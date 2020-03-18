@@ -63,10 +63,13 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       (n - left.length) match {
         case x if x > 0 =>
           r.read(x) flatMap {
-            case Some(right) => loop(left concat right)
-            case None        => Future.value(left)
+            case Some(right) =>
+              loop(left concat right)
+            case None =>
+              Future.value(left)
           }
-        case _ => Future.value(left)
+        case _ =>
+          Future.value(left)
       }
 
     loop(Buf.Empty)
@@ -206,7 +209,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       // header size in client configuration, there should definitely be no
       // "Bar" header.
       val hasBar = client(Request()).transform {
-        case Throw(_) => Future.False
+        case Throw(_) =>
+          Future.False
         case Return(res) =>
           val names = res.headerMap.keys
           Future.value(names.exists(_.contains("Bar")))
@@ -350,8 +354,9 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
           Await.ready(client.close())
           intercept[CancelledRequestException] {
             promise.isInterrupted match {
-              case Some(intr) => throw intr
-              case _          =>
+              case Some(intr) =>
+                throw intr
+              case _ =>
             }
           }
         })

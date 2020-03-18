@@ -128,7 +128,8 @@ object PersistentViewSpec {
     def receive = Actor.emptyBehavior
 
     context.become {
-      case payload ⇒ probe ! s"replicated-${payload}-${lastSequenceNr}"
+      case payload ⇒
+        probe ! s"replicated-${payload}-${lastSequenceNr}"
     }
   }
 
@@ -138,13 +139,16 @@ object PersistentViewSpec {
     override def viewId = name + "-view"
 
     def receive = {
-      case "other" ⇒ stash()
+      case "other" ⇒
+        stash()
       case "unstash" ⇒
         unstashAll()
         context.become {
-          case msg ⇒ probe ! s"$msg-${lastSequenceNr}"
+          case msg ⇒
+            probe ! s"$msg-${lastSequenceNr}"
         }
-      case msg ⇒ stash()
+      case msg ⇒
+        stash()
     }
   }
 
@@ -156,7 +160,8 @@ object PersistentViewSpec {
     def receive = {
       case payload if isPersistent ⇒
         probe ! s"replicated-${payload}-${lastSequenceNr}"
-      case payload ⇒ probe ! s"normal-${payload}-${lastSequenceNr}"
+      case payload ⇒
+        probe ! s"normal-${payload}-${lastSequenceNr}"
     }
   }
 

@@ -38,16 +38,26 @@ class ScalaFindUsagesHandlerFactory(project: Project)
 
   override def canFindUsages(element: PsiElement): Boolean = {
     element match {
-      case _: FakePsiMethod                   => true
-      case _: ScTypedDefinition               => true
-      case _: ScTypeDefinition                => true
-      case _: ScTypeParam                     => true
-      case _: PsiClassWrapper                 => true
-      case _: ScFunctionWrapper               => true
-      case _: StaticPsiMethodWrapper          => true
-      case _: PsiTypedDefinitionWrapper       => true
-      case _: StaticPsiTypedDefinitionWrapper => true
-      case _                                  => false
+      case _: FakePsiMethod =>
+        true
+      case _: ScTypedDefinition =>
+        true
+      case _: ScTypeDefinition =>
+        true
+      case _: ScTypeParam =>
+        true
+      case _: PsiClassWrapper =>
+        true
+      case _: ScFunctionWrapper =>
+        true
+      case _: StaticPsiMethodWrapper =>
+        true
+      case _: PsiTypedDefinitionWrapper =>
+        true
+      case _: StaticPsiTypedDefinitionWrapper =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -56,13 +66,20 @@ class ScalaFindUsagesHandlerFactory(project: Project)
       forHighlightUsages: Boolean): FindUsagesHandler = {
     var replacedElement =
       element match {
-        case wrapper: PsiClassWrapper           => wrapper.definition
-        case p: PsiTypedDefinitionWrapper       => p.typedDefinition
-        case p: StaticPsiTypedDefinitionWrapper => p.typedDefinition
-        case f: ScFunctionWrapper               => f.function
-        case f: FakePsiMethod                   => f.navElement
-        case s: StaticPsiMethodWrapper          => s.method
-        case _                                  => element
+        case wrapper: PsiClassWrapper =>
+          wrapper.definition
+        case p: PsiTypedDefinitionWrapper =>
+          p.typedDefinition
+        case p: StaticPsiTypedDefinitionWrapper =>
+          p.typedDefinition
+        case f: ScFunctionWrapper =>
+          f.function
+        case f: FakePsiMethod =>
+          f.navElement
+        case s: StaticPsiMethodWrapper =>
+          s.method
+        case _ =>
+          element
       }
     def chooseSuper(name: String, supers: Seq[PsiNamedElement]) {
       def showDialog() {
@@ -77,7 +94,8 @@ class ScalaFindUsagesHandlerFactory(project: Project)
             val elem = supers.last
             replacedElement = elem
           case 1 => //do nothing, it's ok
-          case _ => replacedElement = null
+          case _ =>
+            replacedElement = null
         }
       }
       if (SwingUtilities.isEventDispatchThread)
@@ -87,7 +105,8 @@ class ScalaFindUsagesHandlerFactory(project: Project)
     }
 
     replacedElement match {
-      case function: ScFunction if function.isLocal => Array(function)
+      case function: ScFunction if function.isLocal =>
+        Array(function)
       case named: ScNamedElement if !forHighlightUsages =>
         val supers = RenameSuperMembersUtil
           .allSuperMembers(named, withSelfType = true)
@@ -107,7 +126,8 @@ class ScalaFindUsagesHandlerFactory(project: Project)
           if fun.containingClass.qualifiedName.startsWith(
             "scala.Function") && fun.name == "apply" =>
         false
-      case _ => true
+      case _ =>
+        true
     }
   }
 }

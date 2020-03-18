@@ -45,7 +45,8 @@ object Test extends App {
   try {
     pf(1)
   } catch {
-    case x: Throwable => println(x)
+    case x: Throwable =>
+      println(x)
   }
   println("=== pf(42):")
   pf(42)

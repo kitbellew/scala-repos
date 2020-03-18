@@ -16,15 +16,18 @@ final case class ContentTypeRange(
     with ValueRenderable {
   def matches(contentType: jm.ContentType) =
     contentType match {
-      case ContentType.Binary(mt) ⇒ mediaRange.matches(mt)
+      case ContentType.Binary(mt) ⇒
+        mediaRange.matches(mt)
       case x: ContentType.NonBinary ⇒
         mediaRange.matches(x.mediaType) && charsetRange.matches(x.charset)
     }
 
   def render[R <: Rendering](r: R): r.type =
     charsetRange match {
-      case HttpCharsetRange.`*` ⇒ r ~~ mediaRange
-      case x ⇒ r ~~ mediaRange ~~ ContentType.`; charset=` ~~ x
+      case HttpCharsetRange.`*` ⇒
+        r ~~ mediaRange
+      case x ⇒
+        r ~~ mediaRange ~~ ContentType.`; charset=` ~~ x
     }
 }
 
@@ -37,9 +40,12 @@ object ContentTypeRange {
     apply(mediaRange, HttpCharsetRange.`*`)
   implicit def apply(contentType: ContentType): ContentTypeRange =
     contentType match {
-      case ContentType.Binary(mt) ⇒ ContentTypeRange(mt)
-      case ContentType.WithFixedCharset(mt) ⇒ ContentTypeRange(mt)
-      case ContentType.WithCharset(mt, cs) ⇒ ContentTypeRange(mt, cs)
+      case ContentType.Binary(mt) ⇒
+        ContentTypeRange(mt)
+      case ContentType.WithFixedCharset(mt) ⇒
+        ContentTypeRange(mt)
+      case ContentType.WithCharset(mt, cs) ⇒
+        ContentTypeRange(mt, cs)
     }
 }
 
@@ -97,9 +103,12 @@ object ContentType {
       charset: HttpCharset): WithCharset = WithCharset(mediaType, charset)
   def apply(mediaType: MediaType, charset: () ⇒ HttpCharset): ContentType =
     mediaType match {
-      case x: MediaType.Binary ⇒ ContentType(x)
-      case x: MediaType.WithFixedCharset ⇒ ContentType(x)
-      case x: MediaType.WithOpenCharset ⇒ ContentType(x, charset())
+      case x: MediaType.Binary ⇒
+        ContentType(x)
+      case x: MediaType.WithFixedCharset ⇒
+        ContentType(x)
+      case x: MediaType.WithOpenCharset ⇒
+        ContentType(x, charset())
     }
 
   def unapply(

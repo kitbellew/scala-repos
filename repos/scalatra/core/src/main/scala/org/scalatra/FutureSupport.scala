@@ -48,9 +48,12 @@ trait FutureSupport extends AsyncSupport {
 
   override protected def renderResponse(actionResult: Any): Unit = {
     actionResult match {
-      case r: AsyncResult => handleFuture(r.is, r.timeout)
-      case f: Future[_]   => handleFuture(f, asyncTimeout)
-      case a              => super.renderResponse(a)
+      case r: AsyncResult =>
+        handleFuture(r.is, r.timeout)
+      case f: Future[_] =>
+        handleFuture(f, asyncTimeout)
+      case a =>
+        super.renderResponse(a)
     }
   }
 
@@ -65,8 +68,10 @@ trait FutureSupport extends AsyncSupport {
     def renderFutureResult(f: Future[_]): Unit = {
       f onComplete {
         // Loop until we have a non-future result
-        case Success(f2: Future[_])  => renderFutureResult(f2)
-        case Success(r: AsyncResult) => renderFutureResult(r.is)
+        case Success(f2: Future[_]) =>
+          renderFutureResult(f2)
+        case Success(r: AsyncResult) =>
+          renderFutureResult(r.is)
         case t => {
 
           if (gotResponseAlready.compareAndSet(false, true)) {
@@ -114,7 +119,8 @@ trait FutureSupport extends AsyncSupport {
         onAsyncEvent(event) {
           if (gotResponseAlready.compareAndSet(false, true)) {
             event.getThrowable match {
-              case e: HaltException => renderHaltException(e)
+              case e: HaltException =>
+                renderHaltException(e)
               case e =>
                 try {
                   renderResponse(errorHandler(e))

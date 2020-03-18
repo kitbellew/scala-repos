@@ -38,8 +38,9 @@ class ScalaExtractMethodSettings(
                  nextRange.getEndOffset)
            )) {
       elem match {
-        case tpo: ScTypeParametersOwner => tp ++= tpo.typeParameters
-        case _                          =>
+        case tpo: ScTypeParametersOwner =>
+          tp ++= tpo.typeParameters
+        case _ =>
       }
       elem = elem.getParent
     }

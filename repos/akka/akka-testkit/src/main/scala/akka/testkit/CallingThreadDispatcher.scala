@@ -201,8 +201,10 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
   protected[akka] override def unregister(actor: ActorCell): Unit = {
     val mbox =
       actor.mailbox match {
-        case m: CallingThreadMailbox ⇒ Some(m)
-        case _ ⇒ None
+        case m: CallingThreadMailbox ⇒
+          Some(m)
+        case _ ⇒
+          None
       }
     super.unregister(actor)
     mbox foreach CallingThreadDispatcherQueues(actor.system).unregisterQueues
@@ -214,7 +216,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
         m.suspendSwitch.switchOn;
         m.suspend()
       }
-      case m ⇒ m.systemEnqueue(actor.self, Suspend())
+      case m ⇒
+        m.systemEnqueue(actor.self, Suspend())
     }
   }
 
@@ -229,7 +232,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
         }
         if (switched)
           runQueue(mbox, queue)
-      case m ⇒ m.systemEnqueue(actor.self, Resume(causedByFailure = null))
+      case m ⇒
+        m.systemEnqueue(actor.self, Resume(causedByFailure = null))
     }
   }
 
@@ -240,7 +244,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
       case mbox: CallingThreadMailbox ⇒
         mbox.systemEnqueue(receiver.self, message)
         runQueue(mbox, mbox.queue)
-      case m ⇒ m.systemEnqueue(receiver.self, message)
+      case m ⇒
+        m.systemEnqueue(receiver.self, message)
     }
   }
 
@@ -258,7 +263,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
           }
         if (execute)
           runQueue(mbox, queue)
-      case m ⇒ m.enqueue(receiver.self, handle)
+      case m ⇒
+        m.enqueue(receiver.self, handle)
     }
   }
 

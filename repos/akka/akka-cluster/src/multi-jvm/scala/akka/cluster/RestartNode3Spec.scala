@@ -125,7 +125,8 @@ abstract class RestartNode3Spec
         awaitAssert(Cluster(secondSystem).readView.members.size should ===(3))
         awaitAssert(
           Cluster(secondSystem).readView.members.collectFirst {
-            case m if m.address == Cluster(secondSystem).selfAddress ⇒ m.status
+            case m if m.address == Cluster(secondSystem).selfAddress ⇒
+              m.status
           } should ===(Some(Joining)))
       }
       enterBarrier("second-joined")

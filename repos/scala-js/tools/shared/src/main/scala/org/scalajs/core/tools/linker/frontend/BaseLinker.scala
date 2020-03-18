@@ -140,9 +140,12 @@ final class BaseLinker(
     if (analysis.errors.nonEmpty) {
       // TODO Make it always fatal when we can get rid of bypassLinkingErrors
       val fatal = !bypassLinkingErrors || analysis.errors.exists {
-        case _: Analysis.MissingJavaLangObjectClass => true
-        case _: Analysis.CycleInInheritanceChain    => true
-        case _                                      => false
+        case _: Analysis.MissingJavaLangObjectClass =>
+          true
+        case _: Analysis.CycleInInheritanceChain =>
+          true
+        case _ =>
+          false
       }
 
       val linkingErrLevel =

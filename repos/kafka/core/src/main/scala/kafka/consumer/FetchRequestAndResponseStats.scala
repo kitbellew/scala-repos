@@ -90,8 +90,9 @@ object FetchRequestAndResponseStatsRegistry {
     val keys = globalStats.keys
     for (key <- keys) {
       pattern.findFirstIn(key) match {
-        case Some(_) => globalStats.remove(key)
-        case _       =>
+        case Some(_) =>
+          globalStats.remove(key)
+        case _ =>
       }
     }
   }

@@ -114,7 +114,8 @@ final case class ThreadPoolConfig(
         case m: MonitorableThreadFactory ⇒
           // add the dispatcher id to the thread names
           m.withName(m.name + "-" + id)
-        case other ⇒ other
+        case other ⇒
+          other
       }
     new ThreadPoolExecutorServiceFactory(tf)
   }

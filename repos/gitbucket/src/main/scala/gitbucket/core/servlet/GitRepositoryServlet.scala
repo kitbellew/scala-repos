@@ -193,7 +193,8 @@ class CommitLogHook(
               Nil
             } else {
               command.getType match {
-                case ReceiveCommand.Type.DELETE => Nil
+                case ReceiveCommand.Type.DELETE =>
+                  Nil
                 case _ =>
                   JGitUtil.getCommitLog(
                     git,

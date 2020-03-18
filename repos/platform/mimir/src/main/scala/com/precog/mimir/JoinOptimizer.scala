@@ -91,9 +91,11 @@ trait JoinOptimizerModule[M[+_]]
 
         val rewritten =
           transformBottomUp(body) {
-            case j @ Join(_, _, Const(_), _) => j
+            case j @ Join(_, _, Const(_), _) =>
+              j
 
-            case j @ Join(_, _, _, Const(_)) => j
+            case j @ Join(_, _, _, Const(_)) =>
+              j
 
             case j @ Join(op, Cross(_), lhs, rhs)
                 if (compareAncestor(lhs, eqA) && compareAncestor(rhs, eqB)) ||
@@ -119,7 +121,8 @@ trait JoinOptimizerModule[M[+_]]
                 liftRewrite(rhs, ancestorRHS, liftedRHS))(j.loc)
             }
 
-            case other => other
+            case other =>
+              other
           }
 
         if (rewritten == body)
@@ -153,7 +156,8 @@ trait JoinOptimizerModule[M[+_]]
               Join(Eq, Cross(_), eqA, eqB)) if op1.rowLevel =>
           rewrite(filter, body, eqA, eqB)
 
-        case other => other
+        case other =>
+          other
       }
     }
   }

@@ -213,7 +213,8 @@ abstract class NumericRange[T](
   override def contains(x: Any): Boolean =
     try containsTyped(x.asInstanceOf[T])
     catch {
-      case _: ClassCastException => false
+      case _: ClassCastException =>
+        false
     }
 
   final override def sum[B >: T](implicit num: Numeric[B]): B = {

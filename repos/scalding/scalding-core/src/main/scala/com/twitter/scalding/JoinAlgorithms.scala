@@ -141,10 +141,14 @@ trait JoinAlgorithms {
     */
   private def flipJoiner(j: Joiner): Joiner = {
     j match {
-      case outer: OuterJoin => outer
-      case inner: InnerJoin => inner
-      case left: LeftJoin   => new RightJoin
-      case right: RightJoin => new LeftJoin
+      case outer: OuterJoin =>
+        outer
+      case inner: InnerJoin =>
+        inner
+      case left: LeftJoin =>
+        new RightJoin
+      case right: RightJoin =>
+        new LeftJoin
       case other =>
         throw new InvalidJoinModeException(
           "cannot use joiner " + other +
@@ -154,10 +158,14 @@ trait JoinAlgorithms {
 
   def joinerToJoinModes(j: Joiner) = {
     j match {
-      case i: InnerJoin => (InnerJoinMode, InnerJoinMode)
-      case l: LeftJoin  => (InnerJoinMode, OuterJoinMode)
-      case r: RightJoin => (OuterJoinMode, InnerJoinMode)
-      case o: OuterJoin => (OuterJoinMode, OuterJoinMode)
+      case i: InnerJoin =>
+        (InnerJoinMode, InnerJoinMode)
+      case l: LeftJoin =>
+        (InnerJoinMode, OuterJoinMode)
+      case r: RightJoin =>
+        (OuterJoinMode, InnerJoinMode)
+      case o: OuterJoin =>
+        (OuterJoinMode, OuterJoinMode)
       case _ =>
         throw new InvalidJoinModeException(
           "cannot convert joiner to joiner modes")
@@ -392,7 +400,8 @@ trait JoinAlgorithms {
         val rfs = getReplicationFields(rand, replication, otherReplication)
         if (swap)
           rfs.map {
-            case (i, j) => (j, i)
+            case (i, j) =>
+              (j, i)
           }
         else
           rfs
@@ -440,9 +449,12 @@ trait JoinAlgorithms {
       left: Int,
       right: Int): Unit = {
     (joiner, left, right) match {
-      case (i: InnerJoin, _, _) => ()
-      case (k: LeftJoin, 1, _)  => ()
-      case (m: RightJoin, _, 1) => ()
+      case (i: InnerJoin, _, _) =>
+        ()
+      case (k: LeftJoin, 1, _) =>
+        ()
+      case (m: RightJoin, _, 1) =>
+        ()
       case (j, l, r) =>
         throw new InvalidJoinModeException(
           "you cannot use joiner " + j + " with left replication " + l + " and right replication " + r)
@@ -694,8 +706,10 @@ private[scalding] object WrappedJoiner {
     */
   def apply(joiner: Joiner): WrappedJoiner = {
     joiner match {
-      case wrapped: WrappedJoiner => wrapped
-      case _                      => new WrappedJoiner(joiner)
+      case wrapped: WrappedJoiner =>
+        wrapped
+      case _ =>
+        new WrappedJoiner(joiner)
     }
   }
 }

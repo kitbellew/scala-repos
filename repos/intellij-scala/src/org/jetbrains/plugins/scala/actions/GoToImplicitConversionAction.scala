@@ -147,11 +147,14 @@ class GoToImplicitConversionAction
                 entity.getNewExpression match {
                   case f: ScFunction =>
                     f.getSyntheticNavigationElement match {
-                      case Some(n: NavigatablePsiElement) => n.navigate(true)
-                      case _                              => f.navigate(true)
+                      case Some(n: NavigatablePsiElement) =>
+                        n.navigate(true)
+                      case _ =>
+                        f.navigate(true)
                     }
-                  case n: NavigatablePsiElement => n.navigate(true)
-                  case _                        => //do nothing
+                  case n: NavigatablePsiElement =>
+                    n.navigate(true)
+                  case _ => //do nothing
                 }
               }
             })
@@ -194,7 +197,8 @@ class GoToImplicitConversionAction
               if w.getTextRange.getStartOffset == offset &&
                 w.getText.contains("\n") =>
             file.findElementAt(offset - 1)
-          case p => p
+          case p =>
+            p
         }
       def getExpressions(guard: Boolean): Array[ScExpression] = {
         val res = new ArrayBuffer[ScExpression]
@@ -206,7 +210,8 @@ class GoToImplicitConversionAction
                 case postf: ScPostfixExpr if postf.operation == expr =>
                 case pref: ScPrefixExpr if pref.operation == expr    =>
                 case inf: ScInfixExpr if inf.operation == expr       =>
-                case _                                               => res += expr
+                case _ =>
+                  res += expr
               }
             case expr: ScExpression
                 if guard || expr
@@ -335,8 +340,10 @@ class GoToImplicitConversionAction
                 .asInstanceOf[Parameters]
               val function: ScFunction =
                 tuple.getNewExpression match {
-                  case fun: ScFunction => fun
-                  case _               => null
+                  case fun: ScFunction =>
+                    fun
+                  case _ =>
+                    null
                 }
               if (function == null)
                 return

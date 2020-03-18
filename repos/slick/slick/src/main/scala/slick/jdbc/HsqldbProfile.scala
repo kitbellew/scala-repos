@@ -97,12 +97,14 @@ trait HsqldbProfile extends JdbcProfile {
           super.expr(c)
           b" as varchar(16777216))"
         /* Hsqldb uses the SQL:2008 syntax for NEXTVAL */
-        case Library.NextValue(SequenceNode(name)) => b"(next value for `$name)"
+        case Library.NextValue(SequenceNode(name)) =>
+          b"(next value for `$name)"
         case Library.CurrentValue(_*) =>
           throw new SlickException("Hsqldb does not support CURRVAL")
         case RowNumber(_) =>
           b"rownum()" // Hsqldb uses Oracle ROWNUM semantics but needs parens
-        case _ => super.expr(c, skipParens)
+        case _ =>
+          super.expr(c, skipParens)
       }
 
     override protected def buildJoin(j: Join): Unit = {
@@ -119,8 +121,10 @@ trait HsqldbProfile extends JdbcProfile {
               on) =>
           val on3 =
             (on, on2) match {
-              case (a, LiteralNode(true)) => a
-              case (LiteralNode(true), b) => b
+              case (a, LiteralNode(true)) =>
+                a
+              case (LiteralNode(true), b) =>
+                b
               case (a, b) =>
                 Apply(Library.And, ConstArray(a, b))(UnassignedType)
             }
@@ -132,7 +136,8 @@ trait HsqldbProfile extends JdbcProfile {
               r2,
               JoinType.Inner,
               on3))
-        case j => super.buildJoin(j)
+        case j =>
+          super.buildJoin(j)
       }
     }
 
@@ -140,10 +145,13 @@ trait HsqldbProfile extends JdbcProfile {
         fetch: Option[Node],
         offset: Option[Node]) =
       (fetch, offset) match {
-        case (Some(t), Some(d)) => b"\nlimit $t offset $d"
-        case (Some(t), None)    => b"\nlimit $t"
-        case (None, Some(d))    => b"\noffset $d"
-        case _                  =>
+        case (Some(t), Some(d)) =>
+          b"\nlimit $t offset $d"
+        case (Some(t), None) =>
+          b"\nlimit $t"
+        case (None, Some(d)) =>
+          b"\noffset $d"
+        case _ =>
       }
   }
 

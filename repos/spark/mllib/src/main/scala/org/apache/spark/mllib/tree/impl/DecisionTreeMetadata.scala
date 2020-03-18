@@ -121,8 +121,10 @@ private[spark] object DecisionTreeMetadata extends Logging {
     val numExamples = input.count()
     val numClasses =
       strategy.algo match {
-        case Classification => strategy.numClasses
-        case Regression     => 0
+        case Classification =>
+          strategy.numClasses
+        case Regression =>
+          0
       }
 
     val maxPossibleBins = math.min(strategy.maxBins, numExamples).toInt
@@ -198,15 +200,19 @@ private[spark] object DecisionTreeMetadata extends Logging {
               "onethird"
             }
           }
-        case _ => featureSubsetStrategy
+        case _ =>
+          featureSubsetStrategy
       }
     val numFeaturesPerNode: Int =
       _featureSubsetStrategy match {
-        case "all"  => numFeatures
-        case "sqrt" => math.sqrt(numFeatures).ceil.toInt
+        case "all" =>
+          numFeatures
+        case "sqrt" =>
+          math.sqrt(numFeatures).ceil.toInt
         case "log2" =>
           math.max(1, (math.log(numFeatures) / math.log(2)).ceil.toInt)
-        case "onethird" => (numFeatures / 3.0).ceil.toInt
+        case "onethird" =>
+          (numFeatures / 3.0).ceil.toInt
       }
 
     new DecisionTreeMetadata(

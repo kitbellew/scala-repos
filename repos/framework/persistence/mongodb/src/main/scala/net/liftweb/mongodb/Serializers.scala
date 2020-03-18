@@ -37,14 +37,16 @@ class ObjectIdSerializer extends Serializer[ObjectId] {
       format: Formats): PartialFunction[(TypeInfo, JValue), ObjectId] = {
     case (TypeInfo(ObjectIdClass, _), json) =>
       json match {
-        case JsonObjectId(objectId) => objectId
+        case JsonObjectId(objectId) =>
+          objectId
         case x =>
           throw new MappingException("Can't convert " + x + " to ObjectId")
       }
   }
 
   def serialize(implicit formats: Formats): PartialFunction[Any, JValue] = {
-    case x: ObjectId => JsonObjectId(x)
+    case x: ObjectId =>
+      JsonObjectId(x)
   }
 }
 
@@ -62,14 +64,16 @@ class PatternSerializer extends Serializer[Pattern] {
       format: Formats): PartialFunction[(TypeInfo, JValue), Pattern] = {
     case (TypeInfo(PatternClass, _), json) =>
       json match {
-        case JsonRegex(regex) => regex
+        case JsonRegex(regex) =>
+          regex
         case x =>
           throw new MappingException("Can't convert " + x + " to Pattern")
       }
   }
 
   def serialize(implicit formats: Formats): PartialFunction[Any, JValue] = {
-    case x: Pattern => JsonRegex(x)
+    case x: Pattern =>
+      JsonRegex(x)
   }
 }
 
@@ -86,13 +90,16 @@ class DateSerializer extends Serializer[Date] {
       format: Formats): PartialFunction[(TypeInfo, JValue), Date] = {
     case (TypeInfo(DateClass, _), json) =>
       json match {
-        case JsonDate(dt) => dt
-        case x            => throw new MappingException("Can't convert " + x + " to Date")
+        case JsonDate(dt) =>
+          dt
+        case x =>
+          throw new MappingException("Can't convert " + x + " to Date")
       }
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case x: Date => JsonDate(x)
+    case x: Date =>
+      JsonDate(x)
   }
 }
 
@@ -109,13 +116,16 @@ class DateTimeSerializer extends Serializer[DateTime] {
       format: Formats): PartialFunction[(TypeInfo, JValue), DateTime] = {
     case (TypeInfo(DateTimeClass, _), json) =>
       json match {
-        case JsonDateTime(dt) => dt
-        case x                => throw new MappingException("Can't convert " + x + " to Date")
+        case JsonDateTime(dt) =>
+          dt
+        case x =>
+          throw new MappingException("Can't convert " + x + " to Date")
       }
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case x: DateTime => JsonDateTime(x)
+    case x: DateTime =>
+      JsonDateTime(x)
   }
 }
 
@@ -132,12 +142,15 @@ class UUIDSerializer extends Serializer[UUID] {
       format: Formats): PartialFunction[(TypeInfo, JValue), UUID] = {
     case (TypeInfo(UUIDClass, _), json) =>
       json match {
-        case JsonUUID(uuid) => uuid
-        case x              => throw new MappingException("Can't convert " + x + " to UUID")
+        case JsonUUID(uuid) =>
+          uuid
+        case x =>
+          throw new MappingException("Can't convert " + x + " to UUID")
       }
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case x: UUID => JsonUUID(x)
+    case x: UUID =>
+      JsonUUID(x)
   }
 }

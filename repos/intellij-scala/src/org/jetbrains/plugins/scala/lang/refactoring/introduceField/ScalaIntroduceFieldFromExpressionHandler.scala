@@ -51,7 +51,8 @@ class ScalaIntroduceFieldFromExpressionHandler
 
       val (expr: ScExpression, types: Array[ScType]) =
         getExpression(project, editor, file, startOffset, endOffset) match {
-          case Some((e, tps)) => (e, tps)
+          case Some((e, tps)) =>
+            (e, tps)
           case None =>
             showErrorMessage(
               ScalaBundle.message("cannot.refactor.not.expression"),
@@ -195,7 +196,8 @@ class ScalaIntroduceFieldFromExpressionHandler
           parent.addBefore(
             ScalaPsiElementFactory.createNewLineNode(manager, "\n").getPsi,
             anchorForInit)
-        case None => throw new IntroduceException
+        case None =>
+          throw new IntroduceException
 
       }
     }

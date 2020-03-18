@@ -73,7 +73,8 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[InternalRow] = Nil)
       case LocalRelation(otherOutput, otherData) =>
         otherOutput.map(_.dataType) == output.map(
           _.dataType) && otherData == data
-      case _ => false
+      case _ =>
+        false
     }
 
   override lazy val statistics = Statistics(sizeInBytes =

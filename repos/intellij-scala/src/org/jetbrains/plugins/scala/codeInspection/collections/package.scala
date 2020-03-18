@@ -168,7 +168,8 @@ package object collections {
       expr match {
         case ResolvesTo(obj: ScObject) if obj.qualifiedName == "scala.None" =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -181,9 +182,11 @@ package object collections {
             case m: ScMember
                 if m.containingClass.qualifiedName == "scala.Some" =>
               Some(e)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -193,7 +196,8 @@ package object collections {
       expr match {
         case ScIfStmt(Some(c), Some(stripped(tb)), Some(stripped(eb))) =>
           Some(c, tb, eb)
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -201,8 +205,10 @@ package object collections {
   object literal {
     def unapply(expr: ScExpression): Option[String] = {
       expr match {
-        case lit: ScLiteral => Some(lit.getText)
-        case _              => None
+        case lit: ScLiteral =>
+          Some(lit.getText)
+        case _ =>
+          None
       }
     }
   }
@@ -212,10 +218,13 @@ package object collections {
       expr.getType(TypingContext.empty) match {
         case Success(result, _) =>
           result match {
-            case ScFunctionType(returnType, _) => returnType.conforms(tp)
-            case _                             => false
+            case ScFunctionType(returnType, _) =>
+              returnType.conforms(tp)
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -234,7 +243,8 @@ package object collections {
                       leftRef: ScReferenceExpression,
                       rightRef: ScReferenceExpression) =>
                   Set(leftRef.resolve(), rightRef.resolve()) equals Set(x, y)
-                case _ => false
+                case _ =>
+                  false
               }
             stripped(result) match {
               case ScInfixExpr(left, oper, right)
@@ -244,14 +254,17 @@ package object collections {
                     refExpr: ScReferenceExpression,
                     Seq(left, right)) if checkResolve(left, right) =>
                 Some(refExpr)
-              case _ => None
+              case _ =>
+                None
             }
-          case ScInfixExpr(underscore(), oper, underscore()) => Some(oper)
+          case ScInfixExpr(underscore(), oper, underscore()) =>
+            Some(oper)
           case ScMethodCall(
                 refExpr: ScReferenceExpression,
                 Seq(underscore(), underscore())) =>
             Some(refExpr)
-          case _ => None
+          case _ =>
+            None
         }
       operRef.map(_.refName)
     }
@@ -272,9 +285,11 @@ package object collections {
                     if rightRef
                       .resolve() == x && isIndependentOf(leftExpr, x) =>
                   Some(leftExpr)
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
         case ScInfixExpr(underscore(), oper, right)
             if oper.refName == operName =>
@@ -282,7 +297,8 @@ package object collections {
         case ScInfixExpr(left, oper, underscore())
             if oper.refName == operName =>
           Some(left)
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -308,13 +324,16 @@ package object collections {
                       funExprText,
                       expr.getContext,
                       expr))
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
         case ScInfixExpr(underscore(), oper, right) if oper.refName == "&&" =>
           Some(right)
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -327,12 +346,14 @@ package object collections {
             case MethodRepr(_, Some(ResolvesTo(`x`)), Some(ref), Seq())
                 if ref.refName == name =>
               true
-            case _ => false
+            case _ =>
+              false
           }
         case MethodRepr(_, Some(underscore()), Some(ref), Seq())
             if ref.refName == name =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -345,12 +366,15 @@ package object collections {
   object underscore {
     def unapply(expr: ScExpression): Boolean = {
       stripped(expr) match {
-        case ScParenthesisedExpr(underscore()) => true
+        case ScParenthesisedExpr(underscore()) =>
+          true
         case typed: ScTypedStmt
             if typed.expr.isInstanceOf[ScUnderscoreSection] =>
           true
-        case und: ScUnderscoreSection => true
-        case _                        => false
+        case und: ScUnderscoreSection =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -364,8 +388,10 @@ package object collections {
     qual match {
       case _ childOf ScInfixExpr(`qual`, _, _) if args.size == 1 =>
         s"${qual.getText} $methName ${args.head.getText}"
-      case infix: ScInfixExpr => s"($qualText).$methName$argsText"
-      case _                  => s"$qualText.$methName$argsText"
+      case infix: ScInfixExpr =>
+        s"($qualText).$methName$argsText"
+      case _ =>
+        s"$qualText.$methName$argsText"
     }
   }
 
@@ -376,22 +402,33 @@ package object collections {
       args: ScExpression*): String = {
     val baseText = invocationText(qual, methName, args: _*)
     qual match {
-      case _ if !negation                      => baseText
-      case _ childOf ScInfixExpr(`qual`, _, _) => s"!($baseText)"
-      case _                                   => s"!$baseText"
+      case _ if !negation =>
+        baseText
+      case _ childOf ScInfixExpr(`qual`, _, _) =>
+        s"!($baseText)"
+      case _ =>
+        s"!$baseText"
     }
   }
 
   def argListText(args: Seq[ScExpression]): String = {
     args match {
-      case Seq(p: ScParenthesisedExpr)                        => p.getText
-      case Seq(b @ ScBlock(fe: ScFunctionExpr))               => b.getText
-      case Seq(ScBlock(stmt: ScBlockStatement))               => s"(${stmt.getText})"
-      case Seq(b: ScBlock)                                    => b.getText
-      case Seq((fe: ScFunctionExpr) childOf (b: ScBlockExpr)) => b.getText
-      case Seq(other)                                         => s"(${other.getText})"
-      case seq if seq.size > 1                                => seq.map(_.getText).mkString("(", ", ", ")")
-      case _                                                  => ""
+      case Seq(p: ScParenthesisedExpr) =>
+        p.getText
+      case Seq(b @ ScBlock(fe: ScFunctionExpr)) =>
+        b.getText
+      case Seq(ScBlock(stmt: ScBlockStatement)) =>
+        s"(${stmt.getText})"
+      case Seq(b: ScBlock) =>
+        b.getText
+      case Seq((fe: ScFunctionExpr) childOf (b: ScBlockExpr)) =>
+        b.getText
+      case Seq(other) =>
+        s"(${other.getText})"
+      case seq if seq.size > 1 =>
+        seq.map(_.getText).mkString("(", ", ", ")")
+      case _ =>
+        ""
     }
   }
 
@@ -399,7 +436,8 @@ package object collections {
     memberRef.resolve() match {
       case m: ScMember =>
         Option(m.containingClass).exists(_.name.toLowerCase.contains("map"))
-      case _ => false
+      case _ =>
+        false
     }
 
   private def checkScalaVersion(
@@ -422,17 +460,22 @@ package object collections {
       case Some(Seq(srr: ScalaResolveResult))
           if srr.element.name == InferUtil.notFoundParameterName =>
         false
-      case Some(Seq(srr: ScalaResolveResult, _*)) => true
-      case _                                      => false
+      case Some(Seq(srr: ScalaResolveResult, _*)) =>
+        true
+      case _ =>
+        false
     }
   }
 
   @tailrec
   def stripped(expr: ScExpression): ScExpression = {
     expr match {
-      case ScParenthesisedExpr(inner)   => stripped(inner)
-      case ScBlock(inner: ScExpression) => stripped(inner)
-      case _                            => expr
+      case ScParenthesisedExpr(inner) =>
+        stripped(inner)
+      case ScBlock(inner: ScExpression) =>
+        stripped(inner)
+      case _ =>
+        expr
     }
   }
 
@@ -467,9 +510,11 @@ package object collections {
               false
             else
               nameFitToPatterns(clazz.qualifiedName, patterns)
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -483,9 +528,11 @@ package object collections {
           case ExtractClass(cl)
               if nameFitToPatterns(cl.qualifiedName, patterns) =>
             true
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -494,8 +541,10 @@ package object collections {
 
   def isArray(expr: ScExpression): Boolean =
     expr match {
-      case ExpressionType(JavaArrayType(_)) => true
-      case _                                => isOfClassFrom(expr, Array("scala.Array"))
+      case ExpressionType(JavaArrayType(_)) =>
+        true
+      case _ =>
+        isOfClassFrom(expr, Array("scala.Array"))
     }
 
   def isSet(expr: ScExpression): Boolean =
@@ -571,9 +620,12 @@ package object collections {
         ref match {
           case MethodRepr(ExpressionType(ScFunctionType(_, _)), _, _, _) =>
             false
-          case ResolvesTo(fun: ScFunction) => fun.hasUnitResultType
-          case ResolvesTo(m: PsiMethod)    => m.getReturnType == PsiType.VOID
-          case _                           => false
+          case ResolvesTo(fun: ScFunction) =>
+            fun.hasUnitResultType
+          case ResolvesTo(m: PsiMethod) =>
+            m.getReturnType == PsiType.VOID
+          case _ =>
+            false
         }
       }
 
@@ -583,17 +635,21 @@ package object collections {
             case ResolvesTo(elem: PsiElement)
                 if !PsiTreeUtil.isAncestor(expr, elem, false) =>
               Some(elem)
-            case _ => None
+            case _ =>
+              None
           }
       }
 
       val predicate: (PsiElement) => Boolean = {
-        case `expr`                                                     => true
-        case (ScFunctionExpr(_, _) | (_: ScCaseClauses)) childOf `expr` => true
+        case `expr` =>
+          true
+        case (ScFunctionExpr(_, _) | (_: ScCaseClauses)) childOf `expr` =>
+          true
         case (e: ScExpression) childOf `expr`
             if ScUnderScoreSectionUtil.underscores(e).nonEmpty =>
           true
-        case fun: ScFunctionDefinition => false
+        case fun: ScFunctionDefinition =>
+          false
         case elem: PsiElement =>
           !ScalaEvaluatorBuilderUtil.isGenerateClass(elem)
       }
@@ -646,10 +702,12 @@ package object collections {
 
     val startOffset =
       expr match {
-        case _ childOf ScInfixExpr(`expr`, op, _) => op.nameId.getTextOffset
+        case _ childOf ScInfixExpr(`expr`, op, _) =>
+          op.nameId.getTextOffset
         case _ childOf (ref @ ScReferenceExpression.withQualifier(`expr`)) =>
           ref.nameId.getTextOffset
-        case _ => expr.getTextRange.getEndOffset
+        case _ =>
+          expr.getTextRange.getEndOffset
       }
     TextRange.create(startOffset, endOffset).shiftRight(-parent.getTextOffset)
   }
@@ -659,8 +717,10 @@ package object collections {
     stripped(expr) match {
       case MethodRepr(itself: ScMethodCall, Some(base), None, _) =>
         refNameId(base)
-      case MethodRepr(_, _, Some(ref), _) => Some(ref.nameId)
-      case _                              => None
+      case MethodRepr(_, _, Some(ref), _) =>
+        Some(ref.nameId)
+      case _ =>
+        None
     }
 
   implicit class PsiElementRange(val elem: PsiElement) extends AnyVal {

@@ -3,7 +3,8 @@ trait Foo {
     val tvs = "tvs"
     Nil.foreach(x =>
       x match {
-        case _ => println(tvs)
+        case _ =>
+          println(tvs)
       })
   }
 }

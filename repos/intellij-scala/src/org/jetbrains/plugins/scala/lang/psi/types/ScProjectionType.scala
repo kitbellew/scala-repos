@@ -56,9 +56,11 @@ object ScProjectionType {
           case Some(AliasType(td: ScTypeAliasDefinition, _, upper))
               if td.typeParameters.isEmpty =>
             upper.getOrElse(res)
-          case _ => res
+          case _ =>
+            res
         }
-      case _ => res
+      case _ =>
+        res
     }
   }
 
@@ -107,7 +109,8 @@ class ScProjectionType private (
                                     ScTypeParameterType(_, _, _, _, param))
                                   if tParam == param =>
                                 true
-                              case _ => false
+                              case _ =>
+                                false
                             })
                         return Some(
                           AliasType(
@@ -144,7 +147,8 @@ class ScProjectionType private (
               ta.upperBound.map(scType =>
                 ScExistentialType(s.subst(scType), args.toList))
             ))
-        case _ => None
+        case _ =>
+          None
       }
     } else
       None
@@ -172,12 +176,15 @@ class ScProjectionType private (
       visited: HashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         ScProjectionType(
           projected.recursiveUpdate(update, visited + this),
@@ -191,7 +198,8 @@ class ScProjectionType private (
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         ScProjectionType(
           projected.recursiveVarianceUpdateModifiable(newData, update, 0),
@@ -215,11 +223,14 @@ class ScProjectionType private (
           .getOrElse(clazz.extendsBlock)
       }
       ScType.extractClass(projected, Some(element.getProject)) match {
-        case Some(clazz: ScTypeDefinition) => fromClazz(clazz)
+        case Some(clazz: ScTypeDefinition) =>
+          fromClazz(clazz)
         case _ =>
           projected match {
-            case ScThisType(clazz: ScTypeDefinition) => fromClazz(clazz)
-            case _                                   => element
+            case ScThisType(clazz: ScTypeDefinition) =>
+              fromClazz(clazz)
+            case _ =>
+              element
           }
       }
     }
@@ -252,7 +263,8 @@ class ScProjectionType private (
             } match {
             case Some(node) =>
               Some(element, defaultSubstitutor followed node.substitutor)
-            case _ => Some(element, defaultSubstitutor)
+            case _ =>
+              Some(element, defaultSubstitutor)
           }
         } else
           Some(candidates(0).element, defaultSubstitutor)
@@ -260,7 +272,8 @@ class ScProjectionType private (
         None
     }
     element match {
-      case a: ScTypeAlias => processType(a.name)
+      case a: ScTypeAlias =>
+        processType(a.name)
       case d: ScTypedDefinition if d.isStable =>
         val name = d.name
         import org.jetbrains.plugins.scala.lang.resolve.ResolveTargets._
@@ -276,9 +289,12 @@ class ScProjectionType private (
             emptySubst followed candidates(0).substitutor)
         } else
           None
-      case d: ScTypeDefinition => processType(d.name)
-      case d: PsiClass         => processType(d.getName)
-      case _                   => None
+      case d: ScTypeDefinition =>
+        processType(d.name)
+      case d: PsiClass =>
+        processType(d.getName)
+      case _ =>
+        None
     }
   }
 
@@ -296,9 +312,12 @@ class ScProjectionType private (
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     def isSingletonOk(typed: ScTypedDefinition): Boolean = {
       typed.nameContext match {
-        case v: ScValue                      => true
-        case p: ScClassParameter if !p.isVar => true
-        case _                               => false
+        case v: ScValue =>
+          true
+        case p: ScClassParameter if !p.isVar =>
+          true
+        case _ =>
+          false
       }
     }
 
@@ -317,8 +336,10 @@ class ScProjectionType private (
       case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
         return Equivalence.equivInner(
           lower match {
-            case Success(tp, _) => tp
-            case _              => return (false, uSubst)
+            case Success(tp, _) =>
+              tp
+            case _ =>
+              return (false, uSubst)
           },
           r,
           uSubst,
@@ -330,7 +351,8 @@ class ScProjectionType private (
         element match {
           case synth: ScSyntheticClass =>
             Equivalence.equivInner(synth.t, t, uSubst, falseUndef)
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
       case param @ ScParameterizedType(
             proj2 @ ScProjectionType(p1, element1, _),
@@ -340,12 +362,15 @@ class ScProjectionType private (
             Equivalence.equivInner(
               this,
               lower match {
-                case Success(tp, _) => tp
-                case _              => return (false, uSubst)
+                case Success(tp, _) =>
+                  tp
+                case _ =>
+                  return (false, uSubst)
               },
               uSubst,
               falseUndef)
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
       case proj2 @ ScProjectionType(p1, element1, _) =>
         proj2.actualElement match {
@@ -368,8 +393,10 @@ class ScProjectionType private (
             Equivalence.equivInner(
               this,
               lower match {
-                case Success(tp, _) => tp
-                case _              => return (false, uSubst)
+                case Success(tp, _) =>
+                  tp
+                case _ =>
+                  return (false, uSubst)
               },
               uSubst,
               falseUndef)
@@ -418,7 +445,8 @@ class ScProjectionType private (
         Equivalence.equivInner(projected, p1, uSubst, falseUndef)
       case ScThisType(clazz) =>
         element match {
-          case o: ScObject => (false, uSubst)
+          case o: ScObject =>
+            (false, uSubst)
           case t: ScTypedDefinition if t.isStable =>
             t.getType(TypingContext.empty) match {
               case Success(singl, _) if ScType.isSingletonType(singl) =>
@@ -429,20 +457,25 @@ class ScProjectionType private (
                   newSubst.subst(singl),
                   uSubst,
                   falseUndef)
-              case _ => (false, uSubst)
+              case _ =>
+                (false, uSubst)
             }
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
-      case _ => (false, uSubst)
+      case _ =>
+        (false, uSubst)
     }
   }
 
   override def isFinalType =
     actualElement match {
-      case cl: PsiClass if cl.isEffectivelyFinal => true
+      case cl: PsiClass if cl.isEffectivelyFinal =>
+        true
       case alias: ScTypeAliasDefinition =>
         alias.aliasedType.exists(_.isFinalType)
-      case _ => false
+      case _ =>
+        false
     }
 
   def visitType(visitor: ScalaTypeVisitor) {
@@ -458,7 +491,8 @@ class ScProjectionType private (
           projected == that.projected &&
           element == that.element &&
           superReference == that.superReference
-      case _ => false
+      case _ =>
+        false
     }
 
   override def typeDepth: Int = projected.typeDepth
@@ -499,7 +533,8 @@ case class ScThisType(clazz: ScTemplateDefinition) extends ValueType {
           case _ =>
             (false, uSubst)
         }
-      case (_, ScProjectionType(_, o: ScObject, _)) => (false, uSubst)
+      case (_, ScProjectionType(_, o: ScObject, _)) =>
+        (false, uSubst)
       case (_, p @ ScProjectionType(tp, elem: ScTypedDefinition, _))
           if elem.isStable =>
         elem.getType(TypingContext.empty) match {
@@ -511,9 +546,11 @@ case class ScThisType(clazz: ScTemplateDefinition) extends ValueType {
               newSubst.subst(singl),
               uSubst,
               falseUndef)
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
-      case _ => (false, uSubst)
+      case _ =>
+        (false, uSubst)
     }
   }
 
@@ -548,7 +585,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                                   ScTypeParameterType(_, _, _, _, param))
                                 if tParam == param =>
                               true
-                            case _ => false
+                            case _ =>
+                              false
                           })
                       return Some(
                         AliasType(
@@ -584,16 +622,19 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
             ta.upperBound.map(scType =>
               ScExistentialType(genericSubst.subst(scType), args.toList))
           ))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
   override def getValType: Option[StdType] = {
     element match {
-      case o: ScObject => None
+      case o: ScObject =>
+        None
       case clazz: PsiClass =>
         ScType.baseTypesQualMap.get(clazz.qualifiedName)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -617,8 +658,10 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
       case (ScDesignatorType(a: ScTypeAliasDefinition), _) =>
         Equivalence.equivInner(
           a.aliasedType match {
-            case Success(tp, _) => tp
-            case _              => return (false, uSubst)
+            case Success(tp, _) =>
+              tp
+            case _ =>
+              return (false, uSubst)
           },
           r,
           uSubst,
@@ -648,7 +691,8 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
           }
         }
         (false, uSubst)
-      case _ => (false, uSubst)
+      case _ =>
+        (false, uSubst)
     }
   }
 
@@ -658,8 +702,10 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
 
   override def isFinalType =
     element match {
-      case cl: PsiClass if cl.isEffectivelyFinal => true
-      case _                                     => false
+      case cl: PsiClass if cl.isEffectivelyFinal =>
+        true
+      case _ =>
+        false
     }
 }
 
@@ -669,8 +715,10 @@ object ScDesignatorType {
       project: Project,
       scope: GlobalSearchScope): ScType = {
     ScalaPsiManager.instance(project).getCachedClass(scope, fqn) match {
-      case Some(c) => ScType.designator(c)
-      case _       => types.Nothing
+      case Some(c) =>
+        ScType.designator(c)
+      case _ =>
+        types.Nothing
     }
   }
 }

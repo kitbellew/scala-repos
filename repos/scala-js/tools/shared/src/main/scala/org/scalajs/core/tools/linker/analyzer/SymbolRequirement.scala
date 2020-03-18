@@ -74,9 +74,12 @@ object SymbolRequirement {
 
     def optional(requirement: SymbolRequirement): SymbolRequirement = {
       requirement match {
-        case NoRequirement      => NoRequirement
-        case optional: Optional => optional
-        case _                  => requirement
+        case NoRequirement =>
+          NoRequirement
+        case optional: Optional =>
+          optional
+        case _ =>
+          requirement
       }
     }
 
@@ -88,15 +91,21 @@ object SymbolRequirement {
 
   private def multipleInternal(requirements: List[SymbolRequirement]) = {
     val flattened = requirements.flatMap {
-      case NoRequirement          => Nil
-      case Multiple(requirements) => requirements
-      case requirement            => requirement :: Nil
+      case NoRequirement =>
+        Nil
+      case Multiple(requirements) =>
+        requirements
+      case requirement =>
+        requirement :: Nil
     }
 
     flattened match {
-      case Nil      => NoRequirement
-      case x :: Nil => x
-      case xs       => Multiple(xs)
+      case Nil =>
+        NoRequirement
+      case x :: Nil =>
+        x
+      case xs =>
+        Multiple(xs)
     }
   }
 

@@ -87,19 +87,22 @@ class StringTemplateSupport(
         .groupBy(_._1.head)
         .mapValues(
           _.map {
-            case (k, v) => k.tail -> v
+            case (k, v) =>
+              k.tail -> v
           })
         .mapValues { m: Map[List[String], Any] =>
           val (leaves, branches) = m.partition(_._1.length == 1)
           leaves.map {
-            case (k, v) => k.head -> v
+            case (k, v) =>
+              k.head -> v
           } ++ expand(branches, level + 1)
         }
         .map(identity)
     }
 
     val listKeyMap = pkg.map {
-      case (k, v) => k.split('.').toList -> v
+      case (k, v) =>
+        k.split('.').toList -> v
     }
     expand(listKeyMap)
   }
@@ -113,7 +116,8 @@ object StringTemplateSupport {
     override def toString(o: scala.Any, s: String, locale: Locale): String = {
       val wrapped = o.asInstanceOf[AndroidPackage]
       val classes = wrapped.pkg.values.toList.collect {
-        case c: AndroidClass => c
+        case c: AndroidClass =>
+          c
       }
       s match {
         case null | "" | "wrap-all-classes" =>
@@ -124,7 +128,8 @@ object StringTemplateSupport {
           classes
             .map(new ScaloidCodeGenerator(_, ct).implicitConversion)
             .mkString("\n")
-        case _ => throw new Error("Invalid format: " + s)
+        case _ =>
+          throw new Error("Invalid format: " + s)
       }
     }
   }
@@ -136,11 +141,16 @@ object StringTemplateSupport {
       val cls = o.asInstanceOf[AndroidClass]
       val wrapped = new ScaloidCodeGenerator(cls, ct)
       s match {
-        case null | "" | "whole"   => wrapped.wholeClassDef
-        case "rich"                => wrapped.richClassDef
-        case "system-service"      => wrapped.systemServiceHead
-        case "implicit-conversion" => wrapped.implicitConversion
-        case _                     => throw new Error("Invalid format: " + s)
+        case null | "" | "whole" =>
+          wrapped.wholeClassDef
+        case "rich" =>
+          wrapped.richClassDef
+        case "system-service" =>
+          wrapped.systemServiceHead
+        case "implicit-conversion" =>
+          wrapped.implicitConversion
+        case _ =>
+          throw new Error("Invalid format: " + s)
       }
     }
 
@@ -159,9 +169,12 @@ object StringTemplateSupport {
         property: scala.Any,
         propertyName: String): AnyRef = {
       o.asInstanceOf[AndroidPackage].get(propertyName) match {
-        case Some(cls: AndroidClass)     => cls
-        case Some(pkg: Map[String, Any]) => AndroidPackage(pkg)
-        case _                           => throw new STNoSuchPropertyException(null, o, propertyName);
+        case Some(cls: AndroidClass) =>
+          cls
+        case Some(pkg: Map[String, Any]) =>
+          AndroidPackage(pkg)
+        case _ =>
+          throw new STNoSuchPropertyException(null, o, propertyName);
       }
     }
   }
@@ -172,8 +185,10 @@ object StringTemplateSupport {
     def get(name: String): Option[String] =
       stGroup.flatMap { stg =>
         stg.lookupTemplate(name) match {
-          case null       => None
-          case compiledST => Some(compiledST.template)
+          case null =>
+            None
+          case compiledST =>
+            Some(compiledST.template)
         }
       }
 

@@ -5,13 +5,15 @@ object Test {
   def bungus(m: Foo): Boolean =
     bippo(
       (m: @unchecked) match {
-        case Foo(2) => bungus(m)
+        case Foo(2) =>
+          bungus(m)
       })
 
   def main(args: Array[String]): Unit =
     try {
       bungus(Foo(0))
     } catch {
-      case x: MatchError => println(x)
+      case x: MatchError =>
+        println(x)
     }
 }

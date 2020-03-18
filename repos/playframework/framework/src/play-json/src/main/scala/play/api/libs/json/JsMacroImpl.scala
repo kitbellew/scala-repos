@@ -112,7 +112,8 @@ object JsMacroImpl {
           c.abort(
             c.enclosingPosition,
             "No unapply or unapplySeq function found")
-        case Some(s) => s.asMethod
+        case Some(s) =>
+          s.asMethod
       }
 
     val unapplyReturnTypes: Option[List[Type]] =
@@ -125,7 +126,8 @@ object JsMacroImpl {
 
         case TypeRef(_, _, args) =>
           args.head match {
-            case t @ TypeRef(_, _, Nil) => Some(List(t))
+            case t @ TypeRef(_, _, Nil) =>
+              Some(List(t))
             case t @ TypeRef(_, _, args) =>
               import c.universe.definitions.TupleClass
               if (!TupleClass.seq.exists(tupleSym =>
@@ -135,16 +137,20 @@ object JsMacroImpl {
                 Some(args)
               else
                 None
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     // Now the apply methods for the object
     val applies =
       companionType.decl(TermName("apply")) match {
-        case NoSymbol => c.abort(c.enclosingPosition, "No apply function found")
-        case s        => s.asTerm.alternatives
+        case NoSymbol =>
+          c.abort(c.enclosingPosition, "No apply function found")
+        case s =>
+          s.asTerm.alternatives
       }
 
     // Find an apply method that matches the unapply
@@ -231,7 +237,8 @@ object JsMacroImpl {
 
     // if any implicit is missing, abort
     val missingImplicits = effectiveInferredImplicits.collect {
-      case Implicit(_, t, impl, rec, _) if impl == EmptyTree && !rec => t
+      case Implicit(_, t, impl, rec, _) if impl == EmptyTree && !rec =>
+        t
     }
     if (missingImplicits.nonEmpty)
       c.abort(

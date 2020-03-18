@@ -177,7 +177,8 @@ class CompoundTypeCheckSignatureProcessor(
           element match {
             case b: ScBindingPattern =>
               b.getType(TypingContext.empty).getOrNothing
-            case f: ScFieldId => f.getType(TypingContext.empty).getOrNothing
+            case f: ScFieldId =>
+              f.getType(TypingContext.empty).getOrNothing
             case param: ScParameter =>
               param.getType(TypingContext.empty).getOrNothing
           })
@@ -199,7 +200,8 @@ class CompoundTypeCheckSignatureProcessor(
               sign1,
               method.getTypeParameters,
               method match {
-                case fun: ScFunction => fun.returnType.getOrNothing
+                case fun: ScFunction =>
+                  fun.returnType.getOrNothing
                 case method: PsiMethod =>
                   ScType.create(
                     method.getReturnType,

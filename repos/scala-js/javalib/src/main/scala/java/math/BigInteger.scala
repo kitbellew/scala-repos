@@ -495,7 +495,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
         this.sign == that.sign &&
           this.numberLength == that.numberLength &&
           this.equalsArrays(that.digits)
-      case _ => false
+      case _ =>
+        false
     }
 
   def flipBit(n: Int): BigInteger = {

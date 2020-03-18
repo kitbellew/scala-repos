@@ -91,7 +91,8 @@ private[streaming] class MapWithStateDStreamImpl[
       _.stateMap
         .getAll()
         .map {
-          case (k, s, _) => (k, s)
+          case (k, s, _) =>
+            (k, s)
         }
         .toTraversable
     }

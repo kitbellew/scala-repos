@@ -58,12 +58,15 @@ trait Server extends ServerWithStop {
                 case (requestHeader, handler) =>
                   Right((requestHeader, handler, application))
               }
-            case Failure(e) => logExceptionAndGetResult(e)
+            case Failure(e) =>
+              logExceptionAndGetResult(e)
           }
       }
     } catch {
-      case e: ThreadDeath         => throw e
-      case e: VirtualMachineError => throw e
+      case e: ThreadDeath =>
+        throw e
+      case e: VirtualMachineError =>
+        throw e
       case e: Throwable =>
         logExceptionAndGetResult(e)
     }

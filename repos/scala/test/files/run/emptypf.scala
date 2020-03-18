@@ -1,8 +1,10 @@
 object Test {
   val f: PartialFunction[String, Int] = {
     PartialFunction.empty[String, Int] orElse {
-      case "abc" => 100
-      case s     => s.length
+      case "abc" =>
+        100
+      case s =>
+        s.length
     }
   }
 

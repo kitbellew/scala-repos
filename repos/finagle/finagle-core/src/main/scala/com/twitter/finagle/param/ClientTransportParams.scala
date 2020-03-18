@@ -34,8 +34,10 @@ class ClientTransportParams[A <: Stack.Parameterized[A]](
     */
   def tls(hostname: String): A = {
     val socketAddressToEngine: SocketAddress => Engine = {
-      case sa: InetSocketAddress => Ssl.client(hostname, sa.getPort)
-      case _                     => Ssl.client()
+      case sa: InetSocketAddress =>
+        Ssl.client(hostname, sa.getPort)
+      case _ =>
+        Ssl.client()
     }
 
     self
@@ -51,7 +53,8 @@ class ClientTransportParams[A <: Stack.Parameterized[A]](
     val socketAddressToEngine: SocketAddress => Engine = {
       case sa: InetSocketAddress =>
         Ssl.client(context, sa.getHostName, sa.getPort)
-      case _ => Ssl.client(context)
+      case _ =>
+        Ssl.client(context)
     }
 
     self.configured(Transport.TLSClientEngine(Some(socketAddressToEngine)))

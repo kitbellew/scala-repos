@@ -36,15 +36,18 @@ final class Importer(
         game
       else
         situation.status match {
-          case Some(status) => game.finish(status, situation.winner).game
+          case Some(status) =>
+            game.finish(status, situation.winner).game
           case _ =>
             result.fold(game) {
-              case Result(Status.Draw, _) => game.finish(Status.Draw, None).game
+              case Result(Status.Draw, _) =>
+                game.finish(Status.Draw, None).game
               case Result(Status.Resign, winner) =>
                 game.finish(Status.Resign, winner).game
               case Result(Status.UnknownFinish, winner) =>
                 game.finish(Status.UnknownFinish, winner).game
-              case _ => game
+              case _ =>
+                game
             }
         }
 
@@ -69,6 +72,7 @@ final class Importer(
 
   def inMemory(data: ImportData): Valid[Game] =
     data.preprocess(user = none).map {
-      case Preprocessed(game, replay, _) => game withId "synthetic"
+      case Preprocessed(game, replay, _) =>
+        game withId "synthetic"
     }
 }

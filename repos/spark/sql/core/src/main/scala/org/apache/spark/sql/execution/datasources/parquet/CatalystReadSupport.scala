@@ -155,8 +155,10 @@ private[parquet] object CatalystReadSupport {
     */
   private def isPrimitiveCatalystType(dataType: DataType): Boolean = {
     dataType match {
-      case _: ArrayType | _: MapType | _: StructType => false
-      case _                                         => true
+      case _: ArrayType | _: MapType | _: StructType =>
+        false
+      case _ =>
+        true
     }
   }
 

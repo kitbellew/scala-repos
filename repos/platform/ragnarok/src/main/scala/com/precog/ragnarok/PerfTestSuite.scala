@@ -95,7 +95,8 @@ trait PerfTestSuite extends Logging {
     val tails = (runs * (outliers / 2)).toInt
 
     runner.runAll(test, runs) {
-      case None => None
+      case None =>
+        None
       case Some((a, b)) =>
         Some(Statistics(MetricSpace[T].distance(a, b), tails = tails))
     }
@@ -218,8 +219,10 @@ trait PerfTestSuite extends Logging {
 
         val p =
           loc.tree match {
-            case Tree.Node(Group(_), _) => path.tail
-            case _                      => path
+            case Tree.Node(Group(_), _) =>
+              path.tail
+            case _ =>
+              path
           }
 
         loc.right match {
@@ -240,8 +243,10 @@ trait PerfTestSuite extends Logging {
 
         val p =
           loc.tree match {
-            case Tree.Node(Group(name), _) => name :: path
-            case _                         => path
+            case Tree.Node(Group(name), _) =>
+              name :: path
+            case _ =>
+              path
           }
 
         if (select(p.reverse, loc.tree.rootLabel)) {
@@ -260,8 +265,10 @@ trait PerfTestSuite extends Logging {
 
     test.subForest.headOption flatMap { root =>
       find(root.loc, Nil, Nil) match {
-        case Nil   => None
-        case tests => Some(Tree.node(Group(suiteName), tests.toStream))
+        case Nil =>
+          None
+        case tests =>
+          Some(Tree.node(Group(suiteName), tests.toStream))
       }
     }
   }

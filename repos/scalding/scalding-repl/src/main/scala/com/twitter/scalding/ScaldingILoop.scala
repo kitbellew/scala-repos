@@ -127,7 +127,8 @@ class ScaldingILoop(in: Option[BufferedReader], out: JPrintWriter)
           ScaldingILoop.findAllUpPath(cwd)(".scalding_repl").reverse.foreach {
             f => s.loadfiles.appendToValue(f.toString)
           }
-        case _ => ()
+        case _ =>
+          ()
       }
     }
   }

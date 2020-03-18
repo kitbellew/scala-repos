@@ -74,7 +74,8 @@ object CSVConverter {
   def listCsvLinesConverter[A](l: List[String])(implicit
       ec: CSVConverter[A]): Try[List[A]] =
     l match {
-      case Nil => Success(Nil)
+      case Nil =>
+        Success(Nil)
       case Cons(s, ss) =>
         for {
           x <- ec.from(s)
@@ -96,8 +97,10 @@ object CSVConverter {
     new CSVConverter[HNil] {
       def from(s: String): Try[HNil] =
         s match {
-          case "" => Success(HNil)
-          case s  => fail("Cannot convert '" ++ s ++ "' to HNil")
+          case "" =>
+            Success(HNil)
+          case s =>
+            fail("Cannot convert '" ++ s ++ "' to HNil")
         }
       def to(n: HNil) = ""
     }
@@ -119,7 +122,8 @@ object CSVConverter {
                   after.tail)
             } yield front :: back
 
-          case _ => fail("Cannot convert '" ++ s ++ "' to HList")
+          case _ =>
+            fail("Cannot convert '" ++ s ++ "' to HList")
         }
 
       def to(ft: V :: T): String = {
@@ -148,7 +152,8 @@ object CSVConverter {
               sct.value.from(s).map(None :: _)
             }
 
-          case _ => fail("Cannot convert '" ++ s ++ "' to HList")
+          case _ =>
+            fail("Cannot convert '" ++ s ++ "' to HList")
         }
 
       def to(ft: Option[V] :: T): String = {

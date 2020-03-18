@@ -92,7 +92,8 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
       s1,
       Subquery(lbind, condAbove),
       p.replace {
-        case Select(Ref(s), ElementSymbol(1)) if s == s1 => Ref(s1)
+        case Select(Ref(s), ElementSymbol(1)) if s == s1 =>
+          Ref(s1)
         case Select(Ref(s), ElementSymbol(2)) if s == s1 =>
           Select(Ref(s1), idxSym)
       }

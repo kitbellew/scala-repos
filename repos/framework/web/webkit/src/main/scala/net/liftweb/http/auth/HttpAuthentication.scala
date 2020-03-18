@@ -48,7 +48,8 @@ trait HttpAuthentication {
 
 object NoAuthentication extends HttpAuthentication {
   def verified_? = {
-    case req => true
+    case req =>
+      true
   }
 }
 
@@ -69,9 +70,12 @@ case class HttpBasicAuthentication(realmName: String)(
           .split(":")
           .toList
       decoded match {
-        case userName :: password :: _ => Full((userName, password))
-        case userName :: Nil           => Full((userName, ""))
-        case _                         => Empty
+        case userName :: password :: _ =>
+          Full((userName, password))
+        case userName :: Nil =>
+          Full((userName, ""))
+        case _ =>
+          Empty
       }
     })
   }
@@ -83,7 +87,8 @@ case class HttpBasicAuthentication(realmName: String)(
       credentials(req) match {
         case Full((user, pwd)) if (func.isDefinedAt(user, pwd, req)) =>
           func(user, pwd, req)
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -113,14 +118,16 @@ case class HttpDigestAuthentication(realmName: String)(
           }
         })
 
-      case ShutDown => keepPinging = false
+      case ShutDown =>
+        keepPinging = false
     }
 
     private[auth] def doPing() {
       try {
         Schedule.schedule(this, CheckAndPurge, 5.seconds)
       } catch {
-        case e: Exception => logger.error("Couldn't start NonceWatcher ping", e)
+        case e: Exception =>
+          logger.error("Couldn't start NonceWatcher ping", e)
       }
     }
 
@@ -177,13 +184,16 @@ case class HttpDigestAuthentication(realmName: String)(
               val ts = System.currentTimeMillis
               val nonceCreationTime: Long = nonceMap.getOrElse(auth.nonce, -1)
               nonceCreationTime match {
-                case -1 => false
+                case -1 =>
+                  false
                 case _ =>
                   (ts - nonceCreationTime) < nonceValidityPeriod
               }
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
     }
   }

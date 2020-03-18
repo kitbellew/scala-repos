@@ -65,7 +65,8 @@ case class PlayerAggregateAssessment(
 
     def sigDif(dif: Int)(a: Option[Int], b: Option[Int]): Option[Boolean] =
       (a |@| b) apply {
-        case (a, b) => b - a > dif
+        case (a, b) =>
+          b - a > dif
       }
 
     val difs = List(
@@ -112,8 +113,10 @@ case class PlayerAggregateAssessment(
   val relatedUsersCount = relatedUsers.distinct.size
   val assessmentsCount =
     playerAssessments.size match {
-      case 0 => 1
-      case a => a
+      case 0 =>
+        1
+      case a =>
+        a
     }
   val relationModifier =
     if (relatedUsersCount >= 1)

@@ -58,7 +58,8 @@ object NamedCometListener extends Loggable {
         {
           val ret =
             disptchers.get(name) match {
-              case Some(actor) => actor
+              case Some(actor) =>
+                actor
               case None => {
                 val ret = new NamedCometDispatcher(str)
                 disptchers += name -> ret
@@ -88,8 +89,10 @@ object NamedCometListener extends Loggable {
         {
           val ret =
             disptchers.get(name) match {
-              case Some(actor) => Full(actor)
-              case None        => Empty
+              case Some(actor) =>
+                Full(actor)
+              case None =>
+                Empty
             }
           liftActor.satisfy(ret)
         }

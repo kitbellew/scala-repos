@@ -95,9 +95,12 @@ case class ConcatWs(children: Seq[Expression])
   override def eval(input: InternalRow): Any = {
     val flatInputs = children.flatMap { child =>
       child.eval(input) match {
-        case s: UTF8String  => Iterator(s)
-        case arr: ArrayData => arr.toArray[UTF8String](StringType)
-        case null           => Iterator(null.asInstanceOf[UTF8String])
+        case s: UTF8String =>
+          Iterator(s)
+        case arr: ArrayData =>
+          arr.toArray[UTF8String](StringType)
+        case null =>
+          Iterator(null.asInstanceOf[UTF8String])
       }
     }
     UTF8String.concatWs(flatInputs.head, flatInputs.tail: _*)
@@ -819,7 +822,8 @@ case class Substring(str: Expression, pos: Expression, len: Expression)
       ev,
       (string, pos, len) => {
         str.dataType match {
-          case StringType => s"$string.substringSQL($pos, $len)"
+          case StringType =>
+            s"$string.substringSQL($pos, $len)"
           case BinaryType =>
             s"${classOf[ByteArray].getName}.subStringSQL($string, $pos, $len)"
         }
@@ -840,14 +844,18 @@ case class Length(child: Expression)
 
   protected override def nullSafeEval(value: Any): Any =
     child.dataType match {
-      case StringType => value.asInstanceOf[UTF8String].numChars
-      case BinaryType => value.asInstanceOf[Array[Byte]].length
+      case StringType =>
+        value.asInstanceOf[UTF8String].numChars
+      case BinaryType =>
+        value.asInstanceOf[Array[Byte]].length
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     child.dataType match {
-      case StringType => defineCodeGen(ctx, ev, c => s"($c).numChars()")
-      case BinaryType => defineCodeGen(ctx, ev, c => s"($c).length")
+      case StringType =>
+        defineCodeGen(ctx, ev, c => s"($c).numChars()")
+      case BinaryType =>
+        defineCodeGen(ctx, ev, c => s"($c).length")
     }
   }
 }
@@ -1138,8 +1146,10 @@ case class FormatNumber(x: Expression, d: Expression)
 
         def typeHelper(p: String): String = {
           x.dataType match {
-            case _: DecimalType => s"""$p.toJavaBigDecimal()"""
-            case _              => s"$p"
+            case _: DecimalType =>
+              s"""$p.toJavaBigDecimal()"""
+            case _ =>
+              s"$p"
           }
         }
 

@@ -180,7 +180,8 @@ class LinearRegression @Since("1.3.0") (
       .limit(1)
       .rdd
       .map {
-        case Row(features: Vector) => features.size
+        case Row(features: Vector) =>
+          features.size
       }
       .first()
     val w =
@@ -531,7 +532,8 @@ class LinearRegressionModel private[ml] (
         (
           copy(ParamMap.empty).setPredictionCol(predictionColName),
           predictionColName)
-      case p => (this, p)
+      case p =>
+        (this, p)
     }
   }
 
@@ -675,7 +677,8 @@ class LinearRegressionSummary private[regression] (
         .select(predictionCol, labelCol)
         .rdd
         .map {
-          case Row(pred: Double, label: Double) => (pred, label)
+          case Row(pred: Double, label: Double) =>
+            (pred, label)
         },
       !model.getFitIntercept)
 

@@ -28,7 +28,8 @@ class ScParenthesisedExprImpl(node: ASTNode)
       case Some(x: ScExpression) =>
         val res = x.getNonValueType(ctx)
         res
-      case _ => Failure("No expression in parentheseses", Some(this))
+      case _ =>
+        Failure("No expression in parentheseses", Some(this))
     }
   }
 
@@ -38,8 +39,10 @@ class ScParenthesisedExprImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitExprInParent(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitExprInParent(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

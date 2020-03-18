@@ -26,7 +26,8 @@ object ValuePipe extends java.io.Serializable {
   def fold[T, U, V](l: ValuePipe[T], r: ValuePipe[U])(
       f: (T, U) => V): ValuePipe[V] =
     l.leftCross(r).collect {
-      case (t, Some(u)) => f(t, u)
+      case (t, Some(u)) =>
+        f(t, u)
     }
 
   def apply[T](t: T): ValuePipe[T] = LiteralValue(t)
@@ -41,10 +42,13 @@ object ValuePipe extends java.io.Serializable {
 sealed trait ValuePipe[+T] extends java.io.Serializable {
   def leftCross[U](that: ValuePipe[U]): ValuePipe[(T, Option[U])] =
     that match {
-      case EmptyValue       => map((_, None))
-      case LiteralValue(v2) => map((_, Some(v2)))
+      case EmptyValue =>
+        map((_, None))
+      case LiteralValue(v2) =>
+        map((_, Some(v2)))
       // We don't know if a computed value is empty or not. We need to run the MR job:
-      case _ => ComputedValue(toTypedPipe.leftCross(that))
+      case _ =>
+        ComputedValue(toTypedPipe.leftCross(that))
     }
   def collect[U](fn: PartialFunction[T, U]): ValuePipe[U] =
     filter(fn.isDefinedAt(_)).map(fn(_))
@@ -60,7 +64,8 @@ sealed trait ValuePipe[+T] extends java.io.Serializable {
     */
   def getExecution: Execution[T] =
     toOptionExecution.flatMap {
-      case Some(t) => Execution.from(t)
+      case Some(t) =>
+        Execution.from(t)
       // same exception as scala.None.get
       // https://github.com/scala/scala/blob/2.12.x/src/library/scala/Option.scala#L347
       case None =>
@@ -86,8 +91,10 @@ sealed trait ValuePipe[+T] extends java.io.Serializable {
   def toOptionExecution: Execution[Option[T]] =
     toTypedPipe.toIterableExecution.map { it =>
       it.iterator.take(2).toList match {
-        case Nil      => None
-        case h :: Nil => Some(h)
+        case Nil =>
+          None
+        case h :: Nil =>
+          Some(h)
         case items =>
           sys.error("More than 1 item in an ValuePipe: " + items.toString)
       }

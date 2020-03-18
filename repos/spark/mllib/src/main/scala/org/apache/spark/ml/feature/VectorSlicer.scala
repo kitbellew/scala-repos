@@ -118,15 +118,19 @@ final class VectorSlicer(override val uid: String)
     }
     val outputAttr =
       selectedAttrs match {
-        case Some(attrs) => new AttributeGroup($(outputCol), attrs)
-        case None        => new AttributeGroup($(outputCol), inds.length)
+        case Some(attrs) =>
+          new AttributeGroup($(outputCol), attrs)
+        case None =>
+          new AttributeGroup($(outputCol), inds.length)
       }
 
     // Select features
     val slicer = udf { vec: Vector =>
       vec match {
-        case features: DenseVector  => Vectors.dense(inds.map(features.apply))
-        case features: SparseVector => features.slice(inds)
+        case features: DenseVector =>
+          Vectors.dense(inds.map(features.apply))
+        case features: SparseVector =>
+          features.slice(inds)
       }
     }
     dataset.withColumn(
@@ -149,7 +153,8 @@ final class VectorSlicer(override val uid: String)
       nameFeatures
         .zip($(names))
         .map {
-          case (i, n) => s"$i:$n"
+          case (i, n) =>
+            s"$i:$n"
         }
         .mkString("[", ",", "]")
     require(

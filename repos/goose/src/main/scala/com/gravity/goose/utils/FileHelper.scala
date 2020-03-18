@@ -33,7 +33,8 @@ object FileHelper extends Logging {
     try {
       filedata = IOUtils.toString(is, "UTF-8")
     } catch {
-      case e: IOException => warn(e, e.toString)
+      case e: IOException =>
+        warn(e, e.toString)
     }
     filedata
   }

@@ -28,18 +28,22 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
   def clusterSchema(obj: Map[String, SValue]): List[String] =
     obj("cluster1") match {
-      case SObject(ctr) => ctr.keys.toList.sorted
-      case _            => sys.error("malformed SObject")
+      case SObject(ctr) =>
+        ctr.keys.toList.sorted
+      case _ =>
+        sys.error("malformed SObject")
     }
 
   def testmodel(model: Map[String, SValue], validClusters: Set[String]) = {
     model.keys mustEqual Set("clusterId", "clusterCenter")
 
     model("clusterId") must beLike {
-      case SString(c1) => validClusters must contain(c1)
+      case SString(c1) =>
+        validClusters must contain(c1)
     }
     model("clusterCenter") must beLike {
-      case SObject(v) => v.keys mustEqual Set("HeightIncm", "Weight")
+      case SObject(v) =>
+        v.keys mustEqual Set("HeightIncm", "Weight")
     }
   }
 
@@ -98,7 +102,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val count =
         resultsCount.collectFirst {
-          case (_, SDecimal(d)) => d.toInt
+          case (_, SDecimal(d)) =>
+            d.toInt
         }.get
       results must haveSize(count)
 
@@ -110,7 +115,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
           elems.keys mustEqual Set("model1")
 
           elems("model1") must beLike {
-            case SObject(model) => testmodel(model, validClusters)
+            case SObject(model) =>
+              testmodel(model, validClusters)
           }
       }
     }
@@ -121,7 +127,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val count =
         resultsCount.collectFirst {
-          case (_, SDecimal(d)) => d.toInt
+          case (_, SDecimal(d)) =>
+            d.toInt
         }.get
 
       results must haveSize(count)
@@ -142,7 +149,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
               obj.keys mustEqual Set("model1")
 
               obj("model1") must beLike {
-                case SObject(model) => testmodel(model, validClusters)
+                case SObject(model) =>
+                  testmodel(model, validClusters)
               }
           }
       }
@@ -236,7 +244,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
       val count =
         resultsCount.collectFirst {
-          case (_, SDecimal(d)) => d.toInt
+          case (_, SDecimal(d)) =>
+            d.toInt
         }.get
 
       results must haveSize(count)
@@ -260,7 +269,8 @@ trait ClusteringSpecs extends EvalStackSpecs {
               obj.keys mustEqual Set("model1")
 
               obj("model1") must beLike {
-                case SObject(model) => testmodel(model, validClusters)
+                case SObject(model) =>
+                  testmodel(model, validClusters)
               }
           }
       }
@@ -294,10 +304,12 @@ trait ClusteringSpecs extends EvalStackSpecs {
         case (ids, SObject(elems)) =>
           elems.keys mustEqual Set("numPtsInCluster", "clusterId")
           elems("numPtsInCluster") must beLike {
-            case SDecimal(d) => d must be_>=(BigDecimal(1))
+            case SDecimal(d) =>
+              d must be_>=(BigDecimal(1))
           }
           elems("clusterId") must beLike {
-            case SObject(model) => testmodel(model, validClusters)
+            case SObject(model) =>
+              testmodel(model, validClusters)
           }
       }
     }

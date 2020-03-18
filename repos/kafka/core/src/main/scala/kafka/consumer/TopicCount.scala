@@ -81,7 +81,8 @@ private[kafka] object TopicCount extends Logging {
                 "error constructing TopicCount : " + topicCountString)
           }
           consumerRegistrationMap.get("subscription") match {
-            case Some(sub) => topMap = sub.asInstanceOf[Map[String, Int]]
+            case Some(sub) =>
+              topMap = sub.asInstanceOf[Map[String, Int]]
             case None =>
               throw new KafkaException(
                 "error constructing TopicCount : " + topicCountString)
@@ -148,10 +149,12 @@ private[kafka] class StaticTopicCount(
 
   override def equals(obj: Any): Boolean = {
     obj match {
-      case null => false
+      case null =>
+        false
       case n: StaticTopicCount =>
         consumerIdString == n.consumerIdString && topicCountMap == n.topicCountMap
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -181,8 +184,10 @@ private[kafka] class WildcardTopicCount(
 
   def pattern: String = {
     topicFilter match {
-      case wl: Whitelist => TopicCount.whiteListPattern
-      case bl: Blacklist => TopicCount.blackListPattern
+      case wl: Whitelist =>
+        TopicCount.whiteListPattern
+      case bl: Blacklist =>
+        TopicCount.blackListPattern
     }
   }
 

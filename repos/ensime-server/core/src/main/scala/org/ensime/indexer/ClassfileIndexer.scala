@@ -39,8 +39,10 @@ trait ClassfileIndexer {
     DescriptorParser.parse(desc) match {
       case Descriptor(params, ret) =>
         (ret :: params).map {
-          case c: ClassName       => c
-          case a: ArrayDescriptor => a.reifier
+          case c: ClassName =>
+            c
+          case a: ArrayDescriptor =>
+            a.reifier
         }
     }
 
@@ -225,8 +227,10 @@ trait ClassfileIndexer {
 
     private def memberOrInit(owner: String, name: String): FullyQualifiedName =
       name match {
-        case "<init>" | "<clinit>" => ClassName.fromInternal(owner)
-        case member                => MemberName(ClassName.fromInternal(owner), member)
+        case "<init>" | "<clinit>" =>
+          ClassName.fromInternal(owner)
+        case member =>
+          MemberName(ClassName.fromInternal(owner), member)
       }
 
     override def visitLocalVariable(

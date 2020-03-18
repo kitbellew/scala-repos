@@ -53,9 +53,12 @@ trait PackageObject extends Steroids with WithFuture {
 
     def fold[B](fe: Exception => B, fa: A => B): B =
       v match {
-        case scala.util.Failure(e: Exception) => fe(e)
-        case scala.util.Failure(e)            => throw e
-        case scala.util.Success(a)            => fa(a)
+        case scala.util.Failure(e: Exception) =>
+          fe(e)
+        case scala.util.Failure(e) =>
+          throw e
+        case scala.util.Success(a) =>
+          fa(a)
       }
 
     def future: Fu[A] = fold(Future.failed, fuccess)
@@ -65,14 +68,16 @@ trait PackageObject extends Steroids with WithFuture {
     try {
       Some(java.lang.Integer.parseInt(str))
     } catch {
-      case e: NumberFormatException => None
+      case e: NumberFormatException =>
+        None
     }
 
   def parseFloatOption(str: String): Option[Float] =
     try {
       Some(java.lang.Float.parseFloat(str))
     } catch {
-      case e: NumberFormatException => None
+      case e: NumberFormatException =>
+        None
     }
 
   def intBox(in: Range.Inclusive)(v: Int): Int =
@@ -119,7 +124,8 @@ trait WithPlay {
     Monoid.instance(
       (x, y) =>
         x zip y map {
-          case (a, b) => a ⊹ b
+          case (a, b) =>
+            a ⊹ b
         },
       fuccess(∅[A]))
 
@@ -144,7 +150,8 @@ trait WithPlay {
 
     def >>-(sideEffect: => Unit): Fu[A] =
       fua andThen {
-        case _ => sideEffect
+        case _ =>
+          sideEffect
       }
 
     def >>[B](fub: => Fu[B]): Fu[B] = fua flatMap (_ => fub)
@@ -157,28 +164,35 @@ trait WithPlay {
 
     def effectFold(fail: Exception => Unit, succ: A => Unit) {
       fua onComplete {
-        case scala.util.Failure(e: Exception) => fail(e)
-        case scala.util.Failure(e)            => throw e // Throwables
-        case scala.util.Success(e)            => succ(e)
+        case scala.util.Failure(e: Exception) =>
+          fail(e)
+        case scala.util.Failure(e) =>
+          throw e // Throwables
+        case scala.util.Success(e) =>
+          succ(e)
       }
     }
 
     def andThenAnyway(sideEffect: => Unit): Fu[A] = {
       fua onComplete {
-        case scala.util.Failure(_) => sideEffect
-        case scala.util.Success(_) => sideEffect
+        case scala.util.Failure(_) =>
+          sideEffect
+        case scala.util.Success(_) =>
+          sideEffect
       }
       fua
     }
 
     def fold[B](fail: Exception => B, succ: A => B): Fu[B] =
       fua map succ recover {
-        case e: Exception => fail(e)
+        case e: Exception =>
+          fail(e)
       }
 
     def flatFold[B](fail: Exception => Fu[B], succ: A => Fu[B]): Fu[B] =
       fua flatMap succ recoverWith {
-        case e: Exception => fail(e)
+        case e: Exception =>
+          fail(e)
       }
 
     def logFailure(
@@ -195,20 +209,25 @@ trait WithPlay {
     def addFailureEffect(effect: Exception => Unit) =
       fua ~ (
         _ onFailure {
-          case e: Exception => effect(e)
+          case e: Exception =>
+            effect(e)
         }
       )
 
     def addEffects(fail: Exception => Unit, succ: A => Unit): Fu[A] =
       fua andThen {
-        case scala.util.Failure(e: Exception) => fail(e)
-        case scala.util.Failure(e)            => throw e // Throwables
-        case scala.util.Success(e)            => succ(e)
+        case scala.util.Failure(e: Exception) =>
+          fail(e)
+        case scala.util.Failure(e) =>
+          throw e // Throwables
+        case scala.util.Success(e) =>
+          succ(e)
       }
 
     def mapFailure(f: Exception => Exception) =
       fua recover {
-        case cause: Exception => throw f(cause)
+        case cause: Exception =>
+          throw f(cause)
       }
 
     def prefixFailure(p: => String) =
@@ -251,8 +270,10 @@ trait WithPlay {
 
     def nevermind: Fu[A] =
       fua recover {
-        case e: lila.common.LilaException             => zero[A]
-        case e: java.util.concurrent.TimeoutException => zero[A]
+        case e: lila.common.LilaException =>
+          zero[A]
+        case e: java.util.concurrent.TimeoutException =>
+          zero[A]
       }
   }
 

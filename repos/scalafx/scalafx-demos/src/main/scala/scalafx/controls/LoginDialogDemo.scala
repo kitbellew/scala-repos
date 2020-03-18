@@ -117,8 +117,10 @@ object LoginDialogDemo extends JFXApp {
     val result = dialog.showAndWait()
 
     result match {
-      case Some(Result(u, p)) => println("Username=" + u + ", Password=" + p)
-      case None               => println("Dialog returned: None")
+      case Some(Result(u, p)) =>
+        println("Username=" + u + ", Password=" + p)
+      case None =>
+        println("Dialog returned: None")
     }
   }
 

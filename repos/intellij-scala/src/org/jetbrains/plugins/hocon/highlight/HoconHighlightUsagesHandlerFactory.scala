@@ -21,8 +21,10 @@ class HoconHighlightUsagesHandlerFactory
     Iterator
       .iterate(target)(_.getParent)
       .takeWhile {
-        case null | _: PsiFile => false
-        case _                 => true
+        case null | _: PsiFile =>
+          false
+        case _ =>
+          true
       }
       .collectFirst {
         case hkey: HKey =>
@@ -40,12 +42,16 @@ class HoconHighlightKeyUsagesHandler(
   def computeUsages(targets: JList[HKey]): Unit = {
     def findPaths(el: PsiElement): Iterator[HPath] =
       el match {
-        case path: HPath                    => Iterator(path)
-        case hoconFile: HoconPsiFile        => findPaths(hoconFile.toplevelEntries)
-        case _: HInclude | _: HLiteralValue => Iterator.empty
+        case path: HPath =>
+          Iterator(path)
+        case hoconFile: HoconPsiFile =>
+          findPaths(hoconFile.toplevelEntries)
+        case _: HInclude | _: HLiteralValue =>
+          Iterator.empty
         case hoconElement: HoconPsiElement =>
           hoconElement.nonWhitespaceChildren.flatMap(findPaths)
-        case _ => Iterator.empty
+        case _ =>
+          Iterator.empty
       }
     lazy val allValidPathsInFile =
       findPaths(psiFile).map(_.startingValidKeys).toList
@@ -59,7 +65,8 @@ class HoconHighlightKeyUsagesHandler(
               scopes: Iterator[HScope],
               keys: List[HKey]): Iterator[HKey] =
             keys match {
-              case Nil => Iterator.empty
+              case Nil =>
+                Iterator.empty
               case List(lastKey) =>
                 scopes
                   .flatMap(_.directKeyedFields)
@@ -79,7 +86,8 @@ class HoconHighlightKeyUsagesHandler(
               case (key :: rest, pathKey :: pathRest)
                   if key.stringValue == pathKey.stringValue =>
                 fromPath(rest, pathRest)
-              case _ => None
+              case _ =>
+                None
             }
           def fromPaths =
             if (firstKey.enclosingEntries eq firstKey.getContainingFile.toplevelEntries)

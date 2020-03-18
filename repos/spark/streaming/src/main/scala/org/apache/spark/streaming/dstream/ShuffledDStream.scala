@@ -46,7 +46,8 @@ private[streaming] class ShuffledDStream[K: ClassTag, V: ClassTag, C: ClassTag](
             mergeCombiner,
             partitioner,
             mapSideCombine))
-      case None => None
+      case None =>
+        None
     }
   }
 }

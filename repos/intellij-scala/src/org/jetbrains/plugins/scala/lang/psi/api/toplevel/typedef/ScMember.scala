@@ -49,40 +49,52 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
   def containingClass: ScTemplateDefinition = {
     val stub: StubElement[_ <: PsiElement] =
       this match {
-        case file: PsiFileImpl                => file.getStub
-        case st: ScalaStubBasedElementImpl[_] => st.getStub
-        case _                                => null
+        case file: PsiFileImpl =>
+          file.getStub
+        case st: ScalaStubBasedElementImpl[_] =>
+          st.getStub
+        case _ =>
+          null
       }
     stub match {
-      case m: ScMemberOrLocal if m.isLocal => return null
-      case _                               =>
+      case m: ScMemberOrLocal if m.isLocal =>
+        return null
+      case _ =>
     }
     val context = getContext
     (getContainingClassLoose, this) match {
-      case (null, _) => null
+      case (null, _) =>
+        null
       case (found, fun: ScFunction) if fun.syntheticContainingClass.isDefined =>
         fun.syntheticContainingClass.get
-      case (found, fun: ScFunction) if fun.isSynthetic => found
+      case (found, fun: ScFunction) if fun.isSynthetic =>
+        found
       case (found, td: ScTypeDefinition)
           if td.syntheticContainingClass.isDefined =>
         td.syntheticContainingClass.get
-      case (found, td: ScTypeDefinition) if td.isSynthetic        => found
-      case (found, _: ScClassParameter | _: ScPrimaryConstructor) => found
+      case (found, td: ScTypeDefinition) if td.isSynthetic =>
+        found
+      case (found, _: ScClassParameter | _: ScPrimaryConstructor) =>
+        found
       case (found, _)
           if context == found.extendsBlock || found.extendsBlock.templateBody
             .contains(context) ||
             found.extendsBlock.earlyDefinitions.contains(context) =>
         found
-      case (found, _) => null // See SCL-3178
+      case (found, _) =>
+        null // See SCL-3178
     }
   }
 
   def getContainingClassLoose: ScTemplateDefinition = {
     val stub: StubElement[_ <: PsiElement] =
       this match {
-        case file: PsiFileImpl                => file.getStub
-        case st: ScalaStubBasedElementImpl[_] => st.getStub
-        case _                                => null
+        case file: PsiFileImpl =>
+          file.getStub
+        case st: ScalaStubBasedElementImpl[_] =>
+          st.getStub
+        case _ =>
+          null
       }
     if (stub != null) {
       stub.getParentStubOfType(classOf[ScTemplateDefinition])
@@ -96,8 +108,9 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
                   fun.isSyntheticUnapplySeq =>
               //this is special case for synthetic apply and unapply methods
               ScalaPsiUtil.getCompanionModule(c) match {
-                case Some(td) => return td
-                case _        =>
+                case Some(td) =>
+                  return td
+                case _ =>
               }
             case _ =>
           }
@@ -110,9 +123,12 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
   def isLocal: Boolean = {
     val stub: StubElement[_ <: PsiElement] =
       this match {
-        case file: PsiFileImpl                => file.getStub
-        case st: ScalaStubBasedElementImpl[_] => st.getStub
-        case _                                => null
+        case file: PsiFileImpl =>
+          file.getStub
+        case st: ScalaStubBasedElementImpl[_] =>
+          st.getStub
+        case _ =>
+          null
       }
     stub match {
       case memberOrLocal: ScMemberOrLocal =>
@@ -126,14 +142,16 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
     name match {
       case PsiModifier.PUBLIC =>
         !hasModifierProperty("private") && !hasModifierProperty("protected")
-      case PsiModifier.STATIC => containingClass.isInstanceOf[ScObject]
+      case PsiModifier.STATIC =>
+        containingClass.isInstanceOf[ScObject]
       case PsiModifier.PRIVATE =>
         getModifierList.accessModifier.exists(
           _.access == ScAccessModifier.Type.THIS_PRIVATE)
       case PsiModifier.PROTECTED =>
         getModifierList.accessModifier.exists(
           _.access == ScAccessModifier.Type.THIS_PROTECTED)
-      case _ => super.hasModifierProperty(name)
+      case _ =>
+        super.hasModifierProperty(name)
     }
   }
 
@@ -142,8 +160,10 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
 
   override def getNavigationElement: PsiElement =
     getContainingFile match {
-      case s: ScalaFileImpl if s.isCompiled => getSourceMirrorMember
-      case _                                => this
+      case s: ScalaFileImpl if s.isCompiled =>
+        getSourceMirrorMember
+      case _ =>
+        this
     }
 
   private def getSourceMirrorMember: ScMember =
@@ -176,23 +196,30 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
                       else
                         filter(0)
                     }
-                  case _ => this
+                  case _ =>
+                    this
                 }
-              case _ => this
+              case _ =>
+                this
             }
-          case _ => this
+          case _ =>
+            this
         }
       case c: ScTypeDefinition
           if this.isInstanceOf[ScPrimaryConstructor] => //primary constructor
         c.getNavigationElement match {
           case td: ScClass =>
             td.constructor match {
-              case Some(constr) => constr
-              case _            => this
+              case Some(constr) =>
+                constr
+              case _ =>
+                this
             }
-          case _ => this
+          case _ =>
+            this
         }
-      case _ => this
+      case _ =>
+        this
     }
 
   abstract override def getUseScope: SearchScope = {
@@ -205,9 +232,12 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
         classOf[ScBlock],
         classOf[ScMember])
       blockOrMember match {
-        case null             => None
-        case block: ScBlock   => Some(new LocalSearchScope(block))
-        case member: ScMember => Some(member.getUseScope)
+        case null =>
+          None
+        case block: ScBlock =>
+          Some(new LocalSearchScope(block))
+        case member: ScMember =>
+          Some(member.getUseScope)
       }
     }
 
@@ -215,8 +245,10 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       accessModifier
         .filter(am => am.isPrivate && am.getReference != null)
         .map(_.scope) collect {
-        case p: PsiPackage        => new PackageScope(p, true, true)
-        case td: ScTypeDefinition => ScalaPsiUtil.withCompanionSearchScope(td)
+        case p: PsiPackage =>
+          new PackageScope(p, true, true)
+        case td: ScTypeDefinition =>
+          ScalaPsiUtil.withCompanionSearchScope(td)
       }
     }
 
@@ -228,8 +260,10 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
             .map(new LocalSearchScope(_))
         case _ if accessModifier.exists(_.isUnqualifiedPrivateOrThis) =>
           containingClass match {
-            case null => containingFile.map(new LocalSearchScope(_))
-            case c    => Some(ScalaPsiUtil.withCompanionSearchScope(c))
+            case null =>
+              containingFile.map(new LocalSearchScope(_))
+            case c =>
+              Some(ScalaPsiUtil.withCompanionSearchScope(c))
           }
         case cp: ScClassParameter =>
           Option(cp.containingClass)

@@ -61,8 +61,10 @@ trait AnnotationInfos extends api.Annotations {
     def getAnnotation(cls: Symbol): Option[AnnotationInfo] =
       //OPT inlined from exists to save on #closures; was:  annotations find (_ matches cls)
       dropOtherAnnotations(annotations, cls) match {
-        case ann :: _ => Some(ann)
-        case _        => None
+        case ann :: _ =>
+          Some(ann)
+        case _ =>
+          None
       }
 
     def removeAnnotation(cls: Symbol): Self =
@@ -81,7 +83,8 @@ trait AnnotationInfos extends api.Annotations {
             anns
           else
             dropOtherAnnotations(rest, cls)
-        case Nil => Nil
+        case Nil =>
+          Nil
       }
   }
 
@@ -217,19 +220,25 @@ trait AnnotationInfos extends api.Annotations {
     def mkFilter(category: Symbol, defaultRetention: Boolean)(
         ann: AnnotationInfo) =
       (ann.metaAnnotations, ann.defaultTargets) match {
-        case (Nil, Nil)      => defaultRetention
-        case (Nil, defaults) => defaults contains category
-        case (metas, _)      => metas exists (_ matches category)
+        case (Nil, Nil) =>
+          defaultRetention
+        case (Nil, defaults) =>
+          defaults contains category
+        case (metas, _) =>
+          metas exists (_ matches category)
       }
 
     def mkFilter(categories: List[Symbol], defaultRetention: Boolean)(
         ann: AnnotationInfo) =
       (ann.metaAnnotations, ann.defaultTargets) match {
-        case (Nil, Nil)      => defaultRetention
-        case (Nil, defaults) => categories exists defaults.contains
+        case (Nil, Nil) =>
+          defaultRetention
+        case (Nil, defaults) =>
+          categories exists defaults.contains
         case (metas, _) =>
           val metaSyms = metas collect {
-            case ann if !ann.symbol.isInstanceOf[StubSymbol] => ann.symbol
+            case ann if !ann.symbol.isInstanceOf[StubSymbol] =>
+              ann.symbol
           }
           categories exists (category =>
             metaSyms exists (_ isNonBottomSubClass category))
@@ -267,7 +276,8 @@ trait AnnotationInfos extends api.Annotations {
       if (!assocs.isEmpty)
         (
           assocs map {
-            case (x, y) => x + " = " + y
+            case (x, y) =>
+              x + " = " + y
           } mkString ("(", ", ", ")")
         )
       else
@@ -379,8 +389,10 @@ trait AnnotationInfos extends api.Annotations {
       */
     def metaAnnotations: List[AnnotationInfo] =
       atp match {
-        case AnnotatedType(metas, _) => metas
-        case _                       => Nil
+        case AnnotatedType(metas, _) =>
+          metas
+        case _ =>
+          Nil
       }
 
     /** The default kind of members to which this annotation is attached.
@@ -417,7 +429,8 @@ trait AnnotationInfos extends api.Annotations {
     // Literal(const) but some arbitrary AST.
     def constantAtIndex(index: Int): Option[Constant] =
       argAtIndex(index) collect {
-        case Literal(x) => x
+        case Literal(x) =>
+          x
       }
 
     def argAtIndex(index: Int): Option[Tree] =
@@ -431,7 +444,8 @@ trait AnnotationInfos extends api.Annotations {
       other match {
         case x: AnnotationInfo =>
           (atp == x.atp) && (args == x.args) && (assocs == x.assocs)
-        case _ => false
+        case _ =>
+          false
       }
   }
 
@@ -481,7 +495,8 @@ trait AnnotationInfos extends api.Annotations {
             AssignOrNamedArg(
               Ident(name),
               reverseEngineerArg(jarg)) :: reverseEngineerArgs(rest)
-          case Nil => Nil
+          case Nil =>
+            Nil
         }
       if (ann.javaArgs.isEmpty)
         ann.scalaArgs
@@ -501,7 +516,8 @@ trait AnnotationInfos extends api.Annotations {
       case Apply(Select(New(tpt), nme.CONSTRUCTOR), args) =>
         def encodeJavaArg(arg: Tree): ClassfileAnnotArg =
           arg match {
-            case Literal(const) => LiteralAnnotArg(const)
+            case Literal(const) =>
+              LiteralAnnotArg(const)
             case Apply(ArrayModule, args) =>
               ArrayAnnotArg(args map encodeJavaArg toArray)
             case Apply(Select(New(tpt), nme.CONSTRUCTOR), args) =>
@@ -517,7 +533,8 @@ trait AnnotationInfos extends api.Annotations {
             case arg :: rest =>
               throw new Exception(
                 s"unexpected java argument shape $arg: only AssignOrNamedArg trees are supported")
-            case Nil => Nil
+            case Nil =>
+              Nil
           }
         val atp = tpt.tpe
         if (atp != null && (

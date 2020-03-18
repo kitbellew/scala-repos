@@ -131,15 +131,18 @@ class ScalaMemberInplaceRenamer(
               myEditor,
               TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED)
             myElementToRename = element match {
-              case null                                              => null
-              case named: PsiNamedElement if named.getClass == clazz => named
+              case null =>
+                null
+              case named: PsiNamedElement if named.getClass == clazz =>
+                named
               case _ =>
                 RenamePsiElementProcessor
                   .forElement(element)
                   .substituteElementToRename(element, myEditor) match {
                   case named: PsiNamedElement if named.getClass == clazz =>
                     named
-                  case _ => null
+                  case _ =>
+                    null
                 }
             }
           }
@@ -220,12 +223,14 @@ class ScalaMemberInplaceRenamer(
 
   override def getNameIdentifier: PsiElement =
     myElementToRename match {
-      case lightPsi: PsiNamedElement if !lightPsi.isPhysical => null
+      case lightPsi: PsiNamedElement if !lightPsi.isPhysical =>
+        null
       case nameIdentifierOwner: PsiNameIdentifierOwner
           if myElementToRename.getContainingFile.getViewProvider.getAllFiles
             .size() > 1 =>
         nameIdentifierOwner.getNameIdentifier
-      case _ => super.getNameIdentifier
+      case _ =>
+        super.getNameIdentifier
     }
 
   override def startsOnTheSameElement(
@@ -236,7 +241,8 @@ class ScalaMemberInplaceRenamer(
         val caretOffset = editor.getCaretModel.getOffset
         myCaretRangeMarker != null && myCaretRangeMarker.isValid &&
         myCaretRangeMarker.getStartOffset <= caretOffset && myCaretRangeMarker.getEndOffset >= caretOffset
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

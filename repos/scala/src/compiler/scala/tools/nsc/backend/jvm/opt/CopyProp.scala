@@ -135,7 +135,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                     ) // current field value is `this`, which won't be gc'd anyway
                   case _: UninitializedLocalProducer =>
                     true // field is not yet initialized, so current value cannot leak
-                  case _ => false
+                  case _ =>
+                    false
                 }
               )
             }
@@ -256,8 +257,10 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
 
             case _ =>
               (prod.getOpcode: @switch) match {
-                case DUP  => true
-                case DUP2 => prodCons.frameAt(prod).peekStack(0).getSize == 2
+                case DUP =>
+                  true
+                case DUP2 =>
+                  prodCons.frameAt(prod).peekStack(0).getSize == 2
                 case _ =>
                   InstructionStackEffect.prod(
                     InstructionStackEffect
@@ -440,7 +443,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
               prod match {
                 case callGraph.LambdaMetaFactoryCall(indy, _, _, _) =>
                   handleClosureInst(indy)
-                case _ => popAfterProd()
+                case _ =>
+                  popAfterProd()
               }
 
             case NEW =>
@@ -601,9 +605,12 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
 
     def registerLiveVarsLabels(insn: AbstractInsnNode): Unit =
       insn match {
-        case vi: VarInsnNode  => liveVars(vi.`var`) = true
-        case ii: IincInsnNode => liveVars(ii.`var`) = true
-        case j: JumpInsnNode  => liveLabels += j.label
+        case vi: VarInsnNode =>
+          liveVars(vi.`var`) = true
+        case ii: IincInsnNode =>
+          liveVars(ii.`var`) = true
+        case j: JumpInsnNode =>
+          liveLabels += j.label
         case s: TableSwitchInsnNode =>
           liveLabels += s.dflt;
           liveLabels ++= s.labels.asScala
@@ -633,7 +640,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
         pairStartStack.top match {
           case (store: VarInsnNode, _) =>
             store.`var` == load.asInstanceOf[VarInsnNode].`var`
-          case _ => false
+          case _ =>
+            false
         }
       }
 
@@ -703,11 +711,14 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
 
     while (insn != null) {
       insn match {
-        case _ if insn.getOpcode == ACONST_NULL => push(insn)
-        case vi: VarInsnNode if isStore(vi)     => push(insn)
+        case _ if insn.getOpcode == ACONST_NULL =>
+          push(insn)
+        case vi: VarInsnNode if isStore(vi) =>
+          push(insn)
         case label: LabelNode if pairStartStack.nonEmpty =>
           addDepends(LabelNotLive(label))
-        case _ => tryToPairInstruction(insn)
+        case _ =>
+          tryToPairInstruction(insn)
       }
       advanceToNextExecutableOrLabel()
     }

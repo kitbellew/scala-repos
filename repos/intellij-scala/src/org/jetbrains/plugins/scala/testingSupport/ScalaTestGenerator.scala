@@ -66,8 +66,10 @@ class ScalaTestGenerator extends TestGenerator {
       d.getClassName +
         SCALA_EXTENSIOIN,
       d.getSelectedTestFrameworkDescriptor match {
-        case f: AbstractTestFramework if f.generateObjectTests => "Scala Object"
-        case _                                                 => "Scala Class"
+        case f: AbstractTestFramework if f.generateObjectTests =>
+          "Scala Object"
+        case _ =>
+          "Scala Class"
       }
     )
     val typeDefinition = file.depthFirst

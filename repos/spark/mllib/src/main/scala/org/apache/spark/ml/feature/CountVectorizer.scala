@@ -167,7 +167,8 @@ class CountVectorizer(override val uid: String)
             wc.changeValue(w, 1L, _ + 1L)
           }
           wc.map {
-            case (word, count) => (word, (count, 1))
+            case (word, count) =>
+              (word, (count, 1))
           }
       }
       .reduceByKey {
@@ -284,8 +285,9 @@ class CountVectorizerModel(
       var tokenCount = 0L
       document.foreach { term =>
         dictBr.value.get(term) match {
-          case Some(index) => termCounts.changeValue(index, 1.0, _ + 1.0)
-          case None        => // ignore terms not in the vocabulary
+          case Some(index) =>
+            termCounts.changeValue(index, 1.0, _ + 1.0)
+          case None => // ignore terms not in the vocabulary
         }
         tokenCount += 1
       }

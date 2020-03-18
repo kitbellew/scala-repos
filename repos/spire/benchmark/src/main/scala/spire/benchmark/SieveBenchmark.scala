@@ -31,8 +31,10 @@ object SieveBenchmark {
 
     val ns =
       Try(args.toList.map(_.toLong).filter(_ > 0L)) match {
-        case Success(ns) if ns.nonEmpty => ns
-        case _                          => defaults
+        case Success(ns) if ns.nonEmpty =>
+          ns
+        case _ =>
+          defaults
       }
 
     println("warming up the sieves...")

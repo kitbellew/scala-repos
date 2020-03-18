@@ -111,7 +111,8 @@ object ScalaPluginUpdater {
 
     branch match {
       case Release => // leave default plugin repository
-      case EAP     => updateSettings.getStoredPluginHosts.add(currentRepo(EAP))
+      case EAP =>
+        updateSettings.getStoredPluginHosts.add(currentRepo(EAP))
       case Nightly =>
         updateSettings.getStoredPluginHosts.add(currentRepo(Nightly))
     }
@@ -164,7 +165,8 @@ object ScalaPluginUpdater {
         installedPlugins.remove(pluginIdString)
       }
     } catch {
-      case e1: IOException => PluginManagerMain.LOG.error(e1)
+      case e1: IOException =>
+        PluginManagerMain.LOG.error(e1)
     }
   }
 
@@ -198,9 +200,12 @@ object ScalaPluginUpdater {
     val localBuildNumber = infoImpl.getBuild
     val url =
       branch match {
-        case Release => None
-        case EAP     => Some(currentRepo(EAP))
-        case Nightly => Some(currentRepo(Nightly))
+        case Release =>
+          None
+        case EAP =>
+          Some(currentRepo(EAP))
+        case Nightly =>
+          Some(currentRepo(Nightly))
       }
 
     url.foreach(u =>
@@ -289,7 +294,8 @@ object ScalaPluginUpdater {
                     case "No" => // do nothing, will ask next time
                     case "Yes" =>
                       UpdateSettings.getInstance().setUpdateChannelType("eap")
-                    case "Ignore" => appSettings.ASK_PLATFORM_UPDATE = false
+                    case "Ignore" =>
+                      appSettings.ASK_PLATFORM_UPDATE = false
                   }
                 }
               }
@@ -301,7 +307,8 @@ object ScalaPluginUpdater {
                 s"Please update IDEA to at least $suggestedVersion to use latest Scala plugin.",
               NotificationType.WARNING
             ))
-        case None => None
+        case None =>
+          None
       }
     notification.foreach(Notifications.Bus.notify)
   }
@@ -340,7 +347,8 @@ object ScalaPluginUpdater {
                       JDOMUtil.load(request.getReader())
                   })
             } catch {
-              case e: Throwable => LOG.warn(e)
+              case e: Throwable =>
+                LOG.warn(e)
             }
           }
         })
@@ -374,7 +382,8 @@ object ScalaPluginUpdater {
               }</version>
             case <include/> =>
               NodeSeq.Empty // relative path includes break temp file parsing
-            case other => other
+            case other =>
+              other
           }
       }
     val stream = getClass.getClassLoader
@@ -431,9 +440,12 @@ object ScalaPluginUpdater {
               notification.expire()
               applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS = false
               event.getDescription match {
-                case "EAP"     => doUpdatePluginHostsAndCheck(EAP)
-                case "Nightly" => doUpdatePluginHostsAndCheck(Nightly)
-                case "Release" => doUpdatePluginHostsAndCheck(Release)
+                case "EAP" =>
+                  doUpdatePluginHostsAndCheck(EAP)
+                case "Nightly" =>
+                  doUpdatePluginHostsAndCheck(Nightly)
+                case "Release" =>
+                  doUpdatePluginHostsAndCheck(Release)
                 case _ =>
                   applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS = true
               }

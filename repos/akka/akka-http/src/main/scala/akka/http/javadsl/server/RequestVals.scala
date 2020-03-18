@@ -120,8 +120,10 @@ object RequestVals {
 
       def directive: Directive1[U] =
         extract(ctx ⇒ key.get(RequestContextImpl(ctx))).flatMap {
-          case key if map.containsKey(key) ⇒ provide(map.get(key))
-          case _ ⇒ reject()
+          case key if map.containsKey(key) ⇒
+            provide(map.get(key))
+          case _ ⇒
+            reject()
         }
     }
 }

@@ -435,8 +435,10 @@ final private[stream] class QueueSink[T]()
           promise.complete(e)
           e match {
             case Success(_: Some[_]) ⇒ //do nothing
-            case Success(None) ⇒ completeStage()
-            case Failure(t) ⇒ failStage(t)
+            case Success(None) ⇒
+              completeStage()
+            case Failure(t) ⇒
+              failStage(t)
           }
         }
 

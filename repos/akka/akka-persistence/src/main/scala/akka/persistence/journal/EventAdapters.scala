@@ -37,8 +37,10 @@ class EventAdapters(
           bindings filter {
             _._1 isAssignableFrom clazz
           } match {
-            case (_, bestMatch) +: _ ⇒ bestMatch
-            case _ ⇒ IdentityEventAdapter
+            case (_, bestMatch) +: _ ⇒
+              bestMatch
+            case _ ⇒
+              IdentityEventAdapter
           }
         map.putIfAbsent(clazz, value) match {
           case null ⇒
@@ -47,9 +49,11 @@ class EventAdapters(
               value.getClass.getName,
               clazz.getName)
             value
-          case some ⇒ some
+          case some ⇒
+            some
         }
-      case value ⇒ value
+      case value ⇒
+        value
     }
   }
 
@@ -177,8 +181,10 @@ private[akka] object EventAdapters {
       in: Iterable[(Class[_], T)]): immutable.Seq[(Class[_], T)] =
     (new ArrayBuffer[(Class[_], T)](in.size) /: in) { (buf, ca) ⇒
       buf.indexWhere(_._1 isAssignableFrom ca._1) match {
-        case -1 ⇒ buf append ca
-        case x ⇒ buf insert (x, ca)
+        case -1 ⇒
+          buf append ca
+        case x ⇒
+          buf insert (x, ca)
       }
       buf
     }.to[immutable.Seq]
@@ -189,7 +195,8 @@ private[akka] object EventAdapters {
     import scala.collection.JavaConverters._
     if (config.hasPath(path)) {
       config.getConfig(path).root.unwrapped.asScala.toMap map {
-        case (k, v) ⇒ k -> v.toString
+        case (k, v) ⇒
+          k -> v.toString
       }
     } else
       Map.empty
@@ -203,7 +210,8 @@ private[akka] object EventAdapters {
       config.getConfig(path).root.unwrapped.asScala.toMap map {
         case (k, v: util.ArrayList[_]) if v.isInstanceOf[util.ArrayList[_]] ⇒
           k -> v.asScala.map(_.toString).toList
-        case (k, v) ⇒ k -> List(v.toString)
+        case (k, v) ⇒
+          k -> List(v.toString)
       }
     } else
       Map.empty

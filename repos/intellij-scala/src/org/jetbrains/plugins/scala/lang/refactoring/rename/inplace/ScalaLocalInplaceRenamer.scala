@@ -84,7 +84,8 @@ class ScalaLocalInplaceRenamer(
     handler match {
       case _: ScalaLocalInplaceRenameHandler =>
         ScalaRenameUtil.sameElement(elementRange, element)
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

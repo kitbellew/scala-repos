@@ -127,10 +127,13 @@ trait DerbyProfile extends JdbcProfile {
       tmd: JdbcType[_],
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
-      case java.sql.Types.BOOLEAN => "SMALLINT"
+      case java.sql.Types.BOOLEAN =>
+        "SMALLINT"
       /* Derby does not have a TINYINT type, so we use SMALLINT instead. */
-      case java.sql.Types.TINYINT => "SMALLINT"
-      case _                      => super.defaultSqlTypeName(tmd, sym)
+      case java.sql.Types.TINYINT =>
+        "SMALLINT"
+      case _ =>
+        super.defaultSqlTypeName(tmd, sym)
     }
 
   override val scalarFrom = Some("sysibm.sysdummy1")
@@ -196,10 +199,12 @@ trait DerbyProfile extends JdbcProfile {
             b" as ${ti.sqlTypeName(None)})"
           } else
             super.expr(c, skipParens)
-        case Library.NextValue(SequenceNode(name)) => b"(next value for `$name)"
+        case Library.NextValue(SequenceNode(name)) =>
+          b"(next value for `$name)"
         case Library.CurrentValue(_*) =>
           throw new SlickException("Derby does not support CURRVAL")
-        case _ => super.expr(c, skipParens)
+        case _ =>
+          super.expr(c, skipParens)
       }
   }
 

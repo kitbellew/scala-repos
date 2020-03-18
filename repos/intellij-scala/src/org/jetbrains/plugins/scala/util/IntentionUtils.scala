@@ -48,31 +48,40 @@ object IntentionUtils {
       PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
     }
     currentArg match {
-      case None                                                  => return None
-      case Some(assign: ScAssignStmt) if assign.isNamedParameter => return None
-      case _                                                     =>
+      case None =>
+        return None
+      case Some(assign: ScAssignStmt) if assign.isNamedParameter =>
+        return None
+      case _ =>
     }
 
     def matchedParamsAfter(): Seq[(ScExpression, Parameter)] = {
       val sortedMatchedArgs = argList.matchedParameters.sortBy(
         _._1.getTextOffset)
       sortedMatchedArgs.dropWhile {
-        case (e, p) => !PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
-        case _      => true
+        case (e, p) =>
+          !PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
+        case _ =>
+          true
       }
     }
 
     val argsAndMatchedParams = matchedParamsAfter()
     val hasRepeated = argsAndMatchedParams.exists {
-      case (_, param) if param.isRepeated => true
-      case _                              => false
+      case (_, param) if param.isRepeated =>
+        true
+      case _ =>
+        false
     }
     val allNamesDefined = argsAndMatchedParams.forall {
-      case (_, param) => !StringUtil.isEmpty(param.name)
+      case (_, param) =>
+        !StringUtil.isEmpty(param.name)
     }
     val hasUnderscore = argsAndMatchedParams.exists {
-      case (underscore: ScUnderscoreSection, _) => true
-      case _                                    => false
+      case (underscore: ScUnderscoreSection, _) =>
+        true
+      case _ =>
+        false
     }
 
     if (hasRepeated || !allNamesDefined || hasUnderscore)
@@ -158,7 +167,8 @@ object IntentionUtils {
           case infix: ScInfixExpr =>
             infix.operation.nameId.getTextRange.getStartOffset -
               newExpr.getTextRange.getStartOffset - 2
-          case _ => 0
+          case _ =>
+            0
         }
 
       (parent.asInstanceOf[ScPrefixExpr], newExpr, size)
@@ -178,7 +188,8 @@ object IntentionUtils {
         children(0) match {
           case infix: ScInfixExpr =>
             infix.operation.nameId.getTextRange.getStartOffset - newExpr.getTextRange.getStartOffset
-          case _ => 0
+          case _ =>
+            0
         }
       (expr, newExpr, size)
     }

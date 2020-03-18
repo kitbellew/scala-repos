@@ -43,7 +43,8 @@ class IllTypedMacros(val c: whitebox.Context) {
     val Literal(Constant(codeStr: String)) = code
     val (expPat, expMsg) =
       expected match {
-        case null => (null, "Expected some error.")
+        case null =>
+          (null, "Expected some error.")
         case Literal(Constant(s: String)) =>
           (
             Pattern.compile(s, Pattern.CASE_INSENSITIVE | Pattern.DOTALL),

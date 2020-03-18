@@ -47,16 +47,20 @@ trait Foldable[F[_]] {
 
   def reduceLeftToOption[A, B](fa: F[A])(f: A => B)(g: (B, A) => B): Option[B] =
     foldLeft(fa, Option.empty[B]) {
-      case (Some(b), a) => Some(g(b, a))
-      case (None, a)    => Some(f(a))
+      case (Some(b), a) =>
+        Some(g(b, a))
+      case (None, a) =>
+        Some(f(a))
     }
 
   def reduceRightToOption[A, B](fa: F[A])(f: A => B)(
       g: (A, Eval[B]) => Eval[B]): Eval[Option[B]] =
     foldRight(fa, Now(Option.empty[B])) { (a, lb) =>
       lb.flatMap {
-        case Some(b) => g(a, Now(b)).map(Some(_))
-        case None    => Later(Some(f(a)))
+        case Some(b) =>
+          g(a, Now(b)).map(Some(_))
+        case None =>
+          Later(Some(f(a)))
       }
     }
 

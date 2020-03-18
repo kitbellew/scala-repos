@@ -154,9 +154,12 @@ trait PatternExpander[Pattern, Type] {
         "<error>"
       else
         typeStrings match {
-          case Nil       => "Boolean"
-          case tp :: Nil => tp
-          case tps       => tps.mkString("(", ", ", ")")
+          case Nil =>
+            "Boolean"
+          case tp :: Nil =>
+            tp
+          case tps =>
+            tps.mkString("(", ", ", ")")
         }
     override def toString = "%s => %s".format(whole, offeringString)
   }

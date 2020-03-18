@@ -217,8 +217,10 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   /** Length of the delta chains of this map */
   def deltaChainLength: Int =
     parentStateMap match {
-      case map: OpenHashMapBasedStateMap[_, _] => map.deltaChainLength + 1
-      case _                                   => 0
+      case map: OpenHashMapBasedStateMap[_, _] =>
+        map.deltaChainLength + 1
+      case _ =>
+        0
     }
 
   /**
@@ -228,8 +230,10 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   def approxSize: Int =
     deltaMap.size + {
       parentStateMap match {
-        case s: OpenHashMapBasedStateMap[_, _] => s.approxSize
-        case _                                 => 0
+        case s: OpenHashMapBasedStateMap[_, _] =>
+          s.approxSize
+        case _ =>
+          0
       }
     }
 

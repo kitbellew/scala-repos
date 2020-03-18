@@ -81,10 +81,12 @@ trait StreamInstances {
       def eqv(x: Stream[A], y: Stream[A]): Boolean = {
         def loop(xs: Stream[A], ys: Stream[A]): Boolean =
           xs match {
-            case Empty => ys.isEmpty
+            case Empty =>
+              ys.isEmpty
             case a #:: xs =>
               ys match {
-                case Empty => false
+                case Empty =>
+                  false
                 case b #:: ys =>
                   if (ev.neqv(a, b))
                     false

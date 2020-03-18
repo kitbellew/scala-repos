@@ -46,7 +46,8 @@ object EstimatorApp extends App {
           n.toInt,
           windows.split(",") map { w =>
             w.split(":") match {
-              case Array(w, i) => (w.toInt, i.toInt)
+              case Array(w, i) =>
+                (w.toInt, i.toInt)
               case _ =>
                 throw new IllegalArgumentException(
                   "bad weight, count pair " + w)
@@ -54,7 +55,8 @@ object EstimatorApp extends App {
           })
       case Array("load", interval) =>
         new LoadAverage(interval.toDouble)
-      case _ => throw new IllegalArgumentException("bad args ")
+      case _ =>
+        throw new IllegalArgumentException("bad args ")
     }
 
   val lines = scala.io.Source.stdin.getLines().drop(1)

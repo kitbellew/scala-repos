@@ -40,7 +40,8 @@ object ConnectionTestApp {
       .actorRef[(HttpRequest, Int)](10000, OverflowStrategy.dropNew)
       .buffer(20000, OverflowStrategy.fail)
     val sink = Sink.foreach[(Try[HttpResponse], Int)] {
-      case (resp, id) ⇒ handleResponse(resp, id)
+      case (resp, id) ⇒
+        handleResponse(resp, id)
     }
 
     source.via(clientFlow).to(sink).run()

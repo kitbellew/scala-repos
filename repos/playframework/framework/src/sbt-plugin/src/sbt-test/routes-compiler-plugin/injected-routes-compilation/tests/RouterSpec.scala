@@ -106,10 +106,12 @@ object RouterSpec extends PlaySpecification {
 
   "use a new instance for each instantiated controller" in new WithApplication() {
     route(implicitApp, FakeRequest(GET, "/instance")) must beSome.like {
-      case result => contentAsString(result) must_== "1"
+      case result =>
+        contentAsString(result) must_== "1"
     }
     route(implicitApp, FakeRequest(GET, "/instance")) must beSome.like {
-      case result => contentAsString(result) must_== "1"
+      case result =>
+        contentAsString(result) must_== "1"
     }
   }
 

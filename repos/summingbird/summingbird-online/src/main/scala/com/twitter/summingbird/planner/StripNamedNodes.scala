@@ -37,19 +37,31 @@ object StripNamedNode {
   private def irreducible[P <: Platform[P]](
       node: Producer[P, Any]): Option[Any] =
     node match {
-      case Source(src)                    => Some(src)
-      case OptionMappedProducer(_, fn)    => Some(fn)
-      case FlatMappedProducer(_, fn)      => Some(fn)
-      case ValueFlatMappedProducer(_, fn) => Some(fn)
-      case KeyFlatMappedProducer(_, fn)   => Some(fn)
-      case LeftJoinedProducer(_, serv)    => Some(serv)
-      case Summer(_, store, semi)         => Some((store, semi))
-      case WrittenProducer(_, sink)       => Some(sink)
+      case Source(src) =>
+        Some(src)
+      case OptionMappedProducer(_, fn) =>
+        Some(fn)
+      case FlatMappedProducer(_, fn) =>
+        Some(fn)
+      case ValueFlatMappedProducer(_, fn) =>
+        Some(fn)
+      case KeyFlatMappedProducer(_, fn) =>
+        Some(fn)
+      case LeftJoinedProducer(_, serv) =>
+        Some(serv)
+      case Summer(_, store, semi) =>
+        Some((store, semi))
+      case WrittenProducer(_, sink) =>
+        Some(sink)
       // The following have nothing to put options on:
-      case AlsoProducer(_, producer)       => None
-      case NamedProducer(producer, _)      => None
-      case IdentityKeyedProducer(producer) => None
-      case MergedProducer(l, r)            => None
+      case AlsoProducer(_, producer) =>
+        None
+      case NamedProducer(producer, _) =>
+        None
+      case IdentityKeyedProducer(producer) =>
+        None
+      case MergedProducer(l, r) =>
+        None
       case _ =>
         sys.error(
           "Unreachable. Here to warn us if we add Producer subclasses but forget to update this")
@@ -69,7 +81,8 @@ object StripNamedNode {
       (p :: Producer.transitiveDependenciesOf(p))
         .map(irreducible)
         .collect {
-          case Some(irr) => irr
+          case Some(irr) =>
+            irr
         }
         .groupBy(identity)
         .mapValues(_.size)

@@ -74,7 +74,8 @@ object ConfiguredLocalRoutingSpec {
 
   class EchoProps extends Actor {
     def receive = {
-      case "get" ⇒ sender() ! context.props
+      case "get" ⇒
+        sender() ! context.props
     }
   }
 
@@ -98,7 +99,8 @@ class ConfiguredLocalRoutingSpec
     ref match {
       case r: RoutedActorRef ⇒
         r.underlying match {
-          case c: RoutedActorCell ⇒ c.routerConfig
+          case c: RoutedActorCell ⇒
+            c.routerConfig
           case _: UnstartedCell ⇒
             awaitCond(r.isStarted, 1 second, 10 millis);
             routerConfig(ref)

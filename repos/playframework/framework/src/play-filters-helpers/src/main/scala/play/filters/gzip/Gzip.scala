@@ -67,13 +67,16 @@ object Gzip {
           deflateUntilNeedsInput(state, k)
         }
 
-        case in @ Input.Empty => feedEmpty(state, k)
+        case in @ Input.Empty =>
+          feedEmpty(state, k)
       }
 
       def continue[A](k: K[Bytes, A]) = {
         feedHeader(k).pureFlatFold {
-          case Step.Cont(k2) => Cont(step(new State, k2))
-          case step          => Done(step.it, Input.Empty)
+          case Step.Cont(k2) =>
+            Cont(step(new State, k2))
+          case step =>
+            Done(step.it, Input.Empty)
         }
       }
 
@@ -250,7 +253,8 @@ object Gzip {
           inflateUntilNeedsInput(state, k, bytes)
         }
 
-        case in @ Input.Empty => feedEmpty(state, k)
+        case in @ Input.Empty =>
+          feedEmpty(state, k)
       }
 
       def continue[A](k: K[Bytes, A]) = {
@@ -437,8 +441,10 @@ object Gzip {
           crc: CRC32,
           bytes: Bytes = new Bytes(0)): Iteratee[Bytes, Bytes] =
         Cont {
-          case Input.EOF   => Error(error, Input.EOF)
-          case Input.Empty => take(n, error, crc, bytes)
+          case Input.EOF =>
+            Error(error, Input.EOF)
+          case Input.Empty =>
+            take(n, error, crc, bytes)
           case Input.El(b) => {
             val splitted = b.splitAt(n)
             crc.update(splitted._1)
@@ -453,8 +459,10 @@ object Gzip {
 
       def drop(n: Int, error: String, crc: CRC32): Iteratee[Bytes, Unit] =
         Cont {
-          case Input.EOF   => Error(error, Input.EOF)
-          case Input.Empty => drop(n, error, crc)
+          case Input.EOF =>
+            Error(error, Input.EOF)
+          case Input.Empty =>
+            drop(n, error, crc)
           case Input.El(b) =>
             if (b.length >= n) {
               val splitted = b.splitAt(n)
@@ -471,14 +479,18 @@ object Gzip {
           error: String,
           crc: CRC32): Iteratee[Bytes, Unit] =
         Cont {
-          case Input.EOF   => Error(error, Input.EOF)
-          case Input.Empty => dropWhileIncluding(p, error, crc)
+          case Input.EOF =>
+            Error(error, Input.EOF)
+          case Input.Empty =>
+            dropWhileIncluding(p, error, crc)
           case Input.El(b) =>
             val left = b.dropWhile(p)
             crc.update(b, 0, b.length - left.length)
             left match {
-              case none if none.isEmpty => dropWhileIncluding(p, error, crc)
-              case some                 => Done(Unit, maybeEmpty(some.drop(1)))
+              case none if none.isEmpty =>
+                dropWhileIncluding(p, error, crc)
+              case some =>
+                Done(Unit, maybeEmpty(some.drop(1)))
             }
         }
     }

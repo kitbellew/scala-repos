@@ -83,7 +83,8 @@ private[spark] class PipedRDD[T: ClassTag](
     // Add the environmental variables to the process.
     val currentEnvVars = pb.environment()
     envVars.foreach {
-      case (variable, value) => currentEnvVars.put(variable, value)
+      case (variable, value) =>
+        currentEnvVars.put(variable, value)
     }
 
     // for compatibility with Hadoop which sets these env variables
@@ -145,7 +146,8 @@ private[spark] class PipedRDD[T: ClassTag](
             // scalastyle:on println
           }
         } catch {
-          case t: Throwable => childThreadException.set(t)
+          case t: Throwable =>
+            childThreadException.set(t)
         } finally {
           err.close()
         }
@@ -172,7 +174,8 @@ private[spark] class PipedRDD[T: ClassTag](
           }
           // scalastyle:on println
         } catch {
-          case t: Throwable => childThreadException.set(t)
+          case t: Throwable =>
+            childThreadException.set(t)
         } finally {
           out.close()
         }

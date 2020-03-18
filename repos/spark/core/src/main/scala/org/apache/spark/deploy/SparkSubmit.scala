@@ -133,9 +133,12 @@ object SparkSubmit {
       // scalastyle:on println
     }
     appArgs.action match {
-      case SparkSubmitAction.SUBMIT         => submit(appArgs)
-      case SparkSubmitAction.KILL           => kill(appArgs)
-      case SparkSubmitAction.REQUEST_STATUS => requestStatus(appArgs)
+      case SparkSubmitAction.SUBMIT =>
+        submit(appArgs)
+      case SparkSubmitAction.KILL =>
+        kill(appArgs)
+      case SparkSubmitAction.REQUEST_STATUS =>
+        requestStatus(appArgs)
     }
   }
 
@@ -259,15 +262,19 @@ object SparkSubmit {
     // Set the cluster manager
     val clusterManager: Int =
       args.master match {
-        case "yarn" => YARN
+        case "yarn" =>
+          YARN
         case "yarn-client" | "yarn-cluster" =>
           printWarning(
             s"Master ${args.master} is deprecated since 2.0." +
               " Please use master \"yarn\" with specified deploy mode instead.")
           YARN
-        case m if m.startsWith("spark") => STANDALONE
-        case m if m.startsWith("mesos") => MESOS
-        case m if m.startsWith("local") => LOCAL
+        case m if m.startsWith("spark") =>
+          STANDALONE
+        case m if m.startsWith("mesos") =>
+          MESOS
+        case m if m.startsWith("local") =>
+          LOCAL
         case _ =>
           printErrorAndExit(
             "Master must either be yarn or start with spark, mesos, local")
@@ -277,8 +284,10 @@ object SparkSubmit {
     // Set the deploy mode; default is client mode
     var deployMode: Int =
       args.deployMode match {
-        case "client" | null => CLIENT
-        case "cluster"       => CLUSTER
+        case "client" | null =>
+          CLIENT
+        case "cluster" =>
+          CLUSTER
         case _ =>
           printErrorAndExit("Deploy mode must be either client or cluster");
           -1
@@ -313,9 +322,11 @@ object SparkSubmit {
 
     // Update args.deployMode if it is null. It will be passed down as a Spark property later.
     (args.deployMode, deployMode) match {
-      case (null, CLIENT)  => args.deployMode = "client"
-      case (null, CLUSTER) => args.deployMode = "cluster"
-      case _               =>
+      case (null, CLIENT) =>
+        args.deployMode = "client"
+      case (null, CLUSTER) =>
+        args.deployMode = "cluster"
+      case _ =>
     }
     val isYarnCluster = clusterManager == YARN && deployMode == CLUSTER
     val isMesosCluster = clusterManager == MESOS && deployMode == CLUSTER

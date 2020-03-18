@@ -51,7 +51,8 @@ object RemoteNodeDeathWatchMultiJvmSpec extends MultiNodeConfig {
         sender() ! Ack
       case t: Terminated ⇒
         testActor forward WrappedTerminated(t)
-      case msg ⇒ testActor forward msg
+      case msg ⇒
+        testActor forward msg
     }
   }
 
@@ -357,7 +358,8 @@ abstract class RemoteNodeDeathWatchSpec
 
         p1.receiveN(2, 5 seconds)
           .collect {
-            case WrappedTerminated(t) ⇒ t.actor
+            case WrappedTerminated(t) ⇒
+              t.actor
           }
           .toSet should ===(Set(a1, a2))
         p3.expectMsgType[WrappedTerminated](5 seconds).t.actor should ===(a3)

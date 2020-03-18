@@ -51,8 +51,10 @@ trait Offer[+T] {
   def sync(): Future[T] =
     prepare() flatMap { tx =>
       tx.ack() flatMap {
-        case Tx.Commit(v) => Future.value(v)
-        case Tx.Abort     => sync()
+        case Tx.Commit(v) =>
+          Future.value(v)
+        case Tx.Abort =>
+          sync()
       }
     }
 
@@ -77,8 +79,10 @@ trait Offer[+T] {
             import Tx.{Commit, Abort}
             def ack() =
               tx.ack() map {
-                case Commit(t) => Commit(f(t))
-                case Abort     => Abort
+                case Commit(t) =>
+                  Commit(f(t))
+                case Abort =>
+                  Abort
               }
 
             def nack() {
@@ -331,7 +335,8 @@ object Offer {
               p.setValue(Tx.Unit)
             }
           p.setInterruptHandler {
-            case _cause => task.cancel()
+            case _cause =>
+              task.cancel()
           }
           p
         }

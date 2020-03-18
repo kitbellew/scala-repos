@@ -99,7 +99,8 @@ trait BasicBackend {
         false,
         true)
       catch {
-        case NonFatal(ex) => Future.failed(ex)
+        case NonFatal(ex) =>
+          Future.failed(ex)
       }
 
     /** Create a `Publisher` for Reactive Streams which, when subscribed to, will run the specified
@@ -159,11 +160,14 @@ trait BasicBackend {
           if (subscribed) {
             try {
               runInContext(a, ctx, true, true).onComplete {
-                case Success(_) => ctx.tryOnComplete
-                case Failure(t) => ctx.tryOnError(t)
+                case Success(_) =>
+                  ctx.tryOnComplete
+                case Failure(t) =>
+                  ctx.tryOnError(t)
               }(DBIO.sameThreadExecutionContext)
             } catch {
-              case NonFatal(ex) => ctx.tryOnError(ex)
+              case NonFatal(ex) =>
+                ctx.tryOnError(ex)
             }
           }
         }
@@ -193,9 +197,12 @@ trait BasicBackend {
         topLevel: Boolean): Future[R] = {
       logAction(a, ctx)
       a match {
-        case SuccessAction(v) => Future.successful(v)
-        case FailureAction(t) => Future.failed(t)
-        case FutureAction(f)  => f
+        case SuccessAction(v) =>
+          Future.successful(v)
+        case FailureAction(t) =>
+          Future.failed(t)
+        case FutureAction(f) =>
+          f
         case FlatMapAction(base, f, ec) =>
           runInContext(base, ctx, false, topLevel).flatMap(v =>
             runInContext(f(v), ctx, streaming, false))(ctx.getEC(ec))
@@ -241,8 +248,10 @@ trait BasicBackend {
             try {
               val a2 = f(
                 t1 match {
-                  case Success(_) => None
-                  case Failure(t) => Some(t)
+                  case Success(_) =>
+                    None
+                  case Failure(t) =>
+                    Some(t)
                 })
               runInContext(a2, ctx, false, false).onComplete { t2 =>
                 if (t2.isFailure && (t1.isSuccess || !keepFailure))
@@ -254,8 +263,10 @@ trait BasicBackend {
               case NonFatal(ex) =>
                 throw (
                   t1 match {
-                    case Failure(t) if keepFailure => t
-                    case _                         => ex
+                    case Failure(t) if keepFailure =>
+                      t
+                    case _ =>
+                      ex
                   }
                 )
             }
@@ -353,7 +364,8 @@ trait BasicBackend {
                   }
                 promise.success(res)
               } catch {
-                case NonFatal(ex) => promise.tryFailure(ex)
+                case NonFatal(ex) =>
+                  promise.tryFailure(ex)
               }
           })
       promise.future
@@ -470,7 +482,8 @@ trait BasicBackend {
                       streamLogger.debug("Finished streaming action")
                   }
                 } catch {
-                  case NonFatal(ex) => ctx.streamingResultPromise.tryFailure(ex)
+                  case NonFatal(ex) =>
+                    ctx.streamingResultPromise.tryFailure(ex)
                 }
             })
       } catch {
@@ -499,8 +512,10 @@ trait BasicBackend {
             prefix = "    ",
             firstPrefix = aPrefix,
             narrow = {
-              case a: DBIOAction[_, _, _] => a.nonFusedEquivalentAction
-              case o                      => o
+              case a: DBIOAction[_, _, _] =>
+                a.nonFusedEquivalentAction
+              case o =>
+                o
             }).get(logA)
         val msg = DumpInfo.highlight("#" + ctx.sequenceCounter) + ": " + dump
           .substring(0, dump.length - 1)

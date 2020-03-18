@@ -30,7 +30,8 @@ class HttpResponseClassifierTest extends FunSuite {
 
   test("apply") {
     val ok500 = HttpResponseClassifier {
-      case (_, rep: Response) if rep.statusCode == 500 => ResponseClass.Success
+      case (_, rep: Response) if rep.statusCode == 500 =>
+        ResponseClass.Success
     }
     val badReqs = HttpResponseClassifier {
       case (req: Request, _) if req.containsParam("fail") =>

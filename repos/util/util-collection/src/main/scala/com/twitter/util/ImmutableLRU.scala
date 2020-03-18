@@ -67,7 +67,8 @@ class ImmutableLRU[K, V] private (
     val baseOrd = map
       .get(key)
       .map {
-        case (id, _) => ord - id
+        case (id, _) =>
+          ord - id
       }
       .getOrElse(ord)
     val ordWithNewKey = baseOrd + (newIdx -> key)

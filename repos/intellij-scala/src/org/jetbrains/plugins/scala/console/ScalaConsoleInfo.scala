@@ -58,7 +58,8 @@ object ScalaConsoleInfo {
           allConsoles.put(
             project,
             list.filter {
-              case (sConsole, _, _) => sConsole != console
+              case (sConsole, _, _) =>
+                sConsole != console
             })
       }
     }
@@ -68,8 +69,10 @@ object ScalaConsoleInfo {
       : (ScalaLanguageConsole, ConsoleHistoryController, ProcessHandler) = {
     synchronized {
       allConsoles.get(project) match {
-        case null => NULL
-        case list => list.headOption.getOrElse(NULL)
+        case null =>
+          NULL
+        case list =>
+          list.headOption.getOrElse(NULL)
       }
     }
   }
@@ -77,7 +80,8 @@ object ScalaConsoleInfo {
   private def get(editor: Editor) = {
     synchronized {
       allConsoles.get(editor.getProject) match {
-        case null => NULL
+        case null =>
+          NULL
         case list =>
           list.find {
             case (
@@ -86,8 +90,10 @@ object ScalaConsoleInfo {
                   handler: ProcessHandler) =>
               console.getConsoleEditor == editor
           } match {
-            case Some(res) => res
-            case _         => NULL
+            case Some(res) =>
+              res
+            case _ =>
+              NULL
           }
       }
     }
@@ -96,7 +102,8 @@ object ScalaConsoleInfo {
   private def get(file: PsiFile) = {
     synchronized {
       allConsoles.get(file.getProject) match {
-        case null => NULL
+        case null =>
+          NULL
         case list =>
           list.find {
             case (
@@ -105,8 +112,10 @@ object ScalaConsoleInfo {
                   handler: ProcessHandler) =>
               console.getFile == file
           } match {
-            case Some(res) => res
-            case _         => NULL
+            case Some(res) =>
+              res
+            case _ =>
+              NULL
           }
       }
     }

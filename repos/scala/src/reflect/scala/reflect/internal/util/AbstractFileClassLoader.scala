@@ -36,8 +36,10 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
     }
 
     file.lookupName(pathParts.last, directory = false) match {
-      case null => null
-      case file => file
+      case null =>
+        null
+      case file =>
+        file
     }
   }
 
@@ -65,7 +67,8 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
   }
   override protected def findResource(name: String): URL =
     findAbstractFile(name) match {
-      case null => null
+      case null =>
+        null
       case file =>
         new URL(
           null,
@@ -84,7 +87,8 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
         JCollections.enumeration(
           JCollections.emptyList[URL]
         ) //JCollections.emptyEnumeration[URL]
-      case url => JCollections.enumeration(JCollections.singleton(url))
+      case url =>
+        JCollections.enumeration(JCollections.singleton(url))
     }
 
   lazy val protectionDomain = {
@@ -124,7 +128,8 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
 
   override def getPackage(name: String): Package =
     findAbstractDir(name) match {
-      case null => super.getPackage(name)
+      case null =>
+        super.getPackage(name)
       case file =>
         packages.getOrElseUpdate(
           name, {

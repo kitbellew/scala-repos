@@ -146,11 +146,13 @@ trait HeapBackend extends RelationalBackend with Logging {
     val verifier = {
       val v1 =
         indexes.foldLeft(Verifier.empty) {
-          case (z, i) => z andThen createIndexVerifier(i)
+          case (z, i) =>
+            z andThen createIndexVerifier(i)
         }
       val v2 =
         constraints.foldLeft(v1) {
-          case (z, c) => z andThen createConstraintVerifier(c)
+          case (z, c) =>
+            z andThen createConstraintVerifier(c)
         }
       columns.foldLeft(v2) {
         case (z, c) =>
@@ -169,9 +171,11 @@ trait HeapBackend extends RelationalBackend with Logging {
           createUniquenessVerifier(
             name,
             columns.map {
-              case Select(_, f: FieldSymbol) => f
+              case Select(_, f: FieldSymbol) =>
+                f
             })
-        case _ => Verifier.empty
+        case _ =>
+          Verifier.empty
       }
 
     protected def createIndexVerifier(idx: Index) =
@@ -181,7 +185,8 @@ trait HeapBackend extends RelationalBackend with Logging {
         createUniquenessVerifier(
           idx.name,
           idx.on.map {
-            case Select(_, f: FieldSymbol) => f
+            case Select(_, f: FieldSymbol) =>
+              f
           })
 
     protected def createUniquenessVerifier(
@@ -246,14 +251,17 @@ trait HeapBackend extends RelationalBackend with Logging {
 object HeapBackend extends HeapBackend {
   class Column(val sym: FieldSymbol, val tpe: ScalaType[Any]) {
     private[this] val default = sym.options.collectFirst {
-      case RelationalProfile.ColumnOption.Default(v) => v
+      case RelationalProfile.ColumnOption.Default(v) =>
+        v
     }
     private[this] val autoInc = sym.options.collectFirst {
-      case ColumnOption.AutoInc => new AtomicLong()
+      case ColumnOption.AutoInc =>
+        new AtomicLong()
     }
     val isUnique = sym.options
       .collectFirst {
-        case ColumnOption.PrimaryKey => true
+        case ColumnOption.PrimaryKey =>
+          true
       }
       .getOrElse(false)
     def createDefault: Any =
@@ -267,7 +275,8 @@ object HeapBackend extends HeapBackend {
           else
             throw new SlickException(
               "Only Long and Int types are allowed for AutoInc columns")
-        case None => default.getOrElse(null)
+        case None =>
+          default.getOrElse(null)
       }
   }
 }

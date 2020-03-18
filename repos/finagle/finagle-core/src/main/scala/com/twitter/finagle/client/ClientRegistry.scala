@@ -83,8 +83,10 @@ private[finagle] object RegistryEntryLifecycle {
         // which waits for these to become non-Pending
         val va =
           dest match {
-            case Name.Bound(va)  => va
-            case Name.Path(path) => Namer.resolve(baseDtab(), path)
+            case Name.Bound(va) =>
+              va
+            case Name.Path(path) =>
+              Namer.resolve(baseDtab(), path)
           }
 
         val shown = Showable.show(dest)

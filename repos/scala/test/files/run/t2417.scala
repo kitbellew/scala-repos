@@ -10,7 +10,8 @@ object Test {
             try {
               block
             } catch {
-              case x: Throwable => failure = x
+              case x: Throwable =>
+                failure = x
             }
           }
         })

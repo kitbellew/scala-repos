@@ -46,15 +46,18 @@ trait TextareaTypedField extends StringTypedField {
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   override def toString =
     valueBox match {
       case Full(s) if s.length >= 100 =>
         s.substring(0, 40) + " ... " + s.substring(s.length - 40)
-      case _ => super.toString
+      case _ =>
+        super.toString
     }
 
   def textareaRows = 8

@@ -6,7 +6,8 @@ class C {
     rt match {
       case GI =>
         {
-          case x => x
+          case x =>
+            x
         }: PartialFunction[Any, Any] // comment this line, compiles.
         0 // found Int, required T
     }

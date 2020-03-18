@@ -64,9 +64,12 @@ object SupervisorSpec {
       OneForOneStrategy(maxNrOfRetries = 0)(List(classOf[Exception]))
 
     def receive = {
-      case Die ⇒ temp forward Die
-      case Terminated(`temp`) ⇒ sendTo ! "terminated"
-      case Status.Failure(_) ⇒ /*Ignore*/
+      case Die ⇒
+        temp forward Die
+      case Terminated(`temp`) ⇒
+        sendTo ! "terminated"
+      case Status.Failure(_) ⇒
+      /*Ignore*/
     }
   }
 
@@ -78,7 +81,8 @@ object SupervisorSpec {
           SupervisorStrategy.Stop
       }
     def receive = {
-      case p: Props ⇒ sender() ! context.actorOf(p)
+      case p: Props ⇒
+        sender() ! context.actorOf(p)
     }
   }
 
@@ -269,7 +273,8 @@ class SupervisorSpec
               testActor ! "crashed";
               throw new RuntimeException("Expected")
             }
-            case "ping" ⇒ sender() ! "pong"
+            case "ping" ⇒
+              sender() ! "pong"
           }
         }
       val master = system.actorOf(
@@ -280,7 +285,8 @@ class SupervisorSpec
                 List(classOf[Exception]))
             val child = context.actorOf(Props(childInstance))
             def receive = {
-              case msg ⇒ child forward msg
+              case msg ⇒
+                child forward msg
             }
           }))
 
@@ -458,7 +464,8 @@ class SupervisorSpec
           }
 
           def receive = {
-            case Ping ⇒ sender() ! PongMessage
+            case Ping ⇒
+              sender() ! PongMessage
             case DieReply ⇒
               val e = new RuntimeException("Expected")
               sender() ! Status.Failure(e)
@@ -494,7 +501,8 @@ class SupervisorSpec
               OneForOneStrategy()({
                 case e: IllegalStateException if e.getMessage == "OHNOES" ⇒
                   throw e
-                case _ ⇒ SupervisorStrategy.Restart
+                case _ ⇒
+                  SupervisorStrategy.Restart
               })
             val child = context.watch(
               context.actorOf(
@@ -507,7 +515,8 @@ class SupervisorSpec
                         Await.ready(l, 5 seconds);
                         throw new IllegalStateException("OHNOES")
                       }
-                      case "test" ⇒ sender() ! "child green"
+                      case "test" ⇒
+                        sender() ! "child green"
                     }
                   }),
                 "child"
@@ -526,9 +535,12 @@ class SupervisorSpec
             def receive = {
               case Terminated(a) if a.path == child.path ⇒
                 testActor ! "child terminated"
-              case l: TestLatch ⇒ child ! l
-              case "test" ⇒ sender() ! "green"
-              case "testchild" ⇒ child forward "test"
+              case l: TestLatch ⇒
+                child ! l
+              case "test" ⇒
+                sender() ! "green"
+              case "testchild" ⇒
+                child forward "test"
               case "testchildAndAck" ⇒
                 child forward "test";
                 sender() ! "ack"

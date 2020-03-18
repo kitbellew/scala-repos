@@ -74,7 +74,8 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
     val p = new Promise[Unit]()
     f.proxyTo(p)
     p.setInterruptHandler {
-      case _ => rep.release()
+      case _ =>
+        rep.release()
     }
     p
   }

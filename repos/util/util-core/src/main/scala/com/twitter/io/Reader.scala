@@ -46,8 +46,10 @@ object Reader {
   def readAll(r: Reader): Future[Buf] = {
     def loop(left: Buf): Future[Buf] =
       r.read(Int.MaxValue) flatMap {
-        case Some(right) => loop(left concat right)
-        case none        => Future.value(left)
+        case Some(right) =>
+          loop(left concat right)
+        case none =>
+          Future.value(left)
       }
 
     loop(Buf.Empty)
@@ -296,8 +298,10 @@ object Reader {
   def concat(readers: AsyncStream[Reader]): Reader = {
     val target = Reader.writable()
     val f = copyMany(readers, target) respond {
-      case Throw(exc) => target.fail(exc)
-      case _          => target.close()
+      case Throw(exc) =>
+        target.fail(exc)
+      case _ =>
+        target.close()
     }
     new Reader {
       def read(n: Int) = target.read(n)
@@ -356,15 +360,18 @@ object Reader {
   def copy(r: Reader, w: Writer, n: Int): Future[Unit] = {
     def loop(): Future[Unit] =
       r.read(n) flatMap {
-        case None      => Future.Done
-        case Some(buf) => w.write(buf) before loop()
+        case None =>
+          Future.Done
+        case Some(buf) =>
+          w.write(buf) before loop()
       }
     val p = new Promise[Unit]
     // We have to do this because discarding the writer doesn't interrupt read
     // operations, it only fails the next write operation.
     loop() proxyTo p
     p setInterruptHandler {
-      case exc => r.discard()
+      case exc =>
+        r.discard()
     }
     p
   }

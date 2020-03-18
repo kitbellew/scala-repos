@@ -45,8 +45,10 @@ object UidClashTest {
   class RestartedActor extends Actor {
 
     def receive = {
-      case PleaseRestart ⇒ throw new Exception("restart")
-      case Terminated(ref) ⇒ throw new TerminatedForNonWatchedActor
+      case PleaseRestart ⇒
+        throw new Exception("restart")
+      case Terminated(ref) ⇒
+        throw new TerminatedForNonWatchedActor
       // This is the tricky part to make this test a positive one (avoid expectNoMsg).
       // Since anything enqueued in postRestart will arrive before the Terminated
       // the bug triggers, there needs to be a bounce:
@@ -54,8 +56,10 @@ object UidClashTest {
       // 2. As a response to pint, RestartedSafely is sent to self
       // 3a. if Terminated was enqueued during the restart procedure it will arrive before the RestartedSafely message
       // 3b. otherwise only the RestartedSafely message arrives
-      case PingMyself ⇒ self ! RestartedSafely
-      case RestartedSafely ⇒ context.parent ! RestartedSafely
+      case PingMyself ⇒
+        self ! RestartedSafely
+      case RestartedSafely ⇒
+        context.parent ! RestartedSafely
     }
 
     override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
@@ -81,15 +85,18 @@ object UidClashTest {
         case _: TerminatedForNonWatchedActor ⇒
           context.stop(self)
           Stop
-        case _ ⇒ Restart
+        case _ ⇒
+          Restart
       }
     val theRestartedOne = context.actorOf(
       Props[RestartedActor],
       "theRestartedOne")
 
     def receive = {
-      case PleaseRestart ⇒ theRestartedOne ! PleaseRestart
-      case RestartedSafely ⇒ probe ! RestartedSafely
+      case PleaseRestart ⇒
+        theRestartedOne ! PleaseRestart
+      case RestartedSafely ⇒
+        probe ! RestartedSafely
     }
   }
 

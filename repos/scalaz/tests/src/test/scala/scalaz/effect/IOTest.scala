@@ -33,7 +33,8 @@ object IOTest extends SpecLite {
         bad.unsafePerformIO
         fail("should have thrown")
       } catch {
-        case t: Throwable => t must_== err
+        case t: Throwable =>
+          t must_== err
       }
     }
 

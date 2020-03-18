@@ -36,8 +36,10 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
     def assertAnalyzeCommand(analyzeCommand: String, c: Class[_]) {
       val parsed = parser.parsePlan(analyzeCommand)
       val operators = parsed.collect {
-        case a: AnalyzeTable => a
-        case o               => o
+        case a: AnalyzeTable =>
+          a
+        case o =>
+          o
       }
 
       assert(operators.size === 1)
@@ -162,7 +164,8 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
       // Using `sparkPlan` because for relevant patterns in HashJoin to be
       // matched, other strategies need to be applied.
       var bhj = df.queryExecution.sparkPlan.collect {
-        case j: BroadcastHashJoin => j
+        case j: BroadcastHashJoin =>
+          j
       }
       assert(
         bhj.size === 1,
@@ -176,14 +179,16 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
         sql(s"""SET ${SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key}=-1""")
         df = sql(query)
         bhj = df.queryExecution.sparkPlan.collect {
-          case j: BroadcastHashJoin => j
+          case j: BroadcastHashJoin =>
+            j
         }
         assert(
           bhj.isEmpty,
           "BroadcastHashJoin still planned even though it is switched off")
 
         val shj = df.queryExecution.sparkPlan.collect {
-          case j: SortMergeJoin => j
+          case j: SortMergeJoin =>
+            j
         }
         assert(
           shj.size === 1,
@@ -233,7 +238,8 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
     // Using `sparkPlan` because for relevant patterns in HashJoin to be
     // matched, other strategies need to be applied.
     var bhj = df.queryExecution.sparkPlan.collect {
-      case j: BroadcastHashJoin => j
+      case j: BroadcastHashJoin =>
+        j
     }
     assert(
       bhj.size === 1,
@@ -247,14 +253,16 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
       sql(s"SET ${SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key}=-1")
       df = sql(leftSemiJoinQuery)
       bhj = df.queryExecution.sparkPlan.collect {
-        case j: BroadcastHashJoin => j
+        case j: BroadcastHashJoin =>
+          j
       }
       assert(
         bhj.isEmpty,
         "BroadcastHashJoin still planned even though it is switched off")
 
       val shj = df.queryExecution.sparkPlan.collect {
-        case j: ShuffledHashJoin => j
+        case j: ShuffledHashJoin =>
+          j
       }
       assert(
         shj.size === 1,

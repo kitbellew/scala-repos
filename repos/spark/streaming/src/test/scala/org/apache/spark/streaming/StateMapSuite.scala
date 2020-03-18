@@ -469,8 +469,10 @@ private[streaming] final class KryoState(var state: String)
 
   override def equals(other: Any): Boolean =
     other match {
-      case that: KryoState => state == that.state
-      case _               => false
+      case that: KryoState =>
+        state == that.state
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {

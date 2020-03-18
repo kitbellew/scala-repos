@@ -72,10 +72,12 @@ object Literal {
         N],
       N[T]) =
     hm.get(lit) match {
-      case Some(prod) => (hm, prod)
+      case Some(prod) =>
+        (hm, prod)
       case None =>
         lit match {
-          case ConstLit(prod) => (hm + (lit -> prod), prod)
+          case ConstLit(prod) =>
+            (hm + (lit -> prod), prod)
           case UnaryLit(in, fn) =>
             val (h1, p1) = evaluate(hm, in)
             val p2 = fn(p1)
@@ -150,10 +152,14 @@ sealed trait ExpressionDag[N[_]] {
       val partial =
         new GenPartial[HMap[Id, E]#Pair, IdSet] {
           def apply[T] = {
-            case (id, Const(_)) if s(id)            => s
-            case (id, Var(v)) if s(id)              => s + v
-            case (id, Unary(id0, _)) if s(id)       => s + id0
-            case (id, Binary(id0, id1, _)) if s(id) => (s + id0) + id1
+            case (id, Const(_)) if s(id) =>
+              s
+            case (id, Var(v)) if s(id) =>
+              s + v
+            case (id, Unary(id0, _)) if s(id) =>
+              s + id0
+            case (id, Binary(id0, id1, _)) if s(id) =>
+              (s + id0) + id1
           }
         }
       // Note this Stream must always be non-empty as long as roots are
@@ -228,7 +234,8 @@ sealed trait ExpressionDag[N[_]] {
         }
       }
     idToExp.collect[HMap[Id, N]#Pair](getN).headOption match {
-      case None      => this
+      case None =>
+        this
       case Some(tup) =>
         // some type hand holding
         def act[T](in: HMap[Id, N]#Pair[T]) = {
@@ -260,7 +267,8 @@ sealed trait ExpressionDag[N[_]] {
         val partial =
           new GenPartial[HMap[Id, E]#Pair, Id] {
             def apply[T] = {
-              case (thisId, expr) if node == expr.evaluate(idToExp) => thisId
+              case (thisId, expr) if node == expr.evaluate(idToExp) =>
+                thisId
             }
           }
         idToExp.collect(partial).headOption.asInstanceOf[Option[Id[T]]]
@@ -285,7 +293,8 @@ sealed trait ExpressionDag[N[_]] {
     */
   protected def ensure[T](node: N[T]): (ExpressionDag[N], Id[T]) =
     find(node) match {
-      case Some(id) => (this, id)
+      case Some(id) =>
+        (this, id)
       case None => {
         val lit: Lit[T] = toLiteral(node)
         lit match {
@@ -326,7 +335,8 @@ sealed trait ExpressionDag[N[_]] {
         val partial =
           new GenPartial[HMap[Id, E]#Pair, N] {
             def apply[T] = {
-              case (thisId, expr) if (id == thisId) => expr.evaluate(idToExp)
+              case (thisId, expr) if (id == thisId) =>
+                expr.evaluate(idToExp)
             }
           }
         idToExp.collect(partial).headOption.asInstanceOf[Option[N[T]]]
@@ -348,11 +358,16 @@ sealed trait ExpressionDag[N[_]] {
           type IntT[T] = Int
         })#IntT] {
         def apply[T] = {
-          case Var(id1) if (id1 == id)                            => 1
-          case Unary(id1, fn) if (id1 == id)                      => 1
-          case Binary(id1, id2, fn) if (id1 == id) && (id2 == id) => 2
-          case Binary(id1, id2, fn) if (id1 == id) || (id2 == id) => 1
-          case _                                                  => 0
+          case Var(id1) if (id1 == id) =>
+            1
+          case Unary(id1, fn) if (id1 == id) =>
+            1
+          case Binary(id1, id2, fn) if (id1 == id) && (id2 == id) =>
+            2
+          case Binary(id1, id2, fn) if (id1 == id) || (id2 == id) =>
+            1
+          case _ =>
+            0
         }
       }
     idToExp

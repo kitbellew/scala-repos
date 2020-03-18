@@ -67,8 +67,10 @@ object ScalaAfterNewCompletionUtil {
           element,
           classOf[ScNewTemplateDefinition])
         newExpr.expectedTypes().map {
-          case ScAbstractType(_, lower, upper) => upper
-          case tp                              => tp
+          case ScAbstractType(_, lower, upper) =>
+            upper
+          case tp =>
+            tp
         }
       } else
         Array[ScType]()
@@ -149,8 +151,9 @@ object ScalaAfterNewCompletionUtil {
         presentation: LookupElementPresentation) {
       var isDeprecated = false
       psiClass match {
-        case doc: PsiDocCommentOwner if doc.isDeprecated => isDeprecated = true
-        case _                                           =>
+        case doc: PsiDocCommentOwner if doc.isDeprecated =>
+          isDeprecated = true
+        case _ =>
       }
       var tailText: String = ""
       val itemText: String = psiClass.name + (
@@ -159,7 +162,8 @@ object ScalaAfterNewCompletionUtil {
             tps
               .map(tp => ScType.presentableText(subst.subst(tp)))
               .mkString("[", ", ", "]")
-          case _ => ""
+          case _ =>
+            ""
         }
       )
       psiClass match {
@@ -193,7 +197,8 @@ object ScalaAfterNewCompletionUtil {
     val isRenamed =
       renamesMap
         .filter {
-          case (aName, (renamed, aClazz)) => aName == name && aClazz == psiClass
+          case (aName, (renamed, aClazz)) =>
+            aName == name && aClazz == psiClass
         }
         .map(_._2._1)
         .headOption
@@ -225,8 +230,9 @@ object ScalaAfterNewCompletionUtil {
     }
     lookupElement.setInsertHandler(new ScalaConstructorInsertHandler)
     tp match {
-      case ScParameterizedType(_, tps) => lookupElement.typeParameters = tps
-      case _                           =>
+      case ScParameterizedType(_, tps) =>
+        lookupElement.typeParameters = tps
+      case _ =>
     }
     lookupElement
   }
@@ -270,7 +276,8 @@ object ScalaAfterNewCompletionUtil {
           renderer,
           insertHandler,
           renamesMap)
-      case _ => null
+      case _ =>
+        null
     }
   }
 

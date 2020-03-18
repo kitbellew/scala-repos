@@ -79,7 +79,8 @@ class BasicWorkflow
                     DeclaredAs.Class,
                     Some(_)) =>
                 true
-              case _ => false
+              case _ =>
+                false
             })
           //-----------------------------------------------------------------------------------------------
           // public symbol search - scala.util.Random

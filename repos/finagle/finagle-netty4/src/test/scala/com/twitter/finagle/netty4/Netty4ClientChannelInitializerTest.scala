@@ -232,7 +232,8 @@ class Netty4ClientChannelInitializerTest
               b.readBytes(bytes)
               val reversed = Unpooled.wrappedBuffer(bytes.reverse)
               super.write(ctx, reversed, promise)
-            case _ => fail("expected ByteBuf message")
+            case _ =>
+              fail("expected ByteBuf message")
           }
       }
     val init =
@@ -254,8 +255,10 @@ class Netty4ClientChannelInitializerTest
             msg: scala.Any,
             promise: ChannelPromise): Unit =
           msg match {
-            case b: ByteBuf => msgSeen.setValue(b)
-            case _          => fail("expected ByteBuf message")
+            case b: ByteBuf =>
+              msgSeen.setValue(b)
+            case _ =>
+              fail("expected ByteBuf message")
           }
       })
     val bytes = Array(1.toByte, 2.toByte, 3.toByte)

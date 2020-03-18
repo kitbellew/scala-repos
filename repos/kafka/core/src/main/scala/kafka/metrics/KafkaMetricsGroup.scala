@@ -239,12 +239,14 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
       tags: collection.Map[String, String]): Option[String] = {
     val filteredTags = tags
       .filter {
-        case (tagKey, tagValue) => tagValue != ""
+        case (tagKey, tagValue) =>
+          tagValue != ""
       }
     if (filteredTags.nonEmpty) {
       val tagsString = filteredTags
         .map {
-          case (key, value) => "%s=%s".format(key, value)
+          case (key, value) =>
+            "%s=%s".format(key, value)
         }
         .mkString(",")
 
@@ -257,14 +259,16 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
   private def toScope(tags: collection.Map[String, String]): Option[String] = {
     val filteredTags = tags
       .filter {
-        case (tagKey, tagValue) => tagValue != ""
+        case (tagKey, tagValue) =>
+          tagValue != ""
       }
     if (filteredTags.nonEmpty) {
       // convert dot to _ since reporters like Graphite typically use dot to represent hierarchy
       val tagsString = filteredTags.toList
         .sortWith((t1, t2) => t1._1 < t2._1)
         .map {
-          case (key, value) => "%s.%s".format(key, value.replaceAll("\\.", "_"))
+          case (key, value) =>
+            "%s.%s".format(key, value.replaceAll("\\.", "_"))
         }
         .mkString(".")
 

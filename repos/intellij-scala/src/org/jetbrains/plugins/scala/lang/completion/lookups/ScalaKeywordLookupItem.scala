@@ -72,34 +72,49 @@ object ScalaKeywordLookupItem {
             case '(' if parentheses.contains(keyword) =>
               val add =
                 keyword match {
-                  case IF    => settings.SPACE_BEFORE_IF_PARENTHESES
-                  case FOR   => settings.SPACE_BEFORE_FOR_PARENTHESES
-                  case WHILE => settings.SPACE_BEFORE_WHILE_PARENTHESES
+                  case IF =>
+                    settings.SPACE_BEFORE_IF_PARENTHESES
+                  case FOR =>
+                    settings.SPACE_BEFORE_FOR_PARENTHESES
+                  case WHILE =>
+                    settings.SPACE_BEFORE_WHILE_PARENTHESES
                 }
               if (add)
                 addSpace(addCompletionChar = true)
             case '{' if braces.contains(keyword) =>
               val add =
                 keyword match {
-                  case CATCH    => settings.SPACE_BEFORE_CATCH_LBRACE
-                  case ELSE     => settings.SPACE_BEFORE_ELSE_LBRACE
-                  case EXTENDS  => true
-                  case FINALLY  => settings.SPACE_BEFORE_FINALLY_LBRACE
-                  case FOR      => settings.SPACE_BEFORE_FOR_LBRACE
-                  case FOR_SOME => true
-                  case NEW      => true
-                  case TRY      => settings.SPACE_BEFORE_TRY_LBRACE
-                  case DO       => settings.SPACE_BEFORE_DO_LBRACE
-                  case YIELD    => settings.SPACE_BEFORE_FOR_LBRACE
+                  case CATCH =>
+                    settings.SPACE_BEFORE_CATCH_LBRACE
+                  case ELSE =>
+                    settings.SPACE_BEFORE_ELSE_LBRACE
+                  case EXTENDS =>
+                    true
+                  case FINALLY =>
+                    settings.SPACE_BEFORE_FINALLY_LBRACE
+                  case FOR =>
+                    settings.SPACE_BEFORE_FOR_LBRACE
+                  case FOR_SOME =>
+                    true
+                  case NEW =>
+                    true
+                  case TRY =>
+                    settings.SPACE_BEFORE_TRY_LBRACE
+                  case DO =>
+                    settings.SPACE_BEFORE_DO_LBRACE
+                  case YIELD =>
+                    settings.SPACE_BEFORE_FOR_LBRACE
                 }
               if (add)
                 addSpace(addCompletionChar = true)
             case '[' =>
               keyword match {
                 case PRIVATE | PROTECTED => //do nothing
-                case _                   => addSpace(addCompletionChar = false)
+                case _ =>
+                  addSpace(addCompletionChar = false)
               }
-            case _ => addSpace()
+            case _ =>
+              addSpace()
           }
           if (keyword == CASE) {
             val manager = PsiDocumentManager.getInstance(context.getProject)

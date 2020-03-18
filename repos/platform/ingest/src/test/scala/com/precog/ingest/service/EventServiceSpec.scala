@@ -281,7 +281,8 @@ class EventServiceSpec
           testValue)
 
       result.copoint must beLike {
-        case (HttpResponse(HttpStatus(BadRequest, _), _, _, _), _) => ok
+        case (HttpResponse(HttpStatus(BadRequest, _), _, _, _), _) =>
+          ok
       }
     }
 
@@ -345,7 +346,8 @@ class EventServiceSpec
                       s must startWith(
                         "Cannot ingest values with more than 1024 primitive fields.")
                   }
-                case _ => ko
+                case _ =>
+                  ko
               }
           }
       }

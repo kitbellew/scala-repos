@@ -96,7 +96,8 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
         p.getLeaf match {
           case t: IdentifierTree =>
             Some(JavaFqn(None, None, Some(t.getName.toString)))
-          case t => None
+          case t =>
+            None
         }
       })
       .orElse(fqn(info, info.getTrees().getTypeMirror(p)))
@@ -117,7 +118,8 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
     tm match {
       case tm: DeclaredType if tm.getKind == TypeKind.DECLARED => {
         tm.asElement match {
-          case te: TypeElement => parseFqnAsClass(te.getQualifiedName.toString)
+          case te: TypeElement =>
+            parseFqnAsClass(te.getQualifiedName.toString)
           case _ => {
             None
           }
@@ -125,7 +127,8 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
       }
       case tm: PrimitiveType if tm.getKind.isPrimitive =>
         Some(JavaFqn(None, Some(tm.toString), None))
-      case _ => None
+      case _ =>
+        None
     }
   }
 

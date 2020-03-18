@@ -166,7 +166,8 @@ class CodegenContext {
   def declareAddedFunctions(): String = {
     addedFunctions
       .map {
-        case (funcName, funcCode) => funcCode
+        case (funcName, funcCode) =>
+          funcCode
       }
       .mkString("\n")
   }
@@ -224,15 +225,24 @@ class CodegenContext {
         s"$input.get${primitiveTypeName(jt)}($ordinal)"
       case t: DecimalType =>
         s"$input.getDecimal($ordinal, ${t.precision}, ${t.scale})"
-      case StringType              => s"$input.getUTF8String($ordinal)"
-      case BinaryType              => s"$input.getBinary($ordinal)"
-      case CalendarIntervalType    => s"$input.getInterval($ordinal)"
-      case t: StructType           => s"$input.getStruct($ordinal, ${t.size})"
-      case _: ArrayType            => s"$input.getArray($ordinal)"
-      case _: MapType              => s"$input.getMap($ordinal)"
-      case NullType                => "null"
-      case udt: UserDefinedType[_] => getValue(input, udt.sqlType, ordinal)
-      case _                       => s"($jt)$input.get($ordinal, null)"
+      case StringType =>
+        s"$input.getUTF8String($ordinal)"
+      case BinaryType =>
+        s"$input.getBinary($ordinal)"
+      case CalendarIntervalType =>
+        s"$input.getInterval($ordinal)"
+      case t: StructType =>
+        s"$input.getStruct($ordinal, ${t.size})"
+      case _: ArrayType =>
+        s"$input.getArray($ordinal)"
+      case _: MapType =>
+        s"$input.getMap($ordinal)"
+      case NullType =>
+        "null"
+      case udt: UserDefinedType[_] =>
+        getValue(input, udt.sqlType, ordinal)
+      case _ =>
+        s"($jt)$input.get($ordinal, null)"
     }
   }
 
@@ -251,10 +261,12 @@ class CodegenContext {
       case t: DecimalType =>
         s"$row.setDecimal($ordinal, $value, ${t.precision})"
       // The UTF8String may came from UnsafeRow, otherwise clone is cheap (re-use the bytes)
-      case StringType => s"$row.update($ordinal, $value.clone())"
+      case StringType =>
+        s"$row.update($ordinal, $value.clone())"
       case udt: UserDefinedType[_] =>
         setColumn(row, udt.sqlType, ordinal, value)
-      case _ => s"$row.update($ordinal, $value)"
+      case _ =>
+        s"$row.update($ordinal, $value)"
     }
   }
 
@@ -296,8 +308,10 @@ class CodegenContext {
     */
   def primitiveTypeName(jt: String): String =
     jt match {
-      case JAVA_INT => "Int"
-      case _        => boxedType(jt)
+      case JAVA_INT =>
+        "Int"
+      case _ =>
+        boxedType(jt)
     }
 
   def primitiveTypeName(dt: DataType): String = primitiveTypeName(javaType(dt))
@@ -307,25 +321,42 @@ class CodegenContext {
     */
   def javaType(dt: DataType): String =
     dt match {
-      case BooleanType              => JAVA_BOOLEAN
-      case ByteType                 => JAVA_BYTE
-      case ShortType                => JAVA_SHORT
-      case IntegerType | DateType   => JAVA_INT
-      case LongType | TimestampType => JAVA_LONG
-      case FloatType                => JAVA_FLOAT
-      case DoubleType               => JAVA_DOUBLE
-      case dt: DecimalType          => "Decimal"
-      case BinaryType               => "byte[]"
-      case StringType               => "UTF8String"
-      case CalendarIntervalType     => "CalendarInterval"
-      case _: StructType            => "InternalRow"
-      case _: ArrayType             => "ArrayData"
-      case _: MapType               => "MapData"
-      case udt: UserDefinedType[_]  => javaType(udt.sqlType)
+      case BooleanType =>
+        JAVA_BOOLEAN
+      case ByteType =>
+        JAVA_BYTE
+      case ShortType =>
+        JAVA_SHORT
+      case IntegerType | DateType =>
+        JAVA_INT
+      case LongType | TimestampType =>
+        JAVA_LONG
+      case FloatType =>
+        JAVA_FLOAT
+      case DoubleType =>
+        JAVA_DOUBLE
+      case dt: DecimalType =>
+        "Decimal"
+      case BinaryType =>
+        "byte[]"
+      case StringType =>
+        "UTF8String"
+      case CalendarIntervalType =>
+        "CalendarInterval"
+      case _: StructType =>
+        "InternalRow"
+      case _: ArrayType =>
+        "ArrayData"
+      case _: MapType =>
+        "MapData"
+      case udt: UserDefinedType[_] =>
+        javaType(udt.sqlType)
       case ObjectType(cls) if cls.isArray =>
         s"${javaType(ObjectType(cls.getComponentType))}[]"
-      case ObjectType(cls) => cls.getName
-      case _               => "Object"
+      case ObjectType(cls) =>
+        cls.getName
+      case _ =>
+        "Object"
     }
 
   /**
@@ -333,14 +364,22 @@ class CodegenContext {
     */
   def boxedType(jt: String): String =
     jt match {
-      case JAVA_BOOLEAN => "Boolean"
-      case JAVA_BYTE    => "Byte"
-      case JAVA_SHORT   => "Short"
-      case JAVA_INT     => "Integer"
-      case JAVA_LONG    => "Long"
-      case JAVA_FLOAT   => "Float"
-      case JAVA_DOUBLE  => "Double"
-      case other        => other
+      case JAVA_BOOLEAN =>
+        "Boolean"
+      case JAVA_BYTE =>
+        "Byte"
+      case JAVA_SHORT =>
+        "Short"
+      case JAVA_INT =>
+        "Integer"
+      case JAVA_LONG =>
+        "Long"
+      case JAVA_FLOAT =>
+        "Float"
+      case JAVA_DOUBLE =>
+        "Double"
+      case other =>
+        other
     }
 
   def boxedType(dt: DataType): String = boxedType(javaType(dt))
@@ -350,14 +389,22 @@ class CodegenContext {
     */
   def defaultValue(jt: String): String =
     jt match {
-      case JAVA_BOOLEAN => "false"
-      case JAVA_BYTE    => "(byte)-1"
-      case JAVA_SHORT   => "(short)-1"
-      case JAVA_INT     => "-1"
-      case JAVA_LONG    => "-1L"
-      case JAVA_FLOAT   => "-1.0f"
-      case JAVA_DOUBLE  => "-1.0"
-      case _            => "null"
+      case JAVA_BOOLEAN =>
+        "false"
+      case JAVA_BYTE =>
+        "(byte)-1"
+      case JAVA_SHORT =>
+        "(short)-1"
+      case JAVA_INT =>
+        "-1"
+      case JAVA_LONG =>
+        "-1L"
+      case JAVA_FLOAT =>
+        "-1.0f"
+      case JAVA_DOUBLE =>
+        "-1.0"
+      case _ =>
+        "null"
     }
 
   def defaultValue(dt: DataType): String = defaultValue(javaType(dt))
@@ -367,14 +414,18 @@ class CodegenContext {
     */
   def genEqual(dataType: DataType, c1: String, c2: String): String =
     dataType match {
-      case BinaryType => s"java.util.Arrays.equals($c1, $c2)"
+      case BinaryType =>
+        s"java.util.Arrays.equals($c1, $c2)"
       case FloatType =>
         s"(java.lang.Float.isNaN($c1) && java.lang.Float.isNaN($c2)) || $c1 == $c2"
       case DoubleType =>
         s"(java.lang.Double.isNaN($c1) && java.lang.Double.isNaN($c2)) || $c1 == $c2"
-      case dt: DataType if isPrimitiveType(dt) => s"$c1 == $c2"
-      case udt: UserDefinedType[_]             => genEqual(udt.sqlType, c1, c2)
-      case other                               => s"$c1.equals($c2)"
+      case dt: DataType if isPrimitiveType(dt) =>
+        s"$c1 == $c2"
+      case udt: UserDefinedType[_] =>
+        genEqual(udt.sqlType, c1, c2)
+      case other =>
+        s"$c1.equals($c2)"
     }
 
   /**
@@ -387,7 +438,8 @@ class CodegenContext {
   def genComp(dataType: DataType, c1: String, c2: String): String =
     dataType match {
       // java boolean doesn't support > or < operator
-      case BooleanType => s"($c1 == $c2 ? 0 : ($c1 ? 1 : -1))"
+      case BooleanType =>
+        s"($c1 == $c2 ? 0 : ($c1 ? 1 : -1))"
       case DoubleType =>
         s"org.apache.spark.util.Utils.nanSafeCompareDoubles($c1, $c2)"
       case FloatType =>
@@ -397,7 +449,8 @@ class CodegenContext {
         s"($c1 > $c2 ? 1 : $c1 < $c2 ? -1 : 0)"
       case BinaryType =>
         s"org.apache.spark.sql.catalyst.util.TypeUtils.compareBinary($c1, $c2)"
-      case NullType => "0"
+      case NullType =>
+        "0"
       case array: ArrayType =>
         val elementType = array.elementType
         val elementA = freshName("elementA")
@@ -459,8 +512,10 @@ class CodegenContext {
         """
         addNewFunction(compareFunc, funcCode)
         s"this.$compareFunc($c1, $c2)"
-      case other if other.isInstanceOf[AtomicType] => s"$c1.compare($c2)"
-      case udt: UserDefinedType[_]                 => genComp(udt.sqlType, c1, c2)
+      case other if other.isInstanceOf[AtomicType] =>
+        s"$c1.compare($c2)"
+      case udt: UserDefinedType[_] =>
+        genComp(udt.sqlType, c1, c2)
       case _ =>
         throw new IllegalArgumentException(
           "cannot generate compare code for un-comparable type")
@@ -475,8 +530,10 @@ class CodegenContext {
     */
   def genGreater(dataType: DataType, c1: String, c2: String): String =
     javaType(dataType) match {
-      case JAVA_BYTE | JAVA_SHORT | JAVA_INT | JAVA_LONG => s"$c1 > $c2"
-      case _                                             => s"(${genComp(dataType, c1, c2)}) > 0"
+      case JAVA_BYTE | JAVA_SHORT | JAVA_INT | JAVA_LONG =>
+        s"$c1 > $c2"
+      case _ =>
+        s"(${genComp(dataType, c1, c2)}) > 0"
     }
 
   /**

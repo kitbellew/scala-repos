@@ -11,6 +11,7 @@ object Test {
   var b: a.type = a
 
   b = b match {
-    case x => x
+    case x =>
+      x
   }
 }

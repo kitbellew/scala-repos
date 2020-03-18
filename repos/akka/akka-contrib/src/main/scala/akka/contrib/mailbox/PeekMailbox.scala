@@ -46,7 +46,8 @@ class PeekMailboxExtension(val system: ExtendedActorSystem) extends Extension {
       case null ⇒
         throw new IllegalArgumentException(
           "Mailbox not registered for: " + context.self)
-      case mailbox ⇒ mailbox.ack()
+      case mailbox ⇒
+        mailbox.ack()
     }
 }
 
@@ -70,7 +71,8 @@ class PeekMailboxType(settings: ActorSystem.Settings, config: Config)
         val mailbox = new PeekMailbox(o, s, retries)
         PeekMailboxExtension(s).register(o, mailbox)
         mailbox
-      case _ ⇒ throw new Exception("no mailbox owner or system given")
+      case _ ⇒
+        throw new Exception("no mailbox owner or system given")
     }
 }
 

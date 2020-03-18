@@ -259,7 +259,8 @@ object TestUtils extends Logging {
     rack.foreach(props.put("broker.rack", _))
 
     if (protocolAndPorts.exists {
-          case (protocol, _) => usesSslTransportLayer(protocol)
+          case (protocol, _) =>
+            usesSslTransportLayer(protocol)
         })
       props.putAll(
         sslConfigs(Mode.SERVER, false, trustStoreFile, s"server$nodeId"))
@@ -607,8 +608,10 @@ object TestUtils extends Logging {
   private def usesSslTransportLayer(
       securityProtocol: SecurityProtocol): Boolean =
     securityProtocol match {
-      case SecurityProtocol.SSL | SecurityProtocol.SASL_SSL => true
-      case _                                                => false
+      case SecurityProtocol.SSL | SecurityProtocol.SASL_SSL =>
+        true
+      case _ =>
+        false
     }
 
   def consumerSecurityConfigs(
@@ -957,12 +960,15 @@ object TestUtils extends Logging {
       server: KafkaServer): Boolean = {
     val partitionOpt = server.replicaManager.getPartition(topic, partitionId)
     partitionOpt match {
-      case None => false
+      case None =>
+        false
       case Some(partition) =>
         val replicaOpt = partition.leaderReplicaIfLocal
         replicaOpt match {
-          case None    => false
-          case Some(_) => true
+          case None =>
+            false
+          case Some(_) =>
+            true
         }
     }
   }
@@ -997,7 +1003,8 @@ object TestUtils extends Logging {
           val partitionStateOpt = server.apis.metadataCache
             .getPartitionInfo(topic, partition)
           partitionStateOpt match {
-            case None => false
+            case None =>
+              false
             case Some(partitionState) =>
               leader =
                 partitionState.leaderIsrAndControllerEpoch.leaderAndIsr.leader
@@ -1347,7 +1354,8 @@ object TestUtils extends Logging {
 
     val sslProps = new Properties()
     sslConfigs.foreach {
-      case (k, v) => sslProps.put(k, v)
+      case (k, v) =>
+        sslProps.put(k, v)
     }
     sslProps
   }
@@ -1419,8 +1427,10 @@ object TestUtils extends Logging {
           }
       }
     } catch {
-      case ie: InterruptedException => failWithTimeout()
-      case e                        => exceptions += e
+      case ie: InterruptedException =>
+        failWithTimeout()
+      case e =>
+        exceptions += e
     } finally {
       threadPool.shutdownNow()
     }

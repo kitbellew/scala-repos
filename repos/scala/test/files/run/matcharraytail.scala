@@ -3,7 +3,9 @@ object Test extends App {
     case x @ Array("foo", bar @ _*) =>
       println(x.deep.toString);
       println(bar.toString);
-    case Array(x, y, z) => println("shouldn't have fallen through");
-    case _              => println("default case?!");
+    case Array(x, y, z) =>
+      println("shouldn't have fallen through");
+    case _ =>
+      println("default case?!");
   }
 }

@@ -471,7 +471,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       consumeRecords(this.consumers.head)
       Assert.fail("should have thrown exception")
     } catch {
-      case e: GroupAuthorizationException => assertEquals(group, e.groupId())
+      case e: GroupAuthorizationException =>
+        assertEquals(group, e.groupId())
     }
   }
 
@@ -788,7 +789,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     try {
       futures.foreach(_.get)
     } catch {
-      case e: ExecutionException => throw e.getCause
+      case e: ExecutionException =>
+        throw e.getCause
     }
   }
 

@@ -45,8 +45,10 @@ trait Erasure {
           genericCore(arg) match {
             case NoType =>
               unapply(arg) match {
-                case Some((level, core)) => Some((level + 1, core))
-                case None                => None
+                case Some((level, core)) =>
+                  Some((level + 1, core))
+                case None =>
+                  None
               }
             case core =>
               Some((1, core))
@@ -63,11 +65,13 @@ trait Erasure {
     */
   protected def unboundedGenericArrayLevel(tp: Type): Int =
     tp match {
-      case GenericArray(level, core) if !(core <:< AnyRefTpe) => level
+      case GenericArray(level, core) if !(core <:< AnyRefTpe) =>
+        level
       case RefinedType(ps, _) if ps.nonEmpty =>
         logResult(s"Unbounded generic level for $tp is")(
           (ps map unboundedGenericArrayLevel).max)
-      case _ => 0
+      case _ =>
+        0
     }
 
   // @M #2585 when generating a java generic signature that includes
@@ -191,7 +195,8 @@ trait Erasure {
       tp match {
         case tref @ TypeRef(_, sym, _) if sym.isDerivedValueClass =>
           eraseNormalClassRef(tref)
-        case _ => apply(tp)
+        case _ =>
+          apply(tp)
       }
   }
 

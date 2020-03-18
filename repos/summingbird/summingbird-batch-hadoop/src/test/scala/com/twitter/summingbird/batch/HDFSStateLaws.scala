@@ -63,7 +63,8 @@ class HDFSStateLaws extends WordSpec {
               .milliSinceEpoch
           assert(low.least.get.milliSinceEpoch == expectedNextRunStartMillis)
         }
-        case _ => fail("requested interval should be an interseciton")
+        case _ =>
+          fail("requested interval should be an interseciton")
       }
       shouldCheckpointInterval(
         batcher,
@@ -119,15 +120,18 @@ class HDFSStateLaws extends WordSpec {
       interval: Interval[Timestamp],
       message: String = "PreparedState accepted a bad Interval!") = {
     state.begin.willAccept(interval) match {
-      case Left(t)  => t
-      case Right(t) => sys.error(message)
+      case Left(t) =>
+        t
+      case Right(t) =>
+        sys.error(message)
     }
   }
 
   def completeState[T](
       either: Either[WaitingState[T], RunningState[T]]): WaitingState[T] = {
     either match {
-      case Right(t) => t.succeed
+      case Right(t) =>
+        t.succeed
       case Left(t) =>
         sys.error(
           "PreparedState didn't accept its proposed Interval! failed state: " + t)
@@ -153,7 +157,8 @@ class HDFSStateLaws extends WordSpec {
             assert(new java.io.File(totPath).exists)
           }
       }
-      case _ => sys.error("interval should be an intersection")
+      case _ =>
+        sys.error("interval should be an intersection")
     }
   }
 

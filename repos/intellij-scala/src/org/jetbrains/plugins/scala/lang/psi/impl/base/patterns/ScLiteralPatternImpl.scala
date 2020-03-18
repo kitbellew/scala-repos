@@ -20,8 +20,10 @@ class ScLiteralPatternImpl(node: ASTNode)
     with ScLiteralPattern {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

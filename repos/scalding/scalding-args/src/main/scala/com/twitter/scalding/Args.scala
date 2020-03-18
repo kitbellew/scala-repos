@@ -59,7 +59,8 @@ object Args {
         }
         //Now reverse the values to keep the same order
         .map {
-          case (key, value) => key -> value.reverse
+          case (key, value) =>
+            key -> value.reverse
         }
         .toMap)
   }
@@ -69,7 +70,8 @@ object Args {
       arg.toDouble
       true
     } catch {
-      case e: NumberFormatException => false
+      case e: NumberFormatException =>
+        false
     }
   }
 }
@@ -108,7 +110,8 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     */
   def required(position: Int): String =
     positional match {
-      case l if l.size > position => l(position)
+      case l if l.size > position =>
+        l(position)
       case _ =>
         throw ArgsException(
           "Please provide " + (position + 1) + " positional arguments")
@@ -141,8 +144,10 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     */
   def required(key: String): String =
     list(key) match {
-      case List()  => throw ArgsException("Please provide a value for --" + key)
-      case List(a) => a
+      case List() =>
+        throw ArgsException("Please provide a value for --" + key)
+      case List(a) =>
+        a
       case _ =>
         throw ArgsException("Please only provide a single value for --" + key)
     }
@@ -183,8 +188,10 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     */
   def optional(key: String): Option[String] =
     list(key) match {
-      case List()  => None
-      case List(a) => Some(a)
+      case List() =>
+        None
+      case List(a) =>
+        Some(a)
       case _ =>
         throw ArgsException("Please provide at most one value for --" + key)
     }

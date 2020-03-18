@@ -245,8 +245,10 @@ object BaseCharsetTest {
       appendStr(strings.next())
       while (strings.hasNext) {
         expressions.next() match {
-          case b: Byte            => buf += b
-          case bytes: Array[Byte] => buf ++= bytes
+          case b: Byte =>
+            buf += b
+          case bytes: Array[Byte] =>
+            buf ++= bytes
           case bytes: Seq[_] =>
             buf ++= bytes.map(_.asInstanceOf[Number].byteValue())
         }

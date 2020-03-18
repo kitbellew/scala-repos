@@ -40,14 +40,16 @@ class MetadataSpec
   "simple metadata" should {
     "surivive round trip serialization" in check { in: Metadata =>
       in.serialize.validated[Metadata] must beLike {
-        case Success(out) => in mustEqual out
+        case Success(out) =>
+          in mustEqual out
       }
     }
 
     "merge with like metadata" in check {
       (sample1: List[Metadata], sample2: List[Metadata]) =>
         val prepared = sample1 zip sample2 map {
-          case (e1, e2) => (e1, e2, e1 merge e2)
+          case (e1, e2) =>
+            (e1, e2, e1 merge e2)
         }
 
         forall(prepared) {
@@ -90,7 +92,8 @@ class MetadataSpec
             mn3 must_== Order[String].min(mn1, mn2)
             mx3 must_== Order[String].max(mx1, mx2)
           }
-          case (e1, e2, r) => r must beNone
+          case (e1, e2, r) =>
+            r must beNone
         }
     }
   }
@@ -112,7 +115,8 @@ class MetadataSpec
           sample1: List[Map[MetadataType, Metadata]],
           sample2: List[Map[MetadataType, Metadata]]) =>
         val prepared = sample1 zip sample2 map {
-          case (s1, s2) => (s1, s2, s1 |+| s2)
+          case (s1, s2) =>
+            (s1, s2, s1 |+| s2)
         }
 
         forall(prepared) {
@@ -121,9 +125,12 @@ class MetadataSpec
 
             forall(keys) { k =>
               (s1.get(k), s2.get(k)) must beLike {
-                case (Some(a), Some(b)) => r(k) must_== a.merge(b).get
-                case (Some(a), _)       => r(k) must_== a
-                case (_, Some(b))       => r(k) must_== b
+                case (Some(a), Some(b)) =>
+                  r(k) must_== a.merge(b).get
+                case (Some(a), _) =>
+                  r(k) must_== a
+                case (_, Some(b)) =>
+                  r(k) must_== b
               }
             }
           }

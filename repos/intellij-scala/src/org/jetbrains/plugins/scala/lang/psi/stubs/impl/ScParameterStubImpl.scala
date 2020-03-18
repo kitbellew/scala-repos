@@ -143,8 +143,10 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
     }
     val res: Option[ScExpression] =
       getDefaultExprText match {
-        case None     => None
-        case Some("") => None
+        case None =>
+          None
+        case Some("") =>
+          None
         case Some(text) =>
           Some(
             ScalaPsiElementFactory

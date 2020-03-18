@@ -32,8 +32,10 @@ class StreamTestKitSpec extends AkkaSpec {
               override def next(): Int = {
                 i += 1
                 i match {
-                  case 3 ⇒ throw ex
-                  case n ⇒ n
+                  case 3 ⇒
+                    throw ex
+                  case n ⇒
+                    n
                 }
               }
             })

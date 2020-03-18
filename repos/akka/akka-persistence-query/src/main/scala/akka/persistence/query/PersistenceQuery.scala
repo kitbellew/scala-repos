@@ -111,7 +111,8 @@ class PersistenceQuery(system: ExtendedActorSystem) extends Extension {
           instantiate((classOf[ExtendedActorSystem], system) :: Nil)
       }
       .recoverWith {
-        case x: NoSuchMethodException ⇒ instantiate(Nil)
+        case x: NoSuchMethodException ⇒
+          instantiate(Nil)
       }
       .recoverWith {
         case ex: Exception ⇒

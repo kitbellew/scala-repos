@@ -132,7 +132,8 @@ class CachingAPIKeyManager[M[+_]](
           _.traverse(_ tap add).unsafePerformIO
         }
 
-      case t => M.point(t)
+      case t =>
+        M.point(t)
     }
 
   def findGrant(gid: GrantId) =
@@ -143,7 +144,8 @@ class CachingAPIKeyManager[M[+_]](
           _.traverse(_ tap add).unsafePerformIO
         }
 
-      case s @ Some(_) => M.point(s)
+      case s @ Some(_) =>
+        M.point(s)
     }
 
   def findAPIKeyChildren(apiKey: APIKey): M[Set[APIKeyRecord]] =
@@ -152,7 +154,8 @@ class CachingAPIKeyManager[M[+_]](
         manager.findAPIKeyChildren(apiKey) map {
           _.toList.traverse(_ tap add).unsafePerformIO.toSet
         }
-      case Some(s) => M.point(s)
+      case Some(s) =>
+        M.point(s)
     }
 
   def listAPIKeys = manager.listAPIKeys

@@ -610,8 +610,10 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     @tailrec
     def loop(l: HList, acc: Int): Int =
       l match {
-        case HNil     => acc
-        case hd :: tl => loop(tl, acc + 1)
+        case HNil =>
+          acc
+        case hd :: tl =>
+          loop(tl, acc + 1)
       }
 
     loop(l, 0)
@@ -626,7 +628,8 @@ final class HListOps[L <: HList](l: L) extends Serializable {
     @tailrec
     def loop(l: HList): Unit =
       l match {
-        case HNil => ()
+        case HNil =>
+          ()
         case hd :: tl =>
           builder += hd
           loop(tl)

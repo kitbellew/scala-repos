@@ -86,9 +86,11 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
               s"${t.toString} != $expectedType",
               expectedType,
               t.toString)
-          case Failure(cause, _) => org.junit.Assert.fail(cause)
+          case Failure(cause, _) =>
+            org.junit.Assert.fail(cause)
         }
-      case None => org.junit.Assert.fail("method not found")
+      case None =>
+        org.junit.Assert.fail("method not found")
     }
   }
 

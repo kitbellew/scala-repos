@@ -537,8 +537,10 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
       val ev = lastEvents()
       ev.nonEmpty should be(true)
       ev.forall {
-        case OnError(_: IllegalArgumentException) ⇒ true
-        case _ ⇒ false
+        case OnError(_: IllegalArgumentException) ⇒
+          true
+        case _ ⇒
+          false
       } should be(true)
     }
 

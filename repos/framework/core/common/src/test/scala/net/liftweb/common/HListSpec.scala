@@ -58,8 +58,10 @@ object HListSpec extends Specification {
 
       // result in a failure
       x match {
-        case Left(_) => success
-        case _       => failure
+        case Left(_) =>
+          success
+        case _ =>
+          failure
       }
     }
 
@@ -80,7 +82,8 @@ object HListSpec extends Specification {
 
           success
         }
-        case Left(_) => failure
+        case Left(_) =>
+          failure
       }
     }
 

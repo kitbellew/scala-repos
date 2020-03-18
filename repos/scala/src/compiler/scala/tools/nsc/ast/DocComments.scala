@@ -285,7 +285,8 @@ trait DocComments {
           extractSectionTag(child, section) match {
             case param @ ("@param" | "@tparam" | "@throws") =>
               param + " " + extractSectionParam(child, section)
-            case other => other
+            case other =>
+              other
           }
 
         def sectionString(
@@ -354,7 +355,8 @@ trait DocComments {
     */
   def lookupVariable(vble: String, site: Symbol): Option[String] =
     site match {
-      case NoSymbol => None
+      case NoSymbol =>
+        None
       case _ =>
         val searchList =
           if (site.isModule)
@@ -363,10 +365,13 @@ trait DocComments {
             site.info.baseClasses
 
         searchList collectFirst {
-          case x if defs(x) contains vble => defs(x)(vble)
+          case x if defs(x) contains vble =>
+            defs(x)(vble)
         } match {
-          case Some(str) if str startsWith "$" => lookupVariable(str.tail, site)
-          case res                             => res orElse lookupVariable(vble, site.owner)
+          case Some(str) if str startsWith "$" =>
+            lookupVariable(str.tail, site)
+          case res =>
+            res orElse lookupVariable(vble, site.owner)
         }
     }
 
@@ -413,10 +418,12 @@ trait DocComments {
                   if (!isMovable(sc, sec))
                     out append sc.substring(start, end)
               }
-            case "" => idx += 1
+            case "" =>
+              idx += 1
             case vname =>
               lookupVariable(vname, site) match {
-                case Some(replacement) => replaceWith(replacement)
+                case Some(replacement) =>
+                  replaceWith(replacement)
                 case None =>
                   val pos = docCommentPos(sym)
                   val loc = pos withPoint (pos.start + vstart + 1)
@@ -469,10 +476,12 @@ trait DocComments {
         else
           raw.substring(0, end) + "*/",
         defines map {
-          case (start, end) => raw.substring(start, end)
+          case (start, end) =>
+            raw.substring(start, end)
         },
         usecases map {
-          case (start, end) => decomposeUseCase(start, end)
+          case (start, end) =>
+            decomposeUseCase(start, end)
         })
     }
 
@@ -532,8 +541,10 @@ trait DocComments {
       def getSite(name: Name): Type = {
         def findIn(sites: List[Symbol]): Type =
           sites match {
-            case List()         => NoType
-            case site :: sites1 => select(site.thisType, name, findIn(sites1))
+            case List() =>
+              NoType
+            case site :: sites1 =>
+              select(site.thisType, name, findIn(sites1))
           }
         // Previously, searching was taking place *only* in the current package and in the root package
         // now we're looking for it everywhere in the hierarchy, so we'll be able to link variable expansions like
@@ -568,11 +579,14 @@ trait DocComments {
         val partnames = (parts.init map newTermName) :+ newTypeName(parts.last)
         val (start, rest) =
           parts match {
-            case "this" :: _ => (site.thisType, partnames.tail)
+            case "this" :: _ =>
+              (site.thisType, partnames.tail)
             case _ :: "this" :: _ =>
               site.ownerChain.find(_.name == partnames.head) match {
-                case Some(clazz) => (clazz.thisType, partnames drop 2)
-                case _           => (NoType, Nil)
+                case Some(clazz) =>
+                  (clazz.thisType, partnames drop 2)
+                case _ =>
+                  (NoType, Nil)
               }
             case _ =>
               (getSite(partnames.head), partnames.tail)

@@ -84,7 +84,8 @@ object ScriptedPlugin extends Plugin {
           sbtLauncher.value,
           scriptedLaunchOpts.value.toArray)
       } catch {
-        case e: java.lang.reflect.InvocationTargetException => throw e.getCause
+        case e: java.lang.reflect.InvocationTargetException =>
+          throw e.getCause
       }
     }
 

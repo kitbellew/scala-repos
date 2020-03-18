@@ -108,7 +108,8 @@ object InstructionStackEffect {
 
     (insn.getOpcode: @switch) match {
       // The order of opcodes is the same as in Frame.execute.
-      case NOP => t(0, 0)
+      case NOP =>
+        t(0, 0)
 
       case ACONST_NULL | ICONST_M1 | ICONST_0 | ICONST_1 | ICONST_2 | ICONST_3 |
           ICONST_4 | ICONST_5 | FCONST_0 | FCONST_1 | FCONST_2 | BIPUSH |
@@ -118,8 +119,10 @@ object InstructionStackEffect {
       case LDC =>
         if (forClassfile)
           insn.asInstanceOf[LdcInsnNode].cst match {
-            case _: java.lang.Long | _: java.lang.Double => t(0, 2)
-            case _                                       => t(0, 1)
+            case _: java.lang.Long | _: java.lang.Double =>
+              t(0, 2)
+            case _ =>
+              t(0, 1)
           }
         else
           t(0, 1)
@@ -130,7 +133,8 @@ object InstructionStackEffect {
         else
           t(0, 1)
 
-      case IALOAD | FALOAD | AALOAD | BALOAD | CALOAD | SALOAD => t(2, 1)
+      case IALOAD | FALOAD | AALOAD | BALOAD | CALOAD | SALOAD =>
+        t(2, 1)
 
       case LALOAD | DALOAD =>
         if (forClassfile)
@@ -138,7 +142,8 @@ object InstructionStackEffect {
         else
           t(2, 1)
 
-      case ISTORE | FSTORE | ASTORE => t(1, 0)
+      case ISTORE | FSTORE | ASTORE =>
+        t(1, 0)
 
       case LSTORE | DSTORE =>
         if (forClassfile)
@@ -146,7 +151,8 @@ object InstructionStackEffect {
         else
           t(1, 0)
 
-      case IASTORE | FASTORE | AASTORE | BASTORE | CASTORE | SASTORE => t(3, 0)
+      case IASTORE | FASTORE | AASTORE | BASTORE | CASTORE | SASTORE =>
+        t(3, 0)
 
       case LASTORE | DASTORE =>
         if (forClassfile)
@@ -154,7 +160,8 @@ object InstructionStackEffect {
         else
           t(3, 0)
 
-      case POP => t(1, 0)
+      case POP =>
+        t(1, 0)
 
       case POP2 =>
         if (forClassfile)
@@ -169,9 +176,11 @@ object InstructionStackEffect {
             t(2, 0)
         }
 
-      case DUP => t(1, 2)
+      case DUP =>
+        t(1, 2)
 
-      case DUP_X1 => t(2, 3)
+      case DUP_X1 =>
+        t(2, 3)
 
       case DUP_X2 =>
         if (forClassfile || conservative)
@@ -226,7 +235,8 @@ object InstructionStackEffect {
           }
         }
 
-      case SWAP => t(2, 2)
+      case SWAP =>
+        t(2, 2)
 
       case IADD | FADD | ISUB | FSUB | IMUL | FMUL | IDIV | FDIV | IREM |
           FREM =>
@@ -239,7 +249,8 @@ object InstructionStackEffect {
         else
           t(2, 1)
 
-      case INEG | FNEG => t(1, 1)
+      case INEG | FNEG =>
+        t(1, 1)
 
       case LNEG | DNEG =>
         if (forClassfile)
@@ -247,7 +258,8 @@ object InstructionStackEffect {
         else
           t(1, 1)
 
-      case ISHL | ISHR | IUSHR | IAND | IOR | IXOR => t(2, 1)
+      case ISHL | ISHR | IUSHR | IAND | IOR | IXOR =>
+        t(2, 1)
 
       case LSHL | LSHR | LUSHR =>
         if (forClassfile)
@@ -261,9 +273,11 @@ object InstructionStackEffect {
         else
           t(2, 1)
 
-      case IINC => t(0, 0)
+      case IINC =>
+        t(0, 0)
 
-      case I2F | F2I | I2B | I2C | I2S => t(1, 1)
+      case I2F | F2I | I2B | I2C | I2S =>
+        t(1, 1)
 
       case I2L | I2D | F2L | F2D =>
         if (forClassfile)
@@ -283,7 +297,8 @@ object InstructionStackEffect {
         else
           t(1, 1)
 
-      case FCMPL | FCMPG => t(2, 1)
+      case FCMPL | FCMPG =>
+        t(2, 1)
 
       case LCMP | DCMPL | DCMPG =>
         if (forClassfile)
@@ -291,19 +306,24 @@ object InstructionStackEffect {
         else
           t(2, 1)
 
-      case IFEQ | IFNE | IFLT | IFGE | IFGT | IFLE => t(1, 0)
+      case IFEQ | IFNE | IFLT | IFGE | IFGT | IFLE =>
+        t(1, 0)
 
       case IF_ICMPEQ | IF_ICMPNE | IF_ICMPLT | IF_ICMPGE | IF_ICMPGT |
           IF_ICMPLE | IF_ACMPEQ | IF_ACMPNE =>
         t(2, 0)
 
-      case GOTO => t(0, 0)
+      case GOTO =>
+        t(0, 0)
 
-      case JSR => t(0, 1)
+      case JSR =>
+        t(0, 1)
 
-      case RET => t(0, 0)
+      case RET =>
+        t(0, 0)
 
-      case TABLESWITCH | LOOKUPSWITCH => t(1, 0)
+      case TABLESWITCH | LOOKUPSWITCH =>
+        t(1, 0)
 
       case IRETURN | FRETURN | ARETURN =>
         t(1, 0) // Frame.execute consumes one stack value
@@ -314,7 +334,8 @@ object InstructionStackEffect {
         else
           t(1, 0)
 
-      case RETURN => t(0, 0) // Frame.execute does not change the stack
+      case RETURN =>
+        t(0, 0) // Frame.execute does not change the stack
 
       case GETSTATIC =>
         val prod =
@@ -360,21 +381,26 @@ object InstructionStackEffect {
           insn,
           forClassfile)
 
-      case NEW => t(0, 1)
+      case NEW =>
+        t(0, 1)
 
-      case NEWARRAY | ANEWARRAY | ARRAYLENGTH => t(1, 1)
+      case NEWARRAY | ANEWARRAY | ARRAYLENGTH =>
+        t(1, 1)
 
-      case ATHROW => t(1, 0) // Frame.execute consumes one stack value
+      case ATHROW =>
+        t(1, 0) // Frame.execute consumes one stack value
 
       case CHECKCAST | INSTANCEOF =>
         t(1, 1) // Frame.execute does push(pop()) for both of them
 
-      case MONITORENTER | MONITOREXIT => t(1, 0)
+      case MONITORENTER | MONITOREXIT =>
+        t(1, 0)
 
       case MULTIANEWARRAY =>
         t(insn.asInstanceOf[MultiANewArrayInsnNode].dims, 1)
 
-      case IFNULL | IFNONNULL => t(1, 0)
+      case IFNULL | IFNONNULL =>
+        t(1, 0)
     }
   }
 }

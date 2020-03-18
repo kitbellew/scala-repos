@@ -40,15 +40,19 @@ final class FishnetApi(
   } flatMap {
     case Success(client) =>
       repo.updateClientInstance(client, req instance ip) map Success.apply
-    case failure => fuccess(failure)
+    case failure =>
+      fuccess(failure)
   }
 
   def acquire(client: Client): Fu[Option[JsonApi.Work]] =
     (
       client.skill match {
-        case Skill.Move     => acquireMove(client)
-        case Skill.Analysis => acquireAnalysis(client)
-        case Skill.All      => acquireMove(client) orElse acquireAnalysis(client)
+        case Skill.Move =>
+          acquireMove(client)
+        case Skill.Analysis =>
+          acquireAnalysis(client)
+        case Skill.All =>
+          acquireMove(client) orElse acquireAnalysis(client)
       }
     ).chronometer
       .mon(_.fishnet.acquire time client.skill.key)
@@ -97,7 +101,8 @@ final class FishnetApi(
       data: JsonApi.Request.PostMove): Funit =
     fuccess {
       moveDb.get(workId).filter(_ isAcquiredBy client) match {
-        case None => monitor.notFound(Client.Skill.Move, client)
+        case None =>
+          monitor.notFound(Client.Skill.Move, client)
         case Some(work) if work isAcquiredBy client =>
           data.move.uci match {
             case Some(uci) =>
@@ -110,7 +115,8 @@ final class FishnetApi(
               moveDb updateOrGiveUp work.invalid
               monitor.failure(work, client)
           }
-        case Some(work) => monitor.notAcquired(work, client)
+        case Some(work) =>
+          monitor.notAcquired(work, client)
       }
     }.chronometer
       .mon(_.fishnet.move.post)

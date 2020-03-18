@@ -1,7 +1,8 @@
 object Test extends App {
 
   "foo" match {
-    case Matcher(result) => println(result)
+    case Matcher(result) =>
+      println(result)
   }
 
   object Matcher {

@@ -56,7 +56,8 @@ package enumfieldspecs {
             this.dow.value == that.dow.value &&
             this.dowOptional.valueBox == that.dowOptional.valueBox &&
             this.jsonobj.value == that.jsonobj.value
-        case _ => false
+        case _ =>
+          false
       }
   }
   object EnumRec extends EnumRec with MongoMetaRecord[EnumRec] {

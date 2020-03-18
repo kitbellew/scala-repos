@@ -78,7 +78,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
   def resolveExpressions(
       r: PartialFunction[Expression, Expression]): LogicalPlan = {
     this resolveOperators {
-      case p => p.transformExpressions(r)
+      case p =>
+        p.transformExpressions(r)
     }
   }
 
@@ -137,7 +138,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     schema.map { field =>
       resolveQuoted(field.name, resolver)
         .map {
-          case a: AttributeReference => a
+          case a: AttributeReference =>
+            a
           case other =>
             sys.error(s"can not handle nested schema yet...  plan $this")
         }
@@ -251,7 +253,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
 
     candidates.distinct match {
       // One match, no nested fields, use it.
-      case Seq((a, Nil)) => Some(a)
+      case Seq((a, Nil)) =>
+        Some(a)
 
       // One match, but we also need to extract the requested nested field.
       case Seq((a, nestedFields)) =>

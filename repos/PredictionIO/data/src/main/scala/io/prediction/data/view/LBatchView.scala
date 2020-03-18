@@ -82,8 +82,10 @@ object ViewAggregators {
               p.map(_ -- e.properties.keySet)
             }
           }
-          case "$delete" => None
-          case _         => p // do nothing for others
+          case "$delete" =>
+            None
+          case _ =>
+            p // do nothing for others
         }
       }
   }
@@ -165,7 +167,8 @@ class LBatchView(
         init = None,
         op = ViewAggregators.getDataMapAggregator())
       .filter {
-        case (k, v) => (v != None)
+        case (k, v) =>
+          (v != None)
       }
       .mapValues(_.get)
 

@@ -153,7 +153,8 @@ abstract class OperationOnCollectionInspectionBase
       val patternJBList = JListCompatibility.createJBListFromModel(listModel)
       def resetValues() {
         val newArray = listModel.toArray collect {
-          case s: String => s
+          case s: String =>
+            s
         }
         setPatternLists(patternListKey)(newArray)
       }

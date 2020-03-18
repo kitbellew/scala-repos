@@ -117,7 +117,8 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
         case x @ toolbox.u.ValDef(_, _, _, rhs) if rhs != toolbox.u.EmptyTree =>
           val c = content.substring(x.pos.start, x.pos.end)
           !(c contains "=")
-        case _ => false
+        case _ =>
+          false
       }
     parsedTrees.filter(isBadValDef).foreach { badTree =>
       // Issue errors
@@ -127,8 +128,10 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
     }
 
     val (imports, statements) = parsedTrees partition {
-      case _: Import => true
-      case _         => false
+      case _: Import =>
+        true
+      case _ =>
+        false
     }
 
     /**
@@ -175,10 +178,12 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
     (
       importsLineRange,
       stmtTreeLineRange.map {
-        case (stmt, _, lr) => (stmt, lr)
+        case (stmt, _, lr) =>
+          (stmt, lr)
       },
       stmtTreeLineRange.map {
-        case (stmt, tree, _) => (stmt, tree)
+        case (stmt, tree, _) =>
+          (stmt, tree)
       })
   }
 
@@ -193,13 +198,16 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
       imports: Seq[Tree]): Seq[(String, Int)] = {
     val toLineRange = imports map convertImport(modifiedContent)
     val groupedByLineNumber = toLineRange.groupBy {
-      case (_, lineNumber) => lineNumber
+      case (_, lineNumber) =>
+        lineNumber
     }
     val mergedImports = groupedByLineNumber.map {
-      case (l, seq) => (l, extractLine(modifiedContent, seq))
+      case (l, seq) =>
+        (l, extractLine(modifiedContent, seq))
     }
     mergedImports.toSeq.sortBy(_._1).map {
-      case (k, v) => (v, k)
+      case (k, v) =>
+        (v, k)
     }
   }
 

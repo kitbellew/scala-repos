@@ -46,7 +46,8 @@ class ScalaScopeWeigher extends CompletionWeigher {
             .getOrElse(Int.MinValue)
         else
           null
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

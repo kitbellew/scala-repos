@@ -203,7 +203,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
         val runFunc =
           (sqlContext: SQLContext) => {
             sqlContext.getAllConfs.map {
-              case (k, v) => Row(k, v)
+              case (k, v) =>
+                Row(k, v)
             }.toSeq
           }
         (keyValueOutput, runFunc)
@@ -245,7 +246,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
             val value =
               try sqlContext.getConf(key)
               catch {
-                case _: NoSuchElementException => "<undefined>"
+                case _: NoSuchElementException =>
+                  "<undefined>"
               }
             Seq(Row(key, value))
           }
@@ -383,7 +385,8 @@ case class ShowTablesCommand(databaseName: Option[String])
     // Since we need to return a Seq of rows, we will call getTables directly
     // instead of calling tables in sqlContext.
     val rows = sqlContext.sessionState.catalog.getTables(databaseName).map {
-      case (tableName, isTemporary) => Row(tableName, isTemporary)
+      case (tableName, isTemporary) =>
+        Row(tableName, isTemporary)
     }
 
     rows
@@ -418,7 +421,8 @@ case class ShowFunctions(db: Option[String], pattern: Option[String])
             .map(Row(_))
         } catch {
           // probably will failed in the regex that user provided, then returns empty row.
-          case _: Throwable => Seq.empty[Row]
+          case _: Throwable =>
+            Seq.empty[Row]
         }
       case None =>
         sqlContext.sessionState.functionRegistry.listFunction().map(Row(_))
@@ -469,7 +473,8 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
           result
         }
 
-      case None => Seq(Row(s"Function: $functionName not found."))
+      case None =>
+        Seq(Row(s"Function: $functionName not found."))
     }
   }
 }

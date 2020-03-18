@@ -196,7 +196,8 @@ object Trilean {
     try {
       apply(body)
     } catch {
-      case _: Exception => Unknown
+      case _: Exception =>
+        Unknown
     }
 
   implicit val algebra = new TrileanAlgebra

@@ -37,8 +37,10 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
     @throws[UnknownHostException]
     def addr: InetAddress =
       addrOption match {
-        case Some(addr) ⇒ addr
-        case None ⇒ throw new UnknownHostException(name)
+        case Some(addr) ⇒
+          addr
+        case None ⇒
+          throw new UnknownHostException(name)
       }
   }
 
@@ -46,11 +48,13 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
     def apply(name: String, addresses: Iterable[InetAddress]): Resolved = {
       val ipv4: immutable.Seq[Inet4Address] =
         addresses.collect({
-          case a: Inet4Address ⇒ a
+          case a: Inet4Address ⇒
+            a
         })(breakOut)
       val ipv6: immutable.Seq[Inet6Address] =
         addresses.collect({
-          case a: Inet6Address ⇒ a
+          case a: Inet6Address ⇒
+            a
         })(breakOut)
       Resolved(name, ipv4, ipv6)
     }

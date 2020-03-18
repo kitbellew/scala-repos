@@ -237,8 +237,10 @@ final class IRFileCache {
 
     private def extractIRFiles(file: IRContainer) =
       file match {
-        case IRContainer.File(file) => file :: Nil
-        case IRContainer.Jar(jar)   => jar.sjsirFiles
+        case IRContainer.File(file) =>
+          file :: Nil
+        case IRContainer.Jar(jar) =>
+          jar.sjsirFiles
       }
   }
 

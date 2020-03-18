@@ -87,7 +87,8 @@ trait SqlProfile
             self.createPhase2 == ddl.createPhase2 &&
             self.dropPhase1 == ddl.dropPhase1 &&
             self.dropPhase2 == ddl.dropPhase2
-        case _ => false
+        case _ =>
+          false
       }
   }
 
@@ -147,16 +148,20 @@ trait SqlUtilsComponent {
 
   def quoteTableName(t: TableNode): String =
     t.schemaName match {
-      case Some(s) => quoteIdentifier(s) + "." + quoteIdentifier(t.tableName)
-      case None    => quoteIdentifier(t.tableName)
+      case Some(s) =>
+        quoteIdentifier(s) + "." + quoteIdentifier(t.tableName)
+      case None =>
+        quoteIdentifier(t.tableName)
     }
 
   def likeEncode(s: String) = {
     val b = new StringBuilder
     for (c <- s)
       c match {
-        case '%' | '_' | '^' => b append '^' append c
-        case _               => b append c
+        case '%' | '_' | '^' =>
+          b append '^' append c
+        case _ =>
+          b append c
       }
     b.toString
   }

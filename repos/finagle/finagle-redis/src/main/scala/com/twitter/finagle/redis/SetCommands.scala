@@ -19,7 +19,8 @@ trait Sets {
     */
   def sAdd(key: ChannelBuffer, members: List[ChannelBuffer]): Future[JLong] =
     doRequest(SAdd(key, members)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -32,7 +33,8 @@ trait Sets {
     doRequest(SMembers(key)) {
       case MBulkReply(list) =>
         Future.value(ReplyFormat.toChannelBuffers(list).toSet)
-      case EmptyMBulkReply() => Future.value(ImmutableSet())
+      case EmptyMBulkReply() =>
+        Future.value(ImmutableSet())
     }
 
   /**
@@ -45,7 +47,8 @@ trait Sets {
     */
   def sIsMember(key: ChannelBuffer, member: ChannelBuffer): Future[JBoolean] =
     doRequest(SIsMember(key, member)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -57,7 +60,8 @@ trait Sets {
     */
   def sCard(key: ChannelBuffer): Future[JLong] =
     doRequest(SCard(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -70,7 +74,8 @@ trait Sets {
     */
   def sRem(key: ChannelBuffer, members: List[ChannelBuffer]): Future[JLong] =
     doRequest(SRem(key, members)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -81,8 +86,10 @@ trait Sets {
     */
   def sPop(key: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(SPop(key)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -96,11 +103,14 @@ trait Sets {
       key: ChannelBuffer,
       count: Option[Int] = None): Future[Seq[ChannelBuffer]] =
     doRequest(SRandMember(key, count)) {
-      case BulkReply(message) => Future.value(Seq(message))
-      case EmptyBulkReply()   => Future.Nil
+      case BulkReply(message) =>
+        Future.value(Seq(message))
+      case EmptyBulkReply() =>
+        Future.Nil
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -121,6 +131,7 @@ trait Sets {
     doRequest(SInter(keys)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages).toSet)
-      case EmptyMBulkReply() => Future.value(ImmutableSet())
+      case EmptyMBulkReply() =>
+        Future.value(ImmutableSet())
     }
 }

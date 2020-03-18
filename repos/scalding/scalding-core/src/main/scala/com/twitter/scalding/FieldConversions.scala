@@ -27,11 +27,16 @@ trait LowPriorityFieldConversions {
 
   protected def anyToFieldArg(f: Any): Comparable[_] =
     f match {
-      case x: Symbol            => x.name
-      case y: String            => y
-      case z: java.lang.Integer => z
-      case v: Enumeration#Value => v.toString
-      case fld: Field[_]        => fld.id
+      case x: Symbol =>
+        x.name
+      case y: String =>
+        y
+      case z: java.lang.Integer =>
+        z
+      case v: Enumeration#Value =>
+        v.toString
+      case fld: Field[_] =>
+        fld.id
       case flds: Fields => {
         if (flds.size == 1) {
           flds.get(0)
@@ -61,8 +66,9 @@ trait LowPriorityFieldConversions {
         }.toSeq: _*)
     f.productIterator.foreach {
       _ match {
-        case field: Field[_] => fields.setComparator(field.id, field.ord)
-        case _               =>
+        case field: Field[_] =>
+          fields.setComparator(field.id, field.ord)
+        case _ =>
       }
     }
     fields
@@ -111,16 +117,20 @@ trait FieldConversions extends LowPriorityFieldConversions {
       val fromSet = asSet(fromFields)
       val toSet = asSet(toFields)
       (fromSet.subsetOf(toSet), toSet.subsetOf(fromSet)) match {
-        case (true, true)  => Fields.REPLACE //equal
-        case (true, false) => Fields.SWAP //output super set, replaces input
-        case (false, true) => Fields.SWAP //throw away some input
+        case (true, true) =>
+          Fields.REPLACE //equal
+        case (true, false) =>
+          Fields.SWAP //output super set, replaces input
+        case (false, true) =>
+          Fields.SWAP //throw away some input
         /*
          * the next case is that they are disjoint or have some nontrivial intersection
          * if disjoint, everything is fine.
          * if they intersect, it is ill-defined and cascading is going to throw an error BEFORE
          *   starting the flow.
          */
-        case (false, false) => Fields.ALL
+        case (false, false) =>
+          Fields.ALL
       }
     }
   }
@@ -230,8 +240,9 @@ trait FieldConversions extends LowPriorityFieldConversions {
         }: _*)
     anyf.foreach {
       _ match {
-        case field: Field[_] => fields.setComparator(field.id, field.ord)
-        case _               =>
+        case field: Field[_] =>
+          fields.setComparator(field.id, field.ord)
+        case _ =>
       }
     }
     fields

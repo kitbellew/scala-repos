@@ -185,8 +185,10 @@ class ZkUtils(
 
   def getController(): Int = {
     readDataMaybeNull(ControllerPath)._1 match {
-      case Some(controller) => KafkaController.parseControllerId(controller)
-      case None             => throw new KafkaException("Controller doesn't exist")
+      case Some(controller) =>
+        KafkaController.parseControllerId(controller)
+      case None =>
+        throw new KafkaException("Controller doesn't exist")
     }
   }
 
@@ -228,9 +230,11 @@ class ZkUtils(
                 .get("leader")
                 .get
                 .asInstanceOf[Int])
-          case None => None
+          case None =>
+            None
         }
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -284,9 +288,11 @@ class ZkUtils(
               .get("isr")
               .get
               .asInstanceOf[Seq[Int]]
-          case None => Seq.empty[Int]
+          case None =>
+            Seq.empty[Int]
         }
-      case None => Seq.empty[Int]
+      case None =>
+        Seq.empty[Int]
     }
   }
 
@@ -304,14 +310,19 @@ class ZkUtils(
                 replicaMap
                   .asInstanceOf[Map[String, Seq[Int]]]
                   .get(partition.toString) match {
-                  case Some(seq) => seq
-                  case None      => Seq.empty[Int]
+                  case Some(seq) =>
+                    seq
+                  case None =>
+                    Seq.empty[Int]
                 }
-              case None => Seq.empty[Int]
+              case None =>
+                Seq.empty[Int]
             }
-          case None => Seq.empty[Int]
+          case None =>
+            Seq.empty[Int]
         }
-      case None => Seq.empty[Int]
+      case None =>
+        Seq.empty[Int]
     }
   }
 
@@ -483,7 +494,8 @@ class ZkUtils(
           storedData = readData(path)._1
         } catch {
           case e1: ZkNoNodeException => // the node disappeared; treat as if node existed and let caller handles this
-          case e2: Throwable         => throw e2
+          case e2: Throwable =>
+            throw e2
         }
         if (storedData == null || storedData != data) {
           info(
@@ -495,7 +507,8 @@ class ZkUtils(
             path + " exists with value " + data + " during connection loss; this is ok")
         }
       }
-      case e2: Throwable => throw e2
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -542,10 +555,12 @@ class ZkUtils(
         } catch {
           case e: ZkNodeExistsException =>
             zkClient.writeData(path, data)
-          case e2: Throwable => throw e2
+          case e2: Throwable =>
+            throw e2
         }
       }
-      case e2: Throwable => throw e2
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -572,8 +587,10 @@ class ZkUtils(
     } catch {
       case e1: ZkBadVersionException =>
         optionalChecker match {
-          case Some(checker) => return checker(this, path, data)
-          case _             => debug("Checker method is not passed skipping zkData match")
+          case Some(checker) =>
+            return checker(this, path, data)
+          case _ =>
+            debug("Checker method is not passed skipping zkData match")
         }
         warn(
           "Conditional update of path %s with data %s and expected version %d failed due to %s"
@@ -602,7 +619,8 @@ class ZkUtils(
           .format(path, data, expectVersion, stat.getVersion))
       (true, stat.getVersion)
     } catch {
-      case nne: ZkNoNodeException => throw nne
+      case nne: ZkNoNodeException =>
+        throw nne
       case e: Exception =>
         error(
           "Conditional update of path %s with data %s and expected version %d failed due to %s"
@@ -626,7 +644,8 @@ class ZkUtils(
         createParentPath(path)
         ZkPath.createEphemeral(zkClient, path, data, acls)
       }
-      case e2: Throwable => throw e2
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -638,7 +657,8 @@ class ZkUtils(
         // this can happen during a connection loss event, return normally
         info(path + " deleted during connection loss; this is ok")
         false
-      case e2: Throwable => throw e2
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -651,7 +671,8 @@ class ZkUtils(
       zkClient.delete(path, expectedVersion)
       true
     } catch {
-      case e: KeeperException.BadVersionException => false
+      case e: KeeperException.BadVersionException =>
+        false
     }
   }
 
@@ -662,7 +683,8 @@ class ZkUtils(
       case e: ZkNoNodeException =>
         // this can happen during a connection loss event, return normally
         info(path + " deleted during connection loss; this is ok")
-      case e2: Throwable => throw e2
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -680,7 +702,8 @@ class ZkUtils(
       } catch {
         case e: ZkNoNodeException =>
           (None, stat)
-        case e2: Throwable => throw e2
+        case e2: Throwable =>
+          throw e2
       }
     dataAndStat
   }
@@ -697,8 +720,10 @@ class ZkUtils(
     try {
       zkClient.getChildren(path)
     } catch {
-      case e: ZkNoNodeException => Nil
-      case e2: Throwable        => throw e2
+      case e: ZkNoNodeException =>
+        Nil
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -780,11 +805,14 @@ class ZkUtils(
                   case Some(replicaMap) =>
                     val m1 = replicaMap.asInstanceOf[Map[String, Seq[Int]]]
                     m1.map(p => (p._1.toInt, p._2))
-                  case None => Map[Int, Seq[Int]]()
+                  case None =>
+                    Map[Int, Seq[Int]]()
                 }
-              case None => Map[Int, Seq[Int]]()
+              case None =>
+                Map[Int, Seq[Int]]()
             }
-          case None => Map[Int, Seq[Int]]()
+          case None =>
+            Map[Int, Seq[Int]]()
         }
       debug(
         "Partition map for /brokers/topics/%s is %s"
@@ -816,7 +844,8 @@ class ZkUtils(
           jsonPartitionMap)
         reassignedPartitions.map(p =>
           (p._1 -> new ReassignedPartitionsContext(p._2)))
-      case None => Map.empty[TopicAndPartition, ReassignedPartitionsContext]
+      case None =>
+        Map.empty[TopicAndPartition, ReassignedPartitionsContext]
     }
   }
 
@@ -899,7 +928,8 @@ class ZkUtils(
             debug(
               "Created path %s with %s for partition reassignment"
                 .format(zkPath, jsonData))
-          case e2: Throwable => throw new AdminOperationException(e2.toString)
+          case e2: Throwable =>
+            throw new AdminOperationException(e2.toString)
         }
     }
   }
@@ -913,7 +943,8 @@ class ZkUtils(
       case Some(jsonPartitionList) =>
         PreferredReplicaLeaderElectionCommand.parsePreferredReplicaElectionData(
           jsonPartitionList)
-      case None => Set.empty[TopicAndPartition]
+      case None =>
+        Set.empty[TopicAndPartition]
     }
   }
 
@@ -949,7 +980,8 @@ class ZkUtils(
           consumersPerTopicMap.get(topic) match {
             case Some(curConsumers) =>
               consumersPerTopicMap.put(topic, consumerThreadId :: curConsumers)
-            case _ => consumersPerTopicMap.put(topic, List(consumerThreadId))
+            case _ =>
+              consumersPerTopicMap.put(topic, List(consumerThreadId))
           }
       }
     }
@@ -967,8 +999,10 @@ class ZkUtils(
     */
   def getBrokerInfo(brokerId: Int): Option[Broker] = {
     readDataMaybeNull(BrokerIdsPath + "/" + brokerId)._1 match {
-      case Some(brokerInfo) => Some(Broker.createBroker(brokerId, brokerInfo))
-      case None             => None
+      case Some(brokerInfo) =>
+        Some(Broker.createBroker(brokerId, brokerInfo))
+      case None =>
+        None
     }
   }
 
@@ -1303,8 +1337,10 @@ class ZKCheckedEphemeral(
       // Update prefix and suffix
       val index =
         suffix.indexOf('/', 1) match {
-          case -1     => suffix.length
-          case x: Int => x
+          case -1 =>
+            suffix.length
+          case x: Int =>
+            x
         }
       // Get new prefix
       val newPrefix = prefix + suffix.substring(0, index)
@@ -1327,8 +1363,10 @@ class ZKCheckedEphemeral(
   def create() {
     val index =
       path.indexOf('/', 1) match {
-        case -1     => path.length
-        case x: Int => x
+        case -1 =>
+          path.length
+        case x: Int =>
+          x
       }
     val prefix = path.substring(0, index)
     val suffix = path.substring(index, path.length)

@@ -57,7 +57,8 @@ class TypedSpec(config: Config)
     system ? Create(
       Props(
         ScalaDSL.Full[Any] {
-          case _ ⇒ ScalaDSL.Same
+          case _ ⇒
+            ScalaDSL.Same
         }),
       "blackhole"))
 
@@ -73,14 +74,19 @@ class TypedSpec(config: Config)
   def sync(f: Future[Status]): Unit = {
     def unwrap(ex: Throwable): Throwable =
       ex match {
-        case ActorInitializationException(_, _, ex) ⇒ ex
-        case other ⇒ other
+        case ActorInitializationException(_, _, ex) ⇒
+          ex
+        case other ⇒
+          other
       }
 
     await(f) match {
-      case Success ⇒ ()
-      case Failed(ex) ⇒ throw unwrap(ex)
-      case Timedout ⇒ fail("test timed out")
+      case Success ⇒
+        ()
+      case Failed(ex) ⇒
+        throw unwrap(ex)
+      case Timedout ⇒
+        fail("test timed out")
     }
   }
 
@@ -158,9 +164,11 @@ object TypedSpec {
           case Some(reply) ⇒
             reply ! Success
             guardian(outstanding - test)
-          case None ⇒ Same
+          case None ⇒
+            Same
         }
-      case _: Sig[_] ⇒ Same
+      case _: Sig[_] ⇒
+        Same
       case Msg(ctx, r: RunTest[t]) ⇒
         val test = ctx.spawn(r.props, r.name)
         ctx.schedule(r.timeout, r.replyTo, Timedout)

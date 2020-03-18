@@ -46,7 +46,8 @@ trait JsonOutput[T] extends ApiFormats with JsonMethods[T] {
   override protected def renderPipeline =
     ({
 
-      case JsonResult(jv) => jv
+      case JsonResult(jv) =>
+        jv
 
       case jv: JValue if format == "xml" =>
         contentType = formats("xml")

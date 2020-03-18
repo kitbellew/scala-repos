@@ -30,10 +30,14 @@ object TestGraphs {
     new Ordering[Either[T, U]] {
       def compare(l: Either[T, U], r: Either[T, U]) =
         (l, r) match {
-          case (Left(_), Right(_))  => -1
-          case (Right(_), Left(_))  => 1
-          case (Left(_), Left(_))   => 0
-          case (Right(_), Right(_)) => 0
+          case (Left(_), Right(_)) =>
+            -1
+          case (Right(_), Left(_)) =>
+            1
+          case (Left(_), Left(_)) =>
+            0
+          case (Right(_), Right(_)) =>
+            0
         }
     }
 
@@ -201,10 +205,12 @@ object TestGraphs {
       source
         .flatMap(preJoinFn)
         .flatMap {
-          case (k, v) => List((k, v), (k, v))
+          case (k, v) =>
+            List((k, v), (k, v))
         }
         .map {
-          case (k, v) => (k, (v, service(k)))
+          case (k, v) =>
+            (k, (v, service(k)))
         }
         .flatMap(postJoinFn))
 
@@ -218,7 +224,8 @@ object TestGraphs {
       .name("My named source")
       .flatMap(preJoinFn)
       .flatMap {
-        case (k, v) => List((k, v), (k, v))
+        case (k, v) =>
+          List((k, v), (k, v))
       }
       .leftJoin(service)
       .name("My named flatmap")
@@ -233,7 +240,8 @@ object TestGraphs {
       source
         .flatMap(preJoinFn)
         .map {
-          case (k, v) => (k, (v, service(k)))
+          case (k, v) =>
+            (k, (v, service(k)))
         }
         .flatMap(postJoinFn))
 
@@ -259,7 +267,8 @@ object TestGraphs {
       source
         .flatMap(preJoinFn)
         .map {
-          case (k, v) => (k, (v, service(k)))
+          case (k, v) =>
+            (k, (v, service(k)))
         }
         .flatMap {
           case (k, v) =>
@@ -300,7 +309,8 @@ object TestGraphs {
       source1
         .flatMap(simpleFM1)
         .map {
-          case (_, kju) => kju
+          case (_, kju) =>
+            kju
         } // drop the time from the key for the store
     )
 
@@ -311,7 +321,8 @@ object TestGraphs {
       .groupBy(_._1)
       .mapValues {
         _.map {
-          case (time, (k, joinedu)) => (k, joinedu)
+          case (time, (k, joinedu)) =>
+            (k, joinedu)
         }.groupBy(_._1)
           .mapValues { l =>
             scanSum(l.iterator.map(_._2)).toList
@@ -320,7 +331,8 @@ object TestGraphs {
           .flatMap {
             case (k, lv) =>
               lv.map {
-                case (optju, ju) => (k, (optju, ju))
+                case (optju, ju) =>
+                  (k, (optju, ju))
               }
           }
       }
@@ -328,7 +340,8 @@ object TestGraphs {
       .flatMap {
         case (time, lv) =>
           lv.map {
-            case (k, (optju, ju)) => (time, (k, (optju, ju)))
+            case (k, (optju, ju)) =>
+              (time, (k, (optju, ju)))
           }
       }
 
@@ -337,11 +350,13 @@ object TestGraphs {
       .flatMap(simpleFM2)
       .toList
       .map {
-        case (time, (k, u)) => (k, (time, Left(u)))
+        case (time, (k, u)) =>
+          (k, (time, Left(u)))
       }
       .++(
         sumStream.map {
-          case (time, (k, (optju, ju))) => (k, (time, Right(ju)))
+          case (time, (k, (optju, ju))) =>
+            (k, (time, Right(ju)))
         })
 
     // scan left to join the left values and the right summing result stream
@@ -375,13 +390,15 @@ object TestGraphs {
       .flatMap {
         case (k, lv) =>
           lv.map {
-            case ((_, optuju)) => (k, optuju)
+            case ((_, optuju)) =>
+              (k, optuju)
           }
       }
       .flatMap {
         case (k, opt) =>
           opt.map {
-            case (time, u, optju) => (time, (k, (u, optju)))
+            case (time, u, optju) =>
+              (time, (k, (u, optju)))
           }
       }
 
@@ -390,7 +407,8 @@ object TestGraphs {
       resultStream
         .flatMap(postJoinFn)
         .map {
-          case (time, (k, v)) => (k, v)
+          case (time, (k, v)) =>
+            (k, v)
         } // drop the time
     )
     (firstStore, finalStore)
@@ -432,7 +450,8 @@ object TestGraphs {
       .flatMap(simpleFM)
       .toList
       .map {
-        case (time, (k, u)) => (k, (time, Left(u)))
+        case (time, (k, u)) =>
+          (k, (time, Left(u)))
       }
 
     // scan left to join the left values and the right summing result stream
@@ -443,7 +462,8 @@ object TestGraphs {
       .flatMap {
         case (k, lopts) =>
           lopts.map {
-            case ((_, optoptv)) => (k, optoptv)
+            case ((_, optoptv)) =>
+              (k, optoptv)
           }
       }
 
@@ -453,7 +473,8 @@ object TestGraphs {
         .flatMap {
           case (k, opt) =>
             opt.map {
-              case (time, (optv, v)) => (k, v)
+              case (time, (optv, v)) =>
+                (k, v)
             }
         } // drop time and opt[v]
     )
@@ -492,7 +513,8 @@ object TestGraphs {
       .flatMap(simpleFM)
       .toList
       .map {
-        case (time, (k, u)) => (k, (time, Left(u)))
+        case (time, (k, u)) =>
+          (k, (time, Left(u)))
       }
 
     // scan left to join the left values and the right summing result stream
@@ -502,7 +524,8 @@ object TestGraphs {
       .flatMap {
         case (k, lopts) =>
           lopts.map {
-            case ((optuoptv, _)) => (k, optuoptv)
+            case ((optuoptv, _)) =>
+              (k, optuoptv)
           }
       }
 
@@ -510,7 +533,8 @@ object TestGraphs {
       .flatMap {
         case (k, lopts) =>
           lopts.map {
-            case ((_, optoptv)) => (k, optoptv)
+            case ((_, optoptv)) =>
+              (k, optoptv)
           }
       }
 
@@ -520,12 +544,14 @@ object TestGraphs {
         .flatMap {
           case (k, opt) =>
             opt.map {
-              case (time, (u, optv)) => (time, (k, (u, optv)))
+              case (time, (u, optv)) =>
+                (time, (k, (u, optv)))
             }
         }
         .flatMap(flatMapFn(_))
         .map {
-          case (time, (k, v)) => (k, v)
+          case (time, (k, v)) =>
+            (k, v)
         } // drop the time
     )
 
@@ -535,7 +561,8 @@ object TestGraphs {
         .flatMap {
           case (k, opt) =>
             opt.map {
-              case (time, (optv, v)) => (k, v)
+              case (time, (optv, v)) =>
+                (k, v)
             }
         } // drop time and opt[v]
     )
@@ -621,7 +648,8 @@ object TestGraphs {
     val data4 = source4
       .map(preJoin)
       .map {
-        case (k, v) => (k, (v, service(k)))
+        case (k, v) =>
+          (k, (v, service(k)))
       }
       .flatMap(postJoin)
     MapAlgebra.sumByKey(data1 ::: data2 ::: data3 ::: data4)
@@ -665,7 +693,8 @@ object TestGraphs {
     source
       .lookup(srv)
       .collectValues {
-        case Some(v) => v
+        case Some(v) =>
+          v
       }
       .write(sink)
 
@@ -674,7 +703,8 @@ object TestGraphs {
         (t, srv(t))
       }
       .collect {
-        case (t, Some(u)) => (t, u)
+        case (t, Some(u)) =>
+          (t, u)
       }
 
   def twoSumByKey[P <: Platform[P], K, V: Monoid, K2](
@@ -699,7 +729,8 @@ object TestGraphs {
       }
       .toIterable
       .flatMap {
-        case (k, lv) => lv.map((k, _))
+        case (k, lv) =>
+          lv.map((k, _))
       }
     val v2 =
       sumStream.map {
@@ -833,7 +864,8 @@ class TestGraphs[P <: Platform[
         items
           .flatMap(preJoinFn)
           .map {
-            case (k, u) => (k, (u, serviceFn(k)))
+            case (k, u) =>
+              (k, (u, serviceFn(k)))
           }
           .flatMap(postJoinFn))
       .forall {

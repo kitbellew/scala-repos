@@ -94,13 +94,16 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
           def registerUser(name: String): Future[RegistrationStatus] =
             Future.successful {
               name match {
-                case "otto" ⇒ AlreadyRegistered
-                case _ ⇒ Registered(name)
+                case "otto" ⇒
+                  AlreadyRegistered
+                case _ ⇒
+                  Registered(name)
               }
             }
           complete {
             registerUser(name).map[ToResponseMarshallable] {
-              case Registered(_) ⇒ HttpEntity.Empty
+              case Registered(_) ⇒
+                HttpEntity.Empty
               case AlreadyRegistered ⇒
                 import spray.json.DefaultJsonProtocol._
                 import SprayJsonSupport._

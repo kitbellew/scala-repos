@@ -116,9 +116,11 @@ object SbtWatcherMain {
           case Some((watcher, _, _)) if watcher.isRunning =>
             watcher.endSbtExec()
             run()
-          case _ => run()
+          case _ =>
+            run()
         }
-      case STOP => currentExec.foreach(a => a._1.endSbtExec())
+      case STOP =>
+        currentExec.foreach(a => a._1.endSbtExec())
       case IS_RUNNING =>
         write2source(
           currentExec.map { a =>

@@ -30,7 +30,8 @@ class Compiler(classpath: Array[URL], val settings: Settings) {
       .getMethod(method, types: _*)
       .invoke(foreignCompiler, args: _*)
     catch {
-      case e: InvocationTargetException => throw e.getCause
+      case e: InvocationTargetException =>
+        throw e.getCause
     }
 
   def compile(files: Array[File]): (Int, Int) = //(errors, warnings)
@@ -45,6 +46,7 @@ class Compiler(classpath: Array[URL], val settings: Settings) {
         Array(files)).asInstanceOf[Int]
       (result >> 16, result & 0x00FF)
     } catch {
-      case ex: Exception => throw CompilationFailure(ex.getMessage, ex)
+      case ex: Exception =>
+        throw CompilationFailure(ex.getMessage, ex)
     }
 }

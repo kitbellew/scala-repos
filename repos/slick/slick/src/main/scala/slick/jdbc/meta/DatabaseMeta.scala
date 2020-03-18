@@ -15,9 +15,12 @@ object DatabaseMeta {
   private[meta] def yesNoOpt(r: PositionedResult) =
     if (r.hasMoreColumns)
       r.nextString match {
-        case "YES" => Some(true)
-        case "NO"  => Some(false)
-        case _     => None
+        case "YES" =>
+          Some(true)
+        case "NO" =>
+          Some(false)
+        case _ =>
+          None
       }
     else
       None

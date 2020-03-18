@@ -45,10 +45,12 @@ object ScalaMoveUtil {
         val classes = Seq(td1, td2)
         val noFakeCompanions =
           classes.collect {
-            case td: ScTypeDefinition => td.fakeCompanionModule.isDefined
+            case td: ScTypeDefinition =>
+              td.fakeCompanionModule.isDefined
           }.isEmpty
         classes.count(_.isInstanceOf[ScObject]) == 1 && noFakeCompanions
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -78,7 +80,8 @@ object ScalaMoveUtil {
                 if !file.isScriptFile() && !file.isWorksheetFile =>
               file.delete()
               fileWasDeleted = true
-            case _ => aClass.delete()
+            case _ =>
+              aClass.delete()
           }
       }
     }
@@ -110,9 +113,12 @@ object ScalaMoveUtil {
           else {
             val template: String =
               td match {
-                case _: ScClass  => ScalaFileTemplateUtil.SCALA_CLASS
-                case _: ScTrait  => ScalaFileTemplateUtil.SCALA_TRAIT
-                case _: ScObject => ScalaFileTemplateUtil.SCALA_OBJECT
+                case _: ScClass =>
+                  ScalaFileTemplateUtil.SCALA_CLASS
+                case _: ScTrait =>
+                  ScalaFileTemplateUtil.SCALA_TRAIT
+                case _: ScObject =>
+                  ScalaFileTemplateUtil.SCALA_OBJECT
               }
             val created: PsiClass = ScalaDirectoryService
               .createClassFromTemplate(
@@ -214,16 +220,21 @@ object ScalaMoveUtil {
       moveDestination: PsiDirectory) = {
     val classes =
       element match {
-        case c: PsiClass  => Seq(c)
-        case f: ScalaFile => f.typeDefinitions
-        case p: ScPackage => p.getClasses.toSeq
-        case _            => Nil
+        case c: PsiClass =>
+          Seq(c)
+        case f: ScalaFile =>
+          f.typeDefinitions
+        case p: ScPackage =>
+          p.getClasses.toSeq
+        case _ =>
+          Nil
       }
     classes
       .flatMap {
         case td: ScTypeDefinition =>
           td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
-        case e => List(e)
+        case e =>
+          List(e)
       }
       .foreach(_.putUserData(MOVE_DESTINATION, moveDestination))
   }

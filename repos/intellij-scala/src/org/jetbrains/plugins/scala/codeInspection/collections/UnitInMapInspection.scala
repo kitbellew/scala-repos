@@ -34,7 +34,8 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
           case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
               _: ScalaFile =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       val fixes =
         if (isInBlock)
@@ -51,7 +52,8 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
           case expr @ ExpressionType(ft @ ScFunctionType(Unit, _))
               if arg.getType().getOrAny.equiv(ft) =>
             expr
-          case expr @ ExpressionType(Unit) => expr
+          case expr @ ExpressionType(Unit) =>
+            expr
         }
         .filter(_.getTextLength > 0)
 
@@ -68,9 +70,12 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
   object lambdaWithBody {
     def unapply(expr: ScExpression): Option[ScExpression] = {
       expr match {
-        case ScBlock(ScFunctionExpr(_, res)) => res
-        case ScFunctionExpr(_, res)          => res
-        case e                               => Some(e)
+        case ScBlock(ScFunctionExpr(_, res)) =>
+          res
+        case ScFunctionExpr(_, res) =>
+          res
+        case e =>
+          Some(e)
       }
     }
   }

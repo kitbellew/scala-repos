@@ -131,7 +131,8 @@ class MemoizeTest extends FunSuite {
       case 2 =>
         callReadyLatch.await(10, TimeUnit.SECONDS)
         3
-      case i => i + 1
+      case i =>
+        i + 1
     }
     assert(memoizer.snap.isEmpty)
 
@@ -151,8 +152,10 @@ class MemoizeTest extends FunSuite {
 
   test("Memoize.snappable: snap ignores failed computations") {
     val memoizer = Memoize.snappable[Int, Int] {
-      case 2 => throw new RuntimeException
-      case i => i + 1
+      case 2 =>
+        throw new RuntimeException
+      case i =>
+        i + 1
     }
     assert(memoizer.snap.isEmpty)
 

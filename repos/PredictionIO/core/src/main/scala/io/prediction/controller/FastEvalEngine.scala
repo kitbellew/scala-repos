@@ -124,7 +124,8 @@ object FastEvalEngineWorkflow {
         workflow = workflow,
         prefix = new DataSourcePrefix(prefix))
         .mapValues {
-          case (td, _, _) => preparator.prepareBase(workflow.sc, td)
+          case (td, _, _) =>
+            preparator.prepareBase(workflow.sc, td)
         }
 
       cache += Tuple2(prefix, result)
@@ -199,7 +200,8 @@ object FastEvalEngineWorkflow {
                     qs)
 
                   val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-                    case (qx, p) => (qx, (ax, p))
+                    case (qx, p) =>
+                      (qx, (ax, p))
                   }
                   predicts
                 }
@@ -264,11 +266,13 @@ object FastEvalEngineWorkflow {
             val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
               .join(qasMap)
               .map {
-                case (qx, t) => (qx, t._2._1, t._1, t._2._2)
+                case (qx, t) =>
+                  (qx, t._2._1, t._1, t._2._2)
               }
 
             val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
-              case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
+              case (qx, q, ps, a) =>
+                (q, serving.serveBase(q, ps), a)
             }
             (ex, qpaMap)
           }

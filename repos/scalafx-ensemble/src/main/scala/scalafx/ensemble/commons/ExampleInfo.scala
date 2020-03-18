@@ -64,7 +64,8 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
   lazy val classSimpleName: String = {
     val pattern = "object\\s*(\\S*)\\s*extends\\s*JFXApp".r
     pattern findFirstIn sourceCode match {
-      case Some(pattern(name)) => name
+      case Some(pattern(name)) =>
+        name
       case None =>
         throw new IllegalArgumentException("Cannot extract sample class name.")
     }
@@ -97,16 +98,20 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
   private def extractPackageName(source: String): String = {
     val pattern = ".*package\\s(\\S*)".r
     pattern findFirstIn source match {
-      case Some(pattern(name)) => name.trim
-      case None                => ""
+      case Some(pattern(name)) =>
+        name.trim
+      case None =>
+        ""
     }
   }
 
   private def extractSampleName(source: String): String = {
     val pattern = """class\s*Ensemble(\S*)\s*extends\s*EnsembleExample\s*\{""".r
     pattern findFirstIn source match {
-      case Some(pattern(name)) => name.trim
-      case None                => ""
+      case Some(pattern(name)) =>
+        name.trim
+      case None =>
+        ""
     }
   }
 
@@ -200,9 +205,11 @@ class ExampleInfo(exampleName: String, exampleGroupName: String) {
       while (braceCount > 0) {
         index += 1
         source(index) match {
-          case '{' => braceCount += 1
-          case '}' => braceCount -= 1
-          case _   =>
+          case '{' =>
+            braceCount += 1
+          case '}' =>
+            braceCount -= 1
+          case _ =>
         }
       }
       index

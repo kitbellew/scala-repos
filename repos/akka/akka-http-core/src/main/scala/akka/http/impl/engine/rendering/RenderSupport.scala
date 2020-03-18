@@ -134,9 +134,11 @@ private object RenderSupport {
       r ~~ ';' ~~ extension
     r ~~ CrLf
     chunk match {
-      case HttpEntity.Chunk(data, _) ⇒ r ~~ data
+      case HttpEntity.Chunk(data, _) ⇒
+        r ~~ data
       case HttpEntity.LastChunk(_, Nil) ⇒ // nothing to do
-      case HttpEntity.LastChunk(_, trailer) ⇒ r ~~ trailer ~~ CrLf
+      case HttpEntity.LastChunk(_, trailer) ⇒
+        r ~~ trailer ~~ CrLf
     }
     r ~~ CrLf
     r.get

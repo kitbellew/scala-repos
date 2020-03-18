@@ -42,9 +42,12 @@ object MAttribute {
         r.<<,
         r.<<,
         r.nextInt match {
-          case DatabaseMetaData.attributeNoNulls  => Some(false)
-          case DatabaseMetaData.attributeNullable => Some(true)
-          case _                                  => None
+          case DatabaseMetaData.attributeNoNulls =>
+            Some(false)
+          case DatabaseMetaData.attributeNullable =>
+            Some(true)
+          case _ =>
+            None
         },
         r.<<,
         r.<<,

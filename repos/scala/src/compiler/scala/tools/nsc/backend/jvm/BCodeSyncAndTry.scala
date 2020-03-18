@@ -196,8 +196,10 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
             pat match {
               case Typed(Ident(nme.WILDCARD), tpt) =>
                 NamelessEH(tpeTK(tpt).asClassBType, caseBody)
-              case Ident(nme.WILDCARD) => NamelessEH(jlThrowableRef, caseBody)
-              case Bind(_, _)          => BoundEH(pat.symbol, caseBody)
+              case Ident(nme.WILDCARD) =>
+                NamelessEH(jlThrowableRef, caseBody)
+              case Bind(_, _) =>
+                BoundEH(pat.symbol, caseBody)
             }
           }
 

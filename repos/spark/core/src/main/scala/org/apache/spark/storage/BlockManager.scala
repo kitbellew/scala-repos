@@ -322,7 +322,8 @@ private[spark] class BlockManager(
       getLocalBytes(blockId) match {
         case Some(buffer) =>
           new BlockManagerManagedBuffer(this, blockId, buffer)
-        case None => throw new BlockNotFoundException(blockId.toString)
+        case None =>
+          throw new BlockNotFoundException(blockId.toString)
       }
     }
   }
@@ -879,7 +880,8 @@ private[spark] class BlockManager(
           if (level.deserialized) {
             val values = dataDeserialize(blockId, bytes)
             memoryStore.putIterator(blockId, values, level) match {
-              case Right(_)   => true
+              case Right(_) =>
+                true
               case Left(iter) =>
                 // If putting deserialized values in memory failed, we will put the bytes directly to
                 // disk, so we don't need this iterator and can close it to free resources earlier.
@@ -1391,7 +1393,8 @@ private[spark] class BlockManager(
   def removeBroadcast(broadcastId: Long, tellMaster: Boolean): Int = {
     logDebug(s"Removing broadcast $broadcastId")
     val blocksToRemove = blockInfoManager.entries.map(_._1).collect {
-      case bid @ BroadcastBlockId(`broadcastId`, _) => bid
+      case bid @ BroadcastBlockId(`broadcastId`, _) =>
+        bid
     }
     blocksToRemove.foreach { blockId =>
       removeBlock(blockId, tellMaster)
@@ -1427,12 +1430,18 @@ private[spark] class BlockManager(
 
   private def shouldCompress(blockId: BlockId): Boolean = {
     blockId match {
-      case _: ShuffleBlockId     => compressShuffle
-      case _: BroadcastBlockId   => compressBroadcast
-      case _: RDDBlockId         => compressRdds
-      case _: TempLocalBlockId   => compressShuffleSpill
-      case _: TempShuffleBlockId => compressShuffle
-      case _                     => false
+      case _: ShuffleBlockId =>
+        compressShuffle
+      case _: BroadcastBlockId =>
+        compressBroadcast
+      case _: RDDBlockId =>
+        compressRdds
+      case _: TempLocalBlockId =>
+        compressShuffleSpill
+      case _: TempShuffleBlockId =>
+        compressShuffle
+      case _ =>
+        false
     }
   }
 

@@ -85,7 +85,8 @@ object PersistencePluginProxySpec {
       Props(classOf[ExamplePersistentActor], probe, context.system.name))
 
     def receive = {
-      case m ⇒ p forward m
+      case m ⇒
+        p forward m
     }
 
   }

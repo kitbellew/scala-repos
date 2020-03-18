@@ -54,9 +54,11 @@ class ScalaComponentTypeOfMacro extends Macro {
                 .toOption
                 .flatMap(MacroUtil.getComponentFromArrayType)
                 .map(MacroUtil.getTypeLookupItem(_, context.getProject))
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
       .filter(_.isDefined)
       .map(_.get)

@@ -21,9 +21,12 @@ object Constraints {
 
   private def getIntValue(s: String, default: Int): Int =
     s match {
-      case "inf"  => Integer.MAX_VALUE
-      case Int(x) => x
-      case _      => default
+      case "inf" =>
+        Integer.MAX_VALUE
+      case Int(x) =>
+        x
+      case _ =>
+        default
     }
 
   private final class ConstraintsChecker(
@@ -62,14 +65,17 @@ object Constraints {
       groupedTasks.find(_._1.contains(constraintValue)) match {
         case Some(pair) =>
           (groupedTasks.size >= minimum) && (pair._2 == minCount)
-        case None => true
+        case None =>
+          true
       }
     }
 
     private def checkHostName =
       constraint.getOperator match {
-        case Operator.LIKE   => offer.getHostname.matches(value)
-        case Operator.UNLIKE => !offer.getHostname.matches(value)
+        case Operator.LIKE =>
+          offer.getHostname.matches(value)
+        case Operator.UNLIKE =>
+          !offer.getHostname.matches(value)
         // All running tasks must have a hostname that is different from the one in the offer
         case Operator.UNIQUE =>
           tasks.forall(_.agentInfo.host != offer.getHostname)
@@ -82,14 +88,16 @@ object Constraints {
           (value.isEmpty || value == offer.getHostname) &&
             // All running tasks must have the same hostname as the one in the offer
             tasks.forall(_.agentInfo.host == offer.getHostname)
-        case _ => false
+        case _ =>
+          false
       }
 
     private def checkAttribute = {
       def matches: Iterable[Task] =
         matchTaskAttributes(tasks, field, attr.get.getText.getValue)
       constraint.getOperator match {
-        case Operator.UNIQUE  => matches.isEmpty
+        case Operator.UNIQUE =>
+          matches.isEmpty
         case Operator.CLUSTER =>
           // If no value is set, accept the first one. Otherwise check for it.
           (value.isEmpty || attr.get.getText.getValue == value) &&
@@ -172,7 +180,8 @@ object Constraints {
       .map { constraint =>
         def groupFn(task: Task): Option[String] =
           constraint.getField match {
-            case "hostname" => Some(task.agentInfo.host)
+            case "hostname" =>
+              Some(task.agentInfo.host)
             case field: String =>
               task.agentInfo.attributes
                 .find(_.getName == field)
@@ -206,8 +215,10 @@ object Constraints {
           _.isMoreEvenWithout(toKillTasks + (tryTask.taskId -> tryTask))))
 
       matchingTask match {
-        case Some(task) => toKillTasks += task.taskId -> task
-        case None       => flag = false
+        case Some(task) =>
+          toKillTasks += task.taskId -> task
+        case None =>
+          flag = false
       }
     }
 
@@ -252,7 +263,8 @@ object Constraints {
         /* even distributed */ Iterator.empty
       else {
         updated.maxBy(_._1)._2.iterator.flatten.map {
-          case (taskId, task) => task
+          case (taskId, task) =>
+            task
         }
       }
     }

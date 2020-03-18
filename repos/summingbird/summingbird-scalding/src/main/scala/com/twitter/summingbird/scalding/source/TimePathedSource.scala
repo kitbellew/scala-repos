@@ -52,17 +52,20 @@ object TimePathedSource extends java.io.Serializable {
     val expanded = expander(init)
     val unex = unexpander(init, expander)
     vertractor(expanded) match {
-      case None => None
+      case None =>
+        None
       case Some(rt) if rt.contains(expanded) =>
         Some(init) // we can satisfy init
       case Some(subset) =>
         unex(subset) match {
-          case None => None
+          case None =>
+            None
           case Some(newInit) if newInit.contains(init) =>
             sys.error(
               "DateRange expansion ill-behaved: %s -> %s -> %s -> %s"
                 .format(init, expanded, subset, newInit))
-          case Some(newInit) => minifyRec(newInit, expander, vertractor)
+          case Some(newInit) =>
+            minifyRec(newInit, expander, vertractor)
         }
     }
   }
@@ -124,7 +127,8 @@ object TimePathedSource extends java.io.Serializable {
     val vertractor = { (dr: DateRange) =>
       allPaths(dr)
         .takeWhile {
-          case (_, path) => pathIsGood(path)
+          case (_, path) =>
+            pathIsGood(path)
         }
         .map(_._1)
         .reduceOption { (older, newer) =>

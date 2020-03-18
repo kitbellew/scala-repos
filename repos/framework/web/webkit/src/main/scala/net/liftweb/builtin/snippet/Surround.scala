@@ -28,7 +28,8 @@ import Helpers._
 object Surround extends DispatchSnippet {
 
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   def render(kids: NodeSeq): NodeSeq =
@@ -39,8 +40,10 @@ object Surround extends DispatchSnippet {
         def eatDiv(in: NodeSeq): NodeSeq =
           if (S.attr("eat").isDefined)
             in.flatMap {
-              case e: Elem => e.child
-              case n       => n
+              case e: Elem =>
+                e.child
+              case n =>
+                n
             }
           else
             in
@@ -58,8 +61,11 @@ object Surround extends DispatchSnippet {
         }
       }
     ) match {
-      case Full(x)            => x
-      case Empty              => Comment("FIX" + "ME: session or request are invalid")
-      case Failure(msg, _, _) => Comment(msg)
+      case Full(x) =>
+        x
+      case Empty =>
+        Comment("FIX" + "ME: session or request are invalid")
+      case Failure(msg, _, _) =>
+        Comment(msg)
     }
 }

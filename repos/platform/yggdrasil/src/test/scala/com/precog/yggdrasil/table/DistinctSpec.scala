@@ -120,8 +120,10 @@ trait DistinctSpec[M[+_]]
     val data: Stream[JValue] =
       (
         array match {
-          case JArray(li) => li
-          case _          => sys.error("Expected a JArray")
+          case JArray(li) =>
+            li
+          case _ =>
+            sys.error("Expected a JArray")
         }
       ).toStream
 
@@ -203,8 +205,10 @@ trait DistinctSpec[M[+_]]
     val data: Stream[JValue] =
       (
         array match {
-          case JArray(li) => li
-          case _          => sys.error("Expected JArray")
+          case JArray(li) =>
+            li
+          case _ =>
+            sys.error("Expected JArray")
         }
       ).toStream
 
@@ -221,14 +225,16 @@ trait DistinctSpec[M[+_]]
       case JObject(jfields) =>
         JObject(
           jfields collect {
-            case (s, v) if v != JUndefined => JField(s, removeUndefined(v))
+            case (s, v) if v != JUndefined =>
+              JField(s, removeUndefined(v))
           })
       case JArray(jvs) =>
         JArray(
           jvs map { jv =>
             removeUndefined(jv)
           })
-      case v => v
+      case v =>
+        v
     }
 
   def testDistinct = {

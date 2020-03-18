@@ -14,7 +14,8 @@ object PlayExceptions {
     message match {
       case overloaded(method, _, signature) =>
         "Overloaded method value [" + method + "] cannot be applied to " + signature
-      case msg => msg
+      case msg =>
+        msg
     }
   }
 

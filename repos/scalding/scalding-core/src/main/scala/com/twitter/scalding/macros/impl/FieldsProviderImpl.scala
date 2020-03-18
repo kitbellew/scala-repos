@@ -93,17 +93,26 @@ object FieldsProviderImpl {
 
     def isNumbered(t: Type): Boolean =
       t match {
-        case tpe if tpe =:= typeOf[Boolean] => true
-        case tpe if tpe =:= typeOf[Short]   => true
-        case tpe if tpe =:= typeOf[Int]     => true
-        case tpe if tpe =:= typeOf[Long]    => true
-        case tpe if tpe =:= typeOf[Float]   => true
-        case tpe if tpe =:= typeOf[Double]  => true
-        case tpe if tpe =:= typeOf[String]  => true
+        case tpe if tpe =:= typeOf[Boolean] =>
+          true
+        case tpe if tpe =:= typeOf[Short] =>
+          true
+        case tpe if tpe =:= typeOf[Int] =>
+          true
+        case tpe if tpe =:= typeOf[Long] =>
+          true
+        case tpe if tpe =:= typeOf[Float] =>
+          true
+        case tpe if tpe =:= typeOf[Double] =>
+          true
+        case tpe if tpe =:= typeOf[String] =>
+          true
         case tpe =>
           optionInner(c)(tpe) match {
-            case Some(t) => isNumbered(t)
-            case None    => false
+            case Some(t) =>
+              isNumbered(t)
+            case None =>
+              false
           }
       }
 
@@ -157,13 +166,20 @@ object FieldsProviderImpl {
       */
     def matchField(fieldType: Type, name: String): FieldBuilder =
       fieldType match {
-        case tpe if tpe =:= typeOf[String]  => Primitive(name, tpe)
-        case tpe if tpe =:= typeOf[Boolean] => Primitive(name, tpe)
-        case tpe if tpe =:= typeOf[Short]   => Primitive(name, tpe)
-        case tpe if tpe =:= typeOf[Int]     => Primitive(name, tpe)
-        case tpe if tpe =:= typeOf[Long]    => Primitive(name, tpe)
-        case tpe if tpe =:= typeOf[Float]   => Primitive(name, tpe)
-        case tpe if tpe =:= typeOf[Double]  => Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[String] =>
+          Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[Boolean] =>
+          Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[Short] =>
+          Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[Int] =>
+          Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[Long] =>
+          Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[Float] =>
+          Primitive(name, tpe)
+        case tpe if tpe =:= typeOf[Double] =>
+          Primitive(name, tpe)
         case tpe if tpe.erasure =:= typeOf[Option[Any]] =>
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
           OptionBuilder(matchField(innerType, name))
@@ -172,9 +188,11 @@ object FieldsProviderImpl {
           CaseClassBuilder(
             name,
             expandMethod(tpe).map {
-              case (t, s) => matchField(t, s)
+              case (t, s) =>
+                matchField(t, s)
             })
-        case tpe if allowUnknownTypes => Primitive(name, tpe)
+        case tpe if allowUnknownTypes =>
+          Primitive(name, tpe)
         case tpe =>
           c.abort(c.enclosingPosition, s"${T.tpe} is unsupported at $tpe")
       }
@@ -182,7 +200,8 @@ object FieldsProviderImpl {
     def expandMethod(outerTpe: Type): Vector[(Type, String)] =
       outerTpe.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .map { accessorMethod =>
           val fieldName = accessorMethod.name.toTermName.toString

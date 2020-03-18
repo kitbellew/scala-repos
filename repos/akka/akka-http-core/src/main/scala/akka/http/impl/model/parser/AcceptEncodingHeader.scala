@@ -20,8 +20,10 @@ private[parser] trait AcceptEncodingHeader {
     rule {
       codings ~ optional(weight) ~> { (range, optQ) ⇒
         optQ match {
-          case None ⇒ range
-          case Some(q) ⇒ range withQValue q
+          case None ⇒
+            range
+          case Some(q) ⇒
+            range withQValue q
         }
       }
     }

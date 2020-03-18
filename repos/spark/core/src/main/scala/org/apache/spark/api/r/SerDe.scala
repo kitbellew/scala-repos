@@ -63,18 +63,30 @@ private[spark] object SerDe {
 
   def readTypedObject(dis: DataInputStream, dataType: Char): Object = {
     dataType match {
-      case 'n' => null
-      case 'i' => new java.lang.Integer(readInt(dis))
-      case 'd' => new java.lang.Double(readDouble(dis))
-      case 'b' => new java.lang.Boolean(readBoolean(dis))
-      case 'c' => readString(dis)
-      case 'e' => readMap(dis)
-      case 'r' => readBytes(dis)
-      case 'a' => readArray(dis)
-      case 'l' => readList(dis)
-      case 'D' => readDate(dis)
-      case 't' => readTime(dis)
-      case 'j' => JVMObjectTracker.getObject(readString(dis))
+      case 'n' =>
+        null
+      case 'i' =>
+        new java.lang.Integer(readInt(dis))
+      case 'd' =>
+        new java.lang.Double(readDouble(dis))
+      case 'b' =>
+        new java.lang.Boolean(readBoolean(dis))
+      case 'c' =>
+        readString(dis)
+      case 'e' =>
+        readMap(dis)
+      case 'r' =>
+        readBytes(dis)
+      case 'a' =>
+        readArray(dis)
+      case 'l' =>
+        readList(dis)
+      case 'D' =>
+        readDate(dis)
+      case 't' =>
+        readTime(dis)
+      case 'j' =>
+        JVMObjectTracker.getObject(readString(dis))
       case _ =>
         if (sqlSerDe == null || sqlSerDe._1 == null) {
           throw new IllegalArgumentException(s"Invalid type $dataType")
@@ -166,12 +178,18 @@ private[spark] object SerDe {
   def readArray(dis: DataInputStream): Array[_] = {
     val arrType = readObjectType(dis)
     arrType match {
-      case 'i' => readIntArr(dis)
-      case 'c' => readStringArr(dis)
-      case 'd' => readDoubleArr(dis)
-      case 'b' => readBooleanArr(dis)
-      case 'j' => readStringArr(dis).map(x => JVMObjectTracker.getObject(x))
-      case 'r' => readBytesArr(dis)
+      case 'i' =>
+        readIntArr(dis)
+      case 'c' =>
+        readStringArr(dis)
+      case 'd' =>
+        readDoubleArr(dis)
+      case 'b' =>
+        readBooleanArr(dis)
+      case 'j' =>
+        readStringArr(dis).map(x => JVMObjectTracker.getObject(x))
+      case 'r' =>
+        readBytesArr(dis)
       case 'a' =>
         val len = readInt(dis)
         (0 until len).map(_ => readArray(dis)).toArray
@@ -236,21 +254,34 @@ private[spark] object SerDe {
 
   def writeType(dos: DataOutputStream, typeStr: String): Unit = {
     typeStr match {
-      case "void"      => dos.writeByte('n')
-      case "character" => dos.writeByte('c')
-      case "double"    => dos.writeByte('d')
-      case "integer"   => dos.writeByte('i')
-      case "logical"   => dos.writeByte('b')
-      case "date"      => dos.writeByte('D')
-      case "time"      => dos.writeByte('t')
-      case "raw"       => dos.writeByte('r')
+      case "void" =>
+        dos.writeByte('n')
+      case "character" =>
+        dos.writeByte('c')
+      case "double" =>
+        dos.writeByte('d')
+      case "integer" =>
+        dos.writeByte('i')
+      case "logical" =>
+        dos.writeByte('b')
+      case "date" =>
+        dos.writeByte('D')
+      case "time" =>
+        dos.writeByte('t')
+      case "raw" =>
+        dos.writeByte('r')
       // Array of primitive types
-      case "array" => dos.writeByte('a')
+      case "array" =>
+        dos.writeByte('a')
       // Array of objects
-      case "list" => dos.writeByte('l')
-      case "map"  => dos.writeByte('e')
-      case "jobj" => dos.writeByte('j')
-      case _      => throw new IllegalArgumentException(s"Invalid type $typeStr")
+      case "list" =>
+        dos.writeByte('l')
+      case "map" =>
+        dos.writeByte('e')
+      case "jobj" =>
+        dos.writeByte('j')
+      case _ =>
+        throw new IllegalArgumentException(s"Invalid type $typeStr")
     }
   }
 

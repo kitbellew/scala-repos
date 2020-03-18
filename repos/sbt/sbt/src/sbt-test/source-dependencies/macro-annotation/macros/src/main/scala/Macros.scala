@@ -17,7 +17,8 @@ object HelloMacro {
         }
         """
 
-      case _ => c.abort(c.enclosingPosition, "Invalid annottee")
+      case _ =>
+        c.abort(c.enclosingPosition, "Invalid annottee")
     }
   }
 }

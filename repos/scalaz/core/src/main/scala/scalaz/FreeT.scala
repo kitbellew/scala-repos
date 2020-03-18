@@ -31,15 +31,19 @@ object FreeT extends FreeTInstances {
   def suspend[S[_], M[_], A](a: M[A \/ S[FreeT[S, M, A]]])(implicit
       M: Applicative[M]): FreeT[S, M, A] =
     liftM(a).flatMap({
-      case -\/(a) => point(a)
-      case \/-(s) => roll(s)
+      case -\/(a) =>
+        point(a)
+      case \/-(s) =>
+        roll(s)
     })
 
   def tailrecM[S[_], M[_]: Applicative, A, B](f: A => FreeT[S, M, A \/ B])(
       a: A): FreeT[S, M, B] =
     f(a).flatMap {
-      case -\/(a0) => tailrecM(f)(a0)
-      case \/-(b)  => point[S, M, B](b)
+      case -\/(a0) =>
+        tailrecM(f)(a0)
+      case \/-(b) =>
+        point[S, M, B](b)
     }
 
   def liftM[S[_], M[_], A](value: M[A])(implicit
@@ -124,13 +128,16 @@ sealed abstract class FreeT[S[_], M[_], A] {
       M1: Applicative[M]): M[A \/ S[FreeT[S, M, A]]] = {
     def go(ft: FreeT[S, M, A]): M[FreeT[S, M, A] \/ (A \/ S[FreeT[S, M, A]])] =
       ft match {
-        case Suspend(f) => M0.map(f)(as => \/.right(as.map(S.map(_)(point(_)))))
+        case Suspend(f) =>
+          M0.map(f)(as => \/.right(as.map(S.map(_)(point(_)))))
         case g1 @ Gosub() =>
           g1.a match {
             case Suspend(m1) =>
               M0.map(m1) {
-                case -\/(a)  => -\/(g1.f(a))
-                case \/-(fc) => \/-(\/-(S.map(fc)(g1.f(_))))
+                case -\/(a) =>
+                  -\/(g1.f(a))
+                case \/-(fc) =>
+                  \/-(\/-(S.map(fc)(g1.f(_))))
               }
             case g2 @ Gosub() =>
               M1.point(-\/(g2.a.flatMap(g2.f(_).flatMap(g1.f))))
@@ -149,8 +156,10 @@ sealed abstract class FreeT[S[_], M[_], A] {
       M1: Applicative[M]): M[A] = {
     def runM2(ft: FreeT[S, M, A]): M[FreeT[S, M, A] \/ A] =
       M0.bind(ft.resume) {
-        case -\/(a)  => M1.point(\/-(a))
-        case \/-(fc) => M0.map(interp(fc))(\/.left)
+        case -\/(a) =>
+          M1.point(\/-(a))
+        case \/-(fc) =>
+          M0.map(interp(fc))(\/.left)
       }
 
     M0.tailrecM(runM2)(this)
@@ -166,17 +175,22 @@ sealed abstract class FreeT[S[_], M[_], A] {
     this match {
       case Suspend(m) =>
         M.map(m) {
-          case -\/(a) => point(a)
-          case \/-(s) => liftF(s)
+          case -\/(a) =>
+            point(a)
+          case \/-(s) =>
+            liftF(s)
         }
       case g1 @ Gosub() =>
         g1.a match {
           case Suspend(m) =>
             M.map(m) {
-              case -\/(a) => g1.f(a)
-              case \/-(s) => liftF[S, M, g1.C](s).flatMap(g1.f)
+              case -\/(a) =>
+                g1.f(a)
+              case \/-(s) =>
+                liftF[S, M, g1.C](s).flatMap(g1.f)
             }
-          case g0 @ Gosub() => g0.a.flatMap(g0.f(_).flatMap(g1.f)).toM
+          case g0 @ Gosub() =>
+            g0.a.flatMap(g0.f(_).flatMap(g1.f)).toM
         }
     }
 }

@@ -53,7 +53,8 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
       backoffs.tail
         .zip(maxBackoffs)
         .foreach {
-          case (b, m) => assert(b <= m)
+          case (b, m) =>
+            assert(b <= m)
         }
 
       val manyBackoffs =

@@ -442,8 +442,10 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
 
     val prevSpot = locator.get(current.get) - 1
     prevSpot match {
-      case x if x >= 0 => raw(x)
-      case _           => current
+      case x if x >= 0 =>
+        raw(x)
+      case _ =>
+        current
     }
   }
 
@@ -462,8 +464,10 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
 
     val nextSpot = locator.get(current.get) + locator.count(current.get)
     nextSpot match {
-      case x if x < length => raw(x)
-      case _               => current
+      case x if x < length =>
+        raw(x)
+      case _ =>
+        current
     }
   }
 
@@ -500,7 +504,8 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
           }
           eq
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 

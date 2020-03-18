@@ -146,8 +146,10 @@ private[sql] abstract class BaseWriterContainer(
   protected def getWorkPath: String = {
     outputCommitter match {
       // FileOutputCommitter writes to a temporary location returned by `getWorkPath`.
-      case f: MapReduceFileOutputCommitter => f.getWorkPath.toString
-      case _                               => outputPath
+      case f: MapReduceFileOutputCommitter =>
+        f.getWorkPath.toString
+      case _ =>
+        outputPath
     }
   }
 
@@ -444,9 +446,11 @@ private[sql] class DynamicPartitionWriterContainer(
 
     val sortingKeySchema = StructType(
       sortingExpressions.map {
-        case a: Attribute => StructField(a.name, a.dataType, a.nullable)
+        case a: Attribute =>
+          StructField(a.name, a.dataType, a.nullable)
         // The sorting expressions are all `Attribute` except bucket id.
-        case _ => StructField("bucketId", IntegerType, nullable = false)
+        case _ =>
+          StructField("bucketId", IntegerType, nullable = false)
       })
 
     // Returns the data columns to be written given an input row

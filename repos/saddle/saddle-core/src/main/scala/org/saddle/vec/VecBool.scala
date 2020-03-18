@@ -155,7 +155,8 @@ class VecBool(values: Array[Boolean]) extends Vec[Boolean] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }
 

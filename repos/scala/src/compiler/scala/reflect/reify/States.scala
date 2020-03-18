@@ -39,7 +39,8 @@ trait States {
           case sym: Symbol =>
             CannotReifyWeakType(
               s" referring to ${sym.kindString} ${sym.fullName} local to the reifee")
-          case _ => CannotReifyWeakType("")
+          case _ =>
+            CannotReifyWeakType("")
         }
       }
     }

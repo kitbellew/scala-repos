@@ -72,7 +72,8 @@ object Team extends LilaController {
   private def renderTeam(team: TeamModel, page: Int = 1)(implicit
       ctx: Context) =
     teamInfo(team, ctx.me) zip paginator.teamMembers(team, page) map {
-      case (info, pag) => html.team.show(team, pag, info)
+      case (info, pag) =>
+        html.team.show(team, pag, info)
     }
 
   def edit(id: String) =
@@ -184,10 +185,12 @@ object Team extends LilaController {
   def join(id: String) =
     Auth { implicit ctx => implicit me =>
       api join id flatMap {
-        case Some(Joined(team)) => Redirect(routes.Team.show(team.id)).fuccess
+        case Some(Joined(team)) =>
+          Redirect(routes.Team.show(team.id)).fuccess
         case Some(Motivate(team)) =>
           Redirect(routes.Team.requestForm(team.id)).fuccess
-        case _ => notFound
+        case _ =>
+          notFound
       }
     }
 

@@ -22,8 +22,10 @@ object MetricsReporterService {
   object QueryParam {
     def unapply(str: String): Option[(String, String)] =
       str.split("=") match {
-        case Array(key: String, value: String) => Some(key -> value)
-        case _                                 => None
+        case Array(key: String, value: String) =>
+          Some(key -> value)
+        case _ =>
+          None
       }
   }
 }
@@ -60,7 +62,8 @@ class MetricsReporterService @Inject() (
         .getOrElse("")
         .split("&")
         .collect {
-          case QueryParam(k, v) => k -> v
+          case QueryParam(k, v) =>
+            k -> v
         }
         .toMap
 
@@ -107,7 +110,8 @@ class MetricsReporterService @Inject() (
         .getOrElse("")
         .split("&")
         .collect {
-          case QueryParam(k, v) => k -> v
+          case QueryParam(k, v) =>
+            k -> v
         }
         .toMap
 

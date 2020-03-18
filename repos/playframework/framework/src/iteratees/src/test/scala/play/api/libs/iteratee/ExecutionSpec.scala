@@ -49,7 +49,8 @@ object ExecutionSpec extends Specification {
         }
         sys.error("Can't get the stack to overflow")
       } catch {
-        case _: StackOverflowError => ()
+        case _: StackOverflowError =>
+          ()
       }
 
       // Now verify that we don't overflow

@@ -265,10 +265,14 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       .map(attr => {
         val attrValue =
           attr.getType match {
-            case Value.Type.SCALAR => attr.getScalar
-            case Value.Type.RANGES => attr.getRanges
-            case Value.Type.SET    => attr.getSet
-            case Value.Type.TEXT   => attr.getText
+            case Value.Type.SCALAR =>
+              attr.getScalar
+            case Value.Type.RANGES =>
+              attr.getRanges
+            case Value.Type.SET =>
+              attr.getSet
+            case Value.Type.TEXT =>
+              attr.getText
           }
         (attr.getName, attrValue)
       })
@@ -288,7 +292,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       // offer has the required attribute and subsumes the required values for that attribute
       case (name, requiredValues) =>
         offerAttributes.get(name) match {
-          case None => false
+          case None =>
+            false
           case Some(_) if requiredValues.isEmpty =>
             true // empty value matches presence
           case Some(scalarValue: Value.Scalar) =>

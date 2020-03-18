@@ -83,9 +83,11 @@ object ByteIterator {
                   this.clear()
                   result
                 }
-              case that: MultiByteArrayIterator ⇒ this ++: that
+              case that: MultiByteArrayIterator ⇒
+                this ++: that
             }
-        case _ ⇒ super.++(that)
+        case _ ⇒
+          super.++(that)
       }
 
     final override def clone: ByteArrayIterator =
@@ -324,7 +326,8 @@ object ByteIterator {
                 this
             }
           }
-        case _ ⇒ super.++(that)
+        case _ ⇒
+          super.++(that)
       }
 
     final override def clone: MultiByteArrayIterator = {

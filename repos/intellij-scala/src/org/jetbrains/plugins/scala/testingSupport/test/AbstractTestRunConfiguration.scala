@@ -139,8 +139,10 @@ abstract class AbstractTestRunConfiguration(
     val module = getModule
     ScalaTestDefaultWorkingDirectoryProvider.EP_NAME.getExtensions
       .find(_.getWorkingDirectory(module) != null) match {
-      case Some(provider) => provider.getWorkingDirectory(module)
-      case _              => Option(getProject.getBaseDir).map(_.getPath).getOrElse("")
+      case Some(provider) =>
+        provider.getWorkingDirectory(module)
+      case _ =>
+        Option(getProject.getBaseDir).map(_.getPath).getOrElse("")
     }
   }
 
@@ -228,7 +230,8 @@ abstract class AbstractTestRunConfiguration(
     testKind match {
       case TestKind.ALL_IN_PACKAGE =>
         searchTest match {
-          case SearchForTest.IN_WHOLE_PROJECT => unionScope(_ => true)
+          case SearchForTest.IN_WHOLE_PROJECT =>
+            unionScope(_ => true)
           case SearchForTest.IN_SINGLE_MODULE if getModule != null =>
             mScope(getModule)
           case SearchForTest.ACCROSS_MODULE_DEPENDENCIES if getModule != null =>
@@ -236,7 +239,8 @@ abstract class AbstractTestRunConfiguration(
               ModuleManager
                 .getInstance(getProject)
                 .isModuleDependent(getModule, _))
-          case _ => unionScope(_ => true)
+          case _ =>
+            unionScope(_ => true)
         }
       case _ =>
         if (getModule != null)
@@ -289,7 +293,8 @@ abstract class AbstractTestRunConfiguration(
               Array(getModule)
             case SearchForTest.IN_WHOLE_PROJECT =>
               ModuleManager.getInstance(getProject).getModules
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         }
       })
@@ -396,7 +401,8 @@ abstract class AbstractTestRunConfiguration(
       }
       suiteClass = getSuiteClass
     } catch {
-      case e if clazz == null => classNotFoundError()
+      case e if clazz == null =>
+        classNotFoundError()
     }
     if (clazz == null && pack == null)
       classNotFoundError()
@@ -747,7 +753,8 @@ object AbstractTestRunConfiguration extends SuiteValidityChecker {
           c.secondaryConstructors
             .filter(_.isConstructor)
             .toList ::: c.constructor.toList
-        case _ => clazz.getConstructors.toList
+        case _ =>
+          clazz.getConstructors.toList
       }
     for (con <- constructors) {
       if (con.isConstructor && con.getParameterList.getParametersCount == 0) {

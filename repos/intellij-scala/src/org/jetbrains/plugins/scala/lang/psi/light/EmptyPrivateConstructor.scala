@@ -11,7 +11,8 @@ class EmptyPrivateConstructor(o: PsiClass) extends {
   val constructorText = "private " + Option(o.getName).map {
     case e if PsiNameHelper.getInstance(o.getProject).isIdentifier(o.getName) =>
       o.getName
-    case _ => "METHOD_NAME_IS_NOT_AN_IDENTIFIER"
+    case _ =>
+      "METHOD_NAME_IS_NOT_AN_IDENTIFIER"
   }.get + "() {}"
   val method: PsiMethod = elementFactory.createMethodFromText(
     constructorText,

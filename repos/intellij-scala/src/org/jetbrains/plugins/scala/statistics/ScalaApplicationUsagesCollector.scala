@@ -41,8 +41,9 @@ class ScalaApplicationUsagesCollector
         }
 
         ModuleRootManager.getInstance(module).getSdk match {
-          case jsdk: JavaSdk => java_version = Option(jsdk.getVersionString)
-          case _             =>
+          case jsdk: JavaSdk =>
+            java_version = Option(jsdk.getVersionString)
+          case _ =>
         }
       }
 

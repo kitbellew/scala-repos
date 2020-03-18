@@ -57,8 +57,10 @@ class History[Evt, Pub]
     */
   override def equals(obj: Any): Boolean =
     obj match {
-      case that: History[_, _] => this.log equals that.log
-      case _                   => false
+      case that: History[_, _] =>
+        this.log equals that.log
+      case _ =>
+        false
     }
   override def hashCode = log.hashCode()
 }

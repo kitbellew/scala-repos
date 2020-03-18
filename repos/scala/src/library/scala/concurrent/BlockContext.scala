@@ -68,10 +68,13 @@ object BlockContext {
     contextLocal.get match {
       case null =>
         Thread.currentThread match {
-          case ctx: BlockContext => ctx
-          case _                 => DefaultBlockContext
+          case ctx: BlockContext =>
+            ctx
+          case _ =>
+            DefaultBlockContext
         }
-      case some => some
+      case some =>
+        some
     }
 
   /**

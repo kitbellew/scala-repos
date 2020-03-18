@@ -156,8 +156,9 @@ object IteratorSpec extends Spec {
         override def run() {
           for (i <- 0 until sz)
             ct.putIfAbsent(new Wrap(i), i) match {
-              case Some(_) => ct.remove(new Wrap(i))
-              case None    =>
+              case Some(_) =>
+                ct.remove(new Wrap(i))
+              case None =>
             }
         }
       }

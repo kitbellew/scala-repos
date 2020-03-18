@@ -16,8 +16,10 @@ private[http] object SocketOptionSettings {
     def so[T](setting: String)(f: (Config, String) ⇒ T)(
         cons: T ⇒ SocketOption): List[SocketOption] =
       c.getString(setting) match {
-        case "undefined" ⇒ Nil
-        case x ⇒ cons(f(c, setting)) :: Nil
+        case "undefined" ⇒
+          Nil
+        case x ⇒
+          cons(f(c, setting)) :: Nil
       }
 
     so("so-receive-buffer-size")(_ getIntBytes _)(Inet.SO.ReceiveBufferSize) :::

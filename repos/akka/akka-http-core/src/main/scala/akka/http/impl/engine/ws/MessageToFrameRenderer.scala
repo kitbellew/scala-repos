@@ -32,8 +32,10 @@ private[http] object MessageToFrameRenderer {
 
     Flow[Message]
       .flatMapConcat {
-        case BinaryMessage.Strict(data) ⇒ strictFrames(Opcode.Binary, data)
-        case bm: BinaryMessage ⇒ streamedFrames(Opcode.Binary, bm.dataStream)
+        case BinaryMessage.Strict(data) ⇒
+          strictFrames(Opcode.Binary, data)
+        case bm: BinaryMessage ⇒
+          streamedFrames(Opcode.Binary, bm.dataStream)
         case TextMessage.Strict(text) ⇒
           strictFrames(Opcode.Text, ByteString(text, "UTF-8"))
         case tm: TextMessage ⇒

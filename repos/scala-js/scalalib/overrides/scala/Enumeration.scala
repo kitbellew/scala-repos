@@ -142,7 +142,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
     }
 
     named.find(_.toString == s) match {
-      case Some(v) => v
+      case Some(v) =>
+        v
       // If we have unnamed values, we issue a detailed error message
       case None if unnamed.nonEmpty =>
         throw new NoSuchElementException(
@@ -150,7 +151,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
                |However, there were the following unnamed fields:
                |${unnamed.mkString("  ", "\n  ", "")}""".stripMargin)
       // Normal case (no unnamed Values)
-      case _ => None.get
+      case _ =>
+        None.get
     }
   }
 
@@ -204,7 +206,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
       other match {
         case that: Enumeration#Value =>
           (outerEnum eq that.outerEnum) && (id == that.id)
-        case _ => false
+        case _ =>
+          false
       }
     override def hashCode: Int = id.##
 

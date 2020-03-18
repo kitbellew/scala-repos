@@ -41,7 +41,8 @@ class UnnestedReceives extends Actor {
           queue foreach process
           queue.clear
           become { //Then we change behaviour to process incoming messages/events as they arrive
-            case msg => process(msg)
+            case msg =>
+              process(msg)
           }
         case msg => //While we haven't gotten the GoAhead signal, buffer all incoming messages
           queue += msg //Here you have full control, you can handle overflow etc

@@ -52,7 +52,8 @@ trait Encoder {
 
 object Encoder {
   val DefaultFilter: HttpMessage ⇒ Boolean = {
-    case req: HttpRequest ⇒ isCompressible(req)
+    case req: HttpRequest ⇒
+      isCompressible(req)
     case res @ HttpResponse(status, _, _, _) ⇒
       isCompressible(res) && status.isSuccess
   }

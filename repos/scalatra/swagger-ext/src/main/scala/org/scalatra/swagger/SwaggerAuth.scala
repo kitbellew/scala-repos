@@ -35,7 +35,8 @@ class SwaggerWithAuth(
       authorizations: List[String]) {
     val endpoints: List[AuthEndpoint[AnyRef]] =
       s.endpoints(resourcePath) collect {
-        case m: AuthEndpoint[AnyRef] => m
+        case m: AuthEndpoint[AnyRef] =>
+          m
       }
     _docs += listingPath -> AuthApi(
       apiVersion,
@@ -127,7 +128,8 @@ object SwaggerAuthSerializers {
                   consumes andThen produces andThen authorizations andThen protocols
                 )(json)
               r merge writeDataType(obj.responseClass)
-            case obj: AuthOperation[_] => JNothing
+            case obj: AuthOperation[_] =>
+              JNothing
           }))
   class AuthEndpointSerializer[T <: AnyRef: Manifest]
       extends CustomSerializer[AuthEndpoint[T]](implicit formats =>
@@ -178,48 +180,60 @@ object SwaggerAuthSerializers {
                 (
                   "produces" -> (
                     x.produces match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "consumes" -> (
                     x.consumes match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "protocols" -> (
                     x.protocols match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "authorizations" -> (
                     x.authorizations match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "apis" -> (
                     x.apis match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "models" -> (
                     x.models match {
-                      case x if x.isEmpty => JNothing
-                      case e              => Extraction.decompose(e)
+                      case x if x.isEmpty =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 )
@@ -246,8 +260,10 @@ trait SwaggerAuthBase[TypeForUser <: AnyRef] extends SwaggerBaseBase {
       def isAllowed(doc: AuthApi[AnyRef]) =
         doc.apis.exists(_.operations.exists(_.allows(userOption)))
       swagger.doc(params("doc")) match {
-        case Some(doc) if isAllowed(doc) ⇒ renderDoc(doc.asInstanceOf[ApiType])
-        case _ ⇒ NotFound()
+        case Some(doc) if isAllowed(doc) ⇒
+          renderDoc(doc.asInstanceOf[ApiType])
+        case _ ⇒
+          NotFound()
       }
     }
 

@@ -16,19 +16,25 @@ sealed abstract class ISet[A] {
   // -- * Query
   final def isEmpty =
     this match {
-      case Tip()        => true
-      case Bin(_, _, _) => false
+      case Tip() =>
+        true
+      case Bin(_, _, _) =>
+        false
     }
 
   @tailrec
   final def member(x: A)(implicit o: Order[A]): Boolean =
     this match {
-      case Tip() => false
+      case Tip() =>
+        false
       case Bin(y, l, r) =>
         o.order(x, y) match {
-          case LT => l.member(x)
-          case GT => r.member(x)
-          case EQ => true
+          case LT =>
+            l.member(x)
+          case GT =>
+            r.member(x)
+          case EQ =>
+            true
         }
     }
 
@@ -173,12 +179,16 @@ sealed abstract class ISet[A] {
   // -- * Construction
   final def insert(x: A)(implicit o: Order[A]): ISet[A] =
     this match {
-      case Tip() => singleton(x)
+      case Tip() =>
+        singleton(x)
       case Bin(y, l, r) =>
         o.order(x, y) match {
-          case LT => balanceL(y, l.insert(x), r)
-          case GT => balanceR(y, l, r.insert(x))
-          case EQ => Bin(x, l, r)
+          case LT =>
+            balanceL(y, l.insert(x), r)
+          case GT =>
+            balanceR(y, l, r.insert(x))
+          case EQ =>
+            Bin(x, l, r)
         }
     }
 
@@ -308,7 +318,8 @@ sealed abstract class ISet[A] {
   // -- * Filter
   final def filter(p: A => Boolean): ISet[A] =
     this match {
-      case Tip() => this
+      case Tip() =>
+        this
       case Bin(x, l, r) =>
         if (p(x))
           join(x, l.filter(p), r.filter(p))
@@ -366,8 +377,10 @@ sealed abstract class ISet[A] {
 
   final def splitRoot: List[ISet[A]] =
     this match {
-      case Tip()        => List.empty[ISet[A]]
-      case Bin(x, l, r) => List(l, singleton(x), r)
+      case Tip() =>
+        List.empty[ISet[A]]
+      case Bin(x, l, r) =>
+        List(l, singleton(x), r)
     }
 
   // -- * Index
@@ -434,15 +447,18 @@ sealed abstract class ISet[A] {
   // -- * Folds
   final def foldRight[B](z: B)(f: (A, B) => B): B =
     this match {
-      case Tip()        => z
-      case Bin(x, l, r) => l.foldRight(f(x, r.foldRight(z)(f)))(f)
+      case Tip() =>
+        z
+      case Bin(x, l, r) =>
+        l.foldRight(f(x, r.foldRight(z)(f)))(f)
     }
 
   final def foldr[B](z: B)(f: (A, B) => B): B = foldRight(z)(f)
 
   final def foldLeft[B](z: B)(f: (B, A) => B): B =
     this match {
-      case Tip() => z
+      case Tip() =>
+        z
       case Bin(x, l, r) =>
         r.foldLeft(f(l.foldLeft(z)(f), x))(f)
     }
@@ -453,63 +469,83 @@ sealed abstract class ISet[A] {
   @tailrec
   final def findMin: Option[A] =
     this match {
-      case Tip()            => none
-      case Bin(x, Tip(), _) => some(x)
-      case Bin(_, l, _)     => l.findMin
+      case Tip() =>
+        none
+      case Bin(x, Tip(), _) =>
+        some(x)
+      case Bin(_, l, _) =>
+        l.findMin
     }
 
   @tailrec
   final def findMax: Option[A] =
     this match {
-      case Tip()            => none
-      case Bin(x, _, Tip()) => some(x)
-      case Bin(_, _, r)     => r.findMax
+      case Tip() =>
+        none
+      case Bin(x, _, Tip()) =>
+        some(x)
+      case Bin(_, _, r) =>
+        r.findMax
     }
 
   final def deleteMin: ISet[A] =
     this match {
-      case Bin(_, Tip(), r) => r
-      case Bin(x, l, r)     => balanceR(x, l.deleteMin, r)
-      case Tip()            => Tip()
+      case Bin(_, Tip(), r) =>
+        r
+      case Bin(x, l, r) =>
+        balanceR(x, l.deleteMin, r)
+      case Tip() =>
+        Tip()
     }
 
   final def deleteMax: ISet[A] =
     this match {
-      case Bin(_, l, Tip()) => l
-      case Bin(x, l, r)     => balanceL(x, l, r.deleteMax)
-      case Tip()            => Tip()
+      case Bin(_, l, Tip()) =>
+        l
+      case Bin(x, l, r) =>
+        balanceL(x, l, r.deleteMax)
+      case Tip() =>
+        Tip()
     }
 
   // TODO: Can we make this total? or should this remain unsafe, preferring minView instead?
   final def deleteFindMin: (A, ISet[A]) =
     this match {
-      case Bin(x, Tip(), r) => (x, r)
+      case Bin(x, Tip(), r) =>
+        (x, r)
       case Bin(x, l, r) =>
         val (xm, l2) = l.deleteFindMin
         (xm, balanceR(x, l2, r))
-      case Tip() => sys.error("deleteFindMin on empty ISet")
+      case Tip() =>
+        sys.error("deleteFindMin on empty ISet")
     }
 
   // TODO: Can we make this total? or should this remain unsafe, preferring maxView instead?
   final def deleteFindMax: (A, ISet[A]) =
     this match {
-      case Bin(x, l, Tip()) => (x, l)
+      case Bin(x, l, Tip()) =>
+        (x, l)
       case Bin(x, l, r) =>
         val (xm, r2) = r.deleteFindMax
         (xm, balanceL(x, l, r2))
-      case Tip() => sys.error("deleteFindMax on empty ISet")
+      case Tip() =>
+        sys.error("deleteFindMax on empty ISet")
     }
 
   final def minView: Option[(A, ISet[A])] =
     this match {
-      case Tip() => none
-      case x     => some(x.deleteFindMin)
+      case Tip() =>
+        none
+      case x =>
+        some(x.deleteFindMin)
     }
 
   final def maxView: Option[(A, ISet[A])] =
     this match {
-      case Tip() => none
-      case x     => some(x.deleteFindMax)
+      case Tip() =>
+        none
+      case x =>
+        some(x.deleteFindMax)
     }
 
   // -- ** List
@@ -524,8 +560,10 @@ sealed abstract class ISet[A] {
 
   private def glue[A](l: ISet[A], r: ISet[A]): ISet[A] =
     (l, r) match {
-      case (Tip(), r) => r
-      case (l, Tip()) => l
+      case (Tip(), r) =>
+        r
+      case (l, Tip()) =>
+        l
       case (_, _) =>
         if (l.size > r.size) {
           val (m, l2) = l.deleteFindMax
@@ -538,8 +576,10 @@ sealed abstract class ISet[A] {
 
   private def join[A](x: A, l: ISet[A], r: ISet[A]): ISet[A] =
     (l, r) match {
-      case (Tip(), r) => r.insertMin(x)
-      case (l, Tip()) => l.insertMax(x)
+      case (Tip(), r) =>
+        r.insertMin(x)
+      case (l, Tip()) =>
+        l.insertMax(x)
       case (Bin(y, ly, ry), Bin(z, lz, rz)) =>
         if (delta * l.size < r.size)
           balanceL(z, join(x, l, lz), rz)
@@ -567,8 +607,10 @@ sealed abstract class ISet[A] {
 
   protected def merge(other: ISet[A]): ISet[A] =
     (this, other) match {
-      case (Tip(), r) => r
-      case (l, Tip()) => l
+      case (Tip(), r) =>
+        r
+      case (l, Tip()) =>
+        l
       case (l @ Bin(x, lx, rx), r @ Bin(y, ly, ry)) =>
         if (delta * l.size < r.size)
           balanceL(y, l merge ly, ry)
@@ -590,7 +632,8 @@ sealed abstract class ISet[A] {
                 greater(lo, r)
               else
                 t
-            case _ => t
+            case _ =>
+              t
           }
         greater(lx, this)
       case (None, Some(hx)) =>
@@ -601,7 +644,8 @@ sealed abstract class ISet[A] {
                 lesser(hi, l)
               else
                 t
-            case _ => t
+            case _ =>
+              t
           }
         lesser(hx, this)
       case (Some(lx), Some(rx)) =>
@@ -614,7 +658,8 @@ sealed abstract class ISet[A] {
                 middle(lo, hi, l)
               else
                 t
-            case _ => t
+            case _ =>
+              t
           }
         middle(lx, rx, this)
     }
@@ -623,12 +668,16 @@ sealed abstract class ISet[A] {
     cata(a)(
       s =>
         this match {
-          case Tip() => ISet.empty
+          case Tip() =>
+            ISet.empty
           case Bin(x, l, r) =>
             o.order(s, x) match {
-              case LT => join(x, l.filterGt(a), r)
-              case EQ => r
-              case GT => r.filterGt(a)
+              case LT =>
+                join(x, l.filterGt(a), r)
+              case EQ =>
+                r
+              case GT =>
+                r.filterGt(a)
             }
         },
       this)
@@ -637,12 +686,16 @@ sealed abstract class ISet[A] {
     cata(a)(
       s =>
         this match {
-          case Tip() => ISet.empty
+          case Tip() =>
+            ISet.empty
           case Bin(x, l, r) =>
             o.order(x, s) match {
-              case LT => join(x, l, r.filterLt(a))
-              case EQ => l
-              case GT => l.filterLt(a)
+              case LT =>
+                join(x, l, r.filterLt(a))
+              case EQ =>
+                l
+              case GT =>
+                l.filterLt(a)
             }
         },
       this)
@@ -774,14 +827,16 @@ sealed abstract class ISetInstances {
 
       override def any[A](fa: ISet[A])(f: A => Boolean) =
         fa match {
-          case Tip() => false
+          case Tip() =>
+            false
           case Bin(x, l, r) =>
             any(l)(f) || f(x) || any(r)(f)
         }
 
       override def all[A](fa: ISet[A])(f: A => Boolean) =
         fa match {
-          case Tip() => true
+          case Tip() =>
+            true
           case Bin(x, l, r) =>
             all(l)(f) && f(x) && all(r)(f)
         }
@@ -836,7 +891,8 @@ object ISet extends ISetInstances {
                     Bin(lx, ll, Bin(x, lr, r))
                   else
                     Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, r))
-                case _ => sys.error("Failure in ISet.balanceL")
+                case _ =>
+                  sys.error("Failure in ISet.balanceL")
               }
             } else
               Bin(x, l, r)
@@ -873,7 +929,8 @@ object ISet extends ISetInstances {
                     Bin(rx, Bin(x, l, rl), rr)
                   else
                     Bin(rlx, Bin(x, l, rll), Bin(rx, rlr, rr))
-                case _ => sys.error("Failure in ISet.balanceR")
+                case _ =>
+                  sys.error("Failure in ISet.balanceR")
               }
             } else
               Bin(x, l, r)

@@ -158,9 +158,11 @@ trait ColumnarTableModuleSpec[M[+_]]
 
     def minimize(value: JValue): Option[JValue] = {
       value match {
-        case JObject(fields) => Some(JObject(fields.flatMap(minimizeItem)))
+        case JObject(fields) =>
+          Some(JObject(fields.flatMap(minimizeItem)))
 
-        case JArray(Nil) => Some(JArray(Nil))
+        case JArray(Nil) =>
+          Some(JArray(Nil))
 
         case JArray(elements) =>
           val elements2 = elements.flatMap(minimize)
@@ -169,9 +171,11 @@ trait ColumnarTableModuleSpec[M[+_]]
           else
             Some(JArray(elements2))
 
-        case JUndefined => None
+        case JUndefined =>
+          None
 
-        case v => Some(v)
+        case v =>
+          Some(v)
       }
     }
 

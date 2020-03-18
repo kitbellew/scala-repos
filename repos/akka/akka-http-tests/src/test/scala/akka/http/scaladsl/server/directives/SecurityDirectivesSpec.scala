@@ -24,12 +24,14 @@ class SecurityDirectivesSpec extends RoutingSpec {
   val doBasicAuth = authenticateBasicPF(
     "MyRealm",
     {
-      case Credentials.Provided(identifier) ⇒ identifier
+      case Credentials.Provided(identifier) ⇒
+        identifier
     })
   val doOAuth2Auth = authenticateOAuth2PF(
     "MyRealm",
     {
-      case Credentials.Provided(identifier) ⇒ identifier
+      case Credentials.Provided(identifier) ⇒
+        identifier
     })
   val authWithAnonymous = doBasicAuth.withAnonymousUser("We are Legion")
 
@@ -210,7 +212,8 @@ class SecurityDirectivesSpec extends RoutingSpec {
         }) ~> check {
         status shouldEqual StatusCodes.Unauthorized
         headers.collect {
-          case `WWW-Authenticate`(challenge +: Nil) ⇒ challenge
+          case `WWW-Authenticate`(challenge +: Nil) ⇒
+            challenge
         } shouldEqual Seq(challenge, otherChallenge)
       }
     }

@@ -92,8 +92,10 @@ trait LinearRegressionSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -197,12 +199,14 @@ trait LinearRegressionSpecs[M[+_]]
 
           val (SDecimal(theta1), SDecimal(error1)) =
             (arr(0): @unchecked) match {
-              case SArray(Vector(SObject(obj))) => returnValues(obj)
+              case SArray(Vector(SObject(obj))) =>
+                returnValues(obj)
             }
 
           val (SDecimal(theta0), SDecimal(error0)) =
             (arr(1): @unchecked) match {
-              case SObject(obj) => returnValues(obj)
+              case SObject(obj) =>
+                returnValues(obj)
             }
 
           (
@@ -224,7 +228,8 @@ trait LinearRegressionSpecs[M[+_]]
 
     val allThetas = actualThetas zip combinedThetas
     val okThetas = allThetas map {
-      case (t, ts) => isOk(t, ts)
+      case (t, ts) =>
+        isOk(t, ts)
     }
 
     val actualErrors = combinedThetas map { t =>
@@ -235,7 +240,8 @@ trait LinearRegressionSpecs[M[+_]]
 
     val okErrors =
       allErrors map {
-        case (e, es) => isOk(e, es)
+        case (e, es) =>
+          isOk(e, es)
       } toArray
 
     okThetas mustEqual Array.fill(num)(true)
@@ -344,7 +350,8 @@ trait LinearRegressionSpecs[M[+_]]
 
     val allThetas = actualThetas zip combineResults(num, thetas)
     val okThetas = allThetas map {
-      case (t, ts) => isOk(t, ts)
+      case (t, ts) =>
+        isOk(t, ts)
     }
 
     val actualErrors = combinedThetas map { t =>
@@ -354,7 +361,8 @@ trait LinearRegressionSpecs[M[+_]]
     val allErrors = actualErrors zip combinedErrors
     val okErrors =
       allErrors map {
-        case (e, es) => isOk(e, es)
+        case (e, es) =>
+          isOk(e, es)
       } toArray
 
     okThetas mustEqual Array.fill(num)(true)
@@ -410,7 +418,8 @@ trait LinearRegressionSpecs[M[+_]]
       val samples = {
         val samples0 = createLinearSamplePoints(num, 100, actualThetas)
         samples0 map {
-          case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y)
+          case (xs, y) =>
+            (Random.nextGaussian +: Random.nextGaussian +: xs, y)
         }
       }
       val points = jvalues(samples, cpaths, num) map {
@@ -497,7 +506,8 @@ trait LinearRegressionSpecs[M[+_]]
         values: List[List[Double]]): Array[Boolean] = {
       val zipped = actuals zip combineResults(num, values)
       zipped map {
-        case (t, ts) => isOk(t, ts)
+        case (t, ts) =>
+          isOk(t, ts)
       } toArray
     }
 
@@ -520,7 +530,8 @@ trait LinearRegressionSpecs[M[+_]]
       case (actual, err) =>
         val z = actual zip combineResults(num, err)
         z map {
-          case (e, es) => isOk(e, es)
+          case (e, es) =>
+            isOk(e, es)
         }
     }
 

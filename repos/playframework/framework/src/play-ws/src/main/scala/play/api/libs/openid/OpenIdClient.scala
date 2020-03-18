@@ -74,7 +74,8 @@ object UserInfo {
               values.headOption map { value =>
                 Map(shortKey -> value)
               }
-            case _ => None
+            case _ =>
+              None
           } map (result ++ _) getOrElse result
       }
   }
@@ -207,8 +208,10 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
         val server: Future[OpenIDServer] = discovery.discoverServer(id)
         server.flatMap(directVerification(queryString))
       }
-      case (Some("cancel"), _) => Future.failed(Errors.AUTH_CANCEL)
-      case _                   => Future.failed(Errors.BAD_RESPONSE)
+      case (Some("cancel"), _) =>
+        Future.failed(Errors.AUTH_CANCEL)
+      case _ =>
+        Future.failed(Errors.BAD_RESPONSE)
     }
   }
 
@@ -290,13 +293,17 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
         classOf[URISyntaxException]) opt {
         def port(p: Int) =
           p match {
-            case 80 | 443 => -1
-            case port     => port
+            case 80 | 443 =>
+              -1
+            case port =>
+              port
           }
         def schemeForPort(p: Int) =
           p match {
-            case 443 => "https"
-            case _   => "http"
+            case 443 =>
+              "https"
+            case _ =>
+              "http"
           }
         def scheme(uri: URI) =
           Option(uri.getScheme) getOrElse schemeForPort(uri.getPort)

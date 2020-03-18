@@ -50,8 +50,10 @@ private[ui] case class SparkPlanGraph(
     */
   val allNodes: Seq[SparkPlanGraphNode] = {
     nodes.flatMap {
-      case cluster: SparkPlanGraphCluster => cluster.nodes :+ cluster
-      case node                           => Seq(node)
+      case cluster: SparkPlanGraphCluster =>
+        cluster.nodes :+ cluster
+      case node =>
+        Seq(node)
     }
   }
 }

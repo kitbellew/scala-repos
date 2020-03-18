@@ -56,7 +56,8 @@ class InformationGainStats(
           leftPredict == other.leftPredict &&
           rightPredict == other.rightPredict
 
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode: Int = {

@@ -121,7 +121,8 @@ private[akka] trait StreamSubscriptionTimeoutSupport {
   protected def subscriptionTimedOut(target: Publisher[_]): Unit =
     subscriptionTimeoutSettings.mode match {
       case NoopTermination ⇒ // ignore...
-      case WarnTermination ⇒ warn(target, subscriptionTimeoutSettings.timeout)
+      case WarnTermination ⇒
+        warn(target, subscriptionTimeoutSettings.timeout)
       case CancelTermination ⇒
         cancel(target, subscriptionTimeoutSettings.timeout)
     }

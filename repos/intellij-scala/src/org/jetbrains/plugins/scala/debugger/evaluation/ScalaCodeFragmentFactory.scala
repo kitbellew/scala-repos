@@ -55,8 +55,10 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
             override def typeCalculationFinished(psiType: PsiType): Unit = {
               val psiClass =
                 psiType match {
-                  case tp: PsiClassType => tp.resolve()
-                  case _                => null
+                  case tp: PsiClassType =>
+                    tp.resolve()
+                  case _ =>
+                    null
                 }
               nameRef.set(psiClass)
               semaphore.up()

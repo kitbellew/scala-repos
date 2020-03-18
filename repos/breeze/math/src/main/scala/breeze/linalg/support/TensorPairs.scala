@@ -23,7 +23,8 @@ class TensorPairs[K, V, +This](
   def foreach[U](fn: ((K, V)) => U) = iterator foreach fn
   def foreach[U](fn: (K, V) => U) =
     iterator foreach {
-      case (a, b) => fn(a, b)
+      case (a, b) =>
+        fn(a, b)
     }
 
   def filter(p: ((K, V)) => Boolean) = withFilter(p)
@@ -43,7 +44,8 @@ class TensorPairs[K, V, +This](
     p1 match {
       case x: TensorPairs[_, _, _] =>
         x.eq(this) || iterator.sameElements(x.iterator)
-      case _ => false
+      case _ =>
+        false
     }
 
   def map[TT >: This, O, That](fn: ((K, V)) => O)(implicit

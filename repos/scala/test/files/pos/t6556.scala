@@ -26,7 +26,8 @@ class Series[X: Ordering, Y](val adaptee: Iterable[(X, Y)])
           def compare(xy1: (X, Y), xy2: (X, Y)) = order.compare(xy1._1, xy2._1)
         })
       .map {
-        case _ => null
+        case _ =>
+          null
       }
 }
 

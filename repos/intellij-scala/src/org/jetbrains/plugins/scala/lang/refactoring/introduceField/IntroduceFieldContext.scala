@@ -34,7 +34,8 @@ class IntroduceFieldContext[T <: PsiElement](
         ScalaRefactoringUtil.getOccurrenceRanges(
           ScalaRefactoringUtil.unparExpr(expr),
           aClass.extendsBlock)
-      case _ => null
+      case _ =>
+        null
     }
 
   val validator = ScalaVariableValidator(
@@ -47,14 +48,18 @@ class IntroduceFieldContext[T <: PsiElement](
 
   val canBeInitInDecl =
     element match {
-      case expr: ScExpression => canBeInitializedInDeclaration(expr, aClass)
-      case _                  => throw new IntroduceException
+      case expr: ScExpression =>
+        canBeInitializedInDeclaration(expr, aClass)
+      case _ =>
+        throw new IntroduceException
     }
 
   val possibleNames =
     element match {
-      case expr: ScExpression => NameSuggester.suggestNames(expr, validator)
-      case _                  => throw new IntroduceException
+      case expr: ScExpression =>
+        NameSuggester.suggestNames(expr, validator)
+      case _ =>
+        throw new IntroduceException
     }
 
   def canBeInitLocally(replaceAll: Boolean) =

@@ -67,8 +67,10 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
   def isExactAliasFor(cls: PsiClass): Boolean = {
     val isDefinedInObject =
       containingClass match {
-        case obj: ScObject if obj.isStatic => true
-        case _                             => false
+        case obj: ScObject if obj.isStatic =>
+          true
+        case _ =>
+          false
       }
     isDefinedInObject && isAliasFor(cls)
   }
@@ -85,11 +87,14 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
               ScType.designator(cls))
             val typeParamsAppliedInOrder =
               (pte.typeArgs corresponds typeParameters) {
-                case (tpt: ScTypeParameterType, tp) if tpt.param == tp => true
-                case _                                                 => false
+                case (tpt: ScTypeParameterType, tp) if tpt.param == tp =>
+                  true
+                case _ =>
+                  false
               }
             refersToClass && typeParamsAppliedInOrder
-          case _ => false
+          case _ =>
+            false
         }
       val varianceAndBoundsMatch =
         cls match {

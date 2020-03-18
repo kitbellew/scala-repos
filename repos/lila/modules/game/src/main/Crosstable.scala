@@ -25,8 +25,10 @@ case class Crosstable(
   def showScore(userId: String) = {
     val byTen = user(userId) ?? (_.score)
     s"${byTen / 10}${(byTen % 10 != 0).??("½")}" match {
-      case "0½" => "½"
-      case x    => x
+      case "0½" =>
+        "½"
+      case x =>
+        x
     }
   }
 
@@ -42,16 +44,22 @@ case class Crosstable(
     copy(
       user1 = user1.copy(score = user1.score + (
         userId match {
-          case None                     => wins * 5
-          case Some(u) if user1.id == u => wins * 10
-          case _                        => 0
+          case None =>
+            wins * 5
+          case Some(u) if user1.id == u =>
+            wins * 10
+          case _ =>
+            0
         }
       )),
       user2 = user2.copy(score = user2.score + (
         userId match {
-          case None                     => wins * 5
-          case Some(u) if user2.id == u => wins * 10
-          case _                        => 0
+          case None =>
+            wins * 5
+          case Some(u) if user2.id == u =>
+            wins * 10
+          case _ =>
+            0
         }
       ))
     )
@@ -99,15 +107,20 @@ object Crosstable {
               user2 = User(u2Id, r intD "s2"),
               results = r.get[List[String]](results).map { r =>
                 r drop 8 match {
-                  case ""  => Result(r take 8, none)
-                  case "+" => Result(r take 8, Some(u1Id))
-                  case "-" => Result(r take 8, Some(u2Id))
-                  case _   => sys error s"Invalid result string $r"
+                  case "" =>
+                    Result(r take 8, none)
+                  case "+" =>
+                    Result(r take 8, Some(u1Id))
+                  case "-" =>
+                    Result(r take 8, Some(u2Id))
+                  case _ =>
+                    sys error s"Invalid result string $r"
                 }
               },
               nbGames = r int nbGames
             )
-          case x => sys error s"Invalid crosstable id $x"
+          case x =>
+            sys error s"Invalid crosstable id $x"
         }
 
       def writeResult(result: Result, u1: String): String =

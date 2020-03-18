@@ -59,8 +59,10 @@ class ScalaParserDefinition extends ScalaParserDefinitionWrapper {
         return SpaceRequirements.MUST_LINE_BREAK
     }
     (leftNode.getElementType, rightNode.getElementType) match {
-      case (_, ScalaTokenTypes.kIMPORT) => SpaceRequirements.MUST_LINE_BREAK
-      case _                            => super.spaceExistanceTypeBetweenTokens(leftNode, rightNode)
+      case (_, ScalaTokenTypes.kIMPORT) =>
+        SpaceRequirements.MUST_LINE_BREAK
+      case _ =>
+        super.spaceExistanceTypeBetweenTokens(leftNode, rightNode)
     }
   }
 

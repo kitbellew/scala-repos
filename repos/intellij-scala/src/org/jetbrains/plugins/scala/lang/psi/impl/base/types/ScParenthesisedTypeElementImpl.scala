@@ -24,8 +24,10 @@ class ScParenthesisedTypeElementImpl(node: ASTNode)
 
   protected def innerType(ctx: TypingContext) = {
     typeElement match {
-      case Some(el) => el.getType(ctx)
-      case None     => Success(psi.types.Unit, Some(this))
+      case Some(el) =>
+        el.getType(ctx)
+      case None =>
+        Success(psi.types.Unit, Some(this))
     }
   }
 
@@ -35,8 +37,10 @@ class ScParenthesisedTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitParenthesisedTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitParenthesisedTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

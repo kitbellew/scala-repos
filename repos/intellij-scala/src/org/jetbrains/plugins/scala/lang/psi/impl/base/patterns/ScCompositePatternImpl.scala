@@ -25,8 +25,10 @@ class ScCompositePatternImpl(node: ASTNode)
     with ScCompositePattern {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -34,8 +36,10 @@ class ScCompositePatternImpl(node: ASTNode)
 
   override def getType(ctx: TypingContext): TypeResult[ScType] = {
     expectedType match {
-      case Some(expected) => Success(expected, Some(this))
-      case _              => super.getType(ctx) //Failure
+      case Some(expected) =>
+        Success(expected, Some(this))
+      case _ =>
+        super.getType(ctx) //Failure
     }
   }
 }

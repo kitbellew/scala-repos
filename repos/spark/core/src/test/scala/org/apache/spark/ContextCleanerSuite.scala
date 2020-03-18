@@ -90,9 +90,12 @@ abstract class ContextCleanerSuiteBase(
   protected def randomRdd() = {
     val rdd: RDD[_] =
       Random.nextInt(3) match {
-        case 0 => newRDD()
-        case 1 => newShuffleRDD()
-        case 2 => newPairRDD.join(newPairRDD())
+        case 0 =>
+          newRDD()
+        case 1 =>
+          newShuffleRDD()
+        case 2 =>
+          newPairRDD.join(newPairRDD())
       }
     if (Random.nextBoolean())
       rdd.persist()
@@ -317,8 +320,10 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
       sc.env.blockManager.master
         .getMatchingBlockIds(
           {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
+            case BroadcastBlockId(`taskClosureBroadcastId`, _) =>
+              true
+            case _ =>
+              false
           },
           askSlaves = true)
         .isEmpty)
@@ -362,8 +367,10 @@ class ContextCleanerSuite extends ContextCleanerSuiteBase {
       sc.env.blockManager.master
         .getMatchingBlockIds(
           {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
+            case BroadcastBlockId(`taskClosureBroadcastId`, _) =>
+              true
+            case _ =>
+              false
           },
           askSlaves = true)
         .isEmpty)
@@ -448,8 +455,10 @@ class SortShuffleContextCleanerSuite
       sc.env.blockManager.master
         .getMatchingBlockIds(
           {
-            case BroadcastBlockId(`taskClosureBroadcastId`, _) => true
-            case _                                             => false
+            case BroadcastBlockId(`taskClosureBroadcastId`, _) =>
+              true
+            case _ =>
+              false
           },
           askSlaves = true)
         .isEmpty)
@@ -640,8 +649,10 @@ class CleanerTester(
   private def getRDDBlocks(rddId: Int): Seq[BlockId] = {
     blockManager.master.getMatchingBlockIds(
       _ match {
-        case RDDBlockId(`rddId`, _) => true
-        case _                      => false
+        case RDDBlockId(`rddId`, _) =>
+          true
+        case _ =>
+          false
       },
       askSlaves = true)
   }
@@ -649,9 +660,12 @@ class CleanerTester(
   private def getShuffleBlocks(shuffleId: Int): Seq[BlockId] = {
     blockManager.master.getMatchingBlockIds(
       _ match {
-        case ShuffleBlockId(`shuffleId`, _, _)      => true
-        case ShuffleIndexBlockId(`shuffleId`, _, _) => true
-        case _                                      => false
+        case ShuffleBlockId(`shuffleId`, _, _) =>
+          true
+        case ShuffleIndexBlockId(`shuffleId`, _, _) =>
+          true
+        case _ =>
+          false
       },
       askSlaves = true)
   }
@@ -659,8 +673,10 @@ class CleanerTester(
   private def getBroadcastBlocks(broadcastId: Long): Seq[BlockId] = {
     blockManager.master.getMatchingBlockIds(
       _ match {
-        case BroadcastBlockId(`broadcastId`, _) => true
-        case _                                  => false
+        case BroadcastBlockId(`broadcastId`, _) =>
+          true
+        case _ =>
+          false
       },
       askSlaves = true)
   }

@@ -30,7 +30,8 @@ object ActorWithStashSpec {
         state.s = "hello"
         unstashAll()
         context.become(greeted)
-      case msg ⇒ stash()
+      case msg ⇒
+        stash()
     }
   }
 
@@ -58,10 +59,13 @@ object ActorWithStashSpec {
           case "close" ⇒
             unstashAll()
             context.unbecome()
-          case msg ⇒ stash()
+          case msg ⇒
+            stash()
         }
-      case "done" ⇒ state.finished.await
-      case msg ⇒ stash()
+      case "done" ⇒
+        state.finished.await
+      case msg ⇒
+        stash()
     }
   }
 
@@ -202,7 +206,8 @@ class ActorWithStashSpec
       val a = actor(
         new ActWithStash {
           become {
-            case "die" ⇒ throw new RuntimeException("dying")
+            case "die" ⇒
+              throw new RuntimeException("dying")
           }
           whenRestarted { thr ⇒
             testActor ! "restarted"

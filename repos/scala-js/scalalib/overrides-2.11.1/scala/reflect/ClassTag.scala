@@ -53,18 +53,24 @@ trait ClassTag[T]
   /** Produces a new array with element type `T` and length `len` */
   override def newArray(len: Int): Array[T] =
     runtimeClass match {
-      case java.lang.Byte.TYPE  => new Array[Byte](len).asInstanceOf[Array[T]]
-      case java.lang.Short.TYPE => new Array[Short](len).asInstanceOf[Array[T]]
+      case java.lang.Byte.TYPE =>
+        new Array[Byte](len).asInstanceOf[Array[T]]
+      case java.lang.Short.TYPE =>
+        new Array[Short](len).asInstanceOf[Array[T]]
       case java.lang.Character.TYPE =>
         new Array[Char](len).asInstanceOf[Array[T]]
-      case java.lang.Integer.TYPE => new Array[Int](len).asInstanceOf[Array[T]]
-      case java.lang.Long.TYPE    => new Array[Long](len).asInstanceOf[Array[T]]
-      case java.lang.Float.TYPE   => new Array[Float](len).asInstanceOf[Array[T]]
+      case java.lang.Integer.TYPE =>
+        new Array[Int](len).asInstanceOf[Array[T]]
+      case java.lang.Long.TYPE =>
+        new Array[Long](len).asInstanceOf[Array[T]]
+      case java.lang.Float.TYPE =>
+        new Array[Float](len).asInstanceOf[Array[T]]
       case java.lang.Double.TYPE =>
         new Array[Double](len).asInstanceOf[Array[T]]
       case java.lang.Boolean.TYPE =>
         new Array[Boolean](len).asInstanceOf[Array[T]]
-      case java.lang.Void.TYPE => new Array[Unit](len).asInstanceOf[Array[T]]
+      case java.lang.Void.TYPE =>
+        new Array[Unit](len).asInstanceOf[Array[T]]
       case _ =>
         java.lang.reflect.Array
           .newInstance(runtimeClass, len)
@@ -145,15 +151,24 @@ object ClassTag {
 
   def apply[T](runtimeClass1: jClass[_]): ClassTag[T] =
     runtimeClass1 match {
-      case java.lang.Byte.TYPE      => ClassTag.Byte.asInstanceOf[ClassTag[T]]
-      case java.lang.Short.TYPE     => ClassTag.Short.asInstanceOf[ClassTag[T]]
-      case java.lang.Character.TYPE => ClassTag.Char.asInstanceOf[ClassTag[T]]
-      case java.lang.Integer.TYPE   => ClassTag.Int.asInstanceOf[ClassTag[T]]
-      case java.lang.Long.TYPE      => ClassTag.Long.asInstanceOf[ClassTag[T]]
-      case java.lang.Float.TYPE     => ClassTag.Float.asInstanceOf[ClassTag[T]]
-      case java.lang.Double.TYPE    => ClassTag.Double.asInstanceOf[ClassTag[T]]
-      case java.lang.Boolean.TYPE   => ClassTag.Boolean.asInstanceOf[ClassTag[T]]
-      case java.lang.Void.TYPE      => ClassTag.Unit.asInstanceOf[ClassTag[T]]
+      case java.lang.Byte.TYPE =>
+        ClassTag.Byte.asInstanceOf[ClassTag[T]]
+      case java.lang.Short.TYPE =>
+        ClassTag.Short.asInstanceOf[ClassTag[T]]
+      case java.lang.Character.TYPE =>
+        ClassTag.Char.asInstanceOf[ClassTag[T]]
+      case java.lang.Integer.TYPE =>
+        ClassTag.Int.asInstanceOf[ClassTag[T]]
+      case java.lang.Long.TYPE =>
+        ClassTag.Long.asInstanceOf[ClassTag[T]]
+      case java.lang.Float.TYPE =>
+        ClassTag.Float.asInstanceOf[ClassTag[T]]
+      case java.lang.Double.TYPE =>
+        ClassTag.Double.asInstanceOf[ClassTag[T]]
+      case java.lang.Boolean.TYPE =>
+        ClassTag.Boolean.asInstanceOf[ClassTag[T]]
+      case java.lang.Void.TYPE =>
+        ClassTag.Unit.asInstanceOf[ClassTag[T]]
       case _ =>
         if (classOf[java.lang.Object] == runtimeClass1)
           ClassTag.Object.asInstanceOf[ClassTag[T]]

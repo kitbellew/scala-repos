@@ -127,7 +127,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     val realMeth = map.values
       .map(
         _.sortWith {
-          case (a, b) => !a.getReturnType.isAssignableFrom(b.getReturnType)
+          case (a, b) =>
+            !a.getReturnType.isAssignableFrom(b.getReturnType)
         })
       .map(_.head)
 
@@ -154,7 +155,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     ).toList
 
     introspect(this, methods) {
-      case (v, mf) => tArray += FieldHolder(mf.name, v, mf)
+      case (v, mf) =>
+        tArray += FieldHolder(mf.name, v, mf)
     }
 
     fieldList = {
@@ -281,8 +283,10 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     }
 
     jvalue match {
-      case JObject(jfields) => fromJFields(jfields)
-      case other            => expectedA("JObject", other)
+      case JObject(jfields) =>
+        fromJFields(jfields)
+      case other =>
+        expectedA("JObject", other)
     }
   }
 
@@ -317,7 +321,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     */
   def toForm(inst: BaseRecord): NodeSeq = {
     formTemplate match {
-      case Full(template) => toForm(inst, template)
+      case Full(template) =>
+        toForm(inst, template)
       case _ =>
         fieldList.flatMap(
           _.field(inst).toForm.openOr(NodeSeq.Empty) ++ Text("\n"))
@@ -340,7 +345,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
         e.attribute("name") match {
           case Some(name) =>
             fieldByName(name.toString, inst).map(_.label).openOr(NodeSeq.Empty)
-          case _ => NodeSeq.Empty
+          case _ =>
+            NodeSeq.Empty
         }
 
       case e @ <lift:field>{
@@ -351,7 +357,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
             fieldByName(name.toString, inst)
               .flatMap(_.toForm)
               .openOr(NodeSeq.Empty)
-          case _ => NodeSeq.Empty
+          case _ =>
+            NodeSeq.Empty
         }
 
       case e @ <lift:field_msg>{
@@ -366,10 +373,12 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
                     <lift:msg id={
                       id
                     }/>
-                  case _ => NodeSeq.Empty
+                  case _ =>
+                    NodeSeq.Empty
                 })
               .openOr(NodeSeq.Empty)
-          case _ => NodeSeq.Empty
+          case _ =>
+            NodeSeq.Empty
         }
 
       case elem: Elem =>
@@ -384,7 +393,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
                 inst,
                 elem.child.flatMap(n => toForm(inst, n))))
 
-            case x => x
+            case x =>
+              x
           })
 
     }

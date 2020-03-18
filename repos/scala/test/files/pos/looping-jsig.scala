@@ -16,7 +16,9 @@ trait BugTrack {
   def amethod[T](p: => A[T]): A[T] =
     A(in =>
       cache.get(p) match {
-        case Some(res) => res
-        case None      => p(in)
+        case Some(res) =>
+          res
+        case None =>
+          p(in)
       }).giveMeSame.asInstanceOf[A[T]]
 }

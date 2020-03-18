@@ -719,7 +719,8 @@ private[deploy] class Worker(
     */
   private def sendToMaster(message: Any): Unit = {
     master match {
-      case Some(masterRef) => masterRef.send(message)
+      case Some(masterRef) =>
+        masterRef.send(message)
       case None =>
         logWarning(
           s"Dropping $message because the connection to master has not yet been established")
@@ -748,7 +749,8 @@ private[deploy] class Worker(
     // thread-safe RpcEndPoint
     if (finishedExecutors.size > retainedExecutors) {
       finishedExecutors.take(math.max(finishedExecutors.size / 10, 1)).foreach {
-        case (executorId, _) => finishedExecutors.remove(executorId)
+        case (executorId, _) =>
+          finishedExecutors.remove(executorId)
       }
     }
   }
@@ -758,7 +760,8 @@ private[deploy] class Worker(
     // thread-safe RpcEndPoint
     if (finishedDrivers.size > retainedDrivers) {
       finishedDrivers.take(math.max(finishedDrivers.size / 10, 1)).foreach {
-        case (driverId, _) => finishedDrivers.remove(driverId)
+        case (driverId, _) =>
+          finishedDrivers.remove(driverId)
       }
     }
   }
@@ -874,7 +877,8 @@ private[deploy] object Worker extends Logging {
   def isUseLocalNodeSSLConfig(cmd: Command): Boolean = {
     val pattern = """\-Dspark\.ssl\.useNodeLocalConf\=(.+)""".r
     val result = cmd.javaOpts.collectFirst {
-      case pattern(_result) => _result.toBoolean
+      case pattern(_result) =>
+        _result.toBoolean
     }
     result.getOrElse(false)
   }
@@ -886,7 +890,8 @@ private[deploy] object Worker extends Logging {
       val newJavaOpts = cmd.javaOpts
         .filter(opt => !opt.startsWith(s"-D$prefix")) ++
         conf.getAll.collect {
-          case (key, value) if key.startsWith(prefix) => s"-D$key=$value"
+          case (key, value) if key.startsWith(prefix) =>
+            s"-D$key=$value"
         } :+
         s"-D$useNLC=true"
       cmd.copy(javaOpts = newJavaOpts)

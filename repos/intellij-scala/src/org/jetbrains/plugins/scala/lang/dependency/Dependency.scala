@@ -67,9 +67,12 @@ object Dependency {
 
   private def isPrimary(ref: ScReferenceElement) =
     ref match {
-      case it @ Parent(postfix: ScPostfixExpr) => it == postfix.operand
-      case it @ Parent(infix: ScInfixExpr)     => it == infix.lOp
-      case it                                  => it.qualifier.isEmpty
+      case it @ Parent(postfix: ScPostfixExpr) =>
+        it == postfix.operand
+      case it @ Parent(infix: ScInfixExpr) =>
+        it == infix.lOp
+      case it =>
+        it.qualifier.isEmpty
     }
 
   private def dependencyFor(
@@ -97,8 +100,10 @@ object Dependency {
         target match {
           case ContainingClass(aClass) =>
             withEntity(aClass.qualifiedName)
-          case aClass: ScSyntheticClass => None
-          case _                        => None
+          case aClass: ScSyntheticClass =>
+            None
+          case _ =>
+            None
         }
       case _ =>
         target match {
@@ -117,8 +122,10 @@ object Dependency {
           case (member: ScMember) && ContainingClass(obj: ScObject) =>
             val memberName =
               member match {
-                case named: ScNamedElement => named.name
-                case _                     => member.getName
+                case named: ScNamedElement =>
+                  named.name
+                case _ =>
+                  member.getName
               }
             withMember(obj.qualifiedName, memberName)
           case (pattern: ScReferencePattern) && Parent(
@@ -139,13 +146,17 @@ object Dependency {
               case Some(entity: ScObject) =>
                 val memberName =
                   member match {
-                    case named: ScNamedElement => named.name
-                    case _                     => member.getName
+                    case named: ScNamedElement =>
+                      named.name
+                    case _ =>
+                      member.getName
                   }
                 withMember(entity.qualifiedName, memberName)
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
     }
   }

@@ -28,10 +28,12 @@ class Marshal[A](val value: A) {
   def to[B](implicit m: Marshaller[A, B], ec: ExecutionContext): Future[B] =
     m(value).fast.map {
       _.head match {
-        case Marshalling.WithFixedContentType(_, marshal) ⇒ marshal()
+        case Marshalling.WithFixedContentType(_, marshal) ⇒
+          marshal()
         case Marshalling.WithOpenCharset(_, marshal) ⇒
           marshal(HttpCharsets.`UTF-8`)
-        case Marshalling.Opaque(marshal) ⇒ marshal()
+        case Marshalling.Opaque(marshal) ⇒
+          marshal()
       }
     }
 
@@ -59,11 +61,13 @@ class Marshal[A](val value: A) {
                   _: ContentType.Binary | _: ContentType.WithFixedCharset
                 ) ⇒
               marshallings collectFirst {
-                case Marshalling.WithFixedContentType(`best`, marshal) ⇒ marshal
+                case Marshalling.WithFixedContentType(`best`, marshal) ⇒
+                  marshal
               }
             case best @ ContentType.WithCharset(bestMT, bestCS) ⇒
               marshallings collectFirst {
-                case Marshalling.WithFixedContentType(`best`, marshal) ⇒ marshal
+                case Marshalling.WithFixedContentType(`best`, marshal) ⇒
+                  marshal
                 case Marshalling.WithOpenCharset(`bestMT`, marshal) ⇒
                   () ⇒ marshal(bestCS)
               }
@@ -72,7 +76,8 @@ class Marshal[A](val value: A) {
           None
       } orElse {
         marshallings collectFirst {
-          case Marshalling.Opaque(marshal) ⇒ marshal
+          case Marshalling.Opaque(marshal) ⇒
+            marshal
         }
       } getOrElse {
         throw UnacceptableResponseContentTypeException(

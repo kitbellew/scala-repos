@@ -32,8 +32,10 @@ class ScVariableDefinitionImpl private (
     with ScVariableDefinition {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -65,7 +67,8 @@ class ScVariableDefinitionImpl private (
 
   def getType(ctx: TypingContext) =
     typeElement match {
-      case Some(te) => te.getType(ctx)
+      case Some(te) =>
+        te.getType(ctx)
       case None =>
         expr
           .map(_.getType(TypingContext.empty))

@@ -9,17 +9,20 @@ case class E(c: Class[_])
 object Test extends App {
   def f1(c: C) =
     c match {
-      case C(a, b) => ()
+      case C(a, b) =>
+        ()
     }
 
   def f2(d: D) =
     d match {
-      case D(a, b1, b2) => ()
+      case D(a, b1, b2) =>
+        ()
     }
 
   def f3(e: E) =
     e match {
-      case E(c) => ()
+      case E(c) =>
+        ()
     }
 
   f1(C(new A, new B(1)))

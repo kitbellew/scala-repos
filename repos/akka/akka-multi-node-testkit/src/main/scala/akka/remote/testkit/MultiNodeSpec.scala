@@ -158,8 +158,10 @@ object MultiNodeSpec {
       case None ⇒
         throw new IllegalStateException(
           "need system property multinode.host to be set")
-      case Some("") ⇒ InetAddress.getLocalHost.getHostAddress
-      case Some(host) ⇒ host
+      case Some("") ⇒
+        InetAddress.getLocalHost.getHostAddress
+      case Some(host) ⇒
+        host
     }
 
   require(selfName != "", "multinode.host must not be empty")
@@ -262,8 +264,10 @@ object MultiNodeSpec {
     ) drop 1 dropWhile (_ matches ".*MultiNodeSpec.?$")
     val reduced =
       s.lastIndexWhere(_ == clazz.getName) match {
-        case -1 ⇒ s
-        case z ⇒ s drop (z + 1)
+        case -1 ⇒
+          s
+        case z ⇒
+          s drop (z + 1)
       }
     reduced.head.replaceFirst(""".*\.""", "").replaceAll("[^a-zA-Z_0-9]", "_")
   }
@@ -461,7 +465,8 @@ abstract class MultiNodeSpec(
       val deployString = (str /: replacements) {
         case (base, r @ Replacement(tag, _)) ⇒
           base.indexOf(tag) match {
-            case -1 ⇒ base
+            case -1 ⇒
+              base
             case start ⇒
               val replaceWith =
                 try r.addr

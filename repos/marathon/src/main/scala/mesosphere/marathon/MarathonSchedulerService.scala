@@ -138,8 +138,10 @@ class MarathonSchedulerService @Inject() (
       schedulerActor,
       Deploy(plan, force))
     future.map {
-      case DeploymentStarted(_) => ()
-      case CommandFailed(_, t)  => throw t
+      case DeploymentStarted(_) =>
+        ()
+      case CommandFailed(_, t) =>
+        throw t
     }
   }
 
@@ -219,8 +221,10 @@ class MarathonSchedulerService @Inject() (
 
       def executeAbdicationCommand() =
         abdicateCmdOption match {
-          case Some(cmd) => cmd.execute()
-          case _         => leader.set(false)
+          case Some(cmd) =>
+            cmd.execute()
+          case _ =>
+            leader.set(false)
         }
 
       log.info("Running driver")

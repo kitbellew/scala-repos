@@ -25,7 +25,8 @@ final class MongoCache[K, V: MongoCache.Handler] private (
             coll.insert(makeEntry(k, v)) recover
               lila.db.recoverDuplicateKey(_ => ()) inject v
           }
-        case Some(entry) => fuccess(entry.v)
+        case Some(entry) =>
+          fuccess(entry.v)
       }
     }
 

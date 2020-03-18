@@ -163,7 +163,8 @@ private[spark] class AppClient(
       */
     private def sendToMaster(message: Any): Unit = {
       master match {
-        case Some(masterRef) => masterRef.send(message)
+        case Some(masterRef) =>
+          masterRef.send(message)
         case None =>
           logWarning(s"Drop $message because has not yet connected to master")
       }
@@ -228,7 +229,8 @@ private[spark] class AppClient(
 
       case r: RequestExecutors =>
         master match {
-          case Some(m) => askAndReplyAsync(m, context, r)
+          case Some(m) =>
+            askAndReplyAsync(m, context, r)
           case None =>
             logWarning(
               "Attempted to request executors before registering with Master.")
@@ -237,7 +239,8 @@ private[spark] class AppClient(
 
       case k: KillExecutors =>
         master match {
-          case Some(m) => askAndReplyAsync(m, context, k)
+          case Some(m) =>
+            askAndReplyAsync(m, context, k)
           case None =>
             logWarning(
               "Attempted to kill executors before registering with Master.")

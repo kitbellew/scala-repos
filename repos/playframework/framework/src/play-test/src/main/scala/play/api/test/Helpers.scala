@@ -127,7 +127,8 @@ trait PlayRunners extends HttpVerbs {
         .empty[String, String]): Map[String, String] = {
     val optionsForDbUrl = options
       .map {
-        case (k, v) => k + "=" + v
+        case (k, v) =>
+          k + "=" + v
       }
       .mkString(";", ";", "")
 
@@ -276,7 +277,8 @@ trait RouteInvokers extends EssentialActionCaller {
     handler match {
       case a: EssentialAction =>
         Some(call(a, taggedRh, body))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -356,7 +358,8 @@ trait ResultExtractors {
     Await.result(of, timeout.duration).body.contentType match {
       case Some(s) if s.contains("charset=") =>
         Some(s.split("; *charset=").drop(1).mkString.trim)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -417,13 +420,16 @@ trait ResultExtractors {
   def redirectLocation(of: Future[Result])(implicit
       timeout: Timeout): Option[String] =
     Await.result(of, timeout.duration).header match {
-      case ResponseHeader(FOUND, headers, _)     => headers.get(LOCATION)
-      case ResponseHeader(SEE_OTHER, headers, _) => headers.get(LOCATION)
+      case ResponseHeader(FOUND, headers, _) =>
+        headers.get(LOCATION)
+      case ResponseHeader(SEE_OTHER, headers, _) =>
+        headers.get(LOCATION)
       case ResponseHeader(TEMPORARY_REDIRECT, headers, _) =>
         headers.get(LOCATION)
       case ResponseHeader(MOVED_PERMANENTLY, headers, _) =>
         headers.get(LOCATION)
-      case ResponseHeader(_, _, _) => None
+      case ResponseHeader(_, _, _) =>
+        None
     }
 
   /**

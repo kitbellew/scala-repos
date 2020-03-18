@@ -167,7 +167,8 @@ private[akka] class SubclassifiedIndex[K, V] private (
     // go through the whole tree to find all values for the "changed" keys in other
     // parts of the tree as well, since new nodes might have been created
     mergeChangesByKey(innerRemoveValue(key, value)) map {
-      case (k, _) ⇒ (k, findValues(k))
+      case (k, _) ⇒
+        (k, findValues(k))
     }
 
   // this will return the keys and values to be removed from the cache
@@ -252,6 +253,7 @@ private[akka] class SubclassifiedIndex[K, V] private (
 
   private def mergeChangesByKey(changes: Changes): Changes =
     (emptyMergeMap[K, V] /: changes) {
-      case (m, (k, s)) ⇒ m.updated(k, m(k) ++ s)
+      case (m, (k, s)) ⇒
+        m.updated(k, m(k) ++ s)
     }.to[immutable.Seq]
 }

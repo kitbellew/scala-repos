@@ -11,7 +11,8 @@ object StaticReflect {
 
     val nameName: TermName =
       name.tree match {
-        case Literal(Constant(str: String)) => TermName(str)
+        case Literal(Constant(str: String)) =>
+          TermName(str)
         case _ =>
           c.error(c.enclosingPosition, s"Method name not constant.");
           return reify(ru.NoType)

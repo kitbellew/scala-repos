@@ -132,8 +132,10 @@ abstract class ClassfileParser {
   }
 
   private def parseErrorHandler[T]: PartialFunction[Throwable, T] = {
-    case e: MissingRequirementError => handleMissing(e)
-    case e: RuntimeException        => handleError(e)
+    case e: MissingRequirementError =>
+      handleMissing(e)
+    case e: RuntimeException =>
+      handleError(e)
   }
   @inline
   private def pushBusy[T](sym: Symbol)(body: => T): T = {
@@ -209,20 +211,24 @@ abstract class ClassfileParser {
         starts(i) = in.bp
         i += 1
         (u1: @switch) match {
-          case CONSTANT_UTF8 | CONSTANT_UNICODE => in skip u2
+          case CONSTANT_UTF8 | CONSTANT_UNICODE =>
+            in skip u2
           case CONSTANT_CLASS | CONSTANT_STRING | CONSTANT_METHODTYPE =>
             in skip 2
-          case CONSTANT_METHODHANDLE => in skip 3
+          case CONSTANT_METHODHANDLE =>
+            in skip 3
           case CONSTANT_FIELDREF | CONSTANT_METHODREF |
               CONSTANT_INTFMETHODREF =>
             in skip 4
           case CONSTANT_NAMEANDTYPE | CONSTANT_INTEGER | CONSTANT_FLOAT =>
             in skip 4
-          case CONSTANT_INVOKEDYNAMIC => in skip 4
+          case CONSTANT_INVOKEDYNAMIC =>
+            in skip 4
           case CONSTANT_LONG | CONSTANT_DOUBLE =>
             in skip 8;
             i += 1
-          case _ => errorBadTag(in.bp - 1)
+          case _ =>
+            errorBadTag(in.bp - 1)
         }
       }
     }
@@ -247,7 +253,8 @@ abstract class ClassfileParser {
          errorBadIndex(index)
        else
          values(index) match {
-           case name: Name => name
+           case name: Name =>
+             name
            case _ =>
              val start = firstExpecting(index, CONSTANT_UTF8)
              recordAtIndex(
@@ -270,13 +277,15 @@ abstract class ClassfileParser {
       if (index <= 0 || len <= index)
         errorBadIndex(index)
       values(index) match {
-        case sym: Symbol => sym
+        case sym: Symbol =>
+          sym
         case _ =>
           val result =
             getClassName(index) match {
               case name if nme.isModuleName(name) =>
                 rootMirror getModuleByName name.dropModule
-              case name => classNameToSymbol(name)
+              case name =>
+                classNameToSymbol(name)
             }
           recordAtIndex(result, index)
       }
@@ -300,7 +309,8 @@ abstract class ClassfileParser {
       if (index <= 0 || len <= index)
         errorBadIndex(index)
       values(index) match {
-        case p: ((Name @unchecked, Type @unchecked)) => p
+        case p: ((Name @unchecked, Type @unchecked)) =>
+          p
         case _ =>
           val start = firstExpecting(index, CONSTANT_NAMEANDTYPE)
           val name = getName(in.getChar(start).toInt)
@@ -313,7 +323,8 @@ abstract class ClassfileParser {
             tpe match {
               case MethodType(formals, _) if name == nme.CONSTRUCTOR =>
                 MethodType(formals, ownerTpe)
-              case _ => tpe
+              case _ =>
+                tpe
             }
           ((name, restpe))
       }
@@ -328,13 +339,17 @@ abstract class ClassfileParser {
          errorBadIndex(index)
        else
          values(index) match {
-           case tp: Type    => tp
-           case cls: Symbol => cls.tpe_*
+           case tp: Type =>
+             tp
+           case cls: Symbol =>
+             cls.tpe_*
            case _ =>
              val name = getClassName(index)
              name charAt 0 match {
-               case ARRAY_TAG => recordAtIndex(sigToType(null, name), index)
-               case _         => recordAtIndex(classNameToSymbol(name), index).tpe_*
+               case ARRAY_TAG =>
+                 recordAtIndex(sigToType(null, name), index)
+               case _ =>
+                 recordAtIndex(classNameToSymbol(name), index).tpe_*
              }
          })
 
@@ -353,15 +368,21 @@ abstract class ClassfileParser {
       val start = starts(index)
       Constant(
         (in.buf(start).toInt: @switch) match {
-          case CONSTANT_STRING  => getName(in.getChar(start + 1).toInt).toString
-          case CONSTANT_INTEGER => in.getInt(start + 1)
-          case CONSTANT_FLOAT   => in.getFloat(start + 1)
-          case CONSTANT_LONG    => in.getLong(start + 1)
-          case CONSTANT_DOUBLE  => in.getDouble(start + 1)
+          case CONSTANT_STRING =>
+            getName(in.getChar(start + 1).toInt).toString
+          case CONSTANT_INTEGER =>
+            in.getInt(start + 1)
+          case CONSTANT_FLOAT =>
+            in.getFloat(start + 1)
+          case CONSTANT_LONG =>
+            in.getLong(start + 1)
+          case CONSTANT_DOUBLE =>
+            in.getDouble(start + 1)
           case CONSTANT_CLASS =>
             getClassOrArrayType(
               index).typeSymbol.tpe_* // !!! Is this necessary or desirable?
-          case _ => errorBadTag(start)
+          case _ =>
+            errorBadTag(start)
         })
     }
     def getConstant(index: Char): Constant = getConstant(index.toInt)
@@ -370,10 +391,14 @@ abstract class ClassfileParser {
          errorBadIndex(index)
        else
          values(index) match {
-           case const: Constant => const
-           case sym: Symbol     => Constant(sym.tpe_*)
-           case tpe: Type       => Constant(tpe)
-           case _               => recordAtIndex(createConstant(index), index)
+           case const: Constant =>
+             const
+           case sym: Symbol =>
+             Constant(sym.tpe_*)
+           case tpe: Type =>
+             Constant(tpe)
+           case _ =>
+             recordAtIndex(createConstant(index), index)
          })
 
     private def getSubArray(bytes: Array[Byte]): Array[Byte] = {
@@ -388,7 +413,8 @@ abstract class ClassfileParser {
          errorBadIndex(index)
        else
          values(index) match {
-           case xs: Array[Byte] => xs
+           case xs: Array[Byte] =>
+             xs
            case _ =>
              val start = firstExpecting(index, CONSTANT_UTF8)
              val len = (in getChar start).toInt
@@ -400,7 +426,8 @@ abstract class ClassfileParser {
     def getBytes(indices: List[Int]): Array[Byte] = {
       val head = indices.head
       values(head) match {
-        case xs: Array[Byte] => xs
+        case xs: Array[Byte] =>
+          xs
         case _ =>
           val arr: Array[Byte] = indices.toArray flatMap { index =>
             if (index <= 0 || ConstantPool.this.len <= index)
@@ -479,7 +506,8 @@ abstract class ClassfileParser {
     else
       try lookupClass(name)
       catch {
-        case _: FatalError => loadClassSymbol(name)
+        case _: FatalError =>
+          loadClassSymbol(name)
       }
   }
 
@@ -732,15 +760,24 @@ abstract class ClassfileParser {
       val tag = sig.charAt(index);
       index += 1
       tag match {
-        case BYTE_TAG   => ByteTpe
-        case CHAR_TAG   => CharTpe
-        case DOUBLE_TAG => DoubleTpe
-        case FLOAT_TAG  => FloatTpe
-        case INT_TAG    => IntTpe
-        case LONG_TAG   => LongTpe
-        case SHORT_TAG  => ShortTpe
-        case VOID_TAG   => UnitTpe
-        case BOOL_TAG   => BooleanTpe
+        case BYTE_TAG =>
+          ByteTpe
+        case CHAR_TAG =>
+          CharTpe
+        case DOUBLE_TAG =>
+          DoubleTpe
+        case FLOAT_TAG =>
+          FloatTpe
+        case INT_TAG =>
+          IntTpe
+        case LONG_TAG =>
+          LongTpe
+        case SHORT_TAG =>
+          ShortTpe
+        case VOID_TAG =>
+          UnitTpe
+        case BOOL_TAG =>
+          BooleanTpe
         case 'L' =>
           def processInner(tp: Type): Type =
             tp match {
@@ -774,7 +811,8 @@ abstract class ClassfileParser {
                                 TypeBounds.empty
                               else
                                 TypeBounds.lower(tp)
-                            case '*' => TypeBounds.empty
+                            case '*' =>
+                              TypeBounds.empty
                           }
                         val newtparam = sym.newExistential(
                           newTypeName("?" + i),
@@ -1036,8 +1074,10 @@ abstract class ClassfileParser {
           val srcfileLeaf = readName().toString.trim
           val srcpath =
             sym.enclosingPackage match {
-              case NoSymbol                => srcfileLeaf
-              case rootMirror.EmptyPackage => srcfileLeaf
+              case NoSymbol =>
+                srcfileLeaf
+              case rootMirror.EmptyPackage =>
+                srcfileLeaf
               case pkg =>
                 pkg.fullName(File.separatorChar) + File.separator + srcfileLeaf
             }
@@ -1084,8 +1124,10 @@ abstract class ClassfileParser {
           var hasError = false
           for (i <- 0 until index)
             parseAnnotArg match {
-              case Some(c) => arr += c
-              case None    => hasError = true
+              case Some(c) =>
+                arr += c
+              case None =>
+                hasError = true
             }
           if (hasError)
             None
@@ -1133,20 +1175,26 @@ abstract class ClassfileParser {
           // is encoded as a string because of limitations in the Java class file format.
           if ((attrType == ScalaSignatureAnnotation.tpe) && (name == nme.bytes))
             parseScalaSigBytes match {
-              case Some(c) => nvpairs += ((name, c))
-              case None    => hasError = true
+              case Some(c) =>
+                nvpairs += ((name, c))
+              case None =>
+                hasError = true
             }
           else if ((
                      attrType == ScalaLongSignatureAnnotation.tpe
                    ) && (name == nme.bytes))
             parseScalaLongSigBytes match {
-              case Some(c) => nvpairs += ((name, c))
-              case None    => hasError = true
+              case Some(c) =>
+                nvpairs += ((name, c))
+              case None =>
+                hasError = true
             }
           else
             parseAnnotArg match {
-              case Some(c) => nvpairs += ((name, c))
-              case None    => hasError = true
+              case Some(c) =>
+                nvpairs += ((name, c))
+              case None =>
+                hasError = true
             }
         }
         if (hasError)
@@ -1156,8 +1204,9 @@ abstract class ClassfileParser {
       } catch {
         case f: FatalError =>
           throw f // don't eat fatal errors, they mean a class was not found
-        case ex: java.lang.Error => throw ex
-        case ex: Throwable       =>
+        case ex: java.lang.Error =>
+          throw ex
+        case ex: Throwable =>
           // We want to be robust when annotations are unavailable, so the very least
           // we can do is warn the user about the exception
           // There was a reference to ticket 1135, but that is outdated: a reference to a class not on
@@ -1369,8 +1418,10 @@ abstract class ClassfileParser {
     }
     def innerSymbol(externalName: Name): Symbol =
       this getEntry externalName match {
-        case Some(entry) => innerSymbol(entry)
-        case _           => NoSymbol
+        case Some(entry) =>
+          innerSymbol(entry)
+        case _ =>
+          NoSymbol
       }
 
     private def innerSymbol(entry: InnerClassEntry): Symbol = {

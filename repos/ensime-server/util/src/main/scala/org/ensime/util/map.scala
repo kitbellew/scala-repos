@@ -14,7 +14,8 @@ package object map {
       */
     def mapValuesEagerly[W](f: V => W): Map[K, W] =
       map.map {
-        case (k, v) => (k, f(v))
+        case (k, v) =>
+          (k, f(v))
       }
   }
 
@@ -38,7 +39,8 @@ package object map {
         v <- vs
       } builder.addBinding(k, v)
       builder.map {
-        case (k, vs) => (k, vs.toSet)
+        case (k, vs) =>
+          (k, vs.toSet)
       }(collection.breakOut)
     }
 

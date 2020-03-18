@@ -120,7 +120,8 @@ class FutureDirectivesSpec extends RoutingSpec {
     "recover using the inner route if the Future fails" in {
       val route =
         completeOrRecoverWith(Future.failed[String](TestException)) {
-          case e ⇒ complete(s"Exception occurred: ${e.getMessage}")
+          case e ⇒
+            complete(s"Exception occurred: ${e.getMessage}")
         }
 
       Get() ~> route ~> check {

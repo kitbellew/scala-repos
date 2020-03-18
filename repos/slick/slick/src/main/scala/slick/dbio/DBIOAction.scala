@@ -64,8 +64,10 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   def andThen[R2, S2 <: NoStream, E2 <: Effect](
       a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
     a match {
-      case AndThenAction(as2) => AndThenAction[R2, S2, E with E2](this +: as2)
-      case a                  => AndThenAction[R2, S2, E with E2](Vector(this, a))
+      case AndThenAction(as2) =>
+        AndThenAction[R2, S2, E with E2](this +: as2)
+      case a =>
+        AndThenAction[R2, S2, E with E2](Vector(this, a))
     }
 
   /** Run another action after this action, if it completed successfully, and return the result
@@ -291,8 +293,10 @@ object DBIOAction {
     val grouped = groupBySynchronicity[R, E](
       in.asInstanceOf[TraversableOnce[DBIOAction[R, NoStream, E]]])
     grouped.length match {
-      case 0 => DBIO.successful(cbf().result())
-      case 1 => sequenceGroupAsM(grouped.head)
+      case 0 =>
+        DBIO.successful(cbf().result())
+      case 1 =>
+        sequenceGroupAsM(grouped.head)
       case n =>
         grouped.foldLeft(
           DBIO.successful(cbf(in)): DBIOAction[
@@ -348,7 +352,8 @@ object DBIOAction {
           val last = grouped.length - 1
           val as =
             grouped.iterator.zipWithIndex.map {
-              case (g, i) => sequenceGroup(g, i == last)
+              case (g, i) =>
+                sequenceGroup(g, i == last)
             }.toVector
           AndThenAction[Unit, NoStream, E](as)
       }
@@ -391,13 +396,15 @@ object DBIOAction {
         while (r ne null) {
           try r.run()
           catch {
-            case t: Throwable => err = t
+            case t: Throwable =>
+              err = t
           }
           trampoline.get() match {
             case r2 :: rest =>
               trampoline.set(rest)
               r = r2
-            case _ => r = null
+            case _ =>
+              r = null
           }
         }
         if (err ne null)
@@ -407,8 +414,10 @@ object DBIOAction {
 
     override def execute(runnable: Runnable): Unit =
       trampoline.get() match {
-        case null => runTrampoline(runnable)
-        case r    => trampoline.set(runnable :: r)
+        case null =>
+          runTrampoline(runnable)
+        case r =>
+          trampoline.set(runnable :: r)
       }
 
     override def reportFailure(t: Throwable): Unit = throw t
@@ -461,14 +470,17 @@ case class AndThenAction[R, +S <: NoStream, -E <: Effect](
     DumpInfo(
       "andThen",
       children = as.zipWithIndex.map {
-        case (a, i) => (String.valueOf(i + 1), a)
+        case (a, i) =>
+          (String.valueOf(i + 1), a)
       })
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
       a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
     a match {
-      case AndThenAction(as2) => AndThenAction[R2, S2, E with E2](as ++ as2)
-      case a                  => AndThenAction[R2, S2, E with E2](as :+ a)
+      case AndThenAction(as2) =>
+        AndThenAction[R2, S2, E with E2](as ++ as2)
+      case a =>
+        AndThenAction[R2, S2, E with E2](as :+ a)
     }
 }
 
@@ -481,7 +493,8 @@ case class SequenceAction[R, +R2, -E <: Effect](
     DumpInfo(
       "sequence",
       children = as.zipWithIndex.map {
-        case (a, i) => (String.valueOf(i + 1), a)
+        case (a, i) =>
+          (String.valueOf(i + 1), a)
       })
 }
 
@@ -608,7 +621,8 @@ trait SynchronousDatabaseAction[
           Vector(
             self.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]],
             a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]]))
-      case a => super.andThen[R2, S2, E2](a)
+      case a =>
+        super.andThen[R2, S2, E2](a)
     }
 
   private[this] def superZip[R2, E2 <: Effect](
@@ -628,7 +642,8 @@ trait SynchronousDatabaseAction[
           override def nonFusedEquivalentAction
               : DBIOAction[(R, R2), NoStream, E with E2] = superZip(a)
         }
-      case a => superZip(a)
+      case a =>
+        superZip(a)
     }
 
   private[this] def superAndFinally[E2 <: Effect](
@@ -657,7 +672,8 @@ trait SynchronousDatabaseAction[
           override def nonFusedEquivalentAction: DBIOAction[R, S, E with E2] =
             superAndFinally(a)
         }
-      case a => superAndFinally(a)
+      case a =>
+        superAndFinally(a)
     }
 
   private[this] def superWithPinnedSession = super.withPinnedSession
@@ -690,7 +706,8 @@ trait SynchronousDatabaseAction[
           throw new NoSuchElementException(
             "Action.failed (fused) not completed with a Throwable")
         } catch {
-          case NonFatal(ex) if !ok => ex
+          case NonFatal(ex) if !ok =>
+            ex
         }
       }
       override def nonFusedEquivalentAction = superFailed
@@ -702,7 +719,8 @@ trait SynchronousDatabaseAction[
       def run(context: B#Context): Try[R] = {
         try Success(self.run(context))
         catch {
-          case NonFatal(ex) => Failure(ex)
+          case NonFatal(ex) =>
+            Failure(ex)
         }
       }
       override def nonFusedEquivalentAction = superAsTry
@@ -753,7 +771,8 @@ object SynchronousDatabaseAction {
             as.asInstanceOf[IndexedSeq[
               SynchronousDatabaseAction[Any, S2, B, E with E2]]] :+
               a.asInstanceOf[SynchronousDatabaseAction[Any, S2, B, E with E2]])
-        case a => super.andThen(a)
+        case a =>
+          super.andThen(a)
       }
   }
 
@@ -803,7 +822,8 @@ object SynchronousDatabaseAction {
                         Effect]]
                       .run(context)
                   } catch {
-                    case NonFatal(_) if keepFailure => ()
+                    case NonFatal(_) if keepFailure =>
+                      ()
                   }
                   throw ex
               }
@@ -816,7 +836,8 @@ object SynchronousDatabaseAction {
           override def nonFusedEquivalentAction = a
         }
 
-      case a => a
+      case a =>
+        a
     }
   }
 }

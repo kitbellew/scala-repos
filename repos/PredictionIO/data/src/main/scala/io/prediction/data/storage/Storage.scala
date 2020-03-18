@@ -127,8 +127,10 @@ object Storage extends Logging {
 
   private val sourceKeys: Seq[String] = sys.env.keys.toSeq.flatMap { k =>
     sourceTypesRegex findFirstIn k match {
-      case Some(sourceTypesRegex(sourceType)) => Seq(sourceType)
-      case None                               => Nil
+      case Some(sourceTypesRegex(sourceType)) =>
+        Seq(sourceType)
+      case None =>
+        Nil
     }
   }
 
@@ -149,8 +151,10 @@ object Storage extends Logging {
 
   private val repositoryKeys: Seq[String] = sys.env.keys.toSeq.flatMap { k =>
     repositoryNamesRegex findFirstIn k match {
-      case Some(repositoryNamesRegex(repositoryName)) => Seq(repositoryName)
-      case None                                       => Nil
+      case Some(repositoryNamesRegex(repositoryName)) =>
+        Seq(repositoryName)
+      case None =>
+        Nil
     }
   }
 

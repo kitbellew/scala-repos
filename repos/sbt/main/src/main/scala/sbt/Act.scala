@@ -110,29 +110,37 @@ object Act {
     seq(allKeys) flatMap { ss =>
       val default =
         ss.headOption match {
-          case None    => noValidKeys
-          case Some(x) => success(x)
+          case None =>
+            noValidKeys
+          case Some(x) =>
+            success(x)
         }
       selectFromValid(ss filter isValid(data), default)
     }
   def selectFromValid(ss: Seq[ParsedKey], default: Parser[ParsedKey])(implicit
       show: Show[ScopedKey[_]]): Parser[ParsedKey] =
     selectByTask(selectByConfig(ss)) match {
-      case Seq()       => default
-      case Seq(single) => success(single)
-      case multi       => failure("Ambiguous keys: " + showAmbiguous(keys(multi)))
+      case Seq() =>
+        default
+      case Seq(single) =>
+        success(single)
+      case multi =>
+        failure("Ambiguous keys: " + showAmbiguous(keys(multi)))
     }
   private[this] def keys(ss: Seq[ParsedKey]): Seq[ScopedKey[_]] = ss.map(_.key)
   def selectByConfig(ss: Seq[ParsedKey]): Seq[ParsedKey] =
     ss match {
-      case Seq() => Nil
+      case Seq() =>
+        Nil
       case Seq(
             x,
             tail @ _*
           ) => // select the first configuration containing a valid key
         tail.takeWhile(_.key.scope.config == x.key.scope.config) match {
-          case Seq() => x :: Nil
-          case xs    => x +: xs
+          case Seq() =>
+            x :: Nil
+          case xs =>
+            x +: xs
         }
     }
   def selectByTask(ss: Seq[ParsedKey]): Seq[ParsedKey] = {
@@ -181,8 +189,10 @@ object Act {
     }
   def toAxis[T](opt: Option[T], ifNone: ScopeAxis[T]): ScopeAxis[T] =
     opt match {
-      case Some(t) => Select(t);
-      case None    => ifNone
+      case Some(t) =>
+        Select(t);
+      case None =>
+        ifNone
     }
 
   def config(confs: Set[String]): Parser[ParsedAxis[String]] = {
@@ -203,8 +213,10 @@ object Act {
       case Omitted =>
         None +: defaultConfigurations(proj, index, defaultConfigs).flatMap(
           nonEmptyConfig(index, proj))
-      case ParsedGlobal       => None :: Nil
-      case pv: ParsedValue[x] => Some(pv.value) :: Nil
+      case ParsedGlobal =>
+        None :: Nil
+      case pv: ParsedValue[x] =>
+        Some(pv.value) :: Nil
     }
   def defaultConfigurations(
       proj: Option[ResolvedReference],
@@ -243,8 +255,10 @@ object Act {
       keyString: String,
       f: AttributeKey[_] => T): Parser[T] =
     keyMap.get(keyString) match {
-      case Some(k) => success(f(k))
-      case None    => failure(Command.invalidValue("key", keyMap.keys)(keyString))
+      case Some(k) =>
+        success(f(k))
+      case None =>
+        failure(Command.invalidValue("key", keyMap.keys)(keyString))
     }
 
   val spacedComma = token(OptSpace ~ ',' ~ OptSpace)
@@ -279,8 +293,10 @@ object Act {
   }
   def resolveTask(task: ParsedAxis[AttributeKey[_]]): Option[AttributeKey[_]] =
     task match {
-      case ParsedGlobal | Omitted                     => None
-      case t: ParsedValue[AttributeKey[_]] @unchecked => Some(t.value)
+      case ParsedGlobal | Omitted =>
+        None
+      case t: ParsedValue[AttributeKey[_]] @unchecked =>
+        Some(t.value)
     }
 
   def filterStrings(
@@ -293,7 +309,8 @@ object Act {
       knownKeys: Map[String, AttributeKey[_]],
       knownValues: IMap[AttributeKey, Set]): Parser[AttributeMap] = {
     val validKeys = knownKeys.filter {
-      case (_, key) => knownValues get key exists (_.nonEmpty)
+      case (_, key) =>
+        knownValues get key exists (_.nonEmpty)
     }
     if (validKeys.isEmpty)
       failure("No valid extra keys.")
@@ -355,8 +372,10 @@ object Act {
     val buildRef = token('{' ~> resolvedURI <~ '}').?
 
     buildRef flatMap {
-      case None      => projectRef(currentBuild)
-      case Some(uri) => projectRef(uri) | token(trailing ^^^ BuildRef(uri))
+      case None =>
+        projectRef(currentBuild)
+      case Some(uri) =>
+        projectRef(uri) | token(trailing ^^^ BuildRef(uri))
     }
   }
   def optProjectRef(
@@ -367,9 +386,12 @@ object Act {
       parsed: ParsedAxis[ResolvedReference],
       current: ProjectRef): Option[ResolvedReference] =
     parsed match {
-      case Omitted             => Some(current)
-      case ParsedGlobal        => None
-      case pv: ParsedValue[rr] => Some(pv.value)
+      case Omitted =>
+        Some(current)
+      case ParsedGlobal =>
+        None
+      case pv: ParsedValue[rr] =>
+        Some(pv.value)
     }
 
   def actParser(s: State): Parser[() => State] =
@@ -398,7 +420,8 @@ object Act {
         }
       }
       action match {
-        case SingleAction => akp flatMap evaluate
+        case SingleAction =>
+          akp flatMap evaluate
         case ShowAction | MultiAction =>
           rep1sep(akp, token(Space)).flatMap(kvss => evaluate(kvss.flatten))
       }

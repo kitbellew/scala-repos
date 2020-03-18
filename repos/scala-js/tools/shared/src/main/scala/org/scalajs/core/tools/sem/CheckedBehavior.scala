@@ -12,8 +12,10 @@ sealed abstract class CheckedBehavior {
   import CheckedBehavior._
   def optimized: CheckedBehavior =
     this match {
-      case Fatal => Unchecked
-      case _     => this
+      case Fatal =>
+        Unchecked
+      case _ =>
+        this
     }
 }
 

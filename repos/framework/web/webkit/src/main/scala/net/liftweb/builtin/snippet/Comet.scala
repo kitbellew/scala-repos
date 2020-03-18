@@ -27,7 +27,8 @@ import Helpers._
 
 object Comet extends DispatchSnippet with LazyLoggable {
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   // Take the comet's internal container and annotate it with the unique
@@ -91,8 +92,10 @@ object Comet extends DispatchSnippet with LazyLoggable {
     */
   def render(cometHtml: NodeSeq): NodeSeq = {
     Props.inGAE match {
-      case true => Text("Comet Disabled in Google App Engine")
-      case _    => buildComet(cometHtml)
+      case true =>
+        Text("Comet Disabled in Google App Engine")
+      case _ =>
+        buildComet(cometHtml)
     }
   }
 
@@ -115,7 +118,8 @@ object Comet extends DispatchSnippet with LazyLoggable {
             .map { foundComet =>
               containerForCometActor(foundComet, Full(cometHtml))
             } match {
-            case Full(cometContainer) => cometContainer
+            case Full(cometContainer) =>
+              cometContainer
 
             case failedResult =>
               throw new CometNotFoundException(
@@ -129,7 +133,8 @@ object Comet extends DispatchSnippet with LazyLoggable {
       case _: StateInStatelessException =>
         throw new StateInStatelessException(
           "Lift does not support Comet for stateless requests")
-      case e: SnippetFailureException => throw e
+      case e: SnippetFailureException =>
+        throw e
       case e: Exception =>
         logger.error("Failed to find or render a comet actor", e)
         cometHtml

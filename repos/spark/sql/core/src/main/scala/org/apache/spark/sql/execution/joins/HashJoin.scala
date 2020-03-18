@@ -56,14 +56,18 @@ trait HashJoin {
 
   protected lazy val (buildPlan, streamedPlan) =
     buildSide match {
-      case BuildLeft  => (left, right)
-      case BuildRight => (right, left)
+      case BuildLeft =>
+        (left, right)
+      case BuildRight =>
+        (right, left)
     }
 
   protected lazy val (buildKeys, streamedKeys) =
     buildSide match {
-      case BuildLeft  => (leftKeys, rightKeys)
-      case BuildRight => (rightKeys, leftKeys)
+      case BuildLeft =>
+        (leftKeys, rightKeys)
+      case BuildRight =>
+        (rightKeys, leftKeys)
     }
 
   /**

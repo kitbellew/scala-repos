@@ -221,14 +221,22 @@ object StringContext {
             throw new InvalidEscapeException(str, next)
           val c =
             str(idx) match {
-              case 'b'  => '\b'
-              case 't'  => '\t'
-              case 'n'  => '\n'
-              case 'f'  => '\f'
-              case 'r'  => '\r'
-              case '"'  => '"'
-              case '\'' => '\''
-              case '\\' => '\\'
+              case 'b' =>
+                '\b'
+              case 't' =>
+                '\t'
+              case 'n' =>
+                '\n'
+              case 'f' =>
+                '\f'
+              case 'r' =>
+                '\r'
+              case '"' =>
+                '"'
+              case '\'' =>
+                '\''
+              case '\\' =>
+                '\\'
               case o if '0' <= o && o <= '7' =>
                 if (strict)
                   throw new InvalidEscapeException(str, next)
@@ -246,7 +254,8 @@ object StringContext {
                 }
                 idx -= 1 // retreat
                 oct.toChar
-              case _ => throw new InvalidEscapeException(str, next)
+              case _ =>
+                throw new InvalidEscapeException(str, next)
             }
           idx += 1 // advance
           b append c
@@ -260,8 +269,10 @@ object StringContext {
       loop(0, first)
     }
     str indexOf '\\' match {
-      case -1 => str
-      case i  => replace(i)
+      case -1 =>
+        str
+      case i =>
+        replace(i)
     }
   }
 }

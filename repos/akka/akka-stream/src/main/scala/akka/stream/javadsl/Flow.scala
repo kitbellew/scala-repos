@@ -53,10 +53,12 @@ object Flow {
     */
   def fromGraph[I, O, M](g: Graph[FlowShape[I, O], M]): Flow[I, O, M] =
     g match {
-      case f: Flow[I, O, M] ⇒ f
+      case f: Flow[I, O, M] ⇒
+        f
       case f: scaladsl.Flow[I, O, M] if f.isIdentity ⇒
         _identity.asInstanceOf[Flow[I, O, M]]
-      case other ⇒ new Flow(scaladsl.Flow.fromGraph(other))
+      case other ⇒
+        new Flow(scaladsl.Flow.fromGraph(other))
     }
 
   /**
@@ -1102,7 +1104,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Flow(
       delegate.prefixAndTail(n).map {
-        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+        case (taken, tail) ⇒
+          akka.japi.Pair(taken.asJava, tail.asJava)
       })
 
   /**
@@ -1966,7 +1969,8 @@ object RunnableGraph {
     */
   def fromGraph[Mat](graph: Graph[ClosedShape, Mat]): RunnableGraph[Mat] =
     graph match {
-      case r: RunnableGraph[Mat] ⇒ r
+      case r: RunnableGraph[Mat] ⇒
+        r
       case other ⇒
         new RunnableGraphAdapter[Mat](scaladsl.RunnableGraph.fromGraph(graph))
     }

@@ -22,7 +22,8 @@ object ValDcl {
     val returnMarker = builder.mark
     //Look for val
     builder.getTokenType match {
-      case ScalaTokenTypes.kVAL => builder.advanceLexer() //Ate val
+      case ScalaTokenTypes.kVAL =>
+        builder.advanceLexer() //Ate val
       case _ =>
         returnMarker.rollbackTo
         return false

@@ -109,7 +109,8 @@ final class TaskDef(
           Arrays.equals(
             this.selectors.asInstanceOf[Array[AnyRef]],
             that.selectors.asInstanceOf[Array[AnyRef]])
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {

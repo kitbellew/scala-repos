@@ -106,7 +106,8 @@ class OffsetCheckpoint(val file: File) extends Logging {
                     topic,
                     partition.toInt) -> offset.toLong
                   line = reader.readLine()
-                case _ => throw malformedLineException(line)
+                case _ =>
+                  throw malformedLineException(line)
               }
             }
             if (offsets.size != expectedSize)
@@ -118,7 +119,8 @@ class OffsetCheckpoint(val file: File) extends Logging {
               "Unrecognized version of the highwatermark checkpoint file: " + version)
         }
       } catch {
-        case e: NumberFormatException => throw malformedLineException(line)
+        case e: NumberFormatException =>
+          throw malformedLineException(line)
       } finally {
         reader.close()
       }

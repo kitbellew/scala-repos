@@ -172,12 +172,14 @@ private[sbt] object SettingCompletions {
     val cutoff = KeyRanks.MainCutoff
     val keyMap: Map[String, AttributeKey[_]] =
       rawKeyMap.map {
-        case (k, v) => (keyScalaID(k), v)
+        case (k, v) =>
+          (keyScalaID(k), v)
       } toMap;
     def inputScopedKey(pred: AttributeKey[_] => Boolean): Parser[ScopedKey[_]] =
       scopedKeyParser(
         keyMap.filter {
-          case (_, k) => pred(k)
+          case (_, k) =>
+            pred(k)
         },
         settings,
         context)
@@ -280,8 +282,10 @@ private[sbt] object SettingCompletions {
         label: String): Parser[ScopeAxis[T]] = {
       def getChoice(s: Scope): Seq[(String, T)] =
         axis(s) match {
-          case Select(t) => (name(t), t) :: Nil
-          case _         => Nil
+          case Select(t) =>
+            (name(t), t) :: Nil
+          case _ =>
+            Nil
         }
       def getChoices(scopes: Seq[Scope]): Map[String, T] =
         scopes.flatMap(getChoice).toMap
@@ -311,7 +315,8 @@ private[sbt] object SettingCompletions {
       _.description,
       "task")
     val nonGlobal = (configParser ~ taskParser) map {
-      case (c, t) => Scope(This, c, t, Global)
+      case (c, t) =>
+        Scope(This, c, t, Global)
     }
     val global = inParser ~> token((Space ~ GlobalID) ^^^ GlobalScope)
     global | nonGlobal
@@ -380,7 +385,8 @@ private[sbt] object SettingCompletions {
       prominentCutoff: Int,
       detailLimit: Int): Seq[Completion] =
     completeSelectDescribed(seen, level, keys, detailLimit)(_.description) {
-      case (k, v) => v.rank <= prominentCutoff
+      case (k, v) =>
+        v.rank <= prominentCutoff
     }
 
   def completeScope[T](
@@ -390,7 +396,8 @@ private[sbt] object SettingCompletions {
       allChoices: Map[String, T])(
       description: T => Option[String]): Seq[Completion] =
     completeSelectDescribed(seen, level, allChoices, 10)(description) {
-      case (k, v) => definedChoices(k)
+      case (k, v) =>
+        definedChoices(k)
     }
 
   def completeSelectDescribed[T](
@@ -400,10 +407,12 @@ private[sbt] object SettingCompletions {
       detailLimit: Int)(description: T => Option[String])(
       prominent: (String, T) => Boolean): Seq[Completion] = {
     val applicable = all.toSeq.filter {
-      case (k, v) => k startsWith seen
+      case (k, v) =>
+        k startsWith seen
     }
     val prominentOnly = applicable filter {
-      case (k, v) => prominent(k, v)
+      case (k, v) =>
+        prominent(k, v)
     }
 
     val showAll = (level >= 3) || (
@@ -427,7 +436,8 @@ private[sbt] object SettingCompletions {
       Nil
     else if (showDescriptions) {
       val withDescriptions = in map {
-        case (id, key) => (id, description(key))
+        case (id, key) =>
+          (id, description(key))
       }
       val padded = CommandUtil.aligned("", "   ", withDescriptions)
       (padded, in).zipped.map {
@@ -525,10 +535,14 @@ private[sbt] object SettingCompletions {
   /** Returns the description associated with the provided assignment method. */
   def assignDescription(a: Assign.Value): String =
     a match {
-      case AppendValue  => "append value"
-      case AppendValues => "append values"
-      case Define       => "define value, overwriting any existing value"
-      case Update       => "transform existing value"
+      case AppendValue =>
+        "append value"
+      case AppendValues =>
+        "append values"
+      case Define =>
+        "define value, overwriting any existing value"
+      case Update =>
+        "transform existing value"
     }
 
   /** The assignment methods except for the ones that append. */

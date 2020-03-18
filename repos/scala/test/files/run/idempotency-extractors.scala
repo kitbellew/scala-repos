@@ -9,7 +9,8 @@ object Test extends App {
   }
   val extractor = reify {
     2 match {
-      case Extractor(x) => x
+      case Extractor(x) =>
+        x
     }
   }
   println(extractor.eval)
@@ -21,6 +22,7 @@ object Test extends App {
     println(tb.eval(rtextractor))
   } catch {
     // this is the current behaviour, rather than the desired behavior; see SI-5465
-    case _: ToolBoxError => println("error!")
+    case _: ToolBoxError =>
+      println("error!")
   }
 }

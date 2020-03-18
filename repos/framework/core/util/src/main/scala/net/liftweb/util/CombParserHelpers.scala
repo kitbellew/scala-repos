@@ -79,7 +79,8 @@ trait CombParserHelpers {
     accept(
       "whitespace",
       {
-        case c if (c == ' ') || c == '\t' => true
+        case c if (c == ' ') || c == '\t' =>
+          true
       })
 
   /** @return a unit parser for any repetition of 'line' spaces */
@@ -147,7 +148,8 @@ trait CombParserHelpers {
     */
   def aNumber: Parser[Int] =
     rep1(elem("Number", isNum)) ^^ {
-      case xs => xs.mkString("").toInt
+      case xs =>
+        xs.mkString("").toInt
     }
 
   /**
@@ -175,17 +177,20 @@ trait CombParserHelpers {
       val right: Parser[List[T]] = success(Nil)
 
       p.toList match {
-        case Nil => right
+        case Nil =>
+          right
         case x :: Nil =>
           x ~ right ^^ {
-            case ~(x, xs) => x :: xs
+            case ~(x, xs) =>
+              x :: xs
           }
         case xs =>
           func(xs)
             .map(
               _.foldRight(right)(
                 _ ~ _ ^^ {
-                  case ~(x, xs) => x :: xs
+                  case ~(x, xs) =>
+                    x :: xs
                 }))
             .reduceLeft((a: Parser[List[T]], b: Parser[List[T]]) => a | b)
       }
@@ -199,7 +204,8 @@ trait CombParserHelpers {
       rep(p)
     else
       p ~ repNN(n - 1, p) ^^ {
-        case ~(x, xs) => x :: xs
+        case ~(x, xs) =>
+          x :: xs
       }
 }
 

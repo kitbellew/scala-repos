@@ -226,7 +226,8 @@ class FileSourceStrategySuite
   def getPhysicalFilters(df: DataFrame): ExpressionSet = {
     ExpressionSet(
       df.queryExecution.executedPlan.collect {
-        case execution.Filter(f, _) => splitConjunctivePredicates(f)
+        case execution.Filter(f, _) =>
+          splitConjunctivePredicates(f)
       }.flatten)
   }
 
@@ -234,7 +235,8 @@ class FileSourceStrategySuite
   def checkScan(df: DataFrame)(func: Seq[FilePartition] => Unit): Unit = {
     val fileScan = df.queryExecution.executedPlan
       .collect {
-        case DataSourceScan(_, scan: FileScanRDD, _, _) => scan
+        case DataSourceScan(_, scan: FileScanRDD, _, _) =>
+          scan
       }
       .headOption
       .getOrElse {

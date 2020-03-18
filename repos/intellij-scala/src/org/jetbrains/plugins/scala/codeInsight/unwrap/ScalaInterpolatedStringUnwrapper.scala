@@ -40,7 +40,8 @@ class ScalaInterpolatedStringUnwrapper extends ScalaUnwrapper {
     e match {
       case (expr: ScExpression) childOf (lit: ScInterpolatedStringLiteral) =>
         ifInjection(expr, lit)
-      case _ => ifNot
+      case _ =>
+        ifNot
     }
   }
 

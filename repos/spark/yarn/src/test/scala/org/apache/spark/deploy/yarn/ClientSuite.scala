@@ -361,7 +361,8 @@ class ClientSuite
       testCode: (Configuration) => Any) {
     val conf = new Configuration
     m.foreach {
-      case (k, v) => conf.set(k, v, "ClientSpec")
+      case (k, v) =>
+        conf.set(k, v, "ClientSpec")
     }
     testCode(conf)
   }
@@ -390,9 +391,12 @@ class ClientSuite
     Try(clazz.getField(field))
       .map(_.get(null))
       .map {
-        case v: A   => mapTo(v)
-        case v1: A1 => mapTo1(v1)
-        case _      => defaults
+        case v: A =>
+          mapTo(v)
+        case v1: A1 =>
+          mapTo1(v1)
+        case _ =>
+          defaults
       }
       .toOption
       .getOrElse(defaults)

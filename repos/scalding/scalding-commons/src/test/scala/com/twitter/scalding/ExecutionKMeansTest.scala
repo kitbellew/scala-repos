@@ -55,7 +55,8 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
       def clusterOf(v: Vector[Double]): Int = v.indexWhere(_ > 0.0)
 
       val byCluster = labels.groupBy {
-        case (id, v) => clusterOf(v)
+        case (id, v) =>
+          clusterOf(v)
       }
 
       // The rule is this: if two vectors share the same prefix,
@@ -64,7 +65,8 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
         case (clusterId, vs) =>
           val id = vs.head._1
           vs.foreach {
-            case (thisId, _) => id shouldBe thisId
+            case (thisId, _) =>
+              id shouldBe thisId
           }
       }
     }

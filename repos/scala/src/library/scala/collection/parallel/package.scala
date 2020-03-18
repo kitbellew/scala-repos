@@ -41,8 +41,9 @@ package object parallel {
 
   def setTaskSupport[Coll](c: Coll, t: TaskSupport): Coll = {
     c match {
-      case pc: ParIterableLike[_, _, _] => pc.tasksupport = t
-      case _                            => // do nothing
+      case pc: ParIterableLike[_, _, _] =>
+        pc.tasksupport = t
+      case _ => // do nothing
     }
     c
   }
@@ -108,7 +109,8 @@ package parallel {
               new CompositeThrowable(self.throwables + that)
             case (_, that: CompositeThrowable) =>
               new CompositeThrowable(that.throwables + self)
-            case _ => new CompositeThrowable(Set(self, that))
+            case _ =>
+              new CompositeThrowable(Set(self, that))
           }
       }
   }

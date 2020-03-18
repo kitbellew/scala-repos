@@ -46,7 +46,8 @@ final class OptionalThrowable(private val exception: Throwable)
     that match {
       case that: OptionalThrowable =>
         this.exception eq that.exception
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int =

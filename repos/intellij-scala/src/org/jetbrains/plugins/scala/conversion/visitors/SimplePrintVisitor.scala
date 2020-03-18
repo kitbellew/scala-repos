@@ -14,17 +14,22 @@ import org.jetbrains.plugins.scala.conversion.ast.ModifierType.ModifierType
 class SimplePrintVisitor extends IntermediateTreeVisitor {
   override def visit(node: IntermediateNode): Unit = {
     node match {
-      case m: MainConstruction          => m.children.foreach(visit)
-      case t @ TypeConstruction(inType) => visitType(t, inType)
+      case m: MainConstruction =>
+        m.children.foreach(visit)
+      case t @ TypeConstruction(inType) =>
+        visitType(t, inType)
       case ParametrizedConstruction(inType, parts) =>
         visitParametrizedType(inType, parts)
-      case ArrayConstruction(inType) => visitArrayType(inType)
-      case TypeParameters(data)      => visitTypeParameters(data)
+      case ArrayConstruction(inType) =>
+        visitArrayType(inType)
+      case TypeParameters(data) =>
+        visitTypeParameters(data)
       case TypeParameterConstruction(name, typez) =>
         visitTypeParameterConstruction(name, typez)
       case AnnotaionConstruction(inAnnotation, attributes, name) =>
         visitAnnotation(inAnnotation, attributes, name)
-      case b @ BlockConstruction(statements) => visitBlock(b, statements)
+      case b @ BlockConstruction(statements) =>
+        visitBlock(b, statements)
       case ClassConstruction(
             name,
             primaryConstructor,
@@ -60,23 +65,30 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
             secondPart,
             operation: String) =>
         visitBinary(firstPart, secondPart, operation)
-      case ClassObjectAccess(expression) => visitClassObjAccess(expression)
+      case ClassObjectAccess(expression) =>
+        visitClassObjAccess(expression)
       case InstanceOfConstruction(operand, mtype) =>
         visitInstanceOf(operand, mtype)
       case QualifiedExpression(qualifier, identifier) =>
         visitQualifiedExpression(qualifier, identifier)
       case MethodCallExpression(name, method, args) =>
         visitMethodCall(name, method, args)
-      case ExpressionList(data)           => visitExpressionList(data)
-      case ThisExpression(value)          => visitWithExtraWord(value, "this")
-      case SuperExpression(value)         => visitWithExtraWord(value, "super")
-      case LiteralExpression(literal)     => printer.append(literal)
-      case ParenthesizedExpression(value) => visitParenthizedExpression(value)
+      case ExpressionList(data) =>
+        visitExpressionList(data)
+      case ThisExpression(value) =>
+        visitWithExtraWord(value, "this")
+      case SuperExpression(value) =>
+        visitWithExtraWord(value, "super")
+      case LiteralExpression(literal) =>
+        printer.append(literal)
+      case ParenthesizedExpression(value) =>
+        visitParenthizedExpression(value)
       case NewExpression(mtype, arrayInitalizer, arrayDimension) =>
         visitNewExpression(mtype, arrayInitalizer, arrayDimension)
       case AnonymousClassExpression(anonymousClass) =>
         visitAnonimousClassExpression(anonymousClass)
-      case PolyadicExpression(args, operation) => visitPoliadic(args, operation)
+      case PolyadicExpression(args, operation) =>
+        visitPoliadic(args, operation)
       case PrefixExpression(operand, signType, canBeSimplified) =>
         visitPrefixPostfix(operand, signType, canBeSimplified)
       case PostfixExpression(operand, signType, canBeSimplified) =>
@@ -99,24 +111,29 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         visitMethod(modifiers, name, typeParams, params, body, retType)
       case m @ ModifiersConstruction(annotations, modifiers) =>
         visitModifiers(m, annotations, modifiers)
-      case SimpleModifier(mtype: ModifierType) => visitSimpleModifier(mtype)
+      case SimpleModifier(mtype: ModifierType) =>
+        visitSimpleModifier(mtype)
       case ModifierWithExpression(mtype, value) =>
         visitModifierWithExpr(mtype, value)
       case ParameterConstruction(modifiers, name, scCompType, isArray) =>
         visitParameters(modifiers, name, scCompType, isArray)
-      case ParameterListConstruction(list) => visitParameterList(list)
+      case ParameterListConstruction(list) =>
+        visitParameterList(list)
       //statements
       case r @ JavaCodeReferenceStatement(qualifier, parametrList, name) =>
         visitJavaCodeRef(r, qualifier, parametrList, name)
       case IfStatement(condition, thenBranch, elseBranch) =>
         visitIfStatement(condition, thenBranch, elseBranch)
-      case ReturnStatement(value) => visitWithExtraWord(Some(value), "return ")
-      case ThrowStatement(value)  => visitWithExtraWord(Some(value), "throw ")
+      case ReturnStatement(value) =>
+        visitWithExtraWord(Some(value), "return ")
+      case ThrowStatement(value) =>
+        visitWithExtraWord(Some(value), "throw ")
       case AssertStatement(condition, description) =>
         visitAssert(condition, description)
       case ImportStatement(importValue, onDemand) =>
         visitImportStatement(importValue, onDemand)
-      case ImportStatementList(data) => visitImportStatementList(data)
+      case ImportStatementList(data) =>
+        visitImportStatementList(data)
       case PackageStatement(value) =>
         visitWithExtraWord(Some(value), "package ")
       case ForeachStatement(
@@ -145,9 +162,11 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         visitSwitchLabelStatement(caseValue, arrow)
       case SynchronizedStatement(lock, body) =>
         visitSynchronizedStatement(lock, body)
-      case ExpressionListStatement(exprs) => visitExpressionListStatement(exprs)
-      case NotSupported(n, msg)           => visitNotSupported(n, msg)
-      case EmptyConstruction()            =>
+      case ExpressionListStatement(exprs) =>
+        visitExpressionListStatement(exprs)
+      case NotSupported(n, msg) =>
+        visitNotSupported(n, msg)
+      case EmptyConstruction() =>
     }
   }
 
@@ -166,7 +185,8 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
         case deprecated: JavaCodeReferenceStatement
             if deprecated.name == "Deprecated" =>
           printer.append(deprecated.name.toLowerCase)
-        case otherName => visit(otherName)
+        case otherName =>
+          visit(otherName)
       }
     }
 
@@ -223,10 +243,14 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     visit(modifiers)
     printer.append(
       classType match {
-        case ClassType.CLASS     => "class "
-        case ClassType.OBJECT    => "object "
-        case ClassType.INTERFACE => "trait "
-        case _                   => ""
+        case ClassType.CLASS =>
+          "class "
+        case ClassType.OBJECT =>
+          "object "
+        case ClassType.INTERFACE =>
+          "trait "
+        case _ =>
+          ""
       })
 
     printer.append(escapeKeyword(name))
@@ -498,8 +522,10 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     } else {
       printer.append(
         ftype match {
-          case tc: TypeConstruction => tc.getDefaultTypeValue
-          case _                    => "null"
+          case tc: TypeConstruction =>
+            tc.getDefaultTypeValue
+          case _ =>
+            "null"
         })
     }
   }
@@ -608,13 +634,20 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
   def visitSimpleModifier(mtype: ModifierType) = {
     printer.append(
       mtype match {
-        case ModifierType.ABSTRACT  => "abstract"
-        case ModifierType.PUBLIC    => "public"
-        case ModifierType.PROTECTED => "protected"
-        case ModifierType.PRIVATE   => "private"
-        case ModifierType.OVERRIDE  => "override"
-        case ModifierType.FINAL     => "final"
-        case _                      => ""
+        case ModifierType.ABSTRACT =>
+          "abstract"
+        case ModifierType.PUBLIC =>
+          "public"
+        case ModifierType.PROTECTED =>
+          "protected"
+        case ModifierType.PRIVATE =>
+          "private"
+        case ModifierType.OVERRIDE =>
+          "override"
+        case ModifierType.FINAL =>
+          "final"
+        case _ =>
+          ""
       })
   }
 
@@ -884,9 +917,12 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     }
     val begin = printer.length
     name match {
-      case "this"  => printer.append(name)
-      case "super" => printer.append(name)
-      case _       => printer.append(escapeKeyword(name))
+      case "this" =>
+        printer.append(name)
+      case "super" =>
+        printer.append(name)
+      case _ =>
+        printer.append(escapeKeyword(name))
     }
     val range = new TextRange(begin, printer.length)
     rangedElementsMap.put(statement, range)

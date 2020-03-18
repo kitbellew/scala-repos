@@ -140,23 +140,38 @@ private[columnar] object ColumnAccessor {
     val buf = buffer.order(ByteOrder.nativeOrder)
 
     dataType match {
-      case NullType                 => new NullColumnAccessor(buf)
-      case BooleanType              => new BooleanColumnAccessor(buf)
-      case ByteType                 => new ByteColumnAccessor(buf)
-      case ShortType                => new ShortColumnAccessor(buf)
-      case IntegerType | DateType   => new IntColumnAccessor(buf)
-      case LongType | TimestampType => new LongColumnAccessor(buf)
-      case FloatType                => new FloatColumnAccessor(buf)
-      case DoubleType               => new DoubleColumnAccessor(buf)
-      case StringType               => new StringColumnAccessor(buf)
-      case BinaryType               => new BinaryColumnAccessor(buf)
+      case NullType =>
+        new NullColumnAccessor(buf)
+      case BooleanType =>
+        new BooleanColumnAccessor(buf)
+      case ByteType =>
+        new ByteColumnAccessor(buf)
+      case ShortType =>
+        new ShortColumnAccessor(buf)
+      case IntegerType | DateType =>
+        new IntColumnAccessor(buf)
+      case LongType | TimestampType =>
+        new LongColumnAccessor(buf)
+      case FloatType =>
+        new FloatColumnAccessor(buf)
+      case DoubleType =>
+        new DoubleColumnAccessor(buf)
+      case StringType =>
+        new StringColumnAccessor(buf)
+      case BinaryType =>
+        new BinaryColumnAccessor(buf)
       case dt: DecimalType if dt.precision <= Decimal.MAX_LONG_DIGITS =>
         new CompactDecimalColumnAccessor(buf, dt)
-      case dt: DecimalType         => new DecimalColumnAccessor(buf, dt)
-      case struct: StructType      => new StructColumnAccessor(buf, struct)
-      case array: ArrayType        => new ArrayColumnAccessor(buf, array)
-      case map: MapType            => new MapColumnAccessor(buf, map)
-      case udt: UserDefinedType[_] => ColumnAccessor(udt.sqlType, buffer)
+      case dt: DecimalType =>
+        new DecimalColumnAccessor(buf, dt)
+      case struct: StructType =>
+        new StructColumnAccessor(buf, struct)
+      case array: ArrayType =>
+        new ArrayColumnAccessor(buf, array)
+      case map: MapType =>
+        new MapColumnAccessor(buf, map)
+      case udt: UserDefinedType[_] =>
+        ColumnAccessor(udt.sqlType, buffer)
       case other =>
         throw new Exception(s"not support type: $other")
     }

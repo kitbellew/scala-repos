@@ -17,7 +17,8 @@ object Test {
       println(res + " failed to fail.");
       false
     } catch {
-      case _: AssertionError => true
+      case _: AssertionError =>
+        true
     }
   }
 

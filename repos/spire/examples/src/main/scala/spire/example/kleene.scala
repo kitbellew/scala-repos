@@ -277,7 +277,8 @@ object KleeneDemo {
     def apply(edges: Edge*)(implicit dim: Dim): Matrix[Boolean] = {
       val m = ArrayMatrix(Array.fill[Boolean](dim.n * dim.n)(false))
       edges.foreach {
-        case Edge(from, to) => m(to, from) = true
+        case Edge(from, to) =>
+          m(to, from) = true
       }
       m
     }
@@ -321,12 +322,18 @@ object KleeneDemo {
     new Show[Expr[A]] {
       def show(e: Expr[A]) =
         e match {
-          case Var(a)     => ev.show(a)
-          case Empty      => "ε"
-          case Nul        => "∅"
-          case Star(x)    => "(" + show(x) + ")*"
-          case Or(x, y)   => "(" + show(x) + "|" + show(y) + ")"
-          case Then(x, y) => show(x) + show(y)
+          case Var(a) =>
+            ev.show(a)
+          case Empty =>
+            "ε"
+          case Nul =>
+            "∅"
+          case Star(x) =>
+            "(" + show(x) + ")*"
+          case Or(x, y) =>
+            "(" + show(x) + "|" + show(y) + ")"
+          case Then(x, y) =>
+            show(x) + show(y)
         }
     }
 
@@ -337,27 +344,42 @@ object KleeneDemo {
       def one: Expr[A] = Empty
       def plus(x: Expr[A], y: Expr[A]): Expr[A] =
         (x, y) match {
-          case (Nul, e)         => e
-          case (e, Nul)         => e
-          case (Empty, Empty)   => Empty
-          case (Empty, Star(e)) => Star(e)
-          case (Star(e), Empty) => Star(e)
-          case (e1, e2)         => Or(e1, e2)
+          case (Nul, e) =>
+            e
+          case (e, Nul) =>
+            e
+          case (Empty, Empty) =>
+            Empty
+          case (Empty, Star(e)) =>
+            Star(e)
+          case (Star(e), Empty) =>
+            Star(e)
+          case (e1, e2) =>
+            Or(e1, e2)
         }
       def times(x: Expr[A], y: Expr[A]): Expr[A] =
         (x, y) match {
-          case (Nul, _)   => Nul
-          case (_, Nul)   => Nul
-          case (Empty, e) => e
-          case (e, Empty) => e
-          case (e1, e2)   => Then(e1, e2)
+          case (Nul, _) =>
+            Nul
+          case (_, Nul) =>
+            Nul
+          case (Empty, e) =>
+            e
+          case (e, Empty) =>
+            e
+          case (e1, e2) =>
+            Then(e1, e2)
         }
       override def kstar(x: Expr[A]): Expr[A] =
         x match {
-          case Nul     => Empty
-          case Empty   => Empty
-          case Star(e) => kstar(e)
-          case _       => Star(x)
+          case Nul =>
+            Empty
+          case Empty =>
+            Empty
+          case Star(e) =>
+            kstar(e)
+          case _ =>
+            Star(x)
         }
     }
 
@@ -377,8 +399,10 @@ object KleeneDemo {
     new Show[Tropical[A]] {
       def show(t: Tropical[A]) =
         t match {
-          case Finite(a) => Show[A].show(a)
-          case Infinity  => "∞"
+          case Finite(a) =>
+            Show[A].show(a)
+          case Infinity =>
+            "∞"
         }
     }
 
@@ -386,10 +410,14 @@ object KleeneDemo {
     new Order[Tropical[A]] {
       def compare(x: Tropical[A], y: Tropical[A]) =
         (x, y) match {
-          case (Infinity, Infinity)     => 0
-          case (Infinity, _)            => 1
-          case (_, Infinity)            => -1
-          case (Finite(a1), Finite(a2)) => ord.compare(a1, a2)
+          case (Infinity, Infinity) =>
+            0
+          case (Infinity, _) =>
+            1
+          case (_, Infinity) =>
+            -1
+          case (Finite(a1), Finite(a2)) =>
+            ord.compare(a1, a2)
         }
     }
 
@@ -399,15 +427,21 @@ object KleeneDemo {
       def one: Tropical[A] = Tropical(Rig[A].zero)
       def plus(x: Tropical[A], y: Tropical[A]): Tropical[A] =
         (x, y) match {
-          case (Infinity, t)            => t
-          case (t, Infinity)            => t
-          case (Finite(a1), Finite(a2)) => Tropical(a1 min a2)
+          case (Infinity, t) =>
+            t
+          case (t, Infinity) =>
+            t
+          case (Finite(a1), Finite(a2)) =>
+            Tropical(a1 min a2)
         }
       def times(x: Tropical[A], y: Tropical[A]): Tropical[A] =
         (x, y) match {
-          case (Infinity, _)            => Infinity
-          case (_, Infinity)            => Infinity
-          case (Finite(a1), Finite(a2)) => Tropical(a1 + a2)
+          case (Infinity, _) =>
+            Infinity
+          case (_, Infinity) =>
+            Infinity
+          case (Finite(a1), Finite(a2)) =>
+            Tropical(a1 + a2)
         }
       override def kstar(x: Tropical[A]): Tropical[A] = one
     }
@@ -440,9 +474,12 @@ object KleeneDemo {
 
       def plus(x: ShortestPath[A, B], y: ShortestPath[A, B]) =
         (x.a compare y.a) match {
-          case -1 => x
-          case 0  => ShortestPath(x.a + y.a, x.b + y.b)
-          case 1  => y
+          case -1 =>
+            x
+          case 0 =>
+            ShortestPath(x.a + y.a, x.b + y.b)
+          case 1 =>
+            y
         }
 
       def times(x: ShortestPath[A, B], y: ShortestPath[A, B]) =
@@ -508,8 +545,10 @@ object KleeneDemo {
   trait Compact[+A] {
     def map[B: Field](f: A => B): Compact[B] =
       this match {
-        case CompactReal(a) => CompactReal(f(a))
-        case _              => CompactInf
+        case CompactReal(a) =>
+          CompactReal(f(a))
+        case _ =>
+          CompactInf
       }
   }
   case object CompactInf extends Compact[Nothing]
@@ -522,8 +561,10 @@ object KleeneDemo {
     new Show[Compact[A]] {
       def show(c: Compact[A]) =
         c match {
-          case CompactReal(a) => a.show
-          case _              => "∞"
+          case CompactReal(a) =>
+            a.show
+          case _ =>
+            "∞"
         }
     }
 
@@ -533,23 +574,34 @@ object KleeneDemo {
       val one: Compact[A] = Compact(Field[A].one)
       def plus(x: Compact[A], y: Compact[A]): Compact[A] =
         (x, y) match {
-          case (CompactInf, _)                  => CompactInf
-          case (_, CompactInf)                  => CompactInf
-          case (CompactReal(a), CompactReal(b)) => Compact(a + b)
+          case (CompactInf, _) =>
+            CompactInf
+          case (_, CompactInf) =>
+            CompactInf
+          case (CompactReal(a), CompactReal(b)) =>
+            Compact(a + b)
         }
       def times(x: Compact[A], y: Compact[A]): Compact[A] =
         (x, y) match {
-          case (`zero`, _)                      => zero
-          case (_, `zero`)                      => zero
-          case (CompactInf, _)                  => CompactInf
-          case (_, CompactInf)                  => CompactInf
-          case (CompactReal(a), CompactReal(b)) => Compact(a * b)
+          case (`zero`, _) =>
+            zero
+          case (_, `zero`) =>
+            zero
+          case (CompactInf, _) =>
+            CompactInf
+          case (_, CompactInf) =>
+            CompactInf
+          case (CompactReal(a), CompactReal(b)) =>
+            Compact(a * b)
         }
       override def kstar(x: Compact[A]): Compact[A] =
         x match {
-          case `one`          => CompactInf
-          case CompactInf     => CompactInf
-          case CompactReal(a) => CompactReal((Field[A].one - a).reciprocal)
+          case `one` =>
+            CompactInf
+          case CompactInf =>
+            CompactInf
+          case CompactReal(a) =>
+            CompactReal((Field[A].one - a).reciprocal)
         }
     }
 
@@ -615,8 +667,10 @@ object KleeneDemo {
 
     val annotated = Matrix[ShortestPath[Int, Expr[Edge]]] { (x, y) =>
       weighted(x, y) match {
-        case Infinity  => ShortestPath(Infinity, Kleene[Expr[Edge]].zero)
-        case Finite(n) => ShortestPath(Finite(n), Var(Edge(y, x)))
+        case Infinity =>
+          ShortestPath(Infinity, Kleene[Expr[Edge]].zero)
+        case Finite(n) =>
+          ShortestPath(Finite(n), Var(Edge(y, x)))
       }
     }
 
@@ -625,8 +679,10 @@ object KleeneDemo {
 
     val langed = Matrix[ShortestPath[Int, Language[Edge]]] { (x, y) =>
       weighted(x, y) match {
-        case Infinity  => ShortestPath(Infinity, Kleene[Language[Edge]].zero)
-        case Finite(n) => ShortestPath(Finite(n), Language.letter(Edge(y, x)))
+        case Infinity =>
+          ShortestPath(Infinity, Kleene[Language[Edge]].zero)
+        case Finite(n) =>
+          ShortestPath(Finite(n), Language.letter(Edge(y, x)))
       }
     }
 
@@ -635,17 +691,25 @@ object KleeneDemo {
 
     def evalExpr[A, B: Kleene](expr: Expr[A])(f: A => B): B =
       expr match {
-        case Nul        => Kleene[B].zero
-        case Empty      => Kleene[B].one
-        case Var(a)     => f(a)
-        case Star(x)    => evalExpr(x)(f).kstar
-        case Or(x, y)   => evalExpr(x)(f) + evalExpr(y)(f)
-        case Then(x, y) => evalExpr(x)(f) * evalExpr(y)(f)
+        case Nul =>
+          Kleene[B].zero
+        case Empty =>
+          Kleene[B].one
+        case Var(a) =>
+          f(a)
+        case Star(x) =>
+          evalExpr(x)(f).kstar
+        case Or(x, y) =>
+          evalExpr(x)(f) + evalExpr(y)(f)
+        case Then(x, y) =>
+          evalExpr(x)(f) * evalExpr(y)(f)
       }
 
     val costExprs: Matrix[Expr[Int]] = annotated.map {
-      case ShortestPath(Infinity, _)  => Nul
-      case ShortestPath(Finite(n), _) => Expr(n)
+      case ShortestPath(Infinity, _) =>
+        Nul
+      case ShortestPath(Finite(n), _) =>
+        Expr(n)
     }
     val leastCostExprs: Matrix[Tropical[Int]] = costExprs.kstar.map(a =>
       evalExpr(a)(Tropical.apply))

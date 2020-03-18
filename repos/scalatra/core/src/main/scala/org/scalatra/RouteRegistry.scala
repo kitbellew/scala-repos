@@ -29,7 +29,8 @@ class RouteRegistry {
         _methodRoutes.getOrElse(
           Head,
           _methodRoutes.getOrElse(Get, Vector.empty))
-      case m => _methodRoutes.getOrElse(m, Vector.empty)
+      case m =>
+        _methodRoutes.getOrElse(m, Vector.empty)
     }
 
   /**

@@ -71,7 +71,8 @@ class ScalaEvaluatorCache(project: Project)
                 if PsiEquivalenceUtil.areElementsEquivalent(element, elem) =>
               eval
           }
-        case None => None
+        case None =>
+          None
       }
     }
   }
@@ -84,7 +85,8 @@ class ScalaEvaluatorCache(project: Project)
       val file = position.getFile
       val offset = position.getOffset
       cachedEvaluators.get((file, offset)) match {
-        case Some(map) => map += (element -> evaluator)
+        case Some(map) =>
+          map += (element -> evaluator)
         case None =>
           cachedEvaluators += (
             (file, offset) -> mutable.HashMap(element -> evaluator)

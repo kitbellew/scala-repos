@@ -2,7 +2,8 @@ object SCL4380 {
 
   class A {
     def f: PartialFunction[Any, Unit] = {
-      case x: String => 1
+      case x: String =>
+        1
     }
   }
 

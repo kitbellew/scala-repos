@@ -50,7 +50,8 @@ case class OffsetCommitResponse(
 
   def hasError =
     commitStatus.exists {
-      case (topicAndPartition, errorCode) => errorCode != Errors.NONE.code
+      case (topicAndPartition, errorCode) =>
+        errorCode != Errors.NONE.code
     }
 
   def writeTo(buffer: ByteBuffer) {

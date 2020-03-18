@@ -60,8 +60,10 @@ trait MethodDirectives {
     */
   def method(httpMethod: HttpMethod): Directive0 =
     extractMethod.flatMap[Unit] {
-      case `httpMethod` ⇒ pass
-      case _ ⇒ reject(MethodRejection(httpMethod))
+      case `httpMethod` ⇒
+        pass
+      case _ ⇒
+        reject(MethodRejection(httpMethod))
     } & cancelRejections(classOf[MethodRejection])
   //#
 
@@ -78,10 +80,13 @@ trait MethodDirectives {
     parameter(paramName ?) flatMap {
       case Some(method) ⇒
         getForKey(method.toUpperCase) match {
-          case Some(m) ⇒ mapRequest(_.copy(method = m))
-          case _ ⇒ complete(StatusCodes.NotImplemented)
+          case Some(m) ⇒
+            mapRequest(_.copy(method = m))
+          case _ ⇒
+            complete(StatusCodes.NotImplemented)
         }
-      case None ⇒ pass
+      case None ⇒
+        pass
     }
 }
 

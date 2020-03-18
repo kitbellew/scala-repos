@@ -33,7 +33,8 @@ class NamingParamsSearcher
     val scope = inReadAction(queryParameters.getEffectiveSearchScope)
     val element = queryParameters.getElementToSearch
     element match {
-      case _ if !inReadAction(element.isValid) => true
+      case _ if !inReadAction(element.isValid) =>
+        true
       case parameter: ScParameter =>
         val name = parameter.name
         val collectedReferences = new mutable.HashSet[PsiReference]
@@ -83,7 +84,8 @@ class NamingParamsSearcher
           name,
           UsageSearchContext.IN_CODE,
           true)
-      case _ => true
+      case _ =>
+        true
     }
   }
 }

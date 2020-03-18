@@ -150,8 +150,10 @@ trait StackableMaker[T] extends Maker[T] {
 
   private def stack: List[PValueHolder[Maker[T]]] =
     _stack.get() match {
-      case null => Nil
-      case x    => x
+      case null =>
+        Nil
+      case x =>
+        x
     }
 
   /**
@@ -180,11 +182,14 @@ trait StackableMaker[T] extends Maker[T] {
 
   protected final def find(in: List[PValueHolder[Maker[T]]]): Box[T] =
     in match {
-      case Nil => Empty
+      case Nil =>
+        Empty
       case x :: rest =>
         x.get.make match {
-          case Full(v) => Full(v)
-          case _       => find(rest)
+          case Full(v) =>
+            Full(v)
+          case _ =>
+            find(rest)
         }
     }
 

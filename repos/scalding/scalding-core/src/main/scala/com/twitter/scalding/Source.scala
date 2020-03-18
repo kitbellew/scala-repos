@@ -162,8 +162,10 @@ abstract class Source extends java.io.Serializable {
       (st.addSource(srcName, this), ())
     }
     (mode, transformInTest) match {
-      case (test: TestMode, false) => new Pipe(srcName)
-      case _                       => transformForRead(new Pipe(srcName))
+      case (test: TestMode, false) =>
+        new Pipe(srcName)
+      case _ =>
+        transformForRead(new Pipe(srcName))
     }
   }
 
@@ -182,8 +184,10 @@ abstract class Source extends java.io.Serializable {
     }
     val newPipe =
       (mode, transformInTest) match {
-        case (test: TestMode, false) => pipe
-        case _                       => transformForWrite(pipe)
+        case (test: TestMode, false) =>
+          pipe
+        case _ =>
+          transformForWrite(pipe)
       }
     val outPipe = new Pipe(sinkName, newPipe)
     flowDef.addTail(outPipe)
@@ -310,7 +314,8 @@ trait BaseNullSource extends Source {
   override def createTap(readOrWrite: AccessMode)(implicit
       mode: Mode): Tap[_, _, _] = {
     readOrWrite match {
-      case Read => throw new Exception("not supported, reading from null")
+      case Read =>
+        throw new Exception("not supported, reading from null")
       case Write =>
         mode match {
           case Hdfs(_, _) =>

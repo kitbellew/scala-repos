@@ -22,7 +22,8 @@ object SbtLauncherPlugin extends AutoPlugin {
         Classpaths
           .managedJars(SbtLaunchConfiguration, Set("jar"), update.value)
           .headOption match {
-          case Some(jar) => jar.data
+          case Some(jar) =>
+            jar.data
           case None =>
             sys.error(
               s"Could not resolve sbt launcher!, dependencies := ${libraryDependencies.value}")
@@ -52,7 +53,8 @@ object SbtLauncherPlugin extends AutoPlugin {
       IO.unzip(jar, dir)
       IO.copy(
         overrides.map({
-          case (n, f) => (f, dir / n)
+          case (n, f) =>
+            (f, dir / n)
         }),
         overwrite = true)
       // TODO - is the ok for creating a jar?

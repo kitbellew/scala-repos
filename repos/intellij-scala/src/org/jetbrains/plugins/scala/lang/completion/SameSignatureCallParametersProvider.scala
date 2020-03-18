@@ -155,7 +155,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                                 position.getProject,
                                 position.getResolveScope)))
                       }
-                  case _ => Seq.empty
+                  case _ =>
+                    Seq.empty
                 }
                 .filter(_.length > 1)
 
@@ -233,15 +234,17 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                           }
                     }
                     .filter(_.length > 1)
-                case _ => Seq.empty
+                case _ =>
+                  Seq.empty
               }
 
             if (signatures.isEmpty)
               return
 
             c.constructor match {
-              case Some(constr) => checkSignatures(signatures, constr, result)
-              case _            =>
+              case Some(constr) =>
+                checkSignatures(signatures, constr, result)
+              case _ =>
             }
           case _ =>
         }
@@ -263,7 +266,8 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                   if param.getType(TypingContext.empty).getOrAny.conforms(tp) =>
                 names += name
                 name
-              case _ => names += ""
+              case _ =>
+                names += ""
             }
         }
         .mkString(", ")

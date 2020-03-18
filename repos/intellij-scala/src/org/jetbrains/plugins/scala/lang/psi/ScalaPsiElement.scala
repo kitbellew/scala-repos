@@ -19,8 +19,10 @@ trait ScalaPsiElement
 
   def isInCompiledFile =
     getContainingFile match {
-      case file: ScalaFile => file.isCompiled
-      case _               => false
+      case file: ScalaFile =>
+        file.isCompiled
+      case _ =>
+        false
     }
 
   def setContext(element: PsiElement, child: PsiElement) {
@@ -30,24 +32,32 @@ trait ScalaPsiElement
 
   def getSameElementInContext: PsiElement = {
     child match {
-      case null => this
-      case _    => child
+      case null =>
+        this
+      case _ =>
+        child
     }
   }
 
   def getDeepSameElementInContext: PsiElement = {
     child match {
-      case null                   => this
-      case _ if child == context  => this
-      case child: ScalaPsiElement => child.getDeepSameElementInContext
-      case _                      => child
+      case null =>
+        this
+      case _ if child == context =>
+        this
+      case child: ScalaPsiElement =>
+        child.getDeepSameElementInContext
+      case _ =>
+        child
     }
   }
 
   def startOffsetInParent: Int = {
     child match {
-      case s: ScalaPsiElement => s.startOffsetInParent
-      case _                  => getStartOffsetInParent
+      case s: ScalaPsiElement =>
+        s.startOffsetInParent
+      case _ =>
+        getStartOffsetInParent
     }
   }
 
@@ -60,8 +70,10 @@ trait ScalaPsiElement
   protected def findChild[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): Option[T] =
     findChildByClassScala(clazz) match {
-      case null => None
-      case e    => Some(e)
+      case null =>
+        None
+      case e =>
+        Some(e)
     }
 
   def findLastChildByType[T <: PsiElement](t: IElementType): T = {
@@ -145,7 +157,8 @@ trait ScalaPsiElement
         case Some(file: ScalaFile)
             if file.isWorksheetFile || file.isScriptFile() =>
           Some(new LocalSearchScope(file))
-        case _ => None
+        case _ =>
+          None
       }
     )
   }

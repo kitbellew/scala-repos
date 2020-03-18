@@ -162,7 +162,8 @@ class TypedTutorial(args: Args) extends Job(args) {
         scoredWords
         // select the line offset and score fields
           .map {
-            case (word, (offset, score)) => (offset, score)
+            case (word, (offset, score)) =>
+              (offset, score)
           }
           // group by line offset (groups all the words for a line together)
           .group
@@ -216,7 +217,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       // We can operate on this typed pipe as above, and come up with a
       // different set of fields
       val lineSizes: TypedPipe[Long] = lines.map {
-        case (offset, line) => line.length
+        case (offset, line) =>
+          line.length
       }
 
       // To convert back to a Fields Pipe, we must specify the names of the fields:

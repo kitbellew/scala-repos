@@ -64,10 +64,14 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
         classOf[ScClass],
         classOf[ScObject],
         classOf[ScTrait]) match {
-        case Some(c: ScClass) if !c.isCase  => true
-        case Some(c: ScObject) if !c.isCase => true
-        case Some(c: ScTrait)               => true
-        case _                              => false
+        case Some(c: ScClass) if !c.isCase =>
+          true
+        case Some(c: ScObject) if !c.isCase =>
+          true
+        case Some(c: ScTrait) =>
+          true
+        case _ =>
+          false
       }
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isSuitableClass
   }
@@ -82,8 +86,10 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       project: Project): Option[ScFunction] = {
     val typeName =
       aType match {
-        case _: ScObject if aType.name.last == '$' => aType.name.dropRight(1)
-        case _                                     => aType.name
+        case _: ScObject if aType.name.last == '$' =>
+          aType.name.dropRight(1)
+        case _ =>
+          aType.name
       }
 
     showWizard(aType, project).map { result =>

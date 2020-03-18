@@ -65,7 +65,8 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
               sinkMode)
             new HTemplateTap(hfsTap, template, pathFields)
           }
-          case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
+          case _ =>
+            TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
         }
       }
     }

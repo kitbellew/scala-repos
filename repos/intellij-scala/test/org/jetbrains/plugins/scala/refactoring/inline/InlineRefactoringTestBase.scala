@@ -59,7 +59,8 @@ abstract class InlineRefactoringTestBase
       firstPsi.getNode.getElementType match {
         case ScalaTokenTypes.tLINE_COMMENT =>
           ScalaBundle.message(firstPsi.getText.substring(2).trim)
-        case _ => null
+        case _ =>
+          null
       }
     val lastPsi = scalaFile.findElementAt(scalaFile.getText.length - 1)
     //start to inline
@@ -90,7 +91,8 @@ abstract class InlineRefactoringTestBase
     val text = lastPsi.getText
     val output =
       lastPsi.getNode.getElementType match {
-        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tLINE_COMMENT =>
+          text.substring(2).trim
         case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
           text.substring(2, text.length - 2).trim
         case _ =>

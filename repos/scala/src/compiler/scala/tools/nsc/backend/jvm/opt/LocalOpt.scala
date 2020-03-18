@@ -558,8 +558,9 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
 
       def removeFromCallGraph(insn: AbstractInsnNode): Unit =
         insn match {
-          case mi: MethodInsnNode => callGraph.removeCallsite(mi, method)
-          case _                  =>
+          case mi: MethodInsnNode =>
+            callGraph.removeCallsite(mi, method)
+          case _ =>
         }
 
       for ((oldOp, newOps) <- toReplace) {
@@ -712,8 +713,10 @@ object LocalOptImpls {
       start != end && (
         (start.getOpcode: @switch) match {
           // FrameNode, LabelNode and LineNumberNode have opcode == -1.
-          case -1 | GOTO => containsExecutableCode(start.getNext, end)
-          case _         => true
+          case -1 | GOTO =>
+            containsExecutableCode(start.getNext, end)
+          case _ =>
+            true
         }
       )
     }
@@ -748,9 +751,12 @@ object LocalOptImpls {
         varIndex: Int): Boolean = {
       start != end && (
         start match {
-          case v: VarInsnNode if v.`var` == varIndex  => true
-          case i: IincInsnNode if i.`var` == varIndex => true
-          case _                                      => variableIsUsed(start.getNext, end, varIndex)
+          case v: VarInsnNode if v.`var` == varIndex =>
+            true
+          case i: IincInsnNode if i.`var` == varIndex =>
+            true
+          case _ =>
+            variableIsUsed(start.getNext, end, varIndex)
         }
       )
     }
@@ -812,8 +818,9 @@ object LocalOptImpls {
     for (i <- 0 until firstLocalIndex)
       renumber += i // parameters and `this` are always used.
     method.instructions.iterator().asScala foreach {
-      case VarInstruction(varIns, slot) => addVar(varIns, slot)
-      case _                            =>
+      case VarInstruction(varIns, slot) =>
+        addVar(varIns, slot)
+      case _ =>
     }
 
     // assign the next free slot to each used local variable.
@@ -839,8 +846,10 @@ object LocalOptImpls {
           val oldIndex = slot
           if (oldIndex >= firstLocalIndex && renumber(oldIndex) != oldIndex)
             varIns match {
-              case vi: VarInsnNode  => vi.`var` = renumber(slot)
-              case ii: IincInsnNode => ii.`var` = renumber(slot)
+              case vi: VarInsnNode =>
+                vi.`var` = renumber(slot)
+              case ii: IincInsnNode =>
+                ii.`var` = renumber(slot)
             }
         case _ =>
       }
@@ -857,10 +866,14 @@ object LocalOptImpls {
   def removeEmptyLineNumbers(method: MethodNode): Boolean = {
     def isEmpty(node: AbstractInsnNode): Boolean =
       node.getNext match {
-        case null                  => true
-        case l: LineNumberNode     => true
-        case n if n.getOpcode >= 0 => false
-        case n                     => isEmpty(n)
+        case null =>
+          true
+        case l: LineNumberNode =>
+          true
+        case n if n.getOpcode >= 0 =>
+          false
+        case n =>
+          isEmpty(n)
       }
 
     val initialSize = method.instructions.size
@@ -868,7 +881,8 @@ object LocalOptImpls {
     var previousLabel: LabelNode = null
     while (iterator.hasNext) {
       iterator.next match {
-        case label: LabelNode => previousLabel = label
+        case label: LabelNode =>
+          previousLabel = label
         case line: LineNumberNode if isEmpty(line) =>
           assert(line.start == previousLabel)
           iterator.remove()
@@ -969,10 +983,12 @@ object LocalOptImpls {
               replaceJumpByPop(jump)
               true
 
-            case _ => false
+            case _ =>
+              false
           }
 
-        case _ => false
+        case _ =>
+          false
       }
 
     /**
@@ -995,7 +1011,8 @@ object LocalOptImpls {
             true
           }
 
-        case _ => false
+        case _ =>
+          false
       }
 
     /**
@@ -1015,7 +1032,8 @@ object LocalOptImpls {
           replaceJumpByPop(jump)
           true
 
-        case _ => false
+        case _ =>
+          false
       }
 
     /**
@@ -1049,9 +1067,11 @@ object LocalOptImpls {
               } else
                 false
 
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     /**
@@ -1080,9 +1100,11 @@ object LocalOptImpls {
                 } else
                   false
 
-              case _ => false
+              case _ =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
       )
 

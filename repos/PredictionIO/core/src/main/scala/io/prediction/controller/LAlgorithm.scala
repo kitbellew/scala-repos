@@ -72,7 +72,8 @@ abstract class LAlgorithm[PD, M: ClassTag, Q, P]
     cartesian.flatMap {
       case (m, qArray) =>
         qArray.map {
-          case (qx, q) => (qx, predict(m, q))
+          case (qx, q) =>
+            (qx, predict(m, q))
         }
     }
   }

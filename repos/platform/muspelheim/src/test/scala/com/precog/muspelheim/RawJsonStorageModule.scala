@@ -147,7 +147,8 @@ trait RawJsonStorageModule[M[+_]] {
               }
               .groupBy(_._1)
               .map {
-                case (tpe, values) => (tpe, values.map(_._2).sum)
+                case (tpe, values) =>
+                  (tpe, values.map(_._2).sum)
               }
 
             PathStructure(types, structs.map(_.selector))
@@ -207,7 +208,8 @@ trait RawJsonColumnarTableStorageModule[M[+_]]
               schema.columns(JObjectFixedT(Map("value" -> JTextT))) flatMap {
                 case s: StrColumn =>
                   range.filter(s.isDefinedAt).map(i => Path(s(i)))
-                case _ => Set()
+                case _ =>
+                  Set()
               }
             }
           }

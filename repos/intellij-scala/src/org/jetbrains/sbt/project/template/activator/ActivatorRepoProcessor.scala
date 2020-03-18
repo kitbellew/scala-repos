@@ -81,7 +81,8 @@ object ActivatorRepoProcessor {
       } else
         None
     } catch {
-      case _: Exception => None
+      case _: Exception =>
+        None
     } finally {
       if (connection != null)
         connection.disconnect()

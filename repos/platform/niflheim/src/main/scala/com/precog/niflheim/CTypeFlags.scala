@@ -54,12 +54,18 @@ object CTypeFlags {
       @tailrec
       def flagForCValueType(t: CValueType[_]) {
         t match {
-          case CString  => buffer += FString
-          case CBoolean => buffer += FBoolean
-          case CLong    => buffer += FLong
-          case CDouble  => buffer += FDouble
-          case CNum     => buffer += FBigDecimal
-          case CDate    => buffer += FDate
+          case CString =>
+            buffer += FString
+          case CBoolean =>
+            buffer += FBoolean
+          case CLong =>
+            buffer += FLong
+          case CDouble =>
+            buffer += FDouble
+          case CNum =>
+            buffer += FBigDecimal
+          case CDate =>
+            buffer += FDate
           case CArrayType(tpe) =>
             buffer += FArray
             flagForCValueType(tpe)
@@ -93,23 +99,34 @@ object CTypeFlags {
 
     def readCValueType(flag: Byte): Validation[IOException, CValueType[_]] =
       flag match {
-        case FBoolean    => Success(CBoolean)
-        case FString     => Success(CString)
-        case FLong       => Success(CLong)
-        case FDouble     => Success(CDouble)
-        case FBigDecimal => Success(CNum)
-        case FDate       => Success(CDate)
-        case FArray      => readCValueType(buffer.get()) map (CArrayType(_))
+        case FBoolean =>
+          Success(CBoolean)
+        case FString =>
+          Success(CString)
+        case FLong =>
+          Success(CLong)
+        case FDouble =>
+          Success(CDouble)
+        case FBigDecimal =>
+          Success(CNum)
+        case FDate =>
+          Success(CDate)
+        case FArray =>
+          readCValueType(buffer.get()) map (CArrayType(_))
         case flag =>
           Failure(
             new IOException("Unexpected segment type flag: %x" format flag))
       }
 
     buffer.get() match {
-      case FNull        => Success(CNull)
-      case FEmptyArray  => Success(CEmptyArray)
-      case FEmptyObject => Success(CEmptyObject)
-      case flag         => readCValueType(flag)
+      case FNull =>
+        Success(CNull)
+      case FEmptyArray =>
+        Success(CEmptyArray)
+      case FEmptyObject =>
+        Success(CEmptyObject)
+      case flag =>
+        readCValueType(flag)
     }
   }
 }

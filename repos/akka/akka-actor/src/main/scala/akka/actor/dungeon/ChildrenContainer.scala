@@ -140,7 +140,8 @@ private[akka] object ChildrenContainer {
       c.get(actor.path.name) match {
         case c @ Some(crs: ChildRestartStats) if (crs.child == actor) ⇒
           c.asInstanceOf[Option[ChildRestartStats]]
-        case _ ⇒ None
+        case _ ⇒
+          None
       }
 
     override def children: immutable.Iterable[ActorRef] =
@@ -167,8 +168,10 @@ private[akka] object ChildrenContainer {
 
     override def unreserve(name: String): ChildrenContainer =
       c.get(name) match {
-        case Some(ChildNameReserved) ⇒ NormalChildrenContainer(c - name)
-        case _ ⇒ this
+        case Some(ChildNameReserved) ⇒
+          NormalChildrenContainer(c - name)
+        case _ ⇒
+          this
       }
 
     override def toString =
@@ -211,8 +214,10 @@ private[akka] object ChildrenContainer {
       val t = toDie - child
       if (t.isEmpty)
         reason match {
-          case Termination ⇒ TerminatedChildrenContainer
-          case _ ⇒ NormalChildrenContainer(c - child.path.name)
+          case Termination ⇒
+            TerminatedChildrenContainer
+          case _ ⇒
+            NormalChildrenContainer(c - child.path.name)
         }
       else
         copy(c - child.path.name, t)
@@ -224,7 +229,8 @@ private[akka] object ChildrenContainer {
       c.get(actor.path.name) match {
         case c @ Some(crs: ChildRestartStats) if (crs.child == actor) ⇒
           c.asInstanceOf[Option[ChildRestartStats]]
-        case _ ⇒ None
+        case _ ⇒
+          None
       }
 
     override def children: immutable.Iterable[ActorRef] =
@@ -257,8 +263,10 @@ private[akka] object ChildrenContainer {
 
     override def unreserve(name: String): ChildrenContainer =
       c.get(name) match {
-        case Some(ChildNameReserved) ⇒ copy(c = c - name)
-        case _ ⇒ this
+        case Some(ChildNameReserved) ⇒
+          copy(c = c - name)
+        case _ ⇒
+          this
       }
 
     override def isTerminating: Boolean = reason == Termination

@@ -33,8 +33,10 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
   override def hashCode() = visibleSettings.size // going for cheap
   override def equals(that: Any) =
     that match {
-      case s: AbsSettings => this.userSetSettings == s.userSetSettings
-      case _              => false
+      case s: AbsSettings =>
+        this.userSetSettings == s.userSetSettings
+      case _ =>
+        false
     }
   override def toString() = {
     val uss = userSetSettings
@@ -127,14 +129,19 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
       */
     def isAdvanced =
       name match {
-        case "-Y" => true;
-        case "-X" => false;
-        case _    => name startsWith "-X"
+        case "-Y" =>
+          true;
+        case "-X" =>
+          false;
+        case _ =>
+          name startsWith "-X"
       }
     def isPrivate =
       name match {
-        case "-Y" => false;
-        case _    => name startsWith "-Y"
+        case "-Y" =>
+          false;
+        case _ =>
+          name startsWith "-Y"
       }
     def isStandard = !isAdvanced && !isPrivate
     def isForDebug = name endsWith "-debug" // by convention, i.e. -Ytyper-debug
@@ -148,8 +155,10 @@ trait AbsSettings extends scala.reflect.internal.settings.AbsSettings {
       */
     override def equals(that: Any) =
       that match {
-        case x: AbsSettings#AbsSetting => (name == x.name) && (value == x.value)
-        case _                         => false
+        case x: AbsSettings#AbsSetting =>
+          (name == x.name) && (value == x.value)
+        case _ =>
+          false
       }
     override def hashCode() = name.hashCode + value.hashCode
     override def toString() =

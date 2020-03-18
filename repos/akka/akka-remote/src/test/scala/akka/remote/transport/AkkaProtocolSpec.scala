@@ -118,10 +118,13 @@ class AkkaProtocolSpec
         case WriteAttempt(sender, recipient, payload)
             if sender == localAddress && recipient == remoteAddress ⇒
           codec.decodePdu(payload) match {
-            case Heartbeat ⇒ true
-            case _ ⇒ false
+            case Heartbeat ⇒
+              true
+            case _ ⇒
+              false
           }
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
 
   def lastActivityIsAssociate(
@@ -137,9 +140,11 @@ class AkkaProtocolSpec
           codec.decodePdu(payload) match {
             case Associate(info) ⇒
               info.cookie == cookie && info.origin == localAddress && info.uid == uid
-            case _ ⇒ false
+            case _ ⇒
+              false
           }
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
 
   def lastActivityIsDisassociate(registry: AssociationRegistry) =
@@ -150,10 +155,13 @@ class AkkaProtocolSpec
         case WriteAttempt(sender, recipient, payload)
             if sender == localAddress && recipient == remoteAddress ⇒
           codec.decodePdu(payload) match {
-            case Disassociate(_) ⇒ true
-            case _ ⇒ false
+            case Disassociate(_) ⇒
+              true
+            case _ ⇒
+              false
           }
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
 
   "ProtocolStateActor" must {
@@ -209,7 +217,8 @@ class AkkaProtocolSpec
       reader ! testPayload
 
       expectMsgPF() {
-        case InboundPayload(p) ⇒ p should ===(testEnvelope)
+        case InboundPayload(p) ⇒
+          p should ===(testEnvelope)
       }
     }
 
@@ -234,8 +243,10 @@ class AkkaProtocolSpec
 
       awaitCond(
         registry.logSnapshot.exists {
-          case DisassociateAttempt(requester, remote) ⇒ true
-          case _ ⇒ false
+          case DisassociateAttempt(requester, remote) ⇒
+            true
+          case _ ⇒
+            false
         })
     }
 
@@ -274,7 +285,8 @@ class AkkaProtocolSpec
           h.localAddress should ===(localAkkaAddress)
           h.handshakeInfo.uid should ===(33)
 
-        case _ ⇒ fail()
+        case _ ⇒
+          fail()
       }
 
     }
@@ -302,8 +314,10 @@ class AkkaProtocolSpec
 
       awaitCond(
         registry.logSnapshot.exists {
-          case DisassociateAttempt(requester, remote) ⇒ true
-          case _ ⇒ false
+          case DisassociateAttempt(requester, remote) ⇒
+            true
+          case _ ⇒
+            false
         })
     }
 
@@ -403,7 +417,8 @@ class AkkaProtocolSpec
             h.localAddress should ===(localAkkaAddress)
             h
 
-          case _ ⇒ fail()
+          case _ ⇒
+            fail()
         }
 
       wrappedHandle.readHandlerPromise.success(
@@ -443,7 +458,8 @@ class AkkaProtocolSpec
             h.localAddress should ===(localAkkaAddress)
             h
 
-          case _ ⇒ fail()
+          case _ ⇒
+            fail()
         }
 
       wrappedHandle.readHandlerPromise.success(
@@ -483,7 +499,8 @@ class AkkaProtocolSpec
             h.localAddress should ===(localAkkaAddress)
             h
 
-          case _ ⇒ fail()
+          case _ ⇒
+            fail()
         }
 
       wrappedHandle.readHandlerPromise.success(
@@ -526,7 +543,8 @@ class AkkaProtocolSpec
             h.localAddress should ===(localAkkaAddress)
             h
 
-          case _ ⇒ fail()
+          case _ ⇒
+            fail()
         }
 
       stateActor ! Disassociated(AssociationHandle.Unknown)

@@ -424,8 +424,10 @@ private[akka] object LocalActorRefProvider {
       with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
 
     def receive = {
-      case Terminated(_) ⇒ context.stop(self)
-      case StopChild(child) ⇒ context.stop(child)
+      case Terminated(_) ⇒
+        context.stop(self)
+      case StopChild(child) ⇒
+        context.stop(child)
     }
 
     // guardian MUST NOT lose its children during restart
@@ -458,15 +460,18 @@ private[akka] object LocalActorRefProvider {
         // a registered, and watched termination hook terminated before
         // termination process of guardian has started
         terminationHooks -= a
-      case StopChild(child) ⇒ context.stop(child)
+      case StopChild(child) ⇒
+        context.stop(child)
       case RegisterTerminationHook if sender() != context.system.deadLetters ⇒
         terminationHooks += sender()
         context watch sender()
     }
 
     def terminating: Receive = {
-      case Terminated(a) ⇒ stopWhenAllTerminationHooksDone(a)
-      case TerminationHookDone ⇒ stopWhenAllTerminationHooksDone(sender())
+      case Terminated(a) ⇒
+        stopWhenAllTerminationHooksDone(a)
+      case TerminationHookDone ⇒
+        stopWhenAllTerminationHooksDone(sender())
     }
 
     def stopWhenAllTerminationHooksDone(remove: ActorRef): Unit = {
@@ -576,8 +581,10 @@ private[akka] class LocalActorRefProvider private[akka] (
           sender: ActorRef = Actor.noSender): Unit =
         if (isWalking)
           message match {
-            case null ⇒ throw new InvalidMessageException("Message is null")
-            case _ ⇒ log.error(s"$this received unexpected message [$message]")
+            case null ⇒
+              throw new InvalidMessageException("Message is null")
+            case _ ⇒
+              log.error(s"$this received unexpected message [$message]")
           }
 
       override def sendSystemMessage(message: SystemMessage): Unit =
@@ -587,8 +594,12 @@ private[akka] class LocalActorRefProvider private[akka] (
               log.error(ex, s"guardian $child failed, shutting down!")
               causeOfTermination.tryFailure(ex)
               child.stop()
-            case Supervise(_, _) ⇒ // TODO register child in some map to keep track of it and enable shutdown after all dead
-            case _: DeathWatchNotification ⇒ stop()
+            case Supervise(
+                  _,
+                  _
+                ) ⇒ // TODO register child in some map to keep track of it and enable shutdown after all dead
+            case _: DeathWatchNotification ⇒
+              stop()
             case _ ⇒
               log.error(s"$this received unexpected system message [$message]")
           }
@@ -663,8 +674,10 @@ private[akka] class LocalActorRefProvider private[akka] (
       override def getParent: InternalActorRef = this
       override def getSingleChild(name: String): InternalActorRef =
         name match {
-          case "temp" ⇒ tempContainer
-          case "deadLetters" ⇒ deadLetters
+          case "temp" ⇒
+            tempContainer
+          case "deadLetters" ⇒
+            deadLetters
           case other ⇒
             extraNames.get(other).getOrElse(super.getSingleChild(other))
         }
@@ -781,7 +794,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         case Nobody ⇒
           log.debug("look-up of path sequence [/{}] failed", path.mkString("/"))
           new EmptyLocalActorRef(system.provider, ref.path / path, eventStream)
-        case x ⇒ x
+        case x ⇒
+          x
       }
 
   def resolveActorRef(path: String): ActorRef =
@@ -821,7 +835,8 @@ private[akka] class LocalActorRefProvider private[akka] (
             system.provider,
             ref.path / pathElements,
             eventStream)
-        case x ⇒ x
+        case x ⇒
+          x
       }
 
   def actorOf(
@@ -854,12 +869,17 @@ private[akka] class LocalActorRefProvider private[akka] (
           ) match {
             case Some(d) ⇒
               (d.dispatcher, d.mailbox) match {
-                case (Deploy.NoDispatcherGiven, Deploy.NoMailboxGiven) ⇒ props
-                case (dsp, Deploy.NoMailboxGiven) ⇒ props.withDispatcher(dsp)
-                case (Deploy.NoMailboxGiven, mbx) ⇒ props.withMailbox(mbx)
-                case (dsp, mbx) ⇒ props.withDispatcher(dsp).withMailbox(mbx)
+                case (Deploy.NoDispatcherGiven, Deploy.NoMailboxGiven) ⇒
+                  props
+                case (dsp, Deploy.NoMailboxGiven) ⇒
+                  props.withDispatcher(dsp)
+                case (Deploy.NoMailboxGiven, mbx) ⇒
+                  props.withMailbox(mbx)
+                case (dsp, mbx) ⇒
+                  props.withDispatcher(dsp).withMailbox(mbx)
               }
-            case _ ⇒ props // no deployment config found
+            case _ ⇒
+              props // no deployment config found
           }
 
         if (!system.dispatchers.hasDispatcher(props2.dispatcher))

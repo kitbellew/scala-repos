@@ -86,7 +86,8 @@ class ESEngineManifests(
         .execute()
         .actionGet()
     } catch {
-      case e: ElasticsearchException => error(e.getMessage)
+      case e: ElasticsearchException =>
+        error(e.getMessage)
     }
   }
 }

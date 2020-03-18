@@ -43,13 +43,16 @@ case class Average(child: Expression) extends DeclarativeAggregate {
     child.dataType match {
       case DecimalType.Fixed(p, s) =>
         DecimalType.bounded(p + 4, s + 4)
-      case _ => DoubleType
+      case _ =>
+        DoubleType
     }
 
   private lazy val sumDataType =
     child.dataType match {
-      case _ @DecimalType.Fixed(p, s) => DecimalType.bounded(p + 10, s)
-      case _                          => DoubleType
+      case _ @DecimalType.Fixed(p, s) =>
+        DecimalType.bounded(p + 10, s)
+      case _ =>
+        DoubleType
     }
 
   private lazy val sum = AttributeReference("sum", sumDataType)()

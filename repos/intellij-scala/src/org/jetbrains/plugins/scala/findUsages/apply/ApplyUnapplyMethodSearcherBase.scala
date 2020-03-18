@@ -40,7 +40,8 @@ abstract class ApplyUnapplyMethodSearcherBase
                 checkAndTransform(ref).flatMap(_.bind()) match {
                   case Some(ScalaResolveResult(`fun`, _)) =>
                     consumer.process(ref)
-                  case _ => true
+                  case _ =>
+                    true
                 }
               }
             }
@@ -48,9 +49,11 @@ abstract class ApplyUnapplyMethodSearcherBase
         inReadAction(fun.containingClass) match {
           case obj: ScObject =>
             ReferencesSearch.search(obj, scope, ignoreAccess).forEach(processor)
-          case _ => true
+          case _ =>
+            true
         }
-      case _ => true
+      case _ =>
+        true
     }
   }
 }

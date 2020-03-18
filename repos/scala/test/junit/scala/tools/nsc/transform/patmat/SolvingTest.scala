@@ -41,8 +41,10 @@ object TestSolver extends Logic with Solving {
 
       override def equals(other: scala.Any): Boolean =
         other match {
-          case that: Var => this.x == that.x
-          case _         => false
+          case that: Var =>
+            this.x == that.x
+          case _ =>
+            false
         }
 
       override def hashCode(): Int = x.hashCode()
@@ -145,20 +147,30 @@ object TestSolver extends Logic with Solving {
 
       def negationNormalFormNot(p: Prop): Prop =
         p match {
-          case And(ps) => Or(ps map negationNormalFormNot)
-          case Or(ps)  => And(ps map negationNormalFormNot)
-          case Not(p)  => negationNormalForm(p)
-          case True    => False
-          case False   => True
-          case s: Sym  => Not(s)
+          case And(ps) =>
+            Or(ps map negationNormalFormNot)
+          case Or(ps) =>
+            And(ps map negationNormalFormNot)
+          case Not(p) =>
+            negationNormalForm(p)
+          case True =>
+            False
+          case False =>
+            True
+          case s: Sym =>
+            Not(s)
         }
 
       def negationNormalForm(p: Prop): Prop =
         p match {
-          case Or(ps)                  => Or(ps map negationNormalForm)
-          case And(ps)                 => And(ps map negationNormalForm)
-          case Not(negated)            => negationNormalFormNot(negated)
-          case True | False | (_: Sym) => p
+          case Or(ps) =>
+            Or(ps map negationNormalForm)
+          case And(ps) =>
+            And(ps map negationNormalForm)
+          case Not(negated) =>
+            negationNormalFormNot(negated)
+          case True | False | (_: Sym) =>
+            p
         }
 
       val TrueF: Formula = Array()
@@ -171,7 +183,8 @@ object TestSolver extends Logic with Solving {
           (a, b) match {
             // true \/ _ = true
             // _ \/ true = true
-            case (trueA, trueB) if trueA.size == 0 || trueB.size == 0 => TrueF
+            case (trueA, trueB) if trueA.size == 0 || trueB.size == 0 =>
+              TrueF
             // lit \/ lit
             case (a, b) if a.size == 1 && b.size == 1 =>
               formula(merge(a(0), b(0)))
@@ -187,10 +200,14 @@ object TestSolver extends Logic with Solving {
           }
 
         p match {
-          case True        => TrueF
-          case False       => FalseF
-          case s: Sym      => lit(s)
-          case Not(s: Sym) => negLit(s)
+          case True =>
+            TrueF
+          case False =>
+            FalseF
+          case s: Sym =>
+            lit(s)
+          case Not(s: Sym) =>
+            negLit(s)
           case And(ps) =>
             ps.toArray flatMap conjunctiveNormalForm
           case Or(ps) =>
@@ -915,7 +932,8 @@ class SolvingTest {
       ops
         .combinations(2)
         .collect {
-          case a :: b :: Nil => Or(Not(a), Not(b))
+          case a :: b :: Nil =>
+            Or(Not(a), Not(b))
         }
         .toSet[TestSolver.TestSolver.Prop])
   }

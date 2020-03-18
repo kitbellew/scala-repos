@@ -168,7 +168,8 @@ private[history] class ApplicationCache(
         e.getCause() match {
           case nsee: NoSuchElementException =>
             None
-          case cause: Exception => throw cause
+          case cause: Exception =>
+            throw cause
         }
     }
   }
@@ -393,7 +394,8 @@ private[history] class ApplicationCache(
     sb.append(s"; entry count= ${appCache.size()}\n")
     sb.append("----\n")
     appCache.asMap().asScala.foreach {
-      case (key, entry) => sb.append(s"  $key -> $entry\n")
+      case (key, entry) =>
+        sb.append(s"  $key -> $entry\n")
     }
     sb.append("----\n")
     sb.append(metrics)

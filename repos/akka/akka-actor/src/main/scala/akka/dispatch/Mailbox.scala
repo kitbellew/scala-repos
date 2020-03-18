@@ -216,7 +216,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       case Closed ⇒
         setStatus(Closed);
         false
-      case s ⇒ updateStatus(s, Closed) || becomeClosed()
+      case s ⇒
+        updateStatus(s, Closed) || becomeClosed()
     }
 
   /**
@@ -272,8 +273,10 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
     currentStatus match {
       case Open | Scheduled ⇒
         hasMessageHint || hasSystemMessageHint || hasSystemMessages || hasMessages
-      case Closed ⇒ false
-      case _ ⇒ hasSystemMessageHint || hasSystemMessages
+      case Closed ⇒
+        false
+      case _ ⇒
+        hasSystemMessageHint || hasSystemMessages
     }
 
   override final def run(): Unit = {
@@ -302,7 +305,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
         val t = Thread.currentThread
         t.getUncaughtExceptionHandler match {
           case null ⇒
-          case some ⇒ some.uncaughtException(t, anything)
+          case some ⇒
+            some.uncaughtException(t, anything)
         }
         throw anything
     }
@@ -374,7 +378,8 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
       msg.unlink()
       try dlm.systemEnqueue(actor.self, msg)
       catch {
-        case e: InterruptedException ⇒ interruption = e
+        case e: InterruptedException ⇒
+          interruption = e
         case NonFatal(e) ⇒
           actor.system.eventStream.publish(
             Error(
@@ -574,8 +579,10 @@ private[akka] trait DefaultSystemMessageQueue {
 
   def hasSystemMessages: Boolean =
     systemQueueGet.head match {
-      case null | NoMessage ⇒ false
-      case _ ⇒ true
+      case null | NoMessage ⇒
+        false
+      case _ ⇒
+        true
     }
 
 }
@@ -1046,8 +1053,10 @@ trait ControlAwareMessageQueueSemantics extends QueueBasedMessageQueue {
 
   def enqueue(receiver: ActorRef, handle: Envelope): Unit =
     handle match {
-      case envelope @ Envelope(_: ControlMessage, _) ⇒ controlQueue add envelope
-      case envelope ⇒ queue add envelope
+      case envelope @ Envelope(_: ControlMessage, _) ⇒
+        controlQueue add envelope
+      case envelope ⇒
+        queue add envelope
     }
 
   def dequeue(): Envelope = {
@@ -1141,7 +1150,8 @@ object BoundedControlAwareMailbox {
       handle match {
         case envelope @ Envelope(_: ControlMessage, _) ⇒
           enqueueWithTimeout(controlQueue, receiver, envelope)
-        case envelope ⇒ enqueueWithTimeout(queue, receiver, envelope)
+        case envelope ⇒
+          enqueueWithTimeout(queue, receiver, envelope)
       }
 
     override def numberOfMessages: Int = size.get()

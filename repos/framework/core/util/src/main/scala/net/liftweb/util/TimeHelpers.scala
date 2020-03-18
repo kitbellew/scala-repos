@@ -151,8 +151,10 @@ trait TimeHelpers {
       "3.0.0")
     private[util] def toPeriod: Period =
       dt match { // package protected because of view bound usage in tsToPeriod
-        case Left(duration) => duration.toPeriod
-        case Right(period)  => period
+        case Left(duration) =>
+          duration.toPeriod
+        case Right(period) =>
+          period
       }
 
     /**
@@ -172,7 +174,8 @@ trait TimeHelpers {
       */
     def millis =
       dt match {
-        case Left(duration) => duration.getMillis
+        case Left(duration) =>
+          duration.getMillis
         case Right(period) =>
           period.toStandardDuration.getMillis // will throw exception because it holds month or year
       }
@@ -207,12 +210,14 @@ trait TimeHelpers {
       */
     def +[B](in: B)(implicit f: B => TimeSpan): TimeSpan =
       (this.dt, f(in).dt) match {
-        case (Right(p1), Right(p2)) => new TimeSpan(Right(p1.plus(p2)))
+        case (Right(p1), Right(p2)) =>
+          new TimeSpan(Right(p1.plus(p2)))
         case (Left(duration), Right(period)) =>
           new TimeSpan(Left(duration.plus(period.toStandardDuration)))
         case (Right(period), Left(duration)) =>
           new TimeSpan(Left(period.toStandardDuration.plus(duration)))
-        case (Left(d1), Left(d2)) => new TimeSpan(Left(d1.plus(d2)))
+        case (Left(d1), Left(d2)) =>
+          new TimeSpan(Left(d1.plus(d2)))
       }
 
     /**
@@ -251,12 +256,14 @@ trait TimeHelpers {
       */
     def -[B](in: B)(implicit f: B => TimeSpan): TimeSpan =
       (this.dt, f(in).dt) match {
-        case (Right(p1), Right(p2)) => new TimeSpan(Right(p1.minus(p2)))
+        case (Right(p1), Right(p2)) =>
+          new TimeSpan(Right(p1.minus(p2)))
         case (Left(duration), Right(period)) =>
           new TimeSpan(Left(duration.minus(period.toStandardDuration)))
         case (Right(period), Left(duration)) =>
           new TimeSpan(Left(period.toStandardDuration.minus(duration)))
-        case (Left(d1), Left(d2)) => new TimeSpan(Left(d1.minus(d2)))
+        case (Left(d1), Left(d2)) =>
+          new TimeSpan(Left(d1.minus(d2)))
       }
 
     /**
@@ -268,12 +275,18 @@ trait TimeHelpers {
       */
     override def equals(cmp: Any) = {
       cmp match {
-        case lo: Long       => lo == this.millis
-        case i: Int         => i == this.millis
-        case ti: TimeSpan   => ti.dt == this.dt
-        case dur: Duration  => Left(dur) == this.dt
-        case period: Period => Right(period) == this.dt
-        case _              => false
+        case lo: Long =>
+          lo == this.millis
+        case i: Int =>
+          i == this.millis
+        case ti: TimeSpan =>
+          ti.dt == this.dt
+        case dur: Duration =>
+          Left(dur) == this.dt
+        case period: Period =>
+          Right(period) == this.dt
+        case _ =>
+          false
       }
     }
 
@@ -316,8 +329,10 @@ trait TimeHelpers {
           ._2
       def formatAmount(amountUnit: (Long, String)) =
         amountUnit match {
-          case (amount, unit) if (amount == 1) => amount + " " + unit
-          case (amount, unit)                  => amount + " " + unit + "s"
+          case (amount, unit) if (amount == 1) =>
+            amount + " " + unit
+          case (amount, unit) =>
+            amount + " " + unit + "s"
         }
       divideInUnits(millis).filter(_._1 > 0).map(formatAmount(_)).mkString(", ")
     }
@@ -568,17 +583,26 @@ trait TimeHelpers {
   def toDate(in: Any): Box[Date] = {
     try {
       in match {
-        case null                                  => Empty
-        case d: Date                               => Full(d)
-        case lng: Long                             => Full(new Date(lng))
-        case lng: Number                           => Full(new Date(lng.longValue))
-        case Nil | Empty | None | Failure(_, _, _) => Empty
-        case Full(v)                               => toDate(v)
-        case Some(v)                               => toDate(v)
-        case v :: vs                               => toDate(v)
+        case null =>
+          Empty
+        case d: Date =>
+          Full(d)
+        case lng: Long =>
+          Full(new Date(lng))
+        case lng: Number =>
+          Full(new Date(lng.longValue))
+        case Nil | Empty | None | Failure(_, _, _) =>
+          Empty
+        case Full(v) =>
+          toDate(v)
+        case Some(v) =>
+          toDate(v)
+        case v :: vs =>
+          toDate(v)
         case s: String =>
           tryo(internetDateFormatter.parse(s)) or tryo(dateFormatter.parse(s))
-        case o => toDate(o.toString)
+        case o =>
+          toDate(o.toString)
       }
     } catch {
       case e: Exception =>

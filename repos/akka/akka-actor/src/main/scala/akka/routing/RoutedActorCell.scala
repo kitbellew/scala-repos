@@ -91,13 +91,15 @@ private[akka] class RoutedActorCell(
 
   private def watch(routee: Routee): Unit =
     routee match {
-      case ActorRefRoutee(ref) ⇒ watch(ref)
+      case ActorRefRoutee(ref) ⇒
+        watch(ref)
       case _ ⇒
     }
 
   private def unwatch(routee: Routee): Unit =
     routee match {
-      case ActorRefRoutee(ref) ⇒ unwatch(ref)
+      case ActorRefRoutee(ref) ⇒
+        unwatch(ref)
       case _ ⇒
     }
 
@@ -178,7 +180,8 @@ private[akka] class RoutedActorCell(
 private[akka] class RouterActor extends Actor {
   val cell =
     context match {
-      case x: RoutedActorCell ⇒ x
+      case x: RoutedActorCell ⇒
+        x
       case _ ⇒
         throw ActorInitializationException(
           "Router actor can only be used in RoutedActorRef, not in " + context.getClass)
@@ -224,7 +227,8 @@ private[akka] class RouterPoolActor(
 
   val pool =
     cell.routerConfig match {
-      case x: Pool ⇒ x
+      case x: Pool ⇒
+        x
       case other ⇒
         throw ActorInitializationException(
           "RouterPoolActor can only be used with Pool, not " + other.getClass)

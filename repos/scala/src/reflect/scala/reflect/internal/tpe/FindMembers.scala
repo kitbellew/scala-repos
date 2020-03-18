@@ -31,7 +31,8 @@ trait FindMembers {
         _selectorClass = tpe match {
           case tt: ThisType =>
             tt.sym // SI-7507 the first base class is not necessarily the selector class.
-          case _ => initBaseClasses.head
+          case _ =>
+            initBaseClasses.head
         }
       }
       _selectorClass

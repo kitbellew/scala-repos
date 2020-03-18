@@ -103,7 +103,8 @@ class ObjectMapping1[R, A1](
 
   def bind(data: Map[String, String]): Either[Seq[FormError], R] = {
     merge(field1.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(apply(values(0).asInstanceOf[A1]))
       }
@@ -167,7 +168,8 @@ class ObjectMapping2[R, A1, A2](
 
   def bind(data: Map[String, String]): Either[Seq[FormError], R] = {
     merge(field1.bind(data), field2.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(values(0).asInstanceOf[A1], values(1).asInstanceOf[A2]))
@@ -237,7 +239,8 @@ class ObjectMapping3[R, A1, A2, A3](
 
   def bind(data: Map[String, String]): Either[Seq[FormError], R] = {
     merge(field1.bind(data), field2.bind(data), field3.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -321,7 +324,8 @@ class ObjectMapping4[R, A1, A2, A3, A4](
       field2.bind(data),
       field3.bind(data),
       field4.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -413,7 +417,8 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
       field3.bind(data),
       field4.bind(data),
       field5.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -521,7 +526,8 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
       field4.bind(data),
       field5.bind(data),
       field6.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -638,7 +644,8 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
       field5.bind(data),
       field6.bind(data),
       field7.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -765,7 +772,8 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
       field6.bind(data),
       field7.bind(data),
       field8.bind(data)) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -903,7 +911,8 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
       field8.bind(data),
       field9.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -1051,7 +1060,8 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
       field9.bind(data),
       field10.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -1209,7 +1219,8 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
       field10.bind(data),
       field11.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -1375,7 +1386,8 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
       field11.bind(data),
       field12.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -1589,7 +1601,8 @@ class ObjectMapping13[
       field12.bind(data),
       field13.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -1828,7 +1841,8 @@ class ObjectMapping14[
       field13.bind(data),
       field14.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -2081,7 +2095,8 @@ class ObjectMapping15[
       field14.bind(data),
       field15.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -2346,7 +2361,8 @@ class ObjectMapping16[
       field15.bind(data),
       field16.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -2671,7 +2687,8 @@ class ObjectMapping17[
       field16.bind(data),
       field17.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -3011,7 +3028,8 @@ class ObjectMapping18[
       field17.bind(data),
       field18.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -3366,7 +3384,8 @@ class ObjectMapping19[
       field18.bind(data),
       field19.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -3737,7 +3756,8 @@ class ObjectMapping20[
       field19.bind(data),
       field20.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -4123,7 +4143,8 @@ class ObjectMapping21[
       field20.bind(data),
       field21.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(
@@ -4524,7 +4545,8 @@ class ObjectMapping22[
       field21.bind(data),
       field22.bind(data)
     ) match {
-      case Left(errors) => Left(errors)
+      case Left(errors) =>
+        Left(errors)
       case Right(values) => {
         applyConstraints(
           apply(

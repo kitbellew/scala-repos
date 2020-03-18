@@ -30,7 +30,8 @@ object LookupJoinedTest {
         (rng.nextInt(maxTime), rng.nextInt(maxKey), rng.nextInt)
       }
       .groupBy {
-        case (t, k, v) => (t, k)
+        case (t, k, v) =>
+          (t, k)
       }
       .mapValues(_.headOption.toList)
       .values
@@ -48,10 +49,12 @@ class LookupJoinerJob(args: Args) extends Job(args) {
 
   LookupJoin(
     TypedPipe.from(in0).map {
-      case (t, k, v) => (t, (k, v))
+      case (t, k, v) =>
+        (t, (k, v))
     },
     TypedPipe.from(in1).map {
-      case (t, k, v) => (t, (k, v))
+      case (t, k, v) =>
+        (t, (k, v))
     })
     .map {
       case (t, (k, (v, opt))) =>
@@ -62,10 +65,12 @@ class LookupJoinerJob(args: Args) extends Job(args) {
   LookupJoin
     .rightSumming(
       TypedPipe.from(in0).map {
-        case (t, k, v) => (t, (k, v))
+        case (t, k, v) =>
+          (t, (k, v))
       },
       TypedPipe.from(in1).map {
-        case (t, k, v) => (t, (k, v))
+        case (t, k, v) =>
+          (t, (k, v))
       })
     .map {
       case (t, (k, (v, opt))) =>
@@ -90,7 +95,8 @@ class LookupJoinedTest extends WordSpec with Matchers {
       serv.get(k).flatMap { in1s =>
         in1s
           .filter {
-            case (t1, _, _) => Ordering[T].lt(t1, t)
+            case (t1, _, _) =>
+              Ordering[T].lt(t1, t)
           }
           .reduceOption(ord.max(_, _))
           .map {
@@ -139,7 +145,8 @@ class LookupJoinedTest extends WordSpec with Matchers {
       serv.get(k).flatMap { in1s =>
         in1s
           .filter {
-            case (t1, _, _) => Ordering[T].lt(t1, t)
+            case (t1, _, _) =>
+              Ordering[T].lt(t1, t)
           }
           .reduceOption(ord.max(_, _))
           .map {
@@ -192,10 +199,12 @@ class WindowLookupJoinerJob(args: Args) extends Job(args) {
   LookupJoin
     .withWindow(
       TypedPipe.from(in0).map {
-        case (t, k, v) => (t, (k, v))
+        case (t, k, v) =>
+          (t, (k, v))
       },
       TypedPipe.from(in1).map {
-        case (t, k, v) => (t, (k, v))
+        case (t, k, v) =>
+          (t, (k, v))
       })(gate _)
     .map {
       case (t, (k, (v, opt))) =>

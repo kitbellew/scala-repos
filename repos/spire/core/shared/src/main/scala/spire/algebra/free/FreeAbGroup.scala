@@ -125,8 +125,10 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
       terms
         .filter(_._2 != 0)
         .map {
-          case (a, n) if n == 1 => a.toString
-          case (a, n) if n != 0 => s"($a)^$n"
+          case (a, n) if n == 1 =>
+            a.toString
+          case (a, n) if n != 0 =>
+            s"($a)^$n"
         }
         .mkString(" |+| ")
 }

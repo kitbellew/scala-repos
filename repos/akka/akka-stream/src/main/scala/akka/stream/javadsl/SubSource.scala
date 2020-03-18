@@ -909,7 +909,8 @@ class SubSource[+Out, +Mat](
     javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new SubSource(
       delegate.prefixAndTail(n).map {
-        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+        case (taken, tail) ⇒
+          akka.japi.Pair(taken.asJava, tail.asJava)
       })
 
   /**

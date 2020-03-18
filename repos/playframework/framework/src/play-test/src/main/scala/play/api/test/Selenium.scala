@@ -125,8 +125,9 @@ object WebDriverFactory {
     val driver = clazz.newInstance
     // Driver-specific configuration
     driver match {
-      case htmlunit: HtmlUnitDriver => htmlunit.setJavascriptEnabled(true)
-      case _                        =>
+      case htmlunit: HtmlUnitDriver =>
+        htmlunit.setJavascriptEnabled(true)
+      case _ =>
     }
     driver
   }

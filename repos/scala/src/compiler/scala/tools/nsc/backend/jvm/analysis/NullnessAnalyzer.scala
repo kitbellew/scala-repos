@@ -117,16 +117,20 @@ final class NullnessInterpreter(bTypes: BTypes)
 
   def newOperation(insn: AbstractInsnNode): NullnessValue =
     (insn.getOpcode: @switch) match {
-      case Opcodes.ACONST_NULL => NullValue
+      case Opcodes.ACONST_NULL =>
+        NullValue
 
       case Opcodes.LDC =>
         insn.asInstanceOf[LdcInsnNode].cst match {
-          case _: String | _: Type => NotNullValue
-          case _                   => NullnessValue.unknown(insn)
+          case _: String | _: Type =>
+            NotNullValue
+          case _ =>
+            NullnessValue.unknown(insn)
         }
 
       // for Opcodes.NEW, we use Unknown. The value will become NotNull after the constructor call.
-      case _ => NullnessValue.unknown(insn)
+      case _ =>
+        NullnessValue.unknown(insn)
     }
 
   def copyOperation(
@@ -137,11 +141,14 @@ final class NullnessInterpreter(bTypes: BTypes)
       insn: AbstractInsnNode,
       value: NullnessValue): NullnessValue =
     (insn.getOpcode: @switch) match {
-      case Opcodes.CHECKCAST => value
+      case Opcodes.CHECKCAST =>
+        value
 
-      case Opcodes.NEWARRAY | Opcodes.ANEWARRAY => NotNullValue
+      case Opcodes.NEWARRAY | Opcodes.ANEWARRAY =>
+        NotNullValue
 
-      case _ => NullnessValue.unknown(insn)
+      case _ =>
+        NullnessValue.unknown(insn)
     }
 
   def binaryOperation(

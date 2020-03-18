@@ -115,7 +115,8 @@ trait MergeService {
               None
             }
           } catch {
-            case e: NoMergeBaseException => None
+            case e: NoMergeBaseException =>
+              None
           }
         } finally {
           val refUpdate = git.getRepository.updateRef(refSpec.getDestination)
@@ -261,7 +262,8 @@ object MergeService {
         try {
           !merger.merge(mergeBaseTip, mergeTip)
         } catch {
-          case e: NoMergeBaseException => true
+          case e: NoMergeBaseException =>
+            true
         }
       val mergeTipCommit =
         using(new RevWalk(repository))(_.parseCommit(mergeTip))

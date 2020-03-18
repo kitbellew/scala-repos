@@ -63,8 +63,10 @@ abstract class ActorSelection extends Serializable {
     implicit val ec = ExecutionContexts.sameThreadExecutionContext
     val p = Promise[ActorRef]()
     this.ask(Identify(None)) onComplete {
-      case Success(ActorIdentity(_, Some(ref))) ⇒ p.success(ref)
-      case _ ⇒ p.failure(ActorNotFound(this))
+      case Success(ActorIdentity(_, Some(ref))) ⇒
+        p.success(ref)
+      case _ ⇒
+        p.failure(ActorNotFound(this))
     }
     p.future
   }
@@ -112,7 +114,8 @@ abstract class ActorSelection extends Serializable {
       anchor match {
         case a: ActorRefWithCell ⇒
           anchor.path.toStringWithAddress(a.provider.getDefaultAddress)
-        case _ ⇒ anchor.path.toString
+        case _ ⇒
+          anchor.path.toString
       }
 
     val builder = new java.lang.StringBuilder()
@@ -127,8 +130,10 @@ abstract class ActorSelection extends Serializable {
 
   override def equals(obj: Any): Boolean =
     obj match {
-      case s: ActorSelection ⇒ this.anchor == s.anchor && this.path == s.path
-      case _ ⇒ false
+      case s: ActorSelection ⇒
+        this.anchor == s.anchor && this.path == s.path
+      case _ ⇒
+        false
     }
 
   override lazy val hashCode: Int = {
@@ -290,8 +295,10 @@ private[akka] final case class ActorSelectionMessage(
 
   def identifyRequest: Option[Identify] =
     msg match {
-      case x: Identify ⇒ Some(x)
-      case _ ⇒ None
+      case x: Identify ⇒
+        Some(x)
+      case _ ⇒
+        None
     }
 }
 

@@ -28,7 +28,8 @@ class DefTypeFilter extends ElementFilter {
       val parent = leaf.getParent
       parent match {
         case _: ScReferenceExpression =>
-        case _                        => return false
+        case _ =>
+          return false
       }
       parent.getParent match {
         case parent @ (

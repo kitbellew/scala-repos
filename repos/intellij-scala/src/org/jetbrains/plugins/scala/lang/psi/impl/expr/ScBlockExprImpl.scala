@@ -23,8 +23,10 @@ class ScBlockExprImpl(text: CharSequence)
   //todo: bad architecture to have it duplicated here, as ScBlockExprImpl is not instance of ScalaPsiElementImpl
   override def getContext: PsiElement = {
     context match {
-      case null => super.getContext
-      case _    => context
+      case null =>
+        super.getContext
+      case _ =>
+        context
     }
   }
 
@@ -64,8 +66,10 @@ class ScBlockExprImpl(text: CharSequence)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => accept(s)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        accept(s)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

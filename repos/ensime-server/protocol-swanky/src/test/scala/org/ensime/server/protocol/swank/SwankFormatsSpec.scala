@@ -15,8 +15,10 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
   def marshal(value: EnsimeServerMessage, via: Option[String]): Unit = {
     val envelope =
       value match {
-        case r: RpcResponse => RpcResponseEnvelope(Some(666), value)
-        case e: EnsimeEvent => RpcResponseEnvelope(None, value)
+        case r: RpcResponse =>
+          RpcResponseEnvelope(Some(666), value)
+        case e: EnsimeEvent =>
+          RpcResponseEnvelope(None, value)
       }
     val sexp =
       envelope.toSexp match {
@@ -25,12 +27,15 @@ class SwankFormatsSpec extends EnsimeSpec with EnsimeTestData {
               SexpList(SexpSymbol(":ok") :: payload :: Nil) ::
               SexpNumber(callId) :: Nil) if callId == 666 =>
           payload
-        case payload => payload
+        case payload =>
+          payload
       }
     via match {
-      case None => println(s"$value = ${sexp.compactPrint}")
+      case None =>
+        println(s"$value = ${sexp.compactPrint}")
       // using String form because SexpSymbol("nil") for BasicTypeHint is not commutative
-      case Some(expected) => sexp.compactPrint shouldBe expected
+      case Some(expected) =>
+        sexp.compactPrint shouldBe expected
     }
   }
   def marshal(value: EnsimeServerMessage, via: String): Unit =

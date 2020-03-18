@@ -365,14 +365,18 @@ abstract class LambdaLift extends InfoTransform {
             gen.mkAttributedQualifier(clazz.thisType)
           else
             outerValue match {
-              case EmptyTree => prematureSelfReference()
-              case o         => outerPath(o, currentClass.outerClass, clazz)
+              case EmptyTree =>
+                prematureSelfReference()
+              case o =>
+                outerPath(o, currentClass.outerClass, clazz)
             }
         }
 
       qual match {
-        case EmptyTree => EmptyTree
-        case qual      => Select(qual, sym) setType sym.tpe
+        case EmptyTree =>
+          EmptyTree
+        case qual =>
+          Select(qual, sym) setType sym.tpe
       }
     }
 
@@ -390,7 +394,8 @@ abstract class LambdaLift extends InfoTransform {
 
     private def addFreeArgs(pos: Position, sym: Symbol, args: List[Tree]) =
       freeArgs(sym) match {
-        case Nil => args
+        case Nil =>
+          args
         case fvs =>
           addFree(
             sym,
@@ -433,7 +438,8 @@ abstract class LambdaLift extends InfoTransform {
             deriveClassDef(tree)(impl =>
               deriveTemplate(impl)(_ ::: freeParamDefs))
 
-        case _ => tree
+        case _ =>
+          tree
       }
 
     /*  SI-6231: Something like this will be necessary to eliminate the implementation
@@ -562,8 +568,10 @@ abstract class LambdaLift extends InfoTransform {
             tree1
         case Block(stats, expr0) =>
           val (lzyVals, rest) = stats partition {
-            case stat: ValDef => stat.symbol.isLazy || stat.symbol.isModuleVar
-            case _            => false
+            case stat: ValDef =>
+              stat.symbol.isLazy || stat.symbol.isModuleVar
+            case _ =>
+              false
           }
           if (lzyVals.isEmpty)
             tree
@@ -596,7 +604,8 @@ abstract class LambdaLift extends InfoTransform {
           case ClassDef(_, _, _, _) =>
             val lifted =
               liftedDefs remove stat.symbol match {
-                case Some(xs) => xs reverseMap addLifted
+                case Some(xs) =>
+                  xs reverseMap addLifted
                 case _ =>
                   log("unexpectedly no lifted defs for " + stat.symbol);
                   Nil

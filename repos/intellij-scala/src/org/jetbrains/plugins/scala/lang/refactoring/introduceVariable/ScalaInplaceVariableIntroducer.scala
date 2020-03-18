@@ -129,10 +129,14 @@ class ScalaInplaceVariableIntroducer(
 
   private def namedElement(declaration: PsiElement): Option[ScNamedElement] =
     declaration match {
-      case value: ScValue           => value.declaredElements.headOption
-      case variable: ScVariable     => variable.declaredElements.headOption
-      case enumerator: ScEnumerator => enumerator.pattern.bindings.headOption
-      case _                        => None
+      case value: ScValue =>
+        value.declaredElements.headOption
+      case variable: ScVariable =>
+        variable.declaredElements.headOption
+      case enumerator: ScEnumerator =>
+        enumerator.pattern.bindings.headOption
+      case _ =>
+        None
     }
 
   private def findDeclaration(offset: Int): PsiElement = {
@@ -195,7 +199,8 @@ class ScalaInplaceVariableIntroducer(
                         ScalaPsiElementFactory.createValFromVarDefinition(
                           variable,
                           variable.getManager)
-                      case _ => declaration
+                      case _ =>
+                        declaration
                     }
                   if (replacement != declaration)
                     setDeclaration(declaration.replace(replacement))

@@ -35,11 +35,16 @@ private[json] trait LowPriorityMergeDep {
 
       private def merge(val1: JValue, val2: JValue): JValue =
         (val1, val2) match {
-          case (JObject(xs), JObject(ys)) => JObject(Merge.mergeFields(xs, ys))
-          case (JArray(xs), JArray(ys))   => JArray(Merge.mergeVals(xs, ys))
-          case (JNothing, x)              => x
-          case (x, JNothing)              => x
-          case (_, y)                     => y
+          case (JObject(xs), JObject(ys)) =>
+            JObject(Merge.mergeFields(xs, ys))
+          case (JArray(xs), JArray(ys)) =>
+            JArray(Merge.mergeVals(xs, ys))
+          case (JNothing, x) =>
+            x
+          case (x, JNothing) =>
+            x
+          case (_, y) =>
+            y
         }
     }
 }
@@ -75,14 +80,16 @@ object Merge {
       vs2: List[JField]): List[JField] = {
     def mergeRec(xleft: List[JField], yleft: List[JField]): List[JField] =
       xleft match {
-        case Nil => yleft
+        case Nil =>
+          yleft
         case JField(xn, xv) :: xs =>
           yleft find (_.name == xn) match {
             case Some(y @ JField(yn, yv)) =>
               JField(xn, merge(xv, yv)) :: mergeRec(
                 xs,
                 yleft filterNot (_ == y))
-            case None => JField(xn, xv) :: mergeRec(xs, yleft)
+            case None =>
+              JField(xn, xv) :: mergeRec(xs, yleft)
           }
       }
 
@@ -94,12 +101,14 @@ object Merge {
       vs2: List[JValue]): List[JValue] = {
     def mergeRec(xleft: List[JValue], yleft: List[JValue]): List[JValue] =
       xleft match {
-        case Nil => yleft
+        case Nil =>
+          yleft
         case x :: xs =>
           yleft find (_ == x) match {
             case Some(y) =>
               merge(x, y) :: mergeRec(xs, yleft filterNot (_ == y))
-            case None => x :: mergeRec(xs, yleft)
+            case None =>
+              x :: mergeRec(xs, yleft)
           }
       }
 

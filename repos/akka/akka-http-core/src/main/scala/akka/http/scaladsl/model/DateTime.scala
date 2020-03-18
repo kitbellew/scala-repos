@@ -123,8 +123,10 @@ final case class DateTime private (
 
   override def equals(obj: Any) =
     obj match {
-      case x: DateTime ⇒ x.clicks == clicks
-      case _ ⇒ false
+      case x: DateTime ⇒
+        x.clicks == clicks
+      case _ ⇒
+        false
     }
 }
 
@@ -331,7 +333,8 @@ object DateTime {
         case 24 ⇒
           check(19) && c(19) == '.' && isDigit(c(20)) && isDigit(
             c(21)) && isDigit(c(22)) && c(23) == 'Z'
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
     def mul10(i: Int) = (i << 3) + (i << 1)
     if (check(string.length)) {
@@ -344,7 +347,8 @@ object DateTime {
         val sec = mul10(i(17)) + i(18)
         Some(DateTime(year, month, day, hour, min, sec))
       } catch {
-        case _: IllegalArgumentException ⇒ None
+        case _: IllegalArgumentException ⇒
+          None
       }
     } else
       None

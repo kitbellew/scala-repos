@@ -130,10 +130,14 @@ trait BufferReader extends Buffer {
       firstByte
     else
       firstByte match {
-        case 251 => Buffer.NullLength
-        case 252 => readUnsignedShort()
-        case 253 => readUnsignedInt24()
-        case 254 => readLong()
+        case 251 =>
+          Buffer.NullLength
+        case 252 =>
+          readUnsignedShort()
+        case 253 =>
+          readUnsignedInt24()
+        case 254 =>
+          readLong()
         case _ =>
           throw new IllegalStateException("Invalid length byte")
       }

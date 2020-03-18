@@ -23,10 +23,13 @@ class WebServerImpl(project: ActorRef, broadcaster: ActorRef)(implicit
     in match {
       case DocUriAtPointReq(_, _) | DocUriForSymbolReq(_, _, _) =>
         (project ? Canonised(in)).flatMap {
-          case None                  => Future.successful(FalseResponse)
-          case Some(sig: DocSigPair) => handleRpc(sig)
+          case None =>
+            Future.successful(FalseResponse)
+          case Some(sig: DocSigPair) =>
+            handleRpc(sig)
         }
-      case _ => (project ? Canonised(in)).mapTo[EnsimeServerMessage]
+      case _ =>
+        (project ? Canonised(in)).mapTo[EnsimeServerMessage]
     }
 
   def restHandler(in: RpcRequest): Future[EnsimeServerMessage] = handleRpc(in)

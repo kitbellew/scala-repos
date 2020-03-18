@@ -85,7 +85,8 @@ case class WindowSpecDefinition(
               checkValueBasedBoundaryForRangeFrame()
             case (RangeFrame, _, vf: ValueFollowing) =>
               checkValueBasedBoundaryForRangeFrame()
-            case (_, _, _) => None
+            case (_, _, _) =>
+              None
           }
         }
     }
@@ -167,10 +168,14 @@ object FrameBoundary {
   def apply(boundary: FrameBoundary): Option[Int] = unapply(boundary)
   def unapply(boundary: FrameBoundary): Option[Int] =
     boundary match {
-      case CurrentRow             => Some(0)
-      case ValuePreceding(offset) => Some(-offset)
-      case ValueFollowing(offset) => Some(offset)
-      case _                      => None
+      case CurrentRow =>
+        Some(0)
+      case ValuePreceding(offset) =>
+        Some(-offset)
+      case ValueFollowing(offset) =>
+        Some(offset)
+      case _ =>
+        None
     }
 }
 
@@ -178,11 +183,16 @@ object FrameBoundary {
 case object UnboundedPreceding extends FrameBoundary {
   def notFollows(other: FrameBoundary): Boolean =
     other match {
-      case UnboundedPreceding => true
-      case vp: ValuePreceding => true
-      case CurrentRow         => true
-      case vf: ValueFollowing => true
-      case UnboundedFollowing => true
+      case UnboundedPreceding =>
+        true
+      case vp: ValuePreceding =>
+        true
+      case CurrentRow =>
+        true
+      case vf: ValueFollowing =>
+        true
+      case UnboundedFollowing =>
+        true
     }
 
   override def toString: String = "UNBOUNDED PRECEDING"
@@ -192,11 +202,16 @@ case object UnboundedPreceding extends FrameBoundary {
 case class ValuePreceding(value: Int) extends FrameBoundary {
   def notFollows(other: FrameBoundary): Boolean =
     other match {
-      case UnboundedPreceding           => false
-      case ValuePreceding(anotherValue) => value >= anotherValue
-      case CurrentRow                   => true
-      case vf: ValueFollowing           => true
-      case UnboundedFollowing           => true
+      case UnboundedPreceding =>
+        false
+      case ValuePreceding(anotherValue) =>
+        value >= anotherValue
+      case CurrentRow =>
+        true
+      case vf: ValueFollowing =>
+        true
+      case UnboundedFollowing =>
+        true
     }
 
   override def toString: String = s"$value PRECEDING"
@@ -206,11 +221,16 @@ case class ValuePreceding(value: Int) extends FrameBoundary {
 case object CurrentRow extends FrameBoundary {
   def notFollows(other: FrameBoundary): Boolean =
     other match {
-      case UnboundedPreceding => false
-      case vp: ValuePreceding => false
-      case CurrentRow         => true
-      case vf: ValueFollowing => true
-      case UnboundedFollowing => true
+      case UnboundedPreceding =>
+        false
+      case vp: ValuePreceding =>
+        false
+      case CurrentRow =>
+        true
+      case vf: ValueFollowing =>
+        true
+      case UnboundedFollowing =>
+        true
     }
 
   override def toString: String = "CURRENT ROW"
@@ -220,11 +240,16 @@ case object CurrentRow extends FrameBoundary {
 case class ValueFollowing(value: Int) extends FrameBoundary {
   def notFollows(other: FrameBoundary): Boolean =
     other match {
-      case UnboundedPreceding           => false
-      case vp: ValuePreceding           => false
-      case CurrentRow                   => false
-      case ValueFollowing(anotherValue) => value <= anotherValue
-      case UnboundedFollowing           => true
+      case UnboundedPreceding =>
+        false
+      case vp: ValuePreceding =>
+        false
+      case CurrentRow =>
+        false
+      case ValueFollowing(anotherValue) =>
+        value <= anotherValue
+      case UnboundedFollowing =>
+        true
     }
 
   override def toString: String = s"$value FOLLOWING"
@@ -234,11 +259,16 @@ case class ValueFollowing(value: Int) extends FrameBoundary {
 case object UnboundedFollowing extends FrameBoundary {
   def notFollows(other: FrameBoundary): Boolean =
     other match {
-      case UnboundedPreceding => false
-      case vp: ValuePreceding => false
-      case CurrentRow         => false
-      case vf: ValueFollowing => false
-      case UnboundedFollowing => true
+      case UnboundedPreceding =>
+        false
+      case vp: ValuePreceding =>
+        false
+      case CurrentRow =>
+        false
+      case vf: ValueFollowing =>
+        false
+      case UnboundedFollowing =>
+        true
     }
 
   override def toString: String = "UNBOUNDED FOLLOWING"
@@ -283,8 +313,10 @@ case class SpecifiedWindowFrame(
 
   override def toString: String =
     frameType match {
-      case RowFrame   => s"ROWS BETWEEN $frameStart AND $frameEnd"
-      case RangeFrame => s"RANGE BETWEEN $frameStart AND $frameEnd"
+      case RowFrame =>
+        s"ROWS BETWEEN $frameStart AND $frameEnd"
+      case RangeFrame =>
+        s"RANGE BETWEEN $frameStart AND $frameEnd"
     }
 }
 
@@ -402,15 +434,18 @@ abstract class OffsetWindowFunction
     // This will be triggered by the Analyzer.
     val offsetValue =
       offset.eval() match {
-        case o: Int => o
+        case o: Int =>
+          o
         case x =>
           throw new AnalysisException(
             s"Offset expression must be a foldable integer expression: $x")
       }
     val boundary =
       direction match {
-        case Ascending  => ValueFollowing(offsetValue)
-        case Descending => ValuePreceding(offsetValue)
+        case Ascending =>
+          ValueFollowing(offsetValue)
+        case Descending =>
+          ValuePreceding(offsetValue)
       }
     SpecifiedWindowFrame(RowFrame, boundary, boundary)
   }

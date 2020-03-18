@@ -86,20 +86,26 @@ object SphinxDoc {
           "scalaVersion" -> s,
           "crossString" -> (
             s match {
-              case BinVer(_) => ""
-              case _         => "cross CrossVersion.full"
+              case BinVer(_) =>
+                ""
+              case _ =>
+                "cross CrossVersion.full"
             }
           ),
           "jarName" -> (
             s match {
-              case BinVer(bv) => "akka-actor_" + bv + "-" + v + ".jar"
-              case _          => "akka-actor_" + s + "-" + v + ".jar"
+              case BinVer(bv) =>
+                "akka-actor_" + bv + "-" + v + ".jar"
+              case _ =>
+                "akka-actor_" + s + "-" + v + ".jar"
             }
           ),
           "binVersion" -> (
             s match {
-              case BinVer(bv) => bv
-              case _          => s
+              case BinVer(bv) =>
+                bv
+              case _ =>
+                s
             }
           ),
           "sigarVersion" -> Dependencies.Compile.sigar.revision,

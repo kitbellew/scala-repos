@@ -25,8 +25,10 @@ class ScCatchBlockImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitCatchBlock(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitCatchBlock(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

@@ -44,7 +44,8 @@ class ExtractorResolveProcessor(
                 Success(
                   ScProjectionType(tp, obj, superReference = false),
                   Some(obj))
-              case _ => obj.getType(TypingContext.empty)
+              case _ =>
+                obj.getType(TypingContext.empty)
             }
           val processor = new CollectMethodsProcessor(ref, unapplyName)
           typeResult.foreach(t => processor.processType(t, ref))
@@ -52,7 +53,8 @@ class ExtractorResolveProcessor(
             processor.candidatesS.flatMap {
               case ScalaResolveResult(meth: PsiMethod, subst) =>
                 Some((meth, subst, Some(obj)))
-              case _ => None
+              case _ =>
+                None
             }.toSeq
           addResults(
             sigs.map {
@@ -103,8 +105,9 @@ class ExtractorResolveProcessor(
 
       named match {
         case o: ScObject if o.isPackageObject =>
-        case td: ScTypedDefinition            => resultsForTypedDef(td)
-        case _                                =>
+        case td: ScTypedDefinition =>
+          resultsForTypedDef(td)
+        case _ =>
       }
     }
     true
@@ -129,7 +132,8 @@ class ExtractorResolveProcessor(
                   return true
               }
               false
-            case _ => true
+            case _ =>
+              true
           }
         }
         val filtered = candidates.filter(t => isApplicable(t))
@@ -141,11 +145,14 @@ class ExtractorResolveProcessor(
           new MostSpecificUtil(ref, 1).mostSpecificForResolveResult(
             filtered,
             expandInnerResult = false) match {
-            case Some(r) => mutable.HashSet(r)
-            case None    => candidates
+            case Some(r) =>
+              mutable.HashSet(r)
+            case None =>
+              candidates
           }
         }
-      case _ => candidates
+      case _ =>
+        candidates
     }
   }
 }

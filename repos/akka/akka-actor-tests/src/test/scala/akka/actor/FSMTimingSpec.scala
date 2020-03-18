@@ -132,7 +132,8 @@ class FSMTimingSpec extends AkkaSpec with ImplicitSender {
       fsm ! TestRepeatedTimer
       val seq =
         receiveWhile(2 seconds) {
-          case Tick ⇒ Tick
+          case Tick ⇒
+            Tick
         }
       seq should have length 5
       within(500 millis) {
@@ -172,13 +173,15 @@ object FSMTimingSpec {
 
   def suspend(actorRef: ActorRef): Unit =
     actorRef match {
-      case l: ActorRefWithCell ⇒ l.suspend()
+      case l: ActorRefWithCell ⇒
+        l.suspend()
       case _ ⇒
     }
 
   def resume(actorRef: ActorRef): Unit =
     actorRef match {
-      case l: ActorRefWithCell ⇒ l.resume(causedByFailure = null)
+      case l: ActorRefWithCell ⇒
+        l.resume(causedByFailure = null)
       case _ ⇒
     }
 
@@ -218,11 +221,14 @@ object FSMTimingSpec {
         goto(TestRepeatedTimer) using 4
       case Event(TestStateTimeoutOverride, _) ⇒
         goto(TestStateTimeout) forMax (Duration.Inf)
-      case Event(x: FSMTimingSpec.State, _) ⇒ goto(x)
+      case Event(x: FSMTimingSpec.State, _) ⇒
+        goto(x)
     }
     when(TestStateTimeout, stateTimeout = 800.millis.dilated) {
-      case Event(StateTimeout, _) ⇒ goto(Initial)
-      case Event(Cancel, _) ⇒ goto(Initial) replying (Cancel)
+      case Event(StateTimeout, _) ⇒
+        goto(Initial)
+      case Event(Cancel, _) ⇒
+        goto(Initial) replying (Cancel)
     }
     when(TestSingleTimer) {
       case Event(Tick, _) ⇒

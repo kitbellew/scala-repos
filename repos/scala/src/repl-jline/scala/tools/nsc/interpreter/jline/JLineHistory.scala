@@ -69,7 +69,8 @@ object JLineHistory {
 
     private def toEntries(): Seq[JEntry] =
       buf.zipWithIndex map {
-        case (x, i) => Entry(i, x)
+        case (x, i) =>
+          Entry(i, x)
       }
     def entries(idx: Int): JListIterator[JEntry] =
       toEntries().asJava.listIterator(idx)
@@ -80,6 +81,7 @@ object JLineHistory {
   def apply(): History =
     try new JLineFileHistory
     catch {
-      case x: Exception => new SimpleHistory()
+      case x: Exception =>
+        new SimpleHistory()
     }
 }

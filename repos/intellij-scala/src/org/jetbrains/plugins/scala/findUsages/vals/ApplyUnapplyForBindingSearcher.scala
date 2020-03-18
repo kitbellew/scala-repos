@@ -42,7 +42,8 @@ class ApplyUnapplyForBindingSearcher
     val scope = inReadAction(queryParameters.getEffectiveSearchScope)
     val element = queryParameters.getElementToSearch
     element match {
-      case _ if inReadAction(!element.isValid) => true
+      case _ if inReadAction(!element.isValid) =>
+        true
       case binding: ScBindingPattern =>
         val processor = createProcessor(
           consumer,
@@ -57,7 +58,8 @@ class ApplyUnapplyForBindingSearcher
           checkApply,
           checkUnapply)
         processBinding(processor, scope, binding, queryParameters.getProject)
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -104,7 +106,8 @@ class ApplyUnapplyForBindingSearcher
         UsageSearchContext.IN_CODE,
         true)
     } catch {
-      case ignore: IndexNotReadyException => true
+      case ignore: IndexNotReadyException =>
+        true
     }
   }
 
@@ -117,19 +120,24 @@ class ApplyUnapplyForBindingSearcher
                   resolve @ ScalaResolveResult(fun: ScFunctionDefinition, _))
                 if Set("unapply", "unapplySeq").contains(fun.name) =>
               resolve.innerResolveResult match {
-                case Some(ScalaResolveResult(`binding`, _)) => Some(sref)
-                case _                                      => None
+                case Some(ScalaResolveResult(`binding`, _)) =>
+                  Some(sref)
+                case _ =>
+                  None
               }
             case Some(resolve @ ScalaResolveResult(`binding`, _)) =>
               resolve.innerResolveResult match {
                 case Some(ScalaResolveResult(fun: ScFunctionDefinition, _))
                     if Set("unapply", "unapplySeq").contains(fun.name) =>
                   Some(sref)
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -148,11 +156,14 @@ class ApplyUnapplyForBindingSearcher
                 case Some(ScalaResolveResult(fun: ScFunctionDefinition, _))
                     if fun.name == "apply" =>
                   Some(sref)
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -163,9 +174,12 @@ class ApplyUnapplyForBindingSearcher
       inReadAction {
         val (checkApply, checkUnapply) =
           fun.name match {
-            case "apply"                  => (true, false)
-            case "unapply" | "unapplySeq" => (false, true)
-            case _                        => (false, false)
+            case "apply" =>
+              (true, false)
+            case "unapply" | "unapplySeq" =>
+              (false, true)
+            case _ =>
+              (false, false)
           }
         if (checkApply || checkUnapply) {
           fun.containingClass match {
@@ -173,7 +187,8 @@ class ApplyUnapplyForBindingSearcher
               ScalaPsiUtil
                 .findInstanceBinding(anon)
                 .flatMap(Some(_, checkApply, checkUnapply))
-            case _ => None
+            case _ =>
+              None
           }
         } else
           None

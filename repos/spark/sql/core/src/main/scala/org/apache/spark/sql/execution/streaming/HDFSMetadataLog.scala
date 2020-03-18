@@ -70,7 +70,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
           path.getName.toLong
           true
         } catch {
-          case _: NumberFormatException => false
+          case _: NumberFormatException =>
+            false
         }
     }
 

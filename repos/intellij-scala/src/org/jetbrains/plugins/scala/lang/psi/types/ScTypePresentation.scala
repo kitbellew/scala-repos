@@ -46,16 +46,21 @@ trait ScTypePresentation {
     typeText(
       t,
       {
-        case c: PsiClass => ScalaPsiUtil.nameWithPrefixIfNeeded(c)
-        case e           => e.name
+        case c: PsiClass =>
+          ScalaPsiUtil.nameWithPrefixIfNeeded(c)
+        case e =>
+          e.name
       },
       {
         case obj: ScObject
             if Set("scala.Predef", "scala").contains(obj.qualifiedName) =>
           ""
-        case pack: PsiPackage => ""
-        case c: PsiClass      => ScalaPsiUtil.nameWithPrefixIfNeeded(c) + "."
-        case e                => e.name + "."
+        case pack: PsiPackage =>
+          ""
+        case c: PsiClass =>
+          ScalaPsiUtil.nameWithPrefixIfNeeded(c) + "."
+        case e =>
+          e.name + "."
       }
     )
 
@@ -74,8 +79,10 @@ trait ScTypePresentation {
             else
               ""
           )
-        case pack: PsiPackage if withPoint => ""
-        case _                             => StringEscapeUtils.escapeHtml(e.name) + "."
+        case pack: PsiPackage if withPoint =>
+          ""
+        case _ =>
+          StringEscapeUtils.escapeHtml(e.name) + "."
       }
     }
     typeText(t, nameFun(_, withPoint = false), nameFun(_, withPoint = true))
@@ -100,15 +107,19 @@ trait ScTypePresentation {
               "_root_." + qname
             else
               c.name
-          case p: PsiPackage => "_root_." + p.getQualifiedName
+          case p: PsiPackage =>
+            "_root_." + p.getQualifiedName
           case _ =>
             ScalaPsiUtil.nameContext(e) match {
               case m: ScMember =>
                 m.containingClass match {
-                  case o: ScObject => nameFun(o, withPoint = true) + e.name
-                  case _           => e.name
+                  case o: ScObject =>
+                    nameFun(o, withPoint = true) + e.name
+                  case _ =>
+                    e.name
                 }
-              case _ => e.name
+              case _ =>
+                e.name
             }
         }) + (
         if (withPoint)
@@ -169,11 +180,13 @@ trait ScTypePresentation {
       buffer ++= param.name
       param.lowerBound foreach {
         case psi.types.Nothing =>
-        case tp: ScType        => buffer ++= s" >: ${typeText0(tp)}"
+        case tp: ScType =>
+          buffer ++= s" >: ${typeText0(tp)}"
       }
       param.upperBound foreach {
         case psi.types.Any =>
-        case tp: ScType    => buffer ++= s" <: ${typeText0(tp)}"
+        case tp: ScType =>
+          buffer ++= s" <: ${typeText0(tp)}"
       }
       param.viewBound foreach { (tp: ScType) =>
         buffer ++= s" <% ${typeText0(tp)}"
@@ -195,7 +208,8 @@ trait ScTypePresentation {
           case _: ScObject | _: ScBindingPattern | _: ScParameter |
               _: ScFieldId =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       }
       val typeTailForProjection = typeTail(checkIfStable(e) && needDotType)
@@ -245,8 +259,10 @@ trait ScTypePresentation {
           Seq(
             comps
               .map {
-                case tp @ ScFunctionType(_, _) => "(" + innerTypeText(tp) + ")"
-                case tp                        => innerTypeText(tp)
+                case tp @ ScFunctionType(_, _) =>
+                  "(" + innerTypeText(tp) + ")"
+                case tp =>
+                  innerTypeText(tp)
               }
               .mkString(" with "))
 
@@ -303,7 +319,8 @@ trait ScTypePresentation {
                     else
                       "val "
                   ) + f.name + " : " + typeText0(rt))
-              case _ => Seq.empty
+              case _ =>
+                Seq.empty
             }
           }
         case (s: String, sign: TypeAliasSignature) =>
@@ -321,8 +338,10 @@ trait ScTypePresentation {
               case tad: ScTypeAliasDefinition =>
                 tad.aliasedType
                   .map {
-                    case psi.types.Nothing => ""
-                    case tpe               => s" = ${typeText0(tpe)}"
+                    case psi.types.Nothing =>
+                      ""
+                    case tpe =>
+                      s" = ${typeText0(tpe)}"
                   }
                   .getOrElse("")
               case _ =>
@@ -341,7 +360,8 @@ trait ScTypePresentation {
                 lowerText + upperText
             }
           Seq(decl + defnText)
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
 
       val refinementText =
@@ -390,7 +410,8 @@ trait ScTypePresentation {
               replacingArgs.find(_._1 eq t) match {
                 case Some((_, wildcard)) =>
                   existentialArgWithBounds(wildcard, "_")
-                case _ => innerTypeText(t, needDotType = true, checkWildcard)
+                case _ =>
+                  innerTypeText(t, needDotType = true, checkWildcard)
               }
             }
             .mkString("[", ", ", "]")
@@ -451,11 +472,14 @@ trait ScTypePresentation {
             checkWildcard = true)
         case j @ JavaArrayType(arg) =>
           s"Array[${innerTypeText(arg)}]"
-        case ScSkolemizedType(name, _, _, _)       => name
-        case ScTypeParameterType(name, _, _, _, _) => name
+        case ScSkolemizedType(name, _, _, _) =>
+          name
+        case ScTypeParameterType(name, _, _, _, _) =>
+          name
         case ScUndefinedType(tpt: ScTypeParameterType) =>
           "NotInfered" + tpt.name
-        case ScTypeVariable(name) => name
+        case ScTypeVariable(name) =>
+          name
         case c: ScCompoundType if c != null =>
           compoundTypeText(c)
         case ex: ScExistentialType if ex != null =>
@@ -482,7 +506,8 @@ trait ScTypePresentation {
               mt.project,
               mt.scope),
             needDotType)
-        case _ => "" //todo
+        case _ =>
+          "" //todo
       }
     }
 
@@ -506,7 +531,8 @@ object ScTypePresentation {
 
   def shouldExpand(ta: ScTypeAliasDefinition): Boolean =
     ta match {
-      case _: ScLightTypeAliasDefinition | childOf(_: ScRefinement) => true
+      case _: ScLightTypeAliasDefinition | childOf(_: ScRefinement) =>
+        true
       case _ =>
         ScalaPsiUtil
           .superTypeMembers(ta)

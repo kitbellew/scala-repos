@@ -64,7 +64,8 @@ object IntroduceImplicitParameterIntention {
           isValidExpr(e.exprs(0), paramCount)
         case e: ScParenthesisedExpr =>
           isValidExpr(ScalaRefactoringUtil.unparExpr(e), paramCount)
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -98,11 +99,14 @@ object IntroduceImplicitParameterIntention {
       val declaredType = p.typeElement
       val newParam =
         declaredType match {
-          case None                       => "_"
-          case _ if withoutParameterTypes => "_"
+          case None =>
+            "_"
+          case _ if withoutParameterTypes =>
+            "_"
           case Some(t) if expectedType.exists(_.equiv(t.getType().getOrAny)) =>
             "_"
-          case Some(t) => s"(_: ${p.typeElement.get.getText})"
+          case Some(t) =>
+            s"(_: ${p.typeElement.get.getText})"
         }
 
       val offset = occurrences(p.name) - diff

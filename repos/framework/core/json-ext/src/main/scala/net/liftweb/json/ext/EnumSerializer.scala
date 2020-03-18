@@ -30,7 +30,8 @@ class EnumSerializer[E <: Enumeration: ClassTag](enum: E)
       format: Formats): PartialFunction[(TypeInfo, JValue), E#Value] = {
     case (TypeInfo(EnumerationClass, _), json) =>
       json match {
-        case JInt(value) if (value <= enum.maxId) => enum(value.toInt)
+        case JInt(value) if (value <= enum.maxId) =>
+          enum(value.toInt)
         case value =>
           throw new MappingException(
             "Can't convert " +
@@ -39,7 +40,8 @@ class EnumSerializer[E <: Enumeration: ClassTag](enum: E)
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case i: E#Value => i.id
+    case i: E#Value =>
+      i.id
   }
 }
 
@@ -63,6 +65,7 @@ class EnumNameSerializer[E <: Enumeration: ClassTag](enum: E)
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case i: E#Value => i.toString
+    case i: E#Value =>
+      i.toString
   }
 }

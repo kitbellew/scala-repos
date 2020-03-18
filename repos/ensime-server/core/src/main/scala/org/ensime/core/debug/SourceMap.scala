@@ -30,7 +30,8 @@ class SourceMap(config: EnsimeConfig) {
           }
       ).getOrElse(None)
     } catch {
-      case e: AbsentInformationException => None
+      case e: AbsentInformationException =>
+        None
     }
   }
 

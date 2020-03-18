@@ -53,7 +53,8 @@ private[tournament] final class Socket(
       }
       notifyReload
 
-    case Reload => notifyReload
+    case Reload =>
+      notifyReload
 
     case GetWaitingUsers =>
       waitingUsers = waitingUsers.update(userIds.toSet, clock)
@@ -83,7 +84,8 @@ private[tournament] final class Socket(
         case _ =>
       }
 
-    case GetVersion => sender ! history.version
+    case GetVersion =>
+      sender ! history.version
 
     case Join(uid, user) =>
       val (enumerator, channel) = Concurrent.broadcast[JsValue]

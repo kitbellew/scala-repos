@@ -43,7 +43,8 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
     val dirForPackage = getDirectory(inPackage)
     val nestedDirs: Array[File] =
       dirForPackage match {
-        case None => Array.empty
+        case None =>
+          Array.empty
         case Some(directory) =>
           directory.listFiles(DirectoryFileLookup.packageDirectoryFileFilter)
       }
@@ -58,8 +59,10 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
     val dirForPackage = getDirectory(inPackage)
     val files: Array[File] =
       dirForPackage match {
-        case None            => Array.empty
-        case Some(directory) => directory.listFiles(fileFilter)
+        case None =>
+          Array.empty
+        case Some(directory) =>
+          directory.listFiles(fileFilter)
       }
     val entries = files map { file =>
       val wrappedFile = new scala.reflect.io.File(file)
@@ -72,8 +75,10 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
     val dirForPackage = getDirectory(inPackage)
     val files: Array[File] =
       dirForPackage match {
-        case None            => Array.empty
-        case Some(directory) => directory.listFiles()
+        case None =>
+          Array.empty
+        case Some(directory) =>
+          directory.listFiles()
       }
     val packagePrefix = PackageNameUtils.packagePrefix(inPackage)
     val packageBuf = collection.mutable.ArrayBuffer.empty[PackageEntry]
@@ -159,7 +164,8 @@ case class DirectoryFlatSourcePath(dir: File)
     val sourceFile = Stream("scala", "java")
       .map(ext => new File(s"$dir/$relativePath.$ext"))
       .collectFirst {
-        case file if file.exists() => file
+        case file if file.exists() =>
+          file
       }
 
     sourceFile.map { file =>

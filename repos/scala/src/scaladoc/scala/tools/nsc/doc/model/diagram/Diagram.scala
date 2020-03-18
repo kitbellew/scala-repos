@@ -63,10 +63,13 @@ sealed abstract class Node {
     tpl match {
       case Some(tpl) =>
         tpl match {
-          case d: DocTemplateEntity => Some(d)
-          case _                    => None
+          case d: DocTemplateEntity =>
+            Some(d)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   /* shortcuts to find the node type without matching */
   def isThisNode = false
@@ -195,11 +198,13 @@ class ContentDiagramDepth(pack: ContentDiagram) extends DepthInfo {
   private[this] var seedNodes = Set[Node]()
   private[this] val invertedEdges: Map[Node, List[Node]] = pack.edges
     .flatMap({
-      case (node: Node, outgoing: List[Node]) => outgoing.map((_, node))
+      case (node: Node, outgoing: List[Node]) =>
+        outgoing.map((_, node))
     })
     .groupBy(_._1)
     .map({
-      case (k, values) => (k, values.map(_._2))
+      case (k, values) =>
+        (k, values.map(_._2))
     })
     .withDefaultValue(Nil)
   private[this] val directEdges: Map[Node, List[Node]] = pack.edges.toMap

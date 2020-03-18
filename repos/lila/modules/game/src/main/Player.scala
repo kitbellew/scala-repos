@@ -47,7 +47,8 @@ case class Player(
 
   def userInfos: Option[Player.UserInfo] =
     (userId |@| rating) {
-      case (id, ra) => Player.UserInfo(id, ra, provisional)
+      case (id, ra) =>
+        Player.UserInfo(id, ra, provisional)
     }
 
   def wins = isWinner getOrElse false
@@ -83,16 +84,22 @@ case class Player(
 
   def nameSplit: Option[(String, Option[Int])] =
     name map {
-      case Player.nameSplitRegex(n, r) => n -> parseIntOption(r)
-      case n                           => n -> none
+      case Player.nameSplitRegex(n, r) =>
+        n -> parseIntOption(r)
+      case n =>
+        n -> none
     }
 
   def before(other: Player) =
     ((rating, id), (other.rating, other.id)) match {
-      case ((Some(a), _), (Some(b), _)) if a != b => a > b
-      case ((Some(_), _), (None, _))              => true
-      case ((None, _), (Some(_), _))              => false
-      case ((_, a), (_, b))                       => a < b
+      case ((Some(a), _), (Some(b), _)) if a != b =>
+        a > b
+      case ((Some(_), _), (None, _)) =>
+        true
+      case ((None, _), (Some(_), _)) =>
+        false
+      case ((_, a), (_, b)) =>
+        a < b
     }
 
   def ratingAfter = rating map (_ + ~ratingDiff)

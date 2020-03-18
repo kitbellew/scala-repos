@@ -19,10 +19,14 @@ object ProjectFixture extends Matchers {
     val probe = TestProbe()
     probe.ignoreMsg {
       // these are too noisy for tests
-      case e: SendBackgroundMessageEvent => true
-      case e: DebugOutputEvent           => true
-      case ClearAllScalaNotesEvent       => true
-      case ClearAllJavaNotesEvent        => true
+      case e: SendBackgroundMessageEvent =>
+        true
+      case e: DebugOutputEvent =>
+        true
+      case ClearAllScalaNotesEvent =>
+        true
+      case ClearAllJavaNotesEvent =>
+        true
     }
 
     val project = TestActorRef[Project](Project(probe.ref), "project")

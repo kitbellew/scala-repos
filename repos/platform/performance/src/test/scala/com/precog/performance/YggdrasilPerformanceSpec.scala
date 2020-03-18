@@ -204,7 +204,8 @@ histogram
           val result = executor.execute("apiKey", "count(load(//test/small1))")
           result match {
             case Success(jval) =>
-            case Failure(e)    => new RuntimeException("Query result failure")
+            case Failure(e) =>
+              new RuntimeException("Query result failure")
           }
           cnt += 1
         }
@@ -271,7 +272,8 @@ count(tests where tests.gender = "male")
           val result = executor.execute("apiKey", query)
           result match {
             case Success(jval) =>
-            case Failure(e)    => new RuntimeException("Query result failure")
+            case Failure(e) =>
+              new RuntimeException("Query result failure")
           }
           cnt += 1
         }
@@ -302,7 +304,8 @@ histogram
           val result = executor.execute("apiKey", query)
           result match {
             case Success(jval) =>
-            case Failure(e)    => new RuntimeException("Query result failure")
+            case Failure(e) =>
+              new RuntimeException("Query result failure")
           }
           cnt += 1
         }
@@ -404,7 +407,8 @@ histogram
 
       val result = executor.execute("apiKey", "load(//test/null)")
       result must beLike {
-        case Success(JArray(vals)) => vals.size must_== 2
+        case Success(JArray(vals)) =>
+          vals.size must_== 2
       }
     }.pendingUntilFixed
     "handle mixed type scenario" in {
@@ -499,7 +503,8 @@ histogram
 
       val result = executor.execute("apiKey", "load(//test/mixed)")
       result must beLike {
-        case Success(JArray(vals)) => vals.size must_== 2
+        case Success(JArray(vals)) =>
+          vals.size must_== 2
       }
     }.pendingUntilFixed
 

@@ -134,8 +134,9 @@ class ShuffledRowRDD(
 
   private[this] val partitionStartIndices: Array[Int] =
     specifiedPartitionStartIndices match {
-      case Some(indices) => indices
-      case None          =>
+      case Some(indices) =>
+        indices
+      case None =>
         // When specifiedPartitionStartIndices is not defined, every post-shuffle partition
         // corresponds to a pre-shuffle partition.
         (0 until numPreShufflePartitions).toArray

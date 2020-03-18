@@ -46,10 +46,13 @@ class KindProjectorSimplifyTypeProjectionInspection
       param.lowerTypeElement match {
         case Some(_: ScSimpleTypeElement) | None =>
           param.upperTypeElement match {
-            case Some(_: ScSimpleTypeElement) | None => true
-            case _                                   => false
+            case Some(_: ScSimpleTypeElement) | None =>
+              true
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -57,8 +60,10 @@ class KindProjectorSimplifyTypeProjectionInspection
         alias: ScTypeAliasDefinition): Option[String] = {
       def hasNoBounds(p: ScTypeParam): Boolean = {
         (p.lowerTypeElement, p.upperTypeElement) match {
-          case (None, None) => true
-          case _            => false
+          case (None, None) =>
+            true
+          case _ =>
+            false
         }
       }
 
@@ -73,8 +78,10 @@ class KindProjectorSimplifyTypeProjectionInspection
           case p: ScParameterizedType
               if occursInsideParameterized(tp, p, isInsideParam = true) =>
             true
-          case ta if isInsideParam && ta.presentableText == tp.name => true
-          case _                                                    => false
+          case ta if isInsideParam && ta.presentableText == tp.name =>
+            true
+          case _ =>
+            false
         }
       }
 
@@ -105,7 +112,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                     else
                       None
                   tpt.getText.replace(tpt.name, "?")
-                case _ => ta.presentableText
+                case _ =>
+                  ta.presentableText
               }
             }
             if (!typeParamIt.hasNext && currentTypeParam.isEmpty) {
@@ -116,7 +124,8 @@ class KindProjectorSimplifyTypeProjectionInspection
               None
           } else
             None
-        case _ => None
+        case _ =>
+          None
       }
     }
 
@@ -145,7 +154,8 @@ class KindProjectorSimplifyTypeProjectionInspection
                                         canConvertBounds)) {
                                     def simplified(): String = {
                                       tryConvertToInlineSyntax(alias) match {
-                                        case Some(inline) => inline
+                                        case Some(inline) =>
+                                          inline
                                         case _ => //convert to function syntax
                                           val builder = new StringBuilder
                                           val styleSettings =
@@ -206,7 +216,8 @@ class KindProjectorSimplifyTypeProjectionInspection
             }
           }
         }
-      case _ => new PsiElementVisitor {}
+      case _ =>
+        new PsiElementVisitor {}
     }
   }
 

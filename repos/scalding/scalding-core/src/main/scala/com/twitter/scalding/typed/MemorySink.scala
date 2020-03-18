@@ -46,6 +46,7 @@ class MemorySink[T] extends TypedSink[T] {
         flowDef.addSink(name, tap)
         flowDef.addTail(new Pipe(name, pipe))
         pipe
-      case _ => sys.error("MemorySink only usable with cascading local")
+      case _ =>
+        sys.error("MemorySink only usable with cascading local")
     }
 }

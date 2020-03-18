@@ -17,7 +17,8 @@ class ErrorHandlerTest extends ScalatraFunSuite {
       throw new RuntimeException
     }
     error {
-      case e: TestException => "base"
+      case e: TestException =>
+        "base"
     }
   }
 
@@ -26,7 +27,8 @@ class ErrorHandlerTest extends ScalatraFunSuite {
       throw new Exception2
     }
     error {
-      case e: Exception2 => "child"
+      case e: Exception2 =>
+        "child"
     }
   }
 
@@ -35,7 +37,8 @@ class ErrorHandlerTest extends ScalatraFunSuite {
       throw new Exception3
     }
     error {
-      case e: Exception3 => halt(413, "no more")
+      case e: Exception3 =>
+        halt(413, "no more")
     }
   }
 

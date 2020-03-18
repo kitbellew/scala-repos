@@ -75,7 +75,8 @@ object FromString {
       def safeToInt(s: String): Option[Int] =
         try Some(java.lang.Integer.parseInt(s))
         catch {
-          case _: NumberFormatException => None
+          case _: NumberFormatException =>
+            None
         }
     }
 }

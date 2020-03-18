@@ -58,8 +58,10 @@ abstract class SymbolLoaders {
       ex.printStackTrace()
     globalError(
       ex.getMessage() match {
-        case null => "i/o error while loading " + root.name
-        case msg  => "error while loading " + root.name + ", " + msg
+        case null =>
+          "i/o error while loading " + root.name
+        case msg =>
+          "error while loading " + root.name + ", " + msg
       })
   }
 
@@ -224,9 +226,12 @@ abstract class SymbolLoaders {
     private def setSource(sym: Symbol) {
       sourcefile foreach (sf =>
         sym match {
-          case cls: ClassSymbol  => cls.associatedFile = sf
-          case mod: ModuleSymbol => mod.moduleClass.associatedFile = sf
-          case _                 => ()
+          case cls: ClassSymbol =>
+            cls.associatedFile = sf
+          case mod: ModuleSymbol =>
+            mod.moduleClass.associatedFile = sf
+          case _ =>
+            ()
         })
     }
 
@@ -388,8 +393,10 @@ abstract class SymbolLoaders {
 
       override def classFileLookup: util.ClassFileLookup[AbstractFile] =
         settings.YclasspathImpl.value match {
-          case ClassPathRepresentationType.Recursive => platform.classPath
-          case ClassPathRepresentationType.Flat      => platform.flatClassPath
+          case ClassPathRepresentationType.Recursive =>
+            platform.classPath
+          case ClassPathRepresentationType.Flat =>
+            platform.flatClassPath
         }
     }
 

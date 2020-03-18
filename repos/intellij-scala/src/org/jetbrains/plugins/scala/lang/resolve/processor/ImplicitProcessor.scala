@@ -25,8 +25,10 @@ abstract class ImplicitProcessor(kinds: Set[Value], withoutPrecedence: Boolean)
 
   protected def getQualifiedName(result: ScalaResolveResult): String = {
     result.isRenamed match {
-      case Some(str) => str
-      case None      => result.name
+      case Some(str) =>
+        str
+      case None =>
+        result.name
     }
   }
 

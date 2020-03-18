@@ -71,7 +71,8 @@ trait SerializationSupport {
     @tailrec
     def readChunk(): Unit =
       in.read(buffer) match {
-        case -1 ⇒ ()
+        case -1 ⇒
+          ()
         case n ⇒
           out.write(buffer, 0, n)
           readChunk()

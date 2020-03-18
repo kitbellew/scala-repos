@@ -132,7 +132,8 @@ object Test extends InteractiveTest {
               }
 
               getComment(sym, batch, (sym, batch) :: Nil) match {
-                case None => println(s"Got no doc comment for $name")
+                case None =>
+                  println(s"Got no doc comment for $name")
                 case Some(comment) =>
                   import comment._
                   def cnt(bodies: Iterable[Body]) = bodies.size
@@ -159,10 +160,14 @@ object Test extends InteractiveTest {
     val derivedSource = findSource("Derived.scala")
     def existsText(where: Any, text: String): Boolean =
       where match {
-        case s: String  => s contains text
-        case s: Seq[_]  => s exists (existsText(_, text))
-        case p: Product => p.productIterator exists (existsText(_, text))
-        case c: Comment => existsText(c.body, text)
+        case s: String =>
+          s contains text
+        case s: Seq[_] =>
+          s exists (existsText(_, text))
+        case p: Product =>
+          p.productIterator exists (existsText(_, text))
+        case c: Comment =>
+          existsText(c.body, text)
       }
     val (derived, base) = compiler.ask { () =>
       val derived = compiler.rootMirror.RootPackage.info

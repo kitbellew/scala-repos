@@ -20,7 +20,8 @@ object Test {
          cc2 <- xss2) {
       val sum1 =
         (cc1, cc2).zipped map {
-          case (x, y) => x + y
+          case (x, y) =>
+            x + y
         } sum
       val sum2 = (cc1, cc2).zipped map (_ + _) sum
 
@@ -32,7 +33,8 @@ object Test {
          cc3 <- xss3) {
       val sum1 =
         (cc1, cc2, cc3).zipped map {
-          case (x, y, z) => x + y + z
+          case (x, y, z) =>
+            x + y + z
         } sum
       val sum2 = (cc1, cc2, cc3).zipped map (_ + _ + _) sum
 

@@ -46,8 +46,10 @@ trait LocaleTypedField extends TypedField[String] {
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 }
 
@@ -59,8 +61,10 @@ class LocaleField[OwnerType <: Record[OwnerType]](rec: OwnerType)
 
   def isAsLocale: Locale =
     Locale.getAvailableLocales.filter(_.toString == value).toList match {
-      case Nil     => Locale.getDefault
-      case x :: xs => x
+      case Nil =>
+        Locale.getDefault
+      case x :: xs =>
+        x
     }
 
   def buildDisplayList: List[(String, String)] = LocaleField.localeList

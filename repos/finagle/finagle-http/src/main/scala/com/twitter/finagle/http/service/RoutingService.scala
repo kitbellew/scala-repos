@@ -22,7 +22,8 @@ class RoutingService[REQUEST <: Request](
   protected[this] val notFoundService = new NotFoundService[REQUEST]
   protected[this] val notFoundPf
       : PartialFunction[REQUEST, Service[REQUEST, Response]] = {
-    case _ => notFoundService
+    case _ =>
+      notFoundService
   }
   protected[this] val requestToService = routes orElse notFoundPf
 

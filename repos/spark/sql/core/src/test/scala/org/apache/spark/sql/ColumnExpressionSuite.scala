@@ -631,7 +631,8 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
 
     def checkNumProjects(df: DataFrame, expectedNumProjects: Int): Unit = {
       val projects = df.queryExecution.sparkPlan.collect {
-        case tungstenProject: Project => tungstenProject
+        case tungstenProject: Project =>
+          tungstenProject
       }
       assert(projects.size === expectedNumProjects)
     }

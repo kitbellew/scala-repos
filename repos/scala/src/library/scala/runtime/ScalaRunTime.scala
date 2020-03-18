@@ -41,7 +41,8 @@ object ScalaRunTime {
       case _: Byte | _: Short | _: Char | _: Int | _: Long | _: Float |
           _: Double | _: Boolean | _: Unit =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   // A helper method to make my life in the pattern matcher a lot easier.
@@ -63,8 +64,10 @@ object ScalaRunTime {
     */
   def arrayElementClass(schematic: Any): jClass[_] =
     schematic match {
-      case cls: jClass[_]   => cls.getComponentType
-      case tag: ClassTag[_] => tag.runtimeClass
+      case cls: jClass[_] =>
+        cls.getComponentType
+      case tag: ClassTag[_] =>
+        tag.runtimeClass
       case _ =>
         throw new UnsupportedOperationException(
           s"unsupported schematic $schematic (${schematic.getClass})")
@@ -80,66 +83,110 @@ object ScalaRunTime {
   /** Retrieve generic array element */
   def array_apply(xs: AnyRef, idx: Int): Any = {
     xs match {
-      case x: Array[AnyRef]  => x(idx).asInstanceOf[Any]
-      case x: Array[Int]     => x(idx).asInstanceOf[Any]
-      case x: Array[Double]  => x(idx).asInstanceOf[Any]
-      case x: Array[Long]    => x(idx).asInstanceOf[Any]
-      case x: Array[Float]   => x(idx).asInstanceOf[Any]
-      case x: Array[Char]    => x(idx).asInstanceOf[Any]
-      case x: Array[Byte]    => x(idx).asInstanceOf[Any]
-      case x: Array[Short]   => x(idx).asInstanceOf[Any]
-      case x: Array[Boolean] => x(idx).asInstanceOf[Any]
-      case x: Array[Unit]    => x(idx).asInstanceOf[Any]
-      case null              => throw new NullPointerException
+      case x: Array[AnyRef] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Int] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Double] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Long] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Float] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Char] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Byte] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Short] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Boolean] =>
+        x(idx).asInstanceOf[Any]
+      case x: Array[Unit] =>
+        x(idx).asInstanceOf[Any]
+      case null =>
+        throw new NullPointerException
     }
   }
 
   /** update generic array element */
   def array_update(xs: AnyRef, idx: Int, value: Any): Unit = {
     xs match {
-      case x: Array[AnyRef]  => x(idx) = value.asInstanceOf[AnyRef]
-      case x: Array[Int]     => x(idx) = value.asInstanceOf[Int]
-      case x: Array[Double]  => x(idx) = value.asInstanceOf[Double]
-      case x: Array[Long]    => x(idx) = value.asInstanceOf[Long]
-      case x: Array[Float]   => x(idx) = value.asInstanceOf[Float]
-      case x: Array[Char]    => x(idx) = value.asInstanceOf[Char]
-      case x: Array[Byte]    => x(idx) = value.asInstanceOf[Byte]
-      case x: Array[Short]   => x(idx) = value.asInstanceOf[Short]
-      case x: Array[Boolean] => x(idx) = value.asInstanceOf[Boolean]
-      case x: Array[Unit]    => x(idx) = value.asInstanceOf[Unit]
-      case null              => throw new NullPointerException
+      case x: Array[AnyRef] =>
+        x(idx) = value.asInstanceOf[AnyRef]
+      case x: Array[Int] =>
+        x(idx) = value.asInstanceOf[Int]
+      case x: Array[Double] =>
+        x(idx) = value.asInstanceOf[Double]
+      case x: Array[Long] =>
+        x(idx) = value.asInstanceOf[Long]
+      case x: Array[Float] =>
+        x(idx) = value.asInstanceOf[Float]
+      case x: Array[Char] =>
+        x(idx) = value.asInstanceOf[Char]
+      case x: Array[Byte] =>
+        x(idx) = value.asInstanceOf[Byte]
+      case x: Array[Short] =>
+        x(idx) = value.asInstanceOf[Short]
+      case x: Array[Boolean] =>
+        x(idx) = value.asInstanceOf[Boolean]
+      case x: Array[Unit] =>
+        x(idx) = value.asInstanceOf[Unit]
+      case null =>
+        throw new NullPointerException
     }
   }
 
   /** Get generic array length */
   def array_length(xs: AnyRef): Int =
     xs match {
-      case x: Array[AnyRef]  => x.length
-      case x: Array[Int]     => x.length
-      case x: Array[Double]  => x.length
-      case x: Array[Long]    => x.length
-      case x: Array[Float]   => x.length
-      case x: Array[Char]    => x.length
-      case x: Array[Byte]    => x.length
-      case x: Array[Short]   => x.length
-      case x: Array[Boolean] => x.length
-      case x: Array[Unit]    => x.length
-      case null              => throw new NullPointerException
+      case x: Array[AnyRef] =>
+        x.length
+      case x: Array[Int] =>
+        x.length
+      case x: Array[Double] =>
+        x.length
+      case x: Array[Long] =>
+        x.length
+      case x: Array[Float] =>
+        x.length
+      case x: Array[Char] =>
+        x.length
+      case x: Array[Byte] =>
+        x.length
+      case x: Array[Short] =>
+        x.length
+      case x: Array[Boolean] =>
+        x.length
+      case x: Array[Unit] =>
+        x.length
+      case null =>
+        throw new NullPointerException
     }
 
   def array_clone(xs: AnyRef): AnyRef =
     xs match {
-      case x: Array[AnyRef]  => ArrayRuntime.cloneArray(x)
-      case x: Array[Int]     => ArrayRuntime.cloneArray(x)
-      case x: Array[Double]  => ArrayRuntime.cloneArray(x)
-      case x: Array[Long]    => ArrayRuntime.cloneArray(x)
-      case x: Array[Float]   => ArrayRuntime.cloneArray(x)
-      case x: Array[Char]    => ArrayRuntime.cloneArray(x)
-      case x: Array[Byte]    => ArrayRuntime.cloneArray(x)
-      case x: Array[Short]   => ArrayRuntime.cloneArray(x)
-      case x: Array[Boolean] => ArrayRuntime.cloneArray(x)
-      case x: Array[Unit]    => x
-      case null              => throw new NullPointerException
+      case x: Array[AnyRef] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Int] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Double] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Long] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Float] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Char] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Byte] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Short] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Boolean] =>
+        ArrayRuntime.cloneArray(x)
+      case x: Array[Unit] =>
+        x
+      case null =>
+        throw new NullPointerException
     }
 
   /** Convert an array to an object array.
@@ -148,7 +195,8 @@ object ScalaRunTime {
     */
   def toObjectArray(src: AnyRef): Array[Object] =
     src match {
-      case x: Array[AnyRef] => x
+      case x: Array[AnyRef] =>
+        x
       case _ =>
         val length = array_length(src)
         val dest = new Array[Object](length)
@@ -215,7 +263,8 @@ object ScalaRunTime {
     y match {
       case y: Product if x.productArity == y.productArity =>
         x.productIterator sameElements y.productIterator
-      case _ => false
+      case _ =>
+        false
     }
 
   // hashcode -----------------------------------------------------------
@@ -303,8 +352,10 @@ object ScalaRunTime {
   def stringOf(arg: Any, maxElements: Int): String = {
     def packageOf(x: AnyRef) =
       x.getClass.getPackage match {
-        case null => ""
-        case p    => p.getName
+        case null =>
+          ""
+        case p =>
+          p.getName
       }
     def isScalaClass(x: AnyRef) = packageOf(x) startsWith "scala."
     def isScalaCompilerClass(x: AnyRef) =
@@ -317,7 +368,8 @@ object ScalaRunTime {
         val clazz = Class.forName(ofClass, /*initialize =*/ false, classLoader)
         clazz.isAssignableFrom(potentialSubClass)
       } catch {
-        case cnfe: ClassNotFoundException => false
+        case cnfe: ClassNotFoundException =>
+          false
       }
     def isXmlNode(potentialSubClass: Class[_]) =
       isSubClassOf(potentialSubClass, "scala.xml.Node")
@@ -328,13 +380,17 @@ object ScalaRunTime {
     def useOwnToString(x: Any) =
       x match {
         // Range/NumericRange have a custom toString to avoid walking a gazillion elements
-        case _: Range | _: NumericRange[_] => true
+        case _: Range | _: NumericRange[_] =>
+          true
         // Sorted collections to the wrong thing (for us) on iteration - ticket #3493
-        case _: Sorted[_, _] => true
+        case _: Sorted[_, _] =>
+          true
         // StringBuilder(a, b, c) and similar not so attractive
-        case _: StringLike[_] => true
+        case _: StringLike[_] =>
+          true
         // Don't want to evaluate any elements in a view
-        case _: TraversableView[_, _] => true
+        case _: TraversableView[_, _] =>
+          true
         // Node extends NodeSeq extends Seq[Node] and MetaData extends Iterable[MetaData]
         // -> catch those by isXmlNode and isXmlMetaData.
         // Don't want to a) traverse infinity or b) be overly helpful with peoples' custom
@@ -344,14 +400,17 @@ object ScalaRunTime {
           !x.hasDefiniteSize || !isScalaClass(x) || isScalaCompilerClass(
             x) || isXmlNode(x.getClass) || isXmlMetaData(x.getClass)
         // Otherwise, nothing could possibly go wrong
-        case _ => false
+        case _ =>
+          false
       }
 
     // A variation on inner for maps so they print -> instead of bare tuples
     def mapInner(arg: Any): String =
       arg match {
-        case (k, v) => inner(k) + " -> " + inner(v)
-        case _      => inner(arg)
+        case (k, v) =>
+          inner(k) + " -> " + inner(v)
+        case _ =>
+          inner(arg)
       }
 
     // Special casing Unit arrays, the value class which uses a reference array type.
@@ -372,15 +431,19 @@ object ScalaRunTime {
     // random order even on sequences.
     def inner(arg: Any): String =
       arg match {
-        case null => "null"
-        case ""   => "\"\""
+        case null =>
+          "null"
+        case "" =>
+          "\"\""
         case x: String =>
           if (x.head.isWhitespace || x.last.isWhitespace)
             "\"" + x + "\""
           else
             x
-        case x if useOwnToString(x)  => x.toString
-        case x: AnyRef if isArray(x) => arrayToString(x)
+        case x if useOwnToString(x) =>
+          x.toString
+        case x: AnyRef if isArray(x) =>
+          arrayToString(x)
         case x: scala.collection.Map[_, _] =>
           x.iterator take maxElements map mapInner mkString (
             x.stringPrefix + "(", ", ", ")"
@@ -397,14 +460,16 @@ object ScalaRunTime {
           "(" + inner(x._1) + ",)" // that special trailing comma
         case x: Product if isTuple(x) =>
           x.productIterator map inner mkString ("(", ",", ")")
-        case x => x.toString
+        case x =>
+          x.toString
       }
 
     // The try/catch is defense against iterables which aren't actually designed
     // to be iterated, such as some scala.tools.nsc.io.AbstractFile derived classes.
     try inner(arg)
     catch {
-      case _: UnsupportedOperationException | _: AssertionError => "" + arg
+      case _: UnsupportedOperationException | _: AssertionError =>
+        "" + arg
     }
   }
 
@@ -422,15 +487,25 @@ object ScalaRunTime {
 
   def box[T](clazz: jClass[T]): jClass[_] =
     clazz match {
-      case java.lang.Byte.TYPE      => classOf[java.lang.Byte]
-      case java.lang.Short.TYPE     => classOf[java.lang.Short]
-      case java.lang.Character.TYPE => classOf[java.lang.Character]
-      case java.lang.Integer.TYPE   => classOf[java.lang.Integer]
-      case java.lang.Long.TYPE      => classOf[java.lang.Long]
-      case java.lang.Float.TYPE     => classOf[java.lang.Float]
-      case java.lang.Double.TYPE    => classOf[java.lang.Double]
-      case java.lang.Void.TYPE      => classOf[scala.runtime.BoxedUnit]
-      case java.lang.Boolean.TYPE   => classOf[java.lang.Boolean]
-      case _                        => clazz
+      case java.lang.Byte.TYPE =>
+        classOf[java.lang.Byte]
+      case java.lang.Short.TYPE =>
+        classOf[java.lang.Short]
+      case java.lang.Character.TYPE =>
+        classOf[java.lang.Character]
+      case java.lang.Integer.TYPE =>
+        classOf[java.lang.Integer]
+      case java.lang.Long.TYPE =>
+        classOf[java.lang.Long]
+      case java.lang.Float.TYPE =>
+        classOf[java.lang.Float]
+      case java.lang.Double.TYPE =>
+        classOf[java.lang.Double]
+      case java.lang.Void.TYPE =>
+        classOf[scala.runtime.BoxedUnit]
+      case java.lang.Boolean.TYPE =>
+        classOf[java.lang.Boolean]
+      case _ =>
+        clazz
     }
 }

@@ -19,7 +19,8 @@ trait EvalLoop {
       val line =
         try StdIn.readLine()
         catch {
-          case _: EOFException => null
+          case _: EOFException =>
+            null
         }
       if (line != null && line != "") {
         action(line)

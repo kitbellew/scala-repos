@@ -182,19 +182,22 @@ class JobServiceSpec extends TestJobService {
   "job service" should {
     "allow job creation" in {
       postJob(simpleJob, validAPIKey).copoint must beLike {
-        case HttpResponse(HttpStatus(Created, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(Created, _), _, _, _) =>
+          ok
       }
     }
 
     "return not found for jobs that don't exist" in {
       getJob("super awesome job").copoint must beLike {
-        case HttpResponse(HttpStatus(NotFound, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
+          ok
       }
     }
 
     "forbid job creation if provided an invalid API key" in {
       postJob(simpleJob, "Completely wrong API key").copoint must beLike {
-        case HttpResponse(HttpStatus(Forbidden, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(Forbidden, _), _, _, _) =>
+          ok
       }
     }
 
@@ -219,7 +222,8 @@ class JobServiceSpec extends TestJobService {
       val data = JObject(JField("x", JNum(1)) :: Nil)
 
       (obj \ "name", obj \ "type", obj \ "data") must beLike {
-        case (JString("xyz"), JString("zyx"), `data`) => ok
+        case (JString("xyz"), JString("zyx"), `data`) =>
+          ok
       }
     }
 
@@ -237,10 +241,12 @@ class JobServiceSpec extends TestJobService {
 
       st1.validated[JobState] must_== Success(NotStarted)
       st2.validated[JobState] must beLike {
-        case Success(Started(_, NotStarted)) => ok
+        case Success(Started(_, NotStarted)) =>
+          ok
       }
       st3.validated[JobState] must beLike {
-        case Success(Started(_, NotStarted)) => ok
+        case Success(Started(_, NotStarted)) =>
+          ok
       }
     }
 
@@ -275,7 +281,8 @@ class JobServiceSpec extends TestJobService {
             JObject(JField("state", JString("cancelled")) :: Nil))
         } yield res
       ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+          ok
       }
     }
 
@@ -317,7 +324,8 @@ class JobServiceSpec extends TestJobService {
           res <- putState(jobId, cancellation)
         } yield res
       ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+          ok
       }
     }
 
@@ -330,7 +338,8 @@ class JobServiceSpec extends TestJobService {
           res <- putState(jobId, cancellation)
         } yield res
       ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+          ok
       }
     }
 
@@ -343,7 +352,8 @@ class JobServiceSpec extends TestJobService {
       ).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
           obj.validated[JobState] must beLike {
-            case Success(Aborted("Yabba dabba doo!", _, NotStarted)) => ok
+            case Success(Aborted("Yabba dabba doo!", _, NotStarted)) =>
+              ok
           }
       }
     }
@@ -395,7 +405,8 @@ class JobServiceSpec extends TestJobService {
           res <- putState(jobId, abort)
         } yield res
       ).copoint must beLike {
-        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+          ok
       }
     }
 
@@ -520,7 +531,8 @@ class JobServiceSpec extends TestJobService {
           res <- getStatus(jobId)
         } yield res
       ).copoint must beLike {
-        case HttpResponse(HttpStatus(NotFound, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
+          ok
       }
     }
 
@@ -584,7 +596,8 @@ class JobServiceSpec extends TestJobService {
             Some(id))
         } yield res
       ).copoint must beLike {
-        case HttpResponse(HttpStatus(Conflict, _), _, _, _) => ok
+        case HttpResponse(HttpStatus(Conflict, _), _, _, _) =>
+          ok
       }
     }
 
@@ -614,7 +627,8 @@ class JobServiceSpec extends TestJobService {
 
       def mustBeBad(res: HttpResponse[JValue]) =
         res must beLike {
-          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) => ok
+          case HttpResponse(HttpStatus(BadRequest, _), _, _, _) =>
+            ok
         }
 
       mustBeBad(res1)

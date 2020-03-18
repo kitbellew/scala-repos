@@ -130,9 +130,12 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(implicit
       */
     private[this] def pickLowerBound(newFrom: Option[A]): Option[A] =
       (from, newFrom) match {
-        case (Some(fr), Some(newFr)) => Some(ordering.max(fr, newFr))
-        case (None, _)               => newFrom
-        case _                       => from
+        case (Some(fr), Some(newFr)) =>
+          Some(ordering.max(fr, newFr))
+        case (None, _) =>
+          newFrom
+        case _ =>
+          from
       }
 
     /**
@@ -140,9 +143,12 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(implicit
       */
     private[this] def pickUpperBound(newUntil: Option[A]): Option[A] =
       (until, newUntil) match {
-        case (Some(unt), Some(newUnt)) => Some(ordering.min(unt, newUnt))
-        case (None, _)                 => newUntil
-        case _                         => until
+        case (Some(unt), Some(newUnt)) =>
+          Some(ordering.min(unt, newUnt))
+        case (None, _) =>
+          newUntil
+        case _ =>
+          until
       }
 
     /**
@@ -184,8 +190,10 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(implicit
         else
           RB.min(tree)
       (entry, until) match {
-        case (Some(e), Some(unt)) if ordering.compare(e._1, unt) >= 0 => None
-        case _                                                        => entry
+        case (Some(e), Some(unt)) if ordering.compare(e._1, unt) >= 0 =>
+          None
+        case _ =>
+          entry
       }
     }
 
@@ -197,8 +205,10 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(implicit
         else
           RB.max(tree)
       (entry, from) match {
-        case (Some(e), Some(fr)) if ordering.compare(e._1, fr) < 0 => None
-        case _                                                     => entry
+        case (Some(e), Some(fr)) if ordering.compare(e._1, fr) < 0 =>
+          None
+        case _ =>
+          entry
       }
     }
 
@@ -208,7 +218,8 @@ sealed class TreeMap[A, B] private (tree: RB.Tree[A, B])(implicit
     override def foreach[U](f: ((A, B)) => U): Unit = iterator.foreach(f)
     override def transform(f: (A, B) => B) = {
       iterator.foreach {
-        case (key, value) => update(key, f(key, value))
+        case (key, value) =>
+          update(key, f(key, value))
       }
       this
     }

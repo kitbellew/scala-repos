@@ -43,7 +43,8 @@ trait SortedSetLike[A, +This <: SortedSet[A] with SortedSetLike[A, This]]
       // more sensible implementations of == to Ordering.
       case that: SortedSet[_] if that.ordering == ordering =>
         that.hasAll(this.iterator)
-      case that => super.subsetOf(that)
+      case that =>
+        super.subsetOf(that)
     }
 
   /**

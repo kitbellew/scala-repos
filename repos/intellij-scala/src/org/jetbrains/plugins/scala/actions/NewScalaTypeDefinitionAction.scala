@@ -104,7 +104,8 @@ class NewScalaTypeDefinitionAction
     createClassFromTemplate(directory, newName, templateName) match {
       case scalaFile: ScalaFile =>
         scalaFile.typeDefinitions.headOption.orNull
-      case _ => null
+      case _ =>
+        null
     }
   }
 

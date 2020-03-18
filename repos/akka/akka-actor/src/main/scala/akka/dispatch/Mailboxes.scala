@@ -82,7 +82,8 @@ private[akka] class Mailboxes(
           dynamicAccess
             .getClassFor[Any](k)
             .map {
-              case x ⇒ m.updated(x, v.toString)
+              case x ⇒
+                m.updated(x, v.toString)
             }
             .recover {
               case e ⇒
@@ -115,7 +116,8 @@ private[akka] class Mailboxes(
     Reflect.findMarker(actorClass, rmqClass) match {
       case t: ParameterizedType ⇒
         t.getActualTypeArguments.head match {
-          case c: Class[_] ⇒ c
+          case c: Class[_] ⇒
+            c
           case x ⇒
             throw new IllegalArgumentException(
               s"no wildcard type allowed in RequireMessageQueue argument (was [$x])")
@@ -128,8 +130,10 @@ private[akka] class Mailboxes(
 
   def getMailboxRequirement(config: Config) =
     config.getString("mailbox-requirement") match {
-      case NoMailboxRequirement ⇒ classOf[MessageQueue]
-      case x ⇒ dynamicAccess.getClassFor[AnyRef](x).get
+      case NoMailboxRequirement ⇒
+        classOf[MessageQueue]
+      case x ⇒
+        dynamicAccess.getClassFor[AnyRef](x).get
     }
 
   def getProducedMessageQueueType(mailboxType: MailboxType): Class[_] = {
@@ -140,7 +144,8 @@ private[akka] class Mailboxes(
       Reflect.findMarker(mailboxType.getClass, pmqClass) match {
         case t: ParameterizedType ⇒
           t.getActualTypeArguments.head match {
-            case c: Class[_] ⇒ c
+            case c: Class[_] ⇒
+              c
             case x ⇒
               throw new IllegalArgumentException(
                 s"no wildcard type allowed in ProducesMessageQueue argument (was [$x])")
@@ -221,7 +226,8 @@ private[akka] class Mailboxes(
       case None ⇒
         throw new ConfigurationException(
           s"Mailbox Mapping for [${queueType}] not configured")
-      case Some(s) ⇒ s
+      case Some(s) ⇒
+        s
     }
 
   private def lookupConfigurator(id: String): MailboxType = {
@@ -231,8 +237,10 @@ private[akka] class Mailboxes(
         val newConfigurator =
           id match {
             // TODO RK remove these two for Akka 2.3
-            case "unbounded" ⇒ UnboundedMailbox()
-            case "bounded" ⇒ new BoundedMailbox(settings, config(id))
+            case "unbounded" ⇒
+              UnboundedMailbox()
+            case "bounded" ⇒
+              new BoundedMailbox(settings, config(id))
             case _ ⇒
               if (!settings.config.hasPath(id))
                 throw new ConfigurationException(
@@ -277,11 +285,14 @@ private[akka] class Mailboxes(
           }
 
         mailboxTypeConfigurators.putIfAbsent(id, newConfigurator) match {
-          case null ⇒ newConfigurator
-          case existing ⇒ existing
+          case null ⇒
+            newConfigurator
+          case existing ⇒
+            existing
         }
 
-      case existing ⇒ existing
+      case existing ⇒
+        existing
     }
   }
 
@@ -327,7 +338,8 @@ private[akka] class Mailboxes(
       val cache = stashCapacityCache.get
       val key = dispatcher + "-" + mailbox
       cache.get(key) match {
-        case Some(value) ⇒ value
+        case Some(value) ⇒
+          value
         case None ⇒
           val value = stashCapacityFromConfig(dispatcher, mailbox)
           updateCache(cache, key, value)

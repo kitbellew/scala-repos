@@ -35,7 +35,8 @@ object SaddleBuild extends sbt.Build {
           case "META-INF/MANIFEST.MF" | "META-INF/LICENSE" |
               "META-INF/BCKEY.DSA" =>
             MergeStrategy.discard
-          case _ => MergeStrategy.first
+          case _ =>
+            MergeStrategy.first
         }
       ),
       base = file(".")

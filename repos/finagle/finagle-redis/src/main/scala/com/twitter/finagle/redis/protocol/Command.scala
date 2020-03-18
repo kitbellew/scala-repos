@@ -667,7 +667,8 @@ class CommandCodec extends UnifiedProtocolCodec {
     try {
       Commands.doMatch(cmd, args)
     } catch {
-      case e: ClientError => throw e
+      case e: ClientError =>
+        throw e
       case t: Throwable =>
         log.warning(
           t,

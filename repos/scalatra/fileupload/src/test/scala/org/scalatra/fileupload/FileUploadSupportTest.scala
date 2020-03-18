@@ -63,7 +63,8 @@ class MaxSizeTestServlet extends ScalatraServlet with FileUploadSupport {
   post() {}
 
   error {
-    case e: FileUploadBase.SizeLimitExceededException => halt(413, "boom")
+    case e: FileUploadBase.SizeLimitExceededException =>
+      halt(413, "boom")
   }
 
   override def newServletFileUpload = {

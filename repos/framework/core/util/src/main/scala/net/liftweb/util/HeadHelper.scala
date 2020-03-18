@@ -46,14 +46,18 @@ object HeadHelper {
       in flatMap { e =>
         val src =
           e.attributes("src") match {
-            case null => null
-            case x    => x.text
+            case null =>
+              null
+            case x =>
+              x.text
           }
 
         val href =
           e.attributes("href") match {
-            case null => null
-            case x    => x.text
+            case null =>
+              null
+            case x =>
+              x.text
           }
 
         e match {
@@ -81,9 +85,11 @@ object HeadHelper {
             hrefs += href;
             e
 
-          case e: Text if (e.text.trim.length == 0) => NodeSeq.Empty
+          case e: Text if (e.text.trim.length == 0) =>
+            NodeSeq.Empty
 
-          case e => e
+          case e =>
+            e
         }
       }
     ).flatMap(e => e ++ Text("\n\t"))
@@ -120,7 +126,8 @@ object HeadHelper {
               e.minimizeEmpty,
               xform(e.child, true): _*)
 
-          case e: Elem if inBody && e.label == "head" => NodeSeq.Empty
+          case e: Elem if inBody && e.label == "head" =>
+            NodeSeq.Empty
 
           case e: Elem if e.label == "head" =>
             Elem(
@@ -143,7 +150,8 @@ object HeadHelper {
           case g: Group =>
             xform(g.child, inBody)
 
-          case x => x
+          case x =>
+            x
         }
 
       xform(xhtml, false)

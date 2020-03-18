@@ -32,7 +32,8 @@ object PendingRequestFilter {
           case Param(Some(limit)) =>
             next.map(new PendingRequestFilter[Req, Rep](limit).andThen(_))
 
-          case Param(None) => next
+          case Param(None) =>
+            next
         }
     }
 

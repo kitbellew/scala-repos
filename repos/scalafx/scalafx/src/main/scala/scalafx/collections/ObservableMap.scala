@@ -257,7 +257,8 @@ trait ObservableMap[K, V]
                   change.getKey,
                   change.getValueAdded,
                   change.getValueRemoved)
-              case (true, false) => Add(change.getKey, change.getValueAdded)
+              case (true, false) =>
+                Add(change.getKey, change.getValueAdded)
               case (false, true) =>
                 Remove(change.getKey, change.getValueRemoved)
               case (false, false) =>

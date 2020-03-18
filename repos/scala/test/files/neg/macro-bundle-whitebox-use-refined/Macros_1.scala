@@ -43,7 +43,8 @@ class FundepMaterializationBundle(
     if (!sym.isClass || !sym.asClass.isCaseClass)
       c.abort(c.enclosingPosition, s"$sym is not a case class")
     val fields = sym.info.decls.toList.collect {
-      case x: TermSymbol if x.isVal && x.isCaseAccessor => x
+      case x: TermSymbol if x.isVal && x.isCaseAccessor =>
+        x
     }
 
     def mkTpt() = {

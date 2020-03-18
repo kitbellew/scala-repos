@@ -46,7 +46,8 @@ trait WebHookService {
         t.byWebHook(w)
       }
       .map {
-        case (w, t) => w -> t.event
+        case (w, t) =>
+          w -> t.event
       }
       .list
       .groupBy(_._1)
@@ -66,10 +67,12 @@ trait WebHookService {
         whe.byWebHook(wh)
       }
       .filter {
-        case (wh, whe) => whe.event === event.bind
+        case (wh, whe) =>
+          whe.event === event.bind
       }
       .map {
-        case (wh, whe) => wh
+        case (wh, whe) =>
+          wh
       }
       .list
       .distinct
@@ -84,7 +87,8 @@ trait WebHookService {
         t.byWebHook(w)
       }
       .map {
-        case (w, t) => w -> t.event
+        case (w, t) =>
+          w -> t.event
       }
       .list
       .groupBy(_._1)
@@ -202,7 +206,8 @@ trait WebHookService {
           }
         }
         f.onSuccess {
-          case s => logger.debug(s"Success: web hook request to ${webHook.url}")
+          case s =>
+            logger.debug(s"Success: web hook request to ${webHook.url}")
         }
         f.onFailure {
           case t =>
@@ -478,7 +483,8 @@ object WebHookService {
           ApiPath(
             s"/${repository.full_name}"
           ) // maybe test hook on un-initalied repository
-        case 1 => ApiPath(s"/${repository.full_name}/commit/${after}")
+        case 1 =>
+          ApiPath(s"/${repository.full_name}/commit/${after}")
         case _ if before.filterNot(_ == '0').isEmpty =>
           ApiPath(
             s"/${repository.full_name}/compare/${commits.head.id}^...${after}")

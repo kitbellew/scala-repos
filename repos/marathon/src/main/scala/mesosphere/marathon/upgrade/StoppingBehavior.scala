@@ -73,7 +73,8 @@ trait StoppingBehavior extends Actor with ActorLogging {
       scheduleSynchronization()
       checkFinished()
 
-    case x: MesosStatusUpdateEvent => log.debug(s"Received $x")
+    case x: MesosStatusUpdateEvent =>
+      log.debug(s"Received $x")
   }
 
   def checkFinished(): Unit =

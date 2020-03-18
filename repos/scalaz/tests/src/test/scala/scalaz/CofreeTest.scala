@@ -36,9 +36,12 @@ object CofreeTest extends SpecLite {
       override def equal(a: CofreeOption[A], b: CofreeOption[A]): Boolean = {
         def tr(a: CofreeOption[A], b: CofreeOption[A]): Boolean =
           (a.tail, b.tail) match {
-            case (Some(at), Some(bt)) if (e.equal(a.head, b.head)) => tr(at, bt)
-            case (None, None) if (e.equal(a.head, b.head))         => true
-            case _                                                 => false
+            case (Some(at), Some(bt)) if (e.equal(a.head, b.head)) =>
+              tr(at, bt)
+            case (None, None) if (e.equal(a.head, b.head)) =>
+              true
+            case _ =>
+              false
           }
         tr(a, b)
       }
@@ -50,7 +53,8 @@ object CofreeTest extends SpecLite {
         Cofree.unfold(fa) {
           case OneAnd(a, h :: t) =>
             (a, Some(OneAnd(h, t)))
-          case OneAnd(a, _) => (a, None)
+          case OneAnd(a, _) =>
+            (a, None)
         }
     }
 
@@ -58,8 +62,10 @@ object CofreeTest extends SpecLite {
     new IsoFunctorTemplate[OneAndStream, CofreeLazyOption] {
       def to[A](fa: OneAndStream[A]) =
         Cofree.unfold(fa) {
-          case OneAnd(a, h #:: t) => (a, LazyOption.lazySome(OneAnd(h, t)))
-          case OneAnd(a, _)       => (a, LazyOption.lazyNone)
+          case OneAnd(a, h #:: t) =>
+            (a, LazyOption.lazySome(OneAnd(h, t)))
+          case OneAnd(a, _) =>
+            (a, LazyOption.lazyNone)
         }
       def from[A](fa: CofreeLazyOption[A]) =
         OneAnd(
@@ -94,8 +100,10 @@ object CofreeTest extends SpecLite {
       Gen.listOfN(5000, implicitly[Arbitrary[A]].arbitrary)
     }
     Functor[Arbitrary].map(arb) {
-      case h :: Nil => oneAndListNat(OneAnd(h, Nil))
-      case h :: t   => oneAndListNat(OneAnd(h, t))
+      case h :: Nil =>
+        oneAndListNat(OneAnd(h, Nil))
+      case h :: t =>
+        oneAndListNat(OneAnd(h, t))
     }
   }
 

@@ -45,7 +45,8 @@ case class Form[T](
     mapping.mappings
       .map { m =>
         m.key -> m.constraints.collect {
-          case Constraint(Some(name), args) => name -> args
+          case Constraint(Some(name), args) =>
+            name -> args
         }
       }
       .filterNot(_._2.isEmpty)
@@ -60,7 +61,8 @@ case class Form[T](
         m.key -> m.format
       }
       .collect {
-        case (k, Some(f)) => k -> f
+        case (k, Some(f)) =>
+          k -> f
       }
       .toMap
 
@@ -104,11 +106,14 @@ case class Form[T](
             body.asMultipartFormData.get.asFormUrlEncoded
           case body: play.api.mvc.AnyContent if body.asJson.isDefined =>
             FormUtils.fromJson(js = body.asJson.get).mapValues(Seq(_))
-          case body: Map[_, _]                         => body.asInstanceOf[Map[String, Seq[String]]]
-          case body: play.api.mvc.MultipartFormData[_] => body.asFormUrlEncoded
+          case body: Map[_, _] =>
+            body.asInstanceOf[Map[String, Seq[String]]]
+          case body: play.api.mvc.MultipartFormData[_] =>
+            body.asFormUrlEncoded
           case body: play.api.libs.json.JsValue =>
             FormUtils.fromJson(js = body).mapValues(Seq(_))
-          case _ => Map.empty[String, Seq[String]]
+          case _ =>
+            Map.empty[String, Seq[String]]
         }
       ) ++ request.queryString
     }
@@ -119,9 +124,11 @@ case class Form[T](
       data.foldLeft(Map.empty[String, String]) {
         case (s, (key, values)) if key.endsWith("[]") =>
           s ++ values.zipWithIndex.map {
-            case (v, i) => (key.dropRight(2) + "[" + i + "]") -> v
+            case (v, i) =>
+              (key.dropRight(2) + "[" + i + "]") -> v
           }
-        case (s, (key, values)) => s + (key -> values.headOption.getOrElse(""))
+        case (s, (key, values)) =>
+          s + (key -> values.headOption.getOrElse(""))
       }
     }
   }
@@ -167,8 +174,10 @@ case class Form[T](
     */
   def fold[R](hasErrors: Form[T] => R, success: T => R): R =
     value match {
-      case Some(v) if errors.isEmpty => success(v)
-      case _                         => hasErrors(this)
+      case Some(v) if errors.isEmpty =>
+        success(v)
+      case _ =>
+        hasErrors(this)
     }
 
   /**
@@ -189,7 +198,8 @@ case class Form[T](
       constraints.get(key).getOrElse(Nil),
       formats.get(key),
       errors.collect {
-        case e if e.key == key => e
+        case e if e.key == key =>
+          e
       },
       data.get(key))
 
@@ -273,9 +283,12 @@ case class Form[T](
   private def translateMsgArg(msgArg: Any)(implicit
       messages: play.api.i18n.Messages) =
     msgArg match {
-      case key: String       => messages(key)
-      case keys: Seq[String] => keys.map(key => messages(key))
-      case _                 => msgArg
+      case key: String =>
+        messages(key)
+      case keys: Seq[String] =>
+        keys.map(key => messages(key))
+      case _ =>
+        msgArg
     }
 
   /**
@@ -457,15 +470,21 @@ private[data] object FormUtils {
       case JsArray(values) => {
         values.zipWithIndex
           .map {
-            case (value, i) => fromJson(prefix + "[" + i + "]", value)
+            case (value, i) =>
+              fromJson(prefix + "[" + i + "]", value)
           }
           .foldLeft(Map.empty[String, String])(_ ++ _)
       }
-      case JsNull           => Map.empty
-      case JsUndefined()    => Map.empty
-      case JsBoolean(value) => Map(prefix -> value.toString)
-      case JsNumber(value)  => Map(prefix -> value.toString)
-      case JsString(value)  => Map(prefix -> value.toString)
+      case JsNull =>
+        Map.empty
+      case JsUndefined() =>
+        Map.empty
+      case JsBoolean(value) =>
+        Map(prefix -> value.toString)
+      case JsNumber(value) =>
+        Map(prefix -> value.toString)
+      case JsString(value) =>
+        Map(prefix -> value.toString)
     }
 
 }
@@ -648,7 +667,8 @@ trait Mapping[T] {
     constraints
       .map(_(t))
       .collect {
-        case Invalid(errors) => errors.toSeq
+        case Invalid(errors) =>
+          errors.toSeq
       }
       .flatten
       .map(ve => FormError(key, ve.messages, ve.args))
@@ -762,7 +782,8 @@ object RepeatedMapping {
       ("^" + java.util.regex.Pattern.quote(key) + """\[(\d+)\].*$""").r
     data.toSeq
       .collect {
-        case (KeyPattern(index), _) => index.toInt
+        case (KeyPattern(index), _) =>
+          index.toInt
       }
       .sorted
       .distinct
@@ -820,7 +841,8 @@ case class RepeatedMapping[T](
     } else {
       Left(
         allErrorsOrItems.collect {
-          case Left(errors) => errors
+          case Left(errors) =>
+            errors
         }.flatten)
     }
   }
@@ -833,7 +855,8 @@ case class RepeatedMapping[T](
     */
   def unbind(value: List[T]): Map[String, String] = {
     val datas = value.zipWithIndex.map {
-      case (t, i) => wrapped.withPrefix(key + "[" + i + "]").unbind(t)
+      case (t, i) =>
+        wrapped.withPrefix(key + "[" + i + "]").unbind(t)
     }
     datas.foldLeft(Map.empty[String, String])(_ ++ _)
   }
@@ -920,7 +943,8 @@ case class OptionalMapping[T](
         p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
       .map(k => data.get(k).filterNot(_.isEmpty))
       .collect {
-        case Some(v) => v
+        case Some(v) =>
+          v
       }
       .headOption
       .map { _ =>
@@ -1079,10 +1103,14 @@ trait ObjectMapping {
       a: Either[Seq[FormError], Seq[Any]],
       b: Either[Seq[FormError], Seq[Any]]): Either[Seq[FormError], Seq[Any]] =
     (a, b) match {
-      case (Left(errorsA), Left(errorsB)) => Left(errorsA ++ errorsB)
-      case (Left(errorsA), Right(_))      => Left(errorsA)
-      case (Right(_), Left(errorsB))      => Left(errorsB)
-      case (Right(a), Right(b))           => Right(a ++ b)
+      case (Left(errorsA), Left(errorsB)) =>
+        Left(errorsA ++ errorsB)
+      case (Left(errorsA), Right(_)) =>
+        Left(errorsA)
+      case (Right(_), Left(errorsB)) =>
+        Left(errorsB)
+      case (Right(a), Right(b)) =>
+        Right(a ++ b)
     }
 
   /**

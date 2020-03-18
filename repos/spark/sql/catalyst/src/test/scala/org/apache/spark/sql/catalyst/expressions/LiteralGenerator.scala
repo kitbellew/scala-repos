@@ -147,21 +147,34 @@ object LiteralGenerator {
 
   def randomGen(dt: DataType): Gen[Literal] = {
     dt match {
-      case ByteType             => byteLiteralGen
-      case ShortType            => shortLiteralGen
-      case IntegerType          => integerLiteralGen
-      case LongType             => longLiteralGen
-      case DoubleType           => doubleLiteralGen
-      case FloatType            => floatLiteralGen
-      case DateType             => dateLiteralGen
-      case TimestampType        => timestampLiteralGen
-      case BooleanType          => booleanLiteralGen
-      case StringType           => stringLiteralGen
-      case BinaryType           => binaryLiteralGen
-      case CalendarIntervalType => calendarIntervalLiterGen
+      case ByteType =>
+        byteLiteralGen
+      case ShortType =>
+        shortLiteralGen
+      case IntegerType =>
+        integerLiteralGen
+      case LongType =>
+        longLiteralGen
+      case DoubleType =>
+        doubleLiteralGen
+      case FloatType =>
+        floatLiteralGen
+      case DateType =>
+        dateLiteralGen
+      case TimestampType =>
+        timestampLiteralGen
+      case BooleanType =>
+        booleanLiteralGen
+      case StringType =>
+        stringLiteralGen
+      case BinaryType =>
+        binaryLiteralGen
+      case CalendarIntervalType =>
+        calendarIntervalLiterGen
       case DecimalType.Fixed(precision, scale) =>
         decimalLiteralGen(precision, scale)
-      case dt => throw new IllegalArgumentException(s"not supported type $dt")
+      case dt =>
+        throw new IllegalArgumentException(s"not supported type $dt")
     }
   }
 }

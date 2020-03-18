@@ -137,8 +137,10 @@ object TypedSimilarity extends Serializable {
       withReds: T,
       reds: Option[Int]) =
     reds match {
-      case Some(i) => withReds.withReducers(i)
-      case None    => withReds
+      case Some(i) =>
+        withReds.withReducers(i)
+      case None =>
+        withReds
     }
 
   // key: document,
@@ -218,7 +220,8 @@ object TypedSimilarity extends Serializable {
       smallG.reducers
     ).forceToReducers.sum
       .map {
-        case ((node1, node2), sim) => Edge(node1, node2, sim)
+        case ((node1, node2), sim) =>
+          Edge(node1, node2, sim)
       }
   }
 
@@ -264,7 +267,8 @@ object TypedSimilarity extends Serializable {
       smallG.reducers
     ).forceToReducers.sum
       .map {
-        case ((node1, node2), sim) => Edge(node1, node2, sim)
+        case ((node1, node2), sim) =>
+          Edge(node1, node2, sim)
       }
   }
 }

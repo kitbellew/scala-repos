@@ -5,7 +5,8 @@ object Test {
       try {
         0
       } catch {
-        case ex: Throwable => 0
+        case ex: Throwable =>
+          0
       }
     new {
       foo(bar)
@@ -15,6 +16,7 @@ object Test {
   def main(args: Array[String]): Unit =
     try foo(0)
     catch {
-      case _: java.lang.StackOverflowError => println("ok")
+      case _: java.lang.StackOverflowError =>
+        println("ok")
     }
 }

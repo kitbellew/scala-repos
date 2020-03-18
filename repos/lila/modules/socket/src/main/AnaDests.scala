@@ -15,7 +15,8 @@ case class AnaDests(variant: Variant, fen: String, path: String) {
       "iqy muC gvx ltB bqs pxF jrz nvD ksA owE"
     else
       chess.Game(variant.some, fen.some).situation.destinations map {
-        case (orig, dests) => s"${orig.piotr}${dests.map(_.piotr).mkString}"
+        case (orig, dests) =>
+          s"${orig.piotr}${dests.map(_.piotr).mkString}"
       } mkString " "
 
   def opening =

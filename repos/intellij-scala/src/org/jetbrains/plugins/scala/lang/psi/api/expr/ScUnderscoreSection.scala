@@ -19,8 +19,10 @@ import scala.collection.mutable.ListBuffer
 trait ScUnderscoreSection extends ScExpression {
   def bindingExpr: Option[ScExpression] = {
     findChildByClassScala(classOf[ScExpression]) match {
-      case null                     => None
-      case expression: ScExpression => Some(expression)
+      case null =>
+        None
+      case expression: ScExpression =>
+        Some(expression)
     }
   }
 
@@ -37,42 +39,61 @@ trait ScUnderscoreSection extends ScExpression {
           if (!calcArguments)
             return Some(expr.asInstanceOf[ScExpression])
           args.getContext match {
-            case call: ScMethodCall => go(call, calcArguments = false)
+            case call: ScMethodCall =>
+              go(call, calcArguments = false)
             case constr: ScConstructor =>
               PsiTreeUtil.getContextOfType(
                 constr,
                 true,
                 classOf[ScNewTemplateDefinition]) match {
-                case null                       => None
-                case n: ScNewTemplateDefinition => go(n, calcArguments = false)
+                case null =>
+                  None
+                case n: ScNewTemplateDefinition =>
+                  go(n, calcArguments = false)
               }
-            case _ => None
+            case _ =>
+              None
           }
-        case inf: ScInfixExpr           => go(inf, calcArguments = false)
-        case pre: ScPrefixExpr          => go(pre, calcArguments = false)
-        case post: ScPostfixExpr        => go(post, calcArguments = false)
-        case ref: ScReferenceExpression => go(ref, calcArguments = false)
-        case call: ScMethodCall         => go(call, calcArguments = false)
-        case gen: ScGenericCall         => go(gen, calcArguments = false)
+        case inf: ScInfixExpr =>
+          go(inf, calcArguments = false)
+        case pre: ScPrefixExpr =>
+          go(pre, calcArguments = false)
+        case post: ScPostfixExpr =>
+          go(post, calcArguments = false)
+        case ref: ScReferenceExpression =>
+          go(ref, calcArguments = false)
+        case call: ScMethodCall =>
+          go(call, calcArguments = false)
+        case gen: ScGenericCall =>
+          go(gen, calcArguments = false)
         case assign: ScAssignStmt if assign.getLExpression == expr =>
           go(assign, calcArguments = false)
         case assign: ScAssignStmt
             if assign.getRExpression == Some(expr) && isUnderscore(expr) =>
           go(assign, calcArguments = false)
-        case x: ScExpression if calcArguments => Some(x)
-        case x: ScMatchStmt if !calcArguments => Some(x)
-        case x: ScTypedStmt if !calcArguments => Some(x)
+        case x: ScExpression if calcArguments =>
+          Some(x)
+        case x: ScMatchStmt if !calcArguments =>
+          Some(x)
+        case x: ScTypedStmt if !calcArguments =>
+          Some(x)
         case x: ScExpression if !calcArguments =>
           expr match {
-            case _: ScUnderscoreSection => None
-            case expr: ScExpression     => Some(expr)
-            case _                      => None
+            case _: ScUnderscoreSection =>
+              None
+            case expr: ScExpression =>
+              Some(expr)
+            case _ =>
+              None
           }
         case _ =>
           expr match {
-            case x: ScUnderscoreSection => None
-            case x: ScExpression        => Some(x)
-            case _                      => None
+            case x: ScUnderscoreSection =>
+              None
+            case x: ScExpression =>
+              Some(x)
+            case _ =>
+              None
           }
       }
     }
@@ -80,14 +101,18 @@ trait ScUnderscoreSection extends ScExpression {
     @tailrec
     def removeParentheses(p: ScExpression): ScExpression = {
       p.getContext match {
-        case p: ScParenthesisedExpr => removeParentheses(p)
-        case _                      => p
+        case p: ScParenthesisedExpr =>
+          removeParentheses(p)
+        case _ =>
+          p
       }
     }
 
     getContext match {
-      case t: ScTypedStmt => go(removeParentheses(t))
-      case _              => go(removeParentheses(this))
+      case t: ScTypedStmt =>
+        go(removeParentheses(t))
+      case _ =>
+        go(removeParentheses(this))
     }
   }
 }
@@ -96,14 +121,19 @@ object ScUnderScoreSectionUtil {
   @tailrec
   def isUnderscore(expr: PsiElement): Boolean = {
     expr match {
-      case u: ScUnderscoreSection => true
-      case t: ScTypedStmt         => t.expr.isInstanceOf[ScUnderscoreSection]
+      case u: ScUnderscoreSection =>
+        true
+      case t: ScTypedStmt =>
+        t.expr.isInstanceOf[ScUnderscoreSection]
       case p: ScParenthesisedExpr =>
         p.expr match {
-          case Some(expression) => isUnderscore(expression)
-          case _                => false
+          case Some(expression) =>
+            isUnderscore(expression)
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -116,14 +146,16 @@ object ScUnderScoreSectionUtil {
       innerExpr match {
         case under: ScUnderscoreSection =>
           under.bindingExpr match {
-            case Some(e) => return Seq.empty
-            case _       =>
+            case Some(e) =>
+              return Seq.empty
+            case _ =>
           }
           val over = under.overExpr
           over match {
             case Some(e) if expr == e =>
               Seq(under)
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           }
         case _ =>
           val res = new ListBuffer[ScUnderscoreSection]

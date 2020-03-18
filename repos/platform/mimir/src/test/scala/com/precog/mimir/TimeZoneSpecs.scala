@@ -53,8 +53,10 @@ trait TimeZoneSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -68,7 +70,8 @@ trait TimeZoneSpecs[M[+_]]
           Const(CString("-10:00"))(line))(line)
 
       val result = testEval(input) collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result must contain(
@@ -122,7 +125,8 @@ trait TimeZoneSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain(
@@ -149,7 +153,8 @@ trait TimeZoneSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain(
@@ -203,7 +208,8 @@ trait TimeZoneSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain(

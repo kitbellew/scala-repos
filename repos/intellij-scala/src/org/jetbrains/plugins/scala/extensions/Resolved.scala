@@ -11,14 +11,17 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 object ResolvedWithSubst {
   def unapply(e: PsiReference): Option[(PsiElement, ScSubstitutor)] = {
     e match {
-      case null => None
+      case null =>
+        None
       case e: ScReferenceElement =>
         e.bind() match {
           case Some(ScalaResolveResult(target, substitutor)) =>
             Some(target, substitutor)
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => Option(e.resolve).map((_, ScSubstitutor.empty))
+      case _ =>
+        Option(e.resolve).map((_, ScSubstitutor.empty))
     }
   }
 }
@@ -26,8 +29,10 @@ object ResolvedWithSubst {
 object ResolvesTo {
   def unapply(ref: PsiReference): Option[PsiElement] = {
     ref match {
-      case null => None
-      case r    => Option(r.resolve())
+      case null =>
+        None
+      case r =>
+        Option(r.resolve())
     }
   }
 }

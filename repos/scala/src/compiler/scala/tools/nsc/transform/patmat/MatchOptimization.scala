@@ -53,11 +53,14 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
         def simplify(c: Prop): Set[Prop] =
           c match {
-            case And(ops) => ops.toSet flatMap simplify
-            case Or(ops)  => Set(False) // TODO: make more precise
+            case And(ops) =>
+              ops.toSet flatMap simplify
+            case Or(ops) =>
+              Set(False) // TODO: make more precise
             case Not(Eq(Var(_), NullConst)) =>
               Set(True) // not worth remembering
-            case _ => Set(c)
+            case _ =>
+              Set(c)
           }
         val conds = simplify(cond)
 
@@ -239,7 +242,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             dropped.treeMaker match {
               case dropped: FunTreeMaker =>
                 mapToStored(dropped.nextBinder)
-              case _ => Nil
+              case _ =>
+                Nil
             }
           }.unzip
         val rerouteToReusedBinders = Substitution(from, to)
@@ -254,7 +258,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         sharedPrefix.reverse
           .flatMap(tm => tm.reuses map (test => toReused(test.treeMaker)))
           .collectFirst {
-            case x: ReusedCondTreeMaker => x
+            case x: ReusedCondTreeMaker =>
+              x
           }
           .head
 
@@ -315,11 +320,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           tms match {
             case (btm @ BodyTreeMaker(body, _)) :: Nil =>
               Some((EmptyTree, btm.substitution(body)))
-            case (
-                  gtm @ GuardTreeMaker(guard)
-                ) :: (btm @ BodyTreeMaker(body, _)) :: Nil =>
+            case (gtm @ GuardTreeMaker(guard)) :: (
+                  btm @ BodyTreeMaker(body, _)
+                ) :: Nil =>
               Some((gtm.substitution(guard), btm.substitution(body)))
-            case _ => None
+            case _ =>
+              None
           }
         }
       }
@@ -373,7 +379,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             same.foldRight(jumpToDefault) {
               // the last case may be unguarded (we know it's the last one since fold's accum == jumpToDefault)
               // --> replace jumpToDefault by the unguarded case's body
-              case (CaseDef(_, EmptyTree, b), `jumpToDefault`) => b
+              case (CaseDef(_, EmptyTree, b), `jumpToDefault`) =>
+                b
               case (cd @ CaseDef(_, g, b), els) if isGuardedCase(cd) =>
                 If(g, b, els)
             }
@@ -401,8 +408,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               // we can thus safely pick the first one arbitrarily, provided we correct binding
               val origPatWithoutBind =
                 commonPattern match {
-                  case Bind(b, orig) => orig
-                  case o             => o
+                  case Bind(b, orig) =>
+                    orig
+                  case o =>
+                    o
                 }
               // need to replace `defaultSym` as well -- it's used in `defaultBody` (see `jumpToDefault` above)
               val unifiedBody = guardedBody.substituteSymbols(
@@ -446,9 +455,11 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
                 // last case is not guarded, no need to jump to the default here
                 // note: must come after case -1 => (since LastImpliesCurr may be -1)
-                case LastImpliesCurr => true
+                case LastImpliesCurr =>
+                  true
 
-                case _ => false
+                case _ =>
+                  false
               }
             }
 
@@ -479,17 +490,22 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           case (Alternative(xs), Alternative(ys)) =>
             xs.forall(x => ys.exists(patternEquals(x))) &&
               ys.forall(y => xs.exists(patternEquals(y)))
-          case (Alternative(pats), _) => pats.forall(p => patternEquals(p)(y))
-          case (_, Alternative(pats)) => pats.forall(q => patternEquals(x)(q))
+          case (Alternative(pats), _) =>
+            pats.forall(p => patternEquals(p)(y))
+          case (_, Alternative(pats)) =>
+            pats.forall(q => patternEquals(x)(q))
           // regular switch
-          case (Literal(Constant(cx)), Literal(Constant(cy))) => cx == cy
-          case (Ident(nme.WILDCARD), Ident(nme.WILDCARD))     => true
+          case (Literal(Constant(cx)), Literal(Constant(cy))) =>
+            cx == cy
+          case (Ident(nme.WILDCARD), Ident(nme.WILDCARD)) =>
+            true
           // type-switch for catch
           case (
                 Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
                 Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
             tpX.tpe =:= tpY.tpe
-          case _ => false
+          case _ =>
+            false
         }
 
       // if y matches then x matches for sure (thus, if x comes before y, y is unreachable)
@@ -498,17 +514,22 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       private def patternImplies(x: Tree)(y: Tree): Boolean =
         (x, y) match {
           // since alternatives are flattened, must treat them as separate cases
-          case (Alternative(pats), _) => pats.exists(p => patternImplies(p)(y))
-          case (_, Alternative(pats)) => pats.exists(q => patternImplies(x)(q))
+          case (Alternative(pats), _) =>
+            pats.exists(p => patternImplies(p)(y))
+          case (_, Alternative(pats)) =>
+            pats.exists(q => patternImplies(x)(q))
           // regular switch
-          case (Literal(Constant(cx)), Literal(Constant(cy))) => cx == cy
-          case (Ident(nme.WILDCARD), _)                       => true
+          case (Literal(Constant(cx)), Literal(Constant(cy))) =>
+            cx == cy
+          case (Ident(nme.WILDCARD), _) =>
+            true
           // type-switch for catch
           case (
                 Bind(_, Typed(Ident(nme.WILDCARD), tpX)),
                 Bind(_, Typed(Ident(nme.WILDCARD), tpY))) =>
             instanceOfTpImplies(tpY.tpe, tpX.tpe)
-          case _ => false
+          case _ =>
+            false
         }
 
       private def noGuards(cs: List[CaseDef]): Boolean =
@@ -523,9 +544,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             case head :: rest
                 if !isGuardedCase(head) || head.guard.tpe =:= ConstantTrue =>
               rest find caseImplies(head) orElse loop(rest)
-            case head :: _ if head.guard.tpe =:= ConstantFalse => Some(head)
-            case _ :: rest                                     => loop(rest)
-            case _                                             => None
+            case head :: _ if head.guard.tpe =:= ConstantFalse =>
+              Some(head)
+            case _ :: rest =>
+              loop(rest)
+            case _ =>
+              None
           }
         loop(cases)
       }
@@ -566,8 +590,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                   sequence(switchableAlts) map { switchableAlts =>
                     def extractConst(t: Tree) =
                       t match {
-                        case Literal(const) => const
-                        case _              => t
+                        case Literal(const) =>
+                          const
+                        case _ =>
+                          t
                       }
                     // SI-7290 Discard duplicate alternatives that would crash the backend
                     val distinctAlts = distinctBy(switchableAlts)(extractConst)
@@ -591,8 +617,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
 
           val caseDefsWithGuards =
             sequence(caseDefs) match {
-              case None      => return Nil
-              case Some(cds) => cds
+              case None =>
+                return Nil
+              case Some(cds) =>
+                cds
             }
 
           // a switch with duplicate cases yields a verify error,
@@ -665,7 +693,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               Some(
                 Literal(Constant(const.intValue))
               ) // TODO: Java 7 allows strings in switches
-            case _ => None
+            case _ =>
+              None
           }
       }
 
@@ -674,14 +703,17 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           x match {
             case EqualityTestTreeMaker(_, SwitchablePattern(const), _) =>
               Some(const)
-            case _ => None
+            case _ =>
+              None
           }
       }
 
       def isDefault(x: CaseDef): Boolean =
         x match {
-          case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
-          case _                                          => false
+          case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) =>
+            true
+          case _ =>
+            false
         }
 
       def defaultSym: Symbol = scrutSym
@@ -772,8 +804,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           case CaseDef(Bind(_, Typed(Ident(nme.WILDCARD), tpt)), EmptyTree, _)
               if (tpt.tpe =:= ThrowableTpe) =>
             true
-          case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) => true
-          case _                                          => false
+          case CaseDef(Ident(nme.WILDCARD), EmptyTree, _) =>
+            true
+          case _ =>
+            false
         }
 
       lazy val defaultSym: Symbol = freshSym(NoPosition, ThrowableTpe)
@@ -820,7 +854,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         (
           for (treeMakers <- optCases)
             yield treeMakers.collect {
-              case tm: ReusedCondTreeMaker => tm.treesToHoist
+              case tm: ReusedCondTreeMaker =>
+                tm.treesToHoist
             }
         ).flatten.flatten.toList
       (optCases, toHoist)

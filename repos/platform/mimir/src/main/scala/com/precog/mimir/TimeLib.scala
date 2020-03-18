@@ -124,7 +124,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = BinaryOperationType(StrAndDateT, JTextT, JDateT)
       def f2(ctx: MorphContext): F2 =
         CF2P("builtin::time::parseDateTime") {
-          case (c1: DateColumn, c2: StrColumn) => c1
+          case (c1: DateColumn, c2: StrColumn) =>
+            c1
 
           case (c1: StrColumn, c2: StrColumn) =>
             new DateColumn {
@@ -149,7 +150,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = UnaryOperationType(StrAndDateT, JDateT)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::time::parseDateTimeFuzzy") {
-          case (c: DateColumn) => c
+          case (c: DateColumn) =>
+            c
 
           case (c: StrColumn) =>
             new DateColumn {
@@ -189,7 +191,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     //ok to `get` because CoerceToDate is defined for StrColumn
     def createDateCol(c: StrColumn) =
       cf.util.CoerceToDate(c) collect {
-        case (dc: DateColumn) => dc
+        case (dc: DateColumn) =>
+          dc
       } get
 
     object ChangeTimeZone extends Op2F2(TimeNamespace, "changeTimeZone") {
@@ -197,7 +200,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def f2(ctx: MorphContext): F2 =
         CF2P("builtin::time::changeTimeZone") {
-          case (c1: DateColumn, c2: StrColumn) => newColumn(c1, c2)
+          case (c1: DateColumn, c2: StrColumn) =>
+            newColumn(c1, c2)
           case (c1: StrColumn, c2: StrColumn) =>
             newColumn(createDateCol(c1), c2)
         }
@@ -238,10 +242,12 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               cols: Map[ColumnRef, Column],
               range: Range): (A, Map[ColumnRef, Column]) = {
             val startCol = cols collectFirst {
-              case (ref, col: DateColumn) if ref.selector == CPath(start) => col
+              case (ref, col: DateColumn) if ref.selector == CPath(start) =>
+                col
             }
             val endCol = cols collectFirst {
-              case (ref, col: DateColumn) if ref.selector == CPath(end) => col
+              case (ref, col: DateColumn) if ref.selector == CPath(end) =>
+                col
             }
             val stepCol = cols collectFirst {
               case (ref, col: PeriodColumn) if ref.selector == CPath(step) =>
@@ -291,7 +297,8 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 _.length > idx
               }
               val indices = bools.zipWithIndex collect {
-                case (true, idx) => idx
+                case (true, idx) =>
+                  idx
               }
 
               BitSetUtil.create(indices)

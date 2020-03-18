@@ -19,7 +19,8 @@ object RemoteRandomMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
     def receive = {
-      case "hit" ⇒ sender() ! self
+      case "hit" ⇒
+        sender() ! self
     }
   }
 
@@ -80,7 +81,8 @@ class RemoteRandomSpec
             receiveWhile(
               5.seconds,
               messages = connectionCount * iterationCount) {
-              case ref: ActorRef ⇒ ref.path.address
+              case ref: ActorRef ⇒
+                ref.path.address
             }
           ).foldLeft(
             Map(

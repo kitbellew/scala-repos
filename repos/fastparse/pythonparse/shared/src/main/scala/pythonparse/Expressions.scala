@@ -17,8 +17,10 @@ object Expressions {
 
   def tuplize(xs: Seq[Ast.expr]) =
     xs match {
-      case Seq(x) => x
-      case xs     => Ast.expr.Tuple(xs, Ast.expr_context.Load)
+      case Seq(x) =>
+        x
+      case xs =>
+        Ast.expr.Tuple(xs, Ast.expr_context.Load)
     }
 
   val NAME: P[Ast.identifier] = Lexical.identifier
@@ -29,23 +31,30 @@ object Expressions {
 
   val test: P[Ast.expr] = {
     val ternary = P(or_test ~ (kw("if") ~ or_test ~ kw("else") ~ test).?).map {
-      case (x, None)              => x
-      case (x, Some((test, neg))) => Ast.expr.IfExp(test, x, neg)
+      case (x, None) =>
+        x
+      case (x, Some((test, neg))) =>
+        Ast.expr.IfExp(test, x, neg)
     }
     P(ternary | lambdef)
   }
   val or_test = P(and_test.rep(1, kw("or"))).map {
-    case Seq(x) => x
-    case xs     => Ast.expr.BoolOp(Ast.boolop.Or, xs)
+    case Seq(x) =>
+      x
+    case xs =>
+      Ast.expr.BoolOp(Ast.boolop.Or, xs)
   }
   val and_test = P(not_test.rep(1, kw("and"))).map {
-    case Seq(x) => x
-    case xs     => Ast.expr.BoolOp(Ast.boolop.And, xs)
+    case Seq(x) =>
+      x
+    case xs =>
+      Ast.expr.BoolOp(Ast.boolop.And, xs)
   }
   val not_test: P[Ast.expr] = P(
     ("not" ~ not_test).map(Ast.expr.UnaryOp(Ast.unaryop.Not, _)) | comparison)
   val comparison: P[Ast.expr] = P(expr ~ (comp_op ~ expr).rep).map {
-    case (lhs, Nil) => lhs
+    case (lhs, Nil) =>
+      lhs
     case (lhs, chunks) =>
       val (ops, vals) = chunks.unzip
       Ast.expr.Compare(lhs, ops, vals)
@@ -98,8 +107,10 @@ object Expressions {
     case (lhs, trailers, rhs) =>
       val left = trailers.foldLeft(lhs)((l, t) => t(l))
       rhs match {
-        case None              => left
-        case Some((op, right)) => Ast.expr.BinOp(left, op, right)
+        case None =>
+          left
+        case Some((op, right)) =>
+          Ast.expr.BinOp(left, op, right)
       }
   }
   val atom: P[Ast.expr] = {
@@ -142,8 +153,10 @@ object Expressions {
     P(call | slice | attr)
   }
   val subscriptlist = P(subscript.rep(1, ",") ~ ",".?).map {
-    case Seq(x) => x
-    case xs     => Ast.slice.ExtSlice(xs)
+    case Seq(x) =>
+      x
+    case xs =>
+      Ast.slice.ExtSlice(xs)
   }
   val subscript: P[Ast.slice] = {
     val ellipses = P(("." ~ "." ~ ".").map(_ => Ast.slice.Ellipsis))
@@ -186,14 +199,17 @@ object Expressions {
   }
 
   val plain_argument = P(test ~ comp_for.rep).map {
-    case (x, Nil)  => x
-    case (x, gens) => Ast.expr.GeneratorExp(x, gens)
+    case (x, Nil) =>
+      x
+    case (x, gens) =>
+      Ast.expr.GeneratorExp(x, gens)
   }
   val named_argument = P(NAME ~ "=" ~ test).map(Ast.keyword.tupled)
 
   val comp_for: P[Ast.comprehension] = P(
     "for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
-    case (targets, test, ifs) => Ast.comprehension(tuplize(targets), test, ifs)
+    case (targets, test, ifs) =>
+      Ast.comprehension(tuplize(targets), test, ifs)
   }
   val comp_if: P[Ast.expr] = P("if" ~ test)
 

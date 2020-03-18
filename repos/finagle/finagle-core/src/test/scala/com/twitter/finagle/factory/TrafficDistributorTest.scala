@@ -30,7 +30,8 @@ private object TrafficDistributorTest {
       addr match {
         case Address.Inet(ia, metadata) =>
           Some((ia.getPort, metadata(key).asInstanceOf[Double]))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -47,8 +48,10 @@ private object TrafficDistributorTest {
     override def toString = s"AddressFactory($addr)"
     override def status: Status =
       addr match {
-        case WeightedTestAddr(_, weight) if weight == busyWeight => Status.Busy
-        case _                                                   => Status.Open
+        case WeightedTestAddr(_, weight) if weight == busyWeight =>
+          Status.Busy
+        case _ =>
+          Status.Open
       }
   }
 
@@ -187,11 +190,13 @@ class TrafficDistributorTest extends FunSuite {
 
         val baseline =
           result.collect {
-            case ((w, s, l)) if s / w == 1.0 => l / w
+            case ((w, s, l)) if s / w == 1.0 =>
+              l / w
           }.head
 
         result.foreach {
-          case ((w, _, l)) => assert(math.abs(l / w - baseline) <= baseline * ε)
+          case ((w, _, l)) =>
+            assert(math.abs(l / w - baseline) <= baseline * ε)
         }
       }
     })
@@ -242,7 +247,8 @@ class TrafficDistributorTest extends FunSuite {
       assert(newEndpointCalls == newAddrs.size)
       assert(newBalancerCalls == 0)
       val expected = newAddrs.map {
-        case WeightedAddress(addr, _) => AddressFactory(addr)
+        case WeightedAddress(addr, _) =>
+          AddressFactory(addr)
       } + AddressFactory(Address(existingWeight.toInt))
       assert(
         balancers.count {
@@ -260,7 +266,8 @@ class TrafficDistributorTest extends FunSuite {
       assert(
         balancers.count {
           _.endpoints.sample() == updated.map {
-            case WeightedAddress(addr, _) => AddressFactory(addr)
+            case WeightedAddress(addr, _) =>
+              AddressFactory(addr)
           }
         } == 1)
     })
@@ -395,7 +402,8 @@ class TrafficDistributorTest extends FunSuite {
       val newDest = dest.map {
         case Activity.Ok(set) =>
           Activity.Ok(set.flatMap(ConcurrentLoadBalancerFactory.replicate(4)))
-        case state => state
+        case state =>
+          state
       }
       val dist = newDist(newDest)
 

@@ -153,7 +153,8 @@ class TaskReplaceActor(
     case RetryKills =>
       retryKills()
 
-    case x: Any => log.debug(s"Received $x")
+    case x: Any =>
+      log.debug(s"Received $x")
   }
 
   def reconcileNewTasks(): Unit = {

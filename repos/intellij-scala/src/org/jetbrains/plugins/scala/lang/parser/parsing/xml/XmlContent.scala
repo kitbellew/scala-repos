@@ -29,7 +29,8 @@ object XmlContent {
         CDSect parse builder
       case ScalaXmlTokenTypes.XML_PI_START =>
         PI parse builder
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

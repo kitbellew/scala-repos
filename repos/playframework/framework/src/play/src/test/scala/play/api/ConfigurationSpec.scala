@@ -103,7 +103,8 @@ object ConfigurationSpec extends Specification {
         try {
           conf.getStringList("item")
         } catch {
-          case NonFatal(e) => copyViaSerialize(e)
+          case NonFatal(e) =>
+            copyViaSerialize(e)
         }
       } must not(throwA[Exception])
     }

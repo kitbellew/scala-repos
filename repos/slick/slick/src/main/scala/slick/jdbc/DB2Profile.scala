@@ -78,7 +78,8 @@ trait DB2Profile extends JdbcProfile {
     tmd.sqlType match {
       case java.sql.Types.TINYINT =>
         "SMALLINT" // DB2 has no smaller binary integer type
-      case _ => super.defaultSqlTypeName(tmd, sym)
+      case _ =>
+        super.defaultSqlTypeName(tmd, sym)
     }
 
   override val scalarFrom = Some("sysibm.sysdummy1")
@@ -108,10 +109,14 @@ trait DB2Profile extends JdbcProfile {
           b += "(next value for " += quoteIdentifier(name) += ")"
         case Library.CurrentValue(SequenceNode(name)) =>
           b += "(prevval for " += quoteIdentifier(name) += ")"
-        case Library.User()                   => b += "current user"
-        case Library.Database()               => b += "current server"
-        case Library.CountAll(LiteralNode(1)) => b"count(*)"
-        case _                                => super.expr(c, skipParens)
+        case Library.User() =>
+          b += "current user"
+        case Library.Database() =>
+          b += "current server"
+        case Library.CountAll(LiteralNode(1)) =>
+          b"count(*)"
+        case _ =>
+          super.expr(c, skipParens)
       }
 
     override protected def buildOrdering(n: Node, o: Ordering) {

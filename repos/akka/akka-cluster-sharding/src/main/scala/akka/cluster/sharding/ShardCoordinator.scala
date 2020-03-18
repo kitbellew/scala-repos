@@ -174,7 +174,8 @@ object ShardCoordinator {
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]])
         : Future[ActorRef] = {
       val (regionWithLeastShards, _) = currentShardAllocations.minBy {
-        case (_, v) ⇒ v.size
+        case (_, v) ⇒
+          v.size
       }
       Future.successful(regionWithLeastShards)
     }
@@ -185,11 +186,13 @@ object ShardCoordinator {
       if (rebalanceInProgress.size < maxSimultaneousRebalance) {
         val (regionWithLeastShards, leastShards) = currentShardAllocations
           .minBy {
-            case (_, v) ⇒ v.size
+            case (_, v) ⇒
+              v.size
           }
         val mostShards = currentShardAllocations
           .collect {
-            case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s))
+            case (_, v) ⇒
+              v.filterNot(s ⇒ rebalanceInProgress(s))
           }
           .maxBy(_.size)
         if (mostShards.size - leastShards.size >= rebalanceThreshold)
@@ -478,12 +481,15 @@ object ShardCoordinator {
           from ! HandOff(shard)
           context.become(stoppingShard, discardOld = true)
         }
-      case ReceiveTimeout ⇒ done(ok = false)
+      case ReceiveTimeout ⇒
+        done(ok = false)
     }
 
     def stoppingShard: Receive = {
-      case ShardStopped(shard) ⇒ done(ok = true)
-      case ReceiveTimeout ⇒ done(ok = false)
+      case ShardStopped(shard) ⇒
+        done(ok = true)
+      case ReceiveTimeout ⇒
+        done(ok = false)
     }
 
     def done(ok: Boolean): Unit = {
@@ -650,7 +656,8 @@ abstract class ShardCoordinator(
 
       case ResendShardHost(shard, region) ⇒
         state.shards.get(shard) match {
-          case Some(`region`) ⇒ sendHostShardMsg(shard, region)
+          case Some(`region`) ⇒
+            sendHostShardMsg(shard, region)
           case _ ⇒ //Reallocated to another region
         }
 
@@ -669,7 +676,8 @@ abstract class ShardCoordinator(
                   RebalanceResult(shards)
                 }
                 .recover {
-                  case _ ⇒ RebalanceResult(Set.empty)
+                  case _ ⇒
+                    RebalanceResult(Set.empty)
                 }
                 .pipeTo(self)
           }
@@ -811,7 +819,8 @@ abstract class ShardCoordinator(
 
   def stateInitialized(): Unit = {
     state.shards.foreach {
-      case (a, r) ⇒ sendHostShardMsg(a, r)
+      case (a, r) ⇒
+        sendHostShardMsg(a, r)
     }
     allocateShardHomes()
   }
@@ -864,7 +873,8 @@ abstract class ShardCoordinator(
       getShardHomeSender: ActorRef): Unit =
     if (!rebalanceInProgress.contains(shard)) {
       state.shards.get(shard) match {
-        case Some(ref) ⇒ getShardHomeSender ! ShardHome(shard, ref)
+        case Some(ref) ⇒
+          getShardHomeSender ! ShardHome(shard, ref)
         case None ⇒
           if (state.regions.contains(region) && !gracefulShutdownInProgress
                 .contains(region)) {
@@ -1073,7 +1083,8 @@ class DDataShardCoordinator(
       stateInitialized()
       activate()
 
-    case _ ⇒ stash()
+    case _ ⇒
+      stash()
   }
 
   // this state will stash all messages until it receives UpdateSuccess
@@ -1103,7 +1114,8 @@ class DDataShardCoordinator(
         evt)
       throw cause
 
-    case _ ⇒ stash()
+    case _ ⇒
+      stash()
   }
 
   def activate() = {

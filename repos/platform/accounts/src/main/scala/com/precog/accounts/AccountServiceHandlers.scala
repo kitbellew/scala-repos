@@ -107,7 +107,8 @@ class AccountServiceHandlers(
     accountManager.findAccountById(accountId) flatMap {
       case Some(account) =>
         accountManager.hasAncestor(account, auth) flatMap {
-          case true => f(account)
+          case true =>
+            f(account)
           case false => {
             logger.warn(
               "Unauthorized access attempt to account %s from account %s (%s)"

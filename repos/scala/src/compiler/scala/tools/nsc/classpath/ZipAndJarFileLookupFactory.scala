@@ -149,7 +149,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
 
     override private[nsc] def packages(inPackage: String): Seq[PackageEntry] =
       cachedPackages.get(inPackage) match {
-        case None => Seq.empty
+        case None =>
+          Seq.empty
         case Some(PackageFileInfo(_, subpackages)) =>
           val prefix = PackageNameUtils.packagePrefix(inPackage)
           subpackages.map(packageFile =>
@@ -158,7 +159,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
 
     override private[nsc] def classes(inPackage: String): Seq[ClassFileEntry] =
       cachedPackages.get(inPackage) match {
-        case None => Seq.empty
+        case None =>
+          Seq.empty
         case Some(PackageFileInfo(pkg, _)) =>
           (
             for (file <- pkg if file.isClass)

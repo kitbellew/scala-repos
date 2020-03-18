@@ -55,7 +55,8 @@ class ConfigTest {
         ProducerConfig.validateClientId(invalidClientIds(i))
         fail("Should throw InvalidClientIdException.")
       } catch {
-        case e: InvalidConfigException => "This is good."
+        case e: InvalidConfigException =>
+          "This is good."
       }
     }
 
@@ -65,7 +66,8 @@ class ConfigTest {
       try {
         ProducerConfig.validateClientId(validClientIds(i))
       } catch {
-        case e: Exception => fail("Should not throw exception.")
+        case e: Exception =>
+          fail("Should not throw exception.")
       }
     }
   }
@@ -98,7 +100,8 @@ class ConfigTest {
         ConsumerConfig.validateGroupId(invalidGroupIds(i))
         fail("Should throw InvalidGroupIdException.")
       } catch {
-        case e: InvalidConfigException => "This is good."
+        case e: InvalidConfigException =>
+          "This is good."
       }
     }
 
@@ -108,7 +111,8 @@ class ConfigTest {
       try {
         ConsumerConfig.validateGroupId(validGroupIds(i))
       } catch {
-        case e: Exception => fail("Should not throw exception.")
+        case e: Exception =>
+          fail("Should not throw exception.")
       }
     }
   }

@@ -40,7 +40,8 @@ object Decompiler {
             .annotation(SCALA_SIG_ANNOTATION)
             .orElse(classFile.annotation(SCALA_LONG_SIG_ANNOTATION))
           annotation match {
-            case None => null
+            case None =>
+              null
             case Some(Annotation(_, elements)) =>
               val bytesElem =
                 elements
@@ -50,14 +51,17 @@ object Decompiler {
               val parts =
                 (
                   bytesElem.elementValue match {
-                    case ConstValueIndex(index) => Seq(constantWrapped(index))
+                    case ConstValueIndex(index) =>
+                      Seq(constantWrapped(index))
                     case ArrayValue(seq) =>
                       seq.collect {
-                        case ConstValueIndex(index) => constantWrapped(index)
+                        case ConstValueIndex(index) =>
+                          constantWrapped(index)
                       }
                   }
                 ).collect {
-                  case x: StringBytesPair => x.bytes
+                  case x: StringBytesPair =>
+                    x.bytes
                 }
 
               val bytes = parts.reduceLeft(Array.concat(_, _))
@@ -67,8 +71,10 @@ object Decompiler {
                 ByteCode(bytes.take(length)))
               scalaSig
           }
-        case Some(other) => other
-        case None        => null
+        case Some(other) =>
+          other
+        case None =>
+          null
       }
     if (scalaSig == null)
       return None
@@ -116,14 +122,17 @@ object Decompiler {
           val c = classFile.header.constants(index)
           val sBytes: Array[Byte] =
             c match {
-              case s: String => s.getBytes(UTF8)
+              case s: String =>
+                s.getBytes(UTF8)
               case scala.tools.scalap.scalax.rules.scalasig
                     .StringBytesPair(s: String, bytes: Array[Byte]) =>
                 bytes
-              case _ => Array.empty
+              case _ =>
+                Array.empty
             }
           new String(sBytes, UTF8)
-        case None => "-no-source-"
+        case None =>
+          "-no-source-"
       }
     }
     Some(sourceFileName, decompiledSourceText)

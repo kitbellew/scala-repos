@@ -27,8 +27,10 @@ trait ScGenericCall extends ScExpression {
       for (t <- typeArgs)
         yield t.typeArgs
     ) match {
-      case Some(x) => x
-      case _       => Nil
+      case Some(x) =>
+        x
+      case _ =>
+        Nil
     }
 
   def shapeType: TypeResult[ScType]

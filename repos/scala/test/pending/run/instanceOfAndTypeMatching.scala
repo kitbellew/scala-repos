@@ -52,23 +52,29 @@ class Outer {
 
     def compareSimpleWithTypeMatch(other: Any) =
       other match {
-        case _: Inner => true
-        case _        => false
+        case _: Inner =>
+          true
+        case _ =>
+          false
       }
     def compareSimpleWithInstanceOf(other: Any) = other.isInstanceOf[Inner]
 
     def compareSharpWithTypeMatch(other: Any) = {
       other match {
-        case _: Outer#Inner => true
-        case _              => false
+        case _: Outer#Inner =>
+          true
+        case _ =>
+          false
       }
     }
     def compareSharpWithInstanceOf(other: Any) = other.isInstanceOf[Outer#Inner]
 
     def comparePathWithTypeMatch(other: Any) =
       other match {
-        case _: Outer.this.Inner => true
-        case _                   => false
+        case _: Outer.this.Inner =>
+          true
+        case _ =>
+          false
       }
     def comparePathWithInstanceOf(other: Any) =
       other.isInstanceOf[Outer.this.Inner]
@@ -90,8 +96,10 @@ class Outer {
       def compareWithInstanceOf(other: Any) = other.isInstanceOf[MethodInner]
       def compareWithTypeMatch(other: Any) =
         other match {
-          case _: MethodInner => true
-          case _              => false
+          case _: MethodInner =>
+            true
+          case _ =>
+            false
         }
     }
 
@@ -131,12 +139,16 @@ object Test {
       inner1.isInstanceOf[outer1.Inner],
       inner1.isInstanceOf[Outer#Inner],
       (inner1: Any) match {
-        case _: Outer#Inner => true;
-        case _              => false
+        case _: Outer#Inner =>
+          true;
+        case _ =>
+          false
       },
       (inner1: Any) match {
-        case _: outer1.Inner => true;
-        case _               => false
+        case _: outer1.Inner =>
+          true;
+        case _ =>
+          false
       },
       inner1.compareSharpWithTypeMatch(inner2),
       inner1.compareSharpWithInstanceOf(inner2)
@@ -160,8 +172,10 @@ object Test {
     List(
       "These are doing the wrong thing under current proposal",
       (inner1: Any) match {
-        case _: outer2.Inner => true;
-        case _               => false
+        case _: outer2.Inner =>
+          true;
+        case _ =>
+          false
       } // should be false
     ) foreach println
   }

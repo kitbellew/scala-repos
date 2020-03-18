@@ -387,9 +387,12 @@ class TreeSetWithNullFactory extends TreeSetFactory {
       (Option(a), Option(b)) match {
         case (Some(e1), Some(e2)) =>
           e1.asInstanceOf[Comparable[E]].compareTo(e2)
-        case (Some(e1), None) => -1
-        case (None, Some(e2)) => 1
-        case (None, None)     => 0
+        case (Some(e1), None) =>
+          -1
+        case (None, Some(e2)) =>
+          1
+        case (None, None) =>
+          0
       }
   }
 

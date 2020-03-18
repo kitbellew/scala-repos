@@ -37,7 +37,8 @@ import comet.AsyncRenderComet
   */
 object LazyLoad extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   /**
@@ -117,8 +118,10 @@ object LazyLoad extends DispatchSnippet {
   // Helper to deal with Boxed markup.
   private def handleMarkupBox(markup: Box[NodeSeq]): NodeSeq = {
     markup match {
-      case Full(html)         => html
-      case Failure(msg, _, _) => Comment(msg)
+      case Full(html) =>
+        html
+      case Failure(msg, _, _) =>
+        Comment(msg)
       case Empty =>
         Comment("FIX" + "ME: Asynchronous rendering failed for unknown reason.")
     }

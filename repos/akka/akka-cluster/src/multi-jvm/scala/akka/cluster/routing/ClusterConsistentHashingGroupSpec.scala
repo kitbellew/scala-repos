@@ -28,8 +28,10 @@ object ClusterConsistentHashingGroupMultiJvmSpec extends MultiNodeConfig {
   class Destination extends Actor {
     var receivedMessages = Set.empty[Any]
     def receive = {
-      case Get ⇒ sender() ! Collected(receivedMessages)
-      case m ⇒ receivedMessages += m
+      case Get ⇒
+        sender() ! Collected(receivedMessages)
+      case m ⇒
+        receivedMessages += m
     }
   }
 
@@ -61,8 +63,10 @@ abstract class ClusterConsistentHashingGroupSpec
     */
   private def fullAddress(actorRef: ActorRef): Address =
     actorRef.path.address match {
-      case Address(_, _, None, None) ⇒ cluster.selfAddress
-      case a ⇒ a
+      case Address(_, _, None, None) ⇒
+        cluster.selfAddress
+      case a ⇒
+        a
     }
 
   def currentRoutees(router: ActorRef) =
@@ -80,7 +84,8 @@ abstract class ClusterConsistentHashingGroupSpec
 
     "send to same destinations from different nodes" taggedAs LongRunningTest in {
       def hashMapping: ConsistentHashMapping = {
-        case s: String ⇒ s
+        case s: String ⇒
+          s
       }
       val paths = List("/user/dest")
       val router = system.actorOf(

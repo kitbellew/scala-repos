@@ -81,7 +81,8 @@ abstract class SFXEnumDelegateSpec[E <: java.lang.Enum[E], S <: SFXEnumDelegate[
       val scalaEnum = companion(name)
       true
     } catch {
-      case e: IllegalArgumentException => false
+      case e: IllegalArgumentException =>
+        false
     }
   }
 
@@ -148,7 +149,8 @@ abstract class SFXEnumDelegateSpec[E <: java.lang.Enum[E], S <: SFXEnumDelegate[
 
   it should "presents its values at same order as its JavaFX enum ordinal" in {
     companion.values.zipWithIndex.foreach({
-      case (s, i) => assertScalaEnumWithOrdinal(s, i)
+      case (s, i) =>
+        assertScalaEnumWithOrdinal(s, i)
     })
   }
 

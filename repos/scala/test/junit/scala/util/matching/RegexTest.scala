@@ -35,8 +35,10 @@ class RegexTest {
     val s: String = null
     val x =
       s match {
-        case r() => 1;
-        case _   => 2
+        case r() =>
+          1;
+        case _ =>
+          2
       }
     assertEquals(2, x)
   }
@@ -46,8 +48,10 @@ class RegexTest {
     val r = """(\d+):(\d+)""".r
     val s = "1:2 3:4 5:6"
     val z = ((r findAllMatchIn s).toList :+ null) flatMap {
-      case r(x, y) => Some((x.toInt, y.toInt))
-      case _       => None
+      case r(x, y) =>
+        Some((x.toInt, y.toInt))
+      case _ =>
+        None
     }
     assertEquals(List((1, 2), (3, 4), (5, 6)), z)
   }

@@ -197,7 +197,8 @@ abstract class LazyVals
               case stat: TermTree if !added && (LocalLazyValFinder find stat) =>
                 added = true
                 typed(addBitmapDefs(sym, stat))
-              case stat => stat
+              case stat =>
+                stat
             }
 
             val innerClassBitmaps =
@@ -256,7 +257,8 @@ abstract class LazyVals
           else
             l
 
-        case _ => super.transform(tree)
+        case _ =>
+          super.transform(tree)
       }
     }
 
@@ -269,8 +271,10 @@ abstract class LazyVals
     private def addBitmapDefs(methSym: Symbol, rhs: Tree): Tree = {
       def prependStats(stats: List[Tree], tree: Tree): Block =
         tree match {
-          case Block(stats1, res) => Block(stats ::: stats1, res)
-          case _                  => Block(stats, tree)
+          case Block(stats1, res) =>
+            Block(stats ::: stats1, res)
+          case _ =>
+            Block(stats, tree)
         }
 
       val bmps = bitmaps(methSym) map (ValDef(_, ZERO))
@@ -288,7 +292,8 @@ abstract class LazyVals
               assign,
               deriveLabelDef(l)(rhs => typed(prependStats(bmps, rhs))))
 
-          case _ => prependStats(bmps, rhs)
+          case _ =>
+            prependStats(bmps, rhs)
         }
     }
 

@@ -41,25 +41,34 @@ trait Helpers {
 
   def isArrowType(tpe: Type): Boolean = {
     tpe match {
-      case _: MethodType => true
-      case _: PolyType   => true
-      case _             => false
+      case _: MethodType =>
+        true
+      case _: PolyType =>
+        true
+      case _ =>
+        false
     }
   }
 
   def isNoParamArrowType(tpe: Type): Boolean = {
     tpe match {
-      case t: MethodType => t.paramss.flatten.isEmpty
-      case t: PolyType   => t.paramss.flatten.isEmpty
-      case t: Type       => false
+      case t: MethodType =>
+        t.paramss.flatten.isEmpty
+      case t: PolyType =>
+        t.paramss.flatten.isEmpty
+      case t: Type =>
+        false
     }
   }
 
   def typeOrArrowTypeResult(tpe: Type): Type = {
     tpe match {
-      case t: MethodType => t.finalResultType
-      case t: PolyType   => t.finalResultType
-      case t: Type       => t
+      case t: MethodType =>
+        t.finalResultType
+      case t: PolyType =>
+        t.finalResultType
+      case t: Type =>
+        t
     }
   }
 
@@ -119,7 +128,8 @@ trait Helpers {
       outerClass(sym) match {
         case Some(outerSym) =>
           nestedClassName(outerSym) + "$" + typeShortName(sym)
-        case None => typeShortName(sym)
+        case None =>
+          typeShortName(sym)
       }
     }
 
@@ -179,7 +189,8 @@ trait Helpers {
 
       val idx = name.indexWhere(ch => ch == '.' || ch == '$')
       idx match {
-        case 0  => throw new IllegalArgumentException("Empty symbol part")
+        case 0 =>
+          throw new IllegalArgumentException("Empty symbol part")
         case -1 =>
           // Last part of symbol, no '$' -> a class
           return List(newTypeName(name))
@@ -218,12 +229,16 @@ trait Helpers {
       }
     try {
       sym match {
-        case NoSymbol    => None
-        case sym: Symbol => Some(sym)
-        case _           => None
+        case NoSymbol =>
+          None
+        case sym: Symbol =>
+          Some(sym)
+        case _ =>
+          None
       }
     } catch {
-      case e: Throwable => None
+      case e: Throwable =>
+        None
     }
   }
 
@@ -237,7 +252,8 @@ trait Helpers {
     } catch {
       // TODO accessing outerClass sometimes throws java.lang.Error
       // Notably, when tpe = scala.Predef$Class
-      case e: java.lang.Error => None
+      case e: java.lang.Error =>
+        None
     }
   }
 

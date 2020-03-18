@@ -17,7 +17,8 @@ class ScalaPrimaryConstructorParamTypesMacro extends Macro {
       case Some(head :: tail) =>
         new TextResult(
           addParens(tail.foldLeft(head)(_ + ", " + _), tail.nonEmpty))
-      case _ => null
+      case _ =>
+        null
     }
 
   def getName: String = MacroUtil.scalaIdPrefix + "primaryConstructorParamTypes"

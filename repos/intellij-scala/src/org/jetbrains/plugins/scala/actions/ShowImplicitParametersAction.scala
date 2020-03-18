@@ -69,11 +69,14 @@ class ShowImplicitParametersAction
     ScalaPsiUtil.nameContext(named).getContext match {
       case _: ScTemplateBody | _: ScEarlyDefinitions =>
         rr.fromType match {
-          case Some(tp) => named.name //todo:
-          case None     => named.name //todo:
+          case Some(tp) =>
+            named.name //todo:
+          case None =>
+            named.name //todo:
         }
       //Local value
-      case _ => named.name
+      case _ =>
+        named.name
     }
   }
 
@@ -104,8 +107,9 @@ class ShowImplicitParametersAction
             val elements = tp.typeElements
             if (elements.nonEmpty) {
               checkTypeElement(elements.head) match {
-                case Some(x) => return x
-                case None    =>
+                case Some(x) =>
+                  return x
+                case None =>
               }
             }
           case _ =>
@@ -114,8 +118,9 @@ class ShowImplicitParametersAction
         return expr.findImplicitParameters
       case constr: ScConstructor =>
         checkTypeElement(constr.typeElement) match {
-          case Some(x) => return x
-          case _       =>
+          case Some(x) =>
+            return x
+          case _ =>
         }
       case _ =>
     }
@@ -137,7 +142,8 @@ class ShowImplicitParametersAction
       implicitParameters match {
         case None | Some(Seq()) =>
           ScalaActionUtil.showHint(editor, "No implicit parameters")
-        case Some(seq) => showPopup(editor, seq)
+        case Some(seq) =>
+          showPopup(editor, seq)
       }
     }
 
@@ -163,7 +169,8 @@ class ShowImplicitParametersAction
               if w.getTextRange.getStartOffset == offset &&
                 w.getText.contains("\n") =>
             file.findElementAt(offset - 1)
-          case p => p
+          case p =>
+            p
         }
       def getExpressions: Array[PsiElement] = {
         val res = new ArrayBuffer[PsiElement]
@@ -210,7 +217,8 @@ class ShowImplicitParametersAction
             expr match {
               case expr: ScExpression =>
                 ScalaRefactoringUtil.getShortText(expr)
-              case _ => expr.getText.slice(0, 20)
+              case _ =>
+                expr.getText.slice(0, 20)
             }
           }
         )
@@ -393,7 +401,8 @@ class ImplicitParametersTreeStructure(
         }
       } else {
         value.implicitParameters.foreach {
-          case result => list.add(new ImplicitParametersNode(result))
+          case result =>
+            list.add(new ImplicitParametersNode(result))
         }
       }
       list
@@ -440,7 +449,8 @@ class ImplicitParametersTreeStructure(
                 }
               data.setPresentableText(
                 presentation.getPresentableText + presentationTextSuffix)
-            case _ => data.setPresentableText(text)
+            case _ =>
+              data.setPresentableText(text)
           }
         }
       }
@@ -448,8 +458,10 @@ class ImplicitParametersTreeStructure(
 
     override def equals(obj: Any): Boolean = {
       obj match {
-        case ref: AnyRef => this eq ref
-        case _           => false
+        case ref: AnyRef =>
+          this eq ref
+        case _ =>
+          false
       }
     }
   }
@@ -475,8 +487,10 @@ class ImplicitParametersTreeStructure(
       case n: ImplicitParametersNode =>
         val childrenImpl = n.getChildrenImpl
         childrenImpl.toArray(new Array[AnyRef](childrenImpl.size))
-      case _: RootNode => results.map(new ImplicitParametersNode(_)).toArray
-      case _           => Array.empty
+      case _: RootNode =>
+        results.map(new ImplicitParametersNode(_)).toArray
+      case _ =>
+        Array.empty
     }
   }
 

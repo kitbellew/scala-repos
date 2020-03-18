@@ -43,8 +43,10 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     "deconstruct" in {
       assert(
         s match {
-          case x *:: Future(rest) => false
-          case _                  => true
+          case x *:: Future(rest) =>
+            false
+          case _ =>
+            true
         })
     }
 
@@ -147,7 +149,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
           case x *:: Future(Return(rest)) =>
             assert(x == 1)
             rest match {
-              case y *:: Future(Return(rest)) if y == 2 && rest.isEmpty => true
+              case y *:: Future(Return(rest)) if y == 2 && rest.isEmpty =>
+                true
             }
         })
     }
@@ -380,8 +383,10 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
 
       assert(
         s match {
-          case fst *:: rest if fst == 1 && !rest.isDefined => true
-          case _                                           => false
+          case fst *:: rest if fst == 1 && !rest.isDefined =>
+            true
+          case _ =>
+            false
         })
     }
 
@@ -390,7 +395,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       import h._
 
       val f = s collect {
-        case x if x % 2 == 0 => x * 2
+        case x if x % 2 == 0 =>
+          x * 2
       }
 
       assert(f.isDefined == false) // 1 != 2 mod 0
@@ -399,14 +405,18 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       val s1 = Await.result(f)
       assert(
         s1 match {
-          case x *:: rest if x == 4 && !rest.isDefined => true
-          case _                                       => false
+          case x *:: rest if x == 4 && !rest.isDefined =>
+            true
+          case _ =>
+            false
         })
       p1() = Return(3 *:: p2)
       assert(
         s1 match {
-          case x *:: rest if x == 4 && !rest.isDefined => true
-          case _                                       => false
+          case x *:: rest if x == 4 && !rest.isDefined =>
+            true
+          case _ =>
+            false
         })
       p2() = Return(4 *:: Future.value(Spool.empty[Int]))
       val s1s = s1.toSeq
@@ -462,7 +472,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     "collect lazily" in {
       applyLazily { spool =>
         spool.collect {
-          case x if x % 2 == 0 => x
+          case x if x % 2 == 0 =>
+            x
         }
       }
     }
@@ -507,7 +518,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       applyLazily { spool =>
         Future.value(
           spool.zip(spool).map {
-            case (a, b) => a + b
+            case (a, b) =>
+              a + b
           })
       }
     }

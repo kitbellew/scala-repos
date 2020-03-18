@@ -166,8 +166,10 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
     val dispatcher =
       system.settings.config
         .getString("akka.cluster.sharding.use-dispatcher") match {
-        case "" ⇒ Dispatchers.DefaultDispatcherId
-        case id ⇒ id
+        case "" ⇒
+          Dispatchers.DefaultDispatcherId
+        case id ⇒
+          id
       }
     system.systemActorOf(
       Props[ClusterShardingGuardian].withDispatcher(dispatcher),
@@ -431,7 +433,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       case null ⇒
         throw new IllegalArgumentException(
           s"Shard type [$typeName] must be started first")
-      case ref ⇒ ref
+      case ref ⇒
+        ref
     }
 
 }

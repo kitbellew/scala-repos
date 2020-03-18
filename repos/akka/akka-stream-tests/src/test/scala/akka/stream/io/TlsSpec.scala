@@ -113,7 +113,8 @@ class TlsSpec
 
     val debug = Flow[SslTlsInbound].map { x ⇒
       x match {
-        case SessionTruncated ⇒ system.log.debug(s" ----------- truncated ")
+        case SessionTruncated ⇒
+          system.log.debug(s" ----------- truncated ")
         case SessionBytes(_, b) ⇒
           system.log.debug(s" ----------- (${b.size}) ${b.take(32).utf8String}")
       }
@@ -215,14 +216,16 @@ class TlsSpec
             }
 
             {
-              case SessionTruncated ⇒ SendBytes(ByteString("TRUNCATED"))
+              case SessionTruncated ⇒
+                SendBytes(ByteString("TRUNCATED"))
               case SessionBytes(s, b) if session == null ⇒
                 setSession(s)
                 SendBytes(b)
               case SessionBytes(s, b) if s != session ⇒
                 setSession(s)
                 SendBytes(ByteString("NEWSESSION") ++ b)
-              case SessionBytes(s, b) ⇒ SendBytes(b)
+              case SessionBytes(s, b) ⇒
+                SendBytes(b)
             }
           }
       def leftClosing: TLSClosing = IgnoreComplete
@@ -276,7 +279,8 @@ class TlsSpec
       override def flow =
         Flow[SslTlsInbound]
           .mapConcat {
-            case SessionTruncated ⇒ SessionTruncated :: Nil
+            case SessionTruncated ⇒
+              SessionTruncated :: Nil
             case SessionBytes(s, bytes) ⇒
               bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
           }
@@ -295,7 +299,8 @@ class TlsSpec
       override def flow =
         Flow[SslTlsInbound]
           .mapConcat {
-            case SessionTruncated ⇒ SessionTruncated :: Nil
+            case SessionTruncated ⇒
+              SessionTruncated :: Nil
             case SessionBytes(s, bytes) ⇒
               bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
           }
@@ -348,11 +353,13 @@ class TlsSpec
         }
 
         {
-          case SessionTruncated ⇒ SendBytes(ByteString("TRUNCATED"))
+          case SessionTruncated ⇒
+            SendBytes(ByteString("TRUNCATED"))
           case SessionBytes(s, b) if s != session ⇒
             setSession(s)
             SendBytes(ByteString(s.getCipherSuite) ++ b)
-          case SessionBytes(s, b) ⇒ SendBytes(b)
+          case SessionBytes(s, b) ⇒
+            SendBytes(b)
         }
       }
 
@@ -408,7 +415,8 @@ class TlsSpec
             })
           .via(debug)
           .collect {
-            case SessionBytes(_, b) ⇒ b
+            case SessionBytes(_, b) ⇒
+              b
           }
           .scan(ByteString.empty)(_ ++ _)
           .via(new Timeout(6.seconds))
@@ -433,10 +441,12 @@ class TlsSpec
         Flow[SslTlsInbound]
           .map[Either[SslTlsInbound, SSLException]](i ⇒ Left(i))
           .recover {
-            case e: SSLException ⇒ Right(e)
+            case e: SSLException ⇒
+              Right(e)
           }
           .collect {
-            case Right(e) ⇒ e
+            case Right(e) ⇒
+              e
           }
           .toMat(Sink.head)(Keep.right)
 

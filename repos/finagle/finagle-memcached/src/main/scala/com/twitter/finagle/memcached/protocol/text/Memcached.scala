@@ -98,7 +98,8 @@ private class MemcachedTracingFilter extends SimpleFilter[Command, Response] {
             case cmd: RetrievalCommand =>
               val keys: immutable.Set[String] = immutable.Set(
                 cmd.keys map {
-                  case Buf.Utf8(s) => s
+                  case Buf.Utf8(s) =>
+                    s
                 }: _*)
               val hits = values.map {
                 case value =>
@@ -135,8 +136,10 @@ private class MemcachedLoggingFilter(stats: StatsReceiver)
         case NotFound() | Stored() | NotStored() | Exists() | Deleted() |
             NoOp() | Info(_, _) | InfoLines(_) | Values(_) | Number(_) =>
           succ.counter(command.name).incr()
-        case Error(_) => error.counter(command.name).incr()
-        case _        => error.counter(command.name).incr()
+        case Error(_) =>
+          error.counter(command.name).incr()
+        case _ =>
+          error.counter(command.name).incr()
       }
       response
     }

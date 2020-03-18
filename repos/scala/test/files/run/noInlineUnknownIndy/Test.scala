@@ -36,7 +36,8 @@ object Test extends DirectTest {
         val testMethod = cn.methods.iterator.asScala.find(_.name == "test").head
         val indy = testMethod.instructions.iterator.asScala
           .collect({
-            case i: InvokeDynamicInsnNode => i
+            case i: InvokeDynamicInsnNode =>
+              i
           })
           .next()
         indy.bsm = unknownBootstrapMethod

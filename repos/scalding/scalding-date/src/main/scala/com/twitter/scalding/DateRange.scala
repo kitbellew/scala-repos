@@ -58,8 +58,10 @@ object DateRange extends java.io.Serializable {
   def parse(
       fromArgs: Seq[String])(implicit tz: TimeZone, dp: DateParser): DateRange =
     fromArgs match {
-      case Seq(s, e) => parse(s, e)
-      case Seq(o)    => parse(o)
+      case Seq(s, e) =>
+        parse(s, e)
+      case Seq(o) =>
+        parse(o)
       case x =>
         sys.error(
           "--date must have exactly one or two date[time]s. Got: " + x.toString)

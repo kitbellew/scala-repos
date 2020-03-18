@@ -224,10 +224,12 @@ private[serverset2] class ZkSession(
 
     val (path, prefix) = ZooKeeperReader.patToPathAndPrefix(pattern)
     existsOf(path) flatMap {
-      case None => Activity.value(Set.empty)
+      case None =>
+        Activity.value(Set.empty)
       case Some(_) =>
         getChildrenWatchOp(path) transform {
-          case Activity.Pending => Activity.pending
+          case Activity.Pending =>
+            Activity.pending
           case Activity.Ok(Node.Children(children, _)) =>
             noteGoodChildWatch(path)
             Activity.value(children.filter(_.startsWith(prefix)).toSet)
@@ -253,8 +255,10 @@ private[serverset2] class ZkSession(
       case Return(Node.Data(Some(data), _)) =>
         logger.debug(s"Zk.GetData($path) retrieved ${data.length} bytes")
         Future.value(Some(data))
-      case Return(_)                         => Future.value(None)
-      case Throw(ex: KeeperException.NoNode) => Future.value(None)
+      case Return(_) =>
+        Future.value(None)
+      case Throw(ex: KeeperException.NoNode) =>
+        Future.value(None)
       case Throw(exc) =>
         statsReceiver.counter("read_fail").incr()
         unexpectedExceptions.record(statsReceiver, exc)

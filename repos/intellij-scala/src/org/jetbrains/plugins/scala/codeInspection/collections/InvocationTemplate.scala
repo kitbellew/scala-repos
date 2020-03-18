@@ -47,7 +47,8 @@ class InvocationTemplate(nameCondition: String => Boolean) {
             case _: ScReferenceExpression | _: ScMethodCall |
                 _: ScGenericCall =>
               s"${qual.getText}.apply"
-            case _ => s"(${qual.getText}).apply"
+            case _ =>
+              s"(${qual.getText}).apply"
           }
         val ref =
           Try(
@@ -64,7 +65,8 @@ class InvocationTemplate(nameCondition: String => Boolean) {
             None,
             secondArgs) if nameCondition(ref.refName) && refCondition(ref) =>
         Some(qualOpt.orNull, firstArgs ++ secondArgs)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

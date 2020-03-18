@@ -24,8 +24,10 @@ trait Errors extends Traces {
     val Applied(core, _, _) = macroDdef.rhs
     val culprit =
       core match {
-        case Select(Applied(core, _, _), _) => core
-        case _                              => core
+        case Select(Applied(core, _, _), _) =>
+          core
+        case _ =>
+          core
       }
     abort(culprit.pos, message)
   }
@@ -143,7 +145,8 @@ trait Errors extends Traces {
           true
         }
         (rtpe, atpe) match {
-          case _ if rtpe eq atpe => success()
+          case _ if rtpe eq atpe =>
+            success()
           case (
                 TypeRef(_, RepeatedParamClass, rtpe :: Nil),
                 TypeRef(_, RepeatedParamClass, atpe :: Nil)) =>
@@ -152,7 +155,8 @@ trait Errors extends Traces {
             success()
           case (SubtreeType(), ExprClassOf(_)) if rtpe.prefix =:= atpe.prefix =>
             success()
-          case _ => rtpe <:< atpe
+          case _ =>
+            rtpe <:< atpe
         }
       }
 

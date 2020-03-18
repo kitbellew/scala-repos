@@ -250,12 +250,15 @@ trait PaginatorSnippet[T] extends Paginator[T] {
     pages.toList map { n =>
       pageXml(n * itemsPerPage, Text((n + 1).toString))
     } match {
-      case one :: Nil => one
+      case one :: Nil =>
+        one
       case first :: rest =>
         rest.foldLeft(first) {
-          case (a, b) => a ++ sep ++ b
+          case (a, b) =>
+            a ++ sep ++ b
         }
-      case Nil => Nil
+      case Nil =>
+        Nil
     }
   }
 

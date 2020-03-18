@@ -140,7 +140,8 @@ class MongoQueryExecutor(
               success(JNum(0))
           }
         }.onFailure {
-          case t => logger.error("Failure during size", t)
+          case t =>
+            logger.error("Failure during size", t)
         }
 
       def browse(
@@ -194,7 +195,8 @@ class MongoQueryExecutor(
                 "MongoDB paths have the form /databaseName/collectionName; longer paths are not supported.")
           }
         }.onFailure {
-          case t => logger.error("Failure during browse", t)
+          case t =>
+            logger.error("Failure during browse", t)
         }
 
       def structure(

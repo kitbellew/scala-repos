@@ -182,7 +182,8 @@ class KryoTest extends WordSpec with Matchers {
       val list2 = deserObj[List[Int]](bigList.getClass, serObj(bigList))
       //Specs, it turns out, also doesn't deal with giant lists well:
       list2.zip(bigList).foreach {
-        case (l, r) => l shouldBe r
+        case (l, r) =>
+          l shouldBe r
       }
     }
   }

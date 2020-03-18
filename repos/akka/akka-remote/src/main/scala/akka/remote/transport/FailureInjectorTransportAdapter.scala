@@ -92,7 +92,8 @@ private[remote] class FailureInjectorTransportAdapter(
         //  don't care about the protocol part - we are injected in the stack anyway!
         addressChaosTable.put(address.copy(protocol = "", system = ""), mode)
         Future.successful(true)
-      case _ ⇒ wrappedTransport.managementCommand(cmd)
+      case _ ⇒
+        wrappedTransport.managementCommand(cmd)
     }
 
   protected def interceptListen(
@@ -141,7 +142,8 @@ private[remote] class FailureInjectorTransportAdapter(
           if shouldDropInbound(handle.remoteAddress, ev, "notify") ⇒ //Ignore
       case _ ⇒
         upstreamListener match {
-          case Some(listener) ⇒ listener notify interceptInboundAssociation(ev)
+          case Some(listener) ⇒
+            listener notify interceptInboundAssociation(ev)
           case None ⇒
         }
     }
@@ -150,7 +152,8 @@ private[remote] class FailureInjectorTransportAdapter(
     ev match {
       case InboundAssociation(handle) ⇒
         InboundAssociation(FailureInjectorHandle(handle, this))
-      case _ ⇒ ev
+      case _ ⇒
+        ev
     }
 
   def shouldDropInbound(
@@ -158,7 +161,8 @@ private[remote] class FailureInjectorTransportAdapter(
       instance: Any,
       debugMessage: String): Boolean =
     chaosMode(remoteAddress) match {
-      case PassThru ⇒ false
+      case PassThru ⇒
+        false
       case Drop(_, inboundDropP) ⇒
         if (rng.nextDouble() <= inboundDropP) {
           if (shouldDebugLog)
@@ -177,7 +181,8 @@ private[remote] class FailureInjectorTransportAdapter(
       instance: Any,
       debugMessage: String): Boolean =
     chaosMode(remoteAddress) match {
-      case PassThru ⇒ false
+      case PassThru ⇒
+        false
       case Drop(outboundDropP, _) ⇒
         if (rng.nextDouble() <= outboundDropP) {
           if (shouldDebugLog)

@@ -121,8 +121,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
   private def customBanner =
     replProps.powerBanner.option flatMap {
-      case f if f.getName == "classic" => Some(classic)
-      case f                           => io.File(f).safeSlurp()
+      case f if f.getName == "classic" =>
+        Some(classic)
+      case f =>
+        io.File(f).safeSlurp()
     }
   private def customInit =
     replProps.powerInitCode.option flatMap (f => io.File(f).safeSlurp())
@@ -209,8 +211,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
 
     override def toString =
       value match {
-        case Some(x) => "%s (%s)".format(x, shortClass)
-        case _       => runtimeClass.getName
+        case Some(x) =>
+          "%s (%s)".format(x, shortClass)
+        case _ =>
+          runtimeClass.getName
       }
   }
 
@@ -219,14 +223,18 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       def show(x: Any): Unit = prettify(x) foreach println
       def prettify(x: Any): TraversableOnce[String] =
         x match {
-          case x: Name => List(x.decode)
+          case x: Name =>
+            List(x.decode)
           case Tuple2(k, v) =>
             List(
               prettify(k).toIterator ++ Iterator("->") ++ prettify(
                 v) mkString " ")
-          case xs: Array[_]           => xs.iterator flatMap prettify
-          case xs: TraversableOnce[_] => xs flatMap prettify
-          case x                      => List(Prettifier.stringOf(x))
+          case xs: Array[_] =>
+            xs.iterator flatMap prettify
+          case xs: TraversableOnce[_] =>
+            xs flatMap prettify
+          case x =>
+            List(Prettifier.stringOf(x))
         }
     }
   }
@@ -344,8 +352,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     def sanitize(s: Array[Byte]): String =
       (
         s map {
-          case x if x.toChar.isControl => '?'
-          case x                       => x.toChar
+          case x if x.toChar.isControl =>
+            '?'
+          case x =>
+            x.toChar
         }
       ).mkString
 
@@ -354,7 +364,8 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
         Nil
       else
         s dropWhile (_.toChar.isControl) span (x => !x.toChar.isControl) match {
-          case (next, rest) => next.map(_.toChar).mkString :: strings(rest)
+          case (next, rest) =>
+            next.map(_.toChar).mkString :: strings(rest)
         }
     }
   }
@@ -368,8 +379,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
   def unit(code: String) = newCompilationUnit(code)
   def trees(code: String) =
     parse(code) match {
-      case parse.Success(trees) => trees;
-      case _                    => Nil
+      case parse.Success(trees) =>
+        trees;
+      case _ =>
+        Nil
     }
 
   override def toString = s"""

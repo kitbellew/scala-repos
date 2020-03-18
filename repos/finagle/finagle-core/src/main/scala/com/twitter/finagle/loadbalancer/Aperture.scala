@@ -121,8 +121,10 @@ private trait Aperture[Req, Rep] {
 
     private[this] val (up, down) =
       vector.partition(nodeUp) match {
-        case (Vector(), down) => (down, Vector.empty)
-        case updown           => updown
+        case (Vector(), down) =>
+          (down, Vector.empty)
+        case updown =>
+          updown
       }
 
     private[this] val (ring, unitWidth, maxAperture) =

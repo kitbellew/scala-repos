@@ -86,7 +86,8 @@ object NotificationUtil {
       extends NotificationListener {
     def hyperlinkUpdate(notification: Notification, event: HyperlinkEvent) {
       event match {
-        case Link(url) => DesktopUtils browse url
+        case Link(url) =>
+          DesktopUtils browse url
         case Action(command) =>
           notification.expire()
           handler(command)
@@ -98,14 +99,16 @@ object NotificationUtil {
   protected[NotificationUtil] object Link {
     def unapply(event: HyperlinkEvent) =
       Option(event.getURL) map (_.getProtocol) collect {
-        case "http" => event.getURL
+        case "http" =>
+          event.getURL
       }
   }
 
   protected[NotificationUtil] object Action {
     def unapply(event: HyperlinkEvent) =
       Option(event.getURL) map (_.getProtocol) collect {
-        case "ftp" => event.getURL.getHost
+        case "ftp" =>
+          event.getURL.getHost
       }
   }
 }

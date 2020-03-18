@@ -110,8 +110,10 @@ trait Definitions extends api.StandardDefinitions {
 
     private def valueClassSymbol(name: TypeName): ClassSymbol = {
       getMember(ScalaPackageClass, name) match {
-        case x: ClassSymbol => x
-        case _              => catastrophicFailure()
+        case x: ClassSymbol =>
+          x
+        case _ =>
+          catastrophicFailure()
       }
     }
 
@@ -219,29 +221,49 @@ trait Definitions extends api.StandardDefinitions {
 
     def javaTypeToValueClass(jtype: Class[_]): Symbol =
       jtype match {
-        case java.lang.Void.TYPE      => UnitClass
-        case java.lang.Byte.TYPE      => ByteClass
-        case java.lang.Character.TYPE => CharClass
-        case java.lang.Short.TYPE     => ShortClass
-        case java.lang.Integer.TYPE   => IntClass
-        case java.lang.Long.TYPE      => LongClass
-        case java.lang.Float.TYPE     => FloatClass
-        case java.lang.Double.TYPE    => DoubleClass
-        case java.lang.Boolean.TYPE   => BooleanClass
-        case _                        => NoSymbol
+        case java.lang.Void.TYPE =>
+          UnitClass
+        case java.lang.Byte.TYPE =>
+          ByteClass
+        case java.lang.Character.TYPE =>
+          CharClass
+        case java.lang.Short.TYPE =>
+          ShortClass
+        case java.lang.Integer.TYPE =>
+          IntClass
+        case java.lang.Long.TYPE =>
+          LongClass
+        case java.lang.Float.TYPE =>
+          FloatClass
+        case java.lang.Double.TYPE =>
+          DoubleClass
+        case java.lang.Boolean.TYPE =>
+          BooleanClass
+        case _ =>
+          NoSymbol
       }
     def valueClassToJavaType(sym: Symbol): Class[_] =
       sym match {
-        case UnitClass    => java.lang.Void.TYPE
-        case ByteClass    => java.lang.Byte.TYPE
-        case CharClass    => java.lang.Character.TYPE
-        case ShortClass   => java.lang.Short.TYPE
-        case IntClass     => java.lang.Integer.TYPE
-        case LongClass    => java.lang.Long.TYPE
-        case FloatClass   => java.lang.Float.TYPE
-        case DoubleClass  => java.lang.Double.TYPE
-        case BooleanClass => java.lang.Boolean.TYPE
-        case _            => null
+        case UnitClass =>
+          java.lang.Void.TYPE
+        case ByteClass =>
+          java.lang.Byte.TYPE
+        case CharClass =>
+          java.lang.Character.TYPE
+        case ShortClass =>
+          java.lang.Short.TYPE
+        case IntClass =>
+          java.lang.Integer.TYPE
+        case LongClass =>
+          java.lang.Long.TYPE
+        case FloatClass =>
+          java.lang.Float.TYPE
+        case DoubleClass =>
+          java.lang.Double.TYPE
+        case BooleanClass =>
+          java.lang.Boolean.TYPE
+        case _ =>
+          null
       }
 
     /** Fully initialize the symbol, type, or scope.
@@ -296,9 +318,12 @@ trait Definitions extends api.StandardDefinitions {
       hasMultipleNonImplicitParamLists(member.info)
     def hasMultipleNonImplicitParamLists(info: Type): Boolean =
       info match {
-        case PolyType(_, restpe)                                   => hasMultipleNonImplicitParamLists(restpe)
-        case MethodType(_, MethodType(p :: _, _)) if !p.isImplicit => true
-        case _                                                     => false
+        case PolyType(_, restpe) =>
+          hasMultipleNonImplicitParamLists(restpe)
+        case MethodType(_, MethodType(p :: _, _)) if !p.isImplicit =>
+          true
+        case _ =>
+          false
       }
 
     private def fixupAsAnyTrait(tpe: Type): Type =
@@ -500,21 +525,27 @@ trait Definitions extends api.StandardDefinitions {
 
     def firstParamType(tpe: Type): Type =
       tpe.paramTypes match {
-        case p :: _ => p
-        case _      => NoType
+        case p :: _ =>
+          p
+        case _ =>
+          NoType
       }
     def isImplicitParamss(paramss: List[List[Symbol]]) =
       paramss match {
-        case (p :: _) :: _ => p.isImplicit
-        case _             => false
+        case (p :: _) :: _ =>
+          p.isImplicit
+        case _ =>
+          false
       }
 
     def hasRepeatedParam(tp: Type): Boolean =
       tp match {
         case MethodType(formals, restpe) =>
           isScalaVarArgs(formals) || hasRepeatedParam(restpe)
-        case PolyType(_, restpe) => hasRepeatedParam(restpe)
-        case _                   => false
+        case PolyType(_, restpe) =>
+          hasRepeatedParam(restpe)
+        case _ =>
+          false
       }
 
     // wrapping and unwrapping
@@ -758,7 +789,8 @@ trait Definitions extends api.StandardDefinitions {
             isArrayOfSymbol(
               p.tpe,
               StringClass) && restpe.typeSymbol == UnitClass
-          case _ => false
+          case _ =>
+            false
         }
       )
     // The given class has a main method.
@@ -819,15 +851,24 @@ trait Definitions extends api.StandardDefinitions {
 
     def wrapArrayMethodName(elemtp: Type): TermName =
       elemtp.typeSymbol match {
-        case ByteClass    => nme.wrapByteArray
-        case ShortClass   => nme.wrapShortArray
-        case CharClass    => nme.wrapCharArray
-        case IntClass     => nme.wrapIntArray
-        case LongClass    => nme.wrapLongArray
-        case FloatClass   => nme.wrapFloatArray
-        case DoubleClass  => nme.wrapDoubleArray
-        case BooleanClass => nme.wrapBooleanArray
-        case UnitClass    => nme.wrapUnitArray
+        case ByteClass =>
+          nme.wrapByteArray
+        case ShortClass =>
+          nme.wrapShortArray
+        case CharClass =>
+          nme.wrapCharArray
+        case IntClass =>
+          nme.wrapIntArray
+        case LongClass =>
+          nme.wrapLongArray
+        case FloatClass =>
+          nme.wrapFloatArray
+        case DoubleClass =>
+          nme.wrapDoubleArray
+        case BooleanClass =>
+          nme.wrapBooleanArray
+        case UnitClass =>
+          nme.wrapUnitArray
         case _ =>
           if ((elemtp <:< AnyRefTpe) && !isPhantomClass(elemtp.typeSymbol))
             nme.wrapRefArray
@@ -865,8 +906,10 @@ trait Definitions extends api.StandardDefinitions {
           case RefinedType(List(tp), Scope(sym))
               if isOneOfContextTypes(tp) && isPrefix(sym) =>
             Some(tp)
-          case tp if isOneOfContextTypes(tp) => Some(tp)
-          case _                             => None
+          case tp if isOneOfContextTypes(tp) =>
+            Some(tp)
+          case _ =>
+            None
         }
       }
     }
@@ -946,15 +989,19 @@ trait Definitions extends api.StandardDefinitions {
     @deprecated("No longer used", "2.11.0")
     def getProductArgs(tpe: Type): List[Type] =
       tpe.baseClasses find isProductNSymbol match {
-        case Some(x) => tpe.baseType(x).typeArgs
-        case _       => Nil
+        case Some(x) =>
+          tpe.baseType(x).typeArgs
+        case _ =>
+          Nil
       }
 
     @deprecated("No longer used", "2.11.0")
     def unapplyUnwrap(tpe: Type) =
       tpe.finalResultType.dealiasWiden match {
-        case RefinedType(p :: _, _) => p.dealiasWiden
-        case tp                     => tp
+        case RefinedType(p :: _, _) =>
+          p.dealiasWiden
+        case tp =>
+          tp
       }
 
     def getterMemberTypes(tpe: Type, getters: List[Symbol]): List[Type] =
@@ -962,8 +1009,10 @@ trait Definitions extends api.StandardDefinitions {
 
     def dropNullaryMethod(tp: Type) =
       tp match {
-        case NullaryMethodType(restpe) => restpe
-        case _                         => tp
+        case NullaryMethodType(restpe) =>
+          restpe
+        case _ =>
+          tp
       }
 
     /** An implementation of finalResultType which does only what
@@ -973,10 +1022,14 @@ trait Definitions extends api.StandardDefinitions {
       */
     def finalResultType(tp: Type): Type =
       tp match {
-        case PolyType(_, restpe)       => finalResultType(restpe)
-        case MethodType(_, restpe)     => finalResultType(restpe)
-        case NullaryMethodType(restpe) => finalResultType(restpe)
-        case _                         => tp
+        case PolyType(_, restpe) =>
+          finalResultType(restpe)
+        case MethodType(_, restpe) =>
+          finalResultType(restpe)
+        case NullaryMethodType(restpe) =>
+          finalResultType(restpe)
+        case _ =>
+          tp
       }
 
     /** Similarly, putting all the isStable logic in one place.
@@ -985,17 +1038,26 @@ trait Definitions extends api.StandardDefinitions {
       */
     def isStable(tp: Type): Boolean =
       tp match {
-        case _: SingletonType                             => true
-        case NoPrefix                                     => true
-        case TypeRef(_, NothingClass | SingletonClass, _) => true
+        case _: SingletonType =>
+          true
+        case NoPrefix =>
+          true
+        case TypeRef(_, NothingClass | SingletonClass, _) =>
+          true
         case TypeRef(_, sym, _) if sym.isAbstractType =>
           tp.bounds.hi.typeSymbol isSubClass SingletonClass
-        case TypeRef(pre, sym, _) if sym.isModuleClass => isStable(pre)
-        case TypeRef(_, _, _) if tp ne tp.dealias      => isStable(tp.dealias)
-        case TypeVar(origin, _)                        => isStable(origin)
-        case AnnotatedType(_, atp)                     => isStable(atp) // Really?
-        case _: SimpleTypeProxy                        => isStable(tp.underlying)
-        case _                                         => false
+        case TypeRef(pre, sym, _) if sym.isModuleClass =>
+          isStable(pre)
+        case TypeRef(_, _, _) if tp ne tp.dealias =>
+          isStable(tp.dealias)
+        case TypeVar(origin, _) =>
+          isStable(origin)
+        case AnnotatedType(_, atp) =>
+          isStable(atp) // Really?
+        case _: SimpleTypeProxy =>
+          isStable(tp.underlying)
+        case _ =>
+          false
       }
     def isVolatile(tp: Type): Boolean = {
       // need to be careful not to fall into an infinite recursion here
@@ -1041,7 +1103,8 @@ trait Definitions extends api.StandardDefinitions {
 
         (parents exists isVolatile) || {
           dropConcreteParents match {
-            case Nil => false
+            case Nil =>
+              false
             case ps =>
               (ps ne parents) || (
                 ps.tail exists contributesAbstractMembers
@@ -1051,17 +1114,26 @@ trait Definitions extends api.StandardDefinitions {
       }
 
       tp match {
-        case ThisType(_) => false
+        case ThisType(_) =>
+          false
         case SingleType(_, sym) =>
           isVolatile(tp.underlying) && (sym.hasVolatileType || !sym.isStable)
-        case NullaryMethodType(restpe)                => isVolatile(restpe)
-        case PolyType(_, restpe)                      => isVolatile(restpe)
-        case TypeRef(_, _, _) if tp ne tp.dealias     => isVolatile(tp.dealias)
-        case TypeRef(_, sym, _) if sym.isAbstractType => isVolatileAbstractType
-        case RefinedType(_, _)                        => isVolatileRefinedType
-        case TypeVar(origin, _)                       => isVolatile(origin)
-        case _: SimpleTypeProxy                       => isVolatile(tp.underlying)
-        case _                                        => false
+        case NullaryMethodType(restpe) =>
+          isVolatile(restpe)
+        case PolyType(_, restpe) =>
+          isVolatile(restpe)
+        case TypeRef(_, _, _) if tp ne tp.dealias =>
+          isVolatile(tp.dealias)
+        case TypeRef(_, sym, _) if sym.isAbstractType =>
+          isVolatileAbstractType
+        case RefinedType(_, _) =>
+          isVolatileRefinedType
+        case TypeVar(origin, _) =>
+          isVolatile(origin)
+        case _: SimpleTypeProxy =>
+          isVolatile(tp.underlying)
+        case _ =>
+          false
       }
     }
 
@@ -1073,8 +1145,10 @@ trait Definitions extends api.StandardDefinitions {
     }
     def functionNBaseType(tp: Type): Type =
       tp.baseClasses find isFunctionSymbol match {
-        case Some(sym) => tp baseType unspecializedSymbol(sym)
-        case _         => tp
+        case Some(sym) =>
+          tp baseType unspecializedSymbol(sym)
+        case _ =>
+          tp
       }
 
     def isPartialFunctionType(tp: Type): Boolean = {
@@ -1172,7 +1246,8 @@ trait Definitions extends api.StandardDefinitions {
           val x1 = x
           val x2 = repackExistential(x1)
           x2
-        case _ => or
+        case _ =>
+          or
       }
 
     // Can't only check for _1 thanks to pos/t796.
@@ -1186,9 +1261,12 @@ trait Definitions extends api.StandardDefinitions {
     def productSelectors(tpe: Type): List[Symbol] = {
       def loop(n: Int): List[Symbol] =
         tpe member TermName("_" + n) match {
-          case NoSymbol                => Nil
-          case m if m.paramss.nonEmpty => Nil
-          case m                       => m :: loop(n + 1)
+          case NoSymbol =>
+            Nil
+          case m if m.paramss.nonEmpty =>
+            Nil
+          case m =>
+            m :: loop(n + 1)
         }
       // Since ErrorType always returns a symbol from a call to member, we
       // had better not start looking for _1, _2, etc. expecting it to run out.
@@ -1207,15 +1285,18 @@ trait Definitions extends api.StandardDefinitions {
         paramTypes: Type*): Type = {
       def matchesParams(member: Symbol) =
         member.paramss match {
-          case Nil => paramTypes.isEmpty
+          case Nil =>
+            paramTypes.isEmpty
           case ps :: rest =>
             (rest.isEmpty || isImplicitParamss(rest)) && (
               ps corresponds paramTypes
             )(_.tpe =:= _)
         }
       tp member name filter matchesParams match {
-        case NoSymbol => NoType
-        case member   => (tp memberType member).finalResultType
+        case NoSymbol =>
+          NoType
+        case member =>
+          (tp memberType member).finalResultType
       }
     }
 
@@ -1230,8 +1311,10 @@ trait Definitions extends api.StandardDefinitions {
       */
     def neverHasTypeParameters(sym: Symbol) =
       sym match {
-        case _: RefinementClassSymbol => true
-        case _: ModuleClassSymbol     => true
+        case _: RefinementClassSymbol =>
+          true
+        case _: ModuleClassSymbol =>
+          true
         case _ =>
           (
             sym.isPrimitiveValueClass
@@ -1363,14 +1446,17 @@ trait Definitions extends api.StandardDefinitions {
     /** Remove references to class Object (other than the head) in a list of parents */
     def removeLaterObjects(tps: List[Type]): List[Type] =
       tps match {
-        case Nil     => Nil
-        case x :: xs => x :: xs.filterNot(_.typeSymbol == ObjectClass)
+        case Nil =>
+          Nil
+        case x :: xs =>
+          x :: xs.filterNot(_.typeSymbol == ObjectClass)
       }
 
     /** Remove all but one reference to class Object from a list of parents. */
     def removeRedundantObjects(tps: List[Type]): List[Type] =
       tps match {
-        case Nil => Nil
+        case Nil =>
+          Nil
         case x :: xs =>
           if (x.typeSymbol == ObjectClass)
             x :: xs.filterNot(_.typeSymbol == ObjectClass)
@@ -1394,8 +1480,10 @@ trait Definitions extends api.StandardDefinitions {
     /** Flatten curried parameter lists of a method type. */
     def allParameters(tpe: Type): List[Symbol] =
       tpe match {
-        case MethodType(params, res) => params ::: allParameters(res)
-        case _                       => Nil
+        case MethodType(params, res) =>
+          params ::: allParameters(res)
+        case _ =>
+          Nil
       }
 
     def typeStringNoPackage(tp: Type) =
@@ -1411,7 +1499,8 @@ trait Definitions extends api.StandardDefinitions {
       tp match {
         case MethodType(params, _) =>
           params map (_.defString) mkString ("(", ",", ")")
-        case _ => ""
+        case _ =>
+          ""
       }
 
     // members of class java.lang.{ Object, String }
@@ -1589,15 +1678,20 @@ trait Definitions extends api.StandardDefinitions {
     // * by default only end up on the field.
     def defaultAnnotationTarget(t: Tree): Symbol =
       t match {
-        case ClassDef(_, _, _, _) => ClassTargetClass
-        case ModuleDef(_, _, _)   => ObjectTargetClass
+        case ClassDef(_, _, _, _) =>
+          ClassTargetClass
+        case ModuleDef(_, _, _) =>
+          ObjectTargetClass
         case vd @ ValDef(_, _, _, _) if vd.symbol.isParamAccessor =>
           ParamTargetClass
         case vd @ ValDef(_, _, _, _) if vd.symbol.isValueParameter =>
           ParamTargetClass
-        case ValDef(_, _, _, _)       => FieldTargetClass
-        case DefDef(_, _, _, _, _, _) => MethodTargetClass
-        case _                        => GetterTargetClass
+        case ValDef(_, _, _, _) =>
+          FieldTargetClass
+        case DefDef(_, _, _, _, _, _) =>
+          MethodTargetClass
+        case _ =>
+          GetterTargetClass
       }
 
     lazy val AnnotationDefaultAttr: ClassSymbol = {
@@ -1660,14 +1754,18 @@ trait Definitions extends api.StandardDefinitions {
     }
     def getMemberValue(owner: Symbol, name: Name): TermSymbol = {
       getMember(owner, name.toTermName) match {
-        case x: TermSymbol => x
-        case _             => fatalMissingSymbol(owner, name, "member value")
+        case x: TermSymbol =>
+          x
+        case _ =>
+          fatalMissingSymbol(owner, name, "member value")
       }
     }
     def getMemberModule(owner: Symbol, name: Name): ModuleSymbol = {
       getMember(owner, name.toTermName) match {
-        case x: ModuleSymbol => x
-        case NoSymbol        => fatalMissingSymbol(owner, name, "member object")
+        case x: ModuleSymbol =>
+          x
+        case NoSymbol =>
+          fatalMissingSymbol(owner, name, "member object")
         case other =>
           fatalMissingSymbol(
             owner,
@@ -1679,20 +1777,26 @@ trait Definitions extends api.StandardDefinitions {
     }
     def getTypeMember(owner: Symbol, name: Name): TypeSymbol = {
       getMember(owner, name.toTypeName) match {
-        case x: TypeSymbol => x
-        case _             => fatalMissingSymbol(owner, name, "type member")
+        case x: TypeSymbol =>
+          x
+        case _ =>
+          fatalMissingSymbol(owner, name, "type member")
       }
     }
     def getMemberClass(owner: Symbol, name: Name): ClassSymbol = {
       getMember(owner, name.toTypeName) match {
-        case x: ClassSymbol => x
-        case _              => fatalMissingSymbol(owner, name, "member class")
+        case x: ClassSymbol =>
+          x
+        case _ =>
+          fatalMissingSymbol(owner, name, "member class")
       }
     }
     def getMemberMethod(owner: Symbol, name: Name): TermSymbol = {
       getMember(owner, name.toTermName) match {
-        case x: TermSymbol => x
-        case _             => fatalMissingSymbol(owner, name, "method")
+        case x: TermSymbol =>
+          x
+        case _ =>
+          fatalMissingSymbol(owner, name, "method")
       }
     }
 
@@ -1746,7 +1850,8 @@ trait Definitions extends api.StandardDefinitions {
         createFn(tparams) match {
           case (Some(formals), restpe) =>
             MethodType(msym.newSyntheticValueParams(formals), restpe)
-          case (_, restpe) => NullaryMethodType(restpe)
+          case (_, restpe) =>
+            NullaryMethodType(restpe)
         }
 
       msym setInfoAndEnter genPolyType(tparams, mtpe) markAllCompleted
@@ -1847,17 +1952,22 @@ trait Definitions extends api.StandardDefinitions {
     /** Is type's symbol a numeric value class? */
     def isNumericValueType(tp: Type): Boolean =
       tp match {
-        case TypeRef(_, sym, _) => isNumericValueClass(sym)
-        case _                  => false
+        case TypeRef(_, sym, _) =>
+          isNumericValueClass(sym)
+        case _ =>
+          false
       }
 
     // todo: reconcile with javaSignature!!!
     def signature(tp: Type): String = {
       def erasure(tp: Type): Type =
         tp match {
-          case st: SubType             => erasure(st.supertype)
-          case RefinedType(parents, _) => erasure(parents.head)
-          case _                       => tp
+          case st: SubType =>
+            erasure(st.supertype)
+          case RefinedType(parents, _) =>
+            erasure(parents.head)
+          case _ =>
+            tp
         }
       def flatNameString(sym: Symbol, separator: Char): String =
         if (sym == NoSymbol)
@@ -1933,8 +2043,10 @@ trait Definitions extends api.StandardDefinitions {
 
       private def valueClassCompanion(name: TermName): ModuleSymbol = {
         getMember(ScalaPackageClass, name) match {
-          case x: ModuleSymbol => x
-          case _               => catastrophicFailure()
+          case x: ModuleSymbol =>
+            x
+          case _ =>
+            catastrophicFailure()
         }
       }
 

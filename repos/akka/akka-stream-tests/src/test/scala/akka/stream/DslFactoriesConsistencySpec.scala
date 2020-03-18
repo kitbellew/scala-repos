@@ -218,7 +218,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
     *   createN => create
     */
   private val unspecializeName: PartialFunction[Method, Method] = {
-    case m ⇒ m.copy(name = m.name.filter(Character.isLetter))
+    case m ⇒
+      m.copy(name = m.name.filter(Character.isLetter))
   }
 
   /**
@@ -230,7 +231,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
         name = m.name.filter(Character.isLetter),
         parameterTypes = m.parameterTypes
           .dropRight(1) :+ classOf[akka.japi.function.Function[_, _]])
-    case m ⇒ m
+    case m ⇒
+      m
   }
 
   def runSpec(sMethods: List[Method], jMethods: List[Method]) {
@@ -331,9 +333,12 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
 
   def nameMatch(scalaName: String, javaName: String): Boolean =
     (scalaName, javaName) match {
-      case (s, j) if s == j ⇒ true
-      case t if `scala -> java aliases` contains t ⇒ true
-      case t ⇒ false
+      case (s, j) if s == j ⇒
+        true
+      case t if `scala -> java aliases` contains t ⇒
+        true
+      case t ⇒
+        false
     }
 
   /**
@@ -353,9 +358,12 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       scalaParams: List[Class[_]],
       javaParams: List[Class[_]]): Boolean =
     (scalaParams.toList, javaParams.toList) match {
-      case (s, j) if s == j ⇒ true
-      case (s, j) if s.zip(j).forall(typeMatch) ⇒ true
-      case _ ⇒ false
+      case (s, j) if s == j ⇒
+        true
+      case (s, j) if s.zip(j).forall(typeMatch) ⇒
+        true
+      case _ ⇒
+        false
     }
 
   def typeMatch(p: (Class[_], Class[_])): Boolean =

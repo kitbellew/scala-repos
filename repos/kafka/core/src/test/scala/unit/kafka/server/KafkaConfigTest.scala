@@ -360,7 +360,8 @@ class KafkaConfigTest {
       KafkaConfig.fromProps(props)
       true
     } catch {
-      case e: IllegalArgumentException => false
+      case e: IllegalArgumentException =>
+        false
     }
   }
 

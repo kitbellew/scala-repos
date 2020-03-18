@@ -68,7 +68,8 @@ object ClusterClientSettings {
         config.getDuration("acceptable-heartbeat-pause", MILLISECONDS).millis,
       bufferSize = config.getInt("buffer-size"),
       reconnectTimeout = config.getString("reconnect-timeout") match {
-        case "off" ⇒ None
+        case "off" ⇒
+          None
         case _ ⇒
           Some(config.getDuration("reconnect-timeout", MILLISECONDS).millis)
       })
@@ -353,7 +354,8 @@ final class ClusterClient(settings: ClusterClientSettings)
       case ActorIdentity(_, None) ⇒ // ok, use another instead
       case HeartbeatTick ⇒
         failureDetector.heartbeat()
-      case RefreshContactsTick ⇒ sendGetContacts()
+      case RefreshContactsTick ⇒
+        sendGetContacts()
       case Send(path, msg, localAffinity) ⇒
         buffer(DistributedPubSubMediator.Send(path, msg, localAffinity))
       case SendToAll(path, msg) ⇒
@@ -467,8 +469,10 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
     .getConfig("akka.cluster.client.receptionist")
   private val role: Option[String] =
     config.getString("role") match {
-      case "" ⇒ None
-      case r ⇒ Some(r)
+      case "" ⇒
+        None
+      case r ⇒
+        Some(r)
     }
 
   /**
@@ -526,8 +530,10 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem)
       val name = config.getString("name")
       val dispatcher =
         config.getString("use-dispatcher") match {
-          case "" ⇒ Dispatchers.DefaultDispatcherId
-          case id ⇒ id
+          case "" ⇒
+            Dispatchers.DefaultDispatcherId
+          case id ⇒
+            id
         }
       // important to use val mediator here to activate it outside of ClusterReceptionist constructor
       val mediator = pubSubMediator
@@ -676,7 +682,8 @@ object ClusterReceptionist {
             "ClientResponseTunnel for client [{}] stopped due to inactivity",
             client.path)
           context stop self
-        case msg ⇒ client.tell(msg, Actor.noSender)
+        case msg ⇒
+          client.tell(msg, Actor.noSender)
       }
     }
   }
@@ -763,7 +770,8 @@ final class ClusterReceptionist(
   def responseTunnel(client: ActorRef): ActorRef = {
     val encName = URLEncoder.encode(client.path.toSerializationFormat, "utf-8")
     context.child(encName) match {
-      case Some(tunnel) ⇒ tunnel
+      case Some(tunnel) ⇒
+        tunnel
       case None ⇒
         context.actorOf(
           Props(

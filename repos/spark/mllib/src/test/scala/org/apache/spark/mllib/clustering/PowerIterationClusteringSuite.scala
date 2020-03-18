@@ -219,7 +219,8 @@ object PowerIterationClusteringSuite extends SparkFunSuite {
     val unequalElements = aAssignments
       .join(bAssignments)
       .filter {
-        case (id, (c1, c2)) => c1 != c2
+        case (id, (c1, c2)) =>
+          c1 != c2
       }
       .count()
     assert(unequalElements === 0L)

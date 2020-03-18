@@ -67,7 +67,8 @@ trait Decorator {
     */
   def decorateLink(text: String, url: String, title: Option[String]): String =
     title match {
-      case None => "<a href=\"" + url + "\">" + text + "</a>"
+      case None =>
+        "<a href=\"" + url + "\">" + text + "</a>"
       case Some(t) =>
         "<a href=\"" + url + "\" title=\"" + t + "\">" + text + "</a>"
     }
@@ -76,7 +77,8 @@ trait Decorator {
     */
   def decorateImg(alt: String, src: String, title: Option[String]): String =
     title match {
-      case None => "<img src=\"" + src + "\" alt=\"" + alt + "\" />"
+      case None =>
+        "<img src=\"" + src + "\" alt=\"" + alt + "\" />"
       case Some(t) =>
         "<img src=\"" + src + "\" alt=\"" + alt + "\" title=\"" + t + "\" />"
     }

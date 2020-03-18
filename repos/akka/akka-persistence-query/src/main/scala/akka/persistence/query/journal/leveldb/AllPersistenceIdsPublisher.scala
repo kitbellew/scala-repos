@@ -50,7 +50,8 @@ private[akka] class AllPersistenceIdsPublisher(
     case _: Request ⇒
       journal ! LeveldbJournal.SubscribeAllPersistenceIds
       context.become(active)
-    case Cancel ⇒ context.stop(self)
+    case Cancel ⇒
+      context.stop(self)
   }
 
   def active: Receive = {
@@ -71,7 +72,8 @@ private[akka] class AllPersistenceIdsPublisher(
       if (!liveQuery && buf.isEmpty)
         onCompleteThenStop()
 
-    case Cancel ⇒ context.stop(self)
+    case Cancel ⇒
+      context.stop(self)
   }
 
 }

@@ -97,7 +97,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-simple
 
       json.validate(nameReads) must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+        case x: JsSuccess[String] =>
+          x.get === "Watership Down"
       }
     }
 
@@ -122,7 +123,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       val locationResult = (json \ "location").validate[Location]
       locationResult must beLike {
-        case x: JsSuccess[Location] => x.get.lat === 51.235685
+        case x: JsSuccess[Location] =>
+          x.get.lat === 51.235685
       }
     }
 
@@ -145,7 +147,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       val locationResult = (json \ "location").validate[Location]
       locationResult must beLike {
-        case x: JsSuccess[Location] => x.get.lat === 51.235685
+        case x: JsSuccess[Location] =>
+          x.get.lat === 51.235685
       }
     }
 
@@ -165,12 +168,15 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val nameResult: JsResult[String] = json.validate[String](nameReads)
 
       nameResult match {
-        case s: JsSuccess[String] => println("Name: " + s.get)
-        case e: JsError           => println("Errors: " + JsError.toJson(e).toString())
+        case s: JsSuccess[String] =>
+          println("Name: " + s.get)
+        case e: JsError =>
+          println("Errors: " + JsError.toJson(e).toString())
       }
       //#reads-validation-simple
       nameResult must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+        case x: JsSuccess[String] =>
+          x.get === "Watership Down"
       }
 
       //#reads-validation-custom
@@ -178,7 +184,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
         .read[String](minLength[String](2))
       //#reads-validation-custom
       json.validate[String](improvedNameReads) must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+        case x: JsSuccess[String] =>
+          x.get === "Watership Down"
       }
 
     }
@@ -226,7 +233,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       //#reads-model
 
       json.validate[Place] must beLike {
-        case x: JsSuccess[Place] => x.get.name === "Watership Down"
+        case x: JsSuccess[Place] =>
+          x.get.name === "Watership Down"
       }
     }
 
@@ -309,7 +317,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       """)
       val userResult = json.validate[User]
       userResult must beLike {
-        case x: JsSuccess[User] => x.get.name === "Fiver"
+        case x: JsSuccess[User] =>
+          x.get.name === "Fiver"
       }
 
       // Use Writes for model -> JSON

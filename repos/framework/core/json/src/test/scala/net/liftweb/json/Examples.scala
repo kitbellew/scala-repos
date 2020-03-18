@@ -48,7 +48,8 @@ trait AbstractExamples extends Specification {
 
   "Transformation example" in {
     val uppercased = parse(person).transformField {
-      case JField(n, v) => JField(n.toUpperCase, v)
+      case JField(n, v) =>
+        JField(n.toUpperCase, v)
     }
     val rendered = compactRender(uppercased)
     rendered mustEqual
@@ -65,16 +66,20 @@ trait AbstractExamples extends Specification {
   "Queries on person example" in {
     val json = parse(person)
     val filtered = json filterField {
-      case JField("name", _) => true
-      case _                 => false
+      case JField("name", _) =>
+        true
+      case _ =>
+        false
     }
     filtered mustEqual List(
       JField("name", JString("Joe")),
       JField("name", JString("Marilyn")))
 
     val found = json findField {
-      case JField("name", _) => true
-      case _                 => false
+      case JField("name", _) =>
+        true
+      case _ =>
+        false
     }
     found mustEqual Some(JField("name", JString("Joe")))
   }
@@ -171,8 +176,10 @@ trait AbstractExamples extends Specification {
     val ints =
       json.fold(JNothing: JValue) { (a, v) =>
         v match {
-          case x: JInt => a ++ x
-          case _       => a
+          case x: JInt =>
+            a ++ x
+          case _ =>
+            a
         }
       }
     print(ints) mustEqual """[35,33]"""

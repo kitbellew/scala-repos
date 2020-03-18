@@ -54,10 +54,14 @@ private[tracker] object TaskOpProcessorImpl {
       val change = task.update(
         TaskStateOp.MesosUpdate(MarathonTaskStatus(statusUpdate), clock.now()))
       change match {
-        case TaskStateChange.Update(updatedTask) => Action.Update(updatedTask)
-        case TaskStateChange.Expunge             => Action.Expunge
-        case TaskStateChange.NoChange            => Action.Noop
-        case TaskStateChange.Failure(cause)      => Action.Fail(cause)
+        case TaskStateChange.Update(updatedTask) =>
+          Action.Update(updatedTask)
+        case TaskStateChange.Expunge =>
+          Action.Expunge
+        case TaskStateChange.NoChange =>
+          Action.Noop
+        case TaskStateChange.Failure(cause) =>
+          Action.Fail(cause)
       }
     }
   }

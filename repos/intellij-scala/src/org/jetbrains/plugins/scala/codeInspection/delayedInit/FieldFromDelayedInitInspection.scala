@@ -33,7 +33,8 @@ class FieldFromDelayedInitInspection
       ref.bind() match {
         case Some(FieldInDelayedInit(delayedInitClass)) =>
           val classContainers = ref.parentsInFile.collect {
-            case td: ScTemplateDefinition => td
+            case td: ScTemplateDefinition =>
+              td
           }
           if (!classContainers.exists(c =>
                 c == delayedInitClass || c
@@ -48,7 +49,8 @@ class FieldFromDelayedInitInspection
   object FieldInDelayedInit {
     def unapply(srr: ScalaResolveResult): Option[PsiClass] = {
       ScalaPsiUtil.nameContext(srr.getElement) match {
-        case LazyVal(_) => None
+        case LazyVal(_) =>
+          None
         case Both(
               (_: ScPatternDefinition | _: ScVariableDefinition),
               ContainingClass(clazz @ (_: ScClass | _: ScObject))) =>
@@ -60,7 +62,8 @@ class FieldFromDelayedInitInspection
             Some(clazz)
           else
             None
-        case _ => None
+        case _ =>
+          None
       }
     }
   }

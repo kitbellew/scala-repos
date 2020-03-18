@@ -51,7 +51,8 @@ abstract class MembershipChangeListenerUpSpec
               new Actor {
                 var members = Set.empty[Member]
                 def receive = {
-                  case state: CurrentClusterState ⇒ members = state.members
+                  case state: CurrentClusterState ⇒
+                    members = state.members
                   case MemberUp(m) ⇒
                     members = members - m + m
                     if (members.map(_.address) == expectedAddresses)
@@ -83,7 +84,8 @@ abstract class MembershipChangeListenerUpSpec
             new Actor {
               var members = Set.empty[Member]
               def receive = {
-                case state: CurrentClusterState ⇒ members = state.members
+                case state: CurrentClusterState ⇒
+                  members = state.members
                 case MemberUp(m) ⇒
                   members = members - m + m
                   if (members.map(_.address) == expectedAddresses)

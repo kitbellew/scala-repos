@@ -55,7 +55,8 @@ class Foo_1 {
     try {
       return 0
     } catch {
-      case x: Throwable => return 1
+      case x: Throwable =>
+        return 1
     } finally {
       return 2
     }
@@ -66,7 +67,8 @@ class Foo_1 {
     try {
       return 42
     } catch {
-      case x: Throwable => return 2
+      case x: Throwable =>
+        return 2
     }
     return 3
   }
@@ -75,7 +77,8 @@ class Foo_1 {
     try {
       error("haha")
     } catch {
-      case x: Throwable => return 42
+      case x: Throwable =>
+        return 42
     }
     return 3
   }
@@ -84,7 +87,8 @@ class Foo_1 {
     try {
       return 1
     } catch {
-      case x: Throwable => return 2
+      case x: Throwable =>
+        return 2
     } finally {
       return 42
     }
@@ -95,9 +99,12 @@ class Foo_1 {
     return 42
     val x = util.Random.nextInt % 2
     x match {
-      case 0 => return 0
-      case 1 => return 1
-      case _ => error("wtf")
+      case 0 =>
+        return 0
+      case 1 =>
+        return 1
+      case _ =>
+        error("wtf")
     }
     2
   }
@@ -105,9 +112,12 @@ class Foo_1 {
   def unreachableAfterSwitch: Int = {
     val x = util.Random.nextInt % 2
     x match {
-      case 0 => return 42
-      case 1 => return 41 + x
-      case _ => error("wtf")
+      case 0 =>
+        return 42
+      case 1 =>
+        return 41 + x
+      case _ =>
+        error("wtf")
     }
     2
   }

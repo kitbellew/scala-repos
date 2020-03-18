@@ -34,9 +34,12 @@ private[spark] object MetadataUtils {
     */
   def getNumClasses(labelSchema: StructField): Option[Int] = {
     Attribute.fromStructField(labelSchema) match {
-      case binAttr: BinaryAttribute                  => Some(2)
-      case nomAttr: NominalAttribute                 => nomAttr.getNumValues
-      case _: NumericAttribute | UnresolvedAttribute => None
+      case binAttr: BinaryAttribute =>
+        Some(2)
+      case nomAttr: NominalAttribute =>
+        nomAttr.getNumValues
+      case _: NumericAttribute | UnresolvedAttribute =>
+        None
     }
   }
 
@@ -61,11 +64,14 @@ private[spark] object MetadataUtils {
             Iterator()
           } else {
             attr match {
-              case _: NumericAttribute | UnresolvedAttribute => Iterator()
-              case binAttr: BinaryAttribute                  => Iterator(idx -> 2)
+              case _: NumericAttribute | UnresolvedAttribute =>
+                Iterator()
+              case binAttr: BinaryAttribute =>
+                Iterator(idx -> 2)
               case nomAttr: NominalAttribute =>
                 nomAttr.getNumValues match {
-                  case Some(numValues: Int) => Iterator(idx -> numValues)
+                  case Some(numValues: Int) =>
+                    Iterator(idx -> numValues)
                   case None =>
                     throw new IllegalArgumentException(
                       s"Feature $idx is marked as" +

@@ -26,7 +26,8 @@ class ExceptionFilter[REQUEST <: Request]
       service(request)
     } catch {
       // apply() threw an exception - convert to Future
-      case NonFatal(e) => Future.exception(e)
+      case NonFatal(e) =>
+        Future.exception(e)
     }
   } rescue {
     case e: CancelledRequestException =>

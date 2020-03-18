@@ -35,7 +35,8 @@ class FNSpec extends Specification {
       f2(col4, col2).forall(_.isDefinedAt(0)) must beTrue
       f2(col4, col0).forall(_.isDefinedAt(0)) must beFalse
       f2(col4, col2) must beLike {
-        case Some(c: LongColumn) => c(0) must_== 2L
+        case Some(c: LongColumn) =>
+          c(0) must_== 2L
       }
 
       /*

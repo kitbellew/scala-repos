@@ -126,7 +126,8 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
         Future.value(List((List(state), Future.value(Nil))))
       }
     } catch {
-      case NonFatal(e) => Future.exception(e)
+      case NonFatal(e) =>
+        Future.exception(e)
     }
 
   override def apply(state: S, tup: Event) =

@@ -76,19 +76,27 @@ trait JxBase {
 
   private def fixText(in: String): String =
     (in, in.trim) match {
-      case (x, y) if x == y         => x
-      case (x, y) if x startsWith y => y + " "
-      case (x, y) if y.length == 0  => " "
-      case (x, y) if x endsWith y   => " " + y
-      case (_, y)                   => " " + y + " "
+      case (x, y) if x == y =>
+        x
+      case (x, y) if x startsWith y =>
+        y + " "
+      case (x, y) if y.length == 0 =>
+        " "
+      case (x, y) if x endsWith y =>
+        " " + y
+      case (_, y) =>
+        " " + y + " "
     }
 
   def addToDocFrag(parent: String, elems: List[Node]): JsCmd =
     elems
       .map {
-        case Jx(kids)     => addToDocFrag(parent, kids.toList)
-        case jb: JxBase   => jb.appendToParent(parent)
-        case Group(nodes) => addToDocFrag(parent, nodes.toList)
+        case Jx(kids) =>
+          addToDocFrag(parent, kids.toList)
+        case jb: JxBase =>
+          jb.appendToParent(parent)
+        case Group(nodes) =>
+          addToDocFrag(parent, nodes.toList)
         case Text(txt) =>
           JsRaw(
             parent + ".appendChild(document.createTextNode(" + fixText(

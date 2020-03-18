@@ -28,8 +28,10 @@ class ScalaPropertiesReferenceProvider extends PsiReferenceProvider {
           return None
 
         lit.getValue match {
-          case str: String if !str.contains(" ") => Some(str)
-          case _                                 => None
+          case str: String if !str.contains(" ") =>
+            Some(str)
+          case _ =>
+            None
         }
       }
     }
@@ -37,7 +39,8 @@ class ScalaPropertiesReferenceProvider extends PsiReferenceProvider {
     element match {
       case PossibleKey(str) =>
         Array(new PropertyReference(str, element, null, true))
-      case _ => Array.empty
+      case _ =>
+        Array.empty
     }
   }
 }

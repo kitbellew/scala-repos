@@ -65,7 +65,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
         firstRow
       } else {
         firstRow.zipWithIndex.map {
-          case (value, index) => s"C$index"
+          case (value, index) =>
+            s"C$index"
         }
       }
 

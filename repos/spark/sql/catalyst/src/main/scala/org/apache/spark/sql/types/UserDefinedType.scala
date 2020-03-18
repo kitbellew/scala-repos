@@ -85,8 +85,10 @@ abstract class UserDefinedType[UserType >: Null]
 
   override def equals(other: Any): Boolean =
     other match {
-      case that: UserDefinedType[_] => this.acceptsType(that)
-      case _                        => false
+      case that: UserDefinedType[_] =>
+        this.acceptsType(that)
+      case _ =>
+        false
     }
 }
 
@@ -118,7 +120,9 @@ private[sql] class PythonUserDefinedType(
 
   override def equals(other: Any): Boolean =
     other match {
-      case that: PythonUserDefinedType => this.pyUDT.equals(that.pyUDT)
-      case _                           => false
+      case that: PythonUserDefinedType =>
+        this.pyUDT.equals(that.pyUDT)
+      case _ =>
+        false
     }
 }

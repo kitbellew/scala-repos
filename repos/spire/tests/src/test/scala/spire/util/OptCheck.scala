@@ -112,11 +112,13 @@ class OptCheck extends FunSuite {
   test("Name-based extractor") {
     Opt(2) match {
       case Opt(x) => // success
-      case _      => fail()
+      case _ =>
+        fail()
     }
     Opt.empty[Int] match {
-      case Opt(x) => fail()
-      case _      => // success
+      case Opt(x) =>
+        fail()
+      case _ => // success
     }
   }
 
@@ -131,7 +133,8 @@ class OptCheck extends FunSuite {
     try {
       Opt(java.lang.Integer.parseInt(str))
     } catch {
-      case e: NumberFormatException => Opt.empty[Int]
+      case e: NumberFormatException =>
+        Opt.empty[Int]
     }
 
   test("Opt.map") {

@@ -20,7 +20,8 @@ trait ScAnnotationExpr extends ScalaPsiElement {
       .map(_.findChildrenByType(ScalaElementTypes.ASSIGN_STMT))
       .getOrElse(Seq.empty)
       .map {
-        case stmt: ScAssignStmt => new ScNameValueAssignment(stmt)
+        case stmt: ScAssignStmt =>
+          new ScNameValueAssignment(stmt)
       }
 
   def getAnnotationParameters = findArgExprs.map(_.exprs).getOrElse(Seq.empty)
@@ -32,8 +33,10 @@ trait ScAnnotationExpr extends ScalaPsiElement {
 
     val args = constr.findFirstChildByType(ScalaElementTypes.ARG_EXPRS)
     args match {
-      case scArgExpr: ScArgumentExprList => Some(scArgExpr)
-      case _                             => None
+      case scArgExpr: ScArgumentExprList =>
+        Some(scArgExpr)
+      case _ =>
+        None
     }
   }
 
@@ -44,8 +47,10 @@ trait ScAnnotationExpr extends ScalaPsiElement {
     override def getValue: PsiAnnotationMemberValue =
       (
         assign.getRExpression map {
-          case annotationMember: PsiAnnotationMemberValue => annotationMember
-          case _                                          => null
+          case annotationMember: PsiAnnotationMemberValue =>
+            annotationMember
+          case _ =>
+            null
         }
       ).orNull
   }

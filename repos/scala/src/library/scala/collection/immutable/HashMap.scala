@@ -663,8 +663,10 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
           new HashTrieMap[A, B1](this.bitmap | that.bitmap, merged, totalelems)
         case hm: HashMapCollision1[_, _] =>
           that.merge0(this, level, merger.invert)
-        case hm: HashMap[_, _] => this
-        case _                 => sys.error("section supposed to be unreachable.")
+        case hm: HashMap[_, _] =>
+          this
+        case _ =>
+          sys.error("section supposed to be unreachable.")
       }
   }
 

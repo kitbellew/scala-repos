@@ -7,7 +7,8 @@ object Test extends App {
     try {
       f
     } catch {
-      case ex: IndexOutOfBoundsException => println(ex)
+      case ex: IndexOutOfBoundsException =>
+        println(ex)
     }
 
   val lb0 = newLB

@@ -32,14 +32,22 @@ class RRulesCheck extends Specification with ScalaCheck {
 
   private def toWeekday(i: Int) =
     i match {
-      case 1 => MO // ISO standard; joda conforms
-      case 2 => TU
-      case 3 => WE
-      case 4 => TH
-      case 5 => FR
-      case 6 => SA
-      case 7 => SU
-      case _ => throw new IllegalArgumentException("Bad weekday %d" format i)
+      case 1 =>
+        MO // ISO standard; joda conforms
+      case 2 =>
+        TU
+      case 3 =>
+        WE
+      case 4 =>
+        TH
+      case 5 =>
+        FR
+      case 6 =>
+        SA
+      case 7 =>
+        SU
+      case _ =>
+        throw new IllegalArgumentException("Bad weekday %d" format i)
     }
 
   private def genWeekday: Gen[Weekday] =

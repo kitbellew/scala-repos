@@ -63,7 +63,8 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
               obj.keys mustEqual Set("estimate")
 
               obj("estimate") must beLike {
-                case SDecimal(d) => ok
+                case SDecimal(d) =>
+                  ok
               }
           }
       }
@@ -93,7 +94,8 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
             case SObject(obj) =>
               obj.keySet mustEqual Set("fit")
               obj("fit") must beLike {
-                case SDecimal(_) => ok
+                case SDecimal(_) =>
+                  ok
               }
           }
         }
@@ -106,7 +108,8 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
 
       val count =
         resultsCount.collectFirst {
-          case (_, SDecimal(d)) => d.toInt
+          case (_, SDecimal(d)) =>
+            d.toInt
         }.get
       results must haveSize(count)
 
@@ -209,7 +212,8 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
 
       val count =
         resultsCount.collectFirst {
-          case (_, SDecimal(d)) => d.toInt
+          case (_, SDecimal(d)) =>
+            d.toInt
         }.get
       results must haveSize(count)
 

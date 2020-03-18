@@ -162,7 +162,8 @@ class MarathonHealthCheckManager @Inject() (
 
   override def reconcileWith(appId: PathId): Future[Unit] =
     appRepository.currentVersion(appId) flatMap {
-      case None => Future(())
+      case None =>
+        Future(())
       case Some(app) =>
         log.info(s"reconcile [$appId] with latest version [${app.version}]")
 
@@ -259,7 +260,8 @@ class MarathonHealthCheckManager @Inject() (
       } yield maybeTaskState.flatMap(_.launched).map(_.appVersion)
 
     futureAppVersion.flatMap {
-      case None => Future.successful(Nil)
+      case None =>
+        Future.successful(Nil)
       case Some(appVersion) =>
         Future.sequence(
           listActive(appId, appVersion).iterator
@@ -286,8 +288,10 @@ class MarathonHealthCheckManager @Inject() (
         taskTracker.appTasks(appId).map { appTasks =>
           appTasks.iterator.map { task =>
             groupedHealth.get(task.taskId) match {
-              case Some(xs) => task.taskId -> xs.toSeq
-              case None     => task.taskId -> Nil
+              case Some(xs) =>
+                task.taskId -> xs.toSeq
+              case None =>
+                task.taskId -> Nil
             }
           }.toMap
         }

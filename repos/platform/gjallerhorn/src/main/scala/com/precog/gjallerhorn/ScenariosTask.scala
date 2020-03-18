@@ -64,12 +64,15 @@ class ScenariosTask(settings: Settings)
       val res =
         ingestString(account.apiKey, account, dummyEvents, "application/json")(
           _ / account.bareRootPath / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       res must beLike {
-        case Success(jobj) => ok
+        case Success(jobj) =>
+          ok
       }
     }
 
@@ -83,12 +86,15 @@ class ScenariosTask(settings: Settings)
           account2,
           dummyEvents,
           "application/json")(_ / account1.bareRootPath / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       res must beLike {
-        case Success(jobj) => ok
+        case Success(jobj) =>
+          ok
       }
     }
 
@@ -98,8 +104,10 @@ class ScenariosTask(settings: Settings)
       val res =
         ingestString(account.apiKey, account, dummyEvents, "application/json")(
           _ / account.bareRootPath / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       EventuallyResults.eventually(10, 1.second) {
@@ -114,12 +122,15 @@ class ScenariosTask(settings: Settings)
       val res =
         ingestString(account.apiKey, account, dummyEvents, "application/json")(
           _ / ("not-" + account.bareRootPath) / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       res must beLike {
-        case Failure(StatusCode(403)) => ok
+        case Failure(StatusCode(403)) =>
+          ok
       }
     }
 
@@ -133,8 +144,10 @@ class ScenariosTask(settings: Settings)
           account2,
           dummyEvents,
           "application/json")(_ / account1.bareRootPath / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       EventuallyResults.eventually(10, 1.second) {
@@ -154,8 +167,10 @@ class ScenariosTask(settings: Settings)
           account2,
           dummyEvents,
           "application/json")(_ / account1.bareRootPath / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       EventuallyResults.eventually(10, 1.second) {
@@ -185,12 +200,15 @@ class ScenariosTask(settings: Settings)
       val res =
         ingestString(delegateAPIKey, account1, dummyEvents, "application/json")(
           _ / account1.bareRootPath / "foo") match {
-          case Left(thr) => Failure(thr)
-          case Right(s)  => JParser.parseFromString(s)
+          case Left(thr) =>
+            Failure(thr)
+          case Right(s) =>
+            JParser.parseFromString(s)
         }
 
       res must beLike {
-        case Success(jobj) => ok
+        case Success(jobj) =>
+          ok
       }
 
       EventuallyResults.eventually(10, 1.second) {

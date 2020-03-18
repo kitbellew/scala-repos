@@ -37,7 +37,8 @@ final class Vertex(val label: String, var neighbors: List[Vertex])
     this.label == other.label && (
       this.neighbors.length == other.neighbors.length &&
       this.neighbors.zip(other.neighbors).forall {
-        case (thisv, otherv) => thisv.label == otherv.label
+        case (thisv, otherv) =>
+          thisv.label == otherv.label
       }
     )
   }
@@ -58,7 +59,8 @@ final class Graph extends Serializable {
     (this ne other) &&
     this.vertices.length == other.vertices.length &&
     this.vertices.zip(other.vertices).forall {
-      case (thisv, otherv) => thisv.sameAs(otherv)
+      case (thisv, otherv) =>
+        thisv.sameAs(otherv)
     }
   }
 }
@@ -76,7 +78,8 @@ object GraphReader extends RegexParsers {
 
   def tokenize(line: String, onError: String => Unit): List[String] =
     parse(edgeline, line.trim) match {
-      case Success(args, _) => args
+      case Success(args, _) =>
+        args
       case NoSuccess(msg, rest) =>
         onError(msg);
         List()

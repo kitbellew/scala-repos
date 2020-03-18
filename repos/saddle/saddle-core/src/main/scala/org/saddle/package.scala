@@ -269,7 +269,8 @@ package object saddle {
     new {
       def toFrame: Frame[RX, CX, T] = {
         val grp = s.map {
-          case (r, c, v) => ((r, c), v)
+          case (r, c, v) =>
+            ((r, c), v)
         }
         grp.toSeries.pivot
       }

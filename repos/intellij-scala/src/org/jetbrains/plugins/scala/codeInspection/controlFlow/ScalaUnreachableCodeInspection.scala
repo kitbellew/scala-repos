@@ -68,12 +68,16 @@ class ScalaUnreachableCodeInspection
     @tailrec
     def getParentStmt(element: PsiElement): Option[PsiElement] = {
       element.getParent match {
-        case _: ScBlock              => Some(element)
-        case _: ScFunctionDefinition => Some(element)
+        case _: ScBlock =>
+          Some(element)
+        case _: ScFunctionDefinition =>
+          Some(element)
         case doStmt: ScDoStmt if doStmt.condition.contains(element) =>
           Some(element)
-        case null   => None
-        case parent => getParentStmt(parent)
+        case null =>
+          None
+        case parent =>
+          getParentStmt(parent)
       }
     }
 
@@ -100,7 +104,8 @@ class ScalaUnreachableCodeInspection
           case Seq(e childOf (doStmt: ScDoStmt))
               if doStmt.condition.contains(e) =>
             new UnwrapDoStmtFix(doStmt)
-          case _ => new RemoveFragmentQuickFix(fragment)
+          case _ =>
+            new RemoveFragmentQuickFix(fragment)
         }
       new ProblemDescriptorImpl(
         fragment.head,

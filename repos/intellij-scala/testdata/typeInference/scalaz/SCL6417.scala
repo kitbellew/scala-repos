@@ -9,7 +9,8 @@ class SCL6417 {
         /*start*/
         y /*end*/
         println(s"Success $x, $y")
-      case Failure(errors) => println(errors.toString)
+      case Failure(errors) =>
+        println(errors.toString)
     }
   }
 
@@ -20,13 +21,16 @@ class SCL6417 {
           Failure("Errror!").toValidationNel
         else
           Success(p)
-      case None => Success(0)
+      case None =>
+        Success(0)
     }
 
   def validateOptionalY(y: Option[Int]): ValidationNel[String, Int] =
     y match {
-      case Some(yy) => Success(yy)
-      case None     => Failure("Required!").toValidationNel
+      case Some(yy) =>
+        Success(yy)
+      case None =>
+        Failure("Required!").toValidationNel
     }
 
 }

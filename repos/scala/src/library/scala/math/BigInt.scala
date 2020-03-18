@@ -129,11 +129,16 @@ final class BigInt(val bigInteger: BigInteger)
     */
   override def equals(that: Any): Boolean =
     that match {
-      case that: BigInt     => this equals that
-      case that: BigDecimal => that equals this
-      case that: Double     => isValidDouble && toDouble == that
-      case that: Float      => isValidFloat && toFloat == that
-      case x                => isValidLong && unifiedPrimitiveEquals(x)
+      case that: BigInt =>
+        this equals that
+      case that: BigDecimal =>
+        that equals this
+      case that: Double =>
+        isValidDouble && toDouble == that
+      case that: Float =>
+        isValidFloat && toFloat == that
+      case x =>
+        isValidLong && unifiedPrimitiveEquals(x)
     }
   override def isValidByte = this >= Byte.MinValue && this <= Byte.MaxValue
   override def isValidShort = this >= Short.MinValue && this <= Short.MaxValue

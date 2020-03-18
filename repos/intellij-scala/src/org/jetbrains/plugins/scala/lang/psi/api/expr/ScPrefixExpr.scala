@@ -15,7 +15,8 @@ trait ScPrefixExpr extends ScExpression with ScSugarCallExpr {
 
   def operation: ScReferenceExpression =
     findChildrenByClassScala(classOf[ScExpression]).apply(0) match {
-      case re: ScReferenceExpression => re
+      case re: ScReferenceExpression =>
+        re
       case _ =>
         throw new UnsupportedOperationException(
           "Prefix Expr Operation is not reference expression: " + this.getText)

@@ -42,7 +42,8 @@ class TypedFieldsTest extends WordSpec with Matchers {
         .sink[(Opaque, Int)](Tsv("outputFile")) { outputBuffer =>
           val outMap =
             outputBuffer.map {
-              case (opaque: Opaque, i: Int) => (opaque.str, i)
+              case (opaque: Opaque, i: Int) =>
+                (opaque.str, i)
             }.toMap
           outMap should have size 2
           outMap("foo") shouldBe 14
@@ -114,8 +115,10 @@ class TypedFieldsJob(args: Args) extends Job(args) {
 class Opaque(val str: String) {
   override def equals(other: Any) =
     other match {
-      case other: Opaque => str equals other.str
-      case _             => false
+      case other: Opaque =>
+        str equals other.str
+      case _ =>
+        false
     }
   override def hashCode = str.hashCode
 }

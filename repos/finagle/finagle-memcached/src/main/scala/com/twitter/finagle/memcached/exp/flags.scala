@@ -17,8 +17,10 @@ object localMemcachedPort
       new Flaggable[Option[Int]] {
         def parse(s: String) =
           s match {
-            case ""    => None
-            case value => Some(value.toInt)
+            case "" =>
+              None
+            case value =>
+              Some(value.toInt)
           }
         override def show(intOpt: Option[Int]) =
           intOpt.map(_.toString).getOrElse("Not defined")

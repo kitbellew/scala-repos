@@ -32,8 +32,10 @@ object ConsistentHashingRouterSpec {
 
   class Echo extends Actor {
     def receive = {
-      case x: ConsistentHashableEnvelope ⇒ sender() ! s"Unexpected envelope: $x"
-      case _ ⇒ sender() ! self
+      case x: ConsistentHashableEnvelope ⇒
+        sender() ! s"Unexpected envelope: $x"
+      case _ ⇒
+        sender() ! self
     }
   }
 
@@ -85,7 +87,8 @@ class ConsistentHashingRouterSpec
 
     "select destination with defined hashMapping" in {
       def hashMapping: ConsistentHashMapping = {
-        case Msg2(key, data) ⇒ key
+        case Msg2(key, data) ⇒
+          key
       }
       val router2 = system.actorOf(
         ConsistentHashingPool(nrOfInstances = 1, hashMapping = hashMapping)

@@ -737,7 +737,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     }
     val results =
       sorter.partitionedIterator.map {
-        case (p, vs) => (p, vs.toSet)
+        case (p, vs) =>
+          (p, vs.toSet)
       }.toSet
     val expected =
       (0 until 3).map { p =>
@@ -747,7 +748,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
               (i / 4, i)
             }
             .filter {
-              case (k, _) => k % 3 == p
+              case (k, _) =>
+                k % 3 == p
             }
             .toSet
         if (withPartialAgg) {

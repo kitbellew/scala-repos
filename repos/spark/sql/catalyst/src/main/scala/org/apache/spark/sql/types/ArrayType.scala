@@ -97,8 +97,10 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
     new Ordering[ArrayData] {
       private[this] val elementOrdering: Ordering[Any] =
         elementType match {
-          case dt: AtomicType => dt.ordering.asInstanceOf[Ordering[Any]]
-          case a: ArrayType   => a.interpretedOrdering.asInstanceOf[Ordering[Any]]
+          case dt: AtomicType =>
+            dt.ordering.asInstanceOf[Ordering[Any]]
+          case a: ArrayType =>
+            a.interpretedOrdering.asInstanceOf[Ordering[Any]]
           case s: StructType =>
             s.interpretedOrdering.asInstanceOf[Ordering[Any]]
           case other =>

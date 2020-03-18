@@ -645,7 +645,8 @@ private[sql] object ParquetRelation extends Logging {
 
     val ordinalMap =
       metastoreSchema.zipWithIndex.map {
-        case (field, index) => field.name.toLowerCase -> index
+        case (field, index) =>
+          field.name.toLowerCase -> index
       }.toMap
 
     val reorderedParquetSchema = mergedParquetSchema.sortBy(f =>

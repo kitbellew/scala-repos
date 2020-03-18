@@ -40,8 +40,10 @@ trait RejectionHandler extends (immutable.Seq[Rejection] ⇒ Option[Route]) {
     */
   def seal: RejectionHandler =
     this match {
-      case x: BuiltRejectionHandler if x.isDefault ⇒ x
-      case _ ⇒ withFallback(default)
+      case x: BuiltRejectionHandler if x.isDefault ⇒
+        x
+      case _ ⇒
+        withFallback(default)
     }
 }
 
@@ -232,7 +234,8 @@ object RejectionHandler {
           rejections.head.cause match {
             case CredentialsMissing ⇒
               "The resource requires authentication, which was not supplied with the request"
-            case CredentialsRejected ⇒ "The supplied authentication is invalid"
+            case CredentialsRejected ⇒
+              "The supplied authentication is invalid"
           }
         // Multiple challenges per WWW-Authenticate header are allowed per spec,
         // however, it seems many browsers will ignore all challenges but the first.
@@ -291,10 +294,12 @@ object RejectionHandler {
           ))
       }
       .handle {
-        case ValidationRejection(msg, _) ⇒ complete((BadRequest, msg))
+        case ValidationRejection(msg, _) ⇒
+          complete((BadRequest, msg))
       }
       .handle {
-        case x ⇒ sys.error("Unhandled rejection: " + x)
+        case x ⇒
+          sys.error("Unhandled rejection: " + x)
       }
       .handleNotFound {
         complete((NotFound, "The requested resource could not be found."))
@@ -313,7 +318,8 @@ object RejectionHandler {
       rest.distinct /: transformations
         .asInstanceOf[Seq[TransformationRejection]]
     ) {
-      case (remaining, transformation) ⇒ transformation.transform(remaining)
+      case (remaining, transformation) ⇒
+        transformation.transform(remaining)
     }
   }
 }

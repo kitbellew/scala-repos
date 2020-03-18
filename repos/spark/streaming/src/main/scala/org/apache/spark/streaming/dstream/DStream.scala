@@ -453,7 +453,8 @@ abstract class DStream[T: ClassTag](
         }
         Some(new Job(time, jobFunc))
       }
-      case None => None
+      case None =>
+        None
     }
   }
 

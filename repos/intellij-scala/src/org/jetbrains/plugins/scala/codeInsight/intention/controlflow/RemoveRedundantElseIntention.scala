@@ -62,7 +62,8 @@ class RemoveRedundantElseIntention extends PsiElementBaseIntentionAction {
         if (e.isInstanceOf[ScThrowStmt])
           return true
         false
-      case _ => false
+      case _ =>
+        false
     }
   }
 

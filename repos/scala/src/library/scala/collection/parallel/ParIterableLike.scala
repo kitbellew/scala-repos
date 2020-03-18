@@ -1956,8 +1956,10 @@ trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
       }
     def shouldSplitFurther =
       tree match {
-        case ScanNode(_, _)             => true
-        case ScanLeaf(_, _, _, _, _, _) => false
+        case ScanNode(_, _) =>
+          true
+        case ScanLeaf(_, _, _, _, _, _) =>
+          false
       }
     override def merge(that: FromScanTree[U, That]) =
       result = result combine that.result

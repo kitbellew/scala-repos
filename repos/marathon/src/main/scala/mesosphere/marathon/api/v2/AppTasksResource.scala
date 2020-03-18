@@ -157,7 +157,8 @@ class AppTasksResource @Inject() (
     val response = future.map { tasks =>
       toResponse(tasks)
     } recover {
-      case UnknownAppException(appId, version) => unknownApp(appId, version)
+      case UnknownAppException(appId, version) =>
+        unknownApp(appId, version)
     }
     result(response)
   }

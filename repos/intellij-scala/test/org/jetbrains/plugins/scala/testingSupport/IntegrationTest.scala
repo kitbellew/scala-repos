@@ -131,12 +131,14 @@ trait IntegrationTest {
       config: AbstractTestRunConfiguration): Boolean = {
     config.getTestClassPath == testClass && (
       config.getTestName match {
-        case "" => testNames.isEmpty
+        case "" =>
+          testNames.isEmpty
         case configTestName =>
           val configTests = parseTestName(configTestName)
           configTests.size == testNames.size && (
             (configTests zip testNames) forall {
-              case (actual, required) => actual == required
+              case (actual, required) =>
+                actual == required
             }
           )
       }
@@ -172,7 +174,8 @@ trait IntegrationTest {
         acc: List[AbstractTestProxy => Boolean] = List())
         : List[AbstractTestProxy => Boolean] =
       names.size match {
-        case 0 => List(_ => true) //got an empty list of names as initial input
+        case 0 =>
+          List(_ => true) //got an empty list of names as initial input
         case 1 =>
           ((node: AbstractTestProxy) =>
             node.getName == names.head && (

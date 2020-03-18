@@ -54,7 +54,8 @@ trait EvaluatorModule
         val (rightIds, rightValue) = right
 
         val idOrder = leftIds zip rightIds map {
-          case (li, ri) => Ordering.fromInt(li - ri)
+          case (li, ri) =>
+            Ordering.fromInt(li - ri)
         } reduceOption {
           _ |+| _
         } getOrElse Ordering.EQ
@@ -89,7 +90,8 @@ trait EvaluatorModule
           Vector(_)
         }
       ) map {
-        case (a, b) => (b, a)
+        case (a, b) =>
+          (b, a)
       }
     }
 
@@ -97,17 +99,21 @@ trait EvaluatorModule
         env: Map[(Let, String), Dataset],
         restrict: Map[Provenance, Set[Identities]])(expr: Expr): Dataset =
       expr match {
-        case Let(loc, _, _, _, right) => loop(env, restrict)(right)
+        case Let(loc, _, _, _, right) =>
+          loop(env, restrict)(right)
 
         case Solve(loc, constraints, child) =>
           sys.error("todo")
 
-        case Import(_, _, child) => loop(env, restrict)(child)
+        case Import(_, _, child) =>
+          loop(env, restrict)(child)
 
         case Assert(loc, pred, child) => {
           val result = loop(env, restrict)(pred) forall {
-            case (_, JBool(b)) => b
-            case _             => true
+            case (_, JBool(b)) =>
+              b
+            case _ =>
+              true
           }
 
           if (result)
@@ -117,11 +123,13 @@ trait EvaluatorModule
               "assertion failed: %d:%d".format(loc.lineNum, loc.colNum))
         }
 
-        case Observe(_, _, _) => sys.error("todo")
+        case Observe(_, _, _) =>
+          sys.error("todo")
 
         case expr @ New(_, child) => {
           val raw = loop(env, restrict)(child) map {
-            case (_, v) => v
+            case (_, v) =>
+              v
           }
 
           val init = news get expr getOrElse {
@@ -141,7 +149,8 @@ trait EvaluatorModule
               Vector(_)
             }
           ) map {
-            case (a, b) => (b, a)
+            case (a, b) =>
+              (b, a)
           }
         }
 
@@ -151,11 +160,13 @@ trait EvaluatorModule
 
           val fromIdx = Set(
             fromRes map {
-              case (ids, _) => ids
+              case (ids, _) =>
+                ids
             }: _*)
           val toIdx = Set(
             toRes map {
-              case (ids, _) => ids
+              case (ids, _) =>
+                ids
             }: _*)
 
           loop(
@@ -164,19 +175,25 @@ trait EvaluatorModule
             in)
         }
 
-        case TicVar(_, _) => sys.error("todo")
+        case TicVar(_, _) =>
+          sys.error("todo")
 
-        case StrLit(_, value) => (Vector(), JString(value)) :: Nil
+        case StrLit(_, value) =>
+          (Vector(), JString(value)) :: Nil
 
         case NumLit(_, value) =>
           (Vector(), JNumBigDec(BigDecimal(value))) :: Nil
 
-        case BoolLit(_, true)  => (Vector(), JTrue) :: Nil
-        case BoolLit(_, false) => (Vector(), JFalse) :: Nil
+        case BoolLit(_, true) =>
+          (Vector(), JTrue) :: Nil
+        case BoolLit(_, false) =>
+          (Vector(), JFalse) :: Nil
 
-        case UndefinedLit(_) => Nil
+        case UndefinedLit(_) =>
+          Nil
 
-        case NullLit(_) => (Vector(), JNull) :: Nil
+        case NullLit(_) =>
+          (Vector(), JNull) :: Nil
 
         case ObjectDef(loc, props) => {
           val propResults = props map {
@@ -187,7 +204,8 @@ trait EvaluatorModule
           val wrappedResults = propResults map {
             case (name, data, prov) => {
               val mapped = data map {
-                case (ids, v) => (ids, JObject(Map(name -> v)): JValue)
+                case (ids, v) =>
+                  (ids, JObject(Map(name -> v)): JValue)
               }
 
               (mapped, prov)
@@ -212,7 +230,8 @@ trait EvaluatorModule
             })
 
           resultOpt map {
-            case (data, _) => data
+            case (data, _) =>
+              data
           } getOrElse {
             (Vector(), JArray(Nil)) :: Nil
           }
@@ -226,7 +245,8 @@ trait EvaluatorModule
           val wrappedValues = valueResults map {
             case (data, prov) => {
               val mapped = data map {
-                case (ids, v) => (ids, JArray(v :: Nil): JValue)
+                case (ids, v) =>
+                  (ids, JArray(v :: Nil): JValue)
               }
 
               (mapped, prov)
@@ -251,7 +271,8 @@ trait EvaluatorModule
             })
 
           resultOpt map {
-            case (data, _) => data
+            case (data, _) =>
+              data
           } getOrElse {
             (Vector(), JArray(Nil)) :: Nil
           }
@@ -259,11 +280,13 @@ trait EvaluatorModule
 
         case Descent(loc, child, property) => {
           loop(env, restrict)(child) collect {
-            case (ids, value: JObject) => (ids, value \ property)
+            case (ids, value: JObject) =>
+              (ids, value \ property)
           }
         }
 
-        case MetaDescent(_, _, _) => sys.error("todo")
+        case MetaDescent(_, _, _) =>
+          sys.error("todo")
 
         case Deref(_, left, right) => {
           handleBinary(
@@ -286,22 +309,26 @@ trait EvaluatorModule
               loop(env2, restrict)(b.left)
             }
 
-            case FormalBinding(b) => env((b, id))
+            case FormalBinding(b) =>
+              env((b, id))
 
             case LoadBinding => {
               actualSets.head collect {
-                case (_, JString(path)) => mappedFS(path)
+                case (_, JString(path)) =>
+                  mappedFS(path)
               } flatten
             }
 
             // TODO base paths
             case RelLoadBinding => {
               actualSets.head collect {
-                case (_, JString(path)) => mappedFS("/" + path)
+                case (_, JString(path)) =>
+                  mappedFS("/" + path)
               } flatten
             }
 
-            case ExpandGlobBinding => actualSets.head // TODO
+            case ExpandGlobBinding =>
+              actualSets.head // TODO
 
             case Op1Binding(op1) => {
               actualSets.head collect {
@@ -319,7 +346,8 @@ trait EvaluatorModule
 
             case ReductionBinding(red) => {
               val values = actualSets.head map {
-                case (_, v) => v
+                case (_, v) =>
+                  v
               }
 
               val result =
@@ -330,7 +358,8 @@ trait EvaluatorModule
               }
             }
 
-            case _ => sys.error("todo")
+            case _ =>
+              sys.error("todo")
           }
         }
 
@@ -341,7 +370,8 @@ trait EvaluatorModule
               pred.provenance,
               loopForJoin(env, restrict)(left),
               left.provenance) {
-              case (b: JBool, right) => JArray(b :: right :: Nil)
+              case (b: JBool, right) =>
+                JArray(b :: right :: Nil)
             }
 
           handleBinary(
@@ -365,7 +395,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (value, JTrue) => value
+            case (value, JTrue) =>
+              value
           }
         }
 
@@ -396,7 +427,8 @@ trait EvaluatorModule
             .sorted(SEOrder.toScalaOrdering)
 
           zipAlign(leftSorted, rightSorted)(SEOrder.order) map {
-            case (se, _) => se
+            case (se, _) =>
+              se
           }
         }
 
@@ -415,7 +447,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JNum(leftN + rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JNum(leftN + rightN)
           }
         }
 
@@ -425,7 +458,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JNum(leftN - rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JNum(leftN - rightN)
           }
         }
 
@@ -435,7 +469,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JNum(leftN * rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JNum(leftN * rightN)
           }
         }
 
@@ -445,7 +480,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JNum(leftN / rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JNum(leftN / rightN)
           }
         }
 
@@ -455,7 +491,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JNum(leftN % rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JNum(leftN % rightN)
           }
         }
 
@@ -465,7 +502,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JNum(leftN pow rightN.toInt)
+            case (JNum(leftN), JNum(rightN)) =>
+              JNum(leftN pow rightN.toInt)
           }
         }
 
@@ -475,7 +513,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JBool(leftN < rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JBool(leftN < rightN)
           }
         }
 
@@ -485,7 +524,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JBool(leftN <= rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JBool(leftN <= rightN)
           }
         }
 
@@ -495,7 +535,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JBool(leftN > rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JBool(leftN > rightN)
           }
         }
 
@@ -505,7 +546,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JNum(leftN), JNum(rightN)) => JBool(leftN >= rightN)
+            case (JNum(leftN), JNum(rightN)) =>
+              JBool(leftN >= rightN)
           }
         }
 
@@ -515,7 +557,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (leftV, rightV) => JBool(leftV == rightV)
+            case (leftV, rightV) =>
+              JBool(leftV == rightV)
           }
         }
 
@@ -525,7 +568,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (leftV, rightV) => JBool(leftV != rightV)
+            case (leftV, rightV) =>
+              JBool(leftV != rightV)
           }
         }
 
@@ -535,7 +579,8 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JBool(leftB), JBool(rightB)) => JBool(leftB && rightB)
+            case (JBool(leftB), JBool(rightB)) =>
+              JBool(leftB && rightB)
           }
         }
 
@@ -545,23 +590,27 @@ trait EvaluatorModule
             left.provenance,
             loopForJoin(env, restrict)(right),
             right.provenance) {
-            case (JBool(leftB), JBool(rightB)) => JBool(leftB || rightB)
+            case (JBool(leftB), JBool(rightB)) =>
+              JBool(leftB || rightB)
           }
         }
 
         case Comp(_, child) => {
           loop(env, restrict)(child) collect {
-            case (ids, JBool(value)) => (ids, JBool(!value))
+            case (ids, JBool(value)) =>
+              (ids, JBool(!value))
           }
         }
 
         case Neg(_, child) => {
           loop(env, restrict)(child) collect {
-            case (ids, JNum(value)) => (ids, JNum(-value))
+            case (ids, JNum(value)) =>
+              (ids, JNum(-value))
           }
         }
 
-        case Paren(_, child) => loop(env, restrict)(child)
+        case Paren(_, child) =>
+          loop(env, restrict)(child)
       }
 
     def loopForJoin(
@@ -571,7 +620,8 @@ trait EvaluatorModule
 
       restrict get expr.provenance map { idx =>
         back filter {
-          case (ids, _) => idx(ids)
+          case (ids, _) =>
+            idx(ids)
         }
       } getOrElse back
     }
@@ -606,13 +656,15 @@ trait EvaluatorModule
       val posRight = rightProv.possibilities
 
       val indicesLeft = linearLeft.zipWithIndex collect {
-        case (p, i) if posRight(p) => i
+        case (p, i) if posRight(p) =>
+          i
       }
 
       val orderLeft = orderFromIndices(indicesLeft)
 
       val indicesRight = linearRight.zipWithIndex collect {
-        case (p, i) if posLeft(p) => i
+        case (p, i) if posLeft(p) =>
+          i
       }
 
       val orderRight = orderFromIndices(indicesRight)
@@ -623,7 +675,8 @@ trait EvaluatorModule
         } toList
 
       val rightMergeKey = linearRight.zipWithIndex collect {
-        case (p, i) if !posLeft(p) => Right(i)
+        case (p, i) if !posLeft(p) =>
+          Right(i)
       }
 
       val mergeKey: List[Either[Int, Int]] = leftMergeKey ++ rightMergeKey
@@ -647,7 +700,8 @@ trait EvaluatorModule
               (indicesLeft map idsLeft) zip (indicesRight map idsRight)
 
             zipped map {
-              case (x, y) => Ordering.fromInt(x - y)
+              case (x, y) =>
+                Ordering.fromInt(x - y)
             } reduce {
               _ |+| _
             }
@@ -658,8 +712,10 @@ trait EvaluatorModule
         case ((idsLeft, leftV), (idsRight, rightV))
             if pf.isDefinedAt((leftV, rightV)) => {
           val idsMerged = mergeKey map {
-            case Left(i)  => idsLeft(i)
-            case Right(i) => idsRight(i)
+            case Left(i) =>
+              idsLeft(i)
+            case Right(i) =>
+              idsRight(i)
           }
 
           (Vector(idsMerged: _*), pf(leftV, rightV))
@@ -678,7 +734,8 @@ trait EvaluatorModule
 
     if (expr.errors.isEmpty) {
       loop(Map(), Map())(expr) map {
-        case (_, value) => value
+        case (_, value) =>
+          value
       }
     } else {
       Seq.empty
@@ -696,7 +753,8 @@ trait EvaluatorModule
           val rightRec = loop(right)
 
           val merged = leftRec zip rightRec map {
-            case (l, r) => CoproductProvenance(l, r)
+            case (l, r) =>
+              CoproductProvenance(l, r)
           }
 
           merged ++ (leftRec drop merged.length) ++ (
@@ -704,13 +762,16 @@ trait EvaluatorModule
           )
         }
 
-        case prov => prov :: Nil
+        case prov =>
+          prov :: Nil
       }
 
     val (_, back) =
       loop(prov).foldLeft((Set[Provenance](), List[Provenance]())) {
-        case ((acc, result), prov) if acc(prov) => (acc, result)
-        case ((acc, result), prov)              => (acc + prov, prov :: result)
+        case ((acc, result), prov) if acc(prov) =>
+          (acc, result)
+        case ((acc, result), prov) =>
+          (acc + prov, prov :: result)
       }
 
     back.reverse
@@ -720,7 +781,8 @@ trait EvaluatorModule
     new Order[SEvent] {
       def order(left: SEvent, right: SEvent) = {
         (indices map left._1) zip (indices map right._1) map {
-          case (l, r) => Ordering.fromInt(l - r)
+          case (l, r) =>
+            Ordering.fromInt(l - r)
         } reduce {
           _ |+| _
         }
@@ -739,8 +801,10 @@ trait EvaluatorModule
       f(left.head, right.head) match {
         case Ordering.EQ =>
           (left.head, right.head) +: zipAlign(left.tail, right.tail)(f)
-        case Ordering.LT => zipAlign(left.tail, right)(f)
-        case Ordering.GT => zipAlign(left, right.tail)(f)
+        case Ordering.LT =>
+          zipAlign(left.tail, right)(f)
+        case Ordering.GT =>
+          zipAlign(left, right.tail)(f)
       }
     }
   }
@@ -756,9 +820,12 @@ trait EvaluatorModule
       left
     } else {
       f(left.head, right.head) match {
-        case Ordering.EQ => left.head +: mergeAlign(left.tail, right.tail)(f)
-        case Ordering.LT => left.head +: mergeAlign(left.tail, right)(f)
-        case Ordering.GT => right.head +: mergeAlign(left, right.tail)(f)
+        case Ordering.EQ =>
+          left.head +: mergeAlign(left.tail, right.tail)(f)
+        case Ordering.LT =>
+          left.head +: mergeAlign(left.tail, right)(f)
+        case Ordering.GT =>
+          right.head +: mergeAlign(left, right.tail)(f)
       }
     }
   }
@@ -774,9 +841,12 @@ trait EvaluatorModule
       left
     } else {
       f(left.head, right.head) match {
-        case Ordering.EQ => biasLeftAlign(left.tail, right.tail)(f)
-        case Ordering.LT => left.head +: biasLeftAlign(left.tail, right)(f)
-        case Ordering.GT => biasLeftAlign(left, right.tail)(f)
+        case Ordering.EQ =>
+          biasLeftAlign(left.tail, right.tail)(f)
+        case Ordering.LT =>
+          left.head +: biasLeftAlign(left.tail, right)(f)
+        case Ordering.GT =>
+          biasLeftAlign(left, right.tail)(f)
       }
     }
   }

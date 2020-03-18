@@ -59,7 +59,8 @@ class PlannerSuite extends SharedSQLContext {
       fail(
         s"Could query play aggregation query $query. Is it an aggregation query?"))
     val aggregations = planned.collect {
-      case n if n.nodeName contains "Aggregate" => n
+      case n if n.nodeName contains "Aggregate" =>
+        n
     }
 
     // For the new aggregation code path, there will be four aggregate operator for
@@ -96,7 +97,8 @@ class PlannerSuite extends SharedSQLContext {
     def checkPlan(fieldTypes: Seq[DataType]): Unit = {
       withTempTable("testLimit") {
         val fields = fieldTypes.zipWithIndex.map {
-          case (dataType, index) => StructField(s"c${index}", dataType, true)
+          case (dataType, index) =>
+            StructField(s"c${index}", dataType, true)
         } :+ StructField("key", IntegerType, true)
         val schema = StructType(fields)
         val row = Row.fromSeq(Seq.fill(fields.size)(null))
@@ -112,10 +114,12 @@ class PlannerSuite extends SharedSQLContext {
           """.stripMargin).queryExecution.sparkPlan
 
         val broadcastHashJoins = planned.collect {
-          case join: BroadcastHashJoin => join
+          case join: BroadcastHashJoin =>
+            join
         }
         val sortMergeJoins = planned.collect {
-          case join: SortMergeJoin => join
+          case join: SortMergeJoin =>
+            join
         }
 
         assert(broadcastHashJoins.size === 1, "Should use broadcast hash join")
@@ -170,10 +174,12 @@ class PlannerSuite extends SharedSQLContext {
         val planned = a.join(b, $"a.key" === $"b.key").queryExecution.sparkPlan
 
         val broadcastHashJoins = planned.collect {
-          case join: BroadcastHashJoin => join
+          case join: BroadcastHashJoin =>
+            join
         }
         val sortMergeJoins = planned.collect {
-          case join: SortMergeJoin => join
+          case join: SortMergeJoin =>
+            join
         }
 
         assert(broadcastHashJoins.size === 1, "Should use broadcast hash join")
@@ -261,7 +267,8 @@ class PlannerSuite extends SharedSQLContext {
               |  normal JOIN small ON (normal.key = small.key)
               |  JOIN tiny ON (small.key = tiny.key)
             """.stripMargin).queryExecution.executedPlan.collect {
-              case exchange: ShuffleExchange => exchange
+              case exchange: ShuffleExchange =>
+                exchange
             }.length
           assert(numExchanges === 5)
         }
@@ -275,7 +282,8 @@ class PlannerSuite extends SharedSQLContext {
               |  normal JOIN small ON (normal.key = small.key)
               |  JOIN tiny ON (normal.key = tiny.key)
             """.stripMargin).queryExecution.executedPlan.collect {
-              case exchange: ShuffleExchange => exchange
+              case exchange: ShuffleExchange =>
+                exchange
             }.length
           assert(numExchanges === 5)
         }
@@ -291,7 +299,8 @@ class PlannerSuite extends SharedSQLContext {
       .coalesce(5)
     def countRepartitions(plan: LogicalPlan): Int =
       plan.collect {
-        case r: Repartition => r
+        case r: Repartition =>
+          r
       }.length
     assert(countRepartitions(doubleRepartitioned.queryExecution.logical) === 3)
     assert(
@@ -355,7 +364,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.isEmpty) {
       fail(s"Exchange should have been added:\n$outputPlan")
     }
@@ -397,7 +407,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.isEmpty) {
       fail(s"Exchange should have been added:\n$outputPlan")
     }
@@ -420,7 +431,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.nonEmpty) {
       fail(s"Exchange should not have been added:\n$outputPlan")
     }
@@ -446,7 +458,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.nonEmpty) {
       fail(s"No Exchanges should have been added:\n$outputPlan")
     }
@@ -465,7 +478,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case s: Sort => true
+          case s: Sort =>
+            true
         }.isEmpty) {
       fail(s"Sort should have been added:\n$outputPlan")
     }
@@ -486,7 +500,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case s: Sort => true
+          case s: Sort =>
+            true
         }.nonEmpty) {
       fail(s"No sorts should have been added:\n$outputPlan")
     }
@@ -507,7 +522,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case s: Sort => true
+          case s: Sort =>
+            true
         }.isEmpty) {
       fail(s"Sort should have been added:\n$outputPlan")
     }
@@ -533,7 +549,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.size == 2) {
       fail(s"Topmost Exchange should have been eliminated:\n$outputPlan")
     }
@@ -560,7 +577,8 @@ class PlannerSuite extends SharedSQLContext {
       .apply(inputPlan)
     assertDistributionRequirementsAreSatisfied(outputPlan)
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.size == 1) {
       fail(s"Topmost Exchange should not have been eliminated:\n$outputPlan")
     }
@@ -594,12 +612,14 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan = ReuseExchange(sqlContext.sessionState.conf)
       .apply(inputPlan)
     if (outputPlan.collect {
-          case e: ReusedExchange => true
+          case e: ReusedExchange =>
+            true
         }.size != 1) {
       fail(s"Should re-use the shuffle:\n$outputPlan")
     }
     if (outputPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.size != 1) {
       fail(s"Should have only one shuffle:\n$outputPlan")
     }
@@ -616,12 +636,14 @@ class PlannerSuite extends SharedSQLContext {
     val outputPlan2 = ReuseExchange(sqlContext.sessionState.conf)
       .apply(inputPlan2)
     if (outputPlan2.collect {
-          case e: ReusedExchange => true
+          case e: ReusedExchange =>
+            true
         }.size != 2) {
       fail(s"Should re-use the two shuffles:\n$outputPlan2")
     }
     if (outputPlan2.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.size != 2) {
       fail(s"Should have only two shuffles:\n$outputPlan")
     }

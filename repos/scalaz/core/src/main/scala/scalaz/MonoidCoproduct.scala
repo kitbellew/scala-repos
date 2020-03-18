@@ -18,13 +18,18 @@ sealed class :+:[+M, +N](private val rep: Vector[M \/ N]) {
     @annotation.tailrec
     def go(r1: Vector[A \/ B], r2: Vector[A \/ B]): Vector[A \/ B] =
       (r1, r2) match {
-        case (Vector(), es) => es
-        case (es, Vector()) => es
+        case (Vector(), es) =>
+          es
+        case (es, Vector()) =>
+          es
         case (v1, v2) =>
           (v1.last, v2.head) match {
-            case (-\/(m1), -\/(m2)) => go(v1.init, -\/(m1 |+| m2) +: v2.tail)
-            case (\/-(n1), \/-(n2)) => go(v1.init, \/-(n1 |+| n2) +: v2.tail)
-            case _                  => (v1 ++ v2)
+            case (-\/(m1), -\/(m2)) =>
+              go(v1.init, -\/(m1 |+| m2) +: v2.tail)
+            case (\/-(n1), \/-(n2)) =>
+              go(v1.init, \/-(n1 |+| n2) +: v2.tail)
+            case _ =>
+              (v1 ++ v2)
           }
       }
     new :+:(go(rep, m.rep))

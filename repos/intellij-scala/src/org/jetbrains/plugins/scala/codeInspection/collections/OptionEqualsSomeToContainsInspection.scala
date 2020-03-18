@@ -35,7 +35,8 @@ object OptionEqualsSomeToContains extends SimplificationType {
           replace(expr)
             .withText(s"${qual.getText}.contains(${elem.getText})")
             .highlightAll)
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -59,6 +60,7 @@ object OptionNotEqualsSomeToNotContains extends SimplificationType {
           replace(expr)
             .withText(s"!${qual.getText}.contains(${elem.getText})")
             .highlightAll)
-      case _ => None
+      case _ =>
+        None
     }
 }

@@ -27,14 +27,19 @@ trait StandardFormats extends ThreadLocalSupport {
     new SexpFormat[Option[T]] {
       def write(option: Option[T]) =
         option match {
-          case Some(x) => SexpList(x.toSexp)
-          case None    => SexpNil
+          case Some(x) =>
+            SexpList(x.toSexp)
+          case None =>
+            SexpNil
         }
       def read(value: Sexp) =
         value match {
-          case SexpNil     => None
-          case SexpList(s) => Some(s.head.convertTo[T])
-          case x           => deserializationError(x)
+          case SexpNil =>
+            None
+          case SexpList(s) =>
+            Some(s.head.convertTo[T])
+          case x =>
+            deserializationError(x)
         }
     }
 
@@ -46,14 +51,19 @@ trait StandardFormats extends ThreadLocalSupport {
     new SexpFormat[Either[L, R]] {
       def write(either: Either[L, R]) =
         either match {
-          case Left(b)  => b.toSexp
-          case Right(a) => a.toSexp
+          case Left(b) =>
+            b.toSexp
+          case Right(a) =>
+            a.toSexp
         }
       def read(value: Sexp) =
         (value.convertTo(safeReader[L]), value.convertTo(safeReader[R])) match {
-          case (Success(l), Failure(_)) => Left(l)
-          case (Failure(l), Success(r)) => Right(r)
-          case (_, _)                   => deserializationError(value)
+          case (Success(l), Failure(_)) =>
+            Left(l)
+          case (Failure(l), Success(r)) =>
+            Right(r)
+          case (_, _) =>
+            deserializationError(value)
         }
     }
 
@@ -66,8 +76,10 @@ trait StandardFormats extends ThreadLocalSupport {
       def write(t: T): Sexp = SexpString(via.toSexpString(t))
       def read(v: Sexp): T =
         v match {
-          case SexpString(s) => via.fromSexpString(s)
-          case x             => deserializationError(x)
+          case SexpString(s) =>
+            via.fromSexpString(s)
+          case x =>
+            deserializationError(x)
         }
     }
 
@@ -129,13 +141,17 @@ trait OptionAltFormat {
     new SexpFormat[Option[T]] {
       def write(option: Option[T]) =
         option match {
-          case Some(x) => x.toSexp
-          case None    => SexpNil
+          case Some(x) =>
+            x.toSexp
+          case None =>
+            SexpNil
         }
       def read(value: Sexp) =
         value match {
-          case SexpNil => None
-          case x       => Some(x.convertTo[T])
+          case SexpNil =>
+            None
+          case x =>
+            Some(x.convertTo[T])
         }
     }
 

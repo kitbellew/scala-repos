@@ -24,7 +24,8 @@ object GetGetOrElse extends SimplificationType() {
           replace(expr)
             .withText(invocationText(map, "getOrElse", key, default))
             .highlightFrom(map))
-      case _ => None
+      case _ =>
+        None
     }
   }
 

@@ -32,7 +32,8 @@ object StateMetrics {
         durationHistogram.update((t1 - t0) / 1000000)
       }
       result.onFailure {
-        case _ => errorMeter.mark()
+        case _ =>
+          errorMeter.mark()
       }
 
       result

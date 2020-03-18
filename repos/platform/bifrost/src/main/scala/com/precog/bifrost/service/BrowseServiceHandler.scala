@@ -53,9 +53,12 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
   def size(apiKey: APIKey, path: Path): EitherT[M, ResourceError, JNum] =
     EitherT {
       vfs.size(apiKey, path, Version.Current).run.map {
-        case -\/(ResourceError.NotFound(_)) => \/-(0L)
-        case otherError @ -\/(_)            => otherError
-        case okValue @ \/-(_)               => okValue
+        case -\/(ResourceError.NotFound(_)) =>
+          \/-(0L)
+        case otherError @ -\/(_) =>
+          otherError
+        case okValue @ \/-(_) =>
+          okValue
       }
     } map {
       JNum(_)
@@ -85,7 +88,8 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
                   Map(
                     "contentType" -> JString(contentType.value),
                     "type" -> JArray(JString("file")))
-                case PathOnly => Map("type" -> JArray(JString("directory")))
+                case PathOnly =>
+                  Map("type" -> JArray(JString("directory")))
               }
             JObject(fields + ("name" -> JString(p.path.path.substring(1))))
           }
@@ -116,8 +120,10 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
         .pathStructure(apiKey, path, property, Version.Current)
         .fold(
           {
-            case ResourceError.NotFound(_) => \/.right(JUndefined)
-            case otherError                => \/.left(otherError)
+            case ResourceError.NotFound(_) =>
+              \/.right(JUndefined)
+            case otherError =>
+              \/.left(otherError)
           },
           {
             case PathStructure(types, children) =>

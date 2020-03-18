@@ -11,7 +11,8 @@ class ForSomeVsUnapply {
 
     val rep =
       makeWrap match {
-        case Wrap(r) => r
+        case Wrap(r) =>
+          r
       };
 
     useRep(rep) // error

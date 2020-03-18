@@ -84,11 +84,14 @@ object IngestProcessing {
         hd.select(
           partialData,
           request) match { // not using map so as to get tailrec
-          case None => select(tl, partialData, request)
-          case some => some
+          case None =>
+            select(tl, partialData, request)
+          case some =>
+            some
         }
 
-      case Nil => None
+      case Nil =>
+        None
     }
   }
 }

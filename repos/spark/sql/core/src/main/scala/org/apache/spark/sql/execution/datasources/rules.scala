@@ -50,8 +50,9 @@ private[sql] class ResolveDataSource(sqlContext: SQLContext)
           val plan = LogicalRelation(dataSource.resolveRelation())
           u.alias.map(a => SubqueryAlias(u.alias.get, plan)).getOrElse(plan)
         } catch {
-          case e: ClassNotFoundException => u
-          case e: Exception              =>
+          case e: ClassNotFoundException =>
+            u
+          case e: Exception =>
             // the provider is valid, but failed to create a logical plan
             u.failAnalysis(e.getMessage)
         }
@@ -67,7 +68,8 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transform {
       // Wait until children are resolved.
-      case p: LogicalPlan if !p.childrenResolved => p
+      case p: LogicalPlan if !p.childrenResolved =>
+        p
 
       // We are inserting into an InsertableRelation or HadoopFsRelation.
       case i @ InsertIntoTable(
@@ -103,8 +105,10 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
         (needCast, needRename) match {
           case (true, _) =>
             Alias(Cast(actual, expected.dataType), expected.name)()
-          case (false, true) => Alias(actual, expected.name)()
-          case (_, _)        => actual
+          case (false, true) =>
+            Alias(actual, expected.name)()
+          case (_, _) =>
+            actual
         }
     }
 
@@ -140,7 +144,8 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
         } else {
           // Get all input data source relations of the query.
           val srcRelations = query.collect {
-            case LogicalRelation(src: BaseRelation, _, _) => src
+            case LogicalRelation(src: BaseRelation, _, _) =>
+              src
           }
           if (srcRelations.contains(t)) {
             failAnalysis(
@@ -177,7 +182,8 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
 
         // Get all input data source relations of the query.
         val srcRelations = query.collect {
-          case LogicalRelation(src: BaseRelation, _, _) => src
+          case LogicalRelation(src: BaseRelation, _, _) =>
+            src
         }
         if (srcRelations.contains(r)) {
           failAnalysis(
@@ -209,7 +215,8 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
             case l @ LogicalRelation(dest: BaseRelation, _, _) =>
               // Get all input data source relations of the query.
               val srcRelations = c.child.collect {
-                case LogicalRelation(src: BaseRelation, _, _) => src
+                case LogicalRelation(src: BaseRelation, _, _) =>
+                  src
               }
               if (srcRelations.contains(dest)) {
                 failAnalysis(

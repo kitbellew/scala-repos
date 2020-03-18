@@ -26,7 +26,8 @@ class MultiTsvInputJob(args: Args) extends Job(args) {
     MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)).read
       .write(Tsv("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 
 }
@@ -37,7 +38,8 @@ class SequenceFileInputJob(args: Args) extends Job(args) {
     WritableSequenceFile("input1", ('query, 'queryStats)).read
       .write(WritableSequenceFile("output1", ('query, 'queryStats)))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -45,7 +47,8 @@ class MultipleTextLineFilesJob(args: Args) extends Job(args) {
   try {
     MultipleTextLineFiles(args.list("input"): _*).write(Tsv("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 
 }
@@ -304,8 +307,10 @@ object TestPath {
   def getCurrentDirectory = new java.io.File(".").getCanonicalPath
   def prefix =
     getCurrentDirectory.split("/").last match {
-      case "scalding-core" => getCurrentDirectory
-      case _               => getCurrentDirectory + "/scalding-core"
+      case "scalding-core" =>
+        getCurrentDirectory
+      case _ =>
+        getCurrentDirectory + "/scalding-core"
     }
   val testfsPathRoot =
     prefix + "/src/test/resources/com/twitter/scalding/test_filesystem/"

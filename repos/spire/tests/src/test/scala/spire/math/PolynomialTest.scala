@@ -183,7 +183,8 @@ class PolynomialCheck
       def xyz(rs: List[Rational]): Polynomial[Rational] =
         Polynomial(
           rs.take(4).zipWithIndex.map {
-            case (c, e) => Term(c, e)
+            case (c, e) =>
+              Term(c, e)
           })
 
       val (p1, p2) = (xyz(rs1), xyz(rs2))

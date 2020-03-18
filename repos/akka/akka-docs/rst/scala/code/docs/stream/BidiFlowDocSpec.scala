@@ -25,8 +25,10 @@ object BidiFlowDocSpec {
     //#implementation-details-elided
     implicit val order = ByteOrder.LITTLE_ENDIAN
     msg match {
-      case Ping(id) => ByteString.newBuilder.putByte(1).putInt(id).result()
-      case Pong(id) => ByteString.newBuilder.putByte(2).putInt(id).result()
+      case Ping(id) =>
+        ByteString.newBuilder.putByte(1).putInt(id).result()
+      case Pong(id) =>
+        ByteString.newBuilder.putByte(2).putInt(id).result()
     }
     //#implementation-details-elided
   }
@@ -36,8 +38,10 @@ object BidiFlowDocSpec {
     implicit val order = ByteOrder.LITTLE_ENDIAN
     val it = bytes.iterator
     it.getByte match {
-      case 1 => Ping(it.getInt)
-      case 2 => Pong(it.getInt)
+      case 1 =>
+        Ping(it.getInt)
+      case 2 =>
+        Pong(it.getInt)
       case other =>
         throw new RuntimeException(s"parse error: expected 1|2 got $other")
     }
@@ -188,7 +192,8 @@ class BidiFlowDocSpec extends AkkaSpec {
 
       // test it by plugging it into its own inverse and closing the right end
       val pingpong = Flow[Message].collect {
-        case Ping(id) => Pong(id)
+        case Ping(id) =>
+          Pong(id)
       }
       val flow = stack.atop(stack.reversed).join(pingpong)
       val result = Source((0 to 9).map(Ping))
@@ -206,7 +211,8 @@ class BidiFlowDocSpec extends AkkaSpec {
         .atop(stack.reversed)
         .join(
           Flow[Message].map {
-            case Ping(id) => Pong(id)
+            case Ping(id) =>
+              Pong(id)
           })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))
@@ -219,7 +225,8 @@ class BidiFlowDocSpec extends AkkaSpec {
         .atop(stack.reversed)
         .join(
           Flow[Message].map {
-            case Ping(id) => Pong(id)
+            case Ping(id) =>
+              Pong(id)
           })
       val f = Source((0 to 9).map(Ping)).via(flow).limit(20).runWith(Sink.seq)
       Await.result(f, 1.second) should ===((0 to 9).map(Pong))

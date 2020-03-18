@@ -40,8 +40,10 @@ object Play2Keys {
 
       if (children.forall(
             _.child.forall {
-              case _: Text => true;
-              case _       => false
+              case _: Text =>
+                true;
+              case _ =>
+                false
             })) {
         Some(
           new StringXmlKey(
@@ -55,7 +57,8 @@ object Play2Keys {
                        .isInstanceOf[Text]))) {
         val values =
           children.flatMap {
-            case _: Text => None
+            case _: Text =>
+              None
             case projectKey =>
               Some((projectKey.label, projectKey \ ENTRY_SEQ_NAME map (_.text)))
           }.toMap
@@ -75,13 +78,15 @@ object Play2Keys {
           map.put(
             str.name,
             str.values.map {
-              case (k, v) => (k, new StringParsedValue(v))
+              case (k, v) =>
+                (k, new StringParsedValue(v))
             })
         case seqStr: SeqStringXmlKey =>
           map.put(
             seqStr.name,
             seqStr.values map {
-              case (k, v) => (k, new SeqStringParsedValue(v))
+              case (k, v) =>
+                (k, new SeqStringParsedValue(v))
             })
         case _ =>
       }
@@ -122,7 +127,8 @@ object Play2Keys {
             vs.toSeq flatMap {
               case (projectName, projectValue: StringParsedValue) =>
                 Some((projectName, projectValue.parsed))
-              case _ => None
+              case _ =>
+                None
             }
         } getOrElse Seq.empty
       }
@@ -137,7 +143,8 @@ object Play2Keys {
             vs.toSeq flatMap {
               case (projectName, projectValue: SeqStringParsedValue) =>
                 Some((projectName, projectValue.parsed))
-              case _ => None
+              case _ =>
+                None
             }
         } getOrElse Seq.empty
       }

@@ -280,7 +280,8 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       checkAnswer(
         sql("SELECT `_1`.`_2`[0] FROM t"),
         data.map {
-          case Tuple1((_, Seq(string))) => Row(string)
+          case Tuple1((_, Seq(string))) =>
+            Row(string)
         })
     }
   }
@@ -291,7 +292,8 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
       checkAnswer(
         sql("SELECT `_1`[0].`_2` FROM t"),
         data.map {
-          case Tuple1(Seq((_, string))) => Row(string)
+          case Tuple1(Seq((_, string))) =>
+            Row(string)
         })
     }
   }

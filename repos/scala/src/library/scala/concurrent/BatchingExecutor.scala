@@ -60,7 +60,8 @@ private[concurrent] trait BatchingExecutor extends Executor {
           @tailrec
           def processBatch(batch: List[Runnable]): Unit =
             batch match {
-              case Nil => ()
+              case Nil =>
+                ()
               case head :: tail =>
                 _tasksLocal set tail
                 try {
@@ -129,7 +130,9 @@ private[concurrent] trait BatchingExecutor extends Executor {
   /** Override this to define which runnables will be batched. */
   def batchable(runnable: Runnable): Boolean =
     runnable match {
-      case _: OnCompleteRunnable => true
-      case _                     => false
+      case _: OnCompleteRunnable =>
+        true
+      case _ =>
+        false
     }
 }

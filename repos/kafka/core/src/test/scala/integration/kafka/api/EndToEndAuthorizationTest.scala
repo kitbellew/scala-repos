@@ -340,7 +340,8 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
     try {
       futures.foreach(_.get)
     } catch {
-      case e: ExecutionException => throw e.getCause
+      case e: ExecutionException =>
+        throw e.getCause
     }
   }
 

@@ -92,16 +92,20 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       for (t <- Seq(Top, Bottom, Undefined))
         assert(
           t match {
-            case Nanoseconds(_) => false
-            case _              => true
+            case Nanoseconds(_) =>
+              false
+            case _ =>
+              true
           })
 
       for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue);
            t = fromNanoseconds(ns))
         assert(
           t match {
-            case Nanoseconds(`ns`) => true
-            case _                 => false
+            case Nanoseconds(`ns`) =>
+              true
+            case _ =>
+              false
           })
     }
 
@@ -109,16 +113,20 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       for (t <- Seq(Top, Bottom, Undefined))
         assert(
           t match {
-            case Finite(_) => false
-            case _         => true
+            case Finite(_) =>
+              false
+            case _ =>
+              true
           })
 
       for (ns <- Seq(Long.MinValue, -1, 0, 1, Long.MaxValue);
            t = fromNanoseconds(ns))
         assert(
           t match {
-            case Finite(`t`) => true
-            case _           => false
+            case Finite(`t`) =>
+              true
+            case _ =>
+              false
           })
     }
 
@@ -359,7 +367,8 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     "never over/under flow nanos" in {
       for (v <- Seq(Long.MinValue, Long.MaxValue)) {
         fromNanoseconds(v) match {
-          case Nanoseconds(ns) => assert(ns == v)
+          case Nanoseconds(ns) =>
+            assert(ns == v)
         }
       }
     }
@@ -367,7 +376,8 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     "overflow millis" in {
       val millis = TimeUnit.NANOSECONDS.toMillis(Long.MaxValue)
       fromMilliseconds(millis) match {
-        case Nanoseconds(ns) => assert(ns == millis * 1e6)
+        case Nanoseconds(ns) =>
+          assert(ns == millis * 1e6)
       }
       assert(fromMilliseconds(millis + 1) == Top)
     }
@@ -375,7 +385,8 @@ trait TimeLikeSpec[T <: TimeLike[T]]
     "underflow millis" in {
       val millis = TimeUnit.NANOSECONDS.toMillis(Long.MinValue)
       fromMilliseconds(millis) match {
-        case Nanoseconds(ns) => assert(ns == millis * 1e6)
+        case Nanoseconds(ns) =>
+          assert(ns == millis * 1e6)
       }
       assert(fromMilliseconds(millis - 1) == Bottom)
     }
@@ -421,7 +432,8 @@ class TimeTest extends {
       val pairs = List((t0, "foo"), (t1, "bar"))
       assert(
         pairs.groupBy {
-          case (time: Time, value: String) => time
+          case (time: Time, value: String) =>
+            time
         } == Map(t0 -> pairs))
     }
 

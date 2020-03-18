@@ -23,10 +23,12 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
       .collect[List]()
       .flatMap { months =>
         months.headOption match {
-          case Some(m) if m._id == lastId || !orCompute => fuccess(months)
+          case Some(m) if m._id == lastId || !orCompute =>
+            fuccess(months)
           case Some(m) =>
             buildHistoryAfter(m.year, m.month, until) >> history(false)
-          case _ => buildHistoryAfter(2012, 6, until) >> history(false)
+          case _ =>
+            buildHistoryAfter(2012, 6, until) >> history(false)
         }
       }
   }
@@ -78,7 +80,8 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
     f = mixedLeaderboard(DateTime.now minusDays 1, none) zip
       mixedLeaderboard(DateTime.now minusWeeks 1, none) zip
       mixedLeaderboard(DateTime.now minusMonths 1, none) map {
-      case ((daily, weekly), monthly) => Leaderboards(daily, weekly, monthly)
+      case ((daily, weekly), monthly) =>
+        Leaderboards(daily, weekly, monthly)
     },
     timeToLive = 10 seconds
   )
@@ -168,9 +171,12 @@ object Gamify {
       monthly: List[ModMixed]) {
     def apply(period: Period) =
       period match {
-        case Period.Day   => daily
-        case Period.Week  => weekly
-        case Period.Month => monthly
+        case Period.Day =>
+          daily
+        case Period.Week =>
+          weekly
+        case Period.Month =>
+          monthly
       }
   }
 

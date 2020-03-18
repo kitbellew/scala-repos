@@ -1,7 +1,8 @@
 class ReferenceQueue[T] {
   def wrapper(jref: ReferenceQueue[_]): ReferenceQueue[T] =
     jref match {
-      case null => null
+      case null =>
+        null
     }
 
   // def wrapper(jref: ReferenceQueue[_]): ReferenceQueue[T] = OptionMatching.runOrElse(jref)(((x1: ReferenceQueue[_]) =>

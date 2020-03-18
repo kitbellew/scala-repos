@@ -216,7 +216,8 @@ object IsotonicRegressionModel extends Loader[IsotonicRegressionModel] {
       sqlContext
         .createDataFrame(
           boundaries.toSeq.zip(predictions).map {
-            case (b, p) => Data(b, p)
+            case (b, p) =>
+              Data(b, p)
           })
         .write
         .parquet(dataPath(path))

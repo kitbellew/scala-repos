@@ -82,8 +82,10 @@ object Template extends Logging {
         }
       val pioVersionMin = json \ "pio" \ "version" \ "min"
       pioVersionMin match {
-        case JString(s) => TemplateMetaData(pioVersionMin = Some(s))
-        case _          => TemplateMetaData()
+        case JString(s) =>
+          TemplateMetaData(pioVersionMin = Some(s))
+        case _ =>
+          TemplateMetaData()
       }
     }
   }
@@ -101,7 +103,8 @@ object Template extends Logging {
       try {
         Some(Process("git config --global http.proxy").lines.toList(0))
       } catch {
-        case e: Throwable => None
+        case e: Throwable =>
+          None
       }
 
     val (host, port) = gitProxy map { p =>
@@ -119,14 +122,17 @@ object Template extends Logging {
           try {
             Some(p.toInt)
           } catch {
-            case e: NumberFormatException => None
+            case e: NumberFormatException =>
+              None
           }
         } getOrElse None)
     }
 
     (host, port) match {
-      case (Some(h), Some(p)) => Http(url).proxy(h, p)
-      case _                  => Http(url)
+      case (Some(h), Some(p)) =>
+        Http(url).proxy(h, p)
+      case _ =>
+        Http(url)
     }
   }
 
@@ -140,7 +146,8 @@ object Template extends Logging {
           Source.fromFile(repoFilename)(scala.io.Codec.ISO8859).mkString
         read[Map[String, GitHubCache]](cache)
       } catch {
-        case e: Throwable => Map[String, GitHubCache]()
+        case e: Throwable =>
+          Map[String, GitHubCache]()
       }
     val newReposCache = reposCache ++ (
       try {
@@ -190,7 +197,8 @@ object Template extends Logging {
         .postData("json=" + write(data))
         .asString
     } catch {
-      case e: Throwable => error("Unable to subscribe.")
+      case e: Throwable =>
+        error("Unable to subscribe.")
     }
   }
 
@@ -199,7 +207,8 @@ object Template extends Logging {
       httpOptionalProxy(
         s"http://meta.prediction.io/templates/$repo/$org/$name").asString
     } catch {
-      case e: Throwable => debug("Template metadata unavailable.")
+      case e: Throwable =>
+        debug("Template metadata unavailable.")
     }
   }
 

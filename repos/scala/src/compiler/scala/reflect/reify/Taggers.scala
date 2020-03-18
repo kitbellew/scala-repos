@@ -113,7 +113,8 @@ abstract class Taggers {
       }
     try c.typecheck(result)
     catch {
-      case terr @ TypecheckException(pos, msg) => failTag(result, terr)
+      case terr @ TypecheckException(pos, msg) =>
+        failTag(result, terr)
     }
   }
 
@@ -122,7 +123,8 @@ abstract class Taggers {
       c.reifyTree(universe, mirror, expr))
     try c.typecheck(result)
     catch {
-      case terr @ TypecheckException(pos, msg) => failExpr(result, terr)
+      case terr @ TypecheckException(pos, msg) =>
+        failExpr(result, terr)
     }
   }
 

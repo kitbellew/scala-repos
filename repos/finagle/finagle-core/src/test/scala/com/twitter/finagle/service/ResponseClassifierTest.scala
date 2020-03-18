@@ -30,10 +30,12 @@ class ResponseClassifierTest extends FunSuite {
     val aReturn = Return("yep")
 
     val evens: ResponseClassifier = {
-      case ReqRep(i: Int, Throw(_)) if i % 2 == 0 => RetryableFailure
+      case ReqRep(i: Int, Throw(_)) if i % 2 == 0 =>
+        RetryableFailure
     }
     val odds: ResponseClassifier = {
-      case ReqRep(i: Int, Throw(_)) if i % 2 == 1 => NonRetryableFailure
+      case ReqRep(i: Int, Throw(_)) if i % 2 == 1 =>
+        NonRetryableFailure
     }
     val classifier = evens.orElse(odds)
 

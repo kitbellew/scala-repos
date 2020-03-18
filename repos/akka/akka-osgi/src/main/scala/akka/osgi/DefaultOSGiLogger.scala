@@ -44,8 +44,10 @@ class DefaultOSGiLogger extends DefaultLogger {
     }
 
     {
-      case logService: LogService ⇒ setLogService(logService)
-      case logEvent: LogEvent ⇒ messagesToLog :+= logEvent
+      case logService: LogService ⇒
+        setLogService(logService)
+      case logEvent: LogEvent ⇒
+        messagesToLog :+= logEvent
     }
   }
 
@@ -59,8 +61,10 @@ class DefaultOSGiLogger extends DefaultLogger {
     context.system.eventStream.unsubscribe(self, classOf[LogService])
 
     {
-      case logEvent: LogEvent ⇒ logMessage(logService, logEvent)
-      case UnregisteringLogService ⇒ context.become(uninitialisedReceive)
+      case logEvent: LogEvent ⇒
+        logMessage(logService, logEvent)
+      case UnregisteringLogService ⇒
+        context.become(uninitialisedReceive)
     }
   }
 

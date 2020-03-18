@@ -305,7 +305,8 @@ final class QaApi(
         createdAt = DateTime.now)
       subject.fold(question addComment c, answer addComment c) >>- {
         subject match {
-          case Left(q) => notifier.createQuestionComment(q, c, user)
+          case Left(q) =>
+            notifier.createQuestionComment(q, c, user)
           case Right(a) =>
             question findById a.questionId foreach {
               _ foreach { q =>

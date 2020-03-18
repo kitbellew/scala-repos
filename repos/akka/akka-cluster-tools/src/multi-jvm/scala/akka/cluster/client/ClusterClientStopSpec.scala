@@ -35,7 +35,8 @@ object ClusterClientStopSpec extends MultiNodeConfig {
 
   class Service extends Actor {
     def receive = {
-      case msg ⇒ sender() ! msg
+      case msg ⇒
+        sender() ! msg
     }
   }
 }

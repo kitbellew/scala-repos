@@ -23,9 +23,11 @@ class RenameScalaBindingPatternProcessor
         ScalaPsiUtil.nameContext(pattern) match {
           case _: ScVariable | _: ScValue | _: ScClassParameter =>
             false //handled by RenameScalaValsProcessor
-          case _ => true
+          case _ =>
+            true
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   override def findReferences(

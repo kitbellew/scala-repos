@@ -29,7 +29,8 @@ abstract class AbstractFixOnPsiElement[T <: PsiElement](
       else
         null.asInstanceOf[T]
     } catch {
-      case e: ClassCastException => null.asInstanceOf[T]
+      case e: ClassCastException =>
+        null.asInstanceOf[T]
     }
   }
 
@@ -70,7 +71,8 @@ abstract class AbstractFixOnTwoPsiElements[T <: PsiElement, S <: PsiElement](
       else
         null.asInstanceOf[T]
     } catch {
-      case e: ClassCastException => null.asInstanceOf[T]
+      case e: ClassCastException =>
+        null.asInstanceOf[T]
     }
   }
 

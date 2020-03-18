@@ -54,7 +54,8 @@ final class ResponseHeader(
     o match {
       case ResponseHeader(s, h, r) =>
         (s, h, r).equals((status, headers, reasonPhrase))
-      case _ => false
+      case _ =>
+        false
     }
 }
 object ResponseHeader {
@@ -250,8 +251,10 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     Cookies
       .fromCookieHeader(header.headers.get(SET_COOKIE))
       .get(Session.COOKIE_NAME) match {
-      case Some(cookie) => Session.decodeFromCookie(Some(cookie))
-      case None         => request.session
+      case Some(cookie) =>
+        Session.decodeFromCookie(Some(cookie))
+      case None =>
+        request.session
     }
 
   /**

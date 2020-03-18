@@ -115,39 +115,48 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
             ),
             true
           ).infer())
-      case n => n.mapChildren(convert, true)
+      case n =>
+        n.mapChildren(convert, true)
     }
 
   /** Create a structure of the given type where all columns are NULL. */
   def nullStructFor(t: Type): Node =
     t.structural match {
-      case ProductType(ts) => ProductNode(ts.map(nullStructFor))
+      case ProductType(ts) =>
+        ProductNode(ts.map(nullStructFor))
       case StructType(sts) =>
         StructNode(
           sts.map {
-            case (s, t) => (s, nullStructFor(t))
+            case (s, t) =>
+              (s, nullStructFor(t))
           })
-      case t: OptionType => LiteralNode(t, None)
-      case t             => LiteralNode(OptionType(t), None)
+      case t: OptionType =>
+        LiteralNode(t, None)
+      case t =>
+        LiteralNode(OptionType(t), None)
     }
 
   /** Assign new TypeSymbols to a subtree that needs to be copied into multiple places. */
   def assignFreshSymbols(n: Node): Node = {
     val typeSyms =
       n.collect {
-        case n: TypeGenerator => n.identity
+        case n: TypeGenerator =>
+          n.identity
       }.toSet
     val repl =
       typeSyms.map {
-        case ts: TableIdentitySymbol => ts -> new AnonTableIdentitySymbol
-        case ts                      => ts -> new AnonTypeSymbol
+        case ts: TableIdentitySymbol =>
+          ts -> new AnonTableIdentitySymbol
+        case ts =>
+          ts -> new AnonTypeSymbol
       }.toMap
     def replaceTS(t: Type): Type =
       (
         t match {
           case NominalType(ts, v) =>
             repl.get(ts).map(new NominalType(_, v)).getOrElse(t)
-          case t => t
+          case t =>
+            t
         }
       ).mapChildren(replaceTS)
     //repl.foreach { case (ts1, ts2) => global.get(ts1).foreach(t => global += ts2 -> replaceTS(t)) }
@@ -157,8 +166,10 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
             n.copy(identity = repl(n.identity)
               .asInstanceOf[TableIdentitySymbol])(n.profileTable) :@ replaceTS(
               n.nodeType)
-          case n: Pure    => n.copy(identity = repl(n.identity))
-          case n: GroupBy => n.copy(identity = repl(n.identity))
+          case n: Pure =>
+            n.copy(identity = repl(n.identity))
+          case n: GroupBy =>
+            n.copy(identity = repl(n.identity))
         },
         bottomUp = true
       )

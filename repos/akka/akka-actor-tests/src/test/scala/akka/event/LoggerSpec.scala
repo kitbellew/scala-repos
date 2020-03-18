@@ -125,7 +125,8 @@ object LoggerSpec {
           if (event.message.toString.startsWith("msg1"))
             Thread.sleep(500) // slow
           super.aroundReceive(r, msg)
-        case _ ⇒ super.aroundReceive(r, msg)
+        case _ ⇒
+          super.aroundReceive(r, msg)
       }
 
     }
@@ -144,13 +145,15 @@ object LoggerSpec {
             Map[String, Any](
               "currentMsg" -> cmim,
               "currentMsgLength" -> cmim.length)
-          case _ ⇒ Map()
+          case _ ⇒
+            Map()
         }
       always ++ perMessage
     }
 
     def receive: Receive = {
-      case m: String ⇒ log.warning(m)
+      case m: String ⇒
+        log.warning(m)
     }
   }
 
@@ -176,8 +179,10 @@ class LoggerSpec extends WordSpec with Matchers {
         // since logging is asynchronous ensure that it propagates
         if (shouldLog) {
           probe.fishForMessage(0.5.seconds.dilated) {
-            case "Danger! Danger!" ⇒ true
-            case _ ⇒ false
+            case "Danger! Danger!" ⇒
+              true
+            case _ ⇒
+              false
           }
         } else {
           probe.expectNoMsg(0.5.seconds.dilated)

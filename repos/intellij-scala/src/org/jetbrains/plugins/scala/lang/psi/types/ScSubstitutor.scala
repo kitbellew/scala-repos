@@ -128,7 +128,8 @@ class ScSubstitutor(
           placer = placer.getContext
         }
         zSubst.followed(this)
-      case _ => new ScSubstitutor(Map.empty, Map.empty, Some(tp)).followed(this)
+      case _ =>
+        new ScSubstitutor(Map.empty, Map.empty, Some(tp)).followed(this)
     }
   }
   def followed(s: ScSubstitutor): ScSubstitutor = followed(s, 0)
@@ -183,8 +184,10 @@ class ScSubstitutor(
       t
     else
       t match {
-        case ScParameterizedType(designator, _) => designator
-        case _                                  => t
+        case ScParameterizedType(designator, _) =>
+          designator
+        case _ =>
+          t
       }
   }
 
@@ -210,11 +213,14 @@ class ScSubstitutor(
 
         override def visitAbstractType(a: ScAbstractType): Unit = {
           result = tvMap.get((a.tpt.name, a.tpt.getId)) match {
-            case None => a
+            case None =>
+              a
             case Some(v) =>
               v match {
-                case tpt: ScTypeParameterType if tpt.param == a.tpt.param => a
-                case _                                                    => extractTpt(a.tpt, v)
+                case tpt: ScTypeParameterType if tpt.param == a.tpt.param =>
+                  a
+                case _ =>
+                  extractTpt(a.tpt, v)
               }
           }
         }
@@ -233,26 +239,33 @@ class ScSubstitutor(
 
         override def visitUndefinedType(u: ScUndefinedType): Unit = {
           result = tvMap.get((u.tpt.name, u.tpt.getId)) match {
-            case None => u
+            case None =>
+              u
             case Some(v) =>
               v match {
-                case tpt: ScTypeParameterType if tpt.param == u.tpt.param => u
-                case _                                                    => extractTpt(u.tpt, v)
+                case tpt: ScTypeParameterType if tpt.param == u.tpt.param =>
+                  u
+                case _ =>
+                  extractTpt(u.tpt, v)
               }
           }
         }
 
         override def visitTypeVariable(tv: ScTypeVariable): Unit = {
           result = tvMap.get((tv.name, null)) match {
-            case None    => tv
-            case Some(v) => v
+            case None =>
+              tv
+            case Some(v) =>
+              v
           }
         }
 
         override def visitTypeParameterType(tpt: ScTypeParameterType): Unit = {
           result = tvMap.get((tpt.name, tpt.getId)) match {
-            case None    => tpt
-            case Some(v) => extractTpt(tpt, v)
+            case None =>
+              tpt
+            case Some(v) =>
+              extractTpt(tpt, v)
           }
         }
 
@@ -261,12 +274,16 @@ class ScSubstitutor(
             result = getDependentMethodTypes.find {
               case (parameter: Parameter, tp: ScType) =>
                 parameter.paramInCode match {
-                  case Some(p) if p == d.element => true
-                  case _                         => false
+                  case Some(p) if p == d.element =>
+                    true
+                  case _ =>
+                    false
                 }
             } match {
-              case Some((_, res)) => res
-              case _              => t
+              case Some((_, res)) =>
+                res
+              case _ =>
+                t
             }
           }
         }
@@ -276,11 +293,13 @@ class ScSubstitutor(
           def hasRecursiveThisType(tp: ScType): Boolean = {
             var res = false
             tp.recursiveUpdate {
-              case tpp if res => (true, tpp)
+              case tpp if res =>
+                (true, tpp)
               case tpp @ ScThisType(`clazz`) =>
                 res = true
                 (true, tpp)
-              case tpp => (false, tpp)
+              case tpp =>
+                (false, tpp)
             }
             res
           }
@@ -329,12 +348,14 @@ class ScSubstitutor(
                               }
                               null
                           }
-                        case None => null
+                        case None =>
+                          null
                       }
                     }
                   case Some((cl: PsiClass, subst)) =>
                     typez match {
-                      case t: ScTypeParameterType => return update(t.upper.v)
+                      case t: ScTypeParameterType =>
+                        return update(t.upper.v)
                       case p @ ScParameterizedType(des, typeArgs) =>
                         p.designator match {
                           case ScTypeParameterType(_, _, _, upper, _) =>
@@ -368,7 +389,8 @@ class ScSubstitutor(
                             case _ =>
                           }
                         }
-                      case t: ScTypeParameterType => return update(t.upper.v)
+                      case t: ScTypeParameterType =>
+                        return update(t.upper.v)
                       case p @ ScParameterizedType(des, typeArgs) =>
                         p.designator match {
                           case ScTypeParameterType(_, _, _, upper, _) =>
@@ -397,16 +419,19 @@ class ScSubstitutor(
                         parentTemplate.asInstanceOf[ScTemplateDefinition])
                     else
                       tp = null
-                  case ScProjectionType(newType, _, _) => tp = newType
+                  case ScProjectionType(newType, _, _) =>
+                    tp = newType
                   case ScParameterizedType(
                         ScProjectionType(newType, _, _),
                         _) =>
                     tp = newType
-                  case _ => tp = null
+                  case _ =>
+                    tp = null
                 }
               }
               t
-            case _ => t
+            case _ =>
+              t
           }
         }
 
@@ -486,7 +511,8 @@ class ScSubstitutor(
               substInternal(designator) match {
                 case ScParameterizedType(des, _) =>
                   ScParameterizedType(des, typeArgs map substInternal)
-                case des => ScParameterizedType(des, typeArgs map substInternal)
+                case des =>
+                  ScParameterizedType(des, typeArgs map substInternal)
               }
           }
         }
@@ -506,7 +532,8 @@ class ScSubstitutor(
                 res.copy(superReference = true)
               else
                 res
-            case _ => res
+            case _ =>
+              res
           }
         }
 
@@ -553,14 +580,17 @@ class ScSubstitutor(
                           fun)
                       case b: ScBindingPattern =>
                         ScBindingPattern.getCompoundCopy(rt, b)
-                      case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-                      case named        => named
+                      case f: ScFieldId =>
+                        ScFieldId.getCompoundCopy(rt, f)
+                      case named =>
+                        named
                     },
                     s.hasRepeatedParam),
                   rt)
             },
             typeMap.map {
-              case (s, sign) => (s, sign.updateTypes(substInternal))
+              case (s, sign) =>
+                (s, sign.updateTypes(substInternal))
             }
           )
           //todo: this is ugly workaround for
@@ -572,7 +602,8 @@ class ScSubstitutor(
                 thisType
               else
                 middleRes
-            case _ => middleRes
+            case _ =>
+              middleRes
           }
         }
       }
@@ -657,8 +688,10 @@ class ScUndefinedSubstitutor(
                 tp match {
                   case ScAbstractType(_, absLower, upper) =>
                     i match {
-                      case -1 => (true, absLower)
-                      case 1  => (true, upper)
+                      case -1 =>
+                        (true, absLower)
+                      case 1 =>
+                        (true, upper)
                       case 0 =>
                         (
                           true,
@@ -667,8 +700,10 @@ class ScUndefinedSubstitutor(
                     }
                   case ScSkolemizedType(_, _, skoLower, upper) =>
                     i match {
-                      case -1 => (true, skoLower)
-                      case 1  => (true, upper)
+                      case -1 =>
+                        (true, skoLower)
+                      case 1 =>
+                        (true, upper)
                       case 0 =>
                         (
                           true,
@@ -681,7 +716,8 @@ class ScUndefinedSubstitutor(
                             skoLower,
                             upper))
                     }
-                  case _ => (false, tp)
+                  case _ =>
+                    (false, tp)
                 }
               },
               variance
@@ -729,8 +765,10 @@ class ScUndefinedSubstitutor(
                 tp match {
                   case ScAbstractType(_, lower, absUpper) =>
                     i match {
-                      case -1 => (true, lower)
-                      case 1  => (true, absUpper)
+                      case -1 =>
+                        (true, lower)
+                      case 1 =>
+                        (true, absUpper)
                       case 0 =>
                         (
                           true,
@@ -747,8 +785,10 @@ class ScUndefinedSubstitutor(
                     }
                   case ScSkolemizedType(_, _, lower, skoUpper) =>
                     i match {
-                      case -1 => (true, lower)
-                      case 1  => (true, skoUpper)
+                      case -1 =>
+                        (true, lower)
+                      case 1 =>
+                        (true, skoUpper)
                       case 0 =>
                         (
                           true,
@@ -761,7 +801,8 @@ class ScUndefinedSubstitutor(
                             lower,
                             skoUpper))
                     }
-                  case _ => (false, tp)
+                  case _ =>
+                    (false, tp)
                 }
               },
               variance
@@ -818,18 +859,23 @@ class ScUndefinedSubstitutor(
         return None
       }
       tvMap.get(name) match {
-        case Some(tp) => Some(tp)
+        case Some(tp) =>
+          Some(tp)
         case _ =>
           (
             lowerMap
               .get(name)
               .map(set =>
                 lowerAdditionalMap.get(name) match {
-                  case Some(set1) => set ++ set1
-                  case _          => set
+                  case Some(set1) =>
+                    set ++ set1
+                  case _ =>
+                    set
                 }) match {
-              case Some(set) => Some(set)
-              case _         => lowerAdditionalMap.get(name)
+              case Some(set) =>
+                Some(set)
+              case _ =>
+                lowerAdditionalMap.get(name)
             }
           ) match {
             case Some(set) =>
@@ -841,8 +887,9 @@ class ScUndefinedSubstitutor(
                     if (additionalNames.contains(otherName)) {
                       res = true
                       solve(otherName, visited + name) match {
-                        case None if !notNonable => return false
-                        case _                   =>
+                        case None if !notNonable =>
+                          return false
+                        case _ =>
                       }
                     }
                     (false, tpt)
@@ -851,12 +898,14 @@ class ScUndefinedSubstitutor(
                     if (names.contains(otherName)) {
                       res = true
                       solve(otherName, visited + name) match {
-                        case None if !notNonable => return false
-                        case _                   =>
+                        case None if !notNonable =>
+                          return false
+                        case _ =>
                       }
                     }
                     (false, tpt)
-                  case tp: ScType => (false, tp)
+                  case tp: ScType =>
+                    (false, tp)
                 }
                 true
               }
@@ -889,11 +938,15 @@ class ScUndefinedSubstitutor(
               .get(name)
               .map(set =>
                 upperAdditionalMap.get(name) match {
-                  case Some(set1) => set ++ set1
-                  case _          => set
+                  case Some(set1) =>
+                    set ++ set1
+                  case _ =>
+                    set
                 }) match {
-              case Some(set) => Some(set)
-              case _         => upperAdditionalMap.get(name)
+              case Some(set) =>
+                Some(set)
+              case _ =>
+                upperAdditionalMap.get(name)
             }
           ) match {
             case Some(set) =>
@@ -905,8 +958,9 @@ class ScUndefinedSubstitutor(
                     if (additionalNames.contains(otherName)) {
                       res = true
                       solve(otherName, visited + name) match {
-                        case None if !notNonable => return false
-                        case _                   =>
+                        case None if !notNonable =>
+                          return false
+                        case _ =>
                       }
                     }
                     (false, tpt)
@@ -915,12 +969,14 @@ class ScUndefinedSubstitutor(
                     if (names.contains(otherName)) {
                       res = true
                       solve(otherName, visited + name) match {
-                        case None if !notNonable => return false
-                        case _                   =>
+                        case None if !notNonable =>
+                          return false
+                        case _ =>
                       }
                     }
                     (false, tpt)
-                  case tp: ScType => (false, tp)
+                  case tp: ScType =>
+                    (false, tp)
                 }
                 true
               }
@@ -966,7 +1022,8 @@ class ScUndefinedSubstitutor(
                         }
                       }
                     }
-                  case None => tvMap += ((name, rType))
+                  case None =>
+                    tvMap += ((name, rType))
                 }
               }
             case None =>
@@ -982,9 +1039,10 @@ class ScUndefinedSubstitutor(
     while (namesIterator.hasNext) {
       val name = namesIterator.next()
       solve(name, HashSet.empty) match {
-        case Some(tp)            => // do nothing
-        case None if !notNonable => return None
-        case _                   =>
+        case Some(tp) => // do nothing
+        case None if !notNonable =>
+          return None
+        case _ =>
       }
     }
     val subst = new ScSubstitutor(IHashMap.empty ++ tvMap, Map.empty, None)

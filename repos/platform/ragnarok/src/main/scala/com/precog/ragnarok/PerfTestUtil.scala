@@ -69,7 +69,8 @@ class PerfTestUtil(rootDir: File, runs: Int = 30) {
       val tails = (runs * (config.outliers / 2)).toInt
       val test = Tree.leaf[PerfTest](RunQuery(query))
       val result = runner.runAll(test, config.runs) {
-        case None => None
+        case None =>
+          None
         case Some((a, b)) =>
           Some(Statistics(MetricSpace[Long].distance(a, b), tails = tails))
       } map {

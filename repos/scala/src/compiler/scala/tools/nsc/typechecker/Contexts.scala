@@ -436,8 +436,10 @@ trait Contexts {
                 tryOnce(false)
                 reporter.hasErrors
               } catch {
-                case ex: CyclicReference => throw ex
-                case ex: TypeError       => true // recoverable cyclic references?
+                case ex: CyclicReference =>
+                  throw ex
+                case ex: TypeError =>
+                  true // recoverable cyclic references?
               }
             }
           } else
@@ -549,20 +551,26 @@ trait Contexts {
         reporter: ContextReporter = this.reporter): Context = {
       val isTemplateOrPackage =
         tree match {
-          case _: Template | _: PackageDef => true
-          case _                           => false
+          case _: Template | _: PackageDef =>
+            true
+          case _ =>
+            false
         }
       val isDefDef =
         tree match {
-          case _: DefDef => true
-          case _         => false
+          case _: DefDef =>
+            true
+          case _ =>
+            false
         }
       val isImport =
         tree match {
           // The guard is for SI-8403. It prevents adding imports again in the context created by
           // `Namer#createInnerNamer`
-          case _: Import if tree != this.tree => true
-          case _                              => false
+          case _: Import if tree != this.tree =>
+            true
+          case _ =>
+            false
         }
       val sameOwner = owner == this.owner
       val prefixInChild =
@@ -727,8 +735,10 @@ trait Contexts {
     def echo(pos: Position, msg: String) = reporter.echo(fixPosition(pos), msg)
     def fixPosition(pos: Position): Position =
       pos match {
-        case NoPosition => nextEnclosing(_.tree.pos != NoPosition).tree.pos
-        case _          => pos
+        case NoPosition =>
+          nextEnclosing(_.tree.pos != NoPosition).tree.pos
+        case _ =>
+          pos
       }
 
     def deprecationWarning(pos: Position, sym: Symbol, msg: String): Unit =
@@ -793,7 +803,8 @@ trait Contexts {
         ""
     private def treeString =
       tree match {
-        case x: Import => "" + x
+        case x: Import =>
+          "" + x
         case Template(parents, `noSelfType`, body) =>
           val pstr =
             if ((parents eq null) || parents.isEmpty)
@@ -806,7 +817,8 @@ trait Contexts {
             else
               body.length + " stats"
           s"""Template($pstr, _, $bstr)"""
-        case x => s"${tree.shortClass}${treeIdString}:${treeTruncated}"
+        case x =>
+          s"${tree.shortClass}${treeIdString}:${treeTruncated}"
       }
 
     override def toString = sm"""|Context($unit) {
@@ -876,8 +888,10 @@ trait Contexts {
 
       def isSubThisType(pre: Type, clazz: Symbol): Boolean =
         pre match {
-          case ThisType(pclazz) => pclazz isNonBottomSubClass clazz
-          case _                => false
+          case ThisType(pclazz) =>
+            pclazz isNonBottomSubClass clazz
+          case _ =>
+            false
         }
 
       /* Is protected access to target symbol permitted */
@@ -1086,8 +1100,10 @@ trait Contexts {
       val nextOuter = this.nextOuter
       def withOuter(is: List[ImplicitInfo]): List[List[ImplicitInfo]] =
         is match {
-          case Nil => nextOuter.implicitss
-          case _   => is :: nextOuter.implicitss
+          case Nil =>
+            nextOuter.implicitss
+          case _ =>
+            is :: nextOuter.implicitss
         }
 
       val CycleMarker = NoRunId - 1
@@ -1256,9 +1272,12 @@ trait Contexts {
            lookupError
          else
            sym match {
-             case NoSymbol if inaccessible ne null => inaccessible
-             case NoSymbol                         => LookupNotFound
-             case _                                => LookupSucceeded(qual, sym)
+             case NoSymbol if inaccessible ne null =>
+               inaccessible
+             case NoSymbol =>
+               LookupNotFound
+             case _ =>
+               LookupSucceeded(qual, sym)
            })
       def finishDefSym(sym: Symbol, pre0: Type): NameLookup =
         if (requiresQualifier(sym))
@@ -1304,8 +1323,10 @@ trait Contexts {
           val scope = cx.enclClass.prefix.baseType(enclClassSym).decls
           val constructorSym =
             lookupInScope(scope) match {
-              case Nil       => NoSymbol
-              case hd :: Nil => hd.sym
+              case Nil =>
+                NoSymbol
+              case hd :: Nil =>
+                hd.sym
               case entries =>
                 newOverloaded(enclClassSym, cx.enclClass.prefix, entries)
             }
@@ -1316,7 +1337,8 @@ trait Contexts {
       while (defSym == NoSymbol && (cx ne NoContext) && (cx.scope ne null)) {
         pre = cx.enclClass.prefix
         defSym = lookupInScope(cx.scope) match {
-          case Nil                  => searchPrefix
+          case Nil =>
+            searchPrefix
           case entries @ (hd :: tl) =>
             // we have a winner: record the symbol depth
             symbolDepth = (cx.depth - cx.scope.nestingLevel) + hd.depth
@@ -1434,7 +1456,8 @@ trait Contexts {
                   imp1wins()
                 else
                   imp2wins()
-              case _ => lookupError = ambiguousImports(imp1, imp2)
+              case _ =>
+                lookupError = ambiguousImports(imp1, imp2)
             }
         }
         // optimization: don't write out package prefixes
@@ -1562,9 +1585,12 @@ trait Contexts {
         severity: Severity,
         force: Boolean): Unit =
       severity match {
-        case ERROR   => handleError(pos, msg)
-        case WARNING => handleWarning(pos, msg)
-        case INFO    => reporter.echo(pos, msg)
+        case ERROR =>
+          handleError(pos, msg)
+        case WARNING =>
+          handleWarning(pos, msg)
+        case INFO =>
+          reporter.echo(pos, msg)
       }
 
     final override def hasErrors = super.hasErrors || errorBuffer.nonEmpty
@@ -1577,7 +1603,8 @@ trait Contexts {
     def reportFirstDivergentError(fun: Tree, param: Symbol, paramTp: Type)(
         implicit context: Context): Unit =
       errors.collectFirst {
-        case dte: DivergentImplicitTypeError => dte
+        case dte: DivergentImplicitTypeError =>
+          dte
       } match {
         case Some(divergent) =>
           // DivergentImplicit error has higher priority than "no implicit found"
@@ -1585,8 +1612,10 @@ trait Contexts {
           if (context.reportErrors) {
             context.issue(divergent.withPt(paramTp))
             errorBuffer.retain {
-              case dte: DivergentImplicitTypeError => false
-              case _                               => true
+              case dte: DivergentImplicitTypeError =>
+                false
+              case _ =>
+                true
             }
           }
         case _ =>
@@ -1595,8 +1624,10 @@ trait Contexts {
 
     def retainDivergentErrorsExcept(saved: DivergentImplicitTypeError) =
       errorBuffer.retain {
-        case err: DivergentImplicitTypeError => err ne saved
-        case _                               => false
+        case err: DivergentImplicitTypeError =>
+          err ne saved
+        case _ =>
+          false
       }
 
     def propagateImplicitTypeErrorsTo(target: ContextReporter) = {
@@ -1623,7 +1654,8 @@ trait Contexts {
     final def emitWarnings() =
       if (_warningBuffer != null) {
         _warningBuffer foreach {
-          case (pos, msg) => reporter.warning(pos, msg)
+          case (pos, msg) =>
+            reporter.warning(pos, msg)
         }
         _warningBuffer = null
       }
@@ -1719,8 +1751,10 @@ trait Contexts {
     /** The prefix expression */
     def qual: Tree =
       tree.symbol.info match {
-        case ImportType(expr) => expr
-        case ErrorType        => tree setType NoType // fix for #2870
+        case ImportType(expr) =>
+          expr
+        case ErrorType =>
+          tree setType NoType // fix for #2870
         case _ =>
           throw new FatalError(
             "symbol " + tree.symbol + " has bad type: " + tree.symbol.info
@@ -1800,21 +1834,26 @@ trait Contexts {
         selectors: List[ImportSelector],
         sym: Symbol): List[Symbol] =
       selectors match {
-        case List()                                      => List()
-        case List(ImportSelector(nme.WILDCARD, _, _, _)) => List(sym)
+        case List() =>
+          List()
+        case List(ImportSelector(nme.WILDCARD, _, _, _)) =>
+          List(sym)
         case ImportSelector(from, _, to, _) :: _ if from == sym.name =>
           if (to == nme.WILDCARD)
             List()
           else
             List(sym.cloneSymbol(sym.owner, sym.rawflags, to))
-        case _ :: rest => transformImport(rest, sym)
+        case _ :: rest =>
+          transformImport(rest, sym)
       }
 
     override def hashCode = tree.##
     override def equals(other: Any) =
       other match {
-        case that: ImportInfo => (tree == that.tree)
-        case _                => false
+        case that: ImportInfo =>
+          (tree == that.tree)
+        case _ =>
+          false
       }
     override def toString = tree.toString
   }

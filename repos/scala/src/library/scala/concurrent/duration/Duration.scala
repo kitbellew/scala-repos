@@ -57,8 +57,10 @@ object Duration {
   def apply(s: String): Duration = {
     val s1: String = s filterNot (_.isWhitespace)
     s1 match {
-      case "Inf" | "PlusInf" | "+Inf" => Inf
-      case "MinusInf" | "-Inf"        => MinusInf
+      case "Inf" | "PlusInf" | "+Inf" =>
+        Inf
+      case "MinusInf" | "-Inf" =>
+        MinusInf
       case _ =>
         val unitName = s1.reverse takeWhile (_.isLetter) reverse;
         timeUnit get unitName match {
@@ -69,7 +71,8 @@ object Duration {
               Duration(valueD, unit)
             else
               Duration(JLong.parseLong(valueStr), unit)
-          case _ => throw new NumberFormatException("format error " + s)
+          case _ =>
+            throw new NumberFormatException("format error " + s)
         }
     }
   }
@@ -97,7 +100,8 @@ object Duration {
   // Label => TimeUnit
   protected[duration] val timeUnit: Map[String, TimeUnit] =
     timeUnitLabels flatMap {
-      case (unit, names) => expandLabels(names) map (_ -> unit)
+      case (unit, names) =>
+        expandLabels(names) map (_ -> unit)
     } toMap
 
   /**
@@ -108,7 +112,8 @@ object Duration {
     (
       try Some(apply(s))
       catch {
-        case _: RuntimeException => None
+        case _: RuntimeException =>
+          None
       }
     ) flatMap unapply
 
@@ -220,15 +225,21 @@ object Duration {
   sealed abstract class Infinite extends Duration {
     def +(other: Duration): Duration =
       other match {
-        case x if x eq Undefined      => Undefined
-        case x: Infinite if x ne this => Undefined
-        case _                        => this
+        case x if x eq Undefined =>
+          Undefined
+        case x: Infinite if x ne this =>
+          Undefined
+        case _ =>
+          this
       }
     def -(other: Duration): Duration =
       other match {
-        case x if x eq Undefined      => Undefined
-        case x: Infinite if x eq this => Undefined
-        case _                        => this
+        case x if x eq Undefined =>
+          Undefined
+        case x: Infinite if x eq this =>
+          Undefined
+        case _ =>
+          this
       }
 
     def *(factor: Double): Duration =
@@ -247,7 +258,8 @@ object Duration {
         this
     def /(divisor: Duration): Double =
       divisor match {
-        case _: Infinite => Double.NaN
+        case _: Infinite =>
+          Double.NaN
         case x =>
           Double.PositiveInfinity * (
             if ((this > Zero) ^ (divisor >= Zero))
@@ -285,10 +297,12 @@ object Duration {
       override def toString = "Duration.Inf"
       def compare(other: Duration) =
         other match {
-          case x if x eq Undefined => -1 // Undefined != Undefined
+          case x if x eq Undefined =>
+            -1 // Undefined != Undefined
           case x if x eq this =>
             0 // `case Inf` will include null checks in the byte code
-          case _ => 1
+          case _ =>
+            1
         }
       def unary_- : Duration = MinusInf
       def toUnit(unit: TimeUnit): Double = Double.PositiveInfinity
@@ -669,13 +683,20 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
       /*
        * enforce the 2^63-1 ns limit, must be pos/neg symmetrical because of unary_-
        */
-      case NANOSECONDS ⇒ bounded(max_ns)
-      case MICROSECONDS ⇒ bounded(max_µs)
-      case MILLISECONDS ⇒ bounded(max_ms)
-      case SECONDS ⇒ bounded(max_s)
-      case MINUTES ⇒ bounded(max_min)
-      case HOURS ⇒ bounded(max_h)
-      case DAYS ⇒ bounded(max_d)
+      case NANOSECONDS ⇒
+        bounded(max_ns)
+      case MICROSECONDS ⇒
+        bounded(max_µs)
+      case MILLISECONDS ⇒
+        bounded(max_ms)
+      case SECONDS ⇒
+        bounded(max_s)
+      case MINUTES ⇒
+        bounded(max_min)
+      case HOURS ⇒
+        bounded(max_h)
+      case DAYS ⇒
+        bounded(max_d)
       case _ ⇒
         val v = DAYS.convert(length, unit)
         -max_d <= v && v <= max_d
@@ -708,8 +729,10 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
 
   def compare(other: Duration) =
     other match {
-      case x: FiniteDuration => toNanos compare x.toNanos
-      case _                 => -(other compare this)
+      case x: FiniteDuration =>
+        toNanos compare x.toNanos
+      case _ =>
+        -(other compare this)
     }
 
   // see https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow
@@ -735,13 +758,17 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
 
   def +(other: Duration) =
     other match {
-      case x: FiniteDuration => add(x.length, x.unit)
-      case _                 => other
+      case x: FiniteDuration =>
+        add(x.length, x.unit)
+      case _ =>
+        other
     }
   def -(other: Duration) =
     other match {
-      case x: FiniteDuration => add(-x.length, x.unit)
-      case _                 => -other
+      case x: FiniteDuration =>
+        add(-x.length, x.unit)
+      case _ =>
+        -other
     }
 
   def *(factor: Double) =
@@ -860,13 +887,20 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
           FiniteDuration(length, unit)
 
       unit match {
-        case DAYS         => FiniteDuration(length, unit)
-        case HOURS        => coarserOrThis(DAYS, 24)
-        case MINUTES      => coarserOrThis(HOURS, 60)
-        case SECONDS      => coarserOrThis(MINUTES, 60)
-        case MILLISECONDS => coarserOrThis(SECONDS, 1000)
-        case MICROSECONDS => coarserOrThis(MILLISECONDS, 1000)
-        case NANOSECONDS  => coarserOrThis(MICROSECONDS, 1000)
+        case DAYS =>
+          FiniteDuration(length, unit)
+        case HOURS =>
+          coarserOrThis(DAYS, 24)
+        case MINUTES =>
+          coarserOrThis(HOURS, 60)
+        case SECONDS =>
+          coarserOrThis(MINUTES, 60)
+        case MILLISECONDS =>
+          coarserOrThis(SECONDS, 1000)
+        case MICROSECONDS =>
+          coarserOrThis(MILLISECONDS, 1000)
+        case NANOSECONDS =>
+          coarserOrThis(MICROSECONDS, 1000)
       }
     }
 
@@ -878,8 +912,10 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
 
   override def equals(other: Any) =
     other match {
-      case x: FiniteDuration => toNanos == x.toNanos
-      case _                 => super.equals(other)
+      case x: FiniteDuration =>
+        toNanos == x.toNanos
+      case _ =>
+        super.equals(other)
     }
   override def hashCode = toNanos.toInt
 }

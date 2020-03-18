@@ -112,11 +112,13 @@ class ScalaCodeFragment(project: Project, text: String) extends {
             ScalaPsiElementFactory
               .createExpressionFromText(expr.getText, expr)
               .asInstanceOf[ScReferenceExpression])
-        case _ => None
+        case _ =>
+          None
       }
     newRef match {
-      case Some(r) if r.resolve() != null => ref.replace(r)
-      case _                              =>
+      case Some(r) if r.resolve() != null =>
+        ref.replace(r)
+      case _ =>
     }
   }
 

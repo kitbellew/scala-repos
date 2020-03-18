@@ -103,8 +103,10 @@ final class SteppingInmemJournal extends InmemJournal {
       doOrEnqueue { () ⇒
         promise.completeWith(
           super.asyncWriteMessages(Seq(message)).map {
-            case Nil ⇒ AsyncWriteJournal.successUnit
-            case head :: _ ⇒ head
+            case Nil ⇒
+              AsyncWriteJournal.successUnit
+            case head :: _ ⇒
+              head
           })
         future.map(_ ⇒ ())
       }

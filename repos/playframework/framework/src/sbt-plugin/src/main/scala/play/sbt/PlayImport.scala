@@ -81,9 +81,12 @@ object PlayImport {
               .replace("\033[33mx\033[0m", "\u274C ")
               .replace("\033[31m!\033[0m", "\uD83D\uDCA5 ")
             filtered match {
-              case FailuresErrors("0", "0") => filtered + " \uD83D\uDE04"
-              case FailuresErrors(_, _)     => filtered + " \uD83D\uDE22"
-              case _                        => filtered
+              case FailuresErrors("0", "0") =>
+                filtered + " \uD83D\uDE04"
+              case FailuresErrors(_, _) =>
+                filtered + " \uD83D\uDE22"
+              case _ =>
+                filtered
             }
           }
           def log(level: Level.Value, message: => String) =

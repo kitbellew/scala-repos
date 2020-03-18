@@ -14,7 +14,8 @@ object Test extends InteractiveTest {
     res.get match {
       case Left(tree) =>
         compiler.ask(() => reporter.println(s"$tree: ${tree.tpe}"))
-      case Right(ex) => reporter.println(ex)
+      case Right(ex) =>
+        reporter.println(ex)
     }
   }
 }

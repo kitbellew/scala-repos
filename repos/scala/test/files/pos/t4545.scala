@@ -90,7 +90,8 @@ object Test {
 
   def g20 =
     f((1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)) {
-      case ((a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)) => ()
+      case ((a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)) =>
+        ()
     }
 
   def g21 =

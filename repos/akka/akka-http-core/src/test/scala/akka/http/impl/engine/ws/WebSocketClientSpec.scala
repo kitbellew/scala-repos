@@ -368,7 +368,8 @@ class WebSocketClientSpec
           Source.fromPublisher(netIn) ~> Flow[ByteString].map(
             SessionBytes(null, _)) ~> client.in2
           client.out1 ~> Flow[SslTlsOutbound].collect {
-            case SendBytes(x) ⇒ x
+            case SendBytes(x) ⇒
+              x
           } ~> netOut.sink
           client.out2 ~> clientImplementation ~> client.in1
           ClosedShape
@@ -385,8 +386,10 @@ class WebSocketClientSpec
       string
         .fastSplit('\n')
         .map {
-          case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
-          case s ⇒ s
+          case s if s.startsWith("Date:") ⇒
+            "Date: XXXX\r"
+          case s ⇒
+            s
         }
         .mkString("\n")
 

@@ -121,7 +121,8 @@ object MetricsStatsReceiver {
       def deserialize(buf: Buf) =
         for {
           env <- Buf.Utf8.unapply(buf) match {
-            case None => Throw(new IllegalArgumentException("unknown format"))
+            case None =>
+              Throw(new IllegalArgumentException("unknown format"))
             case Some(str) =>
               Try(Json.deserialize[Json.Envelope[CounterIncrData]](str))
           }
@@ -169,7 +170,8 @@ object MetricsStatsReceiver {
       def deserialize(buf: Buf) =
         for {
           env <- Buf.Utf8.unapply(buf) match {
-            case None => Throw(new IllegalArgumentException("unknown format"))
+            case None =>
+              Throw(new IllegalArgumentException("unknown format"))
             case Some(str) =>
               Try(Json.deserialize[Json.Envelope[StatAddData]](str))
           }

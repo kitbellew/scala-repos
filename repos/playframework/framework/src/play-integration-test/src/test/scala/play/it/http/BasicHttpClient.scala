@@ -47,7 +47,8 @@ object BasicHttpClient {
               "Unexpected data after responses received: " + line)
           }
         } catch {
-          case timeout: SocketTimeoutException => throw timeout
+          case timeout: SocketTimeoutException =>
+            throw timeout
         }
       }
 
@@ -163,8 +164,10 @@ class BasicHttpClient(port: Int) {
 
       val (version, status, reasonPhrase) =
         statusLine.split(" ", 3) match {
-          case Array(v, s, r) => (v, s.toInt, r)
-          case Array(v, s)    => (v, s.toInt, "")
+          case Array(v, s, r) =>
+            (v, s.toInt, r)
+          case Array(v, s) =>
+            (v, s.toInt, "")
           case _ =>
             throw new RuntimeException(
               "Invalid status line for response " + responseDesc + ": " + statusLine)
@@ -177,8 +180,10 @@ class BasicHttpClient(port: Int) {
         } else {
           val parsed =
             header.split(":", 2) match {
-              case Array(name, value) => (name.trim(), value.trim())
-              case Array(name)        => (name, "")
+              case Array(name, value) =>
+                (name.trim(), value.trim())
+              case Array(name) =>
+                (name, "")
             }
           parsed :: readHeaders
         }
@@ -244,7 +249,8 @@ class BasicHttpClient(port: Int) {
     try {
       IOUtils.copy(reader, writer)
     } catch {
-      case timeout: SocketTimeoutException => throw timeout
+      case timeout: SocketTimeoutException =>
+        throw timeout
     }
     writer.toString
   }

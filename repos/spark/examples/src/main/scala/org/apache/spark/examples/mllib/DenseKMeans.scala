@@ -103,8 +103,10 @@ object DenseKMeans {
 
     val initMode =
       params.initializationMode match {
-        case Random   => KMeans.RANDOM
-        case Parallel => KMeans.K_MEANS_PARALLEL
+        case Random =>
+          KMeans.RANDOM
+        case Parallel =>
+          KMeans.K_MEANS_PARALLEL
       }
 
     val model = new KMeans()

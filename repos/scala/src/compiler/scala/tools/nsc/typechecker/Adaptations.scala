@@ -29,8 +29,10 @@ trait Adaptations {
     def checkValidAdaptation(t: Tree, args: List[Tree]): Boolean = {
       def applyArg =
         t match {
-          case Apply(_, arg :: Nil) => arg
-          case _                    => EmptyTree
+          case Apply(_, arg :: Nil) =>
+            arg
+          case _ =>
+            EmptyTree
         }
       def callString =
         ((
@@ -83,7 +85,8 @@ trait Adaptations {
           t.symbol.paramss match {
             case (param :: Nil) :: Nil =>
               ObjectClass isSubClass param.tpe.typeSymbol
-            case _ => false
+            case _ =>
+              false
           }
         // Unfortunately various "universal" methods and the manner in which
         // they are used limits our ability to enforce anything sensible until

@@ -192,7 +192,8 @@ object ColumnDefinitionProviderImpl {
 
       outerTpe.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .map { m =>
           val fieldName = m.name.toTermName.toString.trim
@@ -231,17 +232,22 @@ object ColumnDefinitionProviderImpl {
         .foldLeft(scala.util.Try[List[ColumnFormat[c.type]]](Nil)) {
           case (pTry, nxt) =>
             (pTry, nxt) match {
-              case (Success(l), Success(r)) => Success(l ::: r)
-              case (f @ Failure(_), _)      => f
-              case (_, f @ Failure(_))      => f
+              case (Success(l), Success(r)) =>
+                Success(l ::: r)
+              case (f @ Failure(_), _) =>
+                f
+              case (_, f @ Failure(_)) =>
+                f
             }
         }
     }
 
     val formats =
       expandMethod(Nil, T.tpe) match {
-        case Success(s) => s
-        case Failure(e) => (c.abort(c.enclosingPosition, e.getMessage))
+        case Success(s) =>
+          s
+        case Failure(e) =>
+          (c.abort(c.enclosingPosition, e.getMessage))
       }
 
     val duplicateFields =
@@ -317,8 +323,10 @@ object ColumnDefinitionProviderImpl {
               q"""List("VARCHAR", "CHAR").contains($typeNameTerm)"""
             case "BOOLEAN" | "TINYINT" =>
               q"""List("BOOLEAN", "BOOL", "TINYINT").contains($typeNameTerm)"""
-            case "INT" => q"""List("INTEGER", "INT").contains($typeNameTerm)"""
-            case f     => q"""$f == $typeNameTerm"""
+            case "INT" =>
+              q"""List("INTEGER", "INT").contains($typeNameTerm)"""
+            case f =>
+              q"""$f == $typeNameTerm"""
           }
         val typeAssert = q"""
         if (!$typeValidation) {
@@ -348,7 +356,8 @@ object ColumnDefinitionProviderImpl {
         val fieldName = cf.fieldName.toStr
         // java boxed types needed below to populate cascading's Tuple
         cf.fieldType match {
-          case "VARCHAR" | "TEXT" => q"""$rsTerm.getString($fieldName)"""
+          case "VARCHAR" | "TEXT" =>
+            q"""$rsTerm.getString($fieldName)"""
           case "BOOLEAN" | "TINYINT" =>
             q"""_root_.java.lang.Boolean.valueOf($rsTerm.getBoolean($fieldName))"""
           case "DATE" | "DATETIME" =>

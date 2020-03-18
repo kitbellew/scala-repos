@@ -56,9 +56,11 @@ class ScalaTestLocationProvider extends SMTestLocator {
                     file.getContainingFile,
                     lineNumber.toInt))
                 res
-              case _ => searchForClassByUnqualifiedName(project, className)
+              case _ =>
+                searchForClassByUnqualifiedName(project, className)
             }
-          case x => searchForClassByUnqualifiedName(project, locationData)
+          case x =>
+            searchForClassByUnqualifiedName(project, locationData)
         }
       case "scalatest" =>
         val res = new ArrayList[Location[_ <: PsiElement]]()
@@ -120,7 +122,8 @@ class ScalaTestLocationProvider extends SMTestLocator {
           case _ =>
         }
         res
-      case _ => new ArrayList[Location[_ <: PsiElement]]()
+      case _ =>
+        new ArrayList[Location[_ <: PsiElement]]()
     }
   }
 

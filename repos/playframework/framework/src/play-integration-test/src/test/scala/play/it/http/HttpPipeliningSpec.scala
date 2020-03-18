@@ -37,7 +37,8 @@ trait HttpPipeliningSpec
           port,
           GuiceApplicationBuilder()
             .routes {
-              case _ => action
+              case _ =>
+                action
             }
             .build())) {
         block(port)
@@ -51,8 +52,10 @@ trait HttpPipeliningSpec
             Accumulator.done(
               after(100.milliseconds, actorSystem.scheduler)(
                 Future(Results.Ok("long"))))
-          case "/short" => Accumulator.done(Results.Ok("short"))
-          case _        => Accumulator.done(Results.NotFound)
+          case "/short" =>
+            Accumulator.done(Results.Ok("short"))
+          case _ =>
+            Accumulator.done(Results.NotFound)
         }
       }) { port =>
       val responses = BasicHttpClient.pipelineRequests(
@@ -77,8 +80,10 @@ trait HttpPipeliningSpec
                     interval = 50.milliseconds,
                     tick = "chunk")
                   .take(3)))
-          case "/short" => Accumulator.done(Results.Ok("short"))
-          case _        => Accumulator.done(Results.NotFound)
+          case "/short" =>
+            Accumulator.done(Results.Ok("short"))
+          case _ =>
+            Accumulator.done(Results.NotFound)
         }
       }) { port =>
       val responses = BasicHttpClient.pipelineRequests(

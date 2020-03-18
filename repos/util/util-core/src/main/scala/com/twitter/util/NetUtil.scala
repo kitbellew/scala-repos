@@ -112,8 +112,10 @@ object NetUtil {
     val arr = ip.split('.')
     val pLen =
       prefixLen match {
-        case None if arr.length != 4 => arr.length * 8
-        case t                       => t.getOrElse(32)
+        case None if arr.length != 4 =>
+          arr.length * 8
+        case t =>
+          t.getOrElse(32)
       }
 
     val netIp = ipToInt(arr.padTo(4, "0").mkString("."))
@@ -124,13 +126,16 @@ object NetUtil {
   // Get the ip block from CIDR notation, returned as (subnet, subnetMask)
   def cidrToIpBlock(cidr: String): (Int, Int) =
     cidr.split('/') match {
-      case Array(ip, prefixLen) => ipToIpBlock(ip, Some(prefixLen.toInt))
-      case Array(ip)            => ipToIpBlock(ip, None)
+      case Array(ip, prefixLen) =>
+        ipToIpBlock(ip, Some(prefixLen.toInt))
+      case Array(ip) =>
+        ipToIpBlock(ip, None)
     }
 
   def isIpInBlock(ip: Int, ipBlock: (Int, Int)): Boolean =
     ipBlock match {
-      case (netIp, mask) => (mask & ip) == netIp
+      case (netIp, mask) =>
+        (mask & ip) == netIp
     }
 
   def isInetAddressInBlock(
@@ -161,10 +166,13 @@ object NetUtil {
         Option(uhe.getMessage) match {
           case Some(host) =>
             host.split(":") match {
-              case Array(hostName, _) => hostName
-              case _                  => "unknown_host"
+              case Array(hostName, _) =>
+                hostName
+              case _ =>
+                "unknown_host"
             }
-          case None => "unknown_host"
+          case None =>
+            "unknown_host"
         }
     }
   }

@@ -31,7 +31,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
           if element.getTextRange.getStartOffset <= startOffsets(0) &&
             element.getTextRange.getEndOffset >= endOffsets(0) =>
         text stripMargin getMarginChar(element)
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -81,7 +82,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
           if MultiLineStringCopyPasteProcessor.SAFE_ELEMENTS.contains(
             string.getNode.getElementType) =>
         Some(findOuterString(element.getParent).getOrElse(string))
-      case _ => None
+      case _ =>
+        None
     }
 
   private def checkElement(element: PsiElement): Boolean =

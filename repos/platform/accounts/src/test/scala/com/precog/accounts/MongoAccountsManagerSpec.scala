@@ -67,7 +67,8 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
 
     "not find a non-existent Account" in new AccountManager {
       accountManager.findAccountById(notFoundAccountId).copoint must beLike {
-        case None => ok
+        case None =>
+          ok
       }
     }
 
@@ -155,7 +156,8 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
             tokenId)
         } yield resolvedAccount
       ).copoint must beLike {
-        case -\/(_) => ok
+        case -\/(_) =>
+          ok
       }
     }
 

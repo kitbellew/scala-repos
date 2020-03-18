@@ -63,8 +63,10 @@ object OrderedSerialization {
 
   def resultFrom(t: Try[Int]): Result =
     t match {
-      case Success(i) => resultFrom(i)
-      case Failure(e) => CompareFailure(e)
+      case Success(i) =>
+        resultFrom(i)
+      case Failure(e) =>
+        CompareFailure(e)
     }
 
   final case class CompareFailure(ex: Throwable) extends Result {
@@ -110,7 +112,8 @@ object OrderedSerialization {
       val b = Serialization.read[T](bs)
       compare(a.get, b.get)
     } catch {
-      case NonFatal(e) => CompareFailure(e)
+      case NonFatal(e) =>
+        CompareFailure(e)
     }
 
   private[this] def internalTransformer[T, U, V](
@@ -241,7 +244,8 @@ final case class DeserializingOrderedSerialization[T](
     try OrderedSerialization.resultFrom {
       compare(read(a).get, read(b).get)
     } catch {
-      case NonFatal(e) => OrderedSerialization.CompareFailure(e)
+      case NonFatal(e) =>
+        OrderedSerialization.CompareFailure(e)
     }
   final override def staticSize = serialization.staticSize
   final override def dynamicSize(t: T) = serialization.dynamicSize(t)

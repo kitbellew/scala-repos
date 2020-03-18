@@ -53,7 +53,8 @@ class ChaosJournal extends AsyncWriteJournal {
             AsyncWriteJournal.successUnit
           }
     } catch {
-      case NonFatal(e) ⇒ Future.failed(e)
+      case NonFatal(e) ⇒
+        Future.failed(e)
     }
 
   override def asyncDeleteMessagesTo(
@@ -64,7 +65,8 @@ class ChaosJournal extends AsyncWriteJournal {
         del(persistenceId, snr)
       }
     } catch {
-      case NonFatal(e) ⇒ Future.failed(e)
+      case NonFatal(e) ⇒
+        Future.failed(e)
     }
   }
 

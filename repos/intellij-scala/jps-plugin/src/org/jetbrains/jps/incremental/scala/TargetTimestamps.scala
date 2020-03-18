@@ -18,7 +18,8 @@ class TargetTimestamps(context: CompileContext) {
         try {
           Some(in.readLong())
         } catch {
-          case _: IOException => None
+          case _: IOException =>
+            None
         }
       }
     }

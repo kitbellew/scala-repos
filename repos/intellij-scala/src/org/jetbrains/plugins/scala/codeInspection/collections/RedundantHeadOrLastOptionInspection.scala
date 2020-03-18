@@ -20,7 +20,8 @@ object RedundantHeadOption extends SimplificationType {
     expr match {
       case qual `.headOption` () if isOption(qual) =>
         Some(replace(expr).withText(qual.getText).highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -32,6 +33,7 @@ object RedundantLastOption extends SimplificationType {
     expr match {
       case qual `.lastOption` () if isOption(qual) =>
         Some(replace(expr).withText(qual.getText).highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }

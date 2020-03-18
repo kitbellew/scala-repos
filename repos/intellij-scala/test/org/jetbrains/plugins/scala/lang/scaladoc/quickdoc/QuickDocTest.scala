@@ -47,15 +47,18 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       "dummy.scala",
       fileText.stripMargin('|').replaceAll("\r", "").trim())
     val td = getFileAdapter.asInstanceOf[ScalaFile].getClasses collectFirst {
-      case a: ScTemplateDefinition if a.name == className => a
+      case a: ScTemplateDefinition if a.name == className =>
+        a
     }
     val member = td flatMap (c => c.members.find(_.getName == elementName))
     if (member.isEmpty)
       Assert.fail()
     else
       member foreach {
-        case m: ScFunctionWrapper => generateByElement(m.function, assumedTest)
-        case member: ScMember     => generateByElement(member, assumedTest)
+        case m: ScFunctionWrapper =>
+          generateByElement(m.function, assumedTest)
+        case member: ScMember =>
+          generateByElement(member, assumedTest)
       }
   }
 

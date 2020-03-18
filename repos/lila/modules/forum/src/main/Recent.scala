@@ -52,7 +52,8 @@ private[forum] final class Recent(
           PostRepoTroll.recentInCategs(nb)(categs, parseLangs(langs))
         case langs :: categs =>
           PostRepo.recentInCategs(nb)(categs, parseLangs(langs))
-        case categs => PostRepo.recentInCategs(nb)(categs, parseLangs("en"))
+        case categs =>
+          PostRepo.recentInCategs(nb)(categs, parseLangs("en"))
       }
     ) flatMap postApi.miniPosts
 }

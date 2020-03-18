@@ -29,7 +29,8 @@ object GraphXApp {
       sys.env.get("SPARK_AUDIT_MASTER") match {
         case Some(master) =>
           new SparkConf().setAppName("Simple GraphX App").setMaster(master)
-        case None => new SparkConf().setAppName("Simple Graphx App")
+        case None =>
+          new SparkConf().setAppName("Simple Graphx App")
       }
     val sc = new SparkContext(conf)
     SparkContext.jarOfClass(this.getClass).foreach(sc.addJar)

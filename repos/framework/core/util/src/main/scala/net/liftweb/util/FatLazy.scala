@@ -50,7 +50,8 @@ class FatLazy[T](f: => T) {
   def get: T =
     synchronized {
       value match {
-        case Full(v) => v
+        case Full(v) =>
+          v
         case _ =>
           value = Full(f)
           value.openOrThrowException("We just checked that this is a Full box.")

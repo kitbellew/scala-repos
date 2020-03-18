@@ -256,7 +256,8 @@ class ShardNotAvailableException extends NotServableException
 object ChannelException {
   def apply(cause: Throwable, remoteAddress: SocketAddress) = {
     cause match {
-      case exc: ChannelException => exc
+      case exc: ChannelException =>
+        exc
       case _: java.net.ConnectException =>
         new ConnectionFailedException(cause, remoteAddress)
       case _: java.nio.channels.UnresolvedAddressException =>
@@ -270,7 +271,8 @@ object ChannelException {
         new ChannelClosedException(cause, remoteAddress)
       case e: java.io.IOException if "Connection timed out" == e.getMessage =>
         new ConnectionFailedException(cause, remoteAddress)
-      case e => new UnknownChannelException(cause, remoteAddress)
+      case e =>
+        new UnknownChannelException(cause, remoteAddress)
     }
   }
 }
@@ -287,7 +289,8 @@ class ChannelException(underlying: Throwable, val remoteAddress: SocketAddress)
   override def exceptionMessage = {
     val message =
       (underlying, remoteAddress) match {
-        case (_, null) => super.exceptionMessage
+        case (_, null) =>
+          super.exceptionMessage
         case (null, _) =>
           s"ChannelException at remote address: ${remoteAddress.toString}"
         case (_, _) =>
@@ -364,8 +367,10 @@ object WriteException {
 
   def unapply(t: Throwable): Option[Throwable] =
     t match {
-      case we: WriteException => Some(we.getCause)
-      case _                  => None
+      case we: WriteException =>
+        Some(we.getCause)
+      case _ =>
+        None
     }
 }
 

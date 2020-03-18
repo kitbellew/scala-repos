@@ -68,7 +68,8 @@ object arityize {
 
         val ret = c.Expr(Block(results.toList, Literal(Constant(()))))
         ret
-      case _ => ???
+      case _ =>
+        ???
     }
 
   }
@@ -129,7 +130,8 @@ object arityize {
                 List.tabulate(order) { i =>
                   Ident(newTermName(nme.encoded + (i + 1)))
                 }
-              case _ => ???
+              case _ =>
+                ???
             }
           case q"new arityize.repeat()" =>
             tree match {
@@ -141,7 +143,8 @@ object arityize {
                 List.fill(order) {
                   tree
                 }
-              case _ => ???
+              case _ =>
+                ???
             }
           case _ =>
 //            println("???" + ann + " " + tree)
@@ -154,8 +157,10 @@ object arityize {
             expandArity(c, order, bindings)(ret).last))
       case Ident(nme) if nme.encoded == "__order__" =>
         Seq(Literal(Constant(order)))
-      case t @ Ident(x)   => Seq(t)
-      case t @ Literal(x) => Seq(t)
+      case t @ Ident(x) =>
+        Seq(t)
+      case t @ Literal(x) =>
+        Seq(t)
       case Apply(who, args) =>
         for (w2 <- expandArity(c, order, bindings)(who);
              args2 = args.flatMap(arg => expandArity(c, order, bindings)(arg)))
@@ -245,8 +250,10 @@ object arityize {
       td: c.mirror.universe.Modifiers): Boolean = {
     import c.mirror.universe._
     td.annotations.exists {
-      case q"new arityize.replicate" => true
-      case _                         => false
+      case q"new arityize.replicate" =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -254,8 +261,10 @@ object arityize {
       td: c.mirror.universe.Modifiers): Boolean = {
     import c.mirror.universe._
     td.annotations.exists {
-      case q"new arityize.repeat" => true
-      case _                      => false
+      case q"new arityize.repeat" =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -263,7 +272,8 @@ object arityize {
       td: c.mirror.universe.Modifiers): Option[String] = {
     import c.mirror.universe._
     td.annotations.collectFirst {
-      case q"new arityize.relative($q)" => q.toString
+      case q"new arityize.relative($q)" =>
+        q.toString
     }
   }
 
@@ -271,7 +281,8 @@ object arityize {
     import c.mirror.universe._
     val order =
       c.macroApplication.collect {
-        case Literal(x) if x.value.isInstanceOf[Int] => x.value.toString.toInt
+        case Literal(x) if x.value.isInstanceOf[Int] =>
+          x.value.toString.toInt
       }.head
     order
   }

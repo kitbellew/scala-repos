@@ -124,7 +124,8 @@ case class Explode(child: Expression)
   // hive-compatible default alias for explode function ("col" for array, "key", "value" for map)
   override def elementTypes: Seq[(DataType, Boolean, String)] =
     child.dataType match {
-      case ArrayType(et, containsNull) => (et, containsNull, "col") :: Nil
+      case ArrayType(et, containsNull) =>
+        (et, containsNull, "col") :: Nil
       case MapType(kt, vt, valueContainsNull) =>
         (kt, false, "key") :: (vt, valueContainsNull, "value") :: Nil
     }

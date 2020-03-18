@@ -335,8 +335,10 @@ object HttpTracing {
     */
   private[http] def stripParameters(uri: String): String = {
     uri.indexOf('?') match {
-      case -1 => uri
-      case n  => uri.substring(0, n)
+      case -1 =>
+        uri
+      case n =>
+        uri.substring(0, n)
     }
   }
 }
@@ -424,7 +426,8 @@ private object TraceInfo {
       Flags(
         Option(request.headers.get(Header.Flags)).map(_.toLong).getOrElse(0L))
     } catch {
-      case _: Throwable => Flags()
+      case _: Throwable =>
+        Flags()
     }
   }
 }

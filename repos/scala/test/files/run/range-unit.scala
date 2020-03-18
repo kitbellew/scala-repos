@@ -38,7 +38,8 @@ object Test {
       else
         List(num(r.length), num(r.head), num(r.last))
     } catch {
-      case e: IllegalArgumentException => List("---\n    " + e)
+      case e: IllegalArgumentException =>
+        List("---\n    " + e)
     }
   }
 

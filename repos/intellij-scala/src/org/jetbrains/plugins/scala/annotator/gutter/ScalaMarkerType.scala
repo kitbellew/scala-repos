@@ -51,7 +51,8 @@ object ScalaMarkerType {
       case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.kVAL |
           ScalaTokenTypes.kVAR =>
         PsiTreeUtil.getParentOfType(element, classOf[PsiMember])
-      case _ => element
+      case _ =>
+        element
     }
 
   val OVERRIDING_MEMBER = ScalaMarkerType(
@@ -67,8 +68,10 @@ object ScalaMarkerType {
               return ""
             val optionClazz =
               ScalaPsiUtil.nameContext(signatures.head.namedElement) match {
-                case member: PsiMember => Option(member.containingClass)
-                case _                 => None
+                case member: PsiMember =>
+                  Option(member.containingClass)
+                case _ =>
+                  None
               }
             assert(optionClazz.isDefined)
             val clazz = optionClazz.get
@@ -82,8 +85,10 @@ object ScalaMarkerType {
             val signatures = new ArrayBuffer[Signature]
             val bindings =
               elem match {
-                case v: ScDeclaredElementsHolder => v.declaredElements
-                case _                           => return null
+                case v: ScDeclaredElementsHolder =>
+                  v.declaredElements
+                case _ =>
+                  return null
               }
             for (z <- bindings)
               signatures ++= ScalaPsiUtil
@@ -91,8 +96,10 @@ object ScalaMarkerType {
             assert(signatures.nonEmpty)
             val optionClazz =
               ScalaPsiUtil.nameContext(signatures(0).namedElement) match {
-                case member: PsiMember => Option(member.containingClass)
-                case _                 => None
+                case member: PsiMember =>
+                  Option(member.containingClass)
+                case _ =>
+                  None
               }
             assert(optionClazz.isDefined)
             val clazz = optionClazz.get
@@ -109,7 +116,8 @@ object ScalaMarkerType {
             assert(superMembers.nonEmpty)
             val optionClazz = superMembers.head
             ScalaBundle.message("overrides.type.from.super", optionClazz.name)
-          case _ => null
+          case _ =>
+            null
         }
       }
     },
@@ -123,8 +131,9 @@ object ScalaMarkerType {
             signatures.foreach {
               case sig =>
                 sig.namedElement match {
-                  case nav: NavigatablePsiElement => elems += nav
-                  case _                          =>
+                  case nav: NavigatablePsiElement =>
+                    elems += nav
+                  case _ =>
                 }
             }
             elems.size match {
@@ -144,8 +153,10 @@ object ScalaMarkerType {
             val signatures = new ArrayBuffer[Signature]
             val bindings =
               elem match {
-                case v: ScDeclaredElementsHolder => v.declaredElements
-                case _                           => return
+                case v: ScDeclaredElementsHolder =>
+                  v.declaredElements
+                case _ =>
+                  return
               }
             for (z <- bindings)
               signatures ++= ScalaPsiUtil
@@ -154,8 +165,9 @@ object ScalaMarkerType {
             signatures.foreach {
               case sig =>
                 sig.namedElement match {
-                  case n: NavigatablePsiElement => elems += n
-                  case _                        =>
+                  case n: NavigatablePsiElement =>
+                    elems += n
+                  case _ =>
                 }
             }
             elems.size match {
@@ -210,7 +222,8 @@ object ScalaMarkerType {
               ScalaBundle.message("has.implementations")
             else
               ScalaBundle.message("is.overriden.by")
-          case _ => null
+          case _ =>
+            null
         }
       }
     },
@@ -225,9 +238,12 @@ object ScalaMarkerType {
         }
         val members =
           elem match {
-            case memb: PsiNamedElement       => Array[PsiNamedElement](memb)
-            case d: ScDeclaredElementsHolder => d.declaredElements.toArray
-            case _                           => return
+            case memb: PsiNamedElement =>
+              Array[PsiNamedElement](memb)
+            case d: ScDeclaredElementsHolder =>
+              d.declaredElements.toArray
+            case _ =>
+              return
           }
         val overrides = new ArrayBuffer[PsiNamedElement]
         for (member <- members)
@@ -270,9 +286,12 @@ object ScalaMarkerType {
         if (!elem.isInstanceOf[PsiClass])
           return null
         elem match {
-          case _: ScTrait  => ScalaBundle.message("trait.has.implementations")
-          case _: ScObject => ScalaBundle.message("object.has.subclasses")
-          case _           => ScalaBundle.message("class.has.subclasses")
+          case _: ScTrait =>
+            ScalaBundle.message("trait.has.implementations")
+          case _: ScObject =>
+            ScalaBundle.message("object.has.subclasses")
+          case _ =>
+            ScalaBundle.message("class.has.subclasses")
         }
       }
     },
@@ -284,8 +303,10 @@ object ScalaMarkerType {
         }
         val clazz =
           elem match {
-            case x: PsiClass => x
-            case _           => return
+            case x: PsiClass =>
+              x
+            case _ =>
+              return
           }
         val inheritors = ClassInheritorsSearch
           .search(clazz, clazz.getUseScope, true)
@@ -347,8 +368,10 @@ object ScalaMarkerType {
         case x: ScClassParameter =>
           val presentation = x.getPresentation
           presentation.getPresentableText + " " + presentation.getLocationString
-        case x: PsiNamedElement => x.name
-        case _                  => defaultPresentation
+        case x: PsiNamedElement =>
+          x.name
+        case _ =>
+          defaultPresentation
       }
     }
 
@@ -358,10 +381,12 @@ object ScalaMarkerType {
 
     override def getIcon(element: PsiElement): Icon = {
       element match {
-        case _: PsiMethod => super.getIcon(element)
+        case _: PsiMethod =>
+          super.getIcon(element)
         case x: PsiNamedElement if ScalaPsiUtil.nameContext(x) != null =>
           ScalaPsiUtil.nameContext(x).getIcon(getIconFlags)
-        case _ => super.getIcon(element)
+        case _ =>
+          super.getIcon(element)
       }
     }
   }

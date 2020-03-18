@@ -57,7 +57,8 @@ class FlowSpec
       msg match {
         case ActorGraphInterpreter.OnNext(_, 0, m) if m == brokenMessage ⇒
           throw new NullPointerException(s"I'm so broken [$m]")
-        case _ ⇒ super.aroundReceive(receive, msg)
+        case _ ⇒
+          super.aroundReceive(receive, msg)
       }
     }
   }

@@ -87,7 +87,8 @@ object Route {
             routingSettings,
             effectiveParserSettings)).fast
           .map {
-            case RouteResult.Complete(response) ⇒ response
+            case RouteResult.Complete(response) ⇒
+              response
             case RouteResult.Rejected(rejected) ⇒
               throw new IllegalStateException(
                 s"Unhandled rejections '$rejected', unsealed RejectionHandler?!")

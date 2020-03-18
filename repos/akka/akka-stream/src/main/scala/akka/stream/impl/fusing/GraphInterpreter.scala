@@ -165,7 +165,8 @@ private[akka] object GraphInterpreter {
               val copy = mv.copySrc.asInstanceOf[MaterializedValueSource[Any]]
               register(copy)
               copy
-            case x ⇒ x
+            case x ⇒
+              x
           }
 
         val logicAndMat = stage.createLogicAndMaterializedValue(
@@ -187,7 +188,8 @@ private[akka] object GraphInterpreter {
             case null ⇒
               throw new IllegalStateException(
                 s"no handler defined in stage $logic for port ${ins(i)}")
-            case h: InHandler ⇒ inHandlers(i) = h
+            case h: InHandler ⇒
+              inHandlers(i) = h
           }
           logics(inOwners(i)).portToConn(ins(i).id) = i
         }
@@ -198,7 +200,8 @@ private[akka] object GraphInterpreter {
             case null ⇒
               throw new IllegalStateException(
                 s"no handler defined in stage $logic for port ${outs(i)}")
-            case h: OutHandler ⇒ outHandlers(i) = h
+            case h: OutHandler ⇒
+              outHandlers(i) = h
           }
           logic.portToConn(outs(i).id + inCount) = i
         }
@@ -545,29 +548,37 @@ private[stream] final class GraphInterpreter(
   // Debug name for a connections input part
   private def inOwnerName(connection: Int): String =
     assembly.inOwners(connection) match {
-      case Boundary ⇒ "DownstreamBoundary"
-      case owner ⇒ assembly.stages(owner).toString
+      case Boundary ⇒
+        "DownstreamBoundary"
+      case owner ⇒
+        assembly.stages(owner).toString
     }
 
   // Debug name for a connections output part
   private def outOwnerName(connection: Int): String =
     assembly.outOwners(connection) match {
-      case Boundary ⇒ "UpstreamBoundary"
-      case owner ⇒ assembly.stages(owner).toString
+      case Boundary ⇒
+        "UpstreamBoundary"
+      case owner ⇒
+        assembly.stages(owner).toString
     }
 
   // Debug name for a connections input part
   private def inLogicName(connection: Int): String =
     assembly.inOwners(connection) match {
-      case Boundary ⇒ "DownstreamBoundary"
-      case owner ⇒ logics(owner).toString
+      case Boundary ⇒
+        "DownstreamBoundary"
+      case owner ⇒
+        logics(owner).toString
     }
 
   // Debug name for a connections output part
   private def outLogicName(connection: Int): String =
     assembly.outOwners(connection) match {
-      case Boundary ⇒ "UpstreamBoundary"
-      case owner ⇒ logics(owner).toString
+      case Boundary ⇒
+        "UpstreamBoundary"
+      case owner ⇒
+        logics(owner).toString
     }
 
   private def shutdownCounters: String =
@@ -633,7 +644,8 @@ private[stream] final class GraphInterpreter(
         activeStage = logic
         try handler(evt)
         catch {
-          case NonFatal(ex) ⇒ logic.failStage(ex)
+          case NonFatal(ex) ⇒
+            logic.failStage(ex)
         }
         afterStageHasRun(logic)
       } finally currentInterpreterHolder(0) = previousInterpreter

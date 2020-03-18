@@ -82,10 +82,13 @@ class SbtProjectResolver
       } match {
         case Left(errors) =>
           errors match {
-            case _: SbtRunner.ImportCancelledException => return null
-            case _                                     => throw new ExternalSystemException(errors)
+            case _: SbtRunner.ImportCancelledException =>
+              return null
+            case _ =>
+              throw new ExternalSystemException(errors)
           }
-        case Right(node) => node
+        case Right(node) =>
+          node
       }
 
     if (warnings.nonEmpty) {
@@ -503,7 +506,8 @@ class SbtProjectResolver
       case (scope, dependency) =>
         val name =
           scope match {
-            case DependencyScope.COMPILE => Sbt.UnmanagedLibraryName
+            case DependencyScope.COMPILE =>
+              Sbt.UnmanagedLibraryName
             case it =>
               s"${Sbt.UnmanagedLibraryName}-${it.getDisplayName.toLowerCase}"
           }

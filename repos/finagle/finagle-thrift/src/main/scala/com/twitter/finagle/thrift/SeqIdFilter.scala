@@ -93,8 +93,10 @@ class SeqIdFilter extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
       val id = rng.nextInt()
       val givenId =
         getAndSetId(reqBuf, id) match {
-          case Return(id) => id
-          case Throw(exc) => return Future.exception(exc)
+          case Return(id) =>
+            id
+          case Throw(exc) =>
+            return Future.exception(exc)
         }
       val newReq = new ThriftClientRequest(reqBuf, req.oneway)
 
@@ -102,10 +104,12 @@ class SeqIdFilter extends SimpleFilter[ThriftClientRequest, Array[Byte]] {
         // We know it's safe to mutate the response buffer since the
         // codec never touches it again.
         getAndSetId(resBuf, givenId) match {
-          case Return(`id`) => Future.value(resBuf)
+          case Return(`id`) =>
+            Future.value(resBuf)
           case Return(badId) =>
             Future.exception(SeqMismatchException(badId, id))
-          case Throw(exc) => Future.exception(exc)
+          case Throw(exc) =>
+            Future.exception(exc)
         }
       }
     }

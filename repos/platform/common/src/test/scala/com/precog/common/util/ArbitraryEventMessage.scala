@@ -176,7 +176,8 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
       values <- containerOfN[Set, JValue](10, genSimpleNotNull)
     } yield {
       (paths zip values).foldLeft[JValue](JObject(Nil)) {
-        case (obj, (path, value)) => obj.set(path, value)
+        case (obj, (path, value)) =>
+          obj.set(path, value)
       }
     }
 

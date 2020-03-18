@@ -73,18 +73,23 @@ package object extensions {
           .startsWith(prefix) && name.charAt(prefix.length).isUpper
 
       repr.getName match {
-        case "getInstance" => false // TODO others?
+        case "getInstance" =>
+          false // TODO others?
         case name if startsWith(name, "getAnd") || startsWith(name, "getOr") =>
           false
-        case AccessorNamePattern() => true
-        case _                     => false
+        case AccessorNamePattern() =>
+          true
+        case _ =>
+          false
       }
     }
 
     def hasMutatorLikeName =
       repr.getName match {
-        case MutatorNamePattern() => true
-        case _                    => false
+        case MutatorNamePattern() =>
+          true
+        case _ =>
+          false
       }
 
     def hasVoidReturnType = repr.getReturnType == PsiType.VOID
@@ -217,8 +222,10 @@ package object extensions {
       extends PsiElementExtTrait {
     def startOffsetInParent: Int = {
       repr match {
-        case s: ScalaPsiElement => s.startOffsetInParent
-        case _                  => repr.getStartOffsetInParent
+        case s: ScalaPsiElement =>
+          s.startOffsetInParent
+        case _ =>
+          repr.getStartOffsetInParent
       }
     }
   }
@@ -230,9 +237,12 @@ package object extensions {
       */
     def containingClass: PsiClass = {
       member match {
-        case member: ScMember    => member.containingClass
-        case b: ScBindingPattern => b.containingClass
-        case _                   => member.getContainingClass
+        case member: ScMember =>
+          member.containingClass
+        case b: ScBindingPattern =>
+          b.containingClass
+        case _ =>
+          member.getContainingClass
       }
     }
   }
@@ -244,26 +254,33 @@ package object extensions {
       */
     def qualifiedName: String = {
       clazz match {
-        case t: ScTemplateDefinition => t.qualifiedName
-        case _                       => clazz.getQualifiedName
+        case t: ScTemplateDefinition =>
+          t.qualifiedName
+        case _ =>
+          clazz.getQualifiedName
       }
     }
 
     def constructors: Array[PsiMethod] = {
       clazz match {
-        case c: ScClass => c.constructors
-        case _          => clazz.getConstructors
+        case c: ScClass =>
+          c.constructors
+        case _ =>
+          clazz.getConstructors
       }
     }
 
     def isEffectivelyFinal: Boolean =
       clazz match {
-        case scClass: ScClass => scClass.hasFinalModifier
-        case _: ScObject      => true
+        case scClass: ScClass =>
+          scClass.hasFinalModifier
+        case _: ScObject =>
+          true
         case synth: ScSyntheticClass
             if !Seq("AnyRef", "AnyVal").contains(synth.className) =>
           true //wrappers for value types
-        case _ => clazz.hasModifierProperty(PsiModifier.FINAL)
+        case _ =>
+          clazz.hasModifierProperty(PsiModifier.FINAL)
       }
 
     def processPsiMethodsForNode(
@@ -301,9 +318,11 @@ package object extensions {
                   index -= 1
                 }
                 Some(clazz)
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
       }
 
@@ -348,11 +367,15 @@ package object extensions {
       clazz match {
         case td: ScTemplateDefinition =>
           td.members.flatMap {
-            case holder: ScDeclaredElementsHolder => holder.declaredElements
-            case named: ScNamedElement            => Seq(named)
-            case _                                => Seq.empty
+            case holder: ScDeclaredElementsHolder =>
+              holder.declaredElements
+            case named: ScNamedElement =>
+              Seq(named)
+            case _ =>
+              Seq.empty
           }
-        case _ => clazz.getFields ++ clazz.getMethods
+        case _ =>
+          clazz.getFields ++ clazz.getMethods
       }
     }
   }
@@ -364,8 +387,10 @@ package object extensions {
       */
     def name: String = {
       named match {
-        case nd: ScNamedElement => nd.name
-        case nd                 => nd.getName
+        case nd: ScNamedElement =>
+          nd.name
+        case nd =>
+          nd.getName
       }
     }
   }
@@ -378,8 +403,10 @@ package object extensions {
       */
     def hasAbstractModifier: Boolean = {
       member match {
-        case member: ScModifierListOwner => member.hasAbstractModifier
-        case _                           => member.hasModifierProperty(PsiModifier.ABSTRACT)
+        case member: ScModifierListOwner =>
+          member.hasAbstractModifier
+        case _ =>
+          member.hasModifierProperty(PsiModifier.ABSTRACT)
       }
     }
 
@@ -388,8 +415,10 @@ package object extensions {
       */
     def hasFinalModifier: Boolean = {
       member match {
-        case member: ScModifierListOwner => member.hasFinalModifier
-        case _                           => member.hasModifierProperty(PsiModifier.FINAL)
+        case member: ScModifierListOwner =>
+          member.hasFinalModifier
+        case _ =>
+          member.hasModifierProperty(PsiModifier.FINAL)
       }
     }
 
@@ -400,7 +429,8 @@ package object extensions {
       member match {
         case member: ScModifierListOwner =>
           member.hasModifierPropertyScala(name)
-        case _ => member.hasModifierProperty(name)
+        case _ =>
+          member.hasModifierProperty(name)
       }
     }
   }
@@ -501,8 +531,10 @@ package object extensions {
   def withProgressSynchronously[T](title: String)(
       body: ((String => Unit) => T)): T = {
     withProgressSynchronouslyTry[T](title)(body) match {
-      case Success(result)    => result
-      case Failure(exception) => throw exception
+      case Success(result) =>
+        result
+      case Failure(exception) =>
+        throw exception
     }
   }
 
@@ -573,8 +605,10 @@ package object extensions {
     } catch {
       case e: InvocationTargetException =>
         e.getTargetException match {
-          case control: NonLocalReturnControl[_] => throw control
-          case _                                 => throw e
+          case control: NonLocalReturnControl[_] =>
+            throw control
+          case _ =>
+            throw e
         }
     }
   }
@@ -598,8 +632,10 @@ package object extensions {
   implicit class PsiParameterExt(val param: PsiParameter) extends AnyVal {
     def paramType: ScType = {
       param match {
-        case f: FakePsiParameter => f.parameter.paramType
-        case param: ScParameter  => param.getType(TypingContext.empty).getOrAny
+        case f: FakePsiParameter =>
+          f.parameter.paramType
+        case param: ScParameter =>
+          param.getType(TypingContext.empty).getOrAny
         case _ =>
           ScType.create(
             param.getType,
@@ -611,13 +647,17 @@ package object extensions {
 
     def exactParamType(treatJavaObjectAsAny: Boolean = true): ScType = {
       param match {
-        case f: FakePsiParameter => f.parameter.paramType
-        case param: ScParameter  => param.getType(TypingContext.empty).getOrAny
+        case f: FakePsiParameter =>
+          f.parameter.paramType
+        case param: ScParameter =>
+          param.getType(TypingContext.empty).getOrAny
         case _ =>
           val paramType =
             param.getType match {
-              case p: PsiArrayType if param.isVarArgs => p.getComponentType
-              case tp                                 => tp
+              case p: PsiArrayType if param.isVarArgs =>
+                p.getComponentType
+              case tp =>
+                tp
             }
           ScType.create(
             paramType,
@@ -630,12 +670,16 @@ package object extensions {
 
     def index: Int = {
       param match {
-        case f: FakePsiParameter => f.parameter.index
-        case p: ScParameter      => p.index
+        case f: FakePsiParameter =>
+          f.parameter.index
+        case p: ScParameter =>
+          p.index
         case _ =>
           param.getParent match {
-            case pList: PsiParameterList => pList.getParameterIndex(param)
-            case _                       => -1
+            case pList: PsiParameterList =>
+              pList.getParameterIndex(param)
+            case _ =>
+              -1
           }
       }
     }

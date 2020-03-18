@@ -158,7 +158,8 @@ object LiftSession {
       } else {
         val key = (clz -> pp.map(_.clz))
         constructorCache.get(key) match {
-          case Some(v) => v
+          case Some(v) =>
+            v
           case _ => {
             val nv = calcConstructor()
             constructorCache += (key -> nv)
@@ -167,8 +168,10 @@ object LiftSession {
         }
       }
     ).map {
-      case uc: UnitConstructor => uc.makeOne
-      case pc: PConstructor    => pc.makeOne(pp.openOrThrowException("It's ok").v)
+      case uc: UnitConstructor =>
+        uc.makeOne
+      case pc: PConstructor =>
+        pc.makeOne(pp.openOrThrowException("It's ok").v)
       case psc: PAndSessionConstructor =>
         psc.makeOne(pp.openOrThrowException("It's ok").v, session)
     }
@@ -200,8 +203,10 @@ object LiftSession {
             // Name might contain some relative packages, so split them out and put them in the proper argument of findClass
             val (packageSuffix, terminal) =
               name.lastIndexOf('.') match {
-                case -1 => ("", name)
-                case i  => ("." + name.substring(0, i), name.substring(i + 1))
+                case -1 =>
+                  ("", name)
+                case i =>
+                  ("." + name.substring(0, i), name.substring(i + 1))
               }
             findClass(
               terminal,
@@ -241,7 +246,8 @@ private[http] object RenderVersion {
       for {
         sess <- S.session
         func <- sess.findFunc(v).collect {
-          case f: S.PageStateHolder => f
+          case f: S.PageStateHolder =>
+            f
         }
       } yield {
         val tret =
@@ -488,8 +494,10 @@ class LiftSession(
       inactivityLength = (
         sess.maxInactiveInterval * 1000L,
         LiftRules.sessionInactivityTimeout.vend) match {
-        case (container, Full(lift)) if lift < container => lift
-        case (container, _)                              => container
+        case (container, Full(lift)) if lift < container =>
+          lift
+        case (container, _) =>
+          container
       }
     }
 
@@ -606,10 +614,14 @@ class LiftSession(
           case (RunnerHolder(an, _, Full(a)), RunnerHolder(bn, _, Full(b)))
               if a == b =>
             an < bn
-          case (RunnerHolder(_, _, Full(_)), _)               => false
-          case (_, RunnerHolder(_, _, Full(_)))               => true
-          case (RunnerHolder(a, _, _), RunnerHolder(b, _, _)) => a < b
-          case _                                              => false
+          case (RunnerHolder(_, _, Full(_)), _) =>
+            false
+          case (_, RunnerHolder(_, _, Full(_))) =>
+            true
+          case (RunnerHolder(a, _, _), RunnerHolder(b, _, _)) =>
+            a < b
+          case _ =>
+            false
         }
     }
 
@@ -632,10 +644,13 @@ class LiftSession(
         case Full(id) if nasyncById.containsKey(id) =>
           Option(nasyncById.get(id)).toList.flatMap(a =>
             a.!?(ActionMessageSet(f.map(i => buildFunc(i)), state)) match {
-              case li: List[_] => li
-              case other       => Nil
+              case li: List[_] =>
+                li
+              case other =>
+                Nil
             })
-        case _ => f.map(i => buildFunc(i).apply())
+        case _ =>
+          f.map(i => buildFunc(i).apply())
       }
     }
 
@@ -951,7 +966,8 @@ class LiftSession(
           case Empty =>
             v._2.lastSeen = time
             1
-          case _ => 0
+          case _ =>
+            0
         }
       ))
   }
@@ -981,7 +997,8 @@ class LiftSession(
 
         import scala.collection.JavaConversions._
         nasyncComponents.foreach {
-          case (_, comp) => done ::= (() => tryo(comp ! ShutDown))
+          case (_, comp) =>
+            done ::= (() => tryo(comp ! ShutDown))
         }
         cleanUpSession()
         LiftSession.onShutdownSession.foreach(f => done ::= (() => f(this)))
@@ -1071,8 +1088,10 @@ class LiftSession(
     */
   private def checkStatelessInSiteMap[T](req: Req)(f: => T): T = {
     req.location match {
-      case Full(loc) if loc.stateless_? => this.doAsStateless(f)
-      case _                            => f
+      case Full(loc) if loc.stateless_? =>
+        this.doAsStateless(f)
+      case _ =>
+        f
     }
   }
 
@@ -1114,8 +1133,10 @@ class LiftSession(
             runParams(request)
             try {
               f() match {
-                case Full(r) => Full(checkRedirect(r))
-                case _       => LiftRules.notFoundOrIgnore(request, Full(this))
+                case Full(r) =>
+                  Full(checkRedirect(r))
+                case _ =>
+                  LiftRules.notFoundOrIgnore(request, Full(this))
               }
             } finally {
               notices = S.getAllNotices
@@ -1155,8 +1176,10 @@ class LiftSession(
                     }
                   }
 
-                case Right(Full(resp))                    => Full(resp)
-                case _ if (LiftRules.passNotFoundToChain) => Empty
+                case Right(Full(resp)) =>
+                  Full(resp)
+                case _ if (LiftRules.passNotFoundToChain) =>
+                  Empty
                 case _ if Props.mode == Props.RunModes.Development =>
                   request.createNotFound {
                     processTemplate(Empty, request, _, 404)
@@ -1175,7 +1198,8 @@ class LiftSession(
             response.map(checkRedirect)
         }
       } catch {
-        case ContinueResponseException(cre) => throw cre
+        case ContinueResponseException(cre) =>
+          throw cre
 
         case ite: java.lang.reflect.InvocationTargetException
             if (ite.getCause.isInstanceOf[ResponseShortcutException]) =>
@@ -1187,9 +1211,11 @@ class LiftSession(
         case rd: net.liftweb.http.ResponseShortcutException =>
           Full(handleRedirect(rd, request))
 
-        case e: LiftFlowOfControlException => throw e
+        case e: LiftFlowOfControlException =>
+          throw e
 
-        case e: Exception => S.runExceptionHandlers(request, e)
+        case e: Exception =>
+          S.runExceptionHandlers(request, e)
 
       }
 
@@ -1270,7 +1296,8 @@ class LiftSession(
         state.msgs.foreach(m => S.message(m._1, m._2))
         notices = S.getAllNotices
         RedirectResponse(attachRedirectFunc(uri, state.func), cookies: _*)
-      case _ => resp
+      case _ =>
+        resp
     }
 
   private def allElems(in: NodeSeq, f: Elem => Boolean): List[Elem] = {
@@ -1278,12 +1305,14 @@ class LiftSession(
 
     def appendAll(in: NodeSeq, lb: ListBuffer[Elem]) {
       in.foreach {
-        case Group(ns) => appendAll(ns, lb)
+        case Group(ns) =>
+          appendAll(ns, lb)
         case e: Elem if f(e) =>
           lb += e;
           appendAll(e.child, lb)
-        case e: Elem => appendAll(e.child, lb)
-        case _       =>
+        case e: Elem =>
+          appendAll(e.child, lb)
+        case _ =>
       }
     }
     appendAll(in, lb)
@@ -1299,11 +1328,16 @@ class LiftSession(
       ns: NodeSeq): NodeSeq = {
     import scala.collection.JavaConversions._
     value match {
-      case null         => NodeSeq.Empty
-      case None         => NodeSeq.Empty
-      case _: EmptyBox  => NodeSeq.Empty
-      case b: Box[_]    => runSourceContext(b.toList, xform, ns)
-      case b: Option[_] => runSourceContext(b.toList, xform, ns)
+      case null =>
+        NodeSeq.Empty
+      case None =>
+        NodeSeq.Empty
+      case _: EmptyBox =>
+        NodeSeq.Empty
+      case b: Box[_] =>
+        runSourceContext(b.toList, xform, ns)
+      case b: Option[_] =>
+        runSourceContext(b.toList, xform, ns)
       case fut: LAFuture[_] =>
         runSourceContext(fut.get(5.seconds).openOr(Empty), xform, ns)
       case node: scala.xml.Node =>
@@ -1318,7 +1352,8 @@ class LiftSession(
           pos += 1
         }
         runSourceContext(ar.toList, xform, ns)
-      case n: java.lang.Iterable[_] => runSourceContext(n.iterator(), xform, ns)
+      case n: java.lang.Iterable[_] =>
+        runSourceContext(n.iterator(), xform, ns)
       case n: java.util.Iterator[_] =>
         for {
           i <- n.toSeq;
@@ -1339,7 +1374,8 @@ class LiftSession(
           nodes <- currentSourceContext.doWith(i)(
             processSurroundAndInclude("Source", xform(ns)))
         } yield nodes
-      case a: Array[_] => runSourceContext(a.toList, xform, ns)
+      case a: Array[_] =>
+        runSourceContext(a.toList, xform, ns)
       case x =>
         currentSourceContext.doWith(x)(
           processSurroundAndInclude("Source", xform(ns)))
@@ -1353,37 +1389,54 @@ class LiftSession(
       val cur = currentSourceContext.get
       val value =
         field match {
-          case Nil => cur
-          case x   => findField(x, cur)
+          case Nil =>
+            cur
+          case x =>
+            findField(x, cur)
         }
 
       val func: NodeSeq => NodeSeq =
         value match {
-          case n: scala.xml.Node    => xformRule #> n
-          case n: String            => xformRule #> n
-          case b: Bindable          => xformRule #> b
-          case n: java.lang.Number  => xformRule #> n
-          case d: Double            => xformRule #> d
-          case jc: ToJsCmd          => xformRule #> jc
-          case i: Int               => xformRule #> i
-          case sb: StringPromotable => xformRule #> sb
-          case sym: Symbol          => xformRule #> sym
-          case lng: Long            => xformRule #> lng
-          case b: Boolean           => xformRule #> b
-          case b: Box[_]            => runSourceContext(b.toList, retFunc _, _)
-          case b: Option[_]         => runSourceContext(b.toList, retFunc _, _)
+          case n: scala.xml.Node =>
+            xformRule #> n
+          case n: String =>
+            xformRule #> n
+          case b: Bindable =>
+            xformRule #> b
+          case n: java.lang.Number =>
+            xformRule #> n
+          case d: Double =>
+            xformRule #> d
+          case jc: ToJsCmd =>
+            xformRule #> jc
+          case i: Int =>
+            xformRule #> i
+          case sb: StringPromotable =>
+            xformRule #> sb
+          case sym: Symbol =>
+            xformRule #> sym
+          case lng: Long =>
+            xformRule #> lng
+          case b: Boolean =>
+            xformRule #> b
+          case b: Box[_] =>
+            runSourceContext(b.toList, retFunc _, _)
+          case b: Option[_] =>
+            runSourceContext(b.toList, retFunc _, _)
           case fut: LAFuture[_] =>
             runSourceContext(fut.get(5.seconds).openOr(Empty), retFunc _, _)
           case n: java.lang.Iterable[_] =>
             runSourceContext(n.iterator(), retFunc _, _)
-          case n: java.util.Iterator[_] => runSourceContext(n, retFunc _, _)
+          case n: java.util.Iterator[_] =>
+            runSourceContext(n, retFunc _, _)
           case en: java.util.Enumeration[_] =>
             runSourceContext(en, retFunc _, _)
           case se: scala.collection.Iterable[_] =>
             runSourceContext(se, retFunc _, _)
           case se: scala.collection.Iterator[_] =>
             runSourceContext(se, retFunc _, _)
-          case x => xformRule #> x.toString
+          case x =>
+            xformRule #> x.toString
         }
 
       func(ns)
@@ -1394,31 +1447,43 @@ class LiftSession(
 
   private def fixScriptableObject(in: Any): Any =
     in match {
-      case UniqueTag.NOT_FOUND  => Empty
-      case UniqueTag.NULL_VALUE => Empty
-      case x                    => x
+      case UniqueTag.NOT_FOUND =>
+        Empty
+      case UniqueTag.NULL_VALUE =>
+        Empty
+      case x =>
+        x
     }
 
   def findField(name: List[String], cur: Any): Any =
     name.foldLeft(cur) {
-      case (null, _) => Empty
+      case (null, _) =>
+        Empty
       case (so: Scriptable, name) =>
         fixScriptableObject(so.get(name, so))
-      case (m: java.util.Map[_, _], name) => m.get(name)
+      case (m: java.util.Map[_, _], name) =>
+        m.get(name)
       case (m: PartialFunction[_, _] /* expect String,Any */, name) =>
         (m.asInstanceOf[PartialFunction[String, Any]]).applyOrElse(name, null)
-      case (Full(so: Scriptable), name)         => fixScriptableObject(so.get(name, so))
-      case (Full(m: java.util.Map[_, _]), name) => m.get(name)
+      case (Full(so: Scriptable), name) =>
+        fixScriptableObject(so.get(name, so))
+      case (Full(m: java.util.Map[_, _]), name) =>
+        m.get(name)
       case (Full(m: PartialFunction[_, _] /* expect String,Any */ ), name) =>
         (m.asInstanceOf[PartialFunction[String, Any]]).applyOrElse(name, null)
-      case (Some(so: Scriptable), name)         => fixScriptableObject(so.get(name, so))
-      case (Some(m: java.util.Map[_, _]), name) => m.get(name)
+      case (Some(so: Scriptable), name) =>
+        fixScriptableObject(so.get(name, so))
+      case (Some(m: java.util.Map[_, _]), name) =>
+        m.get(name)
       case (Some(m: PartialFunction[_, _] /* expect String,Any */ ), name) =>
         (m.asInstanceOf[PartialFunction[String, Any]]).applyOrElse(name, null)
-      case _ => Empty
+      case _ =>
+        Empty
     } match {
-      case null => Empty
-      case x    => x
+      case null =>
+        Empty
+      case x =>
+        x
     }
 
   private def findVisibleTemplate(
@@ -1430,8 +1495,10 @@ class LiftSession(
         !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
           "-hidden") == -1
       } match {
-        case s @ _ if !s.isEmpty => s
-        case _                   => List("index")
+        case s @ _ if !s.isEmpty =>
+          s
+        case _ =>
+          List("index")
       }
     Templates.findTopLevelTemplate(
       splits,
@@ -1447,14 +1514,19 @@ class LiftSession(
         else
           "/" + name
       ).split("/").toList.drop(1) match {
-        case Nil => List("index")
-        case s   => s
+        case Nil =>
+          List("index")
+        case s =>
+          s
       }
 
     Templates("templates-hidden" :: splits, S.locale) match {
-      case Full(x)                     => Full(x)
-      case f: Failure if Props.devMode => f
-      case _                           => Templates(splits, S.locale)
+      case Full(x) =>
+        Full(x)
+      case f: Failure if Props.devMode =>
+        f
+      case _ =>
+        Templates(splits, S.locale)
     }
   }
 
@@ -1468,7 +1540,8 @@ class LiftSession(
         c)
 
     } catch {
-      case e: IllegalAccessException => Empty
+      case e: IllegalAccessException =>
+        Empty
     }
   }
 
@@ -1487,8 +1560,10 @@ class LiftSession(
               inst,
               method,
               params.toList.toArray) match {
-              case Full(md: MetaData) => Full(md.copy(rest))
-              case _                  => Empty
+              case Full(md: MetaData) =>
+                Full(md.copy(rest))
+              case _ =>
+                Empty
             }
           }
         }
@@ -1532,14 +1607,20 @@ class LiftSession(
   private def splitColonPair(in: String): (String, String) = {
     (
       in match {
-        case null          => List("")
-        case DotSplit(lst) => lst
-        case s             => s.roboSplit(":")
+        case null =>
+          List("")
+        case DotSplit(lst) =>
+          lst
+        case s =>
+          s.roboSplit(":")
       }
     ) match {
-      case f :: s :: _ => (colonToDot(f), s)
-      case f :: Nil    => (colonToDot(f), "render")
-      case _           => ("yikes dude, there's no method name defined", "render")
+      case f :: s :: _ =>
+        (colonToDot(f), s)
+      case f :: Nil =>
+        (colonToDot(f), "render")
+      case _ =>
+        ("yikes dude, there's no method name defined", "render")
     }
   }
 
@@ -1549,8 +1630,10 @@ class LiftSession(
   def findAndProcessTemplate(name: List[String]): Box[Elem] = {
     def findElem(in: NodeSeq): Box[Elem] =
       in.toList.flatMap {
-        case e: Elem => Some(e)
-        case _       => None
+        case e: Elem =>
+          Some(e)
+        case _ =>
+          None
       }.headOption
 
     for {
@@ -1567,7 +1650,8 @@ class LiftSession(
       in
     else {
       in match {
-        case Null => Null
+        case Null =>
+          Null
         case mine: PrefixedAttribute if (mine.pre == "lift") => {
           mine.key match {
             case s if s.indexOf('.') > -1 =>
@@ -1576,10 +1660,12 @@ class LiftSession(
               findAttributeSnippet(
                 mine.value.text,
                 processAttributes(in.next, allow))
-            case _ => mine.copy(processAttributes(in.next, allow))
+            case _ =>
+              mine.copy(processAttributes(in.next, allow))
           }
         }
-        case notMine => notMine.copy(processAttributes(in.next, allow))
+        case notMine =>
+          notMine.copy(processAttributes(in.next, allow))
       }
     }
   }
@@ -1618,9 +1704,12 @@ class LiftSession(
         inst.addName(cls);
         S.overrideSnippetForClass(cls, inst);
         Full(inst)
-      case Full(ret)     => Full(ret)
-      case fail: Failure => fail
-      case _             => Empty
+      case Full(ret) =>
+        Full(ret)
+      case fail: Failure =>
+        fail
+      case _ =>
+        Empty
     }
 
   /**
@@ -1683,10 +1772,12 @@ class LiftSession(
       prefix: String,
       key: String): Option[Seq[Node]] =
     attrs match {
-      case Null => Empty
+      case Null =>
+        Empty
       case p: PrefixedAttribute if p.pre == prefix && p.key == key =>
         Some(p.value)
-      case x => findNSAttr(x.next, prefix, key)
+      case x =>
+        findNSAttr(x.next, prefix, key)
     }
 
   /**
@@ -1776,8 +1867,10 @@ class LiftSession(
     }
 
     req match {
-      case r @ Full(_) => S.init(r, this)(doExec())
-      case _           => S.initIfUninitted(this)(doExec())
+      case r @ Full(_) =>
+        S.init(r, this)(doExec())
+      case _ =>
+        S.initIfUninitted(this)(doExec())
     }
   }
 
@@ -1915,23 +2008,28 @@ class LiftSession(
 
                         def isFunc1(tpe: Type): Boolean =
                           tpe match {
-                            case null => false
+                            case null =>
+                              false
                             case c: Class[_] =>
                               classOf[Function1[_, _]] isAssignableFrom c
-                            case _ => false
+                            case _ =>
+                              false
                           }
 
                         def isNodeSeq(tpe: Type): Boolean =
                           tpe match {
-                            case null => false
+                            case null =>
+                              false
                             case c: Class[_] =>
                               classOf[NodeSeq] isAssignableFrom c
-                            case _ => false
+                            case _ =>
+                              false
                           }
 
                         def testGeneric(tpe: Type): Boolean =
                           tpe match {
-                            case null => false
+                            case null =>
+                              false
                             case pt: ParameterizedType =>
                               if (isFunc1(pt.getRawType) &&
                                   pt.getActualTypeArguments.length == 2 &&
@@ -1947,11 +2045,14 @@ class LiftSession(
                               else
                                 clz.getGenericInterfaces.find(
                                   testGeneric) match {
-                                  case Some(_) => true
-                                  case _       => testGeneric(clz.getSuperclass)
+                                  case Some(_) =>
+                                    true
+                                  case _ =>
+                                    testGeneric(clz.getSuperclass)
                                 }
 
-                            case _ => false
+                            case _ =>
+                              false
                           }
 
                         def isFuncNodeSeq(meth: Method): Boolean = {
@@ -1987,7 +2088,8 @@ class LiftSession(
                             ) or
                               Helpers.invokeMethod(inst.getClass, inst, method)
                           ) match {
-                            case CheckNodeSeq(md) => md
+                            case CheckNodeSeq(md) =>
+                              md
                             case it =>
                               val intersection =
                                 if (Props.devMode) {
@@ -2078,14 +2180,16 @@ class LiftSession(
 
     def checkMultiPart(in: MetaData): MetaData =
       in.filter(_.key == "multipart").toList match {
-        case Nil => Null
+        case Nil =>
+          Null
         case x =>
           new UnprefixedAttribute("enctype", Text("multipart/form-data"), Null)
       }
 
     def checkAttr(attr_name: String, in: MetaData, base: MetaData): MetaData =
       in.filter(_.key == attr_name).toList match {
-        case Nil => base
+        case Nil =>
+          base
         case x =>
           new UnprefixedAttribute(attr_name, Text(x.head.value.text), base)
       }
@@ -2101,7 +2205,8 @@ class LiftSession(
             case e: Elem =>
               e % LiftRules.formAttrs.vend.foldLeft[MetaData](Null)(
                 (base, name) => checkAttr(name, attrs, base))
-            case x => x
+            case x =>
+              x
           }
 
         case Some("ajax") =>
@@ -2109,7 +2214,8 @@ class LiftSession(
             case e: Elem =>
               e % LiftRules.formAttrs.vend.foldLeft[MetaData](Null)(
                 (base, name) => checkAttr(name, attrs, base))
-            case x => x
+            case x =>
+              x
           }
 
         case Some(ft) =>
@@ -2125,7 +2231,8 @@ class LiftSession(
             checkMultiPart(attrs) % LiftRules.formAttrs.vend.foldLeft[MetaData](
             Null)((base, name) => checkAttr(name, attrs, base))
 
-        case _ => ret
+        case _ =>
+          ret
       }
 
   }
@@ -2133,9 +2240,12 @@ class LiftSession(
   private object ExclosedSnippetFailure {
     def unapply(e: Throwable): Option[SnippetFailureException] =
       e.getCause match {
-        case null                       => None
-        case e: SnippetFailureException => Some(e)
-        case _                          => None
+        case null =>
+          None
+        case e: SnippetFailureException =>
+          Some(e)
+        case _ =>
+          None
       }
   }
 
@@ -2204,7 +2314,8 @@ class LiftSession(
               NamedPF((tn.text, elm, metaData, kids, page), liftTagProcessing)
             }
 
-          case _ => processSnippet(page, Empty, elm.attributes, elm, elm.child)
+          case _ =>
+            processSnippet(page, Empty, elm.attributes, elm, elm.child)
         }
       case (snippetInfo, elm, metaData, kids, page) =>
         processSnippet(page, Full(snippetInfo), metaData, elm, kids)
@@ -2217,7 +2328,8 @@ class LiftSession(
 
   private class DeferredProcessor extends SpecializedLiftActor[ProcessSnippet] {
     protected def messageHandler = {
-      case ProcessSnippet(f) => f()
+      case ProcessSnippet(f) =>
+        f()
     }
   }
 
@@ -2273,8 +2385,10 @@ class LiftSession(
           // set the node
           hash.synchronized {
             hash(nodeId) = bns match {
-              case Empty => Failure("Weird Empty Node", Empty, Empty)
-              case x     => x
+              case Empty =>
+                Failure("Weird Empty Node", Empty, Empty)
+              case x =>
+                x
             }
 
             // and notify listeners
@@ -2310,10 +2424,12 @@ class LiftSession(
                   filteredElement,
                   LiftSession.this),
                 dataAttributeProcessors)
-            case _ => Empty
+            case _ =>
+              Empty
           }.headOption
 
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -2325,7 +2441,8 @@ class LiftSession(
       in match {
         case e: Elem if !rules.isEmpty =>
           NamedPF.applyBox((e.label, e, LiftSession.this), rules)
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -2399,7 +2516,8 @@ class LiftSession(
             (p: JsonAST.JValue) => {
               in.!(
                 xlate(p) match {
-                  case Full(v) => v
+                  case Full(v) =>
+                    v
                   case Empty =>
                     logger.error("Failed to deserialize JSON message " + p);
                     p
@@ -2587,7 +2705,8 @@ class LiftSession(
 
         case elem @ TagProcessingNode(toDo) =>
           toDo match {
-            case DataAttributeProcessorAnswerNodes(nodes) => nodes
+            case DataAttributeProcessorAnswerNodes(nodes) =>
+              nodes
             case DataAttributeProcessorAnswerFork(nodeFunc) =>
               processOrDefer(true)(nodeFunc())
             case DataAttributeProcessorAnswerFuture(nodeFuture) =>
@@ -2603,14 +2722,18 @@ class LiftSession(
             v.minimizeEmpty,
             processSurroundAndInclude(page, v.child): _*)
 
-        case pcd: scala.xml.PCData => pcd
-        case text: Text            => text
-        case unparsed: Unparsed    => unparsed
+        case pcd: scala.xml.PCData =>
+          pcd
+        case text: Text =>
+          text
+        case unparsed: Unparsed =>
+          unparsed
 
         case a: Atom[Any] if (a.getClass == classOf[Atom[Any]]) =>
           new Text(a.data.toString)
 
-        case v => v
+        case v =>
+          v
       }
     } finally {
       _lastFoundSnippet.set(null)
@@ -2648,8 +2771,10 @@ class LiftSession(
     testStatefulFeature {
       import scala.collection.JavaConversions._
       nasyncComponents.flatMap {
-        case (CometId(name, _), value) if name == theType => Full(value)
-        case _                                            => Empty
+        case (CometId(name, _), value) if name == theType =>
+          Full(value)
+        case _ =>
+          Empty
       }.toList
     }
   }
@@ -2680,8 +2805,10 @@ class LiftSession(
   def sendCometActorMessage(theType: String, name: Box[String], msg: Any) {
     testStatefulFeature {
       findComet(theType, name) match {
-        case Full(a) => a ! msg
-        case _       => setupComet(theType, name, msg)
+        case Full(a) =>
+          a ! msg
+        case _ =>
+          setupComet(theType, name, msg)
       }
     }
   }
@@ -2909,7 +3036,8 @@ class LiftSession(
 
         fail
 
-      case other => other
+      case other =>
+        other
     }
   }
 
@@ -2959,14 +3087,17 @@ class LiftSession(
         failedFind(f)
       case Full(s) =>
         atWhat.toList match {
-          case Nil => s
+          case Nil =>
+            s
           case xs =>
             xs.map {
-                case (id, replacement) => (("#" + id) #> replacement)
+                case (id, replacement) =>
+                  (("#" + id) #> replacement)
               }
               .reduceLeft(_ & _)(s)
         }
-      case _ => atWhat.valuesIterator.toSeq.flatMap(_.toSeq).toList
+      case _ =>
+        atWhat.valuesIterator.toSeq.flatMap(_.toSeq).toList
     }
   }
 
@@ -3069,8 +3200,10 @@ class LiftSession(
 
       def fixIt(in: Any): JValue = {
         in match {
-          case jv: JValue => jv
-          case a          => Extraction.decompose(a)
+          case jv: JValue =>
+            jv
+          case a =>
+            Extraction.decompose(a)
         }
       }
 
@@ -3106,26 +3239,34 @@ class LiftSession(
                     for (v <- func.asInstanceOf[Function1[Any, Stream[Any]]](
                            reified)) {
                       v match {
-                        case jsCmd: JsCmd => ca ! jsCmd
-                        case jsExp: JsExp => ca ! jsExp
-                        case v            => ca ! ItemMsg(guid, fixIt(v))
+                        case jsCmd: JsCmd =>
+                          ca ! jsCmd
+                        case jsExp: JsExp =>
+                          ca ! jsExp
+                        case v =>
+                          ca ! ItemMsg(guid, fixIt(v))
                       }
                     }
                     ca ! DoneMsg(guid)
                   } catch {
-                    case e: Exception => ca ! FailMsg(guid, e.getMessage)
+                    case e: Exception =>
+                      ca ! FailMsg(guid, e.getMessage)
                   }
 
                 case SimpleRoundTrip(_, func) =>
                   try {
                     func.asInstanceOf[Function1[Any, Any]](reified) match {
-                      case jsCmd: JsCmd => ca ! jsCmd
-                      case jsExp: JsExp => ca ! jsExp
-                      case v            => ca ! ItemMsg(guid, fixIt(v))
+                      case jsCmd: JsCmd =>
+                        ca ! jsCmd
+                      case jsExp: JsExp =>
+                        ca ! jsExp
+                      case v =>
+                        ca ! ItemMsg(guid, fixIt(v))
                     }
                     ca ! DoneMsg(guid)
                   } catch {
-                    case e: Exception => ca ! FailMsg(guid, e.getMessage)
+                    case e: Exception =>
+                      ca ! FailMsg(guid, e.getMessage)
                   }
 
                 case HandledRoundTrip(_, func) =>
@@ -3180,7 +3321,8 @@ class LiftSession(
                         }
                       )
                   } catch {
-                    case e: Exception => ca ! FailMsg(guid, e.getMessage)
+                    case e: Exception =>
+                      ca ! FailMsg(guid, e.getMessage)
                   }
 
               }
@@ -3239,8 +3381,10 @@ trait LiftView {
 private object SnippetNode {
   private def removeLift(str: String): String =
     str.indexOf(":") match {
-      case x if x >= 0 => str.substring(x + 1)
-      case _           => str
+      case x if x >= 0 =>
+        str.substring(x + 1)
+      case _ =>
+        str
     }
 
   private def isLiftClass(s: String): Boolean =
@@ -3301,7 +3445,8 @@ private object SnippetNode {
         case p: PrefixedAttribute if p.pre == "lift" && p.key == "snippet" =>
           nonLift = p.copy(nonLift)
 
-        case a => nonLift = a.copy(nonLift)
+        case a =>
+          nonLift = a.copy(nonLift)
       }
       next = next.next
     }
@@ -3320,7 +3465,8 @@ private object SnippetNode {
             elm.attributes.find {
               case p: PrefixedAttribute =>
                 p.pre == "lift" && (p.key == "parallel")
-              case _ => false
+              case _ =>
+                false
             }.isDefined,
             elm.attributes,
             elm.label))
@@ -3347,8 +3493,10 @@ private object SnippetNode {
               (
                 lift
                   .find {
-                    case up: UnprefixedAttribute if up.key == "parallel" => true
-                    case _                                               => false
+                    case up: UnprefixedAttribute if up.key == "parallel" =>
+                      true
+                    case _ =>
+                      false
                   }
                   .flatMap(up => AsBoolean.unapply(up.value.text)) getOrElse
                   false

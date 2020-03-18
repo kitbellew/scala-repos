@@ -25,8 +25,10 @@ final class IdOps[A](val self: A) extends AnyVal {
     */
   def matchOrZero[B: Monoid](pf: PartialFunction[A, B]): B =
     pf.lift(self) match {
-      case None    => Monoid[B].zero
-      case Some(x) => x
+      case None =>
+        Monoid[B].zero
+      case Some(x) =>
+        x
     }
 
   /** Repeatedly apply `f`, seeded with `self`, checking after each iteration whether the predicate `p` holds. */

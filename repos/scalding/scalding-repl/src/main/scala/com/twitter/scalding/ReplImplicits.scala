@@ -60,7 +60,8 @@ trait BaseReplState {
   /** Switch to Hdfs mode */
   private def useHdfsMode_() {
     storedHdfsMode match {
-      case Some(hdfsMode) => mode = hdfsMode
+      case Some(hdfsMode) =>
+        mode = hdfsMode
       case None =>
         println(
           "To use HDFS/Hadoop mode, you must *start* the repl in hadoop mode to get the hadoop configuration from the hadoop command.")
@@ -105,8 +106,10 @@ trait BaseReplState {
 
   private def modeHadoopConf: Configuration = {
     mode match {
-      case hdfsMode: Hdfs => hdfsMode.jobConf
-      case _              => new Configuration(false)
+      case hdfsMode: Hdfs =>
+        hdfsMode.jobConf
+      case _ =>
+        new Configuration(false)
     }
   }
 
@@ -195,7 +198,8 @@ trait BaseReplState {
     */
   def run(implicit fd: FlowDef, md: Mode): Option[JobStats] =
     ExecutionContext.newContext(executionConfig)(fd, md).waitFor match {
-      case Success(stats) => Some(stats)
+      case Success(stats) =>
+        Some(stats)
       case Failure(e) =>
         println("Flow execution failed!")
         e.printStackTrace()

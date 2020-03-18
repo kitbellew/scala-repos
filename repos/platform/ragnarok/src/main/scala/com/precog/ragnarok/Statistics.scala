@@ -78,8 +78,10 @@ case class Statistics private[ragnarok] (
           val sprev = vn - (x - mprev) * (x - m)
           (mprev, sprev, n - 1)
       } match {
-        case (m, vn, 1) => (m, 0.0, 1)
-        case (m, vn, n) => (m, math.abs(vn / (n - 1)), n)
+        case (m, vn, 1) =>
+          (m, 0.0, 1)
+        case (m, vn, n) =>
+          (m, math.abs(vn / (n - 1)), n)
       }
     } else {
       (Double.NaN, Double.NaN, 0)

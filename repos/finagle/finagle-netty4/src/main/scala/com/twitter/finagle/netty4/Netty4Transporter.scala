@@ -60,7 +60,8 @@ private[netty4] object Netty4Transporter {
 
         // try to cancel the connect attempt if the transporter's promise is interrupted.
         transportP.setInterruptHandler {
-          case _ => nettyConnectF.cancel(true /* mayInterruptIfRunning */ )
+          case _ =>
+            nettyConnectF.cancel(true /* mayInterruptIfRunning */ )
         }
 
         nettyConnectF.addListener(

@@ -52,7 +52,8 @@ object BackendReporting {
     def flatMap[BB](f: B => Either[A, BB]) = v.right.flatMap(f)
     def withFilter(f: B => Boolean)(implicit empty: A): Either[A, B] =
       v match {
-        case Left(_) => v
+        case Left(_) =>
+          v
         case Right(e) =>
           if (f(e))
             v
@@ -84,8 +85,10 @@ object BackendReporting {
       */
     def orThrow: B =
       v match {
-        case Left(m)  => throw Invalid(m)
-        case Right(t) => t
+        case Left(m) =>
+          throw Invalid(m)
+        case Right(t) =>
+          t
       }
   }
 
@@ -98,7 +101,8 @@ object BackendReporting {
     try {
       op
     } catch {
-      case Invalid(e) => Left(e.asInstanceOf[A])
+      case Invalid(e) =>
+        Left(e.asInstanceOf[A])
     }
 
   sealed trait OptimizerWarning {

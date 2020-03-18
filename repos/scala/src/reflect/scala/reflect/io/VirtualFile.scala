@@ -37,8 +37,10 @@ class VirtualFile(val name: String, override val path: String)
   override def hashCode = path.hashCode
   override def equals(that: Any) =
     that match {
-      case x: VirtualFile => x.path == path
-      case _              => false
+      case x: VirtualFile =>
+        x.path == path
+      case _ =>
+        false
     }
 
   private var content = Array.emptyByteArray

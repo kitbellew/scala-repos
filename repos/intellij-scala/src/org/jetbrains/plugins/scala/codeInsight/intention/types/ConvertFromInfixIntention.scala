@@ -30,7 +30,8 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
               ref: ScStableCodeReferenceElement,
               Parent(Parent(param: ScInfixTypeElement)))) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -41,8 +42,10 @@ class ConvertFromInfixIntention extends PsiElementBaseIntentionAction {
       false)
     val elementToReplace =
       infixTypeElement.getParent match {
-        case x: ScParenthesisedTypeElement => x
-        case _                             => infixTypeElement
+        case x: ScParenthesisedTypeElement =>
+          x
+        case _ =>
+          infixTypeElement
       }
 
     if (element == null)

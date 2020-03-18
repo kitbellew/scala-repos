@@ -122,13 +122,15 @@ object PersistenceDocSpec {
       override def persistenceId: String = "persistence-id"
 
       override def receiveCommand: Receive = {
-        case s: String => persist(MsgSent(s))(updateState)
+        case s: String =>
+          persist(MsgSent(s))(updateState)
         case Confirm(deliveryId) =>
           persist(MsgConfirmed(deliveryId))(updateState)
       }
 
       override def receiveRecover: Receive = {
-        case evt: Evt => updateState(evt)
+        case evt: Evt =>
+          updateState(evt)
       }
 
       def updateState(evt: Evt): Unit =
@@ -136,7 +138,8 @@ object PersistenceDocSpec {
           case MsgSent(s) =>
             deliver(destination)(deliveryId => Msg(deliveryId, s))
 
-          case MsgConfirmed(deliveryId) => confirmDelivery(deliveryId)
+          case MsgConfirmed(deliveryId) =>
+            confirmDelivery(deliveryId)
         }
     }
 
@@ -159,7 +162,8 @@ object PersistenceDocSpec {
       var state: Any = _
 
       override def receiveCommand: Receive = {
-        case "snap"                                => saveSnapshot(state)
+        case "snap" =>
+          saveSnapshot(state)
         case SaveSnapshotSuccess(metadata)         => // ...
         case SaveSnapshotFailure(metadata, reason) => // ...
       }
@@ -184,9 +188,10 @@ object PersistenceDocSpec {
       var state: Any = _
 
       override def receiveRecover: Receive = {
-        case SnapshotOffer(metadata, offeredSnapshot) => state = offeredSnapshot
-        case RecoveryCompleted                        =>
-        case event                                    => // ...
+        case SnapshotOffer(metadata, offeredSnapshot) =>
+          state = offeredSnapshot
+        case RecoveryCompleted =>
+        case event             => // ...
       }
       //#snapshot-offer
 

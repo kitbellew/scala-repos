@@ -22,7 +22,8 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
 
   def map[B](f: A => B)(implicit F: Monad[F]): StateT[F, S, B] =
     transform {
-      case (s, a) => (s, f(a))
+      case (s, a) =>
+        (s, f(a))
     }
 
   /**
@@ -66,7 +67,8 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
   def transform[B](f: (S, A) => (S, B))(implicit F: Monad[F]): StateT[F, S, B] =
     transformF { fsa =>
       F.map(fsa) {
-        case (s, a) => f(s, a)
+        case (s, a) =>
+          f(s, a)
       }
     }
 
@@ -102,7 +104,8 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
         val s = f(r)
         val nextState = ff(s)
         F.map(nextState) {
-          case (s, a) => (g(r, s), a)
+          case (s, a) =>
+            (g(r, s), a)
         }
       }
     }

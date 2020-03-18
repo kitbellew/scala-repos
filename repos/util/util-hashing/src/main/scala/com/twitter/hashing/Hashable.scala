@@ -251,7 +251,8 @@ object Hashable extends LowPriorityHashable {
             hash += b0
             hash ^= hash << 10
             hash += hash >>> 1
-          case 0 => ()
+          case 0 =>
+            ()
         }
 
         hash ^= hash << 3

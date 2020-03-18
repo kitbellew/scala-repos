@@ -76,7 +76,8 @@ object MavenRepositoryResolver {
   def parseTimeString(in: String): Option[Long] =
     try Some(LAST_UPDATE_FORMAT.parse(in).getTime)
     catch {
-      case _: java.text.ParseException => None
+      case _: java.text.ParseException =>
+        None
     }
   val DEFAULT_ARTIFACT_CONFIGURATION = "master"
 }
@@ -118,8 +119,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   // TOOD - deal with packaging here.
   private def aetherArtifactIdFromMrid(mrid: ModuleRevisionId): String =
     getSbtVersion(mrid) match {
-      case Some(sbt) => s"${mrid.getName}_sbt_$sbt"
-      case None      => mrid.getName
+      case Some(sbt) =>
+        s"${mrid.getName}_sbt_$sbt"
+      case None =>
+        mrid.getName
     }
   private def aetherCoordsFromMrid(mrid: ModuleRevisionId): String =
     s"${mrid.getOrganisation}:${aetherArtifactIdFromMrid(mrid)}:${mrid.getRevision}"
@@ -142,10 +145,14 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       map: java.util.Map[String, AnyRef]) = {
     val count =
       map.get(SbtPomExtraProperties.LICENSE_COUNT_KEY) match {
-        case null                 => 0
-        case x: java.lang.Integer => x.intValue
-        case x: String            => x.toInt
-        case _                    => 0
+        case null =>
+          0
+        case x: java.lang.Integer =>
+          x.intValue
+        case x: String =>
+          x.toInt
+        case _ =>
+          0
       }
     for {
       i <- 0 until count
@@ -478,7 +485,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               d.getArtifact.getArtifactId,
               d.getArtifact.getVersion,
               props.asJava)
-          case _ => tmp
+          case _ =>
+            tmp
         }
       }
 
@@ -514,9 +522,12 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             "jar"
         val ext: String =
           tpe match {
-            case "test-jar"     => "jar"
-            case JarPackaging() => "jar"
-            case other          => other
+            case "test-jar" =>
+              "jar"
+            case JarPackaging() =>
+              "jar"
+            case other =>
+              other
           }
         // Here we add the classifier, hopefully correctly...
         val extraAtt = new java.util.HashMap[String, AnyRef]()
@@ -652,7 +663,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case Some(t) =>
         throw new IllegalStateException(
           s"Publish Transaction already open for [$getName]")
-      case None => currentTransaction = Some(PublishTransaction(module, Nil))
+      case None =>
+        currentTransaction = Some(PublishTransaction(module, Nil))
     }
   }
   override def abortPublishTransaction(): Unit = {
@@ -667,15 +679,20 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       art: org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor)
       : Option[String] =
     art.getType match {
-      case "doc" | "javadoc"   => Some("javadoc")
-      case "src" | "source"    => Some("sources")
-      case "test-jar" | "test" => Some("tests")
-      case _                   =>
+      case "doc" | "javadoc" =>
+        Some("javadoc")
+      case "src" | "source" =>
+        Some("sources")
+      case "test-jar" | "test" =>
+        Some("tests")
+      case _ =>
         // Look for extra attributes
         art.getExtraAttribute(
           MavenRepositoryResolver.CLASSIFIER_ATTRIBUTE) match {
-          case null => None
-          case c    => Some(c)
+          case null =>
+            None
+          case c =>
+            Some(c)
         }
     }
 
@@ -688,7 +705,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       // fix this for better integration into the maven ecosystem from ivy.
       //case "sources" => "sources"
       //case "javadoc" => "javadoc"
-      case other => MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION
+      case other =>
+        MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION
     }
 
   override def commitPublishTransaction(): Unit = {
@@ -734,8 +752,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
   override def equals(a: Any): Boolean =
     a match {
-      case x: MavenRepositoryResolver => x.getName == getName
-      case _                          => false
+      case x: MavenRepositoryResolver =>
+        x.getName == getName
+      case _ =>
+        false
     }
   override def hashCode: Int = getName.hashCode
 }

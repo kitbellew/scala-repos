@@ -35,7 +35,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
             case b: BaseProcessor =>
               b.kinds.contains(ResolveTargets.OBJECT) || b.kinds.contains(
                 ResolveTargets.VAL)
-            case _ => true
+            case _ =>
+              true
           }
         ) && t.fakeCompanionModule.isDefined
       }
@@ -59,7 +60,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
             processor.execute(t.fakeCompanionModule.get, state)
           }
           true
-        case named: ScNamedElement => processor.execute(named, state)
+        case named: ScNamedElement =>
+          processor.execute(named, state)
         case holder: ScDeclaredElementsHolder =>
           val elements: Seq[PsiNamedElement] = holder.declaredElements
           var i = 0
@@ -70,15 +72,18 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
             i = i + 1
           }
           true
-        case _ => true
+        case _ =>
+          true
       }
     }
 
     if (lastParent != null) {
       var run =
         lastParent match {
-          case element: ScalaPsiElement => element.getDeepSameElementInContext
-          case _                        => lastParent
+          case element: ScalaPsiElement =>
+            element.getDeepSameElementInContext
+          case _ =>
+            lastParent
         }
       while (run != null) {
         ProgressManager.checkCanceled()

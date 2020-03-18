@@ -124,14 +124,16 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
         try {
           relSourceMap = Some(new URI(uriStr))
         } catch {
-          case e: URISyntaxException => error(s"$uriStr is not a valid URI")
+          case e: URISyntaxException =>
+            error(s"$uriStr is not a valid URI")
         }
       } else if (option.startsWith("absSourceMap:")) {
         val uriStr = option.stripPrefix("absSourceMap:")
         try {
           absSourceMap = Some(new URI(uriStr))
         } catch {
-          case e: URISyntaxException => error(s"$uriStr is not a valid URI")
+          case e: URISyntaxException =>
+            error(s"$uriStr is not a valid URI")
         }
       } else {
         error("Option not understood: " + option)

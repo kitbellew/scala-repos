@@ -53,9 +53,12 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
   val filter = TestEvent.Mute(
     EventFilter.custom {
-      case _: Logging.Debug ⇒ true
-      case _: Logging.Info ⇒ true
-      case _ ⇒ false
+      case _: Logging.Debug ⇒
+        true
+      case _: Logging.Info ⇒
+        true
+      case _ ⇒
+        false
     })
   appLogging.eventStream.publish(filter)
   appAuto.eventStream.publish(filter)
@@ -63,7 +66,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
   def ignoreMute(t: TestKit) {
     t.ignoreMsg {
-      case (_: TestEvent.Mute | _: TestEvent.UnMute) ⇒ true
+      case (_: TestEvent.Mute | _: TestEvent.UnMute) ⇒
+        true
     }
   }
 
@@ -113,11 +117,13 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         val actor = TestActorRef(
           new Actor {
             def switch: Actor.Receive = {
-              case "becomenull" ⇒ context.become(r, false)
+              case "becomenull" ⇒
+                context.become(r, false)
             }
             def receive =
               switch orElse LoggingReceive {
-                case x ⇒ sender() ! "x"
+                case x ⇒
+                  sender() ! "x"
               }
           })
 
@@ -137,7 +143,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         within(500 millis) {
           actor ! "bah"
           expectMsgPF() {
-            case UnhandledMessage("bah", testActor, `actor`) ⇒ true
+            case UnhandledMessage("bah", testActor, `actor`) ⇒
+              true
           }
         }
       }
@@ -151,7 +158,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             def receive =
               LoggingReceive(
                 LoggingReceive {
-                  case _ ⇒ sender() ! "x"
+                  case _ ⇒
+                    sender() ! "x"
                 })
           })
         actor ! "buh"
@@ -204,7 +212,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case Logging.Debug(`lname`, _, msg: String)
                 if msg startsWith "now supervising" ⇒
               true
-            case _ ⇒ false
+            case _ ⇒
+              false
           }
 
           TestActorRef[TestLogActor](Props[TestLogActor], supervisor, "none")
@@ -213,7 +222,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case Logging.Debug(`sname`, _, msg: String)
                 if msg startsWith "now supervising" ⇒
               true
-            case _ ⇒ false
+            case _ ⇒
+              false
           }
         }
       }
@@ -236,7 +246,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case Logging.Debug(`aname`, `sclass`, msg: String)
                 if msg.startsWith("now watched by") ⇒
               true
-            case _ ⇒ false
+            case _ ⇒
+              false
           }
 
           supervisor unwatch actor
@@ -261,7 +272,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case Logging.Debug(`sname`, `sclass`, msg: String)
                 if msg startsWith "started" ⇒
               true
-            case _ ⇒ false
+            case _ ⇒
+              false
           }
 
           val actor = TestActorRef[TestLogActor](
@@ -275,7 +287,8 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case Logging.Debug(`aname`, `aclass`, msg: String)
                 if msg startsWith "started" ⇒
               true
-            case _ ⇒ false
+            case _ ⇒
+              false
           }
 
           EventFilter[ActorKilledException](occurrences = 1) intercept {
@@ -288,8 +301,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
                       _,
                       "Kill") ⇒
                   1
-                case Logging.Debug(`aname`, `aclass`, "restarting") ⇒ 2
-                case Logging.Debug(`aname`, `aclass`, "restarted") ⇒ 3
+                case Logging.Debug(`aname`, `aclass`, "restarting") ⇒
+                  2
+                case Logging.Debug(`aname`, `aclass`, "restarted") ⇒
+                  3
               }.toSet
             expectNoMsg(Duration.Zero)
             assert(set == Set(1, 2, 3), set + " was not Set(1, 2, 3)")

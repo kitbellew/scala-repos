@@ -54,7 +54,8 @@ object MapperSpecsModel {
           "DEFAULT:" + mapperName + "." + name
         case "firstName" if l == new Locale("xx", "YY") =>
           "xx_YY:" + mapperName + "." + name
-        case _ => name
+        case _ =>
+          name
       }
     displayName
   }

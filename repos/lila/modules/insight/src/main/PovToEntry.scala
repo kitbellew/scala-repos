@@ -84,12 +84,18 @@ object PovToEntry {
 
   private def pgnMoveToRole(pgn: String): Role =
     pgn.head match {
-      case 'N'       => chess.Knight
-      case 'B'       => chess.Bishop
-      case 'R'       => chess.Rook
-      case 'Q'       => chess.Queen
-      case 'K' | 'O' => chess.King
-      case _         => chess.Pawn
+      case 'N' =>
+        chess.Knight
+      case 'B' =>
+        chess.Bishop
+      case 'R' =>
+        chess.Rook
+      case 'Q' =>
+        chess.Queen
+      case 'K' | 'O' =>
+        chess.King
+      case _ =>
+        chess.Pawn
     }
 
   private def makeMoves(from: RichPov): List[Move] = {
@@ -108,7 +114,8 @@ object PovToEntry {
         else
           1
       from.boards.list.zipWithIndex.collect {
-        case (e, i) if (i % 2) == pivot => e
+        case (e, i) if (i % 2) == pivot =>
+          e
       }
     }
     movetimes.zip(roles).zip(boards).zipWithIndex.map {
@@ -118,18 +125,24 @@ object PovToEntry {
         val opportunism = from.advices.get(ply - 1) flatMap {
           case o if o.nag == Nag.Blunder =>
             from.advices get ply match {
-              case Some(p) if p.nag == Nag.Blunder => false.some
-              case _                               => true.some
+              case Some(p) if p.nag == Nag.Blunder =>
+                false.some
+              case _ =>
+                true.some
             }
-          case _ => none
+          case _ =>
+            none
         }
         val luck = from.advices.get(ply) flatMap {
           case o if o.nag == Nag.Blunder =>
             from.advices.get(ply + 1) match {
-              case Some(p) if p.nag == Nag.Blunder => true.some
-              case _                               => false.some
+              case Some(p) if p.nag == Nag.Blunder =>
+                true.some
+              case _ =>
+                false.some
             }
-          case _ => none
+          case _ =>
+            none
         }
         Move(
           phase = Phase.of(from.division, ply),
@@ -180,9 +193,12 @@ object PovToEntry {
       moves = makeMoves(from),
       queenTrade = queenTrade(from),
       result = pov.game.winnerUserId match {
-        case None                 => Result.Draw
-        case Some(u) if u == myId => Result.Win
-        case _                    => Result.Loss
+        case None =>
+          Result.Draw
+        case Some(u) if u == myId =>
+          Result.Win
+        case _ =>
+          Result.Loss
       },
       termination = Termination fromStatus pov.game.status,
       ratingDiff = ~pov.player.ratingDiff,

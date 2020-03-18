@@ -175,7 +175,8 @@ class AppendOnlyMapSuite extends SparkFunSuite {
       map.changeValue("1", (hadValue, oldValue) => "2014")
       map.iterator
     } catch {
-      case e: IllegalStateException => fail()
+      case e: IllegalStateException =>
+        fail()
     }
 
     val it = map.destructiveSortedIterator(

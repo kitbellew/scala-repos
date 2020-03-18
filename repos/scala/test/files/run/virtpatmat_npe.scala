@@ -6,7 +6,8 @@ class C {
       println(
         "NOK: " + name
       ) // the outer check on D's outer should not cause a NPE
-    case null => println("OK")
+    case null =>
+      println("OK")
   }
 }
 

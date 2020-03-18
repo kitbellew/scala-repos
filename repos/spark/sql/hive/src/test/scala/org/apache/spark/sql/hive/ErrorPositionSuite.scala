@@ -140,7 +140,8 @@ class ErrorPositionSuite
         .split("\n")
         .zipWithIndex
         .collect {
-          case (l, i) if l.contains(token) => (l, i + 1)
+          case (l, i) if l.contains(token) =>
+            (l, i + 1)
         }
         .headOption
         .getOrElse(sys.error(s"Invalid test. Token $token not in $query"))

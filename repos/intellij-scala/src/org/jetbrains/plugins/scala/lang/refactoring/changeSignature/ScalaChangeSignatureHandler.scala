@@ -73,19 +73,24 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
             "change.signature.not.supported.extractors")
           showErrorHint(message)
           false
-        case _ => true
+        case _ =>
+          true
       }
     }
 
     @tailrec
     def unwrapMethod(element: PsiElement): Option[PsiMethod] =
       element match {
-        case null                       => None
-        case isWrapper(fun: ScFunction) => unwrapMethod(fun)
+        case null =>
+          None
+        case isWrapper(fun: ScFunction) =>
+          unwrapMethod(fun)
         case fun: ScFunction if fun.isSynthetic =>
           fun.syntheticCaseClass.flatMap(_.constructor)
-        case m: PsiMethod => Some(m)
-        case _            => None
+        case m: PsiMethod =>
+          Some(m)
+        case _ =>
+          None
       }
 
     unwrapMethod(element) match {
@@ -93,8 +98,9 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
         if (!CommonRefactoringUtil.checkReadOnlyStatus(project, method))
           return
         method match {
-          case f: ScFunction if f.isSynthetic => return
-          case _                              =>
+          case f: ScFunction if f.isSynthetic =>
+            return
+          case _ =>
         }
 
         val newMethod = SuperMethodWarningUtil.checkSuperMethod(
@@ -150,22 +156,29 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
 
     def resolvedMethod =
       PsiTreeUtil.getParentOfType(element, classOf[ScReferenceElement]) match {
-        case null                     => null
-        case ResolvesTo(m: PsiMethod) => m
-        case _                        => null
+        case null =>
+          null
+        case ResolvesTo(m: PsiMethod) =>
+          m
+        case _ =>
+          null
       }
     def currentFunction =
       PsiTreeUtil.getParentOfType(element, classOf[ScFunction]) match {
-        case null => null
+        case null =>
+          null
         case funDef: ScFunctionDefinition
             if !funDef.body.exists(_.isAncestorOf(element)) =>
           funDef
-        case decl: ScFunctionDeclaration => decl
-        case _                           => null
+        case decl: ScFunctionDeclaration =>
+          decl
+        case _ =>
+          null
       }
     def primaryConstr =
       PsiTreeUtil.getParentOfType(element, classOf[ScClass]) match {
-        case null => null
+        case null =>
+          null
         case c: ScClass =>
           c.constructor match {
             case Some(constr)
@@ -174,7 +187,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
                   element,
                   false) || PsiTreeUtil.isAncestor(constr, element, false) =>
               constr
-            case _ => null
+            case _ =>
+              null
           }
       }
     Option(resolvedMethod) orElse Option(
@@ -186,8 +200,10 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
     val element = file.findElementAt(offset)
     Option(findTargetMember(element)) getOrElse {
       file.findReferenceAt(offset) match {
-        case ResolvesTo(m: PsiMethod) => m
-        case _                        => null
+        case ResolvesTo(m: PsiMethod) =>
+          m
+        case _ =>
+          null
       }
     }
   }

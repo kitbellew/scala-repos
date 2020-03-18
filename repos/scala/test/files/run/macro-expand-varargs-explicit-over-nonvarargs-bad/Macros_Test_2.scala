@@ -17,6 +17,7 @@ object Test extends App {
   )
   try cm.mkToolBox().eval(tree)
   catch {
-    case ex: Throwable => println(ex.getMessage)
+    case ex: Throwable =>
+      println(ex.getMessage)
   }
 }

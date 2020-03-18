@@ -152,7 +152,8 @@ object MapParamMap {
       tuples: Seq[Tuple2[String, String]]): Map[String, Seq[String]] = {
     tuples
       .groupBy {
-        case (k, v) => k
+        case (k, v) =>
+          k
       }
       .mapValues {
         case values =>
@@ -216,8 +217,10 @@ class RequestParamMap(val request: Request) extends ParamMap {
   /** Get value */
   def get(name: String): Option[String] =
     jget(postParams, name) match {
-      case None  => jget(getParams, name)
-      case value => value
+      case None =>
+        jget(getParams, name)
+      case value =>
+        value
     }
 
   def iterator: Iterator[(String, String)] =

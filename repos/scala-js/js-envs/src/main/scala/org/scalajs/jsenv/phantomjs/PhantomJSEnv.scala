@@ -525,11 +525,16 @@ class PhantomJSEnv(
 
   protected def htmlEscape(str: String): String =
     str.flatMap {
-      case '<' => "&lt;"
-      case '>' => "&gt;"
-      case '"' => "&quot;"
-      case '&' => "&amp;"
-      case c   => c :: Nil
+      case '<' =>
+        "&lt;"
+      case '>' =>
+        "&gt;"
+      case '"' =>
+        "&quot;"
+      case '&' =>
+        "&amp;"
+      case c =>
+        c :: Nil
     }
 
 }

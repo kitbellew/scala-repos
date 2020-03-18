@@ -28,7 +28,8 @@ object TwitterStreamQuickstartDocSpec {
       body
         .split(" ")
         .collect {
-          case t if t.startsWith("#") => Hashtag(t)
+          case t if t.startsWith("#") =>
+            Hashtag(t)
         }
         .toSet
   }
@@ -94,7 +95,8 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
     trait Example3 {
       //#authors-collect
       val authors: Source[Author, NotUsed] = tweets.collect {
-        case t if t.hashtags.contains(akka) => t.author
+        case t if t.hashtags.contains(akka) =>
+          t.author
       }
       //#authors-collect
     }

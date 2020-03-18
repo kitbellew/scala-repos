@@ -132,8 +132,12 @@ trait ApplicationAnnotator {
                     else {
                       //TODO investigate case when expression is null. It's possible when new Expression(ScType)
                     }
-                  case MissedValueParameter(_) => // simultaneously handled above
-                  case UnresolvedParameter(_)  => // don't show function inapplicability, unresolved
+                  case MissedValueParameter(
+                        _
+                      ) => // simultaneously handled above
+                  case UnresolvedParameter(
+                        _
+                      ) => // don't show function inapplicability, unresolved
                   case MalformedDefinition() =>
                     holder.createErrorAnnotation(
                       call.getInvokedExpr,
@@ -206,11 +210,15 @@ trait ApplicationAnnotator {
       reference.getContext match {
         case x: ScMethodCall =>
           x.getEffectiveInvokedExpr match {
-            case x: ScReferenceExpression => x.qualifier
-            case _                        => None
+            case x: ScReferenceExpression =>
+              x.qualifier
+            case _ =>
+              None
           }
-        case x: ScInfixExpr => Some(x.lOp)
-        case _              => None
+        case x: ScInfixExpr =>
+          Some(x.lOp)
+        case _ =>
+          None
       }
     val refElementOpt = qualifier.flatMap(_.asOptionOf[ScReferenceElement])
     val ref: Option[PsiElement] = refElementOpt.flatMap(_.resolve().toOption)
@@ -237,11 +245,13 @@ trait ApplicationAnnotator {
     call.getEffectiveInvokedExpr match {
       case ref: ScReferenceElement =>
         ref.bind() match {
-          case Some(r) if r.notCheckedResolveResult || r.isDynamic => //it's unhandled case
+          case Some(r)
+              if r.notCheckedResolveResult || r.isDynamic => //it's unhandled case
           case _ =>
             call.applyOrUpdateElement match {
               case Some(r) if r.isDynamic => //it's still unhandled
-              case _                      => return //it's definetely handled case
+              case _ =>
+                return //it's definetely handled case
             }
         }
       case _ => //unhandled case (only ref expressions was checked)
@@ -285,7 +295,9 @@ trait ApplicationAnnotator {
           annotation.registerFix(ReportHighlightingErrorQuickFix)
         }
       case MissedValueParameter(_) => // simultaneously handled above
-      case UnresolvedParameter(_)  => // don't show function inapplicability, unresolved
+      case UnresolvedParameter(
+            _
+          ) => // don't show function inapplicability, unresolved
       case MalformedDefinition() =>
         holder.createErrorAnnotation(
           call.getInvokedExpr,
@@ -304,7 +316,8 @@ trait ApplicationAnnotator {
           "Parameter specified multiple times")
       case ExpectedTypeMismatch               => // it will be reported later
       case DefaultTypeParameterMismatch(_, _) => //it will be reported later
-      case _                                  => holder.createErrorAnnotation(call.argsElement, "Not applicable")
+      case _ =>
+        holder.createErrorAnnotation(call.argsElement, "Not applicable")
     }
   }
 
@@ -319,9 +332,9 @@ trait ApplicationAnnotator {
       case (exp: ScReferenceExpression) childOf (infix: ScInfixExpr)
           if infix.operation == exp =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
-      case (
-            exp: ScReferenceExpression
-          ) childOf ((_: ScGenericCall) childOf (_: ScMethodCall)) =>
+      case (exp: ScReferenceExpression) childOf (
+            (_: ScGenericCall) childOf (_: ScMethodCall)
+          ) =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
       case (exp: ScReferenceExpression) childOf (_: ScGenericCall) =>
         annotation.registerFix(new CreateParameterlessMethodQuickFix(exp))
@@ -330,9 +343,9 @@ trait ApplicationAnnotator {
         annotation.registerFix(new CreateValueQuickFix(exp))
         annotation.registerFix(new CreateVariableQuickFix(exp))
         annotation.registerFix(new CreateObjectQuickFix(exp))
-      case (
-            stRef: ScStableCodeReferenceElement
-          ) childOf (st: ScSimpleTypeElement) if st.singleton =>
+      case (stRef: ScStableCodeReferenceElement) childOf (
+            st: ScSimpleTypeElement
+          ) if st.singleton =>
       case (stRef: ScStableCodeReferenceElement) childOf(
             Both(p: ScPattern, (_: ScConstructorPattern | _: ScInfixPattern))
           ) =>

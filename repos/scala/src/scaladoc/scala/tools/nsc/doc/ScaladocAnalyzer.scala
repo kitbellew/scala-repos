@@ -99,8 +99,9 @@ trait ScaladocAnalyzer extends Analyzer {
       for (tree <- trees;
            t <- tree)
         t match {
-          case Ident(name) if name startsWith '$' => defineAlias(name)
-          case _                                  =>
+          case Ident(name) if name startsWith '$' =>
+            defineAlias(name)
+          case _ =>
         }
 
       useCase.aliases = context.scope.toList

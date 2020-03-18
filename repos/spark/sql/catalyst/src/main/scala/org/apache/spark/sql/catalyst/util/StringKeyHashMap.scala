@@ -24,8 +24,10 @@ package org.apache.spark.sql.catalyst.util
 object StringKeyHashMap {
   def apply[T](caseSensitive: Boolean): StringKeyHashMap[T] =
     caseSensitive match {
-      case false => new StringKeyHashMap[T](_.toLowerCase)
-      case true  => new StringKeyHashMap[T](identity)
+      case false =>
+        new StringKeyHashMap[T](_.toLowerCase)
+      case true =>
+        new StringKeyHashMap[T](identity)
     }
 }
 

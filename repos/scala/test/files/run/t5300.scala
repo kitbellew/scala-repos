@@ -1,6 +1,7 @@
 object Test {
   val pf: PartialFunction[Any, Unit] = {
-    case _ => ()
+    case _ =>
+      ()
   }
 
   def main(args: Array[String]): Unit = {

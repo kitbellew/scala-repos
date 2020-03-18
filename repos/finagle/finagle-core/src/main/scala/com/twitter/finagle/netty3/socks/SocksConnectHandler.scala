@@ -330,7 +330,8 @@ class SocksConnectHandler(
           }
       }
     } catch {
-      case ReplayError => buf.resetReaderIndex()
+      case ReplayError =>
+        buf.resetReaderIndex()
     }
   }
 }

@@ -67,8 +67,10 @@ class ByteBufferMessageSet(val buffer: ByteBuffer) extends MessageSet {
 
   override def equals(other: Any): Boolean = {
     other match {
-      case that: ByteBufferMessageSet => buffer.equals(that.buffer)
-      case _                          => false
+      case that: ByteBufferMessageSet =>
+        buffer.equals(that.buffer)
+      case _ =>
+        false
     }
   }
 

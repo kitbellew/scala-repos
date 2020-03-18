@@ -60,7 +60,8 @@ object AccumulatorSpec extends Specification {
             sum
               .map(error[Int])
               .recover {
-                case e => 20
+                case e =>
+                  20
               }
               .run(source)) must_== 20
       }
@@ -70,7 +71,8 @@ object AccumulatorSpec extends Specification {
           await(
             sum
               .recover {
-                case e => 20
+                case e =>
+                  20
               }
               .run(errorSource)) must_== 20
       }
@@ -84,7 +86,8 @@ object AccumulatorSpec extends Specification {
             sum
               .map(error[Int])
               .recoverWith {
-                case e => Future(20)
+                case e =>
+                  Future(20)
               }
               .run(source)) must_== 20
       }
@@ -94,7 +97,8 @@ object AccumulatorSpec extends Specification {
           await(
             sum
               .recoverWith {
-                case e => Future(20)
+                case e =>
+                  Future(20)
               }
               .run(errorSource)) must_== 20
       }

@@ -31,7 +31,8 @@ abstract class ScalaIntentionTestBase
             myFixture.getEditor,
             myFixture.getFile)
         }
-      case None => Assert.fail("Intention is not found")
+      case None =>
+        Assert.fail("Intention is not found")
     }
     startCommand(getProject, "Test Intention Formatting") {
       CodeStyleManager.getInstance(getProject).reformat(myFixture.getFile)

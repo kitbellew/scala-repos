@@ -341,7 +341,8 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
     assert(array.numElements == values.length)
     assert(array.getSizeInBytes == 4 + (4 + 4) * values.length)
     values.zipWithIndex.foreach {
-      case (value, index) => assert(array.getInt(index) == value)
+      case (value, index) =>
+        assert(array.getInt(index) == value)
     }
   }
 

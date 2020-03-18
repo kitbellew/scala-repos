@@ -24,8 +24,10 @@ class ScalaInjectedStringLiteralManipulator
     val oldText = expr.getText
     val contentString =
       expr.getFirstChild.getNode.getElementType match {
-        case ScalaTokenTypes.tMULTILINE_STRING => newContent
-        case _                                 => StringUtil escapeStringCharacters newContent
+        case ScalaTokenTypes.tMULTILINE_STRING =>
+          newContent
+        case _ =>
+          StringUtil escapeStringCharacters newContent
       }
     val newText =
       oldText.substring(0, range.getStartOffset) + contentString + oldText
@@ -75,8 +77,10 @@ class ScalaInjectedStringLiteralManipulator
         case interp: ScInterpolatedStringLiteral =>
           val prefixLength =
             interp.reference match {
-              case Some(ref) => ref.getText.length
-              case _         => 0
+              case Some(ref) =>
+                ref.getText.length
+              case _ =>
+                0
             }
           getLiteralRange(element.getText.substring(prefixLength))
             .shiftRight(prefixLength)

@@ -801,23 +801,38 @@ private[columnar] object ColumnType {
   @tailrec
   def apply(dataType: DataType): ColumnType[_] = {
     dataType match {
-      case NullType                 => NULL
-      case BooleanType              => BOOLEAN
-      case ByteType                 => BYTE
-      case ShortType                => SHORT
-      case IntegerType | DateType   => INT
-      case LongType | TimestampType => LONG
-      case FloatType                => FLOAT
-      case DoubleType               => DOUBLE
-      case StringType               => STRING
-      case BinaryType               => BINARY
+      case NullType =>
+        NULL
+      case BooleanType =>
+        BOOLEAN
+      case ByteType =>
+        BYTE
+      case ShortType =>
+        SHORT
+      case IntegerType | DateType =>
+        INT
+      case LongType | TimestampType =>
+        LONG
+      case FloatType =>
+        FLOAT
+      case DoubleType =>
+        DOUBLE
+      case StringType =>
+        STRING
+      case BinaryType =>
+        BINARY
       case dt: DecimalType if dt.precision <= Decimal.MAX_LONG_DIGITS =>
         COMPACT_DECIMAL(dt)
-      case dt: DecimalType         => LARGE_DECIMAL(dt)
-      case arr: ArrayType          => ARRAY(arr)
-      case map: MapType            => MAP(map)
-      case struct: StructType      => STRUCT(struct)
-      case udt: UserDefinedType[_] => apply(udt.sqlType)
+      case dt: DecimalType =>
+        LARGE_DECIMAL(dt)
+      case arr: ArrayType =>
+        ARRAY(arr)
+      case map: MapType =>
+        MAP(map)
+      case struct: StructType =>
+        STRUCT(struct)
+      case udt: UserDefinedType[_] =>
+        apply(udt.sqlType)
       case other =>
         throw new Exception(s"Unsupported type: $other")
     }

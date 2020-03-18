@@ -663,9 +663,12 @@ object KMeans {
 
   private[spark] def validateInitMode(initMode: String): Boolean = {
     initMode match {
-      case KMeans.RANDOM           => true
-      case KMeans.K_MEANS_PARALLEL => true
-      case _                       => false
+      case KMeans.RANDOM =>
+        true
+      case KMeans.K_MEANS_PARALLEL =>
+        true
+      case _ =>
+        false
     }
   }
 }

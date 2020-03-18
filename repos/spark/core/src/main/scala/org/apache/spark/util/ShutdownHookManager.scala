@@ -129,7 +129,8 @@ private[spark] object ShutdownHookManager extends Logging {
       // scalastyle:on runtimeaddshutdownhook
       Runtime.getRuntime.removeShutdownHook(hook)
     } catch {
-      case ise: IllegalStateException => return true
+      case ise: IllegalStateException =>
+        return true
     }
     false
   }

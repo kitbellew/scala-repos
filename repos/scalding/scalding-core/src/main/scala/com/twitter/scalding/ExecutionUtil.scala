@@ -45,7 +45,8 @@ object ExecutionUtil {
       dr: DateRange): Execution[Seq[T]] =
     runDatesWithParallelism(duration, parallelism)(fn).map(
       _.map {
-        case (_, t) => t
+        case (_, t) =>
+          t
       })
 
   /**
@@ -74,7 +75,8 @@ object ExecutionUtil {
     runDateRangeWithParallelism(duration, parallelism)(fn)(dr)
       .map(
         _.reduceLeft[T] {
-          case (l, r) => Semigroup.plus(l, r)
+          case (l, r) =>
+            Semigroup.plus(l, r)
         })
   }
 }

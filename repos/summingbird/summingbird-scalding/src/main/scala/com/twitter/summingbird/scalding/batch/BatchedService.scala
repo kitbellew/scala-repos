@@ -64,7 +64,8 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
     implicit val ord = ordering
     LookupJoin(incoming, servStream, reducers)
       .map {
-        case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv))))
+        case (t, (k, (w, optoptv))) =>
+          (t, (k, (w, flatOpt(optoptv))))
       }
   }
 
@@ -81,7 +82,8 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
         val liftedLast: KeyValuePipe[K, Option[V]] = last
           ._2(flowMode)
           .map {
-            case (k, w) => (earliestInLast, (k, Some(w)))
+            case (k, w) =>
+              (earliestInLast, (k, Some(w)))
           }
         // TODO (https://github.com/twitter/summingbird/issues/91): we
         // could not bother to load streams outside the covers, but
@@ -117,7 +119,8 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
               _._2.isDefined
             }
             .collect {
-              case (batch, Some(flow)) => (batch, flow)
+              case (batch, Some(flow)) =>
+                (batch, flow)
             }
 
           if (existing.isEmpty) {

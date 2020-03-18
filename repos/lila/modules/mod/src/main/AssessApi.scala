@@ -81,7 +81,8 @@ final class AssessApi(
             assessedGamesHead :: assessedGamesTail,
             relatedUs,
             relatedCheaters))
-      case _ => none
+      case _ =>
+        none
     }
   }
 
@@ -95,8 +96,10 @@ final class AssessApi(
       userId: String,
       nb: Int = 100): Fu[Option[PlayerAggregateAssessment.WithGames]] =
     getPlayerAggregateAssessment(userId, nb) flatMap {
-      case None      => fuccess(none)
-      case Some(pag) => withGames(pag).map(_.some)
+      case None =>
+        fuccess(none)
+      case Some(pag) =>
+        withGames(pag).map(_.some)
     }
 
   def refreshAssessByUsername(username: String): Funit =
@@ -106,8 +109,10 @@ final class AssessApi(
           (
             gs map { g =>
               AnalysisRepo.byId(g.id) flatMap {
-                case Some(a) => onAnalysisReady(g, a, false)
-                case _       => funit
+                case Some(a) =>
+                  onAnalysisReady(g, a, false)
+                case _ =>
+                  funit
               }
             }
           ).sequenceFu.void
@@ -162,7 +167,8 @@ final class AssessApi(
             reporter ! lila.hub.actorApi.report.Clean(userId)
             funit
         }
-      case none => funit
+      case none =>
+        funit
     }
 
   private val assessableSources: Set[Source] = Set(

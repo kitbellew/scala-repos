@@ -133,8 +133,10 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
 
     txLog.mark(
       pendingCookIds0.headOption match {
-        case Some((_, txKey)) => txKey
-        case None             => completeTxKey
+        case Some((_, txKey)) =>
+          txKey
+        case None =>
+          completeTxKey
       })
   }
 }
@@ -151,8 +153,10 @@ object TXLogEntry extends Logging {
     val buffer = ByteBuffer.wrap(record.getFields()(0))
 
     buffer.getShort match {
-      case 0x1 => StartCook(buffer.getLong)
-      case 0x2 => CompleteCook(buffer.getLong)
+      case 0x1 =>
+        StartCook(buffer.getLong)
+      case 0x2 =>
+        CompleteCook(buffer.getLong)
       case other =>
         logger.error(
           "Unknown TX log record type = %d, isCTRL = %s, isEOB = %s from %s"
@@ -167,8 +171,10 @@ object TXLogEntry extends Logging {
   def toBytes(entry: TXLogEntry): Array[Array[Byte]] = {
     val (tpe, size) =
       entry match {
-        case StartCook(blockId)    => (0x1, 42)
-        case CompleteCook(blockId) => (0x2, 42)
+        case StartCook(blockId) =>
+          (0x1, 42)
+        case CompleteCook(blockId) =>
+          (0x2, 42)
       }
 
     val record = new Array[Byte](size)

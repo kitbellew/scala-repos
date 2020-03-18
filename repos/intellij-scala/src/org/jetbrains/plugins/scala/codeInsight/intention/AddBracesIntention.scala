@@ -32,8 +32,9 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
     if (element == null || !element.isValid)
       return
     check(project, editor, element) match {
-      case Some(x) => x()
-      case None    =>
+      case Some(x) =>
+        x()
+      case None =>
     }
   }
 
@@ -68,8 +69,10 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
           funDef.body.filter(isAncestorOfElement)
         case tryBlock: ScTryBlock if !tryBlock.hasRBrace =>
           tryBlock.statements match {
-            case Seq(x: ScExpression) if isAncestorOfElement(x) => Some(x)
-            case _                                              => None
+            case Seq(x: ScExpression) if isAncestorOfElement(x) =>
+              Some(x)
+            case _ =>
+              None
           }
         case finallyBlock: ScFinallyBlock =>
           finallyBlock.expression.filter(isAncestorOfElement)
@@ -77,7 +80,8 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
           whileStmt.body.filter(isAncestorOfElement)
         case doStmt: ScDoStmt =>
           doStmt.getExprBody.filter(isAncestorOfElement)
-        case _ => None
+        case _ =>
+          None
       }
     val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
       val startLine = editor.getDocument.getLineNumber(
@@ -86,8 +90,10 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
         x.getTextRange.getEndOffset)
       val isBlock =
         x match {
-          case _: ScBlockExpr => true
-          case _              => false
+          case _: ScBlockExpr =>
+            true
+          case _ =>
+            false
 
         }
       startLine == endLine && !isBlock

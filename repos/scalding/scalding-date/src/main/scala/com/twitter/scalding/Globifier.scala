@@ -44,8 +44,10 @@ class BaseGlobifier(
   // Generate a lazy list of all children
   final def children: Stream[BaseGlobifier] =
     child match {
-      case Some(c) => Stream.cons(c, c.children)
-      case None    => Stream.empty
+      case Some(c) =>
+        Stream.cons(c, c.children)
+      case None =>
+        Stream.empty
     }
 
   final def asteriskChildren(rd: RichDate): String = {

@@ -54,7 +54,8 @@ object IdleConnectionFilter {
           case Param(Some(thres)) =>
             val param.Stats(sr) = _stats
             new IdleConnectionFilter(next, thres, sr.scope("idle"))
-          case _ => next
+          case _ =>
+            next
         }
       }
     }

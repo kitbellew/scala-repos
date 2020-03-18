@@ -191,15 +191,18 @@ final class ClusterSingletonProxy(
 
   def matchingRole(member: Member): Boolean =
     role match {
-      case None ⇒ true
-      case Some(r) ⇒ member.hasRole(r)
+      case None ⇒
+        true
+      case Some(r) ⇒
+        member.hasRole(r)
     }
 
   def handleInitial(state: CurrentClusterState): Unit = {
     trackChange { () ⇒
       membersByAge =
         immutable.SortedSet.empty(ageOrdering) union state.members.collect {
-          case m if m.status == MemberStatus.Up && matchingRole(m) ⇒ m
+          case m if m.status == MemberStatus.Up && matchingRole(m) ⇒
+            m
         }
     }
   }
@@ -256,8 +259,10 @@ final class ClusterSingletonProxy(
 
   def receive = {
     // cluster logic
-    case state: CurrentClusterState ⇒ handleInitial(state)
-    case MemberUp(m) ⇒ add(m)
+    case state: CurrentClusterState ⇒
+      handleInitial(state)
+    case MemberUp(m) ⇒
+      add(m)
     case mEvent: MemberEvent
         if mEvent.isInstanceOf[MemberExited] || mEvent
           .isInstanceOf[MemberRemoved] ⇒

@@ -99,8 +99,10 @@ private[sql] case class LogicalRDD(
 
   override def sameResult(plan: LogicalPlan): Boolean =
     plan match {
-      case LogicalRDD(_, otherRDD) => rdd.id == otherRDD.id
-      case _                       => false
+      case LogicalRDD(_, otherRDD) =>
+        rdd.id == otherRDD.id
+      case _ =>
+        false
     }
 
   override def producedAttributes: AttributeSet = outputSet
@@ -156,7 +158,8 @@ private[sql] case class DataSourceScan(
     plan match {
       case other: DataSourceScan =>
         relation == other.relation && metadata == other.metadata
-      case _ => false
+      case _ =>
+        false
     }
 
   private[sql] override lazy val metrics = Map(
@@ -171,8 +174,10 @@ private[sql] case class DataSourceScan(
           .get
           .conf
           .getConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED)
-      case _: HadoopFsRelation => true
-      case _                   => false
+      case _: HadoopFsRelation =>
+        true
+      case _ =>
+        false
     }
 
   override val outputPartitioning = {
@@ -181,7 +186,8 @@ private[sql] case class DataSourceScan(
         // TODO: this should be closer to bucket planning.
         case r: HadoopFsRelation if r.sqlContext.conf.bucketingEnabled =>
           r.bucketSpec
-        case _ => None
+        case _ =>
+          None
       }
 
     def toAttribute(colName: String): Attribute =

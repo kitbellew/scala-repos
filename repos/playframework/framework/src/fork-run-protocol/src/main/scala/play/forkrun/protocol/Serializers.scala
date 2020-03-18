@@ -233,7 +233,8 @@ object Serializers {
               val input: String = readStringOptField("input").orNull
               val sourceName: String = readStringOptField("sourceName").orNull
             }
-          case None => new PlayException(title, description, cause.orNull)
+          case None =>
+            new PlayException(title, description, cause.orNull)
         }
       result.id = id
       reader.endEntry()

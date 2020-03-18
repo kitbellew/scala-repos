@@ -219,7 +219,8 @@ trait ObservableSet[T]
         def onChanged(change: jfxc.SetChangeListener.Change[_ <: T]) {
           val changeEvent: Change[J] =
             (change.wasAdded, change.wasRemoved) match {
-              case (true, false) => ObservableSet.Add(change.getElementAdded)
+              case (true, false) =>
+                ObservableSet.Add(change.getElementAdded)
               case (false, true) =>
                 ObservableSet.Remove(change.getElementRemoved)
               case _ =>

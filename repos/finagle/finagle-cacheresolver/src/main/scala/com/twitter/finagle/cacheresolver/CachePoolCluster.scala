@@ -93,16 +93,20 @@ object CacheNodeGroup {
       .filter((_ != ""))
       .map(_.split(":"))
       .map {
-        case Array(host)               => (host, 11211, 1, None)
-        case Array(host, port)         => (host, port.toInt, 1, None)
-        case Array(host, port, weight) => (host, port.toInt, weight.toInt, None)
+        case Array(host) =>
+          (host, 11211, 1, None)
+        case Array(host, port) =>
+          (host, port.toInt, 1, None)
+        case Array(host, port, weight) =>
+          (host, port.toInt, weight.toInt, None)
         case Array(host, port, weight, key) =>
           (host, port.toInt, weight.toInt, Some(key))
       }
 
     newStaticGroup(
       hostSeq.map {
-        case (host, port, weight, key) => new CacheNode(host, port, weight, key)
+        case (host, port, weight, key) =>
+          new CacheNode(host, port, weight, key)
       }.toSet)
   }
 
@@ -110,7 +114,8 @@ object CacheNodeGroup {
       group: Group[SocketAddress],
       useOnlyResolvedAddress: Boolean = false) =
     group collect {
-      case node: CacheNode => node
+      case node: CacheNode =>
+        node
       // Note: we ignore weights here
       case ia: InetSocketAddress
           if useOnlyResolvedAddress && !ia.isUnresolved =>
@@ -150,7 +155,8 @@ object CacheNodeGroup {
             case Address.Inet(ia, _) if !useOnlyResolvedAddress =>
               CacheNode(ia.getHostName, ia.getPort, 1, None)
           }
-        case _ => Set[CacheNode]()
+        case _ =>
+          Set[CacheNode]()
       }
     }
 }
@@ -337,8 +343,10 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
       underlyingSize = current.size
       changes foreach { spool =>
         spool foreach {
-          case Cluster.Add(node) => underlyingSize += 1
-          case Cluster.Rem(node) => underlyingSize -= 1
+          case Cluster.Add(node) =>
+            underlyingSize += 1
+          case Cluster.Rem(node) =>
+            underlyingSize -= 1
         }
       }
   }

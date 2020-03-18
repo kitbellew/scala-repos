@@ -112,15 +112,18 @@ object ConcurrentRestrictions {
       f: (B, B) => B): Map[A, B] = {
     val newb =
       (m get a) match {
-        case Some(bv) => f(bv, b)
-        case None     => b
+        case Some(bv) =>
+          f(bv, b)
+        case None =>
+          b
       }
     m.updated(a, newb)
   }
   private[this] def merge[A, B](m: Map[A, B], n: Map[A, B])(
       f: (B, B) => B): Map[A, B] =
     (m /: n) {
-      case (acc, (a, b)) => update(acc, a, b)(f)
+      case (acc, (a, b)) =>
+        update(acc, a, b)(f)
     }
 
   /**

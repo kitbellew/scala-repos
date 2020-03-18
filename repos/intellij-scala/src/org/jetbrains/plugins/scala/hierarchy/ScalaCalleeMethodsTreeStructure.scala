@@ -36,8 +36,10 @@ class ScalaCalleeMethodsTreeStructure(
       descriptor.asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
     val method: PsiMethod =
       enclosingElement match {
-        case method: PsiMethod => method
-        case _                 => return ArrayUtil.EMPTY_OBJECT_ARRAY
+        case method: PsiMethod =>
+          method
+        case _ =>
+          return ArrayUtil.EMPTY_OBJECT_ARRAY
       }
     val methods: ArrayBuffer[PsiMethod] = new ArrayBuffer[PsiMethod]
     method match {
@@ -65,7 +67,8 @@ class ScalaCalleeMethodsTreeStructure(
     for (calledMethod <- methods
          if isInScope(baseClass, calledMethod, myScopeType)) {
       methodToDescriptorMap.get(calledMethod) match {
-        case Some(d) => d.incrementUsageCount()
+        case Some(d) =>
+          d.incrementUsageCount()
         case _ =>
           val d =
             new CallHierarchyNodeDescriptor(
@@ -108,8 +111,9 @@ object ScalaCalleeMethodsTreeStructure {
       case ref: ScReferenceElement =>
         val resolve = ref.resolve()
         resolve match {
-          case meth: PsiMethod => methods += meth
-          case _               =>
+          case meth: PsiMethod =>
+            methods += meth
+          case _ =>
         }
       case callExpression: PsiMethodCallExpression =>
         val methodExpression: PsiReferenceExpression =

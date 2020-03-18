@@ -30,8 +30,10 @@ class ScImportExprImpl private (
     with ScImportExpr {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -53,8 +55,10 @@ class ScImportExprImpl private (
       true
     } else {
       selectorSet match {
-        case Some(set) => set.hasWildcard
-        case None      => false
+        case Some(set) =>
+          set.hasWildcard
+        case None =>
+          false
       }
     }
   }
@@ -66,7 +70,8 @@ class ScImportExprImpl private (
       selectorSet match {
         case Some(set) =>
           set.wildcardElement
-        case None => None
+        case None =>
+          None
       }
     }
   }
@@ -84,8 +89,9 @@ class ScImportExprImpl private (
     val parent = getParent.asInstanceOf[ScImportStmt]
     if (parent.importExprs.length == 1) {
       parent.getParent match {
-        case x: ScImportsHolder => x.deleteImportStmt(parent)
-        case _                  =>
+        case x: ScImportsHolder =>
+          x.deleteImportStmt(parent)
+        case _ =>
       }
     } else {
       val node = parent.getNode

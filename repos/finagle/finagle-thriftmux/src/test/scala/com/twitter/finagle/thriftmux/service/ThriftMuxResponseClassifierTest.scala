@@ -19,7 +19,8 @@ import org.scalatest.junit.JUnitRunner
 class ThriftMuxResponseClassifierTest extends FunSuite {
 
   private val classifier = ThriftMuxResponseClassifier.usingDeserializeCtx {
-    case ReqRep(_, Return(rep: String)) if rep == "nope" => RetryableFailure
+    case ReqRep(_, Return(rep: String)) if rep == "nope" =>
+      RetryableFailure
     case ReqRep(_, Throw(e: InvalidQueryException)) if e.errorCode == 4 =>
       NonRetryableFailure
     case ReqRep(TestService.Query.Args(in), _) if in == "lol" =>

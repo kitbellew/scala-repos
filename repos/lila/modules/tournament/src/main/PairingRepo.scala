@@ -159,9 +159,12 @@ object PairingRepo {
   def setBerserk(pairing: Pairing, userId: String, value: Int) =
     (
       userId match {
-        case uid if pairing.user1 == uid => "b1".some
-        case uid if pairing.user2 == uid => "b2".some
-        case _                           => none
+        case uid if pairing.user1 == uid =>
+          "b1".some
+        case uid if pairing.user2 == uid =>
+          "b2".some
+        case _ =>
+          none
       }
     ) ?? { field =>
       coll

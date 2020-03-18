@@ -60,10 +60,12 @@ object MediaRange {
         (params - "q") -> (
           try x.toFloat
           catch {
-            case _: NumberFormatException ⇒ 1.0f
+            case _: NumberFormatException ⇒
+              1.0f
           }
         )
-      case None ⇒ params -> defaultQ
+      case None ⇒
+        params -> defaultQ
     }
 
   private final case class Custom(
@@ -88,7 +90,8 @@ object MediaRange {
         r ~~ ";q=" ~~ qValue
       if (params.nonEmpty)
         params foreach {
-          case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
+          case (k, v) ⇒
+            r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
         }
       r
     }

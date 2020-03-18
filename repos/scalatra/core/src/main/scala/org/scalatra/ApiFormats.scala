@@ -166,11 +166,13 @@ trait ApiFormats extends ScalatraBase {
     }
     mimeTypes find { hdr =>
       formats exists {
-        case (k, v) => matchMimeType(hdr, v)
+        case (k, v) =>
+          matchMimeType(hdr, v)
       }
     } flatMap { hdr =>
       formats find {
-        case (k, v) => matchMimeType(hdr, v)
+        case (k, v) =>
+          matchMimeType(hdr, v)
       } map {
         _._1
       }

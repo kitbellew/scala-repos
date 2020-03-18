@@ -944,7 +944,8 @@ class LinearRegressionSuite
         .collect()
         .zip(testSummary.residuals.select("residuals").collect())
         .forall {
-          case (Row(r1: Double), Row(r2: Double)) => r1 ~== r2 relTol 1e-5
+          case (Row(r1: Double), Row(r2: Double)) =>
+            r1 ~== r2 relTol 1e-5
         }
     }
   }
@@ -968,8 +969,10 @@ class LinearRegressionSuite
         }
 
         val data1 = signedData.flatMap {
-          case (true, p)  => Iterator(p, p)
-          case (false, p) => Iterator(p)
+          case (true, p) =>
+            Iterator(p, p)
+          case (false, p) =>
+            Iterator(p)
         }
 
         val weightedSignedData = signedData.flatMap {

@@ -372,7 +372,8 @@ private[spark] object StatsReportListener extends Logging {
       : Option[Distribution] = {
     Distribution(
       taskInfoMetrics.flatMap {
-        case (info, metric) => getMetric(info, metric)
+        case (info, metric) =>
+          getMetric(info, metric)
       })
   }
 

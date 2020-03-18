@@ -64,7 +64,8 @@ object ResourceMatcher {
             }.toMap
           }
         requiredLabels.labels.forall {
-          case (k, v) => labelMap.get(k).contains(v)
+          case (k, v) =>
+            labelMap.get(k).contains(v)
         }
       }
 
@@ -171,7 +172,8 @@ object ResourceMatcher {
         if meetsAllConstraints
       } yield ResourceMatch(
         scalarMatchResults.collect {
-          case m: ScalarMatch => m
+          case m: ScalarMatch =>
+            m
         },
         portsMatch)
     } else {

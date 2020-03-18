@@ -37,8 +37,10 @@ class ScImportExprElementType[Func <: ScImportExpr]
       parentStub: StubElement[ParentPsi]): ScImportExprStub = {
     val refText =
       psi.reference match {
-        case Some(psi) => psi.getText
-        case _         => ""
+        case Some(psi) =>
+          psi.getText
+        case _ =>
+          ""
       }
     val singleW = psi.singleWildcard
     new ScImportExprStubImpl(parentStub, this, refText, singleW)

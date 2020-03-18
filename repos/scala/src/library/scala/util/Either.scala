@@ -95,8 +95,10 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
     */
   def fold[X](fa: A => X, fb: B => X) =
     this match {
-      case Left(a)  => fa(a)
-      case Right(b) => fb(b)
+      case Left(a) =>
+        fa(a)
+      case Right(b) =>
+        fb(b)
     }
 
   /**
@@ -109,8 +111,10 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
     */
   def swap =
     this match {
-      case Left(a)  => Right(a)
-      case Right(b) => Left(b)
+      case Left(a) =>
+        Right(a)
+      case Right(b) =>
+        Left(b)
     }
 
   /**
@@ -135,8 +139,10 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
   def joinRight[A1 >: A, B1 >: B, C](implicit
       ev: B1 <:< Either[A1, C]): Either[A1, C] =
     this match {
-      case Left(a)  => Left(a)
-      case Right(b) => b
+      case Left(a) =>
+        Left(a)
+      case Right(b) =>
+        b
     }
 
   /**
@@ -161,8 +167,10 @@ sealed abstract class Either[+A, +B] extends Product with Serializable {
   def joinLeft[A1 >: A, B1 >: B, C](implicit
       ev: A1 <:< Either[C, B1]): Either[C, B1] =
     this match {
-      case Left(a)  => a
-      case Right(b) => Right(b)
+      case Left(a) =>
+        a
+      case Right(b) =>
+        Right(b)
     }
 
   /**
@@ -225,8 +233,10 @@ object Either {
       extends AnyVal {
     def merge: A =
       x match {
-        case Left(a)  => a
-        case Right(a) => a
+        case Left(a) =>
+          a
+        case Right(a) =>
+          a
       }
   }
 
@@ -294,7 +304,8 @@ object Either {
       */
     def get =
       e match {
-        case Left(a) => a
+        case Left(a) =>
+          a
         case Right(_) =>
           throw new NoSuchElementException("Either.left.value on Right")
       }
@@ -310,7 +321,8 @@ object Either {
       */
     def foreach[U](f: A => U) =
       e match {
-        case Left(a)  => f(a)
+        case Left(a) =>
+          f(a)
         case Right(_) => {}
       }
 
@@ -326,8 +338,10 @@ object Either {
       */
     def getOrElse[AA >: A](or: => AA) =
       e match {
-        case Left(a)  => a
-        case Right(_) => or
+        case Left(a) =>
+          a
+        case Right(_) =>
+          or
       }
 
     /**
@@ -343,8 +357,10 @@ object Either {
       */
     def forall(@deprecatedName('f) p: A => Boolean) =
       e match {
-        case Left(a)  => p(a)
-        case Right(_) => true
+        case Left(a) =>
+          p(a)
+        case Right(_) =>
+          true
       }
 
     /**
@@ -360,8 +376,10 @@ object Either {
       */
     def exists(@deprecatedName('f) p: A => Boolean) =
       e match {
-        case Left(a)  => p(a)
-        case Right(_) => false
+        case Left(a) =>
+          p(a)
+        case Right(_) =>
+          false
       }
 
     /**
@@ -375,8 +393,10 @@ object Either {
       */
     def flatMap[BB >: B, X](f: A => Either[X, BB]) =
       e match {
-        case Left(a)  => f(a)
-        case Right(b) => Right(b)
+        case Left(a) =>
+          f(a)
+        case Right(b) =>
+          Right(b)
       }
 
     /**
@@ -389,8 +409,10 @@ object Either {
       */
     def map[X](f: A => X) =
       e match {
-        case Left(a)  => Left(f(a))
-        case Right(b) => Right(b)
+        case Left(a) =>
+          Left(f(a))
+        case Right(b) =>
+          Right(b)
       }
 
     /**
@@ -410,7 +432,8 @@ object Either {
             Some(Left(a))
           else
             None
-        case Right(b) => None
+        case Right(b) =>
+          None
       }
 
     /**
@@ -424,8 +447,10 @@ object Either {
       */
     def toSeq =
       e match {
-        case Left(a)  => Seq(a)
-        case Right(_) => Seq.empty
+        case Left(a) =>
+          Seq(a)
+        case Right(_) =>
+          Seq.empty
       }
 
     /**
@@ -439,8 +464,10 @@ object Either {
       */
     def toOption =
       e match {
-        case Left(a)  => Some(a)
-        case Right(_) => None
+        case Left(a) =>
+          Some(a)
+        case Right(_) =>
+          None
       }
   }
 
@@ -476,7 +503,8 @@ object Either {
       e match {
         case Left(_) =>
           throw new NoSuchElementException("Either.right.value on Left")
-        case Right(a) => a
+        case Right(a) =>
+          a
       }
 
     /**
@@ -490,8 +518,9 @@ object Either {
       */
     def foreach[U](f: B => U) =
       e match {
-        case Left(_)  => {}
-        case Right(b) => f(b)
+        case Left(_) => {}
+        case Right(b) =>
+          f(b)
       }
 
     /**
@@ -505,8 +534,10 @@ object Either {
       */
     def getOrElse[BB >: B](or: => BB) =
       e match {
-        case Left(_)  => or
-        case Right(b) => b
+        case Left(_) =>
+          or
+        case Right(b) =>
+          b
       }
 
     /**
@@ -521,8 +552,10 @@ object Either {
       */
     def forall(f: B => Boolean) =
       e match {
-        case Left(_)  => true
-        case Right(b) => f(b)
+        case Left(_) =>
+          true
+        case Right(b) =>
+          f(b)
       }
 
     /**
@@ -537,8 +570,10 @@ object Either {
       */
     def exists(@deprecatedName('f) p: B => Boolean) =
       e match {
-        case Left(_)  => false
-        case Right(b) => p(b)
+        case Left(_) =>
+          false
+        case Right(b) =>
+          p(b)
       }
 
     /**
@@ -548,8 +583,10 @@ object Either {
       */
     def flatMap[AA >: A, Y](f: B => Either[AA, Y]) =
       e match {
-        case Left(a)  => Left(a)
-        case Right(b) => f(b)
+        case Left(a) =>
+          Left(a)
+        case Right(b) =>
+          f(b)
       }
 
     /**
@@ -562,8 +599,10 @@ object Either {
       */
     def map[Y](f: B => Y) =
       e match {
-        case Left(a)  => Left(a)
-        case Right(b) => Right(f(b))
+        case Left(a) =>
+          Left(a)
+        case Right(b) =>
+          Right(f(b))
       }
 
     /** Returns `None` if this is a `Left` or if the
@@ -578,7 +617,8 @@ object Either {
       */
     def filter[X](p: B => Boolean): Option[Either[X, B]] =
       e match {
-        case Left(_) => None
+        case Left(_) =>
+          None
         case Right(b) =>
           if (p(b))
             Some(Right(b))
@@ -596,8 +636,10 @@ object Either {
       */
     def toSeq =
       e match {
-        case Left(_)  => Seq.empty
-        case Right(b) => Seq(b)
+        case Left(_) =>
+          Seq.empty
+        case Right(b) =>
+          Seq(b)
       }
 
     /** Returns a `Some` containing the `Right` value
@@ -610,8 +652,10 @@ object Either {
       */
     def toOption =
       e match {
-        case Left(_)  => None
-        case Right(b) => Some(b)
+        case Left(_) =>
+          None
+        case Right(b) =>
+          Some(b)
       }
   }
 

@@ -8,9 +8,11 @@ object Test extends App {
   val u = r.unanchored
 
   val is = ns collect {
-    case u(x) => x
+    case u(x) =>
+      x
   } map {
-    case r(x) => x
+    case r(x) =>
+      x
   }
   println(is)
   // Match from same pattern
@@ -19,7 +21,8 @@ object Test extends App {
       u findFirstMatchIn _
     }
   ).flatten map {
-    case r(x) => x
+    case r(x) =>
+      x
   }
   println(js)
   // Match not from same pattern
@@ -28,7 +31,8 @@ object Test extends App {
       q findFirstMatchIn _
     }
   ).flatten map {
-    case r(x) => x
+    case r(x) =>
+      x
   }
   println(ks)
 

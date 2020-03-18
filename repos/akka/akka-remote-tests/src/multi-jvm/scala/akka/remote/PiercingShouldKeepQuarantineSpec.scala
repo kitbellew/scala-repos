@@ -19,7 +19,8 @@ object PiercingShouldKeepQuarantineSpec extends MultiNodeConfig {
 
   class Subject extends Actor {
     def receive = {
-      case "getuid" ⇒ sender() ! AddressUidExtension(context.system).addressUid
+      case "getuid" ⇒
+        sender() ! AddressUidExtension(context.system).addressUid
     }
   }
 

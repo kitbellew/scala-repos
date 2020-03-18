@@ -38,8 +38,10 @@ object RemoteNodeShutdownAndComesBackSpec extends MultiNodeConfig {
 
   class Subject extends Actor {
     def receive = {
-      case "shutdown" ⇒ context.system.terminate()
-      case msg ⇒ sender() ! msg
+      case "shutdown" ⇒
+        context.system.terminate()
+      case msg ⇒
+        sender() ! msg
     }
   }
 
@@ -112,7 +114,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
               .actorSelection(RootActorPath(secondAddress) / "user" / "subject")
               .tell(Identify("subject"), p.ref)
             p.expectMsgPF(1 second) {
-              case ActorIdentity("subject", Some(ref)) ⇒ true
+              case ActorIdentity("subject", Some(ref)) ⇒
+                true
             }
           }
         }
@@ -131,7 +134,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec
         subjectNew ! "shutdown"
         // we are waiting for a Terminated here, but it is ok if it does not arrive
         receiveWhile(5.seconds) {
-          case _: ActorIdentity ⇒ true
+          case _: ActorIdentity ⇒
+            true
         }
       }
 

@@ -322,7 +322,8 @@ trait JdbcActionComponent extends SqlActionComponent {
             findSql(
               cases
                 .find {
-                  case (f, n) => f(param)
+                  case (f, n) =>
+                    f(param)
                 }
                 .map(_._2)
                 .getOrElse(default))
@@ -893,10 +894,12 @@ trait JdbcActionComponent extends SqlActionComponent {
       var count = 0
       for ((res, idx) <- updateCounts.zipWithIndex)
         res match {
-          case Statement.SUCCESS_NO_INFO => unknown = true
+          case Statement.SUCCESS_NO_INFO =>
+            unknown = true
           case Statement.EXECUTE_FAILED =>
             throw new SlickException("Failed to insert row #" + (idx + 1))
-          case i => count += i
+          case i =>
+            count += i
         }
       if (unknown)
         None

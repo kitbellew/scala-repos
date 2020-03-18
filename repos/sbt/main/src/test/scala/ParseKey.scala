@@ -43,8 +43,10 @@ object ParseKey extends Properties("Key parser test") {
         ("Mask: " + mask) |:
         ("Current: " + structure.current) |:
         parse(structure, string) {
-          case Left(err) => false
-          case Right(sk) => sk.scope.project == Select(structure.current)
+          case Left(err) =>
+            false
+          case Right(sk) =>
+            sk.scope.project == Select(structure.current)
         }
     }
 
@@ -57,8 +59,10 @@ object ParseKey extends Properties("Key parser test") {
       ("Key: " + displayFull(key)) |:
         ("Mask: " + mask) |:
         parse(structure, string) {
-          case Left(err) => false
-          case Right(sk) => sk.scope.task == Global
+          case Left(err) =>
+            false
+          case Right(sk) =>
+            sk.scope.task == Global
         }
     }
 
@@ -75,8 +79,10 @@ object ParseKey extends Properties("Key parser test") {
         ("Mask: " + mask) |:
         ("Expected configuration: " + resolvedConfig.map(_.name)) |:
         parse(structure, string) {
-          case Right(sk) => sk.scope.config == resolvedConfig
-          case Left(err) => false
+          case Right(sk) =>
+            sk.scope.config == resolvedConfig
+          case Left(err) =>
+            false
         }
     }
 
@@ -114,8 +120,10 @@ object ParseKey extends Properties("Key parser test") {
     ("Expected: " + displayFull(expected)) |:
       ("Mask: " + mask) |:
       parse(structure, s) {
-        case Left(err) => false
-        case Right(sk) => Project.equal(sk, expected, mask)
+        case Left(err) =>
+          false
+        case Right(sk) =>
+          Project.equal(sk, expected, mask)
       }
 
   def parse(structure: Structure, s: String)(

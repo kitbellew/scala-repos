@@ -48,7 +48,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       assert(nbrs.count === 100)
       assert(graph.numVertices === nbrs.count)
       nbrs.collect.foreach {
-        case (vid, nbrs) => assert(nbrs.size === 2)
+        case (vid, nbrs) =>
+          assert(nbrs.size === 2)
       }
       nbrs.collect.foreach {
         case (vid, nbrs) =>
@@ -68,11 +69,13 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val edgeArray = Array((1 -> 2), (2 -> 3), (3 -> 3), (4 -> 3), (1 -> 1))
         .map {
-          case (a, b) => (a.toLong, b.toLong)
+          case (a, b) =>
+            (a.toLong, b.toLong)
         }
       val correctEdges =
         edgeArray.filter {
-          case (a, b) => a != b
+          case (a, b) =>
+            a != b
         }.toSet
       val graph = Graph.fromEdgeTuples(sc.parallelize(edgeArray), 1)
       val canonicalizedEdges =
@@ -135,7 +138,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.Out).cache()
       assert(edges.count == 100)
       edges.collect.foreach {
-        case (vid, edges) => assert(edges.size == 1)
+        case (vid, edges) =>
+          assert(edges.size == 1)
       }
       edges.collect.foreach {
         case (vid, edges) =>
@@ -152,7 +156,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.In).cache()
       assert(edges.count == 100)
       edges.collect.foreach {
-        case (vid, edges) => assert(edges.size == 1)
+        case (vid, edges) =>
+          assert(edges.size == 1)
       }
       edges.collect.foreach {
         case (vid, edges) =>
@@ -174,7 +179,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.Either).cache()
       assert(edges.count == 100)
       edges.collect.foreach {
-        case (vid, edges) => assert(edges.size == 2)
+        case (vid, edges) =>
+          assert(edges.size == 2)
       }
       edges.collect.foreach {
         case (vid, edges) =>
@@ -201,7 +207,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.Out).cache()
       assert(edges.count == 49)
       edges.collect.foreach {
-        case (vid, edges) => assert(edges.size == 1)
+        case (vid, edges) =>
+          assert(edges.size == 1)
       }
       edges.collect.foreach {
         case (vid, edges) =>
@@ -220,7 +227,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       // not have any edges in the specified direction.
       assert(edges.count == 49)
       edges.collect.foreach {
-        case (vid, edges) => assert(edges.size == 1)
+        case (vid, edges) =>
+          assert(edges.size == 1)
       }
       edges.collect.foreach {
         case (vid, edges) =>
@@ -284,7 +292,8 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       sc: SparkContext,
       seq: IndexedSeq[(Int, Int)]): Graph[Double, Int] = {
     val rawEdges = sc.parallelize(seq, 3).map {
-      case (s, d) => (s.toLong, d.toLong)
+      case (s, d) =>
+        (s.toLong, d.toLong)
     }
     Graph.fromEdgeTuples(rawEdges, 1.0).cache()
   }

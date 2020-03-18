@@ -3,7 +3,8 @@ object Test extends App {
   def test1(n: Int) = {
     val old = "old"
     val catcher: PartialFunction[Throwable, Unit] = {
-      case e => println(e)
+      case e =>
+        println(e)
     }
     try {
       println(s"""Bob is ${s"$n"} years ${s"$old"}!""")

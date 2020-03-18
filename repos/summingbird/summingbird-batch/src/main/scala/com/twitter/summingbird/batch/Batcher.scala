@@ -97,9 +97,12 @@ object Batcher {
       override def batchesCoveredBy(
           interval: Interval[Timestamp]): Interval[BatchID] =
         interval match {
-          case Empty()               => Empty()
-          case Universe()            => totalBatchInterval
-          case ExclusiveUpper(upper) => Empty()
+          case Empty() =>
+            Empty()
+          case Universe() =>
+            totalBatchInterval
+          case ExclusiveUpper(upper) =>
+            Empty()
           case InclusiveLower(lower) =>
             if (lower == Timestamp.Min)
               totalBatchInterval
@@ -110,15 +113,18 @@ object Batcher {
               totalBatchInterval
             else
               Empty()
-          case ExclusiveLower(lower) => Empty()
+          case ExclusiveLower(lower) =>
+            Empty()
           case Intersection(low, high) =>
             batchesCoveredBy(low) && batchesCoveredBy(high)
         }
 
       override def cover(interval: Interval[Timestamp]): Interval[BatchID] =
         interval match {
-          case Empty() => Empty()
-          case _       => totalBatchInterval
+          case Empty() =>
+            Empty()
+          case _ =>
+            totalBatchInterval
         }
     }
 }
@@ -147,24 +153,34 @@ trait Batcher extends Serializable {
       onExcUp: (Timestamp) => BatchID): Interval[BatchID] = {
 
     interval match {
-      case Empty()                 => Empty()
-      case Universe()              => Universe()
-      case ExclusiveUpper(upper)   => ExclusiveUpper(onExcUp(upper))
-      case InclusiveLower(lower)   => InclusiveLower(onIncLow(lower))
-      case InclusiveUpper(upper)   => ExclusiveUpper(onExcUp(upper.next))
-      case ExclusiveLower(lower)   => InclusiveLower(onIncLow(lower.next))
+      case Empty() =>
+        Empty()
+      case Universe() =>
+        Universe()
+      case ExclusiveUpper(upper) =>
+        ExclusiveUpper(onExcUp(upper))
+      case InclusiveLower(lower) =>
+        InclusiveLower(onIncLow(lower))
+      case InclusiveUpper(upper) =>
+        ExclusiveUpper(onExcUp(upper.next))
+      case ExclusiveLower(lower) =>
+        InclusiveLower(onIncLow(lower.next))
       case Intersection(low, high) =>
         // Convert to inclusive:
         val lowdate =
           low match {
-            case InclusiveLower(lb) => lb
-            case ExclusiveLower(lb) => lb.next
+            case InclusiveLower(lb) =>
+              lb
+            case ExclusiveLower(lb) =>
+              lb.next
           }
         //convert it exclusive:
         val highdate =
           high match {
-            case InclusiveUpper(hb) => hb.next
-            case ExclusiveUpper(hb) => hb
+            case InclusiveUpper(hb) =>
+              hb.next
+            case ExclusiveUpper(hb) =>
+              hb
           }
         val upperBatch = onExcUp(highdate)
         val lowerBatch = onIncLow(lowdate)
@@ -189,13 +205,20 @@ trait Batcher extends Serializable {
 
   def toTimestamp(b: Interval[BatchID]): Interval[Timestamp] =
     b match {
-      case Empty()                 => Empty[Timestamp]()
-      case Universe()              => Universe[Timestamp]()
-      case ExclusiveUpper(upper)   => ExclusiveUpper(earliestTimeOf(upper))
-      case InclusiveUpper(upper)   => InclusiveUpper(latestTimeOf(upper))
-      case InclusiveLower(lower)   => InclusiveLower(earliestTimeOf(lower))
-      case ExclusiveLower(lower)   => ExclusiveLower(latestTimeOf(lower))
-      case Intersection(low, high) => toTimestamp(low) && toTimestamp(high)
+      case Empty() =>
+        Empty[Timestamp]()
+      case Universe() =>
+        Universe[Timestamp]()
+      case ExclusiveUpper(upper) =>
+        ExclusiveUpper(earliestTimeOf(upper))
+      case InclusiveUpper(upper) =>
+        InclusiveUpper(latestTimeOf(upper))
+      case InclusiveLower(lower) =>
+        InclusiveLower(earliestTimeOf(lower))
+      case ExclusiveLower(lower) =>
+        ExclusiveLower(latestTimeOf(lower))
+      case Intersection(low, high) =>
+        toTimestamp(low) && toTimestamp(high)
     }
 
   /** Returns the (inclusive) earliest time of the supplied batch. */

@@ -21,8 +21,10 @@ sealed class Artifact(val prefix: String, resource: Option[String] = None) {
     val FileName = (prefix + "-(.*?)(?:-src|-sources|-javadoc)?\\.jar").r
 
     file.getName match {
-      case FileName(number) => Some(Version(number))
-      case _                => None
+      case FileName(number) =>
+        Some(Version(number))
+      case _ =>
+        None
     }
   }
 
@@ -52,7 +54,8 @@ object Artifact {
       Option(url.openStream).flatMap(it =>
         using(new BufferedInputStream(it))(readProperty(_, name)))
     } catch {
-      case _: IOException => None
+      case _: IOException =>
+        None
     }
   }
 

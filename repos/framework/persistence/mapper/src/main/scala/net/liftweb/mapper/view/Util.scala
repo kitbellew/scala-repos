@@ -49,10 +49,13 @@ object Util {
       nsfn: MappedField[_, T] => NodeSeq): NodeSeq => NodeSeq = {
     case xml.Elem(_, name, _, _, _*) =>
       mapper.fieldByName(name) match {
-        case Full(field) => nsfn(field)
-        case _           => NodeSeq.Empty
+        case Full(field) =>
+          nsfn(field)
+        case _ =>
+          NodeSeq.Empty
       }
-    case ns => ns
+    case ns =>
+      ns
   }
 
   /**

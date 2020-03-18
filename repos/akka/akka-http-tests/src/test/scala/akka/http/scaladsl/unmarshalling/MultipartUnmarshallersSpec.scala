@@ -503,7 +503,8 @@ class MultipartUnmarshallersSpec
           }
           .fast
           .recover {
-            case _: NoSuchElementException ⇒ Nil
+            case _: NoSuchElementException ⇒
+              Nil
           },
         1.second
       )

@@ -23,8 +23,10 @@ class ScConstrBlockImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitConstrBlock(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitConstrBlock(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

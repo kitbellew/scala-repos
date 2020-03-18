@@ -139,8 +139,10 @@ case class Window(
             // Flip the sign of the offset when processing the order is descending
             val boundOffset =
               sortExpr.direction match {
-                case Descending => -offset
-                case Ascending  => offset
+                case Descending =>
+                  -offset
+                case Ascending =>
+                  offset
               }
             // Create the projection which returns the current 'value' modified by adding the offset.
             val boundExpr = Add(
@@ -162,7 +164,8 @@ case class Window(
         }
         val ordering = newOrdering(sortExprs, Nil)
         RangeBoundOrdering(ordering, current, bound)
-      case RowFrame => RowBoundOrdering(offset)
+      case RowFrame =>
+        RowBoundOrdering(offset)
     }
   }
 
@@ -203,9 +206,12 @@ case class Window(
           function match {
             case AggregateExpression(f, _, _) =>
               collect("AGGREGATE", frame, e, f)
-            case f: AggregateWindowFunction => collect("AGGREGATE", frame, e, f)
-            case f: OffsetWindowFunction    => collect("OFFSET", frame, e, f)
-            case f                          => sys.error(s"Unsupported window function: $f")
+            case f: AggregateWindowFunction =>
+              collect("AGGREGATE", frame, e, f)
+            case f: OffsetWindowFunction =>
+              collect("OFFSET", frame, e, f)
+            case f =>
+              sys.error(s"Unsupported window function: $f")
           }
         case _ =>
       }

@@ -25,8 +25,10 @@ class AnnotatorHolderMock extends AnnotationHolder {
   def annotations = myAnnotations.reverse
   def errorAnnotations =
     annotations.filter {
-      case error: Error => true
-      case _            => false
+      case error: Error =>
+        true
+      case _ =>
+        false
     }
 
   private var myAnnotations = List[Message]()

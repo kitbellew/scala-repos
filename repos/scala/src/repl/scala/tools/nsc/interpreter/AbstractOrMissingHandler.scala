@@ -10,11 +10,16 @@ class AbstractOrMissingHandler[T](onError: String => Unit, value: T)
     extends PartialFunction[Throwable, T] {
   def isDefinedAt(t: Throwable) =
     t match {
-      case _: AbstractMethodError     => true
-      case _: NoSuchMethodError       => true
-      case _: MissingRequirementError => true
-      case _: NoClassDefFoundError    => true
-      case _                          => false
+      case _: AbstractMethodError =>
+        true
+      case _: NoSuchMethodError =>
+        true
+      case _: MissingRequirementError =>
+        true
+      case _: NoClassDefFoundError =>
+        true
+      case _ =>
+        false
     }
   def apply(t: Throwable) =
     t match {

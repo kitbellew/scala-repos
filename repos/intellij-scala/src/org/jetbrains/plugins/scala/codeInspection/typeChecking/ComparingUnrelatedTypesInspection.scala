@@ -53,12 +53,14 @@ object ComparingUnrelatedTypesInspection {
 
   def isNumericType(tp: ScType) = {
     tp match {
-      case Byte | Char | Short | Int | Long | Float | Double => true
+      case Byte | Char | Short | Int | Long | Float | Double =>
+        true
       case ScDesignatorType(c: ScClass) =>
         c.supers.headOption
           .map(_.qualifiedName)
           .contains("scala.math.ScalaNumber")
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -66,7 +68,8 @@ object ComparingUnrelatedTypesInspection {
     tp.isAliasType match {
       case Some(ScTypeUtil.AliasType(_, lower, upper)) =>
         lower.isEmpty || upper.isEmpty || !lower.get.equiv(upper.get)
-      case _ => false
+      case _ =>
+        false
     }
 
   @tailrec
@@ -74,7 +77,8 @@ object ComparingUnrelatedTypesInspection {
     tp.isAliasType match {
       case Some(ScTypeUtil.AliasType(_, Success(rhs, _), _)) =>
         extractActualType(rhs)
-      case _ => tryExtractSingletonType(tp)
+      case _ =>
+        tryExtractSingletonType(tp)
     }
   }
 
@@ -89,9 +93,12 @@ class ComparingUnrelatedTypesInspection
         if Seq("==", "!=", "ne", "eq", "equals") contains oper.refName =>
       val needHighlighting =
         oper.resolve() match {
-          case synth: ScSyntheticFunction              => true
-          case m: PsiMethod if MethodUtils.isEquals(m) => true
-          case _                                       => false
+          case synth: ScSyntheticFunction =>
+            true
+          case m: PsiMethod if MethodUtils.isEquals(m) =>
+            true
+          case _ =>
+            false
         }
       if (needHighlighting) {
         //getType() for the reference on the left side returns singleton type, little hack here
@@ -137,8 +144,10 @@ class ComparingUnrelatedTypesInspection
     case IsInstanceOfCall(call) =>
       val qualType =
         call.referencedExpr match {
-          case ScReferenceExpression.withQualifier(q) => q.getType().toOption
-          case _                                      => None
+          case ScReferenceExpression.withQualifier(q) =>
+            q.getType().toOption
+          case _ =>
+            None
         }
       val argType = call.arguments.headOption.flatMap(_.getType().toOption)
       for {

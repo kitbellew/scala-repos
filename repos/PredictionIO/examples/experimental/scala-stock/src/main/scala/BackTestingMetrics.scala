@@ -87,9 +87,12 @@ class BacktestingEvaluator(val params: BacktestingParams)
         case (ticker, pValue) => {
           val dir =
             pValue match {
-              case p if p >= params.enterThreshold => 1
-              case p if p <= params.exitThreshold  => -1
-              case _                               => 0
+              case p if p >= params.enterThreshold =>
+                1
+              case p if p <= params.exitThreshold =>
+                -1
+              case _ =>
+                0
             }
           (ticker, dir, pValue)
         }

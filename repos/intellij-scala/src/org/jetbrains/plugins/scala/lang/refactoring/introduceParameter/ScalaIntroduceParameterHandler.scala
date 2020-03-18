@@ -108,7 +108,8 @@ class ScalaIntroduceParameterHandler
       val elem = v.element
       val typeText =
         elem match {
-          case fun: ScFunction => fun.getType().getOrAny.canonicalText
+          case fun: ScFunction =>
+            fun.getType().getOrAny.canonicalText
           case named =>
             ScType.ofNamedElement(v.element).getOrElse(scTypeAny).canonicalText
         }
@@ -136,8 +137,10 @@ class ScalaIntroduceParameterHandler
       IntroduceImplicitParameterIntention.createExpressionToIntroduce(
         expr,
         withoutParameterTypes = true) match {
-        case Left(e) => e
-        case _       => expr
+        case Left(e) =>
+          e
+        case _ =>
+          expr
       }
     ScalaPsiUtil.adjustTypes(toReturn, addImports = false)
     (
@@ -154,8 +157,10 @@ class ScalaIntroduceParameterHandler
 
     val (exprWithTypes, elems) =
       selectedElements(file, project, editor) match {
-        case Some((x, y)) => (x, y)
-        case None         => return
+        case Some((x, y)) =>
+          (x, y)
+        case None =>
+          return
       }
 
     afterMethodChoosing(elems.head, editor) { methodLike =>
@@ -198,7 +203,8 @@ class ScalaIntroduceParameterHandler
         endOffset)
       val elems =
         exprWithTypes match {
-          case Some((e, _)) => Seq(e)
+          case Some((e, _)) =>
+            Seq(e)
           case None =>
             ScalaRefactoringUtil.selectedElements(
               editor,
@@ -224,7 +230,8 @@ class ScalaIntroduceParameterHandler
 
       Some((exprWithTypes, elems))
     } catch {
-      case _: IntroduceException => None
+      case _: IntroduceException =>
+        None
     }
   }
 
@@ -247,7 +254,8 @@ class ScalaIntroduceParameterHandler
           funType match {
             case ScFunctionType(retType, _) =>
               Array(funType, retType, StdType.ANY)
-            case _ => Array(funType, StdType.ANY)
+            case _ =>
+              Array(funType, StdType.ANY)
           }
         (allTypes, funExpr.getText, argClauseText)
       } else
@@ -255,17 +263,21 @@ class ScalaIntroduceParameterHandler
 
     val superMethod =
       methodLike.findDeepestSuperMethod() match {
-        case null => methodLike
+        case null =>
+          methodLike
         case scMethod: ScMethodLike =>
           SuperMethodWarningUtil.checkSuperMethod(
             methodLike,
             RefactoringBundle.message("to.refactor"))
-        case _ => methodLike
+        case _ =>
+          methodLike
       }
     val methodToSearchFor =
       superMethod match {
-        case m: ScMethodLike => m
-        case _               => return None
+        case m: ScMethodLike =>
+          m
+        case _ =>
+          return None
       }
     if (!CommonRefactoringUtil.checkReadOnlyStatus(project, superMethod))
       return None
@@ -283,7 +295,8 @@ class ScalaIntroduceParameterHandler
         elems match {
           case Seq(expr: ScExpression) =>
             NameSuggester.suggestNames(expr, validator)
-          case _ => NameSuggester.suggestNamesByType(types(0))
+          case _ =>
+            NameSuggester.suggestNamesByType(types(0))
         }
       possibleNames(0)
     }
@@ -293,9 +306,12 @@ class ScalaIntroduceParameterHandler
         case Seq(expr: ScExpression) =>
           val occurrencesScope =
             methodLike match {
-              case ScFunctionDefinition.withBody(body) => body
-              case pc: ScPrimaryConstructor            => pc.containingClass.extendsBlock
-              case _                                   => methodLike
+              case ScFunctionDefinition.withBody(body) =>
+                body
+              case pc: ScPrimaryConstructor =>
+                pc.containingClass.extendsBlock
+              case _ =>
+                methodLike
             }
 
           val occurrences = ScalaRefactoringUtil.getOccurrenceRanges(
@@ -349,8 +365,9 @@ class ScalaIntroduceParameterHandler
         case f @ ScFunctionDefinition.withBody(body)
             if PsiTreeUtil.isContextAncestor(body, expr, false) =>
           enclosingMethods += f
-        case cl: ScClass => enclosingMethods ++= cl.constructor
-        case _           =>
+        case cl: ScClass =>
+          enclosingMethods ++= cl.constructor
+        case _ =>
       }
       elem = newFun
     }
@@ -359,7 +376,8 @@ class ScalaIntroduceParameterHandler
         case f: ScFunctionDefinition
             if f.superMethods.exists(isLibraryInterfaceMethod) =>
           false
-        case _ => true
+        case _ =>
+          true
       }
       if (methodsNotImplementingLibraryInterfaces.nonEmpty)
         return methodsNotImplementingLibraryInterfaces
@@ -395,7 +413,8 @@ class ScalaIntroduceParameterHandler
           case Some(seq) =>
             val newFirstClause = seq :+ paramInfo
             newFirstClause +: params.tail
-          case None => Seq(Seq(paramInfo))
+          case None =>
+            Seq(Seq(paramInfo))
         }
       }
     }
@@ -410,14 +429,17 @@ class ScalaIntroduceParameterHandler
         s"${f.name} (in anonymous class)"
       case (f: ScFunctionDefinition) && ContainingClass(c) =>
         s"${f.name} (in ${c.name})"
-      case f: ScFunctionDefinition => s"${f.name}"
+      case f: ScFunctionDefinition =>
+        s"${f.name}"
     }
   }
 
   private def toHighlight(e: PsiElement) =
     e match {
-      case pc: ScPrimaryConstructor => pc.containingClass.extendsBlock
-      case _                        => e
+      case pc: ScPrimaryConstructor =>
+        pc.containingClass.extendsBlock
+      case _ =>
+        e
     }
 
   def afterMethodChoosing(elem: PsiElement, editor: Editor)(

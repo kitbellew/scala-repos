@@ -131,7 +131,8 @@ trait RelationalProfile
               _,
               _) =>
           fpf(tm.asInstanceOf[TypeMappingResultConverter[M, T, _]])
-        case tm => tm
+        case tm =>
+          tm
       }
   }
 }
@@ -204,16 +205,20 @@ trait RelationalTableComponent {
           Select(
             (
               tableTag match {
-                case r: RefTag => r.path
-                case _         => tableNode
+                case r: RefTag =>
+                  r.path
+                case _ =>
+                  tableNode
               }
             ),
             FieldSymbol(n)(options, tt)) :@ tt
         override def toString =
           (
             tableTag match {
-              case r: RefTag => "(" + _tableName + " " + r.path + ")"
-              case _         => _tableName
+              case r: RefTag =>
+                "(" + _tableName + " " + r.path + ")"
+              case _ =>
+                _tableName
             }
           ) + "." + n
       }

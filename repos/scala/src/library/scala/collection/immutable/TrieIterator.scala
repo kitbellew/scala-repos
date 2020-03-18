@@ -42,16 +42,20 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
   private[this] def getElems(x: Iterable[T]): Array[Iterable[T]] =
     (
       x match {
-        case x: HashTrieMap[_, _] => x.elems
-        case x: HashTrieSet[_]    => x.elems
+        case x: HashTrieMap[_, _] =>
+          x.elems
+        case x: HashTrieSet[_] =>
+          x.elems
       }
     ).asInstanceOf[Array[Iterable[T]]]
 
   private[this] def collisionToArray(x: Iterable[T]): Array[Iterable[T]] =
     (
       x match {
-        case x: HashMapCollision1[_, _] => x.kvs.map(x => HashMap(x)).toArray
-        case x: HashSetCollision1[_]    => x.ks.map(x => HashSet(x)).toArray
+        case x: HashMapCollision1[_, _] =>
+          x.kvs.map(x => HashMap(x)).toArray
+        case x: HashSetCollision1[_] =>
+          x.ks.map(x => HashSet(x)).toArray
       }
     ).asInstanceOf[Array[Iterable[T]]]
 
@@ -59,13 +63,17 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
 
   private def isTrie(x: AnyRef) =
     x match {
-      case _: HashTrieMap[_, _] | _: HashTrieSet[_] => true
-      case _                                        => false
+      case _: HashTrieMap[_, _] | _: HashTrieSet[_] =>
+        true
+      case _ =>
+        false
     }
   private def isContainer(x: AnyRef) =
     x match {
-      case _: HashMap1[_, _] | _: HashSet1[_] => true
-      case _                                  => false
+      case _: HashMap1[_, _] | _: HashSet1[_] =>
+        true
+      case _ =>
+        false
     }
 
   final class DupIterator(xs: Array[Iterable[T]]) extends {

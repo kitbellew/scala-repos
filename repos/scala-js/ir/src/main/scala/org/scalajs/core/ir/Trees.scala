@@ -167,14 +167,20 @@ object Trees {
   object Block {
     def apply(stats: List[Tree])(implicit pos: Position): Tree = {
       val flattenedStats = stats flatMap {
-        case Skip()          => Nil
-        case Block(subStats) => subStats
-        case other           => other :: Nil
+        case Skip() =>
+          Nil
+        case Block(subStats) =>
+          subStats
+        case other =>
+          other :: Nil
       }
       flattenedStats match {
-        case Nil         => Skip()
-        case only :: Nil => only
-        case _           => new Block(flattenedStats)
+        case Nil =>
+          Skip()
+        case only :: Nil =>
+          only
+        case _ =>
+          new Block(flattenedStats)
       }
     }
 
@@ -194,7 +200,8 @@ object Trees {
         case _: VarRef | _: Select | _: ArraySelect | _: JSDotSelect |
             _: JSBracketSelect | _: JSSuperBracketSelect =>
           true
-        case _ => false
+        case _ =>
+          false
       },
       s"Invalid lhs for Assign: $lhs"
     )
@@ -218,8 +225,10 @@ object Trees {
     // cannot be in expression position, unless it is infinite
     val tpe =
       cond match {
-        case BooleanLiteral(true) => NothingType
-        case _                    => NoType
+        case BooleanLiteral(true) =>
+          NothingType
+        case _ =>
+          NoType
       }
   }
 
@@ -306,11 +315,16 @@ object Trees {
     import UnaryOp._
     val tpe =
       (op: @switch) match {
-        case LongToInt | DoubleToInt  => IntType
-        case IntToLong | DoubleToLong => LongType
-        case DoubleToFloat            => FloatType
-        case LongToDouble             => DoubleType
-        case Boolean_!                => BooleanType
+        case LongToInt | DoubleToInt =>
+          IntType
+        case IntToLong | DoubleToLong =>
+          LongType
+        case DoubleToFloat =>
+          FloatType
+        case LongToDouble =>
+          DoubleType
+        case Boolean_! =>
+          BooleanType
       }
   }
 
@@ -456,9 +470,12 @@ object Trees {
       extends Tree {
     val tpe =
       cls match {
-        case ClassType(Definitions.RuntimeNullClass)    => NullType
-        case ClassType(Definitions.RuntimeNothingClass) => NothingType
-        case _                                          => cls.asInstanceOf[Type]
+        case ClassType(Definitions.RuntimeNullClass) =>
+          NullType
+        case ClassType(Definitions.RuntimeNothingClass) =>
+          NothingType
+        case _ =>
+          cls.asInstanceOf[Type]
       }
   }
 
@@ -466,11 +483,16 @@ object Trees {
       extends Tree {
     val tpe =
       (charCode: @switch) match {
-        case 'Z'             => BooleanType
-        case 'B' | 'S' | 'I' => IntType
-        case 'J'             => LongType
-        case 'F'             => FloatType
-        case 'D'             => DoubleType
+        case 'Z' =>
+          BooleanType
+        case 'B' | 'S' | 'I' =>
+          IntType
+        case 'J' =>
+          LongType
+        case 'F' =>
+          FloatType
+        case 'D' =>
+          DoubleType
       }
   }
 
@@ -707,8 +729,10 @@ object Trees {
   case class JSDelete(prop: Tree)(implicit val pos: Position) extends Tree {
     require(
       prop match {
-        case _: JSDotSelect | _: JSBracketSelect => true
-        case _                                   => false
+        case _: JSDotSelect | _: JSBracketSelect =>
+          true
+        case _ =>
+          false
       },
       s"Invalid prop for JSDelete: $prop")
 

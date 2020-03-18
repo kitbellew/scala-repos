@@ -31,14 +31,16 @@ class ImplicitOrderingSuite extends SparkFunSuite with LocalSparkContext {
     // Infer orderings after basic maps to particular types
     val basicMapExpectations = ImplicitOrderingSuite.basicMapExpectations(rdd)
     basicMapExpectations.map({
-      case (met, explain) => assert(met, explain)
+      case (met, explain) =>
+        assert(met, explain)
     })
 
     // Infer orderings for other RDD methods
     val otherRDDMethodExpectations = ImplicitOrderingSuite
       .otherRDDMethodExpectations(rdd)
     otherRDDMethodExpectations.map({
-      case (met, explain) => assert(met, explain)
+      case (met, explain) =>
+        assert(met, explain)
     })
   }
 }

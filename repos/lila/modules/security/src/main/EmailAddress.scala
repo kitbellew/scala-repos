@@ -26,13 +26,16 @@ final class EmailAddress(disposable: DisposableEmailDomain) {
           .map(radix => s"$radix@$domain") // okay
 
       // disposable addresses
-      case Array(_, domain) if disposable(domain) => none
+      case Array(_, domain) if disposable(domain) =>
+        none
 
       // other valid addresses
-      case Array(name, domain) => s"$name@$domain".some
+      case Array(name, domain) =>
+        s"$name@$domain".some
 
       // invalid addresses for match exhaustivity sake
-      case _ => none
+      case _ =>
+        none
     }
 
   def isValid(email: String) = validate(email).isDefined
@@ -40,9 +43,12 @@ final class EmailAddress(disposable: DisposableEmailDomain) {
   private def isTakenBy(email: String, forUser: Option[User]): Option[String] =
     validate(email) ?? { e =>
       (lila.user.UserRepo.idByEmail(e) awaitSeconds 2, forUser) match {
-        case (None, _)                  => none
-        case (Some(userId), Some(user)) => userId != user.id option userId
-        case (someUserId, _)            => someUserId
+        case (None, _) =>
+          none
+        case (Some(userId), Some(user)) =>
+          userId != user.id option userId
+        case (someUserId, _) =>
+          someUserId
       }
     }
 
@@ -59,7 +65,8 @@ final class EmailAddress(disposable: DisposableEmailDomain) {
       isTakenBy(e, forUser) match {
         case Some(userId) =>
           Invalid(ValidationError(s"Email already in use by $userId"))
-        case None => Valid
+        case None =>
+          Valid
       }
     }
 

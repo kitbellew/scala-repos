@@ -306,7 +306,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
               km.runtimeClass.asInstanceOf[Class[K]],
               vm.runtimeClass.asInstanceOf[Class[V]],
               config)
-          case None => context.sparkContext.newAPIHadoopFile[K, V, F](file)
+          case None =>
+            context.sparkContext.newAPIHadoopFile[K, V, F](file)
         }
       if (rdd.partitions.isEmpty) {
         logError(

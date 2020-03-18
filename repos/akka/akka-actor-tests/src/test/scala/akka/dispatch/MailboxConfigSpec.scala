@@ -211,8 +211,10 @@ abstract class MailboxSpec
 class DefaultMailboxSpec extends MailboxSpec {
   lazy val name = "The default mailbox implementation"
   def factory = {
-    case u: UnboundedMailbox ⇒ u.create(None, None)
-    case b: BoundedMailbox ⇒ b.create(None, None)
+    case u: UnboundedMailbox ⇒
+      u.create(None, None)
+    case b: BoundedMailbox ⇒
+      b.create(None, None)
   }
 }
 
@@ -261,8 +263,10 @@ object CustomMailboxSpec {
       extends MailboxType {
     override def create(owner: Option[ActorRef], system: Option[ActorSystem]) =
       owner match {
-        case Some(o) ⇒ new MyMailbox(o)
-        case None ⇒ throw new Exception("no mailbox owner given")
+        case Some(o) ⇒
+          new MyMailbox(o)
+        case None ⇒
+          throw new Exception("no mailbox owner given")
       }
   }
 
@@ -278,8 +282,10 @@ class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
       val actor = system.actorOf(Props.empty.withDispatcher("my-dispatcher"))
       awaitCond(
         actor match {
-          case r: RepointableRef ⇒ r.isStarted
-          case _ ⇒ true
+          case r: RepointableRef ⇒
+            r.isStarted
+          case _ ⇒
+            true
         },
         1 second,
         10 millis)
@@ -345,7 +351,8 @@ class SingleConsumerOnlyMailboxVerificationSpec
                   }
                 }).withDispatcher(dispatcherId)))
           def receive = {
-            case Ping ⇒ a.tell(Ping, b)
+            case Ping ⇒
+              a.tell(Ping, b)
             case Terminated(`a` | `b`) ⇒
               if (context.children.isEmpty)
                 context stop self

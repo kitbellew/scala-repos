@@ -10,7 +10,8 @@ object Test extends App {
               test(false)
             else
               false
-          case _ => test(false)
+          case _ =>
+            test(false)
         }
     }
   }

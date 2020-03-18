@@ -323,7 +323,8 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
       c.openImplicits.headOption match {
         case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, tpe)), _)) =>
           tpe
-        case other => frTag.tpe.typeConstructor
+        case other =>
+          frTag.tpe.typeConstructor
       }
 
     if (isReprType1(tpe))
@@ -483,7 +484,8 @@ trait IsCons1Macros extends CaseClassMacros {
       c.openImplicits.headOption match {
         case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, fh, ft)), _)) =>
           (fh, ft)
-        case other => (fhTpe0, ftTpe0)
+        case other =>
+          (fhTpe0, ftTpe0)
       }
 
     if (!(lDealiasedTpe.typeConstructor =:= consTpe))
@@ -535,7 +537,8 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
       c.openImplicits.headOption match {
         case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, fo, fi)), _)) =>
           (fo, fi)
-        case other => (foTag.tpe.typeConstructor, fiTag.tpe.typeConstructor)
+        case other =>
+          (foTag.tpe.typeConstructor, fiTag.tpe.typeConstructor)
       }
 
     if (isReprType1(lTpe))

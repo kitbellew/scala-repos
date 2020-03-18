@@ -75,7 +75,8 @@ class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
       analyzer
         .execute(plan)
         .collect {
-          case Project(Alias(e: BinaryComparison, _) :: Nil, _) => e
+          case Project(Alias(e: BinaryComparison, _) :: Nil, _) =>
+            e
         }
         .head
     assert(comparison.left.dataType === expectedType)

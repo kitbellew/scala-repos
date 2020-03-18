@@ -20,9 +20,11 @@ class MonocleInjector extends SyntheticMembersInjector {
           case clazz: ScClass
               if clazz.findAnnotation("monocle.macros.Lenses") != null =>
             mkLens(obj)
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 
@@ -31,7 +33,8 @@ class MonocleInjector extends SyntheticMembersInjector {
     val clazz = obj.fakeCompanionClassOrCompanionClass.asInstanceOf[ScClass]
     val fields = clazz.allVals
       .collect({
-        case (f: ScClassParameterImpl, _) => f
+        case (f: ScClassParameterImpl, _) =>
+          f
       })
       .filter(_.isCaseClassVal)
     val prefix =
@@ -39,8 +42,10 @@ class MonocleInjector extends SyntheticMembersInjector {
         clazz
           .findAnnotation("monocle.macros.Lenses")
           .findAttributeValue("value")) match {
-        case Some(literal: ScLiteralImpl) => literal.getValue.toString
-        case _                            => ""
+        case Some(literal: ScLiteralImpl) =>
+          literal.getValue.toString
+        case _ =>
+          ""
       }
     fields.foreach({ i =>
       val template =

@@ -50,7 +50,8 @@ class Serving extends LServing[Query, PredictedResult] {
       .sortBy(_._2)(Ordering.Double.reverse)
       .take(query.num)
       .map {
-        case (k, v) => ItemScore(k, v)
+        case (k, v) =>
+          ItemScore(k, v)
       }
 
     new PredictedResult(combined)

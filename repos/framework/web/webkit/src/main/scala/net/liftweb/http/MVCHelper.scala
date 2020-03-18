@@ -78,7 +78,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
     */
   def isDefinedAt(in: Req) = {
     S.session match {
-      case Full(_) => dispatch.find(_.isDefinedAt(in.path.partPath)).isDefined
+      case Full(_) =>
+        dispatch.find(_.isDefinedAt(in.path.partPath)).isDefined
 
       case _ =>
         curRequest.set(in)
@@ -126,11 +127,14 @@ trait MVCHelper extends LiftRules.DispatchPF {
 
     def tryIt(path: List[String]): Box[NodeSeq] =
       path match {
-        case Nil => Empty
+        case Nil =>
+          Empty
         case xs =>
           Templates(path) match {
-            case ret @ Full(_) => ret
-            case _             => tryIt(path.dropRight(1))
+            case ret @ Full(_) =>
+              ret
+            case _ =>
+              tryIt(path.dropRight(1))
           }
       }
 
@@ -202,8 +206,10 @@ trait MVCHelper extends LiftRules.DispatchPF {
   protected implicit def boxToResp[T](in: Box[T])(implicit
       c: T => MVCResponse): Box[LiftResponse] =
     in match {
-      case Full(v)     => c(v).toResponse
-      case e: EmptyBox => emptyToResp(e)
+      case Full(v) =>
+        c(v).toResponse
+      case e: EmptyBox =>
+        emptyToResp(e)
     }
 
   /**
@@ -228,7 +234,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
       case Failure(msg, _, _) =>
         Full(NotFoundResponse(msg))
 
-      case _ => Empty
+      case _ =>
+        Empty
     }
 
   /**
@@ -247,7 +254,8 @@ trait MVCHelper extends LiftRules.DispatchPF {
         case Nil =>
           what.save();
           S.redirectTo(where)
-        case xs => S.error(xs)
+        case xs =>
+          S.error(xs)
       }
     }
 }

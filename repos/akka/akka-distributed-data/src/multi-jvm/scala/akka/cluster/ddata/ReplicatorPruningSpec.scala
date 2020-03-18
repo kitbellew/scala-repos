@@ -87,8 +87,10 @@ class ReplicatorPruningSpec
         val member =
           memberProbe
             .fishForMessage(3.seconds) {
-              case MemberUp(m) if m.address == node(third).address ⇒ true
-              case _ ⇒ false
+              case MemberUp(m) if m.address == node(third).address ⇒
+                true
+              case _ ⇒
+                false
             }
             .asInstanceOf[MemberUp]
             .member

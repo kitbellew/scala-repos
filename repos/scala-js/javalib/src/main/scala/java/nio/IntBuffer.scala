@@ -80,8 +80,10 @@ abstract class IntBuffer private[nio] (
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: IntBuffer => compareTo(that) == 0
-      case _               => false
+      case that: IntBuffer =>
+        compareTo(that) == 0
+      case _ =>
+        false
     }
 
   @noinline

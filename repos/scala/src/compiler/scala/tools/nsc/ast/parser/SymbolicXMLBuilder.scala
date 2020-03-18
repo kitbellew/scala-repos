@@ -199,8 +199,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
   def makeXMLpat(pos: Position, n: String, args: Seq[Tree]): Tree = {
     val (prepat, labpat) =
       splitPrefix(n) match {
-        case (Some(pre), rest) => (const(pre), const(rest))
-        case _                 => (wild, const(n))
+        case (Some(pre), rest) =>
+          (const(pre), const(rest))
+        case _ =>
+          (wild, const(n))
       }
     mkXML(
       pos,
@@ -215,8 +217,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
 
   protected def convertToTextPat(t: Tree): Tree =
     t match {
-      case _: Literal => makeTextPat(t)
-      case _          => t
+      case _: Literal =>
+        makeTextPat(t)
+      case _ =>
+        t
     }
   protected def convertToTextPat(buf: Seq[Tree]): List[Tree] =
     (buf map convertToTextPat).toList
@@ -225,16 +229,21 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     import xml.Utility.parseAttributeValue
 
     parseAttributeValue(s, text(pos, _), entityRef(pos, _)) match {
-      case Nil      => gen.mkNil
-      case t :: Nil => t
-      case ts       => makeXMLseq(pos, ts.toList)
+      case Nil =>
+        gen.mkNil
+      case t :: Nil =>
+        t
+      case ts =>
+        makeXMLseq(pos, ts.toList)
     }
   }
 
   def isEmptyText(t: Tree) =
     t match {
-      case Literal(Constant("")) => true
-      case _                     => false
+      case Literal(Constant("")) =>
+        true
+      case _ =>
+        false
     }
 
   /** could optimize if args.length == 0, args.length == 1 AND args(0) is <: Node. */
@@ -253,8 +262,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
   /** Returns (Some(prefix) | None, rest) based on position of ':' */
   def splitPrefix(name: String): (Option[String], String) =
     splitWhere(name, _ == ':', doDropIndex = true) match {
-      case Some((pre, rest)) => (Some(pre), rest)
-      case _                 => (None, name)
+      case Some((pre, rest)) =>
+        (Some(pre), rest)
+      case _ =>
+        (None, name)
     }
 
   /** Various node constructions. */
@@ -289,7 +300,8 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
             mkAssign(uri)
           case Select(_, nme.Nil) =>
             mkAssign(const(null)) // allow for xmlns="" -- bug #1626
-          case x => mkAssign(x)
+          case x =>
+            mkAssign(x)
         }
       attrMap -= z
       uri1
@@ -301,16 +313,20 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
         yield {
           val ns =
             splitPrefix(z) match {
-              case (Some(_), rest) => rest
-              case _               => null
+              case (Some(_), rest) =>
+                rest
+              case _ =>
+                null
             }
           handleNamespaceBinding(ns, z)
         }
 
     val (pre, newlabel) =
       splitPrefix(qname) match {
-        case (Some(p), x) => (p, x)
-        case (None, x)    => (null, x)
+        case (Some(p), x) =>
+          (p, x)
+        case (None, x) =>
+          (null, x)
       }
 
     def mkAttributeTree(pre: String, key: String, value: Tree) =
@@ -335,8 +351,10 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
     val attributes: List[Tree] =
       for ((k, v) <- attrMap.toList.reverse)
         yield splitPrefix(k) match {
-          case (Some(pre), rest) => handlePrefixedAttribute(pre, rest, v)
-          case _                 => handleUnprefixedAttribute(k, v)
+          case (Some(pre), rest) =>
+            handlePrefixedAttribute(pre, rest, v)
+          case _ =>
+            handleUnprefixedAttribute(k, v)
         }
 
     lazy val scopeDef = ValDef(
@@ -362,9 +380,12 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
 
     val (attrResult, nsResult) =
       (attributes.isEmpty, namespaces.isEmpty) match {
-        case (true, true)  => (Nil, Nil)
-        case (true, false) => (scopeDef :: Nil, tmpScopeDef :: namespaces)
-        case (false, true) => (metadataDef :: attributes, Nil)
+        case (true, true) =>
+          (Nil, Nil)
+        case (true, false) =>
+          (scopeDef :: Nil, tmpScopeDef :: namespaces)
+        case (false, true) =>
+          (metadataDef :: attributes, Nil)
         case (false, false) =>
           (scopeDef :: metadataDef :: attributes, tmpScopeDef :: namespaces)
       }

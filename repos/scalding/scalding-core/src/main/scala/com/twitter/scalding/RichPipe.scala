@@ -713,7 +713,8 @@ class RichPipe(val pipe: Pipe)
       outsource match {
         case t: Tsv =>
           new Each(pipe, Fields.ALL, IdentityFunction, Fields.REPLACE)
-        case _ => pipe
+        case _ =>
+          pipe
       }
     outsource.writeFrom(writePipe)(flowDef, mode)
     pipe
@@ -871,12 +872,15 @@ class RichPipe(val pipe: Pipe)
       val nextVisited: Set[Pipe] = visited + p
       val nextToVisit =
         notSeen.foldLeft(toVisit) {
-          case (prev, n) => prev.maybeAdd(n)
+          case (prev, n) =>
+            prev.maybeAdd(n)
         }
 
       nextToVisit.next match {
-        case Some((h, innerNextToVisit)) => go(h, nextVisited, innerNextToVisit)
-        case _                           => nextVisited
+        case Some((h, innerNextToVisit)) =>
+          go(h, nextVisited, innerNextToVisit)
+        case _ =>
+          nextVisited
       }
     }
     val allPipes = go(pipe, Set[Pipe](), ToVisit[Pipe](Queue.empty, Set.empty))

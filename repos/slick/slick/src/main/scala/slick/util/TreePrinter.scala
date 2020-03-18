@@ -129,7 +129,8 @@ case class TreePrinter(
       else {
         val children = value.getDumpInfo.children.map(_._2).toVector
         val markedChildren = children.map(find).collect {
-          case Some(d) => d
+          case Some(d) =>
+            d
         }
         if (markedChildren.length > 1)
           Some(n)

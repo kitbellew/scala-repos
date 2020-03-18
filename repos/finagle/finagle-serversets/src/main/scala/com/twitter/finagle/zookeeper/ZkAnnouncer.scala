@@ -74,7 +74,8 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer {
 
             change.onComplete.setDone()
           } catch {
-            case NonFatal(e) => change.onComplete.setException(e)
+            case NonFatal(e) =>
+              change.onComplete.setException(e)
           }
         }
       }
@@ -123,8 +124,10 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer {
 
     conf.synchronized {
       endpoint match {
-        case Some(ep) => conf.endpoints.put(ep, addr)
-        case None     => conf.addr = Some(addr)
+        case Some(ep) =>
+          conf.endpoints.put(ep, addr)
+        case None =>
+          conf.addr = Some(addr)
       }
 
       doChange(conf) map { _ =>
@@ -132,8 +135,10 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer {
           def unannounce() = {
             conf.synchronized {
               endpoint match {
-                case Some(ep) => conf.endpoints.remove(ep)
-                case None     => conf.addr = None
+                case Some(ep) =>
+                  conf.endpoints.remove(ep)
+                case None =>
+                  conf.addr = None
               }
               doChange(conf)
             }

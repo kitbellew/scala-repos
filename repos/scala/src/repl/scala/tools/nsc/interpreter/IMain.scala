@@ -204,7 +204,8 @@ class IMain(
   private def noFatal(body: => Symbol): Symbol =
     try body
     catch {
-      case _: FatalError => NoSymbol
+      case _: FatalError =>
+        NoSymbol
     }
 
   def getClassIfDefined(path: String) =
@@ -341,9 +342,12 @@ class IMain(
 
   def backticked(s: String): String =
     ((s split '.').toList map {
-      case "_"                               => "_"
-      case s if nme.keywords(newTermName(s)) => s"`$s`"
-      case s                                 => s
+      case "_" =>
+        "_"
+      case s if nme.keywords(newTermName(s)) =>
+        s"`$s`"
+      case s =>
+        s
     } mkString ".")
   def readRootPath(readPath: String) = getModuleIfDefined(readPath)
 
@@ -420,7 +424,8 @@ class IMain(
       super.findAbstractFile(name) match {
         case null if _initializeComplete =>
           translateSimpleResource(name) map super.findAbstractFile orNull
-        case file => file
+        case file =>
+          file
       }
   }
   private def makeClassLoader(): util.AbstractFileClassLoader =
@@ -444,7 +449,8 @@ class IMain(
         case x: MemberDefHandler
             if x.definesValue && !isInternalTermName(x.name) =>
           return Some(x.member)
-        case _ => ()
+        case _ =>
+          ()
       }
     }
     None
@@ -493,7 +499,8 @@ class IMain(
         req.defines contains s.companionSymbol) foreach { newSym =>
         val oldSym = replScope lookup newSym.name.companionName
         if (Seq(oldSym, newSym).permutations exists {
-              case Seq(s1, s2) => s1.isClass && s2.isModule
+              case Seq(s1, s2) =>
+                s1.isClass && s2.isModule
             }) {
           replwarn(
             s"warning: previously defined $oldSym is not a companion to $newSym.")
@@ -545,7 +552,8 @@ class IMain(
   private def safePos(t: Tree, alt: Int): Int =
     try t.pos.start
     catch {
-      case _: UnsupportedOperationException => alt
+      case _: UnsupportedOperationException =>
+        alt
     }
 
   // Given an expression like 10 * 10 * 10 we receive the parent tree positioned
@@ -565,9 +573,12 @@ class IMain(
 
     val trees: List[global.Tree] =
       parse(content) match {
-        case parse.Incomplete(_)  => return Left(IR.Incomplete)
-        case parse.Error(_)       => return Left(IR.Error)
-        case parse.Success(trees) => trees
+        case parse.Incomplete(_) =>
+          return Left(IR.Incomplete)
+        case parse.Error(_) =>
+          return Left(IR.Error)
+        case parse.Success(trees) =>
+          trees
       }
     repltrace(
       trees map (t => {
@@ -577,7 +588,8 @@ class IMain(
         // (it was conflicting with the new reflection API),
         // so I had to rewrite this a bit
         val subs = t collect {
-          case sub => sub
+          case sub =>
+            sub
         }
         subs map (t0 =>
           "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
@@ -635,15 +647,18 @@ class IMain(
                 " content" -> content,
                 "     was" -> l2,
                 "combined" -> combined) map {
-                case (label, s) => label + ": '" + s + "'"
+                case (label, s) =>
+                  label + ": '" + s + "'"
               } mkString "\n")
             combined
           })
         // Rewriting    "foo ; bar ; 123"
         // to           "foo ; bar ; val resXX = 123"
         requestFromLine(rewrittenLine, synthetic) match {
-          case Right(req) => return Right(req withOriginalLine line)
-          case x          => return x
+          case Right(req) =>
+            return Right(req withOriginalLine line)
+          case x =>
+            return x
         }
       case _ =>
     }
@@ -653,8 +668,10 @@ class IMain(
   // dealias non-public types so we don't see protected aliases like Self
   def dealiasNonPublic(tp: Type) =
     tp match {
-      case TypeRef(_, sym, _) if sym.isAliasType && !sym.isPublic => tp.dealias
-      case _                                                      => tp
+      case TypeRef(_, sym, _) if sym.isAliasType && !sym.isPublic =>
+        tp.dealias
+      case _ =>
+        tp
     }
 
   /**
@@ -670,8 +687,10 @@ class IMain(
     interpret(line, synthetic = true)
   def interpret(line: String, synthetic: Boolean): IR.Result =
     compile(line, synthetic) match {
-      case Left(result) => result
-      case Right(req)   => new WrappedRequest(req).loadAndRunReq
+      case Left(result) =>
+        result
+      case Right(req) =>
+        new WrappedRequest(req).loadAndRunReq
     }
 
   private def compile(
@@ -681,8 +700,9 @@ class IMain(
       Left(IR.Error)
     else
       requestFromLine(line, synthetic) match {
-        case Left(result) => Left(result)
-        case Right(req)   =>
+        case Left(result) =>
+          Left(result)
+        case Right(req) =>
           // null indicates a disallowed statement type; otherwise compile and
           // fail if false (implying e.g. a type error)
           if (req == null || !req.compile)
@@ -736,10 +756,14 @@ class IMain(
     def eval(context: ScriptContext): Object = {
       val result =
         req.lineRep.evalEither match {
-          case Left(e: RuntimeException) => throw e
-          case Left(e: Exception)        => throw new ScriptException(e)
-          case Left(e)                   => throw e
-          case Right(result)             => result.asInstanceOf[Object]
+          case Left(e: RuntimeException) =>
+            throw e
+          case Left(e: Exception) =>
+            throw new ScriptException(e)
+          case Left(e) =>
+            throw e
+          case Right(result) =>
+            result.asInstanceOf[Object]
         }
       if (!recorded) {
         recordRequest(req)
@@ -918,7 +942,8 @@ class IMain(
     def callEither(name: String, args: Any*): Either[Throwable, AnyRef] =
       try Right(call(name, args: _*))
       catch {
-        case ex: Throwable => Left(ex)
+        case ex: Throwable =>
+          Left(ex)
       }
 
     class EvalException(msg: String, cause: Throwable)
@@ -932,7 +957,8 @@ class IMain(
     private def load(path: String): Class[_] = {
       try Class.forName(path, true, classLoader)
       catch {
-        case ex: Throwable => evalError(path, unwrap(ex))
+        case ex: Throwable =>
+          evalError(path, unwrap(ex))
       }
     }
 
@@ -942,10 +968,13 @@ class IMain(
       callEither(resultName) match {
         case Left(ex) =>
           ex match {
-            case ex: NullPointerException => Right(null)
-            case ex                       => Left(unwrap(ex))
+            case ex: NullPointerException =>
+              Right(null)
+            case ex =>
+              Left(unwrap(ex))
           }
-        case Right(result) => Right(result)
+        case Right(result) =>
+          Right(result)
       }
 
     def compile(source: String): Boolean =
@@ -958,8 +987,10 @@ class IMain(
       val accessPath = fullAccessPath.stripPrefix(readPath)
       val readRoot = readRootPath(readPath) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
-        case (sym, "")   => sym
-        case (sym, name) => exitingTyper(termMember(sym, name))
+        case (sym, "") =>
+          sym
+        case (sym, name) =>
+          exitingTyper(termMember(sym, name))
       }
     }
 
@@ -969,7 +1000,8 @@ class IMain(
     private def updateRecentWarnings(run: Run) {
       def loop(xs: List[(Position, String)]): List[(Position, String)] =
         xs match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
@@ -991,8 +1023,10 @@ class IMain(
     }
     private def evalMethod(name: String) =
       evalClass.getMethods filter (_.getName == name) match {
-        case Array()       => null
-        case Array(method) => method
+        case Array() =>
+          null
+        case Array(method) =>
+          method
         case xs =>
           sys.error(
             "Internal error: eval object " + evalClass + ", " + xs
@@ -1034,13 +1068,16 @@ class IMain(
     val handlers: List[MemberHandler] =
       trees map (memberHandlers chooseHandler _)
     val definesClass = handlers.exists {
-      case _: ClassHandler => true
-      case _               => false
+      case _: ClassHandler =>
+        true
+      case _ =>
+        false
     }
 
     def defHandlers =
       handlers collect {
-        case x: MemberDefHandler => x
+        case x: MemberDefHandler =>
+          x
       }
 
     /** list of names used by this expression */
@@ -1051,8 +1088,10 @@ class IMain(
     def typeNames = handlers flatMap (_.definesType)
     def importedSymbols =
       handlers flatMap {
-        case x: ImportHandler => x.importedSymbols
-        case _                => Nil
+        case x: ImportHandler =>
+          x.importedSymbols
+        case _ =>
+          Nil
       }
 
     /** Code to import bound names from previous lines - accessPath is code to
@@ -1151,7 +1190,8 @@ class IMain(
         */
       val evalResult =
         Request.this.value match {
-          case NoSymbol => ""
+          case NoSymbol =>
+            ""
           case sym =>
             "lazy val %s = %s".format(lineRep.resultName, originalPath(sym))
         }
@@ -1242,7 +1282,8 @@ class IMain(
       try {
         ("" + (lineRep call sessionNames.print), true)
       } catch {
-        case ex: Throwable => (lineRep.bindError(ex), false)
+        case ex: Throwable =>
+          (lineRep.bindError(ex), false)
       }
     }
 
@@ -1298,10 +1339,14 @@ class IMain(
     else
       "" + (
         mostRecentlyHandledTree.get match {
-          case x: ValOrDefDef         => x.name
-          case Assign(Ident(name), _) => name
-          case ModuleDef(_, name, _)  => name
-          case _                      => naming.mostRecentVar
+          case x: ValOrDefDef =>
+            x.name
+          case Assign(Ident(name), _) =>
+            name
+          case ModuleDef(_, name, _) =>
+            name
+          case _ =>
+            naming.mostRecentVar
         }
       )
 
@@ -1312,8 +1357,10 @@ class IMain(
   private lazy val importToRuntime = ru.internal createImporter global
   private lazy val javaMirror =
     ru.rootMirror match {
-      case x: ru.JavaMirror => x
-      case _                => null
+      case x: ru.JavaMirror =>
+        x
+      case _ =>
+        null
     }
   private implicit def importFromRu(sym: ru.Symbol): Symbol =
     importToGlobal importSymbol sym
@@ -1322,8 +1369,10 @@ class IMain(
 
   def classOfTerm(id: String): Option[JClass] =
     symbolOfTerm(id) match {
-      case NoSymbol => None
-      case sym      => Some(javaMirror runtimeClass importToRu(sym).asClass)
+      case NoSymbol =>
+        None
+      case sym =>
+        Some(javaMirror runtimeClass importToRu(sym).asClass)
     }
 
   def typeOfTerm(id: String): Type = symbolOfTerm(id).tpe
@@ -1345,7 +1394,8 @@ class IMain(
 
       try Some(value())
       catch {
-        case _: Exception => None
+        case _: Exception =>
+          None
       }
     }
 
@@ -1436,11 +1486,13 @@ class IMain(
 
   protected def onlyTerms(xs: List[Name]): List[TermName] =
     xs collect {
-      case x: TermName => x
+      case x: TermName =>
+        x
     }
   protected def onlyTypes(xs: List[Name]): List[TypeName] =
     xs collect {
-      case x: TypeName => x
+      case x: TypeName =>
+        x
     }
 
   def definedTerms = onlyTerms(allDefinedNames) filterNot isInternalTermName
@@ -1477,7 +1529,8 @@ class IMain(
   def prevRequestList = prevRequests.toList
   def importHandlers =
     allHandlers collect {
-      case x: ImportHandler => x
+      case x: ImportHandler =>
+        x
     }
 
   def withoutUnwrapping(op: => Unit): Unit = {
@@ -1556,12 +1609,18 @@ object IMain {
 
     def getParameter(key: String): Object =
       key match {
-        case ScriptEngine.ENGINE           => engineName
-        case ScriptEngine.ENGINE_VERSION   => engineVersion
-        case ScriptEngine.LANGUAGE         => languageName
-        case ScriptEngine.LANGUAGE_VERSION => languageVersion
-        case ScriptEngine.NAME             => names.get(0)
-        case _                             => null
+        case ScriptEngine.ENGINE =>
+          engineName
+        case ScriptEngine.ENGINE_VERSION =>
+          engineVersion
+        case ScriptEngine.LANGUAGE =>
+          languageName
+        case ScriptEngine.LANGUAGE_VERSION =>
+          languageVersion
+        case ScriptEngine.NAME =>
+          names.get(0)
+        case _ =>
+          null
       }
 
     def getProgram(statements: String*): String = null

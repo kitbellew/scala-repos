@@ -25,8 +25,10 @@ object AgeRange {
           to <- intBinder.bind("to", params)
         } yield {
           (from, to) match {
-            case (Right(from), Right(to)) => Right(AgeRange(from, to))
-            case _                        => Left("Unable to bind an AgeRange")
+            case (Right(from), Right(to)) =>
+              Right(AgeRange(from, to))
+            case _ =>
+              Left("Unable to bind an AgeRange")
           }
         }
       }

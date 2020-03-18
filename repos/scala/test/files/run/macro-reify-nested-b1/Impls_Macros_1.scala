@@ -17,7 +17,8 @@ case class Utils[C <: Context](c: C) {
           case Apply(Select(_this, termname), reification :: Nil)
               if termname.toString == "factory" =>
             c.unreifyTree(reification)
-          case _ => tree
+          case _ =>
+            tree
         }
       }
     }

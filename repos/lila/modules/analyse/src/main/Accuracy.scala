@@ -40,7 +40,8 @@ object Accuracy {
                   diff
               ).max(0) :: list
           }
-        case (list, _) => list
+        case (list, _) =>
+          list
       }
       .reverse
 
@@ -51,7 +52,8 @@ object Accuracy {
         analysis.infos)
       .zipWithIndex
       .collect {
-        case (e, i) if (i % 2) == 0 => e
+        case (e, i) if (i % 2) == 0 =>
+          e
       }
   }
 

@@ -109,7 +109,8 @@ class ScalaArrangementVisitor(
         processEntry(entry, fun, body)
         val methodBodyProcessor = new MethodBodyProcessor(parseInfo, fun)
         body.accept(methodBodyProcessor)
-      case None => processEntry(entry, fun, null)
+      case None =>
+        processEntry(entry, fun, null)
     }
     parseProperties(fun, entry)
   }
@@ -133,8 +134,9 @@ class ScalaArrangementVisitor(
 
   override def visitFile(file: PsiFile) =
     file match {
-      case scFile: ScalaFile => scFile.acceptChildren(this)
-      case _                 =>
+      case scFile: ScalaFile =>
+        scFile.acceptChildren(this)
+      case _ =>
     }
 
   override def visitPatternDefinition(pat: ScPatternDefinition) {
@@ -153,8 +155,10 @@ class ScalaArrangementVisitor(
 
   override def visitElement(v: ScalaPsiElement) =
     v match {
-      case packaging: ScPackaging => packaging.acceptChildren(this)
-      case _                      => super.visitElement(v)
+      case packaging: ScPackaging =>
+        packaging.acceptChildren(this)
+      case _ =>
+        super.visitElement(v)
     }
 
   override def visitClass(scClass: ScClass) =
@@ -209,9 +213,12 @@ class ScalaArrangementVisitor(
       typedef.getParent,
       expandTextRangeToComment(typedef),
       typedef match {
-        case _: ScClass => CLASS
-        case _: ScTrait => TRAIT
-        case _          => OBJECT
+        case _: ScClass =>
+          CLASS
+        case _: ScTrait =>
+          TRAIT
+        case _ =>
+          OBJECT
       },
       typedef.getName,
       canArrange = true
@@ -300,7 +307,8 @@ class ScalaArrangementVisitor(
       try nextPsiRoot match {
         case body: ScTemplateBody if splitBodyByExpressions =>
           traverseTypedefBody(body, entry)
-        case _ => nextPsiRoot.acceptChildren(this)
+        case _ =>
+          nextPsiRoot.acceptChildren(this)
       } finally {
         arrangementEntries.pop()
       }
@@ -353,7 +361,8 @@ class ScalaArrangementVisitor(
               } else {
                 (false, nextUnseparable)
               }
-            case _ => (false, unseparable) //outside arrange block
+            case _ =>
+              (false, unseparable) //outside arrange block
           }
         } else
           (false, unseparable)
@@ -387,7 +396,8 @@ class ScalaArrangementVisitor(
           if semicolon.getNode.getElementType == ScalaTokenTypes.tSEMICOLON =>
         currentNode = semicolon;
         range.union(semicolon.getTextRange)
-      case _ => range
+      case _ =>
+        range
     }
     val res =
       currentNode.getNextSibling match {
@@ -403,13 +413,16 @@ class ScalaArrangementVisitor(
                 } else {
                   range
                 }
-              case _ => range
+              case _ =>
+                range
             }
           } else {
             range
           }
-        case comment: PsiComment => range.union(comment.getTextRange)
-        case _                   => range
+        case comment: PsiComment =>
+          range.union(comment.getTextRange)
+        case _ =>
+          range
       }
     res
   }
@@ -540,8 +553,10 @@ object ScalaArrangementVisitor {
   private def hasSetterSignature(method: ScFunction) =
     method.getParameterList.getParametersCount == 1 && (
       method.returnType.getOrAny match {
-        case Any                => true
-        case returnType: ScType => returnType == Unit
+        case Any =>
+          true
+        case returnType: ScType =>
+          returnType == Unit
       }
     )
 

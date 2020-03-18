@@ -50,8 +50,10 @@ class IntroduceExplicitParameterIntention
       editor: Editor,
       _element: PsiElement): Boolean = {
     findExpression(_element, editor) match {
-      case Some(x) => true
-      case None    => false
+      case Some(x) =>
+        true
+      case None =>
+        false
     }
   }
 

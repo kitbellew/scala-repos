@@ -49,13 +49,15 @@ class BrokerPartitionInfo(
     val topicMetadata = topicPartitionInfo.get(topic)
     val metadata: TopicMetadata =
       topicMetadata match {
-        case Some(m) => m
-        case None    =>
+        case Some(m) =>
+          m
+        case None =>
           // refresh the topic metadata cache
           updateInfo(Set(topic), correlationId)
           val topicMetadata = topicPartitionInfo.get(topic)
           topicMetadata match {
-            case Some(m) => m
+            case Some(m) =>
+              m
             case None =>
               throw new KafkaException(
                 "Failed to fetch topic metadata for topic: " + topic)

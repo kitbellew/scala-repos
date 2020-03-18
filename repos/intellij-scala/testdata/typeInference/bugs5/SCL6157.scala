@@ -4,7 +4,8 @@ object SCL6157 {
 
   object Grammar extends RegexParsers {
     val Blah: Parser[(Int, String)] = "\\d+".r ~ ".+".r ^^ {
-      case a ~ b => (a.toInt, b)
+      case a ~ b =>
+        (a.toInt, b)
     }
   }
 

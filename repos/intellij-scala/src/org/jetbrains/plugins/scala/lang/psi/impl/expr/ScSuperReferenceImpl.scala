@@ -65,12 +65,15 @@ class ScSuperReferenceImpl(node: ASTNode)
                     case Some(psiClass) =>
                       drvTemplate.exists(td =>
                         !ScalaPsiUtil.cachedDeepIsInheritor(td, psiClass))
-                    case _ => false
+                    case _ =>
+                      false
                   }
                 }
-              case _ => false
+              case _ =>
+                false
             }
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -79,10 +82,13 @@ class ScSuperReferenceImpl(node: ASTNode)
     reference match {
       case Some(q) =>
         q.bind() match {
-          case Some(ScalaResolveResult(td: ScTypeDefinition, _)) => Some(td)
-          case _                                                 => None
+          case Some(ScalaResolveResult(td: ScTypeDefinition, _)) =>
+            Some(td)
+          case _ =>
+            None
         }
-      case None => ScalaPsiUtil.drvTemplate(this)
+      case None =>
+        ScalaPsiUtil.drvTemplate(this)
     }
 
   def staticSuper: Option[ScType] = {
@@ -105,8 +111,10 @@ class ScSuperReferenceImpl(node: ASTNode)
             .shiftRight(id.getStartOffsetInParent)
         def getCanonicalText =
           resolve match {
-            case c: PsiClass => c.qualifiedName
-            case _           => null
+            case c: PsiClass =>
+              c.qualifiedName
+            case _ =>
+              null
           }
         def isSoft: Boolean = false
 
@@ -114,7 +122,8 @@ class ScSuperReferenceImpl(node: ASTNode)
           doRename(newElementName)
         def bindToElement(e: PsiElement) =
           e match {
-            case c: PsiClass => doRename(c.name)
+            case c: PsiClass =>
+              doRename(c.name)
             case _ =>
               throw new IncorrectOperationException(
                 "cannot bind to anything but class")
@@ -130,8 +139,10 @@ class ScSuperReferenceImpl(node: ASTNode)
 
         def isReferenceTo(element: PsiElement) =
           element match {
-            case c: PsiClass => c.name == id.getText && resolve == c
-            case _           => false
+            case c: PsiClass =>
+              c.name == id.getText && resolve == c
+            case _ =>
+              false
           }
 
         def resolve = {
@@ -139,10 +150,13 @@ class ScSuperReferenceImpl(node: ASTNode)
             findSuper(id) match {
               case Some(t) =>
                 ScType.extractClass(t) match {
-                  case Some(c) => c
-                  case None    => null
+                  case Some(c) =>
+                    c
+                  case None =>
+                    null
                 }
-              case _ => null
+              case _ =>
+                null
             }
           }
           ScalaPsiUtil.fileContext(id) match {
@@ -164,21 +178,25 @@ class ScSuperReferenceImpl(node: ASTNode)
                       classes
                         .find(!_.isInstanceOf[ScObject])
                         .getOrElse(resolveNoHack)
-                  case _ => resolveNoHack
+                  case _ =>
+                    resolveNoHack
                 }
-            case _ => resolveNoHack
+            case _ =>
+              resolveNoHack
           }
         }
 
         def getVariants: Array[Object] =
           superTypes match {
-            case None => Array[Object]()
+            case None =>
+              Array[Object]()
             case Some(supers) => {
               val buff = new ArrayBuffer[Object]
               supers.foreach { t =>
                 ScType.extractClass(t) match {
-                  case Some(c) => buff += c
-                  case None    =>
+                  case Some(c) =>
+                    buff += c
+                  case None =>
                 }
               }
               buff.toArray
@@ -189,13 +207,15 @@ class ScSuperReferenceImpl(node: ASTNode)
 
   def findSuper(id: PsiElement): Option[ScType] =
     superTypes match {
-      case None => None
+      case None =>
+        None
       case Some(types) => {
         val name = id.getText
         for (t <- types) {
           ScType.extractClass(t) match {
-            case Some(c) if name == c.name => return Some(t)
-            case _                         =>
+            case Some(c) if name == c.name =>
+              return Some(t)
+            case _ =>
           }
         }
         None
@@ -211,15 +231,18 @@ class ScSuperReferenceImpl(node: ASTNode)
               clazz.getSuperTypes.map { t =>
                 ScType.create(t, getProject, getResolveScope)
               })
-          case _ => None
+          case _ =>
+            None
         }
       case None => {
         PsiTreeUtil.getContextOfType(
           this,
           false,
           classOf[ScExtendsBlock]) match {
-          case null               => None
-          case eb: ScExtendsBlock => Some(eb.superTypes)
+          case null =>
+            None
+          case eb: ScExtendsBlock =>
+            Some(eb.superTypes)
         }
       }
     }
@@ -233,8 +256,10 @@ class ScSuperReferenceImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitSuperReference(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitSuperReference(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

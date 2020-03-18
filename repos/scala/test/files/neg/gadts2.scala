@@ -5,7 +5,8 @@ object Test extends App {
   val s1 = Sub((x: Int) => x)
 
   (s1: Super[Any]) match {
-    case Sub(f) => f("abc")
+    case Sub(f) =>
+      f("abc")
   }
 }
 // java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Integer

@@ -46,12 +46,14 @@ object ExtractSuperUtil {
       val classes = ScalaPsiUtil
         .getParents(element, file)
         .collect {
-          case t: ScTemplateDefinition if isSuitableClass(t) => t
+          case t: ScTemplateDefinition if isSuitableClass(t) =>
+            t
         }
         .toArray[PsiClass]
       classes.size match {
         case 0 =>
-        case 1 => action
+        case 1 =>
+          action
         case _ =>
           val selection = classes(0)
           val processor =
@@ -75,31 +77,39 @@ object ExtractSuperUtil {
             .showInBestPositionFor(editor)
       }
     } catch {
-      case _: IntroduceException => return
+      case _: IntroduceException =>
+        return
     }
   }
 
   def classPresentableName(clazz: ScTemplateDefinition) = {
     clazz match {
-      case td: ScTypeDefinition => td.qualifiedName
+      case td: ScTypeDefinition =>
+        td.qualifiedName
       case anon: ScNewTemplateDefinition =>
         val anonymous = "<anonymous>"
         PsiTreeUtil.getParentOfType(
           anon,
           classOf[ScTemplateDefinition],
           classOf[ScFunctionDefinition]) match {
-          case td: ScTemplateDefinition  => s"$anonymous in ${td.name}"
-          case fun: ScFunctionDefinition => s"$anonymous in ${fun.name}"
-          case _                         => anonymous
+          case td: ScTemplateDefinition =>
+            s"$anonymous in ${td.name}"
+          case fun: ScFunctionDefinition =>
+            s"$anonymous in ${fun.name}"
+          case _ =>
+            anonymous
         }
-      case _ => ""
+      case _ =>
+        ""
     }
   }
 
   def packageName(clazz: ScTemplateDefinition) = {
     clazz.containingFile match {
-      case Some(f: ScalaFile) => f.getPackageName
-      case _                  => ""
+      case Some(f: ScalaFile) =>
+        f.getPackageName
+      case _ =>
+        ""
     }
   }
 
@@ -188,11 +198,16 @@ object ExtractSuperUtil {
       clazz: ScTemplateDefinition): util.List[ScalaExtractMemberInfo] = {
     clazz.members
       .filter {
-        case m if m.isPrivate                     => false
-        case fun: ScFunction if fun.isConstructor => false
-        case td: ScTypeDefinition                 => false
-        case _: ScPrimaryConstructor              => false
-        case _                                    => true
+        case m if m.isPrivate =>
+          false
+        case fun: ScFunction if fun.isConstructor =>
+          false
+        case td: ScTypeDefinition =>
+          false
+        case _: ScPrimaryConstructor =>
+          false
+        case _ =>
+          true
       }
       .map(new ScalaExtractMemberInfo(_))
       .asJava
@@ -200,14 +215,16 @@ object ExtractSuperUtil {
 
   def declarationScope(m: ScMember): Seq[PsiElement] = {
     m match {
-      case decl: ScDeclaration => Seq(decl)
+      case decl: ScDeclaration =>
+        Seq(decl)
       case fun: ScFunctionDefinition =>
         fun.children.takeWhile(Some(_) != fun.body).toSeq
       case patDef: ScPatternDefinition =>
         patDef.children.takeWhile(Some(_) != patDef.expr).toSeq
       case varDef: ScVariableDefinition =>
         varDef.children.takeWhile(Some(_) != varDef.expr).toSeq
-      case _ => Seq(m)
+      case _ =>
+        Seq(m)
     }
   }
 }

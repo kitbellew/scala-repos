@@ -43,7 +43,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       val classes = ScalaPsiUtil
         .getParents(elem, file)
         .collect {
-          case t: ScTemplateDefinition if isSuitableClass(elem, t) => t
+          case t: ScTemplateDefinition if isSuitableClass(elem, t) =>
+            t
         }
         .toArray[PsiClass]
       classes.size match {
@@ -87,7 +88,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
             .showInBestPositionFor(editor)
       }
     } catch {
-      case _: IntroduceException => return
+      case _: IntroduceException =>
+        return
     }
   }
 
@@ -112,7 +114,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
         aClass.extendsBlock match {
           case ScExtendsBlock.EarlyDefinitions(earlyDef) =>
             earlyDef.lastChild.orNull
-          case extBl => extBl.templateParents.orNull
+          case extBl =>
+            extBl.templateParents.orNull
         }
       }
     }
@@ -150,8 +153,10 @@ object ScalaIntroduceFieldHandlerBase {
       false
     else {
       ifc.element match {
-        case expr: ScExpression => checkForwardReferences(expr, parExpr)
-        case _                  => false
+        case expr: ScExpression =>
+          checkForwardReferences(expr, parExpr)
+        case _ =>
+          false
       }
     }
   }

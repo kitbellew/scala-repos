@@ -152,9 +152,11 @@ trait CollectionsOnCollectionsTest extends CollectionsTestBase {
       expectAllFrequenciesToBe(1)
       coll.addAll(range.map(toElem))
       coll match {
-        case _: ju.Set[_]  => expectAllFrequenciesToBe(1)
-        case _: ju.List[_] => expectAllFrequenciesToBe(2)
-        case _             => // Undefined behaviour
+        case _: ju.Set[_] =>
+          expectAllFrequenciesToBe(1)
+        case _: ju.List[_] =>
+          expectAllFrequenciesToBe(2)
+        case _ => // Undefined behaviour
       }
     }
 

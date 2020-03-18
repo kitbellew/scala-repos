@@ -132,13 +132,20 @@ case class Complex(real: Double, imag: Double) {
 
   override def equals(that: Any) =
     that match {
-      case that: Complex => this.real == that.real && this.imag == that.imag
-      case real: Double  => this.real == real && this.imag == 0
-      case real: Int     => this.real == real && this.imag == 0
-      case real: Short   => this.real == real && this.imag == 0
-      case real: Long    => this.real == real && this.imag == 0
-      case real: Float   => this.real == real && this.imag == 0
-      case _             => false
+      case that: Complex =>
+        this.real == that.real && this.imag == that.imag
+      case real: Double =>
+        this.real == real && this.imag == 0
+      case real: Int =>
+        this.real == real && this.imag == 0
+      case real: Short =>
+        this.real == real && this.imag == 0
+      case real: Long =>
+        this.real == real && this.imag == 0
+      case real: Float =>
+        this.real == real && this.imag == 0
+      case _ =>
+        false
     }
 
   // ensure hashcode contract is maintained for comparison to non-Complex numbers

@@ -56,8 +56,10 @@ trait PathReads {
               _ => JsSuccess(None),
               a =>
                 a match {
-                  case JsNull => JsSuccess(None)
-                  case js     => reads.reads(js).repath(path).map(Some(_))
+                  case JsNull =>
+                    JsSuccess(None)
+                  case js =>
+                    reads.reads(js).repath(path).map(Some(_))
                 }))
     }
 
@@ -110,8 +112,10 @@ trait ConstraintReads {
   def optionWithNull[T](implicit rds: Reads[T]): Reads[Option[T]] =
     Reads(js =>
       js match {
-        case JsNull => JsSuccess(None)
-        case js     => rds.reads(js).map(Some(_))
+        case JsNull =>
+          JsSuccess(None)
+        case js =>
+          rds.reads(js).map(Some(_))
       })
 
   /** Stupidly reads a field as an Option mapping any error (format or missing field) to None */
@@ -216,8 +220,10 @@ trait PathWrites {
   def nullable[A](path: JsPath)(implicit wrs: Writes[A]): OWrites[Option[A]] =
     OWrites[Option[A]] { a =>
       a match {
-        case Some(a) => JsPath.createObj(path -> wrs.writes(a))
-        case None    => Json.obj()
+        case Some(a) =>
+          JsPath.createObj(path -> wrs.writes(a))
+        case None =>
+          Json.obj()
       }
     }
 
@@ -286,8 +292,10 @@ trait ConstraintWrites {
   def optionWithNull[A](implicit wa: Writes[A]) =
     Writes[Option[A]] { a =>
       a match {
-        case None     => JsNull
-        case Some(av) => wa.writes(av)
+        case None =>
+          JsNull
+        case Some(av) =>
+          wa.writes(av)
       }
     }
 }

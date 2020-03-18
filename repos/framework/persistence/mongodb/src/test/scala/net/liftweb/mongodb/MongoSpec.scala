@@ -44,7 +44,8 @@ class MongoSpec extends Specification {
         db.getCollectionNames
       }
     } catch {
-      case e: Exception => skipped("MongoDB is not running")
+      case e: Exception =>
+        skipped("MongoDB is not running")
     }
 
     // using an undefined identifier throws an exception

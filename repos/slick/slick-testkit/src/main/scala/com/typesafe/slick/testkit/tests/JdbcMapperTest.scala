@@ -23,7 +23,8 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def forUpdate =
         baseProjection.shaped <>
           ({
-            case (f, l) => User(None, f, l)
+            case (f, l) =>
+              User(None, f, l)
           }, { u: User =>
             Some((u.first, u.last))
           })
@@ -315,8 +316,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def productElement(n: Int): Any = Seq(a, b)(n)
       override def equals(a: Any) =
         a match {
-          case that: C => this.a == that.a && this.b == that.b
-          case _       => false
+          case that: C =>
+            this.a == that.a && this.b == that.b
+          case _ =>
+            false
         }
     }
     class LiftedC(val a: Rep[Int], val b: Rep[Option[String]]) extends Product {
@@ -325,8 +328,10 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
       def productElement(n: Int): Any = Seq(a, b)(n)
       override def equals(a: Any) =
         a match {
-          case that: LiftedC => this.a == that.a && this.b == that.b
-          case _             => false
+          case that: LiftedC =>
+            this.a == that.a && this.b == that.b
+          case _ =>
+            false
         }
     }
     implicit object cShape
@@ -384,16 +389,20 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     // Use it for returning data from a query
     val q2 = as
       .map {
-        case a => Pair(a.id, (a.s ++ a.s))
+        case a =>
+          Pair(a.id, (a.s ++ a.s))
       }
       .filter {
-        case Pair(id, _) => id =!= 1
+        case Pair(id, _) =>
+          id =!= 1
       }
       .sortBy {
-        case Pair(_, ss) => ss
+        case Pair(_, ss) =>
+          ss
       }
       .map {
-        case Pair(id, ss) => Pair(id, Pair(42, ss))
+        case Pair(id, ss) =>
+          Pair(id, Pair(42, ss))
       }
 
     seq(
@@ -433,20 +442,24 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
           ) if !b
         } yield id :: b :: (s ++ s) :: HNil
       ).sortBy(h => h(2)).map {
-        case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
+        case id :: b :: ss :: HNil =>
+          id :: ss :: (42 :: HNil) :: HNil
       }
     val q2 = bs
       .map {
-        case b => b.id :: b.b :: (b.s ++ b.s) :: HNil
+        case b =>
+          b.id :: b.b :: (b.s ++ b.s) :: HNil
       }
       .filter { h =>
         !h(1)
       }
       .sortBy {
-        case _ :: _ :: ss :: HNil => ss
+        case _ :: _ :: ss :: HNil =>
+          ss
       }
       .map {
-        case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
+        case id :: b :: ss :: HNil =>
+          id :: ss :: (42 :: HNil) :: HNil
       }
 
     seq(

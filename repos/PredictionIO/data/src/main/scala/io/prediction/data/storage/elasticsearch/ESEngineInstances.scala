@@ -166,7 +166,8 @@ class ESEngineInstances(
     try {
       client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
     } catch {
-      case e: ElasticsearchException => error(e.getMessage)
+      case e: ElasticsearchException =>
+        error(e.getMessage)
     }
   }
 
@@ -174,7 +175,8 @@ class ESEngineInstances(
     try {
       val response = client.prepareDelete(index, estype, id).get
     } catch {
-      case e: ElasticsearchException => error(e.getMessage)
+      case e: ElasticsearchException =>
+        error(e.getMessage)
     }
   }
 }

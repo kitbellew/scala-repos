@@ -38,8 +38,10 @@ trait TypeLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -58,7 +60,8 @@ trait TypeLibSpecs[M[+_]]
       result must haveSize(24)
 
       val result2 = result.toSeq collect {
-        case (ids, SBoolean(b)) if ids.length == 1 => b
+        case (ids, SBoolean(b)) if ids.length == 1 =>
+          b
       }
 
       val (trues, falses) = result2 partition identity
@@ -81,7 +84,8 @@ trait TypeLibSpecs[M[+_]]
       result must haveSize(24)
 
       val result2 = result.toSeq collect {
-        case (ids, SBoolean(b)) if ids.length == 1 => b
+        case (ids, SBoolean(b)) if ids.length == 1 =>
+          b
       }
 
       val (trues, falses) = result2 partition identity
@@ -104,7 +108,8 @@ trait TypeLibSpecs[M[+_]]
       result must haveSize(24)
 
       val result2 = result.toSeq collect {
-        case (ids, SBoolean(b)) if ids.length == 1 => b
+        case (ids, SBoolean(b)) if ids.length == 1 =>
+          b
       }
 
       val (trues, falses) = result2 partition identity
@@ -127,7 +132,8 @@ trait TypeLibSpecs[M[+_]]
       result must haveSize(24)
 
       val result2 = result.toSeq collect {
-        case (ids, SBoolean(b)) if ids.length == 1 => b
+        case (ids, SBoolean(b)) if ids.length == 1 =>
+          b
       }
 
       val (trues, falses) = result2 partition identity
@@ -150,7 +156,8 @@ trait TypeLibSpecs[M[+_]]
       result must haveSize(24)
 
       val result2 = result.toSeq collect {
-        case (ids, SBoolean(b)) if ids.length == 1 => b
+        case (ids, SBoolean(b)) if ids.length == 1 =>
+          b
       }
 
       val (trues, falses) = result2 partition identity
@@ -173,7 +180,8 @@ trait TypeLibSpecs[M[+_]]
       result must haveSize(24)
 
       val result2 = result.toSeq collect {
-        case (ids, SBoolean(b)) if ids.length == 1 => b
+        case (ids, SBoolean(b)) if ids.length == 1 =>
+          b
       }
 
       val (trues, falses) = result2 partition identity

@@ -82,9 +82,12 @@ class RelationalGroupedDataset protected[sql] (
   // make it a NamedExpression.
   private[this] def alias(expr: Expression): NamedExpression =
     expr match {
-      case u: UnresolvedAttribute => UnresolvedAlias(u)
-      case expr: NamedExpression  => expr
-      case expr: Expression       => Alias(expr, usePrettyExpression(expr).sql)()
+      case u: UnresolvedAttribute =>
+        UnresolvedAlias(u)
+      case expr: NamedExpression =>
+        expr
+      case expr: Expression =>
+        Alias(expr, usePrettyExpression(expr).sql)()
     }
 
   private[this] def aggregateNumericColumns(colNames: String*)(
@@ -121,8 +124,10 @@ class RelationalGroupedDataset protected[sql] (
         case "count" | "size" =>
           // Turn count(*) into count(1)
           inputExpr match {
-            case s: Star => Count(Literal(1)).toAggregateExpression()
-            case _       => Count(inputExpr).toAggregateExpression()
+            case s: Star =>
+              Count(Literal(1)).toAggregateExpression()
+            case _ =>
+              Count(inputExpr).toAggregateExpression()
           }
         case name =>
           UnresolvedFunction(name, inputExpr :: Nil, isDistinct = false)

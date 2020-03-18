@@ -40,10 +40,13 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
     lazy val arguments = CommandLineParser.tokenize(options)
     lazy val virtualDirectory =
       arguments.iterator.sliding(2).collectFirst {
-        case Seq("-d", dir) => dir
+        case Seq("-d", dir) =>
+          dir
       } match {
-        case Some(outDir) => AbstractFile.getDirectory(outDir)
-        case None         => new VirtualDirectory("(memory)", None)
+        case Some(outDir) =>
+          AbstractFile.getDirectory(outDir)
+        case None =>
+          new VirtualDirectory("(memory)", None)
       }
 
     class ToolBoxGlobal(settings: scala.tools.nsc.Settings, reporter0: Reporter)
@@ -215,8 +218,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           val expr3 = withContext(transform(currentTyper, expr2))
           var (dummies1, result) =
             expr3 match {
-              case Block(dummies, result) => ((dummies, result))
-              case result                 => ((Nil, result))
+              case Block(dummies, result) =>
+                ((dummies, result))
+              case result =>
+                ((Nil, result))
             }
           val invertedIndex = freeTerms map (_.swap)
           result =
@@ -374,8 +379,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) {
           minfo.decls enter meth
           def defOwner(tree: Tree): Symbol =
             tree find (_.isDef) map (_.symbol) match {
-              case Some(sym) if sym != null && sym != NoSymbol => sym.owner
-              case _                                           => NoSymbol
+              case Some(sym) if sym != null && sym != NoSymbol =>
+                sym.owner
+              case _ =>
+                NoSymbol
             }
           trace("wrapping ")(defOwner(expr) -> meth)
           val methdef = DefDef(meth, expr changeOwner (defOwner(expr) -> meth))

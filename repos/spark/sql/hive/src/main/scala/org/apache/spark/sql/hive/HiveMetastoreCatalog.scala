@@ -108,9 +108,12 @@ private[hive] object HiveSerDe {
 
     val key =
       source.toLowerCase match {
-        case s if s.startsWith("org.apache.spark.sql.parquet") => "parquet"
-        case s if s.startsWith("org.apache.spark.sql.orc")     => "orc"
-        case s                                                 => s
+        case s if s.startsWith("org.apache.spark.sql.parquet") =>
+          "parquet"
+        case s if s.startsWith("org.apache.spark.sql.orc") =>
+          "orc"
+        case s =>
+          s
       }
 
     serdeMap.get(key)
@@ -504,7 +507,8 @@ private[hive] class HiveMetastoreCatalog(
       alias match {
         // because hive use things like `_c0` to build the expanded text
         // currently we cannot support view from "create view v1(c1) as ..."
-        case None => SubqueryAlias(table.name.table, hive.parseSql(viewText))
+        case None =>
+          SubqueryAlias(table.name.table, hive.parseSql(viewText))
         case Some(aliasText) =>
           SubqueryAlias(aliasText, hive.parseSql(viewText))
       }
@@ -538,7 +542,8 @@ private[hive] class HiveMetastoreCatalog(
         partitionSpecInMetastore: Option[PartitionSpec])
         : Option[LogicalRelation] = {
       cachedDataSourceTables.getIfPresent(tableIdentifier) match {
-        case null => None // Cache miss
+        case null =>
+          None // Cache miss
         case logical @ LogicalRelation(
               parquetRelation: HadoopFsRelation,
               _,
@@ -730,8 +735,10 @@ private[hive] class HiveMetastoreCatalog(
     def apply(plan: LogicalPlan): LogicalPlan =
       plan transform {
         // Wait until children are resolved.
-        case p: LogicalPlan if !p.childrenResolved => p
-        case p: LogicalPlan if p.resolved          => p
+        case p: LogicalPlan if !p.childrenResolved =>
+          p
+        case p: LogicalPlan if p.resolved =>
+          p
 
         case CreateViewAsSelect(table, child, allowExisting, replace, sql)
             if conf.nativeView =>
@@ -819,7 +826,8 @@ private[hive] class HiveMetastoreCatalog(
     def apply(plan: LogicalPlan): LogicalPlan =
       plan.transform {
         // Wait until children are resolved.
-        case p: LogicalPlan if !p.childrenResolved => p
+        case p: LogicalPlan if !p.childrenResolved =>
+          p
 
         case p @ InsertIntoTable(table: MetastoreRelation, _, child, _, _) =>
           castChildOutput(p, table, child)
@@ -849,7 +857,8 @@ private[hive] class HiveMetastoreCatalog(
                  childOutputDataTypes
                    .zip(tableOutputDataTypes)
                    .forall {
-                     case (left, right) => left.sameType(right)
+                     case (left, right) =>
+                       left.sameType(right)
                    }) {
         // If both types ignoring nullability of ArrayType, MapType, StructType are the same,
         // use InsertIntoHiveTable instead of InsertIntoTable.
@@ -864,7 +873,8 @@ private[hive] class HiveMetastoreCatalog(
         val castedChildOutput = child.output.zip(table.output).map {
           case (input, output) if input.dataType != output.dataType =>
             Alias(Cast(input, output.dataType), input.name)()
-          case (input, _) => input
+          case (input, _) =>
+            input
         }
 
         p.copy(child = logical.Project(castedChildOutput, child))
@@ -969,7 +979,8 @@ private[hive] case class MetastoreRelation(
           tableName == relation.tableName &&
           alias == relation.alias &&
           output == relation.output
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {
@@ -994,7 +1005,8 @@ private[hive] case class MetastoreRelation(
     val tableParameters = new java.util.HashMap[String, String]()
     tTable.setParameters(tableParameters)
     table.properties.foreach {
-      case (k, v) => tableParameters.put(k, v)
+      case (k, v) =>
+        tableParameters.put(k, v)
     }
 
     tTable.setTableType(
@@ -1003,7 +1015,8 @@ private[hive] case class MetastoreRelation(
           HiveTableType.EXTERNAL_TABLE.toString
         case CatalogTableType.MANAGED_TABLE =>
           HiveTableType.MANAGED_TABLE.toString
-        case CatalogTableType.INDEX_TABLE => HiveTableType.INDEX_TABLE.toString
+        case CatalogTableType.INDEX_TABLE =>
+          HiveTableType.INDEX_TABLE.toString
         case CatalogTableType.VIRTUAL_VIEW =>
           HiveTableType.VIRTUAL_VIEW.toString
       })
@@ -1023,7 +1036,8 @@ private[hive] case class MetastoreRelation(
 
     val serdeParameters = new java.util.HashMap[String, String]()
     table.storage.serdeProperties.foreach {
-      case (k, v) => serdeParameters.put(k, v)
+      case (k, v) =>
+        serdeParameters.put(k, v)
     }
     serdeInfo.setParameters(serdeParameters)
 
@@ -1088,10 +1102,12 @@ private[hive] case class MetastoreRelation(
 
       val serdeParameters = new java.util.HashMap[String, String]()
       table.storage.serdeProperties.foreach {
-        case (k, v) => serdeParameters.put(k, v)
+        case (k, v) =>
+          serdeParameters.put(k, v)
       }
       p.storage.serdeProperties.foreach {
-        case (k, v) => serdeParameters.put(k, v)
+        case (k, v) =>
+          serdeParameters.put(k, v)
       }
       serdeInfo.setParameters(serdeParameters)
 
@@ -1104,7 +1120,8 @@ private[hive] case class MetastoreRelation(
     plan match {
       case mr: MetastoreRelation =>
         mr.databaseName == databaseName && mr.tableName == tableName
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -1167,7 +1184,8 @@ private[hive] object HiveMetastoreTypes {
 
   def decimalMetastoreString(decimalType: DecimalType): String =
     decimalType match {
-      case DecimalType.Fixed(precision, scale) => s"decimal($precision,$scale)"
+      case DecimalType.Fixed(precision, scale) =>
+        s"decimal($precision,$scale)"
       case _ =>
         s"decimal($HiveShim.UNLIMITED_DECIMAL_PRECISION,$HiveShim.UNLIMITED_DECIMAL_SCALE)"
     }
@@ -1180,19 +1198,33 @@ private[hive] object HiveMetastoreTypes {
         s"struct<${fields.map(f => s"${f.name}:${toMetastoreType(f.dataType)}").mkString(",")}>"
       case MapType(keyType, valueType, _) =>
         s"map<${toMetastoreType(keyType)},${toMetastoreType(valueType)}>"
-      case StringType              => "string"
-      case FloatType               => "float"
-      case IntegerType             => "int"
-      case ByteType                => "tinyint"
-      case ShortType               => "smallint"
-      case DoubleType              => "double"
-      case LongType                => "bigint"
-      case BinaryType              => "binary"
-      case BooleanType             => "boolean"
-      case DateType                => "date"
-      case d: DecimalType          => decimalMetastoreString(d)
-      case TimestampType           => "timestamp"
-      case NullType                => "void"
-      case udt: UserDefinedType[_] => toMetastoreType(udt.sqlType)
+      case StringType =>
+        "string"
+      case FloatType =>
+        "float"
+      case IntegerType =>
+        "int"
+      case ByteType =>
+        "tinyint"
+      case ShortType =>
+        "smallint"
+      case DoubleType =>
+        "double"
+      case LongType =>
+        "bigint"
+      case BinaryType =>
+        "binary"
+      case BooleanType =>
+        "boolean"
+      case DateType =>
+        "date"
+      case d: DecimalType =>
+        decimalMetastoreString(d)
+      case TimestampType =>
+        "timestamp"
+      case NullType =>
+        "void"
+      case udt: UserDefinedType[_] =>
+        toMetastoreType(udt.sqlType)
     }
 }

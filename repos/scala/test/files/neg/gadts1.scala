@@ -11,12 +11,14 @@ object Test {
 
   def f[a](t: Term[a], c: Cell[a]): Unit = {
     t match {
-      case NumTerm(n) => c.x = Double(1.0)
+      case NumTerm(n) =>
+        c.x = Double(1.0)
     }
     t match {
       // presently testing that this gets past the parser: eventually
       // it should actually work.
-      case Cell[a](x: Int) => c.x = 5
+      case Cell[a](x: Int) =>
+        c.x = 5
     }
   }
 

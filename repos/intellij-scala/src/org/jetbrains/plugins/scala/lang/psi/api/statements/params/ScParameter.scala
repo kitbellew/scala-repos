@@ -101,7 +101,8 @@ trait ScParameter
           Success(ScParameterizedType(ScType.designator(seq), Seq(tp)), elem)
         } else
           f
-      case f => f
+      case f =>
+        f
     }
   }
 
@@ -133,7 +134,8 @@ trait ScParameter
 
   def index =
     getParent.getParent match {
-      case parameters: ScParameters => parameters.params.indexOf(this)
+      case parameters: ScParameters =>
+        parameters.params.indexOf(this)
       case _ =>
         getParent.asInstanceOf[ScParameterClause].parameters.indexOf(this)
     }
@@ -149,12 +151,16 @@ trait ScParameter
   abstract override def getUseScope = {
     val specificScope =
       getDeclarationScope match {
-        case null                           => GlobalSearchScope.EMPTY_SCOPE
-        case expr: ScFunctionExpr           => new LocalSearchScope(expr)
-        case clazz: ScClass if clazz.isCase => clazz.getUseScope
+        case null =>
+          GlobalSearchScope.EMPTY_SCOPE
+        case expr: ScFunctionExpr =>
+          new LocalSearchScope(expr)
+        case clazz: ScClass if clazz.isCase =>
+          clazz.getUseScope
         case clazz: ScClass if this.isInstanceOf[ScClassParameter] =>
           clazz.getUseScope //for named parameters
-        case d => d.getUseScope
+        case d =>
+          d.getUseScope
       }
     specificScope.intersectWith(super.getUseScope)
   }
@@ -169,10 +175,13 @@ trait ScParameter
     getContext match {
       case clause: ScParameterClause =>
         clause.getContext.getContext match {
-          case f: ScFunctionExpr => true
-          case _                 => false
+          case f: ScFunctionExpr =>
+            true
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   def expectedParamType: Option[ScType] =
@@ -216,7 +225,8 @@ trait ScParameter
                 ScUnderScoreSectionUtil.underscores(f).nonEmpty)
             }
             result
-          case _ => None
+          case _ =>
+            None
         }
     }
 
@@ -236,7 +246,8 @@ trait ScParameter
     getSuperParameter match {
       case Some(superParam) =>
         calcIsDefaultParam(superParam, visited + param)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -266,27 +277,35 @@ trait ScParameter
               def extractFromParameterOwner(
                   owner: ScParameterOwner): Option[ScExpression] = {
                 owner.parameters.find(_.name == name) match {
-                  case Some(param) => param.getDefaultExpression
-                  case _           => res
+                  case Some(param) =>
+                    param.getDefaultExpression
+                  case _ =>
+                    res
                 }
               }
               containingMember match {
                 case c: ScClass =>
                   c.getSourceMirrorClass match {
-                    case c: ScClass => extractFromParameterOwner(c)
-                    case _          => res
+                    case c: ScClass =>
+                      extractFromParameterOwner(c)
+                    case _ =>
+                      res
                   }
                 case f: ScFunction =>
                   f.getNavigationElement match {
-                    case f: ScFunction => extractFromParameterOwner(f)
-                    case _             => res
+                    case f: ScFunction =>
+                      extractFromParameterOwner(f)
+                    case _ =>
+                      res
                   }
-                case _ => res
+                case _ =>
+                  res
               }
             }
           } else
             res
-        case _ => res
+        case _ =>
+          res
       }
     }
   }
@@ -311,13 +330,17 @@ trait ScParameter
                     if (i >= parameters.length)
                       return None
                     Some(parameters.apply(i))
-                  case _ => None
+                  case _ =>
+                    None
                 }
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

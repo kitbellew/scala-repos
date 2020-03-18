@@ -84,7 +84,8 @@ class BoyerMooreSpec extends WordSpec with Matchers {
       val ix =
         try boyerMoore.nextIndex(haystack, offset)
         catch {
-          case NotEnoughDataException ⇒ -1
+          case NotEnoughDataException ⇒
+            -1
         }
       if (ix >= 0)
         rec(

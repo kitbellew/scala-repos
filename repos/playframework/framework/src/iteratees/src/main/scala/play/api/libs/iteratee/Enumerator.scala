@@ -223,8 +223,10 @@ object Enumerator {
     new Enumerator[E] {
       def apply[A](i: Iteratee[E, A]): Future[Iteratee[E, A]] =
         i.fold {
-          case Step.Cont(k) => eagerFuture(k(e))
-          case _            => Future.successful(i)
+          case Step.Cont(k) =>
+            eagerFuture(k(e))
+          case _ =>
+            Future.successful(i)
         }(dec)
     }
 
@@ -256,7 +258,8 @@ object Enumerator {
 
         def redeemResultIfNotYet(r: Iteratee[E, A]) {
           if (attending.single.transformIfDefined {
-                case Some(_) => None
+                case Some(_) =>
+                  None
               })
             result.success(r)
         }
@@ -306,14 +309,16 @@ object Enumerator {
         }
         val ps = es.zipWithIndex
           .map {
-            case (e, index) => e |>> iteratee[E](_.patch(index, Seq(true), 1))
+            case (e, index) =>
+              e |>> iteratee[E](_.patch(index, Seq(true), 1))
           }
           .map(_.flatMap(_.pureFold(any => ())(dec)))
 
         Future.sequence(ps).onComplete {
           case Success(_) =>
             redeemResultIfNotYet(iter.single())
-          case Failure(e) => result.failure(e)
+          case Failure(e) =>
+            result.failure(e)
 
         }
 
@@ -343,7 +348,8 @@ object Enumerator {
 
         def redeemResultIfNotYet(r: Iteratee[E2, A]) {
           if (attending.single.transformIfDefined {
-                case Some(_) => None
+                case Some(_) =>
+                  None
               })
             result.success(r)
         }
@@ -391,17 +397,20 @@ object Enumerator {
         }
 
         val itE1 = iteratee[E1] {
-          case (l, r) => (false, r)
+          case (l, r) =>
+            (false, r)
         }
         val itE2 = iteratee[E2] {
-          case (l, r) => (l, false)
+          case (l, r) =>
+            (l, false)
         }
         val r1 = e1 |>>| itE1
         val r2 = e2 |>>| itE2
         r1.flatMap(_ => r2).onComplete {
           case Success(_) =>
             redeemResultIfNotYet(iter.single())
-          case Failure(e) => result.failure(e)
+          case Failure(e) =>
+            result.failure(e)
 
         }
         result.future
@@ -428,8 +437,10 @@ object Enumerator {
             s: S,
             k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] = {
           executeFuture(f(s))(pec).flatMap {
-            case Some((newS, e)) => loop(k(Input.El(e)), newS)
-            case None            => Future.successful(Cont(k))
+            case Some((newS, e)) =>
+              loop(k(Input.El(e)), newS)
+            case None =>
+              Future.successful(Cont(k))
           }(dec)
         }
       })
@@ -462,8 +473,10 @@ object Enumerator {
             s: S,
             k: Input[E] => Iteratee[E, A]): Future[Iteratee[E, A]] =
           Future(f(s))(pec).flatMap {
-            case Some((s, e)) => loop(k(Input.El(e)), s)
-            case None         => Future.successful(Cont(k))
+            case Some((s, e)) =>
+              loop(k(Input.El(e)), s)
+            case None =>
+              Future.successful(Cont(k))
           }(dec)
       })
 
@@ -521,8 +534,10 @@ object Enumerator {
             loop: Iteratee[E, A] => Future[Iteratee[E, A]],
             k: Input[E] => Iteratee[E, A]) =
           executeFuture(e)(pec).flatMap {
-            case Some(e) => loop(k(Input.El(e)))
-            case None    => Future.successful(Cont(k))
+            case Some(e) =>
+              loop(k(Input.El(e)))
+            case None =>
+              Future.successful(Cont(k))
           }(dec)
       })
 
@@ -541,9 +556,12 @@ object Enumerator {
 
         def step(it: Iteratee[E, A]): Future[Iteratee[E, A]] =
           it.fold {
-            case Step.Done(a, e)    => Future.successful(Done(a, e))
-            case Step.Cont(k)       => inner[A](step, k)
-            case Step.Error(msg, e) => Future.successful(Error(msg, e))
+            case Step.Done(a, e) =>
+              Future.successful(Done(a, e))
+            case Step.Cont(k) =>
+              inner[A](step, k)
+            case Step.Error(msg, e) =>
+              Future.successful(Error(msg, e))
           }(dec)
 
         step(it)
@@ -566,9 +584,12 @@ object Enumerator {
 
         def step(it: Iteratee[E, A], state: S): Future[Iteratee[E, A]] =
           it.fold {
-            case Step.Done(a, e)    => Future.successful(Done(a, e))
-            case Step.Cont(k)       => inner[A](step, state, k)
-            case Step.Error(msg, e) => Future.successful(Error(msg, e))
+            case Step.Done(a, e) =>
+              Future.successful(Done(a, e))
+            case Step.Cont(k) =>
+              inner[A](step, state, k)
+            case Step.Error(msg, e) =>
+              Future.successful(Error(msg, e))
           }(dec)
         step(it, s)
       }
@@ -628,9 +649,11 @@ object Enumerator {
           }(dec)
 
           next.onComplete {
-            case Success(Some(i)) => step(i)
+            case Success(Some(i)) =>
+              step(i)
 
-            case Success(None) => Future(onComplete())(pec)
+            case Success(None) =>
+              Future(onComplete())(pec)
             case Failure(e) =>
               iterateeP.failure(e)
           }(dec)
@@ -661,8 +684,10 @@ object Enumerator {
       }
       val chunk =
         bytesRead match {
-          case -1          => None
-          case `chunkSize` => Some(buffer)
+          case -1 =>
+            None
+          case `chunkSize` =>
+            Some(buffer)
           case read =>
             val input = new Array[Byte](read)
             System.arraycopy(buffer, 0, input, 0, read)
@@ -746,13 +771,16 @@ object Enumerator {
     */
   def apply[E](in: E*): Enumerator[E] =
     in.length match {
-      case 0 => Enumerator.empty
+      case 0 =>
+        Enumerator.empty
       case 1 =>
         new Enumerator[E] {
           def apply[A](i: Iteratee[E, A]): Future[Iteratee[E, A]] =
             i.pureFoldNoEC {
-              case Step.Cont(k) => k(Input.El(in.head))
-              case _            => i
+              case Step.Cont(k) =>
+                k(Input.El(in.head))
+              case _ =>
+                i
             }
         }
       case _ =>
@@ -800,8 +828,10 @@ object Enumerator {
     l.foldLeft(Future.successful(i))((i, e) =>
       i.flatMap(it =>
         it.pureFold {
-          case Step.Cont(k) => k(Input.El(e))
-          case _            => it
+          case Step.Cont(k) =>
+            k(Input.El(e))
+          case _ =>
+            it
         }(dec))(dec))
   }
 

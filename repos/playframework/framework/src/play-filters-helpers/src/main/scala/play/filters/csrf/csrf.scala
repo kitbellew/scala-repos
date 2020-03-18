@@ -147,8 +147,10 @@ object CSRFConfig {
     val shouldProtect: RequestHeader => Boolean = { rh =>
       def foundHeaderValues(headersToCheck: Map[String, String]) = {
         headersToCheck.exists {
-          case (name, "*")   => rh.headers.get(name).isDefined
-          case (name, value) => rh.headers.get(name).contains(value)
+          case (name, "*") =>
+            rh.headers.get(name).isDefined
+          case (name, value) =>
+            rh.headers.get(name).contains(value)
         }
       }
 
@@ -236,8 +238,10 @@ object CSRF {
       extends Provider[TokenProvider] {
     override val get =
       config.signTokens match {
-        case true  => new SignedTokenProvider(tokenSigner)
-        case false => new UnsignedTokenProvider(tokenSigner)
+        case true =>
+          new SignedTokenProvider(tokenSigner)
+        case false =>
+          new UnsignedTokenProvider(tokenSigner)
       }
   }
 

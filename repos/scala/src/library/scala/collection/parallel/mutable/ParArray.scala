@@ -827,12 +827,15 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
           Seq(
             new ScanToArray(left, z, op, targetarr),
             new ScanToArray(right, z, op, targetarr))
-        case _ => sys.error("Can only split scan tree internal nodes.")
+        case _ =>
+          sys.error("Can only split scan tree internal nodes.")
       }
     def shouldSplitFurther =
       tree match {
-        case ScanNode(_, _) => true
-        case _              => false
+        case ScanNode(_, _) =>
+          true
+        case _ =>
+          false
       }
   }
 

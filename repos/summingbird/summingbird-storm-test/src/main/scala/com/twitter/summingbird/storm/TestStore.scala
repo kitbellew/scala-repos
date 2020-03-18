@@ -80,7 +80,8 @@ case class TestStore[K, V: Semigroup](storeID: String, initialData: Map[K, V])
 
   def toScala: Map[K, V] =
     backingStore.asScala.collect {
-      case (k, Some(v)) => (k, v)
+      case (k, Some(v)) =>
+        (k, v)
     }.toMap
 
   private def getOpt(k: K) = {

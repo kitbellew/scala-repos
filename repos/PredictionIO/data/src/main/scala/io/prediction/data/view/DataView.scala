@@ -71,13 +71,17 @@ object DataView {
 
     val beginTime =
       startTime match {
-        case Some(t) => t
-        case None    => new DateTime(0L)
+        case Some(t) =>
+          t
+        case None =>
+          new DateTime(0L)
       }
     val endTime =
       untilTime match {
-        case Some(t) => t
-        case None    => DateTime.now() // fix the current time
+        case Some(t) =>
+          t
+        case None =>
+          DateTime.now() // fix the current time
       }
     // detect changes to the case class
     val uid =

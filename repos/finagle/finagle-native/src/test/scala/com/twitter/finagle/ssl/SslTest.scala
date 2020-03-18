@@ -75,8 +75,10 @@ class SslTest extends FunSuite {
           Future {
             val requestedBytes =
               request.headerMap.get("Requested-Bytes") match {
-                case Some(s) => s.toInt
-                case None    => 17280
+                case Some(s) =>
+                  s.toInt
+                case None =>
+                  17280
               }
             val response = Response(Version.Http11, Status.Ok)
             request.headerMap.get("X-Transport-Cipher").foreach { cipher =>
@@ -149,8 +151,10 @@ class SslTest extends FunSuite {
 
             val requestedBytes =
               request.headerMap.get("Requested-Bytes") match {
-                case Some(s) => s.toInt
-                case None    => 17280
+                case Some(s) =>
+                  s.toInt
+                case None =>
+                  17280
               }
             val response = Response(Version.Http11, Status.Ok)
             request.headerMap.get("X-Transport-Cipher").foreach { cipher =>

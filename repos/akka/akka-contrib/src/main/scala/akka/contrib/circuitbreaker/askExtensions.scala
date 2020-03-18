@@ -90,8 +90,10 @@ final class CircuitBreakerAwareFuture(val future: Future[Any]) extends AnyVal {
       executionContext: ExecutionContext): Future[Any] = {
     future.flatMap {
       _ match {
-        case CircuitOpenFailure(_) ⇒ Future.failed(throwing)
-        case result ⇒ Future.successful(result)
+        case CircuitOpenFailure(_) ⇒
+          Future.failed(throwing)
+        case result ⇒
+          Future.successful(result)
       }
     }
   }

@@ -88,10 +88,14 @@ trait TwemcacheConnectedClient extends TwemcacheClient {
       version: Buf): Future[JBoolean] = {
     try {
       service(Upsert(Buf.Utf8(key), flags, expiry, value, version)).map {
-        case Stored() => true
-        case Exists() => false
-        case Error(e) => throw e
-        case _        => throw new IllegalStateException
+        case Stored() =>
+          true
+        case Exists() =>
+          false
+        case Error(e) =>
+          throw e
+        case _ =>
+          throw new IllegalStateException
       }
     } catch {
       case t: IllegalArgumentException =>

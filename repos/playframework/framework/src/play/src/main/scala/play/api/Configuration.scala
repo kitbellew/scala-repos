@@ -148,9 +148,12 @@ object Configuration {
 
     def toJava(data: Any): Any =
       data match {
-        case map: Map[_, _]        => map.mapValues(toJava).asJava
-        case iterable: Iterable[_] => iterable.map(toJava).asJava
-        case v                     => v
+        case map: Map[_, _] =>
+          map.mapValues(toJava).asJava
+        case iterable: Iterable[_] =>
+          iterable.map(toJava).asJava
+        case v =>
+          v
       }
 
     Configuration(
@@ -220,7 +223,8 @@ case class Configuration(underlying: Config) {
       else
         None
     } catch {
-      case NonFatal(e) => throw reportError(path, e.getMessage, Some(e))
+      case NonFatal(e) =>
+        throw reportError(path, e.getMessage, Some(e))
     }
 
   }
@@ -245,15 +249,18 @@ case class Configuration(underlying: Config) {
       validValues: Option[Set[String]] = None): Option[String] =
     readValue(path, underlying.getString(path)).map { value =>
       validValues match {
-        case Some(values) if values.contains(value) => value
-        case Some(values) if values.isEmpty         => value
+        case Some(values) if values.contains(value) =>
+          value
+        case Some(values) if values.isEmpty =>
+          value
         case Some(values) =>
           throw reportError(
             path,
             "Incorrect value, one of " + (
               values.reduceLeft(_ + ", " + _)
             ) + " was expected.")
-        case None => value
+        case None =>
+          value
       }
     }
 

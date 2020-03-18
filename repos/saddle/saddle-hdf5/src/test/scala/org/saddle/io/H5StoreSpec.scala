@@ -59,7 +59,8 @@ class H5StoreSpec extends Specification {
     allCatch either {
       java.lang.Runtime.getRuntime.loadLibrary("jhdf5")
     } match {
-      case Left(exception) => Skipped("Could not import HDF5")
+      case Left(exception) =>
+        Skipped("Could not import HDF5")
       case Right(result) => {
         test in {
           logic

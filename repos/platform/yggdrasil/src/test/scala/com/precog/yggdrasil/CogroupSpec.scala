@@ -66,7 +66,8 @@ trait CogroupSpec[M[+_]]
         data map {
           case (ids, values) =>
             val (d1, d2) = values.partition {
-              case (cpath, _) => lschema.contains(cpath)
+              case (cpath, _) =>
+                lschema.contains(cpath)
             }
             (toRecord(ids, assemble(d1)), toRecord(ids, assemble(d2)))
         } unzip
@@ -105,7 +106,8 @@ trait CogroupSpec[M[+_]]
               leftRemain,
               r,
               acc ++ leftRun.map {
-                case v => left3(v)
+                case v =>
+                  left3(v)
               })
           }
           case GT => {
@@ -115,17 +117,20 @@ trait CogroupSpec[M[+_]]
               l,
               rightRemain,
               acc ++ rightRun.map {
-                case v => right3(v)
+                case v =>
+                  right3(v)
               })
           }
         }
       case (Stream.Empty, _) =>
         acc ++ r.map {
-          case v => right3(v)
+          case v =>
+            right3(v)
         }
       case (_, Stream.Empty) =>
         acc ++ l.map {
-          case v => left3(v)
+          case v =>
+            left3(v)
         }
     }
   }
@@ -139,13 +144,15 @@ trait CogroupSpec[M[+_]]
     import scala.math.max
 
     val expected = computeCogroup(l.data, r.data, Stream())(keyOrder) map {
-      case Left3(jv) => jv
+      case Left3(jv) =>
+        jv
       case Middle3((jv1, jv2)) =>
         JObject(
           JField("key", jv1 \ "key"),
           JField("valueLeft", jv1 \ "value"),
           JField("valueRight", jv2 \ "value"))
-      case Right3(jv) => jv
+      case Right3(jv) =>
+        jv
     }
 
     val result: Table =

@@ -35,8 +35,10 @@ trait OptionMonad extends Monads {
       def unit[a](orig: a) = Some(orig)
       def >>=[b](fun: a => Option[b]): Option[b] =
         self match {
-          case Some(x) => fun(x)
-          case None    => None
+          case Some(x) =>
+            fun(x)
+          case None =>
+            None
         }
     }
 }

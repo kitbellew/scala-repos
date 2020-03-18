@@ -91,9 +91,12 @@ private[spark] object InternalAccumulator {
       name.startsWith(METRICS_PREFIX),
       s"internal accumulator name must start with '$METRICS_PREFIX': $name")
     getParam(name) match {
-      case p @ LongAccumulatorParam   => newMetric[Long](0L, name, p)
-      case p @ IntAccumulatorParam    => newMetric[Int](0, name, p)
-      case p @ StringAccumulatorParam => newMetric[String]("", name, p)
+      case p @ LongAccumulatorParam =>
+        newMetric[Long](0L, name, p)
+      case p @ IntAccumulatorParam =>
+        newMetric[Int](0, name, p)
+      case p @ StringAccumulatorParam =>
+        newMetric[String]("", name, p)
       case p @ UpdatedBlockStatusesAccumulatorParam =>
         newMetric[Seq[(BlockId, BlockStatus)]](Seq(), name, p)
       case p =>
@@ -111,12 +114,18 @@ private[spark] object InternalAccumulator {
       name.startsWith(METRICS_PREFIX),
       s"internal accumulator name must start with '$METRICS_PREFIX': $name")
     name match {
-      case UPDATED_BLOCK_STATUSES            => UpdatedBlockStatusesAccumulatorParam
-      case shuffleRead.LOCAL_BLOCKS_FETCHED  => IntAccumulatorParam
-      case shuffleRead.REMOTE_BLOCKS_FETCHED => IntAccumulatorParam
-      case input.READ_METHOD                 => StringAccumulatorParam
-      case output.WRITE_METHOD               => StringAccumulatorParam
-      case _                                 => LongAccumulatorParam
+      case UPDATED_BLOCK_STATUSES =>
+        UpdatedBlockStatusesAccumulatorParam
+      case shuffleRead.LOCAL_BLOCKS_FETCHED =>
+        IntAccumulatorParam
+      case shuffleRead.REMOTE_BLOCKS_FETCHED =>
+        IntAccumulatorParam
+      case input.READ_METHOD =>
+        StringAccumulatorParam
+      case output.WRITE_METHOD =>
+        StringAccumulatorParam
+      case _ =>
+        LongAccumulatorParam
     }
   }
 

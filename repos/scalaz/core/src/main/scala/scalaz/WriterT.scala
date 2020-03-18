@@ -49,7 +49,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) {
       W: Semigroup[W]): WriterT[F, W, B] =
     writerT {
       F.apply2(f.run, run) {
-        case ((w1, fab), (w2, a)) => (W.append(w1, w2), fab(a))
+        case ((w1, fab), (w2, a)) =>
+          (W.append(w1, w2), fab(a))
       }
     }
 
@@ -71,7 +72,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) {
       F: Traverse[F]): G[WriterT[F, W, B]] = {
     G.map(
       F.traverse(run) {
-        case (w, a) => G.map(f(a))(b => (w, b))
+        case (w, a) =>
+          G.map(f(a))(b => (w, b))
       })(WriterT(_))
   }
 
@@ -83,7 +85,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) {
   def bimap[C, D](f: W => C, g: A => D)(implicit F: Functor[F]) =
     writerT[F, C, D](
       F.map(run)({
-        case (a, b) => (f(a), g(b))
+        case (a, b) =>
+          (f(a), g(b))
       }))
 
   def leftMap[C](f: W => C)(implicit F: Functor[F]): WriterT[F, C, A] =
@@ -94,13 +97,15 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) {
       F: Traverse[F]) =
     G.map(
       F.traverse[G, (W, A), (C, D)](run) {
-        case (a, b) => G.tuple2(f(a), g(b))
+        case (a, b) =>
+          G.tuple2(f(a), g(b))
       })(writerT(_))
 
   def rwst[R, S](implicit F: Functor[F]): ReaderWriterStateT[F, R, W, S, A] =
     ReaderWriterStateT((r, s) =>
       F.map(self.run) {
-        case (w, a) => (w, a, s)
+        case (w, a) =>
+          (w, a, s)
       })
 
   def wpoint[G[_]](implicit
@@ -108,7 +113,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) {
       P: Applicative[G]): WriterT[F, G[W], A] =
     writerT(
       F.map(self.run) {
-        case (w, a) => (P.point(w), a)
+        case (w, a) =>
+          (P.point(w), a)
       })
 
   def colocal[X](f: W => X)(implicit F: Functor[F]): WriterT[F, X, A] =
@@ -419,8 +425,10 @@ private trait WriterTBindRec[F[_], W]
 
     WriterT(
       F.bind(f(a).run) {
-        case (w, -\/(a0)) => F.tailrecM(go)((w, a0))
-        case (w, \/-(b))  => A.point((w, b))
+        case (w, -\/(a0)) =>
+          F.tailrecM(go)((w, a0))
+        case (w, \/-(b)) =>
+          A.point((w, b))
       })
   }
 }
@@ -521,6 +529,7 @@ private trait WriterTMonadListen[F[_], W]
   def listen[A](fa: WriterT[F, W, A]): WriterT[F, W, (A, W)] =
     WriterT(
       F.bind(fa.run) {
-        case (w, a) => F.point((w, (a, w)))
+        case (w, a) =>
+          F.point((w, (a, w)))
       })
 }

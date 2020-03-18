@@ -70,7 +70,8 @@ final class Env(
     Props(
       new Actor {
         def receive = {
-          case MakeTeam(id, name) => categApi.makeTeam(id, name)
+          case MakeTeam(id, name) =>
+            categApi.makeTeam(id, name)
         }
       }),
     name = ActorName)

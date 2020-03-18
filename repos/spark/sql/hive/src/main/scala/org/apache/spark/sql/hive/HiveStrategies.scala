@@ -51,7 +51,8 @@ private[hive] trait HiveStrategies {
               schema: HiveScriptIOSchema) =>
           ScriptTransformation(input, script, output, planLater(child), schema)(
             hiveContext) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -82,7 +83,8 @@ private[hive] trait HiveStrategies {
             planLater(child),
             overwrite,
             ifNotExists) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -147,7 +149,8 @@ private[hive] trait HiveStrategies {
             c.child)
           ExecutedCommand(cmd) :: Nil
 
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -160,7 +163,8 @@ private[hive] trait HiveStrategies {
               describe.table,
               describe.output,
               describe.isExtended)) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 }

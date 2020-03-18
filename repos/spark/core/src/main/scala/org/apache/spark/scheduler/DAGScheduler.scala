@@ -296,8 +296,9 @@ private[spark] class DAGScheduler(
       shuffleDep: ShuffleDependency[_, _, _],
       firstJobId: Int): ShuffleMapStage = {
     shuffleToMapStage.get(shuffleDep.shuffleId) match {
-      case Some(stage) => stage
-      case None        =>
+      case Some(stage) =>
+        stage
+      case None =>
         // We are going to register ancestor shuffle dependencies
         getAncestorShuffleDependencies(shuffleDep.rdd).foreach { dep =>
           shuffleToMapStage(dep.shuffleId) = newOrUsedShuffleStage(
@@ -583,8 +584,10 @@ private[spark] class DAGScheduler(
     jobIdToActiveJob -= job.jobId
     activeJobs -= job
     job.finalStage match {
-      case r: ResultStage     => r.removeActiveJob()
-      case m: ShuffleMapStage => m.removeActiveJob(job)
+      case r: ResultStage =>
+        r.removeActiveJob()
+      case m: ShuffleMapStage =>
+        m.removeActiveJob(job)
     }
   }
 
@@ -1260,7 +1263,8 @@ private[spark] class DAGScheduler(
         // Find the corresponding accumulator on the driver and update it
         val acc: Accumulable[Any, Any] =
           Accumulators.get(id) match {
-            case Some(accum) => accum.asInstanceOf[Accumulable[Any, Any]]
+            case Some(accum) =>
+              accum.asInstanceOf[Accumulable[Any, Any]]
             case None =>
               throw new SparkException(
                 s"attempted to access non-existent accumulator $id")
@@ -1611,8 +1615,10 @@ private[spark] class DAGScheduler(
       errorMessage: Option[String] = None): Unit = {
     val serviceTime =
       stage.latestInfo.submissionTime match {
-        case Some(t) => "%.03f".format((clock.getTimeMillis() - t) / 1000.0)
-        case _       => "Unknown"
+        case Some(t) =>
+          "%.03f".format((clock.getTimeMillis() - t) / 1000.0)
+        case _ =>
+          "Unknown"
       }
     if (errorMessage.isEmpty) {
       logInfo("%s (%s) finished in %s s".format(stage, stage.name, serviceTime))

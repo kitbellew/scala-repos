@@ -214,7 +214,8 @@ private[netty] class NettyRpcEnv(
       try {
         dispatcher.postOneWayMessage(message)
       } catch {
-        case e: RpcEnvStoppedException => logWarning(e.getMessage)
+        case e: RpcEnvStoppedException =>
+          logWarning(e.getMessage)
       }
     } else {
       // Message to a remote RPC endpoint.
@@ -240,7 +241,8 @@ private[netty] class NettyRpcEnv(
 
     def onSuccess(reply: Any): Unit =
       reply match {
-        case RpcFailure(e) => onFailure(e)
+        case RpcFailure(e) =>
+          onFailure(e)
         case rpcReply =>
           if (!promise.trySuccess(rpcReply)) {
             logWarning(s"Ignored message: $reply")
@@ -251,8 +253,10 @@ private[netty] class NettyRpcEnv(
       if (remoteAddr == address) {
         val p = Promise[Any]()
         p.future.onComplete {
-          case Success(response) => onSuccess(response)
-          case Failure(e)        => onFailure(e)
+          case Success(response) =>
+            onSuccess(response)
+          case Failure(e) =>
+            onFailure(e)
         }(ThreadUtils.sameThread)
         dispatcher.postLocalMessage(message, p)
       } else {
@@ -262,8 +266,9 @@ private[netty] class NettyRpcEnv(
           (client, response) => onSuccess(deserialize[Any](client, response)))
         postToOutbox(message.receiver, rpcMessage)
         promise.future.onFailure {
-          case _: TimeoutException => rpcMessage.onTimeout()
-          case _                   =>
+          case _: TimeoutException =>
+            rpcMessage.onTimeout()
+          case _ =>
         }(ThreadUtils.sameThread)
       }
 
@@ -423,7 +428,8 @@ private[netty] class NettyRpcEnv(
 
     override def read(dst: ByteBuffer): Int = {
       Try(source.read(dst)) match {
-        case Success(bytesRead) => bytesRead
+        case Success(bytesRead) =>
+          bytesRead
         case Failure(readErr) =>
           if (error != null) {
             throw error
@@ -602,8 +608,10 @@ private[netty] class NettyRpcEndpointRef(
 
   final override def equals(that: Any): Boolean =
     that match {
-      case other: NettyRpcEndpointRef => _address == other._address
-      case _                          => false
+      case other: NettyRpcEndpointRef =>
+        _address == other._address
+      case _ =>
+        false
     }
 
   final override def hashCode(): Int =

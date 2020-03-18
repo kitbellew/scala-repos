@@ -50,7 +50,8 @@ object BuildSummer {
         logger.debug(
           s"Node (${dag.getNodeName(node)}): Using user supplied SummerConstructor: $cons")
         cons.get
-      case None => legacyBuilder(storm, dag, node, jobID)
+      case None =>
+        legacyBuilder(storm, dag, node, jobID)
     }
   }
 

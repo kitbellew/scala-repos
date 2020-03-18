@@ -128,8 +128,10 @@ object LogManager {
   }
   def unwrapStreamsKey(key: ScopedKey[_]): ScopedKey[_] =
     key.scope.task match {
-      case Select(task) => ScopedKey(key.scope.copy(task = Global), task)
-      case _            => key // should never get here
+      case Select(task) =>
+        ScopedKey(key.scope.copy(task = Global), task)
+      case _ =>
+        key // should never get here
     }
 
   // if global logging levels are not explicitly set, set them from project settings
@@ -147,8 +149,10 @@ object LogManager {
         get(levelKey).foreach(l.setLevel)
       }
       logging.full match {
-        case a: AbstractLogger => transfer(a, traceLevel, logLevel)
-        case _                 => ()
+        case a: AbstractLogger =>
+          transfer(a, traceLevel, logLevel)
+        case _ =>
+          ()
       }
       transfer(logging.backed, persistTraceLevel, persistLogLevel)
       s
@@ -156,8 +160,10 @@ object LogManager {
 
   def setGlobalLogLevel(s: State, level: Level.Value): State = {
     s.globalLogging.full match {
-      case a: AbstractLogger => a.setLevel(level)
-      case _                 => ()
+      case a: AbstractLogger =>
+        a.setLevel(level)
+      case _ =>
+        ()
     }
     s.put(BasicKeys.explicitGlobalLogLevels, true).put(Keys.logLevel.key, level)
   }

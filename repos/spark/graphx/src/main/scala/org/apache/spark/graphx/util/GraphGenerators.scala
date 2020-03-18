@@ -194,7 +194,8 @@ object GraphGenerators extends Logging {
       }
       .reduceByKey(_ + _)
       .map {
-        case (vid, degree) => (vid, degree)
+        case (vid, degree) =>
+          (vid, degree)
       }
     Graph(vertices, edges, 0)
   }
@@ -250,10 +251,14 @@ object GraphGenerators extends Logging {
     } else {
       val newT = math.round(t.toFloat / 2.0).toInt
       pickQuadrant(RMATa, RMATb, RMATc, RMATd) match {
-        case 0 => chooseCell(x, y, newT)
-        case 1 => chooseCell(x + newT, y, newT)
-        case 2 => chooseCell(x, y + newT, newT)
-        case 3 => chooseCell(x + newT, y + newT, newT)
+        case 0 =>
+          chooseCell(x, y, newT)
+        case 1 =>
+          chooseCell(x + newT, y, newT)
+        case 2 =>
+          chooseCell(x, y + newT, newT)
+        case 3 =>
+          chooseCell(x + newT, y + newT, newT)
       }
     }
   }
@@ -268,10 +273,14 @@ object GraphGenerators extends Logging {
     val rand = new Random()
     val result = rand.nextDouble()
     result match {
-      case x if x < a                         => 0 // 0 corresponds to quadrant a
-      case x if (x >= a && x < a + b)         => 1 // 1 corresponds to b
-      case x if (x >= a + b && x < a + b + c) => 2 // 2 corresponds to c
-      case _                                  => 3 // 3 corresponds to d
+      case x if x < a =>
+        0 // 0 corresponds to quadrant a
+      case x if (x >= a && x < a + b) =>
+        1 // 1 corresponds to b
+      case x if (x >= a + b && x < a + b + c) =>
+        2 // 2 corresponds to c
+      case _ =>
+        3 // 3 corresponds to d
     }
   }
 
@@ -318,7 +327,8 @@ object GraphGenerators extends Logging {
             )
       }
       .map {
-        case (src, dst) => Edge(src, dst, 1.0)
+        case (src, dst) =>
+          Edge(src, dst, 1.0)
       }
     Graph(vertices, edges)
   } // end of gridGraph

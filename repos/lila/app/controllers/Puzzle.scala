@@ -63,7 +63,8 @@ object Puzzle extends LilaController {
           renderShow(puzzle, ctx.isAuth.fold("play", "try")) map {
             Ok(_)
           }
-        case None => fuccess(Ok(html.puzzle.noMore()))
+        case None =>
+          fuccess(Ok(html.puzzle.noMore()))
       }
     }
 
@@ -132,7 +133,8 @@ object Puzzle extends LilaController {
                 infos,
                 ctx.isAuth.fold("play", "try"),
                 animationDuration = env.AnimationDuration)) as JSON
-          case (None, _) => NotFound(noMorePuzzleJson)
+          case (None, _) =>
+            NotFound(noMorePuzzleJson)
         } map (_ as JSON)
       }
     }
@@ -156,7 +158,8 @@ object Puzzle extends LilaController {
                       infos,
                       ctx.isAuth.fold("play", "try"),
                       animationDuration = env.AnimationDuration)(newCtx))
-                case (None, _) => NotFound(noMorePuzzleJson)
+                case (None, _) =>
+                  NotFound(noMorePuzzleJson)
               }
             }
           }
@@ -230,7 +233,8 @@ object Puzzle extends LilaController {
           err => fuccess(BadRequest(errorsAsJson(err))),
           vote =>
             env.api.attempt.vote(attempt, vote == 1) map {
-              case (p, a) => Ok(play.api.libs.json.Json.arr(a.vote, p.vote.sum))
+              case (p, a) =>
+                Ok(play.api.libs.json.Json.arr(a.vote, p.vote.sum))
             }
         ) map (_ as JSON)
       }

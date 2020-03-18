@@ -55,7 +55,8 @@ class ScalaCastPostfixTemplate
               _: ScForStatement | _: ScWhileStmt | _: ScThrowStmt |
               _: ScReturnStmt =>
             "(" + expression.getText + ")"
-          case _ => expression.getText
+          case _ =>
+            expression.getText
         }),
       false
     )

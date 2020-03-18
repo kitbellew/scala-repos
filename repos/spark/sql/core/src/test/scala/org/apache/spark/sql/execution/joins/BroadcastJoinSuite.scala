@@ -76,7 +76,8 @@ class BroadcastJoinSuite extends QueryTest with BeforeAndAfterAll {
         .apply(df3.queryExecution.sparkPlan)
       assert(
         plan.collect {
-          case p: T => p
+          case p: T =>
+            p
         }.size === 1)
       plan.executeCollect()
     }

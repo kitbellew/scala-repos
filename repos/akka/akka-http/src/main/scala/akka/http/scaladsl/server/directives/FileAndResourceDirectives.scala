@@ -122,7 +122,8 @@ trait FileAndResourceDirectives {
               } else
                 complete(HttpEntity.Empty)
             }
-          case _ ⇒ reject // not found or directory
+          case _ ⇒
+            reject // not found or directory
         }
       }
     else
@@ -138,8 +139,10 @@ trait FileAndResourceDirectives {
     extractUnmatchedPath { path ⇒
       extractLog { log ⇒
         fileSystemPath(base, path, log) match {
-          case "" ⇒ reject
-          case fileName ⇒ getFromFile(fileName)
+          case "" ⇒
+            reject
+          case fileName ⇒
+            getFromFile(fileName)
         }
       }
     }
@@ -162,7 +165,8 @@ trait FileAndResourceDirectives {
           fileSystemPath("/", path, ctx.log, '/'))
         val dirs = directories flatMap { dir ⇒
           fileSystemPath(withTrailingSlash(dir), path, ctx.log) match {
-            case "" ⇒ None
+            case "" ⇒
+              None
             case fileName ⇒
               val file = new File(fileName)
               if (file.isDirectory && file.canRead)
@@ -222,7 +226,8 @@ trait FileAndResourceDirectives {
     extractUnmatchedPath { path ⇒
       extractLog { log ⇒
         fileSystemPath(base, path, log, separator = '/') match {
-          case "" ⇒ reject
+          case "" ⇒
+            reject
           case resourceName ⇒
             getFromResource(resourceName, resolver(resourceName), classLoader)
         }
@@ -256,8 +261,10 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
         p: Uri.Path,
         result: StringBuilder = new StringBuilder(base)): String =
       p match {
-        case Uri.Path.Empty ⇒ result.toString
-        case Uri.Path.Slash(tail) ⇒ rec(tail, result.append(separator))
+        case Uri.Path.Empty ⇒
+          result.toString
+        case Uri.Path.Slash(tail) ⇒
+          rec(tail, result.append(separator))
         case Uri.Path.Segment(head, tail) ⇒
           if (head.indexOf('/') >= 0 || head == "..") {
             log.warning(
@@ -360,13 +367,15 @@ object ContentTypeResolver {
             fileName.substring(lastDotIx + 1) match {
               case "gz" ⇒
                 fileName.lastIndexOf('.', lastDotIx - 1) match {
-                  case -1 ⇒ MediaTypes.`application/octet-stream`
+                  case -1 ⇒
+                    MediaTypes.`application/octet-stream`
                   case x ⇒
                     MediaTypes
                       .forExtension(fileName.substring(x + 1, lastDotIx))
                       .withComp(MediaType.Gzipped)
                 }
-              case ext ⇒ MediaTypes.forExtension(ext)
+              case ext ⇒
+                MediaTypes.forExtension(ext)
             }
           } else
             MediaTypes.`application/octet-stream`

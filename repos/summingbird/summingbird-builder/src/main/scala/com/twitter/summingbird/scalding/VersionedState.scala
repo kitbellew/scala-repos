@@ -67,7 +67,8 @@ private[scalding] class VersionedState(
             .flatMap { str =>
               ScalaTry(BatchID(str))
             } match {
-            case Success(batchID) => Some(batchID)
+            case Success(batchID) =>
+              Some(batchID)
             case Failure(ex) =>
               logger.warn(
                 "Path: {} missing or corrupt completion file. Ignoring and trying previous",
@@ -127,9 +128,12 @@ private[scalding] class VersionedState(
 
     def nextTime: Timestamp =
       succeedPart match {
-        case Intersection(_, ExclusiveUpper(up)) => up
-        case Intersection(_, InclusiveUpper(up)) => up.next
-        case _                                   => sys.error("We should always be running for a finite interval")
+        case Intersection(_, ExclusiveUpper(up)) =>
+          up
+        case Intersection(_, InclusiveUpper(up)) =>
+          up.next
+        case _ =>
+          sys.error("We should always be running for a finite interval")
       }
     def batchID: BatchID = batcher.batchOf(nextTime)
 

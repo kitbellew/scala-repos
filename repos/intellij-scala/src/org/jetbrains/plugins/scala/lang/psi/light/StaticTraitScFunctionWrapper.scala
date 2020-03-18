@@ -55,7 +55,8 @@ object StaticTraitScFunctionWrapper {
           builder.append(
             JavaConversionUtil
               .typeText(tp, function.getProject, function.getResolveScope))
-        case _ => builder.append("java.lang.Object")
+        case _ =>
+          builder.append("java.lang.Object")
       }
     }
 
@@ -91,7 +92,8 @@ object StaticTraitScFunctionWrapper {
                     function.getResolveScope))
                 if (param.isCallByNameParameter)
                   builder.append(">")
-              case _ => builder.append("java.lang.Object")
+              case _ =>
+                builder.append("java.lang.Object")
             }
             builder.append(" ").append(param.getName)
             builder.toString()

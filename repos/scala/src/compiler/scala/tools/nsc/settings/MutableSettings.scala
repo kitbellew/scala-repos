@@ -82,7 +82,8 @@ class MutableSettings(val errorFn: String => Unit)
               case newArgs if newArgs eq args =>
                 errorFn(s"bad option: '$x'");
                 (false, args)
-              case newArgs => loop(newArgs, residualArgs)
+              case newArgs =>
+                loop(newArgs, residualArgs)
             }
           } else if (processAll)
             loop(xs, residualArgs :+ x)
@@ -114,7 +115,8 @@ class MutableSettings(val errorFn: String => Unit)
     *  match.  This is basically -D and -J.
     */
   lazy val prefixSettings = allSettings collect {
-    case x: PrefixSetting => x
+    case x: PrefixSetting =>
+      x
   }
 
   /** Split the given line into parameters.
@@ -132,8 +134,10 @@ class MutableSettings(val errorFn: String => Unit)
         : Option[List[String]] =
       lookupSetting(cmd) match {
         //case None       => errorFn("Parameter '" + cmd + "' is not recognised by Scalac.") ; None
-        case None      => None //error reported in processArguments
-        case Some(cmd) => setter(cmd)(args)
+        case None =>
+          None //error reported in processArguments
+        case Some(cmd) =>
+          setter(cmd)(args)
       }
 
     // -Xfoo: clears Clearables
@@ -142,8 +146,10 @@ class MutableSettings(val errorFn: String => Unit)
         case Some(c: Clearable) =>
           c.clear();
           Some(Nil)
-        case Some(s) => s.errorAndValue(s"Missing argument to $cmd", None)
-        case None    => None
+        case Some(s) =>
+          s.errorAndValue(s"Missing argument to $cmd", None)
+        case None =>
+          None
       }
 
     // if arg is of form -Xfoo:bar,baz,quux
@@ -167,7 +173,8 @@ class MutableSettings(val errorFn: String => Unit)
       tryToSetIfExists(p, args, (s: Setting) => s.tryToSet _)
 
     args match {
-      case Nil => Nil
+      case Nil =>
+        Nil
       case arg :: rest =>
         if (!arg.startsWith("-")) {
           errorFn("Argument '" + arg + "' does not start with '-'.")
@@ -189,13 +196,17 @@ class MutableSettings(val errorFn: String => Unit)
             rest
           } else if (arg contains ":")
             parseColonArg(arg) match {
-              case Some(_) => rest
-              case None    => args
+              case Some(_) =>
+                rest
+              case None =>
+                args
             }
           else
             parseNormalArg(arg, rest) match {
-              case Some(xs) => xs
-              case None     => args
+              case Some(xs) =>
+                xs
+              case None =>
+                args
             }
         }
     }
@@ -375,10 +386,12 @@ class MutableSettings(val errorFn: String => Unit)
         src.path.startsWith(srcDir.path)
 
       singleOutDir match {
-        case Some(d) => d
+        case Some(d) =>
+          d
         case None =>
           (outputs find (isBelow _).tupled) match {
-            case Some((_, d)) => d
+            case Some((_, d)) =>
+              d
             case _ =>
               throw new FatalError(
                 "Could not find an output directory for "
@@ -413,12 +426,15 @@ class MutableSettings(val errorFn: String => Unit)
       singleOutDir match {
         case Some(d) =>
           d match {
-            case _: VirtualDirectory | _: io.ZipArchive => Nil
-            case _                                      => List(d.lookupPathUnchecked(srcPath, directory = false))
+            case _: VirtualDirectory | _: io.ZipArchive =>
+              Nil
+            case _ =>
+              List(d.lookupPathUnchecked(srcPath, directory = false))
           }
         case None =>
           (outputs filter (isBelow _).tupled) match {
-            case Nil => Nil
+            case Nil =>
+              Nil
             case matches =>
               matches.map(_._1.lookupPathUnchecked(srcPath, directory = false))
           }
@@ -507,10 +523,14 @@ class MutableSettings(val errorFn: String => Unit)
     // Helper to generate a textual explanation of valid inputs
     private def getValidText: String =
       (min, max) match {
-        case (IntMin, IntMax) => "can be any integer"
-        case (IntMin, x)      => "must be less than or equal to " + x
-        case (x, IntMax)      => "must be greater than or equal to " + x
-        case _                => "must be between %d and %d".format(min, max)
+        case (IntMin, IntMax) =>
+          "can be any integer"
+        case (IntMin, x) =>
+          "must be less than or equal to " + x
+        case (x, IntMax) =>
+          "must be greater than or equal to " + x
+        case _ =>
+          "must be between %d and %d".format(min, max)
       }
 
     // Ensure that the default value is actually valid
@@ -521,7 +541,8 @@ class MutableSettings(val errorFn: String => Unit)
         try {
           Some(x.toInt)
         } catch {
-          case _: NumberFormatException => None
+          case _: NumberFormatException =>
+            None
         }
       }
     }
@@ -572,7 +593,8 @@ class MutableSettings(val errorFn: String => Unit)
     }
     override def tryToSetColon(args: List[String]) =
       args match {
-        case Nil => tryToSet(Nil)
+        case Nil =>
+          tryToSet(Nil)
         case List(x) =>
           if (x.equalsIgnoreCase("true")) {
             value = true
@@ -582,7 +604,8 @@ class MutableSettings(val errorFn: String => Unit)
             Some(Nil)
           } else
             errorAndValue(s"'$x' is not a valid choice for '$name'", None)
-        case _ => errorAndValue(s"'$name' accepts only one boolean value", None)
+        case _ =>
+          errorAndValue(s"'$name' accepts only one boolean value", None)
       }
   }
 
@@ -616,7 +639,8 @@ class MutableSettings(val errorFn: String => Unit)
 
     def tryToSet(args: List[String]) =
       args match {
-        case Nil => errorAndValue("missing argument", None)
+        case Nil =>
+          errorAndValue("missing argument", None)
         case x :: xs =>
           value = x;
           Some(xs)
@@ -648,7 +672,8 @@ class MutableSettings(val errorFn: String => Unit)
     // used. No arguments are consumed.
     override def tryToSet(args: List[String]) = {
       default match {
-        case Some(d) => value = d
+        case Some(d) =>
+          value = d
         case None =>
           errorFn(s"$name requires an argument, the syntax is $helpSyntax")
       }
@@ -660,7 +685,8 @@ class MutableSettings(val errorFn: String => Unit)
         case x :: xs =>
           value = ScalaVersion(x, errorFn);
           Some(xs)
-        case nil => Some(nil)
+        case nil =>
+          Some(nil)
       }
 
     def unparse: List[String] =
@@ -702,7 +728,8 @@ class MutableSettings(val errorFn: String => Unit)
       super.value_=(str)
       try outputDirs.setSingleOutput(str)
       catch {
-        case FatalError(msg) => errorFn(msg)
+        case FatalError(msg) =>
+          errorFn(msg)
       }
     }
   }
@@ -767,8 +794,10 @@ class MutableSettings(val errorFn: String => Unit)
       def unapply(
           a: domain.Value): Option[(String, String, List[domain.Choice])] =
         a match {
-          case c: domain.Choice => Some((c.name, c.help, c.expandsTo))
-          case v: domain.Value  => Some((v.toString, "", Nil))
+          case c: domain.Choice =>
+            Some((c.name, c.help, c.expandsTo))
+          case v: domain.Value =>
+            Some((v.toString, "", Nil))
         }
     }
 
@@ -792,23 +821,28 @@ class MutableSettings(val errorFn: String => Unit)
     private def isPos(s: String) = !(s startsWith "-")
 
     override val choices: List[String] = domain.values.toList map {
-      case ChoiceOrVal(name, _, _) => name
+      case ChoiceOrVal(name, _, _) =>
+        name
     }
 
     def descriptions: List[String] =
       domain.values.toList map {
         case ChoiceOrVal(_, "", x :: xs) =>
           "Enables the options " + (x :: xs).map(_.name).mkString(", ")
-        case ChoiceOrVal(_, descr, _) => descr
-        case _                        => ""
+        case ChoiceOrVal(_, descr, _) =>
+          descr
+        case _ =>
+          ""
       }
 
     /** (Re)compute from current yeas, nays, wildcard status. */
     def compute() = {
       def simple(v: domain.Value) =
         v match {
-          case ChoiceOrVal(_, _, Nil) => true
-          case _                      => false
+          case ChoiceOrVal(_, _, Nil) =>
+            true
+          case _ =>
+            false
         }
 
       /**
@@ -819,8 +853,10 @@ class MutableSettings(val errorFn: String => Unit)
         */
       def expand(vs: domain.ValueSet): domain.ValueSet =
         vs flatMap {
-          case c @ ChoiceOrVal(_, _, Nil) => domain.ValueSet(c)
-          case ChoiceOrVal(_, _, others)  => expand(domain.ValueSet(others: _*))
+          case c @ ChoiceOrVal(_, _, Nil) =>
+            domain.ValueSet(c)
+          case ChoiceOrVal(_, _, others) =>
+            expand(domain.ValueSet(others: _*))
         }
 
       // yeas from _ or expansions are weak: an explicit nay will disable them
@@ -873,25 +909,32 @@ class MutableSettings(val errorFn: String => Unit)
 
       def tryArg(arg: String) =
         arg match {
-          case "help"           => sawHelp = true
-          case s if isChoice(s) => added += s // this case also adds "_"
-          case s                => badChoice(s)
+          case "help" =>
+            sawHelp = true
+          case s if isChoice(s) =>
+            added += s // this case also adds "_"
+          case s =>
+            badChoice(s)
         }
       def loop(args: List[String]): List[String] =
         args match {
-          case arg :: _ if halting && (!isPos(arg) || !isChoice(arg)) => args
+          case arg :: _ if halting && (!isPos(arg) || !isChoice(arg)) =>
+            args
           case arg :: rest =>
             tryArg(arg);
             loop(rest)
-          case Nil => Nil
+          case Nil =>
+            Nil
         }
       val rest = loop(args)
 
       // if no arg consumed, use defaults or error; otherwise, add what they added
       if (rest.size == args.size)
         default match {
-          case Some(defaults) => defaults foreach add
-          case None           => errorFn(s"'$name' requires an option. See '$name:help'.")
+          case Some(defaults) =>
+            defaults foreach add
+          case None =>
+            errorFn(s"'$name' requires an option. See '$name:help'.")
         }
       else {
         added foreach add
@@ -908,7 +951,8 @@ class MutableSettings(val errorFn: String => Unit)
       val choiceLength = choices.map(_.length).max + 1
       val formatStr = s"  %-${choiceLength}s %s"
       choices.zipAll(descriptions, "", "").map {
-        case (arg, descr) => formatStr.format(arg, descr)
+        case (arg, descr) =>
+          formatStr.format(arg, descr)
       } mkString (f"$descr%n", f"%n", "")
     }
 
@@ -948,7 +992,8 @@ class MutableSettings(val errorFn: String => Unit)
               appendToValue(arg);
               loop(rest)
             }
-          case Nil => Nil
+          case Nil =>
+            Nil
         }
       Some(loop(args))
     }
@@ -988,7 +1033,8 @@ class MutableSettings(val errorFn: String => Unit)
 
     override def tryToSetColon(args: List[String]) =
       args match {
-        case Nil => errorAndValue(usageErrorMessage, None)
+        case Nil =>
+          errorAndValue(usageErrorMessage, None)
         case List(x) if choices contains x =>
           value = x;
           Some(Nil)
@@ -1044,10 +1090,14 @@ class MutableSettings(val errorFn: String => Unit)
       // throws NumberFormat on bad range (like -5-6)
       def asRange(s: String): (Int, Int) =
         (s indexOf '-') match {
-          case -1                 => (s.toInt, s.toInt)
-          case 0                  => (-1, s.tail.toInt)
-          case i if s.last == '-' => (s.init.toInt, Int.MaxValue)
-          case i                  => (s.take(i).toInt, s.drop(i + 1).toInt)
+          case -1 =>
+            (s.toInt, s.toInt)
+          case 0 =>
+            (-1, s.tail.toInt)
+          case i if s.last == '-' =>
+            (s.init.toInt, Int.MaxValue)
+          case i =>
+            (s.take(i).toInt, s.drop(i + 1).toInt)
         }
       val numsAndStrs = t filter (_.nonEmpty) partition (
         _ forall (ch => ch.isDigit || ch == '-')
@@ -1066,7 +1116,8 @@ class MutableSettings(val errorFn: String => Unit)
     private def phaseIdTest(i: Int): Boolean =
       numericValues exists (
         _ match {
-          case (min, max) => min <= i && i <= max
+          case (min, max) =>
+            min <= i && i <= max
         }
       )
 
@@ -1089,7 +1140,8 @@ class MutableSettings(val errorFn: String => Unit)
             Some(Nil)
         }
       } catch {
-        case _: NumberFormatException => None
+        case _: NumberFormatException =>
+          None
       }
 
     def clear(): Unit = (v = Nil)

@@ -53,18 +53,23 @@ object ValidationError {
     */
   def apply(msg: String, arguments: Any*): ValidationError = {
     val field = arguments collectFirst {
-      case f: FieldName       => f
-      case Some(f: FieldName) => f
+      case f: FieldName =>
+        f
+      case Some(f: FieldName) =>
+        f
     }
     val code = arguments collectFirst {
-      case f: ErrorCode       => f
-      case Some(f: ErrorCode) => f
+      case f: ErrorCode =>
+        f
+      case Some(f: ErrorCode) =>
+        f
     }
     val args = arguments filter {
       case _: FieldName | _: ErrorCode | Some(_: FieldName) |
           Some(_: ErrorCode) =>
         false
-      case _ => false
+      case _ =>
+        false
     }
     new ValidationError(msg, field, code, args)
   }

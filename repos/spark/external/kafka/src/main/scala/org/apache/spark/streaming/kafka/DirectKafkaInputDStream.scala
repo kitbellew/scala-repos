@@ -119,7 +119,8 @@ private[streaming] class DirectKafkaInputDStream[
           }
         case None =>
           offsets.map {
-            case (tp, offset) => tp -> maxRateLimitPerPartition
+            case (tp, offset) =>
+              tp -> maxRateLimitPerPartition
           }
       }
 
@@ -128,7 +129,8 @@ private[streaming] class DirectKafkaInputDStream[
         context.graph.batchDuration.milliseconds.toDouble / 1000
       Some(
         effectiveRateLimitPerPartition.map {
-          case (tp, limit) => tp -> (secsPerBatch * limit).toLong
+          case (tp, limit) =>
+            tp -> (secsPerBatch * limit).toLong
         })
     } else {
       None

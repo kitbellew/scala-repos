@@ -27,7 +27,8 @@ case class ScalaBoxingEvaluator(evaluator: Evaluator) extends Evaluator {
 object ScalaBoxingEvaluator {
   def box(x: AnyRef, context: EvaluationContextImpl): AnyRef = {
     x match {
-      case null => null
+      case null =>
+        null
       case DebuggerUtil.scalaRuntimeRefTo(value: Value) =>
         new BoxingEvaluator(new IdentityEvaluator(value)).evaluate(context)
       case v: Value =>

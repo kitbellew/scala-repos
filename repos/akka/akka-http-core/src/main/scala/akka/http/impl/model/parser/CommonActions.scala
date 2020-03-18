@@ -22,13 +22,20 @@ private[parser] trait CommonActions {
     mainType.toRootLowerCase match {
       case "multipart" ⇒
         subLower match {
-          case "mixed" ⇒ multipart.mixed(params)
-          case "alternative" ⇒ multipart.alternative(params)
-          case "related" ⇒ multipart.related(params)
-          case "form-data" ⇒ multipart.`form-data`(params)
-          case "signed" ⇒ multipart.signed(params)
-          case "encrypted" ⇒ multipart.encrypted(params)
-          case custom ⇒ MediaType.customMultipart(custom, params)
+          case "mixed" ⇒
+            multipart.mixed(params)
+          case "alternative" ⇒
+            multipart.alternative(params)
+          case "related" ⇒
+            multipart.related(params)
+          case "form-data" ⇒
+            multipart.`form-data`(params)
+          case "signed" ⇒
+            multipart.signed(params)
+          case "encrypted" ⇒
+            multipart.encrypted(params)
+          case custom ⇒
+            MediaType.customMultipart(custom, params)
         }
       case mainLower ⇒
         MediaTypes.getForKey((mainLower, subLower)) match {

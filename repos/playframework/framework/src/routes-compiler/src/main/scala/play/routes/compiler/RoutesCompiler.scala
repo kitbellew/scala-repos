@@ -50,7 +50,8 @@ object RoutesCompiler {
 
             def mapLine(generatedLine: Int): Option[Int] = {
               lines.view.take(generatedLine).reverse.collectFirst {
-                case LineMarker(line) => Integer.parseInt(line)
+                case LineMarker(line) =>
+                  Integer.parseInt(line)
               }
             }
           })

@@ -108,17 +108,20 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
             inst.getAdditionalEndpoints.get(epname)
         }
         case None => {
-          case inst: ServiceInstance => inst.getServiceEndpoint()
+          case inst: ServiceInstance =>
+            inst.getServiceEndpoint()
         }
       }
 
     val filterShardId: PartialFunction[ServiceInstance, ServiceInstance] =
       shardId match {
         case Some(id) => {
-          case inst if inst.isSetShard && inst.shard == id => inst
+          case inst if inst.isSetShard && inst.shard == id =>
+            inst
         }
         case None => {
-          case x => x
+          case x =>
+            x
         }
       }
 

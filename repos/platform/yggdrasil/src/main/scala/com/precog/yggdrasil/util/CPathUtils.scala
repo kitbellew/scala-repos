@@ -43,15 +43,18 @@ object CPathUtils {
             addComponent(JPathIndex(i), cPathToJPaths(CPath(tail), elemType(e)))
         }
       // case (CPathMeta(_) :: _, _) => Nil
-      case (Nil, _)  => List((JPath.Identity, value))
-      case (path, _) => sys.error("Bad news, bob! " + path)
+      case (Nil, _) =>
+        List((JPath.Identity, value))
+      case (path, _) =>
+        sys.error("Bad news, bob! " + path)
     }
 
   private def addComponent(
       c: JPathNode,
       xs: List[(JPath, CValue)]): List[(JPath, CValue)] =
     xs map {
-      case (path, value) => (JPath(c :: path.nodes), value)
+      case (path, value) =>
+        (JPath(c :: path.nodes), value)
     }
 
   /**
@@ -121,9 +124,12 @@ object CPathUtils {
     @tailrec
     def zero(ps: List[CPathNode], acc: List[CPathNode] = Nil): List[CPathNode] =
       ps match {
-        case CPathIndex(i) :: ps => zero(ps, CPathIndex(0) :: acc)
-        case p :: ps             => zero(ps, p :: acc)
-        case Nil                 => acc.reverse
+        case CPathIndex(i) :: ps =>
+          zero(ps, CPathIndex(0) :: acc)
+        case p :: ps =>
+          zero(ps, p :: acc)
+        case Nil =>
+          acc.reverse
       }
 
     @tailrec

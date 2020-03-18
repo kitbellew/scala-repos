@@ -293,29 +293,35 @@ object Test extends App {
 
   testAnonFunClass(
     {
-      case x: Int => x
+      case x: Int =>
+        x
     }: PartialFunction[Int, Int],
     sp = true)
 
   testAnonFunClass({
-      case x: Int => x
+      case x: Int =>
+        x
     }: PartialFunction[Any, Any])
 
   testAnonFunClass(
     {
-      case x: Int => ()
+      case x: Int =>
+        ()
     }: PartialFunction[Int, Unit],
     sp = true)
 
   testAnonFunClass({
-      case x: String => 1
+      case x: String =>
+        1
     }: PartialFunction[String, Int])
 
   testAnonFunClass({
-      case x: String => ()
+      case x: String =>
+        ()
     }: PartialFunction[String, Unit])
 
   testAnonFunClass({
-      case x: String => x
+      case x: String =>
+        x
     }: PartialFunction[String, String])
 }

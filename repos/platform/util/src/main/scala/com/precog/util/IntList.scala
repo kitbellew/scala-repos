@@ -67,8 +67,10 @@ sealed trait IntList
     @tailrec
     def loop(xs: IntList, len: Int): Int =
       xs match {
-        case IntCons(x, xs0) => loop(xs0, len + 1)
-        case IntNil          => len
+        case IntCons(x, xs0) =>
+          loop(xs0, len + 1)
+        case IntNil =>
+          len
       }
     loop(this, 0)
   }
@@ -88,8 +90,10 @@ sealed trait IntList
     @tailrec
     def loop(xs: IntList, ys: IntList): IntList =
       xs match {
-        case IntCons(x, xs0) => loop(xs0, x :: ys)
-        case IntNil          => ys
+        case IntCons(x, xs0) =>
+          loop(xs0, x :: ys)
+        case IntNil =>
+          ys
       }
     loop(this, IntNil)
   }

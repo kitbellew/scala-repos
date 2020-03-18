@@ -30,8 +30,10 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
 
   override def suitableForFile(file: PsiFile): Boolean =
     file match {
-      case _: ScalaFile => true
-      case otherFile    => ScalaLanguageDerivative hasDerivativeOnFile otherFile
+      case _: ScalaFile =>
+        true
+      case otherFile =>
+        ScalaLanguageDerivative hasDerivativeOnFile otherFile
     }
 
   def visit(element: PsiElement) {
@@ -64,7 +66,8 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
               case analyzerImpl: DaemonCodeAnalyzerImpl =>
                 val fileStatusMap = analyzerImpl.getFileStatusMap
                 fileStatusMap.getFileDirtyScope(document, Pass.UPDATE_ALL)
-              case _ => file.getTextRange
+              case _ =>
+                file.getTextRange
             }
           }
         success = refCountHolder.analyze(action, dirtyScope, file)

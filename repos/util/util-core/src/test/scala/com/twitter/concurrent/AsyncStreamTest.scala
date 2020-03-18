@@ -330,8 +330,10 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(Gen.nonEmptyListOf(Arbitrary.arbitrary[Int])) { (a: List[Int]) =>
       val tail = await(fromSeq(a).tail)
       a.tail match {
-        case Nil => assert(tail == None)
-        case _   => assert(toSeq(tail.get) == a.tail)
+        case Nil =>
+          assert(tail == None)
+        case _ =>
+          assert(toSeq(tail.get) == a.tail)
       }
     }
   }
@@ -475,8 +477,10 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
       // the same type (don't require them to define equality or have
       // the same exception message)
       (actual, expected) match {
-        case (Throw(e1), Throw(e2)) => assert(e1.getClass == e2.getClass)
-        case _                      => assert(actual == expected)
+        case (Throw(e1), Throw(e2)) =>
+          assert(e1.getClass == e2.getClass)
+        case _ =>
+          assert(actual == expected)
       }
     }
   }
@@ -744,10 +748,13 @@ private object AsyncStreamTest {
   def fromSeq[A](s: Seq[A]): AsyncStream[A] =
     // Test all AsyncStream constructors: Empty, FromFuture, Cons, Embed.
     s match {
-      case Nil      => AsyncStream.empty
-      case a +: Nil => AsyncStream.of(a)
+      case Nil =>
+        AsyncStream.empty
+      case a +: Nil =>
+        AsyncStream.of(a)
       case a +: b +: Nil =>
         AsyncStream.embed(Future.value(a +:: AsyncStream.of(b)))
-      case a +: as => a +:: fromSeq(as)
+      case a +: as =>
+        a +:: fromSeq(as)
     }
 }

@@ -53,7 +53,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             val values = slice.deref(paths.Value)
 
             val indices = values.columns.keys collect {
-              case ColumnRef(CPath(CPathIndex(i), _ @_*), _) => i
+              case ColumnRef(CPath(CPathIndex(i), _ @_*), _) =>
+                i
             }
 
             if (indices.isEmpty) {
@@ -80,7 +81,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                     acc.updated(finalRef, colTable)
                   }
 
-                  case (acc, _) => acc
+                  case (acc, _) =>
+                    acc
                 }
 
               val valueCols = columnTables map {

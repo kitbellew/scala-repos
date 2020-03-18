@@ -41,7 +41,8 @@ object LoggingReceive {
   def withLabel(label: String)(r: Receive)(implicit
       context: ActorContext): Receive =
     r match {
-      case _: LoggingReceive ⇒ r
+      case _: LoggingReceive ⇒
+        r
       case _ ⇒
         if (context.system.settings.AddLoggingReceive)
           new LoggingReceive(None, r, Option(label))
@@ -77,8 +78,10 @@ class LoggingReceive(source: Option[AnyRef], r: Receive, label: Option[String])(
             + " from " + context.sender()
             + (
               label match {
-                case Some(l) ⇒ " in state " + l
-                case _ ⇒ ""
+                case Some(l) ⇒
+                  " in state " + l
+                case _ ⇒
+                  ""
               }
             )))
     }

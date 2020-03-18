@@ -33,9 +33,11 @@ object MapGetOrElse extends SimplificationType() {
               .withText(newText)
               .highlightFrom(qual)
             Some(simplification)
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -54,15 +56,18 @@ object MapGetOrElse extends SimplificationType() {
       replacementText: String): Boolean = {
     val mapArgRetType =
       mapArg match {
-        case ExpressionType(ScFunctionType(retType, _)) => retType
-        case _                                          => return false
+        case ExpressionType(ScFunctionType(retType, _)) =>
+          retType
+        case _ =>
+          return false
       }
     ScalaPsiElementFactory.createExpressionFromText(
       replacementText,
       qual.getContext) match {
       case ScMethodCall(ScMethodCall(_, Seq(firstArg)), _) =>
         mapArgRetType.conforms(firstArg.getType().getOrNothing)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -72,18 +77,24 @@ object MapGetOrElse extends SimplificationType() {
       getOrElseArgs: Seq[ScExpression]): Boolean = {
     val (mapArg, getOrElseArg) =
       (mapArgs, getOrElseArgs) match {
-        case (Seq(a1), Seq(a2)) => (a1, a2)
-        case _                  => return false
+        case (Seq(a1), Seq(a2)) =>
+          (a1, a2)
+        case _ =>
+          return false
       }
     val baseExpr =
       optionalBase match {
-        case Some(e) => e
-        case _       => return false
+        case Some(e) =>
+          e
+        case _ =>
+          return false
       }
     val mapArgRetType =
       mapArg.getType() match {
-        case Success(ScFunctionType(retType, _), _) => retType
-        case _                                      => return false
+        case Success(ScFunctionType(retType, _), _) =>
+          retType
+        case _ =>
+          return false
       }
     val firstArgText = stripped(getOrElseArg).getText
     val secondArgText = stripped(mapArg).getText
@@ -94,7 +105,8 @@ object MapGetOrElse extends SimplificationType() {
       baseExpr.getContext) match {
       case ScMethodCall(ScMethodCall(_, Seq(firstArg)), _) =>
         mapArgRetType.conforms(firstArg.getType().getOrNothing)
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

@@ -120,8 +120,10 @@ object UserRepo {
         }
         .map(_.getAs[String]("_id"))
         .flatten match {
-        case List(u1, u2) => (u1, u2).some
-        case _            => none
+        case List(u1, u2) =>
+          (u1, u2).some
+        case _ =>
+          none
       }
     }
   }
@@ -172,8 +174,10 @@ object UserRepo {
 
   def setTitle(id: ID, title: Option[String]): Funit =
     title match {
-      case Some(t) => $update.field(id, F.title, t)
-      case None    => $update($select(id), $unset(F.title))
+      case Some(t) =>
+        $update.field(id, F.title, t)
+      case None =>
+        $update($select(id), $unset(F.title))
     }
 
   def setPlayTime(u: User, playTime: User.PlayTime): Funit =
@@ -217,18 +221,26 @@ object UserRepo {
       ai option "count.ai",
       (
         result match {
-          case -1 => "count.loss".some
-          case 1  => "count.win".some
-          case 0  => "count.draw".some
-          case _  => none
+          case -1 =>
+            "count.loss".some
+          case 1 =>
+            "count.win".some
+          case 0 =>
+            "count.draw".some
+          case _ =>
+            none
         }
       ),
       (
         result match {
-          case -1 => "count.lossH".some
-          case 1  => "count.winH".some
-          case 0  => "count.drawH".some
-          case _  => none
+          case -1 =>
+            "count.lossH".some
+          case 1 =>
+            "count.winH".some
+          case 0 =>
+            "count.drawH".some
+          case _ =>
+            none
         }
       ) ifFalse ai
     ).flatten.map(_ -> 1) ::: List(

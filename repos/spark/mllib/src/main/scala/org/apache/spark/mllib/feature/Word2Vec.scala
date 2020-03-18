@@ -715,7 +715,8 @@ object Word2VecModel extends Loader[Word2VecModel] {
       val approxSize = 4L * numWords * vectorSize
       val nPartitions = ((approxSize / partitionSize) + 1).toInt
       val dataArray = model.toSeq.map {
-        case (w, v) => Data(w, v)
+        case (w, v) =>
+          Data(w, v)
       }
       sc.parallelize(dataArray.toSeq, nPartitions)
         .toDF()

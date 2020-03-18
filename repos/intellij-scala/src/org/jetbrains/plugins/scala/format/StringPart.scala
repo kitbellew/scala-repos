@@ -45,9 +45,12 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
 
   def value =
     expression match {
-      case literal: ScLiteral => literal.getValue.toString
-      case block: ScBlockExpr => block.exprs.headOption.map(_.getText).mkString
-      case element            => element.getText
+      case literal: ScLiteral =>
+        literal.getValue.toString
+      case block: ScBlockExpr =>
+        block.exprs.headOption.map(_.getText).mkString
+      case element =>
+        element.getText
     }
 
   def format = specifier.map(_.format).getOrElse("")
@@ -64,8 +67,10 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
 
   def isComplexBlock =
     expression match {
-      case block: ScBlockExpr => block.exprs.length > 1
-      case _                  => false
+      case block: ScBlockExpr =>
+        block.exprs.length > 1
+      case _ =>
+        false
     }
 
   def problem: Option[InjectionProblem] =
@@ -82,12 +87,16 @@ case class Injection(expression: ScExpression, specifier: Option[Specifier])
                 value.formatted(it.format)
                 None
               } catch {
-                case e: IllegalFormatConversionException => Some(Inapplicable)
-                case e: IllegalFormatException           => Some(Malformed)
+                case e: IllegalFormatConversionException =>
+                  Some(Inapplicable)
+                case e: IllegalFormatException =>
+                  Some(Malformed)
               }
-            case _ => Some(Malformed)
+            case _ =>
+              Some(Malformed)
           }
-        case _ => Some(Malformed)
+        case _ =>
+          Some(Malformed)
       }
     }
 }

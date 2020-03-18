@@ -84,7 +84,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     math.signum(down) match {
       case -1 ⇒
         throw new IllegalArgumentException("`down` must not be negative")
-      case 0 ⇒ push(value)
+      case 0 ⇒
+        push(value)
       case 1 ⇒
         if (down > _size)
           throw new ValueStackUnderflowException
@@ -118,7 +119,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     math.signum(down) match {
       case -1 ⇒
         throw new IllegalArgumentException("`down` must not be negative")
-      case 0 ⇒ pop()
+      case 0 ⇒
+        pop()
       case 1 ⇒
         if (down >= _size)
           throw new ValueStackUnderflowException
@@ -150,7 +152,8 @@ class ValueStack private[parboiled2] (initialSize: Int, maxSize: Int)
     math.signum(down) match {
       case -1 ⇒
         throw new IllegalArgumentException("`down` must not be negative")
-      case 0 ⇒ peek
+      case 0 ⇒
+        peek
       case 1 ⇒
         if (down >= _size)
           throw new ValueStackUnderflowException

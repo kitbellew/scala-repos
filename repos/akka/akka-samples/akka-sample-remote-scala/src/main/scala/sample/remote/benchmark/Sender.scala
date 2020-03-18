@@ -86,7 +86,8 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
       self ! Warmup
     case ActorIdentity(`path`, None) =>
       println(s"Remote actor not available: $path")
-    case ReceiveTimeout => sendIdentifyRequest()
+    case ReceiveTimeout =>
+      sendIdentifyRequest()
   }
 
   def active(actor: ActorRef): Receive = {

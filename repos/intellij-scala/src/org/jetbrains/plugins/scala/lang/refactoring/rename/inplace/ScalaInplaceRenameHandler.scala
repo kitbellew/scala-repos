@@ -40,9 +40,12 @@ trait ScalaInplaceRenameHandler {
   def renameProcessor(element: PsiElement): RenamePsiElementProcessor = {
     val isScalaElement =
       element match {
-        case null                                     => false
-        case _: LightScalaMethod | _: PsiClassWrapper => true
-        case _                                        => element.getLanguage.isInstanceOf[ScalaLanguage]
+        case null =>
+          false
+        case _: LightScalaMethod | _: PsiClassWrapper =>
+          true
+        case _ =>
+          element.getLanguage.isInstanceOf[ScalaLanguage]
       }
     val processor =
       if (isScalaElement)
@@ -109,10 +112,14 @@ trait ScalaInplaceRenameHandler {
       val clazz = fun.containingClass
       val clazzType =
         clazz match {
-          case _: ScObject                => "object"
-          case _: ScClass                 => "class"
-          case _: ScTrait                 => "trait"
-          case _: ScNewTemplateDefinition => "instance"
+          case _: ScObject =>
+            "object"
+          case _: ScClass =>
+            "class"
+          case _: ScTrait =>
+            "trait"
+          case _: ScNewTemplateDefinition =>
+            "instance"
         }
       val title = ScalaBundle.message("rename.special.method.title")
       val positive = ScalaBundle.message(
@@ -139,9 +146,12 @@ trait ScalaInplaceRenameHandler {
       classOf[ScNamedElement])
     val nameId =
       selected match {
-        case ref: ScReferenceElement => ref.nameId
-        case named: ScNamedElement   => named.nameId
-        case _                       => null
+        case ref: ScReferenceElement =>
+          ref.nameId
+        case named: ScNamedElement =>
+          named.nameId
+        case _ =>
+          null
       }
     elementToRename match {
       case Both(`selected`, fun: ScFunction)

@@ -61,7 +61,8 @@ private[setup] final class Processor(
           }
         case Right(None) if ctx.me.isEmpty =>
           fufail(new IllegalArgumentException("Anon can't create seek"))
-        case _ => fufail("Can't create seek for some unknown reason")
+        case _ =>
+          fufail("Can't create seek for some unknown reason")
       }
     }
   }

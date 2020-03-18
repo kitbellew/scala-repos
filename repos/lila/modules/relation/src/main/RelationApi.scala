@@ -124,11 +124,14 @@ final class RelationApi(
       funit
     else
       followable(u2) flatMap {
-        case false => funit
+        case false =>
+          funit
         case true =>
           fetchRelation(u1, u2) zip fetchRelation(u2, u1) flatMap {
-            case (Some(Follow), _) => funit
-            case (_, Some(Block))  => funit
+            case (Some(Follow), _) =>
+              funit
+            case (_, Some(Block)) =>
+              funit
             case _ =>
               RelationRepo.follow(u1, u2) >> limitFollow(u1) >>- {
                 countFollowersCache remove u2
@@ -157,7 +160,8 @@ final class RelationApi(
       funit
     else
       fetchBlocks(u1, u2) flatMap {
-        case true => funit
+        case true =>
+          funit
         case _ =>
           RelationRepo.block(u1, u2) >> limitBlock(u1) >>- {
             reloadOnlineFriends(u1, u2)
@@ -178,7 +182,8 @@ final class RelationApi(
             reloadOnlineFriends(u1, u2)
             lila.mon.relation.unfollow()
           }
-        case _ => funit
+        case _ =>
+          funit
       }
 
   def unfollowAll(u1: ID): Funit = RelationRepo.unfollowAll(u1)
@@ -194,7 +199,8 @@ final class RelationApi(
             bus.publish(lila.hub.actorApi.relation.UnBlock(u1, u2), 'relation)
             lila.mon.relation.unblock()
           }
-        case _ => funit
+        case _ =>
+          funit
       }
 
   private def reloadOnlineFriends(u1: ID, u2: ID) {

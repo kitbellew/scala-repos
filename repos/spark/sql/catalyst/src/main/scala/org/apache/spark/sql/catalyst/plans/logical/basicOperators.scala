@@ -44,9 +44,12 @@ case class Project(projectList: Seq[NamedExpression], child: LogicalPlan)
   override lazy val resolved: Boolean = {
     val hasSpecialExpressions = projectList.exists(
       _.collect {
-        case agg: AggregateExpression => agg
-        case generator: Generator     => generator
-        case window: WindowExpression => window
+        case agg: AggregateExpression =>
+          agg
+        case generator: Generator =>
+          generator
+        case window: WindowExpression =>
+          window
       }.nonEmpty)
 
     !expressions.exists(
@@ -128,7 +131,8 @@ abstract class SetOperation(left: LogicalPlan, right: LogicalPlan)
     val attributeRewrites = AttributeMap(right.output.zip(left.output))
     right.constraints.map(
       _ transform {
-        case a: Attribute => attributeRewrites(a)
+        case a: Attribute =>
+          attributeRewrites(a)
       })
   }
 }
@@ -159,7 +163,8 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
     childrenResolved &&
       left.output.length == right.output.length &&
       left.output.zip(right.output).forall {
-        case (l, r) => l.dataType == r.dataType
+        case (l, r) =>
+          l.dataType == r.dataType
       } &&
       duplicateResolved
 
@@ -195,7 +200,8 @@ case class Except(left: LogicalPlan, right: LogicalPlan)
     childrenResolved &&
       left.output.length == right.output.length &&
       left.output.zip(right.output).forall {
-        case (l, r) => l.dataType == r.dataType
+        case (l, r) =>
+          l.dataType == r.dataType
       }
 
   override def statistics: Statistics = {
@@ -234,7 +240,8 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
         child.output.length == children.head.output.length &&
           // compare the data types with the first child
           child.output.zip(children.head.output).forall {
-            case (l, r) => l.dataType == r.dataType
+            case (l, r) =>
+              l.dataType == r.dataType
           })
 
     children.length > 1 && childrenResolved && allChildrenCompatible
@@ -258,7 +265,8 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
     val attributeRewrites = AttributeMap(original.zip(reference))
     constraints.map(
       _ transform {
-        case a: Attribute => attributeRewrites(a)
+        case a: Attribute =>
+          attributeRewrites(a)
       })
   }
 
@@ -335,9 +343,12 @@ case class Join(
   // using join, we still need to eliminate natural or using before we mark it resolved.
   override lazy val resolved: Boolean =
     joinType match {
-      case NaturalJoin(_)  => false
-      case UsingJoin(_, _) => false
-      case _               => resolvedExceptNatural
+      case NaturalJoin(_) =>
+        false
+      case UsingJoin(_, _) =>
+        false
+      case _ =>
+        resolvedExceptNatural
     }
 }
 
@@ -456,7 +467,8 @@ case class Aggregate(
   override lazy val resolved: Boolean = {
     val hasWindowExpressions = aggregateExpressions.exists(
       _.collect {
-        case window: WindowExpression => window
+        case window: WindowExpression =>
+          window
       }.nonEmpty)
 
     !expressions.exists(
@@ -635,7 +647,8 @@ object Limit {
     p match {
       case GlobalLimit(le1, LocalLimit(le2, child)) if le1 == le2 =>
         Some((le1, child))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -645,8 +658,10 @@ case class GlobalLimit(limitExpr: Expression, child: LogicalPlan)
   override def output: Seq[Attribute] = child.output
   override def maxRows: Option[Long] = {
     limitExpr match {
-      case IntegerLiteral(limit) => Some(limit)
-      case _                     => None
+      case IntegerLiteral(limit) =>
+        Some(limit)
+      case _ =>
+        None
     }
   }
   override lazy val statistics: Statistics = {
@@ -662,8 +677,10 @@ case class LocalLimit(limitExpr: Expression, child: LogicalPlan)
   override def output: Seq[Attribute] = child.output
   override def maxRows: Option[Long] = {
     limitExpr match {
-      case IntegerLiteral(limit) => Some(limit)
-      case _                     => None
+      case IntegerLiteral(limit) =>
+        Some(limit)
+      case _ =>
+        None
     }
   }
   override lazy val statistics: Statistics = {

@@ -425,12 +425,14 @@ private trait KleisliStrong[F[_]] extends Strong[Kleisli[F, ?, ?]] {
 
   def first[A, B, C](f: Kleisli[F, A, B]): Kleisli[F, (A, C), (B, C)] =
     Kleisli {
-      case (a, c) => F.map(f.run(a))((b: B) => (b, c))
+      case (a, c) =>
+        F.map(f.run(a))((b: B) => (b, c))
     }
 
   def second[A, B, C](f: Kleisli[F, A, B]): Kleisli[F, (C, A), (C, B)] =
     Kleisli {
-      case (c, a) => F.map(f.run(a))((b: B) => (c, b))
+      case (c, a) =>
+        F.map(f.run(a))((b: B) => (c, b))
     }
 
   override def mapfst[A, B, C](fa: Kleisli[F, A, B])(f: C => A) = fa local f
@@ -446,14 +448,18 @@ private trait KleisliProChoice[F[_]]
 
   def left[A, B, C](fa: Kleisli[F, A, B]): Kleisli[F, A \/ C, B \/ C] =
     Kleisli {
-      case -\/(a)     => F.map(fa run a)(\/.left)
-      case b @ \/-(_) => F.point(b)
+      case -\/(a) =>
+        F.map(fa run a)(\/.left)
+      case b @ \/-(_) =>
+        F.point(b)
     }
 
   def right[A, B, C](fa: Kleisli[F, A, B]): Kleisli[F, C \/ A, C \/ B] =
     Kleisli {
-      case b @ -\/(_) => F.point(b)
-      case \/-(a)     => F.map(fa run a)(\/.right)
+      case b @ -\/(_) =>
+        F.point(b)
+      case \/-(a) =>
+        F.map(fa run a)(\/.right)
     }
 }
 
@@ -486,8 +492,10 @@ private trait KleisliArrow[F[_]]
       f: => Kleisli[F, A, C],
       g: => Kleisli[F, B, C]): Kleisli[F, A \/ B, C] =
     Kleisli {
-      case -\/(a) => f run a
-      case \/-(b) => g run b
+      case -\/(a) =>
+        f run a
+      case \/-(b) =>
+        g run b
     }
 
   override def split[A, B, C, D](
@@ -537,7 +545,8 @@ private trait KleisliCatchable[F[_], A] extends Catchable[Kleisli[F, A, ?]] {
       F.attempt(
         try f.run(a)
         catch {
-          case t: Throwable => F.fail(t)
+          case t: Throwable =>
+            F.fail(t)
         }))
 
   def fail[B](err: Throwable): Kleisli[F, A, B] = Kleisli(_ => F.fail(err))

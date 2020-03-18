@@ -49,7 +49,8 @@ trait AccessTokenService {
           ) && (ac.removed === false.bind)
       }
       .map {
-        case (ac, t) => ac
+        case (ac, t) =>
+          ac
       }
       .firstOption
 

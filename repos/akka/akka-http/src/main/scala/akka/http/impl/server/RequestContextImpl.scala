@@ -30,7 +30,8 @@ private[http] final case class RequestContextImpl(
 
   def completeWith(futureResult: Future[RouteResult]): RouteResult =
     futureResult.flatMap {
-      case r: RouteResultImpl ⇒ r.underlying
+      case r: RouteResultImpl ⇒
+        r.underlying
     }(executionContext())
   def completeWith(futureResult: CompletionStage[RouteResult]): RouteResult =
     completeWith(futureResult.toScala)

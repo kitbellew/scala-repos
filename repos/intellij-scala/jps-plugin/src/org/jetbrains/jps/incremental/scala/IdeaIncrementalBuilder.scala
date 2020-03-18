@@ -133,7 +133,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       case Left(error) =>
         client.error(error)
         ExitCode.ABORT
-      case _ if client.hasReportedErrors || client.isCanceled => ExitCode.ABORT
+      case _ if client.hasReportedErrors || client.isCanceled =>
+        ExitCode.ABORT
       case Right(code) =>
         if (delta != null && JavaBuilderUtil.updateMappings(
               context,
@@ -167,7 +168,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
           getCategory == BuilderCategory.SOURCE_PROCESSOR
         case (CompileOrder.ScalaThenJava | CompileOrder.Mixed) =>
           getCategory == BuilderCategory.OVERWRITING_TRANSLATOR
-        case _ => false
+        case _ =>
+          false
       }
     wrongIncrType || wrongCompileOrder
   }
@@ -187,8 +189,10 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       projectSettings(context).getCompilerSettings(chunk).getCompileOrder
     val extensionsToCollect =
       compileOrder match {
-        case CompileOrder.Mixed => List(".scala", ".java")
-        case _                  => List(".scala")
+        case CompileOrder.Mixed =>
+          List(".scala", ".java")
+        case _ =>
+          List(".scala")
       }
 
     def checkAndCollectFile(file: File): Boolean = {

@@ -29,7 +29,8 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
           foldFuns(h(initial))(fail)(t)
         else
           fail
-      case Nil => initial
+      case Nil =>
+        initial
     }
 
   // todo rewrite via continuations
@@ -68,19 +69,26 @@ trait ScAnnotations extends ScalaPsiElement with PsiReferenceList {
                                   .createTypeByFQClassName(
                                     p.qualifiedName,
                                     GlobalSearchScope.allScope(getProject))
-                              case _ => null
+                              case _ =>
+                                null
                             }
-                          case _ => null
+                          case _ =>
+                            null
                         }
-                      case _ => null
+                      case _ =>
+                        null
                     }
-                  case _ => null
+                  case _ =>
+                    null
                 }
-              case _ => null
+              case _ =>
+                null
             }
-          case _ => null
+          case _ =>
+            null
         }
-      case _ => null
+      case _ =>
+        null
     }
   }
 

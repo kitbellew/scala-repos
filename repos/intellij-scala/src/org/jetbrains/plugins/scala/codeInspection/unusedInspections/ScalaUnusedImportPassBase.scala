@@ -63,13 +63,15 @@ trait ScalaUnusedImportPassBase {
                 if !PsiTreeUtil.hasErrorElements(e) && !isLanguageFeatureImport(
                   imp) =>
               Some(e.getParent)
-            case _ => None
+            case _ =>
+              None
           }
 
         val qName = imp.qualName
 
         psiOption match {
-          case None => Seq[Annotation]()
+          case None =>
+            Seq[Annotation]()
           case Some(sel: ScImportSelector) if sel.importedName == "_" =>
             Seq[Annotation]()
           case Some(psi)

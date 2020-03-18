@@ -82,7 +82,8 @@ private[http] object HttpServerBluePrint {
     NotUsed] = BidiFlow.fromFlows(
     Flow[ByteString].map(SendBytes),
     Flow[SslTlsInbound].collect {
-      case x: SessionBytes ⇒ x
+      case x: SessionBytes ⇒
+        x
     })
 
   def websocketSupport(settings: ServerSettings, log: LoggingAdapter): BidiFlow[
@@ -124,7 +125,8 @@ private[http] object HttpServerBluePrint {
     timeout match {
       case x: FiniteDuration ⇒
         BidiFlow.fromGraph(new RequestTimeoutSupport(x)).reversed
-      case _ ⇒ BidiFlow.identity
+      case _ ⇒
+        BidiFlow.identity
     }
 
   /**
@@ -220,8 +222,10 @@ private[http] object HttpServerBluePrint {
         def createEntity(creator: EntityCreator[RequestOutput, RequestEntity])
             : RequestEntity =
           creator match {
-            case StrictEntityCreator(entity) ⇒ entity
-            case StreamedEntityCreator(creator) ⇒ streamRequestEntity(creator)
+            case StrictEntityCreator(entity) ⇒
+              entity
+            case StreamedEntityCreator(creator) ⇒
+              streamRequestEntity(creator)
           }
 
         def streamRequestEntity(
@@ -245,7 +249,8 @@ private[http] object HttpServerBluePrint {
                     entitySource = null
                     setIdleHandlers()
 
-                  case x ⇒ entitySource.push(x)
+                  case x ⇒
+                    entitySource.push(x)
                 }
               }
               override def onUpstreamFinish(): Unit = {
@@ -314,7 +319,8 @@ private[http] object HttpServerBluePrint {
                   "Request is missing required `Host` header",
                   e.getMessage))
           }
-        case x ⇒ x
+        case x ⇒
+          x
       }
 
     Flow[SessionBytes]
@@ -488,7 +494,8 @@ private[http] object HttpServerBluePrint {
               newTimeout match {
                 case x: FiniteDuration ⇒
                   schedule(old.timeoutBase + x - Deadline.now, newHandler)
-                case _ ⇒ null // don't schedule a new timeout
+                case _ ⇒
+                  null // don't schedule a new timeout
               }
             new TimeoutSetup(
               old.timeoutBase,
@@ -571,7 +578,8 @@ private[http] object HttpServerBluePrint {
                   push(requestPrepOut, MessageEnd)
                 case MessageStartError(status, info) ⇒
                   finishWithIllegalRequestError(status, info)
-                case x ⇒ push(requestPrepOut, x)
+                case x ⇒
+                  push(requestPrepOut, x)
               }
             override def onUpstreamFinish() =
               if (openRequests.isEmpty)
@@ -810,7 +818,8 @@ private[http] object HttpServerBluePrint {
           new InHandler {
             override def onPush(): Unit =
               grab(fromHttp) match {
-                case HttpData(b) ⇒ push(toNet, b)
+                case HttpData(b) ⇒
+                  push(toNet, b)
                 case SwitchToWebSocket(bytes, handlerFlow) ⇒
                   push(toNet, bytes)
                   complete(toHttp)
@@ -883,7 +892,8 @@ private[http] object HttpServerBluePrint {
               Graph[FlowShape[Message, Message], Any]]): Unit = {
           val frameHandler =
             handlerFlow match {
-              case Left(frameHandler) ⇒ frameHandler
+              case Left(frameHandler) ⇒
+                frameHandler
               case Right(messageHandler) ⇒
                 WebSocket
                   .stack(

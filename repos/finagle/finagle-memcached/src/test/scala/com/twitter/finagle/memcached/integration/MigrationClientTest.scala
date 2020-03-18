@@ -74,7 +74,8 @@ class MigrationClientTest
         case Some(server) =>
           oldPoolCluster.join(server.address)
           testServers :+= server
-        case None => fail("Cannot start memcached.")
+        case None =>
+          fail("Cannot start memcached.")
       }
     }
 
@@ -88,7 +89,8 @@ class MigrationClientTest
         case Some(server) =>
           newPoolCluster.join(server.address)
           testServers :+= server
-        case None => fail("Cannot start memcached.")
+        case None =>
+          fail("Cannot start memcached.")
       }
     }
 
@@ -185,7 +187,8 @@ class MigrationClientTest
       eventually {
         assert(
           Await.result(client2.get("foo")).map {
-            case Buf.Utf8(s) => s
+            case Buf.Utf8(s) =>
+              s
           } == Some("bar"))
       }
     }
@@ -229,7 +232,8 @@ class MigrationClientTest
       eventually {
         assert(
           Await.result(client2.get("foo")).map {
-            case Buf.Utf8(s) => s
+            case Buf.Utf8(s) =>
+              s
           } == Some("bar"))
       }
     }
@@ -310,7 +314,8 @@ class MigrationClientTest
       eventually {
         assert(
           Await.result(client2.get("foo")).map {
-            case Buf.Utf8(s) => s
+            case Buf.Utf8(s) =>
+              s
           } == Some("bar"))
       }
     }

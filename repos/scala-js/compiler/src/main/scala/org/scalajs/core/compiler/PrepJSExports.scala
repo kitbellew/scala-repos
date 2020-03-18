@@ -567,10 +567,14 @@ trait PrepJSExports {
   /** changes the return type of the method type tpe to Any. returns new type */
   private def retToAny(tpe: Type): Type =
     tpe match {
-      case MethodType(params, result) => MethodType(params, retToAny(result))
-      case NullaryMethodType(result)  => NullaryMethodType(AnyClass.tpe)
-      case PolyType(tparams, result)  => PolyType(tparams, retToAny(result))
-      case _                          => AnyClass.tpe
+      case MethodType(params, result) =>
+        MethodType(params, retToAny(result))
+      case NullaryMethodType(result) =>
+        NullaryMethodType(AnyClass.tpe)
+      case PolyType(tparams, result) =>
+        PolyType(tparams, retToAny(result))
+      case _ =>
+        AnyClass.tpe
     }
 
   /** Whether the given symbol has a visibility that allows exporting */

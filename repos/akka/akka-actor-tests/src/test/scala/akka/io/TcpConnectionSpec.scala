@@ -58,7 +58,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       clientSocket.read(ByteBuffer.allocate(1))
       null
     } catch {
-      case NonFatal(e) ⇒ e.getMessage
+      case NonFatal(e) ⇒
+        e.getMessage
     }
   }
 
@@ -73,7 +74,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       clientSocket.write(ByteBuffer.allocate(1))
       null
     } catch {
-      case NonFatal(e) ⇒ e.getMessage.take(15)
+      case NonFatal(e) ⇒
+        e.getMessage.take(15)
     }
   }
 
@@ -760,7 +762,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
         // dump the NACKs
         writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+          case CommandFailed(write) ⇒
+            written -= 1
         }
         writer.msgAvailable should ===(false)
 
@@ -799,7 +802,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
         // dump the NACKs
         writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+          case CommandFailed(write) ⇒
+            written -= 1
         }
 
         // drain the queue until it works again
@@ -836,7 +840,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
         // dump the NACKs
         writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+          case CommandFailed(write) ⇒
+            written -= 1
         }
         writer.msgAvailable should ===(false)
 
@@ -870,7 +875,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         }
         // dump the NACKs
         writer.receiveWhile(1.second) {
-          case CommandFailed(write) ⇒ written -= 1
+          case CommandFailed(write) ⇒
+            written -= 1
         }
 
         // drain the queue until it works again
@@ -1154,8 +1160,10 @@ class TcpConnectionSpec extends AkkaSpec("""
               case -1 ⇒
                 throw new IllegalStateException(
                   "Connection was closed unexpectedly with remaining bytes " + remaining)
-              case 0 ⇒ throw new IllegalStateException("Made no progress")
-              case other ⇒ other
+              case 0 ⇒
+                throw new IllegalStateException("Made no progress")
+              case other ⇒
+                other
             }
           } else
             0

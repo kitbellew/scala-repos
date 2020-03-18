@@ -30,8 +30,10 @@ case class User(
 
   override def equals(other: Any) =
     other match {
-      case u: User => id == u.id
-      case _       => false
+      case u: User =>
+        id == u.id
+      case _ =>
+        false
     }
 
   override def toString =

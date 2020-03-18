@@ -16,7 +16,8 @@ trait Hashes {
     */
   def hDel(key: ChannelBuffer, fields: Seq[ChannelBuffer]): Future[JLong] =
     doRequest(HDel(key, fields)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -26,7 +27,8 @@ trait Hashes {
     */
   def hExists(key: ChannelBuffer, field: ChannelBuffer): Future[JBoolean] =
     doRequest(HExists(key, field)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -38,8 +40,10 @@ trait Hashes {
       key: ChannelBuffer,
       field: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(HGet(key, field)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -51,7 +55,8 @@ trait Hashes {
     doRequest(HGetAll(key)) {
       case MBulkReply(messages) =>
         Future.value(returnPairs(ReplyFormat.toChannelBuffers(messages)))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -64,7 +69,8 @@ trait Hashes {
       field: ChannelBuffer,
       amount: Long): Future[JLong] =
     doRequest(HIncrBy(key, field, amount)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -76,7 +82,8 @@ trait Hashes {
     doRequest(HKeys(key)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -90,7 +97,8 @@ trait Hashes {
     doRequest(HMGet(key, fields)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -103,7 +111,8 @@ trait Hashes {
       key: ChannelBuffer,
       fv: Map[ChannelBuffer, ChannelBuffer]): Future[Unit] =
     doRequest(HMSet(key, fv)) {
-      case StatusReply(msg) => Future.Unit
+      case StatusReply(msg) =>
+        Future.Unit
     }
 
   /**
@@ -119,7 +128,8 @@ trait Hashes {
     doRequest(HScan(key, cursor, count, pattern)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -132,7 +142,8 @@ trait Hashes {
       field: ChannelBuffer,
       value: ChannelBuffer): Future[JLong] =
     doRequest(HSet(key, field, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -145,7 +156,8 @@ trait Hashes {
       field: ChannelBuffer,
       value: ChannelBuffer): Future[JLong] =
     doRequest(HSetNx(key, field, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -157,6 +169,7 @@ trait Hashes {
     doRequest(HVals(key)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 }

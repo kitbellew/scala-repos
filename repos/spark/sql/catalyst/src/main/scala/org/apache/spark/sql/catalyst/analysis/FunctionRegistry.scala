@@ -317,7 +317,8 @@ object FunctionRegistry {
   val builtin: SimpleFunctionRegistry = {
     val fr = new SimpleFunctionRegistry
     expressions.foreach {
-      case (name, (info, builder)) => fr.registerFunction(name, info, builder)
+      case (name, (info, builder)) =>
+        fr.registerFunction(name, info, builder)
     }
     fr
   }
@@ -337,8 +338,10 @@ object FunctionRegistry {
             varargCtor.get
               .newInstance(expressions)
               .asInstanceOf[Expression]) match {
-            case Success(e) => e
-            case Failure(e) => throw new AnalysisException(e.getMessage)
+            case Success(e) =>
+              e
+            case Failure(e) =>
+              throw new AnalysisException(e.getMessage)
           }
         } else {
           // Otherwise, find an ctor method that matches the number of arguments, and use that.
@@ -352,8 +355,10 @@ object FunctionRegistry {
                   s"Invalid number of arguments for function $name")
             }
           Try(f.newInstance(expressions: _*).asInstanceOf[Expression]) match {
-            case Success(e) => e
-            case Failure(e) => throw new AnalysisException(e.getMessage)
+            case Success(e) =>
+              e
+            case Failure(e) =>
+              throw new AnalysisException(e.getMessage)
           }
         }
       }

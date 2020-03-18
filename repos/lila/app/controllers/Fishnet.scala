@@ -63,8 +63,10 @@ object Fishnet extends LilaController {
               }
               case Success(client) =>
                 f(data)(client).map {
-                  case Some(work) => Accepted(Json toJson work)
-                  case _          => NoContent
+                  case Some(work) =>
+                    Accepted(Json toJson work)
+                  case _ =>
+                    NoContent
                 }
             }
         )

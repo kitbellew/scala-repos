@@ -9,7 +9,8 @@ class Bob[K[_]] {
             }
           ) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 }
 

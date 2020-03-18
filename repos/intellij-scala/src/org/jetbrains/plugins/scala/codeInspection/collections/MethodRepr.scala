@@ -25,8 +25,10 @@ object MethodRepr {
       case call: ScMethodCall =>
         val args =
           call.args match {
-            case exprList: ScArgumentExprList => exprList.exprs.map(stripped)
-            case _                            => Nil
+            case exprList: ScArgumentExprList =>
+              exprList.exprs.map(stripped)
+            case _ =>
+              Nil
           }
         call.getEffectiveInvokedExpr match {
           case baseExpr: ScExpression
@@ -38,16 +40,21 @@ object MethodRepr {
             genericCall.referencedExpr match {
               case ref: ScReferenceExpression =>
                 Some(expr, ref.qualifier, Some(ref), args)
-              case other => Some(expr, None, None, args)
+              case other =>
+                Some(expr, None, None, args)
             }
-          case methCall: ScMethodCall => Some(expr, Some(methCall), None, args)
-          case other                  => Some(expr, None, None, args)
+          case methCall: ScMethodCall =>
+            Some(expr, Some(methCall), None, args)
+          case other =>
+            Some(expr, None, None, args)
         }
       case infix: ScInfixExpr =>
         val args =
           infix.getArgExpr match {
-            case tuple: ScTuple => tuple.exprs
-            case _              => Seq(infix.getArgExpr)
+            case tuple: ScTuple =>
+              tuple.exprs
+            case _ =>
+              Seq(infix.getArgExpr)
           }
         Some(
           expr,
@@ -68,24 +75,33 @@ object MethodRepr {
           Seq())
       case refExpr: ScReferenceExpression =>
         refExpr.getParent match {
-          case _: ScGenericCall                            => None
-          case mc: ScMethodCall if !mc.isApplyOrUpdateCall => None
-          case ScInfixExpr(_, `refExpr`, _)                => None
-          case ScPostfixExpr(_, `refExpr`)                 => None
-          case ScPrefixExpr(`refExpr`, _)                  => None
-          case _                                           => Some(expr, refExpr.qualifier, Some(refExpr), Seq())
+          case _: ScGenericCall =>
+            None
+          case mc: ScMethodCall if !mc.isApplyOrUpdateCall =>
+            None
+          case ScInfixExpr(_, `refExpr`, _) =>
+            None
+          case ScPostfixExpr(_, `refExpr`) =>
+            None
+          case ScPrefixExpr(`refExpr`, _) =>
+            None
+          case _ =>
+            Some(expr, refExpr.qualifier, Some(refExpr), Seq())
         }
       case genCall: ScGenericCall =>
         genCall.getParent match {
-          case mc: ScMethodCall if !mc.isApplyOrUpdateCall => None
+          case mc: ScMethodCall if !mc.isApplyOrUpdateCall =>
+            None
           case _ =>
             genCall.referencedExpr match {
               case ref: ScReferenceExpression =>
                 Some(genCall, ref.qualifier, Some(ref), Seq.empty)
-              case other => Some(genCall, None, None, Seq.empty)
+              case other =>
+                Some(genCall, None, None, Seq.empty)
             }
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -110,8 +126,9 @@ object MethodSeq {
           optionalBase match {
             case Some(ScParenthesisedExpr(inner)) =>
               extractMethods(stripped(inner))
-            case Some(expression) => extractMethods(expression)
-            case _                =>
+            case Some(expression) =>
+              extractMethods(expression)
+            case _ =>
           }
         case _ =>
       }

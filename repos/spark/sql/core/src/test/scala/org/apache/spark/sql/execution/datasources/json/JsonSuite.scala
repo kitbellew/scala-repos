@@ -1251,7 +1251,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       val v5 =
         try values(3).toInt
         catch {
-          case _: NumberFormatException => null
+          case _: NumberFormatException =>
+            null
         }
       Row(
         values(0).toInt,
@@ -1288,7 +1289,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       val v4 =
         try values(3).toInt
         catch {
-          case _: NumberFormatException => null
+          case _: NumberFormatException =>
+            null
         }
       Row(Row(values(0).toInt, values(2).toBoolean), Map(values(1) -> v4))
     }

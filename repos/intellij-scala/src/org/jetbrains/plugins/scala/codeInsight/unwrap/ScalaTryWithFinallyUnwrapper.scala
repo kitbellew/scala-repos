@@ -16,7 +16,8 @@ class ScalaTryWithFinallyUnwrapper extends ScalaUnwrapper {
       case ScTryStmt(tryBl, _, Some(finBl))
           if finBl.expression.isDefined && (tryBl == e || finBl == e) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
@@ -40,6 +41,7 @@ class ScalaTryWithFinallyUnwrapper extends ScalaUnwrapper {
       case stmt: ScTryStmt =>
         super.collectAffectedElements(e, toExtract)
         stmt
-      case _ => e
+      case _ =>
+        e
     }
 }

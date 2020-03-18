@@ -28,6 +28,7 @@ class Test {
     import scala.util._
   }
   1 match {
-    case 1 => import scala.concurrent._
+    case 1 =>
+      import scala.concurrent._
   }
 }

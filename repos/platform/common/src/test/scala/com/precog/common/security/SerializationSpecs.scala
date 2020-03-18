@@ -93,7 +93,8 @@ class SerializationSpecs extends Specification {
               false)
           )
 
-        case Failure(error) => throw new Exception(error.toString)
+        case Failure(error) =>
+          throw new Exception(error.toString)
       }
     }
 
@@ -331,7 +332,8 @@ class SerializationSpecs extends Specification {
     "Deserialize NewGrantRequest without parentIds" in {
       (JObject("permissions" -> JArray()))
         .validated[v1.NewGrantRequest] must beLike {
-        case Success(_) => ok
+        case Success(_) =>
+          ok
       }
     }
   }
@@ -344,7 +346,8 @@ class SerializationSpecs extends Specification {
           "path" -> JString("/test/"),
           "data" -> JObject("test" -> JNum(1)))
       ).validated[Ingest] must beLike {
-        case Success(_) => ok
+        case Success(_) =>
+          ok
       }
     }
 
@@ -356,7 +359,8 @@ class SerializationSpecs extends Specification {
           "data" -> JObject("test" -> JNum(1)),
           "metadata" -> JArray())
       ).validated[Ingest] must beLike {
-        case Success(_) => ok
+        case Success(_) =>
+          ok
       }
     }
   }
@@ -365,14 +369,16 @@ class SerializationSpecs extends Specification {
     "Handle V0 format" in {
       JObject("tokenId" -> JString("1234"), "path" -> JString("/test/"))
         .validated[Archive] must beLike {
-        case Success(_) => ok
+        case Success(_) =>
+          ok
       }
     }
 
     "Handle V1 format" in {
       JObject("apiKey" -> JString("1234"), "path" -> JString("/test/"))
         .validated[Archive] must beLike {
-        case Success(_) => ok
+        case Success(_) =>
+          ok
       }
     }
   }

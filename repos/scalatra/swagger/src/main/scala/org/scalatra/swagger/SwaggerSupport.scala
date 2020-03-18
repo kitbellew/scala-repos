@@ -110,7 +110,8 @@ object SwaggerSupportSyntax {
       def optional(builder: Builder => Builder): Builder =
         try builder(this)
         catch {
-          case e: Exception => this
+          case e: Exception =>
+            this
         }
 
       // appends additional params as a query string
@@ -260,13 +261,16 @@ object SwaggerSupportSyntax {
       dataType match {
         case dt: ValueDataType =>
           dataType(ContainerDataType("List", Some(dt), uniqueItems = false))
-        case _ => this
+        case _ =>
+          this
       }
     }
     def singleValued: this.type = {
       dataType match {
-        case ContainerDataType(_, Some(dataType), _) => this.dataType(dataType)
-        case _                                       => this
+        case ContainerDataType(_, Some(dataType), _) =>
+          this.dataType(dataType)
+        case _ =>
+          this
       }
     }
 
@@ -497,7 +501,8 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
             "The swagger support only works for servlets or filters at this time.")
       }
     } catch {
-      case e: Throwable => e.printStackTrace()
+      case e: Throwable =>
+        e.printStackTrace()
     }
 
   }
@@ -679,9 +684,11 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
             new SinatraSwaggerGenerator(sin).toSwaggerPath
           case rails: RailsRouteMatcher =>
             new RailsSwaggerGenerator(rails).toSwaggerPath
-          case path: PathPatternRouteMatcher => path.toString
+          case path: PathPatternRouteMatcher =>
+            path.toString
         } getOrElse ""
-      case _ => ""
+      case _ =>
+        ""
     }
 
   protected def swaggerEndpointEntries[T <: SwaggerOperation](

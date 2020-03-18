@@ -4,7 +4,8 @@ object Test {
     try {
       throw new RuntimeException
     } catch {
-      case _: Throwable => bar
+      case _: Throwable =>
+        bar
     } finally {
       bar
     }
@@ -15,7 +16,8 @@ object Test {
     try {
       throw new RuntimeException
     } catch {
-      case _: Throwable => baz
+      case _: Throwable =>
+        baz
     } finally {
       ???
     }
@@ -51,7 +53,8 @@ object Test {
         try {
           throw new RuntimeException
         } catch {
-          case _: Throwable => bar(i - 1)
+          case _: Throwable =>
+            bar(i - 1)
         }
       )
   }

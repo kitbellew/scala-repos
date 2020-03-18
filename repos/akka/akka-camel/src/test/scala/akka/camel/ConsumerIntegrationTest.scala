@@ -50,7 +50,8 @@ class ConsumerIntegrationTest
         new Consumer {
           def endpointUri = "direct:a1"
           def receive = {
-            case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
+            case m: CamelMessage ⇒
+              sender() ! "received " + m.bodyAs[String]
           }
         },
         name = "direct-a1")
@@ -90,8 +91,10 @@ class ConsumerIntegrationTest
           def endpointUri = "direct:a2"
 
           def receive = {
-            case "throw" ⇒ throw new TestException("")
-            case m: CamelMessage ⇒ sender() ! "received " + m.bodyAs[String]
+            case "throw" ⇒
+              throw new TestException("")
+            case m: CamelMessage ⇒
+              sender() ! "received " + m.bodyAs[String]
           }
 
           override def postRestart(reason: Throwable) {
@@ -179,7 +182,8 @@ class ConsumerIntegrationTest
         new ManualAckConsumer() {
           def endpointUri = "direct:manual-ack"
           def receive = {
-            case _ ⇒ sender() ! Ack
+            case _ ⇒
+              sender() ! Ack
           }
         },
         name = "direct-manual-ack-1")
@@ -197,7 +201,8 @@ class ConsumerIntegrationTest
         new ManualAckConsumer() {
           def endpointUri = "direct:manual-ack"
           def receive = {
-            case _ ⇒ sender() ! Failure(someException)
+            case _ ⇒
+              sender() ! Failure(someException)
           }
         },
         name = "direct-manual-ack-2")
@@ -257,7 +262,8 @@ class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
 class ErrorRespondingConsumer(override val endpointUri: String)
     extends Consumer {
   def receive = {
-    case msg: CamelMessage ⇒ throw new TestException("Error!")
+    case msg: CamelMessage ⇒
+      throw new TestException("Error!")
   }
   override def onRouteDefinition =
     (rd: RouteDefinition) ⇒ {
@@ -293,7 +299,8 @@ class FailingOnceConsumer(override val endpointUri: String) extends Consumer {
 class TestActor(uri: String = "file://target/abcde") extends Consumer {
   def endpointUri = uri
   def receive = {
-    case _ ⇒ /* do nothing */
+    case _ ⇒
+    /* do nothing */
   }
 }
 

@@ -175,11 +175,16 @@ object GraphStages {
             promise.success(
               new Breaker(
                 getAsyncCallback[Operation] {
-                  case Complete ⇒ complete(shape.out)
-                  case Cancel ⇒ cancel(shape.in)
-                  case Fail(ex) ⇒ fail(shape.out, ex)
-                  case CompleteAndCancel ⇒ completeStage()
-                  case FailAndCancel(ex) ⇒ failStage(ex)
+                  case Complete ⇒
+                    complete(shape.out)
+                  case Cancel ⇒
+                    cancel(shape.in)
+                  case Fail(ex) ⇒
+                    fail(shape.out, ex)
+                  case CompleteAndCancel ⇒
+                    completeStage()
+                  case FailAndCancel(ex) ⇒
+                    failStage(ex)
                 }.invoke))
           }
         }
@@ -255,8 +260,10 @@ object GraphStages {
                   case Fail(ex) ⇒
                     fail(shape.out1, ex)
                     fail(shape.out2, ex)
-                  case CompleteAndCancel ⇒ completeStage()
-                  case FailAndCancel(ex) ⇒ failStage(ex)
+                  case CompleteAndCancel ⇒
+                    completeStage()
+                  case FailAndCancel(ex) ⇒
+                    failStage(ex)
                 }.invoke))
           }
         }
@@ -454,7 +461,8 @@ object GraphStages {
                 getAsyncCallback[Try[T]] {
                   case scala.util.Success(v) ⇒
                     emit(out, v, () ⇒ completeStage())
-                  case scala.util.Failure(t) ⇒ failStage(t)
+                  case scala.util.Failure(t) ⇒
+                    failStage(t)
                 }.invoke _
               future.onComplete(cb)(
                 ExecutionContexts.sameThreadExecutionContext)

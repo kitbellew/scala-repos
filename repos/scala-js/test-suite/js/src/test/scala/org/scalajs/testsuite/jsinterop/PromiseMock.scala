@@ -90,8 +90,10 @@ object PromiseMock {
 
     private def isNotAnObject(x: Any): Boolean =
       x match {
-        case null | () | _: Double | _: Boolean | _: String => true
-        case _                                              => false
+        case null | () | _: Double | _: Boolean | _: String =>
+          true
+        case _ =>
+          false
       }
 
     private def isCallable(x: Any): Boolean =
@@ -100,8 +102,10 @@ object PromiseMock {
     private def throwAny(e: Any): Nothing = {
       throw (
         e match {
-          case th: Throwable => th
-          case _             => js.JavaScriptException(e)
+          case th: Throwable =>
+            th
+          case _ =>
+            js.JavaScriptException(e)
         }
       )
     }
@@ -113,8 +117,10 @@ object PromiseMock {
         case th: Throwable =>
           catchBody(
             th match {
-              case js.JavaScriptException(e) => e
-              case _                         => th
+              case js.JavaScriptException(e) =>
+                e
+              case _ =>
+                th
             })
       }
     }

@@ -49,13 +49,15 @@ class Interner[T] extends (T => T) with Serializable {
 
   def internKeys[V](c: scala.collection.Map[T, V]) = {
     Map[T, V]() ++ c.map {
-      case (k, v) => (intern(k), v)
+      case (k, v) =>
+        (intern(k), v)
     }
   }
 
   def internValues[K](c: scala.collection.Map[K, T]) = {
     Map[K, T]() ++ c.map {
-      case (k, v) => (k, intern(v))
+      case (k, v) =>
+        (k, intern(v))
     }
   }
 

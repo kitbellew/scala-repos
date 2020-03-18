@@ -89,7 +89,8 @@ object Test extends App {
     val tenPlus = ten map (_ + 1)
     assert(
       (ten zip tenPlus) forall {
-        case (x, y) => x + 1 == y
+        case (x, y) =>
+          x + 1 == y
       })
     val dble = ten flatMap (x => List(x, x))
     assert(dble.distinct == ten)
@@ -107,7 +108,8 @@ object Test extends App {
     assert((tenten map (_._2)) == ten)
     assert(
       ten.zipWithIndex forall {
-        case (x, y) => x == y + 1
+        case (x, y) =>
+          x == y + 1
       })
     assert(ten.segmentLength(_ <= 8, 4) == 4, ten.segmentLength(_ <= 8, 4))
     assert(ten.prefixLength(_ <= 8) == 8)
@@ -216,7 +218,8 @@ object Test extends App {
     assert(m1 == m3)
     println(m3.toList.sorted)
     val m4 = m3 filterNot {
-      case (k, v) => k != "A"
+      case (k, v) =>
+        k != "A"
     }
     assert(m4.size == 1, m4)
   }

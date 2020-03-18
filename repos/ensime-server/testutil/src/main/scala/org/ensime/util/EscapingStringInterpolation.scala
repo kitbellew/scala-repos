@@ -17,8 +17,10 @@ object EscapingStringInterpolation {
     private val delegate = new scala.StringContext(parts: _*)
     def s(args: Any*): String = {
       val hijacked = args.map {
-        case f: File => f.toString.replace("""\""", """\\""")
-        case other   => other
+        case f: File =>
+          f.toString.replace("""\""", """\\""")
+        case other =>
+          other
       }
       delegate.s(hijacked: _*)
     }

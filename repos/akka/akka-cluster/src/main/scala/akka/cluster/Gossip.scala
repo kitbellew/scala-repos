@@ -190,7 +190,8 @@ private[cluster] final case class Gossip(
     // status is in the seen table, i.e. has seen this version
     val unreachable =
       reachabilityExcludingDownedObservers.allUnreachableOrTerminated.collect {
-        case node if (node != selfUniqueAddress) ⇒ member(node)
+        case node if (node != selfUniqueAddress) ⇒
+          member(node)
       }
     unreachable.forall(m ⇒
       Gossip.convergenceSkipUnreachableWithMemberStatus(m.status)) &&
@@ -200,7 +201,8 @@ private[cluster] final case class Gossip(
 
   lazy val reachabilityExcludingDownedObservers: Reachability = {
     val downed = members.collect {
-      case m if m.status == Down ⇒ m
+      case m if m.status == Down ⇒
+        m
     }
     overview.reachability.removeObservers(downed.map(_.uniqueAddress))
   }

@@ -103,7 +103,8 @@ class Partition(
   def getOrCreateReplica(replicaId: Int = localBrokerId): Replica = {
     val replicaOpt = getReplica(replicaId)
     replicaOpt match {
-      case Some(replica) => replica
+      case Some(replica) =>
+        replica
       case None =>
         if (isReplicaLocal(replicaId)) {
           val config = LogConfig.fromProps(
@@ -148,7 +149,8 @@ class Partition(
           getReplica(localBrokerId)
         else
           None
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -335,7 +337,8 @@ class Partition(
             // since the replica maybe now be in the ISR and its LEO has just incremented
             maybeIncrementLeaderHW(leaderReplica)
 
-          case None => false // nothing to do if no longer leader
+          case None =>
+            false // nothing to do if no longer leader
         }
       }
 
@@ -464,7 +467,8 @@ class Partition(
               false
             }
 
-          case None => false // do nothing if no longer leader
+          case None =>
+            false // do nothing if no longer leader
         }
       }
 

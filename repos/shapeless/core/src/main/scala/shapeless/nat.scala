@@ -76,7 +76,8 @@ class NatMacros(val c: whitebox.Context) extends NatMacroDefns {
 
   def materializeWidened(i: Tree): Tree =
     i match {
-      case NatLiteral(n) => mkNatValue(n)
+      case NatLiteral(n) =>
+        mkNatValue(n)
       case _ =>
         c.abort(
           c.enclosingPosition,
@@ -92,8 +93,10 @@ trait NatMacroDefns {
   object NatLiteral {
     def unapply(i: Tree): Option[Int] =
       i match {
-        case Literal(Constant(n: Int)) if n >= 0 => Some(n)
-        case _                                   => None
+        case Literal(Constant(n: Int)) if n >= 0 =>
+          Some(n)
+        case _ =>
+          None
       }
   }
 

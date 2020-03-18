@@ -62,7 +62,8 @@ private[this] class MVarImpl[A](
         p <- readLatch.currentPhase
         r <- reader
         a <- r match {
-          case Some(a) => IO(a)
+          case Some(a) =>
+            IO(a)
           case None =>
             for {
               _ <- readLatch.awaitPhase(

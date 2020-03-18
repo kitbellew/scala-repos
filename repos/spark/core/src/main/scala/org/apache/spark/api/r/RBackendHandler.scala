@@ -231,11 +231,16 @@ private[r] class RBackendHandler(server: RBackend)
             // Convert native parameters to Object types as args is Array[Object] here
             if (parameterType.isPrimitive) {
               parameterWrapperType = parameterType match {
-                case java.lang.Integer.TYPE => classOf[java.lang.Integer]
-                case java.lang.Long.TYPE    => classOf[java.lang.Integer]
-                case java.lang.Double.TYPE  => classOf[java.lang.Double]
-                case java.lang.Boolean.TYPE => classOf[java.lang.Boolean]
-                case _                      => parameterType
+                case java.lang.Integer.TYPE =>
+                  classOf[java.lang.Integer]
+                case java.lang.Long.TYPE =>
+                  classOf[java.lang.Integer]
+                case java.lang.Double.TYPE =>
+                  classOf[java.lang.Double]
+                case java.lang.Boolean.TYPE =>
+                  classOf[java.lang.Boolean]
+                case _ =>
+                  parameterType
               }
             }
             if ((parameterType.isPrimitive || args(i) != null) &&

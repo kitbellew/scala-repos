@@ -45,9 +45,12 @@ object SexpNumber {
   def apply(n: Long) = new SexpNumber(BigDecimal(n))
   def apply(n: Double) =
     n match {
-      case _ if n.isNaN      => SexpNil
-      case _ if n.isInfinity => SexpNil
-      case _                 => new SexpNumber(BigDecimal(n))
+      case _ if n.isNaN =>
+        SexpNil
+      case _ if n.isInfinity =>
+        SexpNil
+      case _ =>
+        new SexpNumber(BigDecimal(n))
     }
   def apply(n: BigInt) = new SexpNumber(BigDecimal(n))
   def apply(n: String) = new SexpNumber(BigDecimal(n))
@@ -60,7 +63,8 @@ object SexpList {
 
   def apply(els: List[Sexp]): Sexp =
     els.foldRight(SexpNil: Sexp) {
-      case (head, tail) => SexpCons(head, tail)
+      case (head, tail) =>
+        SexpCons(head, tail)
     }
 
   def unapply(sexp: Sexp): Option[List[Sexp]] =
@@ -69,9 +73,12 @@ object SexpList {
     else {
       def rec(s: Sexp): List[Sexp] =
         s match {
-          case SexpNil            => Nil
-          case SexpCons(car, cdr) => car :: rec(cdr)
-          case _                  => throw new IllegalStateException("Not a list: " + s)
+          case SexpNil =>
+            Nil
+          case SexpCons(car, cdr) =>
+            car :: rec(cdr)
+          case _ =>
+            throw new IllegalStateException("Not a list: " + s)
         }
       val res = rec(sexp)
       if (res.isEmpty)
@@ -101,7 +108,8 @@ object SexpData {
         "keys must start with ':' " + mapped.keys)
       SexpList(
         kvs.flatMap {
-          case (k, v) => k :: v :: Nil
+          case (k, v) =>
+            k :: v :: Nil
         }(breakOut): List[Sexp])
     }
 
@@ -129,6 +137,7 @@ object SexpData {
         else
           Some(props)
 
-      case _ => None
+      case _ =>
+        None
     }
 }

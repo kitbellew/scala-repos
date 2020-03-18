@@ -177,7 +177,8 @@ object SbtExternalSystemManager {
             .isInstanceOf[AndroidSdkType]
             .option(Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
         } catch {
-          case _: NoClassDefFoundError => None
+          case _: NoClassDefFoundError =>
+            None
         }
       }
       .getOrElse(Map.empty)

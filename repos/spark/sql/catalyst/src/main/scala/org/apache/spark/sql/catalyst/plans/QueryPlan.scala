@@ -82,11 +82,13 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
       case eq @ EqualTo(l: Attribute, r: Attribute) =>
         inferredConstraints ++= (constraints - eq).map(
           _ transform {
-            case a: Attribute if a.semanticEquals(l) => r
+            case a: Attribute if a.semanticEquals(l) =>
+              r
           })
         inferredConstraints ++= (constraints - eq).map(
           _ transform {
-            case a: Attribute if a.semanticEquals(r) => l
+            case a: Attribute if a.semanticEquals(r) =>
+              l
           })
       case _ => // No inference
     }
@@ -174,13 +176,20 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
 
     def recursiveTransform(arg: Any): AnyRef =
       arg match {
-        case e: Expression       => transformExpressionDown(e)
-        case Some(e: Expression) => Some(transformExpressionDown(e))
-        case m: Map[_, _]        => m
-        case d: DataType         => d // Avoid unpacking Structs
-        case seq: Traversable[_] => seq.map(recursiveTransform)
-        case other: AnyRef       => other
-        case null                => null
+        case e: Expression =>
+          transformExpressionDown(e)
+        case Some(e: Expression) =>
+          Some(transformExpressionDown(e))
+        case m: Map[_, _] =>
+          m
+        case d: DataType =>
+          d // Avoid unpacking Structs
+        case seq: Traversable[_] =>
+          seq.map(recursiveTransform)
+        case other: AnyRef =>
+          other
+        case null =>
+          null
       }
 
     val newArgs = productIterator.map(recursiveTransform).toArray
@@ -214,13 +223,20 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
 
     def recursiveTransform(arg: Any): AnyRef =
       arg match {
-        case e: Expression       => transformExpressionUp(e)
-        case Some(e: Expression) => Some(transformExpressionUp(e))
-        case m: Map[_, _]        => m
-        case d: DataType         => d // Avoid unpacking Structs
-        case seq: Traversable[_] => seq.map(recursiveTransform)
-        case other: AnyRef       => other
-        case null                => null
+        case e: Expression =>
+          transformExpressionUp(e)
+        case Some(e: Expression) =>
+          Some(transformExpressionUp(e))
+        case m: Map[_, _] =>
+          m
+        case d: DataType =>
+          d // Avoid unpacking Structs
+        case seq: Traversable[_] =>
+          seq.map(recursiveTransform)
+        case other: AnyRef =>
+          other
+        case null =>
+          null
       }
 
     val newArgs = productIterator.map(recursiveTransform).toArray
@@ -246,16 +262,23 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     // Recursively find all expressions from a traversable.
     def seqToExpressions(seq: Traversable[Any]): Traversable[Expression] =
       seq.flatMap {
-        case e: Expression     => e :: Nil
-        case s: Traversable[_] => seqToExpressions(s)
-        case other             => Nil
+        case e: Expression =>
+          e :: Nil
+        case s: Traversable[_] =>
+          seqToExpressions(s)
+        case other =>
+          Nil
       }
 
     productIterator.flatMap {
-      case e: Expression       => e :: Nil
-      case Some(e: Expression) => e :: Nil
-      case seq: Traversable[_] => seqToExpressions(seq)
-      case other               => Nil
+      case e: Expression =>
+        e :: Nil
+      case Some(e: Expression) =>
+        e :: Nil
+      case seq: Traversable[_] =>
+        seqToExpressions(seq)
+      case other =>
+        Nil
     }.toSeq
   }
 
@@ -288,7 +311,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
   def subqueries: Seq[PlanType] = {
     expressions.flatMap(
       _.collect {
-        case e: SubqueryExpression => e.plan.asInstanceOf[PlanType]
+        case e: SubqueryExpression =>
+          e.plan.asInstanceOf[PlanType]
       })
   }
 
@@ -348,18 +372,26 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
   protected lazy val cleanArgs: Seq[Any] = {
     def cleanArg(arg: Any): Any =
       arg match {
-        case e: Expression => cleanExpression(e).canonicalized
-        case other         => other
+        case e: Expression =>
+          cleanExpression(e).canonicalized
+        case other =>
+          other
       }
 
     productIterator.map {
       // Children are checked using sameResult above.
-      case tn: TreeNode[_] if containsChild(tn) => null
-      case e: Expression                        => cleanArg(e)
-      case s: Option[_]                         => s.map(cleanArg)
-      case s: Seq[_]                            => s.map(cleanArg)
-      case m: Map[_, _]                         => m.mapValues(cleanArg)
-      case other                                => other
+      case tn: TreeNode[_] if containsChild(tn) =>
+        null
+      case e: Expression =>
+        cleanArg(e)
+      case s: Option[_] =>
+        s.map(cleanArg)
+      case s: Seq[_] =>
+        s.map(cleanArg)
+      case m: Map[_, _] =>
+        m.mapValues(cleanArg)
+      case other =>
+        other
     }.toSeq
   }
 }

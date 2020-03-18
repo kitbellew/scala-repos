@@ -153,7 +153,8 @@ private[transport] class AkkaProtocolManager(
   // remoting itself. Hence the strategy Stop.
   override val supervisorStrategy =
     OneForOneStrategy() {
-      case NonFatal(_) ⇒ Stop
+      case NonFatal(_) ⇒
+        Stop
     }
 
   private def actorNameFor(remoteAddress: Address): String =
@@ -461,7 +462,8 @@ private[transport] class ProtocolStateActor(
       statusPromise.failure(new TimeoutException(errMsg))
       stop(FSM.Failure(TimeoutReason(errMsg)))
 
-    case _ ⇒ stay()
+    case _ ⇒
+      stay()
 
   }
 
@@ -507,7 +509,8 @@ private[transport] class ProtocolStateActor(
           InboundUnassociated(associationHandler, wrappedHandle)) ⇒
       decodePdu(p) match {
         // After receiving Disassociate we MUST NOT send back a Disassociate (loop)
-        case Disassociate(info) ⇒ stop(FSM.Failure(info))
+        case Disassociate(info) ⇒
+          stop(FSM.Failure(info))
 
         // Incoming association -- implicitly ACK by a heartbeat
         case Associate(info) ⇒
@@ -591,7 +594,8 @@ private[transport] class ProtocolStateActor(
                 s"unhandled message in state Open(InboundPayload) with type [${safeClassName(msg)}]")
           }
 
-        case _ ⇒ stay()
+        case _ ⇒
+          stay()
       }
 
     case Event(HeartbeatTimer, AssociatedWaitHandler(_, wrappedHandle, _)) ⇒
@@ -602,8 +606,10 @@ private[transport] class ProtocolStateActor(
     case Event(DisassociateUnderlying(info: DisassociateInfo), _) ⇒
       val handle =
         stateData match {
-          case ListenerReady(_, wrappedHandle) ⇒ wrappedHandle
-          case AssociatedWaitHandler(_, wrappedHandle, _) ⇒ wrappedHandle
+          case ListenerReady(_, wrappedHandle) ⇒
+            wrappedHandle
+          case AssociatedWaitHandler(_, wrappedHandle, _) ⇒
+            wrappedHandle
           case msg ⇒
             throw new AkkaProtocolException(
               s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
@@ -653,8 +659,10 @@ private[transport] class ProtocolStateActor(
 
   private def safeClassName(obj: AnyRef): String =
     obj match {
-      case null ⇒ "null"
-      case _ ⇒ obj.getClass.getName
+      case null ⇒
+        "null"
+      case _ ⇒
+        obj.getClass.getName
     }
 
   override def postStop(): Unit = {
@@ -669,7 +677,8 @@ private[transport] class ProtocolStateActor(
           OutboundUnassociated(remoteAddress, statusPromise, transport)) ⇒
       statusPromise.tryFailure(
         reason match {
-          case FSM.Failure(info: DisassociateInfo) ⇒ disassociateException(info)
+          case FSM.Failure(info: DisassociateInfo) ⇒
+            disassociateException(info)
           case _ ⇒
             new AkkaProtocolException(
               "Transport disassociated before handshake finished")
@@ -702,8 +711,10 @@ private[transport] class ProtocolStateActor(
       // registration immediately signal a disassociate
       val disassociateNotification =
         reason match {
-          case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
-          case _ ⇒ Disassociated(Unknown)
+          case FSM.Failure(info: DisassociateInfo) ⇒
+            Disassociated(info)
+          case _ ⇒
+            Disassociated(Unknown)
         }
       handlerFuture foreach {
         _ notify disassociateNotification
@@ -713,8 +724,10 @@ private[transport] class ProtocolStateActor(
     case StopEvent(reason, _, ListenerReady(handler, wrappedHandle)) ⇒
       val disassociateNotification =
         reason match {
-          case FSM.Failure(info: DisassociateInfo) ⇒ Disassociated(info)
-          case _ ⇒ Disassociated(Unknown)
+          case FSM.Failure(info: DisassociateInfo) ⇒
+            Disassociated(info)
+          case _ ⇒
+            Disassociated(Unknown)
         }
       handler notify disassociateNotification
       wrappedHandle.disassociate()
@@ -744,7 +757,8 @@ private[transport] class ProtocolStateActor(
       case FSM.Failure(ForbiddenUidReason) ⇒ // no logging
       case FSM.Failure(TimeoutReason(errorMessage)) ⇒
         log.info(errorMessage)
-      case other ⇒ super.logTermination(reason)
+      case other ⇒
+        super.logTermination(reason)
     }
 
   private def listenForListenerRegistration(

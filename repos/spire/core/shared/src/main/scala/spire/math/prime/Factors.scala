@@ -27,14 +27,18 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   private[prime] def prod(m: Map[SafeLong, Int]): SafeLong =
     m.foldLeft(SafeLong.one) {
-      case (t, (p, e)) => t * p.pow(e)
+      case (t, (p, e)) =>
+        t * p.pow(e)
     }
 
   lazy val value: SafeLong =
     sign match {
-      case Positive => prod(factors)
-      case Zero     => SafeLong.zero
-      case Negative => -prod(factors)
+      case Positive =>
+        prod(factors)
+      case Zero =>
+        SafeLong.zero
+      case Negative =>
+        -prod(factors)
     }
 
   override def toString(): String = {
@@ -44,13 +48,17 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
       else
         factors.toSeq.sorted
           .map {
-            case (p, e) => s"$p^$e"
+            case (p, e) =>
+              s"$p^$e"
           }
           .mkString(" * ")
     sign match {
-      case Positive => s"($terms)"
-      case Zero     => "(0)"
-      case Negative => s"-($terms)"
+      case Positive =>
+        s"($terms)"
+      case Zero =>
+        "(0)"
+      case Negative =>
+        s"-($terms)"
     }
   }
 
@@ -138,7 +146,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
       sign,
       nn,
       dd.map {
-        case (p, e) => (p, -e)
+        case (p, e) =>
+          (p, -e)
       },
       cc)
   }
@@ -204,12 +213,15 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
     } else {
       val sign =
         lhs.sign match {
-          case Negative if (rhs & 1) == 0 => Positive
-          case sign                       => sign
+          case Negative if (rhs & 1) == 0 =>
+            Positive
+          case sign =>
+            sign
         }
       Factors(
         lhs.factors.map {
-          case (p, e) => (p, e * rhs)
+          case (p, e) =>
+            (p, e * rhs)
         },
         sign)
     }

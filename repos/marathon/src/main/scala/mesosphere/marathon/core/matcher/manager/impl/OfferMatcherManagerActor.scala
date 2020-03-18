@@ -163,7 +163,8 @@ private[impl] class OfferMatcherManagerActor private (
           r.hasDisk && r.getDisk.hasPersistence && r.getDisk.getPersistence.hasId)
         .map(_.getDisk.getPersistence.getId)
         .collect {
-          case LocalVolumeId(volumeId) => volumeId.appId
+          case LocalVolumeId(volumeId) =>
+            volumeId.appId
         }
         .toSet
     val (reserved, normal) = matchers.toSeq.partition(
@@ -311,7 +312,8 @@ private[impl] class OfferMatcherManagerActor private (
                 resendThisOffer = true)
           }
           .pipeTo(self)
-      case None => sendMatchResult(data, data.resendThisOffer)
+      case None =>
+        sendMatchResult(data, data.resendThisOffer)
     }
   }
 

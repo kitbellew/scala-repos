@@ -11,7 +11,8 @@ final object Test extends java.lang.Object with Application {
           scala.Tuple2.apply[java.lang.String, java.lang.String](
             "first: ".+(fst),
             " second: ".+(snd)))
-      case _ => scala.Predef.println(":(")
+      case _ =>
+        scala.Predef.println(":(")
     }
   Test.this.foo[Test.Foo, String, Int](
     { ((eta$0$1: Test.Foo) =>

@@ -190,9 +190,11 @@ class VersionedKeyValSource[K, V](
             val conf = new JobConf(m.jobConf)
             val store = sink.getStore(conf)
             store.hasVersion(version)
-          case _ => sys.error(s"Unknown mode $mode")
+          case _ =>
+            sys.error(s"Unknown mode $mode")
         }
-      case None => false
+      case None =>
+        false
     }
 
   override def createTap(readOrWrite: AccessMode)(implicit
@@ -201,8 +203,10 @@ class VersionedKeyValSource[K, V](
     mode match {
       case Hdfs(_strict, _config) =>
         readOrWrite match {
-          case Read  => CastHfsTap(source)
-          case Write => CastHfsTap(sink)
+          case Read =>
+            CastHfsTap(source)
+          case Write =>
+            CastHfsTap(sink)
         }
       case _ =>
         TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
@@ -299,11 +303,13 @@ class TypedRichPipeEx[K: Ordering, V: Monoid](pipe: TypedPipe[(K, V)])
         val oldPairs = TypedPipe
           .from[(K, V)](src.read, (0, 1))
           .map {
-            case (k, v) => (k, v, 0)
+            case (k, v) =>
+              (k, v, 0)
           }
 
         val newPairs = pipe.sumByLocalKeys.map {
-          case (k, v) => (k, v, 1)
+          case (k, v) =>
+            (k, v, 1)
         }
 
         (oldPairs ++ newPairs)

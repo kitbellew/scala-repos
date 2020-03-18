@@ -30,7 +30,8 @@ class PromiseRefSpec extends AkkaSpec with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case Request(replyTo) ⇒ replyTo ! Response
+              case Request(replyTo) ⇒
+                replyTo ! Response
             }
           }))
 
@@ -64,7 +65,8 @@ class PromiseRefSpec extends AkkaSpec with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case Response ⇒ promise.success(42)
+              case Response ⇒
+                promise.success(42)
             }
           }))
 
@@ -74,7 +76,8 @@ class PromiseRefSpec extends AkkaSpec with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case Request(replyTo) ⇒ replyTo ! Response
+              case Request(replyTo) ⇒
+                replyTo ! Response
             }
           }))
 

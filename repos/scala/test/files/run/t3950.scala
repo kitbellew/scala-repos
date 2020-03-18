@@ -5,8 +5,10 @@ object NegativeId extends Enumeration {
 
   def fromInt(id: Int) =
     values find (_.id == id) match {
-      case Some(v) => v
-      case None    => null
+      case Some(v) =>
+        v
+      case None =>
+        null
     }
 }
 

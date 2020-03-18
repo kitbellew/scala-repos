@@ -22,7 +22,8 @@ final class JsonView(getLightUser: String => Option[LightUser]) {
       "percentile" -> ratingDistribution.map { distrib =>
         lila.user.Stat
           .percentile(distrib, user.perfs(stat.perfType).intRating) match {
-          case (under, sum) => Math.round(under * 1000.0 / sum) / 10.0
+          case (under, sum) =>
+            Math.round(under * 1000.0 / sum) / 10.0
         }
       },
       "stat" -> stat.copy(playStreak = stat.playStreak.checkCurrent)

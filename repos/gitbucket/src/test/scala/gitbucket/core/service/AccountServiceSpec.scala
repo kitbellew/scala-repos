@@ -27,7 +27,8 @@ class AccountServiceSpec extends FunSuite with ServiceSpecBase {
                   false,
                   false)) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
     }
   }

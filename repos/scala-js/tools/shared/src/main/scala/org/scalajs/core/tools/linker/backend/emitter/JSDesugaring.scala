@@ -273,8 +273,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
       val newBody =
         transformStat(withReturn)(env) match {
-          case js.Block(stats :+ js.Return(js.Undefined())) => js.Block(stats)
-          case other                                        => other
+          case js.Block(stats :+ js.Return(js.Undefined())) =>
+            js.Block(stats)
+          case other =>
+            other
         }
 
       js.Function(newParams, js.Block(extractRestParam, newBody))
@@ -525,8 +527,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 }
                 val transformedName =
                   name match {
-                    case name: Ident      => transformIdent(name)
-                    case StringLiteral(s) => js.StringLiteral(s)
+                    case name: Ident =>
+                      transformIdent(name)
+                    case StringLiteral(s) =>
+                      js.StringLiteral(s)
                   }
                 val descriptor = js.ObjectConstr(
                   List(
@@ -616,7 +620,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           None
         else {
           tree match {
-            case tree: VarRef => Some(tree)
+            case tree: VarRef =>
+              Some(tree)
             case Select(RecordVarRef(VarRef(recIdent)), fieldIdent) =>
               implicit val pos = tree.pos
               Some(VarRef(makeRecordFieldIdent(recIdent, fieldIdent))(tree.tpe))
@@ -632,14 +637,18 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         makeStat: (List[Tree], Env) => js.Tree)(implicit env: Env): js.Tree = {
       val (argsNoSpread, argsWereSpread) =
         args.map {
-          case JSSpread(items) => (items, true)
-          case arg             => (arg, false)
+          case JSSpread(items) =>
+            (items, true)
+          case arg =>
+            (arg, false)
         }.unzip
 
       unnest(argsNoSpread) { (newArgsNoSpread, env) =>
         val newArgs = newArgsNoSpread.zip(argsWereSpread).map {
-          case (newItems, true) => JSSpread(newItems)(newItems.pos)
-          case (newArg, false)  => newArg
+          case (newItems, true) =>
+            JSSpread(newItems)(newItems.pos)
+          case (newArg, false) =>
+            newArg
         }
         makeStat(newArgs, env)
       }
@@ -798,7 +807,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     def unnest(arg: Tree)(makeStat: (Tree, Env) => js.Tree)(implicit
         env: Env): js.Tree = {
       unnest(List(arg)) {
-        case (List(newArg), env) => makeStat(newArg, env)
+        case (List(newArg), env) =>
+          makeStat(newArg, env)
       }
     }
 
@@ -806,7 +816,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     def unnest(lhs: Tree, rhs: Tree)(makeStat: (Tree, Tree, Env) => js.Tree)(
         implicit env: Env): js.Tree = {
       unnest(List(lhs, rhs)) {
-        case (List(newLhs, newRhs), env) => makeStat(newLhs, newRhs, env)
+        case (List(newLhs, newRhs), env) =>
+          makeStat(newLhs, newRhs, env)
       }
     }
 
@@ -834,9 +845,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       def test(tree: Tree): Boolean =
         tree match {
           // Atomic expressions
-          case _: Literal       => true
-          case _: This          => true
-          case _: JSLinkingInfo => true
+          case _: Literal =>
+            true
+          case _: This =>
+            true
+          case _: JSLinkingInfo =>
+            true
 
           // Vars (side-effect free, pure if immutable)
           case VarRef(name) =>
@@ -847,15 +861,22 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             allowSideEffects && test(qualifier)
 
           // Expressions preserving pureness
-          case Block(trees) => trees forall test
+          case Block(trees) =>
+            trees forall test
           case If(cond, thenp, elsep) =>
             test(cond) && test(thenp) && test(elsep)
-          case BinaryOp(_, lhs, rhs)   => test(lhs) && test(rhs)
-          case UnaryOp(_, lhs)         => test(lhs)
-          case JSBinaryOp(_, lhs, rhs) => test(lhs) && test(rhs)
-          case JSUnaryOp(_, lhs)       => test(lhs)
-          case ArrayLength(array)      => test(array)
-          case IsInstanceOf(expr, _)   => test(expr)
+          case BinaryOp(_, lhs, rhs) =>
+            test(lhs) && test(rhs)
+          case UnaryOp(_, lhs) =>
+            test(lhs)
+          case JSBinaryOp(_, lhs, rhs) =>
+            test(lhs) && test(rhs)
+          case JSUnaryOp(_, lhs) =>
+            test(lhs)
+          case ArrayLength(array) =>
+            test(array)
+          case IsInstanceOf(expr, _) =>
+            test(expr)
 
           // Expressions preserving side-effect freedom
           case NewArray(tpe, lengths) =>
@@ -934,7 +955,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           // Non-expressions
-          case _ => false
+          case _ =>
+            false
         }
       test(tree)
     }
@@ -1158,8 +1180,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 labeledExprLHSes = labeledExprLHSes + (label -> newLhs)
                 try {
                   newLhs match {
-                    case Return(_, _) => redo(body)
-                    case _            => js.Labeled(label, pushLhsInto(newLhs, body))
+                    case Return(_, _) =>
+                      redo(body)
+                    case _ =>
+                      js.Labeled(label, pushLhsInto(newLhs, body))
                   }
                 } finally {
                   labeledExprLHSes = savedMap
@@ -1595,8 +1619,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       closeReversedPartUnderConstruction()
 
       reversedParts match {
-        case Nil        => JSArrayConstr(Nil)
-        case List(part) => part
+        case Nil =>
+          JSArrayConstr(Nil)
+        case List(part) =>
+          part
         case _ =>
           val partHead :: partTail = reversedParts.reverse
           JSBracketMethodApply(partHead, StringLiteral("concat"), partTail)
@@ -1705,13 +1731,18 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           import UnaryOp._
           val newLhs = transformExpr(lhs)
           (op: @switch) match {
-            case Boolean_!   => js.UnaryOp(JSUnaryOp.!, newLhs)
-            case DoubleToInt => genCallHelper("doubleToInt", newLhs)
+            case Boolean_! =>
+              js.UnaryOp(JSUnaryOp.!, newLhs)
+            case DoubleToInt =>
+              genCallHelper("doubleToInt", newLhs)
 
-            case LongToInt    => genLongMethodApply(newLhs, LongImpl.toInt)
-            case LongToDouble => genLongMethodApply(newLhs, LongImpl.toDouble)
+            case LongToInt =>
+              genLongMethodApply(newLhs, LongImpl.toInt)
+            case LongToDouble =>
+              genLongMethodApply(newLhs, LongImpl.toDouble)
 
-            case DoubleToFloat => genFround(newLhs)
+            case DoubleToFloat =>
+              genFround(newLhs)
 
             case IntToLong =>
               genNewLong(LongImpl.initFromInt, newLhs)
@@ -1755,85 +1786,133 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   newRhs)
               }
 
-            case Int_+ => or0(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
+            case Int_+ =>
+              or0(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
             case Int_- =>
               lhs match {
-                case IntLiteral(0) => or0(js.UnaryOp(JSUnaryOp.-, newRhs))
-                case _             => or0(js.BinaryOp(JSBinaryOp.-, newLhs, newRhs))
+                case IntLiteral(0) =>
+                  or0(js.UnaryOp(JSUnaryOp.-, newRhs))
+                case _ =>
+                  or0(js.BinaryOp(JSBinaryOp.-, newLhs, newRhs))
               }
-            case Int_* => genCallHelper("imul", newLhs, newRhs)
-            case Int_/ => or0(js.BinaryOp(JSBinaryOp./, newLhs, newRhs))
-            case Int_% => or0(js.BinaryOp(JSBinaryOp.%, newLhs, newRhs))
+            case Int_* =>
+              genCallHelper("imul", newLhs, newRhs)
+            case Int_/ =>
+              or0(js.BinaryOp(JSBinaryOp./, newLhs, newRhs))
+            case Int_% =>
+              or0(js.BinaryOp(JSBinaryOp.%, newLhs, newRhs))
 
-            case Int_| => js.BinaryOp(JSBinaryOp.|, newLhs, newRhs)
-            case Int_& => js.BinaryOp(JSBinaryOp.&, newLhs, newRhs)
+            case Int_| =>
+              js.BinaryOp(JSBinaryOp.|, newLhs, newRhs)
+            case Int_& =>
+              js.BinaryOp(JSBinaryOp.&, newLhs, newRhs)
             case Int_^ =>
               lhs match {
-                case IntLiteral(-1) => js.UnaryOp(JSUnaryOp.~, newRhs)
-                case _              => js.BinaryOp(JSBinaryOp.^, newLhs, newRhs)
+                case IntLiteral(-1) =>
+                  js.UnaryOp(JSUnaryOp.~, newRhs)
+                case _ =>
+                  js.BinaryOp(JSBinaryOp.^, newLhs, newRhs)
               }
-            case Int_<<  => js.BinaryOp(JSBinaryOp.<<, newLhs, newRhs)
-            case Int_>>> => or0(js.BinaryOp(JSBinaryOp.>>>, newLhs, newRhs))
-            case Int_>>  => js.BinaryOp(JSBinaryOp.>>, newLhs, newRhs)
+            case Int_<< =>
+              js.BinaryOp(JSBinaryOp.<<, newLhs, newRhs)
+            case Int_>>> =>
+              or0(js.BinaryOp(JSBinaryOp.>>>, newLhs, newRhs))
+            case Int_>> =>
+              js.BinaryOp(JSBinaryOp.>>, newLhs, newRhs)
 
-            case Float_+ => genFround(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
+            case Float_+ =>
+              genFround(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
             case Float_- =>
               genFround(
                 lhs match {
-                  case DoubleLiteral(0.0) => js.UnaryOp(JSUnaryOp.-, newRhs)
-                  case _                  => js.BinaryOp(JSBinaryOp.-, newLhs, newRhs)
+                  case DoubleLiteral(0.0) =>
+                    js.UnaryOp(JSUnaryOp.-, newRhs)
+                  case _ =>
+                    js.BinaryOp(JSBinaryOp.-, newLhs, newRhs)
                 })
-            case Float_* => genFround(js.BinaryOp(JSBinaryOp.*, newLhs, newRhs))
-            case Float_/ => genFround(js.BinaryOp(JSBinaryOp./, newLhs, newRhs))
-            case Float_% => genFround(js.BinaryOp(JSBinaryOp.%, newLhs, newRhs))
+            case Float_* =>
+              genFround(js.BinaryOp(JSBinaryOp.*, newLhs, newRhs))
+            case Float_/ =>
+              genFround(js.BinaryOp(JSBinaryOp./, newLhs, newRhs))
+            case Float_% =>
+              genFround(js.BinaryOp(JSBinaryOp.%, newLhs, newRhs))
 
-            case Double_+ => js.BinaryOp(JSBinaryOp.+, newLhs, newRhs)
+            case Double_+ =>
+              js.BinaryOp(JSBinaryOp.+, newLhs, newRhs)
             case Double_- =>
               lhs match {
-                case DoubleLiteral(0.0) => js.UnaryOp(JSUnaryOp.-, newRhs)
-                case _                  => js.BinaryOp(JSBinaryOp.-, newLhs, newRhs)
+                case DoubleLiteral(0.0) =>
+                  js.UnaryOp(JSUnaryOp.-, newRhs)
+                case _ =>
+                  js.BinaryOp(JSBinaryOp.-, newLhs, newRhs)
               }
-            case Double_* => js.BinaryOp(JSBinaryOp.*, newLhs, newRhs)
-            case Double_/ => js.BinaryOp(JSBinaryOp./, newLhs, newRhs)
-            case Double_% => js.BinaryOp(JSBinaryOp.%, newLhs, newRhs)
+            case Double_* =>
+              js.BinaryOp(JSBinaryOp.*, newLhs, newRhs)
+            case Double_/ =>
+              js.BinaryOp(JSBinaryOp./, newLhs, newRhs)
+            case Double_% =>
+              js.BinaryOp(JSBinaryOp.%, newLhs, newRhs)
 
-            case Num_<  => js.BinaryOp(JSBinaryOp.<, newLhs, newRhs)
-            case Num_<= => js.BinaryOp(JSBinaryOp.<=, newLhs, newRhs)
-            case Num_>  => js.BinaryOp(JSBinaryOp.>, newLhs, newRhs)
-            case Num_>= => js.BinaryOp(JSBinaryOp.>=, newLhs, newRhs)
+            case Num_< =>
+              js.BinaryOp(JSBinaryOp.<, newLhs, newRhs)
+            case Num_<= =>
+              js.BinaryOp(JSBinaryOp.<=, newLhs, newRhs)
+            case Num_> =>
+              js.BinaryOp(JSBinaryOp.>, newLhs, newRhs)
+            case Num_>= =>
+              js.BinaryOp(JSBinaryOp.>=, newLhs, newRhs)
 
-            case Long_+ => genLongMethodApply(newLhs, LongImpl.+, newRhs)
+            case Long_+ =>
+              genLongMethodApply(newLhs, LongImpl.+, newRhs)
             case Long_- =>
               lhs match {
                 case LongLiteral(0L) =>
                   genLongMethodApply(newRhs, LongImpl.UNARY_-)
-                case _ => genLongMethodApply(newLhs, LongImpl.-, newRhs)
+                case _ =>
+                  genLongMethodApply(newLhs, LongImpl.-, newRhs)
               }
-            case Long_* => genLongMethodApply(newLhs, LongImpl.*, newRhs)
-            case Long_/ => genLongMethodApply(newLhs, LongImpl./, newRhs)
-            case Long_% => genLongMethodApply(newLhs, LongImpl.%, newRhs)
+            case Long_* =>
+              genLongMethodApply(newLhs, LongImpl.*, newRhs)
+            case Long_/ =>
+              genLongMethodApply(newLhs, LongImpl./, newRhs)
+            case Long_% =>
+              genLongMethodApply(newLhs, LongImpl.%, newRhs)
 
-            case Long_| => genLongMethodApply(newLhs, LongImpl.|, newRhs)
-            case Long_& => genLongMethodApply(newLhs, LongImpl.&, newRhs)
+            case Long_| =>
+              genLongMethodApply(newLhs, LongImpl.|, newRhs)
+            case Long_& =>
+              genLongMethodApply(newLhs, LongImpl.&, newRhs)
             case Long_^ =>
               lhs match {
                 case LongLiteral(-1L) =>
                   genLongMethodApply(newRhs, LongImpl.UNARY_~)
-                case _ => genLongMethodApply(newLhs, LongImpl.^, newRhs)
+                case _ =>
+                  genLongMethodApply(newLhs, LongImpl.^, newRhs)
               }
-            case Long_<<  => genLongMethodApply(newLhs, LongImpl.<<, newRhs)
-            case Long_>>> => genLongMethodApply(newLhs, LongImpl.>>>, newRhs)
-            case Long_>>  => genLongMethodApply(newLhs, LongImpl.>>, newRhs)
+            case Long_<< =>
+              genLongMethodApply(newLhs, LongImpl.<<, newRhs)
+            case Long_>>> =>
+              genLongMethodApply(newLhs, LongImpl.>>>, newRhs)
+            case Long_>> =>
+              genLongMethodApply(newLhs, LongImpl.>>, newRhs)
 
-            case Long_== => genLongMethodApply(newLhs, LongImpl.===, newRhs)
-            case Long_!= => genLongMethodApply(newLhs, LongImpl.!==, newRhs)
-            case Long_<  => genLongMethodApply(newLhs, LongImpl.<, newRhs)
-            case Long_<= => genLongMethodApply(newLhs, LongImpl.<=, newRhs)
-            case Long_>  => genLongMethodApply(newLhs, LongImpl.>, newRhs)
-            case Long_>= => genLongMethodApply(newLhs, LongImpl.>=, newRhs)
+            case Long_== =>
+              genLongMethodApply(newLhs, LongImpl.===, newRhs)
+            case Long_!= =>
+              genLongMethodApply(newLhs, LongImpl.!==, newRhs)
+            case Long_< =>
+              genLongMethodApply(newLhs, LongImpl.<, newRhs)
+            case Long_<= =>
+              genLongMethodApply(newLhs, LongImpl.<=, newRhs)
+            case Long_> =>
+              genLongMethodApply(newLhs, LongImpl.>, newRhs)
+            case Long_>= =>
+              genLongMethodApply(newLhs, LongImpl.>=, newRhs)
 
-            case Boolean_| => !(!js.BinaryOp(JSBinaryOp.|, newLhs, newRhs))
-            case Boolean_& => !(!js.BinaryOp(JSBinaryOp.&, newLhs, newRhs))
+            case Boolean_| =>
+              !(!js.BinaryOp(JSBinaryOp.|, newLhs, newRhs))
+            case Boolean_& =>
+              !(!js.BinaryOp(JSBinaryOp.&, newLhs, newRhs))
           }
 
         case NewArray(tpe, lengths) =>
@@ -1873,10 +1952,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           if (semantics.asInstanceOfs == Unchecked) {
             (charCode: @switch) match {
-              case 'Z'             => !(!newExpr)
-              case 'B' | 'S' | 'I' => or0(newExpr)
-              case 'J'             => genCallHelper("uJ", newExpr)
-              case 'D'             => js.UnaryOp(JSUnaryOp.+, newExpr)
+              case 'Z' =>
+                !(!newExpr)
+              case 'B' | 'S' | 'I' =>
+                or0(newExpr)
+              case 'J' =>
+                genCallHelper("uJ", newExpr)
+              case 'D' =>
+                js.UnaryOp(JSUnaryOp.+, newExpr)
 
               case 'F' =>
                 if (semantics.strictFloats)
@@ -2009,13 +2092,20 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
         // Literals
 
-        case Undefined()           => js.Undefined()
-        case Null()                => js.Null()
-        case BooleanLiteral(value) => js.BooleanLiteral(value)
-        case IntLiteral(value)     => js.IntLiteral(value)
-        case FloatLiteral(value)   => js.DoubleLiteral(value.toDouble)
-        case DoubleLiteral(value)  => js.DoubleLiteral(value)
-        case StringLiteral(value)  => js.StringLiteral(value)
+        case Undefined() =>
+          js.Undefined()
+        case Null() =>
+          js.Null()
+        case BooleanLiteral(value) =>
+          js.BooleanLiteral(value)
+        case IntLiteral(value) =>
+          js.IntLiteral(value)
+        case FloatLiteral(value) =>
+          js.DoubleLiteral(value.toDouble)
+        case DoubleLiteral(value) =>
+          js.DoubleLiteral(value)
+        case StringLiteral(value) =>
+          js.StringLiteral(value)
 
         case LongLiteral(0L) =>
           genLongModuleApply(LongImpl.Zero)
@@ -2261,23 +2351,37 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         if (HijackedBoxedClasses.contains(className)) {
           if (test) {
             className match {
-              case BoxedUnitClass    => expr === js.Undefined()
-              case BoxedBooleanClass => typeof(expr) === "boolean"
-              case BoxedByteClass    => genCallHelper("isByte", expr)
-              case BoxedShortClass   => genCallHelper("isShort", expr)
-              case BoxedIntegerClass => genCallHelper("isInt", expr)
-              case BoxedFloatClass   => genCallHelper("isFloat", expr)
-              case BoxedDoubleClass  => typeof(expr) === "number"
+              case BoxedUnitClass =>
+                expr === js.Undefined()
+              case BoxedBooleanClass =>
+                typeof(expr) === "boolean"
+              case BoxedByteClass =>
+                genCallHelper("isByte", expr)
+              case BoxedShortClass =>
+                genCallHelper("isShort", expr)
+              case BoxedIntegerClass =>
+                genCallHelper("isInt", expr)
+              case BoxedFloatClass =>
+                genCallHelper("isFloat", expr)
+              case BoxedDoubleClass =>
+                typeof(expr) === "number"
             }
           } else {
             className match {
-              case BoxedUnitClass    => genCallHelper("asUnit", expr)
-              case BoxedBooleanClass => genCallHelper("asBoolean", expr)
-              case BoxedByteClass    => genCallHelper("asByte", expr)
-              case BoxedShortClass   => genCallHelper("asShort", expr)
-              case BoxedIntegerClass => genCallHelper("asInt", expr)
-              case BoxedFloatClass   => genCallHelper("asFloat", expr)
-              case BoxedDoubleClass  => genCallHelper("asDouble", expr)
+              case BoxedUnitClass =>
+                genCallHelper("asUnit", expr)
+              case BoxedBooleanClass =>
+                genCallHelper("asBoolean", expr)
+              case BoxedByteClass =>
+                genCallHelper("asByte", expr)
+              case BoxedShortClass =>
+                genCallHelper("asShort", expr)
+              case BoxedIntegerClass =>
+                genCallHelper("asInt", expr)
+              case BoxedFloatClass =>
+                genCallHelper("asFloat", expr)
+              case BoxedDoubleClass =>
+                genCallHelper("asDouble", expr)
             }
           }
         } else {

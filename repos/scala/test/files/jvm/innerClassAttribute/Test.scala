@@ -26,7 +26,8 @@ object Test extends BytecodeTest {
     val ns = innerClassNodes(cls)
     assert(ns.length == fs.length, ns.map(_.name))
     (ns zip fs.toList) foreach {
-      case (n, f) => f(n)
+      case (n, f) =>
+        f(n)
     }
   }
 

@@ -29,7 +29,8 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       (2, "2", "c", 5),
       (3, "3", "c", 5))
     val res1b = res1.map {
-      case (a, b, c, d) => ((a, b), (c, d))
+      case (a, b, c, d) =>
+        ((a, b), (c, d))
     }
 
     val q1a =

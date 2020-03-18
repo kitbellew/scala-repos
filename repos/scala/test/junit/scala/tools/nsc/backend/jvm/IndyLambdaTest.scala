@@ -31,9 +31,11 @@ class IndyLambdaTest extends ClearAfterClass {
       x.flatMap {
         case insn: InvokeDynamicInsnNode =>
           insn.bsmArgs.collect {
-            case h: Handle => h.getDesc
+            case h: Handle =>
+              h.getDesc
           }
-        case _ => Nil
+        case _ =>
+          Nil
       }.head
     }
     // unspecialized functions that have a primitive in parameter or return position

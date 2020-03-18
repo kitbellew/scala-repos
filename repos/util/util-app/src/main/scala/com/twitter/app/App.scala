@@ -179,14 +179,16 @@ trait App extends Closable with CloseAwaitably {
     val mainMethod =
       try Some(getClass.getMethod("main"))
       catch {
-        case _: NoSuchMethodException => None
+        case _: NoSuchMethodException =>
+          None
       }
 
     // Invoke main() if it exists.
     mainMethod foreach { method =>
       try method.invoke(this)
       catch {
-        case e: InvocationTargetException => throw e.getCause
+        case e: InvocationTargetException =>
+          throw e.getCause
       }
     }
 

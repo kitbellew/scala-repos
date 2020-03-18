@@ -172,7 +172,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
               afterDuration = 1.second)(taskID = taskId)
         }
 
-      case SuppressOffers => ()
+      case SuppressOffers =>
+        ()
 
       case ReviveOffers =>
         scheduler ! offers

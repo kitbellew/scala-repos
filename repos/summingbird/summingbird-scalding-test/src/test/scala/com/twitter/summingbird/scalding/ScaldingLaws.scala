@@ -78,7 +78,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -128,7 +129,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -185,7 +187,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -237,7 +240,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -303,7 +307,8 @@ class ScaldingLaws extends WordSpec {
 
       //Add a time
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -355,10 +360,12 @@ class ScaldingLaws extends WordSpec {
         */
       val batchedService = stream
         .map {
-          case (time, v) => (Timestamp(time), v)
+          case (time, v) =>
+            (Timestamp(time), v)
         }
         .groupBy {
-          case (ts, _) => batcher.batchOf(ts)
+          case (ts, _) =>
+            batcher.batchOf(ts)
         }
       val testService =
         new TestService[Int, Int](
@@ -401,7 +408,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -453,10 +461,12 @@ class ScaldingLaws extends WordSpec {
         */
       val batchedService = stream
         .map {
-          case (time, v) => (Timestamp(time), v)
+          case (time, v) =>
+            (Timestamp(time), v)
         }
         .groupBy {
-          case (ts, _) => batcher.batchOf(ts)
+          case (ts, _) =>
+            batcher.batchOf(ts)
         }
       val testService =
         new TestService[Int, Int](
@@ -506,10 +516,12 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time
       val inWithTime1 = original1.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
       val inWithTime2 = original2.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -628,7 +640,8 @@ class ScaldingLaws extends WordSpec {
 
       // add a time
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -705,7 +718,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -784,7 +798,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -845,7 +860,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input
@@ -908,7 +924,8 @@ class ScaldingLaws extends WordSpec {
 
       // Add a time
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input

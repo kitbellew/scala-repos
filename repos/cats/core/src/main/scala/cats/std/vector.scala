@@ -30,8 +30,10 @@ trait VectorInstances {
         @tailrec
         def loop(builder: VectorBuilder[B], as: Vector[A]): Vector[B] =
           as match {
-            case _ +: rest => loop(builder += f(as), rest)
-            case _         => builder.result()
+            case _ +: rest =>
+              loop(builder += f(as), rest)
+            case _ =>
+              builder.result()
           }
         loop(new VectorBuilder[B], fa)
       }

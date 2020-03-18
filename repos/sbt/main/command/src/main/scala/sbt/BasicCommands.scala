@@ -70,7 +70,8 @@ object BasicCommands {
         (
           try b.help(s)
           catch {
-            case NonFatal(ex) => Help.empty
+            case NonFatal(ex) =>
+              Help.empty
           }
         )
     }
@@ -97,7 +98,8 @@ object BasicCommands {
       completionsParser)
   def completionsParser(state: State) = {
     val notQuoted = (NotQuoted ~ any.*) map {
-      case (nq, s) => (nq +: s).mkString
+      case (nq, s) =>
+        (nq +: s).mkString
     }
     val quotedOrUnquotedSingleArgument =
       Space ~> (StringVerbatim | StringEscapable | notQuoted)
@@ -267,7 +269,8 @@ object BasicCommands {
         case Some(commands) =>
           commands foreach println //printing is more appropriate than logging
           (commands ::: s).continue
-        case None => s.fail
+        case None =>
+          s.fail
       }
     }
 
@@ -277,8 +280,10 @@ object BasicCommands {
         (s get historyPath) getOrElse Some(new File(s.baseDir, ".history"))
       val prompt =
         (s get shellPrompt) match {
-          case Some(pf) => pf(s);
-          case None     => "> "
+          case Some(pf) =>
+            pf(s);
+          case None =>
+            "> "
         }
       val reader = new FullReader(history, s.combinedParser)
       val line = reader.readLine(prompt)
@@ -293,7 +298,8 @@ object BasicCommands {
             newState
           else
             newState.clearGlobalLog
-        case None => s.setInteractive(false)
+        case None =>
+          s.setInteractive(false)
       }
     }
 
@@ -368,8 +374,10 @@ object BasicCommands {
       case Some(x ~ None) if !x.isEmpty =>
         printAlias(s, x.trim);
         s
-      case Some(name ~ Some(None))        => removeAlias(s, name.trim)
-      case Some(name ~ Some(Some(value))) => addAlias(s, name.trim, value.trim)
+      case Some(name ~ Some(None)) =>
+        removeAlias(s, name.trim)
+      case Some(name ~ Some(Some(value))) =>
+        addAlias(s, name.trim, value.trim)
     }
   def addAlias(s: State, name: String, value: String): State =
     if (Command validID name) {
@@ -399,8 +407,10 @@ object BasicCommands {
     isNamed(name, getAlias(c))
   def isNamed(name: String, alias: Option[(String, String)]): Boolean =
     alias match {
-      case None         => false;
-      case Some((n, _)) => name == n
+      case None =>
+        false;
+      case Some((n, _)) =>
+        name == n
     }
 
   def getAlias(c: Command): Option[(String, String)] =
@@ -438,8 +448,10 @@ object BasicCommands {
   def delegateToAlias(name: String, orElse: Parser[() => State])(
       state: State): Parser[() => State] =
     aliases(state, (nme, _) => nme == name).headOption match {
-      case None         => orElse
-      case Some((n, v)) => aliasBody(n, v)(state)
+      case None =>
+        orElse
+      case Some((n, v)) =>
+        aliasBody(n, v)(state)
     }
 
   val CommandAliasKey = AttributeKey[(String, String)](

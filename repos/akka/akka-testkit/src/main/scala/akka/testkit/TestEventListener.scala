@@ -165,7 +165,8 @@ abstract class EventFilter(occurrences: Int) {
             msgstr == s
           else
             msgstr.startsWith(s)
-        case Right(p) ⇒ p.findFirstIn(msgstr).isDefined
+        case Right(p) ⇒
+          p.findFirstIn(msgstr).isDefined
       }
     )
   }
@@ -368,7 +369,8 @@ final case class ErrorFilter(
           msg == null && cause.getMessage == null && cause.getStackTrace.length == 0
         ) ||
           doMatch(src, msg) || doMatch(src, cause.getMessage)
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
   }
 
@@ -429,8 +431,10 @@ final case class WarningFilter(
 
   def matches(event: LogEvent) = {
     event match {
-      case Warning(src, _, msg) ⇒ doMatch(src, msg)
-      case _ ⇒ false
+      case Warning(src, _, msg) ⇒
+        doMatch(src, msg)
+      case _ ⇒
+        false
     }
   }
 
@@ -482,8 +486,10 @@ final case class InfoFilter(
 
   def matches(event: LogEvent) = {
     event match {
-      case Info(src, _, msg) ⇒ doMatch(src, msg)
-      case _ ⇒ false
+      case Info(src, _, msg) ⇒
+        doMatch(src, msg)
+      case _ ⇒
+        false
     }
   }
 
@@ -535,8 +541,10 @@ final case class DebugFilter(
 
   def matches(event: LogEvent) = {
     event match {
-      case Debug(src, _, msg) ⇒ doMatch(src, msg)
-      case _ ⇒ false
+      case Debug(src, _, msg) ⇒
+        doMatch(src, msg)
+      case _ ⇒
+        false
     }
   }
 
@@ -599,8 +607,10 @@ final case class DeadLettersFilter(val messageClass: Class[_])(occurrences: Int)
 
   def matches(event: LogEvent) = {
     event match {
-      case Warning(_, _, msg) ⇒ BoxedType(messageClass) isInstance msg
-      case _ ⇒ false
+      case Warning(_, _, msg) ⇒
+        BoxedType(messageClass) isInstance msg
+      case _ ⇒
+        false
     }
   }
 
@@ -631,8 +641,10 @@ class TestEventListener extends Logging.DefaultLogger {
         classOf[DeadLetter],
         classOf[UnhandledMessage]) foreach (bus.subscribe(context.self, _))
       sender() ! LoggerInitialized
-    case Mute(filters) ⇒ filters foreach addFilter
-    case UnMute(filters) ⇒ filters foreach removeFilter
+    case Mute(filters) ⇒
+      filters foreach addFilter
+    case UnMute(filters) ⇒
+      filters foreach removeFilter
     case event: LogEvent ⇒
       if (!filter(event))
         print(event)
@@ -657,7 +669,8 @@ class TestEventListener extends Logging.DefaultLogger {
         "unhandled message from " + sender + ": " + msg)
       if (!filter(event))
         print(event)
-    case m ⇒ print(Debug(context.system.name, this.getClass, m))
+    case m ⇒
+      print(Debug(context.system.name, this.getClass, m))
   }
 
   def filter(event: LogEvent): Boolean =
@@ -665,7 +678,8 @@ class TestEventListener extends Logging.DefaultLogger {
       try {
         f(event)
       } catch {
-        case e: Exception ⇒ false
+        case e: Exception ⇒
+          false
       })
 
   def addFilter(filter: EventFilter): Unit = filters ::= filter
@@ -676,9 +690,12 @@ class TestEventListener extends Logging.DefaultLogger {
         list: List[EventFilter],
         zipped: List[EventFilter] = Nil): List[EventFilter] =
       list match {
-        case head :: tail if head == filter ⇒ tail.reverse_:::(zipped)
-        case head :: tail ⇒ removeFirst(tail, head :: zipped)
-        case Nil ⇒ filters // filter not found, just return original list
+        case head :: tail if head == filter ⇒
+          tail.reverse_:::(zipped)
+        case head :: tail ⇒
+          removeFirst(tail, head :: zipped)
+        case Nil ⇒
+          filters // filter not found, just return original list
       }
     filters = removeFirst(filters)
   }

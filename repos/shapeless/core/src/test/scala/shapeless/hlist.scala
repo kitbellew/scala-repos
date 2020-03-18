@@ -2136,7 +2136,8 @@ class HListTests {
 
     val is =
       l match {
-        case i :: true :: s :: 2.0 :: HNil => (i, s)
+        case i :: true :: s :: 2.0 :: HNil =>
+          (i, s)
       }
 
     assertTypedEquals[Int](1, is._1)
@@ -2144,8 +2145,10 @@ class HListTests {
 
     val is2 =
       (l: Any) match {
-        case (i: Int) :: true :: (s: String) :: 2.0 :: HNil => (i, s)
-        case _                                              => sys.error("Not matched")
+        case (i: Int) :: true :: (s: String) :: 2.0 :: HNil =>
+          (i, s)
+        case _ =>
+          sys.error("Not matched")
       }
 
     assertTypedEquals[Int](1, is2._1)
@@ -2155,8 +2158,10 @@ class HListTests {
 
     val tl =
       l2 match {
-        case 23 #: 3.0 #: s #: xs => (s, xs)
-        case _                    => sys.error("Not matched")
+        case 23 #: 3.0 #: s #: xs =>
+          (s, xs)
+        case _ =>
+          sys.error("Not matched")
       }
 
     assertTypedEquals[String]("foo", tl._1)
@@ -2166,8 +2171,10 @@ class HListTests {
 
     val tl2 =
       (l2: Any) match {
-        case 23 #: 3.0 #: (s: String) #: xs => (s, xs)
-        case _                              => sys.error("Not matched")
+        case 23 #: 3.0 #: (s: String) #: xs =>
+          (s, xs)
+        case _ =>
+          sys.error("Not matched")
       }
 
     assertTypedEquals[String]("foo", tl2._1)
@@ -2176,16 +2183,20 @@ class HListTests {
     val ll = List(1, 2, 3, 4)
     val tll =
       ll match {
-        case 1 :: 2 :: x :: y :: Nil => (x, y)
-        case _                       => sys.error("Not matched")
+        case 1 :: 2 :: x :: y :: Nil =>
+          (x, y)
+        case _ =>
+          sys.error("Not matched")
       }
     assertTypedEquals[Int](3, tll._1)
     assertTypedEquals[Int](4, tll._2)
 
     val tll2 =
       ll match {
-        case 1 :: xs => xs
-        case _       => sys.error("Not matched")
+        case 1 :: xs =>
+          xs
+        case _ =>
+          sys.error("Not matched")
       }
     assertTypedEquals[List[Int]](List(2, 3, 4), tll2)
 
@@ -2193,8 +2204,10 @@ class HListTests {
       23 :: "foo" :: (1 :: 2 :: 3 :: 4 :: 5 :: Nil) :: false :: () :: HNil
     val tmixed =
       mixed match {
-        case _ #: _ #: (_ :: 2 :: x :: tl1) #: tl2 => (x, tl1, tl2)
-        case _                                     => sys.error("Not matched")
+        case _ #: _ #: (_ :: 2 :: x :: tl1) #: tl2 =>
+          (x, tl1, tl2)
+        case _ =>
+          sys.error("Not matched")
       }
     assertTypedEquals[Int](3, tmixed._1)
     assertTypedEquals[List[Int]](4 :: 5 :: Nil, tmixed._2)

@@ -101,7 +101,8 @@ final class QuantileDiscretizer(override val uid: String)
     val samples = QuantileDiscretizer
       .getSampledInput(dataset.select($(inputCol)), $(numBuckets), $(seed))
       .map {
-        case Row(feature: Double) => feature
+        case Row(feature: Double) =>
+          feature
       }
     val candidates = QuantileDiscretizer.findSplitCandidates(
       samples,

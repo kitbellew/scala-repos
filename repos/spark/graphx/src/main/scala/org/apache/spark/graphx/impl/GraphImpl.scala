@@ -54,7 +54,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     replicatedVertexView.upgrade(vertices, true, true)
     replicatedVertexView.edges.partitionsRDD.mapPartitions(
       _.flatMap {
-        case (pid, part) => part.tripletIterator()
+        case (pid, part) =>
+          part.tripletIterator()
       })
   }
 
@@ -83,8 +84,10 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
     Seq(
       vertices.getCheckpointFile,
       replicatedVertexView.edges.getCheckpointFile).flatMap {
-      case Some(path) => Seq(path)
-      case None       => Seq()
+      case Some(path) =>
+        Seq(path)
+      case None =>
+        Seq()
     }
   }
 

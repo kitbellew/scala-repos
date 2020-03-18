@@ -14,6 +14,7 @@ object T {
 object Test {
   def f[W](t: T[W]) =
     t match {
-      case T(T(_)) => ()
+      case T(T(_)) =>
+        ()
     }
 }

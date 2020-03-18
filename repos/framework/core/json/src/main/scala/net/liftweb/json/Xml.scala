@@ -85,7 +85,8 @@ object Xml {
     def leaf_?(node: Node) = {
       def descendant(n: Node): List[Node] =
         n match {
-          case g: Group => g.nodes.toList.flatMap(x => x :: descendant(x))
+          case g: Group =>
+            g.nodes.toList.flatMap(x => x :: descendant(x))
           case _ =>
             n.child.toList.flatMap { x =>
               x :: descendant(x)
@@ -118,16 +119,21 @@ object Xml {
 
     def toJValue(x: XElem): JValue =
       x match {
-        case XValue(s) => JString(s)
+        case XValue(s) =>
+          JString(s)
         case XLeaf((name, value), attrs) =>
           (value, attrs) match {
-            case (_, Nil)         => toJValue(value)
-            case (XValue(""), xs) => JObject(mkFields(xs))
+            case (_, Nil) =>
+              toJValue(value)
+            case (XValue(""), xs) =>
+              JObject(mkFields(xs))
             case (_, xs) =>
               JObject(JField(name, toJValue(value)) :: mkFields(xs))
           }
-        case XNode(xs)     => JObject(mkFields(xs))
-        case XArray(elems) => JArray(elems.map(toJValue))
+        case XNode(xs) =>
+          JObject(mkFields(xs))
+        case XArray(elems) =>
+          JArray(elems.map(toJValue))
       }
 
     def mkFields(xs: List[(String, XElem)]) =
@@ -138,8 +144,10 @@ object Xml {
             // XML attributes. Flattening keeps transformation more predicatable.
             // <a><foo id="1">x</foo></a> -> {"a":{"foo":{"foo":"x","id":"1"}}} vs
             // <a><foo id="1">x</foo></a> -> {"a":{"foo":"x","id":"1"}}
-            case (XLeaf(v, x :: xs), o: JObject) => o.obj
-            case (_, json)                       => JField(name, json) :: Nil
+            case (XLeaf(v, x :: xs), o: JObject) =>
+              o.obj
+            case (_, json) =>
+              JField(name, json) :: Nil
           }
       }
 
@@ -174,9 +182,12 @@ object Xml {
       }
 
     buildNodes(xml) match {
-      case List(x @ XLeaf(_, _ :: _)) => toJValue(x)
-      case List(x)                    => JObject(JField(nameOf(xml.head), toJValue(x)) :: Nil)
-      case x                          => JArray(x.map(toJValue))
+      case List(x @ XLeaf(_, _ :: _)) =>
+        toJValue(x)
+      case List(x) =>
+        JObject(JField(nameOf(xml.head), toJValue(x)) :: Nil)
+      case x =>
+        JArray(x.map(toJValue))
     }
   }
 
@@ -206,26 +217,35 @@ object Xml {
           new XmlNode(
             name,
             fields flatMap {
-              case JField(n, v) => toXml(n, v)
+              case JField(n, v) =>
+                toXml(n, v)
             })
         case JArray(xs) =>
           xs flatMap { v =>
             toXml(name, v)
           }
-        case JInt(x)    => new XmlElem(name, x.toString)
-        case JDouble(x) => new XmlElem(name, x.toString)
-        case JString(x) => new XmlElem(name, x)
-        case JBool(x)   => new XmlElem(name, x.toString)
-        case JNull      => new XmlElem(name, "null")
-        case JNothing   => Text("")
+        case JInt(x) =>
+          new XmlElem(name, x.toString)
+        case JDouble(x) =>
+          new XmlElem(name, x.toString)
+        case JString(x) =>
+          new XmlElem(name, x)
+        case JBool(x) =>
+          new XmlElem(name, x.toString)
+        case JNull =>
+          new XmlElem(name, "null")
+        case JNothing =>
+          Text("")
       }
 
     json match {
       case JObject(fields) =>
         fields flatMap {
-          case JField(name, value) => toXml(name, value)
+          case JField(name, value) =>
+            toXml(name, value)
         }
-      case x => toXml("root", x)
+      case x =>
+        toXml("root", x)
     }
   }
 

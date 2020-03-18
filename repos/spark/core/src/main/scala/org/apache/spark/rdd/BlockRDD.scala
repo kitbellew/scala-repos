@@ -52,7 +52,8 @@ private[spark] class BlockRDD[T: ClassTag](
     val blockManager = SparkEnv.get.blockManager
     val blockId = split.asInstanceOf[BlockRDDPartition].blockId
     blockManager.get(blockId) match {
-      case Some(block) => block.data.asInstanceOf[Iterator[T]]
+      case Some(block) =>
+        block.data.asInstanceOf[Iterator[T]]
       case None =>
         throw new Exception(
           "Could not compute split, block " + blockId + " not found")

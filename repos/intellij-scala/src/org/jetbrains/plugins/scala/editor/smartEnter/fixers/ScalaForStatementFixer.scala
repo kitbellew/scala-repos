@@ -57,7 +57,8 @@ class ScalaForStatementFixer extends ScalaFixer {
         placeInWholeBlock(
           forStatement.body.get.asInstanceOf[ScBlockExpr],
           editor)
-      case _ => NoOperation
+      case _ =>
+        NoOperation
     }
   }
 }

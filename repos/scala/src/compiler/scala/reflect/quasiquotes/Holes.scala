@@ -249,11 +249,14 @@ trait Holes {
       (rank, tpe) match {
         case (DotDot, tpe @ IterableType(LiftedType(lift))) =>
           mapF(toList(tree, tpe), lift)
-        case (DotDot, LiftedType(lift)) => toStats(lift(tree))
+        case (DotDot, LiftedType(lift)) =>
+          toStats(lift(tree))
         case (DotDotDot, tpe @ IterableType(inner)) =>
           mapF(toList(tree, tpe), t => iterated(DotDot, t, inner))
-        case (DotDotDot, LiftedType(lift)) => mapF(toStats(lift(tree)), toStats)
-        case _                             => global.abort("unreachable")
+        case (DotDotDot, LiftedType(lift)) =>
+          mapF(toStats(lift(tree)), toStats)
+        case _ =>
+          global.abort("unreachable")
       }
   }
 
@@ -264,7 +267,8 @@ trait Holes {
           (pname, inner.pos, Some(tpt))
         case Bind(pname, inner @ Typed(Ident(nme.WILDCARD), tpt)) =>
           (pname, inner.pos, Some(tpt))
-        case Bind(pname, inner) => (pname, inner.pos, None)
+        case Bind(pname, inner) =>
+          (pname, inner.pos, None)
       }
     val treeNoUnlift = Bind(placeholderName, Ident(nme.WILDCARD))
     lazy val tree = tptopt
@@ -340,8 +344,10 @@ trait Holes {
           val name = TermName(nme.QUASIQUOTE_UNLIFT_HELPER + idx)
           val helperName =
             rank match {
-              case DotDot    => nme.UnliftListElementwise
-              case DotDotDot => nme.UnliftListOfListsElementwise
+              case DotDot =>
+                nme.UnliftListElementwise
+              case DotDotDot =>
+                nme.UnliftListOfListsElementwise
             }
           val lifter = inferUnliftable(tpe)
           assert(helperName.isTermName)

@@ -39,9 +39,12 @@ trait ScToplevelElement extends ScalaPsiElement {
   def immediateTypeDefinitions: Seq[ScTypeDefinition] = {
     val stub: StubElement[_ <: PsiElement] =
       this match {
-        case file: PsiFileImpl   => file.getStub
-        case st: ScPackagingImpl => st.getStub
-        case _                   => null
+        case file: PsiFileImpl =>
+          file.getStub
+        case st: ScPackagingImpl =>
+          st.getStub
+        case _ =>
+          null
       }
     if (stub != null) {
       stub.getChildrenByType[ScTypeDefinition](
@@ -54,9 +57,12 @@ trait ScToplevelElement extends ScalaPsiElement {
   def packagings: Seq[ScPackaging] = {
     val stub: StubElement[_ <: PsiElement] =
       this match {
-        case file: PsiFileImpl   => file.getStub
-        case st: ScPackagingImpl => st.getStub
-        case _                   => null
+        case file: PsiFileImpl =>
+          file.getStub
+        case st: ScPackagingImpl =>
+          st.getStub
+        case _ =>
+          null
       }
     if (stub != null) {
       stub.getChildrenByType[ScPackaging](
@@ -67,8 +73,9 @@ trait ScToplevelElement extends ScalaPsiElement {
       var curr = getFirstChild
       while (curr != null) {
         curr match {
-          case packaging: ScPackaging => buffer += packaging
-          case _                      =>
+          case packaging: ScPackaging =>
+            buffer += packaging
+          case _ =>
         }
         curr = curr.getNextSibling
       }

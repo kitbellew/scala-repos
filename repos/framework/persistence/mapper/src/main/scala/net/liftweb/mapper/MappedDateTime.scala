@@ -114,14 +114,18 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
   def asJsonValue: Box[JsonAST.JValue] =
     Full(
       get match {
-        case null => JsonAST.JNull
-        case v    => JsonAST.JInt(v.getTime)
+        case null =>
+          JsonAST.JNull
+        case v =>
+          JsonAST.JInt(v.getTime)
       })
 
   def toLong: Long =
     get match {
-      case null    => 0L
-      case d: Date => d.getTime / 1000L
+      case null =>
+        0L
+      case d: Date =>
+        d.getTime / 1000L
     }
 
   def asJsExp: JsExp = JE.Num(toLong)
@@ -164,31 +168,46 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
           }
                      value={
             get match {
-              case null => ""
-              case s    => format(s)
+              case null =>
+                ""
+              case s =>
+                format(s)
             }
           }/>))
     }
 
   override def setFromAny(f: Any): Date =
     f match {
-      case JsonAST.JNull                   => this.set(null)
-      case JsonAST.JInt(v)                 => this.set(new Date(v.longValue))
-      case n: Number                       => this.set(new Date(n.longValue))
-      case "" | null                       => this.set(null)
-      case s: String                       => parse(s).map(d => this.set(d)).openOr(this.get)
-      case (s: String) :: _                => parse(s).map(d => this.set(d)).openOr(this.get)
-      case d: Date                         => this.set(d)
-      case Some(d: Date)                   => this.set(d)
-      case Full(d: Date)                   => this.set(d)
-      case None | Empty | Failure(_, _, _) => this.set(null)
-      case _                               => this.get
+      case JsonAST.JNull =>
+        this.set(null)
+      case JsonAST.JInt(v) =>
+        this.set(new Date(v.longValue))
+      case n: Number =>
+        this.set(new Date(n.longValue))
+      case "" | null =>
+        this.set(null)
+      case s: String =>
+        parse(s).map(d => this.set(d)).openOr(this.get)
+      case (s: String) :: _ =>
+        parse(s).map(d => this.set(d)).openOr(this.get)
+      case d: Date =>
+        this.set(d)
+      case Some(d: Date) =>
+        this.set(d)
+      case Full(d: Date) =>
+        this.set(d)
+      case None | Empty | Failure(_, _, _) =>
+        this.set(null)
+      case _ =>
+        this.get
     }
 
   def jdbcFriendly(field: String): Object =
     get match {
-      case null => null
-      case d    => new java.sql.Timestamp(d.getTime)
+      case null =>
+        null
+      case d =>
+        new java.sql.Timestamp(d.getTime)
     }
 
   def real_convertToJDBCFriendly(value: Date): Object =
@@ -216,7 +235,8 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDateTime[T] => f.st(toDate(v))
+          case f: MappedDateTime[T] =>
+            f.st(toDate(v))
         })
 
   def buildSetLongValue(
@@ -243,7 +263,8 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDateTime[T] => f.st(toDate(v))
+          case f: MappedDateTime[T] =>
+            f.st(toDate(v))
         })
 
   def buildSetDateValue(
@@ -254,7 +275,8 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDateTime[T] => f.st(Full(v))
+          case f: MappedDateTime[T] =>
+            f.st(Full(v))
         })
 
   def buildSetBooleanValue(
@@ -265,7 +287,8 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDateTime[T] => f.st(Empty)
+          case f: MappedDateTime[T] =>
+            f.st(Empty)
         })
 
   /**
@@ -276,13 +299,17 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
 
   def inFuture_? =
     data.get match {
-      case null => false
-      case d    => d.getTime > millis
+      case null =>
+        false
+      case d =>
+        d.getTime > millis
     }
   def inPast_? =
     data.get match {
-      case null => false
-      case d    => d.getTime < millis
+      case null =>
+        false
+      case d =>
+        d.getTime < millis
     }
 
   override def toString: String =

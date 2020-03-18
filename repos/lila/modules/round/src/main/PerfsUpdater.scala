@@ -143,9 +143,12 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
 
   private def resultOf(game: Game): Glicko.Result =
     game.winnerColor match {
-      case Some(chess.White) => Glicko.Result.Win
-      case Some(chess.Black) => Glicko.Result.Loss
-      case None              => Glicko.Result.Draw
+      case Some(chess.White) =>
+        Glicko.Result.Win
+      case Some(chess.Black) =>
+        Glicko.Result.Loss
+      case None =>
+        Glicko.Result.Draw
     }
 
   private def updateRatings(
@@ -155,14 +158,18 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       system: RatingCalculator) {
     val results = new RatingPeriodResults()
     result match {
-      case Glicko.Result.Draw => results.addDraw(white, black)
-      case Glicko.Result.Win  => results.addResult(white, black)
-      case Glicko.Result.Loss => results.addResult(black, white)
+      case Glicko.Result.Draw =>
+        results.addDraw(white, black)
+      case Glicko.Result.Win =>
+        results.addResult(white, black)
+      case Glicko.Result.Loss =>
+        results.addResult(black, white)
     }
     try {
       system.updateRatings(results)
     } catch {
-      case e: Exception => logger.error("update ratings", e)
+      case e: Exception =>
+        logger.error("update ratings", e)
     }
   }
 

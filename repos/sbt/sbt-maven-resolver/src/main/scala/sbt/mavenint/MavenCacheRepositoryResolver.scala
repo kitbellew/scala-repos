@@ -93,7 +93,8 @@ class MavenCacheRepositoryResolver(val repo: MavenCache, settings: IvySettings)
           } yield d
         // TODO - Only look at timestamp *IF* the version is for a snapshot.
         timestampOpt orElse lastUpdatedOpt
-      case _ => None
+      case _ =>
+        None
     }
   }
   override def toString = s"${repo.name}: ${repo.root}"

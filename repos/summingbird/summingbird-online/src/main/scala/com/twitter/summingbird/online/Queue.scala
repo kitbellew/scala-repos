@@ -124,7 +124,8 @@ abstract class Queue[T] {
   @annotation.tailrec
   final def foreach(fn: T => Unit): Unit =
     poll match {
-      case None => ()
+      case None =>
+        ()
       case Some(it) =>
         fn(it)
         foreach(fn)
@@ -134,8 +135,10 @@ abstract class Queue[T] {
   @annotation.tailrec
   final def foldLeft[V](init: V)(fn: (V, T) => V): V =
     poll match {
-      case None     => init
-      case Some(it) => foldLeft(fn(init, it))(fn)
+      case None =>
+        init
+      case Some(it) =>
+        foldLeft(fn(init, it))(fn)
     }
 
   /** Take all the items currently in the queue */
@@ -157,7 +160,8 @@ abstract class Queue[T] {
     def loop(size: Int, acc: List[T] = Nil): List[T] = {
       if (size > maxLength) {
         pollNonBlocking match {
-          case None => acc.reverse // someone else cleared us out
+          case None =>
+            acc.reverse // someone else cleared us out
           case Some(item) =>
             loop(count.decrementAndGet, item :: acc)
         }

@@ -24,8 +24,10 @@ final class Env(config: Config, system: ActorSystem, db: lila.db.Env) {
     Props(
       new Actor {
         def receive = {
-          case Toggle(gameId, userId) => api.toggle(gameId, userId)
-          case Remove(gameId)         => api removeByGameId gameId
+          case Toggle(gameId, userId) =>
+            api.toggle(gameId, userId)
+          case Remove(gameId) =>
+            api removeByGameId gameId
         }
       }),
     name = ActorName)

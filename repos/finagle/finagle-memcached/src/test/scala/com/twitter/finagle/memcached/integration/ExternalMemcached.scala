@@ -40,7 +40,8 @@ private[memcached] object InternalMemcached {
           }
         })
     } catch {
-      case NonFatal(_) => None
+      case NonFatal(_) =>
+        None
     }
   }
 }
@@ -107,7 +108,8 @@ private[memcached] object ExternalMemcached {
         else
           None
       } catch {
-        case _: Throwable => None
+        case _: Throwable =>
+          None
       }
     }
   }

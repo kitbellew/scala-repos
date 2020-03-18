@@ -25,7 +25,8 @@ private[spark] object IntParam {
     try {
       Some(str.toInt)
     } catch {
-      case e: NumberFormatException => None
+      case e: NumberFormatException =>
+        None
     }
   }
 }

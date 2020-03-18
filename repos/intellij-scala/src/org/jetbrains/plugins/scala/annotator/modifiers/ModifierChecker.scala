@@ -132,7 +132,8 @@ private[annotator] object ModifierChecker {
                     modifierPsi,
                     holder,
                     new RemoveModifierQuickFix(owner, "final"))
-                case _: ScClass => checkDublicates(modifierPsi, "final")
+                case _: ScClass =>
+                  checkDublicates(modifierPsi, "final")
                 case _: ScObject =>
                   if (checkDublicates(modifierPsi, "final")) {
                     proccessWarning(
@@ -151,8 +152,10 @@ private[annotator] object ModifierChecker {
                           if valMember.typeElement.isEmpty &&
                             valMember.pList.allPatternsSimple =>
                         false // SCL-899
-                      case (cls, _) if cls.hasFinalModifier => true
-                      case _                                => false
+                      case (cls, _) if cls.hasFinalModifier =>
+                        true
+                      case _ =>
+                        false
                     }
                   if (redundant) {
                     if (checkDublicates(modifierPsi, "final")) {
@@ -203,7 +206,8 @@ private[annotator] object ModifierChecker {
               }
             case "abstract" =>
               owner match {
-                case _: ScClass => checkDublicates(modifierPsi, "abstract")
+                case _: ScClass =>
+                  checkDublicates(modifierPsi, "abstract")
                 case _: ScTrait =>
                   if (checkDublicates(modifierPsi, "abstract")) {
                     proccessWarning(
@@ -265,8 +269,10 @@ private[annotator] object ModifierChecker {
                       case file: ScalaFile
                           if !file.isScriptFile() && !file.isWorksheetFile =>
                         true
-                      case p: ScPackaging => true
-                      case _              => false
+                      case p: ScPackaging =>
+                        true
+                      case _ =>
+                        false
                     }
                   if (onTopLevel) {
                     proccessError(
@@ -304,7 +310,8 @@ private[annotator] object ModifierChecker {
                                        ))
                                 errorResult()
                             }
-                          case _ => errorResult()
+                          case _ =>
+                            errorResult()
                         }
                       case _ =>
                     }
@@ -314,7 +321,8 @@ private[annotator] object ModifierChecker {
                     modifierPsi,
                     holder,
                     new RemoveModifierQuickFix(owner, "implicit"))
-                case _ => checkDublicates(modifierPsi, "implicit")
+                case _ =>
+                  checkDublicates(modifierPsi, "implicit")
               }
             case _ =>
           }

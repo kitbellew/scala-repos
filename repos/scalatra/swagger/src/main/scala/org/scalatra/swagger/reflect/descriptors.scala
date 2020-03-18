@@ -221,27 +221,35 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
   def isOption = classOf[Option[_]].isAssignableFrom(erasure)
   def <:<(that: ScalaType): Boolean =
     that match {
-      case t: ManifestScalaType => manifest <:< t.manifest
-      case _                    => manifest <:< ManifestFactory.manifestOf(that)
+      case t: ManifestScalaType =>
+        manifest <:< t.manifest
+      case _ =>
+        manifest <:< ManifestFactory.manifestOf(that)
     }
   def >:>(that: ScalaType): Boolean =
     that match {
-      case t: ManifestScalaType => manifest >:> t.manifest
-      case _                    => manifest >:> ManifestFactory.manifestOf(that)
+      case t: ManifestScalaType =>
+        manifest >:> t.manifest
+      case _ =>
+        manifest >:> ManifestFactory.manifestOf(that)
     }
 
   override def hashCode(): Int = manifest.##
 
   override def equals(obj: Any): Boolean =
     obj match {
-      case a: ManifestScalaType => manifest == a.manifest
-      case _                    => false
+      case a: ManifestScalaType =>
+        manifest == a.manifest
+      case _ =>
+        false
     }
 
   def canEqual(that: Any): Boolean =
     that match {
-      case s: ManifestScalaType => manifest.canEqual(s.manifest)
-      case _                    => false
+      case s: ManifestScalaType =>
+        manifest.canEqual(s.manifest)
+      case _ =>
+        false
     }
 
   def copy(

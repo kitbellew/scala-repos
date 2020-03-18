@@ -29,7 +29,8 @@ abstract class SelectionHandlerSettings(config: Config) {
 
   val MaxChannels: Int =
     getString("max-channels") match {
-      case "unlimited" ⇒ -1
+      case "unlimited" ⇒
+        -1
       case _ ⇒
         getInt("max-channels") requiring (
           _ > 0, "max-channels must be > 0 or 'unlimited'"
@@ -164,8 +165,10 @@ private[io] object SelectionHandler {
                   ) // prevent immediate reselection by always clearing
                   val connection = key.attachment.asInstanceOf[ActorRef]
                   readyOps match {
-                    case OP_READ ⇒ connection ! ChannelReadable
-                    case OP_WRITE ⇒ connection ! ChannelWritable
+                    case OP_READ ⇒
+                      connection ! ChannelReadable
+                    case OP_WRITE ⇒
+                      connection ! ChannelWritable
                     case OP_READ_AND_WRITE ⇒ {
                       connection ! ChannelWritable;
                       connection ! ChannelReadable
@@ -174,7 +177,8 @@ private[io] object SelectionHandler {
                       connection ! ChannelAcceptable
                     case x if (x & OP_CONNECT) > 0 ⇒
                       connection ! ChannelConnectable
-                    case x ⇒ log.warning("Invalid readyOps: [{}]", x)
+                    case x ⇒
+                      log.warning("Invalid readyOps: [{}]", x)
                   }
                 } catch {
                   case _: CancelledKeyException ⇒
@@ -222,7 +226,8 @@ private[io] object SelectionHandler {
               if (it.hasNext) {
                 try it.next().channel.close()
                 catch {
-                  case NonFatal(e) ⇒ log.debug("Error closing channel: {}", e)
+                  case NonFatal(e) ⇒
+                    log.debug("Error closing channel: {}", e)
                 }
                 closeNextChannel(it)
               }
@@ -307,7 +312,8 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
 
     // since our ActorRef is never exposed to the user and we are only assigning watches to our
     // children all incoming `Terminated` events must be for a child of ours
-    case _: Terminated ⇒ childCount -= 1
+    case _: Terminated ⇒
+      childCount -= 1
   }
 
   override def postStop(): Unit = registry.shutdown()
@@ -316,7 +322,8 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
   // and log the failure at debug level
   override def supervisorStrategy = {
     def stoppingDecider: SupervisorStrategy.Decider = {
-      case _: Exception ⇒ SupervisorStrategy.Stop
+      case _: Exception ⇒
+        SupervisorStrategy.Stop
     }
     new OneForOneStrategy()(stoppingDecider) {
       override def logFailure(
@@ -334,9 +341,11 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
                 e.getCause match {
                   case ie: java.lang.reflect.InvocationTargetException ⇒
                     ie.getTargetException.toString
-                  case t: Throwable ⇒ Logging.simpleName(t)
+                  case t: Throwable ⇒
+                    Logging.simpleName(t)
                 }
-              case e ⇒ e.getMessage
+              case e ⇒
+                e.getMessage
             }
           context.system.eventStream.publish(
             Logging.Debug(

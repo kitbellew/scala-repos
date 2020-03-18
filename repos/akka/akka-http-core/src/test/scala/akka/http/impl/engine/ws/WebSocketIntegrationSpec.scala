@@ -39,7 +39,8 @@ class WebSocketIntegrationSpec
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
                 headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒ u
+                  case u: UpgradeToWebSocket ⇒
+                    u
                 }.get
               upgrade.handleMessages(
                 Flow
@@ -80,7 +81,8 @@ class WebSocketIntegrationSpec
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
                 headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒ u
+                  case u: UpgradeToWebSocket ⇒
+                    u
                 }.get
               upgrade.handleMessages(
                 Flow
@@ -135,7 +137,8 @@ class WebSocketIntegrationSpec
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
                 headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒ u
+                  case u: UpgradeToWebSocket ⇒
+                    u
                 }.get
               upgrade.handleMessages(Flow.apply, None)
           },
@@ -189,7 +192,8 @@ class WebSocketIntegrationSpec
             case HttpRequest(_, _, headers, _, _) ⇒
               val upgrade =
                 headers.collectFirst {
-                  case u: UpgradeToWebSocket ⇒ u
+                  case u: UpgradeToWebSocket ⇒
+                    u
                 }.get
               upgrade.handleMessages(handler, None)
           },

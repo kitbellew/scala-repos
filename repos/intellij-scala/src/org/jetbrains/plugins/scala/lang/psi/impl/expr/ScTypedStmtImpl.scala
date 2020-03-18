@@ -26,8 +26,10 @@ class ScTypedStmtImpl(node: ASTNode)
 
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] = {
     typeElement match {
-      case Some(te)                                        => te.getType(ctx)
-      case None if !expr.isInstanceOf[ScUnderscoreSection] => expr.getType(ctx)
+      case Some(te) =>
+        te.getType(ctx)
+      case None if !expr.isInstanceOf[ScUnderscoreSection] =>
+        expr.getType(ctx)
       case _ =>
         Failure(
           "Typed statement is not complete for underscore section",
@@ -41,8 +43,10 @@ class ScTypedStmtImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitTypedStmt(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitTypedStmt(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

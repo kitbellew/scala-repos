@@ -18,9 +18,12 @@ object ExtractMethodControlFlowPolicy extends ScControlFlowPolicy {
       return false
 
     ScalaPsiUtil.nameContext(named) match {
-      case cp: ScClassParameter => false
-      case member: ScMember     => member.isLocal
-      case _                    => true
+      case cp: ScClassParameter =>
+        false
+      case member: ScMember =>
+        member.isLocal
+      case _ =>
+        true
     }
   }
 }

@@ -103,7 +103,8 @@ class ClientDispatcherTest extends FunSuite {
 
     def aux(len: Int): List[Field] =
       len match {
-        case 0 => Nil
+        case 0 =>
+          Nil
         case x =>
           val maxLen = 12
           val fieldName = "field" + len

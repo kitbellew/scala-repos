@@ -30,7 +30,8 @@ object RequestSemaphoreFilter {
           _stats: param.Stats,
           next: ServiceFactory[Req, Rep]) =
         _param match {
-          case Param(None) => next
+          case Param(None) =>
+            next
           case Param(Some(sem)) =>
             val param.Stats(sr) = _stats
             val filter =
@@ -69,6 +70,7 @@ class RequestSemaphoreFilter[Req, Rep](sem: AsyncSemaphore)
         service(req).ensure {
           permit.release()
         }
-      case Throw(noPermit) => Future.exception(Failure.rejected(noPermit))
+      case Throw(noPermit) =>
+        Future.exception(Failure.rejected(noPermit))
     }
 }

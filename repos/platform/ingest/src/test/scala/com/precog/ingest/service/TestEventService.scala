@@ -228,7 +228,8 @@ trait TestEventService
       (
         response.copy(content = content),
         stored.toList collect {
-          case in: Ingest => in
+          case in: Ingest =>
+            in
         })
     }
   }

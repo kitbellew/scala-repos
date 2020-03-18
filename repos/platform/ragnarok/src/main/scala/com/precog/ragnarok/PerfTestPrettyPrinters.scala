@@ -80,8 +80,10 @@ trait JsonConverters {
   def perfTestResultToJson(
       result: Tree[(PerfTest, Option[Statistics])]): JValue = {
     perfTestToJson(result) {
-      case Some(stats) => JField("stats", stats.toJson) :: Nil
-      case None        => Nil
+      case Some(stats) =>
+        JField("stats", stats.toJson) :: Nil
+      case None =>
+        Nil
     }
   }
 }
@@ -99,7 +101,8 @@ trait PrettyPrinters {
             kids.toList map (lines(_)) flatMap {
               case head :: tail =>
                 (" + " + head) :: (tail map (" | " + _))
-              case Nil => Nil
+              case Nil =>
+                Nil
             }
           ) ++ List(" ' " + prettyResult(result), "")
 
@@ -108,13 +111,15 @@ trait PrettyPrinters {
             kids.toList map (lines(_)) flatMap {
               case head :: tail =>
                 (" * " + head) :: (tail map (" | " + _))
-              case Nil => Nil
+              case Nil =>
+                Nil
             }
           ) ++ List(" ' " + prettyResult(result), "")
 
         case Tree.Node((RunQuery(q), result), kids) =>
           (q split "\n").toList match {
-            case Nil => Nil
+            case Nil =>
+              Nil
             case head :: tail =>
               ("-> " + head) :: (
                 tail.foldRight(List(" ' " + prettyResult(result), "")) {

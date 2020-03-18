@@ -27,7 +27,8 @@ class CreateAggregates extends Phase {
                   f,
                   ConstArray(
                     f match {
-                      case Library.CountAll => LiteralNode(1)
+                      case Library.CountAll =>
+                        LiteralNode(1)
                       case _ =>
                         Select(Ref(s) :@ elType, els.head._1) :@ els.head._2
                     }))(n.nodeType)).infer()
@@ -46,10 +47,12 @@ class CreateAggregates extends Phase {
                   from1 match {
                     case Pure(StructNode(ConstArray()), _) =>
                       Vector.empty[(TermSymbol, Node)]
-                    case _ => Vector(s1 -> from1)
+                    case _ =>
+                      Vector(s1 -> from1)
                   }
                 ) ++ temp.map {
-                  case (s, n) => (s, Pure(n))
+                  case (s, n) =>
+                    (s, Pure(n))
                 }
                 val from2 = sources.init
                   .foldRight(sources.last._2) {
@@ -66,7 +69,8 @@ class CreateAggregates extends Phase {
                 logger.debug("New 'from' with joined aggregates:", from2)
                 val repl: Map[TermSymbol, List[TermSymbol]] =
                   sources match {
-                    case Vector((s, n)) => Map(s -> List(s1))
+                    case Vector((s, n)) =>
+                      Map(s -> List(s1))
                     case _ =>
                       val len = sources.length
                       val it = Iterator.iterate(s1)(_ => ElementSymbol(2))
@@ -90,7 +94,8 @@ class CreateAggregates extends Phase {
                   StructNode(ConstArray.from(replNodes)))
                 val sel3 = sel2.replace(
                   {
-                    case n @ Ref(s) => replNodes.getOrElse(s, n)
+                    case n @ Ref(s) =>
+                      replNodes.getOrElse(s, n)
                   },
                   keepType = true)
                 val n2 = Bind(s1, from2, Pure(sel3, ts1)).infer()
@@ -116,7 +121,8 @@ class CreateAggregates extends Phase {
             case FwdPath(s :: f :: rest) if s == a.sym =>
               rest
                 .foldLeft(defs1M(f)) {
-                  case (n, s) => n.select(s)
+                  case (n, s) =>
+                    n.select(s)
                 }
                 .infer()
           },
@@ -124,7 +130,8 @@ class CreateAggregates extends Phase {
         val a2 = Aggregate(s1, f1, sel) :@ a.nodeType
         logger.debug("Inlining mapping Bind under Aggregate", a2)
         inlineMap(a2)
-      case _ => a
+      case _ =>
+        a
     }
 
   /** Find all scalar Aggregate calls in a sub-tree that do not refer to the given Symbol,
@@ -135,8 +142,10 @@ class CreateAggregates extends Phase {
     n match {
       case a @ Aggregate(s1, f1, sel1) =>
         if (a.findNode {
-              case n: PathElement => n.sym == outer
-              case _              => false
+              case n: PathElement =>
+                n.sym == outer
+              case _ =>
+                false
             }.isDefined)
           (a, Map.empty)
         else {

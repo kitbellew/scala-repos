@@ -16,7 +16,8 @@ object Test extends DirectTest {
     try {
       newCompiler()
     } catch {
-      case fe: FatalError => println(fe.getMessage)
+      case fe: FatalError =>
+        println(fe.getMessage)
     }
   }
 }

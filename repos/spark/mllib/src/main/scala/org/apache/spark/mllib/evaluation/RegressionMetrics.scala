@@ -76,7 +76,8 @@ class RegressionMetrics @Since("2.0.0") (
     val yMean = summary.mean(0)
     predictionAndObservations
       .map {
-        case (prediction, _) => math.pow(prediction - yMean, 2)
+        case (prediction, _) =>
+          math.pow(prediction - yMean, 2)
       }
       .sum()
   }

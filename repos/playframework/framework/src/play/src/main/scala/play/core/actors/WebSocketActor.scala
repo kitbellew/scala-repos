@@ -83,7 +83,8 @@ private[play] object WebSocketActor {
         channel.end()
         context.stop(self)
       // A message of the type that we're handling has been received
-      case messageType(a) => channel.push(a)
+      case messageType(a) =>
+        channel.push(a)
     }
 
     override def postStop() = {
@@ -95,7 +96,8 @@ private[play] object WebSocketActor {
 
     override def supervisorStrategy =
       OneForOneStrategy() {
-        case _ => SupervisorStrategy.Stop
+        case _ =>
+          SupervisorStrategy.Stop
       }
   }
 

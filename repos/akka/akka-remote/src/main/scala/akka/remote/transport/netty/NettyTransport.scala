@@ -91,8 +91,10 @@ object NettyFutureBridge {
               future.getGroup
             else
               throw future.iterator.asScala.collectFirst {
-                case f if f.isCancelled ⇒ new CancellationException
-                case f if !f.isSuccess ⇒ f.getCause
+                case f if f.isCancelled ⇒
+                  new CancellationException
+                case f if !f.isSuccess ⇒
+                  f.getCause
               } getOrElse new IllegalStateException(
                 "Error reported in ChannelGroupFuture, but no error found in individual futures."))
       })
@@ -114,8 +116,10 @@ class NettyTransportSettings(config: Config) {
 
   val TransportMode: Mode =
     getString("transport-protocol") match {
-      case "tcp" ⇒ Tcp
-      case "udp" ⇒ Udp
+      case "tcp" ⇒
+        Tcp
+      case "udp" ⇒
+        Udp
       case unknown ⇒
         throw new ConfigurationException(s"Unknown transport: [$unknown]")
     }
@@ -126,17 +130,21 @@ class NettyTransportSettings(config: Config) {
 
   val UseDispatcherForIo: Option[String] =
     getString("use-dispatcher-for-io") match {
-      case "" | null ⇒ None
-      case dispatcher ⇒ Some(dispatcher)
+      case "" | null ⇒
+        None
+      case dispatcher ⇒
+        Some(dispatcher)
     }
 
   private[this] def optionSize(s: String): Option[Int] =
     getBytes(s).toInt match {
-      case 0 ⇒ None
+      case 0 ⇒
+        None
       case x if x < 0 ⇒
         throw new ConfigurationException(
           s"Setting '$s' must be 0 or positive (and fit in an Int)")
-      case other ⇒ Some(other)
+      case other ⇒
+        Some(other)
     }
 
   val ConnectionTimeout: FiniteDuration = config.getMillisDuration(
@@ -169,20 +177,26 @@ class NettyTransportSettings(config: Config) {
 
   val TcpReuseAddr: Boolean =
     getString("tcp-reuse-addr") match {
-      case "off-for-windows" ⇒ !Helpers.isWindows
-      case _ ⇒ getBoolean("tcp-reuse-addr")
+      case "off-for-windows" ⇒
+        !Helpers.isWindows
+      case _ ⇒
+        getBoolean("tcp-reuse-addr")
     }
 
   val Hostname: String =
     getString("hostname") match {
-      case "" ⇒ InetAddress.getLocalHost.getHostAddress
-      case value ⇒ value
+      case "" ⇒
+        InetAddress.getLocalHost.getHostAddress
+      case value ⇒
+        value
     }
 
   val BindHostname: String =
     getString("bind-hostname") match {
-      case "" ⇒ Hostname
-      case value ⇒ value
+      case "" ⇒
+        Hostname
+      case value ⇒
+        value
     }
 
   @deprecated("WARNING: This should only be used by professionals.", "2.0")
@@ -191,8 +205,10 @@ class NettyTransportSettings(config: Config) {
   @deprecated("WARNING: This should only be used by professionals.", "2.4")
   val BindPortSelector: Int =
     getString("bind-port") match {
-      case "" ⇒ PortSelector
-      case value ⇒ value.toInt
+      case "" ⇒
+        PortSelector
+      case value ⇒
+        value.toInt
     }
 
   val SslSettings: Option[SSLSettings] =
@@ -261,7 +277,8 @@ private[netty] trait CommonHandlers extends NettyHelpers {
         }
         op(handle)
 
-      case _ ⇒ NettyTransport.gracefulClose(channel)
+      case _ ⇒
+        NettyTransport.gracefulClose(channel)
     }
   }
 }
@@ -333,7 +350,8 @@ private[transport] object NettyTransport {
   def gracefulClose(channel: Channel)(implicit ec: ExecutionContext): Unit = {
     def always(c: ChannelFuture) =
       NettyFutureBridge(c) recover {
-        case _ ⇒ c.getChannel
+        case _ ⇒
+          c.getChannel
       }
     for {
       _ ← always {
@@ -361,7 +379,8 @@ private[transport] object NettyTransport {
             systemName,
             hostName.getOrElse(sa.getHostString),
             port.getOrElse(sa.getPort)))
-      case _ ⇒ None
+      case _ ⇒
+        None
     }
 
   // Need to do like this for binary compatibility reasons
@@ -393,8 +412,10 @@ class NettyTransport(
   implicit val executionContext: ExecutionContext = settings.UseDispatcherForIo
     .orElse(
       RARP(system).provider.remoteSettings.Dispatcher match {
-        case "" ⇒ None
-        case dispatcherName ⇒ Some(dispatcherName)
+        case "" ⇒
+          None
+        case dispatcherName ⇒
+          Some(dispatcherName)
       })
     .map(system.dispatchers.lookup)
     .getOrElse(system.dispatcher)
@@ -621,8 +642,10 @@ class NettyTransport(
       try {
         val newServerChannel =
           inboundBootstrap match {
-            case b: ServerBootstrap ⇒ b.bind(address)
-            case b: ConnectionlessBootstrap ⇒ b.bind(address)
+            case b: ServerBootstrap ⇒
+              b.bind(address)
+            case b: ConnectionlessBootstrap ⇒
+              b.bind(address)
           }
 
         // Block reads until a handler actor is registered
@@ -647,14 +670,16 @@ class NettyTransport(
               system.name,
               None,
               None) match {
-              case Some(address) ⇒ boundTo = address
+              case Some(address) ⇒
+                boundTo = address
               case None ⇒
                 throw new NettyTransportException(
                   s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
             }
             localAddress = address
             associationListenerPromise.future.onSuccess {
-              case listener ⇒ newServerChannel.setReadable(true)
+              case listener ⇒
+                newServerChannel.setReadable(true)
             }
             (address, associationListenerPromise)
           case None ⇒
@@ -713,7 +738,8 @@ class NettyTransport(
                       readyChannel,
                       NettyTransport.this)
                   handle.readHandlerPromise.future.onSuccess {
-                    case listener ⇒ udpConnectionTable.put(addr, listener)
+                    case listener ⇒
+                      udpConnectionTable.put(addr, listener)
                   }
                   handle
                 case unknown ⇒
@@ -738,7 +764,8 @@ class NettyTransport(
   override def shutdown(): Future[Boolean] = {
     def always(c: ChannelGroupFuture) =
       NettyFutureBridge(c).map(_ ⇒ true) recover {
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
     for {
       // Force flush by trying to write an empty buffer and wait for success

@@ -135,7 +135,8 @@ abstract class GeneratedRouter extends Router {
     ).fold(
       badRequest,
       {
-        case (a1, a2) => generator(a1, a2)
+        case (a1, a2) =>
+          generator(a1, a2)
       })
   }
 
@@ -149,7 +150,8 @@ abstract class GeneratedRouter extends Router {
     ).fold(
       badRequest,
       {
-        case (a1, a2, a3) => generator(a1, a2, a3)
+        case (a1, a2, a3) =>
+          generator(a1, a2, a3)
       })
   }
 
@@ -168,7 +170,8 @@ abstract class GeneratedRouter extends Router {
     ).fold(
       badRequest,
       {
-        case (a1, a2, a3, a4) => generator(a1, a2, a3, a4)
+        case (a1, a2, a3, a4) =>
+          generator(a1, a2, a3, a4)
       })
   }
 
@@ -189,7 +192,8 @@ abstract class GeneratedRouter extends Router {
     ).fold(
       badRequest,
       {
-        case (a1, a2, a3, a4, a5) => generator(a1, a2, a3, a4, a5)
+        case (a1, a2, a3, a4, a5) =>
+          generator(a1, a2, a3, a4, a5)
       })
   }
 
@@ -212,7 +216,8 @@ abstract class GeneratedRouter extends Router {
     ).fold(
       badRequest,
       {
-        case (a1, a2, a3, a4, a5, a6) => generator(a1, a2, a3, a4, a5, a6)
+        case (a1, a2, a3, a4, a5, a6) =>
+          generator(a1, a2, a3, a4, a5, a6)
       })
   }
 

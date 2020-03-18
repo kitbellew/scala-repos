@@ -154,14 +154,18 @@ private[akka] class Deployer(
       .unwrapped
       .asScala
       .collect {
-        case (key, value: String) ⇒ (key -> value)
+        case (key, value: String) ⇒
+          (key -> value)
       }
       .toMap
 
   config.root.asScala flatMap {
-    case ("default", _) ⇒ None
-    case (key, value: ConfigObject) ⇒ parseConfig(key, value.toConfig)
-    case _ ⇒ None
+    case ("default", _) ⇒
+      None
+    case (key, value: ConfigObject) ⇒
+      parseConfig(key, value.toConfig)
+    case _ ⇒
+      None
   } foreach deploy
 
   def lookup(path: ActorPath): Option[Deploy] =
@@ -183,7 +187,8 @@ private[akka] class Deployer(
           case "" ⇒
             throw new InvalidActorNameException(
               s"Actor name in deployment [${d.path}] must not be empty")
-          case el ⇒ ActorPath.validatePathElement(el, fullPath = d.path)
+          case el ⇒
+            ActorPath.validatePathElement(el, fullPath = d.path)
         }
 
       if (!deployments.compareAndSet(w, w.insert(path.iterator, d)))
@@ -247,17 +252,20 @@ private[akka] class Deployer(
       dynamicAccess
         .createInstanceFor[RouterConfig](fqn, args1)
         .recover({
-          case e @ (_: IllegalArgumentException | _: ConfigException) ⇒ throw e
+          case e @ (_: IllegalArgumentException | _: ConfigException) ⇒
+            throw e
           case e: NoSuchMethodException ⇒
             dynamicAccess
               .createInstanceFor[RouterConfig](fqn, args2)
               .recover({
                 case e @ (_: IllegalArgumentException | _: ConfigException) ⇒
                   throw e
-                case e2 ⇒ throwCannotInstantiateRouter(args2, e)
+                case e2 ⇒
+                  throwCannotInstantiateRouter(args2, e)
               })
               .get
-          case e ⇒ throwCannotInstantiateRouter(args2, e)
+          case e ⇒
+            throwCannotInstantiateRouter(args2, e)
         })
         .get
     }

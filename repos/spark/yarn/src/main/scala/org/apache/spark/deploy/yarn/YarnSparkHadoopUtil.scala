@@ -497,10 +497,14 @@ object YarnSparkHadoopUtil {
         val escaped = new StringBuilder("'")
         for (i <- 0 to arg.length() - 1) {
           arg.charAt(i) match {
-            case '$'  => escaped.append("\\$")
-            case '"'  => escaped.append("\\\"")
-            case '\'' => escaped.append("'\\''")
-            case c    => escaped.append(c)
+            case '$' =>
+              escaped.append("\\$")
+            case '"' =>
+              escaped.append("\\\"")
+            case '\'' =>
+              escaped.append("'\\''")
+            case c =>
+              escaped.append(c)
           }
         }
         escaped.append("'").toString()

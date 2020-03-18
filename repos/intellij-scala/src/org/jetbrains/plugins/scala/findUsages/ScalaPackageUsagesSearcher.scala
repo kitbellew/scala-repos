@@ -23,8 +23,10 @@ class ScalaPackageUsagesSearcher
     val target: PsiElement = parameters.getElementToSearch
     val scPack =
       target match {
-        case pack: PsiPackage => ScPackageImpl(pack)
-        case _                => return
+        case pack: PsiPackage =>
+          ScPackageImpl(pack)
+        case _ =>
+          return
       }
     val name = scPack.name
     if (name == null || StringUtil.isEmptyOrSpaces(name))

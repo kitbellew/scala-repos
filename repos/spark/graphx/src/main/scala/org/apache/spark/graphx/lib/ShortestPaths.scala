@@ -34,7 +34,8 @@ object ShortestPaths {
 
   private def incrementMap(spmap: SPMap): SPMap =
     spmap.map {
-      case (v, d) => v -> (d + 1)
+      case (v, d) =>
+        v -> (d + 1)
     }
 
   private def addMaps(spmap1: SPMap, spmap2: SPMap): SPMap =

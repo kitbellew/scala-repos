@@ -49,14 +49,17 @@ private[std] sealed trait Function1Instances extends Function1Instances0 {
     new Choice[Function1] with Arrow[Function1] {
       def choice[A, B, C](f: A => C, g: B => C): Xor[A, B] => C =
         _ match {
-          case Xor.Left(a)  => f(a)
-          case Xor.Right(b) => g(b)
+          case Xor.Left(a) =>
+            f(a)
+          case Xor.Right(b) =>
+            g(b)
         }
 
       def lift[A, B](f: A => B): A => B = f
 
       def first[A, B, C](fa: A => B): ((A, C)) => (B, C) = {
-        case (a, c) => (fa(a), c)
+        case (a, c) =>
+          (fa(a), c)
       }
 
       def id[A]: A => A = a => a
@@ -64,7 +67,8 @@ private[std] sealed trait Function1Instances extends Function1Instances0 {
       override def split[A, B, C, D](
           f: A => B,
           g: C => D): ((A, C)) => (B, D) = {
-        case (a, c) => (f(a), g(c))
+        case (a, c) =>
+          (f(a), g(c))
       }
 
       def compose[A, B, C](f: B => C, g: A => B): A => C = f.compose(g)

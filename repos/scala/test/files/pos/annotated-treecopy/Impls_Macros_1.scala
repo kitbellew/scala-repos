@@ -24,7 +24,8 @@ object Macros {
           new Transformer {
             override def transform(tree: Tree): Tree =
               tree match {
-                case Ident(x) if (x == n) => Ident(TermName("_arg"))
+                case Ident(x) if (x == n) =>
+                  Ident(TermName("_arg"))
                 case tt: TypeTree if tt.original != null =>
                   setOriginal(TypeTree(tt.tpe), transform(tt.original))
                 // without the fix to LazyTreeCopier.Annotated, we would need to uncomment the line below to make the macro work
@@ -34,7 +35,8 @@ object Macros {
                 // but leaves the <@unchecked> part untouched. this signals the misguided LazyTreeCopier that the Annotated tree hasn't been modified,
                 // so the original tree should be copied over and returned => crash when later <x: @unchecked> re-emerges from TypeTree.original
                 // case Annotated(annot, arg) => treeCopy.Annotated(tree, transform(annot).duplicate, transform(arg))
-                case _ => super.transform(tree)
+                case _ =>
+                  super.transform(tree)
               }
           }.transform(b)
 
@@ -56,7 +58,8 @@ object Macros {
         val untyped = c.untypecheck(template.tree)
 
         c.Expr[T => U](untyped)
-      case _ => sys.error("Bad function type")
+      case _ =>
+        sys.error("Bad function type")
     }
   }
 }

@@ -47,7 +47,8 @@ final class ScalaJSTask private (
     val logBuffer = mutable.Buffer.empty[LogElement[_]]
 
     val doneHandler: LoopHandler[List[TaskInfo]] = {
-      case ("ok", msg) => Some(fromJSON[List[TaskInfo]](readJSON(msg)))
+      case ("ok", msg) =>
+        Some(fromJSON[List[TaskInfo]](readJSON(msg)))
     }
 
     val handlerChain = (eventHandler(handler) orElse
@@ -92,10 +93,14 @@ final class ScalaJSTask private (
     }
 
     val pf: LoopHandler[Nothing] = {
-      case ("error", data) => log(_.error, data)
-      case ("warn", data)  => log(_.warn, data)
-      case ("info", data)  => log(_.info, data)
-      case ("debug", data) => log(_.debug, data)
+      case ("error", data) =>
+        log(_.error, data)
+      case ("warn", data) =>
+        log(_.warn, data)
+      case ("info", data) =>
+        log(_.info, data)
+      case ("debug", data) =>
+        log(_.debug, data)
       case ("trace", data) =>
         val (index, innerData) = processData(data)
         val throwable = fromJSON[RemoteException](readJSON(innerData))

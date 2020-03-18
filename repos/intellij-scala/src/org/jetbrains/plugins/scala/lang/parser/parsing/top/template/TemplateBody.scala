@@ -26,7 +26,8 @@ object TemplateBody {
     builder.getTokenType match {
       case ScalaTokenTypes.tLBRACE =>
         builder.advanceLexer() //Ate {
-      case _ => builder error ScalaBundle.message("lbrace.expected")
+      case _ =>
+        builder error ScalaBundle.message("lbrace.expected")
     }
     SelfType parse builder
     //this metod parse recursively TemplateStat {semi TemplateStat}

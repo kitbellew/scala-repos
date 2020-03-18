@@ -190,8 +190,10 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
             x: (InternalRow, InternalRow),
             y: (InternalRow, InternalRow)): Int = {
           keyOrdering.compare(x._1, y._1) match {
-            case 0   => valueOrdering.compare(x._2, y._2)
-            case cmp => cmp
+            case 0 =>
+              valueOrdering.compare(x._2, y._2)
+            case cmp =>
+              cmp
           }
         }
       }

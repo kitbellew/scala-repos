@@ -63,7 +63,8 @@ final class TeamApi(
       requests ← RequestRepo findByTeam team.id
       users ← $find.byOrderedIds[User](requests map (_.user))
     } yield requests zip users map {
-      case (request, user) => RequestWithUser(request, user)
+      case (request, user) =>
+        RequestWithUser(request, user)
     }
 
   def requestsWithUsers(user: User): Fu[List[RequestWithUser]] =
@@ -72,7 +73,8 @@ final class TeamApi(
       requests ← RequestRepo findByTeams teamIds
       users ← $find.byOrderedIds[User](requests map (_.user))
     } yield requests zip users map {
-      case (request, user) => RequestWithUser(request, user)
+      case (request, user) =>
+        RequestWithUser(request, user)
     }
 
   def join(teamId: String)(implicit ctx: UserContext): Fu[Option[Requesting]] =
@@ -98,8 +100,10 @@ final class TeamApi(
     RequestRepo.exists(team.id, user.id).map {
       _ -> belongsTo(team.id, user.id)
     } map {
-      case (false, false) => true
-      case _              => false
+      case (false, false) =>
+        true
+      case _ =>
+        false
     }
 
   def createRequest(team: Team, setup: RequestSetup, user: User): Funit =
@@ -138,7 +142,8 @@ final class TeamApi(
     for {
       teamOption ← $find.byId[Team](teamId)
       result ← ~(teamOption |@| ctx.me)({
-        case (team, user) => doQuit(team, user.id) inject team.some
+        case (team, user) =>
+          doQuit(team, user.id) inject team.some
       })
     } yield result
 

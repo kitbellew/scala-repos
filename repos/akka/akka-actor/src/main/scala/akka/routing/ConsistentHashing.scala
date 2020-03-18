@@ -228,7 +228,8 @@ final case class ConsistentHashingRoutingLogic(
             hashData match {
               case bytes: Array[Byte] ⇒
                 currentConsistenHash.nodeFor(bytes).routee
-              case str: String ⇒ currentConsistenHash.nodeFor(str).routee
+              case str: String ⇒
+                currentConsistenHash.nodeFor(str).routee
               case x: AnyRef ⇒
                 currentConsistenHash
                   .nodeFor(SerializationExtension(system).serialize(x).get)
@@ -247,7 +248,8 @@ final case class ConsistentHashingRoutingLogic(
       message match {
         case _ if hashMapping.isDefinedAt(message) ⇒
           target(hashMapping(message))
-        case hashable: ConsistentHashable ⇒ target(hashable.consistentHashKey)
+        case hashable: ConsistentHashable ⇒
+          target(hashable.consistentHashKey)
         case other ⇒
           log.warning(
             "Message [{}] must be handled by hashMapping, or implement [{}] or be wrapped in [{}]",
@@ -370,7 +372,8 @@ final case class ConsistentHashingPool(
     */
   override def withFallback(other: RouterConfig): RouterConfig =
     other match {
-      case _: FromConfig | _: NoRouter ⇒ this.overrideUnsetConfig(other)
+      case _: FromConfig | _: NoRouter ⇒
+        this.overrideUnsetConfig(other)
       case otherRouter: ConsistentHashingPool ⇒
         (copy(hashMapping = otherRouter.hashMapping)).overrideUnsetConfig(other)
       case _ ⇒
@@ -451,7 +454,8 @@ final case class ConsistentHashingGroup(
     */
   override def withFallback(other: RouterConfig): RouterConfig =
     other match {
-      case _: FromConfig | _: NoRouter ⇒ super.withFallback(other)
+      case _: FromConfig | _: NoRouter ⇒
+        super.withFallback(other)
       case otherRouter: ConsistentHashingGroup ⇒
         copy(hashMapping = otherRouter.hashMapping)
       case _ ⇒
@@ -475,16 +479,20 @@ private[akka] final case class ConsistentRoutee(
 
   override def toString: String =
     routee match {
-      case ActorRefRoutee(ref) ⇒ toStringWithfullAddress(ref.path)
+      case ActorRefRoutee(ref) ⇒
+        toStringWithfullAddress(ref.path)
       case ActorSelectionRoutee(sel) ⇒
         toStringWithfullAddress(sel.anchorPath) + sel.pathString
-      case other ⇒ other.toString
+      case other ⇒
+        other.toString
     }
 
   private def toStringWithfullAddress(path: ActorPath): String = {
     path.address match {
-      case Address(_, _, None, None) ⇒ path.toStringWithAddress(selfAddress)
-      case a ⇒ path.toString
+      case Address(_, _, None, None) ⇒
+        path.toStringWithAddress(selfAddress)
+      case a ⇒
+        path.toString
     }
   }
 }

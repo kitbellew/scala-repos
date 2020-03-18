@@ -64,22 +64,27 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
                               if !f.hasModifierPropertyScala("abstract") ||
                                 !f.hasModifierPropertyScala("override") =>
                             true
-                          case _ => false
+                          case _ =>
+                            false
                         }
-                      case m: PsiMethod => !m.hasModifierProperty("abstract")
-                      case _            => false
+                      case m: PsiMethod =>
+                        !m.hasModifierProperty("abstract")
+                      case _ =>
+                        false
                     }
                 } match {
                   case Some(_) => //do nothing
                   case None =>
                     val place: PsiElement =
                       element match {
-                        case td: ScTypeDefinition => td.nameId
+                        case td: ScTypeDefinition =>
+                          td.nameId
                         case t: ScNewTemplateDefinition =>
                           t.extendsBlock.templateParents
                             .flatMap(_.typeElements.headOption)
                             .orNull
-                        case _ => null
+                        case _ =>
+                          null
                       }
                     if (place != null) {
                       holder.createErrorAnnotation(

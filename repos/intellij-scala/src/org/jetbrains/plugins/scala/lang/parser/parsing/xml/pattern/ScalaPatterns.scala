@@ -18,14 +18,16 @@ object ScalaPatterns {
       case ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_START =>
         builder.advanceLexer
         builder.enableNewlines
-      case _ => return false
+      case _ =>
+        return false
     }
     if (!XmlPatterns.parse(builder))
       builder error ErrMsg("xml.scala.patterns.exected")
     builder.getTokenType match {
       case ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_END =>
         builder.advanceLexer
-      case _ => builder error ErrMsg("xml.scala.injection.end.expected")
+      case _ =>
+        builder error ErrMsg("xml.scala.injection.end.expected")
     }
     builder.restoreNewlinesState
     return true

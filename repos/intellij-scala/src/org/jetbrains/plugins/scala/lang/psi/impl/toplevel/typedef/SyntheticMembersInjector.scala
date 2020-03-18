@@ -105,7 +105,8 @@ object SyntheticMembersInjector {
         source match {
           case o: ScObject if o.isSyntheticObject =>
             ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-          case _ => source
+          case _ =>
+            source
         }
       val function = ScalaPsiElementFactory.createMethodWithContext(
         template,
@@ -136,7 +137,8 @@ object SyntheticMembersInjector {
           source match {
             case o: ScObject if o.isSyntheticObject =>
               ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-            case _ => source
+            case _ =>
+              source
           }
         ).extendsBlock
       val td = ScalaPsiElementFactory.createTypeDefinitionWithContext(
@@ -149,14 +151,16 @@ object SyntheticMembersInjector {
           case td: ScTypeDefinition =>
             td.setSynthetic(context)
             td.members.foreach(updateSynthetic)
-          case fun: ScFunction => fun.setSynthetic(context)
-          case _               => //todo: ?
+          case fun: ScFunction =>
+            fun.setSynthetic(context)
+          case _ => //todo: ?
         }
       }
       updateSynthetic(td)
       buffer += td
     } catch {
-      case p: ProcessCanceledException => throw p
+      case p: ProcessCanceledException =>
+        throw p
       case e: Throwable =>
         LOG.error(
           s"Error during parsing template from injector: ${injector.getClass.getName}",
@@ -181,14 +185,16 @@ object SyntheticMembersInjector {
         source match {
           case o: ScObject if o.isSyntheticObject =>
             ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
-          case _ => source
+          case _ =>
+            source
         }
       buffer += ScalaPsiElementFactory.createTypeElementFromText(
         supers,
         context,
         source)
     } catch {
-      case p: ProcessCanceledException => throw p
+      case p: ProcessCanceledException =>
+        throw p
       case e: Throwable =>
         LOG.error(
           s"Error during parsing type element from injector: ${injector.getClass.getName}",

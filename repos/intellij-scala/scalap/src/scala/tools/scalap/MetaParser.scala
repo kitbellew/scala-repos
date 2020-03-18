@@ -62,7 +62,8 @@ class MetaParser(meta: String) {
         else
           None
       } catch {
-        case _: Throwable => None
+        case _: Throwable =>
+          None
       }
     } else
       None;

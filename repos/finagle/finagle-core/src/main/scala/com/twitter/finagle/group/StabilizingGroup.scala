@@ -86,7 +86,8 @@ object StabilizingGroup {
               // Transitioned to healthy: push back
               val newTime = Time.now + grace
               val newq = remq map {
-                case (elem, _) => (elem, newTime)
+                case (elem, _) =>
+                  (elem, newTime)
               }
               loop(newq, Healthy)
             case newh =>
@@ -100,13 +101,15 @@ object StabilizingGroup {
           // Remove pending removes that are present
           // in this update.
           q = q filter {
-            case (e, _) => !(newSet contains e)
+            case (e, _) =>
+              !(newSet contains e)
           }
           set() ++= newSet &~ snap
 
           def inQ(elem: T) =
             q exists {
-              case (e, _) => e == elem
+              case (e, _) =>
+                e == elem
             }
           for (el <- snap &~ newSet if !inQ(el)) {
             val until = Time.now + grace

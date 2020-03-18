@@ -165,7 +165,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] {
 
   def indexed[A](fa: F[A]): F[(Int, A)] =
     mapAccumL(fa, 0) {
-      case (s, a) => (s + 1, (s, a))
+      case (s, a) =>
+        (s + 1, (s, a))
     }._2
 
   def zipL[A, B](fa: F[A], fb: F[B]): F[(A, Option[B])] =
@@ -183,7 +184,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] {
 
   def mapAccumR[S, A, B](fa: F[A], z: S)(f: (S, A) => (S, B)): (S, F[B]) =
     mapAccumL(reverse(fa), z)(f) match {
-      case (s, fb) => (s, reverse(fb))
+      case (s, fb) =>
+        (s, reverse(fb))
     }
 
   trait TraverseLaw extends FunctorLaw {

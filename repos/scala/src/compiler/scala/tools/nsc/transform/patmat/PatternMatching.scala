@@ -87,7 +87,8 @@ trait PatternMatching
               tree.tpe,
               tree.pos),
             transform(finalizer))
-        case _ => super.transform(tree)
+        case _ =>
+          super.transform(tree)
       }
 
     // TODO: only instantiate new match translator when localTyper has changed
@@ -249,7 +250,8 @@ trait Interface extends ast.TreeDSL {
         // since about half of the typedSubst's end up being no-ops, the check below shaves off 5% of the time spent in typedSubst
         val toIdents = to.forall(_.isInstanceOf[Ident])
         val containsSym = tree.exists {
-          case i @ Ident(_) => from contains i.symbol
+          case i @ Ident(_) =>
+            from contains i.symbol
           case tt: TypeTree =>
             tt.tpe.exists {
               case SingleType(_, sym) =>
@@ -259,9 +261,11 @@ trait Interface extends ast.TreeDSL {
                       s"Unexpected substitution of non-Ident into TypeTree `$tt`, subst= $this")
                   true
                 }
-              case _ => false
+              case _ =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
         val toSyms = to.map(_.symbol)
         object substIdentsForTrees extends Transformer {
@@ -292,8 +296,10 @@ trait Interface extends ast.TreeDSL {
 
             val tree1 =
               tree match {
-                case Ident(_) => subst(from, to)
-                case _        => super.transform(tree)
+                case Ident(_) =>
+                  subst(from, to)
+                case _ =>
+                  super.transform(tree)
               }
             tree1 match {
               case _: DefTree =>

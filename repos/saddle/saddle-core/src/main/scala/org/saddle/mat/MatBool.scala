@@ -105,6 +105,7 @@ class MatBool(r: Int, c: Int, values: Array[Boolean]) extends Mat[Boolean] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

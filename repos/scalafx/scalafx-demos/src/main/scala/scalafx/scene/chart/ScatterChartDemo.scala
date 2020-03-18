@@ -68,6 +68,7 @@ object ScatterChartDemo extends JFXApp {
       name,
       ObservableBuffer(
         data.map {
-          case (x, y) => XYChart.Data[Number, Number](x, y)
+          case (x, y) =>
+            XYChart.Data[Number, Number](x, y)
         }))
 }

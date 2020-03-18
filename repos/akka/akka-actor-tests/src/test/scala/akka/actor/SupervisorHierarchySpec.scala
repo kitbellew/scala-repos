@@ -42,7 +42,8 @@ object SupervisorHierarchySpec {
       extends Actor {
 
     def receive = {
-      case p: Props ⇒ sender() ! context.actorOf(p)
+      case p: Props ⇒
+        sender() ! context.actorOf(p)
     }
     // test relies on keeping children around during restart
     override def preRestart(cause: Throwable, msg: Option[Any]) {}
@@ -54,12 +55,16 @@ object SupervisorHierarchySpec {
   class Resumer extends Actor {
     override def supervisorStrategy =
       OneForOneStrategy() {
-        case _ ⇒ SupervisorStrategy.Resume
+        case _ ⇒
+          SupervisorStrategy.Resume
       }
     def receive = {
-      case "spawn" ⇒ sender() ! context.actorOf(Props[Resumer])
-      case "fail" ⇒ throw new Exception("expected")
-      case "ping" ⇒ sender() ! "pong"
+      case "spawn" ⇒
+        sender() ! context.actorOf(Props[Resumer])
+      case "fail" ⇒
+        throw new Exception("expected")
+      case "ping" ⇒
+        sender() ! "pong"
     }
   }
 
@@ -186,8 +191,10 @@ object SupervisorHierarchySpec {
 
     def setFlags(directive: Directive): Unit =
       directive match {
-        case Restart ⇒ failed = true
-        case Resume ⇒ suspended = true
+        case Restart ⇒
+          failed = true
+        case Resume ⇒
+          suspended = true
         case _ ⇒
       }
 
@@ -247,9 +254,12 @@ object SupervisorHierarchySpec {
     }
 
     val unwrap: PartialFunction[Throwable, (Throwable, Throwable)] = {
-      case x @ PostRestartException(_, f: Failure, _) ⇒ (f, x)
-      case x @ ActorInitializationException(_, _, f: Failure) ⇒ (f, x)
-      case x ⇒ (x, x)
+      case x @ PostRestartException(_, f: Failure, _) ⇒
+        (f, x)
+      case x @ ActorInitializationException(_, _, f: Failure) ⇒
+        (f, x)
+      case x ⇒
+        (x, x)
     }
     override val supervisorStrategy =
       OneForOneStrategy()(
@@ -269,8 +279,10 @@ object SupervisorHierarchySpec {
             }
             val prefix =
               orig match {
-                case f: Failure ⇒ "applying "
-                case _ ⇒ "re-applying "
+                case f: Failure ⇒
+                  "applying "
+                case _ ⇒
+                  "re-applying "
               }
             log :+= Event(
               prefix + f + " to " + sender(),
@@ -371,8 +383,10 @@ object SupervisorHierarchySpec {
             Thread.sleep((random.nextFloat * 1.03).toLong);
             sender() ! "pong"
           }
-          case Dump(0) ⇒ abort("dump")
-          case Dump(level) ⇒ context.children foreach (_ ! Dump(level - 1))
+          case Dump(0) ⇒
+            abort("dump")
+          case Dump(level) ⇒
+            context.children foreach (_ ! Dump(level - 1))
           case Terminated(ref) ⇒
             /*
              * It might be that we acted upon this death already in postRestart
@@ -396,7 +410,8 @@ object SupervisorHierarchySpec {
                 sender() + " terminated while pongOfDeath",
                 identityHashCode(Hierarchy.this))
             }
-          case Abort ⇒ abort("terminating")
+          case Abort ⇒
+            abort("terminating")
           case PingOfDeath ⇒
             if (size > 1) {
               pongsToGo = context.children.size
@@ -509,10 +524,14 @@ object SupervisorHierarchySpec {
     // don’t escalate from this one!
     override val supervisorStrategy =
       OneForOneStrategy() {
-        case f: Failure ⇒ f.directive
-        case OriginalRestartException(f: Failure) ⇒ f.directive
-        case ActorInitializationException(_, _, f: Failure) ⇒ f.directive
-        case _ ⇒ Stop
+        case f: Failure ⇒
+          f.directive
+        case OriginalRestartException(f: Failure) ⇒
+          f.directive
+        case ActorInitializationException(_, _, f: Failure) ⇒
+          f.directive
+        case _ ⇒
+          Stop
       }
 
     var children = Vector.empty[ActorRef]
@@ -606,9 +625,12 @@ object SupervisorHierarchySpec {
 
     private def random012: Int =
       random.nextFloat match {
-        case x if x > 0.1 ⇒ 0
-        case x if x > 0.03 ⇒ 1
-        case _ ⇒ 2
+        case x if x > 0.1 ⇒
+          0
+        case x if x > 0.03 ⇒
+          1
+        case _ ⇒
+          2
       }
     private def bury(path: ActorPath): Unit = {
       val deadGuy = path.elements
@@ -629,7 +651,8 @@ object SupervisorHierarchySpec {
         stay
       case Event(Work, x) if x > 0 ⇒
         nextJob.next match {
-          case Ping(ref) ⇒ ref ! "ping"
+          case Ping(ref) ⇒
+            ref ! "ping"
           case Fail(ref, dir) ⇒
             val f = Failure(
               dir,
@@ -639,9 +662,12 @@ object SupervisorHierarchySpec {
               failPost = random012,
               failConstr = random012,
               stopKids = random012 match {
-                case 0 ⇒ 0
-                case 1 ⇒ random.nextInt(breadth / 2)
-                case 2 ⇒ 1000
+                case 0 ⇒
+                  0
+                case 1 ⇒
+                  random.nextInt(breadth / 2)
+                case 2 ⇒
+                  1000
               }
             )
             ref ! f
@@ -677,7 +703,8 @@ object SupervisorHierarchySpec {
     }
 
     onTransition {
-      case Stress -> Finishing ⇒ ignoreFailConstr = true
+      case Stress -> Finishing ⇒
+        ignoreFailConstr = true
     }
 
     when(Finishing) {
@@ -726,7 +753,8 @@ object SupervisorHierarchySpec {
     }
 
     when(Stopping, stateTimeout = 5.seconds.dilated) {
-      case Event(PongOfDeath, _) ⇒ stay
+      case Event(PongOfDeath, _) ⇒
+        stay
       case Event(Terminated(r), _) if r == hierarchy ⇒
         val undead = children filterNot (_.isTerminated)
         if (undead.nonEmpty) {
@@ -800,16 +828,20 @@ object SupervisorHierarchySpec {
         printErrors()
         testActor ! "timeout in Failed"
         stop
-      case Event("pong", _) ⇒ stay // don’t care?
-      case Event(Work, _) ⇒ stay
-      case Event(Died(_), _) ⇒ stay
+      case Event("pong", _) ⇒
+        stay // don’t care?
+      case Event(Work, _) ⇒
+        stay
+      case Event(Died(_), _) ⇒
+        stay
     }
 
     def getErrors(target: ActorRef, depth: Int): Unit = {
       target match {
         case l: LocalActorRef ⇒
           l.underlying.actor match {
-            case h: Hierarchy ⇒ errors :+= target -> ErrorLog("forced", h.log)
+            case h: Hierarchy ⇒
+              errors :+= target -> ErrorLog("forced", h.log)
             case _ ⇒
               errors :+= target -> ErrorLog(
                 "fetched",
@@ -825,7 +857,8 @@ object SupervisorHierarchySpec {
       target match {
         case l: LocalActorRef ⇒
           l.underlying.actor match {
-            case h: Hierarchy ⇒ errors :+= target -> ErrorLog("forced", h.log)
+            case h: Hierarchy ⇒
+              errors :+= target -> ErrorLog("forced", h.log)
             case _ ⇒
               errors :+= target -> ErrorLog(
                 "fetched",
@@ -838,7 +871,8 @@ object SupervisorHierarchySpec {
 
     def printErrors(): Unit = {
       errors collect {
-        case (origin, ErrorLog("dump", _)) ⇒ getErrors(origin, 1)
+        case (origin, ErrorLog("dump", _)) ⇒
+          getErrors(origin, 1)
         case (origin, ErrorLog(msg, _)) if msg startsWith "not resumed" ⇒
           getErrorsUp(origin)
       }
@@ -949,8 +983,10 @@ class SupervisorHierarchySpec
                     SupervisorStrategy.defaultStrategy))))
 
             def receive = {
-              case "killCrasher" ⇒ crasher ! Kill
-              case Terminated(_) ⇒ countDownMax.countDown()
+              case "killCrasher" ⇒
+                crasher ! Kill
+              case Terminated(_) ⇒
+                countDownMax.countDown()
             }
           }))
 
@@ -992,7 +1028,8 @@ class SupervisorHierarchySpec
                   SupervisorStrategy.Resume
               }
             def receive = {
-              case "spawn" ⇒ sender() ! context.actorOf(Props[Resumer])
+              case "spawn" ⇒
+                sender() ! context.actorOf(Props[Resumer])
             }
           }),
         "slowResumer"
@@ -1065,14 +1102,16 @@ class SupervisorHierarchySpec
                       postRestartCalled.incrementAndGet()
                     }
                     override def receive = {
-                      case m ⇒ sender() ! m
+                      case m ⇒
+                        sender() ! m
                     }
                   }),
                 "failChild"
               )
 
               override def receive = {
-                case m ⇒ child.forward(m)
+                case m ⇒
+                  child.forward(m)
               }
             }),
           "failResumer"
@@ -1108,8 +1147,10 @@ class SupervisorHierarchySpec
           Props(
             new Actor {
               def receive = {
-                case s: FSM.CurrentState[_] ⇒ log.info("{}", s)
-                case t: FSM.Transition[_] ⇒ log.info("{}", t)
+                case s: FSM.CurrentState[_] ⇒
+                  log.info("{}", s)
+                case t: FSM.Transition[_] ⇒
+                  log.info("{}", t)
               }
             })))
 

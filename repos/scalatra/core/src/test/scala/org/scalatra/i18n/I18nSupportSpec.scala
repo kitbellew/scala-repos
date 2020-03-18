@@ -11,8 +11,10 @@ class I18nSupportServlet extends ScalatraServlet with I18nSupport {
 
   get("/getcookie") {
     cookies.get(I18nSupport.LocaleKey) match {
-      case Some(v) => v
-      case _       => "None"
+      case Some(v) =>
+        v
+      case _ =>
+        "None"
     }
   }
 

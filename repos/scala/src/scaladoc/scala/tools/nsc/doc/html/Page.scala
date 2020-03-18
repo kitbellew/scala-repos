@@ -56,16 +56,26 @@ abstract class Page {
           "case class"
         else
           "class"
-      case _: Trait                => "trait"
-      case _: Package              => "package"
-      case _: Object               => "object"
-      case _: AbstractType         => "type"
-      case _: AliasType            => "type"
-      case _: Constructor          => "new"
-      case v: Def                  => "def"
-      case v: Val if (v.isLazyVal) => "lazy val"
-      case v: Val if (v.isVal)     => "val"
-      case v: Val if (v.isVar)     => "var"
+      case _: Trait =>
+        "trait"
+      case _: Package =>
+        "package"
+      case _: Object =>
+        "object"
+      case _: AbstractType =>
+        "type"
+      case _: AliasType =>
+        "type"
+      case _: Constructor =>
+        "new"
+      case v: Def =>
+        "def"
+      case v: Val if (v.isLazyVal) =>
+        "lazy val"
+      case v: Val if (v.isVal) =>
+        "val"
+      case v: Val if (v.isVar) =>
+        "var"
       case _ =>
         sys.error(
           "Cannot create kind for: " + mbr + " of class " + mbr.getClass)
@@ -91,14 +101,18 @@ abstract class Page {
         (doName(pack) :: downPacks(pack.inTemplate))
     def downInner(nme: String, tpl: TemplateEntity): (String, Package) = {
       tpl.inTemplate match {
-        case inPkg: Package => (nme + ".html", inPkg)
-        case inTpl          => downInner(doName(inTpl) + "$" + nme, inTpl)
+        case inPkg: Package =>
+          (nme + ".html", inPkg)
+        case inTpl =>
+          downInner(doName(inTpl) + "$" + nme, inTpl)
       }
     }
     val (file, pack) =
       tpl match {
-        case p: Package => ("index.html", p)
-        case _          => downInner(doName(tpl), tpl)
+        case p: Package =>
+          ("index.html", p)
+        case _ =>
+          downInner(doName(tpl), tpl)
       }
     file :: downPacks(pack)
   }
@@ -124,14 +138,23 @@ abstract class Page {
 
   protected def inlineToStr(inl: comment.Inline): String =
     inl match {
-      case comment.Chain(items)                      => items flatMap (inlineToStr(_)) mkString ""
-      case comment.Italic(in)                        => inlineToStr(in)
-      case comment.Bold(in)                          => inlineToStr(in)
-      case comment.Underline(in)                     => inlineToStr(in)
-      case comment.Monospace(in)                     => inlineToStr(in)
-      case comment.Text(text)                        => text
-      case comment.Summary(in)                       => inlineToStr(in)
-      case comment.EntityLink(comment.Text(text), _) => text
-      case _                                         => inl.toString
+      case comment.Chain(items) =>
+        items flatMap (inlineToStr(_)) mkString ""
+      case comment.Italic(in) =>
+        inlineToStr(in)
+      case comment.Bold(in) =>
+        inlineToStr(in)
+      case comment.Underline(in) =>
+        inlineToStr(in)
+      case comment.Monospace(in) =>
+        inlineToStr(in)
+      case comment.Text(text) =>
+        text
+      case comment.Summary(in) =>
+        inlineToStr(in)
+      case comment.EntityLink(comment.Text(text), _) =>
+        text
+      case _ =>
+        inl.toString
     }
 }

@@ -108,17 +108,20 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
     extends Estimator[Double] {
   require(
     windows forall {
-      case (_, i) => i <= N
+      case (_, i) =>
+        i <= N
     })
   private[this] val normalized = {
     val sum =
       (
         windows map {
-          case (w, _) => w
+          case (w, _) =>
+            w
         }
       ).sum
     windows map {
-      case (w, i) => (w.toDouble / sum, i)
+      case (w, i) =>
+        (w.toDouble / sum, i)
     }
   }
   private[this] val buf = new Array[Double](N)
@@ -155,7 +158,8 @@ class WindowedMeans(N: Int, windows: Seq[(Int, Int)])
   def estimate = {
     require(n > 0)
     val weightedMeans = normalized map {
-      case (w, i) => w * mean(n, i)
+      case (w, i) =>
+        w * mean(n, i)
     }
     weightedMeans.sum
   }

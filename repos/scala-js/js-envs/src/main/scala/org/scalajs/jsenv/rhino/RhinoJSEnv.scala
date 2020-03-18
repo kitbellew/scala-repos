@@ -299,9 +299,11 @@ final class RhinoJSEnv private (
     val topLevelPackageIds = ScriptableObject.getPropertyIds(PackagesObject)
     for (id <- topLevelPackageIds)
       (id: Any) match {
-        case name: String => ScriptableObject.deleteProperty(scope, name)
-        case index: Int   => ScriptableObject.deleteProperty(scope, index)
-        case _            => // should not happen, I think, but with Rhino you never know
+        case name: String =>
+          ScriptableObject.deleteProperty(scope, name)
+        case index: Int =>
+          ScriptableObject.deleteProperty(scope, index)
+        case _ => // should not happen, I think, but with Rhino you never know
       }
   }
 
@@ -324,8 +326,10 @@ final class RhinoJSEnv private (
 
     def ensure[T: ClassTag](v: AnyRef, errMsg: String) =
       v match {
-        case v: T => v
-        case _    => sys.error(errMsg)
+        case v: T =>
+          v
+        case _ =>
+          sys.error(errMsg)
       }
 
     scope.addFunction(
@@ -539,7 +543,8 @@ final class RhinoJSEnv private (
           loop()
         } else {
           waitFct(task.deadline) match {
-            case result @ Some(_) => result
+            case result @ Some(_) =>
+              result
 
             case None =>
               // The time has actually expired

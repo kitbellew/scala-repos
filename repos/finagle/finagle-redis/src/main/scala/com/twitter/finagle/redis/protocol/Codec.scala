@@ -54,7 +54,8 @@ private[redis] object RedisCodec {
             ARG_COUNT_MARKER_BA,
             StringToChannelBuffer(args.length.toString),
             EOL_DELIMITER_BA)
-        case false => Nil
+        case false =>
+          Nil
       }
     val buffers =
       args

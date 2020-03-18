@@ -916,8 +916,10 @@ abstract class RDD[T: ClassTag](
           new Iterator[(T, U)] {
             def hasNext: Boolean =
               (thisIter.hasNext, otherIter.hasNext) match {
-                case (true, true)   => true
-                case (false, false) => false
+                case (true, true) =>
+                  true
+                case (false, false) =>
+                  false
                 case _ =>
                   throw new SparkException(
                     "Can only zip RDDs with " +
@@ -1127,8 +1129,10 @@ abstract class RDD[T: ClassTag](
       val mergeResult = (index: Int, taskResult: Option[T]) => {
         if (taskResult.isDefined) {
           jobResult = jobResult match {
-            case Some(value) => Some(f(value, taskResult.get))
-            case None        => taskResult
+            case Some(value) =>
+              Some(f(value, taskResult.get))
+            case None =>
+              taskResult
           }
         }
       }
@@ -1502,8 +1506,10 @@ abstract class RDD[T: ClassTag](
   def first(): T =
     withScope {
       take(1) match {
-        case Array(t) => t
-        case _        => throw new UnsupportedOperationException("empty collection")
+        case Array(t) =>
+          t
+        case _ =>
+          throw new UnsupportedOperationException("empty collection")
       }
     }
 
@@ -1786,8 +1792,10 @@ abstract class RDD[T: ClassTag](
     */
   private[rdd] def isLocallyCheckpointed: Boolean = {
     checkpointData match {
-      case Some(_: LocalRDDCheckpointData[T]) => true
-      case _                                  => false
+      case Some(_: LocalRDDCheckpointData[T]) =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -1799,7 +1807,8 @@ abstract class RDD[T: ClassTag](
     checkpointData match {
       case Some(reliable: ReliableRDDCheckpointData[T]) =>
         reliable.getCheckpointDir
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -1954,7 +1963,8 @@ abstract class RDD[T: ClassTag](
     def debugChildren(rdd: RDD[_], prefix: String): Seq[String] = {
       val len = rdd.dependencies.length
       len match {
-        case 0 => Seq.empty
+        case 0 =>
+          Seq.empty
         case 1 =>
           val d = rdd.dependencies.head
           debugString(
@@ -1988,8 +1998,10 @@ abstract class RDD[T: ClassTag](
         (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset))
 
       debugSelf(rdd).zipWithIndex.map {
-        case (desc: String, 0) => s"$partitionStr $desc"
-        case (desc: String, _) => s"$nextPrefix $desc"
+        case (desc: String, 0) =>
+          s"$partitionStr $desc"
+        case (desc: String, _) =>
+          s"$nextPrefix $desc"
       } ++ debugChildren(rdd, nextPrefix)
     }
     def shuffleDebugString(
@@ -2009,8 +2021,10 @@ abstract class RDD[T: ClassTag](
         + (" " * leftOffset) + "|" + (" " * (partitionStr.length - leftOffset)))
 
       debugSelf(rdd).zipWithIndex.map {
-        case (desc: String, 0) => s"$thisPrefix+-$partitionStr $desc"
-        case (desc: String, _) => s"$nextPrefix$desc"
+        case (desc: String, 0) =>
+          s"$thisPrefix+-$partitionStr $desc"
+        case (desc: String, _) =>
+          s"$nextPrefix$desc"
       } ++ debugChildren(rdd, nextPrefix)
     }
     def debugString(

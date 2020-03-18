@@ -124,7 +124,8 @@ class IndexInt(keys: Vec[Int]) extends Index[Int] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
   }
 }

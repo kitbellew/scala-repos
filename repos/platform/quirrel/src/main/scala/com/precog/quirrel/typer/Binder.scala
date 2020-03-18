@@ -45,8 +45,10 @@ trait Binder extends parser.AST {
         case b @ Let(_, id, formals, left, right) => {
           val (_, dups) =
             formals.foldLeft((Set[TicId](), Set[TicId]())) {
-              case ((acc, dup), id) if acc(id)  => (acc, dup + id)
-              case ((acc, dup), id) if !acc(id) => (acc + id, dup)
+              case ((acc, dup), id) if acc(id) =>
+                (acc, dup + id)
+              case ((acc, dup), id) if !acc(id) =>
+                (acc + id, dup)
             }
 
           if (!dups.isEmpty) {
@@ -110,14 +112,16 @@ trait Binder extends parser.AST {
                   case (Identifier(ns, name), b) => {
                     if (ns.length >= prefix.length) {
                       if (ns zip prefix forall {
-                            case (a, b) => a == b
+                            case (a, b) =>
+                              a == b
                           })
                         Some(Identifier(ns drop (prefix.length - 1), name) -> b)
                       else
                         None
                     } else if (ns.length == prefix.length - 1) {
                       if (ns zip prefix forall {
-                            case (a, b) => a == b
+                            case (a, b) =>
+                              a == b
                           }) {
                         if (name == prefix.last)
                           Some(Identifier(Vector(), name) -> b)
@@ -131,7 +135,8 @@ trait Binder extends parser.AST {
                     }
                   }
 
-                  case _ => None
+                  case _ =>
+                    None
                 }
               }
 
@@ -140,14 +145,16 @@ trait Binder extends parser.AST {
                   case (Identifier(ns, name), b) => {
                     if (ns.length >= prefix.length + 1) {
                       if (ns zip prefix forall {
-                            case (a, b) => a == b
+                            case (a, b) =>
+                              a == b
                           })
                         Some(Identifier(ns drop prefix.length, name) -> b)
                       else
                         None
                     } else if (ns.length == prefix.length) {
                       if (ns zip prefix forall {
-                            case (a, b) => a == b
+                            case (a, b) =>
+                              a == b
                           })
                         Some(Identifier(Vector(), name) -> b)
                       else
@@ -157,7 +164,8 @@ trait Binder extends parser.AST {
                     }
                   }
 
-                  case _ => None
+                  case _ =>
+                    None
                 }
               }
             }
@@ -165,11 +173,14 @@ trait Binder extends parser.AST {
           loop(child, env.copy(names = env.names ++ addend))
         }
 
-        case Assert(_, pred, child) => loop(pred, env) ++ loop(child, env)
+        case Assert(_, pred, child) =>
+          loop(pred, env) ++ loop(child, env)
 
-        case Observe(_, data, samples) => loop(data, env) ++ loop(samples, env)
+        case Observe(_, data, samples) =>
+          loop(data, env) ++ loop(samples, env)
 
-        case New(_, child) => loop(child, env)
+        case New(_, child) =>
+          loop(child, env)
 
         case Relate(_, from, to, in) =>
           loop(from, env) ++ loop(to, env) ++ loop(in, env)
@@ -201,28 +212,46 @@ trait Binder extends parser.AST {
 
             val arity =
               binding match {
-                case FormalBinding(_)    => 0
-                case LetBinding(let)     => let.params.length
-                case ReductionBinding(_) => 1
-                case LoadBinding         => 1
-                case RelLoadBinding      => 1
-                case DistinctBinding     => 1
-                case ExpandGlobBinding   => 1
-                case Morphism1Binding(_) => 1
-                case Morphism2Binding(_) => 2
-                case Op1Binding(_)       => 1
-                case Op2Binding(_)       => 2
-                case NullBinding         => sys.error("unreachable code")
+                case FormalBinding(_) =>
+                  0
+                case LetBinding(let) =>
+                  let.params.length
+                case ReductionBinding(_) =>
+                  1
+                case LoadBinding =>
+                  1
+                case RelLoadBinding =>
+                  1
+                case DistinctBinding =>
+                  1
+                case ExpandGlobBinding =>
+                  1
+                case Morphism1Binding(_) =>
+                  1
+                case Morphism2Binding(_) =>
+                  2
+                case Op1Binding(_) =>
+                  1
+                case Op2Binding(_) =>
+                  2
+                case NullBinding =>
+                  sys.error("unreachable code")
               }
 
             val functionLikeM =
               binding match {
-                case ReductionBinding(f) => Some(f)
-                case Morphism1Binding(f) => Some(f)
-                case Morphism2Binding(f) => Some(f)
-                case Op1Binding(f)       => Some(f)
-                case Op2Binding(f)       => Some(f)
-                case _                   => None
+                case ReductionBinding(f) =>
+                  Some(f)
+                case Morphism1Binding(f) =>
+                  Some(f)
+                case Morphism2Binding(f) =>
+                  Some(f)
+                case Op1Binding(f) =>
+                  Some(f)
+                case Op2Binding(f) =>
+                  Some(f)
+                case _ =>
+                  None
               }
 
             val warningM =
@@ -241,8 +270,10 @@ trait Binder extends parser.AST {
               }
 
             d.isReduction = env.names(name) match {
-              case ReductionBinding(_) => true
-              case _                   => false
+              case ReductionBinding(_) =>
+                true
+              case _ =>
+                false
             }
 
             binding match {
@@ -297,13 +328,17 @@ trait Binder extends parser.AST {
     expr match {
       case Let(_, _, _, left, right) =>
         listFreeVars(env)(left) ++ listFreeVars(env)(right)
-      case Solve(_, _, _) => Set()
+      case Solve(_, _, _) =>
+        Set()
       case Relate(_, from, to, in) =>
         listFreeVars(env)(from) ++ listFreeVars(env)(to) ++ listFreeVars(env)(
           in)
-      case New(_, child)                                => listFreeVars(env)(child)
-      case TicVar(_, name) if env.vars contains name    => Set()
-      case TicVar(_, name) if !(env.vars contains name) => Set(name)
+      case New(_, child) =>
+        listFreeVars(env)(child)
+      case TicVar(_, name) if env.vars contains name =>
+        Set()
+      case TicVar(_, name) if !(env.vars contains name) =>
+        Set(name)
       case NaryOp(_, values) =>
         values map listFreeVars(env) reduceOption {
           _ ++ _

@@ -31,7 +31,8 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
         if (other.isSearchCompanionModule != isSearchCompanionModule)
           return false
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 

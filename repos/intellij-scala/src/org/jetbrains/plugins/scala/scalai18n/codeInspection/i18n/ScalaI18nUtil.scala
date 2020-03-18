@@ -524,7 +524,8 @@ object ScalaI18nUtil {
             outResourceBundle.set(bundleName)
             isPropertyRef(expression, key, bundleName)
           }
-        case _ => false
+        case _ =>
+          false
       }
     } else
       true

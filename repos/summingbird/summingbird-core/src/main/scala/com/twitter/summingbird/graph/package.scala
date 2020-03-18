@@ -30,7 +30,8 @@ package object graph {
     @annotation.tailrec
     def loop(stack: List[T], deps: List[T], acc: Set[T]): List[T] = {
       stack match {
-        case Nil => deps
+        case Nil =>
+          deps
         case h :: tail =>
           val newStack =
             nf(h).filterNot(acc).foldLeft(tail) { (s, it) =>
@@ -64,7 +65,8 @@ package object graph {
       }
       // make sure the values are sets, not .mapValues is lazy in scala
       .map {
-        case (k, v) => (k, v.distinct)
+        case (k, v) =>
+          (k, v.distinct)
       };
     graph.getOrElse(_, Nil)
   }

@@ -287,8 +287,10 @@ class AsyncMeter private[concurrent] (
         }
       }
       control match {
-        case Some(p) => p.setValue(())
-        case None    => return ()
+        case Some(p) =>
+          p.setValue(())
+        case None =>
+          return ()
       }
     }
   }

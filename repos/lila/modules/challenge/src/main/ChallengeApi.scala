@@ -47,19 +47,22 @@ final class ChallengeApi(
 
   private[challenge] def ping(id: Challenge.ID): Funit =
     repo statusById id flatMap {
-      case Some(Status.Created) => repo setSeen id
+      case Some(Status.Created) =>
+        repo setSeen id
       case Some(Status.Offline) =>
         (repo setSeenAgain id) >> byId(id).flatMap {
           _ ?? uncacheAndNotify
         }
-      case _ => fuccess(socketReload(id))
+      case _ =>
+        fuccess(socketReload(id))
     }
 
   def decline(c: Challenge) = (repo decline c) >> uncacheAndNotify(c)
 
   def accept(c: Challenge, user: Option[User]): Fu[Option[Pov]] =
     joiner(c, user).flatMap {
-      case None => fuccess(None)
+      case None =>
+        fuccess(None)
       case Some(pov) =>
         (repo accept c) >> uncacheAndNotify(c) >>- {
           lilaBus.publish(Event.Accept(c, user.map(_.id)), 'challenge)
@@ -81,8 +84,10 @@ final class ChallengeApi(
                 timeControl = (pov.game.clock, pov.game.daysPerTurn) match {
                   case (Some(clock), _) =>
                     TimeControl.Clock(clock.limit, clock.increment)
-                  case (_, Some(days)) => TimeControl.Correspondence(days)
-                  case _               => TimeControl.Unlimited
+                  case (_, Some(days)) =>
+                    TimeControl.Correspondence(days)
+                  case _ =>
+                    TimeControl.Unlimited
                 },
                 mode = pov.game.mode,
                 color = (!pov.color).name,

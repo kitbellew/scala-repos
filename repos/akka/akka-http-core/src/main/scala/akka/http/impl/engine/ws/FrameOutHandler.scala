@@ -30,8 +30,10 @@ private[http] class FrameOutHandler(
   private object Idle extends CompletionHandlingState {
     def onPush(elem: AnyRef, ctx: Context[FrameStart]): SyncDirective =
       elem match {
-        case start: FrameStart ⇒ ctx.push(start)
-        case DirectAnswer(frame) ⇒ ctx.push(frame)
+        case start: FrameStart ⇒
+          ctx.push(start)
+        case DirectAnswer(frame) ⇒
+          ctx.push(frame)
         case PeerClosed(code, reason)
             if !code.exists(Protocol.CloseCodes.isError) ⇒
           // let user complete it, FIXME: maybe make configurable? immediately, or timeout
@@ -67,7 +69,8 @@ private[http] class FrameOutHandler(
             FrameEvent.closeFrame(
               Protocol.CloseCodes.UnexpectedCondition,
               "internal error"))
-        case Tick ⇒ ctx.pull() // ignore
+        case Tick ⇒
+          ctx.pull() // ignore
       }
 
     def onComplete(ctx: Context[FrameStart]): TerminationDirective = {
@@ -85,14 +88,17 @@ private[http] class FrameOutHandler(
       extends CompletionHandlingState {
     def onPush(elem: AnyRef, ctx: Context[FrameStart]): SyncDirective =
       elem match {
-        case UserHandlerCompleted ⇒ sendOutLastFrame(ctx)
+        case UserHandlerCompleted ⇒
+          sendOutLastFrame(ctx)
         case UserHandlerErredOut(e) ⇒
           log.error(
             e,
             s"WebSocket handler failed while waiting for handler completion with ${e.getMessage}")
           sendOutLastFrame(ctx)
-        case start: FrameStart ⇒ ctx.push(start)
-        case _ ⇒ ctx.pull() // ignore
+        case start: FrameStart ⇒
+          ctx.push(start)
+        case _ ⇒
+          ctx.pull() // ignore
       }
 
     def sendOutLastFrame(ctx: Context[FrameStart]): SyncDirective =
@@ -127,7 +133,8 @@ private[http] class FrameOutHandler(
             become(new WaitingForTransportClose())
             ctx.pull()
           }
-        case _ ⇒ ctx.pull() // ignore
+        case _ ⇒
+          ctx.pull() // ignore
       }
 
     def onComplete(ctx: Context[FrameStart]): TerminationDirective =
@@ -146,7 +153,8 @@ private[http] class FrameOutHandler(
             ctx.finish()
           else
             ctx.pull()
-        case _ ⇒ ctx.pull() // ignore
+        case _ ⇒
+          ctx.pull() // ignore
       }
 
     def onComplete(ctx: Context[FrameStart]): TerminationDirective =
@@ -183,7 +191,8 @@ private[http] class FrameOutHandler(
           new SendOutCloseFrameAndComplete(
             FrameEvent.closeFrame(Protocol.CloseCodes.ProtocolError)))
         ctx.absorbTermination()
-      case _ ⇒ super.onUpstreamFailure(cause, ctx)
+      case _ ⇒
+        super.onUpstreamFailure(cause, ctx)
     }
 }
 

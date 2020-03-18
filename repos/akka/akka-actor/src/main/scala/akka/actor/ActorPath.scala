@@ -58,7 +58,8 @@ object ActorPath {
     */
   def fromString(s: String): ActorPath =
     s match {
-      case ActorPathExtractor(addr, elems) ⇒ RootActorPath(addr) / elems
+      case ActorPathExtractor(addr, elems) ⇒
+        RootActorPath(addr) / elems
       case _ ⇒
         throw new MalformedURLException("cannot parse as ActorPath: " + s)
     }
@@ -139,12 +140,14 @@ object ActorPath {
       def validate(pos: Int): Int =
         if (pos < len)
           s.charAt(pos) match {
-            case c if isValidChar(c) ⇒ validate(pos + 1)
+            case c if isValidChar(c) ⇒
+              validate(pos + 1)
             case '%'
                 if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(
                   s.charAt(pos + 2)) ⇒
               validate(pos + 3)
-            case _ ⇒ pos
+            case _ ⇒
+              pos
           }
         else
           ValidPathCode
@@ -326,7 +329,8 @@ final case class RootActorPath(address: Address, name: String = "/")
     other match {
       case r: RootActorPath ⇒
         toString compareTo r.toString // FIXME make this cheaper by comparing address and name in isolation
-      case c: ChildActorPath ⇒ 1
+      case c: ChildActorPath ⇒
+        1
     }
 
   /**
@@ -373,8 +377,10 @@ final class ChildActorPath private[akka] (
     @tailrec
     def rec(p: ActorPath, acc: List[String]): immutable.Iterable[String] =
       p match {
-        case r: RootActorPath ⇒ acc
-        case _ ⇒ rec(p.parent, p.name :: acc)
+        case r: RootActorPath ⇒
+          acc
+        case _ ⇒
+          rec(p.parent, p.name :: acc)
       }
     rec(this, Nil)
   }
@@ -383,8 +389,10 @@ final class ChildActorPath private[akka] (
     @tailrec
     def rec(p: ActorPath): RootActorPath =
       p match {
-        case r: RootActorPath ⇒ r
-        case _ ⇒ rec(p.parent)
+        case r: RootActorPath ⇒
+          r
+        case _ ⇒
+          rec(p.parent)
       }
     rec(this)
   }
@@ -417,8 +425,10 @@ final class ChildActorPath private[akka] (
 
   private val toStringOffset: Int =
     parent match {
-      case r: RootActorPath ⇒ r.address.toString.length + r.name.length
-      case c: ChildActorPath ⇒ c.toStringLength + 1
+      case r: RootActorPath ⇒
+        r.address.toString.length + r.name.length
+      case c: ChildActorPath ⇒
+        c.toStringLength + 1
     }
 
   override def toStringWithAddress(addr: Address): String = {
@@ -504,8 +514,10 @@ final class ChildActorPath private[akka] (
         left.name == right.name && rec(left.parent, right.parent)
 
     other match {
-      case p: ActorPath ⇒ rec(this, p)
-      case _ ⇒ false
+      case p: ActorPath ⇒
+        rec(this, p)
+      case _ ⇒
+        false
     }
   }
 
@@ -516,7 +528,8 @@ final class ChildActorPath private[akka] (
     @tailrec
     def rec(p: ActorPath, h: Int, c: Int, k: Int): Int =
       p match {
-        case r: RootActorPath ⇒ extendHash(h, r.##, c, k)
+        case r: RootActorPath ⇒
+          extendHash(h, r.##, c, k)
         case _ ⇒
           rec(
             p.parent,

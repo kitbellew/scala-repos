@@ -24,7 +24,9 @@ class QuietReporter(inColor: Boolean, withDurations: Boolean = false)
 
   override def apply(event: Event): Unit =
     event match {
-      case _: RunStarting ⇒ ()
-      case _ ⇒ super.apply(event)
+      case _: RunStarting ⇒
+        ()
+      case _ ⇒
+        super.apply(event)
     }
 }

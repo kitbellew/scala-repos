@@ -69,7 +69,8 @@ trait ToResponse {
               httpClient)
         }
       } catch {
-        case e: IOException => new CompleteFailure(baseUrl + fullUrl, Full(e))
+        case e: IOException =>
+          new CompleteFailure(baseUrl + fullUrl, Full(e))
       } finally {
         getter.releaseConnection
       }
@@ -107,7 +108,8 @@ trait ToBoxTheResponse {
                 httpClient))
         }
       } catch {
-        case e: IOException => Failure(baseUrl + fullUrl, Full(e), Empty)
+        case e: IOException =>
+          Failure(baseUrl + fullUrl, Full(e), Empty)
       } finally {
         getter.releaseConnection
       }
@@ -159,8 +161,10 @@ trait BaseGetPoster {
       params
         .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
         .mkString("&") match {
-        case s if s.length == 0 => "";
-        case s                  => "?" + s
+        case s if s.length == 0 =>
+          "";
+        case s =>
+          "?" + s
       }
     )
     val getter = new GetMethod(baseUrl + fullUrl)
@@ -190,8 +194,10 @@ trait BaseGetPoster {
       params
         .map(v => urlEncode(v._1) + "=" + urlEncode(v._2))
         .mkString("&") match {
-        case s if s.length == 0 => "";
-        case s                  => "?" + s
+        case s if s.length == 0 =>
+          "";
+        case s =>
+          "?" + s
       }
     )
     val getter = new DeleteMethod(baseUrl + fullUrl)
@@ -664,16 +670,22 @@ object TestHelpers {
       (
         headers
           .filter {
-            case ("Cookie", _) => true;
-            case _             => false
+            case ("Cookie", _) =>
+              true;
+            case _ =>
+              false
           }
           .map(_._2) :::
           respHeaders.get("Set-Cookie").toList.flatMap(x => x)
       ) match {
-        case Nil       => Empty
-        case "" :: Nil => Empty
-        case "" :: xs  => Full(xs.mkString(","))
-        case xs        => Full(xs.mkString(","))
+        case Nil =>
+          Empty
+        case "" :: Nil =>
+          Empty
+        case "" :: xs =>
+          Full(xs.mkString(","))
+        case xs =>
+          Full(xs.mkString(","))
       }
     ret
   }
@@ -691,8 +703,10 @@ object TestHelpers {
       in: JavaMap[String, CRK]): Map[String, List[String]] = {
     def morePulling(e: JavaMap.Entry[String, CRK]): (String, List[String]) = {
       e.getValue match {
-        case null => (e.getKey, Nil)
-        case a    => (e.getKey, a.iterator.toList)
+        case null =>
+          (e.getKey, Nil)
+        case a =>
+          (e.getKey, a.iterator.toList)
       }
     }
 
@@ -919,16 +933,22 @@ abstract class BaseResponse(
   private object FindElem {
     def unapply(in: NodeSeq): Option[Elem] =
       in match {
-        case e: Elem         => Some(e)
-        case d: Document     => unapply(d.docElem)
-        case g: Group        => unapply(g.nodes)
-        case n: Text         => None
-        case sn: SpecialNode => None
+        case e: Elem =>
+          Some(e)
+        case d: Document =>
+          unapply(d.docElem)
+        case g: Group =>
+          unapply(g.nodes)
+        case n: Text =>
+          None
+        case sn: SpecialNode =>
+          None
         case n: NodeSeq =>
           val ns: Seq[Node] = n
           val x: Seq[Elem] = ns.flatMap(v => unapply(v))
           x.headOption
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -940,8 +960,10 @@ abstract class BaseResponse(
       b <- body
       nodeSeq <- PCDataXmlParser(new java.io.ByteArrayInputStream(b))
       xml <- nodeSeq.toList match {
-        case (x: Elem) :: _ => Full(x)
-        case _              => Empty
+        case (x: Elem) :: _ =>
+          Full(x)
+        case _ =>
+          Empty
       }
     } yield xml
 
@@ -950,8 +972,10 @@ abstract class BaseResponse(
       b <- body
       nodeSeq <- Html5.parse(new java.io.ByteArrayInputStream(b))
       xml <- nodeSeq.toList match {
-        case (x: Elem) :: _ => Full(x)
-        case _              => Empty
+        case (x: Elem) :: _ =>
+          Full(x)
+        case _ =>
+          Empty
       }
     } yield xml
 
@@ -960,7 +984,8 @@ abstract class BaseResponse(
     */
   lazy val contentType: String = headers
     .filter {
-      case (name, value) => name equalsIgnoreCase "content-type"
+      case (name, value) =>
+        name equalsIgnoreCase "content-type"
     }
     .toList
     .headOption

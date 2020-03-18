@@ -160,7 +160,8 @@ class MainGenericRunner {
     try {
       new File(url.toURI())
     } catch {
-      case e: java.net.URISyntaxException => new File(url.getPath())
+      case e: java.net.URISyntaxException =>
+        new File(url.getPath())
     }
   }
 }

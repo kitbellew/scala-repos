@@ -54,9 +54,12 @@ object Position {
         posIn
     val prefix =
       pos.source match {
-        case NoSourceFile     => ""
-        case s if shortenFile => s.file.name + ":"
-        case s                => s.file.path + ":"
+        case NoSourceFile =>
+          ""
+        case s if shortenFile =>
+          s.file.name + ":"
+        case s =>
+          s.file.path + ":"
       }
     prefix + (pos showError msg)
   }
@@ -110,7 +113,8 @@ sealed abstract class DefinedPosition extends Position {
     that match {
       case that: DefinedPosition =>
         source.file == that.source.file && start == that.start && point == that.point && end == that.end
-      case _ => false
+      case _ =>
+        false
     }
   override def hashCode = Seq[Any](source.file, start, point, end).##
   override def toString =
@@ -282,9 +286,12 @@ private[util] trait InternalPositionImpl {
       f"$where: $msg%n$content%n$indicator"
     }
     finalPosition match {
-      case FakePos(fmsg) => s"$fmsg $msg"
-      case NoPosition    => msg
-      case pos           => errorAt(pos)
+      case FakePos(fmsg) =>
+        s"$fmsg $msg"
+      case NoPosition =>
+        msg
+      case pos =>
+        errorAt(pos)
     }
   }
   def showDebug: String = toString

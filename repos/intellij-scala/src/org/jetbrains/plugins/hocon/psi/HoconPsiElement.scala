@@ -30,16 +30,20 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
 
   def parent: Option[Parent] =
     getParent match {
-      case p: PsiElement => Option(p.asInstanceOf[Parent])
-      case _             => None
+      case p: PsiElement =>
+        Option(p.asInstanceOf[Parent])
+      case _ =>
+        None
     }
 
   def parents: Iterator[HoconPsiElement] =
     Iterator
       .iterate(this)(
         _.parent match {
-          case Some(he: HoconPsiElement) => he
-          case _                         => null
+          case Some(he: HoconPsiElement) =>
+            he
+          case _ =>
+            null
         })
       .takeWhile(_ != null)
 
@@ -52,7 +56,8 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
 
   def findLastChild[T >: Null: ClassTag] =
     allChildrenReverse.collectFirst({
-      case t: T => t
+      case t: T =>
+        t
     })
 
   def allChildren =
@@ -82,7 +87,8 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
 
   def findChildren[T <: HoconPsiElement: ClassTag] =
     allChildren.collect {
-      case t: T => t
+      case t: T =>
+        t
     }
 }
 
@@ -95,8 +101,10 @@ final class HObjectEntries(ast: ASTNode)
     with HScope {
   def forParent[T](forFile: HoconPsiFile => T, forObject: HObject => T) =
     parent match {
-      case Some(file: HoconPsiFile) => forFile(file)
-      case Some(obj: HObject)       => forObject(obj)
+      case Some(file: HoconPsiFile) =>
+        forFile(file)
+      case Some(obj: HObject) =>
+        forObject(obj)
     }
 
   def isToplevel = forParent(file => true, obj => false)
@@ -117,12 +125,14 @@ sealed trait HObjectEntry extends HoconPsiElement with HInnerElement {
 
   def previousEntry =
     prevSiblings.collectFirst({
-      case e: HObjectEntry => e
+      case e: HObjectEntry =>
+        e
     })
 
   def nextEntry =
     nextSiblings.collectFirst({
-      case e: HObjectEntry => e
+      case e: HObjectEntry =>
+        e
     })
 }
 
@@ -153,8 +163,10 @@ sealed trait HKeyedField
       forKeyedParent: HKeyedField => T,
       forObjectField: HObjectField => T): T =
     parent match {
-      case Some(kf: HKeyedField)  => forKeyedParent(kf)
-      case Some(of: HObjectField) => forObjectField(of)
+      case Some(kf: HKeyedField) =>
+        forKeyedParent(kf)
+      case Some(of: HObjectField) =>
+        forObjectField(of)
     }
 
   def key = findChild[HKey]
@@ -191,7 +203,8 @@ sealed trait HKeyedField
       str match {
         case head #:: tail =>
           head.validKey.flatMap(key => iterate(tail, key :: acc))
-        case _ => Some(acc)
+        case _ =>
+          Some(acc)
       }
     iterate(fieldsInAllPathsBackward, Nil)
   }
@@ -258,8 +271,10 @@ final class HValuedField(ast: ASTNode)
     else
       value
         .collect {
-          case obj: HObject         => Iterator(obj)
-          case conc: HConcatenation => conc.findChildren[HObject]
+          case obj: HObject =>
+            Iterator(obj)
+          case conc: HConcatenation =>
+            conc.findChildren[HObject]
         }
         .getOrElse(Iterator.empty)
 }
@@ -286,7 +301,8 @@ final class HIncluded(ast: ASTNode)
     getFirstChild.getNode.getElementType match {
       case HoconTokenType.UnquotedChars =>
         Some(getFirstChild.getText)
-      case _ => None
+      case _ =>
+        None
     }
 
   def target = findChild[HIncludeTarget]
@@ -300,13 +316,15 @@ final class HIncluded(ast: ASTNode)
 
         val (absolute, forcedAbsolute, fromClasspath) =
           qualifier match {
-            case Some(ClasspathQualifier) => (true, true, true)
+            case Some(ClasspathQualifier) =>
+              (true, true, true)
             case None if !isValidUrl(strVal) =>
               val pfi = ProjectRootManager.getInstance(getProject).getFileIndex
               val fromClasspath =
                 pfi.isInSource(vf) || pfi.isInLibraryClasses(vf)
               (strVal.trim.startsWith("/"), false, fromClasspath)
-            case _ => (true, true, false)
+            case _ =>
+              (true, true, false)
           }
 
         // Include resolution is enabled for:
@@ -329,8 +347,10 @@ final class HIncluded(ast: ASTNode)
 final class HKey(ast: ASTNode) extends HoconPsiElement(ast) with HInnerElement {
   def forParent[T](forPath: HPath => T, forKeyedField: HKeyedField => T): T =
     parent match {
-      case Some(path: HPath)             => forPath(path)
-      case Some(keyedField: HKeyedField) => forKeyedField(keyedField)
+      case Some(path: HPath) =>
+        forPath(path)
+      case Some(keyedField: HKeyedField) =>
+        forKeyedField(keyedField)
     }
 
   def allKeysFromToplevel: Option[List[HKey]] =
@@ -343,8 +363,10 @@ final class HKey(ast: ASTNode) extends HoconPsiElement(ast) with HInnerElement {
 
   def stringValue =
     allChildren.collect {
-      case keyPart: HKeyPart => keyPart.stringValue
-      case other             => other.getText
+      case keyPart: HKeyPart =>
+        keyPart.stringValue
+      case other =>
+        other.getText
     }.mkString
 
   def keyParts = findChildren[HKeyPart]
@@ -361,8 +383,10 @@ final class HPath(ast: ASTNode)
       forPath: HPath => T,
       forSubstitution: HSubstitution => T): T =
     parent match {
-      case Some(path: HPath)          => forPath(path)
-      case Some(subst: HSubstitution) => forSubstitution(subst)
+      case Some(path: HPath) =>
+        forPath(path)
+      case Some(subst: HSubstitution) =>
+        forSubstitution(subst)
     }
 
   def allPaths: List[HPath] = {
@@ -406,10 +430,14 @@ sealed trait HValue extends HoconPsiElement with HInnerElement {
       forArray: HArray => Option[T],
       forConcatenation: HConcatenation => Option[T]): Option[T] =
     parent match {
-      case Some(vf: HValuedField)     => forValuedField(vf)
-      case Some(arr: HArray)          => forArray(arr)
-      case Some(conc: HConcatenation) => forConcatenation(conc)
-      case _                          => None
+      case Some(vf: HValuedField) =>
+        forValuedField(vf)
+      case Some(arr: HArray) =>
+        forArray(arr)
+      case Some(conc: HConcatenation) =>
+        forConcatenation(conc)
+      case _ =>
+        None
     }
 
   def prefixingField: Option[HValuedField] =

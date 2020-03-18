@@ -103,7 +103,8 @@ trait ProdConsAnalyzerImpl {
 
   def consumersOfOutputsFrom(insn: AbstractInsnNode): Set[AbstractInsnNode] =
     insn match {
-      case _: UninitializedLocalProducer => Set.empty
+      case _: UninitializedLocalProducer =>
+        Set.empty
       case ParameterProducer(local) =>
         consumersOfValueAt(methodNode.instructions.getFirst, local)
       case ExceptionProducer(handlerLabel, handlerFrame) =>
@@ -195,13 +196,17 @@ trait ProdConsAnalyzerImpl {
   def ultimateConsumersOfOutputsFrom(
       insn: AbstractInsnNode): Set[AbstractInsnNode] =
     insn match {
-      case _: UninitializedLocalProducer => Set.empty
+      case _: UninitializedLocalProducer =>
+        Set.empty
       case _ =>
         lazy val next =
           insn match {
-            case _: ParameterProducer               => methodNode.instructions.getFirst
-            case ExceptionProducer(handlerLabel, _) => handlerLabel
-            case _                                  => insn.getNext
+            case _: ParameterProducer =>
+              methodNode.instructions.getFirst
+            case ExceptionProducer(handlerLabel, _) =>
+              handlerLabel
+            case _ =>
+              insn.getNext
           }
         outputValueSlots(insn)
           .flatMap(slot => ultimateConsumersOfValueAt(next, slot))
@@ -214,7 +219,8 @@ trait ProdConsAnalyzerImpl {
         case DUP | DUP_X1 | DUP_X2 | DUP2 | DUP2_X1 | DUP2_X2 | SWAP |
             CHECKCAST =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -243,24 +249,32 @@ trait ProdConsAnalyzerImpl {
 
     def dupX1Case =
       (producedIndex(2): @switch) match {
-        case 0 | 2 => stackValue(0)
-        case 1     => stackValue(1)
+        case 0 | 2 =>
+          stackValue(0)
+        case 1 =>
+          stackValue(1)
       }
 
     // Form 1 of dup_x2
     def dupX2Case =
       (producedIndex(3): @switch) match {
-        case 0 | 3 => stackValue(0)
-        case 1     => stackValue(2)
-        case 2     => stackValue(1)
+        case 0 | 3 =>
+          stackValue(0)
+        case 1 =>
+          stackValue(2)
+        case 2 =>
+          stackValue(1)
       }
 
     // Form 1 of dup2_x1
     def dup2X1Case =
       (producedIndex(3): @switch) match {
-        case 0 | 3 => stackValue(1)
-        case 1 | 4 => stackValue(0)
-        case 2     => stackValue(2)
+        case 0 | 3 =>
+          stackValue(1)
+        case 1 | 4 =>
+          stackValue(0)
+        case 2 =>
+          stackValue(2)
       }
 
     if (isLoad(copyOp)) {
@@ -289,8 +303,10 @@ trait ProdConsAnalyzerImpl {
             stackValue(0)
           else {
             (producedIndex(2): @switch) match {
-              case 0 | 2 => stackValue(1)
-              case 1 | 3 => stackValue(0)
+              case 0 | 2 =>
+                stackValue(1)
+              case 1 | 3 =>
+                stackValue(0)
             }
           }
 
@@ -315,10 +331,14 @@ trait ProdConsAnalyzerImpl {
             else {
               // Form 1
               (producedIndex(4): @switch) match {
-                case 0 | 4 => stackValue(1)
-                case 1 | 5 => stackValue(0)
-                case 2     => stackValue(3)
-                case 3     => stackValue(2)
+                case 0 | 4 =>
+                  stackValue(1)
+                case 1 | 5 =>
+                  stackValue(0)
+                case 2 =>
+                  stackValue(3)
+                case 3 =>
+                  stackValue(2)
               }
             }
           }
@@ -360,22 +380,30 @@ trait ProdConsAnalyzerImpl {
 
       def dupX1Case =
         (consumedIndex(3): @switch) match {
-          case 0 => Set(top - 1)
-          case 1 => Set(top - 2, top)
+          case 0 =>
+            Set(top - 1)
+          case 1 =>
+            Set(top - 2, top)
         }
 
       def dupX2Case =
         (consumedIndex(4): @switch) match {
-          case 0 => Set(top - 2)
-          case 1 => Set(top - 1)
-          case 2 => Set(top - 3, top)
+          case 0 =>
+            Set(top - 2)
+          case 1 =>
+            Set(top - 1)
+          case 2 =>
+            Set(top - 3, top)
         }
 
       def dup2X1Case =
         (consumedIndex(5): @switch) match {
-          case 0 => Set(top - 2)
-          case 1 => Set(top - 4, top - 1)
-          case 2 => Set(top - 3, top)
+          case 0 =>
+            Set(top - 2)
+          case 1 =>
+            Set(top - 4, top - 1)
+          case 2 =>
+            Set(top - 3, top)
         }
 
       if (isLoad(copyOp))
@@ -399,8 +427,10 @@ trait ProdConsAnalyzerImpl {
               Set(top - 1, top)
             else
               (consumedIndex(4): @switch) match {
-                case 0 => Set(top - 3, top - 1)
-                case 1 => Set(top - 2, top)
+                case 0 =>
+                  Set(top - 3, top - 1)
+                case 1 =>
+                  Set(top - 2, top)
               }
 
           case DUP2_X1 =>
@@ -424,10 +454,14 @@ trait ProdConsAnalyzerImpl {
               else {
                 // Form 1
                 (consumedIndex(6): @switch) match {
-                  case 0 => Set(top - 3)
-                  case 1 => Set(top - 2)
-                  case 2 => Set(top - 5, top - 1)
-                  case 3 => Set(top - 4, top)
+                  case 0 =>
+                    Set(top - 3)
+                  case 1 =>
+                    Set(top - 2)
+                  case 2 =>
+                    Set(top - 5, top - 1)
+                  case 3 =>
+                    Set(top - 4, top)
                 }
               }
             }
@@ -469,9 +503,12 @@ trait ProdConsAnalyzerImpl {
   /** Returns the frame slots holding the values produced by executing `insn`. */
   private def outputValueSlots(insn: AbstractInsnNode): Seq[Int] =
     insn match {
-      case ParameterProducer(local)          => Seq(local)
-      case UninitializedLocalProducer(local) => Seq(local)
-      case ExceptionProducer(_, frame)       => Seq(frame.stackTop)
+      case ParameterProducer(local) =>
+        Seq(local)
+      case UninitializedLocalProducer(local) =>
+        Seq(local)
+      case ExceptionProducer(_, frame) =>
+        Seq(frame.stackTop)
       case _ =>
         if (insn.getOpcode == -1)
           return Seq.empty

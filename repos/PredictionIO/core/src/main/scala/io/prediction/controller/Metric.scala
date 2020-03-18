@@ -64,7 +64,8 @@ private[prediction] trait StatsMetricHelper[EI, Q, P, A] {
       evalDataSet.map {
         case (_, qpaRDD) =>
           qpaRDD.map {
-            case (q, p, a) => calculate(q, p, a)
+            case (q, p, a) =>
+              calculate(q, p, a)
           }
       })
 
@@ -82,7 +83,8 @@ private[prediction] trait StatsOptionMetricHelper[EI, Q, P, A] {
       evalDataSet.map {
         case (_, qpaRDD) =>
           qpaRDD.flatMap {
-            case (q, p, a) => calculate(q, p, a)
+            case (q, p, a) =>
+              calculate(q, p, a)
           }
       })
 
@@ -227,7 +229,8 @@ abstract class SumMetric[EI, Q, P, A, R: ClassTag](implicit num: Numeric[R])
       evalDataSet.map {
         case (_, qpaRDD) =>
           qpaRDD.map {
-            case (q, p, a) => calculate(q, p, a)
+            case (q, p, a) =>
+              calculate(q, p, a)
           }
       })
 

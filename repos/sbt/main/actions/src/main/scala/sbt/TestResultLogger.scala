@@ -170,14 +170,18 @@ object TestResultLogger {
         "Canceled" -> canceledCount,
         "Pending" -> pendingCount)
       val extra = otherCounts.filter(_._2 > 0).map {
-        case (label, count) => s", $label $count"
+        case (label, count) =>
+          s", $label $count"
       }
 
       val postfix = base + extra.mkString
       results.overall match {
-        case TestResult.Error  => log.error("Error: " + postfix)
-        case TestResult.Passed => log.info("Passed: " + postfix)
-        case TestResult.Failed => log.error("Failed: " + postfix)
+        case TestResult.Error =>
+          log.error("Error: " + postfix)
+        case TestResult.Passed =>
+          log.info("Passed: " + postfix)
+        case TestResult.Failed =>
+          log.error("Failed: " + postfix)
       }
     })
 

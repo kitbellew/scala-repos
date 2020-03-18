@@ -22,7 +22,8 @@ object RangeToIndices extends SimplificationType {
       case Range(_, literal("0"), qual `.sizeOrLength` ())
           if isSeq(qual) || isArray(qual) =>
         toIndicesSimplification(expr, qual)
-      case _ => None
+      case _ =>
+        None
     }
 
   def toIndicesSimplification(
@@ -46,7 +47,8 @@ object UntilToIndices extends SimplificationType {
       case literal("0") `.until` (qual `.sizeOrLength` ())
           if isSeq(qual) || isArray(qual) =>
         RangeToIndices.toIndicesSimplification(expr, qual)
-      case _ => None
+      case _ =>
+        None
     }
 
 }
@@ -61,6 +63,7 @@ object ToToIndices extends SimplificationType {
       case literal("0") `.to` (qual `.sizeOrLength` () `-` literal("1"))
           if isSeq(qual) || isArray(qual) =>
         RangeToIndices.toIndicesSimplification(expr, qual)
-      case _ => None
+      case _ =>
+        None
     }
 }

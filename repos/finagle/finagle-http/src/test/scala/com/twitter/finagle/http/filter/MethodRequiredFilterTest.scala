@@ -21,8 +21,10 @@ class MethodRequiredFilterTest extends FunSuite {
             throw new Exception()
           })
         request.params.get("code") match {
-          case Some(code) => response.statusCode = code.toInt
-          case None       => response.status = Status.Ok
+          case Some(code) =>
+            response.statusCode = code.toInt
+          case None =>
+            response.status = Status.Ok
         }
         Future.value(response)
       }

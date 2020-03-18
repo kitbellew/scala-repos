@@ -59,8 +59,10 @@ class ScClassImpl private (
     with ScTemplateDefinition {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitClass(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitClass(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -98,13 +100,16 @@ class ScClassImpl private (
     constructor match {
       case Some(c) =>
         c.effectiveParameterClauses.flatMap(_.unsafeClassParameters)
-      case None => Seq.empty
+      case None =>
+        Seq.empty
     }
 
   override def members =
     constructor match {
-      case Some(c) => super.members ++ Seq(c)
-      case _       => super.members
+      case Some(c) =>
+        super.members ++ Seq(c)
+      case _ =>
+        super.members
     }
 
   import com.intellij.psi.scope.PsiScopeProcessor
@@ -174,8 +179,10 @@ class ScClassImpl private (
     TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
       val isInterface =
         node.info.namedElement match {
-          case t: ScTypedDefinition if t.isAbstractMember => true
-          case _                                          => false
+          case t: ScTypedDefinition if t.isAbstractMember =>
+            true
+          case _ =>
+            false
         }
       this.processPsiMethodsForNode(
         node,
@@ -246,8 +253,9 @@ class ScClassImpl private (
           isInterface = false,
           Some(this)))
     constructor match {
-      case Some(x) => buffer ++= x.getFunctionWrappers
-      case _       =>
+      case Some(x) =>
+        buffer ++= x.getFunctionWrappers
+      case _ =>
     }
     buffer.toArray
   }
@@ -303,8 +311,10 @@ class ScClassImpl private (
           .map { p =>
             val paramType =
               p.typeElement match {
-                case Some(te) => te.getText
-                case None     => "Any"
+                case Some(te) =>
+                  te.getText
+                case None =>
+                  "Any"
               }
             p.name + " : " + paramType + " = this." + p.name
           }
@@ -347,8 +357,10 @@ class ScClassImpl private (
                 val paramText =
                   s"${parameter.name} : ${parameter.typeElement.map(_.getText).getOrElse("Nothing")}"
                 parameter.getDefaultExpression match {
-                  case Some(expr) => s"$paramText = ${expr.getText}"
-                  case _          => paramText
+                  case Some(expr) =>
+                    s"$paramText = ${expr.getText}"
+                  case _ =>
+                    paramText
                 }
             }
             .mkString(
@@ -379,9 +391,11 @@ class ScClassImpl private (
             method.setSynthetic(this)
             Some(method)
           } catch {
-            case e: Exception => None
+            case e: Exception =>
+              None
           }
-        case None => None
+        case None =>
+          None
       }
     } else
       None
@@ -407,10 +421,12 @@ class ScClassImpl private (
                     this)
                 elem.setNavigationElement(param)
                 Option(elem)
-              case _ => None
+              case _ =>
+                None
             }
           }
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     super.getFields ++ fields.flatten
   }

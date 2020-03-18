@@ -56,8 +56,10 @@ abstract class RemoteServerConnectorBase(
       new File(libRoot, "jps"),
       System.getProperty("java.class.version")
     ) match {
-      case Left(msg)   => throw new IllegalArgumentException(msg)
-      case Right(data) => data
+      case Left(msg) =>
+        throw new IllegalArgumentException(msg)
+      case Right(data) =>
+        data
     }
 
   private val sourceRoot = filesToCompile.head.getParentFile
@@ -160,7 +162,8 @@ abstract class RemoteServerConnectorBase(
 
   private def findJdk =
     scala.compiler.findJdkByName(settings.COMPILE_SERVER_SDK) match {
-      case Right(jdk) => jdk.executable
+      case Right(jdk) =>
+        jdk.executable
       case Left(msg) =>
         configurationError(
           s"Cannot find jdk ${settings.COMPILE_SERVER_SDK} for compile server, underlying message: $msg")

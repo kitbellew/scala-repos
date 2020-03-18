@@ -106,9 +106,12 @@ trait SQLServerProfile extends JdbcProfile {
       new ColumnBuilder(tableBuilder, meta) {
         override def tpe =
           dbType match {
-            case Some("date") => "java.sql.Date"
-            case Some("time") => "java.sql.Time"
-            case _            => super.tpe
+            case Some("date") =>
+              "java.sql.Date"
+            case Some("time") =>
+              "java.sql.Time"
+            case _ =>
+              super.tpe
           }
         override def rawDefault =
           super.rawDefault.map(
@@ -120,8 +123,10 @@ trait SQLServerProfile extends JdbcProfile {
           rawDefault
             .map((_, tpe))
             .collect {
-              case ("0", "Boolean") => Some(false)
-              case ("1", "Boolean") => Some(true)
+              case ("0", "Boolean") =>
+                Some(false)
+              case ("1", "Boolean") =>
+                Some(true)
             }
             .map(d => Some(d))
             .getOrElse {
@@ -153,7 +158,8 @@ trait SQLServerProfile extends JdbcProfile {
               s"CHAR(${l.length})"
           case None =>
             defaultStringType match {
-              case Some(s) => s
+              case Some(s) =>
+                s
               case None =>
                 if (sym
                       .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
@@ -163,12 +169,18 @@ trait SQLServerProfile extends JdbcProfile {
                   "VARCHAR(MAX)"
             }
         }
-      case java.sql.Types.BOOLEAN => "BIT"
-      case java.sql.Types.BLOB    => "VARBINARY(MAX)"
-      case java.sql.Types.CLOB    => "TEXT"
-      case java.sql.Types.DOUBLE  => "FLOAT(53)"
-      case java.sql.Types.FLOAT   => "FLOAT(24)"
-      case _                      => super.defaultSqlTypeName(tmd, sym)
+      case java.sql.Types.BOOLEAN =>
+        "BIT"
+      case java.sql.Types.BLOB =>
+        "VARBINARY(MAX)"
+      case java.sql.Types.CLOB =>
+        "TEXT"
+      case java.sql.Types.DOUBLE =>
+        "FLOAT(53)"
+      case java.sql.Types.FLOAT =>
+        "FLOAT(24)"
+      case _ =>
+        super.defaultSqlTypeName(tmd, sym)
     }
 
   class QueryBuilder(tree: Node, state: CompilerState)
@@ -181,7 +193,8 @@ trait SQLServerProfile extends JdbcProfile {
       (c.fetch, c.offset) match {
         case (Some(t), Some(d)) =>
           b"top (${QueryParameter.constOp[Long]("+")(_ + _)(t, d)}) "
-        case (Some(t), None) => b"top ($t) "
+        case (Some(t), None) =>
+          b"top ($t) "
         case (None, _) =>
           if (!c.orderBy.isEmpty)
             b"top 100 percent "
@@ -221,7 +234,8 @@ trait SQLServerProfile extends JdbcProfile {
             .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())}, ${Int.MaxValue})}\)"
         case Library.Repeat(str, count) =>
           b"replicate($str, $count)"
-        case n => super.expr(n, skipParens)
+        case n =>
+          super.expr(n, skipParens)
       }
   }
 
@@ -377,8 +391,10 @@ class ProtectGroupBy extends Phase {
             logger.debug(s"Narrowed 'by' clause down to: (over $b2s)", b2)
             val refsOK = ProductNode(ConstArray(b2)).flatten.children.forall(
               _.findNode {
-                case Ref(s) if s == b2s => true
-                case _                  => false
+                case Ref(s) if s == b2s =>
+                  true
+                case _ =>
+                  false
               }.isDefined)
             logger.debug("All columns reference the source: " + refsOK)
             if (refsOK)
@@ -394,16 +410,20 @@ class ProtectGroupBy extends Phase {
 
   def source(bs: TermSymbol, b: Node, n: Node): (Node, TermSymbol) =
     n match {
-      case Filter(_, f, _)      => source(bs, b, f)
-      case CollectionCast(f, _) => source(bs, b, f)
+      case Filter(_, f, _) =>
+        source(bs, b, f)
+      case CollectionCast(f, _) =>
+        source(bs, b, f)
       case Bind(s, f, Pure(StructNode(defs), _)) =>
         val m = defs.toMap
         val b2 = b.replace(
           {
-            case Select(Ref(s), f) if s == bs => m(f)
+            case Select(Ref(s), f) if s == bs =>
+              m(f)
           },
           keepType = true)
         source(s, b2, f)
-      case _ => (b, bs)
+      case _ =>
+        (b, bs)
     }
 }

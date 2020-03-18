@@ -209,14 +209,21 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
   @deprecated("Scripting is deprecated.", "2.11.0")
   def <<(cmd: Message[A]): Unit =
     cmd match {
-      case Include(Start, x)    => prepend(x)
-      case Include(End, x)      => append(x)
-      case Include(Index(n), x) => insert(n, x)
-      case Include(NoLo, x)     => this += x
+      case Include(Start, x) =>
+        prepend(x)
+      case Include(End, x) =>
+        append(x)
+      case Include(Index(n), x) =>
+        insert(n, x)
+      case Include(NoLo, x) =>
+        this += x
 
-      case Update(Start, x)    => update(0, x)
-      case Update(End, x)      => update(length - 1, x)
-      case Update(Index(n), x) => update(n, x)
+      case Update(Start, x) =>
+        update(0, x)
+      case Update(End, x) =>
+        update(length - 1, x)
+      case Update(Index(n), x) =>
+        update(n, x)
 
       case Remove(Start, x) =>
         if (this(0) == x)
@@ -227,10 +234,13 @@ trait BufferLike[A, +This <: BufferLike[A, This] with Buffer[A]]
       case Remove(Index(n), x) =>
         if (this(n) == x)
           remove(n)
-      case Remove(NoLo, x) => this -= x
+      case Remove(NoLo, x) =>
+        this -= x
 
-      case Reset()      => clear()
-      case s: Script[_] => s.iterator foreach <<
+      case Reset() =>
+        clear()
+      case s: Script[_] =>
+        s.iterator foreach <<
       case _ =>
         throw new UnsupportedOperationException(
           "message " + cmd + " not understood")

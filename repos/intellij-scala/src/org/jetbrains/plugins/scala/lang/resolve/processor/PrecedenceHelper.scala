@@ -63,7 +63,8 @@ trait PrecedenceHelper[T] {
               ta.isExactAliasFor(cls)
             case (cls: PsiClass, ta: ScTypeAliasDefinition) =>
               ta.isExactAliasFor(cls)
-            case _ => false
+            case _ =>
+              false
           }
         } else
           true
@@ -80,8 +81,10 @@ trait PrecedenceHelper[T] {
     fromHistory = true
     try {
       history.foreach {
-        case ChangedLevel       => changedLevel
-        case AddResult(results) => addResults(results)
+        case ChangedLevel =>
+          changedLevel
+        case AddResult(results) =>
+          addResults(results)
       }
     } finally fromHistory = false
   }
@@ -101,8 +104,10 @@ trait PrecedenceHelper[T] {
         elem: PsiElement,
         res: Set[String] = Set.empty): Set[String] = {
       PsiTreeUtil.getContextOfType(elem, true, classOf[ScPackaging]) match {
-        case null           => res
-        case p: ScPackaging => collectPackages(p, res + p.fullPackageName)
+        case null =>
+          res
+        case p: ScPackaging =>
+          collectPackages(p, res + p.fullPackageName)
       }
     }
     Set("scala", "java.lang", "scala", "scala.Predef") ++ collectPackages(
@@ -113,17 +118,20 @@ trait PrecedenceHelper[T] {
     if (importsUsed.length == 1) {
       val importExpr =
         importsUsed.head match {
-          case ImportExprUsed(expr) => expr
+          case ImportExprUsed(expr) =>
+            expr
           case ImportSelectorUsed(selector) =>
             PsiTreeUtil.getContextOfType(selector, true, classOf[ScImportExpr])
-          case ImportWildcardSelectorUsed(expr) => expr
+          case ImportWildcardSelectorUsed(expr) =>
+            expr
         }
       importExpr.qualifier.bind() match {
         case Some(ScalaResolveResult(p: PsiPackage, _)) =>
           suspiciousPackages.contains(p.getQualifiedName)
         case Some(ScalaResolveResult(o: ScObject, _)) =>
           suspiciousPackages.contains(o.qualifiedName)
-        case _ => false
+        case _ =>
+          false
       }
     } else
       false
@@ -215,10 +223,12 @@ trait PrecedenceHelper[T] {
 
   protected def getPrecedence(result: ScalaResolveResult): Int = {
     specialPriority match {
-      case Some(priority) => priority
+      case Some(priority) =>
+        priority
       case None if result.prefixCompletion =>
         PrecedenceHelper.PrecedenceTypes.PREFIX_COMPLETION
-      case None => result.getPrecedence(getPlace, placePackageName)
+      case None =>
+        result.getPrecedence(getPlace, placePackageName)
     }
   }
 }

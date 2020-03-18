@@ -33,10 +33,14 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       ReIndexer(None, None, right)
     } else if (left.isUnique && right.isUnique) {
       how match {
-        case InnerJoin => intersect(left, right)
-        case OuterJoin => union(left, right)
-        case LeftJoin  => leftJoinUnique(left, right)
-        case RightJoin => leftJoinUnique(right, left).swap
+        case InnerJoin =>
+          intersect(left, right)
+        case OuterJoin =>
+          union(left, right)
+        case LeftJoin =>
+          leftJoinUnique(left, right)
+        case RightJoin =>
+          leftJoinUnique(right, left).swap
       }
     } else if (right.isUnique && how == LeftJoin) {
       leftJoinUnique(left, right)
@@ -44,15 +48,21 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       leftJoinUnique(right, left).swap
     } else if (left.isMonotonic && right.isMonotonic) {
       how match {
-        case InnerJoin => innerJoinMonotonic(left, right)
-        case OuterJoin => outerJoinMonotonic(left, right)
-        case LeftJoin  => leftJoinMonotonic(left, right)
-        case RightJoin => leftJoinMonotonic(right, left).swap
+        case InnerJoin =>
+          innerJoinMonotonic(left, right)
+        case OuterJoin =>
+          outerJoinMonotonic(left, right)
+        case LeftJoin =>
+          leftJoinMonotonic(left, right)
+        case RightJoin =>
+          leftJoinMonotonic(right, left).swap
       }
     } else {
       how match {
-        case RightJoin => factorizedJoin(right, left, LeftJoin).swap
-        case _         => factorizedJoin(left, right, how)
+        case RightJoin =>
+          factorizedJoin(right, left, LeftJoin).swap
+        case _ =>
+          factorizedJoin(left, right, how)
       }
     }
   }

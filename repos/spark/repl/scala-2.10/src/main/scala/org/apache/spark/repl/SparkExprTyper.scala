@@ -40,7 +40,8 @@ private[repl] trait SparkExprTyper extends Logging {
 
     def defns(code: String) =
       stmts(code) collect {
-        case x: DefTree => x
+        case x: DefTree =>
+          x
       }
     def expr(code: String) = applyRule(code, _.expr())
     def stmts(code: String) = applyRule(code, _.templateStats())
@@ -85,7 +86,8 @@ private[repl] trait SparkExprTyper extends Logging {
             NoSymbol
           else
             sym
-        case _ => NoSymbol
+        case _ =>
+          NoSymbol
       }
     }
     def asDefn(): Symbol = {
@@ -94,11 +96,15 @@ private[repl] trait SparkExprTyper extends Logging {
       interpretSynthetic(code) match {
         case IR.Success =>
           repl.definedSymbolList filterNot old match {
-            case Nil        => NoSymbol
-            case sym :: Nil => sym
-            case syms       => NoSymbol.newOverloaded(NoPrefix, syms)
+            case Nil =>
+              NoSymbol
+            case sym :: Nil =>
+              sym
+            case syms =>
+              NoSymbol.newOverloaded(NoPrefix, syms)
           }
-        case _ => NoSymbol
+        case _ =>
+          NoSymbol
       }
     }
     beQuietDuring(asExpr()) orElse beQuietDuring(asDefn())
@@ -116,8 +122,10 @@ private[repl] trait SparkExprTyper extends Logging {
     // is an error, and errors are desired, then it re-evaluates non-silently
     // to induce the error message.
     try beSilentDuring(symbolOfLine(expr).tpe) match {
-      case NoType if !silent => symbolOfLine(expr).tpe // generate error
-      case tpe               => tpe
+      case NoType if !silent =>
+        symbolOfLine(expr).tpe // generate error
+      case tpe =>
+        tpe
     } finally typeOfExpressionDepth -= 1
   }
 }

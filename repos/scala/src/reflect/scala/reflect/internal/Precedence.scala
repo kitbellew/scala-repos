@@ -16,21 +16,30 @@ object Precedence extends (Int => Precedence) {
   private val ErrorName = "<error>"
   private def isAssignmentOp(name: String) =
     name match {
-      case "!=" | "<=" | ">=" | "" => false
+      case "!=" | "<=" | ">=" | "" =>
+        false
       case _ =>
         name.last == '=' && name.head != '=' && isOperatorPart(name.head)
     }
   private def firstChar(ch: Char): Precedence =
     apply(
       (ch: @switch) match {
-        case '|'             => 2
-        case '^'             => 3
-        case '&'             => 4
-        case '=' | '!'       => 5
-        case '<' | '>'       => 6
-        case ':'             => 7
-        case '+' | '-'       => 8
-        case '*' | '/' | '%' => 9
+        case '|' =>
+          2
+        case '^' =>
+          3
+        case '&' =>
+          4
+        case '=' | '!' =>
+          5
+        case '<' | '>' =>
+          6
+        case ':' =>
+          7
+        case '+' | '-' =>
+          8
+        case '*' | '/' | '%' =>
+          9
         case _ =>
           if (isScalaLetter(ch))
             1
@@ -41,8 +50,11 @@ object Precedence extends (Int => Precedence) {
   def apply(level: Int): Precedence = new Precedence(level)
   def apply(name: String): Precedence =
     name match {
-      case "" | ErrorName            => this(-1)
-      case _ if isAssignmentOp(name) => this(0)
-      case _                         => firstChar(name charAt 0)
+      case "" | ErrorName =>
+        this(-1)
+      case _ if isAssignmentOp(name) =>
+        this(0)
+      case _ =>
+        firstChar(name charAt 0)
     }
 }

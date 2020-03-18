@@ -182,10 +182,12 @@ case class Ceil(child: Expression)
     extends UnaryMathExpression(math.ceil, "CEIL") {
   override def dataType: DataType =
     child.dataType match {
-      case dt @ DecimalType.Fixed(_, 0) => dt
+      case dt @ DecimalType.Fixed(_, 0) =>
+        dt
       case DecimalType.Fixed(precision, scale) =>
         DecimalType.bounded(precision - scale + 1, 0)
-      case _ => LongType
+      case _ =>
+        LongType
     }
 
   override def inputTypes: Seq[AbstractDataType] =
@@ -193,14 +195,16 @@ case class Ceil(child: Expression)
 
   protected override def nullSafeEval(input: Any): Any =
     child.dataType match {
-      case DoubleType => f(input.asInstanceOf[Double]).toLong
+      case DoubleType =>
+        f(input.asInstanceOf[Double]).toLong
       case DecimalType.Fixed(precision, scale) =>
         input.asInstanceOf[Decimal].ceil
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     child.dataType match {
-      case DecimalType.Fixed(_, 0) => defineCodeGen(ctx, ev, c => s"$c")
+      case DecimalType.Fixed(_, 0) =>
+        defineCodeGen(ctx, ev, c => s"$c")
       case DecimalType.Fixed(precision, scale) =>
         defineCodeGen(ctx, ev, c => s"$c.ceil()")
       case _ =>
@@ -265,10 +269,12 @@ case class Floor(child: Expression)
     extends UnaryMathExpression(math.floor, "FLOOR") {
   override def dataType: DataType =
     child.dataType match {
-      case dt @ DecimalType.Fixed(_, 0) => dt
+      case dt @ DecimalType.Fixed(_, 0) =>
+        dt
       case DecimalType.Fixed(precision, scale) =>
         DecimalType.bounded(precision - scale + 1, 0)
-      case _ => LongType
+      case _ =>
+        LongType
     }
 
   override def inputTypes: Seq[AbstractDataType] =
@@ -276,14 +282,16 @@ case class Floor(child: Expression)
 
   protected override def nullSafeEval(input: Any): Any =
     child.dataType match {
-      case DoubleType => f(input.asInstanceOf[Double]).toLong
+      case DoubleType =>
+        f(input.asInstanceOf[Double]).toLong
       case DecimalType.Fixed(precision, scale) =>
         input.asInstanceOf[Decimal].floor
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     child.dataType match {
-      case DecimalType.Fixed(_, 0) => defineCodeGen(ctx, ev, c => s"$c")
+      case DecimalType.Fixed(_, 0) =>
+        defineCodeGen(ctx, ev, c => s"$c")
       case DecimalType.Fixed(precision, scale) =>
         defineCodeGen(ctx, ev, c => s"$c.floor()")
       case _ =>
@@ -513,9 +521,12 @@ case class Hex(child: Expression)
 
   protected override def nullSafeEval(num: Any): Any =
     child.dataType match {
-      case LongType   => Hex.hex(num.asInstanceOf[Long])
-      case BinaryType => Hex.hex(num.asInstanceOf[Array[Byte]])
-      case StringType => Hex.hex(num.asInstanceOf[UTF8String].getBytes)
+      case LongType =>
+        Hex.hex(num.asInstanceOf[Long])
+      case BinaryType =>
+        Hex.hex(num.asInstanceOf[Array[Byte]])
+      case StringType =>
+        Hex.hex(num.asInstanceOf[UTF8String].getBytes)
     }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -526,8 +537,10 @@ case class Hex(child: Expression)
         val hex = Hex.getClass.getName.stripSuffix("$")
         s"${ev.value} = " + (
           child.dataType match {
-            case StringType => s"""$hex.hex($c.getBytes());"""
-            case _          => s"""$hex.hex($c);"""
+            case StringType =>
+              s"""$hex.hex($c.getBytes());"""
+            case _ =>
+              s"""$hex.hex($c);"""
           }
         )
       }
@@ -613,8 +626,10 @@ case class ShiftLeft(left: Expression, right: Expression)
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     input1 match {
-      case l: jl.Long    => l << input2.asInstanceOf[jl.Integer]
-      case i: jl.Integer => i << input2.asInstanceOf[jl.Integer]
+      case l: jl.Long =>
+        l << input2.asInstanceOf[jl.Integer]
+      case i: jl.Integer =>
+        i << input2.asInstanceOf[jl.Integer]
     }
   }
 
@@ -639,8 +654,10 @@ case class ShiftRight(left: Expression, right: Expression)
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     input1 match {
-      case l: jl.Long    => l >> input2.asInstanceOf[jl.Integer]
-      case i: jl.Integer => i >> input2.asInstanceOf[jl.Integer]
+      case l: jl.Long =>
+        l >> input2.asInstanceOf[jl.Integer]
+      case i: jl.Integer =>
+        i >> input2.asInstanceOf[jl.Integer]
     }
   }
 
@@ -665,8 +682,10 @@ case class ShiftRightUnsigned(left: Expression, right: Expression)
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     input1 match {
-      case l: jl.Long    => l >>> input2.asInstanceOf[jl.Integer]
-      case i: jl.Integer => i >>> input2.asInstanceOf[jl.Integer]
+      case l: jl.Long =>
+        l >>> input2.asInstanceOf[jl.Integer]
+      case i: jl.Integer =>
+        i >>> input2.asInstanceOf[jl.Integer]
     }
   }
 
@@ -777,7 +796,8 @@ case class Round(child: Expression, scale: Expression)
             s
           else
             _scale)
-      case t => t
+      case t =>
+        t
     }
 
   override def inputTypes: Seq[AbstractDataType] = Seq(NumericType, IntegerType)
@@ -791,7 +811,8 @@ case class Round(child: Expression, scale: Expression)
           TypeCheckFailure(
             "Only foldable Expression is allowed for scale arguments")
         }
-      case f => f
+      case f =>
+        f
     }
   }
 

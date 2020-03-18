@@ -79,8 +79,9 @@ class ScalaUnusedImportPass(
         }
 
         myHighlights = list
-      case _: ScalaFile => myHighlights = Collections.emptyList()
-      case _            =>
+      case _: ScalaFile =>
+        myHighlights = Collections.emptyList()
+      case _ =>
     }
   }
 

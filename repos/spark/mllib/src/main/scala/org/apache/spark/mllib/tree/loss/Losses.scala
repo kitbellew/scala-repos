@@ -25,9 +25,12 @@ object Losses {
   @Since("1.2.0")
   def fromString(name: String): Loss =
     name match {
-      case "leastSquaresError"  => SquaredError
-      case "leastAbsoluteError" => AbsoluteError
-      case "logLoss"            => LogLoss
+      case "leastSquaresError" =>
+        SquaredError
+      case "leastAbsoluteError" =>
+        AbsoluteError
+      case "logLoss" =>
+        LogLoss
       case _ =>
         throw new IllegalArgumentException(
           s"Did not recognize Loss name: $name")

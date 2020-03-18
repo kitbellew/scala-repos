@@ -49,7 +49,8 @@ trait ScModificationTrackerOwner
         case owner: ScModificationTrackerOwner
             if owner.isValidModificationTrackerOwner() =>
           calc(owner.getContext, sum + owner.rawModificationCount)
-        case _ => calc(place.getContext, sum)
+        case _ =>
+          calc(place.getContext, sum)
       }
 
     calc(this, 0L)
@@ -65,8 +66,10 @@ trait ScModificationTrackerOwner
     getContext match {
       case f: ScFunction =>
         f.returnTypeElement match {
-          case Some(ret)            => true
-          case None if !f.hasAssign => true
+          case Some(ret) =>
+            true
+          case None if !f.hasAssign =>
+            true
           case _ =>
             if (checkForChangedReturn) {
               CachesUtil.addModificationFunctionsReturnType(f)
@@ -83,10 +86,14 @@ trait ScModificationTrackerOwner
       case v: ScVariable =>
         CachesUtil.addModificationFunctionsReturnType(v)
         true
-      case _: ScWhileStmt    => true
-      case _: ScFinallyBlock => true
-      case _: ScDoStmt       => true
-      case _                 => false
+      case _: ScWhileStmt =>
+        true
+      case _: ScFinallyBlock =>
+        true
+      case _: ScDoStmt =>
+        true
+      case _ =>
+        false
     }
   }
 

@@ -29,7 +29,8 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
                 logger.warn("Table has unexpected type:", t)
             }
             t
-          case n => n.untyped
+          case n =>
+            n.untyped
         },
         bottomUp = true
       )
@@ -48,7 +49,8 @@ class VerifyTypes(after: Option[Phase] = None) extends Phase {
         }
       }
       n1.children.zip(n2.children).force.foreach {
-        case (n1, n2) => compare(n1, n2)
+        case (n1, n2) =>
+          compare(n1, n2)
       }
     }
     compare(tree, retyped)

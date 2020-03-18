@@ -63,15 +63,18 @@ trait ExistentialsAndSkolems {
             tp
           else
             copyRefinedType(tp, parents1, decls)
-        case tp => tp
+        case tp =>
+          tp
       }
 
     // Hanging onto lower bound in case anything interesting
     // happens with it.
     mapFrom(hidden)(s =>
       s.existentialBound match {
-        case TypeBounds(lo, hi) => TypeBounds(lo, hiBound(s))
-        case _                  => hiBound(s)
+        case TypeBounds(lo, hi) =>
+          TypeBounds(lo, hiBound(s))
+        case _ =>
+          hiBound(s)
       })
   }
 
@@ -99,8 +102,10 @@ trait ExistentialsAndSkolems {
     val typeParams: List[Symbol] = rawSyms map { sym =>
       val name =
         sym.name match {
-          case x: TypeName => x
-          case x           => tpnme.singletonName(x)
+          case x: TypeName =>
+            x
+          case x =>
+            tpnme.singletonName(x)
         }
       def rawOwner0 =
         rawOwner orElse abort(

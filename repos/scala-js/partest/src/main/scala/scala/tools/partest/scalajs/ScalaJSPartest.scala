@@ -158,10 +158,14 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
         !whitelistedTestFileNames.contains(absPath) &&
         !buglistedTestFileNames.contains(absPath)
       }
-      case BlacklistedTests => blacklistedTestFileNames
-      case BuglistedTests   => buglistedTestFileNames
-      case WhitelistedTests => whitelistedTestFileNames
-      case SomeTests(names) => names.map(extendShortTestName _).toSet
+      case BlacklistedTests =>
+        blacklistedTestFileNames
+      case BuglistedTests =>
+        buglistedTestFileNames
+      case WhitelistedTests =>
+        whitelistedTestFileNames
+      case SomeTests(names) =>
+        names.map(extendShortTestName _).toSet
     }
   }
 

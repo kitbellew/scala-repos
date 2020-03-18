@@ -95,7 +95,8 @@ case class Ingest(
     val splitSize = (data.length / n) max 1
     val splitData = data.grouped(splitSize).toSeq
     (splitData zip streamRef.split(splitData.size)).map({
-      case (d, ref) => this.copy(data = d, streamRef = ref)
+      case (d, ref) =>
+        this.copy(data = d, streamRef = ref)
     })(collection.breakOut)
   }
 
@@ -208,7 +209,8 @@ object Archive {
           if (apiKey.startsWith("/")) =>
         Archive(path.components.head.toString, Path(apiKey), jobId, timestamp)
 
-      case ok => ok
+      case ok =>
+        ok
     }
 
   val extractorV0: Extractor[Archive] = extractorV[Archive](schemaV0, None)
@@ -226,17 +228,23 @@ sealed trait StreamRef {
 object StreamRef {
   def forWriteMode(mode: WriteMode, terminal: Boolean): StreamRef =
     mode match {
-      case AccessMode.Create  => StreamRef.Create(UUID.randomUUID, terminal)
-      case AccessMode.Replace => StreamRef.Replace(UUID.randomUUID, terminal)
-      case AccessMode.Append  => StreamRef.Append
+      case AccessMode.Create =>
+        StreamRef.Create(UUID.randomUUID, terminal)
+      case AccessMode.Replace =>
+        StreamRef.Replace(UUID.randomUUID, terminal)
+      case AccessMode.Append =>
+        StreamRef.Append
     }
 
   object NewVersion {
     def unapply(ref: StreamRef): Option[(UUID, Boolean, Boolean)] = {
       ref match {
-        case Append                  => None
-        case Create(uuid, terminal)  => Some((uuid, terminal, false))
-        case Replace(uuid, terminal) => Some((uuid, terminal, true))
+        case Append =>
+          None
+        case Create(uuid, terminal) =>
+          Some((uuid, terminal, false))
+        case Replace(uuid, terminal) =>
+          Some((uuid, terminal, true))
       }
     }
   }
@@ -278,7 +286,8 @@ object StreamRef {
               "replace" -> JObject(
                 "uuid" -> uuid.jv,
                 "terminal" -> terminal.jv))
-          case Append => JString("append")
+          case Append =>
+            JString("append")
         }
     }
 
@@ -286,7 +295,8 @@ object StreamRef {
     new Extractor[StreamRef] {
       def validated(jv: JValue) =
         jv match {
-          case JString("append") => Success(Append)
+          case JString("append") =>
+            Success(Append)
           case other =>
             (
               (other \? "create") map { jv =>

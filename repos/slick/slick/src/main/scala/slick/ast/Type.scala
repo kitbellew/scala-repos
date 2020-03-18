@@ -40,7 +40,8 @@ trait Type extends Dumpable {
       toString,
       "",
       children.zipWithIndex.map {
-        case (ch, i) => (i.toString, ch)
+        case (ch, i) =>
+          (i.toString, ch)
       }.toSeq)
 }
 
@@ -67,12 +68,14 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
   override def toString =
     "{" + elements.iterator
       .map {
-        case (s, t) => s + ": " + t
+        case (s, t) =>
+          s + ": " + t
       }
       .mkString(", ") + "}"
   lazy val symbolToIndex: Map[TermSymbol, Int] =
     elements.zipWithIndex.map {
-      case ((sym, _), idx) => (sym, idx)
+      case ((sym, _), idx) =>
+        (sym, idx)
     }.toMap
   def children: ConstArray[Type] = elements.map(_._2)
   def mapChildren(f: Type => Type): StructType = {
@@ -83,12 +86,14 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     else
       StructType(
         elements.zip(ch2).map {
-          case (e, t) => (e._1, t)
+          case (e, t) =>
+            (e._1, t)
         })
   }
   override def select(sym: TermSymbol) =
     sym match {
-      case ElementSymbol(idx) => elements(idx - 1)._2
+      case ElementSymbol(idx) =>
+        elements(idx - 1)._2
       case _ =>
         val i = elements.indexWhere(_._1 == sym)
         if (i >= 0)
@@ -109,8 +114,10 @@ trait OptionType extends Type {
   override def hashCode = elementType.hashCode() + 100
   override def equals(o: Any) =
     o match {
-      case OptionType(elem) if elementType == elem => true
-      case _                                       => false
+      case OptionType(elem) if elementType == elem =>
+        true
+      case _ =>
+        false
     }
   override final def childrenForeach[R](f: Type => R): Unit = f(elementType)
 }
@@ -118,7 +125,8 @@ trait OptionType extends Type {
 object OptionType {
   def apply(tpe: Type): OptionType =
     tpe match {
-      case t: TypedType[_] => t.optionType
+      case t: TypedType[_] =>
+        t.optionType
       case _ =>
         new OptionType {
           def elementType = tpe
@@ -141,7 +149,8 @@ object OptionType {
         case o: OptionType
             if o.elementType.structural.isInstanceOf[AtomicType] =>
           Some(o.elementType)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -152,7 +161,8 @@ object OptionType {
         case o: OptionType
             if !o.elementType.structural.isInstanceOf[AtomicType] =>
           Some(o.elementType)
-        case _ => None
+        case _ =>
+          None
       }
   }
 }
@@ -168,8 +178,10 @@ final case class ProductType(elements: ConstArray[Type]) extends Type {
   }
   override def select(sym: TermSymbol) =
     sym match {
-      case ElementSymbol(i) if i <= elements.length => elements(i - 1)
-      case _                                        => super.select(sym)
+      case ElementSymbol(i) if i <= elements.length =>
+        elements(i - 1)
+      case _ =>
+        super.select(sym)
     }
   def children: ConstArray[Type] = elements
   def classTag = TupleSupport.classTagForArity(elements.length)
@@ -234,8 +246,10 @@ abstract class TypedCollectionTypeConstructor[C[_]](
   override def hashCode = classTag.hashCode() * 10
   override def equals(o: Any) =
     o match {
-      case o: TypedCollectionTypeConstructor[_] => classTag == o.classTag
-      case _                                    => false
+      case o: TypedCollectionTypeConstructor[_] =>
+        classTag == o.classTag
+      case _ =>
+        false
     }
 }
 
@@ -297,7 +311,8 @@ final class MappedScalaType(
     o match {
       case o: MappedScalaType =>
         baseType == o.baseType && mapper == o.mapper && classTag == o.classTag
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -341,8 +356,10 @@ final case class NominalType(sym: TypeSymbol, structuralView: Type)
   def children: ConstArray[Type] = ConstArray(structuralView)
   def sourceNominalType: NominalType =
     structuralView match {
-      case n: NominalType => n.sourceNominalType
-      case _              => this
+      case n: NominalType =>
+        n.sourceNominalType
+      case _ =>
+        this
     }
   def classTag = structuralView.classTag
 }
@@ -385,13 +402,15 @@ class TypeUtil(val tpe: Type) extends AnyVal {
 
   def asCollectionType: CollectionType =
     tpe match {
-      case c: CollectionType => c
+      case c: CollectionType =>
+        c
       case _ =>
         throw new SlickException("Expected a collection type, found " + tpe)
     }
   def asOptionType: OptionType =
     tpe match {
-      case o: OptionType => o
+      case o: OptionType =>
+        o
       case _ =>
         throw new SlickException("Expected an option type, found " + tpe)
     }
@@ -400,7 +419,8 @@ class TypeUtil(val tpe: Type) extends AnyVal {
     f.applyOrElse(
       tpe,
       {
-        case t: Type => t.mapChildren(_.replace(f))
+        case t: Type =>
+          t.mapChildren(_.replace(f))
       }: PartialFunction[Type, Type])
 
   def collect[T](pf: PartialFunction[Type, T]): ConstArray[T] = {
@@ -421,8 +441,10 @@ class TypeUtil(val tpe: Type) extends AnyVal {
       true
     else
       tpe match {
-        case t: AtomicType => false
-        case t             => t.children.exists(_.existsType(f))
+        case t: AtomicType =>
+          false
+        case t =>
+          t.children.exists(_.existsType(f))
       }
 
   def containsSymbol(tss: scala.collection.Set[TypeSymbol]): Boolean =
@@ -430,9 +452,12 @@ class TypeUtil(val tpe: Type) extends AnyVal {
       false
     else
       tpe match {
-        case NominalType(ts, exp) => tss.contains(ts) || exp.containsSymbol(tss)
-        case t: AtomicType        => false
-        case t                    => t.children.exists(_.containsSymbol(tss))
+        case NominalType(ts, exp) =>
+          tss.contains(ts) || exp.containsSymbol(tss)
+        case t: AtomicType =>
+          false
+        case t =>
+          t.children.exists(_.containsSymbol(tss))
       }
 }
 
@@ -501,8 +526,10 @@ class ScalaBaseType[T](implicit
   override def hashCode = classTag.hashCode
   override def equals(o: Any) =
     o match {
-      case t: ScalaBaseType[_] => classTag == t.classTag
-      case _                   => false
+      case t: ScalaBaseType[_] =>
+        classTag == t.classTag
+      case _ =>
+        false
     }
 }
 

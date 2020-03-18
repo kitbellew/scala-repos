@@ -147,13 +147,16 @@ private[server] class NettyModelConversion(
             .split('&')
             .map { keyPair =>
               keyPair.split("=", 2) match {
-                case Array(key)        => key -> ""
-                case Array(key, value) => key -> value
+                case Array(key) =>
+                  key -> ""
+                case Array(key, value) =>
+                  key -> value
               }
             }
             .groupBy(_._1)
             .map {
-              case (name, values) => name -> values.map(_._2).toSeq
+              case (name, values) =>
+                name -> values.map(_._2).toSeq
             }
         } else {
           Map.empty
@@ -206,7 +209,8 @@ private[server] class NettyModelConversion(
       result.header.reasonPhrase match {
         case Some(phrase) =>
           new HttpResponseStatus(result.header.status, phrase)
-        case None => HttpResponseStatus.valueOf(result.header.status)
+        case None =>
+          HttpResponseStatus.valueOf(result.header.status)
       }
 
     val connectionHeader = ServerResultUtils.determineConnectionHeader(
@@ -242,7 +246,8 @@ private[server] class NettyModelConversion(
 
     try {
       headers foreach {
-        case (name, value) => response.headers().add(name, value)
+        case (name, value) =>
+          response.headers().add(name, value)
       }
 
       // Content type and length
@@ -285,7 +290,8 @@ private[server] class NettyModelConversion(
         if (logger.isErrorEnabled) {
           val prettyHeaders = headers
             .map {
-              case (name, value) => s"$name -> $value"
+              case (name, value) =>
+                s"$name -> $value"
             }
             .mkString("[", ",", "]")
           val msg =
@@ -370,11 +376,13 @@ private[server] class NettyModelConversion(
     try {
       sslEngine.map { engine =>
         engine.getSession.getPeerCertificates.toSeq.collect {
-          case x509: X509Certificate => x509
+          case x509: X509Certificate =>
+            x509
         }
       }
     } catch {
-      case e: SSLPeerUnverifiedException => None
+      case e: SSLPeerUnverifiedException =>
+        None
     }
   }
 

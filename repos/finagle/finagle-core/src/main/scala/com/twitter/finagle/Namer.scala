@@ -41,7 +41,8 @@ object Namer {
   private[finagle] val namerOfKind: (String => Namer) = Memoize { kind =>
     try Class.forName(kind).newInstance().asInstanceOf[Namer]
     catch {
-      case NonFatal(exc) => FailingNamer(exc)
+      case NonFatal(exc) =>
+        FailingNamer(exc)
     }
   }
 
@@ -87,7 +88,8 @@ object Namer {
             case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
               Some(
                 (Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
-            case _ => None
+            case _ =>
+              None
           }
       }
 
@@ -108,7 +110,8 @@ object Namer {
           path match {
             case Path.Utf8("$", kind, rest @ _*) =>
               Some((namerOfKind(kind), Path.Utf8(rest: _*)))
-            case _ => None
+            case _ =>
+              None
           }
       }
 
@@ -121,10 +124,14 @@ object Namer {
             Activity.value(
               Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
 
-          case FailPath()             => Activity.value(Fail)
-          case NilPath()              => Activity.value(Empty)
-          case NamerPath(namer, rest) => namer.lookup(rest)
-          case _                      => Activity.value(Neg)
+          case FailPath() =>
+            Activity.value(Fail)
+          case NilPath() =>
+            Activity.value(Empty)
+          case NamerPath(namer, rest) =>
+            namer.lookup(rest)
+          case _ =>
+            Activity.value(Neg)
         }
 
       override def toString = "Namer.global"
@@ -135,10 +142,14 @@ object Namer {
     */
   def resolve(dtab: Dtab, path: Path): Var[Addr] =
     NameInterpreter.bind(dtab, path).map(_.eval).run.flatMap {
-      case Activity.Ok(None)        => Var.value(Addr.Neg)
-      case Activity.Ok(Some(names)) => Name.all(names).addr
-      case Activity.Pending         => Var.value(Addr.Pending)
-      case Activity.Failed(exc)     => Var.value(Addr.Failed(exc))
+      case Activity.Ok(None) =>
+        Var.value(Addr.Neg)
+      case Activity.Ok(Some(names)) =>
+        Name.all(names).addr
+      case Activity.Pending =>
+        Var.value(Addr.Pending)
+      case Activity.Failed(exc) =>
+        Var.value(Addr.Failed(exc))
     }
 
   /**
@@ -153,8 +164,10 @@ object Namer {
     Try {
       Path.read(path)
     } match {
-      case Return(path) => resolve(path)
-      case Throw(e)     => Var.value(Addr.Failed(e))
+      case Return(path) =>
+        resolve(path)
+      case Throw(e) =>
+        Var.value(Addr.Failed(e))
     }
 
   private object IntegerString {
@@ -201,12 +214,14 @@ object Namer {
         // - if no subtree is Ok, and there are failures, retain the first failure.
 
         val oks = seq.collect {
-          case Activity.Ok(t) => t
+          case Activity.Ok(t) =>
+            t
         }
         if (oks.isEmpty) {
           seq
             .collectFirst {
-              case f @ Activity.Failed(_) => f
+              case f @ Activity.Failed(_) =>
+                f
             }
             .getOrElse(Activity.Pending)
         } else {
@@ -236,31 +251,43 @@ object Namer {
             (addr, weight) match {
               case (Addr.Bound(addrs, metadata), Some(weight)) =>
                 Addr.Bound(addrs, metadata + ((AddrWeightKey, weight)))
-              case _ => addr
+              case _ =>
+                addr
             }
           }
           Activity.value(Leaf(Name.Bound(addrWithWeight, bound.id, bound.path)))
 
-        case Fail  => Activity.value(Fail)
-        case Neg   => Activity.value(Neg)
-        case Empty => Activity.value(Empty)
+        case Fail =>
+          Activity.value(Fail)
+        case Neg =>
+          Activity.value(Neg)
+        case Empty =>
+          Activity.value(Empty)
 
-        case Union() => Activity.value(Neg)
+        case Union() =>
+          Activity.value(Neg)
         case Union(Weighted(weight, tree)) =>
           bind(lookup, depth, Some(weight))(tree)
-        case Union(trees @ _*) => bindUnion(lookup, depth, trees)
+        case Union(trees @ _*) =>
+          bindUnion(lookup, depth, trees)
 
-        case Alt()     => Activity.value(Neg)
-        case Alt(tree) => bind(lookup, depth, weight)(tree)
+        case Alt() =>
+          Activity.value(Neg)
+        case Alt(tree) =>
+          bind(lookup, depth, weight)(tree)
         case Alt(trees @ _*) =>
           def loop(trees: Seq[NameTree[Name]]): Activity[NameTree[Name.Bound]] =
             trees match {
-              case Nil => Activity.value(Neg)
+              case Nil =>
+                Activity.value(Neg)
               case Seq(head, tail @ _*) =>
                 bind(lookup, depth, weight)(head).flatMap {
-                  case Fail => Activity.value(Fail)
-                  case Neg  => loop(tail)
-                  case head => Activity.value(head)
+                  case Fail =>
+                    Activity.value(Fail)
+                  case Neg =>
+                    loop(tail)
+                  case head =>
+                    Activity.value(head)
                 }
             }
           loop(trees)

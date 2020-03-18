@@ -15,18 +15,24 @@ class CollectMethodsProcessor(place: PsiElement, name: String)
     val named = element.asInstanceOf[PsiNamedElement]
     val implicitConversionClass: Option[PsiClass] =
       state.get(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY) match {
-        case null => None
-        case x    => Some(x)
+        case null =>
+          None
+        case x =>
+          Some(x)
       }
     val implFunction: Option[PsiNamedElement] =
       state.get(CachesUtil.IMPLICIT_FUNCTION) match {
-        case null => None
-        case x    => Some(x)
+        case null =>
+          None
+        case x =>
+          Some(x)
       }
     val implType: Option[ScType] =
       state.get(CachesUtil.IMPLICIT_TYPE) match {
-        case null => None
-        case x    => Some(x)
+        case null =>
+          None
+        case x =>
+          Some(x)
       }
     if (nameAndKindMatch(named, state)) {
       val accessible = isAccessible(named, ref)

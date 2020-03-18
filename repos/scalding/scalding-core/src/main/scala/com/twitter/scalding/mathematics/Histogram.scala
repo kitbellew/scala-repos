@@ -4,7 +4,8 @@ class Histogram(map: Map[Double, Long], binWidth: Double) {
   lazy val size = map.values.sum
   lazy val sum =
     map.foldLeft(0.0) {
-      case (acc, (bin, count)) => acc + bin * count
+      case (acc, (bin, count)) =>
+        acc + bin * count
     }
   lazy val keys = map.keys.toList.sorted
 
@@ -14,7 +15,8 @@ class Histogram(map: Map[Double, Long], binWidth: Double) {
   lazy val stdDev = {
     val squaredDiff =
       map.foldLeft(0.0) {
-        case (acc, (bin, count)) => acc + count * math.pow(bin - mean, 2.0)
+        case (acc, (bin, count)) =>
+          acc + count * math.pow(bin - mean, 2.0)
       }
     math.sqrt(squaredDiff / size)
   }

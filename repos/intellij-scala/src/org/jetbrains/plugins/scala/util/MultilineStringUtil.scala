@@ -47,10 +47,13 @@ object MultilineStringUtil {
           ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
           ScalaTokenTypes.tINTERPOLATED_STRING_ESCAPE =>
         element.getParent match {
-          case lit: ScLiteral if lit.isMultiLineString => true
-          case _                                       => false
+          case lit: ScLiteral if lit.isMultiLineString =>
+            true
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -72,11 +75,13 @@ object MultilineStringUtil {
           if (Option(call.getEffectiveInvokedExpr).forall {
                 case expr: ScExpression =>
                   expr.getText endsWith "." + methodName
-                case _ => false
+                case _ =>
+                  false
               })
             return false
         case _: ScParenthesisedExpr =>
-        case _                      => return true
+        case _ =>
+          return true
       }
 
       parent = parent.getParent
@@ -110,11 +115,14 @@ object MultilineStringUtil {
                   scType.canonicalText.endsWith(
                     "java.lang.String") || scType.canonicalText.endsWith(
                     "scala.Predef.String"))
-              case _ => true
+              case _ =>
+                true
             }
-          case _ => true
+          case _ =>
+            true
         }
-      case _ => true
+      case _ =>
+        true
     }
 
   def insertStripMargin(
@@ -144,8 +152,10 @@ object MultilineStringUtil {
       return defaultMargin
 
     calls.apply(0).headOption match {
-      case Some(ScLiteral(c: Character)) => c
-      case _                             => defaultMargin
+      case Some(ScLiteral(c: Character)) =>
+        c
+      case _ =>
+        defaultMargin
     }
   }
 
@@ -181,7 +191,8 @@ object MultilineStringUtil {
             calls += Array[ScExpression]()
           }
         case _: ScParenthesisedExpr =>
-        case _                      => return callsArray
+        case _ =>
+          return callsArray
       }
 
       prevParent = parent
@@ -194,7 +205,8 @@ object MultilineStringUtil {
   def findParentMLString(element: PsiElement): Option[ScLiteral] = {
     (Iterator(element) ++ element.parentsInFile)
       .collect {
-        case lit: ScLiteral if lit.isMultiLineString => lit
+        case lit: ScLiteral if lit.isMultiLineString =>
+          lit
       }
       .toStream
       .headOption
@@ -202,8 +214,10 @@ object MultilineStringUtil {
 
   def isMLString(element: PsiElement): Boolean =
     element match {
-      case lit: ScLiteral if lit.isMultiLineString => true
-      case _                                       => false
+      case lit: ScLiteral if lit.isMultiLineString =>
+        true
+      case _ =>
+        false
     }
 
   def interpolatorPrefixLength(literal: ScLiteral) =
@@ -213,7 +227,8 @@ object MultilineStringUtil {
     literal match {
       case isl: ScInterpolatedStringLiteral if isl.reference.isDefined =>
         isl.reference.get.refName
-      case _ => ""
+      case _ =>
+        ""
     }
 
   def containsArgs(
@@ -320,8 +335,10 @@ class MultilineStringSettings(project: Project) {
 
   def selectBySettings[T](ifIndent: => T)(ifAll: => T): T = {
     scalaSettings.MULTILINE_STRING_SUPORT match {
-      case ScalaCodeStyleSettings.MULTILINE_STRING_QUOTES_AND_INDENT => ifIndent
-      case ScalaCodeStyleSettings.MULTILINE_STRING_ALL               => ifAll
+      case ScalaCodeStyleSettings.MULTILINE_STRING_QUOTES_AND_INDENT =>
+        ifIndent
+      case ScalaCodeStyleSettings.MULTILINE_STRING_ALL =>
+        ifAll
     }
   }
 

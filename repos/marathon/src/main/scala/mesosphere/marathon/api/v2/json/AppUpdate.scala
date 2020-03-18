@@ -44,8 +44,10 @@ case class AppUpdate(
 
   protected[api] def onlyVersionOrIdSet: Boolean =
     productIterator forall {
-      case x @ Some(_) => x == version || x == id
-      case _           => true
+      case x @ Some(_) =>
+        x == version || x == id
+      case _ =>
+        true
     }
 
   /**

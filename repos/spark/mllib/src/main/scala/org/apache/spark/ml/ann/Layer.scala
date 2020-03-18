@@ -490,8 +490,10 @@ private[ann] class FunctionalLayerModel private (
   def error(output: BDM[Double], target: BDM[Double]): (BDM[Double], Double) = {
     // TODO: allow user pick error
     activationFunction match {
-      case sigmoid: SigmoidFunction => squared(output, target)
-      case softmax: SoftmaxFunction => crossEntropy(output, target)
+      case sigmoid: SigmoidFunction =>
+        squared(output, target)
+      case softmax: SoftmaxFunction =>
+        crossEntropy(output, target)
     }
   }
 }
@@ -632,7 +634,8 @@ private[ml] class FeedForwardModel private (
     val L = layerModels.length - 1
     val (newE, newError) =
       layerModels.last match {
-        case flm: FunctionalLayerModel => flm.error(outputs.last, target)
+        case flm: FunctionalLayerModel =>
+          flm.error(outputs.last, target)
         case _ =>
           throw new UnsupportedOperationException(
             "Non-functional layer not supported at the top")
@@ -943,8 +946,10 @@ private[ml] class FeedForwardTrainer(
 
   private[this] def updateGradient(gradient: Gradient): Unit = {
     optimizer match {
-      case lbfgs: LBFGS         => lbfgs.setGradient(gradient)
-      case sgd: GradientDescent => sgd.setGradient(gradient)
+      case lbfgs: LBFGS =>
+        lbfgs.setGradient(gradient)
+      case sgd: GradientDescent =>
+        sgd.setGradient(gradient)
       case other =>
         throw new UnsupportedOperationException(
           s"Only LBFGS and GradientDescent are supported but got ${other.getClass}.")
@@ -953,8 +958,10 @@ private[ml] class FeedForwardTrainer(
 
   private[this] def updateUpdater(updater: Updater): Unit = {
     optimizer match {
-      case lbfgs: LBFGS         => lbfgs.setUpdater(updater)
-      case sgd: GradientDescent => sgd.setUpdater(updater)
+      case lbfgs: LBFGS =>
+        lbfgs.setUpdater(updater)
+      case sgd: GradientDescent =>
+        sgd.setUpdater(updater)
       case other =>
         throw new UnsupportedOperationException(
           s"Only LBFGS and GradientDescent are supported but got ${other.getClass}.")

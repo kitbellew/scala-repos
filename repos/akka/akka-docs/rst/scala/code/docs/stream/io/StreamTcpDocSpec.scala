@@ -111,8 +111,10 @@ class StreamTcpDocSpec extends AkkaSpec {
     val input = new AtomicReference("Hello world" :: "What a lovely day" :: Nil)
     def readLine(prompt: String): String = {
       input.get() match {
-        case all @ cmd :: tail if input.compareAndSet(all, tail) ⇒ cmd
-        case _ ⇒ "q"
+        case all @ cmd :: tail if input.compareAndSet(all, tail) ⇒
+          cmd
+        case _ ⇒
+          "q"
       }
     }
 

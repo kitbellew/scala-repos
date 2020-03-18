@@ -35,7 +35,8 @@ class ScalaIfEvaluator(
               modifier = null
           }
         }
-      case _ => throw EvaluateExceptionUtil.BOOLEAN_EXPECTED
+      case _ =>
+        throw EvaluateExceptionUtil.BOOLEAN_EXPECTED
     }
 
     if (elseBranch.isEmpty)

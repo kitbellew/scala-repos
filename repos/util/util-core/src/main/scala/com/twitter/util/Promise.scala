@@ -117,7 +117,8 @@ object Promise {
         catch {
           case e: NonLocalReturnControl[_] =>
             Future.exception(new FutureNonLocalReturnControl(e))
-          case NonFatal(e) => Future.exception(e)
+          case NonFatal(e) =>
+            Future.exception(e)
         })
     }
 
@@ -460,7 +461,8 @@ class Promise[A]
   @tailrec
   final def setInterruptHandler(f: PartialFunction[Throwable, Unit]): Unit = {
     state match {
-      case Linked(p) => p.setInterruptHandler(f)
+      case Linked(p) =>
+        p.setInterruptHandler(f)
 
       case s @ Waiting(first, rest) =>
         val waitq =
@@ -489,12 +491,18 @@ class Promise[A]
   // Useful for debugging waitq.
   private[util] def waitqLength: Int =
     state match {
-      case Waiting(first, rest) if first == null => rest.length
-      case Waiting(first, rest)                  => rest.length + 1
-      case Interruptible(waitq, _)               => waitq.length
-      case Transforming(waitq, _)                => waitq.length
-      case Interrupted(waitq, _)                 => waitq.length
-      case Done(_) | Linked(_)                   => 0
+      case Waiting(first, rest) if first == null =>
+        rest.length
+      case Waiting(first, rest) =>
+        rest.length + 1
+      case Interruptible(waitq, _) =>
+        waitq.length
+      case Transforming(waitq, _) =>
+        waitq.length
+      case Interrupted(waitq, _) =>
+        waitq.length
+      case Done(_) | Linked(_) =>
+        0
     }
 
   /**
@@ -511,7 +519,8 @@ class Promise[A]
     if (other.isDefined)
       return
     state match {
-      case Linked(p) => p.forwardInterruptsTo(other)
+      case Linked(p) =>
+        p.forwardInterruptsTo(other)
 
       case s @ Waiting(first, rest) =>
         val waitq =
@@ -540,7 +549,8 @@ class Promise[A]
   @tailrec
   final def raise(intr: Throwable): Unit =
     state match {
-      case Linked(p) => p.raise(intr)
+      case Linked(p) =>
+        p.raise(intr)
       case s @ Interruptible(waitq, handler) =>
         if (!cas(s, Interrupted(waitq, intr)))
           raise(intr)
@@ -603,15 +613,18 @@ class Promise[A]
             first :: rest
         val next =
           (waitq filterNot (_ eq k)) match {
-            case Nil          => initState[A]
-            case head :: tail => Waiting(head, tail)
+            case Nil =>
+              initState[A]
+            case head :: tail =>
+              Waiting(head, tail)
           }
         if (!cas(s, next))
           detach(k)
         else
           waitq.contains(k)
 
-      case Done(_) => false
+      case Done(_) =>
+        false
     }
   }
 
@@ -651,8 +664,10 @@ class Promise[A]
     */
   def isInterrupted: Option[Throwable] =
     state match {
-      case Linked(p)            => p.isInterrupted
-      case Interrupted(_, intr) => Some(intr)
+      case Linked(p) =>
+        p.isInterrupted
+      case Interrupted(_, intr) =>
+        Some(intr)
       case Done(_) | Waiting(_, _) | Interruptible(_, _) | Transforming(_, _) =>
         None
     }
@@ -764,7 +779,8 @@ class Promise[A]
   @tailrec
   final def updateIfEmpty(result: Try[A]): Boolean =
     state match {
-      case Done(_) => false
+      case Done(_) =>
+        false
       case s @ Waiting(first, rest) =>
         if (!cas(s, Done(result)))
           updateIfEmpty(result)
@@ -793,7 +809,8 @@ class Promise[A]
           runq(null, waitq, result)
           true
         }
-      case Linked(p) => p.updateIfEmpty(result)
+      case Linked(p) =>
+        p.updateIfEmpty(result)
     }
 
   @tailrec
@@ -913,8 +930,10 @@ class Promise[A]
 
   def poll: Option[Try[A]] =
     state match {
-      case Linked(p) => p.poll
-      case Done(res) => Some(res)
+      case Linked(p) =>
+        p.poll
+      case Done(res) =>
+        Some(res)
       case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
           Transforming(_, _) =>
         None
@@ -924,8 +943,10 @@ class Promise[A]
     state match {
       // Note: the basic implementation is the same as `poll()`, but we want to avoid doing
       // object allocations for `Some`s when the caller does not need the result.
-      case Linked(p) => p.isDefined
-      case Done(res) => true
+      case Linked(p) =>
+        p.isDefined
+      case Done(res) =>
+        true
       case Waiting(_, _) | Interruptible(_, _) | Interrupted(_, _) |
           Transforming(_, _) =>
         false

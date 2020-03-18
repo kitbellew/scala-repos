@@ -148,8 +148,10 @@ object Flaggable {
       override def show(addr: InetSocketAddress) =
         "%s:%d".format(
           Option(addr.getAddress) match {
-            case Some(a) if a.isAnyLocalAddress => ""
-            case _                              => addr.getHostName
+            case Some(a) if a.isAnyLocalAddress =>
+              ""
+            case _ =>
+              addr.getHostName
           },
           addr.getPort)
     }
@@ -170,8 +172,10 @@ object Flaggable {
 
       def parse(v: String): (T, U) =
         v.split(",") match {
-          case Array(t, u) => (tflag.parse(t), uflag.parse(u))
-          case _           => throw new IllegalArgumentException("not a 't,u'")
+          case Array(t, u) =>
+            (tflag.parse(t), uflag.parse(u))
+          case _ =>
+            throw new IllegalArgumentException("not a 't,u'")
         }
 
       override def show(tup: (T, U)) = {
@@ -210,20 +214,24 @@ object Flaggable {
             // In order to support comma-separated values, we concatenate
             // consecutive tokens that don't contain equals signs.
             acc.init :+ (acc.last + ',' + s)
-          case (acc, s) => acc :+ s
+          case (acc, s) =>
+            acc :+ s
         }
 
       tuples.map { tup =>
         tup.split("=") match {
-          case Array(k, v) => (kflag.parse(k), vflag.parse(v))
-          case _           => throw new IllegalArgumentException("not a 'k=v'")
+          case Array(k, v) =>
+            (kflag.parse(k), vflag.parse(v))
+          case _ =>
+            throw new IllegalArgumentException("not a 'k=v'")
         }
       }.toMap
     }
 
     override def show(out: Map[K, V]) = {
       out.toSeq map {
-        case (k, v) => k.toString + "=" + v.toString
+        case (k, v) =>
+          k.toString + "=" + v.toString
       } mkString (",")
     }
   }
@@ -320,21 +328,28 @@ class Flag[T: Flaggable] private[app] (
 
   private[this] def localValue: Option[T] =
     localFlagValues() match {
-      case None => None
+      case None =>
+        None
       case Some(flagValues) =>
         flagValues.get(this) match {
-          case None            => None
-          case Some(flagValue) => Some(flagValue.asInstanceOf[T])
+          case None =>
+            None
+          case Some(flagValue) =>
+            Some(flagValue.asInstanceOf[T])
         }
     }
 
   private[this] def setLocalValue(value: Option[T]): Unit = {
     val updatedMap: Map[Flag[_], Any] =
       (localFlagValues(), value) match {
-        case (Some(map), Some(v)) => map + (this -> v)
-        case (Some(map), None)    => map - this
-        case (None, Some(v))      => Map(this -> v)
-        case (None, None)         => Map.empty[Flag[_], Any]
+        case (Some(map), Some(v)) =>
+          map + (this -> v)
+        case (Some(map), None) =>
+          map - this
+        case (None, Some(v)) =>
+          Map(this -> v)
+        case (None, None) =>
+          Map.empty[Flag[_], Any]
       }
     if (updatedMap.isEmpty)
       localFlagValues.clear()
@@ -356,8 +371,10 @@ class Flag[T: Flaggable] private[app] (
       register()
     }
     localValue match {
-      case lv @ Some(_) => lv
-      case None         => value
+      case lv @ Some(_) =>
+        lv
+      case None =>
+        value
     }
   }
 
@@ -367,7 +384,8 @@ class Flag[T: Flaggable] private[app] (
 
   private lazy val default: Option[T] =
     defaultOrUsage match {
-      case Right(_) => None
+      case Right(_) =>
+        None
       case Left(d) =>
         try {
           Some(d())
@@ -381,8 +399,10 @@ class Flag[T: Flaggable] private[app] (
 
   private def valueOrDefault: Option[T] =
     getValue match {
-      case v @ Some(_) => v
-      case None        => default
+      case v @ Some(_) =>
+        v
+      case None =>
+        default
     }
 
   private[this] def flagNotFound: IllegalArgumentException =
@@ -413,8 +433,10 @@ class Flag[T: Flaggable] private[app] (
         log.log(Level.SEVERE, s"Flag $name read before parse.")
     }
     valueOrDefault match {
-      case Some(v) => v
-      case None    => throw flagNotFound
+      case Some(v) =>
+        v
+      case None =>
+        throw flagNotFound
     }
   }
 
@@ -467,8 +489,10 @@ class Flag[T: Flaggable] private[app] (
   def usageString: String = {
     val defaultOrUsageStr =
       defaultOrUsage match {
-        case Left(_)      => runDefaultString
-        case Right(usage) => usage
+        case Left(_) =>
+          runDefaultString
+        case Right(usage) =>
+          usage
       }
     s"  -$name='$defaultOrUsageStr': $help"
   }
@@ -488,7 +512,8 @@ class Flag[T: Flaggable] private[app] (
     */
   override def toString = {
     valueOrDefault match {
-      case None => "-" + name + "=unset"
+      case None =>
+        "-" + name + "=unset"
       case Some(v) =>
         "-" + name + "='" + flaggable.show(v).replaceAll("'", "'\"'\"'") + "'"
     }
@@ -590,7 +615,8 @@ class Flags(
   def reset() =
     synchronized {
       flags foreach {
-        case (_, f) => f.reset()
+        case (_, f) =>
+          f.reset()
       }
     }
 
@@ -719,9 +745,12 @@ class Flags(
   @deprecated("Prefer result-value based `Flags.parseArgs` method", "6.17.1")
   def parse(args: Array[String], undefOk: Boolean = false): Seq[String] =
     parseArgs(args, undefOk) match {
-      case Ok(remainder) => remainder
-      case Help(usage)   => throw FlagUsageError(usage)
-      case Error(reason) => throw FlagParseException(reason)
+      case Ok(remainder) =>
+        remainder
+      case Help(usage) =>
+        throw FlagUsageError(usage)
+      case Error(reason) =>
+        throw FlagParseException(reason)
     }
 
   /**
@@ -997,8 +1026,10 @@ class GlobalFlag[T] private[app] (
 
   protected override def getValue =
     super.getValue match {
-      case v @ Some(_) => v
-      case _           => propertyValue
+      case v @ Some(_) =>
+        v
+      case _ =>
+        propertyValue
     }
 
   def getGlobalFlag: Flag[_] = this
@@ -1042,8 +1073,10 @@ private object GlobalFlag {
         val cls = info.load()
         if (cls.isAnnotationPresent(markerClass)) {
           get(info.name.dropRight(1)) match {
-            case Some(f) => flags += f
-            case None    => println("failed for " + info.name)
+            case Some(f) =>
+              flags += f
+            case None =>
+              println("failed for " + info.name)
           }
         }
       } catch {

@@ -98,7 +98,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
                 import GraphDSL.Implicits._
 
                 val extractChunks = Flow[HttpChunk] collect {
-                  case HttpChunk.Chunk(data) => data
+                  case HttpChunk.Chunk(data) =>
+                    data
                 }
                 val createChunks = Flow[ByteString]
                   .map[HttpChunk](HttpChunk.Chunk.apply)
@@ -153,7 +154,8 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
     val codings = acceptHeader(request.headers, ACCEPT_ENCODING)
     def explicitQValue(coding: String) =
       codings collectFirst {
-        case (q, c) if c equalsIgnoreCase coding => q
+        case (q, c) if c equalsIgnoreCase coding =>
+          q
       }
     def defaultQValue(coding: String) =
       if (coding == "identity")
@@ -205,11 +207,13 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
       headerName: String,
       headerValue: String): (String, String) = {
     existingHeaders.get(headerName) match {
-      case None => (headerName, headerValue)
+      case None =>
+        (headerName, headerValue)
       case Some(existing)
           if existing.split(",").exists(_.trim.equalsIgnoreCase(headerValue)) =>
         (headerName, existing)
-      case Some(existing) => (headerName, s"$existing,$headerValue")
+      case Some(existing) =>
+        (headerName, s"$existing,$headerValue")
     }
   }
 }

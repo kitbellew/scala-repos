@@ -314,7 +314,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
             .sequence
             .map(
               _.toStream.collect({
-                case Some(cs) => cs
+                case Some(cs) =>
+                  cs
               }))
 
           successorStatesM map { successorStates =>
@@ -387,13 +388,15 @@ trait BlockStoreColumnarTableModule[M[+_]]
           case Some((f, db)) =>
             db.close()
             JDBMState(prefix, None, indices, insertCount)
-          case None => this
+          case None =>
+            this
         }
 
       def opened(): (File, DB, JDBMState) =
         fdb match {
-          case Some((f, db)) => (f, db, this)
-          case None          =>
+          case Some((f, db)) =>
+            (f, db, this)
+          case None =>
             // Open a JDBM3 DB for use in sorting under a temp directory
             val dbFile = new File(newScratchDir(), prefix)
             val db = DBMaker.openFile(dbFile.getCanonicalPath).make()
@@ -438,8 +441,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
     def apply(slices: StreamT[M, Slice], size: TableSize): Table = {
       size match {
-        case ExactSize(1) => new SingletonTable(slices)
-        case _            => new ExternalTable(slices, size)
+        case ExactSize(1) =>
+          new SingletonTable(slices)
+        case _ =>
+          new ExternalTable(slices, size)
       }
     }
 
@@ -736,14 +741,16 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       ///println("Continuing on left; not emitting right.")
                       val nextState =
                         (span: @unchecked) match {
-                          case NoSpan => FindEqualAdvancingLeft(ridx, rkey)
+                          case NoSpan =>
+                            FindEqualAdvancingLeft(ridx, rkey)
                           case LeftSpan =>
                             state match {
                               case RunRight(_, _, rauth) =>
                                 RunLeft(ridx, rkey, rauth)
                               case RunLeft(_, _, rauth) =>
                                 RunLeft(ridx, rkey, rauth)
-                              case _ => RunLeft(ridx, rkey, None)
+                              case _ =>
+                                RunLeft(ridx, rkey, None)
                             }
                         }
 
@@ -808,8 +815,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       //println("Continuing on right.")
                       val nextState =
                         (span: @unchecked) match {
-                          case NoSpan    => FindEqualAdvancingRight(lidx, lkey)
-                          case RightSpan => RunRight(lidx, lkey, Some(rkey))
+                          case NoSpan =>
+                            FindEqualAdvancingRight(lidx, lkey)
+                          case RightSpan =>
+                            RunRight(lidx, lkey, Some(rkey))
                         }
 
                       step(
@@ -1078,9 +1087,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
       def rec(ss: List[Slice], slices: StreamT[M, Slice]): StreamT[M, Slice] = {
         StreamT[M, Slice](
           slices.uncons map {
-            case Some((head, tail)) => StreamT.Skip(rec(head :: ss, tail))
-            case None if ss.isEmpty => StreamT.Done
-            case None               => StreamT.Yield(Slice.concat(ss.reverse), StreamT.empty)
+            case Some((head, tail)) =>
+              StreamT.Skip(rec(head :: ss, tail))
+            case None if ss.isEmpty =>
+              StreamT.Done
+            case None =>
+              StreamT.Yield(Slice.concat(ss.reverse), StreamT.empty)
           })
       }
 
@@ -1109,7 +1121,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         }
       }
       val identifiedKeyTrans = keyTrans.zipWithIndex map {
-        case (kt, i) => kt -> i.toString
+        case (kt, i) =>
+          kt -> i.toString
       }
       write0(
         reduceSlices(slices),
@@ -1363,7 +1376,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
       val totalCount =
         indices.toList.map {
-          case (_, sliceIndex) => sliceIndex.count
+          case (_, sliceIndex) =>
+            sliceIndex.count
         }.sum
 
       // Map the distinct indices into SortProjections/Cells, then merge them
@@ -1610,9 +1624,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
     def toRValue: M[RValue] = {
       def loop(stream: StreamT[M, Slice]): M[RValue] =
         stream.uncons flatMap {
-          case Some((head, tail)) if head.size > 0 => M point head.toRValue(0)
-          case Some((_, tail))                     => loop(tail)
-          case None                                => M point CUndefined
+          case Some((head, tail)) if head.size > 0 =>
+            M point head.toRValue(0)
+          case Some((_, tail)) =>
+            loop(tail)
+          case None =>
+            M point CUndefined
         }
 
       loop(slices)
@@ -1719,7 +1736,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 this.size match {
                   case EstimateSize(min, max) if min < size0 =>
                     EstimateSize(size0, max)
-                  case tableSize0 => tableSize0
+                  case tableSize0 =>
+                    tableSize0
                 }
               M.point(-\/(new ExternalTable(slices0, tableSize)))
             } else {
@@ -1788,13 +1806,15 @@ trait BlockStoreColumnarTableModule[M[+_]]
               OuterObjectConcat(
                 WrapObject(
                   deepMap(kt) {
-                    case Leaf(_) => TransSpec1.DerefArray0
+                    case Leaf(_) =>
+                      TransSpec1.DerefArray0
                   },
                   "0"),
                 WrapObject(TransSpec1.DerefArray1, "1"))
             },
             deepMap(valueSpec) {
-              case Leaf(_) => TransSpec1.DerefArray0
+              case Leaf(_) =>
+                TransSpec1.DerefArray0
             })
         } else {
           (Leaf(Source), groupKeys, valueSpec)

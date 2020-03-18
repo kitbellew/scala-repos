@@ -14,7 +14,8 @@ object Test extends App {
   assert(
     (
       richIter filterMap {
-        case Un(3) => 7
+        case Un(3) =>
+          7
       }
     ) == List(7))
 }

@@ -25,9 +25,11 @@ class ScalaAliasedImportedElementSearcher
           ScalaPsiUtil.nameContext(named) match {
             case _: PsiNamedElement | _: PsiMember | _: ScTypeAlias =>
               Some(named)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
     for {

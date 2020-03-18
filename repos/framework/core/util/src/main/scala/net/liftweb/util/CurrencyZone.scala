@@ -141,7 +141,8 @@ abstract class CurrencyZone {
         case that: AbstractCurrency =>
           this.designation + this.format("", scale) == that.designation + that
             .format("", scale)
-        case _ => false
+        case _ =>
+          false
       }
 
     override def hashCode = (this.designation + format("", scale)).hashCode
@@ -157,7 +158,8 @@ abstract class CurrencyZone {
     def format(currencySymbol: String, numberOfFractionDigits: Int): String = {
       val moneyValue =
         amount match {
-          case null => 0
+          case null =>
+            0
           case _ =>
             amount
               .setScale(numberOfFractionDigits, BigDecimal.RoundingMode.HALF_UP)

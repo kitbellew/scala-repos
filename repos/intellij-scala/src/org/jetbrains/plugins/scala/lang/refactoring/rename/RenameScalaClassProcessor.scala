@@ -38,8 +38,10 @@ class RenameScalaClassProcessor
       element: PsiElement,
       editor: Editor): PsiElement = {
     element match {
-      case wrapper: PsiClassWrapper => wrapper.definition
-      case _                        => element
+      case wrapper: PsiClassWrapper =>
+        wrapper.definition
+      case _ =>
+        element
     }
   }
 
@@ -64,9 +66,12 @@ class RenameScalaClassProcessor
         @tailrec
         def isTop(element: PsiElement): Boolean = {
           element match {
-            case null                     => true
-            case td: ScTemplateDefinition => false
-            case _                        => isTop(element.getContext)
+            case null =>
+              true
+            case td: ScTemplateDefinition =>
+              false
+            case _ =>
+              isTop(element.getContext)
           }
         }
         val file = td.getContainingFile
@@ -97,8 +102,9 @@ class RenameScalaClassProcessor
       element match {
         case o: ScObject =>
           o.fakeCompanionClass match {
-            case Some(clazz) => allRenames.put(clazz, newName)
-            case None        =>
+            case Some(clazz) =>
+              allRenames.put(clazz, newName)
+            case None =>
           }
         case t: ScTrait =>
           allRenames.put(t.fakeCompanionClass, newName + "$class")
@@ -116,13 +122,17 @@ class RenameScalaClassProcessor
   override def getElementToSearchInStringsAndComments(
       element: PsiElement): PsiElement = {
     element match {
-      case o: ScObject => o.fakeCompanionClassOrCompanionClass
+      case o: ScObject =>
+        o.fakeCompanionClassOrCompanionClass
       case wrapper: PsiClassWrapper =>
         wrapper.definition match {
-          case o: ScObject => wrapper
-          case definition  => definition
+          case o: ScObject =>
+            wrapper
+          case definition =>
+            definition
         }
-      case _ => element
+      case _ =>
+        element
     }
   }
 
@@ -165,12 +175,17 @@ class ScalaClassRenameDialog(
       psiElement match {
         case clazz: ScTypeDefinition =>
           ScalaPsiUtil.getBaseCompanionModule(clazz) match {
-            case Some(_: ScObject) => Some("object")
-            case Some(_: ScTrait)  => Some("trait")
-            case Some(_: ScClass)  => Some("class")
-            case _                 => None
+            case Some(_: ScObject) =>
+              Some("object")
+            case Some(_: ScTrait) =>
+              Some("trait")
+            case Some(_: ScClass) =>
+              Some("class")
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     if (companionType.isDefined) {

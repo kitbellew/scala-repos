@@ -58,8 +58,10 @@ abstract class PicklerRuntime(
       val tpeWithMaybeTparams = sym.asType.toType
       val tparams =
         tpeWithMaybeTparams match {
-          case TypeRef(_, _, targs) => targs.map(_.typeSymbol)
-          case _                    => Nil
+          case TypeRef(_, _, targs) =>
+            targs.map(_.typeSymbol)
+          case _ =>
+            Nil
         }
       existentialAbstraction(tparams, tpeWithMaybeTparams)
     }

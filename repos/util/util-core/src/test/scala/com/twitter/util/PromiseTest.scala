@@ -143,7 +143,8 @@ class PromiseTest extends FunSuite {
 
     Monitor.using(m) {
       p transform {
-        case _ => throw exc
+        case _ =>
+          throw exc
       }
     }
 

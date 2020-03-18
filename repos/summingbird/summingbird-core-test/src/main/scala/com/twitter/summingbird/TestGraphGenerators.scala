@@ -95,7 +95,8 @@ object TestGraphGenerators {
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]): Gen[Producer[P, Int]] = {
     val deps = Producer.transitiveDependenciesOf(p).filter(_ == p).collect {
-      case x: Producer[_, _] => x.asInstanceOf[Producer[P, Int]]
+      case x: Producer[_, _] =>
+        x.asInstanceOf[Producer[P, Int]]
     }
     if (deps.size == 1)
       genProd1
@@ -111,7 +112,8 @@ object TestGraphGenerators {
       sink1: P#Sink[Int],
       sink2: P#Sink[(Int, Int)]): Gen[TailProducer[P, Any]] = {
     val validDeps = Producer.transitiveDependenciesOf(p).collect {
-      case x: TailProducer[_, _] => x.asInstanceOf[TailProducer[P, Any]]
+      case x: TailProducer[_, _] =>
+        x.asInstanceOf[TailProducer[P, Any]]
     }
     if (validDeps.size == 0)
       summed

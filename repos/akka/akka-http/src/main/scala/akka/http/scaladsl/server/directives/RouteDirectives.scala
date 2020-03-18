@@ -33,7 +33,8 @@ trait RouteDirectives {
           status = redirectionType,
           headers = headers.Location(uri) :: Nil,
           entity = redirectionType.htmlTemplate match {
-            case "" ⇒ HttpEntity.Empty
+            case "" ⇒
+              HttpEntity.Empty
             case template ⇒
               HttpEntity(ContentTypes.`text/html(UTF-8)`, template format uri)
           }

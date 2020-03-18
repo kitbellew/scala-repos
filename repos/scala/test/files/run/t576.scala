@@ -3,8 +3,10 @@ import scala.language.reflectiveCalls
 class A {
   override def equals(other: Any) =
     other match {
-      case _: this.type => true
-      case _            => false
+      case _: this.type =>
+        true
+      case _ =>
+        false
     }
 }
 
@@ -21,8 +23,10 @@ object Test {
       self =>
       override def equals(other: Any) =
         other match {
-          case that: self.type => true
-          case _               => false
+          case that: self.type =>
+            true
+          case _ =>
+            false
         }
     }
   val x4 =
@@ -30,11 +34,16 @@ object Test {
       self =>
       def f(x: Any): Int =
         x match {
-          case _: x1.type     => 1
-          case _: x2.type     => 2
-          case _: x3.type     => 3
-          case _: self.type   => 4
-          case x: Dingus.type => x.IamDingus
+          case _: x1.type =>
+            1
+          case _: x2.type =>
+            2
+          case _: x3.type =>
+            3
+          case _: self.type =>
+            4
+          case x: Dingus.type =>
+            x.IamDingus
         }
     }
 

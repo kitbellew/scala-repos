@@ -305,8 +305,10 @@ private[spark] object BLAS extends Serializable with Logging {
       s"The size of x doesn't match the rank of A. A: $mA x $nA, x: ${x.size}")
 
     x match {
-      case dv: DenseVector  => syr(alpha, dv, A)
-      case sv: SparseVector => syr(alpha, sv, A)
+      case dv: DenseVector =>
+        syr(alpha, dv, A)
+      case sv: SparseVector =>
+        syr(alpha, sv, A)
       case _ =>
         throw new IllegalArgumentException(
           s"syr doesn't support vector type ${x.getClass}.")
@@ -374,8 +376,10 @@ private[spark] object BLAS extends Serializable with Logging {
       f2jBLAS.dscal(C.values.length, beta, C.values, 1)
     } else {
       A match {
-        case sparse: SparseMatrix => gemm(alpha, sparse, B, beta, C)
-        case dense: DenseMatrix   => gemm(alpha, dense, B, beta, C)
+        case sparse: SparseMatrix =>
+          gemm(alpha, sparse, B, beta, C)
+        case dense: DenseMatrix =>
+          gemm(alpha, dense, B, beta, C)
         case _ =>
           throw new IllegalArgumentException(
             s"gemm doesn't support matrix type ${A.getClass}.")

@@ -157,11 +157,14 @@ trait LinearRegressionLibModule[M[+_]]
           def zero = None
           def append(t1: Option[Array[Beta]], t2: => Option[Array[Beta]]) = {
             t1 match {
-              case None => t2
+              case None =>
+                t2
               case Some(c1) =>
                 t2 match {
-                  case None     => Some(c1)
-                  case Some(c2) => Some(c1 ++ c2)
+                  case None =>
+                    Some(c1)
+                  case Some(c2) =>
+                    Some(c1 ++ c2)
                 }
             }
           }
@@ -263,7 +266,8 @@ trait LinearRegressionLibModule[M[+_]]
         val y0 = arrays collect {
           case mx if !mx.isEmpty =>
             mx collect {
-              case arr if !arr.isEmpty => arr.last
+              case arr if !arr.isEmpty =>
+                arr.last
             }
         }
 
@@ -362,7 +366,8 @@ trait LinearRegressionLibModule[M[+_]]
             }
 
             val matrixY = y0 map {
-              case arr => new Matrix(Array(arr))
+              case arr =>
+                new Matrix(Array(arr))
             }
 
             val matrixX =
@@ -412,7 +417,8 @@ trait LinearRegressionLibModule[M[+_]]
             }
 
             val matrixX0 = xs map {
-              case arr => new Matrix(arr)
+              case arr =>
+                new Matrix(arr)
             }
             val matrixX = matrixX0 map { mx =>
               removeColumns(
@@ -494,7 +500,8 @@ trait LinearRegressionLibModule[M[+_]]
         val varianceCovariance = inverse.times(varianceEst)
 
         val stdErrors0 = (0 until colDim) map {
-          case i => math.sqrt(varianceCovariance.get(i, i))
+          case i =>
+            math.sqrt(varianceCovariance.get(i, i))
         }
         val stdErrors = insertZeroAt(stdErrors0.toArray, coeffs.removed.toArray)
 
@@ -628,7 +635,8 @@ trait LinearRegressionLibModule[M[+_]]
 
             val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
               _.map {
-                case (table, jtype) => tableReducer(table, jtype)
+                case (table, jtype) =>
+                  tableReducer(table, jtype)
               }.toStream.sequence map (_.toSeq)
             }
 

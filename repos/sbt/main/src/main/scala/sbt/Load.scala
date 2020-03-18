@@ -139,7 +139,8 @@ object Load {
     try {
       Option(app.provider.scalaProvider.launcher.ivyHome)
     } catch {
-      case _: NoSuchMethodError => None
+      case _: NoSuchMethodError =>
+        None
     }
   def injectGlobal(state: State): Seq[Setting[_]] =
     (appConfiguration in GlobalScope :== state.configuration) +:
@@ -224,7 +225,8 @@ object Load {
       config: ConfigKey,
       rootProject: URI => String): Seq[ConfigKey] =
     ref match {
-      case pr: ProjectRef => configInheritRef(lb, pr, config)
+      case pr: ProjectRef =>
+        configInheritRef(lb, pr, config)
       case BuildRef(uri) =>
         configInheritRef(lb, ProjectRef(uri, rootProject(uri)), config)
     }
@@ -303,17 +305,21 @@ object Load {
     def setDefining[T] =
       (key: ScopedKey[T], value: T) =>
         value match {
-          case tk: Task[t] => setDefinitionKey(tk, key).asInstanceOf[T]
+          case tk: Task[t] =>
+            setDefinitionKey(tk, key).asInstanceOf[T]
           case ik: InputTask[t] =>
             ik.mapTask(tk => setDefinitionKey(tk, key)).asInstanceOf[T]
-          case _ => value
+          case _ =>
+            value
         }
     def setResolved(defining: ScopedKey[_]) =
       new (ScopedKey ~> Option) {
         def apply[T](key: ScopedKey[T]): Option[T] =
           key.key match {
-            case resolvedScoped.key => Some(defining.asInstanceOf[T])
-            case _                  => None
+            case resolvedScoped.key =>
+              Some(defining.asInstanceOf[T])
+            case _ =>
+              None
           }
       }
     ss.map(s =>
@@ -370,8 +376,10 @@ object Load {
 
   def isProjectThis(s: Setting[_]) =
     s.key.scope.project match {
-      case This | Select(ThisProject) => true;
-      case _                          => false
+      case This | Select(ThisProject) =>
+        true;
+      case _ =>
+        false
     }
   def buildConfigurations(
       loaded: sbt.LoadedBuild,
@@ -556,7 +564,8 @@ object Load {
       isRoot: Boolean,
       loaders: BuildLoader): BuildLoader =
     unit.definitions.builds.flatMap(_.buildLoaders).toList match {
-      case Nil => loaders
+      case Nil =>
+        loaders
       case x :: xs =>
         import Alternatives._
         val resolver = (x /: xs) {
@@ -635,7 +644,8 @@ object Load {
             newLoader,
             builds.updated(b, loadedBuild))
         }
-      case Nil => (references, builds, loaders)
+      case Nil =>
+        (references, builds, loaders)
     }
   def checkProjectBase(buildBase: File, projectBase: File): Unit = {
     checkDirectory(projectBase)
@@ -862,8 +872,10 @@ object Load {
       existingIDs: Seq[String]): String = {
     def normalizeID(f: File) =
       Project.normalizeProjectID(f.getName) match {
-        case Right(id) => id
-        case Left(msg) => sys.error(autoIDError(f, msg))
+        case Right(id) =>
+          id
+        case Left(msg) =>
+          sys.error(autoIDError(f, msg))
       }
     def nthParentName(f: File, i: Int): String =
       if (f eq null)
@@ -1134,14 +1146,18 @@ object Load {
       // Expand the AddSettings instance into a real Seq[Setting[_]] we'll use on the project
       def expandSettings(auto: AddSettings): Seq[Setting[_]] =
         auto match {
-          case BuildScalaFiles => rawProject.settings
-          case User            => globalUserSettings.projectLoaded(loadedPlugins.loader)
+          case BuildScalaFiles =>
+            rawProject.settings
+          case User =>
+            globalUserSettings.projectLoaded(loadedPlugins.loader)
           case sf: SbtFiles =>
             settings(sf.files.map(f => IO.resolve(rawProject.base, f)))
           case sf: DefaultSbtFiles =>
             settings(defaultSbtFiles.filter(sf.include))
-          case p: Plugins     => pluginSettings(p)
-          case p: AutoPlugins => autoPluginSettings(p)
+          case p: Plugins =>
+            pluginSettings(p)
+          case p: AutoPlugins =>
+            autoPluginSettings(p)
           case q: Sequence =>
             (Seq.empty[Setting[_]] /: q.sequence) { (b, add) =>
               b ++ expandSettings(add)
@@ -1226,7 +1242,8 @@ object Load {
           (Seq.empty[File] /: q.sequence) { (b, add) =>
             b ++ associatedFiles(add)
           }
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     val rawFiles = associatedFiles(auto)
     val loadedFiles = loadFiles(rawFiles)
@@ -1243,8 +1260,10 @@ object Load {
   def globalPluginClasspath(
       globalPlugin: Option[GlobalPlugin]): Seq[Attributed[File]] =
     globalPlugin match {
-      case Some(cp) => cp.data.fullClasspath
-      case None     => Nil
+      case Some(cp) =>
+        cp.data.fullClasspath
+      case None =>
+        Nil
     }
 
   /** These are the settings defined when loading a project "meta" build. */
@@ -1288,7 +1307,8 @@ object Load {
       case Some(gp) =>
         config.copy(injectSettings = config.injectSettings
           .copy(project = gp.inject))
-      case None => config
+      case None =>
+        config
     }
   def plugins(
       dir: File,
@@ -1585,12 +1605,15 @@ final case class LoadBuildConfiguration(
             Some(x.data.resolvers),
             Some(x.data.updateReport),
             Nil)
-        case None => PluginData(globalPluginClasspath, Nil, None, None, Nil)
+        case None =>
+          PluginData(globalPluginClasspath, Nil, None, None, Nil)
       }
     val baseDir =
       globalPlugin match {
-        case Some(x) => x.base
-        case _       => stagingDirectory
+        case Some(x) =>
+          x.base
+        case _ =>
+          stagingDirectory
       }
     Load.loadPluginDefinition(baseDir, this, pluginData)
   }

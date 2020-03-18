@@ -79,7 +79,8 @@ object Reflector {
       case Nil =>
         sys.error(
           "resolveClass: expected 1+ classloaders but received empty list")
-      case List(cl) => Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
+      case List(cl) =>
+        Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
       case many => {
         try {
           var clazz: Class[_] = null
@@ -97,7 +98,8 @@ object Reflector {
           else
             None
         } catch {
-          case _: Throwable => None
+          case _: Throwable =>
+            None
         }
       }
     }
@@ -150,7 +152,8 @@ object Reflector {
                         else
                           Reflector.scalaTypeOf(cc)
                     }
-                  case _ => Nil
+                  case _ =>
+                    Nil
                 }
               )
               val decoded = unmangleName(f.getName)
@@ -277,9 +280,12 @@ object Reflector {
     rawClasses(
       t,
       _ match {
-        case c: Class[_]          => c
-        case p: ParameterizedType => rawClassOf(p.getRawType)
-        case x                    => sys.error("Raw type of " + x + " not known")
+        case c: Class[_] =>
+          c
+        case p: ParameterizedType =>
+          rawClassOf(p.getRawType)
+        case x =>
+          sys.error("Raw type of " + x + " not known")
       })
 
   def unmangleName(name: String) =

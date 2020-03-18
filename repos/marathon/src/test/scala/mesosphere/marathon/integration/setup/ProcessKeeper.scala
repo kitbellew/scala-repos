@@ -265,7 +265,8 @@ object ProcessKeeper {
 
   def stopJavaProcesses(wantedMainClass: String): Unit = {
     val pids = "jps -l".!!.split("\n").collect {
-      case PIDRE(pid, mainClass) if mainClass.contains(wantedMainClass) => pid
+      case PIDRE(pid, mainClass) if mainClass.contains(wantedMainClass) =>
+        pid
     }
     if (pids.nonEmpty) {
       val killCommand = s"kill -9 ${pids.mkString(" ")}"
@@ -295,9 +296,11 @@ object ProcessKeeper {
     }
     //retry on fail
     Try(killProcess) recover {
-      case _ => killProcess
+      case _ =>
+        killProcess
     } match {
-      case Success(value) => processes -= name
+      case Success(value) =>
+        processes -= name
       case Failure(NonFatal(e)) =>
         log.error("giving up waiting for processes to finish", e)
     }
@@ -320,7 +323,8 @@ object ProcessKeeper {
       try {
         service.awaitTerminated(5, TimeUnit.SECONDS)
       } catch {
-        case NonFatal(ex) => log.error(s"Could not stop service $service", ex)
+        case NonFatal(ex) =>
+          log.error(s"Could not stop service $service", ex)
       }
     }
     services = Nil

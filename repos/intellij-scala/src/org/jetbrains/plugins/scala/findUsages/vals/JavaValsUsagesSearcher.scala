@@ -32,7 +32,8 @@ class JavaValsUsagesSearcher
     val scope = inReadAction(queryParameters.getEffectiveSearchScope)
     val element = queryParameters.getElementToSearch
     element match {
-      case _ if inReadAction(!element.isValid) => true
+      case _ if inReadAction(!element.isValid) =>
+        true
       case scalaValue(vals) =>
         val name: String = vals.getName
         val processor =
@@ -112,7 +113,8 @@ class JavaValsUsagesSearcher
           name,
           UsageSearchContext.IN_CODE,
           true)
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -123,7 +125,8 @@ class JavaValsUsagesSearcher
           case _: ScValue | _: ScVariable | _: ScClassParameter
               if td.getName != "" =>
             Some(td)
-          case _ => None
+          case _ =>
+            None
         }
       }
   }

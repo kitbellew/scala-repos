@@ -33,8 +33,10 @@ object ZkMetadata {
     */
   def fromAddrMetadata(metadata: Addr.Metadata): ZkMetadata =
     metadata.get(key) match {
-      case Some(metadata: ZkMetadata) => metadata
-      case _                          => default
+      case Some(metadata: ZkMetadata) =>
+        metadata
+      case _ =>
+        default
     }
 
   /**

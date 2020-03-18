@@ -32,7 +32,8 @@ class ScalaInlineInfoTest extends ClearAfterClass {
   def inlineInfo(c: ClassNode): InlineInfo =
     c.attrs.asScala
       .collect({
-        case a: InlineInfoAttribute => a.inlineInfo
+        case a: InlineInfoAttribute =>
+          a.inlineInfo
       })
       .head
 

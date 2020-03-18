@@ -94,15 +94,17 @@ object RelationSpecs
       (
         in.relations.keys.toList sorted Provenance.order.toScalaOrdering
       ) must beLike {
-        case DynamicProvenance(_) :: StaticProvenance("/foo") :: Nil => ok
+        case DynamicProvenance(_) :: StaticProvenance("/foo") :: Nil =>
+          ok
       }
       in.relations(StaticProvenance("/foo")).toList(0) must beLike {
-        case DynamicProvenance(_) => ok
+        case DynamicProvenance(_) =>
+          ok
       }
       (in.relations.values.map(_.toList)) must beLike {
-        case (
-              DynamicProvenance(_) :: Nil
-            ) :: (StaticProvenance("/foo") :: Nil) :: Nil =>
+        case (DynamicProvenance(_) :: Nil) :: (
+              StaticProvenance("/foo") :: Nil
+            ) :: Nil =>
           ok
       }
       tree.provenance must beLike {
@@ -118,7 +120,8 @@ object RelationSpecs
       val tree = compileSingle(
         "s1 := new 1 s2 := new 1 s1 ~ s2 { a: s1, b: s2 }")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -161,7 +164,8 @@ object RelationSpecs
     "accept array definition on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 [ s1, s2 ]")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -196,7 +200,8 @@ object RelationSpecs
     "accept deref on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1[s2]")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -235,7 +240,8 @@ object RelationSpecs
       val tree = compileSingle(
         "s1 := new 1 s2 := new 1 s1 ~ s2 fun(a, b) := a + b fun(s1, s2)")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -270,7 +276,8 @@ object RelationSpecs
     "accept where on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 where s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -305,7 +312,8 @@ object RelationSpecs
     "accept with on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 with s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -402,7 +410,8 @@ object RelationSpecs
       val tree = compileSingle(
         "s1 := new 1 s2 := new 1 s1 ~ s2 s1 difference s2")
       tree.provenance must beLike {
-        case DynamicProvenance(_) => ok
+        case DynamicProvenance(_) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -437,7 +446,8 @@ object RelationSpecs
     "accept addition on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 + s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -472,7 +482,8 @@ object RelationSpecs
     "accept subtraction on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 - s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -507,7 +518,8 @@ object RelationSpecs
     "accept multiplication on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 * s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -542,7 +554,8 @@ object RelationSpecs
     "accept division on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 / s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -577,7 +590,8 @@ object RelationSpecs
     "accept less-than on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 < s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -612,7 +626,8 @@ object RelationSpecs
     "accept less-than-equal on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 <= s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -647,7 +662,8 @@ object RelationSpecs
     "accept greater-than on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 > s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -682,7 +698,8 @@ object RelationSpecs
     "accept greater-than-equal on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 >= s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -717,7 +734,8 @@ object RelationSpecs
     "accept equality on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 = s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -752,7 +770,8 @@ object RelationSpecs
     "accept not-equality on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 != s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -793,7 +812,8 @@ object RelationSpecs
     "accept boolean and on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 & s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -834,7 +854,8 @@ object RelationSpecs
     "accept boolean or on differing dynamic provenances when related" in {
       val tree = compileSingle("s1 := new 1 s2 := new 1 s1 ~ s2 s1 | s2")
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }

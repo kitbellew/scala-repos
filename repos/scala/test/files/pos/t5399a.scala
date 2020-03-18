@@ -13,7 +13,8 @@ class Foo {
 
   def testPatternMatch(s: Setting[_]) {
     s.key match {
-      case ScopedKey1(scalaHome.key | scalaVersion.key) => ()
+      case ScopedKey1(scalaHome.key | scalaVersion.key) =>
+        ()
     }
   }
 }

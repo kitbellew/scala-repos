@@ -38,61 +38,71 @@ object SolverSpecs
   "simple expression solution" should {
     "solve left addition" in {
       solve("'a + 2", 'a) must beLike {
-        case Some(Sub(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Sub(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "solve right addition" in {
       solve("2 + 'a", 'a) must beLike {
-        case Some(Sub(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Sub(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "solve left subtraction" in {
       solve("'a - 2", 'a) must beLike {
-        case Some(Add(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Add(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "solve right subtraction" in {
       solve("2 - 'a", 'a) must beLike {
-        case Some(Neg(_, Sub(_, someFunction, NumLit(_, "2")))) => ok
+        case Some(Neg(_, Sub(_, someFunction, NumLit(_, "2")))) =>
+          ok
       }
     }
 
     "solve left multiplication" in {
       solve("'a * 2", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "solve right multiplication" in {
       solve("2 * 'a", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "solve left division" in {
       solve("'a / 2", 'a) must beLike {
-        case Some(Mul(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Mul(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "solve right division" in {
       solve("2 / 'a", 'a) must beLike {
-        case Some(Div(_, NumLit(_, "2"), someFunction)) => ok
+        case Some(Div(_, NumLit(_, "2"), someFunction)) =>
+          ok
       }
     }
 
     "solve negation" in {
       solve("neg 'a", 'a) must beLike {
-        case Some(Neg(_, someFunction)) => ok
+        case Some(Neg(_, someFunction)) =>
+          ok
       }
     }
 
     "solve parenthetical" in {
       solve("('a)", 'a) must beLike {
-        case Some(someFunction) => ok
+        case Some(someFunction) =>
+          ok
       }
     }
   }
@@ -114,38 +124,44 @@ object SolverSpecs
 
     "solve paired variable addition" in {
       solve("'a + 'a", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "2"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "fail to solve paired variable subtraction" in {
       solve("'a - 'a", 'a) must beLike {
-        case None => ok
+        case None =>
+          ok
       }
     }
 
     "fail to solve paired variable multiplication" in {
       solve("'a * 'a", 'a) must beLike {
-        case None => ok
+        case None =>
+          ok
       }
     }
 
     "fail to solve paired variable division" in {
       solve("'a / 'a", 'a) must beLike {
-        case None => ok
+        case None =>
+          ok
       }
     }
 
     "solve addition across multiplicand" in {
       solve("'a * 2 + 'a", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "3"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "3"))) =>
+          ok
         case Some(
               Div(_, someFunction, Add(_, NumLit(_, "2"), NumLit(_, "1")))) =>
           ok
       }
 
       solve("'a + 'a * 2", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "3"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "3"))) =>
+          ok
         case Some(
               Div(_, someFunction, Add(_, NumLit(_, "2"), NumLit(_, "1")))) =>
           ok
@@ -154,7 +170,8 @@ object SolverSpecs
 
     "solve multi-addition across multiplicand" in {
       solve("'a * 2 + 'a + 'a", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "4"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "4"))) =>
+          ok
         case Some(
               Div(
                 _,
@@ -182,7 +199,8 @@ object SolverSpecs
       }
 
       solve("'a + 'a * 2 + 'a", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "4"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "4"))) =>
+          ok
         case Some(
               Div(
                 _,
@@ -210,7 +228,8 @@ object SolverSpecs
       }
 
       solve("'a + 'a + 'a * 2", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "4"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "4"))) =>
+          ok
         case Some(
               Div(
                 _,
@@ -240,7 +259,8 @@ object SolverSpecs
 
     "solve multi-addition parenthetical across multiplicand" in {
       solve("'a * 2 + ('a + 'a)", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "4"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "4"))) =>
+          ok
         case Some(
               Div(_, Div(_, someFunction, NumLit(_, "2")), NumLit(_, "2"))) =>
           ok
@@ -268,7 +288,8 @@ object SolverSpecs
       }
 
       solve("('a + 'a) + 'a * 2", 'a) must beLike {
-        case Some(Div(_, someFunction, NumLit(_, "4"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "4"))) =>
+          ok
         case Some(
               Div(_, Div(_, someFunction, NumLit(_, "2")), NumLit(_, "2"))) =>
           ok
@@ -531,24 +552,28 @@ object SolverSpecs
         case Some(
               Dispatch(LineStream(), Identifier(Vector(), "x"), Vector())) =>
           ok
-        case Some(Div(_, someFunction, NumLit(_, "1"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "1"))) =>
+          ok
       }
 
       solve("'a * ('a / 'a)", 'a) must beLike {
         case Some(
               Dispatch(LineStream(), Identifier(Vector(), "x"), Vector())) =>
           ok
-        case Some(Div(_, someFunction, NumLit(_, "1"))) => ok
+        case Some(Div(_, someFunction, NumLit(_, "1"))) =>
+          ok
       }
     }
 
     "solve self addition of self dividend" in {
       solve("('a / 'a) + 'a", 'a) must beLike {
-        case Some(Sub(_, someFunction, NumLit(_, "1"))) => ok
+        case Some(Sub(_, someFunction, NumLit(_, "1"))) =>
+          ok
       }
 
       solve("'a + ('a / 'a)", 'a) must beLike {
-        case Some(Sub(_, someFunction, NumLit(_, "1"))) => ok
+        case Some(Sub(_, someFunction, NumLit(_, "1"))) =>
+          ok
       }
     }
 
@@ -646,7 +671,8 @@ object SolverSpecs
   def solve(str: String, id: Symbol): Option[Expr] = {
     val f =
       solve(parseSingle(LineStream(str)), Map[Formal, Expr]()) {
-        case TicVar(_, id2) => id.toString == id2
+        case TicVar(_, id2) =>
+          id.toString == id2
       }
     f(someFunction)
   }
@@ -655,7 +681,8 @@ object SolverSpecs
     val expr = parseSingle(LineStream(str))
 
     solveRelation(expr.asInstanceOf[ComparisonOp], Map[Formal, Expr]()) {
-      case TicVar(_, id2) => id.toString == id2;
+      case TicVar(_, id2) =>
+        id.toString == id2;
     }
   }
 

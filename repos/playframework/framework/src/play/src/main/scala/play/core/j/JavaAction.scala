@@ -60,7 +60,8 @@ class JavaActionAnnotations(
       }
     allDeclaredAnnotations
       .collect {
-        case a: play.mvc.With => a.value.map(c => (a, c)).toSeq
+        case a: play.mvc.With =>
+          a.value.map(c => (a, c)).toSeq
         case a
             if a.annotationType.isAnnotationPresent(classOf[play.mvc.With]) =>
           a.annotationType

@@ -53,8 +53,9 @@ private[netty4] class ByteBufSnooper(val name: String) extends ChannelSnooper {
 
   override def channelRead(ctx: ChannelHandlerContext, msg: Object): Unit = {
     msg match {
-      case buf: ByteBuf => dump(printInbound, ctx.channel, buf)
-      case _            =>
+      case buf: ByteBuf =>
+        dump(printInbound, ctx.channel, buf)
+      case _ =>
     }
 
     super.channelRead(ctx, msg)
@@ -65,8 +66,9 @@ private[netty4] class ByteBufSnooper(val name: String) extends ChannelSnooper {
       msg: Object,
       promise: ChannelPromise): Unit = {
     msg match {
-      case buf: ByteBuf => dump(printOutbound, ctx.channel, buf)
-      case _            =>
+      case buf: ByteBuf =>
+        dump(printOutbound, ctx.channel, buf)
+      case _ =>
     }
 
     super.write(ctx, msg, promise)

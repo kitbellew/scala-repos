@@ -108,16 +108,20 @@ object Compatibility {
                             else {
                               (Success(rt, Some(place)), res.importsUsed)
                             }
-                          case None => defaultResult
+                          case None =>
+                            defaultResult
                         }
-                      case _ => defaultResult
+                      case _ =>
+                        defaultResult
                     }
-                  case _ => defaultResult
+                  case _ =>
+                    defaultResult
                 }
             }
           } else
             defaultResult
-        case _ => (Success(typez, None), Set.empty)
+        case _ =>
+          (Success(typez, None), Set.empty)
       }
     }
 
@@ -500,7 +504,8 @@ object Compatibility {
              if !b && !parameter.isDefault)
           yield MissedValueParameter(parameter)
       defaultParameterUsed = parameters.zip(used).exists {
-        case (param, bool) => !bool && param.isDefault
+        case (param, bool) =>
+          !bool && param.isDefault
       }
       if (missed.nonEmpty)
         return ConformanceExtResult(
@@ -572,8 +577,10 @@ object Compatibility {
       false,
       p.index,
       p match {
-        case param: ScParameter => Some(param)
-        case _                  => None
+        case param: ScParameter =>
+          Some(param)
+        case _ =>
+          None
       })
   }
 
@@ -587,8 +594,10 @@ object Compatibility {
       isShapesResolve: Boolean): ConformanceExtResult = {
     val exprs: Seq[Expression] =
       argClauses.headOption match {
-        case Some(seq) => seq
-        case _         => Seq.empty
+        case Some(seq) =>
+          seq
+        case _ =>
+          Seq.empty
       }
     named match {
       case synthetic: ScSyntheticFunction =>
@@ -751,7 +760,8 @@ object Compatibility {
           isShapesResolve = isShapesResolve
         )
 
-      case _ => ConformanceExtResult(Seq(new ApplicabilityProblem("22")))
+      case _ =>
+        ConformanceExtResult(Seq(new ApplicabilityProblem("22")))
     }
   }
 }

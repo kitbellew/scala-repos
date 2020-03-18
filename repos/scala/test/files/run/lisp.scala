@@ -54,8 +54,10 @@ object LispCaseClasses extends Lisp {
     override def elemsToString() =
       car.toString() + (
         cdr match {
-          case NIL() => ""
-          case _     => " " + cdr.elemsToString();
+          case NIL() =>
+            ""
+          case _ =>
+            " " + cdr.elemsToString();
         }
       )
   }
@@ -149,15 +151,20 @@ object LispCaseClasses extends Lisp {
 
   def toList(x: Data): List[Data] =
     x match {
-      case NIL()       => List()
-      case CONS(y, ys) => y :: toList(ys)
-      case _           => lispError("malformed list: " + x);
+      case NIL() =>
+        List()
+      case CONS(y, ys) =>
+        y :: toList(ys)
+      case _ =>
+        lispError("malformed list: " + x);
     }
 
   def toBoolean(x: Data) =
     x match {
-      case NUM(0) => false
-      case _      => true
+      case NUM(0) =>
+        false
+      case _ =>
+        true
     }
 
   def normalize(x: Data): Data =
@@ -173,8 +180,10 @@ object LispCaseClasses extends Lisp {
         normalize(expr)
       case CONS(SYM("cond"), CONS(CONS(test, CONS(expr, NIL())), rest)) =>
         normalize(list(SYM("if"), test, expr, CONS(SYM("cond"), rest)))
-      case CONS(h, t) => CONS(normalize(h), normalize(t))
-      case _          => x
+      case CONS(h, t) =>
+        CONS(normalize(h), normalize(t))
+      case _ =>
+        x
     }
 
   def eval(x: Data, env: Environment): Data = {
@@ -216,17 +225,22 @@ object LispCaseClasses extends Lisp {
         x
       case CONS(y, xs) =>
         apply(eval(y, env), toList(xs) map (x => eval(x, env)))
-      case NUM(_) => x
-      case STR(_) => x
-      case FUN(_) => x
+      case NUM(_) =>
+        x
+      case STR(_) =>
+        x
+      case FUN(_) =>
+        x
       case _ =>
         lispError("illegal term")
     }
 
   def apply(fn: Data, args: List[Data]): Data =
     fn match {
-      case FUN(f) => f(args);
-      case _      => lispError("application of non-function: " + fn);
+      case FUN(f) =>
+        f(args);
+      case _ =>
+        lispError("application of non-function: " + fn);
     }
 
   def mkLambda(params: Data, expr: Data, env: Environment): Data = {
@@ -245,8 +259,10 @@ object LispCaseClasses extends Lisp {
       }
 
     val ps: List[String] = toList(params) map {
-      case SYM(name) => name
-      case _         => sys.error("illegal parameter list");
+      case SYM(name) =>
+        name
+      case _ =>
+        sys.error("illegal parameter list");
     }
 
     FUN(args => eval(expr, extendEnv(env, ps, args)))
@@ -272,44 +288,54 @@ object LispCaseClasses extends Lisp {
     .extend(
       "+",
       FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 + arg2)
-        case List(STR(arg1), STR(arg2)) => STR(arg1 + arg2)
+        case List(NUM(arg1), NUM(arg2)) =>
+          NUM(arg1 + arg2)
+        case List(STR(arg1), STR(arg2)) =>
+          STR(arg1 + arg2)
       }))
     .extend(
       "-",
       FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 - arg2)
+        case List(NUM(arg1), NUM(arg2)) =>
+          NUM(arg1 - arg2)
       }))
     .extend(
       "*",
       FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 * arg2)
+        case List(NUM(arg1), NUM(arg2)) =>
+          NUM(arg1 * arg2)
       }))
     .extend(
       "/",
       FUN({
-        case List(NUM(arg1), NUM(arg2)) => NUM(arg1 / arg2)
+        case List(NUM(arg1), NUM(arg2)) =>
+          NUM(arg1 / arg2)
       }))
     .extend(
       "car",
       FUN({
-        case List(CONS(x, xs)) => x
+        case List(CONS(x, xs)) =>
+          x
       }))
     .extend(
       "cdr",
       FUN({
-        case List(CONS(x, xs)) => xs
+        case List(CONS(x, xs)) =>
+          xs
       }))
     .extend(
       "null?",
       FUN({
-        case List(NIL()) => NUM(1)
-        case _           => NUM(0)
+        case List(NIL()) =>
+          NUM(1)
+        case _ =>
+          NUM(0)
       }))
     .extend(
       "cons",
       FUN({
-        case List(x, y) => CONS(x, y)
+        case List(x, y) =>
+          CONS(x, y)
       }));
 
   def evaluate(x: Data): Data = eval(normalize(x), globalEnv);
@@ -379,20 +405,26 @@ object LispAny extends Lisp {
 
   def asList(x: Data): List[Data] =
     x match {
-      case y: List[_] => y
-      case _          => lispError("malformed list: " + x)
+      case y: List[_] =>
+        y
+      case _ =>
+        lispError("malformed list: " + x)
     }
 
   def asInt(x: Data): Int =
     x match {
-      case y: Int => y
-      case _      => lispError("not an integer: " + x)
+      case y: Int =>
+        y
+      case _ =>
+        lispError("not an integer: " + x)
     }
 
   def asString(x: Data): String =
     x match {
-      case y: String => y
-      case _         => lispError("not a string: " + x)
+      case y: String =>
+        y
+      case _ =>
+        lispError("not a string: " + x)
     }
 
   def asBoolean(x: Data): Boolean = x != 0
@@ -457,21 +489,29 @@ object LispAny extends Lisp {
         y
       case y :: z =>
         apply(eval(y, env), z map (x => eval(x, env)))
-      case Lambda(_) => x
-      case y: String => x
-      case y: Int    => x
-      case y         => lispError("illegal term")
+      case Lambda(_) =>
+        x
+      case y: String =>
+        x
+      case y: Int =>
+        x
+      case y =>
+        lispError("illegal term")
     }
 
   def lisp2string(x: Data): String =
     x match {
-      case Symbol(name) => name
-      case Nil          => "()"
+      case Symbol(name) =>
+        name
+      case Nil =>
+        "()"
       case y :: ys =>
         def list2string(xs: List[Data]): String =
           xs match {
-            case List()  => ""
-            case y :: ys => " " + lisp2string(y) + list2string(ys)
+            case List() =>
+              ""
+            case y :: ys =>
+              " " + lisp2string(y) + list2string(ys)
           }
         "(" + lisp2string(y) + list2string(ys) + ")"
       case _ =>
@@ -483,8 +523,10 @@ object LispAny extends Lisp {
 
   def apply(fn: Data, args: List[Data]): Data =
     fn match {
-      case Lambda(f) => f(args);
-      case _         => lispError("application of non-function: " + fn + " to " + args);
+      case Lambda(f) =>
+        f(args);
+      case _ =>
+        lispError("application of non-function: " + fn + " to " + args);
     }
 
   def mkLambda(params: Data, expr: Data, env: Environment): Data = {
@@ -503,8 +545,10 @@ object LispAny extends Lisp {
       }
 
     val ps: List[String] = asList(params) map {
-      case Symbol(name) => name
-      case _            => sys.error("illegal parameter list");
+      case Symbol(name) =>
+        name
+      case _ =>
+        sys.error("illegal parameter list");
     }
 
     Lambda(args => eval(expr, extendEnv(env, ps, args)))
@@ -523,45 +567,55 @@ object LispAny extends Lisp {
     .extend(
       "+",
       Lambda {
-        case List(arg1: Int, arg2: Int)       => arg1 + arg2
-        case List(arg1: String, arg2: String) => arg1 + arg2
+        case List(arg1: Int, arg2: Int) =>
+          arg1 + arg2
+        case List(arg1: String, arg2: String) =>
+          arg1 + arg2
       })
     .extend(
       "-",
       Lambda {
-        case List(arg1: Int, arg2: Int) => arg1 - arg2
+        case List(arg1: Int, arg2: Int) =>
+          arg1 - arg2
       })
     .extend(
       "*",
       Lambda {
-        case List(arg1: Int, arg2: Int) => arg1 * arg2
+        case List(arg1: Int, arg2: Int) =>
+          arg1 * arg2
       })
     .extend(
       "/",
       Lambda {
-        case List(arg1: Int, arg2: Int) => arg1 / arg2
+        case List(arg1: Int, arg2: Int) =>
+          arg1 / arg2
       })
     .extend("nil", Nil)
     .extend(
       "cons",
       Lambda {
-        case List(arg1, arg2) => arg1 :: asList(arg2)
+        case List(arg1, arg2) =>
+          arg1 :: asList(arg2)
       })
     .extend(
       "car",
       Lambda {
-        case List(x :: xs) => x
+        case List(x :: xs) =>
+          x
       })
     .extend(
       "cdr",
       Lambda {
-        case List(x :: xs) => xs
+        case List(x :: xs) =>
+          xs
       })
     .extend(
       "null?",
       Lambda {
-        case List(Nil) => 1
-        case _         => 0
+        case List(Nil) =>
+          1
+        case _ =>
+          0
       });
 
   def evaluate(x: Data): Data = eval(normalize(x), globalEnv);

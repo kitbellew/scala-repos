@@ -44,7 +44,8 @@ object callccInterpreter {
 
   def lookup(x: Name, e: Environment): M[Value] =
     e match {
-      case List() => unitM(Wrong)
+      case List() =>
+        unitM(Wrong)
       case (y, b) :: e1 =>
         if (x == y)
           unitM(b)
@@ -54,34 +55,42 @@ object callccInterpreter {
 
   def add(a: Value, b: Value) /*?*/ =
     (a, b) match {
-      case (Num(m), Num(n)) => this. /*!*/ unitM(Num(m + n))
-      case _                => unitM(Wrong)
+      case (Num(m), Num(n)) =>
+        this. /*!*/ unitM(Num(m + n))
+      case _ =>
+        unitM(Wrong)
     }
 
   def apply(a: Value, b: Value): M[Value] =
     a match {
-      case Fun(k) => k(b)
-      case _      => unitM(Wrong)
+      case Fun(k) =>
+        k(b)
+      case _ =>
+        unitM(Wrong)
     }
 
   def interp(t: Term, e: Environment): M[Value] =
     t match {
-      case Var(x) => lookup(x, e)
-      case Con(n) => unitM(Num(n))
+      case Var(x) =>
+        lookup(x, e)
+      case Con(n) =>
+        unitM(Num(n))
       case Add(l, r) =>
         for {
           a <- interp(l, e)
           b <- interp(r, e)
           c <- add(a, b)
         } yield c
-      case Lam(x, t) => unitM(Fun(a => interp(t, (x, a) :: e)))
+      case Lam(x, t) =>
+        unitM(Fun(a => interp(t, (x, a) :: e)))
       case App(f, t) =>
         for {
           a <- interp(f, e)
           b <- interp(t, e)
           c <- apply(a, b)
         } yield c
-      case Ccc(x, t) => callCC(k => interp(t, (x, Fun(k)) :: e))
+      case Ccc(x, t) =>
+        callCC(k => interp(t, (x, Fun(k)) :: e))
     }
 
   def test(t: Term): String = showM(interp(t, List()))

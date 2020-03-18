@@ -21,8 +21,9 @@ class NameBooleanParametersQuickFix(element: ScLiteral)
       return
 
     IntentionUtils.addNameToArgumentsFix(elem, onlyBoolean = true) match {
-      case Some(x) => x()
-      case None    =>
+      case Some(x) =>
+        x()
+      case None =>
     }
   }
 }

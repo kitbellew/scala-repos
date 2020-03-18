@@ -45,8 +45,10 @@ private[http] object ReaderUtils {
         trans.write(HttpChunk.LAST_CHUNK)
       case Some(buf) =>
         trans.write(chunkOfBuf(buf)) transform {
-          case Return(_) => streamChunks(trans, r, bufSize)
-          case _         => Future(r.discard())
+          case Return(_) =>
+            streamChunks(trans, r, bufSize)
+          case _ =>
+            Future(r.discard())
         }
     }
   }

@@ -73,9 +73,11 @@ object ExtractValue {
           fields.length,
           containsNull)
 
-      case (_: ArrayType, _) => GetArrayItem(child, extraction)
+      case (_: ArrayType, _) =>
+        GetArrayItem(child, extraction)
 
-      case (MapType(kt, _, _), _) => GetMapValue(child, extraction)
+      case (MapType(kt, _, _), _) =>
+        GetMapValue(child, extraction)
 
       case (otherType, _) =>
         val errorMsg =

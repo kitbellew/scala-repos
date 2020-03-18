@@ -92,7 +92,8 @@ object Test {
       try {
         "42"
       } catch {
-        case _: Throwable => "43"
+        case _: Throwable =>
+          "43"
       }
     assert({ () =>
         x
@@ -119,8 +120,10 @@ object Test {
   def matchCase() = {
     var x =
       100 match {
-        case 100 => "42"
-        case _   => "43"
+        case 100 =>
+          "42"
+        case _ =>
+          "43"
       }
     assert({ () =>
         x
@@ -152,7 +155,8 @@ object Test {
       if (true)
         try "42"
         catch {
-          case _: Throwable => "43"
+          case _: Throwable =>
+            "43"
         }
       else
         "44"

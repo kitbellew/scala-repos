@@ -186,15 +186,18 @@ class MultilabelMetrics @Since("1.2.0") (
 
   private lazy val sumTp =
     tpPerClass.foldLeft(0L) {
-      case (sum, (_, tp)) => sum + tp
+      case (sum, (_, tp)) =>
+        sum + tp
     }
   private lazy val sumFpClass =
     fpPerClass.foldLeft(0L) {
-      case (sum, (_, fp)) => sum + fp
+      case (sum, (_, fp)) =>
+        sum + fp
     }
   private lazy val sumFnClass =
     fnPerClass.foldLeft(0L) {
-      case (sum, (_, fn)) => sum + fn
+      case (sum, (_, fn)) =>
+        sum + fn
     }
 
   /**
@@ -205,7 +208,8 @@ class MultilabelMetrics @Since("1.2.0") (
   lazy val microPrecision: Double = {
     val sumFp =
       fpPerClass.foldLeft(0L) {
-        case (cum, (_, fp)) => cum + fp
+        case (cum, (_, fp)) =>
+          cum + fp
       }
     sumTp.toDouble / (sumTp + sumFp)
   }
@@ -218,7 +222,8 @@ class MultilabelMetrics @Since("1.2.0") (
   lazy val microRecall: Double = {
     val sumFn =
       fnPerClass.foldLeft(0.0) {
-        case (cum, (_, fn)) => cum + fn
+        case (cum, (_, fn)) =>
+          cum + fn
       }
     sumTp.toDouble / (sumTp + sumFn)
   }

@@ -5,7 +5,9 @@ object test3 {
 
   def f[T](t: Type[T]): T =
     t match {
-      case IntType    => 10;
-      case StringType => "hello";
+      case IntType =>
+        10;
+      case StringType =>
+        "hello";
     }
 }

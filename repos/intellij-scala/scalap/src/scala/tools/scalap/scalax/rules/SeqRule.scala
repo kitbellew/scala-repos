@@ -32,16 +32,21 @@ class InRule[In, +Out, +A, +X](rule: Rule[In, Out, A, X]) {
   /** Creates a rule that succeeds only if the original rule would fail on the given context. */
   def unary_! : Rule[In, In, Unit, Nothing] =
     mapRule {
-      case Success(_, _) => in: In => Failure
-      case _             => in: In => Success(in, ())
+      case Success(_, _) =>
+        in: In => Failure
+      case _ =>
+        in: In => Success(in, ())
     }
 
   /** Creates a rule that succeeds if the original rule succeeds, but returns the original input. */
   def & : Rule[In, In, A, X] =
     mapRule {
-      case Success(_, a) => in: In => Success(in, a)
-      case Failure       => in: In => Failure
-      case Error(x)      => in: In => Error(x)
+      case Success(_, a) =>
+        in: In => Success(in, a)
+      case Failure =>
+        in: In => Failure
+      case Error(x) =>
+        in: In => Error(x)
     }
 }
 
@@ -50,9 +55,12 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
 
   def ? =
     rule mapRule {
-      case Success(out, a) => in: S => Success(out, Some(a))
-      case Failure         => in: S => Success(in, None)
-      case Error(x)        => in: S => Error(x)
+      case Success(out, a) =>
+        in: S => Success(out, Some(a))
+      case Failure =>
+        in: S => Success(in, None)
+      case Error(x) =>
+        in: S => Error(x)
     }
 
   /** Creates a rule that always succeeds with a Boolean value.
@@ -67,9 +75,12 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
       // tail-recursive function with reverse list accumulator
       def rep(in: S, acc: List[A]): Result[S, List[A], X] =
         rule(in) match {
-          case Success(out, a) => rep(out, a :: acc)
-          case Failure         => Success(in, acc.reverse)
-          case err: Error[_]   => err
+          case Success(out, a) =>
+            rep(out, a :: acc)
+          case Failure =>
+            Success(in, acc.reverse)
+          case err: Error[_] =>
+            err
         }
       in => rep(in, Nil)
     }
@@ -121,8 +132,10 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
               result(i) = a
               rep(i + 1, out)
             }
-            case Failure       => Failure
-            case err: Error[_] => err
+            case Failure =>
+              Failure
+            case err: Error[_] =>
+              err
           }
       }
       in => rep(0, in)

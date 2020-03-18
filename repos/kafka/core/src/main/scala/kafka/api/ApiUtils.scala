@@ -129,8 +129,10 @@ object ApiUtils {
 
   private[api] def hasPendingWrites(channel: GatheringByteChannel): Boolean =
     channel match {
-      case t: TransportLayer => t.hasPendingWrites
-      case _                 => false
+      case t: TransportLayer =>
+        t.hasPendingWrites
+      case _ =>
+        false
     }
 
 }

@@ -122,8 +122,10 @@ object Types {
   object ArrayType {
     def apply(innerType: ReferenceType): ArrayType =
       innerType match {
-        case ClassType(className)      => ArrayType(className, 1)
-        case ArrayType(className, dim) => ArrayType(className, dim + 1)
+        case ClassType(className) =>
+          ArrayType(className, 1)
+        case ArrayType(className, dim) =>
+          ArrayType(className, dim + 1)
       }
   }
 
@@ -153,14 +155,22 @@ object Types {
   /** Generates a literal zero of the given type. */
   def zeroOf(tpe: Type)(implicit pos: Position): Literal =
     tpe match {
-      case BooleanType => BooleanLiteral(false)
-      case IntType     => IntLiteral(0)
-      case LongType    => LongLiteral(0L)
-      case FloatType   => FloatLiteral(0.0f)
-      case DoubleType  => DoubleLiteral(0.0)
-      case StringType  => StringLiteral("")
-      case UndefType   => Undefined()
-      case _           => Null()
+      case BooleanType =>
+        BooleanLiteral(false)
+      case IntType =>
+        IntLiteral(0)
+      case LongType =>
+        LongLiteral(0L)
+      case FloatType =>
+        FloatLiteral(0.0f)
+      case DoubleType =>
+        DoubleLiteral(0.0)
+      case StringType =>
+        StringLiteral("")
+      case UndefType =>
+        Undefined()
+      case _ =>
+        Null()
     }
 
   /** Tests whether a type `lhs` is a subtype of `rhs` (or equal).
@@ -177,14 +187,18 @@ object Types {
       (lhs == rhs) ||
       (
         (lhs, rhs) match {
-          case (_, AnyType)     => true
-          case (NothingType, _) => true
+          case (_, AnyType) =>
+            true
+          case (NothingType, _) =>
+            true
 
           case (ClassType(lhsClass), ClassType(rhsClass)) =>
             isSubclass(lhsClass, rhsClass)
 
-          case (NullType, ClassType(_))    => true
-          case (NullType, ArrayType(_, _)) => true
+          case (NullType, ClassType(_)) =>
+            true
+          case (NullType, ArrayType(_, _)) =>
+            true
 
           case (UndefType, ClassType(cls)) =>
             isSubclass(BoxedUnitClass, cls)
@@ -205,8 +219,10 @@ object Types {
           case (StringType, ClassType(cls)) =>
             isSubclass(StringClass, cls)
 
-          case (IntType, DoubleType)   => true
-          case (FloatType, DoubleType) => true
+          case (IntType, DoubleType) =>
+            true
+          case (FloatType, DoubleType) =>
+            true
 
           case (ArrayType(lhsBase, lhsDims), ArrayType(rhsBase, rhsDims)) =>
             if (lhsDims < rhsDims) {

@@ -17,7 +17,8 @@ object ZipWithIndex extends SimplificationType() {
       case (ref @ ResolvesTo(x)) `.zip` ((ref2 @ ResolvesTo(y)) `.indices` ())
           if x == y && !x.isInstanceOf[PsiMethod] =>
         Some(replace(expr).withText(invocationText(ref, "zipWithIndex")))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

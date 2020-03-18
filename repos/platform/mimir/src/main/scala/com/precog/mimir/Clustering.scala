@@ -103,7 +103,8 @@ trait KMediansCoreSetClustering {
 
     private def insertCoreSet(coreset: CoreSet, level: Int): CoreSetTree = {
       val (prefix, suffix) = tree partition {
-        case (idx, _) => idx < level
+        case (idx, _) =>
+          idx < level
       }
 
       def rec(
@@ -585,7 +586,8 @@ trait KMediansCoreSetClustering {
             i += 1
           }
           true
-        case _ => false
+        case _ =>
+          false
       }
   }
 }
@@ -629,7 +631,8 @@ trait ClusteringLibModule[M[+_]]
                 columns flatMap {
                   case lc: LongColumn =>
                     range collect {
-                      case i if lc.isDefinedAt(i) && lc(i) > 0 => lc(i).toInt
+                      case i if lc.isDefinedAt(i) && lc(i) > 0 =>
+                        lc(i).toInt
                     }
 
                   case dc: DoubleColumn =>
@@ -660,7 +663,8 @@ trait ClusteringLibModule[M[+_]]
                       }
                     }
 
-                  case _ => List.empty[Int]
+                  case _ =>
+                    List.empty[Int]
                 }
               ).toList
             cols
@@ -765,7 +769,8 @@ trait ClusteringLibModule[M[+_]]
                     M.point(
                       (
                         ts map {
-                          case (spec, jtype) => (table.transform(spec), jtype)
+                          case (spec, jtype) =>
+                            (table.transform(spec), jtype)
                         }
                       ).toStream))
                 }

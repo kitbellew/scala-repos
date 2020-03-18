@@ -27,7 +27,8 @@ class ActorDSLSpec extends AkkaSpec {
     Props(
       new Actor {
         def receive = {
-          case x ⇒ sender() ! x
+          case x ⇒
+            sender() ! x
         }
       }))
 
@@ -62,23 +63,28 @@ class ActorDSLSpec extends AkkaSpec {
           Future {
             i.receive()
           } recover {
-            case x ⇒ x
+            case x ⇒
+              x
           },
           Future {
             Thread.sleep(100);
             i.select() {
-              case "world" ⇒ 1
+              case "world" ⇒
+                1
             }
           } recover {
-            case x ⇒ x
+            case x ⇒
+              x
           },
           Future {
             Thread.sleep(200);
             i.select() {
-              case "hello" ⇒ 2
+              case "hello" ⇒
+                2
             }
           } recover {
-            case x ⇒ x
+            case x ⇒
+              x
           }
         ))
       Thread.sleep(1000)
@@ -95,7 +101,8 @@ class ActorDSLSpec extends AkkaSpec {
       i.receiver ! "world"
       val result =
         i.select() {
-          case "world" ⇒ true
+          case "world" ⇒
+            true
         }
       result should ===(true)
       i.receive() should ===("hello")
@@ -145,7 +152,8 @@ class ActorDSLSpec extends AkkaSpec {
       val a = actor(
         new Act {
           become {
-            case "hello" ⇒ sender() ! "hi"
+            case "hello" ⇒
+              sender() ! "hi"
           }
         })
       //#simple-actor
@@ -160,13 +168,17 @@ class ActorDSLSpec extends AkkaSpec {
       val a = actor(
         new Act {
           become { // this will replace the initial (empty) behavior
-            case "info" ⇒ sender() ! "A"
+            case "info" ⇒
+              sender() ! "A"
             case "switch" ⇒
               becomeStacked { // this will stack upon the "A" behavior
-                case "info" ⇒ sender() ! "B"
-                case "switch" ⇒ unbecome() // return to the "A" behavior
+                case "info" ⇒
+                  sender() ! "B"
+                case "switch" ⇒
+                  unbecome() // return to the "A" behavior
               }
-            case "lobotomize" ⇒ unbecome() // OH NOES: Actor.emptyBehavior
+            case "lobotomize" ⇒
+              unbecome() // OH NOES: Actor.emptyBehavior
           }
         })
       //#becomeStacked
@@ -205,10 +217,12 @@ class ActorDSLSpec extends AkkaSpec {
       val a = actor(
         new Act {
           become {
-            case "die" ⇒ throw new Exception
+            case "die" ⇒
+              throw new Exception
           }
           whenFailing {
-            case m @ (cause, msg) ⇒ testActor ! m
+            case m @ (cause, msg) ⇒
+              testActor ! m
           }
           whenRestarted { cause ⇒
             testActor ! cause
@@ -234,8 +248,10 @@ class ActorDSLSpec extends AkkaSpec {
           //#supervise-with
           superviseWith(
             OneForOneStrategy() {
-              case e: Exception if e.getMessage == "hello" ⇒ Stop
-              case _: Exception ⇒ Resume
+              case e: Exception if e.getMessage == "hello" ⇒
+                Stop
+              case _: Exception ⇒
+                Resume
             })
           //#supervise-with
           val child =
@@ -244,12 +260,15 @@ class ActorDSLSpec extends AkkaSpec {
                 whenFailing { (_, _) ⇒
                 }
                 become {
-                  case ref: ActorRef ⇒ whenStopping(ref ! "stopped")
-                  case ex: Exception ⇒ throw ex
+                  case ref: ActorRef ⇒
+                    whenStopping(ref ! "stopped")
+                  case ex: Exception ⇒
+                    throw ex
                 }
               })
           become {
-            case x ⇒ child ! x
+            case x ⇒
+              child ! x
           }
         })
       a ! testActor
@@ -278,7 +297,8 @@ class ActorDSLSpec extends AkkaSpec {
                   }
                 })
             become {
-              case x ⇒ testActor ! x
+              case x ⇒
+                testActor ! x
             }
           })
       //#nested-actor
@@ -291,7 +311,8 @@ class ActorDSLSpec extends AkkaSpec {
       val a = actor(
         new ActWithStash {
           become {
-            case 1 ⇒ stash()
+            case 1 ⇒
+              stash()
             case 2 ⇒
               testActor ! 2;
               unstashAll();

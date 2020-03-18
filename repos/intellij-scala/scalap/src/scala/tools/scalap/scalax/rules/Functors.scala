@@ -86,7 +86,8 @@ trait Monoidals extends UnitFunctors {
     def and[B](fb: => M[B]): M[(A, B)] = ((a: A) => (b: B) => (a, b))(this)(fb)
     def applyTo[B](fab: M[A => B]): M[B] =
       fab and this map {
-        case (f, a) => f(a)
+        case (f, a) =>
+          f(a)
       }
   }
 }

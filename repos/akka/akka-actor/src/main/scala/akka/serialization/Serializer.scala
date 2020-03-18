@@ -127,8 +127,10 @@ abstract class SerializerWithStringManifest extends Serializer {
       manifest: Option[Class[_]]): AnyRef = {
     val manifestString =
       manifest match {
-        case Some(c) ⇒ c.getName
-        case None ⇒ ""
+        case Some(c) ⇒
+          c.getName
+        case None ⇒
+          ""
       }
     fromBinary(bytes, manifestString)
   }
@@ -293,8 +295,10 @@ class ByteArraySerializer(val system: ExtendedActorSystem)
   def includeManifest: Boolean = false
   def toBinary(o: AnyRef) =
     o match {
-      case null ⇒ null
-      case o: Array[Byte] ⇒ o
+      case null ⇒
+        null
+      case o: Array[Byte] ⇒
+        o
       case other ⇒
         throw new IllegalArgumentException(
           "ByteArraySerializer only serializes byte arrays, not [" + other + "]")

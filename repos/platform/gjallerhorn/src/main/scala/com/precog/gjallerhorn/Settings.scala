@@ -127,26 +127,42 @@ object Settings {
       lines.foldLeft(defaults) { (ps, s) =>
         val ps2 =
           s match {
-            case HostRegex(s)    => ps.copy(host = Some(s))
-            case IdRegex(s)      => ps.copy(id = Some(s))
-            case TokenRegex(s)   => ps.copy(token = Some(s))
-            case AccountsPort(n) => ps.copy(accountsPort = Some(n.toInt))
-            case AccountsPath(p) => ps.copy(accountsPath = Some(p))
-            case AuthPort(n)     => ps.copy(authPort = Some(n.toInt))
-            case AuthPath(p)     => ps.copy(authPath = Some(p))
-            case _               => ps
+            case HostRegex(s) =>
+              ps.copy(host = Some(s))
+            case IdRegex(s) =>
+              ps.copy(id = Some(s))
+            case TokenRegex(s) =>
+              ps.copy(token = Some(s))
+            case AccountsPort(n) =>
+              ps.copy(accountsPort = Some(n.toInt))
+            case AccountsPath(p) =>
+              ps.copy(accountsPath = Some(p))
+            case AuthPort(n) =>
+              ps.copy(authPort = Some(n.toInt))
+            case AuthPath(p) =>
+              ps.copy(authPath = Some(p))
+            case _ =>
+              ps
           }
 
         // split to avoid a bug in the pattern matcher
         s match {
-          case IngestPort(n)  => ps2.copy(ingestPort = Some(n.toInt))
-          case IngestPath(p)  => ps2.copy(ingestPath = Some(p))
-          case JobsPort(n)    => ps2.copy(jobsPort = Some(n.toInt))
-          case JobsPath(p)    => ps2.copy(jobsPath = Some(p))
-          case ShardPort(n)   => ps2.copy(shardPort = Some(n.toInt))
-          case ShardPath(p)   => ps2.copy(shardPath = Some(p))
-          case SecureRegex(s) => ps2.copy(secure = Some(s.toBoolean))
-          case _              => ps2
+          case IngestPort(n) =>
+            ps2.copy(ingestPort = Some(n.toInt))
+          case IngestPath(p) =>
+            ps2.copy(ingestPath = Some(p))
+          case JobsPort(n) =>
+            ps2.copy(jobsPort = Some(n.toInt))
+          case JobsPath(p) =>
+            ps2.copy(jobsPath = Some(p))
+          case ShardPort(n) =>
+            ps2.copy(shardPort = Some(n.toInt))
+          case ShardPath(p) =>
+            ps2.copy(shardPath = Some(p))
+          case SecureRegex(s) =>
+            ps2.copy(secure = Some(s.toBoolean))
+          case _ =>
+            ps2
         }
       }
     ps.settings.getOrElse {

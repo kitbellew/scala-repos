@@ -44,7 +44,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
   private def sourceName(frameProxy: StackFrameProxyImpl) =
     try frameProxy.location().sourceName()
     catch {
-      case e: AbsentInformationException => ""
+      case e: AbsentInformationException =>
+        ""
     }
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
@@ -71,8 +72,9 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
         if (sourceName(frameProxy) == mySourceName) {
           try {
             evaluationStrategy(frameProxy) match {
-              case Some(x) => return Some(x)
-              case _       =>
+              case Some(x) =>
+                return Some(x)
+              case _ =>
             }
           } catch {
             case e: EvaluateException =>
@@ -121,7 +123,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
               None
             }
           } catch {
-            case ignore: InternalException => None
+            case ignore: InternalException =>
+              None
           }
         } else
           None
@@ -138,7 +141,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       .orElse(evaluateWithFrames(withDollar))
 
     result match {
-      case Some(x) => x
+      case Some(x) =>
+        x
       case None =>
         myEvaluatedVariable = null
         myContext = null

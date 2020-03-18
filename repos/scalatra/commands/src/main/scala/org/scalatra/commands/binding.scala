@@ -142,8 +142,10 @@ sealed trait Binding {
 
   def original: Option[S] =
     field match {
-      case v: DataboundFieldDescriptor[_, _] => Some(v.original.asInstanceOf[S])
-      case _                                 => None
+      case v: DataboundFieldDescriptor[_, _] =>
+        Some(v.original.asInstanceOf[S])
+      case _ =>
+        None
     }
 
   implicit def typeConverter: TypeConverter[S, T]

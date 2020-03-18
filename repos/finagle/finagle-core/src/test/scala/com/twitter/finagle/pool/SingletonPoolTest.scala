@@ -130,7 +130,8 @@ class SingletonPoolTest extends FunSuite with MockitoSugar {
     f.poll match {
       case Some(Throw(exc: Failure)) =>
         assert(exc.getMessage == "Returned unavailable service")
-      case _ => fail()
+      case _ =>
+        fail()
     }
     verify(service, times(1)).close(any[Time])
 
@@ -164,14 +165,16 @@ class SingletonPoolTest extends FunSuite with MockitoSugar {
 
     var exc: Option[Throwable] = None
     underlyingP.setInterruptHandler {
-      case exc1 => exc = Some(exc1)
+      case exc1 =>
+        exc = Some(exc1)
     }
 
     assert(pool.close().poll == Some(Return.Unit))
     assert(!f.isDefined)
     exc match {
       case Some(_: ServiceClosedException) =>
-      case _                               => fail()
+      case _ =>
+        fail()
     }
 
     verify(service, never).close(any[Time])

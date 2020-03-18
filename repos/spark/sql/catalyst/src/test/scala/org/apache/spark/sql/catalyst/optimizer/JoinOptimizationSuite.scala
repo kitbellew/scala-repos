@@ -125,7 +125,8 @@ class JoinOptimizationSuite extends PlanTest {
     comparePlans(optimized, expected)
 
     val broadcastChildren = optimized.collect {
-      case Join(_, r, _, _) if r.statistics.sizeInBytes == 1 => r
+      case Join(_, r, _, _) if r.statistics.sizeInBytes == 1 =>
+        r
     }
     assert(broadcastChildren.size == 1)
   }

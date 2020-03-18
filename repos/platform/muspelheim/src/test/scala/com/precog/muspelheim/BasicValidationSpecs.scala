@@ -151,7 +151,8 @@ trait BasicValidationSpecs extends EvalStackSpecs {
       eval(input) must throwA[FatalQueryException].like {
         case e =>
           e must beLike {
-            case FatalQueryException(_) => ok
+            case FatalQueryException(_) =>
+              ok
             // TODO: Check error channel for message.
             // case FatalQueryException(Line(3, 2, " assert false a"), "Assertion failed") => ok
           }

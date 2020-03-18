@@ -25,7 +25,8 @@ final class Env(
   def cli =
     new lila.common.Cli {
       def process = {
-        case "team" :: "search" :: "reset" :: Nil => api.reset inject "done"
+        case "team" :: "search" :: "reset" :: Nil =>
+          api.reset inject "done"
       }
     }
 
@@ -39,8 +40,10 @@ final class Env(
       new Actor {
         import lila.team.actorApi._
         def receive = {
-          case InsertTeam(team) => api store team
-          case RemoveTeam(id)   => client deleteById Id(id)
+          case InsertTeam(team) =>
+            api store team
+          case RemoveTeam(id) =>
+            client deleteById Id(id)
         }
       }),
     name = ActorName)

@@ -53,8 +53,10 @@ object QueueLaws extends Properties("Queue") {
     q.foldLeft((0, true)) {
       case ((cnt, good), (i, ti)) =>
         ti match {
-          case Return(ii) => (cnt + 1, good)
-          case Throw(e)   => (cnt + 1, false)
+          case Return(ii) =>
+            (cnt + 1, good)
+          case Throw(e) =>
+            (cnt + 1, false)
         }
     } == (items.size, true)
   }
@@ -66,8 +68,10 @@ object QueueLaws extends Properties("Queue") {
     q.foldLeft((0, true)) {
       case ((cnt, good), (i, ti)) =>
         ti match {
-          case Return(ii) => (cnt + 1, good)
-          case Throw(e)   => (cnt + 1, false)
+          case Return(ii) =>
+            (cnt + 1, good)
+          case Throw(e) =>
+            (cnt + 1, false)
         }
     } == (items.size, true)
   }
@@ -106,8 +110,10 @@ object QueueLaws extends Properties("Queue") {
         if (i % 2 == 0) {
           // do a poll test
           q.poll match {
-            case None    => q.size == 0
-            case Some(_) => q.size == (size - 1)
+            case None =>
+              q.size == 0
+            case Some(_) =>
+              q.size == (size - 1)
           }
         } else
           true

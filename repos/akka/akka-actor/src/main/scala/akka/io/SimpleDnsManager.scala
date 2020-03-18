@@ -24,8 +24,10 @@ class SimpleDnsManager(val ext: DnsExt)
   )
   private val cacheCleanup =
     ext.cache match {
-      case cleanup: PeriodicCacheCleanup ⇒ Some(cleanup)
-      case _ ⇒ None
+      case cleanup: PeriodicCacheCleanup ⇒
+        Some(cleanup)
+      case _ ⇒
+        None
     }
 
   private val cleanupTimer = cacheCleanup map { _ ⇒

@@ -24,7 +24,8 @@ class ClientIdRequiredFilter[Req, Rep](
 
   def apply(req: Req, service: Service[Req, Rep]) = {
     ClientId.current match {
-      case Some(_) => service(req)
+      case Some(_) =>
+        service(req)
       case None =>
         filterCounter.incr()
         Future.exception(noClientIdSpecifiedEx)

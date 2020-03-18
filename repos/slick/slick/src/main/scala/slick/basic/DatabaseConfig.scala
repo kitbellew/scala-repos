@@ -81,14 +81,22 @@ object DatabaseConfig {
                       path + ".")
     val n = config.getStringOpt(basePath + "profile").getOrElse {
       val nOld = config.getStringOpt(basePath + "driver").map {
-        case "slick.driver.DerbyDriver$"    => "slick.jdbc.DerbyProfile$"
-        case "slick.driver.H2Driver$"       => "slick.jdbc.H2Profile$"
-        case "slick.driver.HsqldbDriver$"   => "slick.jdbc.HsqldbProfile$"
-        case "slick.driver.MySQLDriver$"    => "slick.jdbc.MySQLProfile$"
-        case "slick.driver.PostgresDriver$" => "slick.jdbc.PostgresProfile$"
-        case "slick.driver.SQLiteDriver$"   => "slick.jdbc.SQLiteProfile$"
-        case "slick.memory.MemoryDriver$"   => "slick.memory.MemoryProfile$"
-        case n                              => n
+        case "slick.driver.DerbyDriver$" =>
+          "slick.jdbc.DerbyProfile$"
+        case "slick.driver.H2Driver$" =>
+          "slick.jdbc.H2Profile$"
+        case "slick.driver.HsqldbDriver$" =>
+          "slick.jdbc.HsqldbProfile$"
+        case "slick.driver.MySQLDriver$" =>
+          "slick.jdbc.MySQLProfile$"
+        case "slick.driver.PostgresDriver$" =>
+          "slick.jdbc.PostgresProfile$"
+        case "slick.driver.SQLiteDriver$" =>
+          "slick.jdbc.SQLiteProfile$"
+        case "slick.memory.MemoryDriver$" =>
+          "slick.memory.MemoryProfile$"
+        case n =>
+          n
       }
       if (nOld.isDefined)
         logger.warn(
@@ -202,7 +210,8 @@ object StaticDatabaseConfigMacros {
             pt = weakTypeOf[StaticDatabaseConfig],
             silent = true))
         .collectFirst {
-          case Apply(Select(_, _), List(Literal(Constant(uri: String)))) => uri
+          case Apply(Select(_, _), List(Literal(Constant(uri: String)))) =>
+            uri
         }
 
     val scopes = Iterator

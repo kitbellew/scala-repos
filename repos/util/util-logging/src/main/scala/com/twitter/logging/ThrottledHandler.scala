@@ -131,7 +131,8 @@ class ThrottledHandler(
     synchronized {
       val now = Time.now
       throttleMap retain {
-        case (_, throttle) => !throttle.removeIfExpired(now)
+        case (_, throttle) =>
+          !throttle.removeIfExpired(now)
       }
     }
   }
@@ -150,8 +151,10 @@ class ThrottledHandler(
 
     val key =
       record match {
-        case r: LazyLogRecordUnformatted => r.preformatted
-        case _                           => record.getMessage
+        case r: LazyLogRecordUnformatted =>
+          r.preformatted
+        case _ =>
+          record.getMessage
       }
     @tailrec
     def tryPublish() {

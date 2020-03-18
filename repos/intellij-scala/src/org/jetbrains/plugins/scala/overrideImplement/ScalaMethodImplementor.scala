@@ -42,7 +42,8 @@ class ScalaMethodImplementor extends MethodImplementor {
       for {
         td <- inClass.asOptionOf[ScTemplateDefinition].toSeq
         member <- ScalaOIUtil.getMembersToImplement(td).collect {
-          case mm: ScMethodMember if mm.getElement == method => mm
+          case mm: ScMethodMember if mm.getElement == method =>
+            mm
         }
       } yield {
         val specifyType =
@@ -97,14 +98,17 @@ private class ScalaPsiMethodGenerationInfo(
           methodMember,
           td,
           findAnchor(td, baseMethod))
-      case _ => super.insert(aClass, anchor, before)
+      case _ =>
+        super.insert(aClass, anchor, before)
     }
   }
 
   override def positionCaret(editor: Editor, toEditMethodBody: Boolean) =
     member match {
-      case _: ScMember => ScalaGenerationInfo.positionCaret(editor, member)
-      case _           => super.positionCaret(editor, toEditMethodBody)
+      case _: ScMember =>
+        ScalaGenerationInfo.positionCaret(editor, member)
+      case _ =>
+        super.positionCaret(editor, toEditMethodBody)
     }
 
   private def findAnchor(
@@ -137,9 +141,11 @@ private class ScalaPsiMethodGenerationInfo(
 
     while (nextBaseMethod != null) {
       td.findMethodBySignature(nextBaseMethod, checkBases = false) match {
-        case wrapper: ScFunctionWrapper             => return wrapper.function
-        case method: PsiMethod if method.isPhysical => return method
-        case _                                      =>
+        case wrapper: ScFunctionWrapper =>
+          return wrapper.function
+        case method: PsiMethod if method.isPhysical =>
+          return method
+        case _ =>
       }
       nextBaseMethod = PsiTreeUtil.getNextSiblingOfType(
         nextBaseMethod,

@@ -320,8 +320,10 @@ case object HeapMetricsSelector extends CapacityMetricsSelector {
       case HeapMemory(address, _, used, committed, max) ⇒
         val capacity =
           max match {
-            case None ⇒ (committed - used).toDouble / committed
-            case Some(m) ⇒ (m - used).toDouble / m
+            case None ⇒
+              (committed - used).toDouble / committed
+            case Some(m) ⇒
+              (m - used).toDouble / m
           }
         (address, capacity)
     }.toMap
@@ -442,7 +444,8 @@ abstract class MixMetricsSelectorBase(
           acc + (address -> ((sum + capacity, count + 1)))
       }
       .map {
-        case (addr, (sum, count)) ⇒ (addr -> sum / count)
+        case (addr, (sum, count)) ⇒
+          (addr -> sum / count)
       }
   }
 
@@ -454,10 +457,14 @@ abstract class MixMetricsSelectorBase(
 object MetricsSelector {
   def fromConfig(config: Config, dynamicAccess: DynamicAccess) =
     config.getString("metrics-selector") match {
-      case "mix" ⇒ MixMetricsSelector
-      case "heap" ⇒ HeapMetricsSelector
-      case "cpu" ⇒ CpuMetricsSelector
-      case "load" ⇒ SystemLoadAverageMetricsSelector
+      case "mix" ⇒
+        MixMetricsSelector
+      case "heap" ⇒
+        HeapMetricsSelector
+      case "cpu" ⇒
+        CpuMetricsSelector
+      case "load" ⇒
+        SystemLoadAverageMetricsSelector
       case fqn ⇒
         val args = List(classOf[Config] -> config)
         dynamicAccess
@@ -520,12 +527,14 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
       Map.empty[Address, Int]
     else {
       val (_, min) = capacity.minBy {
-        case (_, c) ⇒ c
+        case (_, c) ⇒
+          c
       }
       // lowest usable capacity is 1% (>= 0.5% will be rounded to weight 1), also avoids div by zero
       val divisor = math.max(0.01, min)
       capacity map {
-        case (addr, c) ⇒ (addr -> math.round((c) / divisor).toInt)
+        case (addr, c) ⇒
+          (addr -> math.round((c) / divisor).toInt)
       }
     }
   }
@@ -556,12 +565,16 @@ private[cluster] class WeightedRoutees(
     def fullAddress(routee: Routee): Address = {
       val a =
         routee match {
-          case ActorRefRoutee(ref) ⇒ ref.path.address
-          case ActorSelectionRoutee(sel) ⇒ sel.anchor.path.address
+          case ActorRefRoutee(ref) ⇒
+            ref.path.address
+          case ActorSelectionRoutee(sel) ⇒
+            sel.anchor.path.address
         }
       a match {
-        case Address(_, _, None, None) ⇒ selfAddress
-        case a ⇒ a
+        case Address(_, _, None, None) ⇒
+          selfAddress
+        case a ⇒
+          a
       }
     }
     val buckets = Array.ofDim[Int](routees.size)
@@ -634,7 +647,8 @@ private[akka] class AdaptiveLoadBalancingMetricsListener(
   override def postStop(): Unit = cluster.unsubscribe(self)
 
   def receive = {
-    case event: ClusterMetricsChanged ⇒ routingLogic.metricsChanged(event)
+    case event: ClusterMetricsChanged ⇒
+      routingLogic.metricsChanged(event)
     case _: CurrentClusterState ⇒ // ignore
   }
 

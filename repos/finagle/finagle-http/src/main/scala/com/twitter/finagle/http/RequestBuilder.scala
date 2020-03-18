@@ -218,7 +218,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     val elems = config.formElements
     val updated =
       kv.foldLeft(elems) {
-        case (es, (k, v)) => es :+ new SimpleElement(k, v)
+        case (es, (k, v)) =>
+          es :+ new SimpleElement(k, v)
       }
     new RequestBuilder(config.copy(formElements = updated))
   }
@@ -288,7 +289,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     */
   def addHeaders(headers: Map[String, String]): This = {
     headers.foldLeft(this) {
-      case (b, (k, v)) => b.addHeader(k, v)
+      case (b, (k, v)) =>
+        b.addHeader(k, v)
     }
   }
 
@@ -328,8 +330,10 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
         HasUrl,
         HasForm]): Request = {
     content match {
-      case Some(content) => withContent(method, content)
-      case None          => withoutContent(method)
+      case Some(content) =>
+        withContent(method, content)
+      case None =>
+        withoutContent(method)
     }
   }
 

@@ -131,7 +131,8 @@ object Test extends App {
     testMap(
       treeMap mapValues (_ + 1),
       keyValues map {
-        case (k, v) => (k, v + 1)
+        case (k, v) =>
+          (k, v + 1)
       })
   }
 }

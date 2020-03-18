@@ -68,7 +68,8 @@ trait LocationLineManager {
         else
           refType.locationsOfLine(line + 1)
       } catch {
-        case aie: AbsentInformationException => return Seq.empty
+        case aie: AbsentInformationException =>
+          return Seq.empty
       }
 
     checkAndUpdateCaches(refType)
@@ -129,7 +130,8 @@ trait LocationLineManager {
           val index = location.codeIndex()
           bytecodes(index.toInt) == Opcodes.voidReturn
         } catch {
-          case e: Throwable => false
+          case e: Throwable =>
+            false
         }
       }
 
@@ -179,15 +181,18 @@ trait LocationLineManager {
         val bytecodes =
           try method.bytecodes()
           catch {
-            case t: Throwable => return
+            case t: Throwable =>
+              return
           }
 
         def cacheCorrespondingIloadLocations(iconst_0Loc: Location): Unit = {
           val codeIndex = iconst_0Loc.codeIndex().toInt
           val iloadCode =
             BytecodeUtil.readIstore(codeIndex + 1, bytecodes) match {
-              case Seq()      => Nil
-              case istoreCode => BytecodeUtil.iloadCode(istoreCode)
+              case Seq() =>
+                Nil
+              case istoreCode =>
+                BytecodeUtil.iloadCode(istoreCode)
             }
           if (iloadCode.isEmpty)
             return
@@ -216,7 +221,8 @@ trait LocationLineManager {
         val bytecodes =
           try method.bytecodes()
           catch {
-            case t: Throwable => return
+            case t: Throwable =>
+              return
           }
 
         def storeCode(location: Location): Option[Seq[Byte]] = {
@@ -261,7 +267,8 @@ trait LocationLineManager {
         val bytecodes =
           try method.bytecodes()
           catch {
-            case t: Throwable => return
+            case t: Throwable =>
+              return
           }
 
         val tail: Seq[Location] = locations.tail
@@ -282,17 +289,21 @@ trait LocationLineManager {
         def tooSmall(m: Method) = {
           try m.allLineLocations().size() <= 3
           catch {
-            case ae: AbsentInformationException => true
+            case ae: AbsentInformationException =>
+              true
           }
         }
 
         val baseLine =
           caseClauses.getParent match {
-            case ms: ScMatchStmt => ms.expr.map(elementStartLine)
+            case ms: ScMatchStmt =>
+              ms.expr.map(elementStartLine)
             case (b: ScBlock) childOf (tr: ScTryStmt) =>
               return //todo: handle try statements
-            case (b: ScBlock) => Some(elementStartLine(b))
-            case _            => None
+            case (b: ScBlock) =>
+              Some(elementStartLine(b))
+            case _ =>
+              None
           }
         val caseLines = caseClauses.caseClauses.map(elementStartLine)
         val methods = refType.methods().asScala.filterNot(tooSmall)
@@ -316,7 +327,8 @@ trait LocationLineManager {
       }
 
       val allCaseClauses = generatingElem.breadthFirst.collect {
-        case cc: ScCaseClauses => cc
+        case cc: ScCaseClauses =>
+          cc
       }
       allCaseClauses.foreach(customizeFor)
     }

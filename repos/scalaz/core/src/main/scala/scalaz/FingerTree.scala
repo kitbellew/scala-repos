@@ -436,7 +436,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         pr match {
           case Four(vf, b, c, d, e) =>
             deep(measurer.cons(az, v), two(az, b), node3(c, d, e) +: mz, sf)
-          case _ => deep(measurer.cons(az, v), az +: pr, mz, sf)
+          case _ =>
+            deep(measurer.cons(az, v), az +: pr, mz, sf)
         }
       }
     )
@@ -455,7 +456,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         sf match {
           case Four(vf, b, c, d, e) =>
             deep(measurer.snoc(v, az), pr, (mz :+ node3(b, c, d)), two(e, az))
-          case _ => deep(measurer.snoc(v, az), pr, mz, sf :+ az)
+          case _ =>
+            deep(measurer.snoc(v, az), pr, mz, sf :+ az)
         }
       }
     )
@@ -607,31 +609,43 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     dig1 match {
       case One(_, a) =>
         dig2 match {
-          case One(_, b)           => m1.add1(node2(a, b), m2)
-          case Two(_, b, c)        => m1.add1(node3(a, b, c), m2)
-          case Three(_, b, c, d)   => m1.add2(node2(a, b), node2(c, d), m2)
-          case Four(_, b, c, d, e) => m1.add2(node3(a, b, c), node2(d, e), m2)
+          case One(_, b) =>
+            m1.add1(node2(a, b), m2)
+          case Two(_, b, c) =>
+            m1.add1(node3(a, b, c), m2)
+          case Three(_, b, c, d) =>
+            m1.add2(node2(a, b), node2(c, d), m2)
+          case Four(_, b, c, d, e) =>
+            m1.add2(node3(a, b, c), node2(d, e), m2)
         }
       case Two(_, a, b) =>
         dig2 match {
-          case One(_, c)         => m1.add1(node3(a, b, c), m2)
-          case Two(_, c, d)      => m1.add2(node2(a, b), node2(c, d), m2)
-          case Three(_, c, d, e) => m1.add2(node3(a, b, c), node2(d, e), m2)
+          case One(_, c) =>
+            m1.add1(node3(a, b, c), m2)
+          case Two(_, c, d) =>
+            m1.add2(node2(a, b), node2(c, d), m2)
+          case Three(_, c, d, e) =>
+            m1.add2(node3(a, b, c), node2(d, e), m2)
           case Four(_, c, d, e, f) =>
             m1.add2(node3(a, b, c), node3(d, e, f), m2)
         }
       case Three(_, a, b, c) =>
         dig2 match {
-          case One(_, d)         => m1.add2(node2(a, b), node2(c, d), m2)
-          case Two(_, d, e)      => m1.add2(node3(a, b, c), node2(d, e), m2)
-          case Three(_, d, e, f) => m1.add2(node3(a, b, c), node3(d, e, f), m2)
+          case One(_, d) =>
+            m1.add2(node2(a, b), node2(c, d), m2)
+          case Two(_, d, e) =>
+            m1.add2(node3(a, b, c), node2(d, e), m2)
+          case Three(_, d, e, f) =>
+            m1.add2(node3(a, b, c), node3(d, e, f), m2)
           case Four(_, d, e, f, g) =>
             m1.add3(node3(a, b, c), node2(d, e), node2(f, g), m2)
         }
       case Four(_, a, b, c, d) =>
         dig2 match {
-          case One(_, e)    => m1.add2(node3(a, b, c), node2(d, e), m2)
-          case Two(_, e, f) => m1.add2(node3(a, b, c), node3(d, e, f), m2)
+          case One(_, e) =>
+            m1.add2(node3(a, b, c), node2(d, e), m2)
+          case Two(_, e, f) =>
+            m1.add2(node3(a, b, c), node3(d, e, f), m2)
           case Three(_, e, f, g) =>
             m1.add3(node3(a, b, c), node2(d, e), node2(f, g), m2)
           case Four(_, e, f, g, h) =>
@@ -650,24 +664,32 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     d1 match {
       case One(_, a) =>
         d2 match {
-          case One(_, b)         => m1.add1(node3(a, x, b), m2)
-          case Two(_, b, c)      => m1.add2(node2(a, x), node2(b, c), m2)
-          case Three(_, b, c, d) => m1.add2(node3(a, x, b), node2(c, d), m2)
+          case One(_, b) =>
+            m1.add1(node3(a, x, b), m2)
+          case Two(_, b, c) =>
+            m1.add2(node2(a, x), node2(b, c), m2)
+          case Three(_, b, c, d) =>
+            m1.add2(node3(a, x, b), node2(c, d), m2)
           case Four(_, b, c, d, e) =>
             m1.add2(node3(a, x, b), node3(c, d, e), m2)
         }
       case Two(_, a, b) =>
         d2 match {
-          case One(_, c)         => m1.add2(node2(a, b), node2(x, c), m2)
-          case Two(_, c, d)      => m1.add2(node3(a, b, x), node2(c, d), m2)
-          case Three(_, c, d, e) => m1.add2(node3(a, b, x), node3(c, d, e), m2)
+          case One(_, c) =>
+            m1.add2(node2(a, b), node2(x, c), m2)
+          case Two(_, c, d) =>
+            m1.add2(node3(a, b, x), node2(c, d), m2)
+          case Three(_, c, d, e) =>
+            m1.add2(node3(a, b, x), node3(c, d, e), m2)
           case Four(_, c, d, e, f) =>
             m1.add3(node3(a, b, x), node2(c, d), node2(e, f), m2)
         }
       case Three(_, a, b, c) =>
         d2 match {
-          case One(_, d)    => m1.add2(node3(a, b, c), node2(x, d), m2)
-          case Two(_, d, e) => m1.add2(node3(a, b, c), node3(x, d, e), m2)
+          case One(_, d) =>
+            m1.add2(node3(a, b, c), node2(x, d), m2)
+          case Two(_, d, e) =>
+            m1.add2(node3(a, b, c), node3(x, d, e), m2)
           case Three(_, d, e, f) =>
             m1.add3(node3(a, b, c), node2(x, d), node2(e, f), m2)
           case Four(_, d, e, f, g) =>
@@ -675,7 +697,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         }
       case Four(_, a, b, c, d) =>
         d2 match {
-          case One(_, e) => m1.add2(node3(a, b, c), node3(d, x, e), m2)
+          case One(_, e) =>
+            m1.add2(node3(a, b, c), node3(d, x, e), m2)
           case Two(_, e, f) =>
             m1.add3(node3(a, b, c), node2(d, x), node2(e, f), m2)
           case Three(_, e, f, g) =>
@@ -699,16 +722,21 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     d1 match {
       case One(_, a) =>
         d2 match {
-          case One(_, b)         => m1.add2(node2(a, x), node2(y, b), m2)
-          case Two(_, b, c)      => m1.add2(node3(a, x, y), node2(b, c), m2)
-          case Three(_, b, c, d) => m1.add2(node3(a, x, y), node3(b, c, d), m2)
+          case One(_, b) =>
+            m1.add2(node2(a, x), node2(y, b), m2)
+          case Two(_, b, c) =>
+            m1.add2(node3(a, x, y), node2(b, c), m2)
+          case Three(_, b, c, d) =>
+            m1.add2(node3(a, x, y), node3(b, c, d), m2)
           case Four(_, b, c, d, e) =>
             m1.add3(node3(a, x, y), node2(b, c), node2(d, e), m2)
         }
       case Two(_, a, b) =>
         d2 match {
-          case One(_, c)    => m1.add2(node3(a, b, x), node2(y, c), m2)
-          case Two(_, c, d) => m1.add2(node3(a, b, x), node3(y, c, d), m2)
+          case One(_, c) =>
+            m1.add2(node3(a, b, x), node2(y, c), m2)
+          case Two(_, c, d) =>
+            m1.add2(node3(a, b, x), node3(y, c, d), m2)
           case Three(_, c, d, e) =>
             m1.add3(node3(a, b, x), node2(y, c), node2(d, e), m2)
           case Four(_, c, d, e, f) =>
@@ -716,7 +744,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         }
       case Three(_, a, b, c) =>
         d2 match {
-          case One(_, d) => m1.add2(node3(a, b, c), node3(x, y, d), m2)
+          case One(_, d) =>
+            m1.add2(node3(a, b, c), node3(x, y, d), m2)
           case Two(_, d, e) =>
             m1.add3(node3(a, b, c), node2(x, y), node2(d, e), m2)
           case Three(_, d, e, f) =>
@@ -758,8 +787,10 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     d1 match {
       case One(_, a) =>
         d2 match {
-          case One(_, b)    => m1.add2(node3(a, x, y), node2(z, b), m2)
-          case Two(_, b, c) => m1.add2(node3(a, x, y), node3(z, b, c), m2)
+          case One(_, b) =>
+            m1.add2(node3(a, x, y), node2(z, b), m2)
+          case Two(_, b, c) =>
+            m1.add2(node3(a, x, y), node3(z, b, c), m2)
           case Three(_, b, c, d) =>
             m1.add3(node3(a, x, y), node2(z, b), node2(c, d), m2)
           case Four(_, b, c, d, e) =>
@@ -767,7 +798,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
         }
       case Two(_, a, b) =>
         d2 match {
-          case One(_, c) => m1.add2(node3(a, b, x), node3(y, z, c), m2)
+          case One(_, c) =>
+            m1.add2(node3(a, b, x), node3(y, z, c), m2)
           case Two(_, c, d) =>
             m1.add3(node3(a, b, x), node2(y, z), node2(c, d), m2)
           case Three(_, c, d, e) =>
@@ -832,7 +864,8 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     d1 match {
       case One(_, a) =>
         d2 match {
-          case One(_, b) => m1.add2(node3(a, x, y), node3(z, w, b), m2)
+          case One(_, b) =>
+            m1.add2(node3(a, x, y), node3(z, w, b), m2)
           case Two(_, b, c) =>
             m1.add3(node3(a, x, y), node2(z, w), node2(b, c), m2)
           case Three(_, b, c, d) =>
@@ -962,8 +995,10 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       (v, x) => OnL[FingerTree[V, ?], A](x, empty[V, A]),
       (v, pr, m, sf) =>
         pr match {
-          case One(v, x) => OnL[FingerTree[V, ?], A](x, rotL(m, sf))
-          case _         => OnL[FingerTree[V, ?], A](pr.lhead, deep(pr.ltail, m, sf))
+          case One(v, x) =>
+            OnL[FingerTree[V, ?], A](x, rotL(m, sf))
+          case _ =>
+            OnL[FingerTree[V, ?], A](pr.lhead, deep(pr.ltail, m, sf))
         }
     )
 
@@ -973,8 +1008,10 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
       (v, x) => OnR[FingerTree[V, ?], A](empty[V, A], x),
       (v, pr, m, sf) =>
         sf match {
-          case One(v, x) => OnR[FingerTree[V, ?], A](rotR(pr, m), x)
-          case _         => OnR[FingerTree[V, ?], A](deep(pr, m, sf.rtail), sf.rhead)
+          case One(v, x) =>
+            OnR[FingerTree[V, ?], A](rotR(pr, m), x)
+          case _ =>
+            OnR[FingerTree[V, ?], A](deep(pr, m, sf.rtail), sf.rhead)
         }
     )
 
@@ -1057,8 +1094,10 @@ sealed abstract class FingerTree[V, A](implicit measurer: Reducer[A, V]) {
     def mkThree(x: B)(y: B)(z: B): Finger[V2, B] = three(x, y, z)
     def mkFour(w: B)(x: B)(y: B)(z: B): Finger[V2, B] = four(w, x, y, z)
     digit match {
-      case One(v, a)    => F.map(f(a))(x => one(x))
-      case Two(v, a, b) => F.ap(f(b))(F.map(f(a))(x => mkTwo(x) _))
+      case One(v, a) =>
+        F.map(f(a))(x => one(x))
+      case Two(v, a, b) =>
+        F.ap(f(b))(F.map(f(a))(x => mkTwo(x) _))
       case Three(v, a, b, c) =>
         F.ap(f(c))(F.ap(f(b))(F.map(f(a))(x => mkThree(x) _)))
       case Four(v, a, b, c, d) =>
@@ -1334,8 +1373,10 @@ object FingerTree extends FingerTreeInstances {
       m: => FingerTree[V, Node[V, A]],
       sf: Finger[V, A])(implicit ms: Reducer[A, V]): FingerTree[V, A] =
     mpr match {
-      case None     => rotL(m, sf)
-      case Some(pr) => deep(pr, m, sf)
+      case None =>
+        rotL(m, sf)
+      case Some(pr) =>
+        deep(pr, m, sf)
     }
 
   def deepR[V, A](
@@ -1343,8 +1384,10 @@ object FingerTree extends FingerTreeInstances {
       m: => FingerTree[V, Node[V, A]],
       msf: Option[Finger[V, A]])(implicit ms: Reducer[A, V]): FingerTree[V, A] =
     msf match {
-      case None     => rotR(pr, m)
-      case Some(sf) => deep(pr, m, sf)
+      case None =>
+        rotR(pr, m)
+      case Some(sf) =>
+        deep(pr, m, sf)
     }
 
   def rotL[V, A](m: FingerTree[V, Node[V, A]], sf: Finger[V, A])(implicit
@@ -1481,7 +1524,8 @@ sealed abstract class OrdSeq[A] extends Ops[FingerTree[LastOption[A], A]] {
   /** Insert `a` at a the first point that all elements to the left are of higher priority */
   def insert(a: A): OrdSeq[A] =
     partition(a) match {
-      case (l, r) => OrdSeq.ordSeq(l <++> (a +: r))
+      case (l, r) =>
+        OrdSeq.ordSeq(l <++> (a +: r))
     }
 
   /** Append `xs` to this sequence, reordering elements to  */

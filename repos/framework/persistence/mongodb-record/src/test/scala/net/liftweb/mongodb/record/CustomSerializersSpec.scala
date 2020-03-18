@@ -333,7 +333,8 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
                   ns.filter {
                     case e: Elem =>
                       e.attribute("selected").map(_.text) == Some("selected")
-                    case _ => false
+                    case _ =>
+                      false
                   }) andThen "* [value]" #> ".*"
               )
             )(fprime)
@@ -413,7 +414,8 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
                   ns.filter {
                     case e: Elem =>
                       e.attribute("selected").map(_.text) == Some("selected")
-                    case _ => false
+                    case _ =>
+                      false
                   }) andThen "* [value]" #> ".*"
               )
             )(fprime)

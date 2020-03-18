@@ -60,7 +60,8 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       val whiteSpaceParse =
         (s: String) =>
           whiteSpace(s) must beLike {
-            case Success(x, y) => x.toString must_== "()"
+            case Success(x, y) =>
+              x.toString must_== "()"
           }
       forAll(whiteSpaceParse)
     }
@@ -69,8 +70,10 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       val ignoreCaseStringParse: Function2[String, String, Boolean] =
         (s: String, s2: String) =>
           acceptCI(s).apply(s2) match {
-            case Success(x, y) => s2.toUpperCase must startWith(s.toUpperCase)
-            case _             => true
+            case Success(x, y) =>
+              s2.toUpperCase must startWith(s.toUpperCase)
+            case _ =>
+              true
           }
       forAll(ignoreCaseStringParse)
     }
@@ -79,8 +82,10 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       val isDigit: String => Boolean =
         (s: String) =>
           digit(s) match {
-            case Success(x, y) => s must beMatching("(?s)\\p{Nd}.*")
-            case _             => true
+            case Success(x, y) =>
+              s must beMatching("(?s)\\p{Nd}.*")
+            case _ =>
+              true
           }
       forAll(isDigit)
     }
@@ -88,8 +93,10 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       val number: String => Boolean =
         (s: String) => {
           aNumber(s) match {
-            case Success(x, y) => s must beMatching("(?s)\\p{Nd}+.*")
-            case _             => true
+            case Success(x, y) =>
+              s must beMatching("(?s)\\p{Nd}+.*")
+            case _ =>
+              true
           }
         }
       forAll(number)
@@ -98,13 +105,15 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
     "provide a slash parser" in {
       slash("/").get must_== '/'
       slash("x") must beLike {
-        case Failure(_, _) => 1 must_== 1
+        case Failure(_, _) =>
+          1 must_== 1
       }
     }
     "provide a colon parser" in {
       colon(":").get must_== ':'
       colon("x") must beLike {
-        case Failure(_, _) => 1 must_== 1
+        case Failure(_, _) =>
+          1 must_== 1
       }
     }
     "provide a EOL parser which parses the any and discards any end of line character" in {
@@ -122,8 +131,10 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
     val parserD = elem("d", (c: Char) => c == 'd')
     def shouldSucceed[T](r: ParseResult[T]) =
       r match {
-        case Success(x, y) => true
-        case _             => false
+        case Success(x, y) =>
+          true
+        case _ =>
+          false
       }
     "provide a permute parser succeeding if any permutation of given parsers succeeds" in {
       def permuteParsers(s: String) =

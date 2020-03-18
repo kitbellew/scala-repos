@@ -191,11 +191,13 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
       case (r1: Array[Byte], r2: Array[Byte])
           if r1 != null && r2 != null && r1.length == r2.length =>
         r1.zip(r2).foreach {
-          case (b1, b2) => assert(b1 === b2)
+          case (b1, b2) =>
+            assert(b1 === b2)
         }
       // We don't support equality & ordering for map type, so skip it.
       case (r1: MapData, r2: MapData) =>
-      case (r1, r2)                   => assert(r1 === r2)
+      case (r1, r2) =>
+        assert(r1 === r2)
     }
   }
 
@@ -215,7 +217,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     checkValues(
       nullRow,
       nullRow.zip(writableOIs).zip(dataTypes).map {
-        case ((d, oi), dt) => unwrap(wrap(d, oi, dt), oi)
+        case ((d, oi), dt) =>
+          unwrap(wrap(d, oi, dt), oi)
       })
 
     // struct couldn't be constant, sweep it out
@@ -231,19 +234,22 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     checkValues(
       constantData,
       constantData.zip(constantWritableOIs).zip(constantTypes).map {
-        case ((d, oi), dt) => unwrap(wrap(d, oi, dt), oi)
+        case ((d, oi), dt) =>
+          unwrap(wrap(d, oi, dt), oi)
       })
 
     checkValues(
       constantNullData,
       constantData.zip(constantNullWritableOIs).zip(constantTypes).map {
-        case ((d, oi), dt) => unwrap(wrap(d, oi, dt), oi)
+        case ((d, oi), dt) =>
+          unwrap(wrap(d, oi, dt), oi)
       })
 
     checkValues(
       constantNullData,
       constantNullData.zip(constantWritableOIs).zip(constantTypes).map {
-        case ((d, oi), dt) => unwrap(wrap(d, oi, dt), oi)
+        case ((d, oi), dt) =>
+          unwrap(wrap(d, oi, dt), oi)
       })
   }
 
@@ -253,7 +259,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     checkValues(
       row,
       row.zip(writableOIs).zip(dataTypes).map {
-        case ((data, oi), dt) => unwrap(wrap(data, oi, dt), oi)
+        case ((data, oi), dt) =>
+          unwrap(wrap(data, oi, dt), oi)
       })
   }
 
@@ -263,14 +270,16 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     checkValues(
       row,
       row.zip(ois).zip(dataTypes).map {
-        case ((data, oi), dt) => unwrap(wrap(data, oi, dt), oi)
+        case ((data, oi), dt) =>
+          unwrap(wrap(data, oi, dt), oi)
       })
   }
 
   test("wrap / unwrap Struct Type") {
     val dt = StructType(
       dataTypes.zipWithIndex.map {
-        case (t, idx) => StructField(s"c_$idx", t)
+        case (t, idx) =>
+          StructField(s"c_$idx", t)
       })
     val inspector = toInspector(dt)
     checkValues(

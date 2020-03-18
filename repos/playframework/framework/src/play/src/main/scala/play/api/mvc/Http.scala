@@ -108,9 +108,12 @@ package play.api.mvc {
     lazy val host: String = {
       val u = new URI(uri)
       (u.getHost, u.getPort) match {
-        case (h, p) if h != null && p > 0 => s"$h:$p"
-        case (h, _) if h != null          => h
-        case _                            => headers.get(HeaderNames.HOST).getOrElse("")
+        case (h, p) if h != null && p > 0 =>
+          s"$h:$p"
+        case (h, _) if h != null =>
+          h
+        case _ =>
+          headers.get(HeaderNames.HOST).getOrElse("")
       }
     }
 
@@ -277,8 +280,10 @@ package play.api.mvc {
         value = value0.trim
       } yield {
         RequestHeader.qPattern.findFirstMatchIn(value) match {
-          case Some(m) => (m.group(1).toDouble, m.before.toString)
-          case None    => (1.0, value) // “The default value is q=1.”
+          case Some(m) =>
+            (m.group(1).toDouble, m.before.toString)
+          case None =>
+            (1.0, value) // “The default value is q=1.”
         }
       }
     }
@@ -516,7 +521,8 @@ package play.api.mvc {
       val keySet = TreeSet(keys: _*)(CaseInsensitiveOrdered)
       new Headers(
         headers.filterNot {
-          case (name, _) => keySet(name)
+          case (name, _) =>
+            keySet(name)
         })
     }
 
@@ -662,7 +668,8 @@ package play.api.mvc {
           urldecode(data)
       } catch {
         // fail gracefully is the session cookie is corrupted
-        case NonFatal(_) => Map.empty[String, String]
+        case NonFatal(_) =>
+          Map.empty[String, String]
       }
     }
 
@@ -949,7 +956,8 @@ package play.api.mvc {
             decodeSetCookieHeader(headerValue)
               .groupBy(_.name)
               .mapValues(_.head))
-        case None => fromMap(Map.empty)
+        case None =>
+          fromMap(Map.empty)
       }
 
     def fromCookieHeader(header: Option[String]): Cookies =
@@ -959,7 +967,8 @@ package play.api.mvc {
             decodeCookieHeader(headerValue)
               .groupBy(_.name)
               .mapValues(_.head))
-        case None => fromMap(Map.empty)
+        case None =>
+          fromMap(Map.empty)
       }
 
     private def fromMap(cookies: Map[String, Cookie]): Cookies =

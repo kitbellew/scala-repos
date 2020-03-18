@@ -25,7 +25,8 @@ package p2 {
     def f() {
       val u2: Other = null
       (null: Any) match {
-        case u2.Baz(x) => println(x)
+        case u2.Baz(x) =>
+          println(x)
       } //: u2.Quux) }
       // The underlying error was: type mismatch;
       //  found   : Other#Quux

@@ -57,7 +57,8 @@ trait TraceSymbolActivity {
     try println(
       "%s#%s %s".format(prefix, sym.accurateKindString, sym.name.decode))
     catch {
-      case x: Throwable => println(prefix + " failed: " + x)
+      case x: Throwable =>
+        println(prefix + " failed: " + x)
     }
     allChildren(sym.id).sorted foreach showIdAndRemove
   }
@@ -116,7 +117,8 @@ trait TraceSymbolActivity {
       showMapFreq(prevOwners) { k =>
         val owners =
           (((allSymbols(k).owner.id, NoPhase)) :: prevOwners(k)) map {
-            case (oid, NoPhase) => "-> owned by " + ownerStr(oid)
+            case (oid, NoPhase) =>
+              "-> owned by " + ownerStr(oid)
             case (oid, ph) =>
               "-> owned by %s (until %s)".format(ownerStr(oid), ph)
           }
@@ -136,7 +138,8 @@ trait TraceSymbolActivity {
             owners
               .take(3)
               .map({
-                case (k, v) => v + "/" + k
+                case (k, v) =>
+                  v + "/" + k
               })
               .mkString(", ") + ", ...")
         }

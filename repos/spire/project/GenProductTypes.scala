@@ -70,14 +70,18 @@ object GenProductTypes {
 
       case args =>
         val arglist = args.zipWithIndex map {
-          case (DelegateArg, i)       => "x%d: (%s)" format (i, types)
-          case (FixedArg(argType), i) => "x%d: %s" format (i, argType)
+          case (DelegateArg, i) =>
+            "x%d: (%s)" format (i, types)
+          case (FixedArg(argType), i) =>
+            "x%d: %s" format (i, argType)
         } mkString ", "
         val call = (1 to arity) map { j =>
           "%s%d.%s(%s)" format (
             prefix, j, methodName, args.zipWithIndex map {
-              case (DelegateArg, i) => "x%d._%d" format (i, j)
-              case (FixedArg(_), i) => "x" + i
+              case (DelegateArg, i) =>
+                "x%d._%d" format (i, j)
+              case (FixedArg(_), i) =>
+                "x" + i
             } mkString ", "
           )
         } mkString ("(", ", ", ")")

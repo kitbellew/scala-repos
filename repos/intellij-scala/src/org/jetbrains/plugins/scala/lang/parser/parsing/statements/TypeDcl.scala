@@ -57,7 +57,8 @@ object TypeDcl {
         builder.advanceLexer()
         builder error ScalaBundle.message("wrong.type")
         true
-      case _ => true
+      case _ =>
+        true
     }
   }
 }

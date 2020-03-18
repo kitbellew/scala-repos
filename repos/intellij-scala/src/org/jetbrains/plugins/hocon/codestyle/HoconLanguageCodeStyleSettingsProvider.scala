@@ -264,6 +264,7 @@ class HoconLanguageCodeStyleSettingsProvider
         |]
         | """.stripMargin.trim
 
-      case _ => ""
+      case _ =>
+        ""
     }
 }

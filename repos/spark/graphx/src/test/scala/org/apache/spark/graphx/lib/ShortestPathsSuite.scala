@@ -33,15 +33,18 @@ class ShortestPathsSuite extends SparkFunSuite with LocalSparkContext {
         (6, Map(1 -> 3, 4 -> 1)))
       val edgeSeq = Seq((1, 2), (1, 5), (2, 3), (2, 5), (3, 4), (4, 5), (4, 6))
         .flatMap {
-          case e => Seq(e, e.swap)
+          case e =>
+            Seq(e, e.swap)
         }
       val edges = sc.parallelize(edgeSeq).map {
-        case (v1, v2) => (v1.toLong, v2.toLong)
+        case (v1, v2) =>
+          (v1.toLong, v2.toLong)
       }
       val graph = Graph.fromEdgeTuples(edges, 1)
       val landmarks = Seq(1, 4).map(_.toLong)
       val results = ShortestPaths.run(graph, landmarks).vertices.collect.map {
-        case (v, spMap) => (v, spMap.mapValues(i => i))
+        case (v, spMap) =>
+          (v, spMap.mapValues(i => i))
       }
       assert(results.toSet === shortestPaths)
     }

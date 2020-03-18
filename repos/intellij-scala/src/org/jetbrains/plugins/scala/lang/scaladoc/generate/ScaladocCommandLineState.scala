@@ -113,8 +113,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         if (file.getExtension == "scala" && file.isValid && scope.contains(
               file)) {
           PsiManager.getInstance(project).findFile(file) match {
-            case f: ScalaFile if !f.isScriptFile() => acc += file
-            case _                                 => // do nothing
+            case f: ScalaFile if !f.isScriptFile() =>
+              acc += file
+            case _ => // do nothing
           }
         }
       }
@@ -131,7 +132,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     val result = ListBuffer[String]()
 
     paramTokens.foldLeft(false) {
-      case (true, _) => false
+      case (true, _) =>
+        false
       case (_, param: String)
           if ScaladocCommandLineState.generatedParamsWithArgs.contains(param) =>
         true
@@ -260,8 +262,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         modulesNeeded ++= allModules
       case AnalysisScope.MODULE =>
         modules.find(scope.containsModule) match {
-          case Some(a) => modulesNeeded += a
-          case None    =>
+          case Some(a) =>
+            modulesNeeded += a
+          case None =>
         }
       case AnalysisScope.MODULES =>
         for (module <- modules) {
@@ -269,7 +272,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
             modulesNeeded += module
           }
         }
-      case _ => needFilter = true
+      case _ =>
+        needFilter = true
     }
 
     for (className <- sourcePath) {
@@ -333,7 +337,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         pw.close()
         paramList.add("@" + tempParamsFile.getAbsolutePath)
       } catch {
-        case e: IOException => throw new ExecutionException("I/O Error", e)
+        case e: IOException =>
+          throw new ExecutionException("I/O Error", e)
       }
     } else {
       paramList.addAll(paramListSimple)

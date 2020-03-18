@@ -61,8 +61,10 @@ object Challenge extends LilaController {
 
   private def isMine(challenge: ChallengeModel)(implicit ctx: Context) =
     challenge.challenger match {
-      case Left(anon)  => HTTPRequest sid ctx.req contains anon.secret
-      case Right(user) => ctx.userId contains user.id
+      case Left(anon) =>
+        HTTPRequest sid ctx.req contains anon.secret
+      case Right(user) =>
+        ctx.userId contains user.id
     }
 
   private def isForMe(challenge: ChallengeModel)(implicit ctx: Context) =
@@ -156,7 +158,8 @@ object Challenge extends LilaController {
   def restriction(user: lila.user.User)(implicit
       ctx: Context): Fu[Option[String]] =
     ctx.me match {
-      case None => fuccess("Only registered players can send challenges.".some)
+      case None =>
+        fuccess("Only registered players can send challenges.".some)
       case Some(me) =>
         Env.relation.api.fetchBlocks(user.id, me.id) flatMap {
           case true =>

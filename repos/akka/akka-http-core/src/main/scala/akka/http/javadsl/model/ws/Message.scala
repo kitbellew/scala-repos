@@ -35,8 +35,10 @@ sealed abstract class Message {
 object Message {
   def adapt(msg: sm.ws.Message): Message =
     msg match {
-      case t: sm.ws.TextMessage ⇒ TextMessage.adapt(t)
-      case b: sm.ws.BinaryMessage ⇒ BinaryMessage.adapt(b)
+      case t: sm.ws.TextMessage ⇒
+        TextMessage.adapt(t)
+      case b: sm.ws.BinaryMessage ⇒
+        BinaryMessage.adapt(b)
     }
 }
 
@@ -100,8 +102,10 @@ object TextMessage {
 
   def adapt(msg: sm.ws.TextMessage): TextMessage =
     msg match {
-      case sm.ws.TextMessage.Strict(text) ⇒ create(text)
-      case tm: sm.ws.TextMessage ⇒ create(tm.textStream.asJava)
+      case sm.ws.TextMessage.Strict(text) ⇒
+        create(text)
+      case tm: sm.ws.TextMessage ⇒
+        create(tm.textStream.asJava)
     }
 }
 
@@ -162,7 +166,9 @@ object BinaryMessage {
 
   def adapt(msg: sm.ws.BinaryMessage): BinaryMessage =
     msg match {
-      case sm.ws.BinaryMessage.Strict(data) ⇒ create(data)
-      case bm: sm.ws.BinaryMessage ⇒ create(bm.dataStream.asJava)
+      case sm.ws.BinaryMessage.Strict(data) ⇒
+        create(data)
+      case bm: sm.ws.BinaryMessage ⇒
+        create(bm.dataStream.asJava)
     }
 }

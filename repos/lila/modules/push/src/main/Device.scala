@@ -10,7 +10,9 @@ private final case class Device(
 
   def deviceId =
     platform match {
-      case "ios" => _id.grouped(8).mkString("<", " ", ">")
-      case _     => _id
+      case "ios" =>
+        _id.grouped(8).mkString("<", " ", ">")
+      case _ =>
+        _id
     }
 }

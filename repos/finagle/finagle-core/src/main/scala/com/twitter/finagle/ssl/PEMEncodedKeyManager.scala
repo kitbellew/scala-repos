@@ -67,8 +67,10 @@ object PEMEncodedKeyManager {
     val f = new FileOutputStream(new File(pemPath))
     // if the chain is present, use it instead of the cert (chain contains cert)
     caCert match {
-      case Some(c) => StreamIO.copy(new ByteArrayInputStream(c), f)
-      case None    => StreamIO.copy(new ByteArrayInputStream(certificate), f)
+      case Some(c) =>
+        StreamIO.copy(new ByteArrayInputStream(c), f)
+      case None =>
+        StreamIO.copy(new ByteArrayInputStream(certificate), f)
     }
     StreamIO.copy(new ByteArrayInputStream(key), f)
     f.close()

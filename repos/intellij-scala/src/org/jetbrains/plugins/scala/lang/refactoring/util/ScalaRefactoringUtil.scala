@@ -120,8 +120,9 @@ object ScalaRefactoringUtil {
     e match {
       case x: ScReferenceExpression =>
         x.resolve() match {
-          case _: ScReferencePattern => return e
-          case _                     =>
+          case _: ScReferencePattern =>
+            return e
+          case _ =>
         }
       case _ =>
     }
@@ -142,7 +143,8 @@ object ScalaRefactoringUtil {
         ScalaPsiElementFactory.createExpressionFromText(
           e.getText + " _",
           e.getManager)
-      case _ => e
+      case _ =>
+        e
     }
   }
 
@@ -171,8 +173,10 @@ object ScalaRefactoringUtil {
   def replaceSingletonTypes(scType: ScType): ScType = {
     def replaceSingleton(scType: ScType): (Boolean, ScType) = {
       ScType.extractDesignatorSingletonType(scType) match {
-        case None     => (false, scType)
-        case Some(tp) => (true, tp)
+        case None =>
+          (false, scType)
+        case Some(tp) =>
+          (true, tp)
       }
     }
     scType.recursiveUpdate(replaceSingleton)
@@ -184,8 +188,10 @@ object ScalaRefactoringUtil {
 
   def checkTypeElement(element: ScTypeElement): Option[ScTypeElement] = {
     Option(element).filter {
-      case e if e.getNextSiblingNotWhitespace.isInstanceOf[ScTypeArgs] => false
-      case _                                                           => true
+      case e if e.getNextSiblingNotWhitespace.isInstanceOf[ScTypeArgs] =>
+        false
+      case _ =>
+        true
     }
   }
 
@@ -236,9 +242,11 @@ object ScalaRefactoringUtil {
           reference.resolve() match {
             case ta: ScTypeAlias if !ScalaPsiUtil.hasStablePath(ta) =>
               ta
-            case _ => null
+            case _ =>
+              null
           }
-        case _ => null
+        case _ =>
+          null
       }
     }
 
@@ -254,7 +262,8 @@ object ScalaRefactoringUtil {
           }
         }
 
-      case _ => false
+      case _ =>
+        false
     }
 
     ownersArray.toSeq
@@ -319,7 +328,8 @@ object ScalaRefactoringUtil {
             return res
           } else
             return None
-        case _ => return None
+        case _ =>
+          return None
       }
       None
     }
@@ -342,7 +352,8 @@ object ScalaRefactoringUtil {
         lit match {
           case intrp: ScInterpolatedStringLiteral if rangeText.contains('$') =>
             intrp.reference.fold("")(_.refName)
-          case _ => ""
+          case _ =>
+            ""
         }
       val quote =
         if (lit.isMultiLineString)
@@ -376,7 +387,8 @@ object ScalaRefactoringUtil {
           case Some(srr: ScalaResolveResult)
               if srr.element.isInstanceOf[ScFunction] =>
             Some(srr.element.asInstanceOf[ScFunction])
-          case _ => None
+          case _ =>
+            None
         }
     }
     // Handle omitted parentheses in calls to functions with empty parameter list.
@@ -386,7 +398,8 @@ object ScalaRefactoringUtil {
         case (ReferenceToFunction(func), ScFunctionType(returnType, _))
             if (func: ScFunction).parameters.isEmpty =>
           returnType
-        case _ => cachedType
+        case _ =>
+          cachedType
       }
     val types = addPossibleTypes(exprType, element).map(replaceSingletonTypes)
     Some((element, types))
@@ -405,13 +418,16 @@ object ScalaRefactoringUtil {
               if fun.paramClauses.clauses.nonEmpty &&
                 fun.paramClauses.clauses.head.isImplicit =>
             copyExpr
-          case fun: ScFunction if fun.parameters.nonEmpty => liftMethod
+          case fun: ScFunction if fun.parameters.nonEmpty =>
+            liftMethod
           case meth: PsiMethod
               if meth.getParameterList.getParameters.nonEmpty =>
             liftMethod
-          case _ => copyExpr
+          case _ =>
+            copyExpr
         }
-      case _ => copyExpr
+      case _ =>
+        copyExpr
     }
   }
 
@@ -458,7 +474,8 @@ object ScalaRefactoringUtil {
             result += toCheck.getTextRange
           case lit: ScLiteral if filter(lit) =>
             collectOccurrencesInLiteral(lit, text, result)
-          case _ => result ++= getTextOccurrenceInLiterals(text, child, filter)
+          case _ =>
+            result ++= getTextOccurrenceInLiterals(text, child, filter)
         }
       }
       result.toArray
@@ -482,9 +499,11 @@ object ScalaRefactoringUtil {
               _.refName) == prefix && toCheck.depthFirst.forall {
               case ref: ScReferenceExpression =>
                 refNameToResolved.get(ref.refName).contains(ref.resolve())
-              case _ => true
+              case _ =>
+                true
             }
-          case _ => false
+          case _ =>
+            false
         }
         getTextOccurrenceInLiterals(text, enclosingContainer, filter)
       case lit: ScLiteral if lit.isString =>
@@ -492,7 +511,8 @@ object ScalaRefactoringUtil {
         val filter: ScLiteral => Boolean = {
           case toCheck: ScInterpolatedStringLiteral if text.contains('$') =>
             false
-          case _ => true
+          case _ =>
+            true
         }
         getTextOccurrenceInLiterals(text, enclosingContainer, filter)
       case _ =>
@@ -512,8 +532,10 @@ object ScalaRefactoringUtil {
           child match {
             case x: ScExpression =>
               x.getParent match {
-                case y: ScMethodCall if y.args.exprs.isEmpty => occurrences += y
-                case _                                       => occurrences += x
+                case y: ScMethodCall if y.args.exprs.isEmpty =>
+                  occurrences += y
+                case _ =>
+                  occurrences += x
               }
             case _ =>
           }
@@ -593,10 +615,13 @@ object ScalaRefactoringUtil {
     expr match {
       case x: ScParenthesisedExpr =>
         x.expr match {
-          case Some(e) => e
-          case _       => x
+          case Some(e) =>
+            e
+          case _ =>
+            x
         }
-      case _ => expr
+      case _ =>
+        expr
     }
   }
 
@@ -768,8 +793,9 @@ object ScalaRefactoringUtil {
         builder.append(getShortText(ass.getLExpression))
         builder.append(" = ")
         ass.getRExpression match {
-          case Some(r) => builder.append(getShortText(r))
-          case _       =>
+          case Some(r) =>
+            builder.append(getShortText(r))
+          case _ =>
         }
       case bl: ScBlock =>
         builder.append("{...}")
@@ -796,11 +822,14 @@ object ScalaRefactoringUtil {
         builder.append(getShortText(i.operation))
         builder.append(" ")
         builder.append(getShortText(i.rOp))
-      case l: ScLiteral => builder.append(l.getText)
+      case l: ScLiteral =>
+        builder.append(l.getText)
       case m: ScMatchStmt =>
         m.expr match {
-          case Some(expression) => builder.append(getShortText(expression))
-          case _                => builder.append("...")
+          case Some(expression) =>
+            builder.append(getShortText(expression))
+          case _ =>
+            builder.append("...")
         }
         builder.append(" match {...}")
       case m: ScMethodCall =>
@@ -814,7 +843,8 @@ object ScalaRefactoringUtil {
         val types = n.extendsBlock.superTypes.filter {
           case ScDesignatorType(clazz: PsiClass) =>
             clazz.qualifiedName != "scala.ScalaObject"
-          case _ => true
+          case _ =>
+            true
         }
         for (tp <- types) {
           builder.append(ScType.presentableText(tp))
@@ -822,14 +852,16 @@ object ScalaRefactoringUtil {
             builder.append(" with ")
         }
         n.extendsBlock.templateBody match {
-          case Some(tb) => builder.append(" {...}")
-          case _        =>
+          case Some(tb) =>
+            builder.append(" {...}")
+          case _ =>
         }
       case p: ScParenthesisedExpr =>
         builder.append("(")
         p.expr match {
-          case Some(expression) => builder.append(getShortText(expression))
-          case _                =>
+          case Some(expression) =>
+            builder.append(getShortText(expression))
+          case _ =>
         }
         builder.append(")")
       case p: ScPostfixExpr =>
@@ -841,23 +873,29 @@ object ScalaRefactoringUtil {
         builder.append(getShortText(p.operand))
       case r: ScReferenceExpression =>
         r.qualifier match {
-          case Some(q) => builder.append(getShortText(q)).append(".")
-          case _       =>
+          case Some(q) =>
+            builder.append(getShortText(q)).append(".")
+          case _ =>
         }
         builder.append(r.refName)
       case r: ScReturnStmt =>
         builder.append("return ")
         r.expr match {
-          case Some(expression) => builder.append(getShortText(expression))
-          case _                =>
+          case Some(expression) =>
+            builder.append(getShortText(expression))
+          case _ =>
         }
-      case s: ScSuperReference => builder.append(s.getText)
-      case t: ScThisReference  => builder.append(t.getText)
+      case s: ScSuperReference =>
+        builder.append(s.getText)
+      case t: ScThisReference =>
+        builder.append(t.getText)
       case t: ScThrowStmt =>
         builder.append("throw ")
         t.body match {
-          case Some(expression) => builder.append(getShortText(expression))
-          case _                => builder.append("...")
+          case Some(expression) =>
+            builder.append(getShortText(expression))
+          case _ =>
+            builder.append("...")
         }
       case t: ScTryStmt =>
         builder.append("try {...}")
@@ -879,8 +917,10 @@ object ScalaRefactoringUtil {
         builder.append(" : ")
         builder.append(
           t.typeElement match {
-            case Some(te) => te.getText
-            case _        => "..."
+            case Some(te) =>
+              te.getText
+            case _ =>
+              "..."
           })
       case u: ScUnderscoreSection =>
         if (u.bindingExpr.isEmpty)
@@ -889,10 +929,14 @@ object ScalaRefactoringUtil {
           builder.append(getShortText(u.bindingExpr.get))
           builder.append(" _")
         }
-      case u: ScUnitExpr  => builder.append("()")
-      case w: ScWhileStmt => builder.append("while (...) {...}")
-      case x: ScXmlExpr   => builder.append(x.getText)
-      case _              => builder.append(expr.getText)
+      case u: ScUnitExpr =>
+        builder.append("()")
+      case w: ScWhileStmt =>
+        builder.append("while (...) {...}")
+      case x: ScXmlExpr =>
+        builder.append(x.getText)
+      case _ =>
+        builder.append(expr.getText)
     }
     builder.toString()
   }
@@ -917,8 +961,9 @@ object ScalaRefactoringUtil {
     var parent = element
     while (parent != null && !parent.getText.contains("\n")) {
       parent match {
-        case expr: ScExpression => res += expr
-        case _                  =>
+        case expr: ScExpression =>
+          res += expr
+        case _ =>
       }
       parent = parent.getParent
     }
@@ -941,7 +986,8 @@ object ScalaRefactoringUtil {
               if w.getTextRange.getStartOffset == offset &&
                 w.getText.contains("\n") =>
             file.findElementAt(offset - 1)
-          case p => p
+          case p =>
+            p
         }
       val expressions = getExpressions(element).filter(exprFilter)
       def chooseExpression(expr: ScExpression) {
@@ -1048,7 +1094,8 @@ object ScalaRefactoringUtil {
             if w.getTextRange.getStartOffset == offset &&
               w.getText.contains(" ") =>
           file.findElementAt(offset - 1)
-        case p => p
+        case p =>
+          p
       }
     element
   }
@@ -1199,9 +1246,11 @@ object ScalaRefactoringUtil {
           par.containingClass match {
             case clazz: ScClass if clazz.isTopLevel =>
               ScalaBundle.message("cannot.refactor.class.parameter.top.level")
-            case _ => null
+            case _ =>
+              null
           }
-        case _ => null
+        case _ =>
+          null
       }
     if (errorMessage != null)
       action(errorMessage)
@@ -1270,7 +1319,8 @@ object ScalaRefactoringUtil {
           lit match {
             case intrp: ScInterpolatedStringLiteral =>
               intrp.reference.fold("")(_.refName)
-            case _ => ""
+            case _ =>
+              ""
           }
         val replaceAsInjection = Seq("s", "raw").contains(prefix)
 
@@ -1384,11 +1434,14 @@ object ScalaRefactoringUtil {
         return true
       val result: Boolean =
         nextParent match {
-          case _: ScBlock => true
+          case _: ScBlock =>
+            true
           case forSt: ScForStatement if forSt.body.orNull == parExpr =>
             false //in this case needBraces == true
-          case forSt: ScForStatement => true
-          case _                     => false
+          case forSt: ScForStatement =>
+            true
+          case _ =>
+            false
         }
       result || needBraces(parExpr, nextParent)
     }
@@ -1403,8 +1456,10 @@ object ScalaRefactoringUtil {
     nextPar match {
       case prevExpr: ScExpression if !checkEnd(nextPar, expr) =>
         findParentExpr(prevExpr)
-      case prevExpr: ScExpression if checkEnd(nextPar, expr) => expr
-      case _                                                 => expr
+      case prevExpr: ScExpression if checkEnd(nextPar, expr) =>
+        expr
+      case _ =>
+        expr
     }
   }
 
@@ -1418,18 +1473,22 @@ object ScalaRefactoringUtil {
       file
     else
       expr.getParent match {
-        case args: ScArgumentExprList => args.getParent
-        case other                    => other
+        case args: ScArgumentExprList =>
+          args.getParent
+        case other =>
+          other
       }
   }
 
   def needBraces(parExpr: PsiElement, prev: PsiElement): Boolean = {
     prev match {
-      case tb: ScTryBlock if !tb.hasRBrace => true
+      case tb: ScTryBlock if !tb.hasRBrace =>
+        true
       case _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
           _: ScalaFile | _: ScCaseClause =>
         false
-      case _: ScFunction => true
+      case _: ScFunction =>
+        true
       case Both(
             fun: ScFunction,
             _ childOf (_: ScTemplateBody | _: ScEarlyDefinitions)) =>
@@ -1437,20 +1496,29 @@ object ScalaRefactoringUtil {
       case ifSt: ScIfStmt
           if Seq(ifSt.thenBranch, ifSt.elseBranch) contains Option(parExpr) =>
         true
-      case forSt: ScForStatement if forSt.body.orNull == parExpr => true
-      case forSt: ScForStatement                                 => false
-      case _: ScEnumerator | _: ScGenerator                      => false
+      case forSt: ScForStatement if forSt.body.orNull == parExpr =>
+        true
+      case forSt: ScForStatement =>
+        false
+      case _: ScEnumerator | _: ScGenerator =>
+        false
       case guard: ScGuard if guard.getParent.isInstanceOf[ScEnumerators] =>
         false
-      case whSt: ScWhileStmt if whSt.body.orNull == parExpr            => true
-      case doSt: ScDoStmt if doSt.getExprBody.orNull == parExpr        => true
-      case finBl: ScFinallyBlock if finBl.expression.orNull == parExpr => true
+      case whSt: ScWhileStmt if whSt.body.orNull == parExpr =>
+        true
+      case doSt: ScDoStmt if doSt.getExprBody.orNull == parExpr =>
+        true
+      case finBl: ScFinallyBlock if finBl.expression.orNull == parExpr =>
+        true
       case fE: ScFunctionExpr =>
         fE.getContext match {
-          case be: ScBlock if be.lastExpr.contains(fE) => false
-          case _                                       => true
+          case be: ScBlock if be.lastExpr.contains(fE) =>
+            false
+          case _ =>
+            true
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -1482,10 +1550,14 @@ object ScalaRefactoringUtil {
   def container(element: PsiElement, file: PsiFile): PsiElement = {
     def oneExprBody(fun: ScFunctionDefinition): Boolean =
       fun.body match {
-        case Some(_: ScBlock)                     => false
-        case Some(newTd: ScNewTemplateDefinition) => false
-        case Some(_)                              => true
-        case None                                 => false
+        case Some(_: ScBlock) =>
+          false
+        case Some(newTd: ScNewTemplateDefinition) =>
+          false
+        case Some(_) =>
+          true
+        case None =>
+          false
       }
 
     if (element == null)
@@ -1506,8 +1578,10 @@ object ScalaRefactoringUtil {
 
       val isCaseClausesBlock =
         candidate match {
-          case b: ScBlock if b.hasCaseClauses => true
-          case _                              => false
+          case b: ScBlock if b.hasCaseClauses =>
+            true
+          case _ =>
+            false
         }
 
       if (funDef != null && PsiTreeUtil.isAncestor(
@@ -1526,8 +1600,10 @@ object ScalaRefactoringUtil {
       element: PsiElement,
       aClass: ScTemplateDefinition): Boolean = {
     aClass.extendsBlock.templateParents match {
-      case Some(parents) if parents.isAncestorOf(element) => true
-      case None                                           => false
+      case Some(parents) if parents.isAncestorOf(element) =>
+        true
+      case None =>
+        false
     }
   }
 
@@ -1542,8 +1618,10 @@ object ScalaRefactoringUtil {
       editor.getSelectionModel.getSelectionEnd - 1)
     val elements =
       ScalaPsiUtil.getElementsRange(startElement, endElement) match {
-        case Seq(b: ScBlock) if !b.hasRBrace => b.children.toSeq
-        case elems                           => elems
+        case Seq(b: ScBlock) if !b.hasRBrace =>
+          b.children.toSeq
+        case elems =>
+          elems
       }
     elements
   }
@@ -1559,16 +1637,20 @@ object ScalaRefactoringUtil {
           ScalaBundle
             .message("cannot.extract.used.function.definition")
             .toOption
-        case _: ScBlockStatement                                        => None
-        case comm: PsiComment if !comm.getParent.isInstanceOf[ScMember] => None
-        case _: PsiWhiteSpace                                           => None
+        case _: ScBlockStatement =>
+          None
+        case comm: PsiComment if !comm.getParent.isInstanceOf[ScMember] =>
+          None
+        case _: PsiWhiteSpace =>
+          None
         case _ if ScalaTokenTypes.tSEMICOLON == elem.getNode.getElementType =>
           None
         case typeDef: ScTypeDefinition if hasOutsideUsages(typeDef) =>
           ScalaBundle.message("cannot.extract.used.type.definition").toOption
         case _: ScSelfInvocation =>
           ScalaBundle.message("cannot.extract.self.invocation").toOption
-        case _ => ScalaBundle.message("cannot.extract.empty.message").toOption
+        case _ =>
+          ScalaBundle.message("cannot.extract.empty.message").toOption
       }
 
     def hasOutsideUsages(elem: PsiElement): Boolean = {
@@ -1609,13 +1691,15 @@ object ScalaRefactoringUtil {
   def findEnclosingBlockStatement(
       place: PsiElement): Option[ScBlockStatement] = {
     place match {
-      case null => None
+      case null =>
+        None
       case (bs: ScBlockStatement) childOf (
             _: ScBlock | _: ScEarlyDefinitions | _: ScalaFile |
             _: ScTemplateBody
           ) =>
         Some(bs)
-      case other => findEnclosingBlockStatement(other.getParent)
+      case other =>
+        findEnclosingBlockStatement(other.getParent)
     }
   }
 

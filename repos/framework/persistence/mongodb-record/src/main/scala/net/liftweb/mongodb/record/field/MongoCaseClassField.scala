@@ -55,7 +55,8 @@ class MongoCaseClassField[OwnerType <: Record[OwnerType], CaseType](
 
   def setFromJValue(jvalue: JValue): Box[CaseType] =
     jvalue match {
-      case JNothing | JNull => setBox(Empty)
+      case JNothing | JNull =>
+        setBox(Empty)
       case s =>
         setBox(
           Helpers.tryo[CaseType] {
@@ -80,14 +81,18 @@ class MongoCaseClassField[OwnerType <: Record[OwnerType], CaseType](
 
   def setFromAny(in: Any): Box[CaseType] =
     in match {
-      case dbo: DBObject => setFromDBObject(dbo)
+      case dbo: DBObject =>
+        setFromDBObject(dbo)
       case c if mf.runtimeClass.isInstance(c) =>
         setBox(Full(c.asInstanceOf[CaseType]))
       case Full(c) if mf.runtimeClass.isInstance(c) =>
         setBox(Full(c.asInstanceOf[CaseType]))
-      case null | None | Empty => setBox(defaultValueBox)
-      case (failure: Failure)  => setBox(failure)
-      case _                   => setBox(defaultValueBox)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case (failure: Failure) =>
+        setBox(failure)
+      case _ =>
+        setBox(defaultValueBox)
     }
 }
 
@@ -123,7 +128,8 @@ class MongoCaseClassListField[OwnerType <: Record[OwnerType], CaseType](
               Helpers.tryo[CaseType] {
                 s.extract[CaseType]
               })))
-      case _ => setBox(Empty)
+      case _ =>
+        setBox(Empty)
     }
 
   def asDBObject: DBObject = {
@@ -145,10 +151,12 @@ class MongoCaseClassListField[OwnerType <: Record[OwnerType], CaseType](
 
   def setFromAny(in: Any): Box[MyType] =
     in match {
-      case dbo: DBObject => setFromDBObject(dbo)
+      case dbo: DBObject =>
+        setFromDBObject(dbo)
       case list @ c :: xs if mf.runtimeClass.isInstance(c) =>
         setBox(Full(list.asInstanceOf[MyType]))
-      case _ => setBox(Empty)
+      case _ =>
+        setBox(Empty)
     }
 
   override def setFromString(in: String): Box[MyType] = {

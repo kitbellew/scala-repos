@@ -13,11 +13,13 @@ object Directory {
     (
       System.getProperty("gitbucket.home") match {
         // -Dgitbucket.home=<path>
-        case path if (path != null) => new File(path)
+        case path if (path != null) =>
+          new File(path)
         case _ =>
           scala.util.Properties.envOrNone("GITBUCKET_HOME") match {
             // environment variable GITBUCKET_HOME
-            case Some(env) => new File(env)
+            case Some(env) =>
+              new File(env)
             // default is HOME/.gitbucket
             case None => {
               val oldHome =

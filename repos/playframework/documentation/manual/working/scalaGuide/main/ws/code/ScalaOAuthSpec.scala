@@ -73,7 +73,8 @@ object ScalaOAuthSpec extends PlaySpecification {
               Redirect(routes.Application.index)
                 .withSession("token" -> t.token, "secret" -> t.secret)
             }
-            case Left(e) => throw e
+            case Left(e) =>
+              throw e
           }
         }
         .getOrElse(
@@ -83,7 +84,8 @@ object ScalaOAuthSpec extends PlaySpecification {
               Redirect(oauth.redirectUrl(t.token))
                 .withSession("token" -> t.token, "secret" -> t.secret)
             }
-            case Left(e) => throw e
+            case Left(e) =>
+              throw e
           })
     }
   //#flow
@@ -99,7 +101,8 @@ object ScalaOAuthSpec extends PlaySpecification {
             .get
             .map(result => Ok(result.json))
         }
-        case _ => Future.successful(Redirect(routes.Application.authenticate))
+        case _ =>
+          Future.successful(Redirect(routes.Application.authenticate))
       }
     }
   //#extended

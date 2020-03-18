@@ -47,7 +47,8 @@ abstract class ExtractTraitTestBase
         onlyFirstMember)
       assert(assertion = false, "Exception was not thrown")
     } catch {
-      case e: Exception => assert(messageText == e.getMessage)
+      case e: Exception =>
+        assert(messageText == e.getMessage)
     }
   }
 }

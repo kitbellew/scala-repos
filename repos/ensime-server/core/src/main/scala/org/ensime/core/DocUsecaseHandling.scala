@@ -42,9 +42,11 @@ trait DocUsecaseHandling {
                 .getOrElse(sig)
             } finally jarFile.close()
           } catch {
-            case e: IOException => sig
+            case e: IOException =>
+              sig
           }
-        case _ => sig
+        case _ =>
+          sig
       }
     } else
       sig

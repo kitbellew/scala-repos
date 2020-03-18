@@ -42,8 +42,10 @@ abstract class ScalaMemberSelectionTableBase[
         val res: java.lang.Boolean = myMemberInfoModel.isAbstractWhenDisabled(
           memberInfo)
         res
-      case _ if memberInfo.isToAbstract => java.lang.Boolean.TRUE
-      case _                            => java.lang.Boolean.FALSE
+      case _ if memberInfo.isToAbstract =>
+        java.lang.Boolean.TRUE
+      case _ =>
+        java.lang.Boolean.FALSE
     }
   }
 
@@ -54,7 +56,8 @@ abstract class ScalaMemberSelectionTableBase[
           if member.hasAbstractModifier && myMemberInfoModel.isFixedAbstract(
             info) == java.lang.Boolean.TRUE =>
         false
-      case _ => info.isChecked && myMemberInfoModel.isAbstractEnabled(info)
+      case _ =>
+        info.isChecked && myMemberInfoModel.isAbstractEnabled(info)
     }
   }
 
@@ -82,6 +85,7 @@ abstract class ScalaMemberSelectionTableBase[
           AllIcons.General.ImplementingMethod
         else
           AbstractMemberSelectionTable.EMPTY_OVERRIDE_ICON
-      case _ => AbstractMemberSelectionTable.EMPTY_OVERRIDE_ICON
+      case _ =>
+        AbstractMemberSelectionTable.EMPTY_OVERRIDE_ICON
     }
 }

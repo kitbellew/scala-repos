@@ -23,29 +23,35 @@ object Test {
   def main(args: Array[String]) {
     testing("List.collect")(
       List(1, 2) collect {
-        case x if f(x) && x < 2 => x
+        case x if f(x) && x < 2 =>
+          x
       })
     testing("List.collectFirst")(
       List(1, 2) collectFirst {
-        case x if f(x) && x < 2 => x
+        case x if f(x) && x < 2 =>
+          x
       })
     testing("Option.collect")(
       Some(1) collect {
-        case x if f(x) && x < 2 => x
+        case x if f(x) && x < 2 =>
+          x
       })
     testing("Option.collect")(
       Some(2) collect {
-        case x if f(x) && x < 2 => x
+        case x if f(x) && x < 2 =>
+          x
       })
     testing("Stream.collect")(
       (
         Stream(1, 2).collect {
-          case x if f(x) && x < 2 => x
+          case x if f(x) && x < 2 =>
+            x
         }
       ).toList)
     testing("Stream.collectFirst")(
       Stream.continually(1) collectFirst {
-        case x if f(x) && x < 2 => x
+        case x if f(x) && x < 2 =>
+          x
       })
 
     import collection.parallel.ParIterable
@@ -55,7 +61,8 @@ object Test {
       val counter = new Counter()
       (
         ParVector(1, 2) collect {
-          case x if counter(x) && x < 2 => x
+          case x if counter(x) && x < 2 =>
+            x
         },
         counter.synchronized(counter.count))
     }
@@ -64,7 +71,8 @@ object Test {
       val counter = new Counter()
       (
         ParArray(1, 2) collect {
-          case x if counter(x) && x < 2 => x
+          case x if counter(x) && x < 2 =>
+            x
         },
         counter.synchronized(counter.count))
     }
@@ -73,14 +81,16 @@ object Test {
       testing("Iterator.collect")(
         (
           Iterator(1, 2) collect {
-            case x if f(x) && x < 2 => x
+            case x if f(x) && x < 2 =>
+              x
           }
         ).toList)
 
       testing("List.view.collect")(
         (
           List(1, 2).view collect {
-            case x if f(x) && x < 2 => x
+            case x if f(x) && x < 2 =>
+              x
           }
         ).force)
 
@@ -96,7 +106,8 @@ object Test {
         import concurrent.Await
         import concurrent.duration.Duration
         val result = concurrent.Future(1) collect {
-          case x if f(x) => x
+          case x if f(x) =>
+            x
         }
         Await.result(result, Duration.Inf)
       }

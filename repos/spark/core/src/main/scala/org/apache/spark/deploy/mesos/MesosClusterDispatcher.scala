@@ -59,7 +59,8 @@ private[mesos] class MesosClusterDispatcher(
 
   private val engineFactory =
     recoveryMode match {
-      case "NONE" => new BlackHoleMesosClusterPersistenceEngineFactory
+      case "NONE" =>
+        new BlackHoleMesosClusterPersistenceEngineFactory
       case "ZOOKEEPER" =>
         new ZookeeperMesosClusterPersistenceEngineFactory(conf)
       case _ =>

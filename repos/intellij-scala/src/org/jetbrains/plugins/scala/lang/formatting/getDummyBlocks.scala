@@ -74,8 +74,10 @@ object getDummyBlocks {
       case _: ScValue | _: ScVariable
           if settings.ALIGN_GROUP_FIELD_DECLARATIONS =>
         if (node.getTreeParent.getPsi match {
-              case _: ScEarlyDefinitions | _: ScTemplateBody => true;
-              case _                                         => false
+              case _: ScEarlyDefinitions | _: ScTemplateBody =>
+                true;
+              case _ =>
+                false
             }) {
           subBlocks.addAll(getFieldGroupSubBlocks(node, block))
           return subBlocks
@@ -214,7 +216,8 @@ object getDummyBlocks {
                   }
                   scalaDocPrevChildTag = currentTag
                   Some(contextAlignment)
-                case _ => None
+                case _ =>
+                  None
               }
             ).map(a => new SubBlocksContext(alignment = Some(a)))
           subBlocks.add(
@@ -309,7 +312,8 @@ object getDummyBlocks {
               case ScalaTokenTypes.tRPARENTHESIS |
                   ScalaTokenTypes.tLPARENTHESIS =>
                 null
-              case _ => alignment
+              case _ =>
+                alignment
             }
           case args: ScArgumentExprList =>
             child.getElementType match {
@@ -331,7 +335,8 @@ object getDummyBlocks {
                 null
               case _ if settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS =>
                 alignment
-              case _ => null
+              case _ =>
+                null
             }
           case patt: ScPatternArgumentList =>
             child.getElementType match {
@@ -353,7 +358,8 @@ object getDummyBlocks {
                 null
               case _ if settings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS =>
                 alignment
-              case _ => null
+              case _ =>
+                null
             }
           case _: ScMethodCall | _: ScReferenceExpression =>
             if (child.getElementType == ScalaTokenTypes.tIDENTIFIER &&
@@ -369,17 +375,21 @@ object getDummyBlocks {
               alignment
           case _: ScXmlStartTag | _: ScXmlEmptyTag =>
             child.getElementType match {
-              case ScalaElementTypes.XML_ATTRIBUTE => alignment
-              case _                               => null
+              case ScalaElementTypes.XML_ATTRIBUTE =>
+                alignment
+              case _ =>
+                null
             }
           case _: ScXmlElement =>
             child.getElementType match {
               case ScalaElementTypes.XML_START_TAG |
                   ScalaElementTypes.XML_END_TAG =>
                 alignment
-              case _ => null
+              case _ =>
+                null
             }
-          case _ => alignment
+          case _ =>
+            alignment
         }
       }
       val childWrap = arrangeSuggestedWrapForChild(
@@ -451,7 +461,8 @@ object getDummyBlocks {
                   block.suggestedWrap),
                 block.getSettings))
             node.getTreeNext
-          case _ => node
+          case _ =>
+            node
         }
 
       do {
@@ -616,7 +627,8 @@ object getDummyBlocks {
           psi match {
             case _: ScCaseClause =>
               true
-            case _: PsiComment => false
+            case _: PsiComment =>
+              false
             case _ =>
               breaks += 2
               false
@@ -735,7 +747,8 @@ object getDummyBlocks {
               } else {
                 true
               }
-            case _: PsiComment => false
+            case _: PsiComment =>
+              false
             case _ =>
               breaks += 2
               false
@@ -867,8 +880,10 @@ object getDummyBlocks {
     val first = extBlock.getFirstChild
     val last =
       tempBody match {
-        case None    => extBlock.getLastChild
-        case Some(x) => x.getPrevSibling
+        case None =>
+          extBlock.getLastChild
+        case Some(x) =>
+          x.getPrevSibling
       }
     if (last != null) {
       val indent = ScalaIndentProcessor.getChildIndent(block, first.getNode)
@@ -1225,7 +1240,8 @@ object getDummyBlocks {
               priority(inf.reference.getText, assignments = false)
             case inf: ScInfixTypeElement =>
               priority(inf.ref.getText, assignments = false)
-            case _ => 0
+            case _ =>
+              0
           }
         val parentPriority =
           node.getPsi match {
@@ -1235,7 +1251,8 @@ object getDummyBlocks {
               priority(inf.reference.getText, assignments = false)
             case inf: ScInfixTypeElement =>
               priority(inf.ref.getText, assignments = false)
-            case _ => 0
+            case _ =>
+              0
           }
         parentPriority == childPriority
       }
@@ -1354,10 +1371,14 @@ object getDummyBlocks {
     val mySettings = s.getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
     val scalaSettings = s.getCustomSettings(classOf[ScalaCodeStyleSettings])
     node.getPsi match {
-      case _: ScXmlStartTag                                              => true //todo:
-      case _: ScXmlEmptyTag                                              => true //todo:
-      case _: ScParameters if mySettings.ALIGN_MULTILINE_PARAMETERS      => true
-      case _: ScParameterClause if mySettings.ALIGN_MULTILINE_PARAMETERS => true
+      case _: ScXmlStartTag =>
+        true //todo:
+      case _: ScXmlEmptyTag =>
+        true //todo:
+      case _: ScParameters if mySettings.ALIGN_MULTILINE_PARAMETERS =>
+        true
+      case _: ScParameterClause if mySettings.ALIGN_MULTILINE_PARAMETERS =>
+        true
       case _: ScTemplateParents if mySettings.ALIGN_MULTILINE_EXTENDS_LIST =>
         true
       case _: ScArgumentExprList
@@ -1368,7 +1389,8 @@ object getDummyBlocks {
           if mySettings.ALIGN_MULTILINE_PARAMETERS_IN_CALLS ||
             mySettings.ALIGN_MULTILINE_METHOD_BRACKETS =>
         true
-      case _: ScEnumerators if mySettings.ALIGN_MULTILINE_FOR => true
+      case _: ScEnumerators if mySettings.ALIGN_MULTILINE_FOR =>
+        true
       case _: ScParenthesisedExpr
           if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION =>
         true
@@ -1378,7 +1400,8 @@ object getDummyBlocks {
       case _: ScParenthesisedPattern
           if mySettings.ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION =>
         true
-      case _: ScInfixExpr if mySettings.ALIGN_MULTILINE_BINARY_OPERATION => true
+      case _: ScInfixExpr if mySettings.ALIGN_MULTILINE_BINARY_OPERATION =>
+        true
       case _: ScInfixPattern if mySettings.ALIGN_MULTILINE_BINARY_OPERATION =>
         true
       case _: ScInfixTypeElement
@@ -1390,7 +1413,8 @@ object getDummyBlocks {
       case _: ScMethodCall | _: ScReferenceExpression
           if mySettings.ALIGN_MULTILINE_CHAINED_METHODS =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 

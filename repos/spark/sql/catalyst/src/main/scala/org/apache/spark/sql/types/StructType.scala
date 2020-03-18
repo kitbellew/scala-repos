@@ -310,7 +310,8 @@ case class StructType(fields: Array[StructField])
   private[sql] override def simpleString(maxNumberFields: Int): String = {
     val builder = new StringBuilder
     val fieldTypes = fields.take(maxNumberFields).map {
-      case f => s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
+      case f =>
+        s"${f.name}: ${f.dataType.simpleString(maxNumberFields)}"
     }
     builder.append("struct<")
     builder.append(fieldTypes.mkString(", "))
@@ -372,8 +373,10 @@ object StructType extends AbstractDataType {
   private[sql] def fromString(raw: String): StructType = {
     Try(DataType.fromJson(raw))
       .getOrElse(LegacyTypeStringParser.parse(raw)) match {
-      case t: StructType => t
-      case _             => throw new RuntimeException(s"Failed parsing StructType: $raw")
+      case t: StructType =>
+        t
+      case _ =>
+        throw new RuntimeException(s"Failed parsing StructType: $raw")
     }
   }
 
@@ -399,7 +402,8 @@ object StructType extends AbstractDataType {
             metadata = mb.withMetadata(f.metadata).remove(key).build())
         }
         StructType(newFields)
-      case _ => dt
+      case _ =>
+        dt
     }
 
   private[sql] def merge(left: DataType, right: DataType): DataType =

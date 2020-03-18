@@ -102,7 +102,8 @@ object LocalKMeans {
 
       var pointStats = mappings.map { pair =>
         pair._2.reduceLeft[(Int, (Vector[Double], Int))] {
-          case ((id1, (p1, c1)), (id2, (p2, c2))) => (id1, (p1 + p2, c1 + c2))
+          case ((id1, (p1, c1)), (id2, (p2, c2))) =>
+            (id1, (p1 + p2, c1 + c2))
         }
       }
 

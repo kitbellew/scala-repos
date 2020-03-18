@@ -55,11 +55,14 @@ class ImportPanelConverterProvider
                     actualSettingsSet.contains(
                       elem.getAttribute("name").getValue)
                   }
-                case None => Seq.empty
+                case None =>
+                  Seq.empty
               }
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           }
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     }
 
@@ -75,8 +78,10 @@ class ImportPanelConverterProvider
         context.getSettingsBaseDir
           .listFiles()
           .find(_.getName == "codeStyleSettings.xml") match {
-          case Some(file) => Collections.singleton(file)
-          case None       => Collections.emptyList()
+          case Some(file) =>
+            Collections.singleton(file)
+          case None =>
+            Collections.emptyList()
         }
       }
 

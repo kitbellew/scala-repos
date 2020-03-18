@@ -103,7 +103,8 @@ object Ratatoskr {
 
     commands
       .foldLeft(initial) {
-        case (acc, cmd) => acc :+ "%-20s : %s".format(cmd.name, cmd.description)
+        case (acc, cmd) =>
+          acc :+ "%-20s : %s".format(cmd.name, cmd.description)
       }
       .mkString("\n")
   }
@@ -234,8 +235,10 @@ object KafkaTools extends Command {
           "The format to use for usage reports. Either csv or json (default)",
           { (s: String) =>
             s.toLowerCase match {
-              case format @ ("csv" | "json") => config.reportFormat = format
-              case other                     => sys.error("Invalid report format: " + other)
+              case format @ ("csv" | "json") =>
+                config.reportFormat = format
+              case other =>
+                sys.error("Invalid report format: " + other)
             }
           }
         )
@@ -355,14 +358,16 @@ object KafkaTools extends Command {
       val byAccount: Map[AccountId, Long] = state.pathSize
         .groupBy(_._1.elements.head)
         .map {
-          case (account, sizes) => (account, sizes.map(_._2).sum)
+          case (account, sizes) =>
+            (account, sizes.map(_._2).sum)
         }
 
       import state.index
 
       val timestamp =
         lastTimestamp match {
-          case ts @ ExactTime(_, `index`) => ts
+          case ts @ ExactTime(_, `index`) =>
+            ts
           case _ =>
             Interpolated(index).unsafeTap { temp =>
               //println("Adding %s to pending timestamps".format(temp))
@@ -396,7 +401,8 @@ object KafkaTools extends Command {
                     .flatMap { date =>
                       List(date, date + ".000Z")
                     }
-                case _ => None
+                case _ =>
+                  None
               }
               .flatMap { date =>
                 try {
@@ -543,8 +549,10 @@ object KafkaTools extends Command {
               byAccount.getOrElse(_, 0L))
             (
               index match {
-                case ExactTime(time, _) => Some(time)
-                case i: Interpolated    => interpolationMap.get(i)
+                case ExactTime(time, _) =>
+                  Some(time)
+                case i: Interpolated =>
+                  interpolationMap.get(i)
               }
             ).foreach { timestamp =>
               //println(index + " => " + timestamp)
@@ -560,8 +568,10 @@ object KafkaTools extends Command {
           case (index, byAccount) =>
             (
               index match {
-                case ExactTime(time, _) => Some(time)
-                case i: Interpolated    => interpolationMap.get(i)
+                case ExactTime(time, _) =>
+                  Some(time)
+                case i: Interpolated =>
+                  interpolationMap.get(i)
               }
             ).foreach { timestamp =>
               //println(index + " => " + timestamp)
@@ -614,10 +624,14 @@ object KafkaTools extends Command {
         finish.map {
           i < _
         }) match {
-        case (Some(s), Some(f)) => s && f
-        case (Some(s), None)    => s
-        case (None, Some(f))    => f
-        case (None, None)       => true
+        case (Some(s), Some(f)) =>
+          s && f
+        case (Some(s), None) =>
+          s
+        case (None, Some(f)) =>
+          f
+        case (None, None) =>
+          true
       }
   }
 
@@ -628,8 +642,10 @@ object KafkaTools extends Command {
       val parts = s.split(":")
       if (parts.length == 2) {
         (parseOffset(parts(0)), parseOffset(parts(1))) match {
-          case (Right(s), Right(f)) => Some(MessageRange(s, f))
-          case _                    => None
+          case (Right(s), Right(f)) =>
+            Some(MessageRange(s, f))
+          case _ =>
+            None
         }
       } else {
         None
@@ -645,7 +661,8 @@ object KafkaTools extends Command {
             Some(s.toInt)
           })
       } catch {
-        case ex => Left("Parse error for: " + s)
+        case ex =>
+          Left("Parse error for: " + s)
       }
     }
   }
@@ -893,8 +910,10 @@ object ZookeeperTools extends Command {
 
     def splitPathJson(s: String): (String, String) =
       s.split(":", 2) match {
-        case Array(path, json) => (path, json)
-        case _                 => sys.error("Invalid format for path+json: \"%s\"".format(s))
+        case Array(path, json) =>
+          (path, json)
+        case _ =>
+          sys.error("Invalid format for path+json: \"%s\"".format(s))
       }
 
     def checkpointUpdate() = updateCheckpoint.map(splitPathJson)
@@ -1224,7 +1243,8 @@ object ImportTools extends Command with Logging {
       apiKeyManager.validGrants(key, None) onComplete {
         case Left(error) =>
           logger.error("Could not retrieve grants for api key " + key, error)
-        case Right(success) => logger.info("Grants for " + key + ": " + success)
+        case Right(success) =>
+          logger.info("Grants for " + key + ": " + success)
       }
 
     def runIngest(apiKey: APIKey) =
@@ -1290,7 +1310,8 @@ object ImportTools extends Command with Logging {
           }
 
           loop(0L, AsyncParser.stream()) onComplete {
-            case _ => ch.close()
+            case _ =>
+              ch.close()
           }
       }
 
@@ -1366,7 +1387,8 @@ object CSVTools extends Command {
         config.teaseTimestamps,
         config.verbose)
       .foreach {
-        case jval => println(jval.renderCompact)
+        case jval =>
+          println(jval.renderCompact)
       }
   }
 
@@ -1622,7 +1644,8 @@ object CSVToJSONConverter {
           header
             .zip(line)
             .map {
-              case (k, v) => JField(k, parse(v, timestampConversion, verbose))
+              case (k, v) =>
+                JField(k, parse(v, timestampConversion, verbose))
             }
             .toList)
         line = reader.readNext
@@ -1639,8 +1662,10 @@ object CSVToJSONConverter {
       verbose: Boolean = false): JValue = {
     JParser.parseFromString(s) getOrElse {
       s match {
-        case Timestamp(d, t) if (ts) => JString("%sT%sZ".format(d, t))
-        case s                       => JString(s)
+        case Timestamp(d, t) if (ts) =>
+          JString("%sT%sZ".format(d, t))
+        case s =>
+          JString(s)
       }
     }
   }

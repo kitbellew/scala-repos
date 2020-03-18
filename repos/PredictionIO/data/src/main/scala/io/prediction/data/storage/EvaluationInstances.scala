@@ -92,7 +92,8 @@ class EvaluationInstanceSerializer
             fields.foldLeft(EvaluationInstance()) {
               case (i, field) =>
                 field match {
-                  case JField("id", JString(id)) => i.copy(id = id)
+                  case JField("id", JString(id)) =>
+                    i.copy(id = id)
                   case JField("status", JString(status)) =>
                     i.copy(status = status)
                   case JField("startTime", JString(startTime)) =>
@@ -106,7 +107,8 @@ class EvaluationInstanceSerializer
                         JString(engineParamsGeneratorClass)) =>
                     i.copy(engineParamsGeneratorClass =
                       engineParamsGeneratorClass)
-                  case JField("batch", JString(batch)) => i.copy(batch = batch)
+                  case JField("batch", JString(batch)) =>
+                    i.copy(batch = batch)
                   case JField("env", env) =>
                     i.copy(env = Extraction.extract[Map[String, String]](env))
                   case JField("sparkConf", sparkConf) =>
@@ -122,7 +124,8 @@ class EvaluationInstanceSerializer
                         "evaluatorResultsJSON",
                         JString(evaluatorResultsJSON)) =>
                     i.copy(evaluatorResultsJSON = evaluatorResultsJSON)
-                  case _ => i
+                  case _ =>
+                    i
                 }
             }
         },

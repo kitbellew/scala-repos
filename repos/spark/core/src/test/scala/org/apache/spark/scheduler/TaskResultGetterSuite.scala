@@ -70,7 +70,8 @@ private class ResultDeletingTaskResultGetter(
             }
             removeBlockSuccessfully = true
           } catch {
-            case NonFatal(e) => removeBlockSuccessfully = false
+            case NonFatal(e) =>
+              removeBlockSuccessfully = false
           }
         case directResult: DirectTaskResult[_] =>
           taskSetManager.abort("Internal error: expect only indirect results")

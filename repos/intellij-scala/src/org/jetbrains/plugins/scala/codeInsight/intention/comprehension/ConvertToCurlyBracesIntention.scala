@@ -24,7 +24,8 @@ class ConvertToCurlyBracesIntention extends PsiElementBaseIntentionAction {
         List(ScalaTokenTypes.tLPARENTHESIS, ScalaTokenTypes.tRPARENTHESIS)
           .contains(e.getNode.getElementType) &&
           IntentionAvailabilityChecker.checkIntention(this, element)
-      case _ => false
+      case _ =>
+        false
     }
   }
 

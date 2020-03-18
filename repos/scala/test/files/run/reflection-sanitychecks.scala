@@ -41,7 +41,8 @@ object Test extends App {
     def failsafe(action: => Any): Any =
       try action
       catch {
-        case ex: Throwable => ex.toString
+        case ex: Throwable =>
+          ex.toString
       }
     println(
       s"=========members of ${tpe.typeSymbol.name} in a mirror of D=========")

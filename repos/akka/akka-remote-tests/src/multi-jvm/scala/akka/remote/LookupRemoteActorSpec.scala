@@ -16,7 +16,8 @@ object LookupRemoteActorMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
     def receive = {
-      case "identify" ⇒ sender() ! self
+      case "identify" ⇒
+        sender() ! self
     }
   }
 

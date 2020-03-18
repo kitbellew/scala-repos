@@ -42,8 +42,10 @@ object RE {
 
   implicit def matchResToBoolean(in: REMatcher): Boolean = {
     in match {
-      case null => false
-      case _    => in.matches
+      case null =>
+        false
+      case _ =>
+        in.matches
     }
   }
 

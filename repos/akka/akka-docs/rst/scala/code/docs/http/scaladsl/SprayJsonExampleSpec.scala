@@ -88,8 +88,10 @@ class SprayJsonExampleSpec extends WordSpec with Matchers {
               val maybeItem: Future[Option[Item]] = fetchItem(id)
 
               onSuccess(maybeItem) {
-                case Some(item) => complete(item)
-                case None       => complete(StatusCodes.NotFound)
+                case Some(item) =>
+                  complete(item)
+                case None =>
+                  complete(StatusCodes.NotFound)
               }
             }
           } ~

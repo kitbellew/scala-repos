@@ -4,7 +4,8 @@ class CSuper {
 class C extends CSuper {
   def f =
     (A: AnyRef) match {
-      case _: A.type => "joepie"
+      case _: A.type =>
+        "joepie"
     }
 }
 

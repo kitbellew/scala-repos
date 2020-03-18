@@ -99,7 +99,8 @@ private[spark] object JsonProtocol {
         executorMetricsUpdateToJson(metricsUpdate)
       case blockUpdated: SparkListenerBlockUpdated =>
         throw new MatchError(blockUpdated) // TODO(ekl) implement this
-      case _ => parse(mapper.writeValueAsString(event))
+      case _ =>
+        parse(mapper.writeValueAsString(event))
     }
   }
 
@@ -360,9 +361,12 @@ private[spark] object JsonProtocol {
     import AccumulatorParam._
     if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX))) {
       (value, InternalAccumulator.getParam(name.get)) match {
-        case (v: Int, IntAccumulatorParam)       => JInt(v)
-        case (v: Long, LongAccumulatorParam)     => JInt(v)
-        case (v: String, StringAccumulatorParam) => JString(v)
+        case (v: Int, IntAccumulatorParam) =>
+          JInt(v)
+        case (v: Long, LongAccumulatorParam) =>
+          JInt(v)
+        case (v: String, StringAccumulatorParam) =>
+          JString(v)
         case (v, UpdatedBlockStatusesAccumulatorParam) =>
           JArray(
             v.asInstanceOf[Seq[(BlockId, BlockStatus)]].toList.map {
@@ -463,7 +467,8 @@ private[spark] object JsonProtocol {
           ("Executor ID" -> executorId) ~
             ("Exit Caused By App" -> exitCausedByApp) ~
             ("Loss Reason" -> reason.map(_.toString))
-        case _ => Utils.emptyJson
+        case _ =>
+          Utils.emptyJson
       }
     ("Reason" -> reason) ~ json
   }
@@ -478,7 +483,8 @@ private[spark] object JsonProtocol {
     val result = Utils.getFormattedClassName(jobResult)
     val json =
       jobResult match {
-        case JobSucceeded => Utils.emptyJson
+        case JobSucceeded =>
+          Utils.emptyJson
         case jobFailed: JobFailed =>
           JObject("Exception" -> exceptionToJson(jobFailed.exception))
       }
@@ -525,7 +531,8 @@ private[spark] object JsonProtocol {
     * ------------------------------- */
   def mapToJson(m: Map[String, String]): JValue = {
     val jsonFields = m.map {
-      case (k, v) => JField(k, JString(v))
+      case (k, v) =>
+        JField(k, JString(v))
     }
     JObject(jsonFields.toList)
   }
@@ -592,23 +599,40 @@ private[spark] object JsonProtocol {
       SparkListenerExecutorMetricsUpdate)
 
     (json \ "Event").extract[String] match {
-      case `stageSubmitted`      => stageSubmittedFromJson(json)
-      case `stageCompleted`      => stageCompletedFromJson(json)
-      case `taskStart`           => taskStartFromJson(json)
-      case `taskGettingResult`   => taskGettingResultFromJson(json)
-      case `taskEnd`             => taskEndFromJson(json)
-      case `jobStart`            => jobStartFromJson(json)
-      case `jobEnd`              => jobEndFromJson(json)
-      case `environmentUpdate`   => environmentUpdateFromJson(json)
-      case `blockManagerAdded`   => blockManagerAddedFromJson(json)
-      case `blockManagerRemoved` => blockManagerRemovedFromJson(json)
-      case `unpersistRDD`        => unpersistRDDFromJson(json)
-      case `applicationStart`    => applicationStartFromJson(json)
-      case `applicationEnd`      => applicationEndFromJson(json)
-      case `executorAdded`       => executorAddedFromJson(json)
-      case `executorRemoved`     => executorRemovedFromJson(json)
-      case `logStart`            => logStartFromJson(json)
-      case `metricsUpdate`       => executorMetricsUpdateFromJson(json)
+      case `stageSubmitted` =>
+        stageSubmittedFromJson(json)
+      case `stageCompleted` =>
+        stageCompletedFromJson(json)
+      case `taskStart` =>
+        taskStartFromJson(json)
+      case `taskGettingResult` =>
+        taskGettingResultFromJson(json)
+      case `taskEnd` =>
+        taskEndFromJson(json)
+      case `jobStart` =>
+        jobStartFromJson(json)
+      case `jobEnd` =>
+        jobEndFromJson(json)
+      case `environmentUpdate` =>
+        environmentUpdateFromJson(json)
+      case `blockManagerAdded` =>
+        blockManagerAddedFromJson(json)
+      case `blockManagerRemoved` =>
+        blockManagerRemovedFromJson(json)
+      case `unpersistRDD` =>
+        unpersistRDDFromJson(json)
+      case `applicationStart` =>
+        applicationStartFromJson(json)
+      case `applicationEnd` =>
+        applicationEndFromJson(json)
+      case `executorAdded` =>
+        executorAddedFromJson(json)
+      case `executorRemoved` =>
+        executorRemovedFromJson(json)
+      case `logStart` =>
+        logStartFromJson(json)
+      case `metricsUpdate` =>
+        executorMetricsUpdateFromJson(json)
       case other =>
         mapper
           .readValue(compact(render(json)), Utils.classForName(other))
@@ -813,8 +837,10 @@ private[spark] object JsonProtocol {
       .map(_.extract[String])
     val accumulatedValues =
       (json \ "Accumulables").extractOpt[List[JValue]] match {
-        case Some(values) => values.map(accumulableInfoFromJson)
-        case None         => Seq[AccumulableInfo]()
+        case Some(values) =>
+          values.map(accumulableInfoFromJson)
+        case None =>
+          Seq[AccumulableInfo]()
       }
 
     val stageInfo =
@@ -852,8 +878,10 @@ private[spark] object JsonProtocol {
     val failed = (json \ "Failed").extract[Boolean]
     val accumulables =
       (json \ "Accumulables").extractOpt[Seq[JValue]] match {
-        case Some(values) => values.map(accumulableInfoFromJson)
-        case None         => Seq[AccumulableInfo]()
+        case Some(values) =>
+          values.map(accumulableInfoFromJson)
+        case None =>
+          Seq[AccumulableInfo]()
       }
 
     val taskInfo =
@@ -914,9 +942,12 @@ private[spark] object JsonProtocol {
     import AccumulatorParam._
     if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX))) {
       (value, InternalAccumulator.getParam(name.get)) match {
-        case (JInt(v), IntAccumulatorParam)       => v.toInt
-        case (JInt(v), LongAccumulatorParam)      => v.toLong
-        case (JString(v), StringAccumulatorParam) => v
+        case (JInt(v), IntAccumulatorParam) =>
+          v.toInt
+        case (JInt(v), LongAccumulatorParam) =>
+          v.toLong
+        case (JString(v), StringAccumulatorParam) =>
+          v
         case (JArray(v), UpdatedBlockStatusesAccumulatorParam) =>
           v.map { blockJson =>
             val id = BlockId((blockJson \ "Block ID").extract[String])
@@ -1024,8 +1055,10 @@ private[spark] object JsonProtocol {
     val unknownReason = Utils.getFormattedClassName(UnknownReason)
 
     (json \ "Reason").extract[String] match {
-      case `success`     => Success
-      case `resubmitted` => Resubmitted
+      case `success` =>
+        Success
+      case `resubmitted` =>
+        Resubmitted
       case `fetchFailed` =>
         val blockManagerAddress = blockManagerIdFromJson(
           json \ "Block Manager Address")
@@ -1057,8 +1090,10 @@ private[spark] object JsonProtocol {
           fullStackTrace,
           None,
           accumUpdates)
-      case `taskResultLost`   => TaskResultLost
-      case `taskKilled`       => TaskKilled
+      case `taskResultLost` =>
+        TaskResultLost
+      case `taskKilled` =>
+        TaskKilled
       case `taskCommitDenied` =>
         // Unfortunately, the `TaskCommitDenied` message was introduced in 1.3.0 but the JSON
         // de/serialization logic was not added until 1.5.1. To provide backward compatibility
@@ -1090,7 +1125,8 @@ private[spark] object JsonProtocol {
           executorId.getOrElse("Unknown"),
           exitCausedByApp.getOrElse(true),
           reason)
-      case `unknownReason` => UnknownReason
+      case `unknownReason` =>
+        UnknownReason
     }
   }
 
@@ -1110,7 +1146,8 @@ private[spark] object JsonProtocol {
     val jobFailed = Utils.getFormattedClassName(JobFailed)
 
     (json \ "Result").extract[String] match {
-      case `jobSucceeded` => JobSucceeded
+      case `jobSucceeded` =>
+        JobSucceeded
       case `jobFailed` =>
         val exception = exceptionFromJson(json \ "Exception")
         new JobFailed(exception)
@@ -1184,7 +1221,8 @@ private[spark] object JsonProtocol {
   def mapFromJson(json: JValue): Map[String, String] = {
     val jsonFields = json.asInstanceOf[JObject].obj
     jsonFields.map {
-      case JField(k, JString(v)) => (k, v)
+      case JField(k, JString(v)) =>
+        (k, v)
     }.toMap
   }
 
@@ -1194,7 +1232,8 @@ private[spark] object JsonProtocol {
       .map { value =>
         val properties = new Properties
         mapFromJson(json).foreach {
-          case (k, v) => properties.setProperty(k, v)
+          case (k, v) =>
+            properties.setProperty(k, v)
         }
         properties
       }

@@ -46,8 +46,10 @@ private[sql] object BucketingUtils {
 
   def getBucketId(fileName: String): Option[Int] =
     fileName match {
-      case bucketedFileName(bucketId) => Some(bucketId.toInt)
-      case other                      => None
+      case bucketedFileName(bucketId) =>
+        Some(bucketId.toInt)
+      case other =>
+        None
     }
 
   def bucketIdToString(id: Int): String = f"_$id%05d"

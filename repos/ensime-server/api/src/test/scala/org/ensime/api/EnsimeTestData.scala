@@ -10,7 +10,8 @@ trait EnsimeTestData {
     val file = new File(s)
     try file.getCanonicalFile
     catch {
-      case t: Throwable => file.getAbsoluteFile
+      case t: Throwable =>
+        file.getAbsoluteFile
     }
   }
 

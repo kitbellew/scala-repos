@@ -41,9 +41,12 @@ object ListTest extends SpecLite {
   "intersperse vs benchmark" ! forAll {
     def intersperse[A](value: List[A], a: A): List[A] =
       value match {
-        case Nil      => Nil
-        case x :: Nil => x :: Nil
-        case h :: t   => h :: a :: intersperse(t, a)
+        case Nil =>
+          Nil
+        case x :: Nil =>
+          x :: Nil
+        case h :: t =>
+          h :: a :: intersperse(t, a)
       }
     (a: List[Int], b: Int) => (a.intersperse(b) must_=== (intersperse(a, b)))
   }
@@ -64,7 +67,8 @@ object ListTest extends SpecLite {
     (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
       pairs.forall {
-        case (l, r) => !p(l.last, r.head)
+        case (l, r) =>
+          !p(l.last, r.head)
       }
   }
 
@@ -103,7 +107,8 @@ object ListTest extends SpecLite {
     (a: List[Int], p: (Int, Int) => Boolean) =>
       val pairs = list.adjacentPairs(a.groupWhen(p))
       pairs.forall {
-        case (l, r) => !p(l.last, r.head)
+        case (l, r) =>
+          !p(l.last, r.head)
       }
   }
 
@@ -111,8 +116,10 @@ object ListTest extends SpecLite {
     (a: List[(Int, Int)]) =>
       {
         a.headOption match {
-          case None    => a.lookup[Int, Int](0) must_=== (None)
-          case Some(x) => a.lookup[Int, Int](x._1) must_=== (Some(x._2))
+          case None =>
+            a.lookup[Int, Int](0) must_=== (None)
+          case Some(x) =>
+            a.lookup[Int, Int](x._1) must_=== (Some(x._2))
         }
       }
   }

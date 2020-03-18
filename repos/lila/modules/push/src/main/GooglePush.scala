@@ -25,7 +25,8 @@ private final class GooglePush(
                 .obj("title" -> data.title, "body" -> data.body),
               "data" -> data.payload))
           .flatMap {
-            case res if res.status == 200 => funit
+            case res if res.status == 200 =>
+              funit
             case res =>
               fufail(
                 s"[push] ${device.deviceId} $data ${res.status} ${res.body}")

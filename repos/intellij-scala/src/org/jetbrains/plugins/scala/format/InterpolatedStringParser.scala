@@ -21,8 +21,9 @@ object InterpolatedStringParser extends StringParser {
       checkStripMargin: Boolean): Option[Seq[StringPart]] = {
     if (checkStripMargin)
       element match {
-        case WithStrippedMargin(_, _) => return StripMarginParser.parse(element)
-        case _                        =>
+        case WithStrippedMargin(_, _) =>
+          return StripMarginParser.parse(element)
+        case _ =>
       }
     Some(element) collect {
       case literal: ScInterpolatedStringLiteral =>
@@ -42,7 +43,8 @@ object InterpolatedStringParser extends StringParser {
                     block
                   else
                     block.exprs.headOption.getOrElse(block)
-                case it => it
+                case it =>
+                  it
               }
             val specifier =
               if (!formatted)
@@ -54,7 +56,8 @@ object InterpolatedStringParser extends StringParser {
                       .findFirstIn(textIn(e))
                       .map(format =>
                         Specifier(Span(e, 0, format.length), format))
-                  case _ => None
+                  case _ =>
+                    None
                 }
             Injection(actualExpression, specifier)
 
@@ -84,14 +87,19 @@ object InterpolatedStringParser extends StringParser {
                 else
                   1
               Text(s.drop(edgeLength)) :: t
-            case it => it
+            case it =>
+              it
           }
         ) flatMap {
-          case t: Text => t.withEscapedPercent(element.getManager)
-          case part    => List(part)
+          case t: Text =>
+            t.withEscapedPercent(element.getManager)
+          case part =>
+            List(part)
         } filter {
-          case Text("") => false
-          case _        => true
+          case Text("") =>
+            false
+          case _ =>
+            true
         }
     }
   }
@@ -108,7 +116,8 @@ object InterpolatedStringParser extends StringParser {
     elementType match {
       case ScalaTokenTypes.tINTERPOLATED_STRING =>
         StringUtil.unescapeStringCharacters(text)
-      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING => text
+      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
+        text
     }
   }
 }

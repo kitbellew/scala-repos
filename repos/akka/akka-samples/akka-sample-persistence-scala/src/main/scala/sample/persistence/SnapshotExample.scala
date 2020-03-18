@@ -15,8 +15,10 @@ object SnapshotExample extends App {
     var state = ExampleState()
 
     def receiveCommand: Receive = {
-      case "print"                               => println("current state = " + state)
-      case "snap"                                => saveSnapshot(state)
+      case "print" =>
+        println("current state = " + state)
+      case "snap" =>
+        saveSnapshot(state)
       case SaveSnapshotSuccess(metadata)         => // ...
       case SaveSnapshotFailure(metadata, reason) => // ...
       case s: String =>

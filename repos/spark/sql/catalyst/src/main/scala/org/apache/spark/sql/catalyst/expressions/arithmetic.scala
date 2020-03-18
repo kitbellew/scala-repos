@@ -38,7 +38,8 @@ case class UnaryMinus(child: Expression)
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     dataType match {
-      case dt: DecimalType => defineCodeGen(ctx, ev, c => s"$c.unary_$$minus()")
+      case dt: DecimalType =>
+        defineCodeGen(ctx, ev, c => s"$c.unary_$$minus()")
       case dt: NumericType =>
         nullSafeCodeGen(
           ctx,
@@ -247,8 +248,10 @@ case class Divide(left: Expression, right: Expression)
 
   private lazy val div: (Any, Any) => Any =
     dataType match {
-      case ft: FractionalType => ft.fractional.asInstanceOf[Fractional[Any]].div
-      case it: IntegralType   => it.integral.asInstanceOf[Integral[Any]].quot
+      case ft: FractionalType =>
+        ft.fractional.asInstanceOf[Fractional[Any]].div
+      case it: IntegralType =>
+        it.integral.asInstanceOf[Integral[Any]].quot
     }
 
   override def eval(input: InternalRow): Any = {
@@ -313,8 +316,10 @@ case class Remainder(left: Expression, right: Expression)
 
   private lazy val integral =
     dataType match {
-      case i: IntegralType   => i.integral.asInstanceOf[Integral[Any]]
-      case i: FractionalType => i.asIntegral.asInstanceOf[Integral[Any]]
+      case i: IntegralType =>
+        i.integral.asInstanceOf[Integral[Any]]
+      case i: FractionalType =>
+        i.asIntegral.asInstanceOf[Integral[Any]]
     }
 
   override def eval(input: InternalRow): Any = {
@@ -495,11 +500,14 @@ case class Pmod(left: Expression, right: Expression) extends BinaryArithmetic {
 
   protected override def nullSafeEval(left: Any, right: Any) =
     dataType match {
-      case IntegerType => pmod(left.asInstanceOf[Int], right.asInstanceOf[Int])
-      case LongType    => pmod(left.asInstanceOf[Long], right.asInstanceOf[Long])
+      case IntegerType =>
+        pmod(left.asInstanceOf[Int], right.asInstanceOf[Int])
+      case LongType =>
+        pmod(left.asInstanceOf[Long], right.asInstanceOf[Long])
       case ShortType =>
         pmod(left.asInstanceOf[Short], right.asInstanceOf[Short])
-      case ByteType => pmod(left.asInstanceOf[Byte], right.asInstanceOf[Byte])
+      case ByteType =>
+        pmod(left.asInstanceOf[Byte], right.asInstanceOf[Byte])
       case FloatType =>
         pmod(left.asInstanceOf[Float], right.asInstanceOf[Float])
       case DoubleType =>

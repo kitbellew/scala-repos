@@ -88,7 +88,8 @@ private[v1] object AllStagesResource {
       if (includeDetails) {
         Some(
           stageUiData.taskData.map {
-            case (k, v) => k -> convertTaskData(v)
+            case (k, v) =>
+              k -> convertTaskData(v)
           })
       } else {
         None

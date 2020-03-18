@@ -36,7 +36,8 @@ trait SequentialProvider extends Actor {
 
     case Done =>
       dequeue match {
-        case None => context become idle
+        case None =>
+          context become idle
         case Some(envelope) =>
           debugQueue
           processThenDone(envelope)
@@ -66,14 +67,16 @@ trait SequentialProvider extends Actor {
   private case object Done
 
   private def fallback: ReceiveAsync = {
-    case _ => fuccess(Status.Failure)
+    case _ =>
+      fuccess(Status.Failure)
   }
 
   private def processThenDone(signal: Any) {
     windowCount.add
     signal match {
       // we don't want to send Done after actor death
-      case SequentialProvider.Terminate => self ! PoisonPill
+      case SequentialProvider.Terminate =>
+        self ! PoisonPill
       case Envelope(msg, replyTo) =>
         (process orElse fallback)(msg)
           .withTimeout(

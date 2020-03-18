@@ -84,7 +84,8 @@ class Worker extends Actor with ActorLogging {
   // Stop the CounterService child if it throws ServiceUnavailable
   override val supervisorStrategy =
     OneForOneStrategy() {
-      case _: CounterService.ServiceUnavailable => Stop
+      case _: CounterService.ServiceUnavailable =>
+        Stop
     }
 
   // The sender of the initial Start message will continuously be notified
@@ -107,7 +108,8 @@ class Worker extends Actor with ActorLogging {
 
         // Send current progress to the initial sender
         counterService ? GetCurrentCount map {
-          case CurrentCount(_, count) => Progress(100.0 * count / totalCount)
+          case CurrentCount(_, count) =>
+            Progress(100.0 * count / totalCount)
         } pipeTo progressListener.get
     }
 }
@@ -138,7 +140,8 @@ class CounterService extends Actor {
   // After 3 restarts within 5 seconds it will be stopped.
   override val supervisorStrategy =
     OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 5 seconds) {
-      case _: Storage.StorageException => Restart
+      case _: Storage.StorageException =>
+        Restart
     }
 
   val key = self.path.name
@@ -184,9 +187,11 @@ class CounterService extends Actor {
           c.tell(msg, sender = replyTo)
         backlog = IndexedSeq.empty
 
-      case msg: Increment => forwardOrPlaceInBacklog(msg)
+      case msg: Increment =>
+        forwardOrPlaceInBacklog(msg)
 
-      case msg: GetCurrentCount => forwardOrPlaceInBacklog(msg)
+      case msg: GetCurrentCount =>
+        forwardOrPlaceInBacklog(msg)
 
       case Terminated(actorRef) if Some(actorRef) == storage =>
         // After 3 restarts the storage child is stopped.
@@ -209,7 +214,8 @@ class CounterService extends Actor {
     // the counter. Before that we place the messages in a backlog, to be sent
     // to the counter when it is initialized.
     counter match {
-      case Some(c) => c forward msg
+      case Some(c) =>
+        c forward msg
       case None =>
         if (backlog.size >= MaxBacklog)
           throw new ServiceUnavailable(
@@ -285,8 +291,10 @@ class Storage extends Actor {
 
   def receive =
     LoggingReceive {
-      case Store(Entry(key, count)) => db.save(key, count)
-      case Get(key)                 => sender() ! Entry(key, db.load(key).getOrElse(0L))
+      case Store(Entry(key, count)) =>
+        db.save(key, count)
+      case Get(key) =>
+        sender() ! Entry(key, db.load(key).getOrElse(0L))
     }
 }
 

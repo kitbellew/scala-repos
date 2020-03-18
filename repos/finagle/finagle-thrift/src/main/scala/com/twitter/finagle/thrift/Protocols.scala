@@ -118,7 +118,8 @@ object Protocols {
         try {
           u.objectFieldOffset(classOf[String].getDeclaredField("offset"))
         } catch {
-          case NonFatal(_) => Long.MinValue
+          case NonFatal(_) =>
+            Long.MinValue
         }
       }
       .getOrElse(Long.MinValue)
@@ -132,7 +133,8 @@ object Protocols {
         try {
           u.objectFieldOffset(classOf[String].getDeclaredField("count"))
         } catch {
-          case NonFatal(_) => Long.MinValue
+          case NonFatal(_) =>
+            Long.MinValue
         }
       }
       .getOrElse(Long.MinValue)

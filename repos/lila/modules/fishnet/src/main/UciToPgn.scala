@@ -19,7 +19,8 @@ private object UciToPgn {
     val pliesWithAdviceAndVariation =
       (
         analysis.advices collect {
-          case a if a.info.hasVariation => a.ply
+          case a if a.info.hasVariation =>
+            a.ply
         }
       ).toSet
 
@@ -50,7 +51,8 @@ private object UciToPgn {
                 uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
                 move.situationAfter -> (move :: moves)
               }
-            case (failure, _) => failure
+            case (failure, _) =>
+              failure
           }
       } yield moves._2.reverse map Dumper.apply
 
@@ -62,7 +64,8 @@ private object UciToPgn {
           err => (info.dropVariation :: infos, LilaException(err) :: errs),
           pgn => (info.copy(variation = pgn) :: infos, errs))
     } match {
-      case (infos, errors) => analysis.copy(infos = infos.reverse) -> errors
+      case (infos, errors) =>
+        analysis.copy(infos = infos.reverse) -> errors
     }
   }
 }

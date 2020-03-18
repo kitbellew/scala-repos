@@ -69,7 +69,8 @@ class ByteCodeRepository[BT <: BTypes](
       // OK if multiple threads get here
       val minimalLRU = parsedClasses.valuesIterator
         .collect({
-          case Right((_, lru)) => lru
+          case Right((_, lru)) =>
+            lru
         })
         .toList
         .sorted(Ordering.Long.reverse)
@@ -77,8 +78,10 @@ class ByteCodeRepository[BT <: BTypes](
         .headOption
         .getOrElse(Long.MaxValue)
       parsedClasses retain {
-        case (_, Right((_, lru))) => lru > minimalLRU
-        case _                    => false
+        case (_, Right((_, lru))) =>
+          lru > minimalLRU
+        case _ =>
+          false
       }
     }
   }
@@ -116,7 +119,8 @@ class ByteCodeRepository[BT <: BTypes](
     compilingClasses.get(internalName).map(Right(_)) getOrElse {
       val r =
         parsedClasses.get(internalName) match {
-          case Some(l @ Left(_)) => l
+          case Some(l @ Left(_)) =>
+            l
           case Some(r @ Right((classNode, _))) =>
             parsedClasses(internalName) = Right(
               (classNode, lruCounter.incrementAndGet()))
@@ -151,7 +155,8 @@ class ByteCodeRepository[BT <: BTypes](
         case Right(c) =>
           c.fields.asScala.find(f =>
             f.name == name && f.desc == descriptor) match {
-            case Some(f) => Right((f, parent))
+            case Some(f) =>
+              Right((f, parent))
             case None =>
               if (c.superName == null)
                 Left(FieldNotFound(name, descriptor, classInternalName, None))
@@ -184,11 +189,13 @@ class ByteCodeRepository[BT <: BTypes](
     def methodNodeImpl(ownerInternalName: InternalName)
         : Either[List[ClassNotFound], (MethodNode, InternalName)] = {
       classNode(ownerInternalName) match {
-        case Left(e) => Left(List(e))
+        case Left(e) =>
+          Left(List(e))
         case Right(c) =>
           c.methods.asScala.find(m =>
             m.name == name && m.desc == descriptor) match {
-            case Some(m) => Right((m, ownerInternalName))
+            case Some(m) =>
+              Right((m, ownerInternalName))
             case None =>
               findInParents(
                 Option(c.superName) ++: c.interfaces.asScala.toList,
@@ -206,7 +213,8 @@ class ByteCodeRepository[BT <: BTypes](
         case x :: xs =>
           methodNodeImpl(x).left.flatMap(failed =>
             findInParents(xs, failed ::: failedClasses))
-        case Nil => Left(failedClasses)
+        case Nil =>
+          Left(failedClasses)
       }
 
     // In a MethodInsnNode, the `owner` field may be an array descriptor, for example when invoking `clone`. We don't have a method node to return in this case.
@@ -248,7 +256,8 @@ class ByteCodeRepository[BT <: BTypes](
       removeLineNumberNodes(classNode)
       classNode
     } match {
-      case Some(node) => Right(node)
+      case Some(node) =>
+        Right(node)
       case None =>
         Left(ClassNotFound(internalName, javaDefinedClasses(internalName)))
     }

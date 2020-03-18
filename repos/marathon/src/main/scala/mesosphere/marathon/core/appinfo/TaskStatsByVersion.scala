@@ -25,8 +25,10 @@ object TaskStatsByVersion {
 
     val maybeFullVersionInfo =
       versionInfo match {
-        case full: FullVersionInfo => Some(full)
-        case _                     => None
+        case full: FullVersionInfo =>
+          Some(full)
+        case _ =>
+          None
       }
 
     TaskStatsByVersion(

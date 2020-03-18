@@ -13,15 +13,21 @@ trait PaginatorHelper {
         val toPage = pager.nbPages min (pager.currentPage + length)
         val pre =
           fromPage match {
-            case 1 => Nil
-            case 2 => List(1.some)
-            case x => List(1.some, none)
+            case 1 =>
+              Nil
+            case 2 =>
+              List(1.some)
+            case x =>
+              List(1.some, none)
           }
         val post =
           toPage match {
-            case x if x == pager.nbPages     => Nil
-            case x if x == pager.nbPages - 1 => List(pager.nbPages.some)
-            case x                           => List(none, pager.nbPages.some)
+            case x if x == pager.nbPages =>
+              Nil
+            case x if x == pager.nbPages - 1 =>
+              List(pager.nbPages.some)
+            case x =>
+              List(none, pager.nbPages.some)
           }
         pre ::: (fromPage to toPage).toList.map(some) ::: post
       }

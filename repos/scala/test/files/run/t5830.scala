@@ -3,40 +3,48 @@ import scala.annotation.switch
 object Test extends App {
   def noSwitch(ch: Char, eof: Boolean) =
     ch match {
-      case 'a' if eof => println("a with oef") // then branch
+      case 'a' if eof =>
+        println("a with oef") // then branch
     }
 
   def onlyThen(ch: Char, eof: Boolean) =
     ch match {
-      case 'a' if eof => println("a with oef") // then branch
-      case 'c'        =>
+      case 'a' if eof =>
+        println("a with oef") // then branch
+      case 'c' =>
     }
 
   def ifThenElse(ch: Char, eof: Boolean) =
     (ch: @switch) match {
-      case 'a' if eof => println("a with oef") // then branch
+      case 'a' if eof =>
+        println("a with oef") // then branch
       case 'a' if eof =>
         println(
           "a with oef2"
         ) // unreachable, but the analysis is not that sophisticated
-      case 'a' => println("a") // else-branch
+      case 'a' =>
+        println("a") // else-branch
       case 'c' =>
     }
 
   def defaultUnguarded(ch: Char, eof: Boolean) =
     ch match {
-      case ' ' if eof => println("spacey oef")
-      case _          => println("default")
+      case ' ' if eof =>
+        println("spacey oef")
+      case _ =>
+        println("default")
     }
 
   def defaults(ch: Char, eof: Boolean) =
     (ch: @switch) match {
-      case _ if eof => println("def with oef") // then branch
+      case _ if eof =>
+        println("def with oef") // then branch
       case _ if eof =>
         println(
           "def with oef2"
         ) // unreachable, but the analysis is not that sophisticated
-      case _ => println("def") // else-branch
+      case _ =>
+        println("def") // else-branch
     }
 
   // test binders in collapsed cases (no need to run, it's "enough" to know it doesn't crash the compiler)
@@ -47,7 +55,8 @@ object Test extends App {
     } // work around SI-6015
     catch {
       case _ if guard(null) =>
-      case x if guard(x)    => throw x
+      case x if guard(x) =>
+        throw x
     }
 
   // def unreachable(ch: Char) = (ch: @switch) match {

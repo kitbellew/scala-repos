@@ -8,6 +8,7 @@ trait Cloning {
     }
 
   val pool = 4 * fn {
-    case ghostSYMBOL: Int => ghostSYMBOL * 2
+    case ghostSYMBOL: Int =>
+      ghostSYMBOL * 2
   }
 }

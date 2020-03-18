@@ -25,10 +25,14 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
   }
   override def isApplicable(element: PsiElement): Boolean = {
     element match {
-      case _: ScBlockExpr                     => true
-      case _: ScBlock                         => false
-      case _: ScExpression | _: PsiWhiteSpace => true
-      case e                                  => ScalaPsiUtil.isLineTerminator(e)
+      case _: ScBlockExpr =>
+        true
+      case _: ScBlock =>
+        false
+      case _: ScExpression | _: PsiWhiteSpace =>
+        true
+      case e =>
+        ScalaPsiUtil.isLineTerminator(e)
     }
   }
 
@@ -37,7 +41,8 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
       case _: ScDoStmt | _: ScIfStmt | _: ScTryStmt | _: ScForStatement |
           _: ScWhileStmt | _: ScThrowStmt | _: ScReturnStmt =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -62,10 +67,13 @@ class ScalaWithMatchSurrounder extends ScalaExpressionSurrounder {
       withMatchNode.getPsi match {
         case x: ScParenthesisedExpr =>
           x.expr match {
-            case Some(y) => y
-            case _       => return x.getTextRange
+            case Some(y) =>
+              y
+            case _ =>
+              return x.getTextRange
           }
-        case x => x
+        case x =>
+          x
       }
 
     val whileStmt = element.asInstanceOf[ScMatchStmt]

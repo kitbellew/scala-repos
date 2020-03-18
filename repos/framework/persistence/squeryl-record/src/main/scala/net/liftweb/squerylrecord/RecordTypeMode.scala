@@ -215,8 +215,10 @@ trait RecordTypeMode extends PrimitiveTypeMode {
       case None => {
         val date =
           f.get match {
-            case Some(calendar) => Some(new Timestamp(calendar.getTimeInMillis))
-            case None           => None
+            case Some(calendar) =>
+              Some(new Timestamp(calendar.getTimeInMillis))
+            case None =>
+              None
           }
         new ConstantExpressionNode[Option[Timestamp]](date)(
           createOutMapperTimestampTypeOption)
@@ -392,14 +394,18 @@ trait RecordTypeMode extends PrimitiveTypeMode {
 
   private def getValue[T](f: Option[TypedField[T]]): Option[T] =
     f match {
-      case Some(field) => field.valueBox
-      case None        => None
+      case Some(field) =>
+        field.valueBox
+      case None =>
+        None
     }
 
   private def getValueOrNull[T <: AnyRef](f: Option[TypedField[T]]): T =
     f match {
-      case Some(field) => field.valueBox.openOr(null.asInstanceOf[T])
-      case None        => null.asInstanceOf[T]
+      case Some(field) =>
+        field.valueBox.openOr(null.asInstanceOf[T])
+      case None =>
+        null.asInstanceOf[T]
     }
 
   /**

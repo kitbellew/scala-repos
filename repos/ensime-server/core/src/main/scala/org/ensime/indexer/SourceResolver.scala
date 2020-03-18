@@ -25,14 +25,18 @@ class SourceResolver(config: EnsimeConfig)(implicit vfs: EnsimeVFS)
   // we only support the case where RawSource has a Some(filename)
   def resolve(clazz: PackageName, source: RawSource): Option[FileObject] =
     source.filename match {
-      case None => None
+      case None =>
+        None
       case Some(filename) =>
         all.get(clazz) flatMap {
           _.find(_.getName.getBaseName == filename)
         } match {
-          case s @ Some(_)               => s
-          case None if clazz.path == Nil => None
-          case _                         => resolve(clazz.parent, source)
+          case s @ Some(_) =>
+            s
+          case None if clazz.path == Nil =>
+            None
+          case _ =>
+            resolve(clazz.parent, source)
         }
     }
 
@@ -43,8 +47,10 @@ class SourceResolver(config: EnsimeConfig)(implicit vfs: EnsimeVFS)
 
   private def scan(f: FileObject) =
     f.findFiles(SourceSelector) match {
-      case null => Nil
-      case res  => res.toList
+      case null =>
+        Nil
+      case res =>
+        res.toList
     }
 
   private val depSources = {

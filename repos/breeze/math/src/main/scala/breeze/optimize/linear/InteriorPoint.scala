@@ -80,7 +80,8 @@ object InteriorPoint {
         }
         lastGap = gap
       } catch {
-        case m: MatrixSingularException => converged = true
+        case m: MatrixSingularException =>
+          converged = true
       }
 //      assert(gap > -1E-3,gap)
     }

@@ -58,8 +58,10 @@ class MacroExpandAction extends AnAction {
       .getPsiFile(sourceEditor.getDocument)
     val candidates =
       psiFile match {
-        case file: ScalaFile => findCandidatesInFile(file)
-        case _               => Seq.empty
+        case file: ScalaFile =>
+          findCandidatesInFile(file)
+        case _ =>
+          Seq.empty
       }
 
     suggestUsingCompilerFlag(e, psiFile)
@@ -131,7 +133,8 @@ class MacroExpandAction extends AnAction {
         expandAnnotation(annot, resolved.expansion)
       case (mc: ScMethodCall) =>
         expandMacroCall(mc, resolved.expansion)
-      case (other) => () // unreachable
+      case (other) =>
+        () // unreachable
     }
   }
 
@@ -211,7 +214,8 @@ class MacroExpandAction extends AnAction {
             result.putCopyableUserData(
               MacroExpandAction.EXPANDED_KEY,
               holder.getText)
-          case None => LOG.warn(s"Failed to parse expansion: $body")
+          case None =>
+            LOG.warn(s"Failed to parse expansion: $body")
         }
       case other =>
         LOG.warn(s"Unexpected annotated element: $other at ${other.getText}")
@@ -257,9 +261,12 @@ class MacroExpandAction extends AnAction {
       case e: LeafPsiElement if e.findReferenceAt(0) == null =>
         def walkUp(elem: PsiElement = e): Option[PsiElement] =
           elem match {
-            case null            => None
-            case m: ScMethodCall => Some(m)
-            case e: PsiElement   => walkUp(e.getParent)
+            case null =>
+              None
+            case m: ScMethodCall =>
+              Some(m)
+            case e: PsiElement =>
+              walkUp(e.getParent)
           }
         walkUp()
       // handle macro calls with incorrect offset pointing to macro annotation
@@ -276,22 +283,30 @@ class MacroExpandAction extends AnAction {
       case e: LeafPsiElement =>
         def walkUp(elem: PsiElement = e): Option[PsiElement] =
           elem match {
-            case null            => None
-            case a: ScAnnotation => Some(a)
-            case e: PsiElement   => walkUp(e.getParent)
+            case null =>
+              None
+            case a: ScAnnotation =>
+              Some(a)
+            case e: PsiElement =>
+              walkUp(e.getParent)
           }
         walkUp()
-      case _ => None
+      case _ =>
+        None
     }
   }
 
   def isMacroAnnotation(expansion: MacroExpansion)(implicit
       e: AnActionEvent): Boolean = {
     getRealOwner(expansion) match {
-      case Some(_: ScAnnotation) => true
-      case Some(_: ScMethodCall) => false
-      case Some(other)           => false
-      case None                  => false
+      case Some(_: ScAnnotation) =>
+        true
+      case Some(_: ScMethodCall) =>
+        false
+      case Some(other) =>
+        false
+      case None =>
+        false
     }
   }
 
@@ -306,7 +321,8 @@ class MacroExpandAction extends AnAction {
       rules match {
         case (pattern, replacement) :: xs =>
           applyRules(xs, pat(pattern).matcher(input).replaceAll(replacement))
-        case Nil => input
+        case Nil =>
+          input
       }
     }
 

@@ -204,8 +204,10 @@ class StubbedActorContext[T](val name: String, override val props: Props[T])(
   override def stop(child: ActorRef[Nothing]): Boolean = {
     // removal is asynchronous, so don’t do it here; explicit removeInbox needed from outside
     _children.get(child.path.name) match {
-      case None ⇒ false
-      case Some(inbox) ⇒ inbox.ref == child
+      case None ⇒
+        false
+      case Some(inbox) ⇒
+        inbox.ref == child
     }
   }
   def watch[U](other: ActorRef[U]): ActorRef[U] = other

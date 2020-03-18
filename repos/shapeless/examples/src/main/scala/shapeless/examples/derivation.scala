@@ -188,8 +188,10 @@ object TypeClassesDemoAux {
       new Show[FieldType[K, V] :+: T] {
         def show(c: FieldType[K, V] :+: T): String =
           c match {
-            case Inl(l) => s"${key.value.name}(${sv.value.show(l)})"
-            case Inr(r) => st.value.show(r)
+            case Inl(l) =>
+              s"${key.value.name}(${sv.value.show(l)})"
+            case Inr(r) =>
+              st.value.show(r)
           }
       }
 

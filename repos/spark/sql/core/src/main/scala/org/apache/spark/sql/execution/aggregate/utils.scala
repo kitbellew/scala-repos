@@ -159,8 +159,10 @@ object Utils {
     val distinctExpressions =
       functionsWithDistinct.head.aggregateFunction.children
     val namedDistinctExpressions = distinctExpressions.map {
-      case ne: NamedExpression => ne
-      case other               => Alias(other, other.toString)()
+      case ne: NamedExpression =>
+        ne
+      case other =>
+        Alias(other, other.toString)()
     }
     val distinctAttributes = namedDistinctExpressions.map(_.toAttribute)
     val groupingAttributes = groupingExpressions.map(_.toAttribute)

@@ -103,7 +103,8 @@ abstract class FormatInterpolator {
       import SpecifierGroups.{Spec, Index}
       val s0 =
         part match {
-          case Literal(Constant(x: String)) => x
+          case Literal(Constant(x: String)) =>
+            x
           case _ =>
             throw new IllegalArgumentException(
               "internal error: argument parts must be a list of string literals")
@@ -116,17 +117,25 @@ abstract class FormatInterpolator {
           def alt = {
             def altOf(i: Int) =
               i match {
-                case '\b' => "\\b"
-                case '\t' => "\\t"
-                case '\n' => "\\n"
-                case '\f' => "\\f"
-                case '\r' => "\\r"
+                case '\b' =>
+                  "\\b"
+                case '\t' =>
+                  "\\t"
+                case '\n' =>
+                  "\\n"
+                case '\f' =>
+                  "\\f"
+                case '\r' =>
+                  "\\r"
                 case '\"' =>
                   "${'\"'}" /* avoid lint warn */ +
                     " or a triple-quoted literal \"\"\"with embedded \" or \\u0022\"\"\"" // $" in future
-                case '\'' => "'"
-                case '\\' => """\\"""
-                case x    => "\\u%04x" format x
+                case '\'' =>
+                  "'"
+                case '\\' =>
+                  """\\"""
+                case x =>
+                  "\\u%04x" format x
               }
             val suggest = {
               val r = "([0-7]{1,3}).*".r
@@ -134,10 +143,12 @@ abstract class FormatInterpolator {
                 case r(n) =>
                   altOf {
                     (0 /: n) {
-                      case (a, o) => (8 * a) + (o - '0')
+                      case (a, o) =>
+                        (8 * a) + (o - '0')
                     }
                   }
-                case _ => ""
+                case _ =>
+                  ""
               }
             }
             val txt =
@@ -191,13 +202,15 @@ abstract class FormatInterpolator {
           if (!op.isLeading)
             errorLeading(op)
           op.accepts(arg) match {
-            case Some(tpe) => defval(arg, tpe)
-            case None      =>
+            case Some(tpe) =>
+              defval(arg, tpe)
+            case None =>
           }
         }
         if (ms.hasNext) {
           Conversion(ms.next, part.pos, args.size) match {
-            case Some(op) if op.isLiteral => s_%()
+            case Some(op) if op.isLiteral =>
+              s_%()
             case Some(op) if op.indexed =>
               if (op.index map (_ == n) getOrElse true)
                 accept(op)
@@ -206,8 +219,9 @@ abstract class FormatInterpolator {
                 c.warning(op.groupPos(Index), "Index is not this arg")
                 s_%()
               }
-            case Some(op) => accept(op)
-            case None     =>
+            case Some(op) =>
+              accept(op)
+            case None =>
           }
         } else
           s_%()
@@ -218,15 +232,17 @@ abstract class FormatInterpolator {
           case Some(op) if first && op.hasFlag('<') =>
             op.badFlag('<', "No last arg")
           case Some(op) if op.isLiteral || op.indexed => // OK
-          case Some(op)                               => errorLeading(op)
-          case None                                   =>
+          case Some(op) =>
+            errorLeading(op)
+          case None =>
         }
       }
       fstring append s
     }
 
     parts.zipWithIndex foreach {
-      case (part, n) => copyPart(part, n)
+      case (part, n) =>
+        copyPart(part, n)
     }
 
     //q"{..$evals; new StringOps(${fstring.toString}).format(..$ids)}"
@@ -323,8 +339,10 @@ abstract class FormatInterpolator {
       }
     def only_-(msg: String) = {
       val badFlags = (flags getOrElse "") filterNot {
-        case '-' | '<' => true
-        case _         => false
+        case '-' | '<' =>
+          true
+        case _ =>
+          false
       }
       badFlags.isEmpty || falsely {
         badFlag(badFlags(0), s"Only '-' allowed for $msg")
@@ -390,7 +408,8 @@ abstract class FormatInterpolator {
             null
         }
       Option(m group CC.id) map (cc => cv(cc(0))) match {
-        case Some(x) => Option(x) filter (_.verify)
+        case Some(x) =>
+          Option(x) filter (_.verify)
         case None =>
           badCC(s"Missing conversion operator in '${m.matched}'; $literalHelp")
           None
@@ -409,12 +428,15 @@ abstract class FormatInterpolator {
             Some(NullTpe)
           else
             Some(BooleanTpe)
-        case _ => Some(AnyTpe)
+        case _ =>
+          Some(AnyTpe)
       }
     override protected def okFlags =
       cc match {
-        case 's' | 'S' => "-#<"
-        case _         => "-<"
+        case 's' | 'S' =>
+          "-#<"
+        case _ =>
+          "-<"
       }
   }
   class LiteralXn(val m: Match, val pos: Position, val argc: Int)
@@ -427,7 +449,8 @@ abstract class FormatInterpolator {
           super.verify && noPrecision && truly(
             width foreach (_ =>
               c.warning(groupPos(Width), "width ignored on literal")))
-        case "n" => noFlags && noWidth && noPrecision
+        case "n" =>
+          noFlags && noWidth && noPrecision
       }
     override protected val okFlags = "-"
     def accepts(arg: Tree) = None
@@ -482,7 +505,8 @@ abstract class FormatInterpolator {
               badFlags foreach (badf =>
                 badFlag(badf, s"'$badf' not allowed for a, A"))
             }
-          case _ => true
+          case _ =>
+            true
         }
       )
     def accepts(arg: Tree) =

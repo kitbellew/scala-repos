@@ -55,7 +55,8 @@ object ActorFlow {
                 case Terminated =>
                   println("Child terminated, stopping")
                   context.stop(self)
-                case other => flowActor ! other
+                case other =>
+                  flowActor ! other
               }
 
               override def supervisorStrategy =

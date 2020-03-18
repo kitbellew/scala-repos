@@ -95,8 +95,10 @@ class LatencyCompensationTest
     var metadata: Addr.Metadata = Addr.Metadata.empty
     var compensator: (Addr.Metadata => Duration) = { metadata =>
       metadata.get("compensation") match {
-        case Some(compensation: Duration) => compensation
-        case _                            => Duration.Zero
+        case Some(compensation: Duration) =>
+          compensation
+        case _ =>
+          Duration.Zero
       }
     }
 

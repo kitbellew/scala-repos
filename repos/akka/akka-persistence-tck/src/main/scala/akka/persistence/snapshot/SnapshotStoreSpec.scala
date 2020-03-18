@@ -53,7 +53,8 @@ abstract class SnapshotStoreSpec(config: Config)
       val metadata = SnapshotMetadata(pid, i + 10)
       snapshotStore.tell(SaveSnapshot(metadata, s"s-${i}"), senderProbe.ref)
       senderProbe.expectMsgPF() {
-        case SaveSnapshotSuccess(md) ⇒ md
+        case SaveSnapshotSuccess(md) ⇒
+          md
       }
     }
   }
@@ -214,7 +215,8 @@ abstract class SnapshotStoreSpec(config: Config)
       snapshotStore.tell(SaveSnapshot(md, s"s-5-modified"), senderProbe.ref)
       val md2 =
         senderProbe.expectMsgPF() {
-          case SaveSnapshotSuccess(md2) ⇒ md2
+          case SaveSnapshotSuccess(md2) ⇒
+            md2
         }
       md2.sequenceNr should be(md.sequenceNr)
       snapshotStore.tell(

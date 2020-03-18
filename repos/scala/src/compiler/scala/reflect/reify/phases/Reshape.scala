@@ -48,7 +48,8 @@ trait Reshape {
               ta
             case ta @ TypeApply(hk, ts) =>
               val discard = ts collect {
-                case tt: TypeTree => tt
+                case tt: TypeTree =>
+                  tt
               } exists isDiscarded
               if (reifyDebug && discard)
                 println("discarding TypeApply: " + tree)
@@ -70,7 +71,8 @@ trait Reshape {
               ModuleDef(mods, name, impl1).copyAttrs(moduledef)
             case template @ Template(parents, self, body) =>
               val discardedParents = parents collect {
-                case tt: TypeTree => tt
+                case tt: TypeTree =>
+                  tt
               } filter isDiscarded
               if (reifyDebug && discardedParents.length > 0)
                 println(
@@ -118,9 +120,11 @@ trait Reshape {
               case Apply(TypeApply(_, List(tt)), List(pre))
                   if sym == materializeTypeTag =>
                 mkImplicitly(typeRef(pre.tpe, TypeTagClass, List(tt.tpe)))
-              case _ => original
+              case _ =>
+                original
             }
-          case _ => tree
+          case _ =>
+            tree
         }
 
       override def transformModifiers(mods: Modifiers) = {
@@ -219,8 +223,10 @@ trait Reshape {
               println("reify typed: " + tree)
             val original =
               tpt match {
-                case tt @ TypeTree() => tt.original
-                case tpt             => tpt
+                case tt @ TypeTree() =>
+                  tt.original
+                case tpt =>
+                  tpt
               }
             val annotatedArg = {
               def loop(tree: Tree): Tree =
@@ -229,8 +235,10 @@ trait Reshape {
                         ann,
                         annotated2 @ Annotated(_, _)) =>
                     loop(annotated2)
-                  case annotated1 @ Annotated(ann, arg) => arg
-                  case _                                => EmptyTree
+                  case annotated1 @ Annotated(ann, arg) =>
+                    arg
+                  case _ =>
+                    EmptyTree
                 }
 
               loop(original)
@@ -275,12 +283,14 @@ trait Reshape {
           } else {
             def toScalaAnnotation(jann: ClassfileAnnotArg): Tree =
               (jann: @unchecked) match {
-                case LiteralAnnotArg(const) => Literal(const)
+                case LiteralAnnotArg(const) =>
+                  Literal(const)
                 case ArrayAnnotArg(arr) =>
                   Apply(
                     Ident(definitions.ArrayModule),
                     arr.toList map toScalaAnnotation)
-                case NestedAnnotArg(ann) => toPreTyperAnnotation(ann)
+                case NestedAnnotArg(ann) =>
+                  toPreTyperAnnotation(ann)
               }
 
             ann.assocs map {
@@ -290,7 +300,8 @@ trait Reshape {
           }
 
         def extractOriginal: PartialFunction[Tree, Tree] = {
-          case Apply(Select(New(tpt), _), _) => tpt
+          case Apply(Select(New(tpt), _), _) =>
+            tpt
         }
         assert(extractOriginal.isDefinedAt(ann.original), showRaw(ann.original))
         New(
@@ -301,8 +312,10 @@ trait Reshape {
       private def toPreTyperLazyVal(ddef: DefDef): ValDef = {
         def extractRhs(rhs: Tree) =
           rhs match {
-            case Block(Assign(lhs, rhs) :: Nil, _) if lhs.symbol.isLazy => rhs
-            case _                                                      => rhs // unit or trait case
+            case Block(Assign(lhs, rhs) :: Nil, _) if lhs.symbol.isLazy =>
+              rhs
+            case _ =>
+              rhs // unit or trait case
           }
         val DefDef(mods0, name0, _, _, tpt0, rhs0) = ddef
         val name1 = name0.dropLocal
@@ -320,15 +333,18 @@ trait Reshape {
         val symdefs =
           (
             stats collect {
-              case vodef: ValOrDefDef => vodef
+              case vodef: ValOrDefDef =>
+                vodef
             } map (vodeff => vodeff.symbol -> vodeff)
           ).toMap
         val accessors = scala.collection.mutable.Map[ValDef, List[DefDef]]()
         stats collect {
-          case ddef: DefDef => ddef
+          case ddef: DefDef =>
+            ddef
         } foreach (defdef => {
           val valdef = symdefs get defdef.symbol.accessedOrSelf collect {
-            case vdef: ValDef => vdef
+            case vdef: ValDef =>
+              vdef
           } getOrElse null
           if (valdef != null)
             accessors(valdef) = accessors.getOrElse(valdef, Nil) :+ defdef
@@ -410,7 +426,8 @@ trait Reshape {
         val lazyvaldefs: Map[Symbol, DefDef] =
           stats
             .collect({
-              case ddef: DefDef if ddef.mods.isLazy => ddef
+              case ddef: DefDef if ddef.mods.isLazy =>
+                ddef
             })
             .map((ddef: DefDef) => ddef.symbol -> ddef)
             .toMap
@@ -441,7 +458,8 @@ trait Reshape {
                 toPreTyperLazyVal(ddef) :: Nil
               } else
                 Nil
-            case _ => stat :: Nil
+            case _ =>
+              stat :: Nil
           })
       }
 
@@ -464,7 +482,8 @@ trait Reshape {
           stats: List[Tree]): List[Tree] =
         stats diff (
           stats collect {
-            case moddef: ModuleDef => moddef
+            case moddef: ModuleDef =>
+              moddef
           } filter (moddef => {
             val isSynthetic = moddef.symbol.isSynthetic
             // this doesn't work for local classes, e.g. for ones that are top-level to a quasiquote (see comments to companionClass)

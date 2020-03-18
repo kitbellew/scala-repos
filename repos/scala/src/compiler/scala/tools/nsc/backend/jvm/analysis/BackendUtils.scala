@@ -181,15 +181,24 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
 
   private def primitiveAsmTypeToBType(primitiveType: Type): PrimitiveBType =
     (primitiveType.getSort: @switch) match {
-      case Type.BOOLEAN => BOOL
-      case Type.BYTE    => BYTE
-      case Type.CHAR    => CHAR
-      case Type.SHORT   => SHORT
-      case Type.INT     => INT
-      case Type.LONG    => LONG
-      case Type.FLOAT   => FLOAT
-      case Type.DOUBLE  => DOUBLE
-      case _            => null
+      case Type.BOOLEAN =>
+        BOOL
+      case Type.BYTE =>
+        BYTE
+      case Type.CHAR =>
+        CHAR
+      case Type.SHORT =>
+        SHORT
+      case Type.INT =>
+        INT
+      case Type.LONG =>
+        LONG
+      case Type.FLOAT =>
+        FLOAT
+      case Type.DOUBLE =>
+        DOUBLE
+      case _ =>
+        null
     }
 
   def isScalaBox(insn: MethodInsnNode): Boolean = {
@@ -199,7 +208,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         srBoxesRuntimeBoxToMethods.get(primitiveAsmTypeToBType(args(0))) match {
           case Some(MethodNameAndType(name, tp)) =>
             name == insn.name && tp.descriptor == insn.desc
-          case _ => false
+          case _ =>
+            false
         }
       )
     }
@@ -221,7 +231,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
         case Some(MethodNameAndType(name, tp)) =>
           name == insn.name && tp.descriptor == insn.desc
-        case _ => false
+        case _ =>
+          false
       }
     )
   }
@@ -243,7 +254,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
     map.get(insn.owner) match {
       case Some(MethodNameAndType(name, tp)) =>
         insn.name == name && insn.desc == tp.descriptor
-      case _ => false
+      case _ =>
+        false
     }
 
   def isJavaBox(insn: MethodInsnNode): Boolean =
@@ -254,8 +266,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isPredefAutoBox(insn: MethodInsnNode): Boolean = {
     insn.owner == PredefRef.internalName && (
       predefAutoBoxMethods.get(insn.name) match {
-        case Some(tp) => insn.desc == tp.descriptor
-        case _        => false
+        case Some(tp) =>
+          insn.desc == tp.descriptor
+        case _ =>
+          false
       }
     )
   }
@@ -263,8 +277,10 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isPredefAutoUnbox(insn: MethodInsnNode): Boolean = {
     insn.owner == PredefRef.internalName && (
       predefAutoUnboxMethods.get(insn.name) match {
-        case Some(tp) => insn.desc == tp.descriptor
-        case _        => false
+        case Some(tp) =>
+          insn.desc == tp.descriptor
+        case _ =>
+          false
       }
     )
   }
@@ -294,7 +310,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi.name == "MODULE$" && fi.desc == (
           "L" + moduleName + ";"
         )
-      case _ => false
+      case _ =>
+        false
     }
 
   def isPredefLoad(insn: AbstractInsnNode) =
@@ -404,8 +421,9 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
 
     def visitConstant(const: AnyRef): Unit =
       const match {
-        case t: Type => visitDescriptor(t.getDescriptor)
-        case _       =>
+        case t: Type =>
+          visitDescriptor(t.getDescriptor)
+        case _ =>
       }
 
     // in principle we could references to annotation types, as they only end up as strings in the
@@ -470,7 +488,8 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
       val iter = m.instructions.iterator()
       while (iter.hasNext)
         iter.next() match {
-          case ti: TypeInsnNode => visitInternalNameOrArrayReference(ti.desc)
+          case ti: TypeInsnNode =>
+            visitInternalNameOrArrayReference(ti.desc)
           case fi: FieldInsnNode =>
             visitInternalNameOrArrayReference(fi.owner);
             visitDescriptor(fi.desc)
@@ -481,9 +500,11 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
             visitDescriptor(id.desc);
             visitHandle(id.bsm);
             id.bsmArgs foreach visitConstant
-          case ci: LdcInsnNode            => visitConstant(ci.cst)
-          case ma: MultiANewArrayInsnNode => visitDescriptor(ma.desc)
-          case _                          =>
+          case ci: LdcInsnNode =>
+            visitConstant(ci.cst)
+          case ma: MultiANewArrayInsnNode =>
+            visitDescriptor(ma.desc)
+          case _ =>
         }
     }
     innerClasses.toList

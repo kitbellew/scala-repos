@@ -579,8 +579,10 @@ private[python] class PythonMLLibAPI extends Serializable {
 
     val documents = data.rdd.map(_.asScala.toArray).map { r =>
       r(0) match {
-        case i: java.lang.Integer => (i.toLong, r(1).asInstanceOf[Vector])
-        case i: java.lang.Long    => (i.toLong, r(1).asInstanceOf[Vector])
+        case i: java.lang.Integer =>
+          (i.toLong, r(1).asInstanceOf[Vector])
+        case i: java.lang.Long =>
+          (i.toLong, r(1).asInstanceOf[Vector])
         case _ =>
           throw new IllegalArgumentException(
             "input values contains invalid type value.")
@@ -1235,7 +1237,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     // We use DataFrames for serialization of IndexedRows from Python,
     // so map each Row in the DataFrame back to an IndexedRow.
     val indexedRows = rows.rdd.map {
-      case Row(index: Long, vector: Vector) => IndexedRow(index, vector)
+      case Row(index: Long, vector: Vector) =>
+        IndexedRow(index, vector)
     }
     new IndexedRowMatrix(indexedRows, numRows, numCols)
   }
@@ -1250,7 +1253,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     // We use DataFrames for serialization of MatrixEntry entries from
     // Python, so map each Row in the DataFrame back to a MatrixEntry.
     val entries = rows.rdd.map {
-      case Row(i: Long, j: Long, value: Double) => MatrixEntry(i, j, value)
+      case Row(i: Long, j: Long, value: Double) =>
+        MatrixEntry(i, j, value)
     }
     new CoordinateMatrix(entries, numRows, numCols)
   }
@@ -1355,10 +1359,14 @@ private[spark] object SerDe extends Serializable {
       objects.foreach(pickler.save)
       val code =
         objects.length match {
-          case 1 => Opcodes.TUPLE1
-          case 2 => Opcodes.TUPLE2
-          case 3 => Opcodes.TUPLE3
-          case _ => Opcodes.TUPLE
+          case 1 =>
+            Opcodes.TUPLE1
+          case 2 =>
+            Opcodes.TUPLE2
+          case 3 =>
+            Opcodes.TUPLE3
+          case _ =>
+            Opcodes.TUPLE
         }
       out.write(code)
     }
@@ -1632,8 +1640,10 @@ private[spark] object SerDe extends Serializable {
   def dumps(obj: AnyRef): Array[Byte] = {
     obj match {
       // Pickler in Python side cannot deserialize Scala Array normally. See SPARK-12834.
-      case array: Array[_] => new Pickler().dumps(array.toSeq.asJava)
-      case _               => new Pickler().dumps(obj)
+      case array: Array[_] =>
+        new Pickler().dumps(array.toSeq.asJava)
+      case _ =>
+        new Pickler().dumps(obj)
     }
   }
 
@@ -1676,8 +1686,10 @@ private[spark] object SerDe extends Serializable {
           val obj = unpickle.loads(row)
           if (batched) {
             obj match {
-              case list: JArrayList[_] => list.asScala
-              case arr: Array[_]       => arr
+              case list: JArrayList[_] =>
+                list.asScala
+              case arr: Array[_] =>
+                arr
             }
           } else {
             Seq(obj)

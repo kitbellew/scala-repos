@@ -38,7 +38,8 @@ object ScFunctionType {
       case Some(t: ScTrait) =>
         val typeParams = params.toList :+ returnType
         ScParameterizedType(ScType.designator(t), typeParams)
-      case _ => types.Nothing
+      case _ =>
+        types.Nothing
     }
   }
 
@@ -47,7 +48,8 @@ object ScFunctionType {
       case Some((clazz, typeArgs)) if typeArgs.length > 0 =>
         val (params, Seq(ret)) = typeArgs.splitAt(typeArgs.length - 1)
         Some(ret, params)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -67,7 +69,8 @@ object ScPartialFunctionType {
       case Some(t: ScTrait) =>
         val typeParams = param :: returnType :: Nil
         ScParameterizedType(ScType.designator(t), typeParams)
-      case _ => types.Nothing
+      case _ =>
+        types.Nothing
     }
   }
 
@@ -77,7 +80,8 @@ object ScPartialFunctionType {
       "scala.PartialFunction") match {
       case Some((clazz, typeArgs)) if typeArgs.length == 2 =>
         Some(typeArgs(1), typeArgs(0))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -96,7 +100,8 @@ object ScTupleType {
     findClass("scala.Tuple" + components.length) match {
       case Some(t: ScClass) =>
         ScParameterizedType(ScType.designator(t), components)
-      case _ => types.Nothing
+      case _ =>
+        types.Nothing
     }
   }
 
@@ -104,7 +109,8 @@ object ScTupleType {
     ScSynteticSugarClassesUtil.extractForPrefix(tp, "scala.Tuple") match {
       case Some((clazz, typeArgs)) if typeArgs.length > 0 =>
         Some(typeArgs)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -135,14 +141,19 @@ object ScSynteticSugarClassesUtil {
                   case Success(t, _) =>
                     val substituted = (sub followed p.substitutor).subst(t)
                     substituted match {
-                      case pt: ScParameterizedType => Some((clazz, pt.typeArgs))
-                      case _                       => None
+                      case pt: ScParameterizedType =>
+                        Some((clazz, pt.typeArgs))
+                      case _ =>
+                        None
                     }
-                  case _ => None
+                  case _ =>
+                    None
                 }
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
     }
   }

@@ -64,7 +64,8 @@ class ScaldingSerializationSpecs extends WordSpec {
     "serialize Hadoop Jobs for single step jobs" in {
       // Add a time:
       val inWithTime = List(1, 2, 3).zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
       val batcher = TestUtil.randomBatcher(inWithTime)
       val testStore = TestStore[Int, Int](
@@ -84,7 +85,8 @@ class ScaldingSerializationSpecs extends WordSpec {
       val mode = HadoopTest(
         new Configuration,
         {
-          case x: ScaldingSource => buffer.get(x)
+          case x: ScaldingSource =>
+            buffer.get(x)
         })
       val intr = Interval.leftClosedRightOpen(
         Timestamp(0L),

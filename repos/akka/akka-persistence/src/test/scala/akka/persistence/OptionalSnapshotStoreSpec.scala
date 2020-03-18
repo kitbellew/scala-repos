@@ -19,8 +19,10 @@ object OptionalSnapshotStoreSpec {
       case s: String ⇒
         lastSender = sender()
         saveSnapshot(s)
-      case f: SaveSnapshotFailure ⇒ lastSender ! f
-      case s: SaveSnapshotSuccess ⇒ lastSender ! s
+      case f: SaveSnapshotFailure ⇒
+        lastSender ! f
+      case s: SaveSnapshotSuccess ⇒
+        lastSender ! s
     }
     override def receiveRecover: Receive = Actor.emptyBehavior
   }

@@ -76,14 +76,22 @@ object CommonUtil {
       result,
       m =>
         m.group(0).charAt(1) match {
-          case '\\' => "\\"
-          case '/'  => "/"
-          case '"'  => "\""
-          case 'b'  => "\b"
-          case 'f'  => "\f"
-          case 'n'  => "\n"
-          case 'r'  => "\r"
-          case 't'  => "\t"
+          case '\\' =>
+            "\\"
+          case '/' =>
+            "/"
+          case '"' =>
+            "\""
+          case 'b' =>
+            "\b"
+          case 'f' =>
+            "\f"
+          case 'n' =>
+            "\n"
+          case 'r' =>
+            "\r"
+          case 't' =>
+            "\t"
         })
     quotedUnicodePattern.replaceAllIn(
       result,
@@ -105,6 +113,7 @@ object CommonUtil {
       new URL(str)
       true
     } catch {
-      case _: MalformedURLException => false
+      case _: MalformedURLException =>
+        false
     }
 }

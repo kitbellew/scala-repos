@@ -105,8 +105,10 @@ private[play] final class RunQueue {
     val prevState = state.get
     val newState =
       prevState match {
-        case null    => Vector.empty
-        case pending => pending :+ op
+        case null =>
+          Vector.empty
+        case pending =>
+          pending :+ op
       }
     if (state.compareAndSet(prevState, newState)) {
       prevState match {
@@ -139,14 +141,17 @@ private[play] final class RunQueue {
         case null =>
           throw new IllegalStateException(
             "Can't be inactive, must have a queue of pending elements")
-        case pending if pending.isEmpty => null
-        case pending                    => pending.tail
+        case pending if pending.isEmpty =>
+          null
+        case pending =>
+          pending.tail
       }
     if (state.compareAndSet(prevState, newState)) {
       prevState match {
         // We have a pending operation to execute
-        case pending if !pending.isEmpty => execute(pending.head)
-        case _                           =>
+        case pending if !pending.isEmpty =>
+          execute(pending.head)
+        case _ =>
       }
     } else
       opExecutionComplete() // Try again

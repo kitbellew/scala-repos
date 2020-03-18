@@ -269,7 +269,8 @@ object ProductOrderedBuf {
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
       outerType.declarations
         .collect {
-          case m: MethodSymbol => m
+          case m: MethodSymbol =>
+            m
         }
         .filter(m => m.name.toTermName.toString.startsWith("_"))
         .map { accessorMethod =>

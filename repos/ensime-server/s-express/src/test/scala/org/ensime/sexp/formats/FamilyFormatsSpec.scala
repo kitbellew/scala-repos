@@ -45,18 +45,30 @@ class FamilyFormatsSpec extends FormatSpec with FamilyFormats {
 
       def write(obj: TokenTree): Sexp =
         obj match {
-          case f: FieldTerm        => wrap(f)
-          case b: BoundedTerm      => wrap(b)
-          case u: Unparsed         => wrap(u)
-          case i: Ignored          => wrap(i)
-          case u: Unclear          => wrap(u)
-          case i: InTerm           => wrap(i)
-          case like: LikeTerm      => wrap(like)
-          case a: AndCondition     => wrap(a)
-          case o: OrCondition      => wrap(o)
-          case prefer: PreferToken => wrap(prefer)
-          case q: QualifierToken   => wrap(q)
-          case SpecialToken        => wrap(SpecialToken)
+          case f: FieldTerm =>
+            wrap(f)
+          case b: BoundedTerm =>
+            wrap(b)
+          case u: Unparsed =>
+            wrap(u)
+          case i: Ignored =>
+            wrap(i)
+          case u: Unclear =>
+            wrap(u)
+          case i: InTerm =>
+            wrap(i)
+          case like: LikeTerm =>
+            wrap(like)
+          case a: AndCondition =>
+            wrap(a)
+          case o: OrCondition =>
+            wrap(o)
+          case prefer: PreferToken =>
+            wrap(prefer)
+          case q: QualifierToken =>
+            wrap(q)
+          case SpecialToken =>
+            wrap(SpecialToken)
         }
 
       def read(hint: SexpSymbol, value: Sexp): TokenTree =
@@ -86,7 +98,8 @@ class FamilyFormatsSpec extends FormatSpec with FamilyFormats {
           case s if s == implicitly[TypeHint[SpecialToken.type]].hint =>
             value.convertTo[SpecialToken.type]
           // SAD FACE --- compiler doesn't catch typos on matches or missing impls
-          case _ => deserializationError(hint)
+          case _ =>
+            deserializationError(hint)
         }
     }
     /////////////////// END OF BOILERPLATE /////////////////

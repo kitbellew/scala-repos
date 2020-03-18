@@ -253,8 +253,10 @@ class BigCons[A](override val head: A, t: => BigStream[A])
   override def toString: String = "BigStream(%s, ...)" format head.toString
   override def equals(rhs: Any): Boolean =
     rhs match {
-      case s: BigStream[_] => !s.isEmpty && tail == s.tail
-      case _               => false
+      case s: BigStream[_] =>
+        !s.isEmpty && tail == s.tail
+      case _ =>
+        false
     }
 }
 

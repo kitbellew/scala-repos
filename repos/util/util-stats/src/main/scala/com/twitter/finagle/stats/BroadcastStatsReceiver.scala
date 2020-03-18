@@ -20,10 +20,14 @@ trait BroadcastStatsReceiver {
 object BroadcastStatsReceiver {
   def apply(receivers: Seq[StatsReceiver]): StatsReceiver =
     receivers.filterNot(_.isNull) match {
-      case Seq()              => NullStatsReceiver
-      case Seq(fst)           => fst
-      case Seq(first, second) => new Two(first, second)
-      case more               => new N(more)
+      case Seq() =>
+        NullStatsReceiver
+      case Seq(fst) =>
+        fst
+      case Seq(first, second) =>
+        new Two(first, second)
+      case more =>
+        new N(more)
     }
 
   private class Two(first: StatsReceiver, second: StatsReceiver)
@@ -97,12 +101,18 @@ object BroadcastStatsReceiver {
 object BroadcastCounter {
   def apply(counters: Seq[Counter]): Counter =
     counters match {
-      case Seq()           => NullCounter
-      case Seq(counter)    => counter
-      case Seq(a, b)       => new Two(a, b)
-      case Seq(a, b, c)    => new Three(a, b, c)
-      case Seq(a, b, c, d) => new Four(a, b, c, d)
-      case more            => new N(more)
+      case Seq() =>
+        NullCounter
+      case Seq(counter) =>
+        counter
+      case Seq(a, b) =>
+        new Two(a, b)
+      case Seq(a, b, c) =>
+        new Three(a, b, c)
+      case Seq(a, b, c, d) =>
+        new Four(a, b, c, d)
+      case more =>
+        new N(more)
     }
 
   private object NullCounter extends Counter {
@@ -149,12 +159,18 @@ object BroadcastCounter {
 object BroadcastStat {
   def apply(stats: Seq[Stat]): Stat =
     stats match {
-      case Seq()           => NullStat
-      case Seq(counter)    => counter
-      case Seq(a, b)       => new Two(a, b)
-      case Seq(a, b, c)    => new Three(a, b, c)
-      case Seq(a, b, c, d) => new Four(a, b, c, d)
-      case more            => new N(more)
+      case Seq() =>
+        NullStat
+      case Seq(counter) =>
+        counter
+      case Seq(a, b) =>
+        new Two(a, b)
+      case Seq(a, b, c) =>
+        new Three(a, b, c)
+      case Seq(a, b, c, d) =>
+        new Four(a, b, c, d)
+      case more =>
+        new N(more)
     }
 
   private object NullStat extends Stat {

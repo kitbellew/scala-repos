@@ -238,7 +238,8 @@ object Eval extends EvalInstances {
             val start: () => Eval[Start] = () => compute.start()
             val run: Start => Eval[A] = s => loop1(compute.run(s))
           }
-        case other => other
+        case other =>
+          other
       }
 
     /**
@@ -285,8 +286,10 @@ object Eval extends EvalInstances {
             }
           case x =>
             fs match {
-              case f :: fs => loop(f(x.value), fs)
-              case Nil     => x.value
+              case f :: fs =>
+                loop(f(x.value), fs)
+              case Nil =>
+                x.value
             }
         }
       loop(this.asInstanceOf[L], Nil).asInstanceOf[A]

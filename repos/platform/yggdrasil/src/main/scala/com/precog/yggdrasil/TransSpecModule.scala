@@ -206,7 +206,8 @@ trait TransSpecModule extends FNModule {
         def createSpecs(trees: Seq[CPathTree[Int]]): Seq[TransSpec[A]] =
           trees.map { child =>
             child match {
-              case node @ RootNode(seq) => concatChildren(node, leaf)
+              case node @ RootNode(seq) =>
+                concatChildren(node, leaf)
               case node @ FieldNode(CPathField(name), _) =>
                 trans.WrapObject(concatChildren(node, leaf), name)
               case node @ IndexNode(CPathIndex(_), _) =>
@@ -220,10 +221,14 @@ trait TransSpecModule extends FNModule {
 
         val initialSpecs =
           tree match {
-            case RootNode(children)     => createSpecs(children)
-            case FieldNode(_, children) => createSpecs(children)
-            case IndexNode(_, children) => createSpecs(children)
-            case LeafNode(_)            => Seq()
+            case RootNode(children) =>
+              createSpecs(children)
+            case FieldNode(_, children) =>
+              createSpecs(children)
+            case IndexNode(_, children) =>
+              createSpecs(children)
+            case LeafNode(_) =>
+              Seq()
           }
 
         val result = initialSpecs reduceOption { (t1, t2) =>
@@ -232,7 +237,8 @@ trait TransSpecModule extends FNModule {
               trans.InnerObjectConcat(t1, t2)
             case (t1: ArraySpec[_], t2: ArraySpec[_]) =>
               trans.InnerArrayConcat(t1, t2)
-            case _ => sys.error("cannot have this")
+            case _ =>
+              sys.error("cannot have this")
           }
         }
 
@@ -242,7 +248,8 @@ trait TransSpecModule extends FNModule {
       def mapSources[A <: SourceType, B <: SourceType](spec: TransSpec[A])(
           f: A => B): TransSpec[B] = {
         spec match {
-          case Leaf(source) => Leaf(f(source))
+          case Leaf(source) =>
+            Leaf(f(source))
           case trans.ConstLiteral(value, target) =>
             trans.ConstLiteral(value, mapSources(target)(f))
 
@@ -254,10 +261,13 @@ trait TransSpecModule extends FNModule {
               mapSources(definedFor)(f),
               definedness)
 
-          case Scan(source, scanner)   => Scan(mapSources(source)(f), scanner)
-          case MapWith(source, mapper) => MapWith(mapSources(source)(f), mapper)
+          case Scan(source, scanner) =>
+            Scan(mapSources(source)(f), scanner)
+          case MapWith(source, mapper) =>
+            MapWith(mapSources(source)(f), mapper)
 
-          case trans.Map1(source, f1) => trans.Map1(mapSources(source)(f), f1)
+          case trans.Map1(source, f1) =>
+            trans.Map1(mapSources(source)(f), f1)
           case trans.DeepMap1(source, f1) =>
             trans.DeepMap1(mapSources(source)(f), f1)
           case trans.Map2(left, right, f2) =>
@@ -278,7 +288,8 @@ trait TransSpecModule extends FNModule {
             trans.WrapObject(mapSources(source)(f), field)
           case trans.WrapObjectDynamic(left, right) =>
             trans.WrapObjectDynamic(mapSources(left)(f), mapSources(right)(f))
-          case trans.WrapArray(source) => trans.WrapArray(mapSources(source)(f))
+          case trans.WrapArray(source) =>
+            trans.WrapArray(mapSources(source)(f))
 
           case DerefMetadataStatic(source, field) =>
             DerefMetadataStatic(mapSources(source)(f), field)
@@ -295,10 +306,12 @@ trait TransSpecModule extends FNModule {
           case trans.ArraySwap(source, index) =>
             trans.ArraySwap(mapSources(source)(f), index)
 
-          case Typed(source, tpe) => Typed(mapSources(source)(f), tpe)
+          case Typed(source, tpe) =>
+            Typed(mapSources(source)(f), tpe)
           case TypedSubsumes(source, tpe) =>
             TypedSubsumes(mapSources(source)(f), tpe)
-          case IsType(source, tpe) => IsType(mapSources(source)(f), tpe)
+          case IsType(source, tpe) =>
+            IsType(mapSources(source)(f), tpe)
 
           case trans.Equal(left, right) =>
             trans.Equal(mapSources(left)(f), mapSources(right)(f))
@@ -316,9 +329,11 @@ trait TransSpecModule extends FNModule {
       def deepMap[A <: SourceType](spec: TransSpec[A])(
           f: PartialFunction[TransSpec[A], TransSpec[A]]): TransSpec[A] =
         spec match {
-          case x if f isDefinedAt x => f(x)
+          case x if f isDefinedAt x =>
+            f(x)
 
-          case x @ Leaf(source) => x
+          case x @ Leaf(source) =>
+            x
           case trans.ConstLiteral(value, target) =>
             trans.ConstLiteral(value, deepMap(target)(f))
 
@@ -330,10 +345,13 @@ trait TransSpecModule extends FNModule {
               deepMap(definedFor)(f),
               definedness)
 
-          case Scan(source, scanner)   => Scan(deepMap(source)(f), scanner)
-          case MapWith(source, mapper) => MapWith(deepMap(source)(f), mapper)
+          case Scan(source, scanner) =>
+            Scan(deepMap(source)(f), scanner)
+          case MapWith(source, mapper) =>
+            MapWith(deepMap(source)(f), mapper)
 
-          case trans.Map1(source, f1) => trans.Map1(deepMap(source)(f), f1)
+          case trans.Map1(source, f1) =>
+            trans.Map1(deepMap(source)(f), f1)
           case trans.DeepMap1(source, f1) =>
             trans.DeepMap1(deepMap(source)(f), f1)
           case trans.Map2(left, right, f2) =>
@@ -354,7 +372,8 @@ trait TransSpecModule extends FNModule {
             trans.WrapObject(deepMap(source)(f), field)
           case trans.WrapObjectDynamic(source, right) =>
             trans.WrapObjectDynamic(deepMap(source)(f), deepMap(right)(f))
-          case trans.WrapArray(source) => trans.WrapArray(deepMap(source)(f))
+          case trans.WrapArray(source) =>
+            trans.WrapArray(deepMap(source)(f))
 
           case DerefMetadataStatic(source, field) =>
             DerefMetadataStatic(deepMap(source)(f), field)
@@ -371,10 +390,12 @@ trait TransSpecModule extends FNModule {
           case trans.ArraySwap(source, index) =>
             trans.ArraySwap(deepMap(source)(f), index)
 
-          case Typed(source, tpe) => Typed(deepMap(source)(f), tpe)
+          case Typed(source, tpe) =>
+            Typed(deepMap(source)(f), tpe)
           case TypedSubsumes(source, tpe) =>
             TypedSubsumes(deepMap(source)(f), tpe)
-          case IsType(source, tpe) => IsType(deepMap(source)(f), tpe)
+          case IsType(source, tpe) =>
+            IsType(deepMap(source)(f), tpe)
 
           case trans.Equal(left, right) =>
             trans.Equal(deepMap(left)(f), deepMap(right)(f))
@@ -413,8 +434,10 @@ trait TransSpecModule extends FNModule {
       /** Flips all `SourceLeft`s to `SourceRight`s and vice versa. */
       def flip(spec: TransSpec2): TransSpec2 =
         TransSpec.mapSources(spec) {
-          case SourceLeft  => SourceRight
-          case SourceRight => SourceLeft
+          case SourceLeft =>
+            SourceRight
+          case SourceRight =>
+            SourceLeft
         }
 
       def DerefArray0(source: Source2) =
@@ -451,7 +474,8 @@ trait TransSpecModule extends FNModule {
     object GroupKeySpec {
       def dnf(keySpec: GroupKeySpec): GroupKeySpec = {
         keySpec match {
-          case GroupKeySpecSource(key, spec) => GroupKeySpecSource(key, spec)
+          case GroupKeySpecSource(key, spec) =>
+            GroupKeySpecSource(key, spec)
           case GroupKeySpecAnd(GroupKeySpecOr(ol, or), right) =>
             GroupKeySpecOr(
               dnf(GroupKeySpecAnd(ol, right)),
@@ -481,8 +505,10 @@ trait TransSpecModule extends FNModule {
 
       def toVector(keySpec: GroupKeySpec): Vector[GroupKeySpec] = {
         keySpec match {
-          case GroupKeySpecOr(left, right) => toVector(left) ++ toVector(right)
-          case x                           => Vector(x)
+          case GroupKeySpecOr(left, right) =>
+            toVector(left) ++ toVector(right)
+          case x =>
+            Vector(x)
         }
       }
     }
@@ -532,7 +558,8 @@ trait TransSpecModule extends FNModule {
         yield {
           val mapped =
             TransSpec.deepMap(value) {
-              case Leaf(_) => DerefObjectStatic(Leaf(Source), key)
+              case Leaf(_) =>
+                DerefObjectStatic(Leaf(Source), key)
             }
 
           trans.WrapObject(mapped, fieldName)

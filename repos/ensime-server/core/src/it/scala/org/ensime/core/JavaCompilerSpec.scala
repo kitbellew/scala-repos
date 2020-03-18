@@ -47,9 +47,12 @@ class JavaCompilerSpec
         "}") { (sf, offset, label, cc) =>
         val info = cc.askTypeAtPoint(sf, offset).get
         label match {
-          case "0" => info.name shouldBe "Test1"
-          case "1" => info.name shouldBe "int"
-          case "2" => info.name shouldBe "int"
+          case "0" =>
+            info.name shouldBe "Test1"
+          case "1" =>
+            info.name shouldBe "int"
+          case "2" =>
+            info.name shouldBe "int"
         }
       }
     }
@@ -274,11 +277,16 @@ class JavaCompilerSpec
           case "4" =>
             forAtLeast(1, info.completions)(_.name shouldBe "createTempFile")
             forAtLeast(1, info.completions)(_.name shouldBe "wait")
-          case "5" => forAtLeast(1, info.completions)(_.name shouldBe "String")
-          case "6" => forAtLeast(1, info.completions)(_.name shouldBe "Entry")
-          case "7" => forAtLeast(1, info.completions)(_.name shouldBe "Entry")
-          case "8" => forAtLeast(1, info.completions)(_.name shouldBe "File")
-          case "9" => forAtLeast(1, info.completions)(_.name shouldBe "foo")
+          case "5" =>
+            forAtLeast(1, info.completions)(_.name shouldBe "String")
+          case "6" =>
+            forAtLeast(1, info.completions)(_.name shouldBe "Entry")
+          case "7" =>
+            forAtLeast(1, info.completions)(_.name shouldBe "Entry")
+          case "8" =>
+            forAtLeast(1, info.completions)(_.name shouldBe "File")
+          case "9" =>
+            forAtLeast(1, info.completions)(_.name shouldBe "foo")
           case "10" =>
             forAtLeast(1, info.completions)(_.name shouldBe "maxValue")
           case "11" =>
@@ -331,8 +339,10 @@ class JavaCompilerSpec
       ) { (sf, offset, label, cc) =>
         val sig = cc.askDocSignatureAtPoint(sf, offset).get.java
         label match {
-          case "0" => sig.fqn shouldBe DocFqn("", "Test1")
-          case "1" => sig.fqn shouldBe DocFqn("java.io", "File")
+          case "0" =>
+            sig.fqn shouldBe DocFqn("", "Test1")
+          case "1" =>
+            sig.fqn shouldBe DocFqn("java.io", "File")
           case "2" =>
             sig shouldBe DocSig(DocFqn("java.io", "File"), Some("toString()"));
           case "3" =>
@@ -344,7 +354,8 @@ class JavaCompilerSpec
               DocFqn("java.io", "File"),
               Some(
                 "createTempFile(java.lang.String,java.lang.String,java.io.File)"));
-          case "5" => sig.fqn shouldBe DocFqn("java.io", "File")
+          case "5" =>
+            sig.fqn shouldBe DocFqn("java.io", "File")
           case "6" =>
             sig shouldBe DocSig(
               DocFqn("java.lang", "String"),

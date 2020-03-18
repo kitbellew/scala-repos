@@ -1141,8 +1141,10 @@ class HttpServerSpec
       "the config setting applied before another attribute (default entity)" in new LengthVerificationTest(
         maxContentLength = 10) {
         def nameDataSource(name: String): RequestEntity ⇒ RequestEntity = {
-          case x: HttpEntity.Default ⇒ x.copy(data = x.data named name)
-          case _ ⇒ ??? // prevent a compile-time warning
+          case x: HttpEntity.Default ⇒
+            x.copy(data = x.data named name)
+          case _ ⇒
+            ??? // prevent a compile-time warning
         }
         sendDefaultRequestWithLength(10)
         expectRequest()

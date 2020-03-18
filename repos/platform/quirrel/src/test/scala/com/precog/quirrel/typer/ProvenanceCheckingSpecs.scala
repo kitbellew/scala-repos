@@ -251,7 +251,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -264,7 +265,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case DynamicProvenance(_) => ok
+        case DynamicProvenance(_) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -307,7 +309,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -373,7 +376,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -464,7 +468,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -481,7 +486,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) => ok
+        case ProductProvenance(DynamicProvenance(_), DynamicProvenance(_)) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -673,7 +679,8 @@ object ProvenanceCheckingSpecs
     "accept difference on differing dynamic provenances" in {
       val tree = compileSingle("(new 1) difference (new 1)")
       tree.provenance must beLike {
-        case DynamicProvenance(_) => ok
+        case DynamicProvenance(_) =>
+          ok
       }
       tree.errors must beEmpty
     }
@@ -964,7 +971,8 @@ object ProvenanceCheckingSpecs
 
       val tree = compileSingle(input)
       tree.provenance must beLike {
-        case StaticProvenance("/foo") => ok
+        case StaticProvenance("/foo") =>
+          ok
       }
       tree.errors must beEmpty
     }

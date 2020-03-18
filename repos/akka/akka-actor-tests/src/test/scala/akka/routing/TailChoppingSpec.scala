@@ -19,8 +19,10 @@ object TailChoppingSpec {
           var times: Int = _
 
           def receive = {
-            case "stop" ⇒ context.stop(self)
-            case "times" ⇒ sender() ! times
+            case "stop" ⇒
+              context.stop(self)
+            case "times" ⇒
+              sender() ! times
             case x ⇒
               times += 1
               Thread sleep sleepTime.toMillis
@@ -60,8 +62,10 @@ class TailChoppingSpec
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter1.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter1.addAndGet(msg)
             }
           }))
 
@@ -70,8 +74,10 @@ class TailChoppingSpec
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter2.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter2.addAndGet(msg)
             }
           }))
 

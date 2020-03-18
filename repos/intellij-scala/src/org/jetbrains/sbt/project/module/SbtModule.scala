@@ -29,7 +29,8 @@ object SbtModule {
           .split(Delimiter)
           .map(SbtResolver.fromString)
           .collect {
-            case Some(r) => r
+            case Some(r) =>
+              r
           }
           .toSet
       }

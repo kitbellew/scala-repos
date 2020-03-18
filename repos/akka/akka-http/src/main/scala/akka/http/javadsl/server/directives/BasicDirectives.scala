@@ -101,7 +101,8 @@ abstract class BasicDirectives extends BasicDirectivesBase {
         def handle(ctx: RequestContext): RouteResult = f(ctx)
       }
     val saExtractions = extractions.collect {
-      case sa: StandaloneExtractionImpl[_] ⇒ sa
+      case sa: StandaloneExtractionImpl[_] ⇒
+        sa
     }
     if (saExtractions.isEmpty)
       route
@@ -161,15 +162,24 @@ abstract class BasicDirectives extends BasicDirectivesBase {
       import java.{lang ⇒ jl}
       def paramMatches(expected: Class[_], actual: Class[_]): Boolean =
         expected match {
-          case e if e isAssignableFrom actual ⇒ true
-          case jl.Long.TYPE if actual == classOf[jl.Long] ⇒ true
-          case jl.Integer.TYPE if actual == classOf[jl.Integer] ⇒ true
-          case jl.Short.TYPE if actual == classOf[jl.Short] ⇒ true
-          case jl.Character.TYPE if actual == classOf[jl.Character] ⇒ true
-          case jl.Byte.TYPE if actual == classOf[jl.Byte] ⇒ true
-          case jl.Double.TYPE if actual == classOf[jl.Double] ⇒ true
-          case jl.Float.TYPE if actual == classOf[jl.Float] ⇒ true
-          case _ ⇒ false
+          case e if e isAssignableFrom actual ⇒
+            true
+          case jl.Long.TYPE if actual == classOf[jl.Long] ⇒
+            true
+          case jl.Integer.TYPE if actual == classOf[jl.Integer] ⇒
+            true
+          case jl.Short.TYPE if actual == classOf[jl.Short] ⇒
+            true
+          case jl.Character.TYPE if actual == classOf[jl.Character] ⇒
+            true
+          case jl.Byte.TYPE if actual == classOf[jl.Byte] ⇒
+            true
+          case jl.Double.TYPE if actual == classOf[jl.Double] ⇒
+            true
+          case jl.Float.TYPE if actual == classOf[jl.Float] ⇒
+            true
+          case _ ⇒
+            false
         }
       def paramsMatch(params: Seq[Class[_]]): Boolean = {
         val res =

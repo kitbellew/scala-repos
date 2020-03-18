@@ -27,7 +27,8 @@ class ConsumerTopicMetrics(metricId: ClientIdTopic) extends KafkaMetricsGroup {
     metricId match {
       case ClientIdAndTopic(clientId, topic) =>
         Map("clientId" -> clientId, "topic" -> topic)
-      case ClientIdAllTopics(clientId) => Map("clientId" -> clientId)
+      case ClientIdAllTopics(clientId) =>
+        Map("clientId" -> clientId)
     }
 
   val messageRate = newMeter(

@@ -79,8 +79,10 @@ trait Resolver {
   @deprecated("Use Resolver.bind", "6.7.x")
   final def resolve(name: String): Try[Group[SocketAddress]] =
     bind(name) match {
-      case Var.Sampled(Addr.Failed(e)) => Throw(e)
-      case va                          => Return(Group.fromVarAddr(va))
+      case Var.Sampled(Addr.Failed(e)) =>
+        Throw(e)
+      case va =>
+        Return(Group.fromVarAddr(va))
     }
 }
 
@@ -160,7 +162,8 @@ private[finagle] class InetResolver(
         // the entire operation a success
         val results =
           seq.collect {
-            case Return(subset) => subset
+            case Return(subset) =>
+              subset
           }.flatten
 
         // Consider any result a success. Ignore partial failures.
@@ -174,11 +177,15 @@ private[finagle] class InetResolver(
           log.warning("Resolution failed for all hosts")
 
           seq.collectFirst {
-            case Throw(e) => e
+            case Throw(e) =>
+              e
           } match {
-            case Some(_: UnknownHostException) => Future.value(Addr.Neg)
-            case Some(e)                       => Future.value(Addr.Failed(e))
-            case None                          => Future.value(Addr.Bound(Set[Address]()))
+            case Some(_: UnknownHostException) =>
+              Future.value(Addr.Neg)
+            case Some(e) =>
+              Future.value(Addr.Failed(e))
+            case None =>
+              Future.value(Addr.Bound(Set[Address]()))
           }
         }
       }
@@ -305,7 +312,8 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     val dups = resolvers
       .groupBy(_.scheme)
       .filter {
-        case (_, rs) => rs.size > 1
+        case (_, rs) =>
+          rs.size > 1
       }
 
     if (dups.nonEmpty)
@@ -331,17 +339,24 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
 
   private[this] def delex(ts: Seq[Token]) =
     ts map {
-      case El(e) => e
-      case Bang  => "!"
-      case Eq    => "="
+      case El(e) =>
+        e
+      case Bang =>
+        "!"
+      case Eq =>
+        "="
     } mkString ""
 
   private[this] def lex(s: String) = {
     s.foldLeft(List[Token]()) {
-      case (ts, '=')        => Eq :: ts
-      case (ts, '!')        => Bang :: ts
-      case (El(s) :: ts, c) => El(s + c) :: ts
-      case (ts, c)          => El("" + c) :: ts
+      case (ts, '=') =>
+        Eq :: ts
+      case (ts, '!') =>
+        Bang :: ts
+      case (El(s) :: ts, c) =>
+        El(s + c) :: ts
+      case (ts, c) =>
+        El("" + c) :: ts
     }
   }.reverse
 
@@ -408,11 +423,14 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
 
           case El(scheme) :: Bang :: name =>
             resolvers.find(_.scheme == scheme) match {
-              case Some(resolver) => (resolver, delex(name))
-              case None           => throw new ResolverNotFoundException(scheme)
+              case Some(resolver) =>
+                (resolver, delex(name))
+              case None =>
+                throw new ResolverNotFoundException(scheme)
             }
 
-          case ts => (inetResolver, delex(ts))
+          case ts =>
+            (inetResolver, delex(ts))
         }
 
       Name.Bound(resolver.bind(arg), name)
@@ -428,8 +446,10 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
   def evalLabeled(addr: String): (Name, String) = {
     val (label, rest) =
       lex(addr) match {
-        case El(n) :: Eq :: rest => (n, rest)
-        case rest                => ("", rest)
+        case El(n) :: Eq :: rest =>
+          (n, rest)
+        case rest =>
+          ("", rest)
       }
 
     (eval(delex(rest)), label)

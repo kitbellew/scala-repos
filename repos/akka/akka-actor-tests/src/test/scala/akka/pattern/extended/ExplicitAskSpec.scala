@@ -25,7 +25,8 @@ class ExplicitAskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case Request(respondTo) ⇒ respondTo ! Response(self)
+              case Request(respondTo) ⇒
+                respondTo ! Response(self)
             }
           }))
 
@@ -40,7 +41,8 @@ class ExplicitAskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case Request(respondTo) ⇒ respondTo ! Response(self)
+              case Request(respondTo) ⇒
+                respondTo ! Response(self)
             }
           }),
         "select-echo")

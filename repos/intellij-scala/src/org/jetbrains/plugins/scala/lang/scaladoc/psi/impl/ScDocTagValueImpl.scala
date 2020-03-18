@@ -79,7 +79,8 @@ class ScDocTagValueImpl(node: ASTNode)
 
   def bindToElement(element: PsiElement): PsiElement = {
     element match {
-      case _: ScParameter => this
+      case _: ScParameter =>
+        this
       case _: ScTypeParam =>
         handleElementRename(element.getText)
         this
@@ -139,8 +140,10 @@ class ScDocTagValueImpl(node: ASTNode)
     }
     val parentTagType: String =
       getParent match {
-        case a: ScDocTag => a.name
-        case _           => null
+        case a: ScDocTag =>
+          a.name
+        case _ =>
+          null
       }
     var parent = getParent
     while (parent != null && !parent.isInstanceOf[ScDocComment]) {
@@ -188,10 +191,12 @@ class ScDocTagValueImpl(node: ASTNode)
               primaryConstr.get.getClassTypeParameters match {
                 case tParam: Some[ScTypeParamClause] =>
                   filterParamsByName(TYPE_PARAM_TAG, tParam.get.typeParameters)
-                case _ => Array.empty[ScNamedElement]
+                case _ =>
+                  Array.empty[ScNamedElement]
               }
             }
-          case None => Array.empty[ScNamedElement]
+          case None =>
+            Array.empty[ScNamedElement]
         }
       case traitt: ScTrait =>
         if (parentTagType == TYPE_PARAM_TAG) {
@@ -205,7 +210,8 @@ class ScDocTagValueImpl(node: ASTNode)
         } else {
           Array.empty[ScNamedElement]
         }
-      case _ => Array.empty[ScNamedElement]
+      case _ =>
+        Array.empty[ScNamedElement]
     }
   }
 }

@@ -526,7 +526,8 @@ class LogManager(
     */
   private def logsByDir = {
     this.logsByTopicPartition.groupBy {
-      case (_, log) => log.dir.getParent
+      case (_, log) =>
+        log.dir.getParent
     }
   }
 

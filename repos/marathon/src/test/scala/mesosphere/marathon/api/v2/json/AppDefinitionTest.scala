@@ -27,7 +27,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
         path: String,
         template: String): Unit = {
       validate(app) match {
-        case Success => fail()
+        case Success =>
+          fail()
         case f: Failure =>
           val violations = ValidationHelper.getAllRuleConstrains(f)
 

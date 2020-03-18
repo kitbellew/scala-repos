@@ -34,10 +34,14 @@ final class StreamerList(
           Try {
             Streamer(
               service = c getString "service" match {
-                case s if s == "twitch"  => Twitch
-                case s if s == "hitbox"  => Hitbox
-                case s if s == "youtube" => Youtube
-                case s                   => sys error s"Invalid service name: $s"
+                case s if s == "twitch" =>
+                  Twitch
+                case s if s == "hitbox" =>
+                  Hitbox
+                case s if s == "youtube" =>
+                  Youtube
+                case s =>
+                  sys error s"Invalid service name: $s"
               },
               streamerName = c getString "streamer_name",
               streamerNameForDisplay =
@@ -49,16 +53,21 @@ final class StreamerList(
           }
         }
         .foldLeft(List.empty[Streamer] -> List.empty[Exception]) {
-          case ((res, err), Success(r)) => (r :: res, err)
+          case ((res, err), Success(r)) =>
+            (r :: res, err)
           case ((res, err), Failure(e: Exception)) =>
             lila.log("tv").warn("streamer", e)
             (res, e :: err)
-          case (_, Failure(e)) => throw e
+          case (_, Failure(e)) =>
+            throw e
         }
     } match {
-      case Failure(e: Exception) => (Nil, List(e))
-      case Failure(e)            => throw e
-      case Success(v)            => v
+      case Failure(e: Exception) =>
+        (Nil, List(e))
+      case Failure(e) =>
+        throw e
+      case Success(v) =>
+        v
     }
 
   def form = {
@@ -70,7 +79,8 @@ final class StreamerList(
         "text" -> text.verifying(
           Constraint[String]("constraint.text_parsable") { t =>
             validate(t) match {
-              case (_, Nil) => Valid
+              case (_, Nil) =>
+                Valid
               case (_, errs) =>
                 Invalid(ValidationError(errs.map(_.getMessage) mkString ","))
             }

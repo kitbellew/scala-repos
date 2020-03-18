@@ -73,11 +73,13 @@ object AddBreakoutQuickFix {
         lastClause.map(_.parameters) match {
           case Some(Seq(p: ScParameter)) if isImplicitCanBuildFromParam(p) =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       case forStmt: ScForStatement =>
         forStmt.getDesugarizedExpr.exists(isAvailable)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -87,7 +89,8 @@ object AddBreakoutQuickFix {
           if tpe.canonicalText.startsWith(
             "_root_.scala.collection.generic.CanBuildFrom") =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

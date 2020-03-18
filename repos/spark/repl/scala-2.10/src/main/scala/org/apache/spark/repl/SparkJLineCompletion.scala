@@ -73,9 +73,12 @@ class SparkJLineCompletion(val intp: SparkIMain)
     def tp: Type
     def effectiveTp =
       tp match {
-        case MethodType(Nil, resType)   => resType
-        case NullaryMethodType(resType) => resType
-        case _                          => tp
+        case MethodType(Nil, resType) =>
+          resType
+        case NullaryMethodType(resType) =>
+          resType
+        case _ =>
+          tp
       }
 
     // for some reason any's members don't show up in subclasses, which
@@ -212,16 +215,20 @@ class SparkJLineCompletion(val intp: SparkIMain)
       extends TypeMemberCompletion(lit.value.tpe) {
     override def completions(verbosity: Int) =
       verbosity match {
-        case 0 => filtered(memberNames)
-        case _ => memberNames
+        case 0 =>
+          filtered(memberNames)
+        case _ =>
+          memberNames
       }
   }
 
   class ImportCompletion(tp: Type) extends TypeMemberCompletion(tp) {
     override def completions(verbosity: Int) =
       verbosity match {
-        case 0 => filtered(members filterNot (_.isSetter) map tos)
-        case _ => super.completions(verbosity)
+        case 0 =>
+          filtered(members filterNot (_.isSetter) map tos)
+        case _ =>
+          super.completions(verbosity)
       }
   }
 
@@ -274,8 +281,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     override def follow(id: String) =
       simpleParse(id) match {
-        case x: Literal => Some(new LiteralCompletion(x))
-        case _          => None
+        case x: Literal =>
+          Some(new LiteralCompletion(x))
+        case _ =>
+          None
       }
   }
 
@@ -285,8 +294,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
       super.completions(verbosity) :+ "_root_"
     override def follow(id: String) =
       id match {
-        case "_root_" => Some(this)
-        case _        => super.follow(id)
+        case "_root_" =>
+          Some(this)
+        case _ =>
+          super.follow(id)
       }
   }
   // members of Predef
@@ -301,8 +312,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     override def completions(verbosity: Int) =
       verbosity match {
-        case 0 => Nil
-        case _ => super.completions(verbosity)
+        case 0 =>
+          Nil
+        case _ =>
+          super.completions(verbosity)
       }
   }
   // members of scala.*
@@ -315,8 +328,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     override def completions(verbosity: Int) =
       verbosity match {
-        case 0 => filtered(packageNames ++ aliasNames)
-        case _ => super.completions(verbosity)
+        case 0 =>
+          filtered(packageNames ++ aliasNames)
+        case _ =>
+          super.completions(verbosity)
       }
   }
   // members of java.lang.*
@@ -328,8 +343,10 @@ class SparkJLineCompletion(val intp: SparkIMain)
 
     override def completions(verbosity: Int) =
       verbosity match {
-        case 0 => filtered(packageNames)
-        case _ => super.completions(verbosity)
+        case 0 =>
+          filtered(packageNames)
+        case _ =>
+          super.completions(verbosity)
       }
   }
 

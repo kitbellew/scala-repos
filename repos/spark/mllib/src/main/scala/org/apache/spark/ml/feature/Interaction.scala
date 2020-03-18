@@ -112,9 +112,12 @@ class Interaction @Since("1.6.0") (override val uid: String)
 
     val featureCols = inputFeatures.map { f =>
       f.dataType match {
-        case DoubleType                   => dataset(f.name)
-        case _: VectorUDT                 => dataset(f.name)
-        case _: NumericType | BooleanType => dataset(f.name).cast(DoubleType)
+        case DoubleType =>
+          dataset(f.name)
+        case _: VectorUDT =>
+          dataset(f.name)
+        case _: NumericType | BooleanType =>
+          dataset(f.name).cast(DoubleType)
       }
     }
     dataset.select(

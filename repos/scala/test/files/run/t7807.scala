@@ -9,8 +9,10 @@ object Test {
         try {
           println("...")
         } catch {
-          case ct: scala.util.control.ControlThrowable => throw (ct)
-          case t: Throwable                            => t.printStackTrace()
+          case ct: scala.util.control.ControlThrowable =>
+            throw (ct)
+          case t: Throwable =>
+            t.printStackTrace()
         }
       }
     }

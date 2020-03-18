@@ -27,7 +27,8 @@ object RoutesCompilerSpec extends Specification with FileMatchers {
             case dir if dir.isDirectory =>
               dir.listFiles().foreach(rm)
               dir.delete()
-            case f => f.delete()
+            case f =>
+              f.delete()
           }
         rm(tmp)
       }

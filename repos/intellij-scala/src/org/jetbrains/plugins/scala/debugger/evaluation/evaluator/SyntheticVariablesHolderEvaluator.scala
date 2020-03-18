@@ -17,8 +17,10 @@ class SyntheticVariablesHolderEvaluator(parentEvaluator: CodeFragmentEvaluator)
 
   override def getValue(localName: String, vm: VirtualMachineProxyImpl): Value =
     mySyntheticLocals.get(localName) match {
-      case None    => parentEvaluator.getValue(localName, vm)
-      case Some(v) => v
+      case None =>
+        parentEvaluator.getValue(localName, vm)
+      case Some(v) =>
+        v
     }
 
   override def setInitialValue(localName: String, value: scala.Any): Unit = {

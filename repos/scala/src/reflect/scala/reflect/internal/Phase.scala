@@ -73,8 +73,10 @@ abstract class Phase(val prev: Phase) {
   override def hashCode = id.## + name.##
   override def equals(other: Any) =
     other match {
-      case x: Phase => id == x.id && name == x.name
-      case _        => false
+      case x: Phase =>
+        id == x.id && name == x.name
+      case _ =>
+        false
     }
 }
 

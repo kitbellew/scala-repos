@@ -16,8 +16,10 @@ object Test {
 
     def lookingForAs(event: Event): Unit = {
       event match {
-        case DomainB.Created(_) => throw null
-        case DomainC.Created(_) => throw null
+        case DomainB.Created(_) =>
+          throw null
+        case DomainC.Created(_) =>
+          throw null
         case DomainA.Created(_) => // okay
       }
     }

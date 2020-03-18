@@ -40,8 +40,10 @@ object QueryStringParameterExtractor {
         _.split("&").toSeq
           .map { keyValue =>
             keyValue.split("=", 2) match {
-              case Array(key, value) => key -> value
-              case Array(key)        => key -> ""
+              case Array(key, value) =>
+                key -> value
+              case Array(key) =>
+                key -> ""
             }
           }
           .groupBy(_._1)

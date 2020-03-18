@@ -91,7 +91,8 @@ sealed abstract class STArray[S, A] {
   /**Fill this array from the given association list. */
   def fill[B](f: (A, B) => A, xs: Traversable[(Int, B)]): ST[S, Unit] =
     xs match {
-      case Nil => returnST(())
+      case Nil =>
+        returnST(())
       case ((i, v) :: ivs) =>
         for {
           _ <- update(f, i, v)
@@ -130,13 +131,15 @@ sealed abstract class ST[S, A] {
   def flatMap[B](g: A => ST[S, B]): ST[S, B] =
     st(s =>
       apply(s) match {
-        case (ns, a) => g(a)(ns)
+        case (ns, a) =>
+          g(a)(ns)
       })
 
   def map[B](g: A => B): ST[S, B] =
     st(s =>
       apply(s) match {
-        case (ns, a) => (ns, g(a))
+        case (ns, a) =>
+          (ns, g(a))
       })
 }
 

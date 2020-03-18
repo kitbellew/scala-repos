@@ -44,7 +44,8 @@ object CachedMappedWithRecursionGuard {
             params(0),
             params(1),
             modCountParamToModTracker(c)(params(2), params(0)))
-        case _ => abort("Wrong annotation parameters!")
+        case _ =>
+          abort("Wrong annotation parameters!")
       }
 
     //annotation parameters
@@ -203,7 +204,8 @@ object CachedMappedWithRecursionGuard {
         """
         println(res)
         c.Expr(res)
-      case _ => abort("You can only annotate one function!")
+      case _ =>
+        abort("You can only annotate one function!")
     }
   }
 }

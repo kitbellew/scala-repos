@@ -29,7 +29,8 @@ class RuleExecutorSuite extends SparkFunSuite {
   object DecrementLiterals extends Rule[Expression] {
     def apply(e: Expression): Expression =
       e transform {
-        case IntegerLiteral(i) if i > 0 => Literal(i - 1)
+        case IntegerLiteral(i) if i > 0 =>
+          Literal(i - 1)
       }
   }
 

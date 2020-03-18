@@ -35,8 +35,10 @@ private[finagle] class InputBuffer(
   def remainder = {
     val length = bytes.length
     memoryTransport.getBufferPosition match {
-      case 0                => bytes
-      case l if l == length => InputBuffers.EmptyBytes
+      case 0 =>
+        bytes
+      case l if l == length =>
+        InputBuffers.EmptyBytes
       case position => {
         val diff = length - position
         val newBytes = new Array[Byte](diff)

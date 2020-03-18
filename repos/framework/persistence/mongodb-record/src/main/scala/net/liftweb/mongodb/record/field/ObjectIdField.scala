@@ -46,24 +46,38 @@ class ObjectIdField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def setFromAny(in: Any): Box[ObjectId] =
     in match {
-      case oid: ObjectId        => setBox(Full(oid))
-      case Some(oid: ObjectId)  => setBox(Full(oid))
-      case Full(oid: ObjectId)  => setBox(Full(oid))
-      case (oid: ObjectId) :: _ => setBox(Full(oid))
-      case s: String            => setFromString(s)
-      case Some(s: String)      => setFromString(s)
-      case Full(s: String)      => setFromString(s)
-      case null | None | Empty  => setBox(defaultValueBox)
-      case f: Failure           => setBox(f)
-      case o                    => setFromString(o.toString)
+      case oid: ObjectId =>
+        setBox(Full(oid))
+      case Some(oid: ObjectId) =>
+        setBox(Full(oid))
+      case Full(oid: ObjectId) =>
+        setBox(Full(oid))
+      case (oid: ObjectId) :: _ =>
+        setBox(Full(oid))
+      case s: String =>
+        setFromString(s)
+      case Some(s: String) =>
+        setFromString(s)
+      case Full(s: String) =>
+        setFromString(s)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case f: Failure =>
+        setBox(f)
+      case o =>
+        setFromString(o.toString)
     }
 
   def setFromJValue(jvalue: JValue): Box[ObjectId] =
     jvalue match {
-      case JNothing | JNull if optional_?             => setBox(Empty)
-      case JObject(JField("$oid", JString(s)) :: Nil) => setFromString(s)
-      case JString(s)                                 => setFromString(s)
-      case other                                      => setBox(FieldHelpers.expectedA("JObject", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JObject(JField("$oid", JString(s)) :: Nil) =>
+        setFromString(s)
+      case JString(s) =>
+        setFromString(s)
+      case other =>
+        setBox(FieldHelpers.expectedA("JObject", other))
     }
 
   def setFromString(in: String): Box[ObjectId] =
@@ -88,14 +102,18 @@ class ObjectIdField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def toForm =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def asJs =
     asJValue match {
-      case JNothing => JsNull
-      case jv       => JsRaw(compactRender(jv))
+      case JNothing =>
+        JsNull
+      case jv =>
+        JsRaw(compactRender(jv))
     }
 
   def asJValue: JValue =

@@ -63,7 +63,8 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
         } else {
           Double.PositiveInfinity
         }
-      case x => math.exp(logPdf(x))
+      case x =>
+        math.exp(logPdf(x))
     }
   }
 

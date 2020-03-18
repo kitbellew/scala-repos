@@ -27,7 +27,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     try {
       Option(sc.getResource(path))
     } catch {
-      case e: MalformedURLException => throw e
+      case e: MalformedURLException =>
+        throw e
     }
   }
 
@@ -45,9 +46,12 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
 
   private[this] def pathMapping(urlPattern: String): String =
     urlPattern match {
-      case s if s.endsWith("/*") => s
-      case s if s.endsWith("/")  => s + "*"
-      case s                     => s + "/*"
+      case s if s.endsWith("/*") =>
+        s
+      case s if s.endsWith("/") =>
+        s + "*"
+      case s =>
+        s + "/*"
     }
 
   /**
@@ -88,7 +92,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     handler match {
       case servlet: HttpServlet =>
         mountServlet(servlet, pathMap, name, loadOnStartup)
-      case filter: Filter => mountFilter(filter, pathMap, name)
+      case filter: Filter =>
+        mountFilter(filter, pathMap, name)
       case _ =>
         sys.error(
           "Don't know how to mount this service to a servletContext: " + handler.getClass)
@@ -109,9 +114,12 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
       loadOnStartup: Int = 1): Unit = {
     val pathMap =
       urlPattern match {
-        case s if s.endsWith("/*") => s
-        case s if s.endsWith("/")  => s + "*"
-        case s                     => s + "/*"
+        case s if s.endsWith("/*") =>
+          s
+        case s if s.endsWith("/") =>
+          s + "*"
+        case s =>
+          s + "/*"
       }
 
     if (classOf[HttpServlet].isAssignableFrom(handlerClass)) {

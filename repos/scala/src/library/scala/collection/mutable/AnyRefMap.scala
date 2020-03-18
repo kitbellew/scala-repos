@@ -544,7 +544,8 @@ object AnyRefMap {
         4
     val arm = new AnyRefMap[K, V](sz * 2)
     elems.foreach {
-      case (k, v) => arm(k) = v
+      case (k, v) =>
+        arm(k) = v
     }
     if (arm.size < (sz >> 3))
       arm.repack()

@@ -30,7 +30,8 @@ import com.twitter.scalding.serialization.OrderedSerialization
 
 object StringOrderedBuf {
   def dispatch(c: Context): PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
-    case tpe if tpe =:= c.universe.typeOf[String] => StringOrderedBuf(c)(tpe)
+    case tpe if tpe =:= c.universe.typeOf[String] =>
+      StringOrderedBuf(c)(tpe)
   }
 
   def apply(c: Context)(outerType: c.Type): TreeOrderedBuf[c.type] = {

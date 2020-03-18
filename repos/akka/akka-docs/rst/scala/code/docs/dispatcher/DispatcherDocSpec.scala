@@ -208,16 +208,20 @@ object DispatcherDocSpec {
         // Create a new PriorityGenerator, lower prio means more important
         PriorityGenerator {
           // 'highpriority messages should be treated first if possible
-          case 'highpriority => 0
+          case 'highpriority =>
+            0
 
           // 'lowpriority messages should be treated last if possible
-          case 'lowpriority => 2
+          case 'lowpriority =>
+            2
 
           // PoisonPill when no other left
-          case PoisonPill => 3
+          case PoisonPill =>
+            3
 
           // We default to 1, which is in between high and low
-          case otherwise => 1
+          case otherwise =>
+            1
         })
   //#prio-mailbox
 
@@ -346,7 +350,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
         self ! PoisonPill
 
         def receive = {
-          case x => log.info(x.toString)
+          case x =>
+            log.info(x.toString)
         }
       }
       val a = system.actorOf(
@@ -366,7 +371,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
 
       watch(a)
       expectMsgPF() {
-        case Terminated(`a`) => ()
+        case Terminated(`a`) =>
+          ()
       }
     }
   }
@@ -385,7 +391,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
         self ! PoisonPill
 
         def receive = {
-          case x => log.info(x.toString)
+          case x =>
+            log.info(x.toString)
         }
       }
       val a = system.actorOf(
@@ -401,7 +408,8 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
 
       watch(a)
       expectMsgPF() {
-        case Terminated(`a`) => ()
+        case Terminated(`a`) =>
+          ()
       }
     }
   }

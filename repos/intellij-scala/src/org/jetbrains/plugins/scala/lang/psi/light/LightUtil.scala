@@ -46,13 +46,17 @@ object LightUtil {
                             c.resolve() match {
                               case clazz: PsiClass =>
                                 Seq(clazz.getQualifiedName)
-                              case _ => Seq.empty
+                              case _ =>
+                                Seq.empty
                             }
-                          case _ => Seq.empty
+                          case _ =>
+                            Seq.empty
                         }
-                      case _ => Seq.empty
+                      case _ =>
+                        Seq.empty
                     }
-                  case _ => Seq.empty
+                  case _ =>
+                    Seq.empty
                 }
               }
             if (classes.isEmpty) {
@@ -69,21 +73,26 @@ object LightUtil {
                         holder.getResolveScope) match {
                         case c: PsiClassType =>
                           c.resolve() match {
-                            case clazz: PsiClass => Seq(clazz.getQualifiedName)
-                            case _               => Seq.empty
+                            case clazz: PsiClass =>
+                              Seq(clazz.getQualifiedName)
+                            case _ =>
+                              Seq.empty
                           }
-                        case _ => Seq.empty
+                        case _ =>
+                          Seq.empty
                       }
                     }
                   if (classes.nonEmpty)
                     accumulator :+ classes.mkString(sep = ", ")
                   else
                     accumulator
-                case None => accumulator
+                case None =>
+                  accumulator
               }
             } else
               accumulator :+ classes.mkString(sep = ", ")
-          case _ => ArrayBuffer()
+          case _ =>
+            ArrayBuffer()
         }
     throwAnnotations.mkString(start = " throws ", sep = ", ", end = " ")
   }

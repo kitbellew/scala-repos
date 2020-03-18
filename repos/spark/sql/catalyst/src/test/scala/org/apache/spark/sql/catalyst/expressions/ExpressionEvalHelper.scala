@@ -65,7 +65,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
         java.util.Arrays.equals(result, expected)
       case (result: Double, expected: Spread[Double @unchecked]) =>
         expected.asInstanceOf[Spread[Double]].isWithin(result)
-      case _ => result == expected
+      case _ =>
+        result == expected
     }
   }
 
@@ -73,8 +74,9 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expression: Expression,
       inputRow: InternalRow = EmptyRow): Any = {
     expression.foreach {
-      case n: Nondeterministic => n.setInitialValues()
-      case _                   =>
+      case n: Nondeterministic =>
+        n.setInitialValues()
+      case _ =>
     }
     expression.eval(inputRow)
   }
@@ -102,7 +104,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     val actual =
       try evaluate(expression, inputRow)
       catch {
-        case e: Exception => fail(s"Exception evaluating $expression", e)
+        case e: Exception =>
+          fail(s"Exception evaluating $expression", e)
       }
     if (!checkResult(actual, expected)) {
       val input =
@@ -293,7 +296,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       try {
         evaluate(expr, inputRow)
       } catch {
-        case e: Exception => fail(s"Exception evaluating $expr", e)
+        case e: Exception =>
+          fail(s"Exception evaluating $expr", e)
       }
 
     val plan = generateProject(
@@ -323,7 +327,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
         true
       case (result: Float, expected: Float) if result.isNaN && expected.isNaN =>
         true
-      case _ => result == expected
+      case _ =>
+        result == expected
     }
   }
 }

@@ -230,8 +230,10 @@ final case class PreRestartException private[akka] (
         ) + ", " +
         (
           messageOption match {
-            case Some(m: AnyRef) ⇒ m.getClass;
-            case _ ⇒ "None"
+            case Some(m: AnyRef) ⇒
+              m.getClass;
+            case _ ⇒
+              "None"
           }
         ) +
         ")",
@@ -272,8 +274,10 @@ object OriginalRestartException {
     @tailrec
     def rec(ex: PostRestartException): Option[Throwable] =
       ex match {
-        case PostRestartException(_, _, e: PostRestartException) ⇒ rec(e)
-        case PostRestartException(_, _, e) ⇒ Some(e)
+        case PostRestartException(_, _, e: PostRestartException) ⇒
+          rec(e)
+        case PostRestartException(_, _, e) ⇒
+          Some(e)
       }
     rec(ex)
   }
@@ -656,7 +660,8 @@ trait Actor {
     */
   def unhandled(message: Any): Unit = {
     message match {
-      case Terminated(dead) ⇒ throw new DeathPactException(dead)
+      case Terminated(dead) ⇒
+        throw new DeathPactException(dead)
       case _ ⇒
         context.system.eventStream
           .publish(UnhandledMessage(message, sender(), self))

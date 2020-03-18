@@ -61,7 +61,8 @@ trait Arrow[F[_, _]] extends Split[F] with Strong[F] with Category[F] {
   def second[A, B, C](fa: F[A, B]): F[(C, A), (C, B)] = {
     def swap[X, Y]: F[(X, Y), (Y, X)] =
       lift[(X, Y), (Y, X)] {
-        case (x, y) => (y, x)
+        case (x, y) =>
+          (y, x)
       }
     compose(swap, compose(first[A, B, C](fa), swap))
   }

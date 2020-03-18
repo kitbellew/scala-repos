@@ -34,7 +34,8 @@ object DisplayHelpers {
 
     for (row <- rows) {
       val formatted = columnFormats.zipWithIndex.zip(row).map {
-        case ((format, index), value) => format(value, maxColumnLengths(index))
+        case ((format, index), value) =>
+          format(value, maxColumnLengths(index))
       }
 
       println(formatted.mkString(" "))

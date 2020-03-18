@@ -44,33 +44,53 @@ class ScModifierListImpl private (
       return stub.asInstanceOf[ScModifiersStub].getModifiers.contains(name)
     }
     name match {
-      case "override"  => has(ScalaTokenTypes.kOVERRIDE)
-      case "private"   => has(ScalaTokenTypes.kPRIVATE)
-      case "protected" => has(ScalaTokenTypes.kPROTECTED)
+      case "override" =>
+        has(ScalaTokenTypes.kOVERRIDE)
+      case "private" =>
+        has(ScalaTokenTypes.kPRIVATE)
+      case "protected" =>
+        has(ScalaTokenTypes.kPROTECTED)
       case "public" =>
         !(has(ScalaTokenTypes.kPROTECTED) || has(ScalaTokenTypes.kPRIVATE))
-      case "final"    => has(ScalaTokenTypes.kFINAL)
-      case "implicit" => has(ScalaTokenTypes.kIMPLICIT)
-      case "abstract" => has(ScalaTokenTypes.kABSTRACT)
-      case "sealed"   => has(ScalaTokenTypes.kSEALED)
-      case "lazy"     => has(ScalaTokenTypes.kLAZY)
-      case "case"     => has(ScalaTokenTypes.kCASE)
-      case _          => false
+      case "final" =>
+        has(ScalaTokenTypes.kFINAL)
+      case "implicit" =>
+        has(ScalaTokenTypes.kIMPLICIT)
+      case "abstract" =>
+        has(ScalaTokenTypes.kABSTRACT)
+      case "sealed" =>
+        has(ScalaTokenTypes.kSEALED)
+      case "lazy" =>
+        has(ScalaTokenTypes.kLAZY)
+      case "case" =>
+        has(ScalaTokenTypes.kCASE)
+      case _ =>
+        false
     }
   }
 
   private def prop2String(prop: IElementType): String = {
     prop match {
-      case ScalaTokenTypes.kOVERRIDE  => "override"
-      case ScalaTokenTypes.kPRIVATE   => "private"
-      case ScalaTokenTypes.kPROTECTED => "protected"
-      case ScalaTokenTypes.kFINAL     => "final"
-      case ScalaTokenTypes.kIMPLICIT  => "implicit"
-      case ScalaTokenTypes.kABSTRACT  => "abstract"
-      case ScalaTokenTypes.kSEALED    => "sealed"
-      case ScalaTokenTypes.kLAZY      => "lazy"
-      case ScalaTokenTypes.kCASE      => "case"
-      case _                          => ""
+      case ScalaTokenTypes.kOVERRIDE =>
+        "override"
+      case ScalaTokenTypes.kPRIVATE =>
+        "private"
+      case ScalaTokenTypes.kPROTECTED =>
+        "protected"
+      case ScalaTokenTypes.kFINAL =>
+        "final"
+      case ScalaTokenTypes.kIMPLICIT =>
+        "implicit"
+      case ScalaTokenTypes.kABSTRACT =>
+        "abstract"
+      case ScalaTokenTypes.kSEALED =>
+        "sealed"
+      case ScalaTokenTypes.kLAZY =>
+        "lazy"
+      case ScalaTokenTypes.kCASE =>
+        "case"
+      case _ =>
+        ""
     }
   }
 
@@ -255,7 +275,8 @@ class ScModifierListImpl private (
         return PsiAnnotation.EMPTY_ARRAY
     }
     getParent.getNode.findChildByType(ScalaElementTypes.ANNOTATIONS) match {
-      case null => PsiAnnotation.EMPTY_ARRAY
+      case null =>
+        PsiAnnotation.EMPTY_ARRAY
       case x =>
         x.getPsi
           .asInstanceOf[ScAnnotations]
@@ -273,8 +294,10 @@ class ScModifierListImpl private (
           "@" + name,
           this
         ); // hack to disable AddOverrideAnnotationAction,
-      case None    => null
-      case Some(x) => x
+      case None =>
+        null
+      case Some(x) =>
+        x
     }
   }
 
@@ -286,14 +309,16 @@ class ScModifierListImpl private (
           case ScAccessModifier.Type.PRIVATE |
               ScAccessModifier.Type.THIS_PRIVATE =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       case ScalaTokenTypes.kPROTECTED if modifier != null =>
         modifier.access match {
           case ScAccessModifier.Type.PROTECTED |
               ScAccessModifier.Type.THIS_PROTECTED =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       case _ =>
         val stub = getStub
@@ -317,8 +342,10 @@ class ScModifierListImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitModifierList(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitModifierList(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

@@ -16,7 +16,8 @@ class QuasiQuotesInjector extends SyntheticMembersInjector {
           if c.qualifiedName == "scala.StringContext" && needQQEmulation(c) =>
         Seq(
           "def q(args: Any*): _root_.scala.reflect.runtime.universe.Tree = ???")
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 

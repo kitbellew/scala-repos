@@ -12,7 +12,8 @@ object SCL6730 {
       extends RDFGraph {
     override def insertTriple(triple: RDFTriple): RDFGraph = {
       Exists {
-        case (bnode) => fn(bnode).insertTriple(triple)
+        case (bnode) =>
+          fn(bnode).insertTriple(triple)
       } //works ok with case
     }
 

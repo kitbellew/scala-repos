@@ -281,7 +281,8 @@ object JsonValidSpec extends Specification {
   "JSON JsResult" should {
     "recover from error" in {
       JsNumber(123).validate[String].recover {
-        case JsError(e) => "error"
+        case JsError(e) =>
+          "error"
       } must beEqualTo(JsSuccess("error"))
 
       JsNumber(123).validate[String].recoverTotal { e =>
@@ -675,7 +676,8 @@ object JsonValidSpec extends Specification {
           (__ \ 'type).read[String] and
             (__ \ 'data).read(
               Reads.verifyingIf[JsObject] {
-                case JsObject(fields) => !fields.isEmpty
+                case JsObject(fields) =>
+                  !fields.isEmpty
               }(
                 (
                   (__ \ "title").read[String] and

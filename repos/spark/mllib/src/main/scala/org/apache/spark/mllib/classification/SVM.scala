@@ -82,7 +82,8 @@ class SVMModel @Since("1.1.0") (
           1.0
         else
           0.0
-      case None => margin
+      case None =>
+        margin
     }
   }
 
@@ -132,8 +133,10 @@ object SVMModel extends Loader[SVMModel] {
           numClasses == 2,
           s"SVMModel.load was given numClasses=$numClasses but only supports 2 classes")
         data.threshold match {
-          case Some(t) => model.setThreshold(t)
-          case None    => model.clearThreshold()
+          case Some(t) =>
+            model.setThreshold(t)
+          case None =>
+            model.clearThreshold()
         }
         model
       case _ =>

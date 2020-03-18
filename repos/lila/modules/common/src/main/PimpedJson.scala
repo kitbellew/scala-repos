@@ -32,7 +32,8 @@ trait PimpedJson {
     def noNull =
       JsObject {
         js.fields collect {
-          case (key, value) if value != JsNull => key -> value
+          case (key, value) if value != JsNull =>
+            key -> value
         }
       }
   }

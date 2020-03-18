@@ -26,7 +26,8 @@ object LiteralTests extends Properties("Literal") {
       l: Literal[_, N],
       acc: Set[Literal[_, N]] = Set.empty[Literal[_, N]]): Set[Literal[_, N]] =
     l match {
-      case c @ ConstLit(_) => acc + c
+      case c @ ConstLit(_) =>
+        acc + c
       case u @ UnaryLit(prev, _) =>
         if (acc(u))
           acc
@@ -47,7 +48,8 @@ object LiteralTests extends Properties("Literal") {
     for {
       fn <- Arbitrary.arbitrary[(Int) => (Int)]
       bfn = {
-        case Box(b) => Box(fn(b))
+        case Box(b) =>
+          Box(fn(b))
       }: Box[Int] => Box[Int]
       input <- genLiteral
     } yield UnaryLit(input, bfn)
@@ -56,7 +58,8 @@ object LiteralTests extends Properties("Literal") {
     for {
       fn <- Arbitrary.arbitrary[(Int, Int) => (Int)]
       bfn = {
-        case (Box(l), Box(r)) => Box(fn(l, r))
+        case (Box(l), Box(r)) =>
+          Box(fn(l, r))
       }: (Box[Int], Box[Int]) => Box[Int]
       left <- genLiteral
       // We have to make dags, so select from the closure of left sometimes
@@ -78,9 +81,12 @@ object LiteralTests extends Properties("Literal") {
   //as lit.evaluate should do
   def slowEvaluate[T](lit: Literal[T, Box]): Box[T] =
     lit match {
-      case ConstLit(n)         => n
-      case UnaryLit(in, fn)    => fn(slowEvaluate(in))
-      case BinaryLit(a, b, fn) => fn(slowEvaluate(a), slowEvaluate(b))
+      case ConstLit(n) =>
+        n
+      case UnaryLit(in, fn) =>
+        fn(slowEvaluate(in))
+      case BinaryLit(a, b, fn) =>
+        fn(slowEvaluate(a), slowEvaluate(b))
     }
 
   property("Literal.evaluate must match simple explanation") =

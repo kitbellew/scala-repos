@@ -242,7 +242,8 @@ trait Types
     def typeArguments = typeArgs
     def erasure =
       this match {
-        case ConstantType(value) => widen.erasure
+        case ConstantType(value) =>
+          widen.erasure
         case _ =>
           var result: Type = transformedType(this)
           result =
@@ -252,15 +253,18 @@ trait Types
                   undets,
                   underlying
                 ) // we don't want undets in the result
-              case _ => result
+              case _ =>
+                result
             }
           // erasure screws up all ThisTypes for modules into PackageTypeRefs
           // we need to unscrew them, or certain typechecks will fail mysteriously
           // http://groups.google.com/group/scala-internals/browse_thread/thread/6d3277ae21b6d581
           result = result.map(tpe =>
             tpe match {
-              case tpe: PackageTypeRef => ThisType(tpe.sym)
-              case _                   => tpe
+              case tpe: PackageTypeRef =>
+                ThisType(tpe.sym)
+              case _ =>
+                tpe
             })
           result
       }
@@ -451,9 +455,12 @@ trait Types
       */
     def prefixChain: List[Type] =
       this match {
-        case TypeRef(pre, _, _) => pre :: pre.prefixChain
-        case SingleType(pre, _) => pre :: pre.prefixChain
-        case _                  => List()
+        case TypeRef(pre, _, _) =>
+          pre :: pre.prefixChain
+        case SingleType(pre, _) =>
+          pre :: pre.prefixChain
+        case _ =>
+          List()
       }
 
     /** This type, without its type arguments @M */
@@ -645,8 +652,10 @@ trait Types
     /** A list of all implicit symbols of this type  (defined or inherited) */
     def implicitMembers: Scope = {
       typeSymbolDirect match {
-        case sym: ModuleClassSymbol => sym.implicitMembers
-        case _                      => membersBasedOnFlags(BridgeFlags, IMPLICIT)
+        case sym: ModuleClassSymbol =>
+          sym.implicitMembers
+        case _ =>
+          membersBasedOnFlags(BridgeFlags, IMPLICIT)
       }
     }
 
@@ -889,8 +898,10 @@ trait Types
         that match {
           case ArrayTypeRef(elem2) if elem2.typeConstructor.isHigherKinded =>
             this match {
-              case ArrayTypeRef(elem1) => elem1 matchesPattern elem2
-              case _                   => false
+              case ArrayTypeRef(elem1) =>
+                elem1 matchesPattern elem2
+              case _ =>
+                false
             }
           case TypeRef(_, sym, args) =>
             val that1 = existentialAbstraction(args map (_.typeSymbol), that)
@@ -1072,7 +1083,8 @@ trait Types
         widen.toString
       else if ((str endsWith ".type") && !typeSymbol.isModuleClass)
         widen match {
-          case RefinedType(_, _) => "" + widen
+          case RefinedType(_, _) =>
+            "" + widen
           case _ =>
             if (widen.toString.trim == "")
               str
@@ -1501,8 +1513,10 @@ trait Types
     override def bounds: TypeBounds = this
     def containsType(that: Type) =
       that match {
-        case TypeBounds(_, _) => that <:< this
-        case _                => lo <:< that && that <:< hi
+        case TypeBounds(_, _) =>
+          that <:< this
+        case _ =>
+          lo <:< that && that <:< hi
       }
     private def emptyLowerBound = typeIsNothing(lo) || lo.isWildcard
     private def emptyUpperBound = typeIsAny(hi) || hi.isWildcard
@@ -1560,7 +1574,8 @@ trait Types
           Some((parents, decls, clazz))
         case RefinedType(parents, decls) =>
           Some((parents, decls, tp.typeSymbol))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -1627,9 +1642,11 @@ trait Types
                 op1
               else
                 op2(w)
-            case None => updateCache()
+            case None =>
+              updateCache()
           }
-        case None => updateCache()
+        case None =>
+          updateCache()
       }
     }
 
@@ -1707,8 +1724,9 @@ trait Types
           for (p <- tpe.parents)
             for (t <- p)
               t match {
-                case tv: TypeVar => tvs += tv
-                case _           =>
+                case tv: TypeVar =>
+                  tvs += tv
+                case _ =>
               }
           val varToParamMap: Map[Type, Symbol] =
             mapFrom[TypeVar, Type, Symbol](tvs.toList)(
@@ -1718,8 +1736,10 @@ trait Types
             new TypeMap {
               def apply(tp: Type) =
                 varToParamMap get tp match {
-                  case Some(sym) => sym.tpe_*
-                  case _         => mapOver(tp)
+                  case Some(sym) =>
+                    sym.tpe_*
+                  case _ =>
+                    mapOver(tp)
                 }
             }
           val paramToVar =
@@ -1728,7 +1748,8 @@ trait Types
                 tp match {
                   case TypeRef(_, tsym, _) if paramToVarMap.isDefinedAt(tsym) =>
                     paramToVarMap(tsym)
-                  case _ => mapOver(tp)
+                  case _ =>
+                    mapOver(tp)
                 }
             }
           val bts =
@@ -1895,8 +1916,10 @@ trait Types
           else
             tp
         tps map dealiasRefinement flatMap {
-          case RefinedType(parents, ds) if ds.isEmpty => flatten(parents)
-          case tp                                     => List(tp)
+          case RefinedType(parents, ds) if ds.isEmpty =>
+            flatten(parents)
+          case tp =>
+            List(tp)
         }
       }
       val flattened = flatten(parents).distinct
@@ -1929,8 +1952,10 @@ trait Types
           typeParams,
           RefinedType(
             parents map {
-              case TypeRef(pre, sym, List()) => TypeRef(pre, sym, dummyArgs)
-              case p                         => p
+              case TypeRef(pre, sym, List()) =>
+                TypeRef(pre, sym, dummyArgs)
+              case p =>
+                p
             },
             decls,
             typeSymbol))
@@ -2011,8 +2036,10 @@ trait Types
       */
     private def getRefs(which: Int, from: Symbol): Set[Symbol] =
       refs(which) get from match {
-        case Some(set) => set
-        case none      => Set()
+        case Some(set) =>
+          set
+        case none =>
+          Set()
       }
 
     /** Augment existing refs map with reference <pre>from -> to</pre>
@@ -2034,7 +2061,8 @@ trait Types
       */
     private def classInfo(tparam: Symbol): ClassInfoType =
       tparam.owner.info.resultType match {
-        case ci: ClassInfoType => ci
+        case ci: ClassInfoType =>
+          ci
         case _ =>
           classInfo(ObjectClass) // something's wrong; fall back to safe value
         // (this can happen only for erroneous programs).
@@ -2540,7 +2568,8 @@ trait Types
         tp match {
           case PolyType(`formals`, result) =>
             PolyType(formals, seenFromOwnerInstantiated(result))
-          case _ => seenFromOwnerInstantiated(tp)
+          case _ =>
+            seenFromOwnerInstantiated(tp)
         }
       }
 
@@ -2715,14 +2744,19 @@ trait Types
     private def noArgsString = finishPrefix(preString + sym.nameString)
     private def tupleTypeString: String =
       args match {
-        case Nil        => noArgsString
-        case arg :: Nil => s"($arg,)"
-        case _          => args.mkString("(", ", ", ")")
+        case Nil =>
+          noArgsString
+        case arg :: Nil =>
+          s"($arg,)"
+        case _ =>
+          args.mkString("(", ", ", ")")
       }
     private def customToString =
       sym match {
-        case RepeatedParamClass | JavaRepeatedParamClass => args.head + "*"
-        case ByNameParamClass                            => "=> " + args.head
+        case RepeatedParamClass | JavaRepeatedParamClass =>
+          args.head + "*"
+        case ByNameParamClass =>
+          "=> " + args.head
         case _ =>
           if (isFunctionTypeDirect(this)) {
             // Aesthetics: printing Function1 as T => R rather than (T) => R
@@ -2731,7 +2765,8 @@ trait Types
             unspecializedTypeArgs(this) match {
               // See neg/t588 for an example which arrives here - printing
               // the type of a Function1 after erasure.
-              case Nil                                        => noArgsString
+              case Nil =>
+                noArgsString
               case in :: out :: Nil if !isTupleTypeDirect(in) =>
                 // A => B => C should be (A => B) => C or A => (B => C).
                 // Also if A is byname, then we want (=> A) => B because => is right associative and => A => B
@@ -3077,7 +3112,8 @@ trait Types
       underlying match {
         case ExistentialType(qs, restpe) =>
           newExistentialType(quantified ::: qs, restpe)
-        case _ => ExistentialType(quantified, underlying)
+        case _ =>
+          ExistentialType(quantified, underlying)
       }
 
   case class ExistentialType(
@@ -3129,7 +3165,8 @@ trait Types
     // TODO: check invariant that all quantifiers have the same (existing) owner
     private def quantifierOwner =
       quantified collectFirst {
-        case q if q.owner.exists => q.owner
+        case q if q.owner.exists =>
+          q.owner
       } getOrElse NoSymbol
 
     // Is this existential of the form: T[Q1, ..., QN] forSome { type Q1 >: L1 <: U1, ..., QN >: LN <: UN}
@@ -3235,7 +3272,8 @@ trait Types
           ) &&
           !(qset contains sym) &&
           !isQuantified(pre)
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -3312,9 +3350,12 @@ trait Types
     */
   def overloadedType(pre: Type, alternatives: List[Symbol]): Type =
     alternatives match {
-      case Nil        => NoType
-      case alt :: Nil => pre memberType alt
-      case _          => OverloadedType(pre, alternatives)
+      case Nil =>
+        NoType
+      case alt :: Nil =>
+        pre memberType alt
+      case _ =>
+        OverloadedType(pre, alternatives)
     }
 
   case class ImportType(expr: Tree) extends Type {
@@ -3346,15 +3387,18 @@ trait Types
       tp match {
         case RefinedType(List(WildcardType), Scope(sym)) =>
           Some((sym.name.toTypeName, sym.info))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
   object ArrayTypeRef {
     def unapply(tp: Type) =
       tp match {
-        case TypeRef(_, ArrayClass, arg :: Nil) => Some(arg)
-        case _                                  => None
+        case TypeRef(_, ArrayClass, arg :: Nil) =>
+          Some(arg)
+        case _ =>
+          None
       }
   }
 
@@ -3369,8 +3413,10 @@ trait Types
       if (traceTypeVars) {
         val s =
           msg match {
-            case ""  => ""
-            case str => "( " + str + " )"
+            case "" =>
+              ""
+            case str =>
+              "( " + str + " )"
           }
         Console.err.println("[%10s] %-25s%s".format(action, value, s))
       }
@@ -3641,9 +3687,12 @@ trait Types
     private var _suspended: Type = ConstantFalse
     private[Types] def suspended: Boolean =
       (_suspended: @unchecked) match {
-        case ConstantFalse => false
-        case ConstantTrue  => true
-        case tv: TypeVar   => tv.suspended
+        case ConstantFalse =>
+          false
+        case ConstantTrue =>
+          true
+        case tv: TypeVar =>
+          tv.suspended
       }
 
     /** `AppliedTypeVar`s share the same `TypeConstraint` with the `HKTypeVar` that it was spawned from.
@@ -3655,7 +3704,8 @@ trait Types
       other match {
         case other: TypeVar =>
           constr == other.constr // SI-8237 avoid cycles. Details in pos/t8237.scala
-        case _ => false
+        case _ =>
+          false
       }
     private[Types] def suspended_=(b: Boolean): Unit =
       _suspended =
@@ -3851,8 +3901,10 @@ trait Types
 
     private def isSkolemAboveLevel(tp: Type) =
       tp.typeSymbol match {
-        case ts: TypeSkolem => ts.level > level
-        case _              => false
+        case ts: TypeSkolem =>
+          ts.level > level
+        case _ =>
+          false
       }
     // side-effects encounteredHigherLevel
     private def containsSkolemAboveLevel(tp: Type) =
@@ -3892,7 +3944,8 @@ trait Types
       sym.info match {
         case PolyType(tparams, _) if tparams.nonEmpty =>
           tparams map (_.defString) mkString ("[", ",", "]")
-        case _ => ""
+        case _ =>
+          ""
       }
     def originName = origin.typeSymbolDirect.decodedName
     def originLocation = {
@@ -4004,8 +4057,10 @@ trait Types
       */
     override def bounds: TypeBounds =
       underlying.bounds match {
-        case TypeBounds(_: this.type, _: this.type) => TypeBounds(this, this)
-        case oftp                                   => oftp
+        case TypeBounds(_: this.type, _: this.type) =>
+          TypeBounds(this, this)
+        case oftp =>
+          oftp
       }
 
     // ** Replace formal type parameter symbols with actual type arguments. * /
@@ -4051,8 +4106,10 @@ trait Types
   object StaticallyAnnotatedType {
     def unapply(tp: Type): Option[(List[AnnotationInfo], Type)] =
       tp.staticAnnotations match {
-        case Nil    => None
-        case annots => Some((annots, tp.withoutAnnotations))
+        case Nil =>
+          None
+        case annots =>
+          Some((annots, tp.withoutAnnotations))
       }
   }
 
@@ -4249,7 +4306,8 @@ trait Types
       pre match {
         case x: SuperType if sym1.isEffectivelyFinal || sym1.isDeferred =>
           x.thistpe
-        case _ => pre
+        case _ =>
+          pre
       }
     if (pre eq pre1)
       TypeRef(pre, sym1, args)
@@ -4280,8 +4338,10 @@ trait Types
   /** Create a new MethodType of the same class as tp, i.e. keep JavaMethodType */
   def copyMethodType(tp: Type, params: List[Symbol], restpe: Type): Type =
     tp match {
-      case _: JavaMethodType => JavaMethodType(params, restpe)
-      case _                 => MethodType(params, restpe)
+      case _: JavaMethodType =>
+        JavaMethodType(params, restpe)
+      case _ =>
+        MethodType(params, restpe)
     }
 
   /** A creator for intersection type where intersections of a single type are
@@ -4292,8 +4352,10 @@ trait Types
     */
   def intersectionType(tps: List[Type], owner: Symbol): Type =
     tps match {
-      case tp :: Nil => tp
-      case _         => refinedType(tps, owner)
+      case tp :: Nil =>
+        tp
+      case _ =>
+        refinedType(tps, owner)
     }
 
   /** A creator for intersection type where intersections of a single type are
@@ -4301,8 +4363,10 @@ trait Types
     */
   def intersectionType(tps: List[Type]): Type =
     tps match {
-      case tp :: Nil => tp
-      case _         => refinedType(tps, commonOwner(tps))
+      case tp :: Nil =>
+        tp
+      case _ =>
+        refinedType(tps, commonOwner(tps))
     }
 
   /**** This implementation to merge parents was checked in in commented-out
@@ -4343,7 +4407,8 @@ trait Types
     tycon match {
       case TypeRef(pre, sym @ (NothingClass | AnyClass), _) =>
         copyTypeRef(tycon, pre, sym, Nil) //@M drop type args to Any/Nothing
-      case TypeRef(pre, sym, Nil) => copyTypeRef(tycon, pre, sym, args)
+      case TypeRef(pre, sym, Nil) =>
+        copyTypeRef(tycon, pre, sym, args)
       case TypeRef(pre, sym, bogons) =>
         devWarning(s"Dropping $bogons from $tycon in appliedType.");
         copyTypeRef(tycon, pre, sym, args)
@@ -4363,11 +4428,14 @@ trait Types
           appliedType(lo, args),
           appliedType(hi, args)
         ) // @PP: Can this be right?
-      case tv @ TypeVar(_, _) => tv.applyArgs(args)
+      case tv @ TypeVar(_, _) =>
+        tv.applyArgs(args)
       case AnnotatedType(annots, underlying) =>
         AnnotatedType(annots, appliedType(underlying, args))
-      case ErrorType | WildcardType => tycon
-      case _                        => abort(debugString(tycon))
+      case ErrorType | WildcardType =>
+        tycon
+      case _ =>
+        abort(debugString(tycon))
     }
   }
 
@@ -4409,8 +4477,10 @@ trait Types
     }
     def unapply(tpe: Type): Option[(List[Symbol], Type)] =
       tpe match {
-        case PolyType(tparams, restpe) => Some((tparams, restpe))
-        case _                         => Some((Nil, tpe))
+        case PolyType(tparams, restpe) =>
+          Some((tparams, restpe))
+        case _ =>
+          Some((Nil, tpe))
       }
   }
   def genPolyType(params: List[Symbol], tpe: Type): Type =
@@ -4500,11 +4570,16 @@ trait Types
       extends (Type => Type) {
     def apply(tp: Type): Type =
       tp match {
-        case AnnotatedType(_, underlying) if annotated     => apply(underlying)
-        case ExistentialType(_, underlying) if existential => apply(underlying)
-        case PolyType(_, underlying) if poly               => apply(underlying)
-        case NullaryMethodType(underlying) if nullary      => apply(underlying)
-        case tp                                            => tp
+        case AnnotatedType(_, underlying) if annotated =>
+          apply(underlying)
+        case ExistentialType(_, underlying) if existential =>
+          apply(underlying)
+        case PolyType(_, underlying) if poly =>
+          apply(underlying)
+        case NullaryMethodType(underlying) if nullary =>
+          apply(underlying)
+        case tp =>
+          tp
       }
   }
   class ClassUnwrapper(existential: Boolean)
@@ -4524,26 +4599,34 @@ trait Types
   def elementExtract(container: Symbol, tp: Type): Type = {
     assert(!container.isAliasType, container)
     unwrapWrapperTypes(tp baseType container).dealiasWiden match {
-      case TypeRef(_, `container`, arg :: Nil) => arg
-      case _                                   => NoType
+      case TypeRef(_, `container`, arg :: Nil) =>
+        arg
+      case _ =>
+        NoType
     }
   }
   def elementExtractOption(container: Symbol, tp: Type): Option[Type] = {
     elementExtract(container, tp) match {
-      case NoType => None
-      case tp     => Some(tp)
+      case NoType =>
+        None
+      case tp =>
+        Some(tp)
     }
   }
   def elementTest(container: Symbol, tp: Type)(f: Type => Boolean): Boolean = {
     elementExtract(container, tp) match {
-      case NoType => false
-      case tp     => f(tp)
+      case NoType =>
+        false
+      case tp =>
+        f(tp)
     }
   }
   def elementTransform(container: Symbol, tp: Type)(f: Type => Type): Type = {
     elementExtract(container, tp) match {
-      case NoType => NoType
-      case tp     => f(tp)
+      case NoType =>
+        NoType
+      case tp =>
+        f(tp)
     }
   }
 
@@ -4585,8 +4668,10 @@ trait Types
   }
   def isDummyAppliedType(tp: Type) =
     tp.dealias match {
-      case tr @ TypeRef(_, _, args) => args exists isDummyOf(tr)
-      case _                        => false
+      case tr @ TypeRef(_, _, args) =>
+        args exists isDummyOf(tr)
+      case _ =>
+        false
     }
 
   def typeParamsToExistentials(
@@ -4612,8 +4697,10 @@ trait Types
   def isRawType(tp: Type) =
     !phase.erasedTypes && (
       tp match {
-        case TypeRef(_, sym, Nil) => isRawIfWithoutArgs(sym)
-        case _                    => false
+        case TypeRef(_, sym, Nil) =>
+          isRawIfWithoutArgs(sym)
+        case _ =>
+          false
       }
     )
 
@@ -4773,10 +4860,12 @@ trait Types
     else
       tp.normalize match {
         // Unify the representations of module classes
-        case st @ SingleType(_, sym) if sym.isModule => st.underlying.normalize
+        case st @ SingleType(_, sym) if sym.isModule =>
+          st.underlying.normalize
         case st @ ThisType(sym) if sym.isModuleClass =>
           normalizePlus(st.underlying)
-        case _ => tp.normalize
+        case _ =>
+          tp.normalize
       }
   }
 
@@ -4834,8 +4923,10 @@ trait Types
         !(sym hasFlag PACKAGE) && isEligibleForPrefixUnification(pre)
       case tv @ TypeVar(_, constr) =>
         !tv.instValid || isEligibleForPrefixUnification(constr.inst)
-      case RefinedType(_, _) => true
-      case _                 => false
+      case RefinedType(_, _) =>
+        true
+      case _ =>
+        false
     }
 
   def isErrorOrWildcard(tp: Type) = (tp eq ErrorType) || (tp eq WildcardType)
@@ -4845,27 +4936,36 @@ trait Types
     */
   def isSingleType(tp: Type) =
     tp match {
-      case ThisType(_) | SuperType(_, _) | SingleType(_, _) => true
-      case _                                                => false
+      case ThisType(_) | SuperType(_, _) | SingleType(_, _) =>
+        true
+      case _ =>
+        false
     }
 
   def isConstantType(tp: Type) =
     tp match {
-      case ConstantType(_) => true
-      case _               => false
+      case ConstantType(_) =>
+        true
+      case _ =>
+        false
     }
 
   def isExistentialType(tp: Type): Boolean =
     tp match {
-      case _: ExistentialType           => true
-      case tp: Type if tp.dealias ne tp => isExistentialType(tp.dealias)
-      case _                            => false
+      case _: ExistentialType =>
+        true
+      case tp: Type if tp.dealias ne tp =>
+        isExistentialType(tp.dealias)
+      case _ =>
+        false
     }
 
   def isImplicitMethodType(tp: Type) =
     tp match {
-      case mt: MethodType => mt.isImplicit
-      case _              => false
+      case mt: MethodType =>
+        mt.isImplicit
+      case _ =>
+        false
     }
 
   /** This is defined and named as it is because the goal is to exclude source
@@ -4883,14 +4983,18 @@ trait Types
 
   private def isHKTypeRef(tp: Type) =
     tp match {
-      case TypeRef(_, sym, Nil) => tp.isHigherKinded
-      case _                    => false
+      case TypeRef(_, sym, Nil) =>
+        tp.isHigherKinded
+      case _ =>
+        false
     }
   @tailrec
   final def isUseableAsTypeArgs(tps: List[Type]): Boolean =
     tps match {
-      case Nil     => true
-      case x :: xs => isUseableAsTypeArg(x) && isUseableAsTypeArgs(xs)
+      case Nil =>
+        true
+      case x :: xs =>
+        isUseableAsTypeArg(x) && isUseableAsTypeArgs(xs)
     }
 
   /** The "third way", types which are neither value types nor
@@ -4913,26 +5017,40 @@ trait Types
   ****/
   private def isInternalTypeUsedAsTypeArg(tp: Type): Boolean =
     tp match {
-      case WildcardType           => true
-      case BoundedWildcardType(_) => true
-      case ErrorType              => true
-      case _: TypeVar             => true
-      case _                      => false
+      case WildcardType =>
+        true
+      case BoundedWildcardType(_) =>
+        true
+      case ErrorType =>
+        true
+      case _: TypeVar =>
+        true
+      case _ =>
+        false
     }
   private def isAlwaysValueType(tp: Type) =
     tp match {
-      case RefinedType(_, _)     => true
-      case ExistentialType(_, _) => true
-      case ConstantType(_)       => true
-      case _                     => false
+      case RefinedType(_, _) =>
+        true
+      case ExistentialType(_, _) =>
+        true
+      case ConstantType(_) =>
+        true
+      case _ =>
+        false
     }
   private def isAlwaysNonValueType(tp: Type) =
     tp match {
-      case OverloadedType(_, _)          => true
-      case NullaryMethodType(_)          => true
-      case MethodType(_, _)              => true
-      case PolyType(_, MethodType(_, _)) => true
-      case _                             => false
+      case OverloadedType(_, _) =>
+        true
+      case NullaryMethodType(_) =>
+        true
+      case MethodType(_, _) =>
+        true
+      case PolyType(_, MethodType(_, _)) =>
+        true
+      case _ =>
+        false
     }
 
   /** Should be called only with types for which a clear true/false answer
@@ -4941,15 +5059,22 @@ trait Types
     */
   private def isValueElseNonValue(tp: Type): Boolean =
     tp match {
-      case tp if isAlwaysValueType(tp)    => true
-      case tp if isAlwaysNonValueType(tp) => false
-      case AnnotatedType(_, underlying)   => isValueElseNonValue(underlying)
-      case SingleType(_, sym)             => sym.isValue // excludes packages and statics
+      case tp if isAlwaysValueType(tp) =>
+        true
+      case tp if isAlwaysNonValueType(tp) =>
+        false
+      case AnnotatedType(_, underlying) =>
+        isValueElseNonValue(underlying)
+      case SingleType(_, sym) =>
+        sym.isValue // excludes packages and statics
       case TypeRef(_, _, _) if tp.isHigherKinded =>
         false // excludes type constructors
-      case ThisType(sym)      => !sym.isPackageClass // excludes packages
-      case TypeRef(_, sym, _) => !sym.isPackageClass // excludes packages
-      case PolyType(_, _)     => true // poly-methods excluded earlier
+      case ThisType(sym) =>
+        !sym.isPackageClass // excludes packages
+      case TypeRef(_, sym, _) =>
+        !sym.isPackageClass // excludes packages
+      case PolyType(_, _) =>
+        true // poly-methods excluded earlier
       case tp =>
         sys.error("isValueElseNonValue called with third-way type " + tp)
     }
@@ -4976,10 +5101,14 @@ trait Types
   /** def isNonValueType(tp: Type) = !isValueElseNonValue(tp) */
   def isNonRefinementClassType(tpe: Type) =
     tpe match {
-      case SingleType(_, sym) => sym.isModuleClass
-      case TypeRef(_, sym, _) => sym.isClass && !sym.isRefinementClass
-      case ErrorType          => true
-      case _                  => false
+      case SingleType(_, sym) =>
+        sym.isModuleClass
+      case TypeRef(_, sym, _) =>
+        sym.isClass && !sym.isRefinementClass
+      case ErrorType =>
+        true
+      case _ =>
+        false
     }
 
   def isSubArgs(
@@ -5166,7 +5295,8 @@ trait Types
             matchesType(tp1, res2, alwaysMatchSimple)
           case NullaryMethodType(res2) =>
             matchesType(tp1, res2, alwaysMatchSimple)
-          case _ => lastTry
+          case _ =>
+            lastTry
         }
       case _ =>
         lastTry
@@ -5271,8 +5401,9 @@ trait Types
   def typeVarsInType(tp: Type): List[TypeVar] = {
     var tvs: List[TypeVar] = Nil
     tp foreach {
-      case t: TypeVar => tvs ::= t
-      case _          =>
+      case t: TypeVar =>
+        tvs ::= t
+      case _ =>
     }
     tvs.reverse
   }
@@ -5303,7 +5434,8 @@ trait Types
       variance: Variance,
       depth: Depth): Type =
     tps match {
-      case tp :: Nil => tp
+      case tp :: Nil =>
+        tp
       case TypeRef(_, sym, _) :: rest =>
         val pres = tps map (_.prefix) // prefix normalizes automatically
         val pre =
@@ -5385,7 +5517,8 @@ trait Types
                     typeRef(pre, sym, args))
             }
         } catch {
-          case ex: MalformedType => NoType
+          case ex: MalformedType =>
+            NoType
         }
       case SingleType(_, sym) :: rest =>
         val pres = tps map (_.prefix)
@@ -5396,12 +5529,15 @@ trait Types
             glb(pres, depth)
         try singleType(pre, sym)
         catch {
-          case ex: MalformedType => NoType
+          case ex: MalformedType =>
+            NoType
         }
       case ExistentialType(tparams, quantified) :: rest =>
         mergePrefixAndArgs(quantified :: rest, variance, depth) match {
-          case NoType => NoType
-          case tpe    => existentialAbstraction(tparams, tpe)
+          case NoType =>
+            NoType
+          case tpe =>
+            existentialAbstraction(tparams, tpe)
         }
       case _ =>
         abort(s"mergePrefixAndArgs($tps, $variance, $depth): unsupported tps")
@@ -5503,14 +5639,19 @@ trait Types
 
   def isUnboundedGeneric(tp: Type) =
     tp match {
-      case t @ TypeRef(_, sym, _) => sym.isAbstractType && !(t <:< AnyRefTpe)
-      case _                      => false
+      case t @ TypeRef(_, sym, _) =>
+        sym.isAbstractType && !(t <:< AnyRefTpe)
+      case _ =>
+        false
     }
   def isBoundedGeneric(tp: Type) =
     tp match {
-      case TypeRef(_, sym, _) if sym.isAbstractType => (tp <:< AnyRefTpe)
-      case TypeRef(_, sym, _)                       => !isPrimitiveValueClass(sym)
-      case _                                        => false
+      case TypeRef(_, sym, _) if sym.isAbstractType =>
+        (tp <:< AnyRefTpe)
+      case TypeRef(_, sym, _) =>
+        !isPrimitiveValueClass(sym)
+      case _ =>
+        false
     }
   // Add serializable to a list of parents, unless one of them already is
   def addSerializable(ps: Type*): List[Type] =
@@ -5599,17 +5740,22 @@ trait Types
   /** The maximum depth of type `tp` */
   def typeDepth(tp: Type): Depth =
     tp match {
-      case TypeRef(pre, sym, args) => typeDepth(pre) max typeDepth(args).incr
+      case TypeRef(pre, sym, args) =>
+        typeDepth(pre) max typeDepth(args).incr
       case RefinedType(parents, decls) =>
         typeDepth(parents) max symTypeDepth(decls.toList).incr
-      case TypeBounds(lo, hi)             => typeDepth(lo) max typeDepth(hi)
-      case MethodType(paramtypes, result) => typeDepth(result)
-      case NullaryMethodType(result)      => typeDepth(result)
+      case TypeBounds(lo, hi) =>
+        typeDepth(lo) max typeDepth(hi)
+      case MethodType(paramtypes, result) =>
+        typeDepth(result)
+      case NullaryMethodType(result) =>
+        typeDepth(result)
       case PolyType(tparams, result) =>
         typeDepth(result) max symTypeDepth(tparams).incr
       case ExistentialType(tparams, result) =>
         typeDepth(result) max symTypeDepth(tparams).incr
-      case _ => Depth(1)
+      case _ =>
+        Depth(1)
     }
 
   //OPT replaced with tailrecursive function to save on #closures
@@ -5621,8 +5767,10 @@ trait Types
     @tailrec
     def loop(tps: List[Type], acc: Depth): Depth =
       tps match {
-        case tp :: rest => loop(rest, acc max typeDepth(tp))
-        case _          => acc
+        case tp :: rest =>
+          loop(rest, acc max typeDepth(tp))
+        case _ =>
+          acc
       }
     loop(tps, Depth.Zero)
   }
@@ -5630,8 +5778,10 @@ trait Types
     @tailrec
     def loop(tps: List[Type], acc: Depth): Depth =
       tps match {
-        case tp :: rest => loop(rest, acc max tp.baseTypeSeqDepth)
-        case _          => acc
+        case tp :: rest =>
+          loop(rest, acc max tp.baseTypeSeqDepth)
+        case _ =>
+          acc
       }
     loop(tps, Depth.Zero)
   }
@@ -5639,15 +5789,19 @@ trait Types
   @tailrec
   private def typesContain(tps: List[Type], sym: Symbol): Boolean =
     tps match {
-      case tp :: rest => (tp contains sym) || typesContain(rest, sym)
-      case _          => false
+      case tp :: rest =>
+        (tp contains sym) || typesContain(rest, sym)
+      case _ =>
+        false
     }
 
   @tailrec
   private def areTrivialTypes(tps: List[Type]): Boolean =
     tps match {
-      case tp :: rest => tp.isTrivial && areTrivialTypes(rest)
-      case _          => true
+      case tp :: rest =>
+        tp.isTrivial && areTrivialTypes(rest)
+      case _ =>
+        true
     }
 
 // -------------- Classtags --------------------------------------------------------

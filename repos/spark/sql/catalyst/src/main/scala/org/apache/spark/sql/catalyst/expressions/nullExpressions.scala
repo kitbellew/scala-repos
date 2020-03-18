@@ -111,8 +111,10 @@ case class IsNaN(child: Expression)
       false
     } else {
       child.dataType match {
-        case DoubleType => value.asInstanceOf[Double].isNaN
-        case FloatType  => value.asInstanceOf[Float].isNaN
+        case DoubleType =>
+          value.asInstanceOf[Double].isNaN
+        case FloatType =>
+          value.asInstanceOf[Float].isNaN
       }
     }
   }
@@ -258,7 +260,8 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
           case FloatType =>
             if (!evalC.asInstanceOf[Float].isNaN)
               numNonNulls += 1
-          case _ => numNonNulls += 1
+          case _ =>
+            numNonNulls += 1
         }
       }
       i += 1

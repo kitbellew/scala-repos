@@ -10,7 +10,8 @@ private[netty4] class TlsShutdownHandler(o: Object)
     try {
       Some(o.getClass.getMethod("shutdown"))
     } catch {
-      case _: NoSuchMethodException => None
+      case _: NoSuchMethodException =>
+        None
     }
 
   private[this] def shutdownAfterChannelClosure(): Unit =

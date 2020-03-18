@@ -44,7 +44,8 @@ trait IssuesService {
           t3.byIssue(t1.userName, t1.repositoryName, t1.issueId)
       }
       .map {
-        case ((t1, t2), t3) => (t1, t2, t3)
+        case ((t1, t2), t3) =>
+          (t1, t2, t3)
       }
       .list
 
@@ -298,11 +299,13 @@ trait IssuesService {
       }
       .innerJoin(Accounts)
       .on {
-        case ((((t1, t2), t3), t4), t5) => t5.userName === t1.openedUserName
+        case ((((t1, t2), t3), t4), t5) =>
+          t5.userName === t1.openedUserName
       }
       .innerJoin(Accounts)
       .on {
-        case (((((t1, t2), t3), t4), t5), t6) => t6.userName === t4.userName
+        case (((((t1, t2), t3), t4), t5), t6) =>
+          t6.userName === t4.userName
       }
       .map {
         case (((((t1, t2), t3), t4), t5), t6) =>
@@ -326,15 +329,20 @@ trait IssuesService {
         case (t1, t2) =>
           (
             condition.sort match {
-              case "created"  => t1.registeredDate
-              case "comments" => t2.commentCount
-              case "updated"  => t1.updatedDate
+              case "created" =>
+                t1.registeredDate
+              case "comments" =>
+                t2.commentCount
+              case "updated" =>
+                t1.updatedDate
             }
           ) match {
             case sort =>
               condition.direction match {
-                case "asc"  => sort asc
-                case "desc" => sort desc
+                case "asc" =>
+                  sort asc
+                case "desc" =>
+                  sort desc
               }
           }
       }
@@ -351,7 +359,8 @@ trait IssuesService {
     Issues filter { t1 =>
       repos
         .map {
-          case (owner, repository) => t1.byRepository(owner, repository)
+          case (owner, repository) =>
+            t1.byRepository(owner, repository)
         }
         .foldLeft[Column[Boolean]](false)(_ || _) &&
       (t1.closed === (condition.state == "closed").bind) &&
@@ -716,17 +725,25 @@ object IssuesService {
           List(
             milestone.map {
               _ match {
-                case Some(x) => s"milestone:${x}"
-                case None    => "no:milestone"
+                case Some(x) =>
+                  s"milestone:${x}"
+                case None =>
+                  "no:milestone"
               }
             },
             (sort, direction) match {
-              case ("created", "desc")  => None
-              case ("created", "asc")   => Some("sort:created-asc")
-              case ("comments", "desc") => Some("sort:comments-desc")
-              case ("comments", "asc")  => Some("sort:comments-asc")
-              case ("updated", "desc")  => Some("sort:updated-desc")
-              case ("updated", "asc")   => Some("sort:updated-asc")
+              case ("created", "desc") =>
+                None
+              case ("created", "asc") =>
+                Some("sort:created-asc")
+              case ("comments", "desc") =>
+                Some("sort:comments-desc")
+              case ("comments", "asc") =>
+                Some("sort:comments-asc")
+              case ("updated", "desc") =>
+                Some("sort:updated-desc")
+              case ("updated", "asc") =>
+                Some("sort:updated-asc")
             },
             visibility.map(visibility => s"visibility:${visibility}")
           ).flatten ++
@@ -741,8 +758,10 @@ object IssuesService {
           Some("labels=" + urlEncode(labels.mkString(","))),
         milestone.map {
           _ match {
-            case Some(x) => "milestone=" + urlEncode(x)
-            case None    => "milestone=none"
+            case Some(x) =>
+              "milestone=" + urlEncode(x)
+            case None =>
+              "milestone=none"
           }
         },
         author.map(x => "author=" + urlEncode(x)),
@@ -785,8 +804,10 @@ object IssuesService {
         .split("[ 　\t]+")
         .flatMap { x =>
           x.split(":") match {
-            case Array(key, value) => Some((key, value))
-            case _                 => None
+            case Array(key, value) =>
+              Some((key, value))
+            case _ =>
+              None
           }
         }
         .groupBy(_._1)
@@ -800,20 +821,29 @@ object IssuesService {
           .get("sort")
           .flatMap(_.headOption)
           .getOrElse("created-desc") match {
-          case "created-asc"   => ("created", "asc")
-          case "comments-desc" => ("comments", "desc")
-          case "comments-asc"  => ("comments", "asc")
-          case "updated-desc"  => ("comments", "desc")
-          case "updated-asc"   => ("comments", "asc")
-          case _               => ("created", "desc")
+          case "created-asc" =>
+            ("created", "asc")
+          case "comments-desc" =>
+            ("comments", "desc")
+          case "comments-asc" =>
+            ("comments", "asc")
+          case "updated-desc" =>
+            ("comments", "desc")
+          case "updated-asc" =>
+            ("comments", "asc")
+          case _ =>
+            ("created", "desc")
         }
 
       IssueSearchCondition(
         conditions.get("label").map(_.toSet).getOrElse(Set.empty),
         conditions.get("milestone").flatMap(_.headOption) match {
-          case None         => None
-          case Some("none") => Some(None)
-          case Some(x)      => Some(Some(x)) //milestones.get(x).map(x => Some(x))
+          case None =>
+            None
+          case Some("none") =>
+            Some(None)
+          case Some(x) =>
+            Some(Some(x)) //milestones.get(x).map(x => Some(x))
         },
         conditions.get("author").flatMap(_.headOption),
         conditions.get("assignee").flatMap(_.headOption),
@@ -837,8 +867,10 @@ object IssuesService {
       IssueSearchCondition(
         param(request, "labels").map(_.split(",").toSet).getOrElse(Set.empty),
         param(request, "milestone").map {
-          case "none" => None
-          case x      => Some(x)
+          case "none" =>
+            None
+          case x =>
+            Some(x)
         },
         param(request, "author"),
         param(request, "assigned"),
@@ -859,7 +891,8 @@ object IssuesService {
         else
           i
       } catch {
-        case e: NumberFormatException => 1
+        case e: NumberFormatException =>
+          1
       }
   }
 

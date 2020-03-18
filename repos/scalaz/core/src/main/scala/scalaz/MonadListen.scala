@@ -5,7 +5,8 @@ trait MonadListen[F[_], W] extends MonadTell[F, W] {
 
   def pass[A](ma: F[(A, W => W)]): F[A] =
     bind(listen(ma)) {
-      case ((a, f), w) => writer(f(w), a)
+      case ((a, f), w) =>
+        writer(f(w), a)
     }
 
   val monadListenSyntax =

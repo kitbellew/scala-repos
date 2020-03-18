@@ -88,16 +88,20 @@ trait Unapplies extends ast.TreeDSL {
       // symbol error, as before.
       def localAccessor =
         caseclazz.impl.body find {
-          case t @ ValOrDefDef(mods, selector.name, _, _) => mods.isPrivateLocal
-          case _                                          => false
+          case t @ ValOrDefDef(mods, selector.name, _, _) =>
+            mods.isPrivateLocal
+          case _ =>
+            false
         }
       localAccessor.fold(selectByName)(Ident(param) DOT _.symbol)
     }
 
     // Working with trees, rather than symbols, to avoid cycles like SI-5082
     constrParamss(caseclazz).take(1).flatten match {
-      case Nil => TRUE
-      case xs  => SOME(xs map caseFieldAccessorValue: _*)
+      case Nil =>
+        TRUE
+      case xs =>
+        SOME(xs map caseFieldAccessorValue: _*)
     }
   }
 
@@ -108,8 +112,10 @@ trait Unapplies extends ast.TreeDSL {
     def inheritFromFun =
       !cdef.mods.hasAbstractFlag && cdef.tparams.isEmpty && (
         params match {
-          case List(ps) if ps.length <= MaxFunctionArity => true
-          case _                                         => false
+          case List(ps) if ps.length <= MaxFunctionArity =>
+            true
+          case _ =>
+            false
         }
       )
     def createFun = {
@@ -183,7 +189,8 @@ trait Unapplies extends ast.TreeDSL {
       constrParamss(cdef) match {
         case xs :: _ if xs.nonEmpty && isRepeatedParamType(xs.last.tpt) =>
           nme.unapplySeq
-        case _ => nme.unapply
+        case _ =>
+          nme.unapply
       }
     val cparams = List(
       ValDef(
@@ -201,7 +208,8 @@ trait Unapplies extends ast.TreeDSL {
                   Select(_, tpnme.REPEATED_PARAM_CLASS_NAME),
                   tps) =>
               AppliedTypeTree(gen.rootScalaDot(tpnme.Seq), tps)
-            case _ => tp
+            case _ =>
+              tp
           }
         constrParamss(cdef) match {
           case Nil | Nil :: _ =>
@@ -221,7 +229,8 @@ trait Unapplies extends ast.TreeDSL {
     val body =
       nullSafe(
         {
-          case Ident(x) => caseClassUnapplyReturnValue(x, cdef)
+          case Ident(x) =>
+            caseClassUnapplyReturnValue(x, cdef)
         },
         ifNull)(Ident(unapplyParamName))
 
@@ -284,7 +293,8 @@ trait Unapplies extends ast.TreeDSL {
       val tparams = constrTparamsInvariant(cdef)
       val paramss =
         classParamss match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case ps :: pss =>
             ps.map(makeCopyParam(_, putDefault = true)) :: mmap(pss)(
               makeCopyParam(_, putDefault = false))

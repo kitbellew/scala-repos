@@ -122,8 +122,10 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
       new BasicDBObject(
         k,
         v match {
-          case s: String if (ObjectId.isValid(s)) => new ObjectId(s)
-          case _                                  => v
+          case s: String if (ObjectId.isValid(s)) =>
+            new ObjectId(s)
+          case _ =>
+            v
         }))
   }
 

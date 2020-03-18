@@ -108,7 +108,8 @@ object Cache {
   private def createBuilder[K, V](
       options: Seq[CacheOption[K, V]]): CacheBuilder[K, V] =
     options.foldLeft(CacheBuilder.newBuilder.asInstanceOf[CacheBuilder[K, V]]) {
-      case (acc, opt) => opt.apply(acc)
+      case (acc, opt) =>
+        opt.apply(acc)
     }
 
   def simple[K, V](options: CacheOption[K, V]*): SimpleCache[K, V] = {

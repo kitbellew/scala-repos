@@ -94,8 +94,10 @@ private class RedisLoggingFilter(stats: StatsReceiver)
             EmptyBulkReply() | MBulkReply(_) | NilMBulkReply() |
             EmptyMBulkReply() =>
           succ.counter(command.command).incr()
-        case ErrorReply(message) => error.counter(command.command).incr()
-        case _                   => error.counter(command.command).incr()
+        case ErrorReply(message) =>
+          error.counter(command.command).incr()
+        case _ =>
+          error.counter(command.command).incr()
       }
       response
     }

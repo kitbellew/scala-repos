@@ -47,8 +47,10 @@ case class SimplePrunedScan(from: Int, to: Int)(
 
   override def buildScan(requiredColumns: Array[String]): RDD[Row] = {
     val rowBuilders = requiredColumns.map {
-      case "a" => (i: Int) => Seq(i)
-      case "b" => (i: Int) => Seq(i * 2)
+      case "a" =>
+        (i: Int) => Seq(i)
+      case "b" =>
+        (i: Int) => Seq(i * 2)
     }
 
     sqlContext.sparkContext
@@ -125,10 +127,13 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
         val queryExecution = sql(sqlString).queryExecution
         val rawPlan =
           queryExecution.executedPlan.collect {
-            case p: execution.DataSourceScan => p
+            case p: execution.DataSourceScan =>
+              p
           } match {
-            case Seq(p) => p
-            case _      => fail(s"More than one PhysicalRDD found\n$queryExecution")
+            case Seq(p) =>
+              p
+            case _ =>
+              fail(s"More than one PhysicalRDD found\n$queryExecution")
           }
         val rawColumns = rawPlan.output.map(_.name)
         val rawOutput = rawPlan.execute().first()

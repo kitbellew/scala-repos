@@ -53,7 +53,8 @@ object IntroduceVariableTestUtil {
         getVariableValidator(project, editor, file, startOffset, endOffset)
       case x: ScTypeElement =>
         getTypeValidator(project, editor, file, startOffset, endOffset)
-      case _ => null
+      case _ =>
+        null
     }
   }
 

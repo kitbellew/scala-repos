@@ -63,7 +63,8 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
 
   private[cluster] def converge(gossip: Gossip): (Gossip, Set[UniqueAddress]) =
     ((gossip, Set.empty[UniqueAddress]) /: gossip.members) {
-      case ((gs, as), m) ⇒ (gs.seen(m.uniqueAddress), as + m.uniqueAddress)
+      case ((gs, as), m) ⇒
+        (gs.seen(m.uniqueAddress), as + m.uniqueAddress)
     }
 
   "Domain events" must {

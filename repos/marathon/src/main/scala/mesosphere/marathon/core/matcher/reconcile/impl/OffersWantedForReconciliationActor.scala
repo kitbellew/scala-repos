@@ -73,7 +73,8 @@ private[reconcile] class OffersWantedForReconciliationActor(
     case success: DeploymentStepSuccess =>
       val terminatedResidentApps = success.currentStep.actions.iterator
         .collect {
-          case StopApplication(app) if app.isResident => app
+          case StopApplication(app) if app.isResident =>
+            app
         }
 
       if (terminatedResidentApps.nonEmpty) {

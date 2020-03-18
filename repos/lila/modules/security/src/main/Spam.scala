@@ -18,7 +18,8 @@ object Spam {
 
   def replace(text: String) =
     replacements.foldLeft(text) {
-      case (t, (regex, rep)) => regex.replaceAllIn(t, rep)
+      case (t, (regex, rep)) =>
+        regex.replaceAllIn(t, rep)
     }
 
   private val replacements = List(

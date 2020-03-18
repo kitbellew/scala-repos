@@ -273,7 +273,8 @@ class TaskBuilder(
 
         val containerWithPortMappings =
           portMappings match {
-            case None => c
+            case None =>
+              c
             case Some(newMappings) =>
               c.copy(docker = c.docker.map {
                 _.copy(portMappings = newMappings)
@@ -412,9 +413,11 @@ object TaskBuilder {
     envVarsPrefix match {
       case Some(prefix) =>
         env.map {
-          case (key: String, value: String) => (prefix + key, value)
+          case (key: String, value: String) =>
+            (prefix + key, value)
         }
-      case None => env
+      case None =>
+        env
     }
   }
 
@@ -435,7 +438,8 @@ object TaskBuilder {
         "MARATHON_APP_RESOURCE_MEM" -> Some(app.mem.toString),
         "MARATHON_APP_RESOURCE_DISK" -> Some(app.disk.toString)
       ).collect {
-        case (key, Some(value)) => key -> value
+        case (key, Some(value)) =>
+          key -> value
       }.toMap ++ labelsToEnvVars(app.labels)
     }
   }
@@ -453,7 +457,8 @@ object TaskBuilder {
 
     val names = Map("MARATHON_APP_LABELS" -> validLabels.keys.mkString(" "))
     val values = validLabels.map {
-      case (key, value) => s"$labelEnvironmentKeyPrefix$key" -> value
+      case (key, value) =>
+        s"$labelEnvironmentKeyPrefix$key" -> value
     }
     names ++ values
   }

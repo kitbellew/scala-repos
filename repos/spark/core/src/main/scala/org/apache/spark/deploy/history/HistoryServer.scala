@@ -249,7 +249,8 @@ class HistoryServer(
           case nsee: NoSuchElementException =>
             false
 
-          case cause: Exception => throw cause
+          case cause: Exception =>
+            throw cause
         }
     }
   }

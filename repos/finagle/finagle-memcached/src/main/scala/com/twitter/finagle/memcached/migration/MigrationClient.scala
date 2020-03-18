@@ -289,7 +289,8 @@ trait FallbackRead extends Client {
         backendClient.getResult(frontR.misses ++ frontR.failures.keySet) map {
           backR => combineGetResult(frontR, backR)
         }
-      case frontR => Future.value(frontR)
+      case frontR =>
+        Future.value(frontR)
     }
   }
 
@@ -324,7 +325,8 @@ trait ReadRepair {
       backR: GetResult): GetResult = {
     // when readrepair, use back hit to repair front miss
     backR.hits foreach {
-      case (k, v) => set(k, v.value)
+      case (k, v) =>
+        set(k, v.value)
     }
     GetResult.merged(Seq(GetResult(frontR.hits), backR))
   }

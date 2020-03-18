@@ -39,8 +39,10 @@ trait OutputFormatter {
 
   private def selectElements(query: String, topNode: Element): Elements =
     topNode match {
-      case null => new Elements(List.empty[Element])
-      case n    => n.select(query)
+      case null =>
+        new Elements(List.empty[Element])
+      case n =>
+        n.select(query)
     }
 
   /**
@@ -78,7 +80,8 @@ trait OutputFormatter {
     */
   def convertToText(topNode: Element): String =
     topNode match {
-      case null => ""
+      case null =>
+        ""
       case node => {
         (
           node
@@ -120,7 +123,8 @@ trait OutputFormatter {
       try {
         Integer.parseInt(text)
       } catch {
-        case _: Exception => 0
+        case _: Exception =>
+          0
       }
 
     val gravityItems = selectElements("*[gravityScore]", topNode)

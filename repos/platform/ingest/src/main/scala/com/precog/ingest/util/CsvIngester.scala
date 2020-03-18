@@ -28,10 +28,14 @@ sealed trait CsvType {
 case object CsvType {
   def lub(a: CsvType, b: CsvType): CsvType =
     (a, b) match {
-      case (CsvNothing, b)  => b
-      case (a, CsvNothing)  => a
-      case (CsvNum, CsvNum) => CsvNum
-      case (_, _)           => CsvString
+      case (CsvNothing, b) =>
+        b
+      case (a, CsvNothing) =>
+        a
+      case (CsvNum, CsvNum) =>
+        CsvNum
+      case (_, _) =>
+        CsvString
     }
 
   val Number =
@@ -40,9 +44,12 @@ case object CsvType {
 
   def infer(x: String): CsvType =
     x match {
-      case Whitespace(_) => CsvNothing
-      case Number(x)     => CsvNum
-      case _             => CsvString
+      case Whitespace(_) =>
+        CsvNothing
+      case Number(x) =>
+        CsvNum
+      case _ =>
+        CsvString
     }
 
   def inferTypes(rows: Iterator[Array[String]]): Array[CsvType] = {
@@ -64,17 +71,22 @@ case object CsvType {
 case object CsvString extends CsvType {
   def apply(s: String) =
     s.trim match {
-      case "" => JNull
-      case s  => JString(s)
+      case "" =>
+        JNull
+      case s =>
+        JString(s)
     }
 }
 // case object CsvDate extends CsvType // For when we support DateColumn.
 case object CsvNum extends CsvType {
   def apply(s: String) =
     s match {
-      case CsvType.Number(n)     => JNum(BigDecimal(n))
-      case CsvType.Whitespace(_) => JNull
-      case _                     => sys.error("Cannot parse CSV number: " + s)
+      case CsvType.Number(n) =>
+        JNum(BigDecimal(n))
+      case CsvType.Whitespace(_) =>
+        JNull
+      case _ =>
+        sys.error("Cannot parse CSV number: " + s)
     }
 }
 

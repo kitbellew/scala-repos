@@ -363,7 +363,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
                 },
                 play.core.Execution.internalContext)
           } catch {
-            case t: Throwable => Accumulator.done(getResult(t))
+            case t: Throwable =>
+              Accumulator.done(getResult(t))
           }
         }
       }

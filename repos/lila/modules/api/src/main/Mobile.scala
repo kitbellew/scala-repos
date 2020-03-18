@@ -34,8 +34,10 @@ object Mobile {
         some(1)
       else
         req.path match {
-          case PathPattern(version) => parseIntOption(version)
-          case _                    => None
+          case PathPattern(version) =>
+            parseIntOption(version)
+          case _ =>
+            None
         }
     }
 

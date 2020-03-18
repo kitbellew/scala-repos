@@ -24,7 +24,8 @@ object FilterHeadOption extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "find", cond))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

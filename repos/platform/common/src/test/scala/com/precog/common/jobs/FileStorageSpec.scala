@@ -121,7 +121,8 @@ trait FileStorageSpec[M[+_]] extends Specification {
         }
 
       result.copoint must beLike {
-        case (true, false) => ok
+        case (true, false) =>
+          ok
       }
     }
   }

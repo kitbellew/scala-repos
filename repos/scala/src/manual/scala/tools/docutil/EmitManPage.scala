@@ -175,10 +175,12 @@ object EmitManPage {
 
   def main(args: Array[String]) =
     args match {
-      case Array(classname) => emitManPage(classname)
+      case Array(classname) =>
+        emitManPage(classname)
       case Array(classname, file, _*) =>
         emitManPage(classname, new java.io.FileOutputStream(file))
-      case _ => sys.exit(1)
+      case _ =>
+        sys.exit(1)
     }
 
   def emitManPage(

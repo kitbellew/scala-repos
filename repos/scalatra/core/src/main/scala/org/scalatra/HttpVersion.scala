@@ -20,7 +20,8 @@ abstract class HttpVersion(
         protocolName == m.protocolName &&
           majorVersion == m.majorVersion &&
           minorVersion == m.minorVersion
-      case _ => false
+      case _ =>
+        false
     }
 
   def compare(that: HttpVersion): Int = {

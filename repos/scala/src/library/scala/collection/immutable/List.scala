@@ -213,8 +213,10 @@ sealed abstract class List[+A]
   override def +:[B >: A, That](elem: B)(implicit
       bf: CanBuildFrom[List[A], B, That]): That =
     bf match {
-      case _: List.GenericCanBuildFrom[_] => (elem :: this).asInstanceOf[That]
-      case _                              => super.+:(elem)(bf)
+      case _: List.GenericCanBuildFrom[_] =>
+        (elem :: this).asInstanceOf[That]
+      case _ =>
+        super.+:(elem)(bf)
     }
 
   override def toList: List[A] = this
@@ -273,8 +275,10 @@ sealed abstract class List[+A]
     @tailrec
     def loop(lead: List[A], lag: List[A]): List[A] =
       lead match {
-        case Nil       => lag
-        case _ :: tail => loop(tail, lag.tail)
+        case Nil =>
+          lag
+        case _ :: tail =>
+          loop(tail, lag.tail)
       }
     loop(drop(n), this)
   }
@@ -475,8 +479,10 @@ case object Nil extends List[Nothing] {
   // Removal of equals method here might lead to an infinite recursion similar to IntMap.equals.
   override def equals(that: Any) =
     that match {
-      case that1: scala.collection.GenSeq[_] => that1.isEmpty
-      case _                                 => false
+      case that1: scala.collection.GenSeq[_] =>
+        that1.isEmpty
+      case _ =>
+        false
     }
 }
 

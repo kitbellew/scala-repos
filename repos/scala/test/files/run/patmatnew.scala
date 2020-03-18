@@ -49,7 +49,8 @@ object Test {
   object SimpleUnapply {
     def run() { // from sortedmap, old version
       List((1, 2)).head match {
-        case kv @ (key, _) => kv.toString + " " + key.toString
+        case kv @ (key, _) =>
+          kv.toString + " " + key.toString
       }
 
     }
@@ -59,13 +60,18 @@ object Test {
     case class SFB(i: Int, xs: List[Int])
     def run() {
       List(1, 2) match {
-        case List(1)             => assert(false, "wrong case")
-        case List(1, 2, xs @ _*) => assert(xs.isEmpty, "not empty")
-        case Nil                 => assert(false, "wrong case")
+        case List(1) =>
+          assert(false, "wrong case")
+        case List(1, 2, xs @ _*) =>
+          assert(xs.isEmpty, "not empty")
+        case Nil =>
+          assert(false, "wrong case")
       }
       SFB(1, List(1)) match {
-        case SFB(_, List(x)) => assert(x == 1)
-        case SFB(_, _)       => assert(false)
+        case SFB(_, List(x)) =>
+          assert(x == 1)
+        case SFB(_, _) =>
+          assert(false)
       }
     }
   }
@@ -75,7 +81,8 @@ object Test {
       val p = (1, 2)
       Some(2) match {
         case Some(p._2) =>
-        case _          => assert(false)
+        case _ =>
+          assert(false)
       }
     }
   }
@@ -86,30 +93,39 @@ object Test {
         "s1",
         1,
         1 match {
-          case 3 => 3
-          case 2 => 2
-          case 1 => 1
-          case 0 => 0
+          case 3 =>
+            3
+          case 2 =>
+            2
+          case 1 =>
+            1
+          case 0 =>
+            0
         })
       assertEquals(
         "s2",
         1,
         1 match {
-          case 1 => 1
-          case _ => 0
+          case 1 =>
+            1
+          case _ =>
+            0
         })
       assertEquals(
         "s2boxed",
         1,
         (1: Any) match {
-          case 1 => 1
-          case _ => 0
+          case 1 =>
+            1
+          case _ =>
+            0
         })
       assertEquals(
         "s3",
         1,
         ("hello") match {
-          case s: String => 1
+          case s: String =>
+            1
           //case _        => 0 // unreachable!
         })
       val xyz: (Int, String, Boolean) = (1, "abc", true);
@@ -117,8 +133,10 @@ object Test {
         "s4",
         1,
         xyz._1 match {
-          case 1 => 1
-          case _ => 0
+          case 1 =>
+            1
+          case _ =>
+            0
         })
     }
   }
@@ -134,7 +152,8 @@ object Test {
       val res =
         (foo1.Bar(2): Any) match {
 
-          case foo1.Bar(2) => true
+          case foo1.Bar(2) =>
+            true
         }
       assert(res)
     }
@@ -154,8 +173,10 @@ object Test {
 
     def foo =
       tree match {
-        case Beez(2)       => 1
-        case HagbardCeline => 0
+        case Beez(2) =>
+          1
+        case HagbardCeline =>
+          0
       }
   }
 
@@ -165,14 +186,18 @@ object Test {
     def run() {
       val res =
         tree match {
-          case Beez(x) if x == 3 => false
-          case Beez(x) if x == 2 => true
+          case Beez(x) if x == 3 =>
+            false
+          case Beez(x) if x == 2 =>
+            true
         }
       assert(res)
       val ret =
         (Beez(3): Tree) match {
-          case Beez(x) if x == 3 => true
-          case Beez(x) if x == 2 => false
+          case Beez(x) if x == 3 =>
+            true
+          case Beez(x) if x == 2 =>
+            false
         }
       assert(ret)
     }
@@ -186,9 +211,12 @@ object Test {
         1,
         (
           (NoContext: Any) match {
-            case that: AnyRef if this eq that => 0
-            case NoContext                    => 1
-            case _                            => 2
+            case that: AnyRef if this eq that =>
+              0
+            case NoContext =>
+              1
+            case _ =>
+              2
           }
         ))
     }
@@ -198,11 +226,13 @@ object Test {
   object TestSequence01 {
     def doMatch(xs: List[String]): String =
       xs match {
-        case List(_*) => "ok"
+        case List(_*) =>
+          "ok"
       }
     def doMatch2(xs: List[String]): List[String] =
       xs match {
-        case List(_, rest @ _*) => rest.toList
+        case List(_, rest @ _*) =>
+          rest.toList
       }
     def run() {
       val list1 = List()
@@ -218,7 +248,8 @@ object Test {
   object TestSequence02 {
     def doMatch(l: Seq[String]): String =
       l match {
-        case Seq(_*) => "ok"
+        case Seq(_*) =>
+          "ok"
       }
     def run() {
       val list1 = List()
@@ -236,8 +267,10 @@ object Test {
   object TestSequence03 {
     def doMatch(xs: List[String]): String =
       xs match {
-        case List(_, _, _, _*) => "ok"
-        case _                 => "not ok"
+        case List(_, _, _, _*) =>
+          "ok"
+        case _ =>
+          "not ok"
       }
     def run() {
       val list1 = List()
@@ -256,15 +289,19 @@ object Test {
     def run() {
       val a =
         Foo(0, 'a') match {
-          case Foo(i, c, chars @ _*) => c
-          case _                     => null
+          case Foo(i, c, chars @ _*) =>
+            c
+          case _ =>
+            null
         }
       assertEquals(a, 'a')
 
       val b =
         Foo(0, 'a') match {
-          case Foo(i, chars @ _*) => 'b'
-          case _                  => null
+          case Foo(i, chars @ _*) =>
+            'b'
+          case _ =>
+            null
         }
       assertEquals(b, 'b')
     }
@@ -282,7 +319,8 @@ object Test {
         (Bar(Foo()): Con) match {
           case Bar(xs @ _*) =>
             xs // this should be optimized away to a pattern Bar(xs)
-          case _ => Nil
+          case _ =>
+            Nil
         }
       assertEquals(
         "res instance" + res.isInstanceOf[
@@ -304,9 +342,12 @@ object Test {
 
     def doMatch(x: Any, bla: Int) =
       x match {
-        case x: A if (bla == 1) => 0
-        case A(1)               => 1
-        case A(A(1))            => 2
+        case x: A if (bla == 1) =>
+          0
+        case A(1) =>
+          1
+        case A(A(1)) =>
+          2
       }
 
     def run() {
@@ -321,21 +362,27 @@ object Test {
   object TestSequence07 {
     def doMatch1(xs: List[Char]) =
       xs match {
-        case List(x, y, _*) => x :: y :: Nil
+        case List(x, y, _*) =>
+          x :: y :: Nil
       }
     def doMatch2(xs: List[Char]) =
       xs match {
-        case List(x, y, z, w) => List(z, w)
+        case List(x, y, z, w) =>
+          List(z, w)
       }
     def doMatch3(xs: Seq[Char]) =
       xs match {
-        case Seq(x, y, 'c', w @ _*) => x :: y :: Nil
-        case Seq(x, y, z @ _*)      => z
+        case Seq(x, y, 'c', w @ _*) =>
+          x :: y :: Nil
+        case Seq(x, y, z @ _*) =>
+          z
       }
     def doMatch4(xs: Seq[Char]) =
       xs match {
-        case Seq(x, 'b')       => x :: 'b' :: Nil
-        case Seq(x, y, z @ _*) => z.toList
+        case Seq(x, 'b') =>
+          x :: 'b' :: Nil
+        case Seq(x, y, z @ _*) =>
+          z.toList
       }
 
     def run() {
@@ -352,8 +399,10 @@ object Test {
       val xs = List(2, 3)
       val ys =
         List(1, 2, 3) match {
-          case x :: `xs` => xs
-          case _         => Nil
+          case x :: `xs` =>
+            xs
+          case _ =>
+            Nil
         }
       assertEquals(xs, ys)
     }
@@ -363,8 +412,10 @@ object Test {
   object TestStream {
     def sum(stream: Stream[Int]): Int =
       stream match {
-        case Stream.Empty        => 0
-        case Stream.cons(hd, tl) => hd + sum(tl)
+        case Stream.Empty =>
+          0
+        case Stream.cons(hd, tl) =>
+          hd + sum(tl)
       }
 
     val str: Stream[Int] = List(1, 2, 3).iterator.toStream
@@ -382,16 +433,21 @@ object Test {
 
     def f(): (Function, Function) = {
       (Var("x"): Function, Var("y"): Function) match {
-        case (Const(v), Const(w)) => throw new Error
-        case (leftOne, Var("z"))  => throw new Error
-        case (leftTwo, rightTwo)  => (leftTwo, rightTwo) // was giving "y","x"
+        case (Const(v), Const(w)) =>
+          throw new Error
+        case (leftOne, Var("z")) =>
+          throw new Error
+        case (leftTwo, rightTwo) =>
+          (leftTwo, rightTwo) // was giving "y","x"
       }
     }
 
     def flips(l: List[Int]): Int =
       (l: @unchecked) match {
-        case 1 :: ls => 0
-        case n :: ls => flips((l take n reverse) ::: (l drop n)) + 1
+        case 1 :: ls =>
+          0
+        case n :: ls =>
+          flips((l take n reverse) ::: (l drop n)) + 1
       }
 
     def run() {
@@ -403,7 +459,8 @@ object Test {
     def run() {
       val xyz: (Int, String, Boolean) = (1, "abc", true)
       xyz._1 match {
-        case 1 => "OK"
+        case 1 =>
+          "OK"
         case 2 =>
           assert(false);
           "KO"
@@ -433,8 +490,10 @@ object Test {
       assertEquals(
         (p2.name, p1.name),
         p2 match {
-          case aPerson @ PersonFather(f) => (aPerson.name, f.name)
-          case _                         => "No father"
+          case aPerson @ PersonFather(f) =>
+            (aPerson.name, f.name)
+          case _ =>
+            "No father"
         })
     }
   }
@@ -461,51 +520,71 @@ object Test {
   //   should not generate any warnings
   def f[A](z: (Option[A], Option[A])) =
     z match {
-      case (None, Some(x))    => 1
-      case (Some(x), None)    => 2
-      case (Some(x), Some(y)) => 3
-      case _                  => 4
+      case (None, Some(x)) =>
+        1
+      case (Some(x), None) =>
+        2
+      case (Some(x), Some(y)) =>
+        3
+      case _ =>
+        4
     }
 
   def g1[A](z: Option[List[A]]) =
     z match {
-      case Some(Nil)      => true
-      case Some(x :: Nil) => true
-      case _              => true
+      case Some(Nil) =>
+        true
+      case Some(x :: Nil) =>
+        true
+      case _ =>
+        true
     }
 
   def g2[A](z: Option[List[A]]) =
     z match {
-      case Some(x :: Nil) => true
-      case Some(_)        => false
-      case _              => true
+      case Some(x :: Nil) =>
+        true
+      case Some(_) =>
+        false
+      case _ =>
+        true
     }
 
   def h[A](x: (Option[A], Option[A])) =
     x match {
-      case (None, _: Some[_])       => 1
-      case (_: Some[_], None)       => 2
-      case (_: Some[_], _: Some[_]) => 3
-      case _                        => 4
+      case (None, _: Some[_]) =>
+        1
+      case (_: Some[_], None) =>
+        2
+      case (_: Some[_], _: Some[_]) =>
+        3
+      case _ =>
+        4
     }
 
   def j =
     (List[Int](), List[Int](1)) match {
-      case (Nil, _)             => 'a'
-      case (_, Nil)             => 'b'
-      case (h1 :: t1, h2 :: t2) => 'c'
+      case (Nil, _) =>
+        'a'
+      case (_, Nil) =>
+        'b'
+      case (h1 :: t1, h2 :: t2) =>
+        'c'
     }
 
   def k(x: AnyRef) =
     x match {
-      case null => 1
-      case _    => 2
+      case null =>
+        1
+      case _ =>
+        2
     }
 
   val FooBar = 42
   def lala() =
     42 match {
-      case FooBar => true
+      case FooBar =>
+        true
     }
 
   object Bug1270 { // unapply13
@@ -537,7 +616,9 @@ object Test {
     class Buffer {
       val Get = new Sync
       val jp: PartialFunction[Any, Any] = {
-        case Get(xs) => // the argDummy <unapply-selector> should have proper arg.tpe (Int in this case)
+        case Get(
+              xs
+            ) => // the argDummy <unapply-selector> should have proper arg.tpe (Int in this case)
       }
     }
     def run() {
@@ -556,9 +637,11 @@ object Test {
 
     def run() {
       val s: PartialFunction[Any, Any] = {
-        case List(4 :: xs) => 1
-        case List(5 :: xs) => 1
-        case _ if false    =>
+        case List(4 :: xs) =>
+          1
+        case List(5 :: xs) =>
+          1
+        case _ if false =>
         case List(3 :: xs) if List(3: Any).forall { g =>
               g.hashCode() > 0
             } =>
@@ -584,11 +667,13 @@ object Test {
         case _: Int
             if (
               x match {
-                case t => t.trim().length() > 0
+                case t =>
+                  t.trim().length() > 0
               }
             ) =>
           false;
-        case _ => true;
+        case _ =>
+          true;
       }
     }
 
@@ -625,9 +710,12 @@ object Test {
 
     def analyze(x: Tuple2[Operator, Int]) =
       (x: @unchecked) match {
-        case (EQ, 0) => "0"
-        case (EQ, 1) => "1"
-        case (EQ, 2) => "2"
+        case (EQ, 0) =>
+          "0"
+        case (EQ, 1) =>
+          "1"
+        case (EQ, 2) =>
+          "2"
       }
     def run() {
       val x = (EQ, 0);
@@ -657,19 +745,26 @@ object Test {
 
     def info(x: Impl) =
       x match {
-        case x: Both      => "size  " + x.size + " color " + x.color // you wish
-        case x: SizeImpl  => "!size " + x.size
-        case x: ColorImpl => "color " + x.color
-        case _            => "n.a."
+        case x: Both =>
+          "size  " + x.size + " color " + x.color // you wish
+        case x: SizeImpl =>
+          "!size " + x.size
+        case x: ColorImpl =>
+          "color " + x.color
+        case _ =>
+          "n.a."
       }
 
     def info2(x: Impl) =
       x match {
         case x: SizeImpl with ColorImpl =>
           "size  " + x.size + " color " + x.color // you wish
-        case x: SizeImpl  => "!size " + x.size
-        case x: ColorImpl => "color " + x.color
-        case _            => "n.a."
+        case x: SizeImpl =>
+          "!size " + x.size
+        case x: ColorImpl =>
+          "color " + x.color
+        case _ =>
+          "n.a."
       }
 
     def run() {
@@ -685,9 +780,12 @@ object Test {
   object Bug995 {
     def foo(v: Any): String =
       v match {
-        case s: Seq[_]                                    => "Seq" // see hack in object Seq.unapplySeq
-        case a: AnyRef if runtime.ScalaRunTime.isArray(a) => "Array"
-        case _                                            => v.toString
+        case s: Seq[_] =>
+          "Seq" // see hack in object Seq.unapplySeq
+        case a: AnyRef if runtime.ScalaRunTime.isArray(a) =>
+          "Array"
+        case _ =>
+          v.toString
       }
     def run() {
       assertEquals("Array", foo(Array(0)))
@@ -700,8 +798,10 @@ object Test {
     def run() {
       assert(
         (Some(3): @unchecked) match {
-          case Some(1 | 2) => false
-          case Some(3)     => true
+          case Some(1 | 2) =>
+            false
+          case Some(3) =>
+            true
         })
     }
   }
@@ -713,7 +813,8 @@ object Test {
     case class X(p: String, ps: String*)
     def bar =
       X("a", "b") match {
-        case X(p, ps @ _*) => foo(ps: _*)
+        case X(p, ps @ _*) =>
+          foo(ps: _*)
       }
     def run() {
       assertEquals("Foo", bar)
@@ -726,8 +827,10 @@ object Test {
     case class Foo(x: Int, y: Int) {
       override def equals(other: Any) =
         other match {
-          case Outer_2.this.Foo(`x`, `y`) => true
-          case _                          => false
+          case Outer_2.this.Foo(`x`, `y`) =>
+            true
+          case _ =>
+            false
         }
     }
   }
@@ -741,9 +844,12 @@ object Test {
       assert(x != y, "equals test returns true (but should not)")
       assert(
         x match {
-          case o2.Foo(x, y) => false
-          case o1.Foo(x, y) => true
-          case _            => false
+          case o2.Foo(x, y) =>
+            false
+          case o1.Foo(x, y) =>
+            true
+          case _ =>
+            false
         },
         "match enters wrong case")
     }
@@ -803,7 +909,8 @@ object Test {
     val foo = _Foo()
     foo match {
       case _Bar() =>
-      case _      => assert(false)
+      case _ =>
+        assert(false)
     }
   }
   object Ticket44 {
@@ -859,14 +966,18 @@ object Test {
 
     def empty(xs: L): Boolean =
       xs match {
-        case N => true
-        case _ => false
+        case N =>
+          true
+        case _ =>
+          false
       }
 
     def singleton(xs: L): Boolean =
       xs match {
-        case C(_, N) => true
-        case _       => false
+        case C(_, N) =>
+          true
+        case _ =>
+          false
       }
 
     def run() {

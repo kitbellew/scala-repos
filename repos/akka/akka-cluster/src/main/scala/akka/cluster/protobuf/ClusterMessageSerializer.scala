@@ -82,15 +82,20 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
         addressToProtoByteArray(from)
       case ClusterHeartbeatSender.HeartbeatRsp(from) ⇒
         uniqueAddressToProtoByteArray(from)
-      case m: GossipEnvelope ⇒ gossipEnvelopeToProto(m).toByteArray
-      case m: GossipStatus ⇒ gossipStatusToProto(m).toByteArray
-      case m: MetricsGossipEnvelope ⇒ compress(metricsGossipEnvelopeToProto(m))
+      case m: GossipEnvelope ⇒
+        gossipEnvelopeToProto(m).toByteArray
+      case m: GossipStatus ⇒
+        gossipStatusToProto(m).toByteArray
+      case m: MetricsGossipEnvelope ⇒
+        compress(metricsGossipEnvelopeToProto(m))
       case InternalClusterAction.Join(node, roles) ⇒
         joinToProto(node, roles).toByteArray
       case InternalClusterAction.Welcome(from, gossip) ⇒
         compress(welcomeToProto(from, gossip))
-      case ClusterUserAction.Leave(address) ⇒ addressToProtoByteArray(address)
-      case ClusterUserAction.Down(address) ⇒ addressToProtoByteArray(address)
+      case ClusterUserAction.Leave(address) ⇒
+        addressToProtoByteArray(address)
+      case ClusterUserAction.Down(address) ⇒
+        addressToProtoByteArray(address)
       case InternalClusterAction.InitJoin ⇒
         cm.Empty.getDefaultInstance.toByteArray
       case InternalClusterAction.InitJoinAck(address) ⇒
@@ -118,7 +123,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     @tailrec
     def readChunk(): Unit =
       in.read(buffer) match {
-        case -1 ⇒ ()
+        case -1 ⇒
+          ()
         case n ⇒
           out.write(buffer, 0, n)
           readChunk()
@@ -133,7 +139,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     clazz match {
       case Some(c) ⇒
         fromBinaryMap.get(c.asInstanceOf[Class[ClusterMessage]]) match {
-          case Some(f) ⇒ f(bytes)
+          case Some(f) ⇒
+            f(bytes)
           case None ⇒
             throw new IllegalArgumentException(
               s"Unimplemented deserialization of message class $c in ClusterSerializer")
@@ -230,7 +237,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     )
 
   private val memberStatusFromInt = memberStatusToInt.map {
-    case (a, b) ⇒ (b, a)
+    case (a, b) ⇒
+      (b, a)
   }
 
   private val reachabilityStatusToInt = scala.collection.immutable
@@ -241,7 +249,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
     )
 
   private val reachabilityStatusFromInt = reachabilityStatusToInt.map {
-    case (a, b) ⇒ (b, a)
+    case (a, b) ⇒
+      (b, a)
   }
 
   private def mapWithErrorMessage[T](
@@ -249,7 +258,8 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       value: T,
       unknown: String): Int =
     map.get(value) match {
-      case Some(x) ⇒ x
+      case Some(x) ⇒
+        x
       case _ ⇒
         throw new IllegalArgumentException(
           s"Unknown $unknown [$value] in cluster message")
@@ -570,9 +580,12 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       number.getType.getNumber match {
         case NumberType.Double_VALUE ⇒
           jl.Double.longBitsToDouble(number.getValue64)
-        case NumberType.Long_VALUE ⇒ number.getValue64
-        case NumberType.Float_VALUE ⇒ jl.Float.intBitsToFloat(number.getValue32)
-        case NumberType.Integer_VALUE ⇒ number.getValue32
+        case NumberType.Long_VALUE ⇒
+          number.getValue64
+        case NumberType.Float_VALUE ⇒
+          jl.Float.intBitsToFloat(number.getValue32)
+        case NumberType.Integer_VALUE ⇒
+          number.getValue32
         case NumberType.Serialized_VALUE ⇒
           val in =
             new ClassLoaderObjectInputStream(

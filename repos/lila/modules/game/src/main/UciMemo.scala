@@ -26,7 +26,8 @@ final class UciMemo(ttl: Duration) {
     Option(memo getIfPresent game.id) filter { moves =>
       moves.size.min(max) == game.pgnMoves.size.min(max)
     } match {
-      case Some(moves) => fuccess(moves)
+      case Some(moves) =>
+        fuccess(moves)
       case _ =>
         compute(game, max) addEffect {
           set(game, _)

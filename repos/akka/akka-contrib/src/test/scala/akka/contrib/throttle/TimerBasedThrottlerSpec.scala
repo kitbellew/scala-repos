@@ -25,7 +25,8 @@ object TimerBasedThrottlerSpec {
   // A simple actor that prints whatever it receives
   class PrintActor extends Actor {
     def receive = {
-      case x ⇒ println(x)
+      case x ⇒
+        println(x)
     }
   }
 

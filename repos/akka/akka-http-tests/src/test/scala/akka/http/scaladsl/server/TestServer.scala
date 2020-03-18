@@ -28,7 +28,8 @@ object TestServer extends App {
   import Directives._
 
   def auth: AuthenticatorPF[String] = {
-    case p @ Credentials.Provided(name) if p.verify(name + "-password") ⇒ name
+    case p @ Credentials.Provided(name) if p.verify(name + "-password") ⇒
+      name
   }
 
   val bindingFuture = Http().bindAndHandle(

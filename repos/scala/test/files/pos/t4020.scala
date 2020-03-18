@@ -13,7 +13,8 @@ object a2 extends A {
 class B {
   def mthd(foo: a2.Foo) = {
     foo match {
-      case a2.Foo2(i) => i
+      case a2.Foo2(i) =>
+        i
 
       // Note: This case is impossible.  In fact, scalac
       // will (correctly) report an error if it is uncommented,

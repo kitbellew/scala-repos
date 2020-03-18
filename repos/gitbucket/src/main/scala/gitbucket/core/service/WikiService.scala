@@ -190,8 +190,10 @@ trait WikiService {
               .asScala
               .filter { diff =>
                 pageName match {
-                  case Some(x) => diff.getNewPath == x + ".md"
-                  case None    => true
+                  case Some(x) =>
+                    diff.getNewPath == x + ".md"
+                  case None =>
+                    true
                 }
               }
 
@@ -245,7 +247,8 @@ trait WikiService {
                         Seq(RevertInfo("DELETE", fh.getOldPath, ""))
                       }
                     }
-                    case _ => Nil
+                    case _ =>
+                      Nil
                   }
                 }
               ).flatten
@@ -285,8 +288,10 @@ trait WikiService {
                 committer.fullName,
                 committer.mailAddress,
                 pageName match {
-                  case Some(x) => s"Revert ${from} ... ${to} on ${x}"
-                  case None    => s"Revert ${from} ... ${to}"
+                  case Some(x) =>
+                    s"Revert ${from} ... ${to} on ${x}"
+                  case None =>
+                    s"Revert ${from} ... ${to}"
                 }
               )
             }

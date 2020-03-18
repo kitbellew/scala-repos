@@ -8,12 +8,14 @@ class A {
     }
   def f2 =
     T2(1, 2) match {
-      case _: T2[Int, Int] => /* nowarn */
-      case _               =>
+      case _: T2[Int, Int] =>
+      /* nowarn */
+      case _ =>
     }
   def f3 =
     T2(1, 2) match {
-      case _: T2[_, Int] => /* nowarn */
-      case _             =>
+      case _: T2[_, Int] =>
+      /* nowarn */
+      case _ =>
     }
 }

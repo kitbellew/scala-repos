@@ -9,7 +9,8 @@ object Test extends App {
     lb0.remove(5, 0)
   } catch {
     // Should not be thrown--nothing is deleted so nothing to do
-    case ex: IndexOutOfBoundsException => println(ex)
+    case ex: IndexOutOfBoundsException =>
+      println(ex)
   }
   checkNotCorrupted(lb0)
 
@@ -19,7 +20,8 @@ object Test extends App {
     lb1.remove(6, 6)
   } catch {
     // Not thrown in 2.11, is thrown in 2.12
-    case ex: IndexOutOfBoundsException => println(ex)
+    case ex: IndexOutOfBoundsException =>
+      println(ex)
   }
   checkNotCorrupted(lb1)
 
@@ -29,7 +31,8 @@ object Test extends App {
     lb2.remove(99, 6)
   } catch {
     // Not thrown in 2.11, is thrown in 2.12
-    case ex: IndexOutOfBoundsException => println(ex)
+    case ex: IndexOutOfBoundsException =>
+      println(ex)
   }
   checkNotCorrupted(lb2)
 
@@ -39,7 +42,8 @@ object Test extends App {
     lb3.remove(1, 9)
   } catch {
     // Not thrown in 2.11, is thrown in 2.12
-    case ex: IndexOutOfBoundsException => println(ex)
+    case ex: IndexOutOfBoundsException =>
+      println(ex)
   }
   checkNotCorrupted(lb3)
 
@@ -49,7 +53,8 @@ object Test extends App {
     lb4.remove(-1, 1)
   } catch {
     // Not thrown in 2.11, is thrown in 2.12
-    case ex: IndexOutOfBoundsException => println(ex)
+    case ex: IndexOutOfBoundsException =>
+      println(ex)
   }
   checkNotCorrupted(lb4)
 
@@ -59,7 +64,8 @@ object Test extends App {
     lb5.remove(1, -1)
   } catch {
     // Was thrown prior to 2.12 also
-    case ex: IllegalArgumentException => println(ex)
+    case ex: IllegalArgumentException =>
+      println(ex)
   }
   checkNotCorrupted(lb5)
 

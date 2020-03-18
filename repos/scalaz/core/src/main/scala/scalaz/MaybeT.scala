@@ -37,7 +37,8 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
   def app[B](f: => MaybeT[F, A => B])(implicit F: Apply[F]): MaybeT[F, B] =
     MaybeT(
       F.apply2(f.run, run) {
-        case (ff, aa) => maybeInstance.ap(aa)(ff)
+        case (ff, aa) =>
+          maybeInstance.ap(aa)(ff)
       })
 
   def isJust(implicit F: Functor[F]): F[Boolean] = mapO(_.isJust)

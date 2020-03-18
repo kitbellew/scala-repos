@@ -81,12 +81,14 @@ abstract class ParallelIterableCheck[T](collName: String)
       t1 == t2 && t2 == t1
     } else
       (t1, t2) match { // it is slightly delicate what `equal` means if the order is not strict
-        case (m1: GenMap[_, _], m2: GenMap[_, _]) => m1 == m2 && m2 == m1
+        case (m1: GenMap[_, _], m2: GenMap[_, _]) =>
+          m1 == m2 && m2 == m1
         case (i1: GenIterable[_], i2: GenIterable[_]) =>
           val i1s = i1.toSet
           val i2s = i2.toSet
           i1s == i2s && i2s == i1s
-        case _ => t1 == t2 && t2 == t1
+        case _ =>
+          t1 == t2 && t2 == t1
       }
 
   def printDebugInfo(coll: ParIterableLike[_, _, _]) {

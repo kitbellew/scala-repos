@@ -21,9 +21,12 @@ trait Granter {
       ctx.me ?? { me =>
         Master(Permission.StaffForum)(me) || {
           categSlug match {
-            case StaffSlug               => false
-            case TeamSlugPattern(teamId) => userBelongsToTeam(teamId, me.id)
-            case _                       => true
+            case StaffSlug =>
+              false
+            case TeamSlugPattern(teamId) =>
+              userBelongsToTeam(teamId, me.id)
+            case _ =>
+              true
           }
         }
       }
@@ -36,11 +39,13 @@ trait Granter {
 
   def isGrantedMod(categSlug: String)(implicit ctx: UserContext): Fu[Boolean] =
     categSlug match {
-      case _ if (ctx.me ?? Master(Permission.ModerateForum)) => fuccess(true)
+      case _ if (ctx.me ?? Master(Permission.ModerateForum)) =>
+        fuccess(true)
       case TeamSlugPattern(teamId) =>
         ctx.me ?? { me =>
           userOwnsTeam(teamId, me.id)
         }
-      case _ => fuccess(false)
+      case _ =>
+        fuccess(false)
     }
 }

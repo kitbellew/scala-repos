@@ -37,7 +37,8 @@ private[process] trait ProcessImpl {
       def run(): Unit =
         try result set Right(f)
         catch {
-          case e: Exception => result set Left(e)
+          case e: Exception =>
+            result set Left(e)
         }
 
       val t = Spawn(run())
@@ -46,8 +47,10 @@ private[process] trait ProcessImpl {
         t,
         () =>
           result.get match {
-            case Right(value)    => value
-            case Left(exception) => throw exception
+            case Right(value) =>
+              value
+            case Left(exception) =>
+              throw exception
           })
     }
   }
@@ -215,8 +218,9 @@ private[process] trait ProcessImpl {
     override def run(): Unit = {
       try {
         source.take match {
-          case Some(in) => runloop(in, pipe)
-          case None     =>
+          case Some(in) =>
+            runloop(in, pipe)
+          case None =>
         }
       } catch onInterrupt(())
       finally BasicIO close pipe
@@ -236,8 +240,9 @@ private[process] trait ProcessImpl {
     override def run(): Unit = {
       try {
         sink.take match {
-          case Some(out) => runloop(pipe, out)
-          case None      =>
+          case Some(out) =>
+            runloop(pipe, out)
+          case None =>
         }
       } catch onInterrupt(())
       finally BasicIO close pipe

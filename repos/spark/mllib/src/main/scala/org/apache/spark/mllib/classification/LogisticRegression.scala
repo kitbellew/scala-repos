@@ -77,7 +77,8 @@ class LogisticRegressionModel @Since("1.3.0") (
 
   private val weightsArray: Array[Double] =
     weights match {
-      case dv: DenseVector => dv.values
+      case dv: DenseVector =>
+        dv.values
       case _ =>
         throw new IllegalArgumentException(
           s"weights only supports dense vector but got type ${weights.getClass}.")
@@ -137,7 +138,8 @@ class LogisticRegressionModel @Since("1.3.0") (
             1.0
           else
             0.0
-        case None => score
+        case None =>
+          score
       }
     } else {
 
@@ -216,8 +218,10 @@ object LogisticRegressionModel extends Loader[LogisticRegressionModel] {
             numFeatures,
             numClasses)
         data.threshold match {
-          case Some(t) => model.setThreshold(t)
-          case None    => model.clearThreshold()
+          case Some(t) =>
+            model.setThreshold(t)
+          case None =>
+            model.clearThreshold()
         }
         model
       case _ =>
@@ -503,9 +507,12 @@ class LogisticRegressionWithLBFGS
         createModel(weights, mlLogisticRegresionModel.intercept)
       }
       optimizer.getUpdater() match {
-        case x: SquaredL2Updater => runWithMlLogisitcRegression(0.0)
-        case x: L1Updater        => runWithMlLogisitcRegression(1.0)
-        case _                   => super.run(input, initialWeights)
+        case x: SquaredL2Updater =>
+          runWithMlLogisitcRegression(0.0)
+        case x: L1Updater =>
+          runWithMlLogisitcRegression(1.0)
+        case _ =>
+          super.run(input, initialWeights)
       }
     } else {
       super.run(input, initialWeights)

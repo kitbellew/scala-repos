@@ -37,8 +37,10 @@ object DefaultRoutines {
       path: List[String]): Box[ResourceBundle] = {
     val realPath =
       path match {
-        case Nil => List("_resources")
-        case x   => x
+        case Nil =>
+          List("_resources")
+        case x =>
+          x
       }
 
     for {
@@ -62,7 +64,8 @@ object DefaultRoutines {
     resourceMap.synchronized {
       val key = loc.toString -> path
       resourceMap.get(key) match {
-        case Full(x) => x
+        case Full(x) =>
+          x
         case _ => {
           val res = rawResBundle(loc, path)
           if (!Props.devMode)

@@ -34,7 +34,8 @@ object XmlBodyParserSpec extends PlaySpecification {
         "<foo>bar</foo>",
         Some("application/xml; charset=utf-8"),
         "utf-8") must beRight.like {
-        case xml => xml.text must_== "bar"
+        case xml =>
+          xml.text must_== "bar"
       }
     }
 
@@ -43,13 +44,15 @@ object XmlBodyParserSpec extends PlaySpecification {
         "<foo>bär</foo>",
         Some("application/xml; charset=iso-8859-1"),
         "iso-8859-1") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
       parse(
         "<foo>bär</foo>",
         Some("application/xml; charset=utf-16"),
         "utf-16") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
     }
 
@@ -58,20 +61,23 @@ object XmlBodyParserSpec extends PlaySpecification {
         "<foo>bär</foo>",
         Some("text/xml; charset=iso-8859-1"),
         "iso-8859-1") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
       parse(
         "<foo>bär</foo>",
         Some("text/xml; charset=utf-16"),
         "utf-16") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
     }
 
     "default to iso-8859-1 for text sub types" in new WithApplication() {
       parse("<foo>bär</foo>", Some("text/xml"), "iso-8859-1") must beRight
         .like {
-          case xml => xml.text must_== "bär"
+          case xml =>
+            xml.text must_== "bär"
         }
     }
 
@@ -80,13 +86,15 @@ object XmlBodyParserSpec extends PlaySpecification {
         """<?xml version="1.0" encoding="utf-16"?><foo>bär</foo>""",
         Some("application/xml"),
         "utf-16") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
       parse(
         """<?xml version="1.0" encoding="iso-8859-1"?><foo>bär</foo>""",
         Some("application/xml"),
         "iso-8859-1") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
     }
 
@@ -95,13 +103,15 @@ object XmlBodyParserSpec extends PlaySpecification {
         """<?xml version="1.0" encoding="utf-16"?><foo>bär</foo>""",
         None,
         "utf-16") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
       parse(
         """<?xml version="1.0" encoding="iso-8859-1"?><foo>bär</foo>""",
         None,
         "iso-8859-1") must beRight.like {
-        case xml => xml.text must_== "bär"
+        case xml =>
+          xml.text must_== "bär"
       }
     }
 
@@ -111,21 +121,24 @@ object XmlBodyParserSpec extends PlaySpecification {
         Some("application/xml; charset=utf-8"),
         "utf-8",
         BodyParsers.parse.xml) must beRight.like {
-        case xml => xml.text must_== "bar"
+        case xml =>
+          xml.text must_== "bar"
       }
       parse(
         "<foo>bar</foo>",
         Some("text/xml; charset=utf-8"),
         "utf-8",
         BodyParsers.parse.xml) must beRight.like {
-        case xml => xml.text must_== "bar"
+        case xml =>
+          xml.text must_== "bar"
       }
       parse(
         "<foo>bar</foo>",
         Some("application/xml+rdf; charset=utf-8"),
         "utf-8",
         BodyParsers.parse.xml) must beRight.like {
-        case xml => xml.text must_== "bar"
+        case xml =>
+          xml.text must_== "bar"
       }
     }
 

@@ -27,8 +27,10 @@ trait ScControlFlowOwner extends ScalaPsiElement {
       policy: ScControlFlowPolicy = AllVariablesControlFlowPolicy) = {
     val builder = new ScalaControlFlowBuilder(null, null, policy)
     controlFlowScope match {
-      case Some(elem) => builder.buildControlflow(elem)
-      case None       => Seq.empty
+      case Some(elem) =>
+        builder.buildControlflow(elem)
+      case None =>
+        Seq.empty
     }
   }
 

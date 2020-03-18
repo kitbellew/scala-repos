@@ -34,10 +34,14 @@ private[camel] class CamelSupervisor extends Actor with CamelSupport {
     }
 
   def receive = {
-    case AddWatch(actorRef) ⇒ context.watch(actorRef)
-    case Terminated(actorRef) ⇒ registry ! DeRegister(actorRef)
-    case msg: ActivationMessage ⇒ activationTracker forward msg
-    case msg ⇒ registry forward (msg)
+    case AddWatch(actorRef) ⇒
+      context.watch(actorRef)
+    case Terminated(actorRef) ⇒
+      registry ! DeRegister(actorRef)
+    case msg: ActivationMessage ⇒
+      activationTracker forward msg
+    case msg ⇒
+      registry forward (msg)
   }
 }
 
@@ -138,7 +142,8 @@ private[camel] class Registry(activationTracker: ActorRef)
           } catch {
             case NonFatal(_) ⇒
           }
-        case _ ⇒ super.logFailure(context, child, cause, decision)
+        case _ ⇒
+          super.logFailure(context, child, cause, decision)
       }
   }
 
@@ -210,7 +215,8 @@ private[camel] class ProducerRegistrar(activationTracker: ActorRef)
           producer ! CamelProducerObjects(endpoint, processor)
           activationTracker ! EndpointActivated(producer)
         } catch {
-          case NonFatal(e) ⇒ throw new ActorActivationException(producer, e)
+          case NonFatal(e) ⇒
+            throw new ActorActivationException(producer, e)
         }
       } else {
         camelObjects.get(producer) foreach {
@@ -226,7 +232,8 @@ private[camel] class ProducerRegistrar(activationTracker: ActorRef)
             camelObjects -= producer
             activationTracker ! EndpointDeActivated(producer)
           } catch {
-            case NonFatal(e) ⇒ throw new ActorDeActivationException(producer, e)
+            case NonFatal(e) ⇒
+              throw new ActorDeActivationException(producer, e)
           }
       }
   }
@@ -251,7 +258,8 @@ private[camel] class ConsumerRegistrar(activationTracker: ActorRef)
             camel.settings))
         activationTracker ! EndpointActivated(consumer)
       } catch {
-        case NonFatal(e) ⇒ throw new ActorActivationException(consumer, e)
+        case NonFatal(e) ⇒
+          throw new ActorActivationException(consumer, e)
       }
     case DeRegister(consumer) ⇒
       try {
@@ -260,7 +268,8 @@ private[camel] class ConsumerRegistrar(activationTracker: ActorRef)
         camelContext.removeRoute(route)
         activationTracker ! EndpointDeActivated(consumer)
       } catch {
-        case NonFatal(e) ⇒ throw new ActorDeActivationException(consumer, e)
+        case NonFatal(e) ⇒
+          throw new ActorDeActivationException(consumer, e)
       }
   }
 }

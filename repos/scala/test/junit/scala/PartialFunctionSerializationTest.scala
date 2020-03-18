@@ -8,11 +8,13 @@ import org.junit.runners.JUnit4
 @RunWith(classOf[JUnit4])
 class PartialFunctionSerializationTest {
   val pf1: PartialFunction[Int, Int] = {
-    case n if n > 0 => 1
+    case n if n > 0 =>
+      1
   }
 
   val pf2: PartialFunction[Int, Int] = {
-    case n if n <= 0 => 2
+    case n if n <= 0 =>
+      2
   }
 
   private def assertSerializable[A, B](fn: A => B) = {

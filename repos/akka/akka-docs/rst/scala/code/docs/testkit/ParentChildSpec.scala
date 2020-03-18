@@ -21,14 +21,17 @@ class Parent extends Actor {
   var ponged = false
 
   def receive = {
-    case "pingit" => child ! "ping"
-    case "pong"   => ponged = true
+    case "pingit" =>
+      child ! "ping"
+    case "pong" =>
+      ponged = true
   }
 }
 
 class Child extends Actor {
   def receive = {
-    case "ping" => context.parent ! "pong"
+    case "ping" =>
+      context.parent ! "pong"
   }
 }
 //#test-example
@@ -36,7 +39,8 @@ class Child extends Actor {
 //#test-dependentchild
 class DependentChild(parent: ActorRef) extends Actor {
   def receive = {
-    case "ping" => parent ! "pong"
+    case "ping" =>
+      parent ! "pong"
   }
 }
 //#test-dependentchild
@@ -47,8 +51,10 @@ class DependentParent(childProps: Props) extends Actor {
   var ponged = false
 
   def receive = {
-    case "pingit" => child ! "ping"
-    case "pong"   => ponged = true
+    case "pingit" =>
+      child ! "ping"
+    case "pong" =>
+      ponged = true
   }
 }
 
@@ -58,8 +64,10 @@ class GenericDependentParent(childMaker: ActorRefFactory => ActorRef)
   var ponged = false
 
   def receive = {
-    case "pingit" => child ! "ping"
-    case "pong"   => ponged = true
+    case "pingit" =>
+      child ! "ping"
+    case "pong" =>
+      ponged = true
   }
 }
 //#test-dependentparent
@@ -69,7 +77,8 @@ class GenericDependentParent(childMaker: ActorRefFactory => ActorRef)
   */
 class MockedChild extends Actor {
   def receive = {
-    case "ping" => sender ! "pong"
+    case "ping" =>
+      sender ! "pong"
   }
 }
 
@@ -123,8 +132,10 @@ class ParentChildSpec extends WordSpec with Matchers with TestKitBase {
           new Actor {
             val child = context.actorOf(Props[Child], "child")
             def receive = {
-              case x if sender == child => proxy.ref forward x
-              case x                    => child forward x
+              case x if sender == child =>
+                proxy.ref forward x
+              case x =>
+                child forward x
             }
           }))
 

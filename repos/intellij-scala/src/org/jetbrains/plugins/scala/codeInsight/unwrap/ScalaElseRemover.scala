@@ -39,7 +39,8 @@ class ScalaElseRemover extends ScalaElseUnwrapperBase {
       case Some((_, expr)) =>
         super.collectAffectedElements(e, toExtract)
         expr
-      case _ => e
+      case _ =>
+        e
     }
 
   override def getDescription(e: PsiElement) =

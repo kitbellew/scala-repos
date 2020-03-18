@@ -329,10 +329,14 @@ object GenTypeClass {
 
     val typeShape: String =
       kind match {
-        case Kind.*         => ""
-        case Kind.*->*      => "[_]"
-        case Kind.*^*->*    => "[_, _]"
-        case Kind.|*->*|->* => "[_], S"
+        case Kind.* =>
+          ""
+        case Kind.*->* =>
+          "[_]"
+        case Kind.*^*->* =>
+          "[_, _]"
+        case Kind.|*->*|->* =>
+          "[_], S"
       }
     val classifiedType = classifiedTypeIdent + typeShape
 
@@ -343,7 +347,8 @@ object GenTypeClass {
         parents: Seq[String] = extendsList,
         cti: String = classifiedTypeIdent) =
       parents match {
-        case Seq() => ""
+        case Seq() =>
+          ""
         case es =>
           es.map(n => n + suffix + "[" + cti + "]")
             .mkString("extends ", " with ", "")
@@ -353,14 +358,16 @@ object GenTypeClass {
         case Kind.*->* | Kind.*^*->* =>
           "extends To" + typeClassName + "Ops0" + (
             extendsList match {
-              case Seq() => ""
+              case Seq() =>
+                ""
               case es =>
                 es.map(n => "To" + n + "Ops").mkString(" with ", " with ", "")
             }
           )
         case _ =>
           extendsList match {
-            case Seq() => ""
+            case Seq() =>
+              ""
             case es =>
               es.map(n => "To" + n + "Ops").mkString("extends ", " with ", "")
           }

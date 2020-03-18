@@ -86,8 +86,10 @@ private[http] class HeaderParser(
   }
   def failure(error: Throwable): Result =
     error match {
-      case IllegalUriException(info) ⇒ Left(info)
-      case NonFatal(e) ⇒ Left(ErrorInfo.fromCompoundString(e.getMessage))
+      case IllegalUriException(info) ⇒
+        Left(info)
+      case NonFatal(e) ⇒
+        Left(ErrorInfo.fromCompoundString(e.getMessage))
     }
   def ruleNotFound(ruleName: String): Result =
     throw HeaderParser.RuleNotFoundException
@@ -109,8 +111,10 @@ private[http] class HeaderParser(
 
   def createCookiePair(name: String, value: String): HttpCookiePair =
     settings.cookieParsingMode match {
-      case CookieParsingMode.RFC6265 ⇒ HttpCookiePair(name, value)
-      case CookieParsingMode.Raw ⇒ HttpCookiePair.raw(name, value)
+      case CookieParsingMode.RFC6265 ⇒
+        HttpCookiePair(name, value)
+      case CookieParsingMode.Raw ⇒
+        HttpCookiePair.raw(name, value)
     }
 }
 
@@ -132,7 +136,8 @@ private[http] object HeaderParser {
       value + EOI // this makes sure the parser isn't broken even if there's no trailing garbage in this value
     val parser = new HeaderParser(v, settings)
     dispatch(parser, headerName) match {
-      case r @ Right(_) if parser.cursor == v.length ⇒ r
+      case r @ Right(_) if parser.cursor == v.length ⇒
+        r
       case r @ Right(_) ⇒
         Left(
           ErrorInfo(

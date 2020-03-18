@@ -8,7 +8,8 @@ object Impls {
         case List(Typed(stripped, Ident(wildstar)))
             if wildstar == typeNames.WILDCARD_STAR =>
           List(stripped)
-        case _ => ???
+        case _ =>
+          ???
       }
     val body = Apply(
       Select(Ident(definitions.PredefModule), TermName("println")),

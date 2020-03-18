@@ -38,7 +38,8 @@ object Test {
         Future
           .failed(new Throwable())
           .recoverWith {
-            case _ => Future.successful(2)
+            case _ =>
+              Future.successful(2)
           }(ec)
       await(recovered)
     }

@@ -63,7 +63,8 @@ package object duration {
       with DurationConversions {
     override protected def durationIn(unit: TimeUnit): FiniteDuration =
       Duration(d, unit) match {
-        case f: FiniteDuration => f
+        case f: FiniteDuration =>
+          f
         case _ =>
           throw new IllegalArgumentException(
             "Duration DSL not applicable to " + d)

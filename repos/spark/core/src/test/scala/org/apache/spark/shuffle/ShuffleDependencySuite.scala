@@ -51,10 +51,12 @@ class ShuffleDependencySuite extends SparkFunSuite with LocalSparkContext {
         .map(key => (KeyClass(), ValueClass()))
         .aggregateByKey(CombinerClass())(
           {
-            case (a, b) => a
+            case (a, b) =>
+              a
           },
           {
-            case (a, b) => a
+            case (a, b) =>
+              a
           })
     val dep = rdd.dependencies.head.asInstanceOf[ShuffleDependency[_, _, _]]
     assert(

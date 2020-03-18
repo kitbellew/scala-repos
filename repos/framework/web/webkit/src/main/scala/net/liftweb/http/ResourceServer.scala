@@ -25,21 +25,33 @@ import java.util.concurrent.{ConcurrentHashMap => CHash}
 
 object ResourceServer {
   var allowedPaths: PartialFunction[List[String], Boolean] = {
-    case "lift.js" :: Nil        => true
-    case "jquery.js" :: Nil      => true
-    case "yui" :: _              => true
-    case "liftYUI.js" :: Nil     => true
-    case "extcore" :: _          => true
-    case "liftExtCore.js" :: Nil => true
-    case "json2.js" :: Nil       => true
-    case "json.js" :: Nil        => true
-    case "jlift.js" :: Nil       => true
+    case "lift.js" :: Nil =>
+      true
+    case "jquery.js" :: Nil =>
+      true
+    case "yui" :: _ =>
+      true
+    case "liftYUI.js" :: Nil =>
+      true
+    case "extcore" :: _ =>
+      true
+    case "liftExtCore.js" :: Nil =>
+      true
+    case "json2.js" :: Nil =>
+      true
+    case "json.js" :: Nil =>
+      true
+    case "jlift.js" :: Nil =>
+      true
     case bp @ ("blueprint" :: _)
         if bp.last.endsWith(".css") || bp.last.endsWith(".png") =>
       true
-    case "jquery-autocomplete" :: "jquery.autocomplete.js" :: Nil  => true
-    case "jquery-autocomplete" :: "jquery.autocomplete.css" :: Nil => true
-    case "jquery-autocomplete" :: "indicator.gif" :: Nil           => true
+    case "jquery-autocomplete" :: "jquery.autocomplete.js" :: Nil =>
+      true
+    case "jquery-autocomplete" :: "jquery.autocomplete.css" :: Nil =>
+      true
+    case "jquery-autocomplete" :: "indicator.gif" :: Nil =>
+      true
   }
 
   private def rewriter =
@@ -54,10 +66,14 @@ object ResourceServer {
   @volatile
   var pathRewriter: PartialFunction[List[String], List[String]] =
     rewriter orElse {
-      case "lift.js" :: Nil  => List("lift-min.js")
-      case "json.js" :: Nil  => List("json2-min.js")
-      case "json2.js" :: Nil => List("json2-min.js")
-      case xs                => xs
+      case "lift.js" :: Nil =>
+        List("lift-min.js")
+      case "json.js" :: Nil =>
+        List("json2-min.js")
+      case "json2.js" :: Nil =>
+        List("json2-min.js")
+      case xs =>
+        xs
     }
 
   /**
@@ -82,12 +98,16 @@ object ResourceServer {
                 uc match {
                   case jc: JarURLConnection =>
                     jc.getJarEntry() match {
-                      case null => 0L
-                      case e    => e.getTime()
+                      case null =>
+                        0L
+                      case e =>
+                        e.getTime()
                     }
-                  case _ => 0L
+                  case _ =>
+                    0L
                 }
-              case x => x
+              case x =>
+                x
             }
           }
         ) openOr 0L

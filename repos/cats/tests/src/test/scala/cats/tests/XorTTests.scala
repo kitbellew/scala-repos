@@ -152,42 +152,48 @@ class XorTTests extends CatsSuite {
   test("recover recovers handled values") {
     val xort = XorT.left[Id, String, Int]("xort")
     xort.recover {
-      case "xort" => 5
+      case "xort" =>
+        5
     }.isRight should ===(true)
   }
 
   test("recover ignores unhandled values") {
     val xort = XorT.left[Id, String, Int]("xort")
     xort.recover {
-      case "notxort" => 5
+      case "notxort" =>
+        5
     } should ===(xort)
   }
 
   test("recover ignores the right side") {
     val xort = XorT.right[Id, String, Int](10)
     xort.recover {
-      case "xort" => 5
+      case "xort" =>
+        5
     } should ===(xort)
   }
 
   test("recoverWith recovers handled values") {
     val xort = XorT.left[Id, String, Int]("xort")
     xort.recoverWith {
-      case "xort" => XorT.right[Id, String, Int](5)
+      case "xort" =>
+        XorT.right[Id, String, Int](5)
     }.isRight should ===(true)
   }
 
   test("recoverWith ignores unhandled values") {
     val xort = XorT.left[Id, String, Int]("xort")
     xort.recoverWith {
-      case "notxort" => XorT.right[Id, String, Int](5)
+      case "notxort" =>
+        XorT.right[Id, String, Int](5)
     } should ===(xort)
   }
 
   test("recoverWith ignores the right side") {
     val xort = XorT.right[Id, String, Int](10)
     xort.recoverWith {
-      case "xort" => XorT.right[Id, String, Int](5)
+      case "xort" =>
+        XorT.right[Id, String, Int](5)
     } should ===(xort)
   }
 

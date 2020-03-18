@@ -11,8 +11,10 @@ object Test {
         sys.error("xx")
       } finally Console.println("ho!")
     } catch {
-      case ex: IOException => Console.println("io exception!");
-      case ex              => Console.println(ex);
+      case ex: IOException =>
+        Console.println("io exception!");
+      case ex =>
+        Console.println(ex);
     }
   }
 }

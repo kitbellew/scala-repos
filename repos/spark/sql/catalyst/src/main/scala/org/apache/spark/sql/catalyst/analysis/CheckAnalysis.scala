@@ -43,7 +43,8 @@ trait CheckAnalysis {
     exprs
       .flatMap(
         _.collect {
-          case e: Generator => e
+          case e: Generator =>
+            e
         })
       .length > 1
   }
@@ -113,7 +114,8 @@ trait CheckAnalysis {
             s.validate match {
               case Some(m) =>
                 failAnalysis(s"Window specification $s is not valid because $m")
-              case None => w
+              case None =>
+                w
             }
 
         }
@@ -185,7 +187,8 @@ trait CheckAnalysis {
                       "which value you get.")
                 case e if groupingExprs.exists(_.semanticEquals(e)) => // OK
                 case e if e.references.isEmpty                      => // OK
-                case e                                              => e.children.foreach(checkValidAggregateExpression)
+                case e =>
+                  e.children.foreach(checkValidAggregateExpression)
               }
 
             def checkValidGroupingExprs(expr: Expression): Unit = {

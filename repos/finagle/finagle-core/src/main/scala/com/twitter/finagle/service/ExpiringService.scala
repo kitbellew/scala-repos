@@ -62,7 +62,8 @@ object ExpiringService {
             None
 
         (idle, life) match {
-          case (None, None) => next
+          case (None, None) =>
+            next
           case _ =>
             next map { service =>
               val closeOnRelease = new CloseOnReleaseService(service)

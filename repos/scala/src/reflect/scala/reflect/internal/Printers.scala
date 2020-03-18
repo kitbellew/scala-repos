@@ -68,8 +68,10 @@ trait Printers extends api.Printers {
         s"${backquotedPath(qual)}.${symName(t, name)}"
       case Select(qual, name) if name.isTypeName =>
         s"${backquotedPath(qual)}#${symName(t, name)}"
-      case Ident(name) => symName(t, name)
-      case _           => t.toString
+      case Ident(name) =>
+        symName(t, name)
+      case _ =>
+        t.toString
     }
   }
 
@@ -117,8 +119,9 @@ trait Printers extends api.Printers {
     def printSeq[a](ls: List[a])(printelem: a => Unit)(
         printsep: => Unit): Unit =
       ls match {
-        case List()  =>
-        case List(x) => printelem(x)
+        case List() =>
+        case List(x) =>
+          printelem(x)
         case x :: rest =>
           printelem(x);
           printsep;
@@ -245,8 +248,10 @@ trait Printers extends api.Printers {
 
     private def symFn[T](tree: Tree, f: Symbol => T, orElse: => T): T =
       tree.symbol match {
-        case null | NoSymbol => orElse
-        case sym             => f(sym)
+        case null | NoSymbol =>
+          orElse
+        case sym =>
+          f(sym)
       }
     private def ifSym(tree: Tree, p: Symbol => Boolean) = symFn(tree, p, false)
 
@@ -286,8 +291,10 @@ trait Printers extends api.Printers {
       // SI-5885: by default this won't print annotations of not yet initialized symbols
       val annots =
         tree.symbol.annotations match {
-          case Nil  => tree.mods.annotations
-          case anns => anns
+          case Nil =>
+            tree.mods.annotations
+          case anns =>
+            anns
         }
       annots foreach (annot => print(s"@$annot "))
     }
@@ -379,8 +386,10 @@ trait Printers extends api.Printers {
       print("case ")
       def patConstr(pat: Tree): Tree =
         pat match {
-          case Apply(fn, args) => patConstr(fn)
-          case _               => pat
+          case Apply(fn, args) =>
+            patConstr(fn)
+          case _ =>
+            pat
         }
 
       print(pat);
@@ -748,8 +757,10 @@ trait Printers extends api.Printers {
     protected def isIntLitWithDecodedOp(qual: Tree, name: Name) = {
       val qualIsIntLit =
         qual match {
-          case Literal(Constant(x: Int)) => true
-          case _                         => false
+          case Literal(Constant(x: Int)) =>
+            true
+          case _ =>
+            false
         }
       qualIsIntLit && name.isOperatorName
     }
@@ -765,14 +776,22 @@ trait Printers extends api.Printers {
         insideLabelDef: Boolean = true,
         insideAssign: Boolean = true) = {
       parent match {
-        case _: If        => insideIf
-        case _: Match     => insideMatch
-        case _: Try       => insideTry
-        case _: Annotated => insideAnnotated
-        case _: Block     => insideBlock
-        case _: LabelDef  => insideLabelDef
-        case _: Assign    => insideAssign
-        case _            => false
+        case _: If =>
+          insideIf
+        case _: Match =>
+          insideMatch
+        case _: Try =>
+          insideTry
+        case _: Annotated =>
+          insideAnnotated
+        case _: Block =>
+          insideBlock
+        case _: LabelDef =>
+          insideLabelDef
+        case _: Assign =>
+          insideAssign
+        case _ =>
+          false
       }
     }
 
@@ -798,8 +817,10 @@ trait Printers extends api.Printers {
           s"${resolveSelect(qual)}.${printedName(name)}"
         case Select(qual, name) if name.isTypeName =>
           s"${resolveSelect(qual)}#${blankForOperatorName(name)}%${printedName(name)}"
-        case Ident(name) => printedName(name)
-        case _           => render(t, new CodePrinter(_, printRootPkg))
+        case Ident(name) =>
+          printedName(name)
+        case _ =>
+          render(t, new CodePrinter(_, printRootPkg))
       }
     }
 
@@ -808,20 +829,25 @@ trait Printers extends api.Printers {
         tt match {
           case build.SyntacticEmptyTypeTree() if tt.wasEmpty || tt.isEmpty =>
             true
-          case _ => false
+          case _ =>
+            false
         }
     }
 
     protected def isEmptyTree(tree: Tree) =
       tree match {
-        case EmptyTree | EmptyTypeTree() => true
-        case _                           => false
+        case EmptyTree | EmptyTypeTree() =>
+          true
+        case _ =>
+          false
       }
 
     protected def originalTypeTrees(trees: List[Tree]) =
       trees.filter(!isEmptyTree(_)) map {
-        case tt: TypeTree if tt.original != null => tt.original
-        case tree                                => tree
+        case tt: TypeTree if tt.original != null =>
+          tt.original
+        case tree =>
+          tree
       }
 
     val defaultClasses = List(tpnme.AnyRef, tpnme.Object)
@@ -833,13 +859,15 @@ trait Printers extends api.Printers {
           trees: List[Tree],
           traitsToRemove: List[Name]): List[Tree] =
         trees match {
-          case Nil => trees
+          case Nil =>
+            trees
           case init :+ last =>
             last match {
               case Select(Ident(sc), name)
                   if traitsToRemove.contains(name) && sc == nme.scala_ =>
                 removeDefaultTraitsFromList(init, traitsToRemove)
-              case _ => trees
+              case _ =>
+                trees
             }
         }
 
@@ -856,14 +884,18 @@ trait Printers extends api.Printers {
           !(classesToRemove.contains(name) && sc == nme.scala_)
         case tt: TypeTree if tt.tpe != null =>
           !(classesToRemove contains (newTypeName(tt.tpe.toString())))
-        case _ => true
+        case _ =>
+          true
       }
 
     protected def syntheticToRemove(tree: Tree) =
       tree match {
-        case _: ValDef | _: TypeDef               => false // don't remove ValDef and TypeDef
-        case md: MemberDef if md.mods.isSynthetic => true
-        case _                                    => false
+        case _: ValDef | _: TypeDef =>
+          false // don't remove ValDef and TypeDef
+        case md: MemberDef if md.mods.isSynthetic =>
+          true
+        case _ =>
+          false
       }
 
     override def printOpt(prefix: String, tree: Tree) =
@@ -905,7 +937,8 @@ trait Printers extends api.Printers {
           _ map {
             case _: ClassDef | _: ModuleDef | _: Template | _: PackageDef =>
               true
-            case _ => false
+            case _ =>
+              false
           } getOrElse false
         )
 
@@ -972,11 +1005,13 @@ trait Printers extends api.Printers {
         case treeInfo.Applied(core, _, argss) =>
           print("@")
           core match {
-            case Select(New(tree), _) => print(tree)
-            case _                    =>
+            case Select(New(tree), _) =>
+              print(tree)
+            case _ =>
           }
           printArgss(argss)
-        case _ => super.printTree(tree)
+        case _ =>
+          super.printTree(tree)
       }
     }
 
@@ -1040,7 +1075,8 @@ trait Printers extends api.Printers {
               vparamss match {
                 case Nil | List(Nil)
                     if (!mods.isCase && !ctorMods.hasFlag(AccessFlags)) =>
-                case _                                                  => vparamss foreach printConstrParams
+                case _ =>
+                  vparamss foreach printConstrParams
               }
               parents
             }
@@ -1144,11 +1180,13 @@ trait Printers extends api.Printers {
           val body = treeInfo.untypecheckedTemplBody(t)
           val printedParents =
             currentParent map {
-              case _: CompoundTypeTree => parents
+              case _: CompoundTypeTree =>
+                parents
               case ClassDef(mods, name, _, _) if mods.isCase =>
                 removeDefaultTypesFromList(parents)()(
                   List(tpnme.Product, tpnme.Serializable))
-              case _ => removeDefaultClassesFromList(parents)
+              case _ =>
+                removeDefaultClassesFromList(parents)
             } getOrElse (parents)
 
           val primaryCtr = treeInfo.firstConstructor(body)
@@ -1157,8 +1195,10 @@ trait Printers extends api.Printers {
               case DefDef(_, _, _, _, _, Block(ctBody, _)) =>
                 val earlyDefs =
                   treeInfo.preSuperFields(ctBody) ::: body.filter {
-                    case td: TypeDef => treeInfo.isEarlyDef(td)
-                    case _           => false
+                    case td: TypeDef =>
+                      treeInfo.isEarlyDef(td)
+                    case _ =>
+                      false
                   }
                 if (earlyDefs.nonEmpty) {
                   print("{")
@@ -1172,9 +1212,11 @@ trait Printers extends api.Printers {
                     ))
                 }
                 ctBody collectFirst {
-                  case apply: Apply => apply
+                  case apply: Apply =>
+                    apply
                 }
-              case _ => None
+              case _ =>
+                None
             }
 
           if (printedParents.nonEmpty) {
@@ -1183,8 +1225,10 @@ trait Printers extends api.Printers {
 
             val constrArgss =
               ap match {
-                case Some(treeInfo.Applied(_, _, argss)) => argss
-                case _                                   => Nil
+                case Some(treeInfo.Applied(_, _, argss)) =>
+                  argss
+                case _ =>
+                  Nil
               }
             printArgss(constrArgss)
             if (traits.nonEmpty) {
@@ -1199,13 +1243,19 @@ trait Printers extends api.Printers {
             case vd: ValDef =>
               !vd.mods.isParamAccessor && !treeInfo.isEarlyValDef(vd)
             // remove $this$ from traits
-            case dd: DefDef  => dd.name != nme.MIXIN_CONSTRUCTOR
-            case td: TypeDef => !treeInfo.isEarlyDef(td)
-            case EmptyTree   => false
-            case _           => true
+            case dd: DefDef =>
+              dd.name != nme.MIXIN_CONSTRUCTOR
+            case td: TypeDef =>
+              !treeInfo.isEarlyDef(td)
+            case EmptyTree =>
+              false
+            case _ =>
+              true
           } span {
-            case dd: DefDef => dd.name != nme.CONSTRUCTOR
-            case _          => true
+            case dd: DefDef =>
+              dd.name != nme.CONSTRUCTOR
+            case _ =>
+              true
           }
           val modBody = (left ::: right.drop(1))
           val showBody =
@@ -1270,8 +1320,10 @@ trait Printers extends api.Printers {
           // parentheses are not allowed for val a: Int => Int = implicit x => x
           val printParentheses =
             vparams match {
-              case head :: _ => !head.mods.isImplicit
-              case _         => true
+              case head :: _ =>
+                !head.mods.isImplicit
+              case _ =>
+                true
             }
           printFunction(f)(
             printValueParams(vparams, inParentheses = printParentheses))
@@ -1280,7 +1332,8 @@ trait Printers extends api.Printers {
           def printTp() = print("(", tp, ")")
 
           tp match {
-            case EmptyTree | EmptyTypeTree() => printTp()
+            case EmptyTree | EmptyTypeTree() =>
+              printTp()
             // case for untypechecked trees
             case Annotated(annot, arg)
                 if (expr ne null) && (arg ne null) && expr.equalsStructure(
@@ -1288,9 +1341,11 @@ trait Printers extends api.Printers {
               printTp() // remove double arg - 5: 5: @unchecked
             case tt: TypeTree if tt.original.isInstanceOf[Annotated] =>
               printTp()
-            case Function(List(), EmptyTree) => print("(", expr, " _)") //func _
+            case Function(List(), EmptyTree) =>
+              print("(", expr, " _)") //func _
             // parentheses required when (a match {}) : Type
-            case _ => print("((", expr, "): ", tp, ")")
+            case _ =>
+              print("((", expr, "): ", tp, ")")
           }
 
         // print only fun when targs are TypeTrees with empty original
@@ -1318,20 +1373,24 @@ trait Printers extends api.Printers {
                 if (needsParentheses(tree1)(insideAnnotated = false)) =>
               parenthesize()(print(fun));
               printRow(vargs, "(", ", ", ")")
-            case _ => super.printTree(tree)
+            case _ =>
+              super.printTree(tree)
           }
 
         case UnApply(fun, args) =>
           fun match {
             case treeInfo.Unapplied(body) =>
               body match {
-                case Select(qual, name) if name == nme.unapply => print(qual)
+                case Select(qual, name) if name == nme.unapply =>
+                  print(qual)
                 case TypeApply(Select(qual, name), _)
                     if name == nme.unapply || name == nme.unapplySeq =>
                   print(qual)
-                case _ => print(body)
+                case _ =>
+                  print(body)
               }
-            case _ => print(fun)
+            case _ =>
+              print(fun)
           }
           printRow(args, "(", ", ", ")")
 
@@ -1345,7 +1404,8 @@ trait Printers extends api.Printers {
             printThis(th, printedName(qual))
 
         // remove this prefix from constructor invocation in typechecked trees: this.this -> this
-        case Select(This(_), name @ nme.CONSTRUCTOR) => print(printedName(name))
+        case Select(This(_), name @ nme.CONSTRUCTOR) =>
+          print(printedName(name))
 
         case Select(qual: New, name) =>
           print(qual)
@@ -1354,16 +1414,20 @@ trait Printers extends api.Printers {
           def checkRootPackage(tr: Tree): Boolean =
             (
               currentParent match { //check that Select is not for package def name
-                case Some(_: PackageDef) => false
-                case _                   => true
+                case Some(_: PackageDef) =>
+                  false
+                case _ =>
+                  true
               }
             ) && (
               tr match { // check that Select contains package
-                case Select(q, _) => checkRootPackage(q)
+                case Select(q, _) =>
+                  checkRootPackage(q)
                 case _: Ident | _: This =>
                   val sym = tr.symbol
                   tr.hasExistingSymbol && sym.hasPackageFlag && sym.name != nme.ROOTPKG
-                case _ => false
+                case _ =>
+                  false
               }
             )
 
@@ -1482,7 +1546,8 @@ trait Printers extends api.Printers {
           printColumn(whereClauses, " forSome { ", ";", "})")
 
         case EmptyTree =>
-        case tree      => super.printTree(tree)
+        case tree =>
+          super.printTree(tree)
       }
     }
   }
@@ -1560,7 +1625,8 @@ trait Printers extends api.Printers {
           fi,
           classIndex[T]
             .find {
-              case (any, ii) => ii == fi
+              case (any, ii) =>
+                ii == fi
             }
             .get
             ._1))
@@ -1684,9 +1750,12 @@ trait Printers extends api.Printers {
             print("[", footnotes.put(tpe), "]")
           else
             tpe match {
-              case NoType   => print("NoType")
-              case NoPrefix => print("NoPrefix")
-              case _        => printProduct(tpe.asInstanceOf[Product])
+              case NoType =>
+                print("NoType")
+              case NoPrefix =>
+                print("NoPrefix")
+              case _ =>
+                printProduct(tpe.asInstanceOf[Product])
             }
         case mods: Modifiers =>
           print("Modifiers(")
@@ -1756,17 +1825,28 @@ trait Printers extends api.Printers {
 
   def show(name: Name): String =
     name match {
-      case tpnme.WILDCARD      => "typeNames.WILDCARD"
-      case tpnme.EMPTY         => "typeNames.EMPTY"
-      case tpnme.ERROR         => "typeNames.ERROR"
-      case tpnme.PACKAGE       => "typeNames.PACKAGE"
-      case tpnme.WILDCARD_STAR => "typeNames.WILDCARD_STAR"
-      case nme.WILDCARD        => "termNames.WILDCARD"
-      case nme.EMPTY           => "termNames.EMPTY"
-      case nme.ERROR           => "termNames.ERROR"
-      case nme.PACKAGE         => "termNames.PACKAGE"
-      case nme.CONSTRUCTOR     => "termNames.CONSTRUCTOR"
-      case nme.ROOTPKG         => "termNames.ROOTPKG"
+      case tpnme.WILDCARD =>
+        "typeNames.WILDCARD"
+      case tpnme.EMPTY =>
+        "typeNames.EMPTY"
+      case tpnme.ERROR =>
+        "typeNames.ERROR"
+      case tpnme.PACKAGE =>
+        "typeNames.PACKAGE"
+      case tpnme.WILDCARD_STAR =>
+        "typeNames.WILDCARD_STAR"
+      case nme.WILDCARD =>
+        "termNames.WILDCARD"
+      case nme.EMPTY =>
+        "termNames.EMPTY"
+      case nme.ERROR =>
+        "termNames.ERROR"
+      case nme.PACKAGE =>
+        "termNames.PACKAGE"
+      case nme.CONSTRUCTOR =>
+        "termNames.CONSTRUCTOR"
+      case nme.ROOTPKG =>
+        "termNames.ROOTPKG"
       case _ =>
         val prefix =
           if (name.isTermName)

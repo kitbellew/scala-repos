@@ -205,8 +205,10 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
 
     val modeConf =
       mode match {
-        case h: HadoopMode => Config.fromHadoop(h.jobConf)
-        case _             => Config.empty
+        case h: HadoopMode =>
+          Config.fromHadoop(h.jobConf)
+        case _ =>
+          Config.empty
       }
 
     val init = base ++ modeConf
@@ -439,8 +441,10 @@ trait DefaultDateRangeJob extends Job {
   def defaultTimeZone = PACIFIC
   implicit lazy val tz =
     args.optional("tz") match {
-      case Some(tzn) => java.util.TimeZone.getTimeZone(tzn)
-      case None      => defaultTimeZone
+      case Some(tzn) =>
+        java.util.TimeZone.getTimeZone(tzn)
+      case None =>
+        defaultTimeZone
     }
 
   // Optionally take a --period, which determines how many days each job runs over (rather
@@ -552,7 +556,8 @@ class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
             case x if x != 0 =>
               println(cmd + " failed, exitStatus: " + x)
               false
-            case 0 => true
+            case 0 =>
+              true
           }
         }
       }.isEmpty

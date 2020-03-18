@@ -228,8 +228,10 @@ object test3 {
     try {
       r.f
     } catch {
-      case e: Exc       => println("caught")
-      case e: Throwable => println(e)
+      case e: Exc =>
+        println("caught")
+      case e: Throwable =>
+        println(e)
     }
 
   m(Rec)

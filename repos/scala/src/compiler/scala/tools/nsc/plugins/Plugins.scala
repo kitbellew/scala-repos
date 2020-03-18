@@ -46,7 +46,8 @@ trait Plugins {
         case e: MissingPluginException =>
           if (global.isDeveloper)
             warning(e.getMessage)
-        case e: Exception => inform(e.getMessage)
+        case e: Exception =>
+          inform(e.getMessage)
       }
     )
     val classes = goods map (_.get) // flatten

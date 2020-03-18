@@ -144,9 +144,11 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     unknown match {
       case j: JObject =>
         j.obj.map {
-          case (k, _) => k
+          case (k, _) =>
+            k
         }.toArray
-      case _ => Array.empty[String] // No difference
+      case _ =>
+        Array.empty[String] // No difference
     }
   }
 

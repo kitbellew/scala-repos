@@ -32,8 +32,10 @@ private[persistence] trait LeveldbIdMapping extends Actor {
   def numericId(id: String): Int =
     idMapLock.synchronized {
       idMap.get(id) match {
-        case None ⇒ writeIdMapping(id, idMap.size + idOffset)
-        case Some(v) ⇒ v
+        case None ⇒
+          writeIdMapping(id, idMap.size + idOffset)
+        case Some(v) ⇒
+          v
       }
     }
 

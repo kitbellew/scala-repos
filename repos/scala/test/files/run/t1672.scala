@@ -7,7 +7,8 @@ object Test {
       try {
         throw new RuntimeException
       } catch {
-        case _: Throwable => bar(i - 1)
+        case _: Throwable =>
+          bar(i - 1)
       }
   }
 
@@ -23,7 +24,8 @@ object Test {
           try {
             ???
           } catch {
-            case _: Throwable => nestedTry1(i - 1)
+            case _: Throwable =>
+              nestedTry1(i - 1)
           }
       }
   }

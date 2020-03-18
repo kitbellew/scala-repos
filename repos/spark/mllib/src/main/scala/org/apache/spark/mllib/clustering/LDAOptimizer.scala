@@ -515,8 +515,10 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
           case (_, termCounts: Vector) =>
             val ids: List[Int] =
               termCounts match {
-                case v: DenseVector  => (0 until v.size).toList
-                case v: SparseVector => v.indices.toList
+                case v: DenseVector =>
+                  (0 until v.size).toList
+                case v: SparseVector =>
+                  v.indices.toList
               }
             val (gammad, sstats) = OnlineLDAOptimizer.variationalTopicInference(
               termCounts,
@@ -634,8 +636,10 @@ private[clustering] object OnlineLDAOptimizer {
       k: Int): (BDV[Double], BDM[Double]) = {
     val (ids: List[Int], cts: Array[Double]) =
       termCounts match {
-        case v: DenseVector  => ((0 until v.size).toList, v.values)
-        case v: SparseVector => (v.indices.toList, v.values)
+        case v: DenseVector =>
+          ((0 until v.size).toList, v.values)
+        case v: SparseVector =>
+          (v.indices.toList, v.values)
       }
     // Initialize the variational distribution q(theta|gamma) for the mini-batch
     val gammad: BDV[Double] = new Gamma(gammaShape, 1.0 / gammaShape)

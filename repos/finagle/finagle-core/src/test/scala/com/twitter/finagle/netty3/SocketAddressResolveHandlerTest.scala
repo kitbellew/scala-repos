@@ -30,7 +30,8 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
       new Answer[ChannelFuture] {
         override def answer(invocation: InvocationOnMock) = {
           invocation.getArguments.headOption.foreach {
-            case r: Runnable => r.run()
+            case r: Runnable =>
+              r.run()
           }
           mock[ChannelFuture]
         }

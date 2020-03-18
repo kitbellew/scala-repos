@@ -44,7 +44,8 @@ private[spark] class ParallelCollectionPartition[T: ClassTag](
     other match {
       case that: ParallelCollectionPartition[_] =>
         this.rddId == that.rddId && this.slice == that.slice
-      case _ => false
+      case _ =>
+        false
     }
 
   override def index: Int = slice
@@ -59,7 +60,8 @@ private[spark] class ParallelCollectionPartition[T: ClassTag](
       // separate serialization header.
 
       sfactory match {
-        case js: JavaSerializer => out.defaultWriteObject()
+        case js: JavaSerializer =>
+          out.defaultWriteObject()
         case _ =>
           out.writeLong(rddId)
           out.writeInt(slice)
@@ -75,7 +77,8 @@ private[spark] class ParallelCollectionPartition[T: ClassTag](
 
       val sfactory = SparkEnv.get.serializer
       sfactory match {
-        case js: JavaSerializer => in.defaultReadObject()
+        case js: JavaSerializer =>
+          in.defaultReadObject()
         case _ =>
           rddId = in.readLong()
           slice = in.readInt()

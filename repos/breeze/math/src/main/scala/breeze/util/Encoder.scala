@@ -166,7 +166,8 @@ trait Encoder[T] {
     */
   def decode[V](array: Array[V]): Map[T, V] = {
     Map.empty ++ array.zipWithIndex.map {
-      case (v, i) => (index.get(i), v)
+      case (v, i) =>
+        (index.get(i), v)
     }
   }
 
@@ -176,7 +177,8 @@ trait Encoder[T] {
   def mkSparseArray[V: ClassTag: Zero] = new SparseArray[V](index.size)
   def decode[V](array: SparseArray[V]): Map[T, V] = {
     Map.empty ++ array.iterator.map {
-      case (i, v) => (index.get(i), v)
+      case (i, v) =>
+        (index.get(i), v)
     }
   }
 

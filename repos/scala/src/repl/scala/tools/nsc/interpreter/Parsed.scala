@@ -21,8 +21,10 @@ trait Delimited {
       Nil
     else
       (s indexWhere isDelimiterChar) match {
-        case -1  => List(s)
-        case idx => (s take idx) :: toArgs(s drop (idx + 1))
+        case -1 =>
+          List(s)
+        case idx =>
+          (s take idx) :: toArgs(s drop (idx + 1))
       }
 
   def isDelimiterChar(ch: Char) = delimited(ch)

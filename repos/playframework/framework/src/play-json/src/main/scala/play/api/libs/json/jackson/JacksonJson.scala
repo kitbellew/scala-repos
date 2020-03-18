@@ -61,8 +61,10 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
         else
           json.writeTree(new BigIntegerNode(new BigInteger(raw)))
       }
-      case JsString(v)  => json.writeString(v)
-      case JsBoolean(v) => json.writeBoolean(v)
+      case JsString(v) =>
+        json.writeString(v)
+      case JsBoolean(v) =>
+        json.writeBoolean(v)
       case JsArray(elements) => {
         json.writeStartArray()
         elements.foreach { t =>
@@ -78,7 +80,8 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
         }
         json.writeEndObject()
       }
-      case JsNull => json.writeNull()
+      case JsNull =>
+        json.writeNull()
     }
   }
 }
@@ -150,11 +153,14 @@ private[jackson] class JsValueDeserializer(
         case JsonTokenId.ID_STRING =>
           (Some(JsString(jp.getText)), parserContext)
 
-        case JsonTokenId.ID_TRUE => (Some(JsBoolean(true)), parserContext)
+        case JsonTokenId.ID_TRUE =>
+          (Some(JsBoolean(true)), parserContext)
 
-        case JsonTokenId.ID_FALSE => (Some(JsBoolean(false)), parserContext)
+        case JsonTokenId.ID_FALSE =>
+          (Some(JsBoolean(false)), parserContext)
 
-        case JsonTokenId.ID_NULL => (Some(JsNull), parserContext)
+        case JsonTokenId.ID_NULL =>
+          (Some(JsNull), parserContext)
 
         case JsonTokenId.ID_START_ARRAY =>
           (None, ReadingList(ListBuffer()) +: parserContext)

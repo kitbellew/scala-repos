@@ -33,7 +33,8 @@ case class GroupUpdate(
             changedIdList.flatMap(gid =>
               updates.find(_.groupId.canonicalPath(current.id) == gid)))
           .map {
-            case (group, groupUpdate) => groupUpdate(group, timestamp)
+            case (group, groupUpdate) =>
+              groupUpdate(group, timestamp)
           }
         val groupAdditions = groupIds
           .diff(changedIds)

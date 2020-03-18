@@ -114,7 +114,8 @@ class IndexBool(keys: Vec[Boolean]) extends Index[Boolean] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
   }
 }

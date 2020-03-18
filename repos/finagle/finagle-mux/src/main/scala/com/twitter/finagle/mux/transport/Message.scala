@@ -501,8 +501,10 @@ private[twitter] object Message {
       val key = buf.readByte()
       val vsize =
         buf.readByte().toInt match {
-          case s if s < 0 => s + 256
-          case s          => s
+          case s if s < 0 =>
+            s + 256
+          case s =>
+            s
         }
 
       if (buf.readableBytes < vsize)
@@ -548,7 +550,8 @@ private[twitter] object Message {
               spanId,
               None,
               Flags(traceFlags)))
-        case None => None
+        case None =>
+          None
       }
 
     Treq(tag, id, buf.slice())
@@ -607,10 +610,14 @@ private[twitter] object Message {
     val status = buf.readByte()
     val contexts = decodeContexts(buf)
     status match {
-      case 0 => RdispatchOk(tag, contexts, buf.slice())
-      case 1 => RdispatchError(tag, contexts, decodeUtf8(buf))
-      case 2 => RdispatchNack(tag, contexts)
-      case _ => throw BadMessageException("invalid Rdispatch status")
+      case 0 =>
+        RdispatchOk(tag, contexts, buf.slice())
+      case 1 =>
+        RdispatchError(tag, contexts, decodeUtf8(buf))
+      case 2 =>
+        RdispatchNack(tag, contexts)
+      case _ =>
+        throw BadMessageException("invalid Rdispatch status")
     }
   }
 
@@ -618,10 +625,14 @@ private[twitter] object Message {
     if (buf.readableBytes < 1)
       throw BadMessageException("short Rreq")
     buf.readByte() match {
-      case 0 => RreqOk(tag, buf.slice())
-      case 1 => RreqError(tag, decodeUtf8(buf))
-      case 2 => RreqNack(tag)
-      case _ => throw BadMessageException("invalid Rreq status")
+      case 0 =>
+        RreqOk(tag, buf.slice())
+      case 1 =>
+        RreqError(tag, decodeUtf8(buf))
+      case 2 =>
+        RreqNack(tag)
+      case _ =>
+        throw BadMessageException("invalid Rreq status")
     }
   }
 
@@ -655,17 +666,28 @@ private[twitter] object Message {
       case Types.Rinit =>
         val (version, ctx) = Init.decode(buf)
         Rinit(tag, version, ctx)
-      case Types.Treq                              => decodeTreq(tag, buf)
-      case Types.Rreq                              => decodeRreq(tag, buf)
-      case Types.Tdispatch                         => decodeTdispatch(tag, buf)
-      case Types.Rdispatch                         => decodeRdispatch(tag, buf)
-      case Types.Tdrain                            => Tdrain(tag)
-      case Types.Rdrain                            => Rdrain(tag)
-      case Types.Tping                             => Tping(tag)
-      case Types.Rping                             => Rping(tag)
-      case Types.Rerr | Types.BAD_Rerr             => Rerr(tag, decodeUtf8(buf))
-      case Types.Tdiscarded | Types.BAD_Tdiscarded => decodeTdiscarded(buf)
-      case Types.Tlease                            => decodeTlease(buf)
+      case Types.Treq =>
+        decodeTreq(tag, buf)
+      case Types.Rreq =>
+        decodeRreq(tag, buf)
+      case Types.Tdispatch =>
+        decodeTdispatch(tag, buf)
+      case Types.Rdispatch =>
+        decodeRdispatch(tag, buf)
+      case Types.Tdrain =>
+        Tdrain(tag)
+      case Types.Rdrain =>
+        Rdrain(tag)
+      case Types.Tping =>
+        Tping(tag)
+      case Types.Rping =>
+        Rping(tag)
+      case Types.Rerr | Types.BAD_Rerr =>
+        Rerr(tag, decodeUtf8(buf))
+      case Types.Tdiscarded | Types.BAD_Tdiscarded =>
+        decodeTdiscarded(buf)
+      case Types.Tlease =>
+        decodeTlease(buf)
       case unknown =>
         throw new BadMessageException(
           s"unknown message type: $unknown [tag=$tag]")
@@ -674,7 +696,8 @@ private[twitter] object Message {
 
   def encode(msg: Message): ChannelBuffer =
     msg match {
-      case m: PreEncodedTping => m.buf
+      case m: PreEncodedTping =>
+        m.buf
       case m: Message =>
         if (m.tag < Tags.MarkerTag || (m.tag & ~Tags.TagMSB) > Tags.MaxTag)
           throw new BadMessageException("invalid tag number %d".format(m.tag))

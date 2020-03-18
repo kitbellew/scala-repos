@@ -39,10 +39,12 @@ private[twitter] class EndpointRegistry {
         case Some(dtabMap) =>
           dtabMap.mapValues { paths =>
             paths.mapValues {
-              case (observation, _) => observation.get()
+              case (observation, _) =>
+                observation.get()
             }.toMap
           }.toMap
-        case None => Map.empty
+        case None =>
+          Map.empty
       }
     }
 
@@ -71,7 +73,8 @@ private[twitter] class EndpointRegistry {
               // If the path already exists, replace it and close the observation
               val prev = dtabEntry.put(path, observation)
               prev.foreach {
-                case (_, closable) => closable.close()
+                case (_, closable) =>
+                  closable.close()
               }
             case None =>
               dtabMap += ((dtab, mutable.Map(path -> observation)))
@@ -99,7 +102,8 @@ private[twitter] class EndpointRegistry {
       registry.get(client).foreach { dtabEntries =>
         dtabEntries.get(dtab).foreach { entry =>
           entry.remove(path).foreach {
-            case (_, closable) => closable.close()
+            case (_, closable) =>
+              closable.close()
           }
           if (entry.isEmpty) {
             dtabEntries.remove(dtab)

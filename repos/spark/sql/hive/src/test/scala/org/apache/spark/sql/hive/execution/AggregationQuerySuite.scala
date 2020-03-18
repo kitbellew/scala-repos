@@ -950,7 +950,8 @@ abstract class AggregationQuerySuite
               s"Failed to create data generator for schema $schemaForGenerator"))
         val data = (1 to 50).map { i =>
           dataGenerator.apply() match {
-            case row: Row => Row.fromSeq(i +: row.toSeq)
+            case row: Row =>
+              Row.fromSeq(i +: row.toSeq)
             case null =>
               Row.fromSeq(i +: Seq.fill(schemaForGenerator.length)(null))
             case other =>

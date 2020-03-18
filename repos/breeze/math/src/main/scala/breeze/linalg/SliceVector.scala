@@ -111,7 +111,8 @@ object SliceVector {
           from: SliceVector[K, V],
           fn: KeyValuePairsVisitor[Int, V]): Unit = {
         from.iterator foreach {
-          case (k, v) => fn.visit(k, v)
+          case (k, v) =>
+            fn.visit(k, v)
         }
 
       }

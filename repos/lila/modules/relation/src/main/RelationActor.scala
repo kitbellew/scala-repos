@@ -23,7 +23,8 @@ private[relation] final class RelationActor(
 
   def receive = {
 
-    case GetOnlineFriends(userId) => onlineFriends(userId) pipeTo sender
+    case GetOnlineFriends(userId) =>
+      onlineFriends(userId) pipeTo sender
 
     // triggers following reloading for this user id
     case ReloadOnlineFriends(userId) =>

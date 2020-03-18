@@ -40,8 +40,10 @@ private[http] object HttpContext {
     msg.headerMap.get(DeadlineHeaderKey) match {
       case Some(str) =>
         unmarshalDeadline(str) match {
-          case Some(deadline) => Contexts.broadcast.let(Deadline, deadline)(fn)
-          case None           => fn
+          case Some(deadline) =>
+            Contexts.broadcast.let(Deadline, deadline)(fn)
+          case None =>
+            fn
         }
       case None =>
         fn

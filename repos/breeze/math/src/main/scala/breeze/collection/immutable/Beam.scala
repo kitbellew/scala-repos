@@ -78,7 +78,8 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
     other match {
       case b: Beam[T @unchecked] =>
         (maxSize == b.maxSize) && this.iterator.sameElements(b.iterator)
-      case _ => false
+      case _ =>
+        false
     }
 
   def min = heap.head

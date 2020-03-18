@@ -112,8 +112,10 @@ class ScExistentialTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitExistentialTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitExistentialTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

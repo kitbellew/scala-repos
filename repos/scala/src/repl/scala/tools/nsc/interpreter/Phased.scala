@@ -21,7 +21,8 @@ trait Phased {
   def get = active
   def set(phase: PhaseName): Boolean =
     phase match {
-      case NoPhaseName => false
+      case NoPhaseName =>
+        false
       case name =>
         active = name;
         true
@@ -79,7 +80,8 @@ trait Phased {
   def parse(str: String): PhaseName =
     try parseInternal(str)
     catch {
-      case _: Exception => NoPhaseName
+      case _: Exception =>
+        NoPhaseName
     }
 
   def atCurrent[T](body: => T): T = enteringPhase(get)(body)

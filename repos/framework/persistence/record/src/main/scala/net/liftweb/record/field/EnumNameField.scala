@@ -41,9 +41,12 @@ trait EnumNameTypedField[EnumType <: Enumeration]
 
   def setFromString(s: String): Box[EnumType#Value] =
     s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case _                       => setBox(enum.values.find(_.toString == s))
+      case null | "" if optional_? =>
+        setBox(Empty)
+      case null | "" =>
+        setBox(Failure(notOptionalErrorMessage))
+      case _ =>
+        setBox(enum.values.find(_.toString == s))
     }
 
   /** Label for the selection item representing Empty, show when this field is optional. Defaults to the empty string. */
@@ -69,8 +72,10 @@ trait EnumNameTypedField[EnumType <: Enumeration]
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def defaultValue: EnumType#Value = enum.values.iterator.next
@@ -81,11 +86,13 @@ trait EnumNameTypedField[EnumType <: Enumeration]
     valueBox.map(v => JString(v.toString)) openOr (JNothing: JValue)
   def setFromJStringName(jvalue: JValue): Box[EnumType#Value] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
       case JString(s) =>
         setBox(
           enum.values.find(_.toString == s) ?~ ("Unknown value \"" + s + "\""))
-      case other => setBox(FieldHelpers.expectedA("JString", other))
+      case other =>
+        setBox(FieldHelpers.expectedA("JString", other))
     }
 
   def asJValue: JValue = asJStringName

@@ -24,7 +24,8 @@ object ProdServerStartSpec extends Specification {
           case dir if dir.isDirectory =>
             dir.listFiles().foreach(rm)
             dir.delete()
-          case f => f.delete()
+          case f =>
+            f.delete()
         }
       rm(temp)
     }

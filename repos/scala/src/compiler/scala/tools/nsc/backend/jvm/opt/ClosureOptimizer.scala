@@ -214,10 +214,12 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
               .getOrElse(NoPosition)
           val stackSize: Either[RewriteClosureApplyToClosureBodyFailed, Int] =
             bodyAccessible match {
-              case Left(w) => Left(RewriteClosureAccessCheckFailed(pos, w))
+              case Left(w) =>
+                Left(RewriteClosureAccessCheckFailed(pos, w))
               case Right(false) =>
                 Left(RewriteClosureIllegalAccess(pos, ownerClass.internalName))
-              case _ => Right(prodCons.frameAt(invocation).getStackSize)
+              case _ =>
+                Right(prodCons.frameAt(invocation).getStackSize)
             }
 
           stackSize.right.map((invocation, _))
@@ -404,10 +406,14 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // replace the callsite with a new call to the body method
     val bodyOpcode =
       (lambdaBodyHandle.getTag: @switch) match {
-        case H_INVOKEVIRTUAL   => INVOKEVIRTUAL
-        case H_INVOKESTATIC    => INVOKESTATIC
-        case H_INVOKESPECIAL   => INVOKESPECIAL
-        case H_INVOKEINTERFACE => INVOKEINTERFACE
+        case H_INVOKEVIRTUAL =>
+          INVOKEVIRTUAL
+        case H_INVOKESTATIC =>
+          INVOKESTATIC
+        case H_INVOKESPECIAL =>
+          INVOKESPECIAL
+        case H_INVOKEINTERFACE =>
+          INVOKEINTERFACE
         case H_NEWINVOKESPECIAL =>
           val insns = ownerMethod.instructions
           insns.insertBefore(
@@ -491,7 +497,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     val argInfos = closureInit.capturedArgInfos ++ originalCallsite
       .map(cs =>
         cs.argInfos map {
-          case (index, info) => (index + numCapturedValues, info)
+          case (index, info) =>
+            (index + numCapturedValues, info)
         })
       .getOrElse(IntMap.empty)
     val bodyMethodCallsite = Callsite(

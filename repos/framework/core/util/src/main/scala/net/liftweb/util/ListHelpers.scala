@@ -73,13 +73,16 @@ trait ListHelpers {
     @tailrec
     def loop(o: List[T], n: List[T]) {
       (o, n) match {
-        case (o, Nil) => o.foreach(t => ret += f(RemoveDelta(t)))
+        case (o, Nil) =>
+          o.foreach(t => ret += f(RemoveDelta(t)))
         case (Nil, n) => {
           n.foreach { t =>
             ret += f(
               insertAfter match {
-                case Full(x) => InsertAfterDelta(t, x)
-                case _       => AppendDelta(t)
+                case Full(x) =>
+                  InsertAfterDelta(t, x)
+                case _ =>
+                  AppendDelta(t)
               })
             insertAfter = Full(t)
           }
@@ -92,8 +95,10 @@ trait ListHelpers {
 
         case (or, n :: nr) if !or.contains(n) => {
           insertAfter match {
-            case Full(x) => ret += f(InsertAfterDelta(n, x))
-            case _       => ret += f(InsertAtStartDelta(n))
+            case Full(x) =>
+              ret += f(InsertAfterDelta(n, x))
+            case _ =>
+              ret += f(InsertAtStartDelta(n))
           }
           insertAfter = Full(n)
           loop(or, nr)
@@ -158,9 +163,12 @@ trait ListHelpers {
       val what = swhat.toLowerCase
       def tGet(in: Seq[(String, String)]): Box[String] =
         in match {
-          case Nil                                   => Empty
-          case x :: xs if (x._1.toLowerCase == what) => Full(x._2)
-          case x :: xs                               => tGet(xs)
+          case Nil =>
+            Empty
+          case x :: xs if (x._1.toLowerCase == what) =>
+            Full(x._2)
+          case x :: xs =>
+            tGet(xs)
         }
       tGet(theList)
     }
@@ -208,8 +216,10 @@ trait ListHelpers {
   def rotateList[T](in: Seq[T]): List[List[T]] = {
     def doIt(in: List[T], cnt: Int): List[List[T]] =
       ((in, cnt): @unchecked) match {
-        case (_, 0)         => Nil
-        case (x :: xs, cnt) => in :: doIt(xs ::: List(x), cnt - 1)
+        case (_, 0) =>
+          Nil
+        case (x :: xs, cnt) =>
+          in :: doIt(xs ::: List(x), cnt - 1)
       }
     doIt(in.toList, in.length)
   }
@@ -223,13 +233,17 @@ trait ListHelpers {
     */
   def permuteList[T](in: Seq[T]): List[List[T]] =
     (in.toList: @unchecked) match {
-      case Nil      => Nil
-      case x :: Nil => List(List(x))
+      case Nil =>
+        Nil
+      case x :: Nil =>
+        List(List(x))
       case xs =>
         rotateList(xs).flatMap(x =>
           (x: @unchecked) match {
-            case x :: xs => permuteList(xs).map(x :: _)
-            case _       => Nil
+            case x :: xs =>
+              permuteList(xs).map(x :: _)
+            case _ =>
+              Nil
           })
     }
 
@@ -243,18 +257,22 @@ trait ListHelpers {
   def permuteWithSublists[T](in: Seq[T]): List[List[T]] = {
     def internal(in: List[T]): List[List[T]] =
       in match {
-        case Nil      => Nil
-        case x :: Nil => List(List(x))
+        case Nil =>
+          Nil
+        case x :: Nil =>
+          List(List(x))
         case xs =>
           val rot = rotateList(xs)
           val ret = rot.flatMap(z =>
             (z: @unchecked) match {
-              case x :: xs => permuteList(xs).map(x :: _)
+              case x :: xs =>
+                permuteList(xs).map(x :: _)
             })
           ret ::: rot
             .map(z =>
               (z: @unchecked) match {
-                case x :: xs => xs
+                case x :: xs =>
+                  xs
               })
             .flatMap(internal(_))
       }
@@ -299,9 +317,12 @@ trait ListHelpers {
     def replace(pos: Int, withWhat: T): List[T] = {
       def repl(pos: Int, withWhat: T, rest: List[T]): List[T] =
         rest match {
-          case Nil                 => Nil
-          case x :: xs if pos <= 0 => withWhat :: xs
-          case x :: xs             => x :: repl(pos - 1, withWhat, xs)
+          case Nil =>
+            Nil
+          case x :: xs if pos <= 0 =>
+            withWhat :: xs
+          case x :: xs =>
+            x :: repl(pos - 1, withWhat, xs)
         }
       repl(pos, withWhat, what)
     }

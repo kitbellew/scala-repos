@@ -56,13 +56,18 @@ private[macros] object JdbcFieldSetter extends CaseClassFieldSetter {
           simpleType(q"$container.setString")
         case tpe if tpe =:= typeOf[Boolean] =>
           simpleType(q"$container.setBoolean")
-        case tpe if tpe =:= typeOf[Short] => simpleType(q"$container.setShort")
-        case tpe if tpe =:= typeOf[Int]   => simpleType(q"$container.setInt")
-        case tpe if tpe =:= typeOf[Long]  => simpleType(q"$container.setLong")
-        case tpe if tpe =:= typeOf[Float] => simpleType(q"$container.setFloat")
+        case tpe if tpe =:= typeOf[Short] =>
+          simpleType(q"$container.setShort")
+        case tpe if tpe =:= typeOf[Int] =>
+          simpleType(q"$container.setInt")
+        case tpe if tpe =:= typeOf[Long] =>
+          simpleType(q"$container.setLong")
+        case tpe if tpe =:= typeOf[Float] =>
+          simpleType(q"$container.setFloat")
         case tpe if tpe =:= typeOf[Double] =>
           simpleType(q"$container.setDouble")
-        case _ => sys.error(s"Unsupported primitive type ${fieldType}")
+        case _ =>
+          sys.error(s"Unsupported primitive type ${fieldType}")
       }
     }
 }

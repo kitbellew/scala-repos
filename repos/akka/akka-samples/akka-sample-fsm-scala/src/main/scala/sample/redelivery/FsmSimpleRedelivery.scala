@@ -221,7 +221,8 @@ class Requester extends Actor {
      * This case is used for displaying [[SimpleOrderedRedeliverer.WillTry]] and [[SimpleOrderedRedeliverer.Delivered]]
      * and [[SimpleOrderedRedeliverer.Busy]] messages.
      */
-    case msg => println(s"[Requester] got $msg")
+    case msg =>
+      println(s"[Requester] got $msg")
   }
 
 }

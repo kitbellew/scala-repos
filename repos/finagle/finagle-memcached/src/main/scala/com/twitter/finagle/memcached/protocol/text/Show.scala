@@ -24,13 +24,20 @@ class ResponseToEncoding extends OneToOneEncoder {
       ch: Channel,
       message: AnyRef): Decoding =
     message match {
-      case Stored()      => Tokens(Seq(STORED))
-      case NotStored()   => Tokens(Seq(NOT_STORED))
-      case Exists()      => Tokens(Seq(EXISTS))
-      case Deleted()     => Tokens(Seq(DELETED))
-      case NotFound()    => Tokens(Seq(NOT_FOUND))
-      case NoOp()        => Tokens(Nil)
-      case Number(value) => Tokens(Seq(Buf.Utf8(value.toString)))
+      case Stored() =>
+        Tokens(Seq(STORED))
+      case NotStored() =>
+        Tokens(Seq(NOT_STORED))
+      case Exists() =>
+        Tokens(Seq(EXISTS))
+      case Deleted() =>
+        Tokens(Seq(DELETED))
+      case NotFound() =>
+        Tokens(Seq(NOT_FOUND))
+      case NoOp() =>
+        Tokens(Nil)
+      case Number(value) =>
+        Tokens(Seq(Buf.Utf8(value.toString)))
       case Error(cause) =>
         val formatted: Seq[Array[Byte]] = ExceptionHandler.format(cause)
         Tokens(
@@ -133,7 +140,8 @@ class CommandToEncoding extends OneToOneEncoder {
         Tokens(Seq(DECR, key, Buf.Utf8(amount.toString)))
       case Delete(key) =>
         Tokens(Seq(DELETE, key))
-      case Stats(args) => Tokens(STATS +: args)
+      case Stats(args) =>
+        Tokens(STATS +: args)
       case Quit() =>
         Tokens(Seq(QUIT))
     }
@@ -158,9 +166,12 @@ object ExceptionHandler {
 
   def formatWithEol(e: Throwable) =
     format(e) match {
-      case head :: Nil         => Seq(head, DELIMITER)
-      case head :: tail :: Nil => Seq(head, SPACE, tail, DELIMITER)
-      case _                   => throw e
+      case head :: Nil =>
+        Seq(head, DELIMITER)
+      case head :: tail :: Nil =>
+        Seq(head, SPACE, tail, DELIMITER)
+      case _ =>
+        throw e
     }
 
   def format(e: Throwable) =

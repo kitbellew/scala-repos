@@ -563,9 +563,12 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
   private def getSubmitResponse(
       response: SubmitRestProtocolResponse): CreateSubmissionResponse = {
     response match {
-      case s: CreateSubmissionResponse => s
-      case e: ErrorResponse            => fail(s"Server returned error: ${e.message}")
-      case r                           => fail(s"Expected submit response. Actual: ${r.toJson}")
+      case s: CreateSubmissionResponse =>
+        s
+      case e: ErrorResponse =>
+        fail(s"Server returned error: ${e.message}")
+      case r =>
+        fail(s"Expected submit response. Actual: ${r.toJson}")
     }
   }
 
@@ -573,9 +576,12 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
   private def getKillResponse(
       response: SubmitRestProtocolResponse): KillSubmissionResponse = {
     response match {
-      case k: KillSubmissionResponse => k
-      case e: ErrorResponse          => fail(s"Server returned error: ${e.message}")
-      case r                         => fail(s"Expected kill response. Actual: ${r.toJson}")
+      case k: KillSubmissionResponse =>
+        k
+      case e: ErrorResponse =>
+        fail(s"Server returned error: ${e.message}")
+      case r =>
+        fail(s"Expected kill response. Actual: ${r.toJson}")
     }
   }
 
@@ -583,9 +589,12 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
   private def getStatusResponse(
       response: SubmitRestProtocolResponse): SubmissionStatusResponse = {
     response match {
-      case s: SubmissionStatusResponse => s
-      case e: ErrorResponse            => fail(s"Server returned error: ${e.message}")
-      case r                           => fail(s"Expected status response. Actual: ${r.toJson}")
+      case s: SubmissionStatusResponse =>
+        s
+      case e: ErrorResponse =>
+        fail(s"Server returned error: ${e.message}")
+      case r =>
+        fail(s"Expected status response. Actual: ${r.toJson}")
     }
   }
 
@@ -593,8 +602,10 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
   private def getErrorResponse(
       response: SubmitRestProtocolResponse): ErrorResponse = {
     response match {
-      case e: ErrorResponse => e
-      case r                => fail(s"Expected error response. Actual: ${r.toJson}")
+      case e: ErrorResponse =>
+        e
+      case r =>
+        fail(s"Expected error response. Actual: ${r.toJson}")
     }
   }
 

@@ -30,7 +30,8 @@ trait Tuples {
             (fromJSON[A](a) |@| fromJSON[B](b)) { (a, b) =>
               (a, b)
             }
-          case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
 
       def write(value: (A, B)) =
@@ -45,7 +46,8 @@ trait Tuples {
             (fromJSON[A](a) |@| fromJSON[B](b) |@| fromJSON[C](c)) {
               (a, b, c) => (a, b, c)
             }
-          case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
 
       def write(value: (A, B, C)) =
@@ -64,7 +66,8 @@ trait Tuples {
             ) { (a, b, c, d) =>
               (a, b, c, d)
             }
-          case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
 
       def write(value: (A, B, C, D)) =
@@ -85,7 +88,8 @@ trait Tuples {
             ) { (a, b, c, d, e) =>
               (a, b, c, d, e)
             }
-          case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
 
       def write(value: (A, B, C, D, E)) =
@@ -106,7 +110,8 @@ trait Tuples {
             ) { (a, b, c, d, e, f) =>
               (a, b, c, d, e, f)
             }
-          case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
 
       def write(value: (A, B, C, D, E, F)) =

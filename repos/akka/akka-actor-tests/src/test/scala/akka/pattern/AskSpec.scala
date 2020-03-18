@@ -23,7 +23,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ sender() ! x
+              case x ⇒
+                sender() ! x
             }
           }))
       val f = echo ? "ping"
@@ -37,7 +38,8 @@ class AskSpec extends AkkaSpec {
       f.isCompleted should ===(true)
       f.value.get match {
         case Failure(_: AskTimeoutException) ⇒
-        case v ⇒ fail(v + " was not Left(AskTimeoutException)")
+        case v ⇒
+          fail(v + " was not Left(AskTimeoutException)")
       }
     }
 
@@ -48,7 +50,8 @@ class AskSpec extends AkkaSpec {
       f.isCompleted should ===(true)
       f.value.get match {
         case Failure(_: AskTimeoutException) ⇒
-        case v ⇒ fail(v + " was not Left(AskTimeoutException)")
+        case v ⇒
+          fail(v + " was not Left(AskTimeoutException)")
       }
     }
 
@@ -68,7 +71,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ sender() ! x
+              case x ⇒
+                sender() ! x
             }
           }))
       val f = echo ? "foo"
@@ -85,7 +89,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ sender() ! x
+              case x ⇒
+                sender() ! x
             }
           }))
       val f = echo ? "foo"
@@ -137,7 +142,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ sender() ! x
+              case x ⇒
+                sender() ! x
             }
           }),
         "select-echo")
@@ -158,7 +164,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ context.actorSelection(sender().path) ! x
+              case x ⇒
+                context.actorSelection(sender().path) ! x
             }
           }),
         "select-echo2")
@@ -178,7 +185,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ context.actorSelection("/temp/*") ! x
+              case x ⇒
+                context.actorSelection("/temp/*") ! x
             }
           }),
         "select-echo3")
@@ -274,7 +282,8 @@ class AskSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case msg ⇒ p.ref ! sender() -> msg
+              case msg ⇒
+                p.ref ! sender() -> msg
             }
           }))
 

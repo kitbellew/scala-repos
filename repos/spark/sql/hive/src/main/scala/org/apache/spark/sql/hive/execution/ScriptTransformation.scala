@@ -487,7 +487,8 @@ private[hive] case class HiveScriptIOSchema(
         "LINES TERMINATED BY " + value
       case ("TOK_TABLEROWFORMATNULL", value) =>
         "NULL DEFINED AS " + value
-      case o => return None
+      case o =>
+        return None
     }
 
     val serdeClassSQL = serdeClass.map("'" + _ + "'").getOrElse("")

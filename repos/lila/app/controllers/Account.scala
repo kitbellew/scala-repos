@@ -39,7 +39,8 @@ object Account extends LilaController {
         html = notFound,
         api = _ =>
           ctx.me match {
-            case None => fuccess(unauthorizedApiResult)
+            case None =>
+              fuccess(unauthorizedApiResult)
             case Some(me) =>
               relationEnv.api.countFollowers(me.id) zip
                 relationEnv.api.countFollowing(me.id) zip
@@ -104,7 +105,8 @@ object Account extends LilaController {
   def emailApply =
     AuthBody { implicit ctx => me =>
       UserRepo hasEmail me.id flatMap {
-        case true => notFound
+        case true =>
+          notFound
         case false =>
           implicit val req = ctx.body
           FormFuResult(Env.security.forms.changeEmail(me)) { err =>

@@ -54,7 +54,8 @@ class NotFoundSpec extends ScalatraSpec {
       }
 
       error {
-        case t: Throwable => t.printStackTrace()
+        case t: Throwable =>
+          t.printStackTrace()
       }
     },
     "/default/*")

@@ -23,8 +23,10 @@ package scalaguide.http.scalacontentnegotiation {
         val list = Action { implicit request =>
           val items = Item.findAll
           render {
-            case Accepts.Html() => Ok(views.html.list(items))
-            case Accepts.Json() => Ok(Json.toJson(items))
+            case Accepts.Html() =>
+              Ok(views.html.list(items))
+            case Accepts.Json() =>
+              Ok(Json.toJson(items))
           }
         }
         //#negotiate_accept_type
@@ -46,7 +48,8 @@ package scalaguide.http.scalacontentnegotiation {
           //#extract_custom_accept_type
           val AcceptsMp3 = Accepting("audio/mp3")
           render {
-            case AcceptsMp3() => ???
+            case AcceptsMp3() =>
+              ???
           }
         }
         //#extract_custom_accept_type

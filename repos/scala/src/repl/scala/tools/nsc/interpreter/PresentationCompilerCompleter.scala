@@ -53,7 +53,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
               last
             else
               Block(rest, last)
-          case t => t
+          case t =>
+            t
         }
       val printed = showCode(tree) + " // : " + tree.tpe.safeToString
       Candidates(cursor, "" :: printed :: Nil)
@@ -83,7 +84,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
       }
       val found =
         result.completionsAt(cursor) match {
-          case NoResults => Completion.NoCandidates
+          case NoResults =>
+            Completion.NoCandidates
           case r =>
             def shouldHide(m: Member): Boolean = {
               val isUniversal = definitions.isUniversalMember(m.sym)
@@ -92,7 +94,8 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
                   case t: TypeMember
                       if t.implicitlyAdded && t.viaView.info.params.head.info.bounds.isEmptyBounds =>
                     true
-                  case _ => false
+                  case _ =>
+                    false
                 }
               (
                 isUniversal && nme.isReplWrapperName(m.prefix.typeSymbol.name)
@@ -150,14 +153,17 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
     val buf1 = buf.patch(cursor, Cursor, 0)
     try {
       intp.presentationCompile(buf1) match {
-        case Left(_) => Completion.NoCandidates
+        case Left(_) =>
+          Completion.NoCandidates
         case Right(result) =>
           try {
             buf match {
-              case slashPrint() if cursor == buf.length => print(result)
+              case slashPrint() if cursor == buf.length =>
+                print(result)
               case slashTypeAt(start, end) if cursor == buf.length =>
                 typeAt(result, start.toInt, end.toInt)
-              case _ => candidates(result)
+              case _ =>
+                candidates(result)
             }
           } finally result.cleanup()
       }

@@ -52,8 +52,10 @@ private[akka] class CachingConfig(_config: Config) extends Config {
 
   private val (config: Config, entryMap: ConcurrentHashMap[String, PathEntry]) =
     _config match {
-      case cc: CachingConfig ⇒ (cc.config, cc.entryMap)
-      case _ ⇒ (_config, new ConcurrentHashMap[String, PathEntry])
+      case cc: CachingConfig ⇒
+        (cc.config, cc.entryMap)
+      case _ ⇒
+        (_config, new ConcurrentHashMap[String, PathEntry])
     }
 
   private def getPathEntry(path: String): PathEntry =
@@ -63,8 +65,10 @@ private[akka] class CachingConfig(_config: Config) extends Config {
           Try {
             config.hasPath(path)
           } match {
-            case Failure(e) ⇒ invalidPathEntry
-            case Success(false) ⇒ nonExistingPathEntry
+            case Failure(e) ⇒
+              invalidPathEntry
+            case Success(false) ⇒
+              nonExistingPathEntry
             case _ ⇒
               Try {
                 config.getValue(path)
@@ -84,11 +88,14 @@ private[akka] class CachingConfig(_config: Config) extends Config {
           }
 
         entryMap.putIfAbsent(path, ne) match {
-          case null ⇒ ne
-          case e ⇒ e
+          case null ⇒
+            ne
+          case e ⇒
+            e
         }
 
-      case e ⇒ e
+      case e ⇒
+        e
     }
 
   def checkValid(reference: Config, restrictToPaths: String*) {
@@ -140,7 +147,8 @@ private[akka] class CachingConfig(_config: Config) extends Config {
     getPathEntry(path) match {
       case StringPathEntry(_, _, _, string) ⇒
         string
-      case e ⇒ e.config.getString("cached")
+      case e ⇒
+        e.config.getString("cached")
     }
   }
 

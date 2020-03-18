@@ -88,7 +88,8 @@ object PhysicalOperation extends PredicateHelper {
   private def collectAliases(
       fields: Seq[Expression]): Map[Attribute, Expression] =
     fields.collect {
-      case a @ Alias(child, _) => a.toAttribute -> child
+      case a @ Alias(child, _) =>
+        a.toAttribute -> child
     }.toMap
 
   private def substitute(aliases: Map[Attribute, Expression])(
@@ -160,13 +161,15 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
               (
                 Coalesce(Seq(r, Literal.default(r.dataType))),
                 Coalesce(Seq(l, Literal.default(l.dataType)))))
-          case other => None
+          case other =>
+            None
         }
         val otherPredicates = predicates.filterNot {
           case EqualTo(l, r) =>
             canEvaluate(l, left) && canEvaluate(r, right) ||
               canEvaluate(l, right) && canEvaluate(r, left)
-          case other => false
+          case other =>
+            false
         }
 
         if (joinKeys.nonEmpty) {
@@ -183,7 +186,8 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
         } else {
           None
         }
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -217,7 +221,8 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
         val (plans, conditions) = flattenJoin(j)
         (plans, conditions ++ splitConjunctivePredicates(filterCondition))
 
-      case _ => (Seq(plan), Seq())
+      case _ =>
+        (Seq(plan), Seq())
     }
 
   def unapply(plan: LogicalPlan): Option[(Seq[LogicalPlan], Seq[Expression])] =
@@ -226,7 +231,8 @@ object ExtractFiltersAndInnerJoins extends PredicateHelper {
         Some(flattenJoin(f))
       case j @ Join(_, _, Inner, _) =>
         Some(flattenJoin(j))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -238,7 +244,8 @@ object Unions {
     plan match {
       case u: Union =>
         Some(collectUnionChildren(mutable.Stack(u), Seq.empty[LogicalPlan]))
-      case _ => None
+      case _ =>
+        None
     }
 
   // Doing a depth-first tree traversal to combine all the union children.
@@ -253,7 +260,8 @@ object Unions {
         case Union(grandchildren) =>
           grandchildren.reverseMap(plans.push(_))
           collectUnionChildren(plans, children)
-        case other => collectUnionChildren(plans, children :+ other)
+        case other =>
+          collectUnionChildren(plans, children :+ other)
       }
     }
   }
@@ -265,9 +273,12 @@ object Unions {
 object IntegerIndex {
   def unapply(a: Any): Option[Int] =
     a match {
-      case Literal(a: Int, IntegerType) => Some(a)
+      case Literal(a: Int, IntegerType) =>
+        Some(a)
       // When resolving ordinal in Sort, negative values are extracted for issuing error messages.
-      case UnaryMinus(IntegerLiteral(v)) => Some(-v)
-      case _                             => None
+      case UnaryMinus(IntegerLiteral(v)) =>
+        Some(-v)
+      case _ =>
+        None
     }
 }

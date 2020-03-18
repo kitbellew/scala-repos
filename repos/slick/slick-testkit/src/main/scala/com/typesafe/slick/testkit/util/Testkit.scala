@@ -70,7 +70,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
           children.iterator
             .map(ch => (ch, ch.cl.newInstance()))
             .filter {
-              case (_, to) => to.setTestDB(tdb)
+              case (_, to) =>
+                to.setTestDB(tdb)
             }
             .zipWithIndex
             .toIndexedSeq
@@ -100,7 +101,8 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
                 testObject.cleanup()
             }
           } catch {
-            case t: Throwable => addFailure(t, notifier, desc)
+            case t: Throwable =>
+              addFailure(t, notifier, desc)
           } finally notifier.fireTestFinished(desc)
         }
       } finally tdb.cleanUpAfter()
@@ -119,7 +121,8 @@ case class TestMethod(
   private[this] def await[T](f: Future[T]): T =
     try Await.result(f, TestkitConfig.asyncTimeout)
     catch {
-      case ex: ExecutionException => throw ex.getCause
+      case ex: ExecutionException =>
+        throw ex.getCause
     }
 
   def run(testObject: GenericTest[_]): Unit = {
@@ -229,7 +232,8 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](implicit
     val cs = qc.run(q.toNode)
     val found =
       cs.tree.collect {
-        case c: Comprehension => c
+        case c: Comprehension =>
+          c
       }.length
     if (found != exp)
       throw cs.symbolNamer.use(
@@ -388,7 +392,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
         def onNext(t: T): Unit = builder += t
       })
     catch {
-      case NonFatal(ex) => pr.failure(ex)
+      case NonFatal(ex) =>
+        pr.failure(ex)
     }
     pr.future
   }
@@ -404,7 +409,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
         def onNext(t: T): Unit = f(t)
       })
     catch {
-      case NonFatal(ex) => pr.failure(ex)
+      case NonFatal(ex) =>
+        pr.failure(ex)
     }
     pr.future
   }
@@ -464,7 +470,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
           }
       })
     catch {
-      case NonFatal(ex) => pr.tryFailure(ex)
+      case NonFatal(ex) =>
+        pr.tryFailure(ex)
     }
     val f = pr.future
     f.onComplete(_ => exe.shutdown())

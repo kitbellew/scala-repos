@@ -198,8 +198,10 @@ object StepWise {
       ops: List[AST],
       value: Any): Behavior[T] =
     ops match {
-      case Thunk(f) :: tail ⇒ run(ctx, tail, f())
-      case ThunkV(f) :: tail ⇒ run(ctx, tail, f(value))
+      case Thunk(f) :: tail ⇒
+        run(ctx, tail, f())
+      case ThunkV(f) :: tail ⇒
+        run(ctx, tail, f(value))
       case Message(t, f, trace) :: tail ⇒
         ctx.setReceiveTimeout(t)
         Full {
@@ -207,7 +209,8 @@ object StepWise {
             throwTimeout(
               trace,
               s"timeout of $t expired while waiting for a message")
-          case Msg(_, msg) ⇒ run(ctx, tail, f(msg, value))
+          case Msg(_, msg) ⇒
+            run(ctx, tail, f(msg, value))
           case Sig(_, other) ⇒
             throwIllegalState(
               trace,
@@ -258,13 +261,15 @@ object StepWise {
             throwTimeout(
               trace,
               s"timeout of $t expired while waiting for termination")
-          case Sig(_, t: Terminated) ⇒ run(ctx, tail, f(t, value))
+          case Sig(_, t: Terminated) ⇒
+            run(ctx, tail, f(t, value))
           case other ⇒
             throwIllegalState(
               trace,
               s"unexpected $other while waiting for termination")
         }
-      case Nil ⇒ Stopped
+      case Nil ⇒
+        Stopped
     }
 }
 

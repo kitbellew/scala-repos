@@ -29,12 +29,18 @@ import scala.language.implicitConversions"""
     def implicitCoercions: List[String] = {
       val coercions =
         this match {
-          case B     => companionCoercions(S, I, L, F, D)
-          case S | C => companionCoercions(I, L, F, D)
-          case I     => companionCoercions(L, F, D)
-          case L     => companionCoercions(F, D)
-          case F     => companionCoercions(D)
-          case _     => Nil
+          case B =>
+            companionCoercions(S, I, L, F, D)
+          case S | C =>
+            companionCoercions(I, L, F, D)
+          case I =>
+            companionCoercions(L, F, D)
+          case L =>
+            companionCoercions(F, D)
+          case F =>
+            companionCoercions(D)
+          case _ =>
+            Nil
         }
       if (coercions.isEmpty)
         Nil
@@ -192,8 +198,10 @@ import scala.language.implicitConversions"""
     def opType(that: AnyValNum): AnyValNum = {
       val rank = IndexedSeq(I, L, F, D)
       (rank indexOf this, rank indexOf that) match {
-        case (-1, -1) => I
-        case (r1, r2) => rank apply (r1 max r2)
+        case (-1, -1) =>
+          I
+        case (r1, r2) =>
+          rank apply (r1 max r2)
       }
     }
 
@@ -226,11 +234,14 @@ import scala.language.implicitConversions"""
     }
     def classLines =
       (clumps :+ commonClassLines).foldLeft(List[String]()) {
-        case (res, Nil) => res
+        case (res, Nil) =>
+          res
         case (res, lines) =>
           val xs = lines map {
-            case "" => ""
-            case s  => interpolate(s)
+            case "" =>
+              ""
+            case s =>
+              interpolate(s)
           }
           res ++ xs
       }
@@ -279,21 +290,30 @@ import scala.language.implicitConversions"""
     def lcname = name.toLowerCase
     def boxedSimpleName =
       this match {
-        case C => "Character"
-        case I => "Integer"
-        case _ => name
+        case C =>
+          "Character"
+        case I =>
+          "Integer"
+        case _ =>
+          name
       }
     def boxedName =
       this match {
-        case U => "scala.runtime.BoxedUnit"
-        case _ => "java.lang." + boxedSimpleName
+        case U =>
+          "scala.runtime.BoxedUnit"
+        case _ =>
+          "java.lang." + boxedSimpleName
       }
     def zeroRep =
       this match {
-        case L => "0L"
-        case F => "0.0f"
-        case D => "0.0d"
-        case _ => "0"
+        case L =>
+          "0L"
+        case F =>
+          "0.0f"
+        case D =>
+          "0.0d"
+        case _ =>
+          "0"
       }
 
     def representation = repr.map(", a " + _).getOrElse("")
@@ -330,7 +350,8 @@ import scala.language.implicitConversions"""
 
     def interpolate(s: String): String =
       interpolations.foldLeft(s) {
-        case (str, (key, value)) => str.replaceAll(key, value)
+        case (str, (key, value)) =>
+          str.replaceAll(key, value)
       }
     def classDoc = interpolate(classDocTemplate)
     def objectDoc = ""

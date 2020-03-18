@@ -19,7 +19,8 @@ final class InsightApi(
 
   def userCache(user: User): Fu[UserCache] =
     userCacheApi find user.id flatMap {
-      case Some(c) => fuccess(c)
+      case Some(c) =>
+        fuccess(c)
       case None =>
         for {
           count <- storage count user.id
@@ -44,13 +45,16 @@ final class InsightApi(
 
   def userStatus(user: User): Fu[UserStatus] =
     GameRepo lastFinishedRatedNotFromPosition user flatMap {
-      case None => fuccess(UserStatus.NoGame)
+      case None =>
+        fuccess(UserStatus.NoGame)
       case Some(game) =>
         storage fetchLast user map {
-          case None => UserStatus.Empty
+          case None =>
+            UserStatus.Empty
           case Some(entry) if entry.date isBefore game.createdAt =>
             UserStatus.Stale
-          case _ => UserStatus.Fresh
+          case _ =>
+            UserStatus.Fresh
         }
     }
 

@@ -120,7 +120,8 @@ final class RandomForestClassifier @Since("1.4.0") (
       .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val numClasses: Int =
       MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
-        case Some(n: Int) => n
+        case Some(n: Int) =>
+          n
         case None =>
           throw new IllegalArgumentException(
             "RandomForestClassifier was given input" +

@@ -105,7 +105,8 @@ trait JsObj extends JsExp {
   def toJsCmd =
     props
       .map {
-        case (n, v) => n.encJs + ": " + v.toJsCmd
+        case (n, v) =>
+          n.encJs + ": " + v.toJsCmd
       }
       .mkString("{", ", ", "}")
 
@@ -121,13 +122,18 @@ trait JsObj extends JsExp {
             me: Map[String, JsExp],
             them: List[(String, JsExp)]): Boolean = {
           them match {
-            case Nil             => me.isEmpty
-            case _ if me.isEmpty => false
+            case Nil =>
+              me.isEmpty
+            case _ if me.isEmpty =>
+              false
             case (k, v) :: xs =>
               me.get(k) match {
-                case None                => false
-                case Some(mv) if mv != v => false
-                case _                   => test(me - k, xs)
+                case None =>
+                  false
+                case Some(mv) if mv != v =>
+                  false
+                case _ =>
+                  test(me - k, xs)
               }
           }
         }
@@ -135,7 +141,8 @@ trait JsObj extends JsExp {
         test(Map(props: _*), jsObj.props)
       }
 
-      case x => super.equals(x)
+      case x =>
+        super.equals(x)
     }
   }
 
@@ -154,14 +161,16 @@ trait JsObj extends JsExp {
     val (ep, nep) = other.props.partition {
       case (key, exp) =>
         props.exists {
-          case (k, e) => k == key
+          case (k, e) =>
+            k == key
         }
     }
     // replaced props
     val rp = props.map {
       case (key, exp) =>
         ep.find {
-            case (k, e) => k == key
+            case (k, e) =>
+              k == key
           }
           .getOrElse(key -> exp)
     }
@@ -198,7 +207,8 @@ object JsExp {
 
   implicit def numToJValue(in: JE.Num): JValue =
     in match {
-      case JE.Num(n) => JDouble(n.doubleValue())
+      case JE.Num(n) =>
+        JDouble(n.doubleValue())
     }
 
   implicit def strToJValue(in: JE.Str): JValue = JString(in.str)
@@ -212,8 +222,10 @@ trait JsExp extends HtmlFixer with ToJsCmd {
 
   override def equals(other: Any): Boolean = {
     other match {
-      case jx: JsExp => this.toJsCmd == jx.toJsCmd
-      case _         => super.equals(other)
+      case jx: JsExp =>
+        this.toJsCmd == jx.toJsCmd
+      case _ =>
+        super.equals(other)
     }
   }
 
@@ -382,7 +394,8 @@ object JE {
                 ", " +
                   tables
                     .map {
-                      case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                      case (l, r) =>
+                        "[" + l.encJs + ", " + r.encJs + "]"
                     }
                     .mkString(", ")
             ) +
@@ -400,7 +413,8 @@ object JE {
                 ", " +
                   tables
                     .map {
-                      case (l, r) => "[" + l.encJs + ", " + r.encJs + "]"
+                      case (l, r) =>
+                        "[" + l.encJs + ", " + r.encJs + "]"
                     }
                     .mkString(", ")
             ) +
@@ -680,7 +694,8 @@ trait HtmlFixer {
     */
   def fixHtmlFunc(uid: String, content: NodeSeq)(f: String => String) =
     fixHtmlAndJs(uid, content) match {
-      case (str, Nil) => f(str)
+      case (str, Nil) =>
+        f(str)
       case (str, cmds) =>
         "((function() {" + cmds.reduceLeft {
           _ & _
@@ -696,8 +711,10 @@ trait HtmlFixer {
     */
   def fixHtmlCmdFunc(uid: String, content: NodeSeq)(f: String => String) =
     fixHtmlAndJs(uid, content) match {
-      case (str, Nil)  => f(str)
-      case (str, cmds) => f(str) + "; " + cmds.reduceLeft(_ & _).toJsCmd
+      case (str, Nil) =>
+        f(str)
+      case (str, cmds) =>
+        f(str) + "; " + cmds.reduceLeft(_ & _).toJsCmd
     }
 
   /**
@@ -731,7 +748,8 @@ trait HtmlFixer {
               lb += JE.JsRaw(ns.text).cmd
               NodeSeq.Empty
             }
-            case x => x
+            case x =>
+              x
           }
         })
       ).apply(xhtml)
@@ -755,7 +773,8 @@ trait HtmlFixer {
                 None
             }
         }
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -938,9 +957,11 @@ object JsCmds {
     @scala.annotation.tailrec
     private def appendDo(acc: ListBuffer[JsCmd], cmds: List[JsCmd]) {
       cmds match {
-        case Nil                   =>
-        case CmdPair(l, r) :: rest => appendDo(acc, l :: r :: rest)
-        case `_Noop` :: rest       => appendDo(acc, rest)
+        case Nil =>
+        case CmdPair(l, r) :: rest =>
+          appendDo(acc, l :: r :: rest)
+        case `_Noop` :: rest =>
+          appendDo(acc, rest)
         case a :: rest =>
           acc.append(a);
           appendDo(acc, rest)
@@ -1018,7 +1039,8 @@ object JsCmds {
       S.session match {
         case Full(liftSession) =>
           new RedirectTo(liftSession.attachRedirectFunc(where, Full(func)))
-        case _ => new RedirectTo(where)
+        case _ =>
+          new RedirectTo(where)
       }
   }
 

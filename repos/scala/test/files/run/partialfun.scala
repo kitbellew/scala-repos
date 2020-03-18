@@ -55,8 +55,10 @@ object Test {
   }
 
   val pf: PartialFunction[Int, Int] = {
-    case Ex1(result) => result
-    case Ex2(result) => result
+    case Ex1(result) =>
+      result
+    case Ex2(result) =>
+      result
   }
 
   def collectTest() {

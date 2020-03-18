@@ -26,8 +26,10 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
 
   def getOrElseF[BB >: B](default: => F[BB])(implicit F: Monad[F]): F[BB] = {
     F.flatMap(value) {
-      case Xor.Left(_)  => default
-      case Xor.Right(b) => F.pure(b)
+      case Xor.Left(_) =>
+        default
+      case Xor.Right(b) =>
+        F.pure(b)
     }
   }
 
@@ -35,8 +37,10 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
       F: Monad[F]): XorT[F, AA, BB] = {
     XorT(
       F.flatMap(value) {
-        case Xor.Left(_)      => default.value
-        case r @ Xor.Right(_) => F.pure(r)
+        case Xor.Left(_) =>
+          default.value
+        case r @ Xor.Right(_) =>
+          F.pure(r)
       })
   }
 
@@ -47,8 +51,10 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
       F: Monad[F]): XorT[F, A, B] =
     XorT(
       F.flatMap(value) {
-        case Xor.Left(a) if pf.isDefinedAt(a) => pf(a).value
-        case other                            => F.pure(other)
+        case Xor.Left(a) if pf.isDefinedAt(a) =>
+          pf(a).value
+        case other =>
+          F.pure(other)
       })
 
   def valueOr[BB >: B](f: A => BB)(implicit F: Functor[F]): F[BB] =
@@ -89,8 +95,10 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
       F: Monad[F]): XorT[F, AA, D] =
     XorT(
       F.flatMap(value) {
-        case l @ Xor.Left(_) => F.pure(l)
-        case Xor.Right(b)    => f(b).value
+        case l @ Xor.Left(_) =>
+          F.pure(l)
+        case Xor.Right(b) =>
+          f(b).value
       })
 
   def flatMapF[AA >: A, D](f: B => F[AA Xor D])(implicit
@@ -341,14 +349,18 @@ private[data] trait XorTMonadError[F[_], L]
       f: L => XorT[F, L, A]): XorT[F, L, A] =
     XorT(
       F.flatMap(fea.value) {
-        case Xor.Left(e)      => f(e).value
-        case r @ Xor.Right(_) => F.pure(r)
+        case Xor.Left(e) =>
+          f(e).value
+        case r @ Xor.Right(_) =>
+          F.pure(r)
       })
   override def handleError[A](fea: XorT[F, L, A])(f: L => A): XorT[F, L, A] =
     XorT(
       F.flatMap(fea.value) {
-        case Xor.Left(e)      => F.pure(Xor.Right(f(e)))
-        case r @ Xor.Right(_) => F.pure(r)
+        case Xor.Left(e) =>
+          F.pure(Xor.Right(f(e)))
+        case r @ Xor.Right(_) =>
+          F.pure(r)
       })
   def raiseError[A](e: L): XorT[F, L, A] = XorT.left(F.pure(e))
   override def attempt[A](fla: XorT[F, L, A]): XorT[F, L, L Xor A] =
@@ -368,10 +380,13 @@ private[data] trait XorTSemigroupK[F[_], L] extends SemigroupK[XorT[F, L, ?]] {
       F.flatMap(x.value) {
         case Xor.Left(l1) =>
           F.map(y.value) {
-            case Xor.Left(l2)     => Xor.Left(L.combine(l1, l2))
-            case r @ Xor.Right(_) => r
+            case Xor.Left(l2) =>
+              Xor.Left(L.combine(l1, l2))
+            case r @ Xor.Right(_) =>
+              r
           }
-        case r @ Xor.Right(_) => F.pure[L Xor A](r)
+        case r @ Xor.Right(_) =>
+          F.pure[L Xor A](r)
       })
 }
 

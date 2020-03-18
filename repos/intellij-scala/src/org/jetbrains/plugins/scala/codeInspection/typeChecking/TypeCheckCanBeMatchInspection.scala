@@ -138,7 +138,8 @@ object TypeCheckToMatchUtil {
           .createExpressionFromText(matchStmtText, ifStmt.getManager)
           .asInstanceOf[ScMatchStmt]
         (Some(matchStmt), renameData)
-      case _ => (None, null)
+      case _ =>
+        (None, null)
     }
   }
 
@@ -172,7 +173,8 @@ object TypeCheckToMatchUtil {
             }
           } else
             false
-        case null => false
+        case null =>
+          false
       }
     }
 
@@ -282,8 +284,9 @@ object TypeCheckToMatchUtil {
           if (elementType != ScalaTokenTypes.tLBRACE && elementType != ScalaTokenTypes.tRBRACE)
             builder.append(elem.getText)
         }
-      case Some(expr: ScExpression) => builder.append(expr.getText)
-      case None                     =>
+      case Some(expr: ScExpression) =>
+        builder.append(expr.getText)
+      case None =>
     }
     if (!builder.last.isWhitespace)
       builder.append("\n")
@@ -309,7 +312,8 @@ object TypeCheckToMatchUtil {
               onlyFirst)
           }
           return (currentIfStmt, currentCall) :: Nil
-        case _ => return (currentIfStmt, currentCall) :: Nil
+        case _ =>
+          return (currentIfStmt, currentCall) :: Nil
       }
     }
     Nil
@@ -353,16 +357,19 @@ object TypeCheckToMatchUtil {
       onlyFirst: Boolean): List[ScGenericCall] = {
     if (onlyFirst) {
       condition match {
-        case IsInstanceOfCall(call) => List(call)
+        case IsInstanceOfCall(call) =>
+          List(call)
         case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" =>
           findIsInstanceOfCalls(infixExpr.lOp, onlyFirst)
         case parenth: ScParenthesisedExpr =>
           findIsInstanceOfCalls(parenth.expr.orNull, onlyFirst)
-        case _ => Nil
+        case _ =>
+          Nil
       }
     } else {
       separateConditions(condition).collect {
-        case IsInstanceOfCall(call) => call
+        case IsInstanceOfCall(call) =>
+          call
       }
     }
   }
@@ -374,10 +381,13 @@ object TypeCheckToMatchUtil {
       genCall.referencedExpr match {
         case ref: ScReferenceExpression if ref.refName == "asInstanceOf" =>
           ref.resolve() match {
-            case synth: SyntheticNamedElement => true
-            case _                            => false
+            case synth: SyntheticNamedElement =>
+              true
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -468,8 +478,10 @@ object TypeCheckToMatchUtil {
 
   def baseExpr(gCall: ScGenericCall): Option[ScExpression] =
     gCall.referencedExpr match {
-      case ref: ScReferenceExpression => ref.qualifier
-      case _                          => None
+      case ref: ScReferenceExpression =>
+        ref.qualifier
+      case _ =>
+        None
     }
 
   private def guardCondition(
@@ -477,7 +489,8 @@ object TypeCheckToMatchUtil {
       isInstOfCall: ScGenericCall): Option[ScExpression] = {
     val conditions = separateConditions(condition)
     conditions match {
-      case Nil => None
+      case Nil =>
+        None
       case _ =>
         val guardConditions: List[ScExpression] = conditions.filterNot(
           equiv(_, isInstOfCall))
@@ -506,7 +519,8 @@ object TypeCheckToMatchUtil {
                 name1.compareTo(name2)
               else
                 1
-            case _ => 1
+            case _ =>
+              1
           }
         }
       }
@@ -521,13 +535,16 @@ object TypeCheckToMatchUtil {
               if infixExpr.operation.refName == "&&" =>
             separateConditions(infixExpr.lOp) ::: separateConditions(
               infixExpr.rOp) ::: Nil
-          case genCall: ScGenericCall => genCall :: Nil
-          case _                      => parenth :: Nil
+          case genCall: ScGenericCall =>
+            genCall :: Nil
+          case _ =>
+            parenth :: Nil
         }
       case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" =>
         separateConditions(infixExpr.lOp) ::: separateConditions(
           infixExpr.rOp) ::: Nil
-      case _ => expr :: Nil
+      case _ =>
+        expr :: Nil
     }
   }
 }

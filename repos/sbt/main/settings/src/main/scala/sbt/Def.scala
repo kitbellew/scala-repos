@@ -47,14 +47,17 @@ object Def extends Init[Scope] with TaskMacroExtra {
       multi: Boolean,
       project: Reference): String =
     project match {
-      case BuildRef(current.build) => "{.}/"
+      case BuildRef(current.build) =>
+        "{.}/"
       case `current` =>
         if (multi)
           current.project + "/"
         else
           ""
-      case ProjectRef(current.build, x) => x + "/"
-      case _                            => Reference.display(project) + "/"
+      case ProjectRef(current.build, x) =>
+        x + "/"
+      case _ =>
+        Reference.display(project) + "/"
     }
   def displayFull(scoped: ScopedKey[_]): String = displayFull(scoped, None)
   def displayFull(scoped: ScopedKey[_], keyNameColor: Option[String]): String =
@@ -64,8 +67,10 @@ object Def extends Init[Scope] with TaskMacroExtra {
 
   def colored(s: String, color: Option[String]): String =
     color match {
-      case Some(c) => c + s + scala.Console.RESET
-      case None    => s
+      case Some(c) =>
+        c + s + scala.Console.RESET
+      case None =>
+        s
     }
 
   override def deriveAllowed[T](
@@ -96,8 +101,10 @@ object Def extends Init[Scope] with TaskMacroExtra {
     s"derived setting ${s.key.key.label}${positionString(s)}"
   private[this] def positionString(s: Setting[_]): String =
     s.positionString match {
-      case None      => "";
-      case Some(pos) => s" defined at $pos"
+      case None =>
+        "";
+      case Some(pos) =>
+        s" defined at $pos"
     }
 
   /**

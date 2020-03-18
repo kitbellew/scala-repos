@@ -29,9 +29,12 @@ class ConsoleReporter(
 
   private def label(severity: Severity): String =
     severity match {
-      case ERROR   => "error"
-      case WARNING => "warning"
-      case INFO    => null
+      case ERROR =>
+        "error"
+      case WARNING =>
+        "warning"
+      case INFO =>
+        null
     }
 
   protected def clabel(severity: Severity): String = {

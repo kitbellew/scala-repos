@@ -92,13 +92,15 @@ object SessionMaster extends LiftActor with Loggable {
     else {
       val ret = this.synchronized {
         otherId.flatMap(a => Box !! nsessions.get(a)) match {
-          case Full(session) => lockAndBump(Full(session))
+          case Full(session) =>
+            lockAndBump(Full(session))
           // for stateless requests, vend a stateless session if none is found
           case _ if req.stateless_? =>
             lockAndBump {
               req.sessionId.flatMap(a => Box !! nsessions.get(a))
             } or Full(LiftRules.statelessSession.vend.apply(req))
-          case _ => getSession(req.request, otherId)
+          case _ =>
+            getSession(req.request, otherId)
         }
       }
 
@@ -255,7 +257,8 @@ object SessionMaster extends LiftActor with Loggable {
                   case e: Exception => // ignore... sometimes you can't do this and it's okay
                 }
               } catch {
-                case e: Exception => logger.warn("Failure in remove session", e)
+                case e: Exception =>
+                  logger.warn("Failure in remove session", e)
 
               }
             },

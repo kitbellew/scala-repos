@@ -133,7 +133,8 @@ class LocalCluster(mutex: Boolean = true) {
 
     // merge in input configuration
     inConf.toMap.foreach {
-      case (k, v) => mrJobConf.set(k, v)
+      case (k, v) =>
+        mrJobConf.set(k, v)
     }
 
     hadoop = Some(dfs, cluster, mrJobConf)

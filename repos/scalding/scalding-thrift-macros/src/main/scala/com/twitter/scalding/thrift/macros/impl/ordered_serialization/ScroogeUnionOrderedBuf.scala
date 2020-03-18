@@ -61,7 +61,8 @@ object ScroogeUnionOrderedBuf {
         }
         .zipWithIndex
         .map {
-          case ((tpe, tbuf), idx) => (idx, tpe, tbuf)
+          case ((tpe, tbuf), idx) =>
+            (idx, tpe, tbuf)
         }
         .toList
 

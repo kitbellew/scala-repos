@@ -132,15 +132,18 @@ case class PathPattern(parts: Seq[PathPart]) {
     */
   def has(key: String): Boolean =
     parts.exists {
-      case DynamicPart(name, _, _) if name == key => true
-      case _                                      => false
+      case DynamicPart(name, _, _) if name == key =>
+        true
+      case _ =>
+        false
     }
 
   override def toString =
     parts.map {
       case DynamicPart(name, constraint, encode) =>
         "$" + name + "<" + constraint + ">"
-      case StaticPart(path) => path
+      case StaticPart(path) =>
+        path
     }.mkString
 
 }

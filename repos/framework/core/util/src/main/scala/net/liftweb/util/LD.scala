@@ -53,7 +53,8 @@ object LD {
     */
   def apply[T](root: String, ly: List[T], f: T => String): (T, Int) =
     (ly: @unchecked) match {
-      case w :: Nil => (w, this(root, f(w)))
+      case w :: Nil =>
+        (w, this(root, f(w)))
 
       case w :: ws =>
         val tv = this(root, f(w))
@@ -85,7 +86,8 @@ object LD {
         ch: Char,
         acc: ListBuffer[Int]): List[Int] =
       word match {
-        case Nil => acc.toList
+        case Nil =>
+          acc.toList
         case c :: cs =>
           val cost =
             if (c == ch)
@@ -100,14 +102,17 @@ object LD {
 
     def matrix(word: List[Char], pos: Int, dist: List[Int]): List[Int] =
       word match {
-        case Nil => dist
+        case Nil =>
+          dist
         case c :: cs =>
           matrix(cs, pos + 1, column(x1, dist, pos, pos + 1, c, new ListBuffer))
       }
 
     matrix(y1, 0, (1 to x.length).toList) match {
-      case Nil => 100000
-      case xs  => xs.last
+      case Nil =>
+        100000
+      case xs =>
+        xs.last
     }
   }
 }

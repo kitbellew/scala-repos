@@ -52,9 +52,11 @@ trait ScMethodLike extends ScMember with PsiMethod {
                   typeParamClause.getContext,
                   typeParamClause)
             })
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -62,8 +64,10 @@ trait ScMethodLike extends ScMember with PsiMethod {
   def getClassTypeParameters: Option[ScTypeParamClause] = {
     if (isConstructor) {
       containingClass match {
-        case c: ScTypeDefinition => c.typeParametersClause
-        case _                   => None
+        case c: ScTypeDefinition =>
+          c.typeParametersClause
+        case _ =>
+          None
       }
     } else
       None

@@ -82,7 +82,8 @@ abstract class UntypedActor extends Actor {
   def become(behavior: Procedure[Any], discardOld: Boolean): Unit =
     super.become(
       {
-        case msg => behavior.apply(msg)
+        case msg =>
+          behavior.apply(msg)
       },
       discardOld)
 
@@ -125,7 +126,8 @@ abstract class UntypedActor extends Actor {
   }
 
   final protected def receive = {
-    case msg => onReceive(msg)
+    case msg =>
+      onReceive(msg)
   }
 }
 

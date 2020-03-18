@@ -40,7 +40,8 @@ trait IterateeSpecification {
       Await.result(
         e(
           Cont {
-            case _ => throw new RuntimeException()
+            case _ =>
+              throw new RuntimeException()
           }),
         Duration.Inf)) must beAFailedTry
   }
@@ -62,7 +63,8 @@ trait IterateeSpecification {
     */
   def cont(f: String => Iteratee[String, String]): Iteratee[String, String] = {
     Cont[String, String]({
-      case Input.El(input: String) => f(input)
+      case Input.El(input: String) =>
+        f(input)
       case unrecognized =>
         throw new IllegalArgumentException(
           s"Unexpected input for Cont iteratee: $unrecognized")

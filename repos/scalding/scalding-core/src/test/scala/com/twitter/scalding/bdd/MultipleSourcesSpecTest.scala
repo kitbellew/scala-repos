@@ -27,7 +27,8 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
       } Then { buffer: Buffer[(String, String, String, String)] =>
         {
           buffer.forall({
-            case (_, _, _, addressTransf) => addressTransf.endsWith("_transf")
+            case (_, _, _, addressTransf) =>
+              addressTransf.endsWith("_transf")
           }) shouldBe true
         }
       }
@@ -53,7 +54,8 @@ class MultipleSourcesSpecTest extends WordSpec with Matchers with BddDsl {
       } Then { buffer: Buffer[(String, String, String, String)] =>
         {
           buffer.forall({
-            case (_, _, _, addressTransf) => addressTransf.endsWith("_transf")
+            case (_, _, _, addressTransf) =>
+              addressTransf.endsWith("_transf")
           }) shouldBe true
         }
       }

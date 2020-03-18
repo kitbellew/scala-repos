@@ -59,8 +59,10 @@ class ScVariableDeclarationImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitVariableDeclaration(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitVariableDeclaration(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

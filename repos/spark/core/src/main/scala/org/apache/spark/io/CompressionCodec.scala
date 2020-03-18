@@ -81,8 +81,10 @@ private[spark] object CompressionCodec {
           .getConstructor(classOf[SparkConf])
         Some(ctor.newInstance(conf).asInstanceOf[CompressionCodec])
       } catch {
-        case e: ClassNotFoundException   => None
-        case e: IllegalArgumentException => None
+        case e: ClassNotFoundException =>
+          None
+        case e: IllegalArgumentException =>
+          None
       }
     codec.getOrElse(
       throw new IllegalArgumentException(
@@ -100,7 +102,8 @@ private[spark] object CompressionCodec {
     } else {
       shortCompressionCodecNames
         .collectFirst {
-          case (k, v) if v == codecName => k
+          case (k, v) if v == codecName =>
+            k
         }
         .getOrElse {
           throw new IllegalArgumentException(
@@ -188,7 +191,8 @@ private final object SnappyCompressionCodec {
     try {
       Snappy.getNativeLibraryVersion
     } catch {
-      case e: Error => throw new IllegalArgumentException(e)
+      case e: Error =>
+        throw new IllegalArgumentException(e)
     }
 }
 

@@ -50,8 +50,10 @@ object EventStreamSpec {
         dst = ref;
         dst ! "OK"
       }
-      case e: Logging.LogEvent ⇒ dst ! e
-      case u: UnhandledMessage ⇒ dst ! u
+      case e: Logging.LogEvent ⇒
+        dst ! e
+      case u: UnhandledMessage ⇒
+        dst ! u
     }
   }
 
@@ -309,7 +311,8 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
           Props(
             new Actor {
               def receive = {
-                case in ⇒ a1.ref forward in
+                case in ⇒
+                  a1.ref forward in
               }
             }),
           "to-be-killed")
@@ -344,7 +347,8 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
           Props(
             new Actor {
               def receive = {
-                case in ⇒ a1.ref forward in
+                case in ⇒
+                  a1.ref forward in
               }
             }),
           "to-be-killed")
@@ -472,7 +476,8 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
       hint = "expected debug message prefix: " + messagePrefix) {
       case Logging.Debug(_, _, msg: String) if msg startsWith messagePrefix ⇒
         true
-      case other ⇒ false
+      case other ⇒
+        false
     }
   }
 

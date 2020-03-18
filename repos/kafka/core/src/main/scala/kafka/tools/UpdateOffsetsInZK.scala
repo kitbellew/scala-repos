@@ -46,7 +46,8 @@ object UpdateOffsetsInZK {
         getAndSetOffsets(zkUtils, OffsetRequest.EarliestTime, config, args(2))
       case Latest =>
         getAndSetOffsets(zkUtils, OffsetRequest.LatestTime, config, args(2))
-      case _ => usage
+      case _ =>
+        usage
     }
   }
 
@@ -59,8 +60,10 @@ object UpdateOffsetsInZK {
     var partitions: Seq[Int] = Nil
 
     partitionsPerTopicMap.get(topic) match {
-      case Some(l) => partitions = l.sortWith((s, t) => s < t)
-      case _       => throw new RuntimeException("Can't find topic " + topic)
+      case Some(l) =>
+        partitions = l.sortWith((s, t) => s < t)
+      case _ =>
+        throw new RuntimeException("Can't find topic " + topic)
     }
 
     var numParts = 0
@@ -71,7 +74,8 @@ object UpdateOffsetsInZK {
 
       val broker =
         brokerHostingPartition match {
-          case Some(b) => b
+          case Some(b) =>
+            b
           case None =>
             throw new KafkaException(
               "Broker " + brokerHostingPartition + " is unavailable. Cannot issue " +

@@ -43,7 +43,8 @@ object LEventAggregator {
         _.sortBy(_.eventTime.getMillis)
           .foldLeft[Prop](Prop())(propAggregator))
       .filter {
-        case (k, v) => v.dm.isDefined
+        case (k, v) =>
+          v.dm.isDefined
       }
       .mapValues { v =>
         require(
@@ -111,8 +112,10 @@ object LEventAggregator {
             p.map(_ -- e.properties.keySet)
           }
         }
-        case "$delete" => None
-        case _         => p // do nothing for others
+        case "$delete" =>
+          None
+        case _ =>
+          p // do nothing for others
       }
     }
   }
@@ -135,7 +138,8 @@ object LEventAggregator {
               .orElse(Some(e.eventTime))
           )
         }
-        case _ => p // do nothing for others
+        case _ =>
+          p // do nothing for others
       }
     }
   }

@@ -69,7 +69,8 @@ sealed trait Schedule extends Loggable {
       blockingQueueSize match {
         case Full(x) =>
           new ArrayBlockingQueue(x)
-        case _ => new LinkedBlockingQueue
+        case _ =>
+          new LinkedBlockingQueue
       })
 
   /** The underlying <code>java.util.concurrent.ScheduledExecutor</code> */
@@ -162,7 +163,8 @@ sealed trait Schedule extends Loggable {
             try {
               f.apply()
             } catch {
-              case e: Exception => logger.error(e)
+              case e: Exception =>
+                logger.error(e)
             }
           }
         }
@@ -174,7 +176,8 @@ sealed trait Schedule extends Loggable {
               Schedule.this.restart
               pool.execute(r)
             } catch {
-              case e: Exception => logger.error(e)
+              case e: Exception =>
+                logger.error(e)
             }
           }
         }

@@ -17,7 +17,8 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config)
     case Dns.Resolve(name) ⇒
       val answer =
         cache.cached(name) match {
-          case Some(a) ⇒ a
+          case Some(a) ⇒
+            a
           case None ⇒
             try {
               val answer = Dns.Resolved(name, InetAddress.getAllByName(name))

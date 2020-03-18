@@ -38,7 +38,8 @@ private[tv] final class TvActor(
         actor ? ChannelActor.GetGameIds(max) pipeTo sender
       }
 
-    case GetChampions => sender ! Tv.Champions(channelChampions)
+    case GetChampions =>
+      sender ! Tv.Champions(channelChampions)
 
     case Select =>
       GameRepo.featuredCandidates foreach { candidates =>
@@ -53,7 +54,8 @@ private[tv] final class TvActor(
       val player = game.firstPlayer
       val user = player.userId flatMap lightUser
       (user |@| player.rating) apply {
-        case (u, r) => channelChampions += (channel -> Tv.Champion(u, r))
+        case (u, r) =>
+          channelChampions += (channel -> Tv.Champion(u, r))
       }
       channelActors
         .collect {

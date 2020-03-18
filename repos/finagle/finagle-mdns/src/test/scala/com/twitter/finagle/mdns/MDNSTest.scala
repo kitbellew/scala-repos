@@ -49,9 +49,11 @@ class MdnsTest extends FunSuite with Eventually with IntegrationPatience {
                 addrs.exists {
                   case Address.Inet(ia1: InetSocketAddress, _) =>
                     ia1.getPort == ia.getPort
-                  case _ => false
+                  case _ =>
+                    false
                 })
-            case _ => fail()
+            case _ =>
+              fail()
           }
         }
       } finally {

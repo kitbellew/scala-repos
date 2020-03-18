@@ -13,8 +13,10 @@ object TestUnit {
     Apply { i =>
       val p =
         i match {
-          case 1 => Success(Some(1))
-          case _ => Success(None)
+          case 1 =>
+            Success(Some(1))
+          case _ =>
+            Success(None)
         }
     }
 }

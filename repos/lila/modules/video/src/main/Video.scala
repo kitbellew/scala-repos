@@ -44,11 +44,16 @@ object Target {
 
   def name(target: Int) =
     target match {
-      case BEGINNER     => "beginner"
-      case INTERMEDIATE => "intermediate"
-      case ADVANCED     => "advanced"
-      case EXPERT       => "expert"
-      case _            => ""
+      case BEGINNER =>
+        "beginner"
+      case INTERMEDIATE =>
+        "intermediate"
+      case ADVANCED =>
+        "advanced"
+      case EXPERT =>
+        "expert"
+      case _ =>
+        ""
     }
 }
 

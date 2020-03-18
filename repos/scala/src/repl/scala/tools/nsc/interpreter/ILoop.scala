@@ -126,9 +126,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   /** print a friendly help message */
   def helpCommand(line: String): Result =
     line match {
-      case ""                => helpSummary()
-      case CommandMatch(cmd) => echo(f"%n${cmd.help}")
-      case _                 => ambiguousError(line)
+      case "" =>
+        helpSummary()
+      case CommandMatch(cmd) =>
+        echo(f"%n${cmd.help}")
+      case _ =>
+        ambiguousError(line)
     }
   private def helpSummary() = {
     val usageWidth = commands map (_.usageMsg.length) max
@@ -141,7 +144,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
   private def ambiguousError(cmd: String): Result = {
     matchingCommands(cmd) match {
-      case Nil => echo(cmd + ": no such command.  Type :help for help.")
+      case Nil =>
+        echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
           cmd + " is ambiguous: did you mean " + xs
@@ -156,8 +160,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private object CommandMatch {
     def unapply(name: String): Option[LoopCommand] =
       matchingCommands(name) match {
-        case x :: Nil => Some(x)
-        case xs       => xs find (_.name == name) // accept an exact match
+        case x :: Nil =>
+          Some(x)
+        case xs =>
+          xs find (_.name == name) // accept an exact match
       }
   }
 
@@ -178,7 +184,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val count =
           try xs.head.toInt
           catch {
-            case _: Exception => defaultLines
+            case _: Exception =>
+              defaultLines
           }
         val lines = history.asStrings takeRight count
         val offset = current - lines.size + 1
@@ -348,7 +355,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       findToolsJar() match {
         case Some(tools) =>
           ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
-        case _ => intp.classLoader
+        case _ =>
+          intp.classLoader
       }
     if (Javap.isAvailable(cl)) {
       repldbg(":javap available.")
@@ -367,7 +375,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   // Still todo: modules.
   private def typeCommand(line0: String): Result = {
     line0.trim match {
-      case "" => ":type [-v] <expression>"
+      case "" =>
+        ":type [-v] <expression>"
       case s =>
         intp.typeCommandInternal(
           s stripPrefix "-v " trim,
@@ -377,7 +386,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   private def kindCommand(expr: String): Result = {
     expr.trim match {
-      case "" => ":kind [-v] <expression>"
+      case "" =>
+        ":kind [-v] <expression>"
       case s =>
         intp.kindCommandInternal(
           s stripPrefix "-v " trim,
@@ -390,7 +400,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       "Can't find any cached warnings."
     else
       intp.lastWarnings foreach {
-        case (pos, msg) => intp.reporter.warning(pos, msg)
+        case (pos, msg) =>
+          intp.reporter.warning(pos, msg)
       }
   }
 
@@ -495,7 +506,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
                 fn()
               })
             catch {
-              case _: RuntimeException => false
+              case _: RuntimeException =>
+                false
             }
 
           if (fn())
@@ -522,11 +534,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     ) // Long timeout here to avoid test failures under heavy load.
 
     command(line) match {
-      case Result(false, _) => false
+      case Result(false, _) =>
+        false
       case Result(_, Some(line)) =>
         addReplay(line);
         true
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -543,7 +557,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   final def loop(): LineResult = {
     import LineResults._
     readOneLine() match {
-      case null => EOF
+      case null =>
+        EOF
       case line =>
         if (try processLine(line)
             catch crashRecovery)
@@ -674,7 +689,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
                   case None =>
                     echo("Can't read edited text. Did you delete it?")
                 }
-              case x => echo(s"Error exit from $ed ($x), ignoring")
+              case x =>
+                echo(s"Error exit from $ed ($x), ignoring")
             }
           } finally {
             tmp.delete()
@@ -699,10 +715,13 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           what
       val sym = intp.symbolOfIdent(name)
       intp.prevRequestList collectFirst {
-        case r if r.defines contains sym => r
+        case r if r.defines contains sym =>
+          r
       } match {
-        case Some(req) => edit(req.line)
-        case None      => echo(s"No symbol in scope: $what")
+        case Some(req) =>
+          edit(req.line)
+        case None =>
+          echo(s"No symbol in scope: $what")
       }
     } else
       try {
@@ -714,7 +733,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
             (a.toInt, b.drop(1).toInt)
           } else {
             (s indexOf '-') match {
-              case -1 => (s.toInt, 1)
+              case -1 =>
+                (s.toInt, 1)
               case 0 =>
                 val n = s.drop(1).toInt;
                 (history.index - n, n)
@@ -745,7 +765,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       override def usage = "<command line>"
       def apply(line: String): Result =
         line match {
-          case "" => showUsage()
+          case "" =>
+            showUsage()
           case _ =>
             val toRun =
               s"new ${classOf[ProcessResult].getName}(${string2codeQuoted(line)})"
@@ -769,8 +790,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       } getOrElse Result.default
 
     words(arg) match {
-      case "-v" :: file :: Nil => run(file, verbose = true)
-      case file :: Nil         => run(file, verbose = false)
+      case "-v" :: file :: Nil =>
+        run(file, verbose = true)
+      case file :: Nil =>
+        run(file, verbose = false)
       case _ =>
         echo("usage: :load -v file");
         Result.default
@@ -911,10 +934,14 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   private def colonCommand(line: String): Result =
     line.trim match {
-      case ""                                  => helpSummary()
-      case commandish(CommandMatch(cmd), rest) => cmd(rest)
-      case commandish(name, _)                 => ambiguousError(name)
-      case _                                   => echo("?")
+      case "" =>
+        helpSummary()
+      case commandish(CommandMatch(cmd), rest) =>
+        cmd(rest)
+      case commandish(name, _) =>
+        ambiguousError(name)
+      case _ =>
+        echo("?")
     }
 
   private def readWhile(cond: String => Boolean) = {
@@ -952,8 +979,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val (margin0, ss1) = maybeHere(ss0)
         val file0 =
           ss1 match {
-            case Nil      => null
-            case x :: Nil => x
+            case Nil =>
+              null
+            case x :: Nil =>
+              x
             case _ =>
               echo("usage: :paste [-raw] file | < EOF");
               return result
@@ -981,7 +1010,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           val text =
             (
               margin filter (_.nonEmpty) map {
-                case "-" => input.lines map (_.trim) mkString "\n"
+                case "-" =>
+                  input.lines map (_.trim) mkString "\n"
                 case m =>
                   input stripMargin m.head // ignore excess chars in "<<||"
               } getOrElse input
@@ -1050,20 +1080,26 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
      *    and avoid the interpreter, as it's likely not valid scala code.
      */
     code match {
-      case ""            => None
-      case lineComment() => None // line comment, do nothing
+      case "" =>
+        None
+      case lineComment() =>
+        None // line comment, do nothing
       case paste() if !paste.running =>
         paste.transcript(
           Iterator(code) ++ readWhile(!paste.isPromptOnly(_))) match {
-          case Some(s) => interpretStartingWith(s)
-          case _       => None
+          case Some(s) =>
+            interpretStartingWith(s)
+          case _ =>
+            None
         }
       case invocation() if intp.mostRecentVar != "" =>
         interpretStartingWith(intp.mostRecentVar + code)
       case _ =>
         intp.interpret(code) match {
-          case IR.Error   => None
-          case IR.Success => Some(code)
+          case IR.Error =>
+            None
+          case IR.Success =>
+            Some(code)
           case IR.Incomplete if in.interactive && code.endsWith("\n\n") =>
             echo("You typed two blank lines.  Starting a new command.")
             None
@@ -1079,7 +1115,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
                   // it straight to the compiler for the nice error message.
                   intp.compileString(code)
                   None
-                case line => interpretStartingWith(s"$code\n$line")
+                case line =>
+                  interpretStartingWith(s"$code\n$line")
               }
             } finally intp.partialInput = saved
         }
@@ -1143,7 +1180,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
       val reader = (
         readers collect {
-          case Success(reader) => reader
+          case Success(reader) =>
+            reader
         } headOption
       ) getOrElse SimpleReader()
 
@@ -1152,7 +1190,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           case (cls, Failure(e)) =>
             s"  - $cls --> \n\t" + scala.tools.nsc.util
               .stackTraceString(e) + "\n"
-          case (cls, Success(_)) => s"  - $cls OK"
+          case (cls, Success(_)) =>
+            s"  - $cls OK"
         }
         Console.println(
           s"All InteractiveReaders tried: ${readerDiags.mkString("\n", "\n", "\n")}")
@@ -1202,8 +1241,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       printWelcome()
 
       try loop() match {
-        case LineResults.EOF => out print Properties.shellInterruptedString
-        case _               =>
+        case LineResults.EOF =>
+          out print Properties.shellInterruptedString
+        case _ =>
       } catch AbstractOrMissingHandler()
       finally closeInterpreter()
 

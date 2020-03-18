@@ -57,8 +57,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
     override def hashCode = tmd.hashCode() + classTag.hashCode()
     override def equals(o: Any) =
       o match {
-        case o: MappedJdbcType[_, _] => tmd == o.tmd && classTag == o.classTag
-        case _                       => false
+        case o: MappedJdbcType[_, _] =>
+          tmd == o.tmd && classTag == o.classTag
+        case _ =>
+          false
       }
   }
 
@@ -82,20 +84,34 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
     (
       (
         t.structural match {
-          case tmd: JdbcType[_]             => tmd
-          case ScalaBaseType.booleanType    => columnTypes.booleanJdbcType
-          case ScalaBaseType.bigDecimalType => columnTypes.bigDecimalJdbcType
-          case ScalaBaseType.byteType       => columnTypes.byteJdbcType
-          case ScalaBaseType.charType       => columnTypes.charJdbcType
-          case ScalaBaseType.doubleType     => columnTypes.doubleJdbcType
-          case ScalaBaseType.floatType      => columnTypes.floatJdbcType
-          case ScalaBaseType.intType        => columnTypes.intJdbcType
-          case ScalaBaseType.longType       => columnTypes.longJdbcType
-          case ScalaBaseType.nullType       => columnTypes.nullJdbcType
-          case ScalaBaseType.shortType      => columnTypes.shortJdbcType
-          case ScalaBaseType.stringType     => columnTypes.stringJdbcType
-          case t: OptionType                => jdbcTypeFor(t.elementType)
-          case t: ErasedScalaBaseType[_, _] => jdbcTypeFor(t.erasure)
+          case tmd: JdbcType[_] =>
+            tmd
+          case ScalaBaseType.booleanType =>
+            columnTypes.booleanJdbcType
+          case ScalaBaseType.bigDecimalType =>
+            columnTypes.bigDecimalJdbcType
+          case ScalaBaseType.byteType =>
+            columnTypes.byteJdbcType
+          case ScalaBaseType.charType =>
+            columnTypes.charJdbcType
+          case ScalaBaseType.doubleType =>
+            columnTypes.doubleJdbcType
+          case ScalaBaseType.floatType =>
+            columnTypes.floatJdbcType
+          case ScalaBaseType.intType =>
+            columnTypes.intJdbcType
+          case ScalaBaseType.longType =>
+            columnTypes.longJdbcType
+          case ScalaBaseType.nullType =>
+            columnTypes.nullJdbcType
+          case ScalaBaseType.shortType =>
+            columnTypes.shortJdbcType
+          case ScalaBaseType.stringType =>
+            columnTypes.stringJdbcType
+          case t: OptionType =>
+            jdbcTypeFor(t.elementType)
+          case t: ErasedScalaBaseType[_, _] =>
+            jdbcTypeFor(t.erasure)
           case t =>
             throw new SlickException(
               "JdbcProfile has no JdbcType for type " + t)
@@ -113,7 +129,8 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
             s"VARCHAR(${l.length})"
           else
             s"CHAR(${l.length})")
-      case java.sql.Types.DECIMAL => "DECIMAL(21,2)"
+      case java.sql.Types.DECIMAL =>
+        "DECIMAL(21,2)"
       case t =>
         JdbcTypesComponent.typeNames.getOrElse(
           t,
@@ -282,8 +299,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent {
           sb append '\''
           for (c <- value)
             c match {
-              case '\'' => sb append "''"
-              case _    => sb append c
+              case '\'' =>
+                sb append "''"
+              case _ =>
+                sb append c
             }
           sb append '\''
           sb.toString

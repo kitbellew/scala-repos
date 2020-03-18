@@ -19,12 +19,18 @@ case class TypeConstruction(inType: String)
     with TypedElement {
   def getDefaultTypeValue: String = {
     inType match {
-      case "Int" | "Byte" | "Short" | "Char" => "0"
-      case "Double" | "Float"                => ".0"
-      case "Boolean"                         => "false"
-      case "Long"                            => "0L"
-      case "Unit"                            => "{}"
-      case _                                 => "null"
+      case "Int" | "Byte" | "Short" | "Char" =>
+        "0"
+      case "Double" | "Float" =>
+        ".0"
+      case "Boolean" =>
+        "false"
+      case "Long" =>
+        "0L"
+      case "Unit" =>
+        "{}"
+      case _ =>
+        "null"
     }
   }
 
@@ -47,7 +53,8 @@ object TypeConstruction {
       case array: ArrayConstruction =>
         array.assocoationMap = buffer.toSeq
         array
-      case _ => result
+      case _ =>
+        result
     }
   }
 
@@ -91,7 +98,8 @@ case class ParametrizedConstruction(
 
   def getAssociations =
     assocoationMap.collect {
-      case (n, Some(value)) => (n, value)
+      case (n, Some(value)) =>
+        (n, value)
     }
 
   override def getType: TypeConstruction =
@@ -105,7 +113,8 @@ case class ArrayConstruction(iNode: IntermediateNode)
 
   def getAssociations =
     assocoationMap.collect {
-      case (n, Some(value)) => (n, value)
+      case (n, Some(value)) =>
+        (n, value)
     }
 
   override def getType: TypeConstruction =

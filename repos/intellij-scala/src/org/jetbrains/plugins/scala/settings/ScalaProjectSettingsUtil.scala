@@ -86,8 +86,10 @@ object ScalaProjectSettingsUtil {
       val listModel =
         JListCompatibility.getDefaultListModel(
           patternJBList.getList.getModel) match {
-          case null    => return
-          case default => default
+          case null =>
+            return
+          case default =>
+            default
         }
       val index: Int = -util.Arrays.binarySearch(listModel.toArray, pattern) - 1
       if (index < 0)
@@ -133,8 +135,10 @@ object ScalaProjectSettingsUtil {
       val listModel =
         JListCompatibility.getDefaultListModel(
           patternJBList.getList.getModel) match {
-          case null    => return
-          case default => default
+          case null =>
+            return
+          case default =>
+            default
         }
       val index = patternJBList.getList.getSelectedIndex
       JListCompatibility.add(listModel, index + 1, pattern)
@@ -175,8 +179,10 @@ object ScalaProjectSettingsUtil {
             val listModel =
               JListCompatibility.getDefaultListModel(
                 patternJBList.getList.getModel) match {
-                case null    => return
-                case default => default
+                case null =>
+                  return
+                case default =>
+                  default
               }
             val index = patternJBList.getList.getSelectedIndex
             if (index != -1) {

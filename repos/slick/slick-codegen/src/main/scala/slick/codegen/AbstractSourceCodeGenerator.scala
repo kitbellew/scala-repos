@@ -62,8 +62,10 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       if (hlistEnabled) {
         def mkHList(types: List[String]): String =
           types match {
-            case Nil       => "HNil"
-            case e :: tail => s"HCons[$e," + mkHList(tail) + "]"
+            case Nil =>
+              "HNil"
+            case e :: tail =>
+              s"HCons[$e," + mkHList(tail) + "]"
           }
         mkHList(types.toList)
       } else
@@ -132,7 +134,8 @@ def $name($args): $name = {
           .distinct
           .zipWithIndex
           .map {
-            case (t, i) => s"""e$i: GR[$t]"""
+            case (t, i) =>
+              s"""e$i: GR[$t]"""
           }
           .mkString(", ")
         val rearranged = compoundValue(
@@ -246,13 +249,16 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
       import RelationalProfile.ColumnOption._
       import SqlProfile.ColumnOption._
       def columnOptionCode = {
-        case ColumnOption.PrimaryKey => Some(s"O.PrimaryKey")
+        case ColumnOption.PrimaryKey =>
+          Some(s"O.PrimaryKey")
         case Default(value) =>
           Some(s"O.Default(${default.get})") // .get is safe here
-        case SqlType(dbType) => Some(s"""O.SqlType("$dbType")""")
+        case SqlType(dbType) =>
+          Some(s"""O.SqlType("$dbType")""")
         case Length(length, varying) =>
           Some(s"O.Length($length,varying=$varying)")
-        case AutoInc => Some(s"O.AutoInc")
+        case AutoInc =>
+          Some(s"O.AutoInc")
         case NotNull | Nullable =>
           throw new SlickException(
             s"Please don't use Nullable or NotNull column options. Use an Option type, respectively the nullable flag in Slick's model model Column.")
@@ -260,17 +266,28 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
           None // throw new SlickException( s"Don't know how to generate code for unexpected ColumnOption $o." )
       }
       def defaultCode = {
-        case Some(v)    => s"Some(${defaultCode(v)})"
-        case s: String  => "\"" + s + "\""
-        case None       => s"None"
-        case v: Byte    => s"$v"
-        case v: Int     => s"$v"
-        case v: Long    => s"${v}L"
-        case v: Float   => s"${v}F"
-        case v: Double  => s"$v"
-        case v: Boolean => s"$v"
-        case v: Short   => s"$v"
-        case v: Char    => s"'$v'"
+        case Some(v) =>
+          s"Some(${defaultCode(v)})"
+        case s: String =>
+          "\"" + s + "\""
+        case None =>
+          s"None"
+        case v: Byte =>
+          s"$v"
+        case v: Int =>
+          s"$v"
+        case v: Long =>
+          s"${v}L"
+        case v: Float =>
+          s"${v}F"
+        case v: Double =>
+          s"$v"
+        case v: Boolean =>
+          s"$v"
+        case v: Short =>
+          s"$v"
+        case v: Char =>
+          s"'$v'"
         case v: BigDecimal =>
           s"new scala.math.BigDecimal(new java.math.BigDecimal($v))"
         case v =>
@@ -296,11 +313,16 @@ class $name(_tableTag: Tag) extends Table[$elementType](_tableTag, ${args
         extends super.ForeignKeyDef(model) {
       def actionCode(action: ForeignKeyAction) =
         action match {
-          case ForeignKeyAction.Cascade    => "ForeignKeyAction.Cascade"
-          case ForeignKeyAction.Restrict   => "ForeignKeyAction.Restrict"
-          case ForeignKeyAction.NoAction   => "ForeignKeyAction.NoAction"
-          case ForeignKeyAction.SetNull    => "ForeignKeyAction.SetNull"
-          case ForeignKeyAction.SetDefault => "ForeignKeyAction.SetDefault"
+          case ForeignKeyAction.Cascade =>
+            "ForeignKeyAction.Cascade"
+          case ForeignKeyAction.Restrict =>
+            "ForeignKeyAction.Restrict"
+          case ForeignKeyAction.NoAction =>
+            "ForeignKeyAction.NoAction"
+          case ForeignKeyAction.SetNull =>
+            "ForeignKeyAction.SetNull"
+          case ForeignKeyAction.SetDefault =>
+            "ForeignKeyAction.SetDefault"
         }
       def code = {
         val pkTable = referencedTable.TableValue.name

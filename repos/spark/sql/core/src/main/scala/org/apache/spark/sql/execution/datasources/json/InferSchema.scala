@@ -79,8 +79,9 @@ private[sql] object InferSchema {
             shouldHandleCorruptRecord))
 
     canonicalizeType(rootType) match {
-      case Some(st: StructType) => st
-      case _                    =>
+      case Some(st: StructType) =>
+        st
+      case _ =>
         // canonicalizeType erases all empty structs, including the only one we want to keep
         StructType(Seq())
     }
@@ -94,7 +95,8 @@ private[sql] object InferSchema {
       configOptions: JSONOptions): DataType = {
     import com.fasterxml.jackson.core.JsonToken._
     parser.getCurrentToken match {
-      case null | VALUE_NULL => NullType
+      case null | VALUE_NULL =>
+        NullType
 
       case FIELD_NAME =>
         parser.nextToken()
@@ -109,7 +111,8 @@ private[sql] object InferSchema {
         // record fields' types have been combined.
         NullType
 
-      case VALUE_STRING => StringType
+      case VALUE_STRING =>
+        StringType
       case START_OBJECT =>
         val builder = Seq.newBuilder[StructField]
         while (nextUntil(parser, END_OBJECT)) {
@@ -145,7 +148,8 @@ private[sql] object InferSchema {
         import JsonParser.NumberType._
         parser.getNumberType match {
           // For Integer values, use LongType by default.
-          case INT | LONG => LongType
+          case INT | LONG =>
+            LongType
           // Since we do not have a data type backed by BigInteger,
           // when we see a Java BigInteger, we use DecimalType.
           case BIG_INTEGER | BIG_DECIMAL =>
@@ -160,7 +164,8 @@ private[sql] object InferSchema {
             }
         }
 
-      case VALUE_TRUE | VALUE_FALSE => BooleanType
+      case VALUE_TRUE | VALUE_FALSE =>
+        BooleanType
     }
   }
 
@@ -193,8 +198,10 @@ private[sql] object InferSchema {
           None
         }
 
-      case NullType => Some(StringType)
-      case other    => Some(other)
+      case NullType =>
+        Some(StringType)
+      case other =>
+        Some(other)
     }
 
   private def withCorruptField(
@@ -228,8 +235,10 @@ private[sql] object InferSchema {
         ty2)
     // If we see any other data type at the root level, we get records that cannot be
     // parsed. So, we use the struct as the data type and add the corrupt field to the schema.
-    case (struct: StructType, NullType) => struct
-    case (NullType, struct: StructType) => struct
+    case (struct: StructType, NullType) =>
+      struct
+    case (NullType, struct: StructType) =>
+      struct
     case (struct: StructType, o)
         if !o.isInstanceOf[StructType] && shouldHandleCorruptRecord =>
       withCorruptField(struct, columnNameOfCorruptRecords)
@@ -238,7 +247,8 @@ private[sql] object InferSchema {
       withCorruptField(struct, columnNameOfCorruptRecords)
     // If we get anything else, we call compatibleType.
     // Usually, when we reach here, ty1 and ty2 are two StructTypes.
-    case (ty1, ty2) => compatibleType(ty1, ty2)
+    case (ty1, ty2) =>
+      compatibleType(ty1, ty2)
   }
 
   /**
@@ -283,7 +293,8 @@ private[sql] object InferSchema {
             containsNull1 || containsNull2)
 
         // strings and every string is a Json object.
-        case (_, _) => StringType
+        case (_, _) =>
+          StringType
       }
     }
   }

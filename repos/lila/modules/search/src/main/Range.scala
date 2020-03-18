@@ -20,7 +20,8 @@ object Range {
     (a, b) match {
       case (Some(aa), Some(bb)) =>
         o.lt(aa, bb).fold(new Range(a, b), new Range(b, a))
-      case (x, y) => new Range(x, y)
+      case (x, y) =>
+        new Range(x, y)
     }
 
   def none[A]: Range[A] = new Range(None, None)

@@ -78,7 +78,8 @@ class Hakker(name: String, chair: Int) extends Actor {
       become(hungry(left, right) orElse (managementEvents))
       left ! Take(self)
       right ! Take(self)
-    case Identify => identify("Thinking")
+    case Identify =>
+      identify("Thinking")
   }
 
   //When a hakker is hungry it tries to pick up its chopsticks and eat
@@ -95,7 +96,8 @@ class Hakker(name: String, chair: Int) extends Actor {
     case Busy(chopstick) =>
       pubStateChange("hungry", "denied_a_chopstick")
       become(denied_a_chopstick(left, right) orElse (managementEvents))
-    case Identify => identify("Hungry")
+    case Identify =>
+      identify("Hungry")
   }
 
   //When a hakker is waiting for the last chopstick it can either obtain it
@@ -128,7 +130,8 @@ class Hakker(name: String, chair: Int) extends Actor {
         left ! Put(self)
       }
       self ! Eat
-    case Identify => identify("Waiting for Chopstick")
+    case Identify =>
+      identify("Waiting for Chopstick")
   }
 
   //When the results of the other grab comes back,
@@ -144,7 +147,8 @@ class Hakker(name: String, chair: Int) extends Actor {
       pubStateChange("denied_a_chopstick", "thinking")
       become(thinking(left, right) orElse (managementEvents))
       self ! Eat
-    case Identify => identify("Denied a Chopstick")
+    case Identify =>
+      identify("Denied a Chopstick")
   }
 
   //When a hakker is eating, he can decide to start to think,
@@ -157,7 +161,8 @@ class Hakker(name: String, chair: Int) extends Actor {
       right ! Put(self)
       log.info("%s puts down his chopsticks and starts to think".format(name))
       system.scheduler.scheduleOnce(5 seconds, self, Eat)
-    case Identify => identify("Eating")
+    case Identify =>
+      identify("Eating")
   }
 
   def waitForChopsticks: Receive = {
@@ -165,12 +170,15 @@ class Hakker(name: String, chair: Int) extends Actor {
       pubStateChange("waiting", "thinking")
       become(thinking(left, right) orElse managementEvents)
       system.scheduler.scheduleOnce(5 seconds, self, Eat)
-    case Identify => identify("Waiting")
+    case Identify =>
+      identify("Waiting")
   }
 
   def managementEvents: Receive = {
-    case state: CurrentClusterState         => state.leader foreach updateTable
-    case LeaderChanged(Some(leaderAddress)) => updateTable(leaderAddress)
+    case state: CurrentClusterState =>
+      state.leader foreach updateTable
+    case LeaderChanged(Some(leaderAddress)) =>
+      updateTable(leaderAddress)
     case SubscribeToHakkerStateChanges =>
       subscribers += sender()
       context watch sender()
@@ -179,7 +187,8 @@ class Hakker(name: String, chair: Int) extends Actor {
   }
 
   def initializing: Receive = {
-    case Identify => identify("Initializing")
+    case Identify =>
+      identify("Initializing")
   }
 
   def identify(busyWith: String): Unit = {

@@ -45,9 +45,12 @@ trait Placeholders {
 
     val iargs =
       method match {
-        case nme.apply   => args
-        case nme.unapply => internal.subpatterns(args.head).get
-        case _           => global.abort("unreachable")
+        case nme.apply =>
+          args
+        case nme.unapply =>
+          internal.subpatterns(args.head).get
+        case _ =>
+          global.abort("unreachable")
       }
 
     foreach2(iargs, parts.init) {
@@ -99,9 +102,12 @@ trait Placeholders {
 
   object Placeholder extends HolePlaceholder {
     def matching = {
-      case name: Name                      => name
-      case Ident(name)                     => name
-      case Bind(name, Ident(nme.WILDCARD)) => name
+      case name: Name =>
+        name
+      case Ident(name) =>
+        name
+      case Bind(name, Ident(nme.WILDCARD)) =>
+        name
       case TypeDef(_, name, List(), TypeBoundsTree(EmptyTree, EmptyTree)) =>
         name
     }
@@ -122,7 +128,8 @@ trait Placeholders {
 
   object AnnotPlaceholder extends HolePlaceholder {
     def matching = {
-      case Apply(Select(New(Ident(name)), nme.CONSTRUCTOR), Nil) => name
+      case Apply(Select(New(Ident(name)), nme.CONSTRUCTOR), Nil) =>
+        name
     }
   }
 
@@ -130,7 +137,8 @@ trait Placeholders {
     def apply(flags: FlagSet, name: Name) =
       ValDef(Modifiers(flags), nme.QUASIQUOTE_PARAM, Ident(name), EmptyTree)
     def matching = {
-      case ValDef(_, nme.QUASIQUOTE_PARAM, Ident(name), EmptyTree) => name
+      case ValDef(_, nme.QUASIQUOTE_PARAM, Ident(name), EmptyTree) =>
+        name
     }
   }
 
@@ -138,8 +146,10 @@ trait Placeholders {
     def apply(args: List[Tree]) = Apply(Ident(nme.QUASIQUOTE_TUPLE), args)
     def unapply(tree: Tree): Option[List[Tree]] =
       tree match {
-        case Apply(Ident(nme.QUASIQUOTE_TUPLE), args) => Some(args)
-        case _                                        => None
+        case Apply(Ident(nme.QUASIQUOTE_TUPLE), args) =>
+          Some(args)
+        case _ =>
+          None
       }
   }
 
@@ -148,8 +158,10 @@ trait Placeholders {
       AppliedTypeTree(Ident(tpnme.QUASIQUOTE_TUPLE), args)
     def unapply(tree: Tree): Option[List[Tree]] =
       tree match {
-        case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_TUPLE), args) => Some(args)
-        case _                                                    => None
+        case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_TUPLE), args) =>
+          Some(args)
+        case _ =>
+          None
       }
   }
 
@@ -160,7 +172,8 @@ trait Placeholders {
       tree match {
         case AppliedTypeTree(Ident(tpnme.QUASIQUOTE_FUNCTION), args :+ res) =>
           Some((args, res))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -169,7 +182,8 @@ trait Placeholders {
       scrutinee match {
         case Placeholder(hole: ApplyHole) if hole.tpe <:< symbolType =>
           Some(hole)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -186,7 +200,8 @@ trait Placeholders {
               EmptyTree,
               EmptyTree) =>
           Some(hole)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -201,7 +216,8 @@ trait Placeholders {
               Ident(Placeholder(hole)),
               _) =>
           Some(hole)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -216,7 +232,8 @@ trait Placeholders {
       tree match {
         case ValDef(_, nme.QUASIQUOTE_EARLY_DEF, Ident(Placeholder(hole)), _) =>
           Some(hole)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -231,7 +248,8 @@ trait Placeholders {
               Ident(Placeholder(hole)),
               EmptyTree) =>
           Some(hole)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -246,7 +264,8 @@ trait Placeholders {
               Bind(Placeholder(hole), Ident(nme.WILDCARD)),
               Ident(nme.QUASIQUOTE_FOR_ENUM)) =>
           Some(hole)
-        case _ => None
+        case _ =>
+          None
       }
   }
 }

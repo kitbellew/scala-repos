@@ -79,7 +79,8 @@ object LogQuery {
             (ip, user, query)
           else
             (null, null, null)
-        case _ => (null, null, null)
+        case _ =>
+          (null, null, null)
       }
     }
 
@@ -97,7 +98,8 @@ object LogQuery {
                 referer,
                 ua)) =>
           new Stats(1, bytes.toInt)
-        case _ => new Stats(1, 0)
+        case _ =>
+          new Stats(1, 0)
       }
     }
 
@@ -106,7 +108,8 @@ object LogQuery {
       .reduceByKey((a, b) => a.merge(b))
       .collect()
       .foreach {
-        case (user, query) => println("%s\t%s".format(user, query))
+        case (user, query) =>
+          println("%s\t%s".format(user, query))
       }
 
     sc.stop()

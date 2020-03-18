@@ -21,7 +21,8 @@ class ListenerSpec extends AkkaSpec {
           new Actor with Listeners {
             def receive =
               listenerManagement orElse {
-                case "foo" ⇒ gossip("bar")
+                case "foo" ⇒
+                  gossip("bar")
               }
           }))
 

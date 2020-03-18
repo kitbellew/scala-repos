@@ -193,7 +193,8 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
           .map(response ⇒ Some(response.entity.contentType))
           .fast
           .recover {
-            case _: Marshal.UnacceptableResponseContentTypeException ⇒ None
+            case _: Marshal.UnacceptableResponseContentTypeException ⇒
+              None
           },
         1.second
       )
@@ -212,8 +213,10 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
               rawHeader ⇒
                 val Array(name, value) = rawHeader.split(':')
                 HttpHeader.parse(name.trim, value) match {
-                  case HttpHeader.ParsingResult.Ok(header, Nil) ⇒ header
-                  case result ⇒ fail(result.errors.head.formatPretty)
+                  case HttpHeader.ParsingResult.Ok(header, Nil) ⇒
+                    header
+                  case result ⇒
+                    fail(result.errors.head.formatPretty)
                 }
             }
           } else

@@ -58,7 +58,8 @@ object ScroogeOrderedBuf {
       companionSymbol.asModule.moduleClass.asType.toType.declarations
         .filter(_.name.decoded.endsWith("Field "))
         .collect {
-          case s: TermSymbol => s
+          case s: TermSymbol =>
+            s
         }
         .filter(_.isStatic)
         .filter(_.isVal)
@@ -73,7 +74,8 @@ object ScroogeOrderedBuf {
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
       outerType.declarations
         .collect {
-          case m: MethodSymbol => m
+          case m: MethodSymbol =>
+            m
         }
         .filter(m =>
           fieldNames.contains(m.name.toTermName.toString.toLowerCase))

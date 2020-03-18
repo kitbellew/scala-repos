@@ -4,6 +4,7 @@
 object HasArgs {
   def boop(params: List[List[_]]) =
     params match {
-      case List(List()) => 2
+      case List(List()) =>
+        2
     }
 }

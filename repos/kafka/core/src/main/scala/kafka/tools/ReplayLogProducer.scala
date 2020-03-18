@@ -186,7 +186,8 @@ object ReplayLogProducer extends Logging {
             }
             messageCount += 1
           } catch {
-            case ie: Exception => error("Skipping this message", ie)
+            case ie: Exception =>
+              error("Skipping this message", ie)
           }
         }
       } catch {

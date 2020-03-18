@@ -15,9 +15,11 @@ object Test {
               else
                 tick(i - 1)
             tick(10000000) // testing that this doesn't SOE
-          case None => None
+          case None =>
+            None
         }
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -33,7 +35,8 @@ object Test {
               else
                 tick(i - 1)
             tick(10000000) // testing that this doesn't SOE
-          case None => test1
+          case None =>
+            test1
         }
       case None =>
         test1 // not a tail call

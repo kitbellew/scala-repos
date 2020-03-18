@@ -78,8 +78,10 @@ class Hashtable[K, V] private (inner: mutable.HashMap[Box[Any], V])
       def setValue(value: V): V = boxedEntry.setValue(value)
       override def equals(o: Any): Boolean =
         o match {
-          case o: UnboxedEntry => boxedEntry.equals(o.boxedEntry)
-          case _               => false
+          case o: UnboxedEntry =>
+            boxedEntry.equals(o.boxedEntry)
+          case _ =>
+            false
         }
       override def hashCode(): Int = boxedEntry.hashCode()
     }

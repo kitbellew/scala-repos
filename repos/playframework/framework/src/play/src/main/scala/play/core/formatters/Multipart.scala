@@ -165,8 +165,10 @@ object Multipart {
           bodyPart match {
             case MultipartFormData.DataPart(_, data) =>
               Source.single((f ~~ ByteString(data)).get)
-            case MultipartFormData.FilePart(_, _, _, ref) => bodyPartChunks(ref)
-            case _                                        => throw new UnsupportedOperationException()
+            case MultipartFormData.FilePart(_, _, _, ref) =>
+              bodyPartChunks(ref)
+            case _ =>
+              throw new UnsupportedOperationException()
           }
 
         renderBoundary(
@@ -185,7 +187,8 @@ object Multipart {
                   innerContentType,
                   _) =>
               (innerKey, Option(innerFilename), innerContentType)
-            case _ => throw new UnsupportedOperationException()
+            case _ =>
+              throw new UnsupportedOperationException()
           }
         renderDisposition(f, key, filename)
         contentType.foreach { ct =>

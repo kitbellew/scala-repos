@@ -174,8 +174,10 @@ trait JdbcStatementBuilderComponent {
     protected def buildComprehension(c: Comprehension): Unit = {
       val limit0 =
         c.fetch match {
-          case Some(LiteralNode(0L)) => true
-          case _                     => false
+          case Some(LiteralNode(0L)) =>
+            true
+          case _ =>
+            false
         }
       scanJoins(ConstArray((c.sym, c.from)))
       val (from, on) = flattenJoins(c.sym, c.from)
@@ -185,15 +187,18 @@ trait JdbcStatementBuilderComponent {
           .drop(1)
           .flatMap(
             _.collect {
-              case c: Comprehension => c
+              case c: Comprehension =>
+                c
             }.toSeq.flatMap(_.findNode(_ == Ref(s))))
           .nonEmpty
       currentUniqueFrom = from match {
-        case Seq((s, _: TableNode)) if !containsSymbolInSubquery(s) => Some(s)
+        case Seq((s, _: TableNode)) if !containsSymbolInSubquery(s) =>
+          Some(s)
         case Seq((s, _))
             if !alwaysAliasSubqueries && !containsSymbolInSubquery(s) =>
           Some(s)
-        case _ => None
+        case _ =>
+          None
       }
       buildSelectClause(c)
       buildFromClause(from)
@@ -229,11 +234,15 @@ trait JdbcStatementBuilderComponent {
             } yield (
               defs1 ++ defs2,
               on match {
-                case LiteralNode(true) => on1 ++ on2
-                case on                => on1 ++ on2 :+ on
+                case LiteralNode(true) =>
+                  on1 ++ on2
+                case on =>
+                  on1 ++ on2 :+ on
               })
-          case _: Join => None
-          case n       => Some((Seq((s, n)), Nil))
+          case _: Join =>
+            None
+          case n =>
+            Some((Seq((s, n)), Nil))
         }
       f(s, n).getOrElse((Seq((s, n)), Nil))
     }
@@ -255,14 +264,17 @@ trait JdbcStatementBuilderComponent {
             b.sep(ch, ", ")(buildSelectPart)
             if (ch.isEmpty)
               b"1"
-          case Pure(n, _) => buildSelectPart(n)
+          case Pure(n, _) =>
+            buildSelectPart(n)
         }
       }
 
     protected def buildSelectModifiers(c: Comprehension): Unit = {
       c.distinct.foreach {
-        case ProductNode(ch) if ch.isEmpty => b"distinct "
-        case n                             => b"distinct on (!$n) "
+        case ProductNode(ch) if ch.isEmpty =>
+          b"distinct "
+        case n =>
+          b"distinct on (!$n) "
       }
     }
 
@@ -302,8 +314,10 @@ trait JdbcStatementBuilderComponent {
         groupBy.foreach { n =>
           b"\ngroup by "
           n match {
-            case ProductNode(es) => b.sep(es, ", ")(buildGroupByColumn)
-            case e               => buildGroupByColumn(e)
+            case ProductNode(es) =>
+              b.sep(es, ", ")(buildGroupByColumn)
+            case e =>
+              buildGroupByColumn(e)
           }
         })
 
@@ -311,8 +325,10 @@ trait JdbcStatementBuilderComponent {
       by match {
         // Some database systems assign special meaning to literal values in GROUP BY, so we replace
         // them by a constant non-literal expression unless it is known to be safe.
-        case LiteralNode(_) if !supportsLiteralGroupBy => b"0+0"
-        case e                                         => b"!$e"
+        case LiteralNode(_) if !supportsLiteralGroupBy =>
+          b"0+0"
+        case e =>
+          b"!$e"
       }
 
     protected def buildHavingClause(having: Option[Node]) =
@@ -323,7 +339,8 @@ trait JdbcStatementBuilderComponent {
         if (!order.isEmpty) {
           b"\norder by "
           b.sep(order, ", ") {
-            case (n, o) => buildOrdering(n, o)
+            case (n, o) =>
+              buildOrdering(n, o)
           }
         }
       }
@@ -334,10 +351,13 @@ trait JdbcStatementBuilderComponent {
       building(OtherPart) {
         (fetch, offset) match {
           /* SQL:2008 syntax */
-          case (Some(t), Some(d)) => b"\noffset $d row fetch next $t row only"
-          case (Some(t), None)    => b"\nfetch next $t row only"
-          case (None, Some(d))    => b"\noffset $d row"
-          case _                  =>
+          case (Some(t), Some(d)) =>
+            b"\noffset $d row fetch next $t row only"
+          case (Some(t), None) =>
+            b"\nfetch next $t row only"
+          case (None, Some(d)) =>
+            b"\noffset $d row"
+          case _ =>
         }
       }
 
@@ -376,8 +396,10 @@ trait JdbcStatementBuilderComponent {
       buildFrom(j.left, Some(j.leftGen))
       val op =
         j.on match {
-          case LiteralNode(true) if j.jt == JoinType.Inner => "cross"
-          case _                                           => j.jt.sqlName
+          case LiteralNode(true) if j.jt == JoinType.Inner =>
+            "cross"
+          case _ =>
+            j.jt.sqlName
         }
       b"\n$op join "
       if (j.right.isInstanceOf[Join] && parenthesizeNestedRHSJoin) {
@@ -388,8 +410,10 @@ trait JdbcStatementBuilderComponent {
         buildFrom(j.right, Some(j.rightGen))
       if (op != "cross")
         j.on match {
-          case LiteralNode(true) => b"\non 1=1"
-          case on                => b"\non !$on"
+          case LiteralNode(true) =>
+            b"\non 1=1"
+          case on =>
+            b"\non !$on"
         }
     }
 
@@ -401,14 +425,18 @@ trait JdbcStatementBuilderComponent {
               .foldRight[(Option[TermSymbol], List[TermSymbol])]((None, Nil)) {
                 case (ElementSymbol(idx), (Some(b), Nil)) =>
                   (Some(joins(b).generators(idx - 1)._1), Nil)
-                case (s, (None, Nil)) => (Some(s), Nil)
-                case (s, (b, r))      => (b, s :: r)
+                case (s, (None, Nil)) =>
+                  (Some(s), Nil)
+                case (s, (b, r)) =>
+                  (b, s :: r)
               }
           if (base != currentUniqueFrom)
             b += symbolName(base.get) += '.'
           rest match {
-            case Nil          => b += '*'
-            case field :: Nil => b += symbolName(field)
+            case Nil =>
+              b += '*'
+            case field :: Nil =>
+              b += symbolName(field)
             case _ =>
               throw new SlickException(
                 "Cannot resolve " + p + " as field or view")
@@ -479,16 +507,20 @@ trait JdbcStatementBuilderComponent {
                 if !capabilities.contains(
                   RelationalCapabilities.functionDatabase) =>
               b += "''"
-            case Library.Pi() if !hasPiFunction => b += pi
+            case Library.Pi() if !hasPiFunction =>
+              b += pi
             case Library.Degrees(ch) if !hasRadDegConversion =>
               b"(180.0/!${Library.Pi.typed(columnTypes.bigDecimalJdbcType)}*$ch)"
             case Library.Radians(ch) if !hasRadDegConversion =>
               b"(!${Library.Pi.typed(columnTypes.bigDecimalJdbcType)}/180.0*$ch)"
             case Library.Between(left, start, end) =>
               b"$left between $start and $end"
-            case Library.CountDistinct(e) => b"count(distinct $e)"
-            case Library.CountAll(e)      => b"count($e)"
-            case Library.Like(l, r)       => b"\($l like $r\)"
+            case Library.CountDistinct(e) =>
+              b"count(distinct $e)"
+            case Library.CountAll(e) =>
+              b"count($e)"
+            case Library.Like(l, r) =>
+              b"\($l like $r\)"
             case Library.Like(l, r, LiteralNode(esc: Char)) =>
               if (esc == '\'' || esc == '%' || esc == '_')
                 throw new SlickException(
@@ -510,7 +542,8 @@ trait JdbcStatementBuilderComponent {
             case Library.Substring(n, start) =>
               b"\({fn substring($n, ${QueryParameter
                 .constOp[Int]("+")(_ + _)(start, LiteralNode(1).infer())})}\)"
-            case Library.IndexOf(n, str) => b"\({fn locate($str, $n)} - 1\)"
+            case Library.IndexOf(n, str) =>
+              b"\({fn locate($str, $n)} - 1\)"
             case Library.Cast(ch @ _*) =>
               val tn =
                 if (ch.length == 2)
@@ -521,7 +554,8 @@ trait JdbcStatementBuilderComponent {
                 b"cast(${ch(0)} as $tn)"
               else
                 b"{fn convert(!${ch(0)},$tn)}"
-            case Library.SilentCast(ch) => b"$ch"
+            case Library.SilentCast(ch) =>
+              b"$ch"
             case Apply(sym: Library.SqlOperator, ch) =>
               b"\("
               if (ch.length == 1) {
@@ -549,14 +583,17 @@ trait JdbcStatementBuilderComponent {
         case c: IfThenElse =>
           b"(case"
           c.ifThenClauses.foreach {
-            case (l, r) => b" when $l then $r"
+            case (l, r) =>
+              b" when $l then $r"
           }
           c.elseClause match {
             case LiteralNode(null) =>
-            case n                 => b" else $n"
+            case n =>
+              b" else $n"
           }
           b" end)"
-        case OptionApply(ch) => expr(ch, skipParens)
+        case OptionApply(ch) =>
+          expr(ch, skipParens)
         case QueryParameter(extractor, JdbcType(ti, option), _) =>
           b +?= { (p, idx, param) =>
             if (option)
@@ -578,7 +615,8 @@ trait JdbcStatementBuilderComponent {
             b"(select 1)"
           else
             b.sep(by, ", ") {
-              case (n, o) => buildOrdering(n, o)
+              case (n, o) =>
+                buildOrdering(n, o)
             }
           b")"
         case c: Comprehension =>
@@ -594,9 +632,12 @@ trait JdbcStatementBuilderComponent {
             b"\nunion "
           buildFrom(right, None, true)
           b"\}"
-        case SimpleLiteral(w)        => b += w
-        case s: SimpleExpression     => s.toSQL(this)
-        case s: SimpleBinaryOperator => b"\(${s.left} ${s.name} ${s.right}\)"
+        case SimpleLiteral(w) =>
+          b += w
+        case s: SimpleExpression =>
+          s.toSQL(this)
+        case s: SimpleBinaryOperator =>
+          b"\(${s.left} ${s.name} ${s.right}\)"
         case n =>
           throw new SlickException(
             "Unexpected node " + n + " -- SQL prefix: " + b.build.sql)
@@ -630,15 +671,18 @@ trait JdbcStatementBuilderComponent {
               case f @ Select(Ref(struct), _) if struct == sym =>
                 (sym, from, where, ConstArray(f.field))
               case ProductNode(ch) if ch.forall {
-                    case Select(Ref(struct), _) if struct == sym => true;
-                    case _                                       => false
+                    case Select(Ref(struct), _) if struct == sym =>
+                      true;
+                    case _ =>
+                      false
                   } =>
                 (
                   sym,
                   from,
                   where,
                   ch.map {
-                    case Select(Ref(_), field) => field
+                    case Select(Ref(_), field) =>
+                      field
                   })
               case _ =>
                 throw new SlickException(
@@ -680,7 +724,8 @@ trait JdbcStatementBuilderComponent {
             if (fetch.isDefined || offset.isDefined || distinct.isDefined)
               fail(".take, .drop and .distinct are not supported for deleting")
             from match {
-              case from: TableNode => (sym, from, where)
+              case from: TableNode =>
+                (sym, from, where)
               case from =>
                 fail("A single source table is required, found: " + from)
             }
@@ -708,7 +753,8 @@ trait JdbcStatementBuilderComponent {
       ProductNode(rawColumns),
       allFields) = ins
     protected val syms: ConstArray[FieldSymbol] = rawColumns.map {
-      case Select(_, fs: FieldSymbol) => fs
+      case Select(_, fs: FieldSymbol) =>
+        fs
     }
     protected lazy val allNames = syms.map(fs => quoteIdentifier(fs.name))
     protected lazy val allVars = syms.iterator
@@ -1002,14 +1048,19 @@ trait JdbcStatementBuilderComponent {
 
     protected def handleColumnOption(o: ColumnOption[_]): Unit =
       o match {
-        case SqlProfile.ColumnOption.SqlType(s) => sqlType = s
+        case SqlProfile.ColumnOption.SqlType(s) =>
+          sqlType = s
         case RelationalProfile.ColumnOption.Length(s, v) =>
           size = Some(s)
           varying = v
-        case SqlProfile.ColumnOption.NotNull  => notNull = true
-        case SqlProfile.ColumnOption.Nullable => notNull = false
-        case ColumnOption.AutoInc             => autoIncrement = true
-        case ColumnOption.PrimaryKey          => primaryKey = true
+        case SqlProfile.ColumnOption.NotNull =>
+          notNull = true
+        case SqlProfile.ColumnOption.Nullable =>
+          notNull = false
+        case ColumnOption.AutoInc =>
+          autoIncrement = true
+        case ColumnOption.PrimaryKey =>
+          primaryKey = true
         case RelationalProfile.ColumnOption.Default(v) =>
           defaultLiteral = valueToSQLLiteral(v, column.tpe)
       }

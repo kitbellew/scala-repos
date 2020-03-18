@@ -25,8 +25,10 @@ case class RichResponse(res: HttpServletResponse) {
 
     def get(key: String): Option[String] =
       res.getHeaders(key) match {
-        case xs if xs.isEmpty => None
-        case xs               => Some(xs.asScala mkString ",")
+        case xs if xs.isEmpty =>
+          None
+        case xs =>
+          Some(xs.asScala mkString ",")
       }
 
     def iterator: Iterator[(String, String)] =

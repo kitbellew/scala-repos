@@ -89,8 +89,10 @@ object ConfigCommand {
   def warnOnMaxMessagesChange(configs: Properties): Unit = {
     val maxMessageBytes =
       configs.get(LogConfig.MaxMessageBytesProp) match {
-        case n: String => n.toInt
-        case _         => -1
+        case n: String =>
+          n.toInt
+        case _ =>
+          -1
       }
     if (maxMessageBytes > Defaults.MaxMessageSize) {
       error(TopicCommand.longMessageSizeWarning(maxMessageBytes))

@@ -35,7 +35,8 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
       fos.write(i.models)
       fos.close
     } catch {
-      case e: FileNotFoundException => error(e.getMessage)
+      case e: FileNotFoundException =>
+        error(e.getMessage)
     }
   }
 

@@ -55,7 +55,8 @@ class ScSelfTypeElementImpl private (
           selfType <- ste.getType(ctx)
           ct = ScCompoundType(Seq(templateType, selfType), Map.empty, Map.empty)
         } yield ct
-      case None => parent.getType(ctx)
+      case None =>
+        parent.getType(ctx)
     }
   }
 
@@ -63,7 +64,8 @@ class ScSelfTypeElementImpl private (
     val stub = getStub
     if (stub != null) {
       return stub.asInstanceOf[ScSelfTypeElementStub].getTypeElementText match {
-        case "" => None
+        case "" =>
+          None
         case text =>
           Some(
             ScalaPsiElementFactory.createTypeElementFromText(text, this, this))
@@ -82,10 +84,12 @@ class ScSelfTypeElementImpl private (
       typeElement match {
         case s: ScSimpleTypeElement =>
           s.reference match {
-            case Some(ref) => names += ref.refName
-            case _         =>
+            case Some(ref) =>
+              names += ref.refName
+            case _ =>
           }
-        case p: ScParameterizedTypeElement => fillNames(p.typeElement)
+        case p: ScParameterizedTypeElement =>
+          fillNames(p.typeElement)
         case c: ScCompoundTypeElement =>
           c.components.foreach(fillNames)
         case _ => //do nothing

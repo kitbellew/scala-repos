@@ -22,8 +22,10 @@ object ZipWith {
 
       def zapp[A, B](xs: Stream[A => B], ys: Stream[A]): Stream[B] =
         (xs, ys) match {
-          case (cons(f, fs), cons(s, ss)) => cons(f(s), zapp(fs, ss))
-          case (_, _)                     => Stream.empty
+          case (cons(f, fs), cons(s, ss)) =>
+            cons(f(s), zapp(fs, ss))
+          case (_, _) =>
+            Stream.empty
         }
 
       def manyApp =
@@ -31,7 +33,8 @@ object ZipWith {
           xs =>
             ss =>
               n match {
-                case Succ(i) => zw.manyApp(i)(zapp(xs, ss))
+                case Succ(i) =>
+                  zw.manyApp(i)(zapp(xs, ss))
               }
     }
 }

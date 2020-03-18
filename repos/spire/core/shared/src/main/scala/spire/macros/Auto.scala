@@ -82,8 +82,10 @@ abstract class AutoOps {
     tpeA.members exists { m =>
       m.isMethod && m.isPublic && m.name.encodedName.toString == name && (
         m.typeSignature match {
-          case MethodType(Nil, ret) => ret =:= tpeB
-          case _                    => false
+          case MethodType(Nil, ret) =>
+            ret =:= tpeB
+          case _ =>
+            false
         }
       )
     }

@@ -41,9 +41,11 @@ sealed trait CPath {
   def ancestors: List[CPath] = {
     def ancestors0(path: CPath, acc: List[CPath]): List[CPath] = {
       path.parent match {
-        case None => acc
+        case None =>
+          acc
 
-        case Some(parent) => ancestors0(parent, parent :: acc)
+        case Some(parent) =>
+          ancestors0(parent, parent :: acc)
       }
     }
 
@@ -81,9 +83,12 @@ sealed trait CPath {
       nodes match {
         case x :: xs =>
           toDrop match {
-            case `x` :: ys => remainder(xs, ys)
-            case Nil       => Some(CPath(nodes))
-            case _         => None
+            case `x` :: ys =>
+              remainder(xs, ys)
+            case Nil =>
+              Some(CPath(nodes))
+            case _ =>
+              None
           }
 
         case Nil =>
@@ -102,12 +107,15 @@ sealed trait CPath {
   def extract(jvalue: JValue): JValue = {
     def extract0(path: List[CPathNode], d: JValue): JValue =
       path match {
-        case Nil => d
+        case Nil =>
+          d
 
         case head :: tail =>
           head match {
-            case CPathField(name)  => extract0(tail, d \ name)
-            case CPathIndex(index) => extract0(tail, d(index))
+            case CPathField(name) =>
+              extract0(tail, d \ name)
+            case CPathIndex(index) =>
+              extract0(tail, d(index))
           }
       }
 
@@ -126,7 +134,8 @@ sealed trait CPath {
         right: List[CPathNode],
         d: JValue): List[CPath] =
       right match {
-        case Nil => CPath(current) :: Nil
+        case Nil =>
+          CPath(current) :: Nil
 
         case head :: tail =>
           head match {
@@ -141,10 +150,12 @@ sealed trait CPath {
                       val expandedNode = CPathField(name)
                       expand0(current :+ expandedNode, tail, value)
 
-                    case _ => Nil
+                    case _ =>
+                      Nil
                   }
 
-                case _ => Nil
+                case _ =>
+                  Nil
               }
             }
 
@@ -183,12 +194,17 @@ object CPathNode {
       (n1, n2) match {
         case (CPathField(s1), CPathField(s2)) =>
           Ordering.fromInt(s1.compare(s2))
-        case (CPathField(_), _) => GT
-        case (_, CPathField(_)) => LT
+        case (CPathField(_), _) =>
+          GT
+        case (_, CPathField(_)) =>
+          LT
 
-        case (CPathArray, CPathArray) => EQ
-        case (CPathArray, _)          => GT
-        case (_, CPathArray)          => LT
+        case (CPathArray, CPathArray) =>
+          EQ
+        case (CPathArray, _) =>
+          GT
+        case (_, CPathArray) =>
+          LT
 
         case (CPathIndex(i1), CPathIndex(i2)) =>
           if (i1 < i2)
@@ -197,10 +213,13 @@ object CPathNode {
             EQ
           else
             GT
-        case (CPathIndex(_), _) => GT
-        case (_, CPathIndex(_)) => LT
+        case (CPathIndex(_), _) =>
+          GT
+        case (_, CPathIndex(_)) =>
+          LT
 
-        case (CPathMeta(m1), CPathMeta(m2)) => Ordering.fromInt(m1.compare(m2))
+        case (CPathMeta(m1), CPathMeta(m2)) =>
+          Ordering.fromInt(m1.compare(m2))
       }
   }
 
@@ -250,8 +269,10 @@ object CPath {
 
   def apply(path: JPath): CPath = {
     val nodes2 = path.nodes map {
-      case JPathField(name) => CPathField(name)
-      case JPathIndex(idx)  => CPathIndex(idx)
+      case JPathField(name) =>
+        CPathField(name)
+      case JPathIndex(idx) =>
+        CPathIndex(idx)
     }
 
     CPath(nodes2: _*)
@@ -265,7 +286,8 @@ object CPath {
   implicit def apply(path: String): CPath = {
     def parse0(segments: List[String], acc: List[CPathNode]): List[CPathNode] =
       segments match {
-        case Nil => acc
+        case Nil =>
+          acc
 
         case head :: tail =>
           if (head.trim.length == 0)
@@ -275,10 +297,13 @@ object CPath {
               tail,
               (
                 head match {
-                  case "[*]"               => CPathArray
-                  case IndexPattern(index) => CPathIndex(index.toInt)
+                  case "[*]" =>
+                    CPathArray
+                  case IndexPattern(index) =>
+                    CPathIndex(index.toInt)
 
-                  case name => CPathField(name)
+                  case name =>
+                    CPathField(name)
                 }
               ) :: acc)
       }
@@ -310,24 +335,30 @@ object CPath {
         List(LeafNode(paths.head.value))
       } else {
         val filtered = paths filterNot {
-          case PathWithLeaf(path, _) => path.isEmpty
+          case PathWithLeaf(path, _) =>
+            path.isEmpty
         }
         val grouped = filtered groupBy {
-          case PathWithLeaf(path, _) => path.head
+          case PathWithLeaf(path, _) =>
+            path.head
         }
 
         def recurse[A](paths: Seq[PathWithLeaf[A]]) =
           inner(
             paths map {
-              case PathWithLeaf(path, v) => PathWithLeaf(path.tail, v)
+              case PathWithLeaf(path, v) =>
+                PathWithLeaf(path.tail, v)
             })
 
         val result = grouped.toSeq.sortBy(_._1) map {
           case (node, paths) =>
             node match {
-              case (field: CPathField) => FieldNode(field, recurse(paths))
-              case (index: CPathIndex) => IndexNode(index, recurse(paths))
-              case _                   => sys.error("CPathArray and CPathMeta not supported")
+              case (field: CPathField) =>
+                FieldNode(field, recurse(paths))
+              case (index: CPathIndex) =>
+                IndexNode(index, recurse(paths))
+              case _ =>
+                sys.error("CPathArray and CPathMeta not supported")
             }
         }
         result
@@ -357,9 +388,12 @@ object CPath {
     def order(v1: CPath, v2: CPath): Ordering = {
       def compare0(n1: List[CPathNode], n2: List[CPathNode]): Ordering =
         (n1, n2) match {
-          case (Nil, Nil) => EQ
-          case (Nil, _)   => LT
-          case (_, Nil)   => GT
+          case (Nil, Nil) =>
+            EQ
+          case (Nil, _) =>
+            LT
+          case (_, Nil) =>
+            GT
           case (n1 :: ns1, n2 :: ns2) =>
             val ncomp = Order[CPathNode].order(n1, n2)
             if (ncomp != EQ)

@@ -82,10 +82,12 @@ private[akka] final case class MaybePublisher[T](
       requireNonNullSubscriber(subscriber)
       tryOnSubscribe(subscriber, new MaybeSubscription(subscriber))
       promise.future onFailure {
-        case error ⇒ tryOnError(subscriber, error)
+        case error ⇒
+          tryOnError(subscriber, error)
       }
     } catch {
-      case sv: SpecViolation ⇒ ec.reportFailure(sv)
+      case sv: SpecViolation ⇒
+        ec.reportFailure(sv)
     }
 
   override def toString: String = name

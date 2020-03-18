@@ -107,14 +107,22 @@ case class TypedAggregateExpression(
     while (i < aggBufferAttributes.length) {
       val offset = mutableAggBufferOffset + i
       aggBufferSchema(i).dataType match {
-        case BooleanType => buffer.setBoolean(offset, value.getBoolean(i))
-        case ByteType    => buffer.setByte(offset, value.getByte(i))
-        case ShortType   => buffer.setShort(offset, value.getShort(i))
-        case IntegerType => buffer.setInt(offset, value.getInt(i))
-        case LongType    => buffer.setLong(offset, value.getLong(i))
-        case FloatType   => buffer.setFloat(offset, value.getFloat(i))
-        case DoubleType  => buffer.setDouble(offset, value.getDouble(i))
-        case other       => buffer.update(offset, value.get(i, other))
+        case BooleanType =>
+          buffer.setBoolean(offset, value.getBoolean(i))
+        case ByteType =>
+          buffer.setByte(offset, value.getByte(i))
+        case ShortType =>
+          buffer.setShort(offset, value.getShort(i))
+        case IntegerType =>
+          buffer.setInt(offset, value.getInt(i))
+        case LongType =>
+          buffer.setLong(offset, value.getLong(i))
+        case FloatType =>
+          buffer.setFloat(offset, value.getFloat(i))
+        case DoubleType =>
+          buffer.setDouble(offset, value.getDouble(i))
+        case other =>
+          buffer.update(offset, value.get(i, other))
       }
       i += 1
     }
@@ -147,8 +155,10 @@ case class TypedAggregateExpression(
     val b = bEncoder.shift(mutableAggBufferOffset).fromRow(buffer)
     val result = cEncoder.toRow(aggregator.finish(b))
     dataType match {
-      case _: StructType => result
-      case _             => result.get(0, dataType)
+      case _: StructType =>
+        result
+      case _ =>
+        result.get(0, dataType)
     }
   }
 

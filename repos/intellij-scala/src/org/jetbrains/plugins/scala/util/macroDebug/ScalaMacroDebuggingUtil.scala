@@ -141,8 +141,10 @@ object ScalaMacroDebuggingUtil {
 
   def isLoaded(file: PsiFile) =
     SOURCE_CACHE get file.getVirtualFile.getCanonicalPath match {
-      case Some(_) => true
-      case _       => false
+      case Some(_) =>
+        true
+      case _ =>
+        false
     }
 
   def tryToLoad(file: PsiFile) =
@@ -154,8 +156,10 @@ object ScalaMacroDebuggingUtil {
 
   def getOffsetsCount(file: PsiFile) =
     SYNTHETIC_OFFSETS_MAP get file.getVirtualFile.getCanonicalPath match {
-      case Some(offsets) => offsets.length
-      case _             => 0
+      case Some(offsets) =>
+        offsets.length
+      case _ =>
+        0
     }
 
   def checkMarkers(fileName: String, markersCount: Int) =
@@ -178,12 +182,16 @@ object ScalaMacroDebuggingUtil {
         methodInvocation.getEffectiveInvokedExpr match {
           case ref: ScReferenceExpression =>
             ref.resolve() match {
-              case _: ScMacroDefinition => true
-              case _                    => false
+              case _: ScMacroDefinition =>
+                true
+              case _ =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   def copyTextBetweenEditors(from: Editor, to: Editor, project: Project) {

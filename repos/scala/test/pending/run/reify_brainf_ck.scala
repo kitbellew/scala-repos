@@ -38,16 +38,23 @@ object Test extends App {
       def isZero = cell == func.zero
       def execute(ch: Char) =
         (ch: @switch) match {
-          case '+' => copy(cell = func.inc(cell))
-          case '-' => copy(cell = func.dec(cell))
-          case '<' => Tape(tailOf(left), headOf(left), cell :: right)
-          case '>' => Tape(cell :: left, headOf(right), tailOf(right))
+          case '+' =>
+            copy(cell = func.inc(cell))
+          case '-' =>
+            copy(cell = func.dec(cell))
+          case '<' =>
+            Tape(tailOf(left), headOf(left), cell :: right)
+          case '>' =>
+            Tape(cell :: left, headOf(right), tailOf(right))
           case '.' =>
             func.out(cell);
             this
-          case ','       => copy(cell = func.in)
-          case '[' | ']' => this
-          case _         => error("Unexpected token: " + ch)
+          case ',' =>
+            copy(cell = func.in)
+          case '[' | ']' =>
+            this
+          case _ =>
+            error("Unexpected token: " + ch)
         }
     }
 
@@ -69,10 +76,12 @@ object Test extends App {
             o2c
           else
             (prog(pos): @switch) match {
-              case '[' => braceMatcher(pos + 1, pos :: stack, o2c)
+              case '[' =>
+                braceMatcher(pos + 1, pos :: stack, o2c)
               case ']' =>
                 braceMatcher(pos + 1, stack.tail, o2c + (stack.head -> pos))
-              case _ => braceMatcher(pos + 1, stack, o2c)
+              case _ =>
+                braceMatcher(pos + 1, stack, o2c)
             }
 
         val open2close = braceMatcher(0, Nil, Map())
@@ -83,9 +92,12 @@ object Test extends App {
           if (pos < prog.length)
             ex(
               (prog(pos): @switch) match {
-                case '[' if tape.isZero  => open2close(pos)
-                case ']' if !tape.isZero => close2open(pos)
-                case _                   => pos + 1
+                case '[' if tape.isZero =>
+                  open2close(pos)
+                case ']' if !tape.isZero =>
+                  close2open(pos)
+                case _ =>
+                  pos + 1
               },
               tape.execute(prog(pos)))
 

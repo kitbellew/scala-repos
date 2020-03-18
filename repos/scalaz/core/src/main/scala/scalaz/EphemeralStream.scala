@@ -111,8 +111,10 @@ sealed abstract class EphemeralStream[A] {
     else {
       val hh = head()
       Monad[M].bind(f(hh)) {
-        case Some(b) => Monad[M].point(Some(b));
-        case None    => tail() findMapM f
+        case Some(b) =>
+          Monad[M].point(Some(b));
+        case None =>
+          tail() findMapM f
       }
     }
   }
@@ -200,7 +202,8 @@ sealed abstract class EphemeralStreamInstances {
               EphemeralStream(a)
             else
               cons(a, cojoin(tl))
-          case _ => emptyEphemeralStream
+          case _ =>
+            emptyEphemeralStream
         }
       def cobind[A, B](fa: EphemeralStream[A])(
           f: EphemeralStream[A] => B): EphemeralStream[B] = map(cojoin(fa))(f)
@@ -273,9 +276,12 @@ sealed abstract class EphemeralStreamInstances {
           @annotation.tailrec
           def rec(abs: EphemeralStream[A \/ B]): EphemeralStream[B] =
             abs match {
-              case \/-(b) ##:: tail  => cons(b, go(tail))
-              case -\/(a0) ##:: tail => rec(f(a0) ++ tail)
-              case _                 => emptyEphemeralStream
+              case \/-(b) ##:: tail =>
+                cons(b, go(tail))
+              case -\/(a0) ##:: tail =>
+                rec(f(a0) ++ tail)
+              case _ =>
+                emptyEphemeralStream
             }
           rec(s)
         }
@@ -314,8 +320,10 @@ object EphemeralStream extends EphemeralStreamInstances {
 
   def unfold[A, B](b: => B)(f: B => Option[(A, B)]): EphemeralStream[A] =
     f(b) match {
-      case None         => emptyEphemeralStream
-      case Some((a, r)) => cons(a, unfold(r)(f))
+      case None =>
+        emptyEphemeralStream
+      case Some((a, r)) =>
+        cons(a, unfold(r)(f))
     }
 
   def iterate[A](start: A)(f: A => A): EphemeralStream[A] =
@@ -332,8 +340,10 @@ object EphemeralStream extends EphemeralStreamInstances {
 
   def fromStream[A](s: => Stream[A]): EphemeralStream[A] =
     s match {
-      case Stream() => emptyEphemeralStream
-      case h #:: t  => cons(h, fromStream(t))
+      case Stream() =>
+        emptyEphemeralStream
+      case h #:: t =>
+        cons(h, fromStream(t))
     }
 
   def toIterable[A](e: EphemeralStream[A]): Iterable[A] =
@@ -375,8 +385,10 @@ object EphemeralStream extends EphemeralStreamInstances {
   def apply[A](as: A*): EphemeralStream[A] = {
     val as0 =
       as match {
-        case indexedSeq: collection.IndexedSeq[A] => indexedSeq
-        case other                                => other.toIndexedSeq
+        case indexedSeq: collection.IndexedSeq[A] =>
+          indexedSeq
+        case other =>
+          other.toIndexedSeq
       }
     val size = as.size
     unfold(0)(b =>

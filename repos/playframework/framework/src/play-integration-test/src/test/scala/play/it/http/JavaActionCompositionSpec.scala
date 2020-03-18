@@ -24,7 +24,8 @@ object JavaActionCompositionSpec extends PlaySpecification with WsTestClient {
     lazy val app: Application = GuiceApplicationBuilder()
       .configure(configuration)
       .routes {
-        case _ => JAction(app, controller)
+        case _ =>
+          JAction(app, controller)
       }
       .build()
 

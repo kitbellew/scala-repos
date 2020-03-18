@@ -140,7 +140,8 @@ case class Segments(
     try {
       DateTimeUtil.parseDateTime(s, true)
     } catch {
-      case e: IllegalArgumentException => null
+      case e: IllegalArgumentException =>
+        null
     }
   }
 
@@ -266,15 +267,23 @@ case class Segments(
 
   def initializeSegments(row: Int, j: JValue, tree: CTree): Unit = {
     j match {
-      case JNull  => addNull(row, tree)
-      case JTrue  => addTrue(row, tree)
-      case JFalse => addFalse(row, tree)
+      case JNull =>
+        addNull(row, tree)
+      case JTrue =>
+        addTrue(row, tree)
+      case JFalse =>
+        addFalse(row, tree)
 
-      case JString(s)    => addString(row, tree, s)
-      case JNumLong(n)   => addLong(row, tree, n)
-      case JNumDouble(n) => addDouble(row, tree, n)
-      case JNumBigDec(n) => addBigDecimal(row, tree, n)
-      case JNumStr(s)    => addNum(row, tree, s)
+      case JString(s) =>
+        addString(row, tree, s)
+      case JNumLong(n) =>
+        addLong(row, tree, n)
+      case JNumDouble(n) =>
+        addDouble(row, tree, n)
+      case JNumBigDec(n) =>
+        addBigDecimal(row, tree, n)
+      case JNumStr(s) =>
+        addNum(row, tree, s)
 
       case JObject(m) =>
         if (m.isEmpty) {
@@ -297,7 +306,8 @@ case class Segments(
           }
         }
 
-      case JUndefined => ()
+      case JUndefined =>
+        ()
     }
   }
 }

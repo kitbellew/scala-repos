@@ -138,8 +138,10 @@ case class ClientCodecConfig(serviceName: String)
 case class ServerCodecConfig(serviceName: String, boundAddress: SocketAddress) {
   def boundInetSocketAddress =
     boundAddress match {
-      case ia: InetSocketAddress => ia
-      case _                     => new InetSocketAddress(0)
+      case ia: InetSocketAddress =>
+        ia
+      case _ =>
+        new InetSocketAddress(0)
     }
 }
 

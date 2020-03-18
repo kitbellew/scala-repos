@@ -169,7 +169,8 @@ trait Positions extends api.Positions {
               positionError(
                 "Overlapping trees " + xs
                   .map {
-                    case (x, y) => (x.id, y.id)
+                    case (x, y) =>
+                      (x.id, y.id)
                   }
                   .mkString("", ", ", "")) {
                 reportTree("Ancestor", tree)
@@ -319,7 +320,8 @@ trait Positions extends api.Positions {
                       // After typechecking, annotations are moved from the modifiers
                       // to the annotation on the symbol of the anotatee.
                       mdef.symbol.annotations.map(_.original)
-                    case anns => anns
+                    case anns =>
+                      anns
                   }
                 traverseTrees(annTrees)
               case _ =>

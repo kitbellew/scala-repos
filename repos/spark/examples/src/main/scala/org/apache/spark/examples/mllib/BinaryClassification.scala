@@ -130,8 +130,10 @@ object BinaryClassification {
 
     val updater =
       params.regType match {
-        case L1 => new L1Updater()
-        case L2 => new SquaredL2Updater()
+        case L1 =>
+          new L1Updater()
+        case L2 =>
+          new SquaredL2Updater()
       }
 
     val model =

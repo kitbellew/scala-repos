@@ -62,7 +62,8 @@ object UnapplyInference extends App {
       s: String =>
         try \/-(s.toInt)
         catch {
-          case e: NumberFormatException => -\/(e)
+          case e: NumberFormatException =>
+            -\/(e)
         }
     }
   }

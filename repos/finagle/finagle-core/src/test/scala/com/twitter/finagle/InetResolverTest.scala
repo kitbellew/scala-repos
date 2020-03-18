@@ -34,7 +34,8 @@ class InetResolverTest extends FunSuite {
     val f = addr.changes.filter(_ != Addr.Pending).toFuture
     Await.result(f) match {
       case Addr.Failed(_) =>
-      case _              => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -44,7 +45,8 @@ class InetResolverTest extends FunSuite {
     Await.result(f, 10.seconds) match {
       case Addr.Bound(b, meta) if meta.isEmpty =>
         assert(b.contains(Address("localhost", 80)))
-      case _ => fail()
+      case _ =>
+        fail()
     }
     assert(statsReceiver.counter("inet", "dns", "successes")() > 0)
     assert(statsReceiver.stat("inet", "dns", "lookup_ms")().size > 0)
@@ -55,7 +57,8 @@ class InetResolverTest extends FunSuite {
     val f = addr.changes.filter(_ != Addr.Pending).toFuture
     Await.result(f) match {
       case Addr.Bound(b, meta) if b.isEmpty =>
-      case _                                => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -65,7 +68,8 @@ class InetResolverTest extends FunSuite {
     Await.result(f) match {
       case Addr.Bound(b, meta) if meta.isEmpty =>
         assert(b.contains(Address("localhost", 80)))
-      case _ => fail()
+      case _ =>
+        fail()
     }
     assert(statsReceiver.counter("inet", "dns", "successes")() > 0)
     assert(statsReceiver.stat("inet", "dns", "lookup_ms")().size > 0)

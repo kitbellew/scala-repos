@@ -650,8 +650,10 @@ abstract class GenIncOptimizer private[optimizer] (
     private def isElidableModuleConstructor(impl: MethodImpl): Boolean = {
       def isTriviallySideEffectFree(tree: Tree): Boolean =
         tree match {
-          case _: VarRef | _: Literal | _: This | _: Skip => true
-          case _                                          => false
+          case _: VarRef | _: Literal | _: This | _: Skip =>
+            true
+          case _ =>
+            false
         }
       def isElidableStat(tree: Tree): Boolean =
         tree match {
@@ -661,8 +663,10 @@ abstract class GenIncOptimizer private[optimizer] (
             isTriviallySideEffectFree(rhs)
           case ApplyStatic(ClassType(cls), methodName, List(This())) =>
             statics(cls).methods(methodName.name).originalDef.body match {
-              case Skip() => true
-              case _      => false
+              case Skip() =>
+                true
+              case _ =>
+                false
             }
           case ApplyStatically(This(), ClassType(cls), methodName, args) =>
             Definitions.isConstructorName(methodName.name) &&
@@ -696,11 +700,14 @@ abstract class GenIncOptimizer private[optimizer] (
     @tailrec
     final def lookupMethod(methodName: String): Option[MethodImpl] = {
       methods.get(methodName) match {
-        case Some(impl) => Some(impl)
+        case Some(impl) =>
+          Some(impl)
         case none =>
           superClass match {
-            case Some(p) => p.lookupMethod(methodName)
-            case none    => None
+            case Some(p) =>
+              p.lookupMethod(methodName)
+            case none =>
+              None
           }
       }
     }
@@ -909,7 +916,8 @@ abstract class GenIncOptimizer private[optimizer] (
         val changed = {
           originalDef == null ||
           (methodDef.hash zip originalDef.hash).forall {
-            case (h1, h2) => !Hashers.hashesEqual(h1, h2, considerPositions)
+            case (h1, h2) =>
+              !Hashers.hashesEqual(h1, h2, considerPositions)
           }
         }
 

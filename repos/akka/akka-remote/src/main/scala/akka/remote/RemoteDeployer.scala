@@ -44,10 +44,12 @@ private[akka] class RemoteDeployer(
               deploy.routerConfig match {
                 case r: Pool ⇒
                   Some(deploy.copy(routerConfig = RemoteRouterConfig(r, nodes)))
-                case _ ⇒ d
+                case _ ⇒
+                  d
               }
         }
-      case None ⇒ None
+      case None ⇒
+        None
     }
   }
 }

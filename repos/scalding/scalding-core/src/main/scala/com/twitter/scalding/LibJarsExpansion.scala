@@ -49,8 +49,10 @@ object ExpandLibJarsGlobs {
     else
       root #:: (
         root.listFiles match {
-          case null  => Stream.empty
-          case files => files.toStream.flatMap(tree(_, skipHidden))
+          case null =>
+            Stream.empty
+          case files =>
+            files.toStream.flatMap(tree(_, skipHidden))
         }
       )
 

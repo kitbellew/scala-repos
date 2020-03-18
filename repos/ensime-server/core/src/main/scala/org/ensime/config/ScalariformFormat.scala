@@ -21,9 +21,12 @@ trait ScalariformFormat {
         data: Map[SexpSymbol, Sexp]): Option[Any] =
       data.get(key(descriptor)).map { sexp =>
         descriptor.preferenceType match {
-          case BooleanPreference       => sexp.convertTo[Boolean]
-          case IntegerPreference(_, _) => sexp.convertTo[Int]
-          case IntentPreference        => sexp.convertTo[String]
+          case BooleanPreference =>
+            sexp.convertTo[Boolean]
+          case IntegerPreference(_, _) =>
+            sexp.convertTo[Int]
+          case IntentPreference =>
+            sexp.convertTo[String]
         }
       }
 
@@ -40,20 +43,24 @@ trait ScalariformFormat {
             } yield (descriptor, value)
           new FormattingPreferences(custom.toMap)
 
-        case x => deserializationError(x)
+        case x =>
+          deserializationError(x)
       }
 
     private def ser(descriptor: PreferenceDescriptor[_], value: Any): Sexp =
       descriptor.preferenceType match {
-        case BooleanPreference       => value.asInstanceOf[Boolean].toSexp
-        case IntegerPreference(_, _) => value.asInstanceOf[Int].toSexp
+        case BooleanPreference =>
+          value.asInstanceOf[Boolean].toSexp
+        case IntegerPreference(_, _) =>
+          value.asInstanceOf[Int].toSexp
         case IntentPreference =>
           value.asInstanceOf[Intent].getClass.getSimpleName.toSexp
       }
 
     def write(f: FormattingPreferences) = {
       val data = f.preferencesMap.map {
-        case (d, v) => key(d) -> ser(d, v)
+        case (d, v) =>
+          key(d) -> ser(d, v)
       }
       SexpData(data.toList)
     }

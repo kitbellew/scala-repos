@@ -114,10 +114,12 @@ private[akka] object MultiStreamOutputProcessor {
         s: Subscriber[Any],
         withState: CompletedState): Unit =
       withState match {
-        case Completed ⇒ tryOnComplete(s)
+        case Completed ⇒
+          tryOnComplete(s)
         case Cancelled ⇒ // nothing to do
         case Failed(e: SpecViolation) ⇒ // nothing to do
-        case Failed(e) ⇒ tryOnError(s, e)
+        case Failed(e) ⇒
+          tryOnError(s, e)
       }
 
     override def subscribe(s: Subscriber[_ >: Any]): Unit = {
@@ -219,12 +221,14 @@ private[akka] trait MultiStreamOutputProcessorLike
       }
     case SubstreamSubscribe(key, subscriber) ⇒
       substreamOutputs.get(key) match {
-        case Some(sub) ⇒ sub.attachSubscriber(subscriber)
+        case Some(sub) ⇒
+          sub.attachSubscriber(subscriber)
         case _ ⇒ // ignore...
       }
     case SubstreamSubscriptionTimeout(key) ⇒
       substreamOutputs.get(key) match {
-        case Some(sub) if !sub.isAttached ⇒ subscriptionTimedOut(sub)
+        case Some(sub) if !sub.isAttached ⇒
+          subscriptionTimedOut(sub)
         case _ ⇒ // ignore...
       }
     case SubstreamCancel(key) ⇒

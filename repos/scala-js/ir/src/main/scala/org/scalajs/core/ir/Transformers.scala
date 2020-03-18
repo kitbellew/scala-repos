@@ -189,7 +189,8 @@ object Transformers {
         case JSObjectConstr(fields) =>
           JSObjectConstr(
             fields map {
-              case (name, value) => (name, transformExpr(value))
+              case (name, value) =>
+                (name, transformExpr(value))
             })
 
         // Atomic expressions

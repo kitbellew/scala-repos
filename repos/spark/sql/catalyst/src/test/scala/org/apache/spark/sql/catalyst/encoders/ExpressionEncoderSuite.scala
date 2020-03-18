@@ -41,7 +41,8 @@ case class NestedArray(a: Array[Array[Int]]) {
         java.util.Arrays.deepEquals(
           a.asInstanceOf[Array[AnyRef]],
           otherArray.asInstanceOf[Array[AnyRef]])
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -333,8 +334,10 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
       val isCorrect =
         (input, convertedBack) match {
-          case (b1: Array[Byte], b2: Array[Byte]) => Arrays.equals(b1, b2)
-          case (b1: Array[Int], b2: Array[Int])   => Arrays.equals(b1, b2)
+          case (b1: Array[Byte], b2: Array[Byte]) =>
+            Arrays.equals(b1, b2)
+          case (b1: Array[Int], b2: Array[Int]) =>
+            Arrays.equals(b1, b2)
           case (b1: Array[Array[_]], b2: Array[Array[_]]) =>
             Arrays.deepEquals(
               b1.asInstanceOf[Array[AnyRef]],
@@ -343,7 +346,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
             Arrays.equals(
               b1.asInstanceOf[Array[AnyRef]],
               b2.asInstanceOf[Array[AnyRef]])
-          case _ => input == convertedBack
+          case _ =>
+            input == convertedBack
         }
 
       if (!isCorrect) {
@@ -354,7 +358,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
                 .filter(_ != null)
                 .map(_.getClass.getName)
                 .mkString(",")
-            case other => other.getClass.getName
+            case other =>
+              other.getClass.getName
           }
 
         val encodedData =
@@ -372,7 +377,8 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
               }
               .mkString("[", ",", "]")
           } catch {
-            case e: Throwable => s"Failed to toSeq: $e"
+            case e: Throwable =>
+              s"Failed to toSeq: $e"
           }
 
         fail(s"""Encoded/Decoded data does not match input data

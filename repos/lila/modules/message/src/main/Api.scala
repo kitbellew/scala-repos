@@ -90,7 +90,8 @@ final class Api(
       fuccess(thread) // prevent duplicate post
     else
       blocks(thread receiverOf post, me.id) flatMap {
-        case true => fuccess(thread)
+        case true =>
+          fuccess(thread)
         case false =>
           val newThread = thread + post
           $update[ThreadRepo.ID, Thread](newThread) >>- {

@@ -54,10 +54,12 @@ trait PullRequestService {
             (t1.repositoryName === repository.get.bind, repository.isDefined)
       }
       .groupBy {
-        case (t1, t2) => t2.openedUserName
+        case (t1, t2) =>
+          t2.openedUserName
       }
       .map {
-        case (userName, t) => userName -> t.length
+        case (userName, t) =>
+          userName -> t.length
       }
       .sortBy(_._2 desc)
       .list
@@ -122,7 +124,8 @@ trait PullRequestService {
             (t2.closed === closed.bind)
       }
       .map {
-        case (t1, t2) => t1
+        case (t1, t2) =>
+          t1
       }
       .list
 
@@ -154,7 +157,8 @@ trait PullRequestService {
             (t2.closed === false.bind)
       }
       .sortBy {
-        case (t1, t2) => t1.branch =!= defaultBranch.bind
+        case (t1, t2) =>
+          t1.branch =!= defaultBranch.bind
       }
       .firstOption
 
@@ -253,7 +257,8 @@ object PullRequestService {
       val state = CommitState.combine(stateMap.keySet)
       val summary = stateMap
         .map {
-          case (keyState, states) => states.size + " " + keyState.name
+          case (keyState, states) =>
+            states.size + " " + keyState.name
         }
         .mkString(", ")
       state -> summary

@@ -105,7 +105,8 @@ class StateTTests extends CatsSuite {
 
     val got = x.run(input)
     val expected = xx.run(Env(input, "hello")).map {
-      case (e, i) => (e.int, i)
+      case (e, i) =>
+        (e.int, i)
     }
     got should ===(expected)
   }

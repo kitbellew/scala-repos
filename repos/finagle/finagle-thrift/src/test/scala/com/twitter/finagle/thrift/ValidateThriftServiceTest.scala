@@ -121,8 +121,10 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
       assert(validate.isAvailable)
       assert(
         validate(req).poll match {
-          case Some(Return(_)) => true
-          case _               => false
+          case Some(Return(_)) =>
+            true
+          case _ =>
+            false
         })
     }
   }

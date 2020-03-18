@@ -90,7 +90,8 @@ class EnsembleAdvHorizontalBarChart extends EnsembleExample {
         val prices = Seq(800, 1000, 2000)
         data = ObservableBuffer(
           prices zip years map {
-            case (x, y) => XYChart.Data[Number, String](x, y)
+            case (x, y) =>
+              XYChart.Data[Number, String](x, y)
           })
       }
 

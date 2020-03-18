@@ -48,14 +48,16 @@ object Test extends Properties("TreeMap") {
           it.next;
         true
       } catch {
-        case _ => false
+        case _ =>
+          false
       }
     }
 
   property("sorted") = forAll { (subject: TreeMap[Int, String]) =>
     (subject.size >= 3) ==> {
       subject.zip(subject.tail).forall {
-        case (x, y) => x._1 < y._1
+        case (x, y) =>
+          x._1 < y._1
       }
     }
   }

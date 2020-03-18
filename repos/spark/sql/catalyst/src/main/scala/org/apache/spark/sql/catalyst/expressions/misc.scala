@@ -100,7 +100,8 @@ case class Sha2(left: Expression, right: Expression)
           UTF8String.fromBytes(md.digest())
         } catch {
           // SHA-224 is not supported on the system, return null
-          case noa: NoSuchAlgorithmException => null
+          case noa: NoSuchAlgorithmException =>
+            null
         }
       case 256 | 0 =>
         UTF8String.fromString(DigestUtils.sha256Hex(input))
@@ -108,7 +109,8 @@ case class Sha2(left: Expression, right: Expression)
         UTF8String.fromString(DigestUtils.sha384Hex(input))
       case 512 =>
         UTF8String.fromString(DigestUtils.sha512Hex(input))
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -284,19 +286,26 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
     def hashLong(l: Long): Int = Murmur3_x86_32.hashLong(l, seed)
 
     value match {
-      case null => seed
+      case null =>
+        seed
       case b: Boolean =>
         hashInt(
           if (b)
             1
           else
             0)
-      case b: Byte   => hashInt(b)
-      case s: Short  => hashInt(s)
-      case i: Int    => hashInt(i)
-      case l: Long   => hashLong(l)
-      case f: Float  => hashInt(java.lang.Float.floatToIntBits(f))
-      case d: Double => hashLong(java.lang.Double.doubleToLongBits(d))
+      case b: Byte =>
+        hashInt(b)
+      case s: Short =>
+        hashInt(s)
+      case i: Int =>
+        hashInt(i)
+      case l: Long =>
+        hashLong(l)
+      case f: Float =>
+        hashInt(java.lang.Float.floatToIntBits(f))
+      case d: Double =>
+        hashLong(java.lang.Double.doubleToLongBits(d))
       case d: Decimal =>
         val precision = dataType.asInstanceOf[DecimalType].precision
         if (precision <= Decimal.MAX_LONG_DIGITS) {
@@ -329,7 +338,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
           dataType match {
             case udt: UserDefinedType[_] =>
               udt.sqlType.asInstanceOf[ArrayType].elementType
-            case ArrayType(et, _) => et
+            case ArrayType(et, _) =>
+              et
           }
         var result = seed
         var i = 0
@@ -345,7 +355,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
             case udt: UserDefinedType[_] =>
               val mapType = udt.sqlType.asInstanceOf[MapType]
               mapType.keyType -> mapType.valueType
-            case MapType(kt, vt, _) => kt -> vt
+            case MapType(kt, vt, _) =>
+              kt -> vt
           }
         val keys = map.keyArray()
         val values = map.valueArray()
@@ -363,7 +374,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
           dataType match {
             case udt: UserDefinedType[_] =>
               udt.sqlType.asInstanceOf[StructType].map(_.dataType).toArray
-            case StructType(fields) => fields.map(_.dataType)
+            case StructType(fields) =>
+              fields.map(_.dataType)
           }
         var result = seed
         var i = 0
@@ -428,12 +440,18 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       s"$result = $hasher.hashUnsafeBytes($b, Platform.BYTE_ARRAY_OFFSET, $b.length, $result);"
 
     dataType match {
-      case NullType                                      => ""
-      case BooleanType                                   => hashInt(s"$input ? 1 : 0")
-      case ByteType | ShortType | IntegerType | DateType => hashInt(input)
-      case LongType | TimestampType                      => hashLong(input)
-      case FloatType                                     => hashInt(s"Float.floatToIntBits($input)")
-      case DoubleType                                    => hashLong(s"Double.doubleToLongBits($input)")
+      case NullType =>
+        ""
+      case BooleanType =>
+        hashInt(s"$input ? 1 : 0")
+      case ByteType | ShortType | IntegerType | DateType =>
+        hashInt(input)
+      case LongType | TimestampType =>
+        hashLong(input)
+      case FloatType =>
+        hashInt(s"Float.floatToIntBits($input)")
+      case DoubleType =>
+        hashLong(s"Double.doubleToLongBits($input)")
       case d: DecimalType =>
         if (d.precision <= Decimal.MAX_LONG_DIGITS) {
           hashLong(s"$input.toUnscaledLong()")
@@ -447,7 +465,8 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       case CalendarIntervalType =>
         val microsecondsHash = s"$hasher.hashLong($input.microseconds, $result)"
         s"$result = $hasher.hashInt($input.months, $microsecondsHash);"
-      case BinaryType => hashBytes(input)
+      case BinaryType =>
+        hashBytes(input)
       case StringType =>
         val baseObject = s"$input.getBaseObject()"
         val baseOffset = s"$input.getBaseOffset()"

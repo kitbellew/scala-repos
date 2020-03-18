@@ -169,8 +169,10 @@ abstract class UnPickler {
 
     private def maybeReadSymbol(): Either[Int, Symbol] =
       readNat() match {
-        case index if isSymbolRef(index) => Right(at(index, readSymbol))
-        case index                       => Left(index)
+        case index if isSymbolRef(index) =>
+          Right(at(index, readSymbol))
+        case index =>
+          Left(index)
       }
 
     /** Does entry represent a refinement symbol?
@@ -210,9 +212,12 @@ abstract class UnPickler {
       val tag = readByte()
       val len = readNat()
       tag match {
-        case TERMname => newTermName(bytes, readIndex, len)
-        case TYPEname => newTypeName(bytes, readIndex, len)
-        case _        => errorBadSignature("bad name tag: " + tag)
+        case TERMname =>
+          newTermName(bytes, readIndex, len)
+        case TYPEname =>
+          newTypeName(bytes, readIndex, len)
+        case _ =>
+          errorBadSignature("bad name tag: " + tag)
       }
     }
     private def readEnd() = readNat() + readIndex
@@ -239,14 +244,17 @@ abstract class UnPickler {
 
         def fromName(name: Name) =
           name.toTermName match {
-            case nme.ROOT    => loadingMirror.RootClass
-            case nme.ROOTPKG => loadingMirror.RootPackage
+            case nme.ROOT =>
+              loadingMirror.RootClass
+            case nme.ROOTPKG =>
+              loadingMirror.RootPackage
             case _ =>
               val decl =
                 owner match {
                   case stub: StubSymbol =>
                     NoSymbol // SI-8502 Don't call .info and fail the stub
-                  case _ => owner.info.decl(name)
+                  case _ =>
+                    owner.info.decl(name)
                 }
               adjust(decl)
           }
@@ -319,9 +327,12 @@ abstract class UnPickler {
       }
 
       tag match {
-        case NONEsym                 => return NoSymbol
-        case EXTref | EXTMODCLASSref => return readExtSymbol()
-        case _                       => ()
+        case NONEsym =>
+          return NoSymbol
+        case EXTref | EXTMODCLASSref =>
+          return readExtSymbol()
+        case _ =>
+          ()
       }
 
       // symbols that were pickled with Pickler.writeSymInfo
@@ -332,8 +343,10 @@ abstract class UnPickler {
 
       val (privateWithin, inforef) =
         maybeReadSymbol() match {
-          case Left(index) => NoSymbol -> index
-          case Right(sym)  => sym -> readNat()
+          case Left(index) =>
+            NoSymbol -> index
+          case Right(sym) =>
+            sym -> readNat()
         }
 
       def isModuleFlag = (flags & MODULE) != 0L
@@ -437,13 +450,17 @@ abstract class UnPickler {
            MethodType(params, restpe))
       def PolyOrNullaryType(restpe: Type, tparams: List[Symbol]): Type =
         tparams match {
-          case Nil => NullaryMethodType(restpe)
-          case _   => PolyType(tparams, restpe)
+          case Nil =>
+            NullaryMethodType(restpe)
+          case _ =>
+            PolyType(tparams, restpe)
         }
       def CompoundType(clazz: Symbol, parents: List[Type]): Type =
         tag match {
-          case REFINEDtpe   => RefinedType(parents, symScope(clazz), clazz)
-          case CLASSINFOtpe => ClassInfoType(parents, symScope(clazz), clazz)
+          case REFINEDtpe =>
+            RefinedType(parents, symScope(clazz), clazz)
+          case CLASSINFOtpe =>
+            ClassInfoType(parents, symScope(clazz), clazz)
         }
 
       def readThisType(): Type = {
@@ -455,7 +472,8 @@ abstract class UnPickler {
                 stub.name.toTypeName,
                 stub.missingMessage,
                 isPackage = true)
-            case sym => sym
+            case sym =>
+              sym
           }
         ThisType(sym)
       }
@@ -464,22 +482,31 @@ abstract class UnPickler {
       // of named parameters we can recapture a declarative flavor in a few cases.
       // But it's still a rat's nest of adhockery.
       (tag: @switch) match {
-        case NOtpe       => NoType
-        case NOPREFIXtpe => NoPrefix
-        case THIStpe     => readThisType()
+        case NOtpe =>
+          NoType
+        case NOPREFIXtpe =>
+          NoPrefix
+        case THIStpe =>
+          readThisType()
         case SINGLEtpe =>
           SingleType(
             readTypeRef(),
             readSymbolRef().filter(_.isStable)
           ) // SI-7596 account for overloading
-        case SUPERtpe      => SuperType(readTypeRef(), readTypeRef())
-        case CONSTANTtpe   => ConstantType(readConstantRef())
-        case TYPEREFtpe    => TypeRef(readTypeRef(), readSymbolRef(), readTypes())
-        case TYPEBOUNDStpe => TypeBounds(readTypeRef(), readTypeRef())
+        case SUPERtpe =>
+          SuperType(readTypeRef(), readTypeRef())
+        case CONSTANTtpe =>
+          ConstantType(readConstantRef())
+        case TYPEREFtpe =>
+          TypeRef(readTypeRef(), readSymbolRef(), readTypes())
+        case TYPEBOUNDStpe =>
+          TypeBounds(readTypeRef(), readTypeRef())
         case REFINEDtpe | CLASSINFOtpe =>
           CompoundType(readSymbolRef(), readTypes())
-        case METHODtpe => MethodTypeRef(readTypeRef(), readSymbols())
-        case POLYtpe   => PolyOrNullaryType(readTypeRef(), readSymbols())
+        case METHODtpe =>
+          MethodTypeRef(readTypeRef(), readSymbols())
+        case POLYtpe =>
+          PolyOrNullaryType(readTypeRef(), readSymbols())
         case EXISTENTIALtpe =>
           ExistentialType(
             underlying = readTypeRef(),
@@ -497,20 +524,34 @@ abstract class UnPickler {
       val tag = readByte().toInt
       val len = readNat()
       (tag: @switch) match {
-        case LITERALunit    => Constant(())
-        case LITERALboolean => Constant(readLong(len) != 0L)
-        case LITERALbyte    => Constant(readLong(len).toByte)
-        case LITERALshort   => Constant(readLong(len).toShort)
-        case LITERALchar    => Constant(readLong(len).toChar)
-        case LITERALint     => Constant(readLong(len).toInt)
-        case LITERALlong    => Constant(readLong(len))
-        case LITERALfloat   => Constant(intBitsToFloat(readLong(len).toInt))
-        case LITERALdouble  => Constant(longBitsToDouble(readLong(len)))
-        case LITERALstring  => Constant(readNameRef().toString)
-        case LITERALnull    => Constant(null)
-        case LITERALclass   => Constant(readTypeRef())
-        case LITERALenum    => Constant(readSymbolRef())
-        case _              => noSuchConstantTag(tag, len)
+        case LITERALunit =>
+          Constant(())
+        case LITERALboolean =>
+          Constant(readLong(len) != 0L)
+        case LITERALbyte =>
+          Constant(readLong(len).toByte)
+        case LITERALshort =>
+          Constant(readLong(len).toShort)
+        case LITERALchar =>
+          Constant(readLong(len).toChar)
+        case LITERALint =>
+          Constant(readLong(len).toInt)
+        case LITERALlong =>
+          Constant(readLong(len))
+        case LITERALfloat =>
+          Constant(intBitsToFloat(readLong(len).toInt))
+        case LITERALdouble =>
+          Constant(longBitsToDouble(readLong(len)))
+        case LITERALstring =>
+          Constant(readNameRef().toString)
+        case LITERALnull =>
+          Constant(null)
+        case LITERALclass =>
+          Constant(readTypeRef())
+        case LITERALenum =>
+          Constant(readSymbolRef())
+        case _ =>
+          noSuchConstantTag(tag, len)
       }
     }
 
@@ -533,7 +574,8 @@ abstract class UnPickler {
       */
     protected def readAnnotArg(i: Int): Tree =
       bytes(index(i)) match {
-        case TREE => at(i, readTree)
+        case TREE =>
+          at(i, readTree)
         case _ =>
           val const = at(i, readConstant)
           Literal(const) setType const.tpe
@@ -549,9 +591,12 @@ abstract class UnPickler {
     }
     protected def readClassfileAnnotArg(i: Int): ClassfileAnnotArg =
       bytes(index(i)) match {
-        case ANNOTINFO     => NestedAnnotArg(at(i, readAnnotation))
-        case ANNOTARGARRAY => at(i, () => ArrayAnnotArg(readArrayAnnot()))
-        case _             => LiteralAnnotArg(at(i, readConstant))
+        case ANNOTINFO =>
+          NestedAnnotArg(at(i, readAnnotation))
+        case ANNOTARGARRAY =>
+          at(i, () => ArrayAnnotArg(readArrayAnnot()))
+        case _ =>
+          LiteralAnnotArg(at(i, readConstant))
       }
 
     /** Read an AnnotationInfo. Not to be called directly, use
@@ -622,8 +667,10 @@ abstract class UnPickler {
       def typeNameRef() = readNameRef().toTypeName
       def refTreeRef() =
         ref() match {
-          case t: RefTree => t
-          case t          => errorBadSignature("RefTree expected, found " + t.shortClass)
+          case t: RefTree =>
+            t
+          case t =>
+            errorBadSignature("RefTree expected, found " + t.shortClass)
         }
       def selectorsRef() = all(ImportSelector(nameRef(), -1, nameRef(), -1))
 
@@ -632,28 +679,45 @@ abstract class UnPickler {
         */
       def readTree(tpe: Type): Tree =
         (tag: @switch) match {
-          case IDENTtree  => Ident(nameRef)
-          case SELECTtree => Select(ref, nameRef)
-          case APPLYtree  => fixApply(Apply(ref, all(ref)), tpe) // !!!
-          case BINDtree   => Bind(nameRef, ref)
+          case IDENTtree =>
+            Ident(nameRef)
+          case SELECTtree =>
+            Select(ref, nameRef)
+          case APPLYtree =>
+            fixApply(Apply(ref, all(ref)), tpe) // !!!
+          case BINDtree =>
+            Bind(nameRef, ref)
           case BLOCKtree =>
             all(ref) match {
-              case stats :+ expr => Block(stats, expr)
+              case stats :+ expr =>
+                Block(stats, expr)
             }
-          case IFtree           => If(ref, ref, ref)
-          case LITERALtree      => Literal(constRef)
-          case TYPEAPPLYtree    => TypeApply(ref, all(ref))
-          case TYPEDtree        => Typed(ref, ref)
-          case ALTERNATIVEtree  => Alternative(all(ref))
-          case ANNOTATEDtree    => Annotated(ref, ref)
-          case APPLIEDTYPEtree  => AppliedTypeTree(ref, all(ref))
-          case APPLYDYNAMICtree => ApplyDynamic(ref, all(ref))
-          case ARRAYVALUEtree   => ArrayValue(ref, all(ref))
-          case ASSIGNtree       => Assign(ref, ref)
-          case CASEtree         => CaseDef(ref, ref, ref)
+          case IFtree =>
+            If(ref, ref, ref)
+          case LITERALtree =>
+            Literal(constRef)
+          case TYPEAPPLYtree =>
+            TypeApply(ref, all(ref))
+          case TYPEDtree =>
+            Typed(ref, ref)
+          case ALTERNATIVEtree =>
+            Alternative(all(ref))
+          case ANNOTATEDtree =>
+            Annotated(ref, ref)
+          case APPLIEDTYPEtree =>
+            AppliedTypeTree(ref, all(ref))
+          case APPLYDYNAMICtree =>
+            ApplyDynamic(ref, all(ref))
+          case ARRAYVALUEtree =>
+            ArrayValue(ref, all(ref))
+          case ASSIGNtree =>
+            Assign(ref, ref)
+          case CASEtree =>
+            CaseDef(ref, ref, ref)
           case CLASStree =>
             ClassDef(modsRef, typeNameRef, rep(tparamRef), implRef)
-          case COMPOUNDTYPEtree => CompoundTypeTree(implRef)
+          case COMPOUNDTYPEtree =>
+            CompoundTypeTree(implRef)
           case DEFDEFtree =>
             DefDef(
               modsRef,
@@ -662,29 +726,52 @@ abstract class UnPickler {
               rep(rep(vparamRef)),
               ref,
               ref)
-          case EXISTENTIALTYPEtree => ExistentialTypeTree(ref, all(memberRef))
-          case FUNCTIONtree        => Function(rep(vparamRef), ref)
-          case IMPORTtree          => Import(ref, selectorsRef)
-          case LABELtree           => LabelDef(termNameRef, rep(idRef), ref)
-          case MATCHtree           => Match(ref, all(caseRef))
-          case MODULEtree          => ModuleDef(modsRef, termNameRef, implRef)
-          case NEWtree             => New(ref)
-          case PACKAGEtree         => PackageDef(refTreeRef, all(ref))
-          case RETURNtree          => Return(ref)
-          case SELECTFROMTYPEtree  => SelectFromTypeTree(ref, typeNameRef)
-          case SINGLETONTYPEtree   => SingletonTypeTree(ref)
-          case STARtree            => Star(ref)
-          case SUPERtree           => Super(ref, typeNameRef)
-          case TEMPLATEtree        => Template(rep(ref), vparamRef, all(ref))
-          case THIStree            => This(typeNameRef)
-          case THROWtree           => Throw(ref)
-          case TREtree             => Try(ref, rep(caseRef), ref)
-          case TYPEBOUNDStree      => TypeBoundsTree(ref, ref)
-          case TYPEDEFtree         => TypeDef(modsRef, typeNameRef, rep(tparamRef), ref)
-          case TYPEtree            => TypeTree()
-          case UNAPPLYtree         => UnApply(ref, all(ref))
-          case VALDEFtree          => ValDef(modsRef, termNameRef, ref, ref)
-          case _                   => noSuchTreeTag(tag, end)
+          case EXISTENTIALTYPEtree =>
+            ExistentialTypeTree(ref, all(memberRef))
+          case FUNCTIONtree =>
+            Function(rep(vparamRef), ref)
+          case IMPORTtree =>
+            Import(ref, selectorsRef)
+          case LABELtree =>
+            LabelDef(termNameRef, rep(idRef), ref)
+          case MATCHtree =>
+            Match(ref, all(caseRef))
+          case MODULEtree =>
+            ModuleDef(modsRef, termNameRef, implRef)
+          case NEWtree =>
+            New(ref)
+          case PACKAGEtree =>
+            PackageDef(refTreeRef, all(ref))
+          case RETURNtree =>
+            Return(ref)
+          case SELECTFROMTYPEtree =>
+            SelectFromTypeTree(ref, typeNameRef)
+          case SINGLETONTYPEtree =>
+            SingletonTypeTree(ref)
+          case STARtree =>
+            Star(ref)
+          case SUPERtree =>
+            Super(ref, typeNameRef)
+          case TEMPLATEtree =>
+            Template(rep(ref), vparamRef, all(ref))
+          case THIStree =>
+            This(typeNameRef)
+          case THROWtree =>
+            Throw(ref)
+          case TREtree =>
+            Try(ref, rep(caseRef), ref)
+          case TYPEBOUNDStree =>
+            TypeBoundsTree(ref, ref)
+          case TYPEDEFtree =>
+            TypeDef(modsRef, typeNameRef, rep(tparamRef), ref)
+          case TYPEtree =>
+            TypeTree()
+          case UNAPPLYtree =>
+            UnApply(ref, all(ref))
+          case VALDEFtree =>
+            ValDef(modsRef, termNameRef, ref, ref)
+          case _ =>
+            noSuchTreeTag(tag, end)
         }
 
       val tpe = readTypeRef()
@@ -705,8 +792,10 @@ abstract class UnPickler {
       expect(TREE, "tree expected")
       val end = readEnd()
       readByte() match {
-        case EMPTYtree => EmptyTree
-        case tag       => readNonEmptyTree(tag, end)
+        case EMPTYtree =>
+          EmptyTree
+        case tag =>
+          readNonEmptyTree(tag, end)
       }
     }
 
@@ -759,37 +848,43 @@ abstract class UnPickler {
 
     protected def readTemplateRef(): Template =
       readTreeRef() match {
-        case templ: Template => templ
+        case templ: Template =>
+          templ
         case other =>
           errorBadSignature("expected a template (" + other + ")")
       }
     protected def readCaseDefRef(): CaseDef =
       readTreeRef() match {
-        case tree: CaseDef => tree
+        case tree: CaseDef =>
+          tree
         case other =>
           errorBadSignature("expected a case def (" + other + ")")
       }
     protected def readValDefRef(): ValDef =
       readTreeRef() match {
-        case tree: ValDef => tree
+        case tree: ValDef =>
+          tree
         case other =>
           errorBadSignature("expected a ValDef (" + other + ")")
       }
     protected def readIdentRef(): Ident =
       readTreeRef() match {
-        case tree: Ident => tree
+        case tree: Ident =>
+          tree
         case other =>
           errorBadSignature("expected an Ident (" + other + ")")
       }
     protected def readTypeDefRef(): TypeDef =
       readTreeRef() match {
-        case tree: TypeDef => tree
+        case tree: TypeDef =>
+          tree
         case other =>
           errorBadSignature("expected an TypeDef (" + other + ")")
       }
     protected def readMemberDefRef(): MemberDef =
       readTreeRef() match {
-        case tree: MemberDef => tree
+        case tree: MemberDef =>
+          tree
         case other =>
           errorBadSignature("expected an MemberDef (" + other + ")")
       }
@@ -844,7 +939,8 @@ abstract class UnPickler {
                     definitions.ObjectTpe :: superClass :: traits,
                     decls,
                     typeSymbol)
-                case _ => tp
+                case _ =>
+                  tp
               }
             else
               tp
@@ -855,7 +951,8 @@ abstract class UnPickler {
           if (currentRunId != definedAtRunId)
             sym.setInfo(adaptToNewRunMap(fixLocalChildTp))
         } catch {
-          case e: MissingRequirementError => throw toTypeError(e)
+          case e: MissingRequirementError =>
+            throw toTypeError(e)
         }
       override def complete(sym: Symbol): Unit = {
         completeInternal(sym)
@@ -886,7 +983,8 @@ abstract class UnPickler {
 
           sym.asInstanceOf[TermSymbol].setAlias(alias)
         } catch {
-          case e: MissingRequirementError => throw toTypeError(e)
+          case e: MissingRequirementError =>
+            throw toTypeError(e)
         }
     }
   }

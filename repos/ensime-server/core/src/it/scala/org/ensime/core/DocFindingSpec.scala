@@ -136,11 +136,14 @@ class DocFindingSpec
               Some("write(byte[], java.io.File)"))
           // TODO(fix this hack) - just goes to the class itself if companion
           // constructor is requested.
-          case "16" => sig.java shouldBe DocSig(DocFqn("scala", "Some"), None)
+          case "16" =>
+            sig.java shouldBe DocSig(DocFqn("scala", "Some"), None)
           case "17" =>
             sig.java shouldBe DocSig(DocFqn("java.lang", "String"), None)
-          case "18" => sig.scala shouldBe DocSig(DocFqn("scala", "Int"), None)
-          case "20" => sig.java shouldBe DocSig(DocFqn("java.io", "File"), None)
+          case "18" =>
+            sig.scala shouldBe DocSig(DocFqn("scala", "Int"), None)
+          case "20" =>
+            sig.java shouldBe DocSig(DocFqn("java.io", "File"), None)
           case "21" =>
             sig.java shouldBe DocSig(
               DocFqn("java.lang", "Class"),

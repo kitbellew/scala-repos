@@ -42,17 +42,23 @@ import scala.reflect.NameTransformer
 object TypeDefinitionMembers {
   def nonBridge(place: Option[PsiElement], memb: PsiMember): Boolean = {
     memb match {
-      case f: ScFunction if f.isBridge => false
-      case _                           => true
+      case f: ScFunction if f.isBridge =>
+        false
+      case _ =>
+        true
     }
   }
 
   def isAbstract(s: PhysicalSignature) =
     s.method match {
-      case _: ScFunctionDeclaration                         => true
-      case _: ScFunctionDefinition                          => false
-      case m if m.hasModifierProperty(PsiModifier.ABSTRACT) => true
-      case _                                                => false
+      case _: ScFunctionDeclaration =>
+        true
+      case _: ScFunctionDefinition =>
+        false
+      case m if m.hasModifierProperty(PsiModifier.ABSTRACT) =>
+        true
+      case _ =>
+        false
     }
 
   object ParameterlessNodes extends MixinNodes {
@@ -70,19 +76,24 @@ object TypeDefinitionMembers {
 
     def isPrivate(t: Signature): Boolean = {
       t.namedElement match {
-        case param: ScClassParameter if !param.isEffectiveVal => true
+        case param: ScClassParameter if !param.isEffectiveVal =>
+          true
         case named: ScNamedElement =>
           ScalaPsiUtil.nameContext(named) match {
             case s: ScModifierListOwner =>
               s.getModifierList.accessModifier match {
-                case Some(a: ScAccessModifier) => a.isUnqualifiedPrivateOrThis
-                case _                         => false
+                case Some(a: ScAccessModifier) =>
+                  a.isUnqualifiedPrivateOrThis
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           }
         case n: PsiModifierListOwner =>
           n.hasModifierProperty("private")
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -92,12 +103,15 @@ object TypeDefinitionMembers {
           TypeDefinitionMembers.this.isAbstract(phys)
         case s: Signature =>
           s.namedElement match {
-            case _: ScFieldId => true
+            case _: ScFieldId =>
+              true
             case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
               true
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     def isImplicit(t: Signature) = ScalaPsiUtil.isImplicit(t.namedElement)
@@ -291,8 +305,10 @@ object TypeDefinitionMembers {
       for ((sign, _) <- cp.signatureMap) {
         if (sign.paramLength.sum == 0 && (
               ScalaPsiUtil.nameContext(sign.namedElement) match {
-                case m: PsiMember => nonBridge(place, m)
-                case _            => false
+                case m: PsiMember =>
+                  nonBridge(place, m)
+                case _ =>
+                  false
               }
             )) {
           map addToMap (sign, new Node(sign, sign.substitutor))
@@ -313,8 +329,10 @@ object TypeDefinitionMembers {
 
     def isAbstract(t: PsiNamedElement) =
       t match {
-        case _: ScTypeAliasDeclaration => true
-        case _                         => false
+        case _: ScTypeAliasDeclaration =>
+          true
+        case _ =>
+          false
       }
 
     def isImplicit(t: PsiNamedElement) = false
@@ -327,11 +345,15 @@ object TypeDefinitionMembers {
       t match {
         case n: ScModifierListOwner =>
           n.getModifierList.accessModifier match {
-            case Some(a: ScAccessModifier) => a.isUnqualifiedPrivateOrThis
-            case _                         => false
+            case Some(a: ScAccessModifier) =>
+              a.isUnqualifiedPrivateOrThis
+            case _ =>
+              false
           }
-        case n: PsiModifierListOwner => n.hasModifierProperty("private")
-        case _                       => false
+        case n: PsiModifierListOwner =>
+          n.hasModifierProperty("private")
+        case _ =>
+          false
       }
     }
 
@@ -394,19 +416,24 @@ object TypeDefinitionMembers {
 
     def isPrivate(t: Signature): Boolean = {
       t.namedElement match {
-        case c: ScClassParameter if !c.isEffectiveVal => true
+        case c: ScClassParameter if !c.isEffectiveVal =>
+          true
         case named: ScNamedElement =>
           ScalaPsiUtil.nameContext(named) match {
             case s: ScModifierListOwner =>
               s.getModifierList.accessModifier match {
-                case Some(a: ScAccessModifier) => a.isUnqualifiedPrivateOrThis
-                case _                         => false
+                case Some(a: ScAccessModifier) =>
+                  a.isUnqualifiedPrivateOrThis
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           }
         case n: PsiModifierListOwner =>
           n.hasModifierProperty("private")
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -416,12 +443,15 @@ object TypeDefinitionMembers {
           TypeDefinitionMembers.this.isAbstract(phys)
         case s: Signature =>
           s.namedElement match {
-            case _: ScFieldId => true
+            case _: ScFieldId =>
+              true
             case f: PsiField if f.hasModifierProperty(PsiModifier.ABSTRACT) =>
               true
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     def isImplicit(t: Signature) = ScalaPsiUtil.isImplicit(t.namedElement)
@@ -657,8 +687,10 @@ object TypeDefinitionMembers {
         place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
         if (ScalaPsiUtil.nameContext(sign.namedElement) match {
-              case m: PsiMember => nonBridge(place, m)
-              case _            => false
+              case m: PsiMember =>
+                nonBridge(place, m)
+              case _ =>
+                false
             }) {
           map addToMap (sign, new Node(sign, sign.substitutor))
         }
@@ -808,15 +840,18 @@ object TypeDefinitionMembers {
               case tp =>
                 val cl =
                   ScType.extractClassType(tp, Some(clazz.getProject)) match {
-                    case Some((selfClazz, subst)) => selfClazz
-                    case _                        => clazz
+                    case Some((selfClazz, subst)) =>
+                      selfClazz
+                    case _ =>
+                      clazz
                   }
                 getSignatures(cl)
             }
           case _ =>
             getSignatures(clazz)
         }
-      case _ => getSignatures(clazz)
+      case _ =>
+        getSignatures(clazz)
     }
   }
 
@@ -833,15 +868,18 @@ object TypeDefinitionMembers {
               case tp =>
                 val cl =
                   ScType.extractClassType(tp, Some(clazz.getProject)) match {
-                    case Some((selfClazz, subst)) => selfClazz
-                    case _                        => clazz
+                    case Some((selfClazz, subst)) =>
+                      selfClazz
+                    case _ =>
+                      clazz
                   }
                 getTypes(cl)
             }
           case _ =>
             getTypes(clazz)
         }
-      case _ => getTypes(clazz)
+      case _ =>
+        getTypes(clazz)
     }
   }
 
@@ -858,8 +896,9 @@ object TypeDefinitionMembers {
         clazz match {
           case td: ScTypeDefinition =>
             ScalaPsiUtil.getCompanionModule(td) match {
-              case Some(companionClass) => return getSignatures(companionClass)
-              case None                 =>
+              case Some(companionClass) =>
+                return getSignatures(companionClass)
+              case None =>
             }
           case _ =>
         }
@@ -874,7 +913,8 @@ object TypeDefinitionMembers {
             val f = new PhysicalSignature(fun, ScSubstitutor.empty)
             (f, new SignatureNodes.Node(f, ScSubstitutor.empty))
           })
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     }
 
@@ -1278,8 +1318,10 @@ object TypeDefinitionMembers {
             ProgressManager.checkCanceled()
             val method =
               n.info match {
-                case phys: PhysicalSignature => phys.method
-                case _                       => null
+                case phys: PhysicalSignature =>
+                  phys.method
+                case _ =>
+                  null
               }
             if (method != null && checkName(method.name)) {
               val substitutor = n.substitutor followed subst
@@ -1298,15 +1340,17 @@ object TypeDefinitionMembers {
           while (valuesIterator.hasNext) {
             val iterator = valuesIterator.next().iterator
             runIterator(iterator) match {
-              case Some(x) => return x
-              case None    =>
+              case Some(x) =>
+                return x
+              case None =>
             }
           }
 
           //todo: this is hack, better to split imports resolve into import for types and for expressions.
           runIterator(syntheticMethods().iterator) match {
-            case Some(x) => return x
-            case None    =>
+            case Some(x) =>
+              return x
+            case None =>
           }
         }
       }
@@ -1419,7 +1463,8 @@ object TypeDefinitionMembers {
 
   def shouldProcessMethods(processor: PsiScopeProcessor) =
     processor match {
-      case BaseProcessor(kinds) => kinds contains METHOD
+      case BaseProcessor(kinds) =>
+        kinds contains METHOD
       case _ =>
         val hint = processor.getHint(ElementClassHint.KEY)
         hint == null || hint.shouldProcess(
@@ -1430,15 +1475,18 @@ object TypeDefinitionMembers {
     processor match {
       case BaseProcessor(kinds) =>
         (kinds contains METHOD) || (kinds contains VAR) || (kinds contains VAL)
-      case _ => true
+      case _ =>
+        true
     }
 
   def shouldProcessTypes(processor: PsiScopeProcessor) =
     processor match {
-      case b: BaseProcessor if b.isImplicitProcessor => false
+      case b: BaseProcessor if b.isImplicitProcessor =>
+        false
       case BaseProcessor(kinds) =>
         (kinds contains CLASS) || (kinds contains METHOD)
-      case _ => false //important: do not process inner classes!
+      case _ =>
+        false //important: do not process inner classes!
     }
 
   def shouldProcessJavaInnerClasses(processor: PsiScopeProcessor): Boolean = {
@@ -1452,7 +1500,8 @@ object TypeDefinitionMembers {
     processor match {
       case BaseProcessor(kinds) =>
         !kinds.contains(METHOD) && !kinds.contains(VAR)
-      case _ => false
+      case _ =>
+        false
     }
   }
 

@@ -50,9 +50,12 @@ trait TryStandard {
     val t = Success(1)
     val n = t.filter(x => x < 0)
     n match {
-      case Success(v)                         => assert(false)
-      case Failure(e: NoSuchElementException) => assert(true)
-      case _                                  => assert(false)
+      case Success(v) =>
+        assert(false)
+      case Failure(e: NoSuchElementException) =>
+        assert(true)
+      case _ =>
+        assert(false)
     }
   }
 
@@ -76,7 +79,8 @@ trait TryStandard {
   def testRescueFailure(): Unit = {
     val t = Failure(new Exception("foo"))
     val n = t.recoverWith {
-      case x => Try(1)
+      case x =>
+        Try(1)
     }
     assert(n.get == 1)
   }
@@ -93,7 +97,8 @@ trait TryStandard {
   def testRecoverFailure(): Unit = {
     val t = Failure(new Exception("foo"))
     val n = t.recover {
-      case x => 1
+      case x =>
+        1
     }
     assert(n.get == 1)
   }
@@ -108,8 +113,10 @@ trait TryStandard {
     val t = Success(1)
     val n = t.failed
     n match {
-      case Failure(e: UnsupportedOperationException) => assert(true)
-      case _                                         => assert(false)
+      case Failure(e: UnsupportedOperationException) =>
+        assert(true)
+      case _ =>
+        assert(false)
     }
   }
 
@@ -117,8 +124,10 @@ trait TryStandard {
     val t = Failure(new Exception("foo"))
     val n = t.failed
     n match {
-      case Success(e: Exception) => assert(true)
-      case _                     => assert(false)
+      case Success(e: Exception) =>
+        assert(true)
+      case _ =>
+        assert(false)
     }
   }
 
@@ -170,7 +179,8 @@ trait TryStandard {
       try {
         t.fold(_ => throw new Exception("bar"), "Returns " + _)
       } catch {
-        case e: Throwable => "Throws " + e
+        case e: Throwable =>
+          "Throws " + e
       }
     assert(res == "Throws java.lang.Exception: bar")
   }

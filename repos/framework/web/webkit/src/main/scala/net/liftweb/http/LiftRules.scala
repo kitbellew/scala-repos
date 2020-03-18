@@ -237,8 +237,10 @@ object LiftRules extends LiftRulesMocker {
 
   def defaultFuncNameGenerator(runMode: Props.RunModes.Value): () => String = {
     runMode match {
-      case Props.RunModes.Test => S.generateTestFuncName _
-      case _                   => S.generateFuncName _
+      case Props.RunModes.Test =>
+        S.generateTestFuncName _
+      case _ =>
+        S.generateFuncName _
     }
   }
 }
@@ -409,8 +411,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     val LiftPath = LiftRules.liftContextRelativePath
     val cometSessionId =
       wp match {
-        case LiftPath :: "comet" :: _ :: session :: _ => Full(session)
-        case _                                        => Empty
+        case LiftPath :: "comet" :: _ :: session :: _ =>
+          Full(session)
+        case _ =>
+          Empty
       }
 
     val ret =
@@ -455,10 +459,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
       // dump the oldest requests
       which.drop(max).foreach {
-        case (actor, req) => actor ! BreakOut()
+        case (actor, req) =>
+          actor ! BreakOut()
       }
       invalid.foreach {
-        case (actor, req) => actor ! BreakOut()
+        case (actor, req) =>
+          actor ! BreakOut()
       }
     }
 
@@ -543,11 +549,13 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val maxConcurrentRequests: FactoryMaker[Req => Int] =
     new FactoryMaker((x: Req) =>
       x match {
-        case r if r.isIPad || r.isIPhone => 1
+        case r if r.isIPad || r.isIPhone =>
+          1
         case r
             if r.isFirefox35_+ || r.isIE8 || r.isIE9 || r.isChrome3_+ || r.isOpera9 || r.isSafari3_+ =>
           4
-        case _ => 2
+        case _ =>
+          2
       }) {}
 
   /**
@@ -560,7 +568,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         if this.useXhtmlMimeType && accept.toLowerCase.contains(
           "application/xhtml+xml") =>
       "application/xhtml+xml; charset=utf-8"
-    case _ => "text/html; charset=utf-8"
+    case _ =>
+      "text/html; charset=utf-8"
   }
 
   lazy val liftVersion: String = {
@@ -739,7 +748,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       session match {
         case Full(session) =>
           Full(session.checkRedirect(requestState.createNotFound))
-        case _ => Full(requestState.createNotFound)
+        case _ =>
+          Full(requestState.createNotFound)
       }
   }
 
@@ -811,7 +821,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     // Compute the global notices first
     val groupMessages =
       Msgs.renderNotices() match {
-        case NodeSeq.Empty => JsCmds.Noop
+        case NodeSeq.Empty =>
+          JsCmds.Noop
         case xml =>
           LiftRules.jsArtifacts.setHtml(LiftRules.noticesContainerId, xml) &
             noticesFadeOut(NoticeType.Notice) &
@@ -953,7 +964,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     S.request.map(_.path.partPath.dropRight(1)) match {
       case Full(xs) if !xs.isEmpty =>
         (xs.mkString(".") + "." + name) :: name :: Nil
-      case _ => name :: Nil
+      case _ =>
+        name :: Nil
     }
 
   /**
@@ -1059,8 +1071,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   @volatile
   var calculateXmlHeader: (NodeResponse, Node, Box[String]) => String = {
-    case _ if S.skipXmlHeader => ""
-    case (_, up: Unparsed, _) => ""
+    case _ if S.skipXmlHeader =>
+      ""
+    case (_, up: Unparsed, _) =>
+      ""
 
     case (_, _, Empty) | (_, _, Failure(_, _, _)) =>
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -1077,7 +1091,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         ) =>
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 
-    case _ => ""
+    case _ =>
+      ""
   }
 
   /**
@@ -1267,8 +1282,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       runAsSafe {
         sitemapFunc.flatMap { smf =>
           LiftRules.statefulRewrite.remove {
-            case PerRequestPF(_) => true
-            case _               => false
+            case PerRequestPF(_) =>
+              true
+            case _ =>
+              false
           }
 
           val sm = smf()
@@ -1343,7 +1360,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
                 <pre>{
                   e.getStackTrace.map(_.toString).mkString("\n")
                 }</pre>
-              case _ => NodeSeq.Empty
+              case _ =>
+                NodeSeq.Empty
             }
           }<i>note: this error is displayed in the browser because
         your application is running in "development" mode.If you
@@ -1419,7 +1437,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   private[http] def dispatchTable(req: HTTPRequest): List[DispatchPF] = {
     req match {
-      case null => dispatch.toList
+      case null =>
+        dispatch.toList
       case _ =>
         SessionMaster.getSession(req, Empty) match {
           case Full(s) =>
@@ -1427,7 +1446,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
               S.highLevelSessionDispatchList.map(_.dispatch) :::
                 dispatch.toList
             }
-          case _ => dispatch.toList
+          case _ =>
+            dispatch.toList
         }
     }
   }
@@ -1745,7 +1765,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           pf(in)
         else
           in
-      case (in, f) => f(in)
+      case (in, f) =>
+        f(in)
     }
 
   /**
@@ -1760,7 +1781,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   var convertResponse: PartialFunction[
     (Any, List[(String, String)], List[HTTPCookie], Req),
     LiftResponse] = {
-    case (r: LiftResponse, _, _, _) => r
+    case (r: LiftResponse, _, _, _) =>
+      r
     case (ns: Group, headers, cookies, req) =>
       cvt(ns, headers, cookies, req, 200)
     case (ns: Node, headers, cookies, req) =>
@@ -1777,7 +1799,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
     case (Some(o), headers, cookies, req) =>
       convertResponse((o, headers, cookies, req))
-    case (bad, _, _, req) => req.createNotFound
+    case (bad, _, _, req) =>
+      req.createNotFound
   }
 
   /**
@@ -1852,7 +1875,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val uriNotFound = RulesSeq[URINotFoundPF].prepend(
     NamedPF("default") {
-      case (r, _) => DefaultNotFound
+      case (r, _) =>
+        DefaultNotFound
     })
 
   /**
@@ -1884,8 +1908,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
     val also =
       le.getCause match {
-        case null           => ""
-        case sub: Throwable => "\nCaught and thrown by:\n" + showException(sub)
+        case null =>
+          ""
+        case sub: Throwable =>
+          "\nCaught and thrown by:\n" + showException(sub)
       }
 
     ret + also
@@ -1930,7 +1956,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
               CSSHelpers.fixCSS(
                 new BufferedReader(new StringReader(str)),
                 prefix openOr (S.contextPath)) match {
-                case (Full(c), _) => CSSResponse(c)
+                case (Full(c), _) =>
+                  CSSResponse(c)
                 case (x, input) => {
                   logger.info(
                     "Fixing " + cssPath + " failed with result %s".format(x));
@@ -2328,8 +2355,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
     private def safe_?(f: => Any) {
       doneBoot match {
-        case false => f
-        case _     => throw new IllegalStateException("Cannot modify after boot.");
+        case false =>
+          f
+        case _ =>
+          throw new IllegalStateException("Cannot modify after boot.");
       }
     }
 
@@ -2355,9 +2384,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     def prependWith[A](what: List[T])(f: => A): A = {
       val newList =
         pre.value match {
-          case null => what
-          case Nil  => what
-          case x    => what ::: x
+          case null =>
+            what
+          case Nil =>
+            what
+          case x =>
+            what ::: x
         }
       pre.doWith(newList)(doCur(f))
     }
@@ -2370,9 +2402,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     def appendWith[A](what: List[T])(f: => A): A = {
       val newList =
         pre.value match {
-          case null => what
-          case Nil  => what
-          case x    => x ::: what
+          case null =>
+            what
+          case Nil =>
+            what
+          case x =>
+            x ::: what
         }
       app.doWith(newList)(doCur(f))
     }
@@ -2383,17 +2418,23 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     private def doCur[A](f: => A): A = {
       cur.doWith(
         (pre.value, app.value) match {
-          case (null, null) | (null, Nil) | (Nil, null) | (Nil, Nil) => rules
-          case (null, xs)                                            => rules ::: xs
-          case (xs, null)                                            => xs ::: rules
-          case (p, a)                                                => p ::: rules ::: a
+          case (null, null) | (null, Nil) | (Nil, null) | (Nil, Nil) =>
+            rules
+          case (null, xs) =>
+            rules ::: xs
+          case (xs, null) =>
+            xs ::: rules
+          case (p, a) =>
+            p ::: rules ::: a
         })(f)
     }
 
     def toList: List[T] =
       cur.value match {
-        case null => rules
-        case xs   => xs
+        case null =>
+          rules
+        case xs =>
+          xs
       }
 
     def prepend(r: T): RulesSeq[T] = {
@@ -2423,11 +2464,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     def firstFull(param: F): Box[T] = {
       def finder(in: List[F => Box[T]]): Box[T] =
         in match {
-          case Nil => Empty
+          case Nil =>
+            Empty
           case x :: xs =>
             x(param) match {
-              case Full(r) => Full(r)
-              case _       => finder(xs)
+              case Full(r) =>
+                Full(r)
+              case _ =>
+                finder(xs)
             }
         }
 
@@ -2531,11 +2575,13 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
               e.getColumnNumber))
       }
     ) match {
-      case Full(x) => x
+      case Full(x) =>
+        x
       case Failure(msg, _, _) =>
         logger.info("XHTML Validation Failure: " + msg)
         Nil
-      case _ => Nil
+      case _ =>
+        Nil
     }
   }
 }
@@ -2555,7 +2601,8 @@ trait FormVendor {
       requestForms.is.get(name) orElse sessionForms.is.get(name)
 
     first match {
-      case Some(x :: _) => Full(x.func.asInstanceOf[(T, T => Any) => NodeSeq])
+      case Some(x :: _) =>
+        Full(x.func.asInstanceOf[(T, T => Any) => NodeSeq])
       case _ =>
         if (globalForms.containsKey(name)) {
           globalForms

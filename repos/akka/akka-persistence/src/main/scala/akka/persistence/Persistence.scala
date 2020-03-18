@@ -237,10 +237,13 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   private[akka] final def adaptersFor(
       journalPluginActor: ActorRef): EventAdapters = {
     pluginExtensionId.get().values collectFirst {
-      case ext if ext(system).actor == journalPluginActor ⇒ ext(system).adapters
+      case ext if ext(system).actor == journalPluginActor ⇒
+        ext(system).adapters
     } match {
-      case Some(adapters) ⇒ adapters
-      case _ ⇒ IdentityEventAdapters
+      case Some(adapters) ⇒
+        adapters
+      case _ ⇒
+        IdentityEventAdapters
     }
   }
 
@@ -265,9 +268,11 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     */
   private[akka] final def configFor(journalPluginActor: ActorRef): Config =
     pluginExtensionId.get().values.collectFirst {
-      case ext if ext(system).actor == journalPluginActor ⇒ ext(system).config
+      case ext if ext(system).actor == journalPluginActor ⇒
+        ext(system).config
     } match {
-      case Some(conf) ⇒ conf
+      case Some(conf) ⇒
+        conf
       case None ⇒
         throw new IllegalArgumentException(
           s"Unknown plugin actor $journalPluginActor")
@@ -334,7 +339,8 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
           throw new IllegalArgumentException(
             "Plugin class name must be defined in config property " +
               s"[$configPath.class]")
-        case className ⇒ className
+        case className ⇒
+          className
       }
     log.debug(s"Create plugin: $pluginActorName $pluginClassName")
     val pluginClass = system.dynamicAccess.getClassFor[Any](pluginClassName).get
@@ -347,7 +353,8 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
         ) // will throw if not found
         List(pluginConfig)
       } catch {
-        case NonFatal(_) ⇒ Nil
+        case NonFatal(_) ⇒
+          Nil
       } // otherwise use empty constructor
     val pluginActorProps = Props(
       Deploy(dispatcher = pluginDispatcherId),

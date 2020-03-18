@@ -102,7 +102,8 @@ class SparseVector[@spec(Double, Int, Float, Long) V](
       case x: Vector[_] =>
         this.length == x.length &&
           (valuesIterator sameElements x.valuesIterator)
-      case _ => false
+      case _ =>
+        false
     }
 
   def isActive(rawIndex: Int) = array.isActive(rawIndex)

@@ -8,7 +8,8 @@ import akka.actor.{Actor, ActorRef, Props}
   */
 class ForwardingActor(destination: ActorRef) extends Actor {
   override def receive: Receive = {
-    case msg => destination.forward(msg)
+    case msg =>
+      destination.forward(msg)
   }
 }
 

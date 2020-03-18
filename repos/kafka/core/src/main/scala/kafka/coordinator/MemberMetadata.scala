@@ -71,7 +71,8 @@ private[coordinator] class MemberMetadata(
     */
   def metadata(protocol: String): Array[Byte] = {
     supportedProtocols.find(_._1 == protocol) match {
-      case Some((_, metadata)) => metadata
+      case Some((_, metadata)) =>
+        metadata
       case None =>
         throw new IllegalArgumentException("Member does not support protocol")
     }
@@ -117,9 +118,11 @@ private[coordinator] class MemberMetadata(
     */
   def vote(candidates: Set[String]): String = {
     supportedProtocols.find({
-      case (protocol, _) => candidates.contains(protocol)
+      case (protocol, _) =>
+        candidates.contains(protocol)
     }) match {
-      case Some((protocol, _)) => protocol
+      case Some((protocol, _)) =>
+        protocol
       case None =>
         throw new IllegalArgumentException(
           "Member does not support any of the candidate protocols")

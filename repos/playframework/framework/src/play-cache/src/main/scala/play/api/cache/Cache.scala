@@ -297,7 +297,8 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
   def set(key: String, value: Any, expiration: Duration) = {
     val element = new Element(key, value)
     expiration match {
-      case infinite: Duration.Infinite => element.setEternal(true)
+      case infinite: Duration.Infinite =>
+        element.setEternal(true)
       case finite: FiniteDuration =>
         val seconds = finite.toSeconds
         if (seconds <= 0) {

@@ -128,7 +128,8 @@ class ServiceRegistry extends Actor with ActorLogging {
 
     case Terminated(ref) ⇒
       val names = services.collect {
-        case (name, refs) if refs.contains(ref) ⇒ name
+        case (name, refs) if refs.contains(ref) ⇒
+          name
       }
       names.foreach { name ⇒
         log.debug("Service with name [{}] terminated: {}", name, ref)

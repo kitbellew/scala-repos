@@ -73,7 +73,8 @@ object Producers {
 
       override def transformOutgoingMessage(msg: Any) =
         msg match {
-          case msg: CamelMessage => upperCase(msg)
+          case msg: CamelMessage =>
+            upperCase(msg)
         }
     }
     //#TransformOutgoingMessage

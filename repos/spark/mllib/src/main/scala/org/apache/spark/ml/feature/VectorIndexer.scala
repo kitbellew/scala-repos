@@ -129,7 +129,8 @@ class VectorIndexer(override val uid: String)
       s"VectorIndexer cannot be fit on an empty dataset.")
     val numFeatures = firstRow(0).getAs[Vector](0).size
     val vectorDataset = dataset.select($(inputCol)).rdd.map {
-      case Row(v: Vector) => v
+      case Row(v: Vector) =>
+        v
     }
     val maxCats = $(maxCategories)
     val categoryStats: VectorIndexer.CategoryStats = vectorDataset
@@ -207,8 +208,10 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
         s"VectorIndexer expected $numFeatures features but" +
           s" found vector of size ${v.size}.")
       v match {
-        case dv: DenseVector  => addDenseVector(dv)
-        case sv: SparseVector => addSparseVector(sv)
+        case dv: DenseVector =>
+          addDenseVector(dv)
+        case sv: SparseVector =>
+          addSparseVector(sv)
       }
     }
 

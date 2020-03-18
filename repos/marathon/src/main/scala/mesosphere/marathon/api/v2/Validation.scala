@@ -14,8 +14,10 @@ import scala.util.Try
 object Validation {
   def validateOrThrow[T](t: T)(implicit validator: Validator[T]): T =
     validate(t) match {
-      case Success    => t
-      case f: Failure => throw new ValidationFailedException(t, f)
+      case Success =>
+        t
+      case f: Failure =>
+        throw new ValidationFailedException(t, f)
     }
 
   implicit def optional[T](implicit
@@ -95,7 +97,8 @@ object Validation {
           parentDesc.map { p =>
             r.description.map {
               // Error is on object level, having a parent description. Omit 'value', prepend '/' as root.
-              case "value" => r.withDescription("/" + p)
+              case "value" =>
+                r.withDescription("/" + p)
               // Error is on property level, having a parent description. Prepend '/' as root.
               case s: String =>
                 r.withDescription(
@@ -106,17 +109,21 @@ object Validation {
             r.withDescription(
               r.description.map {
                 // Error is on object level, having no parent description, being a root error.
-                case "value" => "/"
+                case "value" =>
+                  "/"
                 // Error is on property level, having no parent description, being a property of root error.
-                case s: String => "/" + s
+                case s: String =>
+                  "/" + s
               } getOrElse "/")
           })
       case g: GroupViolation =>
         g.children.flatMap { c =>
           val dot =
             g.value match {
-              case _: Iterable[_] => false
-              case _              => true
+              case _: Iterable[_] =>
+                false
+              case _ =>
+                true
             }
 
           val desc = parentDesc.map { p =>
@@ -219,8 +226,10 @@ object Validation {
         option match {
           case Some(prop) =>
             val n = product.productIterator.count {
-              case Some(_) => true
-              case _       => false
+              case Some(_) =>
+                true
+              case _ =>
+                false
             }
 
             if (n == 1)
@@ -232,7 +241,8 @@ object Validation {
                     product,
                     s"not allowed in conjunction with other properties.",
                     None)))
-          case None => Success
+          case None =>
+            Success
         }
       }
     }

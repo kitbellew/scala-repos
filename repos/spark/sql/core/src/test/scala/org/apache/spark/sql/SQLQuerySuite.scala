@@ -259,7 +259,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     // First, check if we have GeneratedAggregate.
     val hasGeneratedAgg =
       df.queryExecution.sparkPlan.collect {
-        case _: aggregate.TungstenAggregate => true
+        case _: aggregate.TungstenAggregate =>
+          true
       }.nonEmpty
     if (!hasGeneratedAgg) {
       fail(s"""
@@ -779,12 +780,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val df = sql(
       "select count(*) from testData a join testData b on (a.key <=> b.key)")
     val cp = df.queryExecution.sparkPlan.collect {
-      case cp: CartesianProduct => cp
+      case cp: CartesianProduct =>
+        cp
     }
     assert(cp.isEmpty, "should not use CartesianProduct for null-safe join")
     val smj = df.queryExecution.sparkPlan.collect {
-      case smj: SortMergeJoin   => smj
-      case j: BroadcastHashJoin => j
+      case smj: SortMergeJoin =>
+        smj
+      case j: BroadcastHashJoin =>
+        j
     }
     assert(smj.size > 0, "should use SortMergeJoin or BroadcastHashJoin")
     checkAnswer(df, Row(100) :: Nil)
@@ -1008,7 +1012,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       val v4 =
         try values(3).toInt
         catch {
-          case _: NumberFormatException => null
+          case _: NumberFormatException =>
+            null
         }
       Row(values(0).toInt, values(1), values(2).toBoolean, v4)
     }
@@ -1043,7 +1048,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       val v4 =
         try values(3).toInt
         catch {
-          case _: NumberFormatException => null
+          case _: NumberFormatException =>
+            null
         }
       Row(Row(values(0).toInt, values(2).toBoolean), Map(values(1) -> v4))
     }
@@ -1071,7 +1077,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       val v4 =
         try values(3).toInt
         catch {
-          case _: NumberFormatException => null
+          case _: NumberFormatException =>
+            null
         }
       Row(
         Row(values(0).toInt, values(2).toBoolean),

@@ -88,10 +88,14 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
           System.currentTimeMillis())
         val classNameByStatus =
           status match {
-            case JobExecutionStatus.SUCCEEDED => "succeeded"
-            case JobExecutionStatus.FAILED    => "failed"
-            case JobExecutionStatus.RUNNING   => "running"
-            case JobExecutionStatus.UNKNOWN   => "unknown"
+            case JobExecutionStatus.SUCCEEDED =>
+              "succeeded"
+            case JobExecutionStatus.FAILED =>
+              "failed"
+            case JobExecutionStatus.RUNNING =>
+              "running"
+            case JobExecutionStatus.UNKNOWN =>
+              "unknown"
           }
 
         // The timeline library treats contents as HTML, so we have to escape them; for the

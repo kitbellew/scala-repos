@@ -101,7 +101,8 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
 
   def warnOnSimpleTree(tree: Tree): Unit =
     tree match {
-      case Literal(_) => c.warning(tree.pos, "checked used with literal")
+      case Literal(_) =>
+        c.warning(tree.pos, "checked used with literal")
       case Ident(_) =>
         c.warning(tree.pos, "checked used with simple identifier")
       case _ =>
@@ -150,8 +151,10 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
 
     def isSimple(tree: Tree): Boolean =
       tree match {
-        case Literal(_) | Ident(_) => true
-        case _                     => false
+        case Literal(_) | Ident(_) =>
+          true
+        case _ =>
+          false
       }
 
     def runWithX(rewrite: Tree => Tree, sub: Tree)(f: Tree => Tree): Tree =

@@ -13,7 +13,8 @@ object Try {
     try {
       Return(r)
     } catch {
-      case NonFatal(e) => Throw(e)
+      case NonFatal(e) =>
+        Throw(e)
     }
   }
 
@@ -24,7 +25,8 @@ object Try {
   def withFatals[R](r: => R)(f: PartialFunction[Throwable, Try[R]]): Try[R] =
     try Try(r)
     catch {
-      case e: Throwable if f.isDefinedAt(e) => f(e)
+      case e: Throwable if f.isDefinedAt(e) =>
+        f(e)
     }
 
   /**
@@ -60,11 +62,14 @@ object Try {
   def orThrow[A](o: Option[A])(failure: () => Throwable): Try[A] =
     try {
       o match {
-        case Some(item) => Return(item)
-        case None       => Throw(failure())
+        case Some(item) =>
+          Return(item)
+        case None =>
+          Throw(failure())
       }
     } catch {
-      case NonFatal(e) => Throw(e)
+      case NonFatal(e) =>
+        Throw(e)
     }
 
   implicit class OrThrow[A](val option: Option[A]) extends AnyVal {
@@ -248,7 +253,8 @@ final case class Throw[+R](e: Throwable) extends Try[R] {
       else
         result
     } catch {
-      case NonFatal(e2) => Throw(e2)
+      case NonFatal(e2) =>
+        Throw(e2)
     }
   }
   def apply(): R = throw e
@@ -299,7 +305,8 @@ final case class Return[+R](r: R) extends Try[R] {
   def flatMap[R2](f: R => Try[R2]): Try[R2] =
     try f(r)
     catch {
-      case NonFatal(e) => Throw(e)
+      case NonFatal(e) =>
+        Throw(e)
     }
 
   def flatten[T](implicit ev: R <:< Try[T]): Try[T] = r
@@ -307,7 +314,8 @@ final case class Return[+R](r: R) extends Try[R] {
   def map[X](f: R => X): Try[X] =
     try Return(f(r))
     catch {
-      case NonFatal(e) => Throw(e)
+      case NonFatal(e) =>
+        Throw(e)
     }
 
   def exists(p: R => Boolean): Boolean = p(r)

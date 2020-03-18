@@ -29,9 +29,12 @@ class metropolisTest extends FunSuite {
   private val l1 = math.log(1)
   def logLikelihood(x: State) =
     x match {
-      case A => l6
-      case B => l2
-      case C => l1
+      case A =>
+        l6
+      case B =>
+        l2
+      case C =>
+        l1
     }
 
   val proposal = rand.choose(Seq(A, B, C))
@@ -51,9 +54,12 @@ class metropolisTest extends FunSuite {
     var cCount: Double = 0
     cforRange(0 until NUM_TESTS) { i =>
       mh.draw() match {
-        case A => aCount += 1
-        case B => bCount += 1
-        case C => cCount += 1
+        case A =>
+          aCount += 1
+        case B =>
+          bCount += 1
+        case C =>
+          cCount += 1
       }
     }
     assert(math.abs(aCount / cCount - 6) < TOLERANCE)
@@ -65,10 +71,14 @@ class metropolisTest extends FunSuite {
 
   def logSkewedTransitionProbability(start: State, end: State) =
     (start, end) match {
-      case (a, b) if (a == b) => ???
-      case (A, _)             => math.log(0.5)
-      case (_, A)             => math.log(2.0 / 3.0)
-      case (_, _)             => math.log(1.0 / 3.0)
+      case (a, b) if (a == b) =>
+        ???
+      case (A, _) =>
+        math.log(0.5)
+      case (_, A) =>
+        math.log(2.0 / 3.0)
+      case (_, _) =>
+        math.log(1.0 / 3.0)
     }
 
   test("stupidly simple mcmc, anisotropic") {
@@ -84,9 +94,12 @@ class metropolisTest extends FunSuite {
     var cCount: Double = 0
     cforRange(0 until NUM_TESTS) { i =>
       mh.draw() match {
-        case A => aCount += 1
-        case B => bCount += 1
-        case C => cCount += 1
+        case A =>
+          aCount += 1
+        case B =>
+          bCount += 1
+        case C =>
+          cCount += 1
       }
     }
     assert(math.abs(aCount / cCount - 6) < TOLERANCE)

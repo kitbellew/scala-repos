@@ -39,8 +39,10 @@ object Test extends App {
 
   def copyright(in: String): String =
     in match {
-      case dateP1(year, month, day) => "Copyright " + year
-      case _                        => "No copyright"
+      case dateP1(year, month, day) =>
+        "Copyright " + year
+      case _ =>
+        "No copyright"
     }
 
   test("copyright example has date") {

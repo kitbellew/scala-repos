@@ -29,14 +29,22 @@ private[pickling] object IrAst {
   def transform(ast: IrAst)(f: IrAst => IrAst): IrAst = {
     def chain(ast: IrAst): IrAst = transform(ast)(f)
     ast match {
-      case x: CallConstructor        => f(x)
-      case x: CallModuleFactory      => f(x)
-      case x: SetField               => f(x)
-      case x: GetField               => f(x)
-      case x: UnpickleSingleton      => f(x)
-      case x: AllocateInstance       => f(x)
-      case x: PickleExternalizable   => f(x)
-      case x: UnpickleExternalizable => f(x)
+      case x: CallConstructor =>
+        f(x)
+      case x: CallModuleFactory =>
+        f(x)
+      case x: SetField =>
+        f(x)
+      case x: GetField =>
+        f(x)
+      case x: UnpickleSingleton =>
+        f(x)
+      case x: AllocateInstance =>
+        f(x)
+      case x: PickleExternalizable =>
+        f(x)
+      case x: UnpickleExternalizable =>
+        f(x)
       case UnpickleBehavior(ops) =>
         f(UnpickleBehavior(ops.map(chain).asInstanceOf[Seq[UnpicklerAst]]))
       case PickleBehavior(ops) =>

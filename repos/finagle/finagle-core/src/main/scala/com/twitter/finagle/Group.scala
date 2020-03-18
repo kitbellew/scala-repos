@@ -57,7 +57,8 @@ trait Group[T] {
     */
   def map[U](f: T => U): Group[U] =
     collect {
-      case e => f(e)
+      case e =>
+        f(e)
     }
 
   /**
@@ -72,7 +73,8 @@ trait Group[T] {
       protected[finagle] val set = outer.set map { set =>
         synchronized {
           mapped ++= (set &~ last) collect {
-            case el if f.isDefinedAt(el) => el -> f(el)
+            case el if f.isDefinedAt(el) =>
+              el -> f(el)
           }
           mapped --= last &~ set
           last = set
@@ -123,9 +125,11 @@ private[finagle] case class NameGroup(name: Name.Bound)
   protected[finagle] lazy val set: Var[Set[SocketAddress]] = name.addr map {
     case Addr.Bound(set, _) =>
       set.collect {
-        case Address.Inet(ia, _) => ia
+        case Address.Inet(ia, _) =>
+          ia
       }
-    case _ => Set()
+    case _ =>
+      Set()
   }
 }
 
@@ -168,9 +172,11 @@ object Group {
       protected[finagle] val set: Var[Set[SocketAddress]] = va map {
         case Addr.Bound(addrs, _) =>
           addrs.collect {
-            case Address.Inet(ia, _) => ia
+            case Address.Inet(ia, _) =>
+              ia
           }
-        case _ => Set[SocketAddress]()
+        case _ =>
+          Set[SocketAddress]()
       }
     }
 
@@ -219,8 +225,10 @@ object Group {
 
       edits foreach { spool =>
         spool foreach {
-          case Cluster.Add(t) => set() += t
-          case Cluster.Rem(t) => set() -= t
+          case Cluster.Add(t) =>
+            set() += t
+          case Cluster.Rem(t) =>
+            set() -= t
         }
       }
     }

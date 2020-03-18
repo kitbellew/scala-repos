@@ -90,13 +90,15 @@ private object PoolSlot {
         split
           .out(0)
           .collect {
-            case ResponseDelivery(r) ⇒ r
+            case ResponseDelivery(r) ⇒
+              r
           }
           .outlet,
         split
           .out(1)
           .collect {
-            case r: RawSlotEvent ⇒ r
+            case r: RawSlotEvent ⇒
+              r
           }
           .outlet)
     }
@@ -163,8 +165,10 @@ private object PoolSlot {
         if (remainingRequested == 0)
           request(1) // ask for first request if necessary
 
-      case OnComplete ⇒ onComplete()
-      case OnError(e) ⇒ onError(e)
+      case OnComplete ⇒
+        onComplete()
+      case OnError(e) ⇒
+        onError(e)
       case Cancel ⇒
         cancel()
         shutdown()
@@ -176,8 +180,10 @@ private object PoolSlot {
         connInport: ActorRef,
         connOutport: ActorRef,
         firstRequest: RequestContext): Receive = {
-      case ev @ (Request(_) | Cancel) ⇒ connOutport ! ev
-      case ev @ (OnComplete | OnError(_)) ⇒ connInport ! ev
+      case ev @ (Request(_) | Cancel) ⇒
+        connOutport ! ev
+      case ev @ (OnComplete | OnError(_)) ⇒
+        connInport ! ev
       case OnNext(x) ⇒
         throw new IllegalStateException("Unrequested RequestContext: " + x)
 
@@ -201,13 +207,16 @@ private object PoolSlot {
     }
 
     def running(connInport: ActorRef, connOutport: ActorRef): Receive = {
-      case ev @ (Request(_) | Cancel) ⇒ connOutport ! ev
-      case ev @ (OnComplete | OnError(_)) ⇒ connInport ! ev
+      case ev @ (Request(_) | Cancel) ⇒
+        connOutport ! ev
+      case ev @ (OnComplete | OnError(_)) ⇒
+        connInport ! ev
       case OnNext(rc: RequestContext) ⇒
         inflightRequests = inflightRequests.enqueue(rc)
         connInport ! OnNext(rc.request)
 
-      case FromConnection(Request(n)) ⇒ request(n)
+      case FromConnection(Request(n)) ⇒
+        request(n)
       case FromConnection(Cancel) ⇒
         if (!isActive) {
           cancel();
@@ -226,8 +235,10 @@ private object PoolSlot {
           whenCompleted.map(_ ⇒ SlotEvent.RequestCompleted(slotIx)))
         onNext(delivery :: requestCompleted :: Nil)
 
-      case FromConnection(OnComplete) ⇒ handleDisconnect(sender(), None)
-      case FromConnection(OnError(e)) ⇒ handleDisconnect(sender(), Some(e))
+      case FromConnection(OnComplete) ⇒
+        handleDisconnect(sender(), None)
+      case FromConnection(OnError(e)) ⇒
+        handleDisconnect(sender(), Some(e))
     }
 
     def handleDisconnect(
@@ -304,10 +315,14 @@ private object PoolSlot {
       extends ActorPublisher[HttpRequest]
       with ActorLogging {
     def receive: Receive = {
-      case ev: Request ⇒ slotProcessor ! FromConnection(ev)
-      case OnNext(r: HttpRequest) ⇒ onNext(r)
-      case OnComplete ⇒ onCompleteThenStop()
-      case OnError(e) ⇒ onErrorThenStop(e)
+      case ev: Request ⇒
+        slotProcessor ! FromConnection(ev)
+      case OnNext(r: HttpRequest) ⇒
+        onNext(r)
+      case OnComplete ⇒
+        onCompleteThenStop()
+      case OnError(e) ⇒
+        onErrorThenStop(e)
       case Cancel ⇒
         slotProcessor ! FromConnection(Cancel)
         context.stop(self)
@@ -319,9 +334,12 @@ private object PoolSlot {
       with ActorLogging {
     def requestStrategy = ZeroRequestStrategy
     def receive: Receive = {
-      case Request(n) ⇒ request(n)
-      case Cancel ⇒ cancel()
-      case ev: OnNext ⇒ slotProcessor ! FromConnection(ev)
+      case Request(n) ⇒
+        request(n)
+      case Cancel ⇒
+        cancel()
+      case ev: OnNext ⇒
+        slotProcessor ! FromConnection(ev)
       case ev @ (OnComplete | OnError(_)) ⇒
         slotProcessor ! FromConnection(ev)
         context.stop(self)

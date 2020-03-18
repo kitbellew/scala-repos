@@ -175,19 +175,30 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
       cols.getOrElseUpdate(
         ref,
         ref.ctype match {
-          case CBoolean => ArrayBoolColumn.empty()
-          case CLong    => ArrayLongColumn.empty(size)
-          case CDouble  => ArrayDoubleColumn.empty(size)
-          case CNum     => ArrayNumColumn.empty(size)
-          case CString  => ArrayStrColumn.empty(size)
-          case CDate    => ArrayDateColumn.empty(size)
-          case CPeriod  => ArrayPeriodColumn.empty(size)
+          case CBoolean =>
+            ArrayBoolColumn.empty()
+          case CLong =>
+            ArrayLongColumn.empty(size)
+          case CDouble =>
+            ArrayDoubleColumn.empty(size)
+          case CNum =>
+            ArrayNumColumn.empty(size)
+          case CString =>
+            ArrayStrColumn.empty(size)
+          case CDate =>
+            ArrayDateColumn.empty(size)
+          case CPeriod =>
+            ArrayPeriodColumn.empty(size)
           case CArrayType(elemType) =>
             ArrayHomogeneousArrayColumn.empty(size)(elemType)
-          case CNull        => MutableNullColumn.empty()
-          case CEmptyObject => MutableEmptyObjectColumn.empty()
-          case CEmptyArray  => MutableEmptyArrayColumn.empty()
-          case CUndefined   => sys.error("this shouldn't exist")
+          case CNull =>
+            MutableNullColumn.empty()
+          case CEmptyObject =>
+            MutableEmptyObjectColumn.empty()
+          case CEmptyArray =>
+            MutableEmptyArrayColumn.empty()
+          case CUndefined =>
+            sys.error("this shouldn't exist")
         }
       )
     }

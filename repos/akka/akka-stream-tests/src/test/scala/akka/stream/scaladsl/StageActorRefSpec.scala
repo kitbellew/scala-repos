@@ -174,8 +174,10 @@ class StageActorRefSpec extends AkkaSpec with ImplicitSender {
       stageRef ! Add(40)
 
       val filter = EventFilter.custom {
-        case e: Logging.Warning ⇒ true
-        case _ ⇒ false
+        case e: Logging.Warning ⇒
+          true
+        case _ ⇒
+          false
       }
       system.eventStream.publish(TestEvent.Mute(filter))
       system.eventStream.subscribe(testActor, classOf[Logging.Warning])
@@ -239,13 +241,16 @@ object StageActorRefSpec {
 
           def behaviour(m: (ActorRef, Any)): Unit = {
             m match {
-              case (sender, Add(n)) ⇒ sum += n
-              case (sender, PullNow) ⇒ pull(in)
+              case (sender, Add(n)) ⇒
+                sum += n
+              case (sender, PullNow) ⇒
+                pull(in)
               case (sender, CallInitStageActorRef) ⇒
                 sender ! getStageActor(behaviour).ref
               case (sender, BecomeStringEcho) ⇒
                 getStageActor {
-                  case (theSender, msg) ⇒ theSender ! msg.toString
+                  case (theSender, msg) ⇒
+                    theSender ! msg.toString
                 }
               case (sender, StopNow) ⇒
                 p.trySuccess(sum)

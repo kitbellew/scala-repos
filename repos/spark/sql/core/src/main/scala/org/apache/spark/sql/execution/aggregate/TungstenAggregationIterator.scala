@@ -131,7 +131,8 @@ class TungstenAggregationIterator(
     // Initialize imperative aggregates' buffer values
     aggregateFunctions
       .collect {
-        case f: ImperativeAggregate => f
+        case f: ImperativeAggregate =>
+          f
       }
       .foreach(_.initialize(buffer))
     buffer
@@ -267,7 +268,8 @@ class TungstenAggregationIterator(
         agg.copy(mode = PartialMerge)
       case agg @ AggregateExpression(_, Complete, _) =>
         agg.copy(mode = Final)
-      case other => other
+      case other =>
+        other
     }
     val newFunctions = initializeAggregateFunctions(newExpressions, 0)
     val newInputAttributes = newFunctions.flatMap(_.inputAggBufferAttributes)

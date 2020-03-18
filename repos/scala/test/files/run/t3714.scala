@@ -11,8 +11,10 @@ object Test {
   // }
   def f2(x: Break) =
     x match {
-      case BreakImpl(x) => x
-      case _            => -1
+      case BreakImpl(x) =>
+        x
+      case _ =>
+        -1
     }
   // def f3(x: Any) = x match {
   //   case b: BreakImpl => b.break
@@ -20,8 +22,10 @@ object Test {
   // }
   def f4(x: Any) =
     x match {
-      case BreakImpl(x) => x
-      case _            => -1
+      case BreakImpl(x) =>
+        x
+      case _ =>
+        -1
     }
 
   def main(args: Array[String]) {

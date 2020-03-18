@@ -154,7 +154,8 @@ object InputWrapper {
           wrapPrevious[T](c)(newTree, a.pos)
         } else
           c.abort(a.pos, s"Internal sbt error. Unexpected type ${t.tpe.widen}")
-      case x => ContextUtil.unexpectedTree(x)
+      case x =>
+        ContextUtil.unexpectedTree(x)
     }
   }
 }

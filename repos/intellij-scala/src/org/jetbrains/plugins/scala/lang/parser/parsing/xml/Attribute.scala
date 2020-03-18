@@ -26,13 +26,15 @@ object Attribute {
       }
     }*/
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_NAME => builder.advanceLexer()
+      case ScalaXmlTokenTypes.XML_NAME =>
+        builder.advanceLexer()
       case _ =>
         attributeMarker.rollbackTo()
         return false
     }
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_EQ => builder.advanceLexer()
+      case ScalaXmlTokenTypes.XML_EQ =>
+        builder.advanceLexer()
       case _ =>
         builder error ErrMsg("xml.eq.expected")
         attributeMarker.done(ScalaElementTypes.XML_ATTRIBUTE)

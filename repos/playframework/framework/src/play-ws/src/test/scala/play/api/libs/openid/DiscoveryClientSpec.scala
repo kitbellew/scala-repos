@@ -353,8 +353,10 @@ object DiscoveryClientSpec extends Specification with Mockito {
     "OP-Local Identifiers must be handled correctly (if a different OP-Local Identifier is not specified, the claimed identifier MUST be used as the value for openid.identity." in {
       val value = params.get("openid.identity")
       opLocalIdentifier match {
-        case Some(id) => value must_== Some(Seq(id))
-        case _        => value must be equalTo params.get("openid.claimed_id")
+        case Some(id) =>
+          value must_== Some(Seq(id))
+        case _ =>
+          value must be equalTo params.get("openid.claimed_id")
       }
     }
 
@@ -369,7 +371,9 @@ object DiscoveryClientSpec extends Specification with Mockito {
       key: String,
       expected: Option[String] = None) =
     expected match {
-      case Some(value) => params.get(key) must_== Some(Seq(value))
-      case _           => params.get(key) must beNone
+      case Some(value) =>
+        params.get(key) must_== Some(Seq(value))
+      case _ =>
+        params.get(key) must beNone
     }
 }

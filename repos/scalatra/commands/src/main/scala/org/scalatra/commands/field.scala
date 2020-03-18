@@ -77,8 +77,10 @@ trait FieldDescriptor[T] {
 
   override def equals(obj: Any) =
     obj match {
-      case b: FieldDescriptor[_] => b.name == this.name
-      case _                     => false
+      case b: FieldDescriptor[_] =>
+        b.name == this.name
+      case _ =>
+        false
     }
 
 }
@@ -250,9 +252,12 @@ class BoundFieldDescriptor[S, T](
   override def hashCode(): Int = field.hashCode()
   override def equals(other: Any) =
     other match {
-      case o: BasicFieldDescriptor[T]    => field.equals(o)
-      case o: BoundFieldDescriptor[T, S] => field.equals(o.field)
-      case _                             => false
+      case o: BasicFieldDescriptor[T] =>
+        field.equals(o)
+      case o: BoundFieldDescriptor[T, S] =>
+        field.equals(o.field)
+      case _ =>
+        false
     }
   override def toString() =
     "BoundFieldDescriptor(name: %s, original: %s, converted: %s)".format(
@@ -340,10 +345,14 @@ class ValidatedBoundFieldDescriptor[S, T](
   override def hashCode(): Int = field.hashCode()
   override def equals(other: Any) =
     other match {
-      case o: BasicFieldDescriptor[T]             => field.equals(o)
-      case o: BoundFieldDescriptor[T, S]          => field.equals(o.field)
-      case o: ValidatedBoundFieldDescriptor[S, T] => field.equals(o.field)
-      case _                                      => false
+      case o: BasicFieldDescriptor[T] =>
+        field.equals(o)
+      case o: BoundFieldDescriptor[T, S] =>
+        field.equals(o.field)
+      case o: ValidatedBoundFieldDescriptor[S, T] =>
+        field.equals(o.field)
+      case _ =>
+        false
     }
   override def toString() =
     "BoundFieldDescriptor(name: %s, original: %s, converted: %s)".format(

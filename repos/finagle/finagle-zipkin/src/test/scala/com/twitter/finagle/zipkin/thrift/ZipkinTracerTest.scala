@@ -63,7 +63,8 @@ class ZipkinTracerTest
           intercept[IllegalArgumentException] {
             id(event)
           }
-        case _ => assert(id(event) == event)
+        case _ =>
+          assert(id(event) == event)
       }
     }
   }

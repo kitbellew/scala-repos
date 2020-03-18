@@ -238,9 +238,12 @@ object Source {
     */
   def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] =
     g match {
-      case s: Source[T, M] ⇒ s
-      case s: javadsl.Source[T, M] ⇒ s.asScala
-      case other ⇒ new Source(other.module)
+      case s: Source[T, M] ⇒
+        s
+      case s: javadsl.Source[T, M] ⇒
+        s.asScala
+      case other ⇒
+        new Source(other.module)
     }
 
   /**

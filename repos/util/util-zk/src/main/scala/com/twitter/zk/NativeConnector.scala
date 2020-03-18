@@ -39,7 +39,8 @@ case class NativeConnector(
 
   onSessionEvent {
     // Invalidate the connection on expiration.
-    case StateEvent.Expired => Await.ready(release())
+    case StateEvent.Expired =>
+      Await.ready(release())
   }
 
   /*
@@ -79,7 +80,8 @@ case class NativeConnector(
   def release() =
     serialized {
       connection match {
-        case None => Future.Unit
+        case None =>
+          Future.Unit
         case Some(c) => {
           connection = None
           c.release()

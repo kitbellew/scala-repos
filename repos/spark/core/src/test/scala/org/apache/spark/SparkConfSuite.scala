@@ -265,7 +265,8 @@ class SparkConfSuite
     assert(conf.get(newName) === "4")
 
     val count = conf.getAll.count {
-      case (k, v) => k.startsWith("spark.history.")
+      case (k, v) =>
+        k.startsWith("spark.history.")
     }
     assert(count === 4)
 

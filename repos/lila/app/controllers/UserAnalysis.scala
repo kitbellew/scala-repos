@@ -22,13 +22,17 @@ object UserAnalysis extends LilaController with TheftPrevention {
 
   def parse(arg: String) =
     arg.split("/", 2) match {
-      case Array(key) => load("", Variant orDefault key)
+      case Array(key) =>
+        load("", Variant orDefault key)
       case Array(key, fen) =>
         Variant.byKey get key match {
-          case Some(variant) => load(fen, variant)
-          case _             => load(arg, Standard)
+          case Some(variant) =>
+            load(fen, variant)
+          case _ =>
+            load(arg, Standard)
         }
-      case _ => load("", Standard)
+      case _ =>
+        load("", Standard)
     }
 
   def load(urlFen: String, variant: Variant) =
@@ -133,10 +137,13 @@ object UserAnalysis extends LilaController with TheftPrevention {
               forecasts =>
                 Env.round.forecastApi.save(pov, forecasts) >>
                   Env.round.forecastApi.loadForDisplay(pov) map {
-                  case None     => Ok(Json.obj("none" -> true))
-                  case Some(fc) => Ok(Json toJson fc) as JSON
+                  case None =>
+                    Ok(Json.obj("none" -> true))
+                  case Some(fc) =>
+                    Ok(Json toJson fc) as JSON
                 } recover {
-                  case Forecast.OutOfSync => Ok(Json.obj("reload" -> true))
+                  case Forecast.OutOfSync =>
+                    Ok(Json.obj("reload" -> true))
                 }
             )
       }

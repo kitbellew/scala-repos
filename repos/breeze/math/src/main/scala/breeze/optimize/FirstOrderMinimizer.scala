@@ -257,7 +257,8 @@ object FirstOrderMinimizer {
         : Option[ConvergenceReason] = {
       (checks zip info).iterator
         .flatMap {
-          case (c, i) => c(state, i.asInstanceOf[c.Info])
+          case (c, i) =>
+            c(state, i.asInstanceOf[c.Info])
         }
         .toStream
         .headOption

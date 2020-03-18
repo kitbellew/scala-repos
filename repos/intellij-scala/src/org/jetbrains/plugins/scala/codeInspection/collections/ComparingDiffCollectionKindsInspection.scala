@@ -41,18 +41,25 @@ object ComparingDiffCollectionKinds extends SimplificationType {
         }
         convertSimplification(leftSide = true) ++ convertSimplification(
           leftSide = false)
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
 
   private object collectionOfKind {
     def unapply(expr: ScExpression): Option[String] = {
       expr match {
-        case _ if isSeq(expr)      => Some("Seq")
-        case _ if isSet(expr)      => Some("Set")
-        case _ if isMap(expr)      => Some("Map")
-        case _ if isIterator(expr) => Some("Iterator")
-        case _ if isArray(expr)    => Some("Array")
-        case _                     => None
+        case _ if isSeq(expr) =>
+          Some("Seq")
+        case _ if isSet(expr) =>
+          Some("Set")
+        case _ if isMap(expr) =>
+          Some("Map")
+        case _ if isIterator(expr) =>
+          Some("Iterator")
+        case _ if isArray(expr) =>
+          Some("Array")
+        case _ =>
+          None
       }
     }
   }
@@ -60,9 +67,12 @@ object ComparingDiffCollectionKinds extends SimplificationType {
   private object `(!)==` {
     def unapply(expr: ScExpression): Option[(ScExpression, ScExpression)] = {
       expr match {
-        case left `==` right => Some(left, right)
-        case left `!=` right => Some(left, right)
-        case _               => None
+        case left `==` right =>
+          Some(left, right)
+        case left `!=` right =>
+          Some(left, right)
+        case _ =>
+          None
       }
     }
   }
@@ -76,7 +86,8 @@ object ComparingDiffCollectionKinds extends SimplificationType {
         case _: ScMethodCall | _: ScReferenceExpression |
             _: ScParenthesisedExpr | _: ScTuple =>
           s"${subExpr.getText}.$conversion"
-        case _ => s"(${subExpr.getText}).$conversion"
+        case _ =>
+          s"(${subExpr.getText}).$conversion"
       }
     val exprText = expr.getText
     val rangeInParent = subExpr.getTextRange.shiftRight(-expr.getTextOffset)

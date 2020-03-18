@@ -278,8 +278,10 @@ object ClusterSingletonManager {
 
       def matchingRole(member: Member): Boolean =
         role match {
-          case None ⇒ true
-          case Some(r) ⇒ member.hasRole(r)
+          case None ⇒
+            true
+          case Some(r) ⇒
+            member.hasRole(r)
         }
 
       def trackChange(block: () ⇒ Unit): Unit = {
@@ -328,8 +330,10 @@ object ClusterSingletonManager {
       }
 
       def receive = {
-        case state: CurrentClusterState ⇒ handleInitial(state)
-        case MemberUp(m) ⇒ add(m)
+        case state: CurrentClusterState ⇒
+          handleInitial(state)
+        case MemberUp(m) ⇒
+          add(m)
         case mEvent: MemberEvent
             if (
               mEvent.isInstanceOf[MemberExited] || mEvent
@@ -476,7 +480,8 @@ class ClusterSingletonManager(
 
   def cleanupOverdueNotMemberAnyMore(): Unit = {
     removed = removed filter {
-      case (address, deadline) ⇒ deadline.hasTimeLeft
+      case (address, deadline) ⇒
+        deadline.hasTimeLeft
     }
   }
 
@@ -550,8 +555,10 @@ class ClusterSingletonManager(
           "Younger observed OldestChanged: [{} -> myself]",
           previousOldestOption)
         previousOldestOption match {
-          case None ⇒ gotoOldest()
-          case Some(prev) if removed.contains(prev) ⇒ gotoOldest()
+          case None ⇒
+            gotoOldest()
+          case Some(prev) if removed.contains(prev) ⇒
+            gotoOldest()
           case Some(prev) ⇒
             peer(prev) ! HandOverToMe
             goto(BecomingOldest) using BecomingOldestData(previousOldestOption)
@@ -819,7 +826,8 @@ class ClusterSingletonManager(
   }
 
   whenUnhandled {
-    case Event(_: CurrentClusterState, _) ⇒ stay
+    case Event(_: CurrentClusterState, _) ⇒
+      stay
     case Event(MemberExited(m), _) ⇒
       if (m.address == cluster.selfAddress) {
         selfExited = true
@@ -866,12 +874,15 @@ class ClusterSingletonManager(
   }
 
   onTransition {
-    case BecomingOldest -> _ ⇒ cancelTimer(HandOverRetryTimer)
-    case WasOldest -> _ ⇒ cancelTimer(TakeOverRetryTimer)
+    case BecomingOldest -> _ ⇒
+      cancelTimer(HandOverRetryTimer)
+    case WasOldest -> _ ⇒
+      cancelTimer(TakeOverRetryTimer)
   }
 
   onTransition {
-    case _ -> (Younger | Oldest) ⇒ getNextOldestChanged()
+    case _ -> (Younger | Oldest) ⇒
+      getNextOldestChanged()
   }
 
   onTransition {

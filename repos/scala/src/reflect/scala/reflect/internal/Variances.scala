@@ -114,7 +114,8 @@ trait Variances {
         tp match {
           case AnnotatedType(annots, _) =>
             annots exists (_ matches definitions.uncheckedVarianceClass)
-          case _ => false
+          case _ =>
+            false
         }
 
       private def checkVarianceOfSymbol(sym: Symbol) {
@@ -145,9 +146,12 @@ trait Variances {
       }
       private def resultTypeOnly(tp: Type) =
         tp match {
-          case mt: MethodType => !inRefinement
-          case pt: PolyType   => true
-          case _              => false
+          case mt: MethodType =>
+            !inRefinement
+          case pt: PolyType =>
+            true
+          case _ =>
+            false
         }
 
       /** For PolyTypes, type parameters are skipped because they are defined
@@ -157,18 +161,23 @@ trait Variances {
         */
       def apply(tp: Type): Type = {
         tp match {
-          case _ if isUncheckedVariance(tp)          =>
-          case _ if resultTypeOnly(tp)               => this(tp.resultType)
-          case TypeRef(_, sym, _) if sym.isAliasType => this(tp.normalize)
+          case _ if isUncheckedVariance(tp) =>
+          case _ if resultTypeOnly(tp) =>
+            this(tp.resultType)
+          case TypeRef(_, sym, _) if sym.isAliasType =>
+            this(tp.normalize)
           case TypeRef(_, sym, _) if !sym.variance.isInvariant =>
             checkVarianceOfSymbol(sym);
             mapOver(tp)
-          case RefinedType(_, _)            => withinRefinement(mapOver(tp))
-          case ClassInfoType(parents, _, _) => parents foreach this
+          case RefinedType(_, _) =>
+            withinRefinement(mapOver(tp))
+          case ClassInfoType(parents, _, _) =>
+            parents foreach this
           case mt @ MethodType(_, result) =>
             flipped(mt.paramTypes foreach this);
             this(result)
-          case _ => mapOver(tp)
+          case _ =>
+            mapOver(tp)
         }
         // We're using TypeMap here for type traversal only. To avoid wasteful symbol
         // cloning during the recursion, it is important to return the input `tp`, rather
@@ -245,20 +254,30 @@ trait Variances {
         inType(sym.info)
     def inType(tp: Type): Variance =
       tp match {
-        case ErrorType | WildcardType | NoType | NoPrefix => Bivariant
-        case ThisType(_) | ConstantType(_)                => Bivariant
-        case TypeRef(_, `tparam`, _)                      => Covariant
-        case BoundedWildcardType(bounds)                  => inType(bounds)
-        case NullaryMethodType(restpe)                    => inType(restpe)
-        case SingleType(pre, sym)                         => inType(pre)
+        case ErrorType | WildcardType | NoType | NoPrefix =>
+          Bivariant
+        case ThisType(_) | ConstantType(_) =>
+          Bivariant
+        case TypeRef(_, `tparam`, _) =>
+          Covariant
+        case BoundedWildcardType(bounds) =>
+          inType(bounds)
+        case NullaryMethodType(restpe) =>
+          inType(restpe)
+        case SingleType(pre, sym) =>
+          inType(pre)
         case TypeRef(pre, _, _) if tp.isHigherKinded =>
           inType(pre) // a type constructor cannot occur in tp's args
-        case TypeRef(pre, sym, args) => inType(pre) & inArgs(sym, args)
-        case TypeBounds(lo, hi)      => inType(lo).flip & inType(hi)
+        case TypeRef(pre, sym, args) =>
+          inType(pre) & inArgs(sym, args)
+        case TypeBounds(lo, hi) =>
+          inType(lo).flip & inType(hi)
         case RefinedType(parents, defs) =>
           inTypes(parents) & inSyms(defs.toList)
-        case MethodType(params, restpe) => inSyms(params).flip & inType(restpe)
-        case PolyType(tparams, restpe)  => inSyms(tparams).flip & inType(restpe)
+        case MethodType(params, restpe) =>
+          inSyms(params).flip & inType(restpe)
+        case PolyType(tparams, restpe) =>
+          inSyms(tparams).flip & inType(restpe)
         case ExistentialType(tparams, restpe) =>
           inSyms(tparams) & inType(restpe)
         case AnnotatedType(annots, tp) =>

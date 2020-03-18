@@ -146,8 +146,9 @@ class DefaultEventHandler[K, V](
               val failedTopicPartitions = send(brokerid, messageSetPerBroker)
               failedTopicPartitions.foreach(topicPartition => {
                 messagesPerBrokerMap.get(topicPartition) match {
-                  case Some(data) => failedProduceRequests.appendAll(data)
-                  case None       => // nothing
+                  case Some(data) =>
+                    failedProduceRequests.appendAll(data)
+                  case None => // nothing
                 }
               })
             case None => // failed to group messages

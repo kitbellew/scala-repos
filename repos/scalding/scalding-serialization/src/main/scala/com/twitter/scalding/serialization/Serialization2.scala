@@ -37,9 +37,12 @@ class Serialization2[A, B](
     val a = serA.read(in)
     val b = serB.read(in)
     (a, b) match {
-      case (Success(a), Success(b)) => Success((a, b))
-      case (Failure(e), _)          => Failure(e)
-      case (_, Failure(e))          => Failure(e)
+      case (Success(a), Success(b)) =>
+        Success((a, b))
+      case (Failure(e), _) =>
+        Failure(e)
+      case (_, Failure(e)) =>
+        Failure(e)
     }
   }
 
@@ -76,7 +79,8 @@ object OrderedSerialization2 {
         new OrderedSerialization2(
           ordA.asInstanceOf[OrderedSerialization[A]],
           ordB.asInstanceOf[OrderedSerialization[B]])
-      case _ => Ordering.Tuple2(ordA, ordB)
+      case _ =>
+        Ordering.Tuple2(ordA, ordB)
     }
   }
 }
@@ -99,9 +103,12 @@ class OrderedSerialization2[A, B](
     // we have to read the second ones to skip
     val cB = ordB.compareBinary(a, b)
     cA match {
-      case OrderedSerialization.Equal                 => cB
-      case f @ OrderedSerialization.CompareFailure(_) => f
-      case _                                          => cA // the first is not equal
+      case OrderedSerialization.Equal =>
+        cB
+      case f @ OrderedSerialization.CompareFailure(_) =>
+        f
+      case _ =>
+        cA // the first is not equal
     }
   }
 }

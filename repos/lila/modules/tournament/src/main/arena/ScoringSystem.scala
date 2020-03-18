@@ -16,11 +16,16 @@ object ScoringSystem extends AbstractScoringSystem {
 
     val value = (
       (win, flag) match {
-        case (Some(true), Double) => 4
-        case (Some(true), _)      => 2
-        case (None, Double)       => 2
-        case (None, _)            => 1
-        case _                    => 0
+        case (Some(true), Double) =>
+          4
+        case (Some(true), _) =>
+          2
+        case (None, Double) =>
+          2
+        case (None, _) =>
+          1
+        case _ =>
+          0
       }
     ) + (~win ?? berserk)
 
@@ -63,12 +68,15 @@ object ScoringSystem extends AbstractScoringSystem {
                     StreakStarter
                   else
                     n.flatMap(_.winner) match {
-                      case Some(w) if (userId == w) => StreakStarter
-                      case _                        => Normal
+                      case Some(w) if (userId == w) =>
+                        StreakStarter
+                      case _ =>
+                        Normal
                     },
                   berserkValue
                 )
-              case _ => Score(Some(false), Normal, berserkValue)
+              case _ =>
+                Score(Some(false), Normal, berserkValue)
             }
           ) :: scores
       }

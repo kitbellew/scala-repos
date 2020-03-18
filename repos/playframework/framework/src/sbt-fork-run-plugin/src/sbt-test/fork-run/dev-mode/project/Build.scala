@@ -37,7 +37,8 @@ object DevModeBuild {
         val actual =
           try IO.readLines(target.value / "reload.log").count(_.nonEmpty)
           catch {
-            case _: java.io.IOException => 0
+            case _: java.io.IOException =>
+              0
           }
         if (expected == actual) {
           println(s"Expected and got $expected reloads")

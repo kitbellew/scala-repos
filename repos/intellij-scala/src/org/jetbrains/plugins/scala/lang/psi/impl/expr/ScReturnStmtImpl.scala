@@ -25,8 +25,10 @@ class ScReturnStmtImpl(node: ASTNode)
     with ScReturnStmt {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

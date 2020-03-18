@@ -99,8 +99,10 @@ trait Formats {
     val ord = Ordering[Int].on[(Class[_], FieldSerializer[_])](x =>
       delta(x._1, clazz))
     fieldSerializers filter (_._1.isAssignableFrom(clazz)) match {
-      case Nil => None
-      case xs  => Some((xs min ord)._2)
+      case Nil =>
+        None
+      case xs =>
+        Some((xs min ord)._2)
     }
   }
 
@@ -277,7 +279,8 @@ trait DefaultFormats extends Formats {
         try {
           Some(formatter.parse(s))
         } catch {
-          case e: ParseException => None
+          case e: ParseException =>
+            None
         }
 
       def format(d: Date) = formatter.format(d)

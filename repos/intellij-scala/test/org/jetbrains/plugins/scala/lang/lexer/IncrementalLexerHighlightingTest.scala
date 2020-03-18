@@ -44,7 +44,8 @@ class IncrementalLexerHighlightingTest
             },
             "",
             null)
-      case a => myFixture.`type`(a)
+      case a =>
+        myFixture.`type`(a)
     }
 
     val incSegments =

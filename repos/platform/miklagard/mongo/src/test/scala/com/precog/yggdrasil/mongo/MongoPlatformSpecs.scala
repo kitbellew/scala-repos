@@ -152,10 +152,12 @@ object MongoPlatformSpecEngine extends Logging {
 
                 // Verify that things did actually make it to disk
                 assert(collection.count() == objs.size)
-              case Failure(error) => logger.error("Error loading: " + error)
+              case Failure(error) =>
+                logger.error("Error loading: " + error)
             }
           } catch {
-            case t: Throwable => logger.error("Error loading: " + t)
+            case t: Throwable =>
+              logger.error("Error loading: " + t)
           }
         }
       }

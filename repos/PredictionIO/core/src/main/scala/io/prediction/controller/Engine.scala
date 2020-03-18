@@ -228,8 +228,10 @@ class Engine[TD, EI, PD, Q, P, A](
         val models = algorithms.zip(persistedModels).map {
           case (algo, m) =>
             m match {
-              case Unit => algo.trainBase(sc, pd)
-              case _    => m
+              case Unit =>
+                algo.trainBase(sc, pd)
+              case _ =>
+                m
             }
         }
         models
@@ -392,8 +394,10 @@ class Engine[TD, EI, PD, Q, P, A](
 
     val algorithmsParams: Seq[(String, Params)] =
       variantJson findField {
-        case JField("algorithms", _) => true
-        case _                       => false
+        case JField("algorithms", _) =>
+          true
+        case _ =>
+          false
       } map { jv =>
         val algorithmsParamsJson = jv._2
         algorithmsParamsJson match {
@@ -409,7 +413,8 @@ class Engine[TD, EI, PD, Q, P, A](
                   algorithmClassMap(eap.name),
                   jsonExtractor))
             }
-          case _ => Nil
+          case _ =>
+            Nil
         }
       } getOrElse Seq(("", EmptyParams()))
 
@@ -798,7 +803,8 @@ object Engine {
 
     val suppQAsMap: Map[EX, RDD[(QX, (Q, A))]] = evalQAsMap.mapValues { qas =>
       qas.map {
-        case (qx, (q, a)) => (qx, (serving.supplementBase(q), a))
+        case (qx, (q, a)) =>
+          (qx, (serving.supplementBase(q), a))
       }
     }
 
@@ -853,11 +859,13 @@ object Engine {
           val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
             .join(qasMap)
             .map {
-              case (qx, t) => (qx, t._2._1, t._1, t._2._2)
+              case (qx, t) =>
+                (qx, t._2._1, t._1, t._2._2)
             }
 
           val qpaMap: RDD[(Q, P, A)] = qpsaMap.map {
-            case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
+            case (qx, q, ps, a) =>
+              (q, serving.serveBase(q, ps), a)
           }
           (ex, qpaMap)
         }

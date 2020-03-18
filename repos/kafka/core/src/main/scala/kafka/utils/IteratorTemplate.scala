@@ -52,9 +52,12 @@ abstract class IteratorTemplate[T]
     if (state == FAILED)
       throw new IllegalStateException("Iterator is in failed state")
     state match {
-      case DONE  => false
-      case READY => true
-      case _     => maybeComputeNext()
+      case DONE =>
+        false
+      case READY =>
+        true
+      case _ =>
+        maybeComputeNext()
     }
   }
 

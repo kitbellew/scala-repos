@@ -287,7 +287,8 @@ class CSRFAction(
     def findToken(position: Int): Option[String] = {
       // Find the next boundary from position
       prefixedBody.indexOfSlice(boundaryLine, position) match {
-        case -1           => None
+        case -1 =>
+          None
         case nextBoundary =>
           // Progress past the CRLF at the end of the boundary
           val nextCrlf = prefixedBody.indexOfSlice(
@@ -629,7 +630,8 @@ case class CSRFCheck @Inject() (
                       body.asInstanceOf[Map[String, Seq[String]]]
                     case body: play.api.mvc.MultipartFormData[_] =>
                       body.asFormUrlEncoded
-                    case _ => Map.empty[String, Seq[String]]
+                    case _ =>
+                      Map.empty[String, Seq[String]]
                   }
                 form.get(config.tokenName).flatMap(_.headOption)
               })

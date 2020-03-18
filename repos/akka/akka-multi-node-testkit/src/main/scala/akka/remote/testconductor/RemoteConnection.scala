@@ -41,7 +41,8 @@ private[akka] class ProtobufEncoder extends OneToOneEncoder {
         val bytes = m.toByteArray()
         ctx.getChannel.getConfig.getBufferFactory
           .getBuffer(bytes, 0, bytes.length)
-      case other ⇒ other
+      case other ⇒
+        other
     }
 }
 
@@ -60,7 +61,8 @@ private[akka] class ProtobufDecoder(prototype: Message)
         val bytes = new Array[Byte](len)
         buf.getBytes(buf.readerIndex, bytes, 0, len)
         prototype.getParserForType.parseFrom(bytes)
-      case other ⇒ other
+      case other ⇒
+        other
     }
 }
 
@@ -137,8 +139,10 @@ private[akka] object RemoteConnection {
 
   def getAddrString(channel: Channel) =
     channel.getRemoteAddress match {
-      case i: InetSocketAddress ⇒ i.toString
-      case _ ⇒ "[unknown]"
+      case i: InetSocketAddress ⇒
+        i.toString
+      case _ ⇒
+        "[unknown]"
     }
 
   def shutdown(channel: Channel) =

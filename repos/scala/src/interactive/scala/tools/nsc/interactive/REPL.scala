@@ -164,7 +164,8 @@ object REPL {
   def using[T, U](svar: Response[T])(op: T => U): Option[U] = {
     val res =
       svar.get match {
-        case Left(result) => Some(op(result))
+        case Left(result) =>
+          Some(op(result))
         case Right(exc) =>
           exc.printStackTrace;
           println("ERROR: " + exc);

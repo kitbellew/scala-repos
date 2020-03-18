@@ -284,9 +284,12 @@ object Source {
     */
   def fromGraph[T, M](g: Graph[SourceShape[T], M]): Source[T, M] =
     g match {
-      case s: Source[T, M] ⇒ s
-      case s if s eq scaladsl.Source.empty ⇒ empty().asInstanceOf[Source[T, M]]
-      case other ⇒ new Source(scaladsl.Source.fromGraph(other))
+      case s: Source[T, M] ⇒
+        s
+      case s if s eq scaladsl.Source.empty ⇒
+        empty().asInstanceOf[Source[T, M]]
+      case other ⇒
+        new Source(scaladsl.Source.fromGraph(other))
     }
 
   /**
@@ -1605,7 +1608,8 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Source(
       delegate.prefixAndTail(n).map {
-        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+        case (taken, tail) ⇒
+          akka.japi.Pair(taken.asJava, tail.asJava)
       })
 
   /**

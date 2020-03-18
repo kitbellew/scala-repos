@@ -121,16 +121,22 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
   def asJsonValue: Box[JsonAST.JValue] =
     Full(
       get match {
-        case null  => JsonAST.JNull
-        case value => JsonAST.JString(base64Encode(value))
+        case null =>
+          JsonAST.JNull
+        case value =>
+          JsonAST.JString(base64Encode(value))
       })
 
   override def setFromAny(f: Any): Array[Byte] =
     f match {
-      case null | JsonAST.JNull    => this.set(null)
-      case JsonAST.JString(base64) => this.set(base64Decode(base64))
-      case array: Array[Byte]      => this.set(array)
-      case s                       => this.set(s.toString.getBytes("UTF-8"))
+      case null | JsonAST.JNull =>
+        this.set(null)
+      case JsonAST.JString(base64) =>
+        this.set(base64Decode(base64))
+      case array: Array[Byte] =>
+        this.set(array)
+      case s =>
+        this.set(s.toString.getBytes("UTF-8"))
     }
 
   def jdbcFriendly(field: String): Object = get
@@ -149,9 +155,12 @@ abstract class MappedBinary[T <: Mapper[T]](val fieldOwner: T)
           case f: MappedBinary[T] =>
             val toSet =
               v match {
-                case null            => null
-                case ba: Array[Byte] => ba
-                case other           => other.toString.getBytes("UTF-8")
+                case null =>
+                  null
+                case ba: Array[Byte] =>
+                  ba
+                case other =>
+                  other.toString.getBytes("UTF-8")
               }
             f.data() = toSet
             f.orgData() = toSet
@@ -264,25 +273,38 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
   def asJsonValue: Box[JsonAST.JValue] =
     Full(
       get match {
-        case null => JsonAST.JNull
-        case str  => JsonAST.JString(str)
+        case null =>
+          JsonAST.JNull
+        case str =>
+          JsonAST.JString(str)
       })
 
   protected def i_obscure_!(in: String): String = ""
 
   override def setFromAny(in: Any): String = {
     in match {
-      case JsonAST.JNull                   => this.set(null)
-      case JsonAST.JString(str)            => this.set(str)
-      case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
-      case (s: String) :: _                => this.set(s)
-      case s :: _                          => this.setFromAny(s)
-      case null                            => this.set(null)
-      case s: String                       => this.set(s)
-      case Some(s: String)                 => this.set(s)
-      case Full(s: String)                 => this.set(s)
-      case None | Empty | Failure(_, _, _) => this.set(null)
-      case o                               => this.set(o.toString)
+      case JsonAST.JNull =>
+        this.set(null)
+      case JsonAST.JString(str) =>
+        this.set(str)
+      case seq: Seq[_] if !seq.isEmpty =>
+        seq.map(setFromAny).apply(0)
+      case (s: String) :: _ =>
+        this.set(s)
+      case s :: _ =>
+        this.setFromAny(s)
+      case null =>
+        this.set(null)
+      case s: String =>
+        this.set(s)
+      case Some(s: String) =>
+        this.set(s)
+      case Full(s: String) =>
+        this.set(s)
+      case None | Empty | Failure(_, _, _) =>
+        this.set(null)
+      case o =>
+        this.set(o.toString)
     }
   }
 
@@ -290,8 +312,10 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
 
   def real_convertToJDBCFriendly(value: String): Object =
     value match {
-      case null => null
-      case s    => s
+      case null =>
+        null
+      case s =>
+        s
     }
 
   def buildSetActualValue(
@@ -306,12 +330,16 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
           case f: MappedText[T] =>
             val toSet =
               v match {
-                case null            => null
-                case s: String       => s
-                case ba: Array[Byte] => new String(ba, "UTF-8")
+                case null =>
+                  null
+                case s: String =>
+                  s
+                case ba: Array[Byte] =>
+                  new String(ba, "UTF-8")
                 case clob: java.sql.Clob =>
                   clob.getSubString(1, clob.length.toInt)
-                case other => other.toString
+                case other =>
+                  other.toString
               }
             f.data() = toSet
             f.orgData() = toSet
@@ -332,8 +360,10 @@ abstract class MappedText[T <: Mapper[T]](val fieldOwner: T)
           case f: MappedText[T] =>
             val toSet =
               v match {
-                case null  => null
-                case other => other
+                case null =>
+                  null
+                case other =>
+                  other
               }
             f.data() = toSet
             f.orgData() = toSet
@@ -440,23 +470,36 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
   def asJsonValue: Box[JsonAST.JValue] =
     Full(
       get match {
-        case null => JsonAST.JNull
-        case str  => JsonAST.JString(str)
+        case null =>
+          JsonAST.JNull
+        case str =>
+          JsonAST.JString(str)
       })
 
   override def setFromAny(in: Any): String = {
     in match {
-      case JsonAST.JNull                   => this.set(null)
-      case JsonAST.JString(str)            => this.set(str)
-      case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
-      case (s: String) :: _                => this.set(s)
-      case s :: _                          => this.setFromAny(s)
-      case null                            => this.set(null)
-      case s: String                       => this.set(s)
-      case Some(s: String)                 => this.set(s)
-      case Full(s: String)                 => this.set(s)
-      case None | Empty | Failure(_, _, _) => this.set(null)
-      case o                               => this.set(o.toString)
+      case JsonAST.JNull =>
+        this.set(null)
+      case JsonAST.JString(str) =>
+        this.set(str)
+      case seq: Seq[_] if !seq.isEmpty =>
+        seq.map(setFromAny).apply(0)
+      case (s: String) :: _ =>
+        this.set(s)
+      case s :: _ =>
+        this.setFromAny(s)
+      case null =>
+        this.set(null)
+      case s: String =>
+        this.set(s)
+      case Some(s: String) =>
+        this.set(s)
+      case Full(s: String) =>
+        this.set(s)
+      case None | Empty | Failure(_, _, _) =>
+        this.set(null)
+      case o =>
+        this.set(o.toString)
     }
   }
 
@@ -464,8 +507,10 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
 
   def real_convertToJDBCFriendly(value: String): Object =
     value match {
-      case null => null
-      case s    => s.getBytes("UTF-8")
+      case null =>
+        null
+      case s =>
+        s.getBytes("UTF-8")
     }
 
   def buildSetActualValue(
@@ -480,11 +525,14 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
           case f: MappedFakeClob[T] =>
             val toSet =
               v match {
-                case null            => null
-                case ba: Array[Byte] => new String(ba, "UTF-8")
+                case null =>
+                  null
+                case ba: Array[Byte] =>
+                  new String(ba, "UTF-8")
                 case clob: java.sql.Clob =>
                   clob.getSubString(1, clob.length.toInt)
-                case other => other.toString
+                case other =>
+                  other.toString
               }
             f.data() = toSet
             f.orgData() = toSet
@@ -505,8 +553,10 @@ abstract class MappedFakeClob[T <: Mapper[T]](val fieldOwner: T)
           case f: MappedFakeClob[T] =>
             val toSet =
               v match {
-                case null  => null
-                case other => other
+                case null =>
+                  null
+                case other =>
+                  other
               }
             f.data() = toSet
             f.orgData() = toSet

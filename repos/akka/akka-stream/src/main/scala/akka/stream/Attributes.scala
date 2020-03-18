@@ -77,7 +77,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     */
   def getFirstAttribute[T <: Attribute](c: Class[T]): Optional[T] =
     attributeList.collectFirst {
-      case attr if c.isInstance(attr) => c cast attr
+      case attr if c.isInstance(attr) =>
+        c cast attr
     }.asJava
 
   /**
@@ -86,7 +87,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   def filtered[T <: Attribute: ClassTag]: List[T] = {
     val c = implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]
     attributeList.collect {
-      case attr if c.isAssignableFrom(attr.getClass) ⇒ c.cast(attr)
+      case attr if c.isAssignableFrom(attr.getClass) ⇒
+        c.cast(attr)
     }
   }
 
@@ -110,7 +112,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   def get[T <: Attribute: ClassTag]: Option[T] = {
     val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
     attributeList.reverseIterator.collectFirst[T] {
-      case attr if c.isInstance(attr) => c.cast(attr)
+      case attr if c.isInstance(attr) =>
+        c.cast(attr)
     }
   }
 
@@ -120,7 +123,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   def getFirst[T <: Attribute: ClassTag]: Option[T] = {
     val c = classTag[T].runtimeClass.asInstanceOf[Class[T]]
     attributeList.collectFirst {
-      case attr if c.isInstance(attr) => c.cast(attr)
+      case attr if c.isInstance(attr) =>
+        c.cast(attr)
     }
   }
 
@@ -172,7 +176,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
               concatNames(i, null, b.append(first).append('-').append(nn))
             } else
               concatNames(i, nn, null)
-          case _ ⇒ concatNames(i, first, buf)
+          case _ ⇒
+            concatNames(i, first, buf)
         }
       else if (buf eq null)
         first
@@ -180,8 +185,10 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
         buf.toString
 
     concatNames(attributeList.iterator, null, null) match {
-      case null ⇒ default
-      case some ⇒ some
+      case null ⇒
+        default
+      case some ⇒
+        some
     }
   }
 
@@ -273,7 +280,8 @@ object Attributes {
     mod match {
       case CopiedModule(_, attr, copyOf) ⇒
         (attr and copyOf.attributes).nameOrDefault(default)
-      case _ ⇒ mod.attributes.nameOrDefault(default)
+      case _ ⇒
+        mod.attributes.nameOrDefault(default)
     }
   }
 }

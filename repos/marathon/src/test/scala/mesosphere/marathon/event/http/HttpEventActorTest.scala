@@ -163,7 +163,8 @@ class HttpEventActorTest
 
   class ReturnSubscribersTestActor(subscribers: Set[String]) extends Actor {
     override def receive: Receive = {
-      case GetSubscribers => sender ! EventSubscribers(subscribers)
+      case GetSubscribers =>
+        sender ! EventSubscribers(subscribers)
     }
   }
 }

@@ -281,7 +281,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
       p1 match {
         case vb: VectorBuilder[_] =>
           this.length == vb.length && vb.toHashVector == this.toHashVector
-        case _ => false
+        case _ =>
+          false
       }
     )
 

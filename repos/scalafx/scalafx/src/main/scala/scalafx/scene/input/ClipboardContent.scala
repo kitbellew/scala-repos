@@ -49,7 +49,8 @@ object ClipboardContent {
   def apply[T <: AnyRef](arg: Map[DataFormat, T]): ClipboardContent = {
     val c = new jfxsi.ClipboardContent()
     arg.foreach {
-      case (k, v) => c.put(k.delegate, v)
+      case (k, v) =>
+        c.put(k.delegate, v)
     }
     new ClipboardContent(c)
   }
@@ -57,7 +58,8 @@ object ClipboardContent {
   def apply[T <: AnyRef](elems: (DataFormat, T)*): ClipboardContent = {
     val c = new jfxsi.ClipboardContent()
     elems.foreach {
-      case (k, v) => c.put(k.delegate, v)
+      case (k, v) =>
+        c.put(k.delegate, v)
     }
     new ClipboardContent(c)
   }

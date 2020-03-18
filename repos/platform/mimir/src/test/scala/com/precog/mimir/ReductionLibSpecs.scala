@@ -44,8 +44,10 @@ trait ReductionLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -55,7 +57,8 @@ trait ReductionLibSpecs[M[+_]]
     result must haveSize(1)
 
     val result2 = result collect {
-      case (ids, SDecimal(d)) if ids.length == 0 => d.toDouble
+      case (ids, SDecimal(d)) if ids.length == 0 =>
+        d.toDouble
     }
 
     result2 must contain(value)
@@ -164,7 +167,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2012-12-28T22:38:19.430+06:00")
@@ -178,7 +182,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2010-04-29T09:37:52.599+08:00")
@@ -246,7 +251,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SBoolean(b)) if ids.length == 0 => b
+        case (ids, SBoolean(b)) if ids.length == 0 =>
+          b
       }
 
       result2 must contain(false)
@@ -263,7 +269,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SBoolean(b)) if ids.length == 0 => b
+        case (ids, SBoolean(b)) if ids.length == 0 =>
+          b
       }
 
       result2 must contain(true)
@@ -324,7 +331,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2012-12-28T22:38:19.430+06:00")
@@ -338,7 +346,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2010-04-29T09:37:52.599+08:00")
@@ -442,7 +451,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2012-12-28T22:38:19.430+06:00")
@@ -458,7 +468,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2007-02-04T10:58:14.041-01:00")
@@ -566,7 +577,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2012-05-05T08:58:10.171+10:00")
@@ -582,7 +594,8 @@ trait ReductionLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 0 => d
+        case (ids, SString(d)) if ids.length == 0 =>
+          d
       }
 
       result2 must contain("2007-07-14T03:49:30.311-07:00")

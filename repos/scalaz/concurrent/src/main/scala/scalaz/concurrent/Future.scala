@@ -67,9 +67,12 @@ sealed abstract class Future[+A] {
 
   def flatMap[B](f: A => Future[B]): Future[B] =
     this match {
-      case Now(a)         => Suspend(() => f(a))
-      case Suspend(thunk) => BindSuspend(thunk, f)
-      case Async(listen)  => BindAsync(listen, f)
+      case Now(a) =>
+        Suspend(() => f(a))
+      case Suspend(thunk) =>
+        BindSuspend(thunk, f)
+      case Async(listen) =>
+        BindAsync(listen, f)
       case BindSuspend(thunk, g) =>
         Suspend(() => BindSuspend(thunk, g andThen (_ flatMap f)))
       case BindAsync(listen, g) =>
@@ -84,8 +87,10 @@ sealed abstract class Future[+A] {
     */
   def unsafePerformListen(cb: A => Trampoline[Unit]): Unit =
     (this.step: @unchecked) match {
-      case Now(a)          => cb(a).run
-      case Async(onFinish) => onFinish(cb)
+      case Now(a) =>
+        cb(a).run
+      case Async(onFinish) =>
+        onFinish(cb)
       case BindAsync(onFinish, g) =>
         onFinish(x => Trampoline.delay(g(x)) map (_ unsafePerformListen cb))
     }
@@ -103,7 +108,8 @@ sealed abstract class Future[+A] {
       cb: A => Trampoline[Unit],
       cancel: AtomicBoolean): Unit =
     this.stepInterruptibly(cancel) match {
-      case Now(a) if !cancel.get => cb(a).run
+      case Now(a) if !cancel.get =>
+        cb(a).run
       case Async(onFinish) if !cancel.get =>
         onFinish(a =>
           if (!cancel.get)
@@ -117,7 +123,8 @@ sealed abstract class Future[+A] {
               .delay(g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
           else
             Trampoline.done(()))
-      case _ if cancel.get => ()
+      case _ if cancel.get =>
+        ()
     }
 
   @deprecated("use unsafePerformListenInterruptibly", "7.2")
@@ -134,9 +141,12 @@ sealed abstract class Future[+A] {
   @annotation.tailrec
   final def step: Future[A] =
     this match {
-      case Suspend(thunk)        => thunk().step
-      case BindSuspend(thunk, f) => (thunk() flatMap f).step
-      case _                     => this
+      case Suspend(thunk) =>
+        thunk().step
+      case BindSuspend(thunk, f) =>
+        (thunk() flatMap f).step
+      case _ =>
+        this
     }
 
   /** Like `step`, but may be interrupted by setting `cancel` to true. */
@@ -144,10 +154,12 @@ sealed abstract class Future[+A] {
   final def stepInterruptibly(cancel: AtomicBoolean): Future[A] =
     if (!cancel.get)
       this match {
-        case Suspend(thunk) => thunk().stepInterruptibly(cancel)
+        case Suspend(thunk) =>
+          thunk().stepInterruptibly(cancel)
         case BindSuspend(thunk, f) =>
           (thunk() flatMap f).stepInterruptibly(cancel)
-        case _ => this
+        case _ =>
+          this
       }
     else
       this
@@ -207,7 +219,8 @@ sealed abstract class Future[+A] {
   /** Run this `Future` and block awaiting its result. */
   def unsafePerformSync: A =
     this match {
-      case Now(a) => a
+      case Now(a) =>
+        a
       case _ => {
         val latch = new java.util.concurrent.CountDownLatch(1)
         @volatile
@@ -231,8 +244,10 @@ sealed abstract class Future[+A] {
     */
   def unsafePerformSyncFor(timeoutInMillis: Long): A =
     unsafePerformSyncAttemptFor(timeoutInMillis) match {
-      case -\/(e) => throw e
-      case \/-(a) => a
+      case -\/(e) =>
+        throw e
+      case \/-(a) =>
+        a
     }
 
   def unsafePerformSyncFor(timeout: Duration): A =
@@ -388,7 +403,8 @@ object Future {
                       (
                         a,
                         fs.collect {
-                          case (i, _, rf, _, _) if i != ind => rf
+                          case (i, _, rf, _, _) if i != ind =>
+                            rf
                         }))
                   else {
                     Trampoline.done(
@@ -417,8 +433,10 @@ object Future {
       override def reduceUnordered[A, M](fs: Seq[Future[A]])(implicit
           R: Reducer[A, M]): Future[M] =
         fs match {
-          case Seq()  => Future.now(R.zero)
-          case Seq(f) => f.map(R.unit)
+          case Seq() =>
+            Future.now(R.zero)
+          case Seq(f) =>
+            f.map(R.unit)
           case other =>
             Async { cb =>
               val results = new ConcurrentLinkedQueue[M]

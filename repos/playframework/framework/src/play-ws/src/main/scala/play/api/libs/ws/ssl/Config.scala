@@ -370,8 +370,10 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
 
     val algorithm =
       config.get[Option[String]]("algorithm") match {
-        case None        => KeyManagerFactory.getDefaultAlgorithm
-        case Some(other) => other
+        case None =>
+          KeyManagerFactory.getDefaultAlgorithm
+        case Some(other) =>
+          other
       }
 
     val keyStoreInfos = config.getPrototypedSeq("stores").map { store =>
@@ -387,8 +389,10 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
   def parseTrustManager(config: PlayConfig): TrustManagerConfig = {
     val algorithm =
       config.get[Option[String]]("algorithm") match {
-        case None        => TrustManagerFactory.getDefaultAlgorithm
-        case Some(other) => other
+        case None =>
+          TrustManagerFactory.getDefaultAlgorithm
+        case Some(other) =>
+          other
       }
 
     val trustStoreInfos = config.getPrototypedSeq("stores").map { store =>

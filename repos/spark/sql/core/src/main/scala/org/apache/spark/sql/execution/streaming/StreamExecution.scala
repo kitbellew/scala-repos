@@ -59,7 +59,8 @@ class StreamExecution(
 
   /** All stream sources present the query plan. */
   private val sources = logicalPlan.collect {
-    case s: StreamingRelation => s.source
+    case s: StreamingRelation =>
+      s.source
   }
 
   /** Defines the internal state of execution */
@@ -135,7 +136,8 @@ class StreamExecution(
         Thread.sleep(minBatchTime) // TODO: Could be tighter
       }
     } catch {
-      case _: InterruptedException if state == TERMINATED => // interrupted by stop()
+      case _: InterruptedException
+          if state == TERMINATED => // interrupted by stop()
       case NonFatal(e) =>
         streamDeathCause = new ContinuousQueryException(
           this,
@@ -160,7 +162,8 @@ class StreamExecution(
       case Some(c: CompositeOffset) =>
         val storedProgress = c.offsets
         val sources = logicalPlan collect {
-          case StreamingRelation(source, _) => source
+          case StreamingRelation(source, _) =>
+            source
         }
 
         assert(sources.size == storedProgress.size)
@@ -210,7 +213,8 @@ class StreamExecution(
     // Rewire the plan to use the new attributes that were returned by the source.
     val replacementMap = AttributeMap(replacements)
     val newPlan = withNewSources transformAllExpressions {
-      case a: Attribute if replacementMap.contains(a) => replacementMap(a)
+      case a: Attribute if replacementMap.contains(a) =>
+        replacementMap(a)
     }
 
     if (newOffsets.nonEmpty) {

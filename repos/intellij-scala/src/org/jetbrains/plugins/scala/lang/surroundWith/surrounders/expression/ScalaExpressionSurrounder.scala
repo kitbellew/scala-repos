@@ -50,11 +50,16 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
     val element = elements(0)
     val parent = element.getParent
     parent match {
-      case _: ScInfixExpr           => true
-      case _: ScReferenceExpression => true
-      case _: ScPrefixExpr          => true
-      case _: ScPostfixExpr         => true
-      case _                        => false
+      case _: ScInfixExpr =>
+        true
+      case _: ScReferenceExpression =>
+        true
+      case _: ScPrefixExpr =>
+        true
+      case _: ScPostfixExpr =>
+        true
+      case _ =>
+        false
     }
   }
 

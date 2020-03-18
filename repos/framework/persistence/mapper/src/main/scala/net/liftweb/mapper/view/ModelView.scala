@@ -67,9 +67,12 @@ trait ModelSnippet[T <: Mapper[T]] extends StatefulSnippet {
   def load(entity: T) = view.entity = entity
 
   def dispatch: DispatchIt = {
-    case "list"      => list _
-    case "edit"      => edit _
-    case "newOrEdit" => view.newOrEdit
+    case "list" =>
+      list _
+    case "edit" =>
+      edit _
+    case "newOrEdit" =>
+      view.newOrEdit
   }
 
   /**
@@ -155,7 +158,8 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
       entity match {
         case e: net.liftweb.mapper.KeyedMapper[_, T] =>
           e.primaryKeyField.toString
-        case _ => entity.fieldByName("id").toString
+        case _ =>
+          entity.fieldByName("id").toString
       }
     else
       "<new>"

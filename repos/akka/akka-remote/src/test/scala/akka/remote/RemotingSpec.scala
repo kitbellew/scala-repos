@@ -31,10 +31,14 @@ object RemotingSpec {
     var target: ActorRef = context.system.deadLetters
 
     def receive = {
-      case (p: Props, n: String) ⇒ sender() ! context.actorOf(Props[Echo1], n)
-      case ex: Exception ⇒ throw ex
-      case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
-      case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
+      case (p: Props, n: String) ⇒
+        sender() ! context.actorOf(Props[Echo1], n)
+      case ex: Exception ⇒
+        throw ex
+      case ActorForReq(s) ⇒
+        sender() ! context.actorFor(s)
+      case ActorSelReq(s) ⇒
+        sender() ! context.actorSelection(s)
       case x ⇒
         target = sender();
         sender() ! x
@@ -52,9 +56,12 @@ object RemotingSpec {
 
   class Echo2 extends Actor {
     def receive = {
-      case "ping" ⇒ sender() ! (("pong", sender()))
-      case a: ActorRef ⇒ a ! (("ping", sender()))
-      case ("ping", a: ActorRef) ⇒ sender() ! (("pong", a))
+      case "ping" ⇒
+        sender() ! (("pong", sender()))
+      case a: ActorRef ⇒
+        a ! (("ping", sender()))
+      case ("ping", a: ActorRef) ⇒
+        sender() ! (("pong", a))
       case ("pong", a: ActorRef) ⇒
         a ! (("pong", sender().path.toSerializationFormat))
     }
@@ -62,8 +69,10 @@ object RemotingSpec {
 
   class Proxy(val one: ActorRef, val another: ActorRef) extends Actor {
     def receive = {
-      case s if sender().path == one.path ⇒ another ! s
-      case s if sender().path == another.path ⇒ one ! s
+      case s if sender().path == one.path ⇒
+        another ! s
+      case s if sender().path == another.path ⇒
+        one ! s
     }
   }
 
@@ -187,8 +196,10 @@ class RemotingSpec
       Props(
         new Actor {
           def receive = {
-            case x: Int ⇒ sender() ! byteStringOfSize(x)
-            case x ⇒ sender() ! x
+            case x: Int ⇒
+              sender() ! byteStringOfSize(x)
+            case x ⇒
+              sender() ! x
           }
         }).withDeploy(Deploy.local),
       bigBounceId)
@@ -199,7 +210,8 @@ class RemotingSpec
       Props(
         new Actor {
           def receive = {
-            case x ⇒ testActor ! x
+            case x ⇒
+              testActor ! x
           }
         }).withDeploy(Deploy.local))
     system.eventStream.subscribe(eventForwarder, classOf[AssociationErrorEvent])
@@ -261,7 +273,8 @@ class RemotingSpec
     "support ask" in {
       Await.result(here ? "ping", timeout.duration) match {
         case ("pong", s: akka.pattern.PromiseActorRef) ⇒ // good
-        case m ⇒ fail(m + " was not (pong, AskActorRef)")
+        case m ⇒
+          fail(m + " was not (pong, AskActorRef)")
       }
     }
 
@@ -378,8 +391,10 @@ class RemotingSpec
         Props(
           new Actor {
             def receive = {
-              case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
-              case ActorForReq(s) ⇒ sender() ! context.actorFor(s)
+              case (p: Props, n: String) ⇒
+                sender() ! context.actorOf(p, n)
+              case ActorForReq(s) ⇒
+                sender() ! context.actorFor(s)
             }
           }),
         "looker1")
@@ -430,8 +445,10 @@ class RemotingSpec
         Props(
           new Actor {
             def receive = {
-              case (p: Props, n: String) ⇒ sender() ! context.actorOf(p, n)
-              case ActorSelReq(s) ⇒ sender() ! context.actorSelection(s)
+              case (p: Props, n: String) ⇒
+                sender() ! context.actorOf(p, n)
+              case ActorSelReq(s) ⇒
+                sender() ! context.actorSelection(s)
             }
           }),
         "looker2")
@@ -712,7 +729,8 @@ class RemotingSpec
         awaitCond(registry.transportsReady(rawLocalAddress))
         awaitCond {
           registry.transportFor(rawLocalAddress) match {
-            case None ⇒ false
+            case None ⇒
+              false
             case Some((testTransport, _)) ⇒
               testTransport.associateBehavior.pushError(
                 new InvalidAssociationException("Test connection error"))

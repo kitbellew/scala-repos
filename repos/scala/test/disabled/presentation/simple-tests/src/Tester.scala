@@ -148,9 +148,12 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
         val pos =
           new OffsetPosition(inputs(sfidx), rand.nextInt(testPositions.length))
         rand.nextInt(3) match {
-          case 0 => askTypeAt(pos)
-          case 1 => askTypeCompletion(pos)
-          case 2 => askScopeCompletion(pos)
+          case 0 =>
+            askTypeAt(pos)
+          case 1 =>
+            askTypeCompletion(pos)
+          case 2 =>
+            askScopeCompletion(pos)
         }
       }
     }

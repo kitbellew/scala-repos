@@ -23,8 +23,10 @@ class ScCaseClauseImpl(node: ASTNode)
     with ScCaseClause {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

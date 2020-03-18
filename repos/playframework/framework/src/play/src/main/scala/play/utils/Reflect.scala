@@ -71,7 +71,8 @@ object Reflect {
       case Some(Right(java)) =>
         Seq(bind[ScalaTrait].to[JavaAdapter], bind[JavaInterface].to(java))
 
-      case None => Nil
+      case None =>
+        Nil
     }
   }
 
@@ -116,9 +117,12 @@ object Reflect {
       try {
         Some(environment.classLoader.loadClass(className))
       } catch {
-        case e: ClassNotFoundException if !notFoundFatal => None
-        case e: VirtualMachineError                      => throw e
-        case e: ThreadDeath                              => throw e
+        case e: ClassNotFoundException if !notFoundFatal =>
+          None
+        case e: VirtualMachineError =>
+          throw e
+        case e: ThreadDeath =>
+          throw e
         case e: Throwable =>
           throw new PlayException(
             s"Cannot load $key",
@@ -130,14 +134,16 @@ object Reflect {
     val maybeClass =
       config.get[Option[String]](key) match {
         // If provided, don't bind anything
-        case Some("provided") => None
+        case Some("provided") =>
+          None
         // If empty, use the default
         case None =>
           // If no value, load the default class name, but if it's not found, then fallback to the default class
           loadClass(defaultClassName, notFoundFatal = false)
             .orElse(Some(default.runtimeClass))
         // If a value, load that class
-        case Some(className) => loadClass(className, notFoundFatal = true)
+        case Some(className) =>
+          loadClass(className, notFoundFatal = true)
       }
 
     maybeClass.map {
@@ -160,8 +166,10 @@ object Reflect {
     try {
       createInstance(getClass(fqcn, classLoader))
     } catch {
-      case e: VirtualMachineError => throw e
-      case e: ThreadDeath         => throw e
+      case e: VirtualMachineError =>
+        throw e
+      case e: ThreadDeath =>
+        throw e
       case e: Throwable =>
         val name = simpleName(implicitly[ClassTag[T]].runtimeClass)
         throw new PlayException(

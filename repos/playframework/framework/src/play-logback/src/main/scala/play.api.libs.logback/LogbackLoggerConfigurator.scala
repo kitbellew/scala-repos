@@ -112,12 +112,14 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
           frameworkPackages.add(classOf[play.api.Logger].getName)
 
           properties.foreach {
-            case (name, value) => ctx.putProperty(name, value)
+            case (name, value) =>
+              ctx.putProperty(name, value)
           }
 
           try {
             config match {
-              case Some(url) => configurator.doConfigure(url)
+              case Some(url) =>
+                configurator.doConfigure(url)
               case None =>
                 System.err.println(
                   "Could not detect a logback configuration file, not configuring logback")

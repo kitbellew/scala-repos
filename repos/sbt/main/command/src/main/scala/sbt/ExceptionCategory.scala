@@ -25,8 +25,10 @@ private[sbt] object ExceptionCategory {
           new Full(ite)
         else
           apply(cause)
-      case _: MessageOnlyException => new MessageOnly(t.toString)
-      case _                       => new Full(t)
+      case _: MessageOnlyException =>
+        new MessageOnly(t.toString)
+      case _ =>
+        new Full(t)
     }
 
   object AlreadyHandled extends ExceptionCategory

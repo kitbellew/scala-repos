@@ -45,7 +45,8 @@ private[sql] class TestSQLContext(sc: SparkContext) extends SQLContext(sc) {
             super.clear()
             // Make sure we start with the default test configs even after clear
             TestSQLContext.overrideConfs.foreach {
-              case (key, value) => setConfString(key, value)
+              case (key, value) =>
+                setConfString(key, value)
             }
           }
         }

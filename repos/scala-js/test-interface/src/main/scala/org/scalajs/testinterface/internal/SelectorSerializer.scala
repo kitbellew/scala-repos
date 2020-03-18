@@ -9,7 +9,8 @@ object SelectorSerializer {
 
   def serialize(sel: Selector): js.Dynamic =
     sel match {
-      case sel: SuiteSelector => lit(selType = "SuiteSelector")
+      case sel: SuiteSelector =>
+        lit(selType = "SuiteSelector")
       case sel: TestSelector =>
         lit(selType = "TestSelector", testName = sel.testName)
       case sel: NestedSuiteSelector =>

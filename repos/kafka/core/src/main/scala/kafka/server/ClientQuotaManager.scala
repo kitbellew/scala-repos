@@ -170,7 +170,8 @@ class ClientQuotaManager(
       name: MetricName,
       measurable: Measurable): Rate = {
     measurable match {
-      case r: Rate => r
+      case r: Rate =>
+        r
       case _ =>
         throw new IllegalArgumentException(
           s"Metric $name is not a Rate metric, value $measurable")

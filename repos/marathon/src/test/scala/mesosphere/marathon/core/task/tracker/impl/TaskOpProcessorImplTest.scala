@@ -466,7 +466,8 @@ class TaskOpProcessorImplTest
 
     def toLaunched(task: Task, taskStateOp: TaskStateOp.Launch): Task =
       task.update(taskStateOp) match {
-        case TaskStateChange.Update(launchedTask) => launchedTask
+        case TaskStateChange.Update(launchedTask) =>
+          launchedTask
         case _ =>
           throw new scala.RuntimeException(
             "taskStateOp did not result in a launched task")

@@ -58,9 +58,11 @@ object SbtWatcherMain {
           case ((watcher, _)) =>
             watcher.endSbtExec()
             run()
-          case _ => run()
+          case _ =>
+            run()
         }
-      case STOP => currentExec.foreach(a => a._1.endSbtExec())
+      case STOP =>
+        currentExec.foreach(a => a._1.endSbtExec())
       case IS_RUNNING =>
         messageConsumer.consume(
           currentExec.map { a =>

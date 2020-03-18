@@ -51,7 +51,8 @@ private[streaming] class ForEachDStream[T: ClassTag](
             foreachFunc(rdd, time)
           }
         Some(new Job(time, jobFunc))
-      case None => None
+      case None =>
+        None
     }
   }
 }

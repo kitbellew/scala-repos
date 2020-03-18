@@ -58,8 +58,10 @@ object SimplifyBooleanUtil {
       expr: ScExpression,
       isTopLevel: Boolean = true): Boolean = {
     expr match {
-      case _: ScLiteral if !isTopLevel => booleanConst(expr).isDefined
-      case ScParenthesisedExpr(e)      => canBeSimplified(e, isTopLevel)
+      case _: ScLiteral if !isTopLevel =>
+        booleanConst(expr).isDefined
+      case ScParenthesisedExpr(e) =>
+        canBeSimplified(e, isTopLevel)
       case expression: ScExpression =>
         val children = getScExprChildren(expr)
         val isBooleanOperation =
@@ -69,7 +71,8 @@ object SimplifyBooleanUtil {
             case ScInfixExpr(left, oper, right) =>
               boolInfixOperations.contains(oper.refName) &&
                 isOfBooleanType(left) && isOfBooleanType(right)
-            case _ => false
+            case _ =>
+              false
           }
         isBooleanOperation && isOfBooleanType(expr) && children.exists(
           canBeSimplified(_, isTopLevel = false))
@@ -100,18 +103,23 @@ object SimplifyBooleanUtil {
 
   private def getScExprChildren(expr: ScExpression) =
     expr.children.collect {
-      case expr: ScExpression => expr
+      case expr: ScExpression =>
+        expr
     }.toList
 
   private def booleanConst(expr: ScExpression): Option[Boolean] =
     expr match {
       case literal: ScLiteral =>
         literal.getText match {
-          case "true"  => Some(true)
-          case "false" => Some(false)
-          case _       => None
+          case "true" =>
+            Some(true)
+          case "false" =>
+            Some(false)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 
   private def simplifyTrivially(expr: ScExpression): ScExpression =
@@ -130,7 +138,8 @@ object SimplifyBooleanUtil {
               ScalaPsiElementFactory.createExpressionFromText(
                 (!bool).toString,
                 expr.getManager)
-            case None => expr
+            case None =>
+              expr
           }
         }
       case ScInfixExpr(leftExpr, operation, rightExpr) =>
@@ -145,11 +154,13 @@ object SimplifyBooleanUtil {
               booleanConst(rightExpr) match {
                 case Some(bool: Boolean) =>
                   simplifyInfixWithLiteral(bool, operName, leftExpr)
-                case None => expr
+                case None =>
+                  expr
               }
           }
         }
-      case _ => expr
+      case _ =>
+        expr
     }
 
   private def simplifyInfixWithLiteral(
@@ -162,10 +173,14 @@ object SimplifyBooleanUtil {
         case Some(bool: Boolean) =>
           val result: Boolean =
             operation match {
-              case "=="       => bool == value
-              case "!=" | "^" => bool != value
-              case "&&" | "&" => bool && value
-              case "||" | "|" => bool || value
+              case "==" =>
+                bool == value
+              case "!=" | "^" =>
+                bool != value
+              case "&&" | "&" =>
+                bool && value
+              case "||" | "|" =>
+                bool || value
             }
           result.toString
         case _ =>
@@ -185,7 +200,8 @@ object SimplifyBooleanUtil {
               ScalaKeyword.TRUE
             case (false, "&&") | (false, "&") =>
               ScalaKeyword.FALSE
-            case _ => throw new IllegalArgumentException("Wrong operation")
+            case _ =>
+              throw new IllegalArgumentException("Wrong operation")
           }
       }
     ScalaPsiElementFactory.createExpressionFromText(text, manager)

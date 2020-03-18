@@ -30,8 +30,10 @@ package object jobs {
 
     def unapply(str: String): Option[Long] =
       str match {
-        case NonNegInt(str) => Some(str.toLong)
-        case _              => None
+        case NonNegInt(str) =>
+          Some(str.toLong)
+        case _ =>
+          None
       }
   }
 

@@ -117,7 +117,8 @@ class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
         writeForThis(page.EntityPage(universe, diagramGenerator, tpl, reporter))
         written += tpl
         tpl.templates collect {
-          case d: DocTemplateEntity => d
+          case d: DocTemplateEntity =>
+            d
         } map writeTemplate
       }
     }

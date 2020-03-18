@@ -41,8 +41,10 @@ object AddrMetadataExtraction {
 
         val idMetadata =
           name match {
-            case bound: Name.Bound => Addr.Metadata("id" -> bound.idStr)
-            case _                 => Addr.Metadata.empty
+            case bound: Name.Bound =>
+              Addr.Metadata("id" -> bound.idStr)
+            case _ =>
+              Addr.Metadata.empty
           }
 
         // delay construction of the ServiceFactory while Addr is Pending

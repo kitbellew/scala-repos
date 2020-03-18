@@ -136,8 +136,10 @@ final class ORMap[A <: ReplicatedData] private[akka] (
       modify: A ⇒ A): ORMap[A] = {
     val newValue =
       values.get(key) match {
-        case Some(old) ⇒ modify(old)
-        case _ ⇒ modify(initial)
+        case Some(old) ⇒
+          modify(old)
+        case _ ⇒
+          modify(initial)
       }
     new ORMap(keys.add(node, key), values.updated(key, newValue))
   }
@@ -195,8 +197,10 @@ final class ORMap[A <: ReplicatedData] private[akka] (
 
   override def needPruningFrom(removedNode: UniqueAddress): Boolean = {
     keys.needPruningFrom(removedNode) || values.exists {
-      case (_, data: RemovedNodePruning) ⇒ data.needPruningFrom(removedNode)
-      case _ ⇒ false
+      case (_, data: RemovedNodePruning) ⇒
+        data.needPruningFrom(removedNode)
+      case _ ⇒
+        false
     }
   }
 
@@ -211,7 +215,8 @@ final class ORMap[A <: ReplicatedData] private[akka] (
           acc.updated(
             key,
             data.prune(removedNode, collapseInto).asInstanceOf[A])
-        case (acc, _) ⇒ acc
+        case (acc, _) ⇒
+          acc
       }
     new ORMap(prunedKeys, prunedValues)
   }
@@ -223,7 +228,8 @@ final class ORMap[A <: ReplicatedData] private[akka] (
         case (acc, (key, data: RemovedNodePruning))
             if data.needPruningFrom(removedNode) ⇒
           acc.updated(key, data.pruningCleanup(removedNode).asInstanceOf[A])
-        case (acc, _) ⇒ acc
+        case (acc, _) ⇒
+          acc
       }
     new ORMap(pruningCleanupedKeys, pruningCleanupedValues)
   }
@@ -234,8 +240,10 @@ final class ORMap[A <: ReplicatedData] private[akka] (
 
   override def equals(o: Any): Boolean =
     o match {
-      case other: ORMap[_] ⇒ keys == other.keys && values == other.values
-      case _ ⇒ false
+      case other: ORMap[_] ⇒
+        keys == other.keys && values == other.values
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = {

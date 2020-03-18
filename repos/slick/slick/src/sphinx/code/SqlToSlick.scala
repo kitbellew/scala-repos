@@ -249,7 +249,8 @@ object SqlToSlick extends App {
           people
             .groupBy(p => p.addressId)
             .map {
-              case (addressId, group) => (addressId, group.map(_.age).avg)
+              case (addressId, group) =>
+                (addressId, group.map(_.age).avg)
             }
             .result
         //#slickQueryGroupBy
@@ -275,10 +276,12 @@ object SqlToSlick extends App {
           people
             .groupBy(p => p.addressId)
             .map {
-              case (addressId, group) => (addressId, group.map(_.age).avg)
+              case (addressId, group) =>
+                (addressId, group.map(_.age).avg)
             }
             .filter {
-              case (addressId, avgAge) => avgAge > 50
+              case (addressId, avgAge) =>
+                avgAge > 50
             }
             .map(_._1)
             .result
@@ -336,7 +339,8 @@ object SqlToSlick extends App {
         val slick =
           //#slickQueryExplicitJoin
           (people join addresses on (_.addressId === _.id)).map {
-            case (p, a) => (p.name, a.city)
+            case (p, a) =>
+              (p.name, a.city)
           }.result
         //#slickQueryExplicitJoin
         val (sqlRes, slickRes) = Await.result(
@@ -357,7 +361,8 @@ object SqlToSlick extends App {
         val slick =
           //#slickQueryLeftJoin
           (addresses joinLeft people on (_.id === _.addressId)).map {
-            case (a, p) => (p.map(_.name), a.city)
+            case (a, p) =>
+              (p.map(_.name), a.city)
           }.result
         //#slickQueryLeftJoin
         val (sqlRes, slickRes) = Await.result(

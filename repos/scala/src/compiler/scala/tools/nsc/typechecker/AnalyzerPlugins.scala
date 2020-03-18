@@ -442,15 +442,19 @@ trait AnalyzerPlugins {
         .filter(_.isActive())
         .map(plugin => (plugin, op.custom(plugin)))
       results.flatMap {
-        case (p, Some(result)) => Some((p, result));
-        case _                 => None
+        case (p, Some(result)) =>
+          Some((p, result));
+        case _ =>
+          None
       } match {
         case (p1, _) :: (p2, _) :: _ =>
           typer.context
             .error(op.position, s"both $p1 and $p2 want to ${op.description}");
           op.default
-        case (_, custom) :: Nil => custom
-        case Nil                => op.default
+        case (_, custom) :: Nil =>
+          custom
+        case Nil =>
+          op.default
       }
     }
   }

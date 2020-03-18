@@ -11,11 +11,15 @@ object Test extends App {
   val a = new Outer
   val b = new Outer
   (new a.Inner: Any) match {
-    case _: b.Inner => println("b")
-    case _: a.Inner => println("a") // this is the case we want
+    case _: b.Inner =>
+      println("b")
+    case _: a.Inner =>
+      println("a") // this is the case we want
   }
   (new b.Inner: Any) match {
-    case _: a.Inner => println("a")
-    case _: b.Inner => println("b") // this is the case we want
+    case _: a.Inner =>
+      println("a")
+    case _: b.Inner =>
+      println("b") // this is the case we want
   }
 }

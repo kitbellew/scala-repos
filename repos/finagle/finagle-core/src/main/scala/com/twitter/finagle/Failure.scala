@@ -125,7 +125,8 @@ final class Failure private[finagle] (
           this.cause.equals(that.cause) &&
           this.flags.equals(that.flags) &&
           this.sources.equals(that.sources)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -245,7 +246,8 @@ object Failure {
         if (f.isFlagged(Naming))
           flags += "naming"
         flags
-      case _ => Set.empty
+      case _ =>
+        Set.empty
     }
 
   /**
@@ -255,8 +257,10 @@ object Failure {
     */
   def adapt(exc: Throwable, flags: Long): Failure =
     exc match {
-      case f: Failure => f.chained.flagged(flags)
-      case exc        => Failure(exc, flags)
+      case f: Failure =>
+        f.chained.flagged(flags)
+      case exc =>
+        Failure(exc, flags)
     }
 
   /**
@@ -266,8 +270,10 @@ object Failure {
   def wrap(exc: Throwable, flags: Long): Failure = {
     require(exc != null)
     exc match {
-      case f: Failure => f.flagged(flags | Failure.Wrapped)
-      case exc        => Failure(exc, flags | Failure.Wrapped)
+      case f: Failure =>
+        f.flagged(flags | Failure.Wrapped)
+      case exc =>
+        Failure(exc, flags | Failure.Wrapped)
     }
   }
 
@@ -306,8 +312,10 @@ object Failure {
       f.masked(ShowMask)
     else
       f.cause match {
-        case Some(inner: Failure)   => show(inner)
-        case Some(inner: Throwable) => inner
+        case Some(inner: Failure) =>
+          show(inner)
+        case Some(inner: Throwable) =>
+          inner
         case None =>
           throw new IllegalArgumentException("Wrapped failure without a cause")
       }
@@ -327,7 +335,8 @@ object Failure {
   private[finagle] class ProcessFailures[Req, Rep]
       extends SimpleFilter[Req, Rep] {
     private[this] val Process: PartialFunction[Throwable, Future[Rep]] = {
-      case f: Failure => Future.exception(f.show)
+      case f: Failure =>
+        Future.exception(f.show)
     }
 
     def apply(req: Req, service: Service[Req, Rep]): Future[Rep] =

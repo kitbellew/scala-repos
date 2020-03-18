@@ -104,7 +104,8 @@ class JobQueryLoggerSpec extends Specification {
             job <- report.jobManager.findJob(report.jobId)
           } yield job
         ).copoint must beLike {
-          case Some(Job(_, _, _, _, _, Cancelled(_, _, _))) => ok
+          case Some(Job(_, _, _, _, _, Cancelled(_, _, _))) =>
+            ok
         }
       }
     }

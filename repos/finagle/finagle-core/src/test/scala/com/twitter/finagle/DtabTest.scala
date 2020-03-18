@@ -76,7 +76,8 @@ class DtabTest extends FunSuite with AssertionsForJUnit {
           /a => /b;
           """)
       } catch {
-        case _: IllegalArgumentException => Dtab.empty
+        case _: IllegalArgumentException =>
+          Dtab.empty
       }
     assert(dtab.length == 2)
   }

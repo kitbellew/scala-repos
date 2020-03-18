@@ -329,7 +329,8 @@ class GroupBuilder(val groupFields: Fields)
         IdentityMode // no reducers or everys, just a sort
       case (Some(Nil), Nil, _) =>
         IdentityMode // no sort, just identity. used to shuffle data
-      case (None, _, _) => GroupByMode
+      case (None, _, _) =>
+        GroupByMode
       case (Some(redList), _, None) =>
         AggregateByMode // use map-side aggregation
       case _ =>
@@ -340,8 +341,10 @@ class GroupBuilder(val groupFields: Fields)
   protected def groupedPipeOf(name: String, in: Pipe): GroupBy = {
     val gb: GroupBy =
       sortF match {
-        case None     => new GroupBy(name, in, groupFields)
-        case Some(sf) => new GroupBy(name, in, groupFields, sf, isReversed)
+        case None =>
+          new GroupBy(name, in, groupFields)
+        case Some(sf) =>
+          new GroupBy(name, in, groupFields, sf, isReversed)
       }
     overrideReducers(gb)
     overrideDescription(gb)
@@ -393,7 +396,8 @@ class GroupBuilder(val groupFields: Fields)
     reds = None
     val sort =
       sortF match {
-        case None => f
+        case None =>
+          f
         case Some(sf) => {
           sf.append(f)
           sf

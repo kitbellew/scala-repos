@@ -36,7 +36,8 @@ class RegressionTest {
       def go(f: Int => Int): Int = f(1)
       def main(): Unit = {
         go {
-          case x if false => x
+          case x if false =>
+            x
         }
       }
     }
@@ -531,7 +532,8 @@ object RegressionTest {
 
     def bug(x: Int, e: Boolean): Unit = {
       x match {
-        case 1      => doSomething(123, 456, ())
+        case 1 =>
+          doSomething(123, 456, ())
         case 2 if e =>
       }
 

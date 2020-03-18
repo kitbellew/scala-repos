@@ -42,7 +42,8 @@ class ServersetNamerTest extends FunSuite with AssertionsForJUnit {
             "env",
             "job:endpoint"))
 
-      case _ => fail(s"invalid name: ${path.show}")
+      case _ =>
+        fail(s"invalid name: ${path.show}")
     }
   }
 

@@ -32,7 +32,8 @@ class DefinitionsFilter extends ElementFilter {
         case _: ScClassParameter =>
           return true
         case _: ScReferenceExpression =>
-        case _                        => return false
+        case _ =>
+          return false
       }
       @tailrec
       def findParent(p: PsiElement): PsiElement = {
@@ -49,7 +50,8 @@ class DefinitionsFilter extends ElementFilter {
                   case Some(elem) =>
                     if (leaf.getTextRange.getStartOffset <= elem.getTextRange.getStartOffset)
                       return null
-                  case _ => return null
+                  case _ =>
+                    return null
                 }
               case _ =>
             }
@@ -70,7 +72,8 @@ class DefinitionsFilter extends ElementFilter {
                   ))
                 return p
             null
-          case _ => findParent(p.getParent)
+          case _ =>
+            findParent(p.getParent)
         }
       }
       val otherParent = findParent(parent)

@@ -30,8 +30,10 @@ class BroadcastSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter1.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter1.addAndGet(msg)
             }
           }))
 
@@ -40,8 +42,10 @@ class BroadcastSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter2.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter2.addAndGet(msg)
             }
           }))
 
@@ -64,7 +68,8 @@ class BroadcastSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
+              case "end" ⇒
+                doneLatch.countDown()
               case msg: Int ⇒
                 counter1.addAndGet(msg)
                 sender() ! "ack"
@@ -76,8 +81,10 @@ class BroadcastSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter2.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter2.addAndGet(msg)
             }
           }))
 

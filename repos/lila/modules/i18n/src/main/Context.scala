@@ -32,8 +32,9 @@ private[i18n] final class Context(
         case (cs, Array(key, _)) =>
           // logwarn("i18n context skipped key " + key)
           cs
-        case (cs, line) if line startsWith "//" => cs
-        case (cs, line)                         =>
+        case (cs, line) if line startsWith "//" =>
+          cs
+        case (cs, line) =>
           // logwarn("i18n context skipped line " + line.mkString("="))
           cs
       }

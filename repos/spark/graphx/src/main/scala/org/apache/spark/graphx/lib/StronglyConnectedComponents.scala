@@ -45,12 +45,14 @@ object StronglyConnectedComponents {
 
     // the graph we update with final SCC ids, and the graph we return at the end
     var sccGraph = graph.mapVertices {
-      case (vid, _) => vid
+      case (vid, _) =>
+        vid
     }
     // graph we are going to work with in our iterations
     var sccWorkGraph = graph
       .mapVertices {
-        case (vid, _) => (vid, false)
+        case (vid, _) =>
+          (vid, false)
       }
       .cache()
 
@@ -79,7 +81,8 @@ object StronglyConnectedComponents {
         // get all vertices to be removed
         val finalVertices = sccWorkGraph.vertices
           .filter {
-            case (vid, (scc, isFinal)) => isFinal
+            case (vid, (scc, isFinal)) =>
+              isFinal
           }
           .mapValues { (vid, data) =>
             data._1
@@ -97,7 +100,8 @@ object StronglyConnectedComponents {
       } while (sccWorkGraph.numVertices < numVertices)
 
       sccWorkGraph = sccWorkGraph.mapVertices {
-        case (vid, (color, isFinal)) => (vid, isFinal)
+        case (vid, (color, isFinal)) =>
+          (vid, isFinal)
       }
 
       // collect min of all my neighbor's scc values, update if it's smaller than mine

@@ -219,14 +219,16 @@ trait IntroduceTypeAlias {
                   computable._1.getElement match {
                     case typeAlias: ScTypeAliasDefinition =>
                       typeAlias
-                    case _ => null
+                    case _ =>
+                      null
                   }
 
                 val mtypeElement =
                   computable._2.getElement match {
                     case typeElement: ScTypeElement =>
                       typeElement
-                    case _ => null
+                    case _ =>
+                      null
                   }
 
                 if (mtypeElement != null && mtypeElement.isValid) {
@@ -398,7 +400,8 @@ trait IntroduceTypeAlias {
       PsiTreeUtil.getParentOfType(parent, classOf[ScObject]) match {
         case objectType: ScObject =>
           objectType.name
-        case _ => ""
+        case _ =>
+          ""
       }
 
     replaceTypeElements(

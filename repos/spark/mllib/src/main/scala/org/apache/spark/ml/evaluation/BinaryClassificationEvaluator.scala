@@ -107,13 +107,16 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
       .map {
         case Row(rawPrediction: Vector, label: Double) =>
           (rawPrediction(1), label)
-        case Row(rawPrediction: Double, label: Double) => (rawPrediction, label)
+        case Row(rawPrediction: Double, label: Double) =>
+          (rawPrediction, label)
       }
     val metrics = new BinaryClassificationMetrics(scoreAndLabels)
     val metric =
       $(metricName) match {
-        case "areaUnderROC" => metrics.areaUnderROC()
-        case "areaUnderPR"  => metrics.areaUnderPR()
+        case "areaUnderROC" =>
+          metrics.areaUnderROC()
+        case "areaUnderPR" =>
+          metrics.areaUnderPR()
       }
     metrics.unpersist()
     metric
@@ -122,8 +125,10 @@ class BinaryClassificationEvaluator @Since("1.4.0") (
   @Since("1.5.0")
   override def isLargerBetter: Boolean =
     $(metricName) match {
-      case "areaUnderROC" => true
-      case "areaUnderPR"  => true
+      case "areaUnderROC" =>
+        true
+      case "areaUnderPR" =>
+        true
     }
 
   @Since("1.4.1")

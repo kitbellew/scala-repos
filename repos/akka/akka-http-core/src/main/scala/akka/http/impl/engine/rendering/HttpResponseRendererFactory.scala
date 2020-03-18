@@ -32,7 +32,8 @@ private[http] class HttpResponseRendererFactory(
       case Some(h) ⇒
         val bytes = (new ByteArrayRendering(32) ~~ h ~~ CrLf).get
         _ ~~ bytes
-      case None ⇒ _ ⇒ ()
+      case None ⇒
+        _ ⇒ ()
     }
 
   // as an optimization we cache the Date header of the last second here
@@ -86,7 +87,8 @@ private[http] class HttpResponseRendererFactory(
                   push(out, outElement)
                   if (close)
                     completeStage()
-                case Streamed(outStream) ⇒ transfer(outStream)
+                case Streamed(outStream) ⇒
+                  transfer(outStream)
               }
 
             override def onUpstreamFinish(): Unit =
@@ -145,7 +147,8 @@ private[http] class HttpResponseRendererFactory(
                   r ~~ DefaultStatusLineBytes
                 else
                   r ~~ StatusLineStartBytes ~~ status ~~ CrLf
-              case `HTTP/1.0` ⇒ r ~~ protocol ~~ ' ' ~~ status ~~ CrLf
+              case `HTTP/1.0` ⇒
+                r ~~ protocol ~~ ' ' ~~ status ~~ CrLf
             }
 
           def render(h: HttpHeader) = r ~~ h ~~ CrLf
@@ -343,7 +346,8 @@ private[http] class HttpResponseRendererFactory(
                   r ~~ connHeader ~~ CrLf
                   headers
                     .collectFirst {
-                      case u: UpgradeToWebSocketResponseHeader ⇒ u
+                      case u: UpgradeToWebSocketResponseHeader ⇒
+                        u
                     }
                     .foreach { header ⇒
                       closeMode = SwitchToWebSocket(header.handler)
@@ -379,7 +383,8 @@ private[http] class HttpResponseRendererFactory(
                   closeMode match {
                     case SwitchToWebSocket(handler) ⇒
                       ResponseRenderingOutput.SwitchToWebSocket(r.get, handler)
-                    case _ ⇒ ResponseRenderingOutput.HttpData(r.get)
+                    case _ ⇒
+                      ResponseRenderingOutput.HttpData(r.get)
                   }
                 }
 

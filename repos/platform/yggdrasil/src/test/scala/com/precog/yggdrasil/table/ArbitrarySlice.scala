@@ -91,15 +91,18 @@ trait ArbitrarySlice {
         arbitraryBitSet(size) map { s =>
           new BitsetColumn(s) with EmptyArrayColumn
         }
-      case CUndefined => Gen.value(UndefinedColumn.raw)
+      case CUndefined =>
+        Gen.value(UndefinedColumn.raw)
     }
   }
 
   def genSlice(identities: Int, refs: Seq[ColumnRef], sz: Int): Gen[Slice] = {
     def sequence[T](l: List[Gen[T]], acc: Gen[List[T]]): Gen[List[T]] = {
       l match {
-        case x :: xs => acc.flatMap(l => sequence(xs, x.map(xv => xv :: l)))
-        case Nil     => acc
+        case x :: xs =>
+          acc.flatMap(l => sequence(xs, x.map(xv => xv :: l)))
+        case Nil =>
+          acc
       }
     }
 

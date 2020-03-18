@@ -61,7 +61,8 @@ class ContentTypeTestServlet(system: ActorSystem) extends ScalatraServlet {
         }
 
         def secondReceive: Receive = {
-          case 2 => firstSender ! 1
+          case 2 =>
+            firstSender ! 1
         }
       }))
 

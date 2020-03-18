@@ -46,8 +46,10 @@ trait Implicits extends Types {
               for (sorter ← sorters)
                 yield sorter._1 -> BSONInteger(
                   sorter._2 match {
-                    case api.SortOrder.Ascending  => 1
-                    case api.SortOrder.Descending => -1
+                    case api.SortOrder.Ascending =>
+                      1
+                    case api.SortOrder.Descending =>
+                      -1
                   })
             ).toStream)
         }

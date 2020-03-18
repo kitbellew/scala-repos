@@ -19,7 +19,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     val Apply(Select(Apply(_, List(Apply(_, strArg))), _), paramList) =
       c.macroApplication
     strArg map {
-      case Literal(Constant(x: String)) => x
+      case Literal(Constant(x: String)) =>
+        x
       case _ =>
         abort("The interpolation contained something other than constants...")
     }
@@ -86,19 +87,29 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
   def rconvTree(resultTypes: Vector[ClassTag[_]]) = {
     val resultTypeTrees = resultTypes.map(
       _.runtimeClass.getCanonicalName match {
-        case "int"     => TypeTree(typeOf[Int])
-        case "byte"    => TypeTree(typeOf[Byte])
-        case "long"    => TypeTree(typeOf[Long])
-        case "short"   => TypeTree(typeOf[Short])
-        case "float"   => TypeTree(typeOf[Float])
-        case "double"  => TypeTree(typeOf[Double])
-        case "boolean" => TypeTree(typeOf[Boolean])
-        case x         => TypeTree(c.mirror.staticClass(x).selfType)
+        case "int" =>
+          TypeTree(typeOf[Int])
+        case "byte" =>
+          TypeTree(typeOf[Byte])
+        case "long" =>
+          TypeTree(typeOf[Long])
+        case "short" =>
+          TypeTree(typeOf[Short])
+        case "float" =>
+          TypeTree(typeOf[Float])
+        case "double" =>
+          TypeTree(typeOf[Double])
+        case "boolean" =>
+          TypeTree(typeOf[Boolean])
+        case x =>
+          TypeTree(c.mirror.staticClass(x).selfType)
       })
 
     resultTypes.size match {
-      case 0 => implicitTree(TypeTree(typeOf[Int]), GetResultTypeTree)
-      case 1 => implicitTree(resultTypeTrees(0), GetResultTypeTree)
+      case 0 =>
+        implicitTree(TypeTree(typeOf[Int]), GetResultTypeTree)
+      case 1 =>
+        implicitTree(resultTypeTrees(0), GetResultTypeTree)
       case n if (n <= 22) =>
         implicitTree(
           AppliedTypeTree(
@@ -183,8 +194,10 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
         case Literal(Constant(s1: String)) :: Literal(
               Constant(s2: String)) :: ss =>
           fuse(Literal(Constant(s1 + s2)) :: ss)
-        case s :: ss => s :: fuse(ss)
-        case Nil     => Nil
+        case s :: ss =>
+          s :: fuse(ss)
+        case Nil =>
+          Nil
       }
 
     if (rawQueryParts.length == 1)
@@ -255,7 +268,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
 
   def staticQueryString: String =
     interpolationResultParams._1 match {
-      case Literal(Constant(s: String)) :: Nil => s
+      case Literal(Constant(s: String)) :: Nil =>
+        s
       case _ =>
         c.abort(
           c.enclosingPosition,

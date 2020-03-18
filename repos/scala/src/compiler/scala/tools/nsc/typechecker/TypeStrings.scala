@@ -195,14 +195,19 @@ trait TypeStrings {
       primitives.toList map { x =>
         val key =
           x match {
-            case "int"  => "Integer"
-            case "char" => "Character"
-            case s      => s.capitalize
+            case "int" =>
+              "Integer"
+            case "char" =>
+              "Character"
+            case s =>
+              s.capitalize
           }
         val value =
           x match {
-            case "void" => "Unit"
-            case s      => s.capitalize
+            case "void" =>
+              "Unit"
+            case s =>
+              s.capitalize
           }
 
         ("java.lang." + key) -> ("scala." + value)
@@ -253,7 +258,8 @@ trait TypeStrings {
     tvarString(tvar.getBounds.toList)
   private def tvarString(bounds: List[AnyRef]): String = {
     val xs = bounds filterNot (_ == ObjectClass) collect {
-      case x: JClass => x
+      case x: JClass =>
+        x
     }
     if (xs.isEmpty)
       "_"
@@ -268,8 +274,10 @@ trait TypeStrings {
     import ru._ // get TypeRefTag in scope so that pattern match works (TypeRef is an abstract type)
     def typeArguments: List[ru.Type] =
       ru.typeOf[T] match {
-        case ru.TypeRef(_, _, args) => args;
-        case _                      => Nil
+        case ru.TypeRef(_, _, args) =>
+          args;
+        case _ =>
+          Nil
       }
     brackets(typeArguments map (jc => tvarString(List(jc))): _*)
   }
@@ -303,7 +311,8 @@ trait TypeStrings {
     ) ++ (alsoStrip map (_ -> ""))
 
     transforms.foldLeft(tpe) {
-      case (res, (k, v)) => res.replaceAll(k, v)
+      case (res, (k, v)) =>
+        res.replaceAll(k, v)
     }
   }
 }

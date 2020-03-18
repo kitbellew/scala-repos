@@ -142,8 +142,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   def classPath: ClassFileLookup[AbstractFile] =
     settings.YclasspathImpl.value match {
-      case ClassPathRepresentationType.Flat      => flatClassPath
-      case ClassPathRepresentationType.Recursive => recursiveClassPath
+      case ClassPathRepresentationType.Flat =>
+        flatClassPath
+      case ClassPathRepresentationType.Recursive =>
+        recursiveClassPath
     }
 
   private def recursiveClassPath: ClassPath[AbstractFile] = platform.classPath
@@ -1034,8 +1036,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def hasClasses(cp: OptClassPath) = cp.isDefined && cp.get.classes.nonEmpty
     def invalidateOrRemove(root: ClassSymbol) = {
       allEntries match {
-        case Some(cp) => root setInfo new loaders.PackageLoader(cp)
-        case None     => root.owner.info.decls unlink root.sourceModule
+        case Some(cp) =>
+          root setInfo new loaders.PackageLoader(cp)
+        case None =>
+          root.owner.info.decls unlink root.sourceModule
       }
       invalidated += root
     }
@@ -1193,7 +1197,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   private def formatExplain(pairs: (String, Any)*): String =
     (pairs.toList collect {
-      case (k, v) if v != null => "%20s: %s".format(k, v)
+      case (k, v) if v != null =>
+        "%20s: %s".format(k, v)
     } mkString "\n")
 
   /** Don't want to introduce new errors trying to report errors,
@@ -1218,7 +1223,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             .File(tree.pos.source.file.file)
             .lines drop start take 7
           val strs = xs.zipWithIndex map {
-            case (line, idx) => f"${start + idx}%6d $line"
+            case (line, idx) =>
+              f"${start + idx}%6d $line"
           }
           strs.mkString(
             "== Source file context for tree position ==\n\n",
@@ -1259,7 +1265,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         "\n  " + errorMessage + "\n" + info1
       ) :: info2 :: context_s :: Nil mkString "\n\n"
     } catch {
-      case _: Exception | _: TypeError => errorMessage
+      case _: Exception | _: TypeError =>
+        errorMessage
     }
 
   /** The id of the currently active run
@@ -1370,8 +1377,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     private lazy val stopPhaseSetting = {
       def isBefore(pd: SubComponent) = settings.stopBefore contains pd.phaseName
       phaseDescriptors sliding 2 collectFirst {
-        case xs if xs exists isBefore                            => (xs find isBefore).get
-        case xs if settings.stopAfter contains xs.head.phaseName => xs.last
+        case xs if xs exists isBefore =>
+          (xs find isBefore).get
+        case xs if settings.stopAfter contains xs.head.phaseName =>
+          xs.last
       }
     }
 
@@ -1461,7 +1470,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       // phases that are excluded; for historical reasons, these settings only select by phase name
       val exclusions = List(ss.stopBefore, ss.stopAfter, ss.skip)
       val inclusions = ss.visibleSettings collect {
-        case s: ss.PhasesSetting if !(exclusions contains s) => s.value
+        case s: ss.PhasesSetting if !(exclusions contains s) =>
+          s.value
       }
       checkPhaseSettings(including = true, inclusions.toSeq: _*)
       checkPhaseSettings(including = false, exclusions map (_.value): _*)
@@ -1636,7 +1646,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           else
             newTypeName(s)
         (str indexOf '@') match {
-          case -1 => mkName(str)
+          case -1 =>
+            mkName(str)
           case idx =>
             val phasePart = str drop (idx + 1)
             settings.Yshow.tryToSetColon(phasePart split ',' toList)
@@ -1693,7 +1704,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         units match {
           case Nil =>
             checkDeprecations() // nothing to compile, report deprecated options
-          case _ => compileUnits(units, firstPhase)
+          case _ =>
+            compileUnits(units, firstPhase)
         }
       }
 
@@ -1785,7 +1797,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def compileFiles(files: List[AbstractFile]) {
       try compileSources(files map getSourceFile)
       catch {
-        case ex: IOException => globalError(ex.getMessage())
+        case ex: IOException =>
+          globalError(ex.getMessage())
       }
     }
 
@@ -1801,7 +1814,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
         compileSources(sources)
       } catch {
-        case ex: IOException => globalError(ex.getMessage())
+        case ex: IOException =>
+          globalError(ex.getMessage())
       }
     }
 
@@ -1810,7 +1824,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       s match {
         case b: BatchSourceFile if settings.script.isSetByUser =>
           ScriptSourceFile(b)
-        case _ => s
+        case _ =>
+          s
       }
 
     /** Compile abstract file until `globalPhase`, but at least
@@ -1885,7 +1900,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             currentRun.symSource.keys map (sym =>
               findNamedMember(fullName, sym)) filterNot (_ == NoSymbol) toList)
         // The name as given matched, so show only that.
-        case sym => List(sym)
+        case sym =>
+          List(sym)
       }
 
     syms foreach { sym =>
@@ -1913,8 +1929,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       suffix: String): File = {
     val outDir = Path(
       settings.outputDirs.outputDirFor(source).path match {
-        case ""   => "."
-        case path => path
+        case "" =>
+          "."
+        case path =>
+          path
       })
     val dir = segments.init.foldLeft(outDir)(_ / _).createDirectory()
     new File(dir.path, segments.last + suffix)

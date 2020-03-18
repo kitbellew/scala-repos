@@ -125,8 +125,10 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] {
 
         val update: Seq[Update] =
           types.get(classOf[NewList]) match {
-            case Some(Seq(last, _*)) => Seq(last)
-            case None                => types.getOrElse(classOf[Rebuild], Nil).take(1)
+            case Some(Seq(last, _*)) =>
+              Seq(last)
+            case None =>
+              types.getOrElse(classOf[Rebuild], Nil).take(1)
           }
 
         update ++ types.getOrElse(classOf[Invoke], Nil).reverse
@@ -148,7 +150,8 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] {
             val transferNodes = transfer.map(n => n.factory -> n).toMap
             var numNew = 0
             val newNodes = svcFactories.map {
-              case f if transferNodes.contains(f) => transferNodes(f)
+              case f if transferNodes.contains(f) =>
+                transferNodes(f)
               case f =>
                 numNew += 1
                 newNode(f, statsReceiver.scope(f.toString))

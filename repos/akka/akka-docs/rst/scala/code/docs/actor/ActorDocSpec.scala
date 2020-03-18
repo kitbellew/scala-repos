@@ -26,8 +26,10 @@ class MyActor extends Actor {
   val log = Logging(context.system, this)
 
   def receive = {
-    case "test" => log.info("received test")
-    case _      => log.info("received unknown message")
+    case "test" =>
+      log.info("received test")
+    case _ =>
+      log.info("received unknown message")
   }
 }
 //#my-actor
@@ -40,7 +42,8 @@ class FirstActor extends Actor {
   val child = context.actorOf(Props[MyActor], name = "myChild")
   //#plus-some-behavior
   def receive = {
-    case x => sender() ! x
+    case x =>
+      sender() ! x
   }
   //#plus-some-behavior
 }
@@ -48,7 +51,8 @@ class FirstActor extends Actor {
 
 class ActorWithArgs(arg: String) extends Actor {
   def receive = {
-    case _ => ()
+    case _ =>
+      ()
   }
 }
 
@@ -68,7 +72,8 @@ class DemoActorWrapper extends Actor {
 
   class DemoActor(magicNumber: Int) extends Actor {
     def receive = {
-      case x: Int => sender() ! (x + magicNumber)
+      case x: Int =>
+        sender() ! (x + magicNumber)
     }
   }
 
@@ -96,8 +101,10 @@ class ActorWithMessagesWrapper {
   class MyActor extends Actor with ActorLogging {
     import MyActor._
     def receive = {
-      case Greeting(greeter) => log.info(s"I was greeted by $greeter.")
-      case Goodbye           => log.info("Someone said goodbye to me.")
+      case Greeting(greeter) =>
+        log.info(s"I was greeted by $greeter.")
+      case Goodbye =>
+        log.info("Someone said goodbye to me.")
     }
   }
   //#messages-in-companion
@@ -172,14 +179,16 @@ class Manager extends Actor {
   val worker = context.watch(context.actorOf(Props[Cruncher], "worker"))
 
   def receive = {
-    case "job" => worker ! "crunch"
+    case "job" =>
+      worker ! "crunch"
     case Shutdown =>
       worker ! PoisonPill
       context become shuttingDown
   }
 
   def shuttingDown: Receive = {
-    case "job" => sender() ! "service unavailable, shutting down"
+    case "job" =>
+      sender() ! "service unavailable, shutting down"
     case Terminated(`worker`) =>
       context stop self
   }
@@ -282,7 +291,8 @@ class ActorDocSpec extends AkkaSpec("""
         import context._
         val myActor = actorOf(Props[MyActor], name = "myactor")
         def receive = {
-          case x => myActor ! x
+          case x =>
+            myActor ! x
         }
       }
       //#import-context
@@ -301,20 +311,24 @@ class ActorDocSpec extends AkkaSpec("""
 
     // TODO: convert docs to AkkaSpec(Map(...))
     val filter = EventFilter.custom {
-      case e: Logging.Info => true
-      case _               => false
+      case e: Logging.Info =>
+        true
+      case _ =>
+        false
     }
     system.eventStream.publish(TestEvent.Mute(filter))
     system.eventStream.subscribe(testActor, classOf[Logging.Info])
 
     myActor ! "test"
     expectMsgPF(1 second) {
-      case Logging.Info(_, _, "received test") => true
+      case Logging.Info(_, _, "received test") =>
+        true
     }
 
     myActor ! "unknown"
     expectMsgPF(1 second) {
-      case Logging.Info(_, _, "received unknown message") => true
+      case Logging.Info(_, _, "received unknown message") =>
+        true
     }
 
     system.eventStream.unsubscribe(testActor)
@@ -353,7 +367,8 @@ class ActorDocSpec extends AkkaSpec("""
   "creating actor with IndirectActorProducer" in {
     class Echo(name: String) extends Actor {
       def receive = {
-        case n: Int => sender() ! name
+        case n: Int =>
+          sender() ! name
         case message =>
           val target = testActor
           //#forward
@@ -450,18 +465,24 @@ class ActorDocSpec extends AkkaSpec("""
   class HotSwapActor extends Actor {
     import context._
     def angry: Receive = {
-      case "foo" => sender() ! "I am already angry?"
-      case "bar" => become(happy)
+      case "foo" =>
+        sender() ! "I am already angry?"
+      case "bar" =>
+        become(happy)
     }
 
     def happy: Receive = {
-      case "bar" => sender() ! "I am already happy :-)"
-      case "foo" => become(angry)
+      case "bar" =>
+        sender() ! "I am already happy :-)"
+      case "foo" =>
+        become(angry)
     }
 
     def receive = {
-      case "foo" => become(angry)
-      case "bar" => become(happy)
+      case "foo" =>
+        become(angry)
+      case "bar" =>
+        become(happy)
     }
   }
   //#hot-swap-actor
@@ -483,11 +504,13 @@ class ActorDocSpec extends AkkaSpec("""
               case "close" =>
                 unstashAll()
                 context.unbecome()
-              case msg => stash()
+              case msg =>
+                stash()
             },
             discardOld = false
           ) // stack on top instead of replacing
-        case msg => stash()
+        case msg =>
+          stash()
       }
     }
     //#stash
@@ -509,7 +532,8 @@ class ActorDocSpec extends AkkaSpec("""
           case "kill" =>
             context.stop(child);
             lastSender = sender()
-          case Terminated(`child`) => lastSender ! "finished"
+          case Terminated(`child`) =>
+            lastSender ! "finished"
         }
       }
       //#watch
@@ -552,12 +576,14 @@ class ActorDocSpec extends AkkaSpec("""
           case ActorIdentity(`identifyId`, Some(ref)) =>
             context.watch(ref)
             context.become(active(ref))
-          case ActorIdentity(`identifyId`, None) => context.stop(self)
+          case ActorIdentity(`identifyId`, None) =>
+            context.stop(self)
 
         }
 
         def active(another: ActorRef): Actor.Receive = {
-          case Terminated(`another`) => context.stop(self)
+          case Terminated(`another`) =>
+            context.stop(self)
         }
       }
       //#identify

@@ -54,8 +54,10 @@ private[sql] abstract class RowIterator {
 object RowIterator {
   def fromScala(scalaIter: Iterator[InternalRow]): RowIterator = {
     scalaIter match {
-      case wrappedRowIter: RowIteratorToScala => wrappedRowIter.rowIter
-      case _                                  => new RowIteratorFromScala(scalaIter)
+      case wrappedRowIter: RowIteratorToScala =>
+        wrappedRowIter.rowIter
+      case _ =>
+        new RowIteratorFromScala(scalaIter)
     }
   }
 }

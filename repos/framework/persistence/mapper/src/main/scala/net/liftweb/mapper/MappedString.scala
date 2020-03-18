@@ -148,8 +148,10 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   def asJsonValue: Box[JsonAST.JValue] =
     Full(
       get match {
-        case null => JsonAST.JNull
-        case str  => JsonAST.JString(str)
+        case null =>
+          JsonAST.JNull
+        case str =>
+          JsonAST.JString(str)
       })
 
   /**
@@ -175,8 +177,10 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
           }
                        value={
             get match {
-              case null => ""
-              case s    => s.toString
+              case null =>
+                ""
+              case s =>
+                s.toString
             }
           }/>))
     }
@@ -188,7 +192,8 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
   override def toForm: Box[Elem] = {
 
     super.toForm match {
-      case Full(IsElem(elem)) => Full(elem)
+      case Full(IsElem(elem)) =>
+        Full(elem)
       case _ =>
         Empty
     }
@@ -196,17 +201,28 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
 
   override def setFromAny(in: Any): String = {
     in match {
-      case JsonAST.JNull                   => this.set(null)
-      case seq: Seq[_] if !seq.isEmpty     => seq.map(setFromAny).apply(0)
-      case (s: String) :: _                => this.set(s)
-      case s :: _                          => this.setFromAny(s)
-      case JsonAST.JString(v)              => this.set(v)
-      case null                            => this.set(null)
-      case s: String                       => this.set(s)
-      case Some(s: String)                 => this.set(s)
-      case Full(s: String)                 => this.set(s)
-      case None | Empty | Failure(_, _, _) => this.set(null)
-      case o                               => this.set(o.toString)
+      case JsonAST.JNull =>
+        this.set(null)
+      case seq: Seq[_] if !seq.isEmpty =>
+        seq.map(setFromAny).apply(0)
+      case (s: String) :: _ =>
+        this.set(s)
+      case s :: _ =>
+        this.setFromAny(s)
+      case JsonAST.JString(v) =>
+        this.set(v)
+      case null =>
+        this.set(null)
+      case s: String =>
+        this.set(s)
+      case Some(s: String) =>
+        this.set(s)
+      case Full(s: String) =>
+        this.set(s)
+      case None | Empty | Failure(_, _, _) =>
+        this.set(null)
+      case o =>
+        this.set(o.toString)
     }
   }
 
@@ -311,8 +327,10 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
     fieldOwner.getSingleton
       .findAll(By(this, value))
       .filter(!_.comparePrimaryKeys(this.fieldOwner)) match {
-      case Nil    => Nil
-      case x :: _ => List(FieldError(this, Text(msg))) // issue 179
+      case Nil =>
+        Nil
+      case x :: _ =>
+        List(FieldError(this, Text(msg))) // issue 179
     }
 
   /**
@@ -326,9 +344,12 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
 private[mapper] object IsElem {
   def unapply(in: NodeSeq): Option[Elem] =
     in match {
-      case e: Elem      => Some(e)
-      case Seq(e: Elem) => Some(e)
-      case _            => None
+      case e: Elem =>
+        Some(e)
+      case Seq(e: Elem) =>
+        Some(e)
+      case _ =>
+        None
     }
 }
 

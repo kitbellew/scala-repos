@@ -29,10 +29,13 @@ class ScalaWithDoWhileSurrounder extends ScalaExpressionSurrounder {
       withDoWhileNode.getPsi match {
         case x: ScParenthesisedExpr =>
           x.expr match {
-            case Some(y) => y
-            case _       => return x.getTextRange
+            case Some(y) =>
+              y
+            case _ =>
+              return x.getTextRange
           }
-        case x => x
+        case x =>
+          x
       }
     val doWhileStmt = element.asInstanceOf[ScDoStmt]
 

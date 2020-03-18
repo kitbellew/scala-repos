@@ -178,7 +178,8 @@ final class LWWRegister[A] private[akka] (
     o match {
       case other: LWWRegister[_] ⇒
         timestamp == other.timestamp && value == other.value && node == other.node
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = {

@@ -49,7 +49,8 @@ trait ExecutionDirectives {
               recoverRejectionsWith(
                 handle(_, originalRejections, iterationsLeft - 1))(route)(
                 ctx.withAcceptAll)
-            case None ⇒ FastFuture.successful(RouteResult.Rejected(rejections))
+            case None ⇒
+              FastFuture.successful(RouteResult.Rejected(rejections))
           }
         } else
           sys.error(

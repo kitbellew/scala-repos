@@ -21,8 +21,10 @@ class StaticPsiMethodWrapper private (
 
   override def hasModifierProperty(name: String): Boolean = {
     name match {
-      case "static" => true
-      case _        => super.hasModifierProperty(name)
+      case "static" =>
+        true
+      case _ =>
+        super.hasModifierProperty(name)
     }
   }
 
@@ -30,15 +32,19 @@ class StaticPsiMethodWrapper private (
     new LightModifierList(getManager, ScalaFileType.SCALA_LANGUAGE) {
       override def hasModifierProperty(name: String): Boolean = {
         name match {
-          case "static" => true
-          case _        => super.hasModifierProperty(name)
+          case "static" =>
+            true
+          case _ =>
+            super.hasModifierProperty(name)
         }
       }
 
       override def hasExplicitModifier(name: String): Boolean = {
         name match {
-          case "static" => true
-          case _        => super.hasModifierProperty(name)
+          case "static" =>
+            true
+          case _ =>
+            super.hasModifierProperty(name)
         }
       }
     }

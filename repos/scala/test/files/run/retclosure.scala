@@ -12,8 +12,10 @@ object Test {
     }
 
     check match {
-      case Some(problem) => "check failed: " + problem
-      case None          => "ok"
+      case Some(problem) =>
+        "check failed: " + problem
+      case None =>
+        "ok"
     }
   }
 

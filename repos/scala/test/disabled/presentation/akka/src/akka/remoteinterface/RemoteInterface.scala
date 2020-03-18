@@ -284,12 +284,15 @@ abstract class RemoteSupport
   protected def createActorFromClass(clazz: Class[_]): Actor = {
     import ReflectiveAccess.{createInstance, noParams, noArgs}
     createInstance[Actor](clazz, noParams, noArgs) match {
-      case Right(actor) => actor
+      case Right(actor) =>
+        actor
       case Left(exception) =>
         val cause =
           exception match {
-            case i: InvocationTargetException => i.getTargetException
-            case _                            => exception
+            case i: InvocationTargetException =>
+              i.getTargetException
+            case _ =>
+              exception
           }
 
         throw new ActorInitializationException(

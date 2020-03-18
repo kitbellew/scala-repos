@@ -87,7 +87,8 @@ object DataFrameExample {
 
     // Convert features column to an RDD of vectors.
     val features = df.select("features").rdd.map {
-      case Row(v: Vector) => v
+      case Row(v: Vector) =>
+        v
     }
     val featureSummary =
       features.aggregate(new MultivariateOnlineSummarizer())(

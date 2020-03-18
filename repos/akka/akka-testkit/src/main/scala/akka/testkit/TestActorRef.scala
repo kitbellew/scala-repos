@@ -31,13 +31,15 @@ class TestActorRef[T <: Actor](
   val dispatcher = _system.dispatchers.lookup(props.dispatcher)
   private val disregard =
     _supervisor match {
-      case l: LocalActorRef ⇒ l.underlying.reserveChild(name)
+      case l: LocalActorRef ⇒
+        l.underlying.reserveChild(name)
       case r: RepointableActorRef ⇒
         r.underlying match {
           case u: UnstartedCell ⇒
             throw new IllegalStateException(
               "cannot attach a TestActor to an unstarted top-level actor, ensure that it is started by sending a message and observing the reply")
-          case c: ActorCell ⇒ c.reserveChild(name)
+          case c: ActorCell ⇒
+            c.reserveChild(name)
           case o ⇒
             _system.log.error(
               "trying to attach child {} to unknown type of supervisor cell {}, this is not going to end well",
@@ -72,8 +74,10 @@ class TestActorRef[T <: Actor](
     new ActorCell(system, ref, props, dispatcher, supervisor) {
       override def autoReceiveMessage(msg: Envelope) {
         msg.message match {
-          case InternalGetActor ⇒ sender() ! actor
-          case _ ⇒ super.autoReceiveMessage(msg)
+          case InternalGetActor ⇒
+            sender() ! actor
+          case _ ⇒
+            super.autoReceiveMessage(msg)
         }
       }
     }
@@ -115,7 +119,8 @@ class TestActorRef[T <: Actor](
       case null ⇒
         val t = TestKitExtension(_system).DefaultTimeout
         Await.result(this.?(InternalGetActor)(t), t.duration).asInstanceOf[T]
-      case ref ⇒ ref
+      case ref ⇒
+        ref
     }
   }
 

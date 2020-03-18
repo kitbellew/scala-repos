@@ -531,7 +531,8 @@ trait IssuesControllerBase extends ControllerBase {
                   f"""inline; filename=${file.getName}""")
                 RawData(FileUtil.getMimeType(file.getName), file)
             }
-          case _ => None
+          case _ =>
+            None
         }
       ) getOrElse NotFound
     })
@@ -553,7 +554,8 @@ trait IssuesControllerBase extends ControllerBase {
     params("from") match {
       case "issues" =>
         redirect(s"/${repository.owner}/${repository.name}/issues")
-      case "pulls" => redirect(s"/${repository.owner}/${repository.name}/pulls")
+      case "pulls" =>
+        redirect(s"/${repository.owner}/${repository.name}/pulls")
     }
   }
 

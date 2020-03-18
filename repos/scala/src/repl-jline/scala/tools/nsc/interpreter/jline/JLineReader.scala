@@ -72,9 +72,12 @@ private class JLineConsoleReader
   private def emulateMore(): Int = {
     val key = readOneKey(morePrompt)
     try key match {
-      case '\r' | '\n' => 1
-      case 'q'         => -1
-      case _           => height - 1
+      case '\r' | '\n' =>
+        1
+      case 'q' =>
+        -1
+      case _ =>
+        height - 1
     } finally {
       eraseLine()
       // TODO: still not quite managing to erase --More-- and get
@@ -151,8 +154,10 @@ private class JLineConsoleReader
       }
 
     completion match {
-      case NoCompletion => ()
-      case _            => this addCompleter completer
+      case NoCompletion =>
+        ()
+      case _ =>
+        this addCompleter completer
     }
 
     // This is a workaround for https://github.com/jline/jline2/issues/208

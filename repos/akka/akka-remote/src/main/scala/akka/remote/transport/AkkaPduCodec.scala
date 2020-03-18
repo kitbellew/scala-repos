@@ -82,10 +82,14 @@ private[remote] trait AkkaPduCodec {
     */
   def encodePdu(pdu: AkkaPdu): ByteString =
     pdu match {
-      case Associate(info) ⇒ constructAssociate(info)
-      case Payload(bytes) ⇒ constructPayload(bytes)
-      case Disassociate(reason) ⇒ constructDisassociate(reason)
-      case Heartbeat ⇒ constructHeartbeat
+      case Associate(info) ⇒
+        constructAssociate(info)
+      case Payload(bytes) ⇒
+        constructPayload(bytes)
+      case Disassociate(reason) ⇒
+        constructDisassociate(reason)
+      case Heartbeat ⇒
+        constructHeartbeat
     }
 
   def constructPayload(payload: ByteString): ByteString
@@ -199,9 +203,12 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
   override def constructDisassociate(
       info: AssociationHandle.DisassociateInfo): ByteString =
     info match {
-      case AssociationHandle.Unknown ⇒ DISASSOCIATE
-      case AssociationHandle.Shutdown ⇒ DISASSOCIATE_SHUTTING_DOWN
-      case AssociationHandle.Quarantined ⇒ DISASSOCIATE_QUARANTINED
+      case AssociationHandle.Unknown ⇒
+        DISASSOCIATE
+      case AssociationHandle.Shutdown ⇒
+        DISASSOCIATE_SHUTTING_DOWN
+      case AssociationHandle.Quarantined ⇒
+        DISASSOCIATE_QUARANTINED
     }
 
   override val constructHeartbeat: ByteString = constructControlMessagePdu(
@@ -287,12 +294,14 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
             decodeAddress(handshakeInfo.getOrigin),
             handshakeInfo.getUid.toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
             cookie))
-      case CommandType.DISASSOCIATE ⇒ Disassociate(AssociationHandle.Unknown)
+      case CommandType.DISASSOCIATE ⇒
+        Disassociate(AssociationHandle.Unknown)
       case CommandType.DISASSOCIATE_SHUTTING_DOWN ⇒
         Disassociate(AssociationHandle.Shutdown)
       case CommandType.DISASSOCIATE_QUARANTINED ⇒
         Disassociate(AssociationHandle.Quarantined)
-      case CommandType.HEARTBEAT ⇒ Heartbeat
+      case CommandType.HEARTBEAT ⇒
+        Heartbeat
       case x ⇒
         throw new PduCodecException(
           s"Decoding of control PDU failed, invalid format, unexpected: [${x}]",

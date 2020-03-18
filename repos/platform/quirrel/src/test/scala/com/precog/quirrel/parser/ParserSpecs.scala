@@ -113,7 +113,8 @@ object ParserSpecs
 
     "accept a specific import expression" in {
       parseSingle("import std 42") must beLike {
-        case Import(_, SpecificImport(Vector("std")), NumLit(_, "42")) => ok
+        case Import(_, SpecificImport(Vector("std")), NumLit(_, "42")) =>
+          ok
       }
 
       parseSingle("import std::math::alissa 42") must beLike {
@@ -127,7 +128,8 @@ object ParserSpecs
 
     "accept a wildcard import expression" in {
       parseSingle("import std::* 42") must beLike {
-        case Import(_, WildcardImport(Vector("std")), NumLit(_, "42")) => ok
+        case Import(_, WildcardImport(Vector("std")), NumLit(_, "42")) =>
+          ok
       }
 
       parseSingle("import std::math::alissa::* 42") must beLike {
@@ -144,7 +146,8 @@ object ParserSpecs
         | import std::time::*
         | foo := //foo
         | foo""".stripMargin) must beLike {
-        case Import(_, WildcardImport(Vector("std", "time")), _) => ok
+        case Import(_, WildcardImport(Vector("std", "time")), _) =>
+          ok
       }
     }
 
@@ -168,7 +171,8 @@ object ParserSpecs
       parseSingle("""
         | import std::time::*
         | distinct(//foo)""".stripMargin) must beLike {
-        case Import(_, WildcardImport(Vector("std", "time")), _) => ok
+        case Import(_, WildcardImport(Vector("std", "time")), _) =>
+          ok
       }
     }
 
@@ -178,7 +182,8 @@ object ParserSpecs
 
     "accept a simple assertion" in {
       parseSingle("assert true 42") must beLike {
-        case Assert(_, BoolLit(_, true), NumLit(_, "42")) => ok
+        case Assert(_, BoolLit(_, true), NumLit(_, "42")) =>
+          ok
       }
     }
 
@@ -397,25 +402,29 @@ object ParserSpecs
 
     "accept a 'new' expression" in {
       parseSingle("new 1") must beLike {
-        case New(_, NumLit(_, "1")) => ok
+        case New(_, NumLit(_, "1")) =>
+          ok
       }
     }
 
     "accept a 'new' expression followed by a let" in {
       parseSingle("new foo := //foo foo") must beLike {
-        case New(_, _) => ok
+        case New(_, _) =>
+          ok
       }
     }
 
     "accept a 'new' expression followed by a solve" in {
       parseSingle("new solve 'a 'a") must beLike {
-        case New(_, _) => ok
+        case New(_, _) =>
+          ok
       }
     }
 
     "accept a relate expression" in {
       parseSingle("1 ~ 2 3") must beLike {
-        case Relate(_, NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3")) => ok
+        case Relate(_, NumLit(_, "1"), NumLit(_, "2"), NumLit(_, "3")) =>
+          ok
       }
     }
 
@@ -452,13 +461,16 @@ object ParserSpecs
 
     "accept a variable without a namespace" in {
       parseSingle("x") must beLike {
-        case Dispatch(_, Identifier(Vector(), "x"), Vector()) => ok
+        case Dispatch(_, Identifier(Vector(), "x"), Vector()) =>
+          ok
       }
       parseSingle("cafe_Babe__42_") must beLike {
-        case Dispatch(_, Identifier(Vector(), "cafe_Babe__42_"), Vector()) => ok
+        case Dispatch(_, Identifier(Vector(), "cafe_Babe__42_"), Vector()) =>
+          ok
       }
       parseSingle("x'") must beLike {
-        case Dispatch(_, Identifier(Vector(), "x'"), Vector()) => ok
+        case Dispatch(_, Identifier(Vector(), "x'"), Vector()) =>
+          ok
       }
     }
 
@@ -476,7 +488,8 @@ object ParserSpecs
 
     "accept a variable with a namespace" in {
       parseSingle("a :: b :: c") must beLike {
-        case Dispatch(_, Identifier(Vector("a", "b"), "c"), Vector()) => ok
+        case Dispatch(_, Identifier(Vector("a", "b"), "c"), Vector()) =>
+          ok
       }
     }
 
@@ -495,13 +508,16 @@ object ParserSpecs
 
     "accept a tic-variable" in {
       parseSingle("'x") must beLike {
-        case TicVar(_, "'x") => ok
+        case TicVar(_, "'x") =>
+          ok
       }
       parseSingle("'cafe_Babe__42_") must beLike {
-        case TicVar(_, "'cafe_Babe__42_") => ok
+        case TicVar(_, "'cafe_Babe__42_") =>
+          ok
       }
       parseSingle("'x'") must beLike {
-        case TicVar(_, "'x'") => ok
+        case TicVar(_, "'x'") =>
+          ok
       }
     }
 
@@ -514,35 +530,43 @@ object ParserSpecs
     "accept a path literal" in {
       // TODO find a way to use LoadId instead
       parseSingle("//foo") must beLike {
-        case PathLit("/foo") => ok
+        case PathLit("/foo") =>
+          ok
       }
       parseSingle("//foo/bar/baz") must beLike {
-        case PathLit("/foo/bar/baz") => ok
+        case PathLit("/foo/bar/baz") =>
+          ok
       }
       parseSingle("//cafe-babe42_silly/SILLY") must beLike {
-        case PathLit("/cafe-babe42_silly/SILLY") => ok
+        case PathLit("/cafe-babe42_silly/SILLY") =>
+          ok
       }
     }
 
     "accept a relative path literal" in {
       // TODO find a way to use LoadId instead
       parseSingle("./foo") must beLike {
-        case RelPathLit("foo") => ok
+        case RelPathLit("foo") =>
+          ok
       }
       parseSingle("./foo/bar/baz") must beLike {
-        case RelPathLit("foo/bar/baz") => ok
+        case RelPathLit("foo/bar/baz") =>
+          ok
       }
       parseSingle("./cafe-babe42_silly/SILLY") must beLike {
-        case RelPathLit("cafe-babe42_silly/SILLY") => ok
+        case RelPathLit("cafe-babe42_silly/SILLY") =>
+          ok
       }
     }
 
     "accept a string literal" in {
       parseSingle("\"I have a dream\"") must beLike {
-        case StrLit(_, "I have a dream") => ok
+        case StrLit(_, "I have a dream") =>
+          ok
       }
       parseSingle("\"\"") must beLike {
-        case StrLit(_, "") => ok
+        case StrLit(_, "") =>
+          ok
       }
     }
 
@@ -560,46 +584,59 @@ object ParserSpecs
 
     "resolve all escape sequences in string literals" in {
       parseSingle("\"\\\"\"") must beLike {
-        case StrLit(_, "\"") => ok
+        case StrLit(_, "\"") =>
+          ok
       }
       parseSingle("\"\\n\"") must beLike {
-        case StrLit(_, "\n") => ok
+        case StrLit(_, "\n") =>
+          ok
       }
       parseSingle("\"\\r\"") must beLike {
-        case StrLit(_, "\r") => ok
+        case StrLit(_, "\r") =>
+          ok
       }
       parseSingle("\"\\f\"") must beLike {
-        case StrLit(_, "\f") => ok
+        case StrLit(_, "\f") =>
+          ok
       }
       parseSingle("\"\\t\"") must beLike {
-        case StrLit(_, "\t") => ok
+        case StrLit(_, "\t") =>
+          ok
       }
       parseSingle("\"\\0\"") must beLike {
-        case StrLit(_, "\0") => ok
+        case StrLit(_, "\0") =>
+          ok
       }
       parseSingle("\"\\\\\"") must beLike {
-        case StrLit(_, "\\") => ok
+        case StrLit(_, "\\") =>
+          ok
       }
     }
 
     "accept a number literal" in {
       parseSingle("1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("256") must beLike {
-        case NumLit(_, "256") => ok
+        case NumLit(_, "256") =>
+          ok
       }
       parseSingle("256.715") must beLike {
-        case NumLit(_, "256.715") => ok
+        case NumLit(_, "256.715") =>
+          ok
       }
       parseSingle("3.1415") must beLike {
-        case NumLit(_, "3.1415") => ok
+        case NumLit(_, "3.1415") =>
+          ok
       }
       parseSingle("2.7183e26") must beLike {
-        case NumLit(_, "2.7183e26") => ok
+        case NumLit(_, "2.7183e26") =>
+          ok
       }
       parseSingle("2.7183E26") must beLike {
-        case NumLit(_, "2.7183E26") => ok
+        case NumLit(_, "2.7183E26") =>
+          ok
       }
     }
 
@@ -609,28 +646,33 @@ object ParserSpecs
 
     "accept a boolean literal" in {
       parseSingle("true") must beLike {
-        case BoolLit(_, true) => ok
+        case BoolLit(_, true) =>
+          ok
       }
       parseSingle("false") must beLike {
-        case BoolLit(_, false) => ok
+        case BoolLit(_, false) =>
+          ok
       }
     }
 
     "accept an undefined literal" in {
       parseSingle("undefined") must beLike {
-        case UndefinedLit(_) => ok
+        case UndefinedLit(_) =>
+          ok
       }
     }
 
     "accept a null literal" in {
       parseSingle("null") must beLike {
-        case NullLit(_) => ok
+        case NullLit(_) =>
+          ok
       }
     }
 
     "accept an object definition with no properties" in {
       parseSingle("{}") must beLike {
-        case ObjectDef(_, Vector()) => ok
+        case ObjectDef(_, Vector()) =>
+          ok
       }
     }
 
@@ -657,10 +699,12 @@ object ParserSpecs
 
     "accept an object definition with one property" in {
       parseSingle("{ x: 1 }") must beLike {
-        case ObjectDef(_, Vector(("x", NumLit(_, "1")))) => ok
+        case ObjectDef(_, Vector(("x", NumLit(_, "1")))) =>
+          ok
       }
       parseSingle("{ \"x\": 1 }") must beLike {
-        case ObjectDef(_, Vector(("x", NumLit(_, "1")))) => ok
+        case ObjectDef(_, Vector(("x", NumLit(_, "1")))) =>
+          ok
       }
     }
 
@@ -759,7 +803,8 @@ object ParserSpecs
 
     "accept an array definition with no actuals" in {
       parseSingle("[]") must beLike {
-        case ArrayDef(_, Vector()) => ok
+        case ArrayDef(_, Vector()) =>
+          ok
       }
     }
 
@@ -777,7 +822,8 @@ object ParserSpecs
 
     "accept an array definition with one actual" in {
       parseSingle("[1]") must beLike {
-        case ArrayDef(_, Vector(NumLit(_, "1"))) => ok
+        case ArrayDef(_, Vector(NumLit(_, "1"))) =>
+          ok
       }
     }
 
@@ -798,10 +844,12 @@ object ParserSpecs
 
     "accept a property descent" in {
       parseSingle("1.foo") must beLike {
-        case Descent(_, NumLit(_, "1"), "foo") => ok
+        case Descent(_, NumLit(_, "1"), "foo") =>
+          ok
       }
       parseSingle("1.e42") must beLike {
-        case Descent(_, NumLit(_, "1"), "e42") => ok
+        case Descent(_, NumLit(_, "1"), "e42") =>
+          ok
       }
     }
 
@@ -812,7 +860,8 @@ object ParserSpecs
 
     "accept a property descent with a backtic-delimited property" in {
       parseSingle("1.`$see! what I can do___`") must beLike {
-        case Descent(_, NumLit(_, "1"), "$see! what I can do___") => ok
+        case Descent(_, NumLit(_, "1"), "$see! what I can do___") =>
+          ok
       }
       parseSingle("1.`test \\` ing \\\\ with $%^&*!@#$ me!`") must beLike {
         case Descent(_, NumLit(_, "1"), "test ` ing \\ with $%^&*!@#$ me!") =>
@@ -822,10 +871,12 @@ object ParserSpecs
 
     "accept a metadata descent" in {
       parseSingle("1@foo") must beLike {
-        case MetaDescent(_, NumLit(_, "1"), "foo") => ok
+        case MetaDescent(_, NumLit(_, "1"), "foo") =>
+          ok
       }
       parseSingle("1@e42") must beLike {
-        case MetaDescent(_, NumLit(_, "1"), "e42") => ok
+        case MetaDescent(_, NumLit(_, "1"), "e42") =>
+          ok
       }
     }
 
@@ -836,7 +887,8 @@ object ParserSpecs
 
     "accept a metadata descent with a backtic-delimited property" in {
       parseSingle("1@`$see! what I can do___`") must beLike {
-        case MetaDescent(_, NumLit(_, "1"), "$see! what I can do___") => ok
+        case MetaDescent(_, NumLit(_, "1"), "$see! what I can do___") =>
+          ok
       }
       parseSingle("1@`test \\` ing \\\\ with $%^&*!@#$ me!`") must beLike {
         case MetaDescent(
@@ -849,7 +901,8 @@ object ParserSpecs
 
     "accept an array dereference" in {
       parseSingle("1[2]") must beLike {
-        case Deref(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Deref(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
       parseSingle("x[y]") must beLike {
         case Deref(
@@ -957,28 +1010,33 @@ object ParserSpecs
     "accept an infix operation with numerics as left and right" >> {
       "where" >> {
         parseSingle("1 where 2") must beLike {
-          case Where(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+          case Where(_, NumLit(_, "1"), NumLit(_, "2")) =>
+            ok
         }
       }
 
       "with" >> {
         parseSingle("1 with 2") must beLike {
-          case With(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+          case With(_, NumLit(_, "1"), NumLit(_, "2")) =>
+            ok
         }
       }
       "union" >> {
         parseSingle("1 union 2") must beLike {
-          case Union(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+          case Union(_, NumLit(_, "1"), NumLit(_, "2")) =>
+            ok
         }
       }
       "intersect" >> {
         parseSingle("1 intersect 2") must beLike {
-          case Intersect(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+          case Intersect(_, NumLit(_, "1"), NumLit(_, "2")) =>
+            ok
         }
       }
       "difference" >> {
         parseSingle("1 difference 2") must beLike {
-          case Difference(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+          case Difference(_, NumLit(_, "1"), NumLit(_, "2")) =>
+            ok
         }
       }
     }
@@ -986,28 +1044,33 @@ object ParserSpecs
     "accept an infix operation with null and strings" >> {
       "where" >> {
         parseSingle("""null where "foo" """) must beLike {
-          case Where(_, NullLit(_), StrLit(_, "foo")) => ok
+          case Where(_, NullLit(_), StrLit(_, "foo")) =>
+            ok
         }
       }
 
       "with" >> {
         parseSingle(""""foo" with null""") must beLike {
-          case With(_, StrLit(_, "foo"), NullLit(_)) => ok
+          case With(_, StrLit(_, "foo"), NullLit(_)) =>
+            ok
         }
       }
       "union" >> {
         parseSingle("""null union "foo" """) must beLike {
-          case Union(_, NullLit(_), StrLit(_, "foo")) => ok
+          case Union(_, NullLit(_), StrLit(_, "foo")) =>
+            ok
         }
       }
       "intersect" >> {
         parseSingle(""""foo" intersect null""") must beLike {
-          case Intersect(_, StrLit(_, "foo"), NullLit(_)) => ok
+          case Intersect(_, StrLit(_, "foo"), NullLit(_)) =>
+            ok
         }
       }
       "intersect" >> {
         parseSingle(""""foo" difference null""") must beLike {
-          case Difference(_, StrLit(_, "foo"), NullLit(_)) => ok
+          case Difference(_, StrLit(_, "foo"), NullLit(_)) =>
+            ok
         }
       }
     }
@@ -1030,13 +1093,15 @@ object ParserSpecs
 
     "accept an if/else operation" in {
       parseSingle("if true then 2 else 3") must beLike {
-        case Cond(_, BoolLit(_, true), NumLit(_, "2"), NumLit(_, "3")) => ok
+        case Cond(_, BoolLit(_, true), NumLit(_, "2"), NumLit(_, "3")) =>
+          ok
       }
     }
 
     "accept an addition operation" in {
       parseSingle("1 + 2") must beLike {
-        case Add(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Add(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1050,7 +1115,8 @@ object ParserSpecs
 
     "accept a subtraction operation" in {
       parseSingle("1 - 2") must beLike {
-        case Sub(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Sub(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1064,7 +1130,8 @@ object ParserSpecs
 
     "accept a multiplication operation" in {
       parseSingle("1 * 2") must beLike {
-        case Mul(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Mul(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1078,7 +1145,8 @@ object ParserSpecs
 
     "accept a division operation" in {
       parseSingle("1 / 2") must beLike {
-        case Div(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Div(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1092,7 +1160,8 @@ object ParserSpecs
 
     "accept a mod operation" in {
       parseSingle("1 % 2") must beLike {
-        case Mod(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Mod(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1106,7 +1175,8 @@ object ParserSpecs
 
     "accept a power operation" in {
       parseSingle("1 ^ 2") must beLike {
-        case Pow(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Pow(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1120,7 +1190,8 @@ object ParserSpecs
 
     "accept a less-than operation" in {
       parseSingle("1 < 2") must beLike {
-        case Lt(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Lt(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1134,7 +1205,8 @@ object ParserSpecs
 
     "accept a less-than-equal operation" in {
       parseSingle("1 <= 2") must beLike {
-        case LtEq(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case LtEq(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1148,7 +1220,8 @@ object ParserSpecs
 
     "accept a greater-than operation" in {
       parseSingle("1 > 2") must beLike {
-        case Gt(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Gt(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1162,7 +1235,8 @@ object ParserSpecs
 
     "accept a greater-than-equal operation" in {
       parseSingle("1 >= 2") must beLike {
-        case GtEq(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case GtEq(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1176,7 +1250,8 @@ object ParserSpecs
 
     "accept a equality operation" in {
       parseSingle("1 = 2") must beLike {
-        case Eq(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Eq(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1190,7 +1265,8 @@ object ParserSpecs
 
     "accept a not-equal operation" in {
       parseSingle("1 != 2") must beLike {
-        case NotEq(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case NotEq(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1204,7 +1280,8 @@ object ParserSpecs
 
     "accept a boolean and operation" in {
       parseSingle("1 & 2") must beLike {
-        case And(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case And(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1218,7 +1295,8 @@ object ParserSpecs
 
     "accept a boolean or operation" in {
       parseSingle("1 | 2") must beLike {
-        case Or(_, NumLit(_, "1"), NumLit(_, "2")) => ok
+        case Or(_, NumLit(_, "1"), NumLit(_, "2")) =>
+          ok
       }
     }
 
@@ -1232,19 +1310,22 @@ object ParserSpecs
 
     "accept boolean complementation" in {
       parseSingle("!1") must beLike {
-        case Comp(_, NumLit(_, "1")) => ok
+        case Comp(_, NumLit(_, "1")) =>
+          ok
       }
     }
 
     "accept numeric negation" in {
       parseSingle("neg 1") must beLike {
-        case Neg(_, NumLit(_, "1")) => ok
+        case Neg(_, NumLit(_, "1")) =>
+          ok
       }
     }
 
     "accept parentheticals" in {
       parseSingle("(1)") must beLike {
-        case Paren(_, NumLit(_, "1")) => ok
+        case Paren(_, NumLit(_, "1")) =>
+          ok
       }
     }
 
@@ -1257,27 +1338,33 @@ object ParserSpecs
   "operator precedence" should {
     "favor descent/deref over negation/complement" in {
       parseSingle("!1.x") must beLike {
-        case Comp(_, Descent(_, NumLit(_, "1"), "x")) => ok
+        case Comp(_, Descent(_, NumLit(_, "1"), "x")) =>
+          ok
       }
 
       parseSingle("neg 1.x") must beLike {
-        case Neg(_, Descent(_, NumLit(_, "1"), "x")) => ok
+        case Neg(_, Descent(_, NumLit(_, "1"), "x")) =>
+          ok
       }
 
       parseSingle("!1@x") must beLike {
-        case Comp(_, MetaDescent(_, NumLit(_, "1"), "x")) => ok
+        case Comp(_, MetaDescent(_, NumLit(_, "1"), "x")) =>
+          ok
       }
 
       parseSingle("neg 1@x") must beLike {
-        case Neg(_, MetaDescent(_, NumLit(_, "1"), "x")) => ok
+        case Neg(_, MetaDescent(_, NumLit(_, "1"), "x")) =>
+          ok
       }
 
       parseSingle("!1[2]") must beLike {
-        case Comp(_, Deref(_, NumLit(_, "1"), NumLit(_, "2"))) => ok
+        case Comp(_, Deref(_, NumLit(_, "1"), NumLit(_, "2"))) =>
+          ok
       }
 
       parseSingle("neg 1[2]") must beLike {
-        case Neg(_, Deref(_, NumLit(_, "1"), NumLit(_, "2"))) => ok
+        case Neg(_, Deref(_, NumLit(_, "1"), NumLit(_, "2"))) =>
+          ok
       }
     }
 
@@ -1675,7 +1762,8 @@ object ParserSpecs
           ok
       }
       parseSingle("1 < 2 > 3") must beLike {
-        case Gt(_, Lt(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) => ok
+        case Gt(_, Lt(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) =>
+          ok
       }
       parseSingle("1 < 2 >= 3") must beLike {
         case GtEq(_, Lt(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) =>
@@ -1687,7 +1775,8 @@ object ParserSpecs
           ok
       }
       parseSingle("1 > 2 < 3") must beLike {
-        case Lt(_, Gt(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) => ok
+        case Lt(_, Gt(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) =>
+          ok
       }
       parseSingle("1 >= 2 < 3") must beLike {
         case Lt(_, GtEq(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) =>
@@ -1960,10 +2049,12 @@ object ParserSpecs
 
     "favor and/or according to left/right ordering" in {
       parseSingle("1 & 2 | 3") must beLike {
-        case Or(_, And(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) => ok
+        case Or(_, And(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) =>
+          ok
       }
       parseSingle("1 | 2 & 3") must beLike {
-        case And(_, Or(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) => ok
+        case And(_, Or(_, NumLit(_, "1"), NumLit(_, "2")), NumLit(_, "3")) =>
+          ok
       }
     }
 
@@ -2463,118 +2554,145 @@ object ParserSpecs
   "whitespace processing" should {
     "skip any amount of leading space characters" in {
       parseSingle(" 1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("     1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("\t  \t 1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("\n\r  ;\r\t  \t\n ;;1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
     "skip any amount of trailing space characters" in {
       parseSingle("1 ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("1     ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("1\t  \t ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("1\n\r  ;\r\t  \t\n ;;") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
     "skip leading line comments delimited by newline" in {
       parseSingle("-- testing one two three\n1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("-- testing one two three\n--four five six\n1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle(
         "   \t  -- testing one two three\n\n  \t--four five six\n\r  1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
     "skip trailing line comments delimited by newline" in {
       parseSingle("1-- testing one two three\n") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("1-- testing one two three\n--four five six\n") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle(
         "1   \t  -- testing one two three\n\n  \t--four five six\n\r  ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
     "skip leading block comments" in {
       parseSingle("(- testing one two three -)1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("  (- testing one two three -)   1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("  (- testing one \n two\n three -)   1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
 
       parseSingle(
         "(- testing one two three -)\n(-four five six -)\n1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
 
       parseSingle(
         "(- testing one- \\- two three -)\n(-four \n five-- \t six -)\n1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
 
       parseSingle(
         "   \t  (- testing one two three -)\n\n  \t(- four five six -)\n\r  1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
     "skip trailing line comments delimited by newline" in {
       parseSingle("1(- testing one two three -)") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("1  (- testing one two three -)    ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
       parseSingle("1  (- testing one \n two\n three -)  ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
 
       parseSingle(
         "1\t  (- testing one two three -)\n(-four five six -)\n") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
 
       parseSingle(
         "1(- testing one- \\- two three -)\n(-four \n five-- \t six -)\n") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
 
       parseSingle(
         "1   \t  (- testing one two three -)\n\n  \t(- four five six -)\n\r  ") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
     // Regression test for #39825209
     "ambiguous comment syntax" in {
       parseSingle("(-- Test\n--) 1") must beLike {
-        case NumLit(_, "1") => ok
+        case NumLit(_, "1") =>
+          ok
       }
     }
 
@@ -2662,77 +2780,95 @@ object ParserSpecs
 
     "handle new expression within deref parameter" in {
       parseSingle("1[new 2]") must beLike {
-        case Deref(_, NumLit(_, "1"), New(_, NumLit(_, "2"))) => ok
+        case Deref(_, NumLit(_, "1"), New(_, NumLit(_, "2"))) =>
+          ok
       }
     }
 
     "accept a binary expression involving a number and a string" in {
       parseSingle("1 + \"a\"") must beLike {
-        case Add(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Add(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 - \"a\"") must beLike {
-        case Sub(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Sub(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 * \"a\"") must beLike {
-        case Mul(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Mul(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 / \"a\"") must beLike {
-        case Div(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Div(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 < \"a\"") must beLike {
-        case Lt(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Lt(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 <= \"a\"") must beLike {
-        case LtEq(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case LtEq(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 > \"a\"") must beLike {
-        case Gt(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Gt(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 >= \"a\"") must beLike {
-        case GtEq(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case GtEq(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 = \"a\"") must beLike {
-        case Eq(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Eq(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 != \"a\"") must beLike {
-        case NotEq(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case NotEq(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 & \"a\"") must beLike {
-        case And(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case And(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 | \"a\"") must beLike {
-        case Or(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Or(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 where \"a\"") must beLike {
-        case Where(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Where(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 with \"a\"") must beLike {
-        case With(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case With(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 union \"a\"") must beLike {
-        case Union(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Union(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 intersect \"a\"") must beLike {
-        case Intersect(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Intersect(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
 
       parseSingle("1 difference \"a\"") must beLike {
-        case Difference(_, NumLit(_, "1"), StrLit(_, "a")) => ok
+        case Difference(_, NumLit(_, "1"), StrLit(_, "a")) =>
+          ok
       }
     }
   }
@@ -2742,7 +2878,8 @@ object ParserSpecs
       forall(keywords) { kw =>
         val input = kw + "foo"
         parseSingle(input) must beLike {
-          case Dispatch(_, Identifier(Vector(), `input`), Vector()) => ok
+          case Dispatch(_, Identifier(Vector(), `input`), Vector()) =>
+            ok
         }
       }
     }
@@ -2886,7 +3023,8 @@ object ParserSpecs
 
     "prefer path literals in case of ambiguity" in {
       parseSingle("//foo.bar") must beLike {
-        case PathLit("/foo.bar") => ok
+        case PathLit("/foo.bar") =>
+          ok
       }
     }
   }
@@ -2927,7 +3065,8 @@ object ParserSpecs
                   Vector(StrLit(_, str))))) =>
           Some(str)
 
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -2944,7 +3083,8 @@ object ParserSpecs
                   Vector(StrLit(_, str))))) =>
           Some(str)
 
-        case _ => None
+        case _ =>
+          None
       }
   }
 }

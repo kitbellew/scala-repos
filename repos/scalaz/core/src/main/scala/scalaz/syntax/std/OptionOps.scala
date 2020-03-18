@@ -28,8 +28,10 @@ final class OptionOps[A](self: Option[A]) {
   final class Conditional[X](s: => X) {
     def |(n: => X): X =
       self match {
-        case None    => n
-        case Some(_) => s
+        case None =>
+          n
+        case Some(_) =>
+          s
       }
   }
 

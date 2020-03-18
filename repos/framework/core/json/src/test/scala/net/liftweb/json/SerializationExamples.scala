@@ -371,7 +371,8 @@ object CustomSerializerExamples extends Specification {
     }
 
     def serialize(implicit formats: Formats) = {
-      case i: IndexedSeq[_] => JArray(i.map(Extraction.decompose).toList)
+      case i: IndexedSeq[_] =>
+        JArray(i.map(Extraction.decompose).toList)
     }
   }
 
@@ -423,7 +424,8 @@ object CustomClassWithTypeHintsExamples extends Specification {
   val hints =
     new ShortTypeHints(classOf[DateTime] :: Nil) {
       override def serialize: PartialFunction[Any, JObject] = {
-        case t: DateTime => JObject(JField("t", JInt(t.time)) :: Nil)
+        case t: DateTime =>
+          JObject(JField("t", JInt(t.time)) :: Nil)
       }
 
       override def deserialize: PartialFunction[(String, JObject), Any] = {

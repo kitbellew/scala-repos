@@ -191,8 +191,10 @@ private[spark] class SparkDeploySchedulerBackend(
       exitStatus: Option[Int]) {
     val reason: ExecutorLossReason =
       exitStatus match {
-        case Some(code) => ExecutorExited(code, exitCausedByApp = true, message)
-        case None       => SlaveLost(message)
+        case Some(code) =>
+          ExecutorExited(code, exitCausedByApp = true, message)
+        case None =>
+          SlaveLost(message)
       }
     logInfo("Executor %s removed: %s".format(fullId, message))
     removeExecutor(fullId.split("/")(1), reason)
@@ -217,7 +219,8 @@ private[spark] class SparkDeploySchedulerBackend(
   protected override def doRequestTotalExecutors(
       requestedTotal: Int): Boolean = {
     Option(client) match {
-      case Some(c) => c.requestTotalExecutors(requestedTotal)
+      case Some(c) =>
+        c.requestTotalExecutors(requestedTotal)
       case None =>
         logWarning(
           "Attempted to request executors before driver fully initialized.")
@@ -231,7 +234,8 @@ private[spark] class SparkDeploySchedulerBackend(
     */
   protected override def doKillExecutors(executorIds: Seq[String]): Boolean = {
     Option(client) match {
-      case Some(c) => c.killExecutors(executorIds)
+      case Some(c) =>
+        c.killExecutors(executorIds)
       case None =>
         logWarning(
           "Attempted to kill executors before driver fully initialized.")

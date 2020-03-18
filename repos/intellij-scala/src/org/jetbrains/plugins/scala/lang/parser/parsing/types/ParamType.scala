@@ -29,8 +29,10 @@ object ParamType {
           false
         else {
           builder.getTokenText match {
-            case "*" => builder.advanceLexer() // Ate '*'
-            case _   => /* nothing needs to be done */
+            case "*" =>
+              builder.advanceLexer() // Ate '*'
+            case _ =>
+            /* nothing needs to be done */
           }
           true
         }

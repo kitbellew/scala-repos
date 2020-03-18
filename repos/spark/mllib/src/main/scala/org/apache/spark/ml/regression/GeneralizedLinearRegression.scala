@@ -453,10 +453,14 @@ object GeneralizedLinearRegression
       */
     def fromName(name: String): Family = {
       name match {
-        case Gaussian.name => Gaussian
-        case Binomial.name => Binomial
-        case Poisson.name  => Poisson
-        case Gamma.name    => Gamma
+        case Gaussian.name =>
+          Gaussian
+        case Binomial.name =>
+          Binomial
+        case Poisson.name =>
+          Poisson
+        case Gamma.name =>
+          Gamma
       }
     }
   }
@@ -670,13 +674,20 @@ object GeneralizedLinearRegression
       */
     def fromName(name: String): Link = {
       name match {
-        case Identity.name => Identity
-        case Logit.name    => Logit
-        case Log.name      => Log
-        case Inverse.name  => Inverse
-        case Probit.name   => Probit
-        case CLogLog.name  => CLogLog
-        case Sqrt.name     => Sqrt
+        case Identity.name =>
+          Identity
+        case Logit.name =>
+          Logit
+        case Log.name =>
+          Log
+        case Inverse.name =>
+          Inverse
+        case Probit.name =>
+          Probit
+        case CLogLog.name =>
+          CLogLog
+        case Sqrt.name =>
+          Sqrt
       }
     }
   }
@@ -813,7 +824,8 @@ class GeneralizedLinearRegressionModel private[ml] (
         (
           copy(ParamMap.empty).setPredictionCol(predictionColName),
           predictionColName)
-      case p => (this, p)
+      case p =>
+        (this, p)
     }
   }
 
@@ -1019,10 +1031,14 @@ class GeneralizedLinearRegressionSummary private[regression] (
   @Since("2.0.0")
   def residuals(residualsType: String): DataFrame = {
     residualsType match {
-      case "deviance" => devianceResiduals
-      case "pearson"  => pearsonResiduals
-      case "working"  => workingResiduals
-      case "response" => responseResiduals
+      case "deviance" =>
+        devianceResiduals
+      case "pearson" =>
+        pearsonResiduals
+      case "working" =>
+        workingResiduals
+      case "response" =>
+        responseResiduals
       case other =>
         throw new UnsupportedOperationException(
           s"The residuals type $other is not supported by Generalized Linear Regression.")

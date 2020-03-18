@@ -33,7 +33,8 @@ class CancellationTest extends FunSuite with IntegrationBase with MockitoSugar {
           assert(event.getChannel == m.channel)
           assert(
             event.getMessage match {
-              case s: String => s == "123"
+              case s: String =>
+                s == "123"
             })
           true
         }

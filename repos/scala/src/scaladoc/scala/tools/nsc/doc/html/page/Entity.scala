@@ -172,7 +172,8 @@ trait EntityPage extends HtmlPage {
                     c.comment.fold("")(com => inlineToStr(com.short))
                   }></a>
               }
-            case _ => <span class="separator"></span>
+            case _ =>
+              <span class="separator"></span>
           }
         }
                       <a class={
@@ -206,8 +207,10 @@ trait EntityPage extends HtmlPage {
 
       val parent =
         tpl.toRoot match {
-          case _ :: parent :: _ if !parent.isRootPackage => Some(parent)
-          case _                                         => None
+          case _ :: parent :: _ if !parent.isRootPackage =>
+            Some(parent)
+          case _ =>
+            None
         }
 
       val parentSub =
@@ -311,8 +314,10 @@ trait EntityPage extends HtmlPage {
       x.isTrait || x.isClass) sorted (implicitly[Ordering[MemberEntity]])
 
   val constructors = (tpl match {
-    case cls: Class => (cls.constructors: List[MemberEntity]).sorted
-    case _          => Nil
+    case cls: Class =>
+      (cls.constructors: List[MemberEntity]).sorted
+    case _ =>
+      Nil
   })
 
   /* for body, there is a special case for AnyRef, otherwise AnyRef appears
@@ -646,7 +651,8 @@ trait EntityPage extends HtmlPage {
                 <div class="comment cmt">{
                   bodyToHtml(body)
                 }</div>
-              case _ => NodeSeq.Empty
+              case _ =>
+                NodeSeq.Empty
             }
           }
             </div>
@@ -771,7 +777,8 @@ trait EntityPage extends HtmlPage {
     mbr match {
       case nte: NonTemplateMemberEntity if nte.isUseCase =>
         inlineToHtml(comment.Text("[use case] "))
-      case _ => NodeSeq.Empty
+      case _ =>
+        NodeSeq.Empty
     }
   }
 
@@ -824,11 +831,16 @@ trait EntityPage extends HtmlPage {
     val paramComments = {
       val prs: List[ParameterEntity] =
         mbr match {
-          case cls: Class       => cls.typeParams ::: cls.valueParams.flatten
-          case trt: Trait       => trt.typeParams
-          case dfe: Def         => dfe.typeParams ::: dfe.valueParams.flatten
-          case ctr: Constructor => ctr.valueParams.flatten
-          case _                => Nil
+          case cls: Class =>
+            cls.typeParams ::: cls.valueParams.flatten
+          case trt: Trait =>
+            trt.typeParams
+          case dfe: Def =>
+            dfe.typeParams ::: dfe.valueParams.flatten
+          case ctr: Constructor =>
+            ctr.valueParams.flatten
+          case _ =>
+            Nil
         }
 
       def paramCommentToHtml(
@@ -862,8 +874,10 @@ trait EntityPage extends HtmlPage {
 
       mbr.comment.fold(NodeSeq.Empty) { comment =>
         val cmtedPrs = prs filter {
-          case tp: TypeParam  => comment.typeParams isDefinedAt tp.name
-          case vp: ValueParam => comment.valueParams isDefinedAt vp.name
+          case tp: TypeParam =>
+            comment.typeParams isDefinedAt tp.name
+          case vp: ValueParam =>
+            comment.valueParams isDefinedAt vp.name
         }
         if (cmtedPrs.isEmpty && comment.result.isEmpty)
           NodeSeq.Empty
@@ -871,7 +885,8 @@ trait EntityPage extends HtmlPage {
           <dl class="paramcmts block">{
             paramCommentToHtml(cmtedPrs, comment) ++ (
               comment.result match {
-                case None => NodeSeq.Empty
+                case None =>
+                  NodeSeq.Empty
                 case Some(cmt) =>
                   <dt>returns</dt><dd class="cmt">{
                     bodyToHtml(cmt)
@@ -890,8 +905,10 @@ trait EntityPage extends HtmlPage {
             val targetType = typeToHtml(conv.targetType, hasLinks = true)
             val conversionMethod =
               conv.convertorMethod match {
-                case Left(member) => Text(member.name)
-                case Right(name)  => Text(name)
+                case Left(member) =>
+                  Text(member.name)
+                case Right(name) =>
+                  Text(name)
               }
 
             // strip off the package object endings, they make things harder to follow
@@ -954,7 +971,8 @@ trait EntityPage extends HtmlPage {
                       d.valueParams map (
                         _ map (_ name) mkString ("(", ", ", ")")
                       ) mkString
-                    case _ => "" // no parameters
+                    case _ =>
+                      "" // no parameters
                   }
                 <br/> ++ scala.xml.Text(
                   "To access this member you can use a ") ++
@@ -1032,7 +1050,8 @@ trait EntityPage extends HtmlPage {
             signature(nte.useCaseOf.get, isSelf = true)
           }</div>
           </div>
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
     }
 
@@ -1044,7 +1063,8 @@ trait EntityPage extends HtmlPage {
         <dd>{
             typeToHtml(dtpl.selfType.get, hasLinks = true)
           }</dd>
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
 
     val annotations: NodeSeq = {
@@ -1093,7 +1113,8 @@ trait EntityPage extends HtmlPage {
               Text(absFile.file.getName)
             }</a>
           }</dd>
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
 
     val deprecation: NodeSeq =
@@ -1103,7 +1124,8 @@ trait EntityPage extends HtmlPage {
           <dd class="cmt">{
             bodyToHtml(deprecation)
           }</dd>
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
 
     val migration: NodeSeq =
@@ -1113,7 +1135,8 @@ trait EntityPage extends HtmlPage {
           <dd class="cmt">{
             bodyToHtml(migration)
           }</dd>
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
 
     val mainComment: NodeSeq =
@@ -1215,7 +1238,8 @@ trait EntityPage extends HtmlPage {
 
           example ++ version ++ sinceVersion ++ exceptions ++ todo ++ note ++ seeAlso
 
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
     // end attributes block vals ---
 
@@ -1244,7 +1268,8 @@ trait EntityPage extends HtmlPage {
               sep = scala.xml.Text(", "))
           }</div>
         </div>
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
 
     val subclasses =
@@ -1271,7 +1296,8 @@ trait EntityPage extends HtmlPage {
           </div>
           else
             NodeSeq.Empty
-        case _ => NodeSeq.Empty
+        case _ =>
+          NodeSeq.Empty
       }
 
     def createDiagram(
@@ -1308,7 +1334,8 @@ trait EntityPage extends HtmlPage {
                 NodeSeq.Empty
             } else
               NodeSeq.Empty
-          case _ => NodeSeq.Empty
+          case _ =>
+            NodeSeq.Empty
         }
       else
         NodeSeq.Empty // diagrams not generated
@@ -1331,8 +1358,10 @@ trait EntityPage extends HtmlPage {
       hasLinks: Boolean): NodeSeq = {
     def bound0(bnd: Option[TypeEntity], pre: String): NodeSeq =
       bnd match {
-        case None      => NodeSeq.Empty
-        case Some(tpe) => scala.xml.Text(pre) ++ typeToHtml(tpe, hasLinks)
+        case None =>
+          NodeSeq.Empty
+        case Some(tpe) =>
+          scala.xml.Text(pre) ++ typeToHtml(tpe, hasLinks)
       }
     bound0(lo, " >: ") ++ bound0(hi, " <: ")
   }
@@ -1461,14 +1490,17 @@ trait EntityPage extends HtmlPage {
                   }</span>
                 def tparams0(tpss: List[TypeParam]): NodeSeq =
                   (tpss: @unchecked) match {
-                    case tp :: Nil => tparam0(tp)
-                    case tp :: tps => tparam0(tp) ++ Text(", ") ++ tparams0(tps)
+                    case tp :: Nil =>
+                      tparam0(tp)
+                    case tp :: tps =>
+                      tparam0(tp) ++ Text(", ") ++ tparams0(tps)
                   }
                 <span class="tparams">[{
                   tparams0(tpss)
                 }]</span>
               }
-            case _ => NodeSeq.Empty
+            case _ =>
+              NodeSeq.Empty
           }
         tparamsToHtml(mbr)
       }{
@@ -1486,16 +1518,21 @@ trait EntityPage extends HtmlPage {
                 Text(": ") ++ typeToHtml(vl.resultType, hasLinks)
               }{
                 vl.defaultValue match {
-                  case Some(v) => Text(" = ") ++ treeToHtml(v)
-                  case None    => NodeSeq.Empty
+                  case Some(v) =>
+                    Text(" = ") ++ treeToHtml(v)
+                  case None =>
+                    NodeSeq.Empty
                 }
               }</span>
 
             def params0(vlss: List[ValueParam]): NodeSeq =
               vlss match {
-                case Nil       => NodeSeq.Empty
-                case vl :: Nil => param0(vl)
-                case vl :: vls => param0(vl) ++ Text(", ") ++ params0(vls)
+                case Nil =>
+                  NodeSeq.Empty
+                case vl :: Nil =>
+                  param0(vl)
+                case vl :: vls =>
+                  param0(vl) ++ Text(", ") ++ params0(vls)
               }
             def implicitCheck(vlss: List[ValueParam]): NodeSeq =
               vlss match {
@@ -1504,7 +1541,8 @@ trait EntityPage extends HtmlPage {
                     <span class="implicit">implicit </span>
                   } else
                     Text("")
-                case _ => Text("")
+                case _ =>
+                  Text("")
               }
             vlsss map { vlss =>
               <span class="params">({
@@ -1513,10 +1551,14 @@ trait EntityPage extends HtmlPage {
             }
           }
           mbr match {
-            case cls: Class       => paramsToHtml(cls.valueParams)
-            case ctr: Constructor => paramsToHtml(ctr.valueParams)
-            case dfe: Def         => paramsToHtml(dfe.valueParams)
-            case _                => NodeSeq.Empty
+            case cls: Class =>
+              paramsToHtml(cls.valueParams)
+            case ctr: Constructor =>
+              paramsToHtml(ctr.valueParams)
+            case dfe: Def =>
+              paramsToHtml(dfe.valueParams)
+            case _ =>
+              NodeSeq.Empty
           }
         }
       }{
@@ -1549,7 +1591,8 @@ trait EntityPage extends HtmlPage {
                 typeToHtml(tpl.parentTypes.map(_._2), hasLinks)
               }</span>
 
-            case _ => NodeSeq.Empty
+            case _ =>
+              NodeSeq.Empty
           }
         }
       }
@@ -1591,7 +1634,8 @@ trait EntityPage extends HtmlPage {
             goodLookingXml ++= Text("}")
           case '\n' =>
             goodLookingXml ++= <br/> ++ indentation
-          case _ => goodLookingXml ++= Text(c.toString)
+          case _ =>
+            goodLookingXml ++= Text(c.toString)
         }
       def indentation: NodeSeq = {
         var indentXml = NodeSeq.Empty
@@ -1651,8 +1695,10 @@ trait EntityPage extends HtmlPage {
   private def argumentsToHtml(argss: List[ValueArgument]): NodeSeq = {
     def argumentsToHtml0(argss: List[ValueArgument]): NodeSeq =
       argss match {
-        case Nil        => NodeSeq.Empty
-        case arg :: Nil => argumentToHtml(arg)
+        case Nil =>
+          NodeSeq.Empty
+        case arg :: Nil =>
+          argumentToHtml(arg)
         case arg :: args =>
           argumentToHtml(arg) ++ scala.xml.Text(", ") ++ argumentsToHtml0(args)
       }
@@ -1665,8 +1711,10 @@ trait EntityPage extends HtmlPage {
     <span>
       {
       arg.parameter match {
-        case Some(param) => Text(param.name + " = ")
-        case None        => NodeSeq.Empty
+        case Some(param) =>
+          Text(param.name + " = ")
+        case None =>
+          NodeSeq.Empty
       }
     }
       {
@@ -1680,8 +1728,10 @@ trait EntityPage extends HtmlPage {
 
   private def blockToStr(block: comment.Block): String =
     block match {
-      case comment.Paragraph(in) => inlineToStr(in)
-      case _                     => block.toString
+      case comment.Paragraph(in) =>
+        inlineToStr(in)
+      case _ =>
+        block.toString
     }
 
   private def typeToHtmlWithStupidTypes(

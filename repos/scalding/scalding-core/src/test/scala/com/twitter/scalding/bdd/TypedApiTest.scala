@@ -23,8 +23,10 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
       } When { in: TypedPipe[(String, String, Int)] =>
         in.map[(String, Double)] { person =>
           person match {
-            case (name, "M", age) => (name, (1000.0 / (72 - age)).toDouble)
-            case (name, _, age)   => (name, (1000.0 / (80 - age)).toDouble)
+            case (name, "M", age) =>
+              (name, (1000.0 / (72 - age)).toDouble)
+            case (name, _, age) =>
+              (name, (1000.0 / (80 - age)).toDouble)
           }
         }
       } Then { buffer: mutable.Buffer[(String, Double)] =>
@@ -178,17 +180,22 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
                   smoker) =>
               val lifeExpectancy =
                 (gender, smoker) match {
-                  case ("M", true)  => 68
-                  case ("M", false) => 72
-                  case (_, true)    => 76
-                  case (_, false)   => 80
+                  case ("M", true) =>
+                    68
+                  case ("M", false) =>
+                    72
+                  case (_, true) =>
+                    76
+                  case (_, false) =>
+                    80
                 }
 
               Some(
                 EstimatedContribution(
                   name,
                   floor(income / (lifeExpectancy - age))))
-            case _ => None
+            case _ =>
+              None
           }
           .values
       } Then { buffer: mutable.Buffer[EstimatedContribution] =>

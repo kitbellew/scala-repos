@@ -69,7 +69,8 @@ class InstanceTestsHijackedBoxedClassesTest {
     // from the bug report
     def test(x: Any): String =
       x match {
-        case f: Float => "ok"
+        case f: Float =>
+          "ok"
       }
     assertEquals("ok", test(0.2))
   }

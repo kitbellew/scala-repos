@@ -56,10 +56,14 @@ sealed trait NameTree[+T] {
     */
   def eval[U >: T]: Option[Set[U]] =
     NameTree.eval[U](this) match {
-      case NameTree.Fail        => None
-      case NameTree.Neg         => None
-      case NameTree.Leaf(value) => Some(value)
-      case _                    => scala.sys.error("bug")
+      case NameTree.Fail =>
+        None
+      case NameTree.Neg =>
+        None
+      case NameTree.Leaf(value) =>
+        Some(value)
+      case _ =>
+        scala.sys.error("bug")
     }
 }
 
@@ -139,7 +143,8 @@ object NameTree {
     tree match {
       case Union(trees @ _*) =>
         val trees1 = trees map {
-          case Weighted(w, t) => Weighted(w, t.map(f))
+          case Weighted(w, t) =>
+            Weighted(w, t.map(f))
         }
         Union(trees1: _*)
 
@@ -147,11 +152,15 @@ object NameTree {
         val trees1 = trees map map(f)
         Alt(trees1: _*)
 
-      case Leaf(t) => Leaf(f(t))
+      case Leaf(t) =>
+        Leaf(f(t))
 
-      case Fail  => Fail
-      case Neg   => Neg
-      case Empty => Empty
+      case Fail =>
+        Fail
+      case Neg =>
+        Neg
+      case Empty =>
+        Empty
     }
 
   private[this] val unionFail = Seq(Weighted(Weighted.defaultWeight, Fail))
@@ -163,51 +172,70 @@ object NameTree {
     */
   def simplify[T](tree: NameTree[T]): NameTree[T] =
     tree match {
-      case Alt()     => Neg
-      case Alt(tree) => simplify(tree)
+      case Alt() =>
+        Neg
+      case Alt(tree) =>
+        simplify(tree)
       case Alt(trees @ _*) =>
         @tailrec
         def loop(
             trees: Seq[NameTree[T]],
             accum: Seq[NameTree[T]]): Seq[NameTree[T]] =
           trees match {
-            case Nil => accum
+            case Nil =>
+              accum
             case Seq(head, tail @ _*) =>
               simplify(head) match {
-                case Fail => accum :+ Fail
-                case Neg  => loop(tail, accum)
-                case head => loop(tail, accum :+ head)
+                case Fail =>
+                  accum :+ Fail
+                case Neg =>
+                  loop(tail, accum)
+                case head =>
+                  loop(tail, accum :+ head)
               }
           }
         loop(trees, Nil) match {
-          case Nil       => Neg
-          case Seq(head) => head
-          case trees     => Alt.fromSeq(trees)
+          case Nil =>
+            Neg
+          case Seq(head) =>
+            head
+          case trees =>
+            Alt.fromSeq(trees)
         }
 
-      case Union()                  => Neg
-      case Union(Weighted(_, tree)) => simplify(tree)
+      case Union() =>
+        Neg
+      case Union(Weighted(_, tree)) =>
+        simplify(tree)
       case Union(trees @ _*) =>
         @tailrec
         def loop(
             trees: Seq[Weighted[T]],
             accum: Seq[Weighted[T]]): Seq[Weighted[T]] =
           trees match {
-            case Nil => accum
+            case Nil =>
+              accum
             case Seq(Weighted(w, tree), tail @ _*) =>
               simplify(tree) match {
-                case Fail => unionFail
-                case Neg  => loop(tail, accum)
-                case tree => loop(tail, accum :+ Weighted(w, tree))
+                case Fail =>
+                  unionFail
+                case Neg =>
+                  loop(tail, accum)
+                case tree =>
+                  loop(tail, accum :+ Weighted(w, tree))
               }
           }
         loop(trees, Nil) match {
-          case Nil                    => Neg
-          case Seq(Weighted(_, tree)) => tree
-          case trees                  => Union.fromSeq(trees)
+          case Nil =>
+            Neg
+          case Seq(Weighted(_, tree)) =>
+            tree
+          case trees =>
+            Union.fromSeq(trees)
         }
 
-      case other => other
+      case other =>
+        other
     }
 
   /**
@@ -215,46 +243,63 @@ object NameTree {
     */
   def show[T: Showable](tree: NameTree[T]): String =
     tree match {
-      case Union(Weighted(_, tree)) => show(tree)
-      case Alt(tree)                => show(tree)
+      case Union(Weighted(_, tree)) =>
+        show(tree)
+      case Alt(tree) =>
+        show(tree)
 
       case Alt(trees @ _*) =>
         val trees1 = trees.map(show1(_))
         trees1 mkString " | "
 
-      case _ => show1(tree)
+      case _ =>
+        show1(tree)
     }
 
   private def show1[T: Showable](tree: NameTree[T]): String =
     tree match {
-      case Union(Weighted(_, tree)) => show1(tree)
-      case Alt(tree)                => show1(tree)
+      case Union(Weighted(_, tree)) =>
+        show1(tree)
+      case Alt(tree) =>
+        show1(tree)
 
       case Union(trees @ _*) =>
         val trees1 = trees map {
-          case Weighted(Weighted.defaultWeight, t) => showSimple(t)
-          case Weighted(w, t)                      => f"${w}%.2f*${showSimple(t)}"
+          case Weighted(Weighted.defaultWeight, t) =>
+            showSimple(t)
+          case Weighted(w, t) =>
+            f"${w}%.2f*${showSimple(t)}"
         }
         trees1 mkString " & "
 
-      case Alt(_*) => showParens(tree)
+      case Alt(_*) =>
+        showParens(tree)
 
-      case _ => showSimple(tree)
+      case _ =>
+        showSimple(tree)
     }
 
   private def showSimple[T: Showable](tree: NameTree[T]): String =
     tree match {
-      case Union(Weighted(_, tree)) => showSimple(tree)
-      case Alt(tree)                => showSimple(tree)
+      case Union(Weighted(_, tree)) =>
+        showSimple(tree)
+      case Alt(tree) =>
+        showSimple(tree)
 
-      case Union(_*) => showParens(tree)
-      case Alt(_*)   => showParens(tree)
+      case Union(_*) =>
+        showParens(tree)
+      case Alt(_*) =>
+        showParens(tree)
 
-      case Leaf(l) => Showable.show(l)
+      case Leaf(l) =>
+        Showable.show(l)
 
-      case Fail  => "!"
-      case Neg   => "~"
-      case Empty => "$"
+      case Fail =>
+        "!"
+      case Neg =>
+        "~"
+      case Empty =>
+        "$"
     }
 
   private def showParens[T: Showable](tree: NameTree[T]): String =
@@ -264,13 +309,20 @@ object NameTree {
   // NB: discards weights
   private def eval[T](tree: NameTree[T]): NameTree[Set[T]] =
     tree match {
-      case Union() | Alt()          => Neg
-      case Alt(tree)                => eval(tree)
-      case Union(Weighted(_, tree)) => eval(tree)
-      case Fail                     => Fail
-      case Neg                      => Neg
-      case Empty                    => Leaf(Set.empty)
-      case Leaf(t)                  => Leaf(Set(t))
+      case Union() | Alt() =>
+        Neg
+      case Alt(tree) =>
+        eval(tree)
+      case Union(Weighted(_, tree)) =>
+        eval(tree)
+      case Fail =>
+        Fail
+      case Neg =>
+        Neg
+      case Empty =>
+        Leaf(Set.empty)
+      case Leaf(t) =>
+        Leaf(Set(t))
 
       case Union(trees @ _*) =>
         @tailrec
@@ -280,15 +332,21 @@ object NameTree {
           trees match {
             case Nil =>
               accum match {
-                case Nil => Neg
-                case _   => Leaf(accum.flatten.toSet)
+                case Nil =>
+                  Neg
+                case _ =>
+                  Leaf(accum.flatten.toSet)
               }
             case Seq(Weighted(_, head), tail @ _*) =>
               eval(head) match {
-                case Fail        => Fail
-                case Neg         => loop(tail, accum)
-                case Leaf(value) => loop(tail, accum :+ value)
-                case _           => scala.sys.error("bug")
+                case Fail =>
+                  Fail
+                case Neg =>
+                  loop(tail, accum)
+                case Leaf(value) =>
+                  loop(tail, accum :+ value)
+                case _ =>
+                  scala.sys.error("bug")
               }
           }
         loop(trees, Nil)
@@ -297,13 +355,18 @@ object NameTree {
         @tailrec
         def loop(trees: Seq[NameTree[T]]): NameTree[Set[T]] =
           trees match {
-            case Nil => Neg
+            case Nil =>
+              Neg
             case Seq(head, tail @ _*) =>
               eval(head) match {
-                case Fail           => Fail
-                case Neg            => loop(tail)
-                case head @ Leaf(_) => head
-                case _              => scala.sys.error("bug")
+                case Fail =>
+                  Fail
+                case Neg =>
+                  loop(tail)
+                case head @ Leaf(_) =>
+                  head
+                case _ =>
+                  scala.sys.error("bug")
               }
           }
         loop(trees)

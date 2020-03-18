@@ -13,7 +13,9 @@ trait ScControlFlowPolicy {
 
   def usedVariable(ref: ScReferenceElement): Option[PsiNamedElement] =
     ref.resolve() match {
-      case named: PsiNamedElement if isElementAccepted(named) => Some(named)
-      case _                                                  => None
+      case named: PsiNamedElement if isElementAccepted(named) =>
+        Some(named)
+      case _ =>
+        None
     }
 }

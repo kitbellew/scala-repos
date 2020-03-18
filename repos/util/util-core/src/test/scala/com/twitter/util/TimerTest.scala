@@ -282,7 +282,8 @@ class TimerTest
         f.poll match {
           case Some(Throw(e: CancellationException)) if e.getCause eq exc =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       }
     }

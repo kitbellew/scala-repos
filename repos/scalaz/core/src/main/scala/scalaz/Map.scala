@@ -221,8 +221,10 @@ sealed abstract class ==>>[A, B] {
 
   def keySet: ISet[A] =
     this match {
-      case Tip()           => ISet.Tip[A]
-      case Bin(k, v, l, r) => ISet.Bin(k, l.keySet, r.keySet)
+      case Tip() =>
+        ISet.Tip[A]
+      case Bin(k, v, l, r) =>
+        ISet.Bin(k, l.keySet, r.keySet)
     }
 
   def toList = toAscList
@@ -286,8 +288,10 @@ sealed abstract class ==>>[A, B] {
             balance(kx, x, l, r.updateAt(i - l.size - 1, f))
           case EQ =>
             f(kx, x) match {
-              case Some(y) => Bin(kx, y, l, r)
-              case None    => glue(l, r)
+              case Some(y) =>
+                Bin(kx, y, l, r)
+              case None =>
+                glue(l, r)
             }
         }
     }
@@ -429,8 +433,10 @@ sealed abstract class ==>>[A, B] {
 
   private def glue(l: A ==>> B, r: A ==>> B): A ==>> B =
     (l, r) match {
-      case (Tip(), r) => r
-      case (l, Tip()) => l
+      case (Tip(), r) =>
+        r
+      case (l, Tip()) =>
+        l
       case (l @ Bin(_, _, _, _), r @ Bin(_, _, _, _)) =>
         if (l.size > r.size) {
           val ((km, m), l2) = deleteFindMax(l)
@@ -518,9 +524,12 @@ sealed abstract class ==>>[A, B] {
   /* Unions */
   def union(other: A ==>> B)(implicit k: Order[A]): A ==>> B = {
     (this, other) match {
-      case (Tip(), t2) => t2
-      case (t1, Tip()) => t1
-      case (t1, t2)    => t1.hedgeUnionL(Function const LT, Function const GT, t2)
+      case (Tip(), t2) =>
+        t2
+      case (t1, Tip()) =>
+        t1
+      case (t1, t2) =>
+        t1.hedgeUnionL(Function const LT, Function const GT, t2)
     }
   }
 
@@ -543,8 +552,10 @@ sealed abstract class ==>>[A, B] {
           val (found, gt) = t2.trimLookupLo(kx, cmphi)
           val newx =
             found match {
-              case None         => x
-              case Some((_, y)) => f(kx, x, y)
+              case None =>
+                x
+              case Some((_, y)) =>
+                f(kx, x, y)
             }
           val aa = hedgeUnionWithKey(cmplo, cmpkx, l, t2.trim(cmplo, cmpkx))
           val bb = hedgeUnionWithKey(cmpkx, cmphi, r, gt)
@@ -851,10 +862,13 @@ sealed abstract class ==>>[A, B] {
         lo(kx) match {
           case LT =>
             hi(kx) match {
-              case GT => t
-              case _  => l.trim(lo, hi)
+              case GT =>
+                t
+              case _ =>
+                l.trim(lo, hi)
             }
-          case _ => r.trim(lo, hi)
+          case _ =>
+            r.trim(lo, hi)
         }
     }
 
@@ -968,25 +982,35 @@ sealed abstract class MapInstances0 {
 
       override def align[A, B](a: S ==>> A, b: S ==>> B) =
         (a, b) match {
-          case (Tip(), Tip()) => Tip()
-          case (a, Tip())     => a.map(This(_))
-          case (Tip(), b)     => b.map(That(_))
+          case (Tip(), Tip()) =>
+            Tip()
+          case (a, Tip()) =>
+            a.map(This(_))
+          case (Tip(), b) =>
+            b.map(That(_))
           case (a, b) =>
             a.map(This(_): A \&/ B).unionWith(b.map(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) => Both(aa, bb)
-              case _                    => sys.error("==>> align")
+              case (This(aa), That(bb)) =>
+                Both(aa, bb)
+              case _ =>
+                sys.error("==>> align")
             }
         }
 
       override def alignWith[A, B, C](f: A \&/ B => C) = {
-        case (Tip(), Tip()) => Tip()
-        case (a, Tip())     => a.map(aa => f(This(aa)))
-        case (Tip(), b)     => b.map(bb => f(That(bb)))
+        case (Tip(), Tip()) =>
+          Tip()
+        case (a, Tip()) =>
+          a.map(aa => f(This(aa)))
+        case (Tip(), b) =>
+          b.map(bb => f(That(bb)))
         case (a, b) =>
           a.map(This(_): A \&/ B)
             .unionWith(b.map(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) => Both(aa, bb)
-              case _                    => sys.error("==>> alignWith")
+              case (This(aa), That(bb)) =>
+                Both(aa, bb)
+              case _ =>
+                sys.error("==>> alignWith")
             }
             .map(f)
       }
@@ -1112,14 +1136,16 @@ sealed abstract class MapInstances extends MapInstances0 {
 
       override def any[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
-          case Tip() => false
+          case Tip() =>
+            false
           case Bin(_, x, l, r) =>
             any(l)(f) || f(x) || any(r)(f)
         }
 
       override def all[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
-          case Tip() => true
+          case Tip() =>
+            true
           case Bin(_, x, l, r) =>
             all(l)(f) && f(x) && all(r)(f)
         }

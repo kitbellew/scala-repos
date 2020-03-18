@@ -44,7 +44,8 @@ trait Tracer extends parser.AST with typer.Binder {
         copied.indices(idx) set copied.nodes.indexOf((sigma, expr))
         copied
       }
-      case None => copied
+      case None =>
+        copied
     }
   }
 
@@ -137,13 +138,15 @@ trait Tracer extends parser.AST with typer.Binder {
     */
   def buildBacktrace(trace: Trace)(target0: Expr): List[List[(Sigma, Expr)]] = {
     val targetLocations: Array[Int] = trace.nodes.zipWithIndex collect {
-      case ((_, expr), idx) if target0 == expr => idx
+      case ((_, expr), idx) if target0 == expr =>
+        idx
     }
 
     def loop(stack: List[(Sigma, Expr)])(location: Int): List[(Sigma, Expr)] = {
       val newTargets: Array[(Int, (Sigma, Expr))] = {
         trace.indices.zipWithIndex collect {
-          case (bitset, idx) if bitset(location) => (idx, trace.nodes(idx))
+          case (bitset, idx) if bitset(location) =>
+            (idx, trace.nodes(idx))
         }
       }
 

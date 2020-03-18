@@ -8,13 +8,15 @@ object Test extends App {
   try {
     println(test6)
   } catch {
-    case _: Throwable => println("OK")
+    case _: Throwable =>
+      println("OK")
   }
   println(test7)
   try {
     println(test8)
   } catch {
-    case _: Throwable => println("OK")
+    case _: Throwable =>
+      println("OK")
   }
   println(test9)
   println(test10)
@@ -26,8 +28,10 @@ object Test extends App {
     try {
       x = 2
     } catch {
-      case _: NullPointerException => x = 3
-      case _: Throwable            => x = 4
+      case _: NullPointerException =>
+        x = 3
+      case _: Throwable =>
+        x = 4
     }
     x
   }
@@ -39,12 +43,15 @@ object Test extends App {
       try {
         x = 21
       } catch {
-        case _: Throwable => x = 22
+        case _: Throwable =>
+          x = 22
       }
       x = 23
     } catch {
-      case _: NullPointerException => x = 3
-      case _: Throwable            => x = 4
+      case _: NullPointerException =>
+        x = 3
+      case _: Throwable =>
+        x = 4
     }
     x
   }
@@ -55,11 +62,14 @@ object Test extends App {
       try {
         x = 2
       } catch {
-        case _: Throwable => x = 4
+        case _: Throwable =>
+          x = 4
       }
     } catch {
-      case _: NullPointerException => x = 3
-      case _: Throwable            => x = 4
+      case _: NullPointerException =>
+        x = 3
+      case _: Throwable =>
+        x = 4
     }
     x
   }
@@ -69,13 +79,16 @@ object Test extends App {
     try {
       x = 2
     } catch {
-      case _: NullPointerException => x = 3
-      case _: Throwable            => x = 4
+      case _: NullPointerException =>
+        x = 3
+      case _: Throwable =>
+        x = 4
     }
     try {
       x = 5
     } catch {
-      case _: NullPointerException => x = 6
+      case _: NullPointerException =>
+        x = 6
     }
     x
   }
@@ -89,14 +102,16 @@ object Test extends App {
         try {
           x = 3
         } catch {
-          case f: Throwable => throw f
+          case f: Throwable =>
+            throw f
         }
       case _: Throwable =>
         x = 4;
         try {
           x = 41
         } catch {
-          case _: Exception => x = 42
+          case _: Exception =>
+            x = 42
         };
         x = 43
     }
@@ -129,7 +144,8 @@ object Test extends App {
       try {
         x = 4
       } catch {
-        case _: Throwable => x = 5
+        case _: Throwable =>
+          x = 5
       }
     }
     x
@@ -140,7 +156,8 @@ object Test extends App {
     try {
       throw new NullPointerException
     } catch {
-      case e: Throwable => throw e
+      case e: Throwable =>
+        throw e
     }
     x
   }
@@ -148,10 +165,12 @@ object Test extends App {
   def test9 = {
     try {
       "" match {
-        case s: String => 10
+        case s: String =>
+          10
       }
     } catch {
-      case _: Throwable => 20
+      case _: Throwable =>
+        20
     }
   }
 
@@ -160,7 +179,8 @@ object Test extends App {
     try {
       1
     } catch {
-      case e if (x10 == 1) => 1
+      case e if (x10 == 1) =>
+        1
     }
   }
 
@@ -168,7 +188,8 @@ object Test extends App {
     try {
       ()
     } catch {
-      case e: Throwable => ()
+      case e: Throwable =>
+        ()
     }
   }
 
@@ -180,9 +201,12 @@ object Test extends App {
     try {
       op
     } catch {
-      case e: E1 => 2
-      case e: E2 => 3
-      case e: E3 => 4
+      case e: E1 =>
+        2
+      case e: E2 =>
+        3
+      case e: E3 =>
+        4
     }
   def test12 =
     test12_impl(1) +

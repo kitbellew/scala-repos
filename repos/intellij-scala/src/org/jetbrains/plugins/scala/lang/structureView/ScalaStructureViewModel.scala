@@ -49,10 +49,14 @@ class ScalaStructureViewModel(
 
   def isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean = {
     element match {
-      case _: ScalaTypeDefinitionStructureViewElement => true
-      case _: ScalaFileStructureViewElement           => true
-      case _: ScalaPackagingStructureViewElement      => true
-      case _                                          => false
+      case _: ScalaTypeDefinitionStructureViewElement =>
+        true
+      case _: ScalaFileStructureViewElement =>
+        true
+      case _: ScalaPackagingStructureViewElement =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -75,8 +79,10 @@ class ScalaStructureViewModel(
                     test1: TestStructureViewElement,
                     test2: TestStructureViewElement) =>
                 0
-              case (_, test: TestStructureViewElement) => -1
-              case (test: TestStructureViewElement, _) => 1
+              case (_, test: TestStructureViewElement) =>
+                -1
+              case (test: TestStructureViewElement, _) =>
+                1
               case _ =>
                 SorterUtil
                   .getStringPresentation(o1)
@@ -105,35 +111,42 @@ class ScalaStructureViewModel(
     element match {
       case t: ScTypeDefinition =>
         t.getParent match {
-          case _: ScalaFile | _: ScPackaging => true
+          case _: ScalaFile | _: ScPackaging =>
+            true
           case tb: ScTemplateBody
               if tb.getParent.isInstanceOf[ScExtendsBlock] =>
             isSuitable(tb.getParent.getParent)
-          case _ => false
+          case _ =>
+            false
         }
       case f: ScFunction =>
         f.getParent match {
-          case b: ScBlockExpr => b.getParent.isInstanceOf[ScFunction]
+          case b: ScBlockExpr =>
+            b.getParent.isInstanceOf[ScFunction]
           case tb: ScTemplateBody
               if tb.getParent.isInstanceOf[ScExtendsBlock] =>
             isSuitable(tb.getParent.getParent)
-          case _ => false
+          case _ =>
+            false
         }
       case m: ScMember =>
         m.getParent match {
           case tb: ScTemplateBody
               if tb.getParent.isInstanceOf[ScExtendsBlock] =>
             isSuitable(tb.getParent.getParent)
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   override def shouldEnterElement(o: Object): Boolean =
     o match {
       case t: ScTypeDefinition =>
         t.members.length > 0 || t.typeDefinitions.size > 0
-      case _ => false
+      case _ =>
+        false
     }
 }
 

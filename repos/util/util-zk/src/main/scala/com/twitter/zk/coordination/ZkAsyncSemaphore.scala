@@ -124,7 +124,8 @@ class ZkAsyncSemaphore(
         // client is always connected here.
         monitorSemaphore(semaphoreNode)
         zk onSessionEvent {
-          case StateEvent.Expired => rejectWaitQueue()
+          case StateEvent.Expired =>
+            rejectWaitQueue()
           case StateEvent.Connected => {
             permitNodes() map { nodes =>
               checkWaiters(nodes)
@@ -265,10 +266,12 @@ class ZkAsyncSemaphore(
         i
       }
       val permitsToBelievers = groupedByNumPermits map {
-        case (permits, believers) => (permits, believers.size)
+        case (permits, believers) =>
+          (permits, believers.size)
       }
       val (numPermitsInMax, numBelieversOfMax) = permitsToBelievers.maxBy {
-        case (_, believers) => believers
+        case (_, believers) =>
+          believers
       }
       val cardinalityOfMax =
         permitsToBelievers.values
@@ -300,7 +303,8 @@ class ZkAsyncSemaphore(
       try {
         new String(data.bytes, Charset.forName("UTF8")).toInt
       } catch {
-        case err: NumberFormatException => -1
+        case err: NumberFormatException =>
+          -1
       }
     }
   }

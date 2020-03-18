@@ -158,7 +158,8 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
                 else
                   0.0
               }
-              case _ => v + math.signum(xv) * l1regValue
+              case _ =>
+                v + math.signum(xv) * l1regValue
             }
           }
       }

@@ -45,11 +45,14 @@ trait MemoryQueryingProfile extends BasicProfile {
     (
       (
         t.structural match {
-          case t: ScalaType[_] => t
-          case t: TypedType[_] => t.scalaType
+          case t: ScalaType[_] =>
+            t
+          case t: TypedType[_] =>
+            t.scalaType
           case o: OptionType =>
             typeInfoFor(o.elementType).asInstanceOf[ScalaBaseType[_]].optionType
-          case t => throw new SlickException("No ScalaType found for type " + t)
+          case t =>
+            throw new SlickException("No ScalaType found for type " + t)
         }
       ): ScalaType[_]
     ).asInstanceOf[ScalaType[Any]]
@@ -82,8 +85,10 @@ trait MemoryQueryingProfile extends BasicProfile {
             n
           else
             Bind(gen, g, p2).infer(typeChildren = true)
-        case Library.SilentCast(n :@ tpe1) :@ tpe2 if tpe1 == tpe2 => n
-        case n                                                     => n
+        case Library.SilentCast(n :@ tpe1) :@ tpe2 if tpe1 == tpe2 =>
+          n
+        case n =>
+          n
       }
 
     def transformCountAll(gen: TermSymbol, n: Node): Node =
@@ -108,7 +113,8 @@ trait MemoryQueryingProfile extends BasicProfile {
               _: MappedScalaType | OptionType.NonPrimitive(_)
             ) =>
           t.mapChildren(trType)
-        case t => typeInfoFor(t)
+        case t =>
+          typeInfoFor(t)
       }
 
     override def compile(
@@ -126,7 +132,8 @@ trait MemoryQueryingProfile extends BasicProfile {
             () =>
               throw new SlickException(
                 "Read null value for non-nullable column in Option"))
-        case n => super.compile(n)
+        case n =>
+          super.compile(n)
       }
 
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
@@ -162,11 +169,14 @@ trait MemoryQueryingProfile extends BasicProfile {
       else
         n.children.iterator
           .foldLeft(null: Option[(TermSymbol, Vector[List[TermSymbol]])]) {
-            case (None, _)                    => None
-            case (null, FwdPath(sym :: rest)) => Some((sym, Vector(rest)))
+            case (None, _) =>
+              None
+            case (null, FwdPath(sym :: rest)) =>
+              Some((sym, Vector(rest)))
             case (Some((sym0, v)), FwdPath(sym :: rest)) if sym == sym0 =>
               Some((sym, v :+ rest))
-            case _ => None
+            case _ =>
+              None
           }
   }
 }

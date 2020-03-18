@@ -16,8 +16,10 @@ object ExtractTraitInfoModel
     extends AbstractMemberInfoModel[ScMember, ScalaExtractMemberInfo] {
   override def isAbstractEnabled(member: ScalaExtractMemberInfo) = {
     member.getMember match {
-      case decl: ScDeclaration => false
-      case _                   => true
+      case decl: ScDeclaration =>
+        false
+      case _ =>
+        true
     }
   }
 
@@ -27,13 +29,17 @@ object ExtractTraitInfoModel
 
   override def isFixedAbstract(member: ScalaExtractMemberInfo) =
     member.getMember match {
-      case decl: ScDeclaration => true
-      case _                   => null
+      case decl: ScDeclaration =>
+        true
+      case _ =>
+        null
     }
 
   override def isAbstractWhenDisabled(member: ScalaExtractMemberInfo) =
     member.getMember match {
-      case decl: ScDeclaration => true
-      case _                   => false
+      case decl: ScDeclaration =>
+        true
+      case _ =>
+        false
     }
 }

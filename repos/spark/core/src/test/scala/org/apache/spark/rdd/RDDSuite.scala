@@ -59,7 +59,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(
       nums
         .collect({
-          case i if i >= 3 => i.toString
+          case i if i >= 3 =>
+            i.toString
         })
         .collect()
         .toList === List("3", "4"))
@@ -76,12 +77,14 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(partitionSums.collect().toList === List(3, 7))
 
     val partitionSumsWithSplit = nums.mapPartitionsWithIndex {
-      case (split, iter) => Iterator((split, iter.sum))
+      case (split, iter) =>
+        Iterator((split, iter.sum))
     }
     assert(partitionSumsWithSplit.collect().toList === List((0, 3), (1, 7)))
 
     val partitionSumsWithIndex = nums.mapPartitionsWithIndex {
-      case (split, iter) => Iterator((split, iter.sum))
+      case (split, iter) =>
+        Iterator((split, iter.sum))
     }
     assert(partitionSumsWithIndex.collect().toList === List((0, 3), (1, 7)))
 

@@ -3,8 +3,10 @@ object Test {
 
   def f(x: Any) =
     x match {
-      case A(x) => x
-      case _    => -1
+      case A(x) =>
+        x
+      case _ =>
+        -1
     }
 
   def main(args: Array[String]): Unit = {

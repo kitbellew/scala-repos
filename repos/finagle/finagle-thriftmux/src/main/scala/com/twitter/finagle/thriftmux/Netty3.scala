@@ -285,7 +285,8 @@ private[finagle] class PipelineFactory(
         msg.`type` == TMessageType.CALL &&
         msg.name == ThriftTracing.CanTraceMethodName
       } catch {
-        case NonFatal(_) => false
+        case NonFatal(_) =>
+          false
       }
     }
 
@@ -388,7 +389,8 @@ private[finagle] class PipelineFactory(
           pipeline.remove(this)
           super.messageReceived(ctx, e)
 
-        case Throw(exc) => throw exc
+        case Throw(exc) =>
+          throw exc
       }
 
       // On the surface, this seems bad, since messages may be

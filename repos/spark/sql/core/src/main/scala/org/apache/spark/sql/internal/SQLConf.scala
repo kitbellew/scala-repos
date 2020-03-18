@@ -799,7 +799,8 @@ class SQLConf
   def setConf(props: Properties): Unit =
     settings.synchronized {
       props.asScala.foreach {
-        case (k, v) => setConfString(k, v)
+        case (k, v) =>
+          setConfString(k, v)
       }
     }
 

@@ -30,8 +30,10 @@ trait DBLogEntry {
 object DBLogEntry {
   def unapply(obj: Any) =
     obj match {
-      case entry: DBLogEntry => Some(entry.statement, entry.duration)
-      case _                 => None
+      case entry: DBLogEntry =>
+        Some(entry.statement, entry.duration)
+      case _ =>
+        None
     }
 }
 case class DBStatementEntry(statement: String, duration: Long)
@@ -154,9 +156,12 @@ object DBLog {
       method.getName match {
         // Handle DBLog methods first. We have to do this since the end user expects a DBLog interface
         // via the proxy.
-        case "statementEntries" => this.statementEntries
-        case "metaEntries"      => this.metaEntries
-        case "allEntries"       => this.allEntries
+        case "statementEntries" =>
+          this.statementEntries
+        case "metaEntries" =>
+          this.metaEntries
+        case "allEntries" =>
+          this.allEntries
 
         // The rest are from Statement
         case "addBatch" => {
@@ -430,13 +435,17 @@ object DBLog {
         // These are from wrapper and are required
         case "isWrapperFor" =>
           args(0).getClass match {
-            case `representative` => Boolean.box(true)
-            case _                => chain(method, args)
+            case `representative` =>
+              Boolean.box(true)
+            case _ =>
+              chain(method, args)
           }
         case "unwrap" =>
           args(0).getClass match {
-            case `representative` => underlying
-            case _                => chain(method, args)
+            case `representative` =>
+              underlying
+            case _ =>
+              chain(method, args)
           }
 
         case methodName =>
@@ -725,7 +734,8 @@ object DBLog {
         }
 
         // Chain up to LoggedStatement if we don't handle it here
-        case _ => super.invoke(proxy, method, args)
+        case _ =>
+          super.invoke(proxy, method, args)
       }
     }
   }
@@ -738,46 +748,67 @@ object DBLog {
 object StatementConstantDescriptions {
   def genKeyDescriptions(in: Int) =
     in match {
-      case Statement.NO_GENERATED_KEYS     => "NO_GENERATED_KEYS"
-      case Statement.RETURN_GENERATED_KEYS => "RETURN_GENERATED_KEYS"
-      case x                               => "Invalid Generated Keys Constant: " + x
+      case Statement.NO_GENERATED_KEYS =>
+        "NO_GENERATED_KEYS"
+      case Statement.RETURN_GENERATED_KEYS =>
+        "RETURN_GENERATED_KEYS"
+      case x =>
+        "Invalid Generated Keys Constant: " + x
     }
 
   def fetchDirDescriptions(in: Int) =
     in match {
-      case ResultSet.FETCH_FORWARD => "FETCH_FORWARD"
-      case ResultSet.FETCH_REVERSE => "FETCH_REVERSE"
-      case ResultSet.FETCH_UNKNOWN => "FETCH_UNKNOWN"
-      case x                       => "Invalid Fetch Direction Constant: " + x
+      case ResultSet.FETCH_FORWARD =>
+        "FETCH_FORWARD"
+      case ResultSet.FETCH_REVERSE =>
+        "FETCH_REVERSE"
+      case ResultSet.FETCH_UNKNOWN =>
+        "FETCH_UNKNOWN"
+      case x =>
+        "Invalid Fetch Direction Constant: " + x
     }
 
   def getMoreResultsDescriptions(in: Int) =
     in match {
-      case Statement.CLOSE_CURRENT_RESULT => "CLOSE_CURRENT_RESULT"
-      case Statement.KEEP_CURRENT_RESULT  => "KEEP_CURRENT_RESULT"
-      case Statement.CLOSE_ALL_RESULTS    => "CLOSE_ALL_RESULTS"
-      case x                              => "Invalid getMoreResults constant: " + x
+      case Statement.CLOSE_CURRENT_RESULT =>
+        "CLOSE_CURRENT_RESULT"
+      case Statement.KEEP_CURRENT_RESULT =>
+        "KEEP_CURRENT_RESULT"
+      case Statement.CLOSE_ALL_RESULTS =>
+        "CLOSE_ALL_RESULTS"
+      case x =>
+        "Invalid getMoreResults constant: " + x
     }
 
   def resultSetConcurrencyDescs(in: Int) =
     in match {
-      case ResultSet.CONCUR_READ_ONLY => "CONCUR_READ_ONLY"
-      case ResultSet.CONCUR_UPDATABLE => "CONCUR_UPDATABLE"
-      case x                          => "Invalid ResultSet concurrency constant: " + x
+      case ResultSet.CONCUR_READ_ONLY =>
+        "CONCUR_READ_ONLY"
+      case ResultSet.CONCUR_UPDATABLE =>
+        "CONCUR_UPDATABLE"
+      case x =>
+        "Invalid ResultSet concurrency constant: " + x
     }
 
   def resultSetHoldabilityDescs(in: Int) =
     in match {
-      case ResultSet.HOLD_CURSORS_OVER_COMMIT => "HOLD_CURSORS_OVER_COMMIT"
-      case ResultSet.CLOSE_CURSORS_AT_COMMIT  => "CLOSE_CURSORS_AT_COMMIT"
-      case x                                  => "Invalid ResultSet holdability constant: " + x
+      case ResultSet.HOLD_CURSORS_OVER_COMMIT =>
+        "HOLD_CURSORS_OVER_COMMIT"
+      case ResultSet.CLOSE_CURSORS_AT_COMMIT =>
+        "CLOSE_CURSORS_AT_COMMIT"
+      case x =>
+        "Invalid ResultSet holdability constant: " + x
     }
 
   def resultSetTypeDescs(in: Int) =
     in match {
-      case ResultSet.TYPE_FORWARD_ONLY       => "TYPE_FORWARD_ONLY"
-      case ResultSet.TYPE_SCROLL_INSENSITIVE => "TYPE_SCROLL_INSENSITIVE"
-      case ResultSet.TYPE_SCROLL_SENSITIVE   => "TYPE_SCROLL_SENSITIVE"
-      case x                                 => "Invalid ResultSet type constant: " + x
+      case ResultSet.TYPE_FORWARD_ONLY =>
+        "TYPE_FORWARD_ONLY"
+      case ResultSet.TYPE_SCROLL_INSENSITIVE =>
+        "TYPE_SCROLL_INSENSITIVE"
+      case ResultSet.TYPE_SCROLL_SENSITIVE =>
+        "TYPE_SCROLL_SENSITIVE"
+      case x =>
+        "Invalid ResultSet type constant: " + x
     }
 }

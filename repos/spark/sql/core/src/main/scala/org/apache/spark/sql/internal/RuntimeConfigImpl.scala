@@ -46,7 +46,8 @@ class RuntimeConfigImpl extends RuntimeConfig {
   override def getOption(key: String): Option[String] = {
     try Option(get(key))
     catch {
-      case _: NoSuchElementException => None
+      case _: NoSuchElementException =>
+        None
     }
   }
 
@@ -70,7 +71,8 @@ class RuntimeConfigImpl extends RuntimeConfig {
   override def getHadoopOption(key: String): Option[String] = {
     try Option(getHadoop(key))
     catch {
-      case _: NoSuchElementException => None
+      case _: NoSuchElementException =>
+        None
     }
   }
 

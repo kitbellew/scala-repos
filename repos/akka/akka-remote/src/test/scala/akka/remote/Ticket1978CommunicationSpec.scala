@@ -219,7 +219,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
         Props(
           new Actor {
             def receive = {
-              case ("ping", x) ⇒ sender() ! ((("pong", x), sender()))
+              case ("ping", x) ⇒
+                sender() ! ((("pong", x), sender()))
             }
           }),
         "echo")
@@ -242,7 +243,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
           here ! (("ping", i))
         for (i ← 1 to 1000)
           expectMsgPF() {
-            case (("pong", i), `testActor`) ⇒ true
+            case (("pong", i), `testActor`) ⇒
+              true
           }
       }
 

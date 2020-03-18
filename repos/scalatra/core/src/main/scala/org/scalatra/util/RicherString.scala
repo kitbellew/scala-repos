@@ -39,9 +39,12 @@ class RicherString(orig: String) {
 
   def /(path: String): String = {
     (orig.endsWith("/"), path.startsWith("/")) match {
-      case (true, false) | (false, true) ⇒ orig + path
-      case (false, false) ⇒ orig + "/" + path
-      case (true, true) ⇒ orig + path substring 1
+      case (true, false) | (false, true) ⇒
+        orig + path
+      case (false, false) ⇒
+        orig + "/" + path
+      case (true, true) ⇒
+        orig + path substring 1
     }
   }
 
@@ -52,7 +55,8 @@ class RicherString(orig: String) {
       case "ON" | "TRUE" | "OK" | "1" | "CHECKED" | "YES" | "ENABLE" |
           "ENABLED" =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

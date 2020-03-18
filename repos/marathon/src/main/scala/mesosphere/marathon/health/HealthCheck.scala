@@ -150,11 +150,14 @@ object HealthCheck {
         val hasCommand = hc.command.isDefined
         val hasPath = hc.path.isDefined
         if (hc.protocol match {
-              case Protocol.COMMAND => hasCommand && !hasPath && hc.port.isEmpty
-              case Protocol.HTTP    => !hasCommand && eitherPortIndexOrPort
+              case Protocol.COMMAND =>
+                hasCommand && !hasPath && hc.port.isEmpty
+              case Protocol.HTTP =>
+                !hasCommand && eitherPortIndexOrPort
               case Protocol.TCP =>
                 !hasCommand && !hasPath && eitherPortIndexOrPort
-              case _ => true
+              case _ =>
+                true
             })
           Success
         else

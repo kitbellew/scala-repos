@@ -56,23 +56,29 @@ case class GlobifierOps(implicit tz: TimeZone, dp: DateParser) {
                   val tryDuration: Try[Duration] = Try(current.toInt).map {
                     indx =>
                       curMapping match {
-                        case t if mappings.tail == Nil => t
-                        case _                         => Millisecs(0)
+                        case t if mappings.tail == Nil =>
+                          t
+                        case _ =>
+                          Millisecs(0)
                       }
                   }
 
                   val (duration, doContinue) =
                     tryDuration match {
-                      case Success(d) => (d, true)
+                      case Success(d) =>
+                        (d, true)
                       case Failure(e) =>
                         val dur: Duration =
                           curMapping match {
                             case Years(_) =>
                               sys.error(
                                 "Current is " + current + ", parsed as all years?")
-                            case Months(_) => Years(1)
-                            case Days(_)   => Months(1)
-                            case Hours(_)  => Days(1)
+                            case Months(_) =>
+                              Years(1)
+                            case Days(_) =>
+                              Months(1)
+                            case Hours(_) =>
+                              Days(1)
                           }
                         (dur, false)
                     }
@@ -80,13 +86,16 @@ case class GlobifierOps(implicit tz: TimeZone, dp: DateParser) {
                   val base: Duration = Try(current.toInt)
                     .map { indx =>
                       curMapping match {
-                        case Years(_) => Years(indx - 1970)
+                        case Years(_) =>
+                          Years(indx - 1970)
                         case Months(_) =>
                           Months(
                             indx - 1
                           ) // months and days are 1 offsets not 0
-                        case Days(_)  => Days(indx - 1)
-                        case Hours(_) => Hours(indx)
+                        case Days(_) =>
+                          Days(indx - 1)
+                        case Hours(_) =>
+                          Hours(indx)
                       }
                     }
                     .getOrElse(Hours(0))

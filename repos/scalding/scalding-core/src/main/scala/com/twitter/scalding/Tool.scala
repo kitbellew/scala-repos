@@ -40,7 +40,8 @@ class Tool extends Configured with HTool {
 
   protected def getJob(args: Args): Job =
     rootJob match {
-      case Some(job) => job(args)
+      case Some(job) =>
+        job(args)
       case None if args.positional.isEmpty =>
         throw ArgsException("Usage: Tool <jobClass> --local|--hdfs [args...]")
       case None => // has at least one arg
@@ -135,8 +136,10 @@ class Tool extends Configured with HTool {
       //When we get here, the job is finished
       if (successful) {
         j.next match {
-          case Some(nextj) => start(nextj, cnt + 1)
-          case None        => Unit
+          case Some(nextj) =>
+            start(nextj, cnt + 1)
+          case None =>
+            Unit
         }
       } else {
         throw new RuntimeException(

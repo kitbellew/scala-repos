@@ -36,6 +36,7 @@ class ArraysTest extends javalib.util.ArraysTest {
       case ClassTag.Double =>
         new Float64Array(v.asInstanceOf[Seq[Double]].toJSArray).toArray
           .asInstanceOf[scala.Array[T]]
-      case _ => scala.Array(v: _*)
+      case _ =>
+        scala.Array(v: _*)
     }
 }

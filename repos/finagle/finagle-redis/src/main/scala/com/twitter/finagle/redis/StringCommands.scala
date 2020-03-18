@@ -17,7 +17,8 @@ trait Strings {
     */
   def append(key: ChannelBuffer, value: ChannelBuffer): Future[JLong] =
     doRequest(Append(key, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -34,7 +35,8 @@ trait Strings {
       start: Option[Int] = None,
       end: Option[Int] = None): Future[JLong] =
     doRequest(BitCount(key, start, end)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -53,7 +55,8 @@ trait Strings {
       dstKey: ChannelBuffer,
       srcKeys: Seq[ChannelBuffer]): Future[JLong] =
     doRequest(BitOp(op, dstKey, srcKeys)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -63,7 +66,8 @@ trait Strings {
     */
   def decr(key: ChannelBuffer): Future[JLong] =
     doRequest(Decr(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -76,7 +80,8 @@ trait Strings {
     */
   def decrBy(key: ChannelBuffer, amount: Long): Future[JLong] =
     doRequest(DecrBy(key, amount)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -86,8 +91,10 @@ trait Strings {
     */
   def get(key: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(Get(key)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -99,7 +106,8 @@ trait Strings {
     */
   def getBit(key: ChannelBuffer, offset: Int): Future[JLong] =
     doRequest(GetBit(key, offset)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -114,8 +122,10 @@ trait Strings {
       start: Long,
       end: Long): Future[Option[ChannelBuffer]] =
     doRequest(GetRange(key, start, end)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -131,8 +141,10 @@ trait Strings {
       key: ChannelBuffer,
       value: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(GetSet(key, value)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -144,7 +156,8 @@ trait Strings {
     */
   def incr(key: ChannelBuffer): Future[JLong] =
     doRequest(Incr(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -156,7 +169,8 @@ trait Strings {
     */
   def incrBy(key: ChannelBuffer, increment: Long): Future[JLong] =
     doRequest(IncrBy(key, increment)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -171,12 +185,16 @@ trait Strings {
       case MBulkReply(messages) =>
         Future {
           messages.map {
-            case BulkReply(message) => Some(message)
-            case EmptyBulkReply()   => None
-            case _                  => throw new IllegalStateException()
+            case BulkReply(message) =>
+              Some(message)
+            case EmptyBulkReply() =>
+              None
+            case _ =>
+              throw new IllegalStateException()
           }.toSeq
         }
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -188,7 +206,8 @@ trait Strings {
     */
   def mSet(kv: Map[ChannelBuffer, ChannelBuffer]): Future[Unit] =
     doRequest(MSet(kv)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -201,7 +220,8 @@ trait Strings {
     */
   def mSetNx(kv: Map[ChannelBuffer, ChannelBuffer]): Future[JBoolean] =
     doRequest(MSetNx(kv)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -216,7 +236,8 @@ trait Strings {
       millis: Long,
       value: ChannelBuffer): Future[Unit] =
     doRequest(PSetEx(key, millis, value)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -227,7 +248,8 @@ trait Strings {
     */
   def set(key: ChannelBuffer, value: ChannelBuffer): Future[Unit] =
     doRequest(Set(key, value)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -239,7 +261,8 @@ trait Strings {
     */
   def setBit(key: ChannelBuffer, offset: Int, value: Int): Future[JLong] =
     doRequest(SetBit(key, offset, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -254,7 +277,8 @@ trait Strings {
       seconds: Long,
       value: ChannelBuffer): Future[Unit] =
     doRequest(SetEx(key, seconds, value)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -270,8 +294,10 @@ trait Strings {
       seconds: Long,
       value: ChannelBuffer): Future[JBoolean] =
     doRequest(Set(key, value, Some(InSeconds(seconds)), true, false)) {
-      case StatusReply(_)   => Future.value(true)
-      case EmptyBulkReply() => Future.value(false)
+      case StatusReply(_) =>
+        Future.value(true)
+      case EmptyBulkReply() =>
+        Future.value(false)
     }
 
   /**
@@ -287,8 +313,10 @@ trait Strings {
       seconds: Long,
       value: ChannelBuffer): Future[JBoolean] =
     doRequest(Set(key, value, Some(InSeconds(seconds)), false, true)) {
-      case StatusReply(_)   => Future.value(true)
-      case EmptyBulkReply() => Future.value(false)
+      case StatusReply(_) =>
+        Future.value(true)
+      case EmptyBulkReply() =>
+        Future.value(false)
     }
 
   /**
@@ -301,7 +329,8 @@ trait Strings {
     */
   def setNx(key: ChannelBuffer, value: ChannelBuffer): Future[JBoolean] =
     doRequest(SetNx(key, value)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -315,7 +344,8 @@ trait Strings {
       millis: Long,
       value: ChannelBuffer): Future[Unit] =
     doRequest(Set(key, value, Some(InMilliseconds(millis)))) {
-      case StatusReply(_) => Future.Unit
+      case StatusReply(_) =>
+        Future.Unit
     }
 
   /**
@@ -331,8 +361,10 @@ trait Strings {
       millis: Long,
       value: ChannelBuffer): Future[JBoolean] =
     doRequest(Set(key, value, Some(InMilliseconds(millis)), true, false)) {
-      case StatusReply(_)   => Future.value(true)
-      case EmptyBulkReply() => Future.value(false)
+      case StatusReply(_) =>
+        Future.value(true)
+      case EmptyBulkReply() =>
+        Future.value(false)
     }
 
   /**
@@ -348,8 +380,10 @@ trait Strings {
       millis: Long,
       value: ChannelBuffer): Future[JBoolean] =
     doRequest(Set(key, value, Some(InMilliseconds(millis)), false, true)) {
-      case StatusReply(_)   => Future.value(true)
-      case EmptyBulkReply() => Future.value(false)
+      case StatusReply(_) =>
+        Future.value(true)
+      case EmptyBulkReply() =>
+        Future.value(false)
     }
 
   /**
@@ -361,8 +395,10 @@ trait Strings {
     */
   def setXx(key: ChannelBuffer, value: ChannelBuffer): Future[JBoolean] =
     doRequest(Set(key, value, None, false, true)) {
-      case StatusReply(_)   => Future.value(true)
-      case EmptyBulkReply() => Future.value(false)
+      case StatusReply(_) =>
+        Future.value(true)
+      case EmptyBulkReply() =>
+        Future.value(false)
     }
 
   /**
@@ -378,7 +414,8 @@ trait Strings {
       offset: Int,
       value: ChannelBuffer): Future[JLong] =
     doRequest(SetRange(key, offset, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -390,6 +427,7 @@ trait Strings {
     */
   def strlen(key: ChannelBuffer): Future[JLong] =
     doRequest(Strlen(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 }

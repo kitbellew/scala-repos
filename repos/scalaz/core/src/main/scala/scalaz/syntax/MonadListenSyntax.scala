@@ -6,7 +6,8 @@ final class MonadListenOps[F[_], W, A] private[syntax] (self: F[A])(implicit
 
   final def written: F[W] =
     ML.map(ML.listen(self)) {
-      case (_, w) => w
+      case (_, w) =>
+        w
     }
 
   final def listen: F[(A, W)] = ML.listen[A](self)

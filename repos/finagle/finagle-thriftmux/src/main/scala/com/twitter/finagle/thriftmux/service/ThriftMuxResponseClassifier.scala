@@ -107,9 +107,11 @@ object ThriftMuxResponseClassifier {
           case Return(rep: mux.Response) =>
             try classifier.isDefinedAt(deserialized(deserCtx, rep.body))
             catch {
-              case _: Throwable => false
+              case _: Throwable =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
       }
 
@@ -123,9 +125,11 @@ object ThriftMuxResponseClassifier {
             try {
               classifier(deserialized(deserCtx, rep.body))
             } catch {
-              case NonFatal(e) => throw new MatchError(e)
+              case NonFatal(e) =>
+                throw new MatchError(e)
             }
-          case e => throw new MatchError(e)
+          case e =>
+            throw new MatchError(e)
         }
     }
 

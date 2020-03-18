@@ -52,8 +52,10 @@ class PasswordTestRecord private () extends Record[PasswordTestRecord] {
 
     def validateNonEmptyPassword(v: String): List[FieldError] =
       v match {
-        case "testvalue" => Text("no way!")
-        case _           => Nil
+        case "testvalue" =>
+          Text("no way!")
+        case _ =>
+          Nil
       }
   }
 }
@@ -282,7 +284,8 @@ class FieldTypeTestRecord private () extends Record[FieldTypeTestRecord] {
         that.fieldsToCompare.corresponds(this.fieldsToCompare) { (a, b) =>
           a.name == b.name && a.valueBox == b.valueBox
         }
-      case _ => false
+      case _ =>
+        false
     }
 }
 

@@ -363,7 +363,8 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
             @volatile
             var interrupted: Option[Throwable] = None
             setInterruptHandler {
-              case exc => interrupted = Some(exc)
+              case exc =>
+                interrupted = Some(exc)
             }
           }
         when(factory()).thenReturn(slowService)
@@ -374,7 +375,8 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
         f.raise(exc)
         assert(f.isDefined)
         f onFailure {
-          case WriteException(e) => assert(e == exc)
+          case WriteException(e) =>
+            assert(e == exc)
           case _ =>
             assert(false, "expecting a WriteException, gets something else")
         }

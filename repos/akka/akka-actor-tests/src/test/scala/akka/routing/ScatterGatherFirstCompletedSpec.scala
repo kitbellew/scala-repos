@@ -29,8 +29,10 @@ object ScatterGatherFirstCompletedSpec {
       Props(
         new Actor {
           def receive = {
-            case Stop(None) ⇒ context.stop(self)
-            case Stop(Some(_id)) if (_id == id) ⇒ context.stop(self)
+            case Stop(None) ⇒
+              context.stop(self)
+            case Stop(Some(_id)) if (_id == id) ⇒
+              context.stop(self)
             case _id: Int if (_id == id) ⇒
             case x ⇒ {
               Thread sleep 100 * id
@@ -63,8 +65,10 @@ class ScatterGatherFirstCompletedSpec
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter1.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter1.addAndGet(msg)
             }
           }))
 
@@ -73,8 +77,10 @@ class ScatterGatherFirstCompletedSpec
         Props(
           new Actor {
             def receive = {
-              case "end" ⇒ doneLatch.countDown()
-              case msg: Int ⇒ counter2.addAndGet(msg)
+              case "end" ⇒
+                doneLatch.countDown()
+              case msg: Int ⇒
+                counter2.addAndGet(msg)
             }
           }))
 

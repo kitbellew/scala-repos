@@ -30,7 +30,8 @@ object ResizerSpec {
 
   class TestActor extends Actor {
     def receive = {
-      case latch: TestLatch ⇒ latch.countDown()
+      case latch: TestLatch ⇒
+        latch.countDown()
     }
   }
 
@@ -197,7 +198,8 @@ class ResizerSpec
                 case d: FiniteDuration ⇒
                   Thread.sleep(d.dilated.toMillis);
                   sender() ! "done"
-                case "echo" ⇒ sender() ! "reply"
+                case "echo" ⇒
+                  sender() ! "reply"
               }
             })))
 
@@ -244,7 +246,8 @@ class ResizerSpec
             new Actor {
               def receive = {
                 case n: Int if n <= 0 ⇒ // done
-                case n: Int ⇒ Thread.sleep((n millis).dilated.toMillis)
+                case n: Int ⇒
+                  Thread.sleep((n millis).dilated.toMillis)
               }
             })))
 

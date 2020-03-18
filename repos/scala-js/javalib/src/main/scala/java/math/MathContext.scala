@@ -50,7 +50,8 @@ object MathContext {
       try {
         java.lang.Integer.parseInt(precisionString)
       } catch {
-        case _: NumberFormatException => invalidMathContext("Bad precision", s)
+        case _: NumberFormatException =>
+          invalidMathContext("Bad precision", s)
       }
     }
 

@@ -87,8 +87,10 @@ case class Cookie(name: String, value: String)(implicit
       maxAge match {
         case a if a < 0 =>
           None // we don't do anything for max-age when it's < 0 then it becomes a session cookie
-        case 0 => Some(0L) // Set the date to the min date for the system
-        case a => Some(currentTimeMillis + a * 1000)
+        case 0 =>
+          Some(0L) // Set the date to the min date for the system
+        case a =>
+          Some(currentTimeMillis + a * 1000)
       }
 
     // This used to be Max-Age but IE is not always very happy with that

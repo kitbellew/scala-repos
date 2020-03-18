@@ -16,8 +16,10 @@ object Test extends JavapTest {
     def filtered =
       res filter (
         _ match {
-          case p() => true
-          case _   => false
+          case p() =>
+            true
+          case _ =>
+            false
         }
       )
     1 == filtered.size

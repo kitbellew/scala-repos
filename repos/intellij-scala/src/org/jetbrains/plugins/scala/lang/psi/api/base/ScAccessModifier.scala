@@ -38,8 +38,9 @@ trait ScAccessModifier extends ScalaPsiElement {
       return builder.toString()
     }
     idText match {
-      case Some(id) => builder.append(s"[$id]")
-      case _        =>
+      case Some(id) =>
+        builder.append(s"[$id]")
+      case _ =>
     }
     builder.toString()
   }

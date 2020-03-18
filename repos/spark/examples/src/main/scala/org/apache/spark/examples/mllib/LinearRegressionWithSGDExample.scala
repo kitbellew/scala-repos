@@ -59,7 +59,8 @@ object LinearRegressionWithSGDExample {
     }
     val MSE = valuesAndPreds
       .map {
-        case (v, p) => math.pow((v - p), 2)
+        case (v, p) =>
+          math.pow((v - p), 2)
       }
       .mean()
     println("training Mean Squared Error = " + MSE)

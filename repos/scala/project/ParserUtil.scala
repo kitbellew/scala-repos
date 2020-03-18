@@ -67,7 +67,8 @@ object ParserUtil {
           displayPath
         else
           matching(seen) match {
-            case Nil => displayPath
+            case Nil =>
+              displayPath
             case x :: Nil =>
               if (fileFilter.accept(file(x)))
                 Completions.strict(

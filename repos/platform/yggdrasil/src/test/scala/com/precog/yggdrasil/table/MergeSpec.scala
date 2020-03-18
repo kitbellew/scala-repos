@@ -242,7 +242,8 @@ trait MergeSpec[M[+_]]
               //partition(3).flatMap(_.toJson).copoint.foreach(println)
               r3
             }
-            case _ => sys.error("Unexpected group key")
+            case _ =>
+              sys.error("Unexpected group key")
           }
         ).point[M]
       }
@@ -426,7 +427,8 @@ trait MergeSpec[M[+_]]
               //partition(3).flatMap(_.toJson).copoint.foreach(println)
               r3
             }
-            case _ => sys.error("Unexpected group key")
+            case _ =>
+              sys.error("Unexpected group key")
           }
         ).point[M]
       }

@@ -40,7 +40,8 @@ object ControlUtil {
     try {
       f
     } catch {
-      case e: Exception => ()
+      case e: Exception =>
+        ()
     }
 
 }

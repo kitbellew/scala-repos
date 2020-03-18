@@ -151,7 +151,8 @@ class RichPresentationCompilerSpec
         sym.name shouldBe "fn"
         sym.localName shouldBe "fn"
         inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+          case Some(OffsetSourcePosition(f, i)) =>
+            i should be > 0
         }
       }
     }
@@ -176,7 +177,8 @@ class RichPresentationCompilerSpec
         sym.name shouldBe "apply"
         sym.localName shouldBe "apply"
         inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+          case Some(OffsetSourcePosition(f, i)) =>
+            i should be > 0
         }
       }
     }
@@ -202,7 +204,8 @@ class RichPresentationCompilerSpec
         sym.name shouldBe "copy"
         sym.localName shouldBe "copy"
         inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) => i should be > 0
+          case Some(OffsetSourcePosition(f, i)) =>
+            i should be > 0
         }
       }
     }
@@ -729,13 +732,17 @@ class RichPresentationCompilerSpec
 
           val info =
             cc1.askSymbolInfoAt(new OffsetPosition(usesFile, usePos)) match {
-              case Some(x) => x
-              case None    => fail(s"For $comment, askSymbolInfoAt returned None")
+              case Some(x) =>
+                x
+              case None =>
+                fail(s"For $comment, askSymbolInfoAt returned None")
             }
           val declPos = info.declPos
           declPos match {
-            case Some(op: OffsetSourcePosition) => assert(op.offset === defPos)
-            case _                              => fail(s"For $comment, unexpected declPos value: $declPos")
+            case Some(op: OffsetSourcePosition) =>
+              assert(op.offset === defPos)
+            case _ =>
+              fail(s"For $comment, unexpected declPos value: $declPos")
           }
         } finally {
           cc1.askShutdown()

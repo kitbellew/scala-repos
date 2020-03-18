@@ -31,7 +31,8 @@ private[finagle] object FinagleScheduler {
       try {
         Some(str.toInt)
       } catch {
-        case _: java.lang.NumberFormatException => None
+        case _: java.lang.NumberFormatException =>
+          None
       }
     }
   }
@@ -75,11 +76,13 @@ private[finagle] object FinagleScheduler {
     scheduler().split(":").toList match {
       case "bridged" :: Integer(numWorkers) :: Nil =>
         switchToBridged(numWorkers)
-      case "bridged" :: Nil => switchToBridged(numProcs().ceil.toInt)
+      case "bridged" :: Nil =>
+        switchToBridged(numProcs().ceil.toInt)
 
       case "forkjoin" :: Integer(numWorkers) :: Nil =>
         switchToForkJoin(numWorkers)
-      case "forkjoin" :: Nil => switchToForkJoin(numProcs().ceil.toInt)
+      case "forkjoin" :: Nil =>
+        switchToForkJoin(numProcs().ceil.toInt)
 
       case "lifo" :: Nil =>
         log.info("Using LIFO local scheduler")

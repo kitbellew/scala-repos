@@ -93,7 +93,8 @@ final class GCounter private[akka] (
         case Some(v) ⇒
           val tot = v + delta
           assignAncestor(new GCounter(state + (key -> tot)))
-        case None ⇒ assignAncestor(new GCounter(state + (key -> delta)))
+        case None ⇒
+          assignAncestor(new GCounter(state + (key -> delta)))
       }
   }
 
@@ -122,7 +123,8 @@ final class GCounter private[akka] (
     state.get(removedNode) match {
       case Some(value) ⇒
         new GCounter(state - removedNode).increment(collapseInto, value)
-      case None ⇒ this
+      case None ⇒
+        this
     }
 
   override def pruningCleanup(removedNode: UniqueAddress): GCounter =
@@ -134,8 +136,10 @@ final class GCounter private[akka] (
 
   override def equals(o: Any): Boolean =
     o match {
-      case other: GCounter ⇒ state == other.state
-      case _ ⇒ false
+      case other: GCounter ⇒
+        state == other.state
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = state.hashCode

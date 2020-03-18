@@ -21,20 +21,34 @@ case class JsonQuestion(
                   Dimension.valueByKey(dimension, _)
                 }).some
             filterKey match {
-              case Perf.key             => build(Perf)
-              case Phase.key            => build(Phase)
-              case Result.key           => build(Result)
-              case Termination.key      => build(Termination)
-              case Color.key            => build(Color)
-              case Opening.key          => build(Opening)
-              case OpponentStrength.key => build(OpponentStrength)
-              case PieceRole.key        => build(PieceRole)
-              case MovetimeRange.key    => build(MovetimeRange)
-              case MyCastling.key       => build(MyCastling)
-              case OpCastling.key       => build(OpCastling)
-              case QueenTrade.key       => build(QueenTrade)
-              case MaterialRange.key    => build(MaterialRange)
-              case _                    => none
+              case Perf.key =>
+                build(Perf)
+              case Phase.key =>
+                build(Phase)
+              case Result.key =>
+                build(Result)
+              case Termination.key =>
+                build(Termination)
+              case Color.key =>
+                build(Color)
+              case Opening.key =>
+                build(Opening)
+              case OpponentStrength.key =>
+                build(OpponentStrength)
+              case PieceRole.key =>
+                build(PieceRole)
+              case MovetimeRange.key =>
+                build(MovetimeRange)
+              case MyCastling.key =>
+                build(MyCastling)
+              case OpCastling.key =>
+                build(OpCastling)
+              case QueenTrade.key =>
+                build(QueenTrade)
+              case MaterialRange.key =>
+                build(MaterialRange)
+              case _ =>
+                none
             }
           }
         }
@@ -45,20 +59,34 @@ case class JsonQuestion(
         def build[X](dimension: Dimension[X]) =
           Question[X](dimension, realMetric, realFilters).some
         dimension match {
-          case Perf.key             => build(Perf)
-          case Phase.key            => build(Phase)
-          case Result.key           => build(Result)
-          case Termination.key      => build(Termination)
-          case Color.key            => build(Color)
-          case Opening.key          => build(Opening)
-          case OpponentStrength.key => build(OpponentStrength)
-          case PieceRole.key        => build(PieceRole)
-          case MovetimeRange.key    => build(MovetimeRange)
-          case MyCastling.key       => build(MyCastling)
-          case OpCastling.key       => build(OpCastling)
-          case QueenTrade.key       => build(QueenTrade)
-          case MaterialRange.key    => build(MaterialRange)
-          case _                    => none
+          case Perf.key =>
+            build(Perf)
+          case Phase.key =>
+            build(Phase)
+          case Result.key =>
+            build(Result)
+          case Termination.key =>
+            build(Termination)
+          case Color.key =>
+            build(Color)
+          case Opening.key =>
+            build(Opening)
+          case OpponentStrength.key =>
+            build(OpponentStrength)
+          case PieceRole.key =>
+            build(PieceRole)
+          case MovetimeRange.key =>
+            build(MovetimeRange)
+          case MyCastling.key =>
+            build(MyCastling)
+          case OpCastling.key =>
+            build(OpCastling)
+          case QueenTrade.key =>
+            build(QueenTrade)
+          case MaterialRange.key =>
+            build(MaterialRange)
+          case _ =>
+            none
         }
       }
     } yield question

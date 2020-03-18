@@ -49,7 +49,8 @@ object WSClientAutobahnTest extends App {
   def runCase(caseIndex: Int, agent: String = Agent): Future[CaseStatus] =
     runWs(runCaseUri(caseIndex, agent), echo)
       .recover {
-        case _ ⇒ ()
+        case _ ⇒
+          ()
       }
       .flatMap { _ ⇒
         getCaseStatus(caseIndex, agent)
@@ -152,7 +153,8 @@ object WSClientAutobahnTest extends App {
         println(s"${GREEN}OK$RESET: ${grouped.getOrElse("OK", Nil).size}")
         val notOk = grouped.filterNot(_._1 == "OK")
         notOk.toSeq.sortBy(_._2.size).foreach {
-          case (status, cases) ⇒ println(s"$RED$status$RESET: ${cases.size}")
+          case (status, cases) ⇒
+            println(s"$RED$status$RESET: ${cases.size}")
         }
         println()
         println("Not OK tests: ")
@@ -228,7 +230,8 @@ object WSClientAutobahnTest extends App {
       uri,
       Flow.fromSinkAndSourceMat(sink, Source.maybe[Message])(Keep.left))
       .flatMap {
-        case tm: TextMessage ⇒ tm.textStream.runWith(Sink.fold("")(_ + _))
+        case tm: TextMessage ⇒
+          tm.textStream.runWith(Sink.fold("")(_ + _))
         case other ⇒
           throw new IllegalStateException(
             s"unexpected element of type ${other.getClass}")

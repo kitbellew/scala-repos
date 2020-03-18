@@ -38,7 +38,8 @@ object InspectionsUtil {
       Option(clazz).map { c =>
         val designatorType = ScDesignatorType(c)
         c.getTypeParameters.toSeq match {
-          case Seq() => designatorType
+          case Seq() =>
+            designatorType
           case params =>
             val undefines = params.map(p =>
               ScUndefinedType(new ScTypeParameterType(p, ScSubstitutor.empty)))

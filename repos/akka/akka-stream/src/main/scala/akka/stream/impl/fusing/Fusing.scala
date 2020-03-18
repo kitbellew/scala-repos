@@ -29,9 +29,12 @@ private[stream] object Fusing {
     */
   def aggressive[S <: Shape, M](g: Graph[S, M]): FusedGraph[S, M] =
     g match {
-      case fg: FusedGraph[_, _] ⇒ fg
-      case FusedGraph(module, shape) => FusedGraph(module, shape)
-      case _ ⇒ doAggressive(g)
+      case fg: FusedGraph[_, _] ⇒
+        fg
+      case FusedGraph(module, shape) =>
+        FusedGraph(module, shape)
+      case _ ⇒
+        doAggressive(g)
     }
 
   private def doAggressive[S <: Shape, M](g: Graph[S, M]): FusedGraph[S, M] = {
@@ -242,7 +245,8 @@ private[stream] object Fusing {
     // FIXME attributes should contain some naming info and async boundary where needed
     val firstModule =
       group.iterator.next() match {
-        case c: CopiedModule => c
+        case c: CopiedModule =>
+          c
         case _ =>
           throw new IllegalArgumentException("unexpected module structure")
       }
@@ -253,8 +257,10 @@ private[stream] object Fusing {
         Attributes.none
     val disp =
       dispatcher(firstModule) match {
-        case None ⇒ Attributes.none
-        case Some(d) ⇒ Attributes(d)
+        case None ⇒
+          Attributes.none
+        case Some(d) ⇒
+          Attributes(d)
       }
     val attr = async and disp
 
@@ -308,11 +314,14 @@ private[stream] object Fusing {
     def log(msg: String): Unit = println("  " * indent + msg)
     val async =
       m match {
-        case _: GraphStageModule ⇒ m.attributes.contains(AsyncBoundary)
-        case _: GraphModule ⇒ m.attributes.contains(AsyncBoundary)
+        case _: GraphStageModule ⇒
+          m.attributes.contains(AsyncBoundary)
+        case _: GraphModule ⇒
+          m.attributes.contains(AsyncBoundary)
         case _ if m.isAtomic ⇒
           true // non-GraphStage atomic or has AsyncBoundary
-        case _ ⇒ m.attributes.contains(AsyncBoundary)
+        case _ ⇒
+          m.attributes.contains(AsyncBoundary)
       }
     if (Debug)
       log(
@@ -366,7 +375,8 @@ private[stream] object Fusing {
                 val n = newIn.next()
                 findInArray(o, oldIns) match {
                   case -1 ⇒ // nothing to do
-                  case idx ⇒ oldIns(idx) = n
+                  case idx ⇒
+                    oldIns(idx) = n
                 }
               }
               // ... then the outlets
@@ -377,7 +387,8 @@ private[stream] object Fusing {
                 val n = newOut.next()
                 findInArray(o, oldOuts) match {
                   case -1 ⇒ // nothing to do
-                  case idx ⇒ oldOuts(idx) = n
+                  case idx ⇒
+                    oldOuts(idx) = n
                 }
               }
 
@@ -426,8 +437,10 @@ private[stream] object Fusing {
         case CopiedModule(shape, _, copyOf) ⇒
           val ret =
             descend(copyOf, attributes, struct, localGroup, indent + 1) match {
-              case xs @ (_, mat) :: _ ⇒ (m -> mat) :: xs
-              case _ ⇒ throw new IllegalArgumentException("cannot happen")
+              case xs @ (_, mat) :: _ ⇒
+                (m -> mat) :: xs
+              case _ ⇒
+                throw new IllegalArgumentException("cannot happen")
             }
           struct.rewire(copyOf.shape, shape, indent)
           ret
@@ -458,14 +471,17 @@ private[stream] object Fusing {
           // don’t do wirings twice
           val oldDownstreams =
             m match {
-              case f: FusedModule ⇒ f.info.downstreams.toSet
-              case _ ⇒ m.downstreams.toSet
+              case f: FusedModule ⇒
+                f.info.downstreams.toSet
+              case _ ⇒
+                m.downstreams.toSet
             }
           val down =
             m.subModules.foldLeft(oldDownstreams)((set, m) ⇒
               set -- m.downstreams)
           down.foreach {
-            case (start, end) ⇒ struct.wire(start, end, indent)
+            case (start, end) ⇒
+              struct.wire(start, end, indent)
           }
           // now rewrite the materialized value computation based on the copied modules and their computation nodes
           val matNodeMapping
@@ -492,9 +508,12 @@ private[stream] object Fusing {
               .asInstanceOf[MaterializedValueSource[Any]]
             val mapped =
               ms.computation match {
-                case Atomic(sub) ⇒ subMat(sub)
-                case Ignore => Ignore
-                case other ⇒ matNodeMapping.get(other)
+                case Atomic(sub) ⇒
+                  subMat(sub)
+                case Ignore =>
+                  Ignore
+                case other ⇒
+                  matNodeMapping.get(other)
               }
             if (Debug)
               log(s"materialized value source: ${c.copyOf} -> $mapped")
@@ -547,7 +566,8 @@ private[stream] object Fusing {
         val ret = Transform(f, rewriteMat(subMat, dep, mapping))
         mapping.put(mat, ret)
         ret
-      case Ignore ⇒ Ignore
+      case Ignore ⇒
+        Ignore
     }
 
   private implicit class NonNull[T](val x: T) extends AnyVal {
@@ -642,9 +662,12 @@ private[stream] object Fusing {
 
     private def removeMapping[T](orig: T, map: ju.Map[T, List[T]]): T =
       map.remove(orig) match {
-        case null ⇒ null.asInstanceOf[T]
-        case Nil ⇒ throw new IllegalStateException("mappings corrupted")
-        case x :: Nil ⇒ x
+        case null ⇒
+          null.asInstanceOf[T]
+        case Nil ⇒
+          throw new IllegalStateException("mappings corrupted")
+        case x :: Nil ⇒
+          x
         case x :: xs ⇒
           map.put(orig, xs)
           x
@@ -666,7 +689,8 @@ private[stream] object Fusing {
       }
     def pushMatSrc(m: CopiedModule): Unit =
       matSrc match {
-        case x :: xs ⇒ matSrc = (m :: x) :: xs
+        case x :: xs ⇒
+          matSrc = (m :: x) :: xs
         case Nil ⇒
           throw new IllegalArgumentException("pushMatSrc without context")
       }
@@ -896,7 +920,8 @@ private[stream] object Fusing {
       case CopiedModule(_, inherited, orig) ⇒
         val attr = inherited and orig.attributes
         attr.get[ActorAttributes.Dispatcher]
-      case x ⇒ x.attributes.get[ActorAttributes.Dispatcher]
+      case x ⇒
+        x.attributes.get[ActorAttributes.Dispatcher]
     }
 
   /**
@@ -904,7 +929,9 @@ private[stream] object Fusing {
     */
   private def realModule(m: Module): Module =
     m match {
-      case CopiedModule(_, _, of) ⇒ realModule(of)
-      case other ⇒ other
+      case CopiedModule(_, _, of) ⇒
+        realModule(of)
+      case other ⇒
+        other
     }
 }

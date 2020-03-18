@@ -17,8 +17,10 @@ private[sbt] class PluginsDebug(
     * Because plugins can define keys in different scopes, this should only be used as a guideline. */
   def providers(keyName: String): Set[AutoPlugin] =
     nameToKey.get(keyName) match {
-      case None      => Set.empty
-      case Some(key) => provided.reverse(key)
+      case None =>
+        Set.empty
+      case Some(key) =>
+        provided.reverse(key)
     }
 
   /** Describes alternative approaches for defining key [[keyName]] in [[context]].*/
@@ -29,8 +31,10 @@ private[sbt] class PluginsDebug(
   def debug(notFoundKey: String, context: Context): String = {
     val (activated, deactivated) =
       Util.separate(toEnable(notFoundKey, context)) {
-        case pa: PluginActivated   => Left(pa)
-        case pd: EnableDeactivated => Right(pd)
+        case pa: PluginActivated =>
+          Left(pa)
+        case pd: EnableDeactivated =>
+          Right(pd)
       }
     val activePrefix =
       if (activated.nonEmpty)
@@ -44,8 +48,10 @@ private[sbt] class PluginsDebug(
       deactivated: Seq[EnableDeactivated]): String = {
     val (impossible, possible) =
       Util.separate(deactivated) {
-        case pi: PluginImpossible   => Left(pi)
-        case pr: PluginRequirements => Right(pr)
+        case pi: PluginImpossible =>
+          Left(pi)
+        case pr: PluginRequirements =>
+          Right(pr)
       }
     if (possible.nonEmpty) {
       val explained = possible.map(explainPluginEnable)
@@ -53,7 +59,8 @@ private[sbt] class PluginsDebug(
         if (explained.size > 1)
           explained.zipWithIndex
             .map {
-              case (s, i) => s"$i. $s"
+              case (s, i) =>
+                s"$i. $s"
             }
             .mkString(
               "Multiple plugins are available that can provide $notFoundKey:\n",
@@ -396,11 +403,13 @@ private[sbt] object PluginsDebug {
 
   private[this] def excludes(bs: Seq[Basic]): Set[AutoPlugin] =
     bs.collect {
-      case Exclude(b) => b
+      case Exclude(b) =>
+        b
     }.toSet
   private[this] def plugins(bs: Seq[Basic]): Set[AutoPlugin] =
     bs.collect {
-      case n: AutoPlugin => n
+      case n: AutoPlugin =>
+        n
     }.toSet
 
   // If there is a model that includes `plugin`, it includes at least what is returned by this method.
@@ -409,8 +418,10 @@ private[sbt] object PluginsDebug {
   // The actual model might be larger, since other plugins might be enabled by the selected plugins.
   private[this] def minimalModel(plugin: AutoPlugin): Seq[Basic] =
     Dag.topologicalSortUnchecked(plugin: Basic) {
-      case _: Exclude     => Nil
-      case ap: AutoPlugin => Plugins.flatten(ap.requires) :+ plugin
+      case _: Exclude =>
+        Nil
+      case ap: AutoPlugin =>
+        Plugins.flatten(ap.requires) :+ plugin
     }
 
   /** String representation of [[PluginEnable]], intended for end users. */
@@ -491,9 +502,12 @@ private[sbt] object PluginsDebug {
   private[this] def str[A](
       list: List[A])(f: A => String, fs: List[A] => String): String =
     list match {
-      case Nil           => ""
-      case single :: Nil => f(single)
-      case _             => fs(list)
+      case Nil =>
+        ""
+      case single :: Nil =>
+        f(single)
+      case _ =>
+        fs(list)
     }
 
   private[this] def willAdd(
@@ -533,9 +547,12 @@ private[sbt] object PluginsDebug {
   private[this] def deactivateString(d: DeactivatePlugin): String = {
     val removePluginsString: String =
       d.removeOneOf.toList match {
-        case Nil      => ""
-        case x :: Nil => s" or no longer include $x"
-        case xs       => s" or remove one of ${xs.mkString(", ")}"
+        case Nil =>
+          ""
+        case x :: Nil =>
+          s" or no longer include $x"
+        case xs =>
+          s" or remove one of ${xs.mkString(", ")}"
       }
     s"${d.plugin.label}: directly exclude it${removePluginsString}"
   }

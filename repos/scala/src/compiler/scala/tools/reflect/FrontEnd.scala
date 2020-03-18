@@ -9,10 +9,14 @@ trait FrontEnd {
     var count: Int = 0
     override def toString() =
       this match {
-        case INFO    => "INFO"
-        case WARNING => "WARNING"
-        case ERROR   => "ERROR"
-        case _       => "<unknown>"
+        case INFO =>
+          "INFO"
+        case WARNING =>
+          "WARNING"
+        case ERROR =>
+          "ERROR"
+        case _ =>
+          "<unknown>"
       }
   }
   val INFO = new Severity(0)

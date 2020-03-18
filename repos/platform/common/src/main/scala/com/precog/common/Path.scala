@@ -33,9 +33,12 @@ class Path private (val elements: String*) {
 
   lazy val parent: Option[Path] =
     elements.size match {
-      case 0 => None
-      case 1 => Some(Path.Root)
-      case _ => Some(new Path(elements.init: _*))
+      case 0 =>
+        None
+      case 1 =>
+        Some(Path.Root)
+      case _ =>
+        Some(new Path(elements.init: _*))
     }
 
   lazy val ancestors: List[Path] = {
@@ -67,8 +70,10 @@ class Path private (val elements: String*) {
 
   override def equals(that: Any) =
     that match {
-      case Path(`path`) => true
-      case _            => false
+      case Path(`path`) =>
+        true
+      case _ =>
+        false
     }
 
   override def hashCode = path.hashCode

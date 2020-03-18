@@ -68,7 +68,8 @@ object HRavenHistoryService extends HistoryService {
     def getFirstKey(fields: String*): Try[String] =
       fields
         .collectFirst {
-          case f if conf.get(f) != null => Success(conf.get(f))
+          case f if conf.get(f) != null =>
+            Success(conf.get(f))
         }
         .getOrElse {
           LOG.warn("Missing required config param: " + fields.mkString(" or "))
@@ -152,7 +153,8 @@ object HRavenHistoryService extends HistoryService {
         try {
           step.getConfiguration.get("cascading.flow.step.num").toInt == stepNum
         } catch {
-          case _: NumberFormatException => false
+          case _: NumberFormatException =>
+            false
         }
       } orElse {
         LOG.warn("No matching job step in the retrieved hRaven flow.")

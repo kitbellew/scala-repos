@@ -254,9 +254,12 @@ object Ordering extends LowPriorityOrderingImplicits {
   trait BooleanOrdering extends Ordering[Boolean] {
     def compare(x: Boolean, y: Boolean) =
       (x, y) match {
-        case (false, true) => -1
-        case (true, false) => 1
-        case _             => 0
+        case (false, true) =>
+          -1
+        case (true, false) =>
+          1
+        case _ =>
+          0
       }
   }
   implicit object Boolean extends BooleanOrdering
@@ -374,10 +377,14 @@ object Ordering extends LowPriorityOrderingImplicits {
     def optionOrdering: Ordering[T]
     def compare(x: Option[T], y: Option[T]) =
       (x, y) match {
-        case (None, None)       => 0
-        case (None, _)          => -1
-        case (_, None)          => 1
-        case (Some(x), Some(y)) => optionOrdering.compare(x, y)
+        case (None, None) =>
+          0
+        case (None, _) =>
+          -1
+        case (_, None) =>
+          1
+        case (Some(x), Some(y)) =>
+          optionOrdering.compare(x, y)
       }
   }
   implicit def Option[T](implicit ord: Ordering[T]): Ordering[Option[T]] =

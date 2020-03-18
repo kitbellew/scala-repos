@@ -178,7 +178,8 @@ object Metadata {
     obj match {
       case map: Map[_, _] =>
         val fields = map.toList.map {
-          case (k: String, v) => (k, toJsonValue(v))
+          case (k: String, v) =>
+            (k, toJsonValue(v))
         }
         JObject(fields)
       case arr: Array[_] =>

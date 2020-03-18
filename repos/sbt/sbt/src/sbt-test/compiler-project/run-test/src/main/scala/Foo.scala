@@ -33,7 +33,8 @@ class Foo {
     try {
       new File(url.toURI)
     } catch {
-      case _: URISyntaxException => new File(url.getPath)
+      case _: URISyntaxException =>
+        new File(url.getPath)
     }
 }
 

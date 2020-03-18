@@ -97,8 +97,10 @@ class DirectCompileTest extends ClearAfterClass {
     val ins = getSingleMethod(b, "g").instructions
     assert(
       ins exists {
-        case Invoke(_, "B", "f", _, _) => true
-        case _                         => false
+        case Invoke(_, "B", "f", _, _) =>
+          true
+        case _ =>
+          false
       },
       ins)
   }

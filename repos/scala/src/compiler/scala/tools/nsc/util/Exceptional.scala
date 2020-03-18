@@ -15,6 +15,7 @@ object Exceptional {
           if x.getCause != null =>
         unwrap(x.getCause)
 
-      case _ => x
+      case _ =>
+        x
     }
 }

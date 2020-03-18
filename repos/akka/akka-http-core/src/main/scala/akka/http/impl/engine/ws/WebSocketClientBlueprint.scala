@@ -118,7 +118,8 @@ object WebSocketClientBlueprint {
               elem: ByteString,
               ctx: Context[ByteString]): SyncDirective = {
             parser.parseBytes(elem) match {
-              case NeedMoreData ⇒ ctx.pull()
+              case NeedMoreData ⇒
+                ctx.pull()
               case ResponseStart(status, protocol, headers, entity, close) ⇒
                 val response = HttpResponse(
                   status,
@@ -139,8 +140,10 @@ object WebSocketClientBlueprint {
                       parseResult == ParserOutput.MessageEnd,
                       s"parseResult should be MessageEnd but was $parseResult")
                     parser.onPull() match {
-                      case NeedMoreData ⇒ ctx.pull()
-                      case RemainingBytes(bytes) ⇒ ctx.push(bytes)
+                      case NeedMoreData ⇒
+                        ctx.pull()
+                      case RemainingBytes(bytes) ⇒
+                        ctx.push(bytes)
                       case other ⇒
                         throw new IllegalStateException(
                           s"unexpected element of type ${other.getClass}")
@@ -195,7 +198,8 @@ object WebSocketClientBlueprint {
       : BidiFlow[SslTlsInbound, ByteString, ByteString, SendBytes, NotUsed] =
     BidiFlow.fromFlowsMat(
       Flow[SslTlsInbound].collect {
-        case SessionBytes(_, bytes) ⇒ bytes
+        case SessionBytes(_, bytes) ⇒
+          bytes
       },
       Flow[ByteString].map(SendBytes))(Keep.none)
 }

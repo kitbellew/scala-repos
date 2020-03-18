@@ -59,8 +59,10 @@ class StringConverterSpec extends FlatSpec {
 
     def fromString(s: String) =
       s match {
-        case "t" => true
-        case "f" => false
+        case "t" =>
+          true
+        case "f" =>
+          false
         case _ =>
           throw new java.text.ParseException(
             "'%s' can not be converted to a boolean".format(s),

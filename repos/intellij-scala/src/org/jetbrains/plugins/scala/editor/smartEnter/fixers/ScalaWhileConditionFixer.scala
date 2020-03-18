@@ -60,14 +60,16 @@ class ScalaWhileConditionFixer extends ScalaFixer {
         whileStatement.body match {
           case Some(block: ScBlockExpr) =>
             return placeInWholeBlock(block, editor)
-          case Some(expr) => moveToEnd(editor, expr)
-          case _          =>
+          case Some(expr) =>
+            moveToEnd(editor, expr)
+          case _ =>
         }
         WithReformat(0)
       case Some(cond) if rightParenthesis == null =>
         doc.insertString(cond.getTextRange.getEndOffset, ")")
         WithReformat(0)
-      case _ => NoOperation
+      case _ =>
+        NoOperation
     }
   }
 }

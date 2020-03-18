@@ -47,15 +47,18 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
             s"$urlString/$PROPERTIES")
         } catch {
-          case io: IOException => error("Can't download index", io)
+          case io: IOException =>
+            error("Can't download index", io)
         }
 
         downloaded flatMap {
           case str =>
             str.split('\n').find {
-              case s => s.trim startsWith CACHE_HASH
+              case s =>
+                s.trim startsWith CACHE_HASH
             } map {
-              case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
+              case hashStr =>
+                hashStr.trim.stripPrefix(CACHE_HASH)
             }
         }
       }
@@ -121,7 +124,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           getClass.getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
             case urlLoader: URLClassLoader =>
               new URLClassLoader(urlLoader.getURLs, null)
-            case other => other
+            case other =>
+              other
           }
         loader.loadClass("org.apache.lucene.store.FSDirectory")
 
@@ -131,11 +135,13 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
           new lucene.search.MatchAllDocsQuery,
           reader.maxDoc())
         val data = docs.scoreDocs.map {
-          case doc => reader document doc.doc
+          case doc =>
+            reader document doc.doc
         }
 
         data.map {
-          case docData => Keys.from(docData)
+          case docData =>
+            Keys.from(docData)
         }.toMap
       }
     } catch {
@@ -170,7 +176,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         try {
           FileUtil.copy(cachedTemplate, pathTo)
         } catch {
-          case _: IOException => onError(a)
+          case _: IOException =>
+            onError(a)
         }
       }
 

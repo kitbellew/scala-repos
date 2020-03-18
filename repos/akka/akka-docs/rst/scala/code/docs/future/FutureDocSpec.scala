@@ -18,11 +18,13 @@ object FutureDocSpec {
 
   class MyActor extends Actor {
     def receive = {
-      case x: String => sender() ! x.toUpperCase
+      case x: String =>
+        sender() ! x.toUpperCase
       case x: Int if x < 0 =>
         sender() ! Status.Failure(
           new ArithmeticException("Negative values not supported"))
-      case x: Int => sender() ! x
+      case x: Int =>
+        sender() ! x
     }
   }
 
@@ -170,7 +172,8 @@ class FutureDocSpec extends AkkaSpec {
 
     val failedFilter = future1.filter(_ % 2 == 1).recover {
       // When filter fails, it will have a java.util.NoSuchElementException
-      case m: NoSuchElementException => 0
+      case m: NoSuchElementException =>
+        0
     }
 
     failedFilter foreach println
@@ -314,7 +317,8 @@ class FutureDocSpec extends AkkaSpec {
     val msg1 = -1
     //#recover
     val future = akka.pattern.ask(actor, msg1) recover {
-      case e: ArithmeticException => 0
+      case e: ArithmeticException =>
+        0
     }
     future foreach println
     //#recover
@@ -327,7 +331,8 @@ class FutureDocSpec extends AkkaSpec {
     val msg1 = -1
     //#try-recover
     val future = akka.pattern.ask(actor, msg1) recoverWith {
-      case e: ArithmeticException => Future.successful(0)
+      case e: ArithmeticException =>
+        Future.successful(0)
       case foo: IllegalArgumentException =>
         Future.failed[Int](new IllegalStateException("All br0ken!"))
     }
@@ -345,7 +350,8 @@ class FutureDocSpec extends AkkaSpec {
     }
     //#zip
     val future3 = future1 zip future2 map {
-      case (a, b) => a + " " + b
+      case (a, b) =>
+        a + " " + b
     }
     future3 foreach println
     //#zip
@@ -361,9 +367,11 @@ class FutureDocSpec extends AkkaSpec {
     val result = Future {
       loadPage(url)
     } andThen {
-      case Failure(exception) => log(exception)
+      case Failure(exception) =>
+        log(exception)
     } andThen {
-      case _ => watchSomeTV()
+      case _ =>
+        watchSomeTV()
     }
     result foreach println
     //#and-then
@@ -394,8 +402,10 @@ class FutureDocSpec extends AkkaSpec {
       }
       //#onSuccess
       future onSuccess {
-        case "bar"     => println("Got my bar alright!")
-        case x: String => println("Got some random string: " + x)
+        case "bar" =>
+          println("Got my bar alright!")
+        case x: String =>
+          println("Got some random string: " + x)
       }
       //#onSuccess
       Await.result(future, 3 seconds) should be("foo")
@@ -419,8 +429,10 @@ class FutureDocSpec extends AkkaSpec {
       def doSomethingOnFailure(t: Throwable) = ()
       //#onComplete
       future onComplete {
-        case Success(result)  => doSomethingOnSuccess(result)
-        case Failure(failure) => doSomethingOnFailure(failure)
+        case Success(result) =>
+          doSomethingOnSuccess(result)
+        case Failure(failure) =>
+          doSomethingOnFailure(failure)
       }
       //#onComplete
       Await.result(future, 3 seconds) should be("foo")

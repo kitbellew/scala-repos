@@ -63,7 +63,8 @@ object Multipart {
               .map {
                 case (Seq(Left(part: FilePart[_])), body) =>
                   part.copy[Source[ByteString, _]](ref = body.collect {
-                    case Right(bytes) => bytes
+                    case Right(bytes) =>
+                      bytes
                   })
                 case (Seq(Left(other)), ignored) =>
                   // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
@@ -99,7 +100,8 @@ object Multipart {
               filePartHandler(
                 FileInfo(filePart.key, filePart.filename, filePart.contentType))
                 .run(filePart.ref)
-            case other: Part[Nothing] => Future.successful(other)
+            case other: Part[Nothing] =>
+              Future.successful(other)
           }
 
         val multipartAccumulator = Accumulator(
@@ -107,7 +109,8 @@ object Multipart {
           parts =>
             def parseError =
               parts.collectFirst {
-                case ParseError(msg) => createBadResult(msg)(request)
+                case ParseError(msg) =>
+                  createBadResult(msg)(request)
               }
 
             def bufferExceededError =
@@ -122,17 +125,21 @@ object Multipart {
                   MultipartFormData(
                     parts
                       .collect {
-                        case dp: DataPart => dp
+                        case dp: DataPart =>
+                          dp
                       }
                       .groupBy(_.key)
                       .map {
-                        case (key, partValues) => key -> partValues.map(_.value)
+                        case (key, partValues) =>
+                          key -> partValues.map(_.value)
                       },
                     parts.collect {
-                      case fp: FilePart[A] => fp
+                      case fp: FilePart[A] =>
+                        fp
                     },
                     parts.collect {
-                      case bad: BadPart => bad
+                      case bad: BadPart =>
+                        bad
                     }
                   )))
             }
@@ -216,7 +223,8 @@ object Multipart {
                 // unescape escaped quotes
                 case KeyValue(key, v) =>
                   (key.trim, v.trim.replaceAll("""\\"""", "\""))
-                case key => (key.trim, "")
+                case key =>
+                  (key.trim, "")
               }
               .toMap)
 
@@ -240,8 +248,10 @@ object Multipart {
             _.split(";")
               .map(_.trim)
               .map {
-                case KeyValue(key, v) => (key.trim, v.trim)
-                case key              => (key.trim, "")
+                case KeyValue(key, v) =>
+                  (key.trim, v.trim)
+                case key =>
+                  (key.trim, "")
               }
               .toMap)
         _ <- values.get("form-data")
@@ -577,9 +587,12 @@ object Multipart {
     def continue(input: ByteString, offset: Int)(
         next: (ByteString, Int) ⇒ StateResult): StateResult = {
       state = math.signum(offset - input.length) match {
-        case -1 ⇒ more ⇒ next(input ++ more, offset)
-        case 0 ⇒ next(_, 0)
-        case 1 ⇒ throw new IllegalStateException
+        case -1 ⇒
+          more ⇒ next(input ++ more, offset)
+        case 0 ⇒
+          next(_, 0)
+        case 1 ⇒
+          throw new IllegalStateException
       }
       done()
     }

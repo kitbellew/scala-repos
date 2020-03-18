@@ -161,14 +161,22 @@ trait InlineParsers extends BaseParsers {
         Failure("End of Input Reached", in)
       } else {
         in.first match {
-          case ' ' => br(in)
-          case '`' => code(in)
-          case '<' => (xmlTag | fastLink(ctx))(in)
-          case '[' => link(ctx)(in)
-          case '*' => spanAsterisk(ctx)(in)
-          case '_' => spanUnderscore(ctx)(in)
-          case '!' => img(ctx)(in)
-          case _   => Failure("Lookahead does not start inline element.", in)
+          case ' ' =>
+            br(in)
+          case '`' =>
+            code(in)
+          case '<' =>
+            (xmlTag | fastLink(ctx))(in)
+          case '[' =>
+            link(ctx)(in)
+          case '*' =>
+            spanAsterisk(ctx)(in)
+          case '_' =>
+            spanUnderscore(ctx)(in)
+          case '!' =>
+            img(ctx)(in)
+          case _ =>
+            Failure("Lookahead does not start inline element.", in)
         }
       }
     }
@@ -244,7 +252,8 @@ trait InlineParsers extends BaseParsers {
       '[' ~> linkInline(ctx.addTag("a")) ~ (
         "](" ~ ows
       ) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
-        case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl)
+        case txt ~ _ ~ u ~ _ ~ ttl =>
+          deco.decorateLink(txt, u, ttl)
       }
     }
 
@@ -255,7 +264,8 @@ trait InlineParsers extends BaseParsers {
       failure("Cannot nest a link in a link.")
     } else {
       ref(ctx.addTag("a")) ^^ {
-        case (LinkDefinition(_, u, ttl), txt) => deco.decorateLink(txt, u, ttl)
+        case (LinkDefinition(_, u, ttl), txt) =>
+          deco.decorateLink(txt, u, ttl)
       }
     }
 
@@ -287,13 +297,16 @@ trait InlineParsers extends BaseParsers {
     '"' ~> (
       (markdownText(Set('"'), true) ~ opt(not('"' ~ ows ~ ')') ~> aChar)) *
     ) <~ '"') ^^ {
-    case None => None
+    case None =>
+      None
     case Some(chunks) => {
       val result = new StringBuilder()
       for (chunk <- chunks) {
         chunk match {
-          case (text) ~ None    => result.append(text)
-          case (text) ~ Some(s) => result.append(text).append(s)
+          case (text) ~ None =>
+            result.append(text)
+          case (text) ~ Some(s) =>
+            result.append(text).append(s)
         }
       }
       Some(result.toString)
@@ -310,7 +323,8 @@ trait InlineParsers extends BaseParsers {
     */
   def idReference(ctx: InlineContext): Parser[(String, LinkDefinition)] =
     guard(acceptMatch(ctx.map)(refText ^^ (_.trim.toLowerCase))) ~ refText ^^ {
-      case ld ~ t => (t, ld)
+      case ld ~ t =>
+        (t, ld)
     }
 
   /**
@@ -321,12 +335,14 @@ trait InlineParsers extends BaseParsers {
     (
       '[' ~> linkInline(ctx) ~ (']' ~ opt(' ') ~ '[') ~ idReference(
         ctx) <~ ']' ^^ {
-        case t ~ dummy ~ pair => (pair._2, t)
+        case t ~ dummy ~ pair =>
+          (pair._2, t)
       }
     ) |
       (
         '[' ~> idReference(ctx) <~ (']' ~ opt(opt(' ') ~ '[' ~ ows ~ ']')) ^^ {
-          case (t, ld) => (ld, t)
+          case (t, ld) =>
+            (ld, t)
         }
       )
 
@@ -340,7 +356,8 @@ trait InlineParsers extends BaseParsers {
     */
   val directImg: Parser[String] =
     elem('[') ~> refText ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
-      case altText ~ _ ~ path ~ _ ~ ttl => deco.decorateImg(altText, path, ttl)
+      case altText ~ _ ~ path ~ _ ~ ttl =>
+        deco.decorateImg(altText, path, ttl)
     }
 
   /**
@@ -348,7 +365,8 @@ trait InlineParsers extends BaseParsers {
     */
   def refImg(ctx: InlineContext): Parser[String] =
     ref(ctx) ^^ {
-      case (LinkDefinition(_, u, ttl), alt) => deco.decorateImg(alt, u, ttl)
+      case (LinkDefinition(_, u, ttl), alt) =>
+        deco.decorateImg(alt, u, ttl)
     }
 
   /** Parses inline in a span element like bold or emphasis or link up until the given end marker
@@ -716,7 +734,8 @@ trait InlineParsers extends BaseParsers {
           return validEntitySet.contains(sb.toString)
         case c if c == '#' || Character.isLetter(c) || Character.isDigit(c) =>
           sb.append(c)
-        case _ => return false
+        case _ =>
+          return false
       }
       pos += 1
     }

@@ -470,7 +470,8 @@ private[niflheim] class NIHDBActor private (
         (p -> s)
       }
     ).groupBy(_._1).map {
-      case (p, ids) => (p -> ids.map(_._2).max)
+      case (p, ids) =>
+        (p -> ids.map(_._2).max)
     }
   }
 

@@ -192,10 +192,14 @@ object Function {
   def make(i: Int) = apply(i)()
   def apply(i: Int) =
     i match {
-      case 0 => FunctionZero
-      case 1 => FunctionOne
-      case 2 => FunctionTwo
-      case _ => new Function(i)
+      case 0 =>
+        FunctionZero
+      case 1 =>
+        FunctionOne
+      case 2 =>
+        FunctionTwo
+      case _ =>
+        new Function(i)
     }
 }
 
@@ -315,10 +319,14 @@ object Tuple {
   def make(i: Int) = apply(i)()
   def apply(i: Int) =
     i match {
-      case 1 => TupleOne
-      case 2 => TupleTwo
-      case 3 => TupleThree
-      case _ => new Tuple(i)
+      case 1 =>
+        TupleOne
+      case 2 =>
+        TupleTwo
+      case 3 =>
+        TupleThree
+      case _ =>
+        new Tuple(i)
     }
 }
 
@@ -426,9 +434,12 @@ object Product extends Group("Product") {
   def make(i: Int) = apply(i)()
   def apply(i: Int) =
     i match {
-      case 1 => ProductOne
-      case 2 => ProductTwo
-      case _ => new Product(i)
+      case 1 =>
+        ProductOne
+      case 2 =>
+        ProductTwo
+      case _ =>
+        new Product(i)
     }
 }
 
@@ -588,9 +599,13 @@ object AbstractFunction {
   def make(i: Int) = apply(i)()
   def apply(i: Int) =
     i match {
-      case 0 => AbstractFunctionZero
-      case 1 => AbstractFunctionOne
-      case 2 => AbstractFunctionTwo
-      case _ => new AbstractFunction(i)
+      case 0 =>
+        AbstractFunctionZero
+      case 1 =>
+        AbstractFunctionOne
+      case 2 =>
+        AbstractFunctionTwo
+      case _ =>
+        new AbstractFunction(i)
     }
 }

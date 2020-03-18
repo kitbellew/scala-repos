@@ -81,9 +81,12 @@ trait Collections {
     @tailrec
     def loop(rest: List[A]): Option[B] =
       rest match {
-        case Nil                          => None
-        case a :: as if pf.isDefinedAt(a) => Some(pf(a))
-        case a :: as                      => loop(as)
+        case Nil =>
+          None
+        case a :: as if pf.isDefinedAt(a) =>
+          Some(pf(a))
+        case a :: as =>
+          loop(as)
       }
     loop(as)
   }
@@ -333,7 +336,8 @@ trait Collections {
     try {
       Some(ass.transpose)
     } catch {
-      case _: IllegalArgumentException => None
+      case _: IllegalArgumentException =>
+        None
     }
 }
 

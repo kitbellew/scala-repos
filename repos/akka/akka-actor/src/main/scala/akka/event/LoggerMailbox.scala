@@ -24,7 +24,8 @@ private[akka] class LoggerMailboxType(
 
   override def create(owner: Option[ActorRef], system: Option[ActorSystem]) =
     (owner, system) match {
-      case (Some(o), Some(s)) ⇒ new LoggerMailbox(o, s)
+      case (Some(o), Some(s)) ⇒
+        new LoggerMailbox(o, s)
       case _ ⇒
         throw new IllegalArgumentException("no mailbox owner or system given")
     }

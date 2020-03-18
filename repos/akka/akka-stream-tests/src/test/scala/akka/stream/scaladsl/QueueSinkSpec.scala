@@ -116,7 +116,8 @@ class QueueSinkSpec extends AkkaSpec {
       Await.result(queue.pull(), noMsgTimeout) should be(None)
 
       queue.pull().onFailure {
-        case e ⇒ e.isInstanceOf[IllegalStateException] should ===(true)
+        case e ⇒
+          e.isInstanceOf[IllegalStateException] should ===(true)
       }
     }
 

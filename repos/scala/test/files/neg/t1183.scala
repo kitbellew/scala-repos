@@ -15,7 +15,8 @@ object Test {
     def runTest() = {
       val res =
         (foo1.Bar(2): Any) match {
-          case foo1.Bar(2) => true // (1)
+          case foo1.Bar(2) =>
+            true // (1)
         }
       require(res)
     }

@@ -42,15 +42,24 @@ trait EnumTypedField[EnumType <: Enumeration]
 
   def setFromAny(in: Any): Box[EnumType#Value] =
     in match {
-      case (value: Int)         => setBox(fromInt(value))
-      case Some(value: Int)     => setBox(fromInt(value))
-      case Full(value: Int)     => setBox(fromInt(value))
-      case (value: Int) :: _    => setBox(fromInt(value))
-      case (value: Number)      => setBox(fromInt(value.intValue))
-      case Some(value: Number)  => setBox(fromInt(value.intValue))
-      case Full(value: Number)  => setBox(fromInt(value.intValue))
-      case (value: Number) :: _ => setBox(fromInt(value.intValue))
-      case _                    => genericSetFromAny(in)(valueManifest)
+      case (value: Int) =>
+        setBox(fromInt(value))
+      case Some(value: Int) =>
+        setBox(fromInt(value))
+      case Full(value: Int) =>
+        setBox(fromInt(value))
+      case (value: Int) :: _ =>
+        setBox(fromInt(value))
+      case (value: Number) =>
+        setBox(fromInt(value.intValue))
+      case Some(value: Number) =>
+        setBox(fromInt(value.intValue))
+      case Full(value: Number) =>
+        setBox(fromInt(value.intValue))
+      case (value: Number) :: _ =>
+        setBox(fromInt(value.intValue))
+      case _ =>
+        genericSetFromAny(in)(valueManifest)
     }
 
   def setFromString(s: String): Box[EnumType#Value] =
@@ -86,8 +95,10 @@ trait EnumTypedField[EnumType <: Enumeration]
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def defaultValue: EnumType#Value = enum.values.iterator.next
@@ -98,19 +109,24 @@ trait EnumTypedField[EnumType <: Enumeration]
     toInt.map(i => JInt(BigInt(i))) openOr (JNothing: JValue)
   def setFromJIntOrdinal(jvalue: JValue): Box[EnumType#Value] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JInt(i)                        => setBox(fromInt(i.intValue))
-      case other                          => setBox(FieldHelpers.expectedA("JInt", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JInt(i) =>
+        setBox(fromInt(i.intValue))
+      case other =>
+        setBox(FieldHelpers.expectedA("JInt", other))
     }
 
   def asJStringName: JValue =
     valueBox.map(v => JString(v.toString)) openOr (JNothing: JValue)
   def setFromJStringName(jvalue: JValue): Box[EnumType#Value] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
       case JString(s) =>
         setBox(Option(enum.withName(s)) ?~ ("Unknown value \"" + s + "\""))
-      case other => setBox(FieldHelpers.expectedA("JString", other))
+      case other =>
+        setBox(FieldHelpers.expectedA("JString", other))
     }
 
   def asJValue: JValue = asJIntOrdinal

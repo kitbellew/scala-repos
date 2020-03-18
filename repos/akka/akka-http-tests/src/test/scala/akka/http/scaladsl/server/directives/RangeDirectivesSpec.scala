@@ -88,8 +88,10 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
         wrs(reject())) ~> check {
         status == NotFound
         headers.exists {
-          case `Content-Range`(_, _) ⇒ true;
-          case _ ⇒ false
+          case `Content-Range`(_, _) ⇒
+            true;
+          case _ ⇒
+            false
         } shouldEqual false
       }
     }

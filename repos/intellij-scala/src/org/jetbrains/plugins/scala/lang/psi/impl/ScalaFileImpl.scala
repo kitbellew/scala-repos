@@ -149,8 +149,9 @@ class ScalaFileImpl(
           if (source != null) {
             val psiSource = getManager.findFile(source)
             psiSource match {
-              case o: PsiClassOwner => return o
-              case _                =>
+              case o: PsiClassOwner =>
+                return o
+              case _ =>
             }
           }
         }
@@ -199,8 +200,10 @@ class ScalaFileImpl(
       )
 
       result match {
-        case Some(o) => o
-        case _       => this
+        case Some(o) =>
+          o
+        case _ =>
+          this
       }
     }
   }
@@ -209,9 +212,12 @@ class ScalaFileImpl(
     val stub = getStub
     if (stub == null) {
       val empty = children.forall {
-        case _: PsiWhiteSpace => true
-        case _: PsiComment    => true
-        case _                => false
+        case _: PsiWhiteSpace =>
+          true
+        case _: PsiComment =>
+          true
+        case _ =>
+          false
       }
       if (empty)
         return true // treat empty or commented files as scripts to avoid project recompilations
@@ -219,7 +225,8 @@ class ScalaFileImpl(
       while (childrenIterator.hasNext) {
         val n = childrenIterator.next()
         n.getPsi match {
-          case _: ScPackaging => return false
+          case _: ScPackaging =>
+            return false
           case _: ScValue | _: ScVariable | _: ScFunction | _: ScExpression |
               _: ScTypeAlias =>
             return true
@@ -277,13 +284,15 @@ class ScalaFileImpl(
           name match {
             case ScalaFileImpl.QualifiedPackagePattern(qualifier, simpleName) =>
               (qualifier, simpleName)
-            case s => ("", name)
+            case s =>
+              ("", name)
           }
 
         setPackageName(basePackageName, packageName)
         typeDefinitions.headOption.foreach(_.name = objectName)
 
-      case _ => setPackageName(basePackageName, name)
+      case _ =>
+        setPackageName(basePackageName, name)
     }
   }
 
@@ -362,8 +371,10 @@ class ScalaFileImpl(
 
   override def getStub: ScFileStub =
     super[PsiFileBase].getStub match {
-      case null          => null
-      case s: ScFileStub => s
+      case null =>
+        null
+      case s: ScFileStub =>
+        s
       case _ =>
         val faultyContainer: VirtualFile = PsiUtilCore.getVirtualFile(this)
         ScalaFileImpl.LOG.error(
@@ -442,19 +453,22 @@ class ScalaFileImpl(
         definition match {
           case o: ScObject =>
             o.fakeCompanionClass match {
-              case Some(clazz) => arrayBuffer += clazz
-              case _           =>
+              case Some(clazz) =>
+                arrayBuffer += clazz
+              case _ =>
             }
           case t: ScTrait =>
             arrayBuffer += t.fakeCompanionClass
             t.fakeCompanionModule match {
-              case Some(m) => arrayBuffer += m
-              case _       =>
+              case Some(m) =>
+                arrayBuffer += m
+              case _ =>
             }
           case c: ScClass =>
             c.fakeCompanionModule match {
-              case Some(m) => arrayBuffer += m
-              case _       =>
+              case Some(m) =>
+                arrayBuffer += m
+              case _ =>
             }
           case _ =>
         }
@@ -486,12 +500,14 @@ class ScalaFileImpl(
   def getClassNames: util.Set[String] = {
     val res = new util.HashSet[String]
     typeDefinitions.foreach {
-      case clazz: ScClass => res.add(clazz.getName)
+      case clazz: ScClass =>
+        res.add(clazz.getName)
       case o: ScObject =>
         res.add(o.getName)
         o.fakeCompanionClass match {
-          case Some(clazz) => res.add(clazz.getName)
-          case _           =>
+          case Some(clazz) =>
+            res.add(clazz.getName)
+          case _ =>
         }
       case t: ScTrait =>
         res.add(t.getName)
@@ -533,22 +549,28 @@ class ScalaFileImpl(
 
   override def getContext: PsiElement = {
     getCopyableUserData(ScalaFileImpl.CONTEXT_KEY) match {
-      case null => super.getContext
-      case _    => getCopyableUserData(ScalaFileImpl.CONTEXT_KEY)
+      case null =>
+        super.getContext
+      case _ =>
+        getCopyableUserData(ScalaFileImpl.CONTEXT_KEY)
     }
   }
 
   override def getPrevSibling: PsiElement = {
     getCopyableUserData(ScalaFileImpl.CHILD_KEY) match {
-      case null => super.getPrevSibling
-      case _    => getCopyableUserData(ScalaFileImpl.CHILD_KEY).getPrevSibling
+      case null =>
+        super.getPrevSibling
+      case _ =>
+        getCopyableUserData(ScalaFileImpl.CHILD_KEY).getPrevSibling
     }
   }
 
   override def getNextSibling: PsiElement = {
     child match {
-      case null => super.getNextSibling
-      case _    => getCopyableUserData(ScalaFileImpl.CHILD_KEY).getNextSibling
+      case null =>
+        super.getNextSibling
+      case _ =>
+        getCopyableUserData(ScalaFileImpl.CHILD_KEY).getNextSibling
     }
   }
 
@@ -560,7 +582,8 @@ class ScalaFileImpl(
         case c: PsiComment
             if c.getNode.getElementType == ScalaTokenTypes.tSH_COMMENT =>
           addImportAfter(importSt, c)
-        case _ => super.insertFirstImport(importSt, first)
+        case _ =>
+          super.insertFirstImport(importSt, first)
       }
     } else {
       super.insertFirstImport(importSt, first)
@@ -589,8 +612,10 @@ object ScalaFileImpl {
   def isProcessLocalClasses(_place: PsiElement): Boolean = {
     val place =
       _place match {
-        case s: ScalaPsiElement => s.getDeepSameElementInContext
-        case _                  => _place
+        case s: ScalaPsiElement =>
+          s.getDeepSameElementInContext
+        case _ =>
+          _place
       }
     if (place == null)
       return false
@@ -610,7 +635,8 @@ object ScalaFileImpl {
           index.isInSourceContent(file) || index.isInLibraryClasses(
             file) || index.isInLibrarySource(file)
         )
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -619,8 +645,10 @@ object ScalaFileImpl {
 
   private def packagingsIn(root: PsiElement): List[ScPackaging] = {
     root.children.findByType(classOf[ScPackaging]) match {
-      case Some(packaging) => packaging :: packagingsIn(packaging)
-      case _               => Nil
+      case Some(packaging) =>
+        packaging :: packagingsIn(packaging)
+      case _ =>
+        Nil
     }
   }
 
@@ -634,12 +662,14 @@ object ScalaFileImpl {
       path
     else
       path match {
-        case h :: t if h == vector => h :: t
+        case h :: t if h == vector =>
+          h :: t
         case h :: t if vector.startsWith(h) =>
           h :: splitAt(t, vector.drop(h.size))
         case h :: t if h.startsWith(vector) =>
           h.take(vector.size) :: h.drop(vector.size) :: t
-        case it => it
+        case it =>
+          it
       }
   }
 

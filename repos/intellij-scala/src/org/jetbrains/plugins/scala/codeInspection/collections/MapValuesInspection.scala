@@ -29,6 +29,7 @@ object MapValues extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "values"))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }

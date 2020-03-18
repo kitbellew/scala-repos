@@ -71,9 +71,12 @@ case class SyntaxUtil[C <: Context with Singleton](val c: C) {
   def isClean(es: c.Expr[_]*): Boolean =
     es.forall {
       _.tree match {
-        case t @ Ident(_: TermName) if t.symbol.asTerm.isStable => true
-        case Function(_, _)                                     => true
-        case _                                                  => false
+        case t @ Ident(_: TermName) if t.symbol.asTerm.isStable =>
+          true
+        case Function(_, _) =>
+          true
+        case _ =>
+          false
       }
     }
 }
@@ -208,10 +211,13 @@ v     */
       t match {
         case Literal(Constant(a)) =>
           a match {
-            case n: Int => Some(n)
-            case _      => None
+            case n: Int =>
+              Some(n)
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     def strideUpTo(fromExpr: Tree, toExpr: Tree, stride: Int): Tree = q"""
@@ -258,8 +264,10 @@ v     */
 
         case r @ q"scala.this.Predef.intWrapper($i).until($j).by($step)" =>
           isLiteral(step) match {
-            case Some(k) if k > 0 => strideUpUntil(i, j, k)
-            case Some(k) if k < 0 => strideDownUntil(i, j, -k)
+            case Some(k) if k > 0 =>
+              strideUpUntil(i, j, k)
+            case Some(k) if k < 0 =>
+              strideDownUntil(i, j, -k)
             case Some(k) if k == 0 =>
               c.error(c.enclosingPosition, "zero stride")
               q"()"
@@ -270,8 +278,10 @@ v     */
 
         case r @ q"scala.this.Predef.intWrapper($i).to($j).by($step)" =>
           isLiteral(step) match {
-            case Some(k) if k > 0 => strideUpTo(i, j, k)
-            case Some(k) if k < 0 => strideDownTo(i, j, -k)
+            case Some(k) if k > 0 =>
+              strideUpTo(i, j, k)
+            case Some(k) if k < 0 =>
+              strideDownTo(i, j, -k)
             case Some(k) if k == 0 =>
               c.error(c.enclosingPosition, "zero stride")
               q"()"

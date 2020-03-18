@@ -251,7 +251,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
         for {
           screen <- VisitedScreens.is.toList
           field <- screen.screenFields.collect {
-            case c: ConfirmField => c
+            case c: ConfirmField =>
+              c
           } if field.show_? && field.onConfirm_?
         } yield ScreenFieldInfo(
           field,
@@ -325,9 +326,11 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
         cur.transitionIntoFrom(Full(old))
       }
 
-      case (Full(old), _) => old.transitionOutOfTo(Empty)
-      case (_, Full(cur)) => cur.transitionIntoFrom(Empty)
-      case _              =>
+      case (Full(old), _) =>
+        old.transitionOutOfTo(Empty)
+      case (_, Full(cur)) =>
+        cur.transitionIntoFrom(Empty)
+      case _ =>
     }
   }
 
@@ -471,7 +474,8 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
                   Noop
                 }
 
-              case _ => SetHtml(FormGUID, renderHtml())
+              case _ =>
+                SetHtml(FormGUID, renderHtml())
             }
           }
           case xs => {

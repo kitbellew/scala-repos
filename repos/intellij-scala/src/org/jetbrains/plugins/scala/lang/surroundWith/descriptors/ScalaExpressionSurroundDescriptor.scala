@@ -92,7 +92,8 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
           startOffset,
           element2.getTextRange.getStartOffset)
       }
-      case (null, _) | (_, null) => return null
+      case (null, _) | (_, null) =>
+        return null
       case _ => {
         if (element2.getNode.getElementType == ScalaTokenTypes.tSEMICOLON)
           return findExpressionInRange(file, startOffset, endOffset - 1)

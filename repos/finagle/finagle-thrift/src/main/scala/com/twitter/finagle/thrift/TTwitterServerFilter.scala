@@ -76,7 +76,8 @@ private[finagle] class TTwitterServerFilter(
 
           Contexts.broadcast.let(env) {
             service(request_) map {
-              case response if response.isEmpty => response
+              case response if response.isEmpty =>
+                response
               case response =>
                 val responseHeader = new thrift.ResponseHeader
                 ByteArrays.concat(

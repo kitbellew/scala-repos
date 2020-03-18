@@ -197,8 +197,9 @@ class HadoopRDD[K, V](
       .newInstance(inputFormatClass.asInstanceOf[Class[_]], conf)
       .asInstanceOf[InputFormat[K, V]]
     newInputFormat match {
-      case c: Configurable => c.setConf(conf)
-      case _               =>
+      case c: Configurable =>
+        c.setConf(conf)
+      case _ =>
     }
     newInputFormat
   }
@@ -237,7 +238,8 @@ class HadoopRDD[K, V](
         split.inputSplit.value match {
           case fs: FileSplit =>
             SqlNewHadoopRDDState.setInputFileName(fs.getPath.toString)
-          case _ => SqlNewHadoopRDDState.unsetInputFileName()
+          case _ =>
+            SqlNewHadoopRDDState.unsetInputFileName()
         }
 
         // Find a function that will return the FileSystem bytes read by this thread. Do this before
@@ -246,7 +248,8 @@ class HadoopRDD[K, V](
           split.inputSplit.value match {
             case _: FileSplit | _: CombineFileSplit =>
               SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
-            case _ => None
+            case _ =>
+              None
           }
 
         // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
@@ -358,7 +361,8 @@ class HadoopRDD[K, V](
               logDebug("Failed to use InputSplitWithLocations.", e)
               None
           }
-        case None => None
+        case None =>
+          None
       }
     locs.getOrElse(hsplit.getLocations.filter(_ != "localhost"))
   }

@@ -123,8 +123,10 @@ final case class Failed(cause: Throwable, child: ActorRef[Nothing])
   def decide(decision: Decision): Unit = _decision = decision
   def getDecision: Decision =
     _decision match {
-      case null ⇒ NoFailureResponse
-      case x ⇒ x
+      case null ⇒
+        NoFailureResponse
+      case x ⇒
+        x
     }
 }
 
@@ -299,9 +301,12 @@ object Behavior {
       behavior: Behavior[T],
       current: Behavior[T]): Behavior[T] =
     behavior match {
-      case `sameBehavior` ⇒ current
-      case `unhandledBehavior` ⇒ current
-      case other ⇒ other
+      case `sameBehavior` ⇒
+        current
+      case `unhandledBehavior` ⇒
+        current
+      case other ⇒
+        other
     }
 
   def isAlive[T](behavior: Behavior[T]): Boolean = behavior ne stoppedBehavior

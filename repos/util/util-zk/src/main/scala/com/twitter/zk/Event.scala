@@ -32,8 +32,10 @@ sealed trait StateEvent {
   def apply() = Event(eventType, state, None)
   def unapply(event: WatchedEvent) =
     event match {
-      case Event(t, s, _) => (t == eventType && s == state)
-      case _              => false
+      case Event(t, s, _) =>
+        (t == eventType && s == state)
+      case _ =>
+        false
     }
 }
 
@@ -64,12 +66,18 @@ object StateEvent {
 
   def apply(w: WatchedEvent): StateEvent = {
     w.getState match {
-      case KeeperState.AuthFailed        => AuthFailed
-      case KeeperState.SyncConnected     => Connected
-      case KeeperState.Disconnected      => Disconnected
-      case KeeperState.Expired           => Expired
-      case KeeperState.ConnectedReadOnly => ConnectedReadOnly
-      case KeeperState.SaslAuthenticated => SaslAuthenticated
+      case KeeperState.AuthFailed =>
+        AuthFailed
+      case KeeperState.SyncConnected =>
+        Connected
+      case KeeperState.Disconnected =>
+        Disconnected
+      case KeeperState.Expired =>
+        Expired
+      case KeeperState.ConnectedReadOnly =>
+        ConnectedReadOnly
+      case KeeperState.SaslAuthenticated =>
+        SaslAuthenticated
       case KeeperState.Unknown =>
         throw new IllegalArgumentException(
           "Can't convert deprecated state to StateEvent: Unknown")
@@ -86,8 +94,10 @@ sealed trait NodeEvent {
   def apply(path: String) = Event(eventType, state, Some(path))
   def unapply(event: WatchedEvent) =
     event match {
-      case Event(t, _, somePath) if (t == eventType) => somePath
-      case _                                         => None
+      case Event(t, _, somePath) if (t == eventType) =>
+        somePath
+      case _ =>
+        None
     }
 }
 

@@ -121,7 +121,8 @@ class HttpServerExampleSpec
       Flow[IncomingConnection]
         .watchTermination()((_, termination) =>
           termination.onFailure {
-            case cause => failureMonitor ! cause
+            case cause =>
+              failureMonitor ! cause
           })
 
     serverSource

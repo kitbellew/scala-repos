@@ -206,9 +206,12 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     */
   def convertToTypeName(tree: Tree): Option[RefTree] =
     tree match {
-      case Select(qual, name) => Some(Select(qual, name.toTypeName))
-      case Ident(name)        => Some(Ident(name.toTypeName))
-      case _                  => None
+      case Select(qual, name) =>
+        Some(Select(qual, name.toTypeName))
+      case Ident(name) =>
+        Some(Ident(name.toTypeName))
+      case _ =>
+        None
     }
 
   /** Try to convert Select(qual, name) to a SelectFromTypeTree.
@@ -217,7 +220,8 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     convertToTypeName(qual) match {
       case Some(qual1) =>
         SelectFromTypeTree(qual1 setPos qual.pos, origName.toTypeName)
-      case _ => EmptyTree
+      case _ =>
+        EmptyTree
     }
 
   /** Create a ValDef initialized to the given expression, setting the
@@ -319,8 +323,10 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       stats: List[Tree]): Tree = {
     def blockOrStat(stats: List[Tree]): Tree =
       stats match {
-        case head :: Nil => head
-        case _           => Block(stats: _*)
+        case head :: Nil =>
+          head
+        case _ =>
+          Block(stats: _*)
       }
     val sync = mkSynchronized(
       attrThis,

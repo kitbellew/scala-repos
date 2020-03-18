@@ -4,8 +4,10 @@ trait Test {
   class Foo;
   def foo(t: Ti) =
     t match {
-      case t: Foo => true;
-      case _      => false;
+      case t: Foo =>
+        true;
+      case _ =>
+        false;
     }
   class Bar extends Foo with Ti;
   assert(foo(new Bar));

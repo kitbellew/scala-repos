@@ -309,8 +309,10 @@ object Messages {
     def namedError[A](p: Parser[A], msg: String) =
       Parser[A] { i =>
         p(i) match {
-          case Failure(_, in) => Failure(msg, in)
-          case o              => o
+          case Failure(_, in) =>
+            Failure(msg, in)
+          case o =>
+            o
         }
       }
 
@@ -318,11 +320,13 @@ object Messages {
     val newLine = namedError((("\r" ?) ~> "\n"), "End of line expected")
     val ignoreWhiteSpace = opt(whiteSpace)
     val blankLine = ignoreWhiteSpace <~ newLine ^^ {
-      case _ => Comment("")
+      case _ =>
+        Comment("")
     }
 
     val comment = """^#.*""".r ^^ {
-      case s => Comment(s)
+      case s =>
+        Comment(s)
     }
 
     val messageKey = namedError(
@@ -338,7 +342,8 @@ object Messages {
             "^.".r ^^ ("""\""" + _)) |
           "^.".r // Or any character
       ) ^^ {
-        case chars => chars.mkString
+        case chars =>
+          chars.mkString
       },
       "Message pattern expected"
     )
@@ -355,13 +360,15 @@ object Messages {
     val parser = phrase(((sentence | blankLine).*) <~ end) ^^ {
       case messages =>
         messages.collect {
-          case m @ Messages.Message(_, _, _, _) => m
+          case m @ Messages.Message(_, _, _, _) =>
+            m
         }
     }
 
     def parse: Either[PlayException.ExceptionSource, Seq[Message]] = {
       parser(new CharSequenceReader(messageSource.read + "\n")) match {
-        case Success(messages, _) => Right(messages)
+        case Success(messages, _) =>
+          Right(messages)
         case NoSuccess(message, in) =>
           Left(
             new PlayException.ExceptionSource("Configuration error", message) {
@@ -573,8 +580,10 @@ class DefaultMessagesApi @Inject() (
   def apply(keys: Seq[String], args: Any*)(implicit lang: Lang): String = {
     keys
       .foldLeft[Option[String]](None) {
-        case (None, key) => translate(key, args)
-        case (acc, _)    => acc
+        case (None, key) =>
+          translate(key, args)
+        case (acc, _) =>
+          acc
       }
       .getOrElse(noMatch(keys.last, args))
   }
@@ -602,8 +611,10 @@ class DefaultMessagesApi @Inject() (
 
   private def joinPaths(first: Option[String], second: String) =
     first match {
-      case Some(parent) => new java.io.File(parent, second).getPath
-      case None         => second
+      case Some(parent) =>
+        new java.io.File(parent, second).getPath
+      case None =>
+        second
     }
 
   protected def loadMessages(file: String): Map[String, String] = {

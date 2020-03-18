@@ -27,7 +27,8 @@ class ScalaMoveClassesOrPackagesProcessor(
       elements.flatMap {
         case td: ScTypeDefinition =>
           td :: ScalaPsiUtil.getBaseCompanionModule(td).toList
-        case e => List(e)
+        case e =>
+          List(e)
       }
     else
       elements

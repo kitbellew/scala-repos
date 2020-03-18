@@ -52,16 +52,19 @@ class ScObjectImpl protected (
     with ScTemplateDefinition {
   override def additionalJavaNames: Array[String] = {
     fakeCompanionClass match {
-      case Some(c) => Array(c.getName)
-      case _       => Array.empty
+      case Some(c) =>
+        Array(c.getName)
+      case _ =>
+        Array.empty
     }
   }
 
   override def getNavigationElement: PsiElement = {
     if (isSyntheticObject) {
       ScalaPsiUtil.getCompanionModule(this) match {
-        case Some(clazz) => return clazz.getNavigationElement
-        case _           =>
+        case Some(clazz) =>
+          return clazz.getNavigationElement
+        case _ =>
       }
     }
     super.getNavigationElement
@@ -70,8 +73,9 @@ class ScObjectImpl protected (
   override def getContainingFile: PsiFile = {
     if (isSyntheticObject) {
       ScalaPsiUtil.getCompanionModule(this) match {
-        case Some(clazz) => return clazz.getContainingFile
-        case _           =>
+        case Some(clazz) =>
+          return clazz.getContainingFile
+        case _ =>
       }
     }
     super.getContainingFile
@@ -79,8 +83,10 @@ class ScObjectImpl protected (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -214,7 +220,8 @@ class ScObjectImpl protected (
               }
             })
             res.toSeq
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
     res ++ super.syntheticMethodsWithOverrideImpl
   }
@@ -224,7 +231,8 @@ class ScObjectImpl protected (
 
   def fakeCompanionClass: Option[PsiClass] = {
     ScalaPsiUtil.getCompanionModule(this) match {
-      case Some(module) => None
+      case Some(module) =>
+        None
       case None =>
         Some(
           new PsiClassWrapper(
@@ -236,7 +244,8 @@ class ScObjectImpl protected (
 
   def fakeCompanionClassOrCompanionClass: PsiClass = {
     fakeCompanionClass match {
-      case Some(clazz) => clazz
+      case Some(clazz) =>
+        clazz
       case _ =>
         ScalaPsiUtil.getCompanionModule(this).get
     }
@@ -270,8 +279,10 @@ class ScObjectImpl protected (
 
   override def findFieldByName(name: String, checkBases: Boolean): PsiField = {
     name match {
-      case "MODULE$" => getModuleField.orNull
-      case _         => null
+      case "MODULE$" =>
+        getModuleField.orNull
+      case _ =>
+        null
     }
   }
 
@@ -287,8 +298,10 @@ class ScObjectImpl protected (
     TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
       val isInterface =
         node.info.namedElement match {
-          case t: ScTypedDefinition if t.isAbstractMember => true
-          case _                                          => false
+          case t: ScTypedDefinition if t.isAbstractMember =>
+            true
+          case _ =>
+            false
         }
       this.processPsiMethodsForNode(
         node,

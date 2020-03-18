@@ -24,26 +24,33 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
 
     // read from the beginning
     Await.result(reader.read(13)) match {
-      case Some(b) => assert(b == Buf.UsAscii("soylent green"))
-      case _       => fail()
+      case Some(b) =>
+        assert(b == Buf.UsAscii("soylent green"))
+      case _ =>
+        fail()
     }
 
     // a no-op read
     Await.result(reader.read(0)) match {
-      case Some(b) => assert(b == Buf.Empty)
-      case _       => fail()
+      case Some(b) =>
+        assert(b == Buf.Empty)
+      case _ =>
+        fail()
     }
 
     // read to the end
     Await.result(reader.read(20)) match {
-      case Some(b) => assert(b == Buf.UsAscii(" is made of..."))
-      case _       => fail()
+      case Some(b) =>
+        assert(b == Buf.UsAscii(" is made of..."))
+      case _ =>
+        fail()
     }
 
     // read past the end
     Await.result(reader.read(20)) match {
       case None =>
-      case _    => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -75,8 +82,10 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
 
       // do a read of 1 byte in 0 time — which is ok.
       Await.result(reader.read(1)) match {
-        case Some(b) => assert(b == buf.slice(0, 1))
-        case _       => fail()
+        case Some(b) =>
+          assert(b == buf.slice(0, 1))
+        case _ =>
+          fail()
       }
 
       val ex = intercept[BelowThroughputException] {
@@ -139,7 +148,8 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
 
     Await.result(reader.read(1)) match {
       case None =>
-      case _    => fail()
+      case _ =>
+        fail()
     }
   }
 

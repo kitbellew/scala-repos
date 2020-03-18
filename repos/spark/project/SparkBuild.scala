@@ -147,7 +147,8 @@ object SparkBuild extends PomBuild {
   override val profiles = {
     val profiles =
       Properties.envOrNone("SBT_MAVEN_PROFILES") match {
-        case None => backwardCompatibility
+        case None =>
+          backwardCompatibility
         case Some(v) =>
           if (backwardCompatibility.nonEmpty)
             // scalastyle:off println
@@ -647,15 +648,20 @@ object Assembly {
       (v, mName, hv) => s"${mName}-test-${v}.jar"
     },
     mergeStrategy in assembly := {
-      case PathList("org", "datanucleus", xs @ _*)    => MergeStrategy.discard
-      case m if m.toLowerCase.endsWith("manifest.mf") => MergeStrategy.discard
+      case PathList("org", "datanucleus", xs @ _*) =>
+        MergeStrategy.discard
+      case m if m.toLowerCase.endsWith("manifest.mf") =>
+        MergeStrategy.discard
       case m if m.toLowerCase.matches("meta-inf.*\\.sf$") =>
         MergeStrategy.discard
-      case "log4j.properties" => MergeStrategy.discard
+      case "log4j.properties" =>
+        MergeStrategy.discard
       case m if m.toLowerCase.startsWith("meta-inf/services/") =>
         MergeStrategy.filterDistinctLines
-      case "reference.conf" => MergeStrategy.concat
-      case _                => MergeStrategy.first
+      case "reference.conf" =>
+        MergeStrategy.concat
+      case _ =>
+        MergeStrategy.first
     },
     deployDatanucleusJars := {
       val jars: Seq[File] = (fullClasspath in assembly).value
@@ -945,7 +951,8 @@ object TestSettings {
     javaOptions in Test ++= System.getProperties.asScala
       .filter(_._1.startsWith("spark"))
       .map {
-        case (k, v) => s"-D$k=$v"
+        case (k, v) =>
+          s"-D$k=$v"
       }
       .toSeq,
     javaOptions in Test += "-ea",

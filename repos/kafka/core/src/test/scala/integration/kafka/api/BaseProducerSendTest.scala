@@ -135,7 +135,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
               assertEquals(
                 metadata.serializedValueSize,
                 "value".getBytes.length)
-            case _ => assertTrue(metadata.serializedValueSize > 0)
+            case _ =>
+              assertTrue(metadata.serializedValueSize > 0)
           }
           assertNotEquals(metadata.checksum(), 0)
           offset += 1
@@ -209,7 +210,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         fail("Should not allow sending a record without topic")
       } catch {
         case iae: IllegalArgumentException => // this is ok
-        case e: Throwable                  => fail("Only expecting IllegalArgumentException", e)
+        case e: Throwable =>
+          fail("Only expecting IllegalArgumentException", e)
       }
 
       // non-blocking send a list of records

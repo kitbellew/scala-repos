@@ -28,8 +28,10 @@ object ScTypeUtil {
 
   def stripTypeArgs(tp: ScType): ScType =
     tp match {
-      case ScParameterizedType(designator, _) => designator
-      case t                                  => t
+      case ScParameterizedType(designator, _) =>
+        designator
+      case t =>
+        t
     }
 
   case class AliasType(
@@ -62,9 +64,11 @@ object ScTypeUtil {
               .map(p.actualSubst.subst)
               .toOption
               .flatMap(removeTypeDesignator)
-          case _ => Some(tp)
+          case _ =>
+            Some(tp)
         }
-      case _ => Some(tp)
+      case _ =>
+        Some(tp)
     }
   }
 }

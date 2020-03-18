@@ -91,7 +91,8 @@ private[launcher] class OfferProcessorImpl(
       .flatMap {
         case MatchedTaskOps(offerId, Nil, resendThisOffer) =>
           declineOffer(offerId, resendThisOffer)
-        case MatchedTaskOps(offerId, tasks, _) => acceptOffer(offerId, tasks)
+        case MatchedTaskOps(offerId, tasks, _) =>
+          acceptOffer(offerId, tasks)
       }
   }
 
@@ -177,8 +178,10 @@ private[launcher] class OfferProcessorImpl(
             revertTaskOps(Some(taskOpWithSource.op))
         }
         .map {
-          case Some(savedTask) => Some(taskOpWithSource)
-          case None            => None
+          case Some(savedTask) =>
+            Some(taskOpWithSource)
+          case None =>
+            None
         }
     }
 

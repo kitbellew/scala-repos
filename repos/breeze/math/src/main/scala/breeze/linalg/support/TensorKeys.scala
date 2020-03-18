@@ -50,7 +50,8 @@ class TensorKeys[K, V, +This](
     p1 match {
       case x: TensorKeys[_, _, _] =>
         x.eq(this) || iterator.sameElements(x.iterator)
-      case _ => false
+      case _ =>
+        false
     }
 
 }

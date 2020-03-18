@@ -31,7 +31,8 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     */
   def map[U](f: T => U): Activity[U] =
     collect {
-      case x => f(x)
+      case x =>
+        f(x)
     }
 
   /**
@@ -44,9 +45,11 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
       case t if f.isDefinedAt(t) =>
         try Activity.value(f(t))
         catch {
-          case NonFatal(exc) => Activity.exception(exc)
+          case NonFatal(exc) =>
+            Activity.exception(exc)
         }
-      case _ => Activity.pending
+      case _ =>
+        Activity.pending
     }
 
   /**
@@ -67,12 +70,15 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
           val a =
             try f(v)
             catch {
-              case NonFatal(exc) => Activity.exception(exc)
+              case NonFatal(exc) =>
+                Activity.exception(exc)
             }
 
           a.run
-        case Pending         => Var.value(Activity.Pending)
-        case exc @ Failed(_) => Var.value(exc)
+        case Pending =>
+          Var.value(Activity.Pending)
+        case exc @ Failed(_) =>
+          Var.value(exc)
       })
 
   /**
@@ -85,7 +91,8 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
         val a =
           try f(act)
           catch {
-            case NonFatal(exc) => Activity.exception(exc)
+            case NonFatal(exc) =>
+              Activity.exception(exc)
           }
         a.run
       })
@@ -95,10 +102,14 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     */
   def handle[U >: T](h: PartialFunction[Throwable, U]): Activity[U] =
     transform {
-      case Activity.Failed(e) if h.isDefinedAt(e) => Activity.value(h(e))
-      case Activity.Pending                       => Activity.pending
-      case Activity.Failed(e)                     => Activity.exception(e)
-      case Activity.Ok(t)                         => Activity.value(t)
+      case Activity.Failed(e) if h.isDefinedAt(e) =>
+        Activity.value(h(e))
+      case Activity.Pending =>
+        Activity.pending
+      case Activity.Failed(e) =>
+        Activity.exception(e)
+      case Activity.Ok(t) =>
+        Activity.value(t)
     }
 
   /**
@@ -112,8 +123,10 @@ case class Activity[+T](run: Var[Activity.State[T]]) {
     */
   def values: Event[Try[T]] =
     states collect {
-      case Ok(v)       => Return(v)
-      case Failed(exc) => Throw(exc)
+      case Ok(v) =>
+        Return(v)
+      case Failed(exc) =>
+        Throw(exc)
     }
 
   /**
@@ -135,8 +148,10 @@ object Activity {
   def apply[T](): (Activity[T], Witness[Try[T]]) = {
     val v = Var(Pending: State[T])
     val w: Witness[Try[T]] = Witness(v) comap {
-      case Return(v)  => Ok(v)
-      case Throw(exc) => Failed(exc)
+      case Return(v) =>
+        Ok(v)
+      case Throw(exc) =>
+        Failed(exc)
     }
 
     (Activity(v), w)
@@ -166,21 +181,28 @@ object Activity {
 
     def flip(states: Traversable[State[T]]): State[CC[T]] = {
       val notOk = states find {
-        case Pending | Failed(_) => true
-        case Ok(_)               => false
+        case Pending | Failed(_) =>
+          true
+        case Ok(_) =>
+          false
       }
 
       notOk match {
-        case None                =>
-        case Some(Pending)       => return Pending
-        case Some(f @ Failed(_)) => return f
-        case Some(_)             => assert(false)
+        case None =>
+        case Some(Pending) =>
+          return Pending
+        case Some(f @ Failed(_)) =>
+          return f
+        case Some(_) =>
+          assert(false)
       }
 
       val ts = newBuilder()
       states foreach {
-        case Ok(t) => ts += t
-        case _     => assert(false)
+        case Ok(t) =>
+          ts += t
+        case _ =>
+          assert(false)
       }
 
       Ok(ts.result)
@@ -946,9 +968,12 @@ object Activity {
     */
   def sample[T](act: Activity[T]): T =
     act.run.sample() match {
-      case Ok(t)       => t
-      case Pending     => throw new IllegalStateException("Still pending")
-      case Failed(exc) => throw exc
+      case Ok(t) =>
+        t
+      case Pending =>
+        throw new IllegalStateException("Still pending")
+      case Failed(exc) =>
+        throw exc
     }
 
   /**
@@ -971,8 +996,10 @@ object Activity {
   def future[T](f: Future[T]): Activity[T] = {
     val run = Var(Pending: State[T])
     f respond {
-      case Return(v) => run() = Ok(v)
-      case Throw(e)  => run() = Failed(e)
+      case Return(v) =>
+        run() = Ok(v)
+      case Throw(e) =>
+        run() = Failed(e)
     }
     Activity(run)
   }

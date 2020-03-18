@@ -79,8 +79,10 @@ object AnnotatorHighlighter {
 
   private def getParentByStub(x: PsiElement): PsiElement = {
     x match {
-      case el: ScalaStubBasedElementImpl[_] => getParentStub(el)
-      case _                                => x.getContext
+      case el: ScalaStubBasedElementImpl[_] =>
+        getParentStub(el)
+      case _ =>
+        x.getContext
     }
   }
 
@@ -99,11 +101,13 @@ object AnnotatorHighlighter {
         .getInstance(refElement.getProject)
 
       scalaProjectSettings.getCollectionTypeHighlightingLevel match {
-        case ScalaProjectSettings.COLLECTION_TYPE_HIGHLIGHTING_NONE => return
+        case ScalaProjectSettings.COLLECTION_TYPE_HIGHLIGHTING_NONE =>
+          return
         case ScalaProjectSettings.COLLECTION_TYPE_HIGHLIGHTING_NOT_QUALIFIED =>
           refElement.qualifier match {
             case None =>
-            case _    => return
+            case _ =>
+              return
           }
         case ScalaProjectSettings.COLLECTION_TYPE_HIGHLIGHTING_ALL =>
       }
@@ -190,7 +194,8 @@ object AnnotatorHighlighter {
         fun match {
           case p: ScPatternDefinition =>
             p.bindings.headOption.map(_.getName).orNull
-          case _ => fun.getName
+          case _ =>
+            fun.getName
         },
         fun.getProject
       )
@@ -358,12 +363,18 @@ object AnnotatorHighlighter {
 
   def highlightElement(element: PsiElement, holder: AnnotationHolder) {
     element match {
-      case x: ScAnnotation => visitAnnotation(x, holder)
-      case x: ScParameter  => visitParameter(x, holder)
-      case x: ScCaseClause => visitCaseClause(x, holder)
-      case x: ScGenerator  => visitGenerator(x, holder)
-      case x: ScEnumerator => visitEnumerator(x, holder)
-      case x: ScTypeAlias  => visitTypeAlias(x, holder)
+      case x: ScAnnotation =>
+        visitAnnotation(x, holder)
+      case x: ScParameter =>
+        visitParameter(x, holder)
+      case x: ScCaseClause =>
+        visitCaseClause(x, holder)
+      case x: ScGenerator =>
+        visitGenerator(x, holder)
+      case x: ScEnumerator =>
+        visitEnumerator(x, holder)
+      case x: ScTypeAlias =>
+        visitTypeAlias(x, holder)
       case _ if element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER =>
         getParentByStub(element) match {
           case _: ScNameValuePair =>
@@ -492,8 +503,9 @@ object AnnotatorHighlighter {
       clause: ScCaseClause,
       holder: AnnotationHolder): Unit = {
     clause.pattern match {
-      case Some(x) => visitPattern(x, holder, DefaultHighlighter.PATTERN)
-      case None    =>
+      case Some(x) =>
+        visitPattern(x, holder, DefaultHighlighter.PATTERN)
+      case None =>
     }
   }
 
@@ -514,7 +526,8 @@ object AnnotatorHighlighter {
     Option(r.getContext) exists {
       case _: ScMethodCall | _: ScReferenceExpression =>
         true // These references to 'Foo' should be 'object' references: case class Foo(a: Int); Foo(1); Foo.apply(1).
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

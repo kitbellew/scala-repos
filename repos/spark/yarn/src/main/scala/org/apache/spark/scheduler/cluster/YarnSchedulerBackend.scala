@@ -163,7 +163,8 @@ private[spark] abstract class YarnSchedulerBackend(
       logInfo(s"Add WebUI Filter. $filterName, $filterParams, $proxyBase")
       conf.set("spark.ui.filters", filterName)
       filterParams.foreach {
-        case (k, v) => conf.set(s"spark.$filterName.param.$k", v)
+        case (k, v) =>
+          conf.set(s"spark.$filterName.param.$k", v)
       }
       scheduler.sc.ui.foreach { ui =>
         JettyUtils.addFilters(ui.getHandlers, conf)
@@ -253,7 +254,8 @@ private[spark] abstract class YarnSchedulerBackend(
               driverEndpoint.askWithRetry[Boolean](
                 RemoveExecutor(executorId, SlaveLost()))
             }
-            case t => throw t
+            case t =>
+              throw t
           }
         case None =>
           logWarning(

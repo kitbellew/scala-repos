@@ -41,8 +41,10 @@ case class Tournament(
 
   def isMarathon =
     schedule.map(_.freq) exists {
-      case Schedule.Freq.ExperimentalMarathon | Schedule.Freq.Marathon => true
-      case _                                                           => false
+      case Schedule.Freq.ExperimentalMarathon | Schedule.Freq.Marathon =>
+        true
+      case _ =>
+        false
     }
 
   def isUnique = schedule.map(_.freq) exists (Schedule.Freq.Unique ==)
@@ -76,8 +78,10 @@ case class Tournament(
 
   def similarTo(other: Tournament) =
     (schedule, other.schedule) match {
-      case (Some(s1), Some(s2)) if s1 similarTo s2 => true
-      case _                                       => false
+      case (Some(s1), Some(s2)) if s1 similarTo s2 =>
+        true
+      case _ =>
+        false
     }
 
   def speed = Speed(clock.chessClock.some)

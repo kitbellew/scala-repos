@@ -104,8 +104,10 @@ private[akka] final case class Collect[In, Out](
 
   override def onPush(elem: In, ctx: Context[Out]): SyncDirective =
     pf.applyOrElse(elem, NotApplied) match {
-      case NotApplied ⇒ ctx.pull()
-      case result: Out @unchecked ⇒ ctx.push(result)
+      case NotApplied ⇒
+        ctx.pull()
+      case result: Out @unchecked ⇒
+        ctx.push(result)
     }
 
   override def decide(t: Throwable): Supervision.Directive = decider(t)
@@ -125,15 +127,18 @@ private[akka] final case class Recover[T](pf: PartialFunction[Throwable, T])
 
   override def onPull(ctx: Context[T]): SyncDirective =
     recovered match {
-      case Some(value) ⇒ ctx.pushAndFinish(value)
-      case None ⇒ ctx.pull()
+      case Some(value) ⇒
+        ctx.pushAndFinish(value)
+      case None ⇒
+        ctx.pull()
     }
 
   override def onUpstreamFailure(
       t: Throwable,
       ctx: Context[T]): TerminationDirective = {
     pf.applyOrElse(t, NotApplied) match {
-      case NotApplied ⇒ ctx.fail(t)
+      case NotApplied ⇒
+        ctx.fail(t)
       case result: T @unchecked ⇒
         recovered = Some(result)
         ctx.absorbTermination()
@@ -560,8 +565,10 @@ private[akka] final case class Batch[In, Out](
           } catch {
             case NonFatal(ex) ⇒
               decider(ex) match {
-                case Supervision.Stop ⇒ failStage(ex)
-                case Supervision.Restart ⇒ restartState()
+                case Supervision.Stop ⇒
+                  failStage(ex)
+                case Supervision.Restart ⇒
+                  restartState()
                 case Supervision.Resume ⇒
                   pending = null.asInstanceOf[In]
               }
@@ -588,7 +595,8 @@ private[akka] final case class Batch[In, Out](
               } catch {
                 case NonFatal(ex) ⇒
                   decider(ex) match {
-                    case Supervision.Stop ⇒ failStage(ex)
+                    case Supervision.Stop ⇒
+                      failStage(ex)
                     case Supervision.Restart ⇒
                       restartState()
                     case Supervision.Resume ⇒
@@ -603,7 +611,8 @@ private[akka] final case class Batch[In, Out](
               } catch {
                 case NonFatal(ex) ⇒
                   decider(ex) match {
-                    case Supervision.Stop ⇒ failStage(ex)
+                    case Supervision.Stop ⇒
+                      failStage(ex)
                     case Supervision.Restart ⇒
                       restartState()
                     case Supervision.Resume ⇒
@@ -644,7 +653,8 @@ private[akka] final case class Batch[In, Out](
                 } catch {
                   case NonFatal(ex) ⇒
                     decider(ex) match {
-                      case Supervision.Stop ⇒ failStage(ex)
+                      case Supervision.Stop ⇒
+                        failStage(ex)
                       case Supervision.Resume ⇒
                       case Supervision.Restart ⇒
                         restartState()
@@ -790,7 +800,8 @@ private[akka] final case class MapAsync[In, Out](
             tryPull(in)
         } else
           buffer.dequeue().elem match {
-            case Failure(ex) ⇒ pushOne()
+            case Failure(ex) ⇒
+              pushOne()
             case Success(elem) ⇒
               push(out, elem)
               if (todo < parallelism && !hasBeenPulled(in))
@@ -807,7 +818,8 @@ private[akka] final case class MapAsync[In, Out](
         }
 
       val futureCB = getAsyncCallback[(Holder[Try[Out]], Try[Out])]({
-        case (holder, f: Failure[_]) ⇒ failOrPull(holder, f)
+        case (holder, f: Failure[_]) ⇒
+          failOrPull(holder, f)
         case (holder, s @ Success(elem)) ⇒
           if (elem == null) {
             val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
@@ -895,7 +907,8 @@ private[akka] final case class MapAsyncUnordered[In, Out](
         getAsyncCallback((result: Try[Out]) ⇒ {
           inFlight -= 1
           result match {
-            case Failure(ex) ⇒ failOrPull(ex)
+            case Failure(ex) ⇒
+              failOrPull(ex)
             case Success(elem) ⇒
               if (elem == null) {
                 val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
@@ -969,7 +982,8 @@ private[akka] final case class Log[T](
   override def preStart(ctx: LifecycleContext): Unit = {
     logLevels = ctx.attributes.get[LogLevels](DefaultLogLevels)
     log = logAdapter match {
-      case Some(l) ⇒ l
+      case Some(l) ⇒
+        l
       case _ ⇒
         val mat =
           try ActorMaterializer.downcast(ctx.materializer)
@@ -1049,7 +1063,8 @@ private[akka] object Log {
       override def genString(t: LifecycleContext): String = {
         try s"$DefaultLoggerName(${ActorMaterializer.downcast(t.materializer).supervisor.path})"
         catch {
-          case ex: Exception ⇒ LogSource.fromString.genString(DefaultLoggerName)
+          case ex: Exception ⇒
+            LogSource.fromString.genString(DefaultLoggerName)
         }
       }
 
@@ -1179,7 +1194,8 @@ private[stream] final class Delay[T](
           case None ⇒
             throw new IllegalStateException(
               s"Couldn't find InputBuffer Attribute for $this")
-          case Some(InputBuffer(min, max)) ⇒ max
+          case Some(InputBuffer(min, max)) ⇒
+            max
         }
 
       var buffer: BufferImpl[(Long, T)] =
@@ -1499,7 +1515,8 @@ private[stream] final class StatefulMapConcat[In, Out](
         } catch {
           case NonFatal(ex) ⇒
             decider(ex) match {
-              case Supervision.Stop ⇒ failStage(ex)
+              case Supervision.Stop ⇒
+                failStage(ex)
               case Supervision.Resume ⇒
                 if (!hasBeenPulled(in))
                   pull(in)

@@ -31,8 +31,10 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
       parentStub: StubElement[ParentPsi]): ScFunctionStub = {
     val returnTypeText = {
       psi.returnTypeElement match {
-        case Some(x) => x.getText
-        case None    => ""
+        case Some(x) =>
+          x.getText
+        case None =>
+          ""
       }
     }
     val bodyText = {
@@ -42,17 +44,22 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
         psi match {
           case fDef: ScFunctionDefinition =>
             fDef.body match {
-              case Some(x) => x.getText
-              case None    => ""
+              case Some(x) =>
+                x.getText
+              case None =>
+                ""
             }
-          case _ => ""
+          case _ =>
+            ""
         }
       }
     }
     val assign = {
       psi match {
-        case fDef: ScFunctionDefinition => fDef.hasAssign
-        case _                          => false
+        case fDef: ScFunctionDefinition =>
+          fDef.hasAssign
+        case _ =>
+          false
       }
     }
     val isImplicit = psi.hasModifierProperty("implicit")

@@ -40,8 +40,10 @@ trait IfElseMatcher extends BraceMatcher {
     object openParen extends parenPair.OpenLink;
     override def link(b: Boolean): Link =
       b match {
-        case true  => ifLink;
-        case false => openParen;
+        case true =>
+          ifLink;
+        case false =>
+          openParen;
       }
   }
 }

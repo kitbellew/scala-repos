@@ -27,10 +27,14 @@ object ProxyFactory {
   private[reflect] object IgnoredMethodFilter extends CallbackFilter {
     def accept(m: Method) = {
       m.getName match {
-        case "hashCode" => 1
-        case "equals"   => 1
-        case "toString" => 1
-        case _          => 0
+        case "hashCode" =>
+          1
+        case "equals" =>
+          1
+        case "toString" =>
+          1
+        case _ =>
+          0
       }
     }
   }

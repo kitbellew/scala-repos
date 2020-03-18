@@ -34,8 +34,10 @@ object Insight extends LilaController {
       Accessible(username) { user =>
         import lila.insight.InsightApi.UserStatus._
         env.api userStatus user flatMap {
-          case NoGame => Ok(html.insight.noGame(user)).fuccess
-          case Empty  => Ok(html.insight.empty(user)).fuccess
+          case NoGame =>
+            Ok(html.insight.noGame(user)).fuccess
+          case Empty =>
+            Ok(html.insight.empty(user)).fuccess
           case s =>
             for {
               cache <- env.api userCache user

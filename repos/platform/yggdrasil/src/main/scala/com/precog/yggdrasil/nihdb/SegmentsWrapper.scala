@@ -85,15 +85,22 @@ case class SegmentsWrapper(
         val defined: BitSet = segment.defined
         val values: Array[a] = segment.values
         ctype match {
-          case CString => new ArrayStrColumn(defined, values)
-          case CDate   => new ArrayDateColumn(defined, values)
-          case CPeriod => new ArrayPeriodColumn(defined, values)
-          case CNum    => new ArrayNumColumn(defined, values)
-          case CDouble => new ArrayDoubleColumn(defined, values)
-          case CLong   => new ArrayLongColumn(defined, values)
+          case CString =>
+            new ArrayStrColumn(defined, values)
+          case CDate =>
+            new ArrayDateColumn(defined, values)
+          case CPeriod =>
+            new ArrayPeriodColumn(defined, values)
+          case CNum =>
+            new ArrayNumColumn(defined, values)
+          case CDouble =>
+            new ArrayDoubleColumn(defined, values)
+          case CLong =>
+            new ArrayLongColumn(defined, values)
           case cat: CArrayType[_] =>
             new ArrayHomogeneousArrayColumn(defined, values)(cat)
-          case CBoolean => sys.error("impossible")
+          case CBoolean =>
+            sys.error("impossible")
         }
 
       case BooleanSegment(_, _, defined, values, _) =>

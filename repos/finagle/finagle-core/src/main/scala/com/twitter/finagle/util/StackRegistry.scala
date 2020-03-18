@@ -29,7 +29,8 @@ object StackRegistry {
               val values = p.productIterator.map(_.toString).toSeq
               seq ++ fields.zipAll(values, "<unknown>", "<unknown>")
 
-            case (seq, _) => seq
+            case (seq, _) =>
+              seq
           }
         Module(node.head.role.name, node.head.description, reflected)
       }.toSeq
@@ -84,8 +85,10 @@ trait StackRegistry {
       if (registry.contains(entry.name)) {
         val updated =
           duplicates.get(entry.name) match {
-            case Some(values) => values :+ entry
-            case None         => Seq(entry)
+            case Some(values) =>
+              values :+ entry
+            case None =>
+              Seq(entry)
           }
         duplicates += entry.name -> updated
       }

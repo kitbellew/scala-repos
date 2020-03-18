@@ -54,9 +54,12 @@ object ContentEncoding {
       override def validated(
           obj: JValue): Validation[Error, ContentEncoding] = {
         obj.validated[String]("encoding").flatMap {
-          case "uncompressed" => Success(RawUTF8Encoding)
-          case "base64"       => Success(Base64Encoding)
-          case invalid        => Failure(Invalid("Unknown encoding " + invalid))
+          case "uncompressed" =>
+            Success(RawUTF8Encoding)
+          case "base64" =>
+            Success(Base64Encoding)
+          case invalid =>
+            Failure(Invalid("Unknown encoding " + invalid))
         }
       }
     }

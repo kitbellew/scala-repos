@@ -41,8 +41,10 @@ class ScalaGenerationInfo(classMember: ClassMember) extends GenerationInfoBase {
       before: Boolean): Unit = {
     val templDef =
       aClass match {
-        case td: ScTemplateDefinition => td
-        case _                        => return
+        case td: ScTemplateDefinition =>
+          td
+        case _ =>
+          return
       }
 
     classMember match {
@@ -63,18 +65,24 @@ class ScalaGenerationInfo(classMember: ClassMember) extends GenerationInfoBase {
       case _: ScValueMember | _: ScVariableMember =>
         val isVal =
           classMember match {
-            case _: ScValueMember    => true
-            case _: ScVariableMember => false
+            case _: ScValueMember =>
+              true
+            case _: ScVariableMember =>
+              false
           }
         val value =
           classMember match {
-            case x: ScValueMember    => x.element
-            case x: ScVariableMember => x.element
+            case x: ScValueMember =>
+              x.element
+            case x: ScVariableMember =>
+              x.element
           }
         val (substitutor, needsOverride) =
           classMember match {
-            case x: ScValueMember    => (x.substitutor, x.isOverride)
-            case x: ScVariableMember => (x.substitutor, x.isOverride)
+            case x: ScValueMember =>
+              (x.substitutor, x.isOverride)
+            case x: ScVariableMember =>
+              (x.substitutor, x.isOverride)
           }
         val addOverride = needsOverride || toAddOverrideToImplemented
         val m = ScalaPsiElementFactory.createOverrideImplementVariable(
@@ -97,7 +105,8 @@ class ScalaGenerationInfo(classMember: ClassMember) extends GenerationInfoBase {
     aClass match {
       case td: ScTemplateDefinition =>
         ScalaOIUtil.getAnchor(leaf.getTextRange.getStartOffset, td).orNull
-      case _ => super.findInsertionAnchor(aClass, leaf)
+      case _ =>
+        super.findInsertionAnchor(aClass, leaf)
     }
   }
 
@@ -127,23 +136,30 @@ object ScalaGenerationInfo {
     //Setting selection
     val body: PsiElement =
       member match {
-        case ta: ScTypeAliasDefinition       => ta.aliasedTypeElement
-        case ScPatternDefinition.expr(expr)  => expr
-        case ScVariableDefinition.expr(expr) => expr
+        case ta: ScTypeAliasDefinition =>
+          ta.aliasedTypeElement
+        case ScPatternDefinition.expr(expr) =>
+          expr
+        case ScVariableDefinition.expr(expr) =>
+          expr
         case method: ScFunctionDefinition =>
           method.body match {
-            case Some(x) => x
-            case None    => return
+            case Some(x) =>
+              x
+            case None =>
+              return
           }
-        case _ => return
+        case _ =>
+          return
       }
 
     val offset = member.getTextRange.getStartOffset
     val point = editor.visualPositionToXY(editor.offsetToVisualPosition(offset))
     if (!editor.getScrollingModel.getVisibleArea.contains(point)) {
       member match {
-        case n: Navigatable => n.navigate(true)
-        case _              =>
+        case n: Navigatable =>
+          n.navigate(true)
+        case _ =>
       }
     }
 
@@ -175,7 +191,8 @@ object ScalaGenerationInfo {
       method: PsiMethod): String = {
     val superOrSelfQual: String =
       td.selfType match {
-        case None => "super."
+        case None =>
+          "super."
         case Some(st: ScType) =>
           val psiClass = ScType
             .extractClass(st, Option(td.getProject))

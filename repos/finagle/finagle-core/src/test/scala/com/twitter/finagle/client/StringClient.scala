@@ -19,8 +19,10 @@ private class DelimEncoder(delim: Char) extends SimpleChannelHandler {
   override def writeRequested(ctx: ChannelHandlerContext, evt: MessageEvent) = {
     val newMessage =
       evt.getMessage match {
-        case m: String => m + delim
-        case m         => m
+        case m: String =>
+          m + delim
+        case m =>
+          m
       }
 
     Channels.write(ctx, evt.getFuture, newMessage, evt.getRemoteAddress)

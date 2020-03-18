@@ -23,7 +23,8 @@ object VerticaExtensions {
       : PartialFunction[DBColumnDefinition, DBColumnDefinition] = {
     case t @ DBColumnDefinition(BIGINT, _, _, None, _, _) =>
       t.copy(sizeOpt = None)
-    case t @ DBColumnDefinition(INT, _, _, None, _, _) => t.copy(sizeOpt = None)
+    case t @ DBColumnDefinition(INT, _, _, None, _, _) =>
+      t.copy(sizeOpt = None)
     case t @ DBColumnDefinition(SMALLINT, _, _, None, _, _) =>
       t.copy(sizeOpt = None)
     case t @ DBColumnDefinition(BOOLEAN, _, _, None, _, _) =>

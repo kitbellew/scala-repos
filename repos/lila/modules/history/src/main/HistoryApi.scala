@@ -33,7 +33,8 @@ final class HistoryApi(coll: Coll) {
       (isStd && game.speed == Speed.Correspondence).option(
         "correspondence" -> perfs.correspondence)
     ).flatten.map {
-      case (k, p) => k -> p.intRating
+      case (k, p) =>
+        k -> p.intRating
     }
     val days = daysBetween(user.createdAt, game.updatedAt | game.createdAt)
     coll
@@ -42,7 +43,8 @@ final class HistoryApi(coll: Coll) {
         BSONDocument(
           "$set" -> BSONDocument(
             changes.map {
-              case (perf, rating) => s"$perf.$days" -> BSONInteger(rating)
+              case (perf, rating) =>
+                s"$perf.$days" -> BSONInteger(rating)
             })),
         upsert = true)
       .void

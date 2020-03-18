@@ -37,7 +37,8 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     if (key == null)
       throw new NullPointerException()
     inner.exists {
-      case (ik, _) => key === ik()
+      case (ik, _) =>
+        key === ik()
     }
   }
 
@@ -45,7 +46,8 @@ class ConcurrentHashMap[K >: Null, V >: Null]
     if (value == null)
       throw new NullPointerException()
     inner.exists {
-      case (_, iv) => value === iv
+      case (_, iv) =>
+        value === iv
     }
   }
 

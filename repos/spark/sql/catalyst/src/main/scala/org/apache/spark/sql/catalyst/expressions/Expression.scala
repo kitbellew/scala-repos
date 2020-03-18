@@ -195,8 +195,10 @@ abstract class Expression extends TreeNode[Expression] {
 
   private def flatArguments =
     productIterator.flatMap {
-      case t: Traversable[_] => t
-      case single            => single :: Nil
+      case t: Traversable[_] =>
+        t
+      case single =>
+        single :: Nil
     }
 
   override def simpleString: String = toString
@@ -238,7 +240,8 @@ trait Unevaluable extends Expression {
 trait NonSQLExpression extends Expression {
   override def sql: String = {
     transform {
-      case a: Attribute => new PrettyAttribute(a)
+      case a: Attribute =>
+        new PrettyAttribute(a)
     }.toString
   }
 }

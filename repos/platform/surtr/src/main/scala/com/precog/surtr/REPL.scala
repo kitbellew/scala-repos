@@ -220,10 +220,12 @@ trait REPL
       def loop() {
         val results = prompt(readNext(reader, color))
         val successes = results collect {
-          case Success(tree, _) => tree
+          case Success(tree, _) =>
+            tree
         }
         val failures = results collect {
-          case f: Failure => f
+          case f: Failure =>
+            f
         }
 
         if (successes.isEmpty) {

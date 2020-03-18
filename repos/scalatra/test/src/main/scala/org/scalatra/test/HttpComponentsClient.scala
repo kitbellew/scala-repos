@@ -27,7 +27,8 @@ case class HttpComponentsClientResponse(res: HttpResponse)
 
         bos.toByteArray
 
-      case None => Array()
+      case None =>
+        Array()
     }
   }
 
@@ -113,21 +114,30 @@ trait HttpComponentsClient extends Client {
       req: HttpRequestBase,
       headers: Iterable[(String, String)]) {
     headers.foreach {
-      case (name, value) => req.addHeader(name, value)
+      case (name, value) =>
+        req.addHeader(name, value)
     }
   }
 
   private def createMethod(method: String, url: String) = {
     val req =
       method match {
-        case "GET"     => new HttpGet(url)
-        case "HEAD"    => new HttpHead(url)
-        case "OPTIONS" => new HttpOptions(url)
-        case "DELETE"  => new HttpDelete(url)
-        case "TRACE"   => new HttpTrace(url)
-        case "POST"    => new HttpPost(url)
-        case "PUT"     => new HttpPut(url)
-        case "PATCH"   => new HttpPatch(url)
+        case "GET" =>
+          new HttpGet(url)
+        case "HEAD" =>
+          new HttpHead(url)
+        case "OPTIONS" =>
+          new HttpOptions(url)
+        case "DELETE" =>
+          new HttpDelete(url)
+        case "TRACE" =>
+          new HttpTrace(url)
+        case "POST" =>
+          new HttpPost(url)
+        case "PUT" =>
+          new HttpPut(url)
+        case "PATCH" =>
+          new HttpPatch(url)
       }
 
     req.setConfig(RequestConfig.custom().setCookieSpec("compatibility").build())
@@ -191,8 +201,10 @@ trait HttpComponentsClient extends Client {
 
   def createBody(name: String, content: Any) =
     content match {
-      case file: File             => UploadableBody(FilePart(file))
-      case uploadable: Uploadable => UploadableBody(uploadable)
+      case file: File =>
+        UploadableBody(FilePart(file))
+      case uploadable: Uploadable =>
+        UploadableBody(uploadable)
 
       case s: Any =>
         throw new IllegalArgumentException(

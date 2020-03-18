@@ -119,8 +119,10 @@ trait JdbcBackend extends RelationalBackend {
           forDataSource(
             ds,
             executor match {
-              case null => AsyncExecutor.default(name)
-              case e    => e
+              case null =>
+                AsyncExecutor.default(name)
+              case e =>
+                e
             })
         case x =>
           throw new SlickException(

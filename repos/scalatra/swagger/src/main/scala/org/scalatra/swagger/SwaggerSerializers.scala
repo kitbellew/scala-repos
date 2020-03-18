@@ -196,7 +196,8 @@ object SwaggerSerializers {
           try {
             Option(Iso8601Date.parseDateTime(s).toDate)
           } catch {
-            case _: Throwable ⇒ None
+            case _: Throwable ⇒
+              None
           }
       }
   }
@@ -213,10 +214,12 @@ object SwaggerSerializers {
       extends CustomSerializer[HttpMethod](implicit formats =>
         (
           {
-            case JString(method) => HttpMethod(method)
+            case JString(method) =>
+              HttpMethod(method)
           },
           {
-            case method: HttpMethod => JString(method.toString)
+            case method: HttpMethod =>
+              JString(method.toString)
           }))
 
   def writeDataType(dataType: DataType, key: String = "type")(implicit
@@ -254,8 +257,10 @@ object SwaggerSerializers {
       if (t == "array") {
         val items =
           value \ "items" match {
-            case JNothing => None
-            case jv       => Some(readDataType(jv))
+            case JNothing =>
+              None
+            case jv =>
+              Some(readDataType(jv))
           }
         value \ "uniqueItems" match {
           case JBool(true) =>
@@ -289,19 +294,23 @@ object SwaggerSerializers {
                       AllowableValuesList(entries.map(_.as[Boolean]))
                     case Some(_: JString) =>
                       AllowableValuesList(entries.map(_.as[String]))
-                    case _ => AnyValue
+                    case _ =>
+                      AnyValue
                   }
-                case _ => AnyValue
+                case _ =>
+                  AnyValue
               }
             case value @ JObject(flds)
                 if flds.exists(_._1 == "minimum") && flds.exists(
                   _._1 == "maximum") =>
               AllowableRangeValues(
                 (value \ "minimum").as[Int] to (value \ "maximum").as[Int])
-            case _ => AnyValue
+            case _ =>
+              AnyValue
           },
           {
-            case AnyValue => JNothing
+            case AnyValue =>
+              JNothing
             case AllowableValuesList(values) =>
               ("enum" -> Extraction.decompose(values)): JValue
             case AllowableRangeValues(range) =>
@@ -317,9 +326,12 @@ object SwaggerSerializers {
                 `type` = readDataType(json),
                 position = (json \ "position").getAsOrElse(0),
                 json \ "required" match {
-                  case JString(s)   => s.toCheckboxBool
-                  case JBool(value) => value
-                  case _            => false
+                  case JString(s) =>
+                    s.toCheckboxBool
+                  case JBool(value) =>
+                    value
+                  case _ =>
+                    false
                 },
                 description = (json \ "description")
                   .getAs[String]
@@ -347,7 +359,8 @@ object SwaggerSerializers {
                     for ((key, value) <- entries)
                       yield key -> value.extract[ModelProperty]
                   }
-                  case _ => Nil
+                  case _ =>
+                    Nil
                 }
 
               Model(
@@ -378,9 +391,11 @@ object SwaggerSerializers {
                 (
                   "properties" -> (
                     x.properties.sortBy {
-                      case (_, p) ⇒ p.position
+                      case (_, p) ⇒
+                        p.position
                     } map {
-                      case (k, v) => k -> Extraction.decompose(v)
+                      case (k, v) =>
+                        k -> Extraction.decompose(v)
                     }
                   )
                 )
@@ -417,18 +432,27 @@ object SwaggerSerializers {
                   .map(ParamType.withName)
                   .getOrElse(ParamType.Query),
                 json \ "defaultValue" match {
-                  case JInt(num)     => Some(num.toString)
-                  case JBool(value)  => Some(value.toString)
-                  case JString(s)    => Some(s)
-                  case JDouble(num)  => Some(num.toString)
-                  case JDecimal(num) => Some(num.toString)
-                  case _             => None
+                  case JInt(num) =>
+                    Some(num.toString)
+                  case JBool(value) =>
+                    Some(value.toString)
+                  case JString(s) =>
+                    Some(s)
+                  case JDouble(num) =>
+                    Some(num.toString)
+                  case JDecimal(num) =>
+                    Some(num.toString)
+                  case _ =>
+                    None
                 },
                 (json \ "allowableValues").extract[AllowableValues],
                 json \ "required" match {
-                  case JString(s)   => s.toBoolean
-                  case JBool(value) => value
-                  case _            => false
+                  case JString(s) =>
+                    s.toBoolean
+                  case JBool(value) =>
+                    value
+                  case _ =>
+                    false
                 },
                 (json \ "paramAccess").getAs[String].flatMap(_.blankOption)
               )
@@ -551,48 +575,60 @@ object SwaggerSerializers {
                 (
                   "produces" -> (
                     x.produces match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "consumes" -> (
                     x.consumes match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "protocols" -> (
                     x.protocols match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "authorizations" -> (
                     x.authorizations match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "apis" -> (
                     x.apis match {
-                      case Nil => JNothing
-                      case e   => Extraction.decompose(e)
+                      case Nil =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 ) ~
                 (
                   "models" -> (
                     x.models match {
-                      case x if x.isEmpty => JNothing
-                      case e              => Extraction.decompose(e)
+                      case x if x.isEmpty =>
+                        JNothing
+                      case e =>
+                        Extraction.decompose(e)
                     }
                   )
                 )

@@ -37,13 +37,17 @@ object P extends Build {
         Class.forName("org.example.ProvidedTest", false, loader);
         None
       } catch {
-        case e: Exception => Some(e)
+        case e: Exception =>
+          Some(e)
       }
 
     (err, shouldSucceed) match {
-      case (None, true) | (Some(_), false) => ()
-      case (None, false)                   => sys.error("Expected failure")
-      case (Some(x), true)                 => throw x
+      case (None, true) | (Some(_), false) =>
+        ()
+      case (None, false) =>
+        sys.error("Expected failure")
+      case (Some(x), true) =>
+        throw x
     }
   }
 }

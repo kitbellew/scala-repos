@@ -61,9 +61,11 @@ trait CrossOrdering extends DAG {
           case node: SplitGroup =>
             SplitGroup(node.id, node.identities, node.parentId)(node.loc)
 
-          case node @ Const(_) => node
+          case node @ Const(_) =>
+            node
 
-          case node @ Undefined() => node
+          case node @ Undefined() =>
+            node
 
           case node @ dag.New(parent) =>
             dag.New(memoized(parent))(node.loc)
@@ -152,7 +154,8 @@ trait CrossOrdering extends DAG {
           case AddSortKey(parent, sortField, valueField, id) =>
             AddSortKey(memoized(parent), sortField, valueField, id)
 
-          case Memoize(parent, priority) => Memoize(memoized(parent), priority)
+          case Memoize(parent, priority) =>
+            Memoize(memoized(parent), priority)
         }
 
       memotable.get(new DepGraphWrapper(node)) getOrElse {

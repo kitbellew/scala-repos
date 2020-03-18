@@ -18,13 +18,15 @@ object NewRemoteActorMultiJvmSpec extends MultiNodeConfig {
 
   class SomeActor extends Actor {
     def receive = {
-      case "identify" ⇒ sender() ! self
+      case "identify" ⇒
+        sender() ! self
     }
   }
 
   class SomeActorWithParam(ignored: String) extends Actor {
     def receive = {
-      case "identify" ⇒ sender() ! self
+      case "identify" ⇒
+        sender() ! self
     }
   }
 
@@ -126,7 +128,8 @@ class NewRemoteActorSpec
         // master system is supposed to be shutdown after slave
         // this should be triggered by slave system.terminate
         expectMsgPF() {
-          case Terminated(`actor`) ⇒ true
+          case Terminated(`actor`) ⇒
+            true
         }
       }
 

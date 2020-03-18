@@ -3,7 +3,8 @@ package a {
   trait Foo {
     def crash(x: Dingus[_]): Unit =
       x match {
-        case m: Bippy[tv] => ()
+        case m: Bippy[tv] =>
+          ()
       }
 
     class Dingus[T]
@@ -19,7 +20,8 @@ package b {
 
     def crash(x: Dingus[_]): Unit =
       x match {
-        case m: Bippy[tv] => ()
+        case m: Bippy[tv] =>
+          ()
       }
   }
 }

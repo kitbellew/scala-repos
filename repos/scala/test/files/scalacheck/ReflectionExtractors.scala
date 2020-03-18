@@ -58,8 +58,10 @@ object Test extends Properties("reflection extractors") {
 
   property("extract term or type name") = forAll { (name: Name) =>
     name match {
-      case TermName(s) => s == name.toString
-      case TypeName(s) => s == name.toString
+      case TermName(s) =>
+        s == name.toString
+      case TypeName(s) =>
+        s == name.toString
     }
   }
 

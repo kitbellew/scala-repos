@@ -29,7 +29,8 @@ object GenerateRoundtripSources {
           override def tableName = {
             case n if n.toLowerCase == "null" =>
               "null" // testing null as table name
-            case n => super.tableName(n)
+            case n =>
+              super.tableName(n)
           }
         })
     val a2 = profile

@@ -150,7 +150,8 @@ object Grouped {
         tuple2Converter[Boxed[K], V].andThen { kv =>
           (kv._1.get, kv._2)
         }
-      case _ => tuple2Converter[K, V]
+      case _ =>
+        tuple2Converter[K, V]
     }
 
   def valueConverter[V](optOrd: Option[Ordering[_ >: V]]): TupleConverter[V] =
@@ -159,7 +160,8 @@ object Grouped {
         ord match {
           case _: OrderedSerialization[_] =>
             TupleConverter.singleConverter[Boxed[V]].andThen(_.get)
-          case _ => TupleConverter.singleConverter[V]
+          case _ =>
+            TupleConverter.singleConverter[V]
         }
       }
       .getOrElse(TupleConverter.singleConverter[V])
@@ -168,7 +170,8 @@ object Grouped {
     ord match {
       case _: OrderedSerialization[_] =>
         TupleConverter.singleConverter[Boxed[K]].andThen(_.get)
-      case _ => TupleConverter.singleConverter[K]
+      case _ =>
+        TupleConverter.singleConverter[K]
     }
   def keyGetter[K](ord: Ordering[K]): TupleGetter[K] =
     ord match {
@@ -177,7 +180,8 @@ object Grouped {
           def get(tup: CTuple, i: Int) =
             tup.getObject(i).asInstanceOf[Boxed[K]].get
         }
-      case _ => TupleGetter.castingGetter
+      case _ =>
+        TupleGetter.castingGetter
     }
 
   def addEmptyGuard[K, V1, V2](fn: (K, Iterator[V1]) => Iterator[V2])
@@ -345,7 +349,8 @@ case class IdentityReduce[K, V1](
 
   override lazy val toTypedPipe =
     reducers match {
-      case None       => mapped // free case
+      case None =>
+        mapped // free case
       case Some(reds) =>
         // This is weird, but it is sometimes used to force a partition
         groupOp {
@@ -393,7 +398,8 @@ case class UnsortedIdentityReduce[K, V1](
         }
         .sumByLocalKeys
         .flatMap {
-          case (k, vs) => vs.iterator.asScala.map((k, _))
+          case (k, vs) =>
+            vs.iterator.asScala.map((k, _))
         }
       // We have removed the priority queues, so serialization is not greater
       // Now finish on the reducers
@@ -450,7 +456,8 @@ case class UnsortedIdentityReduce[K, V1](
 
   override lazy val toTypedPipe =
     reducers match {
-      case None       => mapped // free case
+      case None =>
+        mapped // free case
       case Some(reds) =>
         // This is weird, but it is sometimes used to force a partition
         groupOp {
@@ -537,7 +544,8 @@ case class IdentityValueSortedReduce[K, V1](
         }
         .sumByLocalKeys
         .flatMap {
-          case (k, vs) => vs.iterator.asScala.map((k, _))
+          case (k, vs) =>
+            vs.iterator.asScala.map((k, _))
         }
       // Now finish on the reducers
       IdentityValueSortedReduce[K, V1](

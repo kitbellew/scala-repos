@@ -33,7 +33,8 @@ class RevertibleHistory[Evt <: Undoable, Pub]
     val old = log.toList.reverse
     clear()
     old.foreach {
-      case (sub, event) => event.undo()
+      case (sub, event) =>
+        event.undo()
     }
   }
 }

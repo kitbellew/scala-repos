@@ -145,7 +145,8 @@ class ScalaBasicCompletionTest extends ScalaCodeInsightTestBase {
 
     assert(
       activeLookup.collect {
-        case le if le.getLookupString == "getGoo" => le
+        case le if le.getLookupString == "getGoo" =>
+          le
       }.length == 1)
   }
 

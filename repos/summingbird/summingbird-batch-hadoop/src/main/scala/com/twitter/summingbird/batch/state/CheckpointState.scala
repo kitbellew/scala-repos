@@ -130,9 +130,11 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
                   intersection,
                   hasStarted,
                   batchToken))
-            case _ => Left(waitingState)
+            case _ =>
+              Left(waitingState)
           }
-        case _ => Left(waitingState)
+        case _ =>
+          Left(waitingState)
       }
 
     override def fail(err: Throwable) = {

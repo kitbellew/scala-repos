@@ -46,7 +46,8 @@ class NettyBlockTransferSecuritySuite
       .set("spark.app.id", "app-id")
     testConnection(conf, conf) match {
       case Success(_) => // expected
-      case Failure(t) => fail(t)
+      case Failure(t) =>
+        fail(t)
     }
   }
 
@@ -57,7 +58,8 @@ class NettyBlockTransferSecuritySuite
       .set("spark.app.id", "app-id")
     testConnection(conf, conf) match {
       case Success(_) => // expected
-      case Failure(t) => fail(t)
+      case Failure(t) =>
+        fail(t)
     }
   }
 
@@ -68,8 +70,10 @@ class NettyBlockTransferSecuritySuite
       .set("spark.app.id", "app-id")
     val conf1 = conf0.clone.set("spark.authenticate.secret", "bad")
     testConnection(conf0, conf1) match {
-      case Success(_) => fail("Should have failed")
-      case Failure(t) => t.getMessage should include("Mismatched response")
+      case Success(_) =>
+        fail("Should have failed")
+      case Failure(t) =>
+        t.getMessage should include("Mismatched response")
     }
   }
 
@@ -80,8 +84,11 @@ class NettyBlockTransferSecuritySuite
       .set("spark.app.id", "app-id")
     val conf1 = conf0.clone.set("spark.authenticate", "false")
     testConnection(conf0, conf1) match {
-      case Success(_) => fail("Should have failed")
-      case Failure(t) => // any funny error may occur, sever will interpret SASL token as RPC
+      case Success(_) =>
+        fail("Should have failed")
+      case Failure(
+            t
+          ) => // any funny error may occur, sever will interpret SASL token as RPC
     }
   }
 
@@ -92,8 +99,10 @@ class NettyBlockTransferSecuritySuite
       .set("spark.app.id", "app-id")
     val conf1 = conf0.clone.set("spark.authenticate", "true")
     testConnection(conf0, conf1) match {
-      case Success(_) => fail("Should have failed")
-      case Failure(t) => t.getMessage should include("Expected SaslMessage")
+      case Success(_) =>
+        fail("Should have failed")
+      case Failure(t) =>
+        t.getMessage should include("Expected SaslMessage")
     }
   }
 

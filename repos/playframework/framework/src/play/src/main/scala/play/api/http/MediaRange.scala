@@ -247,7 +247,8 @@ object MediaRange {
      * RFC 2616 section 3.7
      */
     val parameter = token ~ opt('=' ~> (token | quotedString)) <~ rep(' ') ^^ {
-      case name ~ value => name -> value
+      case name ~ value =>
+        name -> value
     }
 
     // Either it's a valid parameter followed immediately by the end, a comma or a semicolon, or it's a bad parameter
@@ -258,7 +259,8 @@ object MediaRange {
     val parameters = rep(';' ~> rep(' ') ~> tolerantParameter <~ rep(' '))
     val mediaType: Parser[MediaType] =
       (token <~ '/') ~ (token <~ rep(' ')) ~ parameters ^^ {
-        case mainType ~ subType ~ ps => MediaType(mainType, subType, ps.flatten)
+        case mainType ~ subType ~ ps =>
+          MediaType(mainType, subType, ps.flatten)
       }
 
     /*
@@ -275,8 +277,10 @@ object MediaRange {
       val (params, rest) = mediaType.parameters.span(_._1 != "q")
       val (qValueStr, acceptParams) =
         rest match {
-          case q :: ps => (q._2, ps)
-          case _       => (None, Nil)
+          case q :: ps =>
+            (q._2, ps)
+          case _ =>
+            (None, Nil)
         }
       val qValue = qValueStr.flatMap { q =>
         try {

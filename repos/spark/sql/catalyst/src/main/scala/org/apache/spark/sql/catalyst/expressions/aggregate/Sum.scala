@@ -41,7 +41,8 @@ case class Sum(child: Expression) extends DeclarativeAggregate {
     child.dataType match {
       case DecimalType.Fixed(precision, scale) =>
         DecimalType.bounded(precision + 10, scale)
-      case _ => child.dataType
+      case _ =>
+        child.dataType
     }
 
   private lazy val sumDataType = resultType

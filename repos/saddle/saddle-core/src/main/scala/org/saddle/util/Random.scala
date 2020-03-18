@@ -239,13 +239,20 @@ case class RandomStream(rng: () => Long) extends InputStream {
     c += 1
     val byte =
       c match {
-        case 1 => r
-        case 2 => r >>> 8
-        case 3 => r >>> 16
-        case 4 => r >>> 24
-        case 5 => r >>> 32
-        case 6 => r >>> 40
-        case 7 => r >>> 48
+        case 1 =>
+          r
+        case 2 =>
+          r >>> 8
+        case 3 =>
+          r >>> 16
+        case 4 =>
+          r >>> 24
+        case 5 =>
+          r >>> 32
+        case 6 =>
+          r >>> 40
+        case 7 =>
+          r >>> 48
         case 8 =>
           c = 0;
           val tmp = (r >>> 56);

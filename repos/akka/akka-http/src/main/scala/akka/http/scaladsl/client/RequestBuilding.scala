@@ -45,7 +45,8 @@ trait RequestBuilding extends TransformerPipelineSupport {
         timeout: Timeout = Timeout(1.second),
         ec: ExecutionContext): HttpRequest =
       content match {
-        case None ⇒ apply(uri, HttpEntity.Empty)
+        case None ⇒
+          apply(uri, HttpEntity.Empty)
         case Some(value) ⇒
           val entity = Await.result(
             Marshal(value).to[RequestEntity],
@@ -73,7 +74,8 @@ trait RequestBuilding extends TransformerPipelineSupport {
 
   def addHeader(headerName: String, headerValue: String): RequestTransformer =
     HttpHeader.parse(headerName, headerValue) match {
-      case HttpHeader.ParsingResult.Ok(h, Nil) ⇒ addHeader(h)
+      case HttpHeader.ParsingResult.Ok(h, Nil) ⇒
+        addHeader(h)
       case result ⇒
         throw new IllegalArgumentException(result.errors.head.formatPretty)
     }

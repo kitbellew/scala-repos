@@ -21,8 +21,10 @@ class SafeLongCheck
 
   def invariant(z: SafeLong): SafeLong = {
     z match {
-      case SafeLongLong(_)       => ()
-      case SafeLongBigInteger(n) => BigInt(n).isValidLong shouldBe false
+      case SafeLongLong(_) =>
+        ()
+      case SafeLongBigInteger(n) =>
+        BigInt(n).isValidLong shouldBe false
     }
     z
   }

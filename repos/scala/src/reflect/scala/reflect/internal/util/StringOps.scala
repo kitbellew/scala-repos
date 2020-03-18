@@ -24,8 +24,10 @@ trait StringOps {
   def ojoin(xs: String*): String = oempty(xs: _*) mkString " "
   def longestCommonPrefix(xs: List[String]): String =
     xs match {
-      case Nil      => ""
-      case w :: Nil => w
+      case Nil =>
+        ""
+      case w :: Nil =>
+        w
       case _ =>
         def lcp(ss: List[String]): String = {
           val w :: ws = ss
@@ -101,24 +103,36 @@ trait StringOps {
     */
   def countElementsAsString(n: Int, elements: String): String =
     n match {
-      case 0 => "no " + elements + "s"
-      case 1 => "one " + elements
-      case 2 => "two " + elements + "s"
-      case 3 => "three " + elements + "s"
-      case 4 => "four " + elements + "s"
-      case _ => "" + n + " " + elements + "s"
+      case 0 =>
+        "no " + elements + "s"
+      case 1 =>
+        "one " + elements
+      case 2 =>
+        "two " + elements + "s"
+      case 3 =>
+        "three " + elements + "s"
+      case 4 =>
+        "four " + elements + "s"
+      case _ =>
+        "" + n + " " + elements + "s"
     }
 
   /** Turns a count into a friendly English description if n<=4.
     */
   def countAsString(n: Int): String =
     n match {
-      case 0 => "none"
-      case 1 => "one"
-      case 2 => "two"
-      case 3 => "three"
-      case 4 => "four"
-      case _ => "" + n
+      case 0 =>
+        "none"
+      case 1 =>
+        "one"
+      case 2 =>
+        "two"
+      case 3 =>
+        "three"
+      case 4 =>
+        "four"
+      case _ =>
+        "" + n
     }
 }
 

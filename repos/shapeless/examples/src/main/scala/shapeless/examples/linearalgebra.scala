@@ -40,7 +40,8 @@ object LinearAlgebraExamples extends App {
     object sum extends Poly1 {
       implicit def caseDouble =
         at[Double :: Double :: HNil] {
-          case a :: b :: HNil => a + b
+          case a :: b :: HNil =>
+            a + b
         }
     }
 

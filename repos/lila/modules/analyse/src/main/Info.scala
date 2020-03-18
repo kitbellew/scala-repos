@@ -41,9 +41,12 @@ case class Info(
 
   def forceCentipawns: Option[Int] =
     mate match {
-      case None             => score.map(_.centipawns)
-      case Some(m) if m < 0 => Some(Int.MinValue - m)
-      case Some(m)          => Some(Int.MaxValue - m)
+      case None =>
+        score.map(_.centipawns)
+      case Some(m) if m < 0 =>
+        Some(Int.MinValue - m)
+      case Some(m) =>
+        Some(Int.MaxValue - m)
     }
 
   override def toString =
@@ -61,9 +64,12 @@ object Info {
 
   def decode(ply: Int, str: String): Option[Info] =
     str.split(separator) match {
-      case Array()       => Info(ply).some
-      case Array(cp)     => Info(ply, Score(cp)).some
-      case Array(cp, ma) => Info(ply, Score(cp), parseIntOption(ma)).some
+      case Array() =>
+        Info(ply).some
+      case Array(cp) =>
+        Info(ply, Score(cp)).some
+      case Array(cp, ma) =>
+        Info(ply, Score(cp), parseIntOption(ma)).some
       case Array(cp, ma, va) =>
         Info(ply, Score(cp), parseIntOption(ma), va.split(' ').toList).some
       case Array(cp, ma, va, be) =>
@@ -73,12 +79,14 @@ object Info {
           parseIntOption(ma),
           va.split(' ').toList,
           Uci.Move piotr be).some
-      case _ => none
+      case _ =>
+        none
     }
 
   def decodeList(str: String, fromPly: Int): Option[List[Info]] = {
     str.split(listSeparator).toList.zipWithIndex map {
-      case (infoStr, index) => decode(index + 1 + fromPly, infoStr)
+      case (infoStr, index) =>
+        decode(index + 1 + fromPly, infoStr)
     }
   }.sequence
 

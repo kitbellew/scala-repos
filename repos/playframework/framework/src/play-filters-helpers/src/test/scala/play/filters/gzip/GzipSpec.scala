@@ -120,8 +120,10 @@ object GzipSpec extends Specification {
         chunkSize: Option[Int] = None) = {
       val gzipEnumerator =
         chunkSize match {
-          case Some(size) => Enumerator.enumerate(input.grouped(size))
-          case None       => Enumerator(input)
+          case Some(size) =>
+            Enumerator.enumerate(input.grouped(size))
+          case None =>
+            Enumerator(input)
         }
       val future = gzipEnumerator &> gunzip |>>> Iteratee.consume[Array[Byte]]()
       val result = new String(Await.result(future, 10.seconds), "utf-8")

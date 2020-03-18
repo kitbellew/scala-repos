@@ -26,8 +26,10 @@ sealed abstract class MonadCatchIOFunctions {
       ma: M[A])(p: Throwable => Option[B], handler: B => M[A]): M[A] =
     except(ma)(e =>
       p(e) match {
-        case Some(z) => handler(z)
-        case None    => throw e
+        case Some(z) =>
+          handler(z)
+        case None =>
+          throw e
       })
 
   /**

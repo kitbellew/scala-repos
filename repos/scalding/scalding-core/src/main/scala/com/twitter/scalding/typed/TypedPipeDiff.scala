@@ -39,7 +39,8 @@ object TypedPipeDiff {
     }
     val counts = (lefts ++ rights).sumByKey
     val diff = counts.filter {
-      case (key, (lCount, rCount)) => lCount != rCount
+      case (key, (lCount, rCount)) =>
+        lCount != rCount
     }
     reducers.map(diff.withReducers).getOrElse(diff)
   }
@@ -59,7 +60,8 @@ object TypedPipeDiff {
 
     diffByHashCode(left.map(wrapFn), right.map(wrapFn), reducers)
       .map {
-        case (k, counts) => (k.wrapped, counts)
+        case (k, counts) =>
+          (k.wrapped, counts)
       }
   }
 
@@ -101,7 +103,8 @@ object TypedPipeDiff {
 
     val diff = (lefts ++ rights).sumByKey.flattenValues
       .filter {
-        case (k, (t, (lCount, rCount))) => lCount != rCount
+        case (k, (t, (lCount, rCount))) =>
+          lCount != rCount
       }
 
     reducers.map(diff.withReducers).getOrElse(diff).values

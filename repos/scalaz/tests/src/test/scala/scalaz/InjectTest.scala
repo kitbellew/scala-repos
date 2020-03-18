@@ -15,7 +15,8 @@ object InjectTest extends SpecLite {
       new Functor[Test1Algebra] {
         def map[A, B](a: Test1Algebra[A])(f: A => B): Test1Algebra[B] =
           a match {
-            case Test1(k, h) => Test1(k, x => f(h(x)))
+            case Test1(k, h) =>
+              Test1(k, x => f(h(x)))
           }
       }
   }
@@ -37,7 +38,8 @@ object InjectTest extends SpecLite {
       new Functor[Test2Algebra] {
         def map[A, B](a: Test2Algebra[A])(f: A => B): Test2Algebra[B] =
           a match {
-            case Test2(k, h) => Test2(k, x => f(h(x)))
+            case Test2(k, h) =>
+              Test2(k, x => f(h(x)))
           }
       }
   }
@@ -59,7 +61,8 @@ object InjectTest extends SpecLite {
       new Functor[Test3Algebra] {
         def map[A, B](a: Test3Algebra[A])(f: A => B): Test3Algebra[B] =
           a match {
-            case Test3(k, h) => Test3(k, x => f(h(x)))
+            case Test3(k, h) =>
+              Test3(k, x => f(h(x)))
           }
       }
   }
@@ -81,9 +84,12 @@ object InjectTest extends SpecLite {
     def run[A](algebra: Free[T, A]): A =
       algebra.resume.fold(
         {
-          case Coproduct(-\/(Test3(k, h)))                 => run(h(k.length))
-          case Coproduct(\/-(Coproduct(-\/(Test1(k, h))))) => run(h(k.length))
-          case Coproduct(\/-(Coproduct(\/-(Test2(k, h))))) => run(h(k.length))
+          case Coproduct(-\/(Test3(k, h))) =>
+            run(h(k.length))
+          case Coproduct(\/-(Coproduct(-\/(Test1(k, h))))) =>
+            run(h(k.length))
+          case Coproduct(\/-(Coproduct(\/-(Test2(k, h))))) =>
+            run(h(k.length))
         },
         a => a
       )

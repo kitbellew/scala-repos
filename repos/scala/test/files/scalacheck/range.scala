@@ -129,7 +129,8 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
                   0L
               )
           )
-        case _ => 0L
+        case _ =>
+          0L
       }
     }
 
@@ -203,8 +204,10 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       val rSum = r.sum
       val expected =
         r.length match {
-          case 0             => 0
-          case 1             => r.head
+          case 0 =>
+            0
+          case 1 =>
+            r.head
           case x if x < 1000 =>
             // Explicit sum, to guard against having the same mistake in both the
             // range implementation and test implementation of sum formula.
@@ -392,7 +395,8 @@ object TooLargeRange extends Properties("Too Large Range") {
         println("how here? length = " + l + ", r = " + r.toString)
         false
       } catch {
-        case _: IllegalArgumentException => true
+        case _: IllegalArgumentException =>
+          true
       }
     }
 }

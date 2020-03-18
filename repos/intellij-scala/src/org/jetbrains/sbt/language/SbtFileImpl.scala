@@ -57,13 +57,17 @@ class SbtFileImpl(provider: FileViewProvider)
 
     // TODO this is a workaround, we need to find out why references stopped resolving via the chained imports
     val expressions0 = expressions.map {
-      case "Keys._"  => "sbt.Keys._"
-      case "Build._" => "sbt.Build._"
+      case "Keys._" =>
+        "sbt.Keys._"
+      case "Build._" =>
+        "sbt.Build._"
       // TODO: this is a workaround. `processDeclarations` does not resolve "Play.autoImport -> PlayImport"
       //    However, when object with implicit imports is located in the same file where plugin object resides
       //    everything is resolved, but PlayImport and Play are in different files.
-      case "_root_.play.Play.autoImport._" => "_root_.play.PlayImport._"
-      case it                              => it
+      case "_root_.play.Play.autoImport._" =>
+        "_root_.play.PlayImport._"
+      case it =>
+        it
     }
 
     expressions0.isEmpty || {

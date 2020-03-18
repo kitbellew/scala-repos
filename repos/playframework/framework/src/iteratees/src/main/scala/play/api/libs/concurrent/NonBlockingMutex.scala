@@ -61,7 +61,8 @@ private[play] final class NonBlockingMutex {
       prevState match {
         case null =>
           Vector.empty // This is very cheap because Vector.empty is only allocated once
-        case pending => pending :+ op
+        case pending =>
+          pending :+ op
       }
     if (state.compareAndSet(prevState, newState)) {
       prevState match {
@@ -80,8 +81,10 @@ private[play] final class NonBlockingMutex {
     op.apply()
     val nextOp = dequeueNextOpToExecute()
     nextOp match {
-      case None     => ()
-      case Some(op) => executeAll(op)
+      case None =>
+        ()
+      case Some(op) =>
+        executeAll(op)
     }
   }
 
@@ -93,8 +96,10 @@ private[play] final class NonBlockingMutex {
         case null =>
           throw new IllegalStateException(
             "When executing, must have a queue of pending elements")
-        case pending if pending.isEmpty => (null, None)
-        case pending                    => (pending.tail, Some(pending.head))
+        case pending if pending.isEmpty =>
+          (null, None)
+        case pending =>
+          (pending.tail, Some(pending.head))
       }
     if (state.compareAndSet(prevState, newState))
       nextOp

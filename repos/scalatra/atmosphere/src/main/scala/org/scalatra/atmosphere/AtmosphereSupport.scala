@@ -78,8 +78,10 @@ trait AtmosphereSupport
 
   private[this] def isFilter =
     self match {
-      case _: ScalatraFilter => true
-      case _                 => false
+      case _: ScalatraFilter =>
+        true
+      case _ =>
+        false
     }
 
   val atmosphereFramework = new ScalatraAtmosphereFramework(isFilter, false)
@@ -111,7 +113,8 @@ trait AtmosphereSupport
     super.initialize(config)
     val cfg: ServletConfig =
       config match {
-        case c: FilterConfig => c
+        case c: FilterConfig =>
+          c
         case c: ServletConfig =>
           new ServletConfig {
             def getInitParameterNames: util.Enumeration[String] =

@@ -68,7 +68,8 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                 _,
                 _) =>
             inlineRequest(callsite) match {
-              case Some(Right(req)) => requests += req
+              case Some(Right(req)) =>
+                requests += req
               case Some(Left(w)) =>
                 if ((
                       calleeAnnotatedInline && bTypes.compilerSettings.YoptWarningEmitAtInlineFailed
@@ -143,8 +144,10 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
     def requestIfCanInline(
         callsite: Callsite): Either[OptimizerWarning, InlineRequest] =
       inliner.earlyCanInlineCheck(callsite) match {
-        case Some(w) => Left(w)
-        case None    => Right(InlineRequest(callsite, Nil))
+        case Some(w) =>
+          Left(w)
+        case None =>
+          Right(InlineRequest(callsite, Nil))
       }
 
     compilerSettings.YoptInlineHeuristics.value match {
@@ -165,7 +168,8 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
           def shouldInlineHO =
             callee.samParamTypes.nonEmpty && (
               callee.samParamTypes exists {
-                case (index, _) => callsite.argInfos.contains(index)
+                case (index, _) =>
+                  callsite.argInfos.contains(index)
               }
             )
           if (callee.annotatedInline || callsite.annotatedInline || shouldInlineHO)

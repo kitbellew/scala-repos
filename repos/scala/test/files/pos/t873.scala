@@ -5,7 +5,9 @@ abstract class Foo {
 
   val z =
     (0: Any) match {
-      case 1 => x
-      case 2 => y
+      case 1 =>
+        x
+      case 2 =>
+        y
     }
 }

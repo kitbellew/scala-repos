@@ -71,7 +71,8 @@ trait LoadBalancer extends Dispatcher {
   protected def seq: InfiniteIterator[ActorRef]
 
   protected def routes = {
-    case x if seq.hasNext => seq.next
+    case x if seq.hasNext =>
+      seq.next
   }
 
   override def broadcast(message: Any) = seq.items.foreach(_ ! message)

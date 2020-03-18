@@ -82,12 +82,15 @@ class TestSealedExhaustive { // compile only
   case object B2 extends B
   def ma8(x: B) =
     x match {
-      case _: B => true
+      case _: B =>
+        true
     }
   def ma9(x: B) =
     x match {
-      case B1() => true // missing B, which is not abstract so must be included
-      case B2   => true
+      case B1() =>
+        true // missing B, which is not abstract so must be included
+      case B2 =>
+        true
     }
 
   object ob1 {
@@ -99,8 +102,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // exhaustive: abstract sealed C1 is dead end.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
 
@@ -113,8 +118,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // not exhaustive: C1 is not sealed.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
   object ob3 {
@@ -128,8 +135,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // not exhaustive: C1 has subclasses.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
   object ob4 {
@@ -141,8 +150,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // not exhaustive: C1 is not abstract.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
 }

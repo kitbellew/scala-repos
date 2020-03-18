@@ -201,7 +201,8 @@ class LogisticRegressionSuite
       .select("prediction", "myProbability")
       .collect()
       .map {
-        case Row(pred: Double, prob: Vector) => pred
+        case Row(pred: Double, prob: Vector) =>
+          pred
       }
     assert(
       predAllZero.forall(_ === 0),
@@ -217,7 +218,8 @@ class LogisticRegressionSuite
       .select("prediction", "myProb")
       .collect()
       .map {
-        case Row(pred: Double, prob: Vector) => pred
+        case Row(pred: Double, prob: Vector) =>
+          pred
       }
     assert(predNotAllZero.exists(_ !== 0.0))
 
@@ -889,7 +891,8 @@ class LogisticRegressionSuite
     val histogram =
       binaryDataset.rdd
         .map {
-          case Row(label: Double, features: Vector) => label
+          case Row(label: Double, features: Vector) =>
+            label
         }
         .treeAggregate(new MultiClassSummarizer)(
           seqOp = (c, v) =>

@@ -44,11 +44,16 @@ import Helpers._
   */
 object Menu extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case "builder" => builder
-    case "title"   => title
-    case "item"    => item
-    case "group"   => group
-    case "json"    => jsonMenu
+    case "builder" =>
+      builder
+    case "title" =>
+      title
+    case "item" =>
+      item
+    case "group" =>
+      group
+    case "json" =>
+      jsonMenu
   }
 
   /**
@@ -128,7 +133,8 @@ object Menu extends DispatchSnippet {
             req <- S.request.toList
             item <- buildItemMenu(loc, req.location, expandAll)
           } yield item
-        case _ => renderWhat(expandAll)
+        case _ =>
+          renderWhat(expandAll)
       }
 
     def ifExpandCurrent(f: => NodeSeq): NodeSeq =
@@ -143,8 +149,10 @@ object Menu extends DispatchSnippet {
         NodeSeq.Empty
 
     toRender.toList match {
-      case Nil if S.attr("group").isDefined => NodeSeq.Empty
-      case Nil                              => Text("No Navigation Defined.")
+      case Nil if S.attr("group").isDefined =>
+        NodeSeq.Empty
+      case Nil =>
+        Text("No Navigation Defined.")
       case xs =>
         val liMap = S.prefixedAttrsToMap("li")
         val li = S.mapToAttrs(liMap)
@@ -292,12 +300,15 @@ object Menu extends DispatchSnippet {
 
               findKids(xs, lvl)
 
-            case _ => xs
+            case _ =>
+              xs
           }
 
         buildUlLine(realMenuItems) match {
-          case top: Elem => top % S.prefixedAttrsToMetaData("top")
-          case other     => other
+          case top: Elem =>
+            top % S.prefixedAttrsToMetaData("top")
+          case other =>
+            other
         }
     }
   }
@@ -545,8 +556,10 @@ object Menu extends DispatchSnippet {
       (
         "a" #> ((n: NodeSeq) =>
           n match {
-            case e: Elem => e.child
-            case xs      => xs
+            case e: Elem =>
+              e.child
+            case xs =>
+              xs
           })
       ).apply(_text)
 
@@ -566,7 +579,8 @@ object Menu extends DispatchSnippet {
               Helpers.addCssClass(
                 loc.cssClassForMenuItem,
                 e % S.prefixedAttrsToMetaData("a"))
-            case x => x
+            case x =>
+              x
           })
       }
 
@@ -596,7 +610,8 @@ object Menu extends DispatchSnippet {
 
         case (Full(loc), _, _) if loc.name == name => {
           (linkToSelf, donthide) match {
-            case (true, _) => buildLink(loc)
+            case (true, _) =>
+              buildLink(loc)
             case (_, true) => {
               if (!text.isEmpty) {
                 Group(text)
@@ -604,13 +619,16 @@ object Menu extends DispatchSnippet {
                 Group(loc.linkText openOr Text(loc.name))
               }
             }
-            case _ => Text("")
+            case _ =>
+              Text("")
           }
         }
 
-        case (Full(loc), _, _) => buildLink(loc)
+        case (Full(loc), _, _) =>
+          buildLink(loc)
 
-        case _ => Text("")
+        case _ =>
+          Text("")
       }
     }
   }

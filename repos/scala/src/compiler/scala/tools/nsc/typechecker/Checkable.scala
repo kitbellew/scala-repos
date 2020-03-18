@@ -102,8 +102,10 @@ trait Checkable {
     }
 
     val resArgs = tparams zip tvars map {
-      case (_, tvar) if tvar.instValid => tvar.constr.inst
-      case (tparam, _)                 => tparam.tpeHK
+      case (_, tvar) if tvar.instValid =>
+        tvar.constr.inst
+      case (tparam, _) =>
+        tparam.tpeHK
     }
     appliedType(to, resArgs: _*)
   }
@@ -124,16 +126,19 @@ trait Checkable {
   private def typeArgsInTopLevelType(tp: Type): List[Type] = {
     val tps =
       tp match {
-        case RefinedType(parents, _) => parents flatMap typeArgsInTopLevelType
+        case RefinedType(parents, _) =>
+          parents flatMap typeArgsInTopLevelType
         case TypeRef(_, ArrayClass, arg :: Nil) =>
           if (arg.typeSymbol.isAbstractType)
             arg :: Nil
           else
             typeArgsInTopLevelType(arg)
-        case TypeRef(pre, sym, args) => typeArgsInTopLevelType(pre) ++ args
+        case TypeRef(pre, sym, args) =>
+          typeArgsInTopLevelType(pre) ++ args
         case ExistentialType(tparams, underlying) =>
           tparams.map(_.tpe) ++ typeArgsInTopLevelType(underlying)
-        case _ => Nil
+        case _ =>
+          Nil
       }
     tps filterNot isUnwarnableTypeArg
   }
@@ -157,7 +162,8 @@ trait Checkable {
       P match {
         case erasure.GenericArray(n, core) =>
           existentialAbstraction(core.typeSymbol :: Nil, P)
-        case _ => existentialAbstraction(Psym.typeParams, Psym.tpe_*)
+        case _ =>
+          existentialAbstraction(Psym.typeParams, Psym.tpe_*)
       }
     }
     def XR =
@@ -220,11 +226,14 @@ trait Checkable {
     def isCheckable = !isUncheckable
     def uncheckableMessage =
       uncheckableType match {
-        case NoType                 => "something"
-        case tp @ RefinedType(_, _) => "refinement " + tp
+        case NoType =>
+          "something"
+        case tp @ RefinedType(_, _) =>
+          "refinement " + tp
         case TypeRef(_, sym, _) if sym.isAbstractType =>
           "abstract type " + sym.name
-        case tp => "non-variable type argument " + tp
+        case tp =>
+          "non-variable type argument " + tp
       }
   }
 
@@ -318,7 +327,8 @@ trait Checkable {
               isNeverSubArgs(tp1seen.typeArgs, args2, sym2.typeParams)
             }
           }
-        case _ => false
+        case _ =>
+          false
       })
   }
 
@@ -330,10 +340,14 @@ trait Checkable {
     def isCheckable(P0: Type): Boolean =
       (uncheckedOk(P0) || (
         P0.widen match {
-          case TypeRef(_, NothingClass | NullClass | AnyValClass, _) => false
-          case RefinedType(_, decls) if !decls.isEmpty               => false
-          case RefinedType(parents, _)                               => parents forall isCheckable
-          case p                                                     => new CheckabilityChecker(AnyTpe, p) isCheckable
+          case TypeRef(_, NothingClass | NullClass | AnyValClass, _) =>
+            false
+          case RefinedType(_, decls) if !decls.isEmpty =>
+            false
+          case RefinedType(parents, _) =>
+            parents forall isCheckable
+          case p =>
+            new CheckabilityChecker(AnyTpe, p) isCheckable
         }
       ))
 
@@ -370,8 +384,7 @@ trait Checkable {
         case TypeRef(_, NothingClass | NullClass | AnyValClass, _) =>
           InferErrorGen.TypePatternOrIsInstanceTestError(tree, P)
         // If top-level abstract types can be checked using a classtag extractor, don't warn about them
-        case TypeRef(_, sym, _) if sym.isAbstractType && canRemedy =>
-          ;
+        case TypeRef(_, sym, _) if sym.isAbstractType && canRemedy => ;
         // Matching on types like case _: AnyRef { def bippy: Int } => doesn't work -- yet.
         case RefinedType(_, decls) if !decls.isEmpty =>
           reporter.warning(

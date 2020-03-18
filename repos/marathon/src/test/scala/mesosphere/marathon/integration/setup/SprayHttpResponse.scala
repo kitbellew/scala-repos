@@ -12,7 +12,8 @@ object SprayHttpResponse {
       classTag: ClassTag[T]): HttpResponse => RestResult[T] =
     responseResult.andThen { result =>
       result.map(_ => Json.fromJson(result.entityJson)).map {
-        case JsSuccess(value, _) => value
+        case JsSuccess(value, _) =>
+          value
         case JsError(errors) =>
           throw new IllegalArgumentException(
             s"could not parse as $classTag:\n${Json.prettyPrint(

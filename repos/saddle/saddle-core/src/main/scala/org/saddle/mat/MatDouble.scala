@@ -91,6 +91,7 @@ class MatDouble(r: Int, c: Int, values: Array[Double]) extends Mat[Double] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

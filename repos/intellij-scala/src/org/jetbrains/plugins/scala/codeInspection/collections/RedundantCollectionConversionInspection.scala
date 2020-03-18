@@ -18,8 +18,10 @@ object RedundantCollectionConversion extends SimplificationType {
   override def getSimplification(expr: ScExpression) = {
     val withGeneric =
       expr match {
-        case ChildOf(gc: ScGenericCall) => gc
-        case ref                        => ref
+        case ChildOf(gc: ScGenericCall) =>
+          gc
+        case ref =>
+          ref
       }
     val typeAfterConversion = withGeneric.getType().getOrAny
     withGeneric match {
@@ -29,7 +31,8 @@ object RedundantCollectionConversion extends SimplificationType {
           .withText(base.getText)
           .highlightFrom(base)
         Some(simplification)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

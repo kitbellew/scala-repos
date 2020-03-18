@@ -113,11 +113,14 @@ class Jetty7AsyncProvider(req: HTTPRequest) extends ServletAsyncProvider {
       try {
         setAttribute.invoke(cont, "__liftCometState", null)
         ret match {
-          case (r: Req, lr: LiftResponse) => Some(r -> lr)
-          case _                          => None
+          case (r: Req, lr: LiftResponse) =>
+            Some(r -> lr)
+          case _ =>
+            None
         }
       } catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     }
 

@@ -555,7 +555,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       this.colAt(col1).toVec,
       this.colAt(col2).toVec)
     this.setRowIndex(newIx).filterAt {
-      case c => !Set(col1, col2).contains(c)
+      case c =>
+        !Set(col1, col2).contains(c)
     }
   }
 
@@ -594,7 +595,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       this.rowAt(row1).toVec,
       this.rowAt(row2).toVec)
     this.setColIndex(newIx).rfilterAt {
-      case r => !Set(row1, row2).contains(r)
+      case r =>
+        !Set(row1, row2).contains(r)
     }
   }
 
@@ -812,7 +814,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       f: ((RX, CX, T)) => (SX, DX, U)): Frame[SX, DX, U] = {
     Series(
       toSeq.map(f).map {
-        case (sx, dx, u) => ((sx, dx) -> u)
+        case (sx, dx, u) =>
+          ((sx, dx) -> u)
       }: _*).pivot
   }
 
@@ -824,7 +827,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       f: ((RX, CX, T)) => Traversable[(SX, DX, U)]): Frame[SX, DX, U] = {
     Series(
       toSeq.flatMap(f).map {
-        case (sx, dx, u) => ((sx, dx) -> u)
+        case (sx, dx, u) =>
+          ((sx, dx) -> u)
       }: _*).pivot
   }
 
@@ -870,7 +874,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       chow: JoinType = RightJoin)(f: (T, U) => V): Frame[RX, CX, V] = {
     val (l, r) = align(other, rhow, chow)
     val result = l.values.zip(r.values).map {
-      case (v1, v2) => VecImpl.zipMap(v1, v2)(f)
+      case (v1, v2) =>
+        VecImpl.zipMap(v1, v2)(f)
     }
     Frame(result, l.rowIx, l.colIx)
   }
@@ -962,7 +967,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     val mfn = (v: Vec[T], u: Vec[U]) => v concat u
     val zpp = lft zip rgt
     val dat = zpp.map {
-      case (top, bot) => mfn(top, bot)
+      case (top, bot) =>
+        mfn(top, bot)
     }
     val idx = rowIx concat other.rowIx
 
@@ -1801,7 +1807,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
         (
           this eq f
         ) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -1879,8 +1886,10 @@ object Frame extends BinOpFrame {
     val asIdxSeq = values.map(_._2).toIndexedSeq
     val idx = Index(values.map(_._1).toArray)
     asIdxSeq.length match {
-      case 0 => empty[Int, CX, T]
-      case _ => Frame(asIdxSeq, IndexIntRange(asIdxSeq(0).length), idx)
+      case 0 =>
+        empty[Int, CX, T]
+      case _ =>
+        Frame(asIdxSeq, IndexIntRange(asIdxSeq(0).length), idx)
     }
   }
 
@@ -1899,7 +1908,8 @@ object Frame extends BinOpFrame {
       values: Series[RX, T]*): Frame[RX, Int, T] = {
     val asIdxSeq = values.toIndexedSeq
     asIdxSeq.length match {
-      case 0 => empty[RX, Int, T]
+      case 0 =>
+        empty[RX, Int, T]
       case 1 =>
         Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, IndexIntRange(1))
       case _ => {
@@ -1923,8 +1933,10 @@ object Frame extends BinOpFrame {
       colIx: Index[CX]): Frame[RX, CX, T] = {
     val asIdxSeq = values.toIndexedSeq
     asIdxSeq.length match {
-      case 0 => empty[RX, CX, T]
-      case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, colIx)
+      case 0 =>
+        empty[RX, CX, T]
+      case 1 =>
+        Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, colIx)
       case _ => {
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Index(0))
         val temp = values.tail.foldLeft(init)(_.joinS(_, OuterJoin))
@@ -1944,8 +1956,10 @@ object Frame extends BinOpFrame {
     val asIdxSeq = values.map(_._2).toIndexedSeq
     val idx = Index(values.map(_._1).toArray)
     asIdxSeq.length match {
-      case 0 => empty[RX, CX, T]
-      case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, idx)
+      case 0 =>
+        empty[RX, CX, T]
+      case 1 =>
+        Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, idx)
       case _ => {
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
@@ -2051,7 +2065,8 @@ object Panel {
     val asIdxSeq = values.map(_._2).toIndexedSeq
     val idx = Index(values.map(_._1).toArray)
     asIdxSeq.length match {
-      case 0 => empty[Int, CX]
+      case 0 =>
+        empty[Int, CX]
       case _ =>
         Frame(toSeqVec(asIdxSeq), IndexIntRange(asIdxSeq(0).length), idx)
     }
@@ -2070,7 +2085,8 @@ object Panel {
   def apply[RX: ST: ORD](values: Series[RX, _]*): Frame[RX, Int, Any] = {
     val asIdxSeq = toSeqSeries(values)
     asIdxSeq.length match {
-      case 0 => empty[RX, Int]
+      case 0 =>
+        empty[RX, Int]
       case 1 =>
         Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, IndexIntRange(1))
       case _ => {
@@ -2091,8 +2107,10 @@ object Panel {
       colIx: Index[CX]): Frame[RX, CX, Any] = {
     val asIdxSeq = toSeqSeries(values)
     asIdxSeq.length match {
-      case 0 => empty[RX, CX]
-      case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, colIx)
+      case 0 =>
+        empty[RX, CX]
+      case 1 =>
+        Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, colIx)
       case _ => {
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Index(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
@@ -2112,8 +2130,10 @@ object Panel {
     val asIdxSeq = toSeqSeries(values.map(_._2))
     val idx = Index(values.map(_._1).toArray)
     asIdxSeq.length match {
-      case 0 => empty[RX, CX]
-      case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, idx)
+      case 0 =>
+        empty[RX, CX]
+      case 1 =>
+        Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, idx)
       case _ => {
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))

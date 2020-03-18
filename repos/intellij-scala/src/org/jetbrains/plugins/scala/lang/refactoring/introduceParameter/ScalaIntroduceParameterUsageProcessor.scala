@@ -40,7 +40,8 @@ class ScalaIntroduceParameterUsageProcessor
           .getInstance(data.getProject)
           .getDocument(file)
         Array(TextRangeUsageInfo(file, doc.createRangeMarker(data.mainOcc)))
-      case _ => Array.empty
+      case _ =>
+        Array.empty
     }
 
   override def processUsage(
@@ -54,7 +55,8 @@ class ScalaIntroduceParameterUsageProcessor
     changeInfo match {
       case isIntroduceParameter(data) =>
         val textRangeUsages = usages.collect {
-          case t: TextRangeUsageInfo => t
+          case t: TextRangeUsageInfo =>
+            t
         }
         if (textRangeUsages.headOption.forall(_.processed))
           return false
@@ -74,7 +76,8 @@ class ScalaIntroduceParameterUsageProcessor
           file)
         textRangeUsages.foreach(_.processed = true)
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 

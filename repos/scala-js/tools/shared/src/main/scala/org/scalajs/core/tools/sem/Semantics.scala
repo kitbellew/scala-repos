@@ -77,10 +77,14 @@ final class Semantics private (
   /** Checks whether the given semantics setting is Java compliant */
   def isCompliant(name: String): Boolean =
     name match {
-      case "asInstanceOfs" => asInstanceOfs == CheckedBehavior.Compliant
-      case "moduleInit"    => moduleInit == CheckedBehavior.Compliant
-      case "strictFloats"  => strictFloats
-      case _               => false
+      case "asInstanceOfs" =>
+        asInstanceOfs == CheckedBehavior.Compliant
+      case "moduleInit" =>
+        moduleInit == CheckedBehavior.Compliant
+      case "strictFloats" =>
+        strictFloats
+      case _ =>
+        false
     }
 
   /** Retrieve a list of semantics which are set to compliant */

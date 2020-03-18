@@ -240,8 +240,10 @@ trait Implicits {
 
   private def isInvalidConversionSource(tpe: Type): Boolean =
     tpe match {
-      case Function1(in, _) => in <:< NullClass.tpe
-      case _                => false
+      case Function1(in, _) =>
+        in <:< NullClass.tpe
+      case _ =>
+        false
     }
 
   def resetImplicits() {
@@ -259,7 +261,8 @@ trait Implicits {
     tp match {
       case PolyType(tparams, restpe) =>
         deriveTypeWithWildcards(tparams)(ApproximateDependentMap(restpe))
-      case _ => ApproximateDependentMap(tp)
+      case _ =>
+        ApproximateDependentMap(tp)
     }
 
   /** The result of an implicit search
@@ -328,7 +331,8 @@ trait Implicits {
     private[this] final def computeIsCyclicOrErroneous =
       try sym.hasFlag(LOCKED) || containsError(tpe)
       catch {
-        case _: CyclicReference => true
+        case _: CyclicReference =>
+          true
       }
 
     var useCountArg: Int = 0
@@ -357,7 +361,8 @@ trait Implicits {
           this.name == that.name &&
             this.pre =:= that.pre &&
             this.sym == that.sym
-        case _ => false
+        case _ =>
+          false
       }
     override def hashCode = name.## + pre.## + sym.##
     override def toString =
@@ -378,8 +383,10 @@ trait Implicits {
       // overriding the equals here seems cleaner and benchmarks show no difference in performance
       override def equals(other: Any) =
         other match {
-          case that: AnyRef => that eq this
-          case _            => false
+          case that: AnyRef =>
+            that eq this
+          case _ =>
+            false
         }
       override def hashCode = 1
     }
@@ -390,7 +397,8 @@ trait Implicits {
   def memberWildcardType(name: Name, tp: Type) = {
     val result = refinedType(List(WildcardType), NoSymbol)
     name match {
-      case x: TermName => result.typeSymbol.newMethod(x) setInfoAndEnter tp
+      case x: TermName =>
+        result.typeSymbol.newMethod(x) setInfoAndEnter tp
       case x: TypeName =>
         result.typeSymbol.newAbstractType(x) setInfoAndEnter tp
     }
@@ -434,11 +442,14 @@ trait Implicits {
                       params forall (_.tpe.isInstanceOf[BoundedWildcardType])
                     ) =>
                   Some((sym.name, params map (_.tpe.bounds.lo), restpe))
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -451,8 +462,10 @@ trait Implicits {
     // accompanies it for explanation why that isn't done.
     def unapply(tp: Type) =
       tp match {
-        case TypeRef(_, Sym, arg1 :: arg2 :: _) => Some((arg1, arg2))
-        case _                                  => None
+        case TypeRef(_, Sym, arg1 :: arg2 :: _) =>
+          Some((arg1, arg2))
+        case _ =>
+          None
       }
   }
 
@@ -572,14 +585,16 @@ trait Implicits {
         tp.dealiasWiden match {
           case RefinedType(parents, defs) =>
             intersectionType(parents map core, tp.typeSymbol.owner)
-          case AnnotatedType(annots, tp) => core(tp)
+          case AnnotatedType(annots, tp) =>
+            core(tp)
           case ExistentialType(tparams, result) =>
             core(result)
               .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
           case PolyType(tparams, result) =>
             core(result)
               .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
-          case _ => tp
+          case _ =>
+            tp
         }
       def stripped(tp: Type): Type = {
         // `t.typeSymbol` returns the symbol of the normalized type. If that normalized type
@@ -592,7 +607,8 @@ trait Implicits {
       }
       def complexity(tp: Type): Int =
         tp.dealias match {
-          case NoPrefix => 0
+          case NoPrefix =>
+            0
           case SingleType(pre, sym) =>
             if (sym.hasPackageFlag)
               0
@@ -605,14 +621,19 @@ trait Implicits {
               1
           case TypeRef(pre, sym, args) =>
             complexity(pre) + (args map complexity).sum + 1
-          case RefinedType(parents, _) => (parents map complexity).sum + 1
-          case _                       => 1
+          case RefinedType(parents, _) =>
+            (parents map complexity).sum + 1
+          case _ =>
+            1
         }
       def overlaps(tp1: Type, tp2: Type): Boolean =
         (tp1, tp2) match {
-          case (RefinedType(parents, _), _) => parents exists (overlaps(_, tp2))
-          case (_, RefinedType(parents, _)) => parents exists (overlaps(tp1, _))
-          case _                            => tp1.typeSymbol == tp2.typeSymbol
+          case (RefinedType(parents, _), _) =>
+            parents exists (overlaps(_, tp2))
+          case (_, RefinedType(parents, _)) =>
+            parents exists (overlaps(tp1, _))
+          case _ =>
+            tp1.typeSymbol == tp2.typeSymbol
         }
       val dtor1 = stripped(core(dtor))
       val dted1 = stripped(core(dted))
@@ -693,8 +714,10 @@ trait Implicits {
           null
       val result = normSubType(tp, pt) || isView && {
         pt match {
-          case Function1(arg1, arg2) => matchesPtView(tp, arg1, arg2, undet)
-          case _                     => false
+          case Function1(arg1, arg2) =>
+            matchesPtView(tp, arg1, arg2, undet)
+          case _ =>
+            false
         }
       }
       if (Statistics.canEnable)
@@ -718,7 +741,8 @@ trait Implicits {
           matchesPtView(normalize(qtpe), ptarg, ptres, undet)
         case Function1(arg1, res1) =>
           matchesArgRes(arg1, res1, ptarg, ptres, undet)
-        case _ => false
+        case _ =>
+          false
       }
 
     private def matchesArgRes(
@@ -796,8 +820,10 @@ trait Implicits {
                   else
                     tp <:< pt
               }
-          case NullaryMethodType(restpe) => loop(restpe, pt)
-          case PolyType(_, restpe)       => loop(restpe, pt)
+          case NullaryMethodType(restpe) =>
+            loop(restpe, pt)
+          case PolyType(_, restpe) =>
+            loop(restpe, pt)
           case ExistentialType(_, qtpe) =>
             if (fast)
               loop(qtpe, pt)
@@ -829,9 +855,11 @@ trait Implicits {
               )
             case RefinedType(parents, decls) =>
               decls.nonEmpty && tr1.member(decls.head.name) == NoSymbol
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     private def typedImplicit0(
@@ -915,9 +943,11 @@ trait Implicits {
                   // that `conv` is potentially available under such and such conditions
                   case tree if isImplicitMethodType(tree.tpe) && !isScaladoc =>
                     applyImplicitArgs(tree)
-                  case tree => tree
+                  case tree =>
+                    tree
                 }
-              case _ => fallback
+              case _ =>
+                fallback
             }
         context.reporter.firstError match { // using match rather than foreach to avoid non local return.
           case Some(err) =>
@@ -940,10 +970,14 @@ trait Implicits {
         def hasMatchingSymbol(tree: Tree): Boolean =
           (tree.symbol == info.sym) || {
             tree match {
-              case Apply(fun, _)          => hasMatchingSymbol(fun)
-              case TypeApply(fun, _)      => hasMatchingSymbol(fun)
-              case Select(pre, nme.apply) => pre.symbol == info.sym
-              case _                      => false
+              case Apply(fun, _) =>
+                hasMatchingSymbol(fun)
+              case TypeApply(fun, _) =>
+                hasMatchingSymbol(fun)
+              case Select(pre, nme.apply) =>
+                pre.symbol == info.sym
+              case _ =>
+                false
             }
           }
 
@@ -1025,7 +1059,8 @@ trait Implicits {
                 typedTypeApply(itree3, EXPRmode, fun, args)
               case Apply(TypeApply(fun, args), _) =>
                 typedTypeApply(itree3, EXPRmode, fun, args) // t2421c
-              case t => t
+              case t =>
+                t
             }
 
             context.reporter.firstError match {
@@ -1071,13 +1106,18 @@ trait Implicits {
       def hasExplicitResultType(sym: Symbol) = {
         def hasExplicitRT(tree: Tree) =
           tree match {
-            case x: ValOrDefDef => !x.tpt.isEmpty
-            case _              => false
+            case x: ValOrDefDef =>
+              !x.tpt.isEmpty
+            case _ =>
+              false
           }
         sym.rawInfo match {
-          case tc: TypeCompleter              => hasExplicitRT(tc.tree)
-          case PolyType(_, tc: TypeCompleter) => hasExplicitRT(tc.tree)
-          case _                              => true
+          case tc: TypeCompleter =>
+            hasExplicitRT(tc.tree)
+          case PolyType(_, tc: TypeCompleter) =>
+            hasExplicitRT(tc.tree)
+          case _ =>
+            true
         }
       }
       def comesBefore(sym: Symbol, owner: Symbol) = {
@@ -1195,7 +1235,8 @@ trait Implicits {
           // A divergent error from a nested implicit search will be found in `errors`. Stash that
           // aside to be re-issued if this implicit search fails.
           errors.collectFirst {
-            case err: DivergentImplicitTypeError => err
+            case err: DivergentImplicitTypeError =>
+              err
           } foreach saveDivergent
 
           if (search.isDivergent && divergentError.isEmpty) {
@@ -1253,7 +1294,8 @@ trait Implicits {
           acc: List[(SearchResult, ImplicitInfo)])
           : List[(SearchResult, ImplicitInfo)] =
         pending match {
-          case Nil => acc
+          case Nil =>
+            acc
           case firstPending :: otherPending =>
             def firstPendingImproves(alt: ImplicitInfo) =
               firstPending == alt || (
@@ -1279,8 +1321,10 @@ trait Implicits {
               typedFirstPending,
               firstPending,
               context.reporter.errors) match {
-              case sr if sr.isDivergent => Nil
-              case sr if sr.isFailure   => rankImplicits(otherPending, acc)
+              case sr if sr.isDivergent =>
+                Nil
+              case sr if sr.isFailure =>
+                rankImplicits(otherPending, acc)
               case newBest =>
                 best =
                   newBest // firstPending is our new best, since we already pruned last time around:
@@ -1307,10 +1351,12 @@ trait Implicits {
         // earlier elems may improve on later ones, but not the other way.
         // So if there is any element not improved upon by the first it is an error.
         rankImplicits(eligible, Nil) match {
-          case Nil => ()
+          case Nil =>
+            ()
           case (chosenResult, chosenInfo) :: rest =>
             rest find {
-              case (_, alt) => !improves(chosenInfo, alt)
+              case (_, alt) =>
+                !improves(chosenInfo, alt)
             } match {
               case Some((competingResult, competingInfo)) =>
                 AmbiguousImplicitError(
@@ -1465,7 +1511,8 @@ trait Implicits {
                 if (sym.isStatic && !(pending contains sym))
                   infoMap ++= {
                     infoMapCache get sym match {
-                      case Some(imap) => imap
+                      case Some(imap) =>
+                        imap
                       case None =>
                         val result = new InfoMap
                         getClassParts(sym.tpeHK)(
@@ -1579,8 +1626,10 @@ trait Implicits {
         try {
           val tree1 = typedPos(pos.focus)(arg)
           context.reporter.firstError match {
-            case Some(err) => processMacroExpansionError(err.errPos, err.errMsg)
-            case None      => new SearchResult(tree1, EmptyTreeTypeSubstituter, Nil)
+            case Some(err) =>
+              processMacroExpansionError(err.errPos, err.errMsg)
+            case None =>
+              new SearchResult(tree1, EmptyTreeTypeSubstituter, Nil)
           }
         } catch {
           case ex: TypeError =>
@@ -1735,7 +1784,8 @@ trait Implicits {
                 tp match {
                   case _: ExistentialType =>
                     gen.mkCast(classarg0, ClassType(tp))
-                  case _ => classarg0
+                  case _ =>
+                    classarg0
                 }
               val suffix = classarg :: (args map findSubManifest)
               manifestFactoryCall(
@@ -1829,7 +1879,8 @@ trait Implicits {
         mot(tp, Nil, Nil) match {
           case SearchFailure if opt =>
             wrapResult(gen.mkAttributedRef(NoManifest))
-          case result => result
+          case result =>
+            result
         }
       }
     }
@@ -1851,8 +1902,10 @@ trait Implicits {
           ) // #3977: use pt.dealias, not pt (if pt is a type alias, pt.bounds.lo == pt)
         case pt @ TypeRef(pre, sym, arg :: Nil) =>
           sym match {
-            case sym if ManifestSymbols(sym) => manifestOfType(arg, sym)
-            case sym if TagSymbols(sym)      => tagOfType(pre, arg, sym)
+            case sym if ManifestSymbols(sym) =>
+              manifestOfType(arg, sym)
+            case sym if TagSymbols(sym) =>
+              tagOfType(pre, arg, sym)
             // as of late ClassManifest is an alias of ClassTag
             // hence we need to take extra care when performing dealiasing
             // because it might destroy the flavor of the manifest requested by the user
@@ -1860,8 +1913,10 @@ trait Implicits {
             // hence we don't do `pt.dealias` as we did before, but rather do `pt.betaReduce`
             // unlike `dealias`, `betaReduce` performs at most one step of dealiasing
             // while dealias pops all aliases in a single invocation
-            case sym if sym.isAliasType => materializeImplicit(pt.betaReduce)
-            case _                      => SearchFailure
+            case sym if sym.isAliasType =>
+              materializeImplicit(pt.betaReduce)
+            case _ =>
+              SearchFailure
           }
         case _ =>
           SearchFailure
@@ -1964,7 +2019,8 @@ trait Implicits {
                   settings.isScala211 && prohibit(AnyValClass)
                 ))
               result = SearchFailure
-          case _ => false
+          case _ =>
+            false
         }
         if (settings.isScala211 && isInvalidConversionSource(pt)) {
           maybeInvalidConversionError(
@@ -2024,13 +2080,15 @@ trait Implicits {
       annotationName: String) {
     def unapply(sym: Symbol): Option[(Message)] =
       f(sym) match {
-        case Some(m)                 => Some(new Message(sym, m, annotationName))
+        case Some(m) =>
+          Some(new Message(sym, m, annotationName))
         case None if sym.isAliasType =>
           // perform exactly one step of dealiasing
           // this is necessary because ClassManifests are now aliased to ClassTags
           // but we don't want to intimidate users by showing unrelated error messages
           unapply(sym.info.resultType.betaReduce.typeSymbolDirect)
-        case _ => None
+        case _ =>
+          None
       }
 
     // check the message's syntax: should be a string literal that may contain occurrences of the string "${X}",
@@ -2040,7 +2098,8 @@ trait Implicits {
         .getAnnotation(clazz)
         .flatMap(
           _.stringArg(0) match {
-            case Some(m) => new Message(sym, m, annotationName).validate
+            case Some(m) =>
+              new Message(sym, m, annotationName).validate
             case None =>
               Some(s"Missing argument `msg` on $annotationName annotation.")
           })
@@ -2066,7 +2125,8 @@ trait Implicits {
       Intersobralator.replaceAllIn(
         text,
         (_: Regex.Match) match {
-          case Regex.Groups(v) => Regex quoteReplacement vars.getOrElse(v, "")
+          case Regex.Groups(v) =>
+            Regex quoteReplacement vars.getOrElse(v, "")
           // #3915: need to quote replacement string since it may include $'s (such as the interpreter's $iw)
         }
       )
@@ -2089,7 +2149,8 @@ trait Implicits {
       val decls = typeParamNames.toSet
 
       (refs &~ decls) match {
-        case s if s.isEmpty => None
+        case s if s.isEmpty =>
+          None
         case unboundNames =>
           val singular = unboundNames.size == 1
           val ess =

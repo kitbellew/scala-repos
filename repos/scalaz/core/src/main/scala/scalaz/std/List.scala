@@ -130,14 +130,18 @@ trait ListInstances extends ListInstances0 {
 
       def cobind[A, B](fa: List[A])(f: List[A] => B) =
         fa match {
-          case Nil    => Nil
-          case _ :: t => f(fa) :: cobind(t)(f)
+          case Nil =>
+            Nil
+          case _ :: t =>
+            f(fa) :: cobind(t)(f)
         }
 
       override def cojoin[A](a: List[A]) =
         a match {
-          case Nil    => Nil
-          case _ :: t => a :: cojoin(t)
+          case Nil =>
+            Nil
+          case _ :: t =>
+            a :: cojoin(t)
         }
 
       override def any[A](fa: List[A])(p: A => Boolean): Boolean = fa.exists(p)
@@ -174,13 +178,17 @@ trait ListInstances extends ListInstances0 {
       override def show(as: List[A]) = {
         def commaSep(rest: List[A], acc: Cord): Cord =
           rest match {
-            case Nil     => acc
-            case x :: xs => commaSep(xs, (acc :+ ",") ++ Show[A].show(x))
+            case Nil =>
+              acc
+            case x :: xs =>
+              commaSep(xs, (acc :+ ",") ++ Show[A].show(x))
           }
         "[" +: (
           as match {
-            case Nil     => Cord()
-            case x :: xs => commaSep(xs, Show[A].show(x))
+            case Nil =>
+              Cord()
+            case x :: xs =>
+              commaSep(xs, Show[A].show(x))
           }
         ) :+ "]"
       }
@@ -199,17 +207,22 @@ trait ListFunctions {
     @tailrec
     def intersperse0(accum: List[A], rest: List[A]): List[A] =
       rest match {
-        case Nil      => accum
-        case x :: Nil => x :: accum
-        case h :: t   => intersperse0(a :: h :: accum, t)
+        case Nil =>
+          accum
+        case x :: Nil =>
+          x :: accum
+        case h :: t =>
+          intersperse0(a :: h :: accum, t)
       }
     intersperse0(Nil, as).reverse
   }
 
   final def tailOption[A](as: List[A]): Option[List[A]] =
     as match {
-      case Nil    => None
-      case _ :: t => Some(t)
+      case Nil =>
+        None
+      case _ :: t =>
+        Some(t)
     }
 
   /** [[scala.Nil]] with a sometimes more convenient type */
@@ -217,8 +230,10 @@ trait ListFunctions {
 
   final def toNel[A](as: List[A]): Option[NonEmptyList[A]] =
     as match {
-      case Nil    => None
-      case h :: t => Some(NonEmptyList.nel(h, IList.fromList(t)))
+      case Nil =>
+        None
+      case h :: t =>
+        Some(NonEmptyList.nel(h, IList.fromList(t)))
     }
 
   final def toZipper[A](as: List[A]): Option[Zipper[A]] =
@@ -232,8 +247,10 @@ trait ListFunctions {
     */
   final def <^>[A, B: Monoid](as: List[A])(f: NonEmptyList[A] => B): B =
     as match {
-      case Nil    => Monoid[B].zero
-      case h :: t => f(NonEmptyList.nel(h, IList.fromList(t)))
+      case Nil =>
+        Monoid[B].zero
+      case h :: t =>
+        f(NonEmptyList.nel(h, IList.fromList(t)))
     }
 
   /** Run `p(a)`s and collect `as` while `p` yields true.  Don't run
@@ -242,7 +259,8 @@ trait ListFunctions {
   final def takeWhileM[A, M[_]: Monad](as: List[A])(
       p: A => M[Boolean]): M[List[A]] =
     as match {
-      case Nil => Monad[M].point(Nil)
+      case Nil =>
+        Monad[M].point(Nil)
       case h :: t =>
         Monad[M].bind(p(h))(b =>
           if (b)
@@ -267,7 +285,8 @@ trait ListFunctions {
   final def findM[A, M[_]: Monad](as: List[A])(
       p: A => M[Boolean]): M[Option[A]] =
     as match {
-      case Nil => Monad[M].point(None: Option[A])
+      case Nil =>
+        Monad[M].point(None: Option[A])
       case h :: t =>
         Monad[M].bind(p(h))(b =>
           if (b)
@@ -286,7 +305,8 @@ trait ListFunctions {
   final def partitionM[A, M[_]](as: List[A])(p: A => M[Boolean])(implicit
       F: Applicative[M]): M[(List[A], List[A])] =
     as match {
-      case Nil => F.point(Nil: List[A], Nil: List[A])
+      case Nil =>
+        F.point(Nil: List[A], Nil: List[A])
       case h :: t =>
         F.ap(partitionM(t)(p))(
           F.map(p(h))(b => {
@@ -303,7 +323,8 @@ trait ListFunctions {
   final def spanM[A, M[_]: Monad](as: List[A])(
       p: A => M[Boolean]): M[(List[A], List[A])] =
     as match {
-      case Nil => Monad[M].point(Nil, Nil)
+      case Nil =>
+        Monad[M].point(Nil, Nil)
       case h :: t =>
         Monad[M].bind(p(h))(b =>
           if (b)
@@ -323,7 +344,8 @@ trait ListFunctions {
   final def groupWhenM[A, M[_]: Monad](as: List[A])(
       p: (A, A) => M[Boolean]): M[List[NonEmptyList[A]]] =
     as match {
-      case Nil => Monad[M].point(Nil)
+      case Nil =>
+        Monad[M].point(Nil)
       case h :: t =>
         val stateP =
           (i: A) => StateT[M, A, Boolean](s => Monad[M].map(p(s, i))(i ->))
@@ -347,7 +369,8 @@ trait ListFunctions {
     @tailrec
     def span1(xs: List[A], s: A, l: List[A]): (List[A], List[A]) =
       xs match {
-        case Nil => (l, Nil)
+        case Nil =>
+          (l, Nil)
         case h :: t =>
           if (p(s, h))
             span1(t, h, h :: l)
@@ -357,7 +380,8 @@ trait ListFunctions {
     @tailrec
     def go(xs: List[A], acc: List[NonEmptyList[A]]): List[NonEmptyList[A]] =
       xs match {
-        case Nil => acc.reverse
+        case Nil =>
+          acc.reverse
         case h :: t =>
           val (x, y) = span1(t, h, Nil)
           go(y, NonEmptyList.nel(h, IList.fromList(x.reverse)) :: acc)
@@ -390,15 +414,19 @@ trait ListFunctions {
   /** `[as, as.tail, as.tail.tail, ..., Nil]` */
   final def tailz[A](as: List[A]): List[List[A]] =
     as match {
-      case Nil             => Nil :: Nil
-      case xxs @ (_ :: xs) => xxs :: tailz(xs)
+      case Nil =>
+        Nil :: Nil
+      case xxs @ (_ :: xs) =>
+        xxs :: tailz(xs)
     }
 
   /** `[Nil, as take 1, as take 2, ..., as]` */
   final def initz[A](as: List[A]): List[List[A]] =
     as match {
-      case Nil             => Nil :: Nil
-      case xxs @ (x :: xs) => Nil :: (initz(xs) map (x :: _))
+      case Nil =>
+        Nil :: Nil
+      case xxs @ (x :: xs) =>
+        Nil :: (initz(xs) map (x :: _))
     }
 
   /** Combinations of `as` and `as`, excluding same-element pairs. */
@@ -408,8 +436,10 @@ trait ListFunctions {
   /** `[(as(0), as(1)), (as(1), as(2)), ... (as(size-2), as(size-1))]` */
   final def adjacentPairs[A](as: List[A]): List[(A, A)] =
     as match {
-      case Nil      => Nil
-      case (_ :: t) => as zip t
+      case Nil =>
+        Nil
+      case (_ :: t) =>
+        as zip t
     }
 }
 
@@ -434,13 +464,18 @@ private trait ListOrder[A] extends Order[List[A]] with ListEqual[A] {
   @annotation.tailrec
   final def order(a1: List[A], a2: List[A]) =
     (a1, a2) match {
-      case (Nil, Nil)    => EQ
-      case (Nil, _ :: _) => LT
-      case (_ :: _, Nil) => GT
+      case (Nil, Nil) =>
+        EQ
+      case (Nil, _ :: _) =>
+        LT
+      case (_ :: _, Nil) =>
+        GT
       case (a :: as, b :: bs) =>
         Order[A].order(a, b) match {
-          case EQ => order(as, bs)
-          case x  => x
+          case EQ =>
+            order(as, bs)
+          case x =>
+            x
         }
     }
 

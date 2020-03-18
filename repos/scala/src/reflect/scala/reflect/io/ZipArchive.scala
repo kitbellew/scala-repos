@@ -42,7 +42,8 @@ object ZipArchive {
     try {
       new FileZipArchive(file)
     } catch {
-      case _: IOException => null
+      case _: IOException =>
+        null
     }
 
   /**
@@ -129,7 +130,8 @@ abstract class ZipArchive(override val file: JFile)
     //   dir
     // })
     dirs get path match {
-      case Some(v) => v
+      case Some(v) =>
+        v
       case None =>
         val parent = ensureDir(dirs, dirName(path), null)
         val dir = new DirEntry(path)
@@ -194,8 +196,10 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
   override def hashCode() = file.hashCode
   override def equals(that: Any) =
     that match {
-      case x: FileZipArchive => file.getAbsoluteFile == x.file.getAbsoluteFile
-      case _                 => false
+      case x: FileZipArchive =>
+        file.getAbsoluteFile == x.file.getAbsoluteFile
+      case _ =>
+        false
     }
 }
 
@@ -272,15 +276,18 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
   def lastModified =
     try url.openConnection().getLastModified()
     catch {
-      case _: IOException => 0
+      case _: IOException =>
+        0
     }
 
   override def canEqual(other: Any) = other.isInstanceOf[URLZipArchive]
   override def hashCode() = url.hashCode
   override def equals(that: Any) =
     that match {
-      case x: URLZipArchive => url == x.url
-      case _                => false
+      case x: URLZipArchive =>
+        url == x.url
+      case _ =>
+        false
     }
 }
 
@@ -323,15 +330,18 @@ final class ManifestResources(val url: URL) extends ZipArchive(null) {
   def lastModified =
     try url.openConnection().getLastModified()
     catch {
-      case _: IOException => 0
+      case _: IOException =>
+        0
     }
 
   override def canEqual(other: Any) = other.isInstanceOf[ManifestResources]
   override def hashCode() = url.hashCode
   override def equals(that: Any) =
     that match {
-      case x: ManifestResources => url == x.url
-      case _                    => false
+      case x: ManifestResources =>
+        url == x.url
+      case _ =>
+        false
     }
 
   private def resourceInputStream(path: String): InputStream = {

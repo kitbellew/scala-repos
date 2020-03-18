@@ -29,9 +29,12 @@ trait PredefinedFromStringUnmarshallers {
   implicit val booleanFromStringUnmarshaller: Unmarshaller[String, Boolean] =
     Unmarshaller.strict[String, Boolean] { string ⇒
       string.toLowerCase match {
-        case "true" | "yes" | "on" ⇒ true
-        case "false" | "no" | "off" ⇒ false
-        case "" ⇒ throw Unmarshaller.NoContentException
+        case "true" | "yes" | "on" ⇒
+          true
+        case "false" | "no" | "off" ⇒
+          false
+        case "" ⇒
+          throw Unmarshaller.NoContentException
         case x ⇒
           throw new IllegalArgumentException(
             s"'$x' is not a valid Boolean value")

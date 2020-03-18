@@ -20,7 +20,8 @@ private[io] class BufReader(buf: Buf) extends Reader {
             state = Return(buf.slice(n, Int.MaxValue))
             f
           }
-        case Throw(exc) => Future.exception(exc)
+        case Throw(exc) =>
+          Future.exception(exc)
       }
     }
 

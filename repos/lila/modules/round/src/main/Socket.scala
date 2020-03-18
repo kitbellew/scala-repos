@@ -109,7 +109,8 @@ private[round] final class Socket(
     // from lilaBus 'startGame
     // sets definitive user ids
     // in case one joined after the socket creation
-    case StartGame(game) => self ! SetGame(game.some)
+    case StartGame(game) =>
+      self ! SetGame(game.some)
 
     case d: Deploy =>
       onDeploy(d) // default behaviour
@@ -125,7 +126,8 @@ private[round] final class Socket(
         (history getEventsSince v).fold(resyncNow(member))(batch(member, _))
       }
 
-    case Bye(color) => playerDo(color, _.setBye)
+    case Bye(color) =>
+      playerDo(color, _.setBye)
 
     case Broom =>
       broom
@@ -138,11 +140,14 @@ private[round] final class Socket(
           }
         }
 
-    case GetVersion => sender ! history.getVersion
+    case GetVersion =>
+      sender ! history.getVersion
 
-    case IsGone(color) => playerGet(color, _.isGone) pipeTo sender
+    case IsGone(color) =>
+      playerGet(color, _.isGone) pipeTo sender
 
-    case IsOnGame(color) => sender ! ownerOf(color).isDefined
+    case IsOnGame(color) =>
+      sender ! ownerOf(color).isDefined
 
     case GetSocketStatus =>
       playerGet(White, _.isGone) zip playerGet(Black, _.isGone) map {
@@ -169,8 +174,9 @@ private[round] final class Socket(
           lila.hub.actorApi.round.SocketEvent.OwnerJoin(gameId, color, ip),
           'roundDoor)
 
-    case Nil                  =>
-    case eventList: EventList => notify(eventList.events)
+    case Nil =>
+    case eventList: EventList =>
+      notify(eventList.events)
 
     case lila.chat.actorApi.ChatLine(chatId, line) =>
       notify(
@@ -178,10 +184,12 @@ private[round] final class Socket(
           line match {
             case l: lila.chat.UserLine =>
               Event.UserMessage(l, chatId endsWith "/w")
-            case l: lila.chat.PlayerLine => Event.PlayerMessage(l)
+            case l: lila.chat.PlayerLine =>
+              Event.PlayerMessage(l)
           }))
 
-    case AnalysisAvailable => notifyAll("analysisAvailable")
+    case AnalysisAvailable =>
+      notifyAll("analysisAvailable")
 
     case Quit(uid) =>
       members get uid foreach { member =>
@@ -191,9 +199,11 @@ private[round] final class Socket(
           refreshSubscriptions
       }
 
-    case ChangeFeatured(_, msg) => watchers.foreach(_ push msg)
+    case ChangeFeatured(_, msg) =>
+      watchers.foreach(_ push msg)
 
-    case TvSelect(msg) => watchers.foreach(_ push msg)
+    case TvSelect(msg) =>
+      watchers.foreach(_ push msg)
 
     case UserStartGame(userId, game) =>
       watchers filter (_ onUserTv userId) foreach {
@@ -230,9 +240,11 @@ private[round] final class Socket(
 
   def batch(member: Member, vevents: List[VersionedEvent]) {
     vevents match {
-      case Nil       =>
-      case List(one) => member push one.jsFor(member)
-      case many      => member push makeMessage("b", many map (_ jsFor member))
+      case Nil =>
+      case List(one) =>
+        member push one.jsFor(member)
+      case many =>
+        member push makeMessage("b", many map (_ jsFor member))
     }
   }
 

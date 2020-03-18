@@ -58,11 +58,14 @@ class SendSelectionToConsoleAction extends AnAction {
       }
 
       file match {
-        case _: ScalaFile => enable()
-        case _            => disable()
+        case _: ScalaFile =>
+          enable()
+        case _ =>
+          disable()
       }
     } catch {
-      case e: Exception => disable()
+      case e: Exception =>
+        disable()
     }
   }
 

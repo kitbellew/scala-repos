@@ -58,7 +58,8 @@ class CacheStatistics private (id: String, name: String) {
       case WeakReference(el) if el.equals(obj) =>
         res = objectsToKeepTrackOf.remove(el)
       case WeakReference(el) =>
-      case t                 => objectsToKeepTrackOf.remove(t) //weak refernce has expired
+      case t =>
+        objectsToKeepTrackOf.remove(t) //weak refernce has expired
     }
     res
   }
@@ -66,7 +67,8 @@ class CacheStatistics private (id: String, name: String) {
   def objectsToKeepTrackOfNormalReferences: mutable.Set[Any] = {
     import scala.collection.JavaConversions._
     objectsToKeepTrackOf.collect {
-      case WeakReference(ref) => ref
+      case WeakReference(ref) =>
+        ref
     }
   }
 
@@ -125,11 +127,13 @@ object CacheStatistics {
 
   def apply(id: String, name: String) =
     Option(caches.get(id)) match {
-      case Some(res) => res
+      case Some(res) =>
+        res
       case _ =>
         synchronized {
           Option(caches.get(id)) match {
-            case Some(res) => res
+            case Some(res) =>
+              res
             case _ =>
               val res = new CacheStatistics(id, name)
               caches.put(id, res)

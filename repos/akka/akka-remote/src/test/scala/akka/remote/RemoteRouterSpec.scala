@@ -12,7 +12,8 @@ import com.typesafe.config._
 object RemoteRouterSpec {
   class Echo extends Actor {
     def receive = {
-      case _ ⇒ sender() ! self
+      case _ ⇒
+        sender() ! self
     }
   }
 }

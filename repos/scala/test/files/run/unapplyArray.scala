@@ -25,7 +25,8 @@ object Test {
      */
     val zl =
       zs match {
-        case Seq(xs @ _*) => xs.length
+        case Seq(xs @ _*) =>
+          xs.length
       }
     assert(zl == 4)
   }

@@ -25,7 +25,8 @@ object Packaging {
         IO.copyDirectory(from, destination / to, overwrite = true)
     }
     files foreach {
-      case (from, to) => IO.copyFile(from, destination / to)
+      case (from, to) =>
+        IO.copyFile(from, destination / to)
     }
   }
 

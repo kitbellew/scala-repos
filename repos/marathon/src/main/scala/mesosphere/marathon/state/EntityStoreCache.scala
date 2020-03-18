@@ -35,8 +35,10 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
       if (noVersionKey(key)) {
         Future.successful {
           cache.get(key) match {
-            case Some(t) => t
-            case _       => None
+            case Some(t) =>
+              t
+            case _ =>
+              None
           }
         }
       } else {
@@ -46,7 +48,8 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
         cache.get(id) match {
           case Some(Some(t)) if key == versionKey(id, t.version) =>
             Future.successful(Some(t))
-          case _ => store.fetch(key)
+          case _ =>
+            store.fetch(key)
         }
       }
     }
@@ -90,7 +93,8 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
 
     def preloadEntry(nextName: String): Future[Unit] = {
       store.fetch(nextName).map {
-        case Some(t) => cache.update(nextName, Some(t))
+        case Some(t) =>
+          cache.update(nextName, Some(t))
         case None =>
           log.warn(s"Expected to find entry $nextName in store $store")
       }
@@ -135,8 +139,10 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
   private[this] def directOrCached[R](direct: => R)(
       cached: TrieMap[String, Option[T]] => R): R = {
     cacheOpt match {
-      case Some(cache) => cached(cache)
-      case None        => direct
+      case Some(cache) =>
+        cached(cache)
+      case None =>
+        direct
     }
   }
 }

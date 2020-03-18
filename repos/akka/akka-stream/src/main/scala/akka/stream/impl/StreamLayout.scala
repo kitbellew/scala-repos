@@ -41,7 +41,8 @@ object StreamLayout {
           val x = ids.next()
           idMap.put(obj, x)
           x
-        case x ⇒ x
+        case x ⇒
+          x
       }
     def in(i: InPort) = s"${i.toString}@${id(i)}"
     def out(o: OutPort) = s"${o.toString}@${id(o)}"
@@ -109,15 +110,21 @@ object StreamLayout {
 
     def atomics(n: MaterializedValueNode): Set[Module] =
       n match {
-        case Ignore ⇒ Set.empty
-        case Transform(f, dep) ⇒ atomics(dep)
-        case Atomic(module) ⇒ Set(module)
-        case Combine(f, left, right) ⇒ atomics(left) ++ atomics(right)
+        case Ignore ⇒
+          Set.empty
+        case Transform(f, dep) ⇒
+          atomics(dep)
+        case Atomic(module) ⇒
+          Set(module)
+        case Combine(f, left, right) ⇒
+          atomics(left) ++ atomics(right)
       }
     val atomic = atomics(materializedValueComputation)
     val graphValues = subModules.flatMap {
-      case GraphModule(_, _, _, mvids) ⇒ mvids
-      case _ ⇒ Nil
+      case GraphModule(_, _, _, mvids) ⇒
+        mvids
+      case _ ⇒
+        Nil
     }
     if ((atomic -- subModules -- graphValues - m).nonEmpty)
       problems ::= s"computation refers to non-existent modules [${atomic -- subModules -- graphValues - m mkString ","}]"
@@ -129,7 +136,8 @@ object StreamLayout {
       println(
         s"$indent${simpleName(this)}($shape): ${ins(inPorts)} ${outs(outPorts)}")
       downstreams foreach {
-        case (o, i) ⇒ println(s"$indent    ${out(o)} -> ${in(i)}")
+        case (o, i) ⇒
+          println(s"$indent    ${out(o)} -> ${in(i)}")
       }
       problems foreach (p ⇒ println(s"$indent  -!- $p"))
     }
@@ -144,16 +152,23 @@ object StreamLayout {
   object IgnorableMatValComp {
     def apply(comp: MaterializedValueNode): Boolean =
       comp match {
-        case Atomic(module) ⇒ IgnorableMatValComp(module)
-        case _: Combine | _: Transform ⇒ false
-        case Ignore ⇒ true
+        case Atomic(module) ⇒
+          IgnorableMatValComp(module)
+        case _: Combine | _: Transform ⇒
+          false
+        case Ignore ⇒
+          true
       }
     def apply(module: Module): Boolean =
       module match {
-        case _: AtomicModule | EmptyModule ⇒ true
-        case CopiedModule(_, _, module) ⇒ IgnorableMatValComp(module)
-        case CompositeModule(_, _, _, _, comp, _) ⇒ IgnorableMatValComp(comp)
-        case FusedModule(_, _, _, _, comp, _, _) ⇒ IgnorableMatValComp(comp)
+        case _: AtomicModule | EmptyModule ⇒
+          true
+        case CopiedModule(_, _, module) ⇒
+          IgnorableMatValComp(module)
+        case CompositeModule(_, _, _, _, comp, _) ⇒
+          IgnorableMatValComp(comp)
+        case FusedModule(_, _, _, _, comp, _, _) ⇒
+          IgnorableMatValComp(comp)
       }
   }
 
@@ -559,12 +574,14 @@ object StreamLayout {
            .mkString("\n    ")}
          |  Downstreams: ${downstreams.iterator
            .map {
-             case (in, out) ⇒ s"\n    $in -> $out"
+             case (in, out) ⇒
+               s"\n    $in -> $out"
            }
            .mkString("")}
          |  Upstreams: ${upstreams.iterator
            .map {
-             case (out, in) ⇒ s"\n    $out -> $in"
+             case (out, in) ⇒
+               s"\n    $out -> $in"
            }
            .mkString("")}
          |  MatValue: $materializedValueComputation""".stripMargin
@@ -617,12 +634,14 @@ object StreamLayout {
            .mkString("\n    ")}
          |  Downstreams: ${downstreams.iterator
            .map {
-             case (in, out) ⇒ s"\n    $in -> $out"
+             case (in, out) ⇒
+               s"\n    $in -> $out"
            }
            .mkString("")}
          |  Upstreams: ${upstreams.iterator
            .map {
-             case (out, in) ⇒ s"\n    $out -> $in"
+             case (out, in) ⇒
+               s"\n    $out -> $in"
            }
            .mkString("")}
          |  MatValue: $materializedValueComputation""".stripMargin
@@ -814,7 +833,8 @@ private[stream] final class VirtualProcessor[T]
         case s: Subscriber[_] => // spec violation
           getAndSet(Inert) match {
             case Inert => // nothing to be done
-            case _     => ErrorPublisher(ex, "failed-VirtualProcessor").subscribe(s)
+            case _ =>
+              ErrorPublisher(ex, "failed-VirtualProcessor").subscribe(s)
           }
         case _ => // spec violation or cancellation race, but nothing we can do
       }
@@ -912,9 +932,10 @@ private[stream] final class VirtualProcessor[T]
       if (n < 1) {
         tryCancel(real)
         getAndSet(Inert) match {
-          case Both(s) => rejectDueToNonPositiveDemand(s)
-          case Inert   => // another failure has won the race
-          case _       => // this cannot possibly happen, but signaling errors is impossible at this point
+          case Both(s) =>
+            rejectDueToNonPositiveDemand(s)
+          case Inert => // another failure has won the race
+          case _     => // this cannot possibly happen, but signaling errors is impossible at this point
         }
       } else
         real.request(n)
@@ -981,7 +1002,8 @@ private[impl] class VirtualPublisher[T]
       case sub: Subscriber[r] =>
         set(Inert.subscriber)
         pub.asInstanceOf[Publisher[r]].subscribe(sub)
-      case _ => throw new IllegalStateException("internal error")
+      case _ =>
+        throw new IllegalStateException("internal error")
     }
 }
 
@@ -1118,8 +1140,10 @@ private[stream] abstract class MaterializerSession(
     if (MaterializerSession.Debug)
       println(s"registering source $ms")
     matValSrc.get(ms.computation) match {
-      case null ⇒ matValSrc.put(ms.computation, ms :: Nil)
-      case xs ⇒ matValSrc.put(ms.computation, ms :: xs)
+      case null ⇒
+        matValSrc.put(ms.computation, ms :: Nil)
+      case xs ⇒
+        matValSrc.put(ms.computation, ms :: xs)
     }
   }
 
@@ -1200,13 +1224,16 @@ private[stream] abstract class MaterializerSession(
       println(" " * spaces + matNode)
     val ret =
       matNode match {
-        case Atomic(m) ⇒ matVal.get(m)
+        case Atomic(m) ⇒
+          matVal.get(m)
         case Combine(f, d1, d2) ⇒
           f(
             resolveMaterialized(d1, matVal, spaces + 2),
             resolveMaterialized(d2, matVal, spaces + 2))
-        case Transform(f, d) ⇒ f(resolveMaterialized(d, matVal, spaces + 2))
-        case Ignore ⇒ NotUsed
+        case Transform(f, d) ⇒
+          f(resolveMaterialized(d, matVal, spaces + 2))
+        case Ignore ⇒
+          NotUsed
       }
     if (MaterializerSession.Debug)
       println(" " * spaces + s"result = $ret")
@@ -1250,7 +1277,8 @@ private[stream] abstract class MaterializerSession(
     subscriberOrVirtual match {
       case s: Subscriber[_] =>
         publisher.subscribe(s.asInstanceOf[Subscriber[Any]])
-      case v: VirtualPublisher[_] => v.registerPublisher(publisher)
+      case v: VirtualPublisher[_] =>
+        v.registerPublisher(publisher)
     }
 
 }

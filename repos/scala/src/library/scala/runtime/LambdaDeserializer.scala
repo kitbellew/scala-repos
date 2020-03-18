@@ -129,7 +129,8 @@ object LambdaDeserializer {
             val temp = callSite.getTarget
             cache.put(key, temp)
             temp
-          case target => target
+          case target =>
+            target
         }
 
     val captures =

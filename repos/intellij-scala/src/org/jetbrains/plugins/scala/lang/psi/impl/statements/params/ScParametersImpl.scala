@@ -72,8 +72,10 @@ class ScParametersImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitParameters(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitParameters(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -91,7 +93,8 @@ class ScParametersImpl private (
             super.add(clause)
             newClause.parameters.last
         }
-      case _ => super.add(element)
+      case _ =>
+        super.add(element)
     }
   }
 }

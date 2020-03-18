@@ -113,12 +113,14 @@ sealed class Fork(val commandName: String, val runnerClass: Option[String]) {
       // overriding, not appending, is correct due to the specified priorities of -classpath and CLASSPATH
       environment.put(Fork.ClasspathEnvKey, cpenv)
     outputStrategy.getOrElse(StdoutOutput) match {
-      case StdoutOutput => Process(builder).run(connectInput)
+      case StdoutOutput =>
+        Process(builder).run(connectInput)
       case BufferedOutput(logger) =>
         logger.buffer {
           Process(builder).run(logger, connectInput)
         }
-      case LoggedOutput(logger) => Process(builder).run(logger, connectInput)
+      case LoggedOutput(logger) =>
+        Process(builder).run(logger, connectInput)
       case CustomOutput(output) =>
         (Process(builder) #> output).run(connectInput)
     }
@@ -248,12 +250,14 @@ object Fork {
       for ((key, value) <- env)
         environment.put(key, value)
       outputStrategy match {
-        case StdoutOutput => Process(builder).run(connectInput)
+        case StdoutOutput =>
+          Process(builder).run(connectInput)
         case BufferedOutput(logger) =>
           logger.buffer {
             Process(builder).run(logger, connectInput)
           }
-        case LoggedOutput(logger) => Process(builder).run(logger, connectInput)
+        case LoggedOutput(logger) =>
+          Process(builder).run(logger, connectInput)
         case CustomOutput(output) =>
           (Process(builder) #> output).run(connectInput)
       }

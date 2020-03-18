@@ -156,7 +156,8 @@ trait TestStackLike[M[+_]]
       case Success(result) =>
         parseEvalLogger.debug("Evaluation complete for query: " + str)
         result
-      case Failure(error) => throw error
+      case Failure(error) =>
+        throw error
     }
   }
 }

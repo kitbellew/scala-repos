@@ -12,7 +12,8 @@ object StringConcatenationFormatter extends StringFormatter {
       quoted("")
     else {
       val strings = parts.collect {
-        case Text(s) => quoted(StringUtil.escapeStringCharacters(s))
+        case Text(s) =>
+          quoted(StringUtil.escapeStringCharacters(s))
         case injection: Injection =>
           val s =
             if (injection.isLiteral || injection.isComplexBlock)

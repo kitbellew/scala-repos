@@ -55,7 +55,8 @@ class PropertyMap(
       case that: DataMap => { // for testing purpose
         super.equals(that)
       }
-      case _ => false
+      case _ =>
+        false
     }
 
   override def canEqual(other: Any): Boolean = other.isInstanceOf[PropertyMap]

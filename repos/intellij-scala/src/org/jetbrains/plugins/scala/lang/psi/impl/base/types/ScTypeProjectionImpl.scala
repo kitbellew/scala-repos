@@ -51,7 +51,8 @@ class ScTypeProjectionImpl(node: ASTNode)
               ScProjectionType(_, elem, superReference = false)
             }
         }
-      case _ => Failure("Cannot Resolve reference", Some(this))
+      case _ =>
+        Failure("Cannot Resolve reference", Some(this))
     }
   }
 
@@ -75,7 +76,8 @@ class ScTypeProjectionImpl(node: ASTNode)
             isInImport = isInImport,
             qualifierType = qualifier,
             isInStableCodeReference = false)
-        case r => Seq(r.getElement)
+        case r =>
+          Seq(r.getElement)
       }
   }
 
@@ -109,7 +111,8 @@ class ScTypeProjectionImpl(node: ASTNode)
             mem,
             r.substitutor /*.bindO(mem.getContainingClass, projected, this)*/,
             r.importsUsed)
-        case _ => r: ResolveResult
+        case _ =>
+          r: ResolveResult
       }
     }
     if (accessibilityCheck && res.length == 0)
@@ -131,8 +134,10 @@ class ScTypeProjectionImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitTypeProjection(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitTypeProjection(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

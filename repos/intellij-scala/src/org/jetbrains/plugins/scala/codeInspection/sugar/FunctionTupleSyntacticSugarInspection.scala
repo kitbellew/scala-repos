@@ -34,8 +34,10 @@ class FunctionTupleSyntacticSugarInspection extends LocalInspectionTool {
     object QualifiedName {
       def unapply(p: PsiElement): Option[String] =
         p match {
-          case x: PsiClass => Some(x.qualifiedName)
-          case _           => None
+          case x: PsiClass =>
+            Some(x.qualifiedName)
+          case _ =>
+            None
         }
     }
 
@@ -108,7 +110,8 @@ object FunctionTupleSyntacticSugarInspection {
           typeElement.getContext match {
             case ft: ScFunctionalTypeElement =>
               true // (Tuple2[A, B]) => B  ==>> ((A, B)) => C
-            case _ => false
+            case _ =>
+              false
           }
         ("(" + typeElement.typeArgList.getText.drop(1).dropRight(1) + ")")
           .parenthesisedIf(needParens)
@@ -135,20 +138,26 @@ object FunctionTupleSyntacticSugarInspection {
       val returnTypeTextWithParens = {
         val returnTypeNeedParens =
           returnType match {
-            case ft: ScFunctionalTypeElement => true
-            case ft: ScInfixTypeElement      => true
-            case _                           => false
+            case ft: ScFunctionalTypeElement =>
+              true
+            case ft: ScInfixTypeElement =>
+              true
+            case _ =>
+              false
           }
         returnType.getText.parenthesisedIf(returnTypeNeedParens)
       }
       val typeTextWithParens = {
         val needParens =
           typeElement.getContext match {
-            case ft: ScFunctionalTypeElement => true
-            case ft: ScInfixTypeElement      => true
+            case ft: ScFunctionalTypeElement =>
+              true
+            case ft: ScInfixTypeElement =>
+              true
             case _: ScConstructor | _: ScTraitParents | _: ScClassParents =>
               true
-            case _ => false
+            case _ =>
+              false
           }
         val arrow = ScalaPsiUtil.functionArrow(project)
         s"(${elemsInParamTypes.map(_.getText).mkString}) $arrow $returnTypeTextWithParens"

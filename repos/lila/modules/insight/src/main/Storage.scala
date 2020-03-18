@@ -74,6 +74,7 @@ private object Storage {
 
   def combineDocs(docs: List[BSONDocument]) =
     docs.foldLeft(BSONDocument()) {
-      case (acc, doc) => acc ++ doc
+      case (acc, doc) =>
+        acc ++ doc
     }
 }

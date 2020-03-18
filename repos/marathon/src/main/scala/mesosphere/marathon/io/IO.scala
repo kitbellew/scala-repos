@@ -127,8 +127,10 @@ object IO {
   def withResource[T](path: String)(fn: InputStream => T): Option[T] = {
     Option(getClass.getResourceAsStream(path)).flatMap { stream =>
       Try(stream.available()) match {
-        case Success(length) => Some(fn(stream))
-        case Failure(ex)     => None
+        case Success(length) =>
+          Some(fn(stream))
+        case Failure(ex) =>
+          None
       }
     }
   }

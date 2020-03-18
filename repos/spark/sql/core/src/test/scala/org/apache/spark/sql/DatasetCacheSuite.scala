@@ -64,7 +64,8 @@ class DatasetCacheSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey($"_1").keyAs[String]
     val agged = grouped.mapGroups {
-      case (g, iter) => (g, iter.map(_._2).sum)
+      case (g, iter) =>
+        (g, iter.map(_._2).sum)
     }
     agged.persist()
 

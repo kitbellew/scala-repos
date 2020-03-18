@@ -333,7 +333,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   // start periodic publish of current stats
   val publishStatsTask: Option[Cancellable] =
     PublishStatsInterval match {
-      case Duration.Zero | _: Duration.Infinite ⇒ None
+      case Duration.Zero | _: Duration.Infinite ⇒
+        None
       case d: FiniteDuration ⇒
         Some(
           scheduler.schedule(
@@ -371,24 +372,31 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   }
 
   def uninitialized: Actor.Receive = {
-    case InitJoin ⇒ sender() ! InitJoinNack(selfAddress)
-    case ClusterUserAction.JoinTo(address) ⇒ join(address)
-    case JoinSeedNodes(newSeedNodes) ⇒ joinSeedNodes(newSeedNodes)
-    case msg: SubscriptionMessage ⇒ publisher forward msg
+    case InitJoin ⇒
+      sender() ! InitJoinNack(selfAddress)
+    case ClusterUserAction.JoinTo(address) ⇒
+      join(address)
+    case JoinSeedNodes(newSeedNodes) ⇒
+      joinSeedNodes(newSeedNodes)
+    case msg: SubscriptionMessage ⇒
+      publisher forward msg
   }
 
   def tryingToJoin(
       joinWith: Address,
       deadline: Option[Deadline]): Actor.Receive = {
-    case Welcome(from, gossip) ⇒ welcome(joinWith, from, gossip)
-    case InitJoin ⇒ sender() ! InitJoinNack(selfAddress)
+    case Welcome(from, gossip) ⇒
+      welcome(joinWith, from, gossip)
+    case InitJoin ⇒
+      sender() ! InitJoinNack(selfAddress)
     case ClusterUserAction.JoinTo(address) ⇒
       becomeUninitialized()
       join(address)
     case JoinSeedNodes(newSeedNodes) ⇒
       becomeUninitialized()
       joinSeedNodes(newSeedNodes)
-    case msg: SubscriptionMessage ⇒ publisher forward msg
+    case msg: SubscriptionMessage ⇒
+      publisher forward msg
     case _: Tick ⇒
       if (deadline.exists(_.isOverdue)) {
         // join attempt failed, retry
@@ -418,19 +426,32 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   }
 
   def initialized: Actor.Receive = {
-    case msg: GossipEnvelope ⇒ receiveGossip(msg)
-    case msg: GossipStatus ⇒ receiveGossipStatus(msg)
-    case GossipTick ⇒ gossipTick()
-    case GossipSpeedupTick ⇒ gossipSpeedupTick()
-    case ReapUnreachableTick ⇒ reapUnreachableMembers()
-    case LeaderActionsTick ⇒ leaderActions()
-    case PublishStatsTick ⇒ publishInternalStats()
-    case InitJoin ⇒ initJoin()
-    case Join(node, roles) ⇒ joining(node, roles)
-    case ClusterUserAction.Down(address) ⇒ downing(address)
-    case ClusterUserAction.Leave(address) ⇒ leaving(address)
-    case SendGossipTo(address) ⇒ sendGossipTo(address)
-    case msg: SubscriptionMessage ⇒ publisher forward msg
+    case msg: GossipEnvelope ⇒
+      receiveGossip(msg)
+    case msg: GossipStatus ⇒
+      receiveGossipStatus(msg)
+    case GossipTick ⇒
+      gossipTick()
+    case GossipSpeedupTick ⇒
+      gossipSpeedupTick()
+    case ReapUnreachableTick ⇒
+      reapUnreachableMembers()
+    case LeaderActionsTick ⇒
+      leaderActions()
+    case PublishStatsTick ⇒
+      publishInternalStats()
+    case InitJoin ⇒
+      initJoin()
+    case Join(node, roles) ⇒
+      joining(node, roles)
+    case ClusterUserAction.Down(address) ⇒
+      downing(address)
+    case ClusterUserAction.Leave(address) ⇒
+      leaving(address)
+    case SendGossipTo(address) ⇒
+      sendGossipTo(address)
+    case msg: SubscriptionMessage ⇒
+      publisher forward msg
     case QuarantinedEvent(address, uid) ⇒
       quarantined(UniqueAddress(address, uid))
     case ClusterUserAction.JoinTo(address) ⇒
@@ -444,7 +465,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   }
 
   def removed: Actor.Receive = {
-    case msg: SubscriptionMessage ⇒ publisher forward msg
+    case msg: SubscriptionMessage ⇒
+      publisher forward msg
   }
 
   def receive = uninitialized
@@ -454,7 +476,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       case _: Tick ⇒
       case _: GossipEnvelope ⇒
       case _: GossipStatus ⇒
-      case other ⇒ super.unhandled(other)
+      case other ⇒
+        super.unhandled(other)
     }
 
   def initJoin(): Unit = {
@@ -525,8 +548,10 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       } else {
         val joinDeadline =
           RetryUnsuccessfulJoinAfter match {
-            case d: FiniteDuration ⇒ Some(Deadline.now + d)
-            case _ ⇒ None
+            case d: FiniteDuration ⇒
+              Some(Deadline.now + d)
+            case _ ⇒
+              None
           }
         context.become(tryingToJoin(address, joinDeadline))
         clusterCore(address) ! Join(selfUniqueAddress, cluster.selfRoles)
@@ -744,7 +769,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         case VectorClock.Same ⇒ // same version
         case VectorClock.After ⇒
           gossipStatusTo(from, sender()) // remote is newer
-        case _ ⇒ gossipTo(from, sender()) // conflicting or local is newer
+        case _ ⇒
+          gossipTo(from, sender()) // conflicting or local is newer
       }
     }
   }
@@ -872,11 +898,16 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
       if (statsEnabled) {
         gossipStats = gossipType match {
-          case Merge ⇒ gossipStats.incrementMergeCount
-          case Same ⇒ gossipStats.incrementSameCount
-          case Newer ⇒ gossipStats.incrementNewerCount
-          case Older ⇒ gossipStats.incrementOlderCount
-          case Ignored ⇒ gossipStats // included in receivedGossipCount
+          case Merge ⇒
+            gossipStats.incrementMergeCount
+          case Same ⇒
+            gossipStats.incrementSameCount
+          case Newer ⇒
+            gossipStats.incrementNewerCount
+          case Older ⇒
+            gossipStats.incrementOlderCount
+          case Ignored ⇒
+            gossipStats // included in receivedGossipCount
         }
       }
 
@@ -939,7 +970,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         // Fall back to localGossip; important to not accidentally use `map` of the SortedSet, since the original order is not preserved)
         val peer = selectRandomNode(
           localGossip.members.toIndexedSeq.collect {
-            case m if validNodeForGossip(m.uniqueAddress) ⇒ m.uniqueAddress
+            case m if validNodeForGossip(m.uniqueAddress) ⇒
+              m.uniqueAddress
           })
         peer foreach { node ⇒
           if (localGossip.seenByNode(node))
@@ -1017,7 +1049,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       val unreachable =
         latestGossip.overview.reachability.allUnreachableOrTerminated
       val downed = latestGossip.members.collect {
-        case m if m.status == Down ⇒ m.uniqueAddress
+        case m if m.status == Down ⇒
+          m.uniqueAddress
       }
       if (downed.forall(node ⇒
             unreachable(node) || latestGossip.seenByNode(node))) {
@@ -1171,7 +1204,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       m.status == Joining && enoughMembers && latestGossip.reachabilityExcludingDownedObservers
         .isReachable(m.uniqueAddress)
     val changedMembers = localMembers.collect {
-      case m if isJoiningToWeaklyUp(m) ⇒ m.copy(status = WeaklyUp)
+      case m if isJoiningToWeaklyUp(m) ⇒
+        m.copy(status = WeaklyUp)
     }
 
     if (changedMembers.nonEmpty) {
@@ -1465,7 +1499,8 @@ private[cluster] final class JoinSeedNodeProcess(
 
   def done: Actor.Receive = {
     case InitJoinAck(_) ⇒ // already received one, skip rest
-    case ReceiveTimeout ⇒ context.stop(self)
+    case ReceiveTimeout ⇒
+      context.stop(self)
   }
 }
 

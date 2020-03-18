@@ -23,7 +23,8 @@ object FindIsDefined extends SimplificationType() {
         val end = Math.max(e, expr.end)
         val existsText = invocationText(qual, "exists", cond)
         Some(replace(expr).withText(existsText).highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -42,7 +43,8 @@ object FindIsEmpty extends SimplificationType() {
           "exists",
           cond)
         Some(replace(expr).withText(notExistsText).highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

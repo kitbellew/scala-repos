@@ -163,9 +163,12 @@ object JdbcDialects {
   private[sql] def get(url: String): JdbcDialect = {
     val matchingDialects = dialects.filter(_.canHandle(url))
     matchingDialects.length match {
-      case 0 => NoopDialect
-      case 1 => matchingDialects.head
-      case _ => new AggregatedDialect(matchingDialects)
+      case 0 =>
+        NoopDialect
+      case 1 =>
+        matchingDialects.head
+      case _ =>
+        new AggregatedDialect(matchingDialects)
     }
   }
 }

@@ -76,10 +76,12 @@ private[scalding] object InternalService {
           Producer
             .transitiveDependenciesOf(summer)
             .collectFirst {
-              case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer => ()
+              case ljp @ LeftJoinedProducer(l, s) if ljp == joinProducer =>
+                ()
             }
             .isDefined
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -120,8 +122,10 @@ private[scalding] object InternalService {
       dag: Dependants[Scalding],
       store: Store[K, V]): Boolean =
     dag.nodes.exists {
-      case LeftJoinedProducer(l, StoreService(s)) => s == store
-      case _                                      => false
+      case LeftJoinedProducer(l, StoreService(s)) =>
+        s == store
+      case _ =>
+        false
     }
 
   // Get the summer that sums into the given store
@@ -194,7 +198,8 @@ private[scalding] object InternalService {
                     }
                 recurse(prod, Some(newFn))
               }
-              case None => recurse(prod, Some(fn))
+              case None =>
+                recurse(prod, Some(fn))
 
             }
           case IdentityKeyedProducer(prod) =>
@@ -250,17 +255,21 @@ private[scalding] object InternalService {
       */
     implicit def lookupFirst[E <: Either[V, U]]: Ordering[E] =
       Ordering.by {
-        case Left(_)  => 0
-        case Right(_) => 1
+        case Left(_) =>
+          0
+        case Right(_) =>
+          1
       }
 
     val bothPipes =
       (
         left.map {
-          case (t, (k, v)) => (k, (t, Left(v)))
+          case (t, (k, v)) =>
+            (k, (t, Left(v)))
         } ++
           mergeLog.map {
-            case (t, (k, u)) => (k, (t, Right(u)))
+            case (t, (k, u)) =>
+              (k, (t, Right(u)))
           }
       ).group
         .withReducers(

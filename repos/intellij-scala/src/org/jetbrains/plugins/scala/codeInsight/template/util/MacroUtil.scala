@@ -57,17 +57,20 @@ object MacroUtil {
             .createExpressionFromText(result.toString, _)
             .asInstanceOf[ScExpression])
     } catch {
-      case _: IncorrectOperationException => None
+      case _: IncorrectOperationException =>
+        None
     }
 
   def getComponentFromArrayType(scType: ScType): Option[ScType] =
     scType match {
-      case javaArrType: JavaArrayType => Some(javaArrType.arg)
+      case javaArrType: JavaArrayType =>
+        Some(javaArrType.arg)
       case paramType: ScParameterizedType
           if paramType.canonicalText.startsWith("_root_.scala.Array") &&
             paramType.typeArgs.length == 1 =>
         Some(paramType.typeArgs.head)
-      case _ => None
+      case _ =>
+        None
     }
 
   def getTypeLookupItem(
@@ -93,8 +96,10 @@ object MacroUtil {
       PsiTreeUtil
         .getParentOfType(context.getPsiElementAtStartOffset, classOf[PsiClass]))
       .map {
-        case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
-        case other         => other
+        case obj: ScObject =>
+          obj.fakeCompanionClassOrCompanionClass
+        case other =>
+          other
       }
       .filter(_.isInstanceOf[ScClass])
       .flatMap(_.asInstanceOf[ScClass].constructor)
@@ -109,8 +114,10 @@ object MacroUtil {
         .split(",")
         .map(l =>
           l.split(":").map(_.trim).toList match {
-            case a :: b :: Nil => (a, b)
-            case _             => ("", "")
+            case a :: b :: Nil =>
+              (a, b)
+            case _ =>
+              ("", "")
           })
         .toList
 

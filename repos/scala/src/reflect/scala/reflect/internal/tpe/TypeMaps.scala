@@ -22,8 +22,10 @@ private[internal] trait TypeMaps {
         tp match {
           case TypeRef(_, sym, _) if sym.isAliasType && tp.isHigherKinded =>
             logResult(s"Normalized type alias function $tp")(tp.normalize)
-          case TypeRef(_, sym, _) if sym.isAliasType => tp.normalize
-          case tp                                    => tp
+          case TypeRef(_, sym, _) if sym.isAliasType =>
+            tp.normalize
+          case tp =>
+            tp
         })
   }
 
@@ -35,9 +37,12 @@ private[internal] trait TypeMaps {
           AnyTpe
         case tp1 @ RefinedType(parents, decls) =>
           parents filter (_.typeSymbol != SingletonClass) match {
-            case Nil                       => AnyTpe
-            case p :: Nil if decls.isEmpty => mapOver(p)
-            case ps                        => mapOver(copyRefinedType(tp1, ps, decls))
+            case Nil =>
+              AnyTpe
+            case p :: Nil if decls.isEmpty =>
+              mapOver(p)
+            case ps =>
+              mapOver(copyRefinedType(tp1, ps, decls))
           }
         case tp1 =>
           mapOver(tp1)
@@ -49,12 +54,16 @@ private[internal] trait TypeMaps {
   object abstractTypesToBounds extends TypeMap {
     def apply(tp: Type): Type =
       tp match {
-        case TypeRef(_, sym, _) if sym.isAliasType    => apply(tp.dealias)
-        case TypeRef(_, sym, _) if sym.isAbstractType => apply(tp.bounds.hi)
+        case TypeRef(_, sym, _) if sym.isAliasType =>
+          apply(tp.dealias)
+        case TypeRef(_, sym, _) if sym.isAbstractType =>
+          apply(tp.bounds.hi)
         case rtp @ RefinedType(parents, decls) =>
           copyRefinedType(rtp, parents mapConserve this, decls)
-        case AnnotatedType(_, _) => mapOver(tp)
-        case _                   => tp // no recursion - top level only
+        case AnnotatedType(_, _) =>
+          mapOver(tp)
+        case _ =>
+          tp // no recursion - top level only
       }
   }
 
@@ -139,7 +148,8 @@ private[internal] trait TypeMaps {
             tp
           else
             copyTypeRef(tp, pre1, tr.coevolveSym(pre1), args1)
-        case ThisType(_) => tp
+        case ThisType(_) =>
+          tp
         case SingleType(pre, sym) =>
           if (sym.isPackageClass)
             tp // short path
@@ -170,7 +180,8 @@ private[internal] trait TypeMaps {
             tp
           else
             NullaryMethodType(result1)
-        case ConstantType(_) => tp
+        case ConstantType(_) =>
+          tp
         case SuperType(thistp, supertp) =>
           val thistp1 = this(thistp)
           val supertp1 = this(supertp)
@@ -287,8 +298,10 @@ private[internal] trait TypeMaps {
       @tailrec
       def loop(syms: List[Symbol]): Boolean =
         syms match {
-          case Nil     => true
-          case x :: xs => (x.info eq applyToSymbolInfo(x)) && loop(xs)
+          case Nil =>
+            true
+          case x :: xs =>
+            (x.info eq applyToSymbolInfo(x)) && loop(xs)
         }
       loop(origSyms)
     }
@@ -447,7 +460,8 @@ private[internal] trait TypeMaps {
         case TypeRef(_, sym, _) =>
           if (tparams contains sym)
             occurCount(sym) += 1
-        case _ => ()
+        case _ =>
+          ()
       }
     }
     def extrapolate(tpe: Type): Type = {
@@ -508,7 +522,8 @@ private[internal] trait TypeMaps {
             else
               singleType(pre1, sym)
           }
-        case _ => super.mapOver(tp)
+        case _ =>
+          super.mapOver(tp)
       }
 
     // Do not discard the types of existential ident's. The
@@ -517,8 +532,10 @@ private[internal] trait TypeMaps {
     // type would be ill-formed.
     override def mapOver(tree: Tree) =
       tree match {
-        case Ident(_) if tree.tpe.isStable => tree
-        case _                             => super.mapOver(tree)
+        case Ident(_) if tree.tpe.isStable =>
+          tree
+        case _ =>
+          super.mapOver(tree)
       }
   }
 
@@ -538,7 +555,8 @@ private[internal] trait TypeMaps {
         case BoundedWildcardType(TypeBounds(NothingTpe, hi))
             if variance.isCovariant =>
           hi
-        case tp => mapOver(tp)
+        case tp =>
+          mapOver(tp)
       }
   }
 
@@ -590,7 +608,8 @@ private[internal] trait TypeMaps {
 
     def apply(tp: Type): Type =
       tp match {
-        case tp @ ThisType(_) => thisTypeAsSeen(tp)
+        case tp @ ThisType(_) =>
+          thisTypeAsSeen(tp)
         case tp @ SingleType(_, sym) =>
           if (sym.isPackageClass)
             tp
@@ -598,7 +617,8 @@ private[internal] trait TypeMaps {
             singleTypeAsSeen(tp)
         case tp @ TypeRef(_, sym, _) if isTypeParamOfEnclosingClass(sym) =>
           classParameterAsSeen(tp)
-        case _ => mapOver(tp)
+        case _ =>
+          mapOver(tp)
       }
 
     private var _capturedSkolems: List[Symbol] = Nil
@@ -629,7 +649,8 @@ private[internal] trait TypeMaps {
       */
     protected def captureThis(pre: Type, clazz: Symbol): Type = {
       capturedParams find (_.owner == clazz) match {
-        case Some(p) => p.tpe
+        case Some(p) =>
+          p.tpe
         case _ =>
           val qvar =
             clazz freshExistential nme.SINGLETON_SUFFIX setInfo singletonBounds(
@@ -765,8 +786,10 @@ private[internal] trait TypeMaps {
       /** Rewrite `This` trees in annotation argument trees */
       override def transform(tree: Tree): Tree =
         super.transform(tree) match {
-          case This(_) if matchesThis(tree.symbol) => newThis()
-          case tree                                => tree
+          case This(_) if matchesThis(tree.symbol) =>
+            newThis()
+          case tree =>
+            tree
         }
     }
 
@@ -795,8 +818,10 @@ private[internal] trait TypeMaps {
       def loop(pre: Type, clazz: Symbol): Type = {
         val pre1 =
           pre match {
-            case SuperType(thistpe, _) => thistpe
-            case _                     => pre
+            case SuperType(thistpe, _) =>
+              thistpe
+            case _ =>
+              pre
           }
         if (skipPrefixOf(pre, clazz))
           mapOver(tp) // TODO - is mapOver necessary here?
@@ -924,8 +949,10 @@ private[internal] trait TypeMaps {
 
     protected def toType(fromtp: Type, sym: Symbol) =
       fromtp match {
-        case TypeRef(pre, _, args) => copyTypeRef(fromtp, pre, sym, args)
-        case SingleType(pre, _)    => singleType(pre, sym)
+        case TypeRef(pre, _, args) =>
+          copyTypeRef(fromtp, pre, sym, args)
+        case SingleType(pre, _) =>
+          singleType(pre, sym)
       }
     @tailrec
     private def subst(
@@ -971,16 +998,20 @@ private[internal] trait TypeMaps {
 
       def termMapsTo(sym: Symbol) =
         from indexOf sym match {
-          case -1  => None
-          case idx => Some(to(idx))
+          case -1 =>
+            None
+          case idx =>
+            Some(to(idx))
         }
 
       // if tree.symbol is mapped to another symbol, passes the new symbol into the
       // constructor `trans` and sets the symbol and the type on the resulting tree.
       def transformIfMapped(tree: Tree)(trans: Symbol => Tree) =
         termMapsTo(tree.symbol) match {
-          case Some(toSym) => trans(toSym) setSymbol toSym setType tree.tpe
-          case None        => tree
+          case Some(toSym) =>
+            trans(toSym) setSymbol toSym setType tree.tpe
+          case None =>
+            tree
         }
 
       // changes trees which refer to one of the mapped symbols. trees are copied before attributes are modified.
@@ -994,7 +1025,8 @@ private[internal] trait TypeMaps {
             transformIfMapped(sel)(toSym =>
               strictCopy.Select(sel, qual, toSym.name))
 
-          case tree => tree
+          case tree =>
+            tree
         }
       }
     }
@@ -1014,7 +1046,8 @@ private[internal] trait TypeMaps {
           tree match {
             case Ident(name) =>
               from indexOf tree.symbol match {
-                case -1 => super.transform(tree)
+                case -1 =>
+                  super.transform(tree)
                 case idx =>
                   val totpe = to(idx)
                   if (totpe.isStable)
@@ -1034,8 +1067,10 @@ private[internal] trait TypeMaps {
   class SubstThisMap(from: Symbol, to: Type) extends TypeMap {
     def apply(tp: Type): Type =
       tp match {
-        case ThisType(sym) if (sym == from) => to
-        case _                              => mapOver(tp)
+        case ThisType(sym) if (sym == from) =>
+          to
+        case _ =>
+          mapOver(tp)
       }
   }
 
@@ -1086,7 +1121,8 @@ private[internal] trait TypeMaps {
       // type of actual arg corresponding to param -- if the type is stable
       def unapply(param: Symbol): Option[Type] =
         (params indexOf param) match {
-          case -1 => None
+          case -1 =>
+            None
           case pid =>
             val tp = actuals(pid)
             if (tp.isStable && (tp.typeSymbol != NothingClass))
@@ -1122,7 +1158,8 @@ private[internal] trait TypeMaps {
       // existential quantifier and type of corresponding actual arg with unstable type
       def unapply(param: Symbol): Option[(Symbol, Type)] =
         (params indexOf param) match {
-          case -1 => None
+          case -1 =>
+            None
           case pid =>
             val sym = existentialFor(pid)
             Some((sym, sym.tpe_*)) // refers to an actual value, must be kind-*
@@ -1132,9 +1169,12 @@ private[internal] trait TypeMaps {
     private object StabilizedArgTp {
       def unapply(param: Symbol): Option[Type] =
         param match {
-          case StableArgTp(tp)      => Some(tp) // (1)
-          case UnstableArgTp(_, tp) => Some(tp) // (2)
-          case _                    => None
+          case StableArgTp(tp) =>
+            Some(tp) // (1)
+          case UnstableArgTp(_, tp) =>
+            Some(tp) // (2)
+          case _ =>
+            None
         }
     }
 
@@ -1148,8 +1188,10 @@ private[internal] trait TypeMaps {
       */
     def apply(tp: Type): Type =
       tp match {
-        case SingleType(NoPrefix, StabilizedArgTp(tp)) => tp
-        case _                                         => mapOver(tp)
+        case SingleType(NoPrefix, StabilizedArgTp(tp)) =>
+          tp
+        case _ =>
+          mapOver(tp)
       }
 
     //AM propagate more info to annotations -- this seems a bit ad-hoc... (based on code by spoon)
@@ -1175,10 +1217,12 @@ private[internal] trait TypeMaps {
       object treeTrans extends Transformer {
         override def transform(tree: Tree): Tree =
           tree.symbol match {
-            case StableArgTp(tp) => gen.mkAttributedQualifier(tp, tree.symbol)
+            case StableArgTp(tp) =>
+              gen.mkAttributedQualifier(tp, tree.symbol)
             case UnstableArgTp(quant, tp) =>
               Ident(quant) copyAttrs tree setType tp
-            case _ => super.transform(tree)
+            case _ =>
+              super.transform(tree)
           }
       }
       treeTrans transform arg
@@ -1203,8 +1247,10 @@ private[internal] trait TypeMaps {
   object typeVarToOriginMap extends TypeMap {
     def apply(tp: Type): Type =
       tp match {
-        case TypeVar(origin, _) => origin
-        case _                  => mapOver(tp)
+        case TypeVar(origin, _) =>
+          origin
+        case _ =>
+          mapOver(tp)
       }
   }
 
@@ -1222,9 +1268,12 @@ private[internal] trait TypeMaps {
             mapOver(tp)
           case _ =>
             tp.normalize match {
-              case TypeRef(_, sym1, _) if (sym == sym1) => result = true
-              case SingleType(_, sym1) if (sym == sym1) => result = true
-              case _                                    => mapOver(tp)
+              case TypeRef(_, sym1, _) if (sym == sym1) =>
+                result = true
+              case SingleType(_, sym1) if (sym == sym1) =>
+                result = true
+              case _ =>
+                mapOver(tp)
             }
         }
       }
@@ -1449,12 +1498,18 @@ private[internal] trait TypeMaps {
               tp.typeSymbol.owner,
               decls,
               tp.typeSymbol.owner.pos)
-        case SuperType(_, _)       => mapOver(tp)
-        case TypeBounds(_, _)      => mapOver(tp)
-        case TypeVar(_, _)         => mapOver(tp)
-        case AnnotatedType(_, _)   => mapOver(tp)
-        case ExistentialType(_, _) => mapOver(tp)
-        case _                     => tp
+        case SuperType(_, _) =>
+          mapOver(tp)
+        case TypeBounds(_, _) =>
+          mapOver(tp)
+        case TypeVar(_, _) =>
+          mapOver(tp)
+        case AnnotatedType(_, _) =>
+          mapOver(tp)
+        case ExistentialType(_, _) =>
+          mapOver(tp)
+        case _ =>
+          tp
       }
   }
 

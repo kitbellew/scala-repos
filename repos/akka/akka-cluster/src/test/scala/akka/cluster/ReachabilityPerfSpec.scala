@@ -45,7 +45,8 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
     (base /: observers) {
       case (r, o) ⇒
         (r /: (1 to 5)) {
-          case (r, _) ⇒ r.unreachable(o, subjects.next())
+          case (r, _) ⇒
+            r.unreachable(o, subjects.next())
         }
     }
   }

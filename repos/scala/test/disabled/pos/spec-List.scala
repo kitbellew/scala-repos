@@ -107,8 +107,10 @@ sealed trait List[@specialized +A]
     @tailrec
     def loop(l: List[A], res: List[B]): List[B] =
       l match {
-        case Nil          => res
-        case head :: tail => loop(tail, f(head) :: res)
+        case Nil =>
+          res
+        case head :: tail =>
+          loop(tail, f(head) :: res)
       }
     loop(this, Nil)
   }
@@ -223,8 +225,10 @@ sealed trait List[@specialized +A]
     @tailrec
     def loop(lead: List[A], lag: List[A]): List[A] =
       lead match {
-        case Nil       => lag
-        case _ :: tail => loop(tail, lag.tail)
+        case Nil =>
+          lag
+        case _ :: tail =>
+          loop(tail, lag.tail)
       }
     loop(drop(n), this)
   }
@@ -424,8 +428,10 @@ sealed trait List[@specialized +A]
     /** Merge-sort the specified list */
     def ms(lst: List[A]): List[A] =
       lst match {
-        case Nil      => lst
-        case x :: Nil => lst
+        case Nil =>
+          lst
+        case x :: Nil =>
+          lst
         case x :: y :: Nil =>
           if (lt(x, y))
             lst
@@ -459,8 +465,10 @@ case object Nil extends List[Nothing] {
   // Removal of equals method here might lead to an infinite recursion similar to IntMap.equals.
   override def equals(that: Any) =
     that match {
-      case that1: Seq[_] => that1.isEmpty
-      case _             => false
+      case that1: Seq[_] =>
+        that1.isEmpty
+      case _ =>
+        false
     }
 }
 
@@ -617,7 +625,8 @@ object List extends SeqFactory[List] {
   @deprecated("use `xs.unzip' instead")
   def unzip[A, B](xs: Iterable[(A, B)]): (List[A], List[B]) =
     xs.foldRight[(List[A], List[B])]((Nil, Nil)) {
-      case ((x, y), (xs, ys)) => (x :: xs, y :: ys)
+      case ((x, y), (xs, ys)) =>
+        (x :: xs, y :: ys)
     }
 
   /**
@@ -628,8 +637,10 @@ object List extends SeqFactory[List] {
   def lefts[A, B](es: Iterable[Either[A, B]]) =
     es.foldRight[List[A]](Nil)((e, as) =>
       e match {
-        case Left(a)  => a :: as
-        case Right(_) => as
+        case Left(a) =>
+          a :: as
+        case Right(_) =>
+          as
       })
 
   /**
@@ -639,8 +650,10 @@ object List extends SeqFactory[List] {
   def rights[A, B](es: Iterable[Either[A, B]]) =
     es.foldRight[List[B]](Nil)((e, bs) =>
       e match {
-        case Left(_)  => bs
-        case Right(b) => b :: bs
+        case Left(_) =>
+          bs
+        case Right(b) =>
+          b :: bs
       })
 
   /** Transforms an Iterable of Eithers into a pair of lists.
@@ -651,8 +664,10 @@ object List extends SeqFactory[List] {
   @deprecated("use `Either.separate' instead")
   def separate[A, B](es: Iterable[Either[A, B]]): (List[A], List[B]) =
     es.foldRight[(List[A], List[B])]((Nil, Nil)) {
-      case (Left(a), (lefts, rights))  => (a :: lefts, rights)
-      case (Right(b), (lefts, rights)) => (lefts, b :: rights)
+      case (Left(a), (lefts, rights)) =>
+        (a :: lefts, rights)
+      case (Right(b), (lefts, rights)) =>
+        (lefts, b :: rights)
     }
 
   /** Converts an iterator to a list.

@@ -46,9 +46,12 @@ object MProcedureColumn {
         r.<<,
         r.<<,
         r.nextShort match {
-          case DatabaseMetaData.procedureNoNulls  => Some(false)
-          case DatabaseMetaData.procedureNullable => Some(true)
-          case _                                  => None
+          case DatabaseMetaData.procedureNoNulls =>
+            Some(false)
+          case DatabaseMetaData.procedureNullable =>
+            Some(true)
+          case _ =>
+            None
         },
         r.<<,
         r.<<?,

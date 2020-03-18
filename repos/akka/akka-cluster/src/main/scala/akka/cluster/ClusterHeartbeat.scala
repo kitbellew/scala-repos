@@ -27,7 +27,8 @@ private[cluster] final class ClusterHeartbeatReceiver
     Cluster(context.system).selfUniqueAddress)
 
   def receive = {
-    case Heartbeat(from) ⇒ sender() ! selfHeartbeatRsp
+    case Heartbeat(from) ⇒
+      sender() ! selfHeartbeatRsp
   }
 
 }
@@ -126,13 +127,20 @@ private[cluster] final class ClusterHeartbeatSender
   }
 
   def active: Actor.Receive = {
-    case HeartbeatTick ⇒ heartbeat()
-    case HeartbeatRsp(from) ⇒ heartbeatRsp(from)
-    case MemberRemoved(m, _) ⇒ removeMember(m)
-    case evt: MemberEvent ⇒ addMember(evt.member)
-    case UnreachableMember(m) ⇒ unreachableMember(m)
-    case ReachableMember(m) ⇒ reachableMember(m)
-    case ExpectedFirstHeartbeat(from) ⇒ triggerFirstHeartbeat(from)
+    case HeartbeatTick ⇒
+      heartbeat()
+    case HeartbeatRsp(from) ⇒
+      heartbeatRsp(from)
+    case MemberRemoved(m, _) ⇒
+      removeMember(m)
+    case evt: MemberEvent ⇒
+      addMember(evt.member)
+    case UnreachableMember(m) ⇒
+      unreachableMember(m)
+    case ReachableMember(m) ⇒
+      reachableMember(m)
+    case ExpectedFirstHeartbeat(from) ⇒
+      triggerFirstHeartbeat(from)
   }
 
   def init(snapshot: CurrentClusterState): Unit = {

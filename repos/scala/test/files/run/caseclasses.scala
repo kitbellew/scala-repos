@@ -25,8 +25,10 @@ object Test extends App {
   def fn[a, b](x: a => b) = x;
   val f = fn(Foo(1))
   (f(2): AnyRef) match {
-    case Foo(1) => Console.println("OK")
-    case Bar()  => Console.println("NO")
+    case Foo(1) =>
+      Console.println("OK")
+    case Bar() =>
+      Console.println("NO")
   }
   try {
     Bar() productElement 3
@@ -36,8 +38,10 @@ object Test extends App {
   }
 
   M.C("hi") match {
-    case M.C("hi") => println("OK")
-    case _         => println("NO")
+    case M.C("hi") =>
+      println("OK")
+    case _ =>
+      println("NO")
   }
 
   try {

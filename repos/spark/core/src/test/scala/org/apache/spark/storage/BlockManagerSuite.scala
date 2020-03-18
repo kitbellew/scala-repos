@@ -1115,7 +1115,8 @@ class BlockManagerSuite
             assert(status.storageLevel === StorageLevel.NONE)
           case TestBlockId("list3") =>
             assert(status.storageLevel === StorageLevel.MEMORY_ONLY)
-          case _ => fail("Updated block is neither list1 nor list3")
+          case _ =>
+            fail("Updated block is neither list1 nor list3")
         }
     }
     assert(store.memoryStore.contains("list3"), "list3 was not in memory store")
@@ -1136,7 +1137,8 @@ class BlockManagerSuite
             assert(status.storageLevel === StorageLevel.DISK_ONLY)
           case TestBlockId("list4") =>
             assert(status.storageLevel === StorageLevel.MEMORY_ONLY)
-          case _ => fail("Updated block is neither list2 nor list4")
+          case _ =>
+            fail("Updated block is neither list2 nor list4")
         }
     }
     assert(store.diskStore.contains("list2"), "list2 was not in disk store")
@@ -1302,8 +1304,10 @@ class BlockManagerSuite
     }
     val matchedBlockIds = store.master.getMatchingBlockIds(
       _ match {
-        case RDDBlockId(1, _) => true
-        case _                => false
+        case RDDBlockId(1, _) =>
+          true
+        case _ =>
+          false
       },
       askSlaves = true)
     assert(matchedBlockIds.toSet === Set(RDDBlockId(1, 0), RDDBlockId(1, 1)))

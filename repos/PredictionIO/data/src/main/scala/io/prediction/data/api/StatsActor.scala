@@ -66,6 +66,7 @@ class StatsActor extends Actor {
         "currentHour" -> hourlyStats.get(appId),
         "prevHour" -> prevHourlyStats.get(appId),
         "longLive" -> longLiveStats.get(appId))
-    case _ => log.error("Unknown message.")
+    case _ =>
+      log.error("Unknown message.")
   }
 }

@@ -29,7 +29,8 @@ object ArrayEquality extends SimplificationType {
             .withText(
               invocationText(negation = true, left, "sameElements", right))
             .highlightRef)
-      case _ => None
+      case _ =>
+        None
     }
 
   private def arraysOrSeqAndArray(left: ScExpression, right: ScExpression) = {
@@ -56,7 +57,8 @@ object IteratorsEquality extends SimplificationType {
             .withText(
               invocationText(negation = true, left, "sameElements", right))
             .highlightRef)
-      case _ => None
+      case _ =>
+        None
     }
 
   private def iterators(left: ScExpression, right: ScExpression) =

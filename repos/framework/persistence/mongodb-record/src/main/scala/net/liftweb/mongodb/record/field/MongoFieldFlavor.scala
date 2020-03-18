@@ -44,8 +44,10 @@ trait MongoFieldFlavor[MyType] {
     */
   def asJs =
     asJValue match {
-      case JNothing => JsNull
-      case jv       => JsRaw(compactRender(jv))
+      case JNothing =>
+        JsNull
+      case jv =>
+        JsRaw(compactRender(jv))
     }
 
   /** Encode the field value into a JValue */

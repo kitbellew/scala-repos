@@ -46,7 +46,8 @@ private[round] final class SocketHandler(
         o str "d" foreach { text =>
           messenger.watcher(gameId, member, text, socket)
         }
-      case ("outoftime", _) => send(Outoftime)
+      case ("outoftime", _) =>
+        send(Outoftime)
     }) { playerId =>
       {
         case ("p", o) =>
@@ -58,7 +59,8 @@ private[round] final class SocketHandler(
             case (move, blur, lag) =>
               val promise = Promise[Unit]
               promise.future onFailure {
-                case _: Exception => socket ! Resync(uid)
+                case _: Exception =>
+                  socket ! Resync(uid)
               }
               send(HumanPlay(playerId, move, blur, lag.millis, promise.some))
               member push ackEvent
@@ -69,24 +71,39 @@ private[round] final class SocketHandler(
               member push ackEvent
               val promise = Promise[Unit]
               promise.future onFailure {
-                case _: Exception => socket ! Resync(uid)
+                case _: Exception =>
+                  socket ! Resync(uid)
               }
               send(HumanPlay(playerId, drop, blur, lag.millis, promise.some))
           }
-        case ("rematch-yes", _)  => send(RematchYes(playerId))
-        case ("rematch-no", _)   => send(RematchNo(playerId))
-        case ("takeback-yes", _) => send(TakebackYes(playerId))
-        case ("takeback-no", _)  => send(TakebackNo(playerId))
-        case ("draw-yes", _)     => send(DrawYes(playerId))
-        case ("draw-no", _)      => send(DrawNo(playerId))
-        case ("draw-claim", _)   => send(DrawClaim(playerId))
-        case ("resign", _)       => send(Resign(playerId))
-        case ("resign-force", _) => send(ResignForce(playerId))
-        case ("draw-force", _)   => send(DrawForce(playerId))
-        case ("abort", _)        => send(Abort(playerId))
-        case ("moretime", _)     => send(Moretime(playerId))
-        case ("outoftime", _)    => send(Outoftime)
-        case ("bye", _)          => socket ! Bye(ref.color)
+        case ("rematch-yes", _) =>
+          send(RematchYes(playerId))
+        case ("rematch-no", _) =>
+          send(RematchNo(playerId))
+        case ("takeback-yes", _) =>
+          send(TakebackYes(playerId))
+        case ("takeback-no", _) =>
+          send(TakebackNo(playerId))
+        case ("draw-yes", _) =>
+          send(DrawYes(playerId))
+        case ("draw-no", _) =>
+          send(DrawNo(playerId))
+        case ("draw-claim", _) =>
+          send(DrawClaim(playerId))
+        case ("resign", _) =>
+          send(Resign(playerId))
+        case ("resign-force", _) =>
+          send(ResignForce(playerId))
+        case ("draw-force", _) =>
+          send(DrawForce(playerId))
+        case ("abort", _) =>
+          send(Abort(playerId))
+        case ("moretime", _) =>
+          send(Moretime(playerId))
+        case ("outoftime", _) =>
+          send(Outoftime)
+        case ("bye", _) =>
+          socket ! Bye(ref.color)
         case ("talk", o) =>
           o str "d" foreach { text =>
             messenger.owner(gameId, member, text, socket)

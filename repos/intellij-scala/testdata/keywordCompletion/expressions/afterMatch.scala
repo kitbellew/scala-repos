@@ -1,6 +1,7 @@
 class a {
   a match {
-    case to => from
+    case to =>
+      from
   }
   /*caret*/
 }

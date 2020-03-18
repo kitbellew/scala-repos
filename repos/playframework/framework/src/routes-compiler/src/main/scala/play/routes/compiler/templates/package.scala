@@ -233,7 +233,8 @@ package object templates {
   def safeKeyword(keyword: String) =
     scalaReservedWords
       .collectFirst {
-        case reserved if reserved == keyword => s"_pf_escape_$reserved"
+        case reserved if reserved == keyword =>
+          s"_pf_escape_$reserved"
       }
       .getOrElse(keyword)
 
@@ -293,8 +294,10 @@ package object templates {
       .map { p =>
         p.name + " == " + p.fixed.get
       } match {
-      case Nil      => ""
-      case nonEmpty => "if " + nonEmpty.mkString(" && ")
+      case Nil =>
+        ""
+      case nonEmpty =>
+        "if " + nonEmpty.mkString(" && ")
     }
   }
 
@@ -305,7 +308,8 @@ package object templates {
       route: Route,
       params: Seq[(Parameter, Int)]): Map[String, String] = {
     params.map {
-      case (lp, i) => route.call.parameters.get(i).name -> lp.name
+      case (lp, i) =>
+        route.call.parameters.get(i).name -> lp.name
     }.toMap
   }
 
@@ -357,8 +361,10 @@ package object templates {
             .filter(_.size == 1)
             .flatMap(_.headOption)
             .map {
-              case None          => ""
-              case Some(default) => " = " + default
+              case None =>
+                ""
+              case Some(default) =>
+                " = " + default
             }
             .getOrElse("")
         })
@@ -376,7 +382,8 @@ package object templates {
         " + { _defaultPrefix } + "
     val callPath = "_prefix" + df + route.path.parts
       .map {
-        case StaticPart(part) => "\"" + part + "\""
+        case StaticPart(part) =>
+          "\"" + part + "\""
         case DynamicPart(name, _, encode) =>
           route.call.parameters
             .getOrElse(Nil)
@@ -400,7 +407,8 @@ package object templates {
       p.fixed.isDefined ||
       route.path.parts
         .collect {
-          case DynamicPart(name, _, _) => name
+          case DynamicPart(name, _, _) =>
+            name
         }
         .contains(p.name)
     }
@@ -475,7 +483,8 @@ package object templates {
         (route, localNames, constraints)
       }
       .foldLeft((Seq.empty[(Route, Map[String, String], String)], false)) {
-        case ((routes, true), dead) => (routes, true)
+        case ((routes, true), dead) =>
+          (routes, true)
         case ((routes, false), (route, localNames, None)) =>
           (routes :+ ((route, localNames, "true")), true)
         case ((routes, false), (route, localNames, Some(constraints))) =>
@@ -494,7 +503,8 @@ package object templates {
       else
         "{ _defaultPrefix } + "
     } + "\"\"\"\"" + route.path.parts.map {
-      case StaticPart(part) => " + \"" + part + "\""
+      case StaticPart(part) =>
+        " + \"" + part + "\""
       case DynamicPart(name, _, encode) => {
         route.call.parameters
           .getOrElse(Nil)
@@ -520,7 +530,8 @@ package object templates {
       p.fixed.isDefined ||
       route.path.parts
         .collect {
-          case DynamicPart(name, _, _) => name
+          case DynamicPart(name, _, _) =>
+            name
         }
         .contains(p.name)
     }
@@ -544,7 +555,8 @@ package object templates {
                 """(""" + localNames
                   .get(name)
                   .getOrElse(name) + " == null ? null : " + u + ")"
-              case (u, Parameter(name, typeName, None, None)) => u
+              case (u, Parameter(name, typeName, None, None)) =>
+                u
             }
             .mkString(", "))
 

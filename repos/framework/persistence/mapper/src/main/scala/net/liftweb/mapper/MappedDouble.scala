@@ -101,18 +101,30 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
 
   def toDouble(in: Any): Double = {
     in match {
-      case null             => 0.0
-      case i: Int           => i
-      case n: Long          => n
-      case n: Number        => n.doubleValue
-      case (n: Number) :: _ => n.doubleValue
-      case Full(n)          => toDouble(n) // fixes issue 185
-      case x: EmptyBox      => 0.0
-      case Some(n)          => toDouble(n)
-      case None             => 0.0
-      case s: String        => s.toDouble
-      case x :: xs          => toDouble(x)
-      case o                => toDouble(o.toString)
+      case null =>
+        0.0
+      case i: Int =>
+        i
+      case n: Long =>
+        n
+      case n: Number =>
+        n.doubleValue
+      case (n: Number) :: _ =>
+        n.doubleValue
+      case Full(n) =>
+        toDouble(n) // fixes issue 185
+      case x: EmptyBox =>
+        0.0
+      case Some(n) =>
+        toDouble(n)
+      case None =>
+        0.0
+      case s: String =>
+        s.toDouble
+      case x :: xs =>
+        toDouble(x)
+      case o =>
+        toDouble(o.toString)
     }
   }
 
@@ -135,17 +147,28 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
 
   override def setFromAny(in: Any): Double = {
     in match {
-      case JsonAST.JDouble(db) => this.set(db)
-      case JsonAST.JInt(bi)    => this.set(bi.doubleValue)
-      case n: Double           => this.set(n)
-      case n: Number           => this.set(n.doubleValue)
-      case (n: Number) :: _    => this.set(n.doubleValue)
-      case Some(n: Number)     => this.set(n.doubleValue)
-      case None                => this.set(0.0)
-      case (s: String) :: _    => this.set(toDouble(s))
-      case null                => this.set(0L)
-      case s: String           => this.set(toDouble(s))
-      case o                   => this.set(toDouble(o))
+      case JsonAST.JDouble(db) =>
+        this.set(db)
+      case JsonAST.JInt(bi) =>
+        this.set(bi.doubleValue)
+      case n: Double =>
+        this.set(n)
+      case n: Number =>
+        this.set(n.doubleValue)
+      case (n: Number) :: _ =>
+        this.set(n.doubleValue)
+      case Some(n: Number) =>
+        this.set(n.doubleValue)
+      case None =>
+        this.set(0.0)
+      case (s: String) :: _ =>
+        this.set(toDouble(s))
+      case null =>
+        this.set(0L)
+      case s: String =>
+        this.set(toDouble(s))
+      case o =>
+        this.set(toDouble(o))
     }
   }
 
@@ -184,7 +207,8 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDouble[T] => f.st(toDouble(v))
+          case f: MappedDouble[T] =>
+            f.st(toDouble(v))
         })
 
   def buildSetLongValue(
@@ -212,7 +236,8 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedDouble[T] => f.st(toDouble(v))
+          case f: MappedDouble[T] =>
+            f.st(toDouble(v))
         })
 
   def fieldCreatorString(dbType: DriverType, colName: String): String =

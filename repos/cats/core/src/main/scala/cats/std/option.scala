@@ -35,22 +35,28 @@ trait OptionInstances extends OptionInstances1 {
 
       def foldLeft[A, B](fa: Option[A], b: B)(f: (B, A) => B): B =
         fa match {
-          case None    => b
-          case Some(a) => f(b, a)
+          case None =>
+            b
+          case Some(a) =>
+            f(b, a)
         }
 
       def foldRight[A, B](fa: Option[A], lb: Eval[B])(
           f: (A, Eval[B]) => Eval[B]): Eval[B] =
         fa match {
-          case None    => lb
-          case Some(a) => f(a, lb)
+          case None =>
+            lb
+          case Some(a) =>
+            f(a, lb)
         }
 
       def traverse[G[_]: Applicative, A, B](fa: Option[A])(
           f: A => G[B]): G[Option[B]] =
         fa match {
-          case None    => Applicative[G].pure(None)
-          case Some(a) => Applicative[G].map(f(a))(Some(_))
+          case None =>
+            Applicative[G].pure(None)
+          case Some(a) =>
+            Applicative[G].map(f(a))(Some(_))
         }
 
       override def exists[A](fa: Option[A])(p: A => Boolean): Boolean =
@@ -67,11 +73,14 @@ trait OptionInstances extends OptionInstances1 {
       def empty: Option[A] = None
       def combine(x: Option[A], y: Option[A]): Option[A] =
         x match {
-          case None => y
+          case None =>
+            y
           case Some(xx) =>
             y match {
-              case None     => x
-              case Some(yy) => Some(ev.combine(xx, yy))
+              case None =>
+                x
+              case Some(yy) =>
+                Some(ev.combine(xx, yy))
             }
         }
     }
@@ -82,8 +91,10 @@ trait OptionInstances extends OptionInstances1 {
         x match {
           case Some(a) =>
             y match {
-              case Some(b) => ev.compare(a, b)
-              case None    => 1
+              case Some(b) =>
+                ev.compare(a, b)
+              case None =>
+                1
             }
           case None =>
             if (y.isDefined)
@@ -97,8 +108,10 @@ trait OptionInstances extends OptionInstances1 {
     new Show[Option[A]] {
       def show(fa: Option[A]): String =
         fa match {
-          case Some(a) => s"Some(${A.show(a)})"
-          case None    => "None"
+          case Some(a) =>
+            s"Some(${A.show(a)})"
+          case None =>
+            "None"
         }
     }
 }

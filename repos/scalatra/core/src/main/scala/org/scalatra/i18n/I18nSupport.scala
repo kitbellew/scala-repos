@@ -84,7 +84,8 @@ trait I18nSupport {
         case Some(localeValue) =>
           cookies.set(LocaleKey, localeValue)
           Some(localeValue)
-        case _ => cookies.get(LocaleKey)
+        case _ =>
+          cookies.get(LocaleKey)
       }
     ).map(localeFromString(_)) orElse resolveHttpLocaleFromUserAgent
   }

@@ -40,12 +40,18 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
 
   def getElementByReference(ref: PsiReference, flags: Int): PsiElement =
     ref.getElement match {
-      case isUnapplyFromVal(binding)                => binding
-      case isCaseClassParameter(cp)                 => cp
-      case isVarSetterFakeMethod(refPattern)        => refPattern
-      case isVarSetterWrapper(refPattern)           => refPattern
-      case ResolvesTo(isLightScNamedElement(named)) => named
-      case _                                        => null
+      case isUnapplyFromVal(binding) =>
+        binding
+      case isCaseClassParameter(cp) =>
+        cp
+      case isVarSetterFakeMethod(refPattern) =>
+        refPattern
+      case isVarSetterWrapper(refPattern) =>
+        refPattern
+      case ResolvesTo(isLightScNamedElement(named)) =>
+        named
+      case _ =>
+        null
     }
 
   private object isUnapplyFromVal {
@@ -59,9 +65,11 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
           resolve.innerResolveResult match {
             case Some(ScalaResolveResult(binding: ScBindingPattern, _)) =>
               Some(binding)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -78,9 +86,11 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
                   .nameContext(refPattern)
                   .isInstanceOf[ScVariable] =>
               Some(refPattern)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -97,9 +107,11 @@ class ScalaTargetElementEvaluator extends TargetElementEvaluatorEx {
                   .nameContext(refPattern)
                   .isInstanceOf[ScVariable] =>
               Some(refPattern)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }

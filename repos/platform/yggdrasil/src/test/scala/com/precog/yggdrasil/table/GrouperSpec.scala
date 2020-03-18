@@ -131,7 +131,8 @@ trait GrouperSpec[M[+_]]
           key.toJValue must beLike {
             case jo: JObject =>
               (jo \ "tic_a") match {
-                case JNum(i) => set must contain(i)
+                case JNum(i) =>
+                  set must contain(i)
               }
           }
 
@@ -205,7 +206,8 @@ trait GrouperSpec[M[+_]]
           key.toJValue must beLike {
             case jo: JObject =>
               (jo \ "tic_a") match {
-                case JNum(i) => set must contain(i)
+                case JNum(i) =>
+                  set must contain(i)
               }
           }
 
@@ -272,7 +274,8 @@ trait GrouperSpec[M[+_]]
           key.toJValue must beLike {
             case jo: JObject =>
               (jo \ "tic_a") match {
-                case JNum(i) => set.map(_ % 2) must contain(i)
+                case JNum(i) =>
+                  set.map(_ % 2) must contain(i)
               }
           }
 
@@ -369,13 +372,15 @@ trait GrouperSpec[M[+_]]
               a must beLike {
                 case JNum(i) if i == 12 => {
                   b must beLike {
-                    case JNum(i) if i == 7 => ok
+                    case JNum(i) if i == 7 =>
+                      ok
                   }
                 }
 
                 case JNum(i) if i == -7 => {
                   b must beLike {
-                    case JNum(i) if i == 3 => ok
+                    case JNum(i) if i == 3 =>
+                      ok
                   }
                 }
               }
@@ -393,7 +398,8 @@ trait GrouperSpec[M[+_]]
 
     forall(resultJson) { v =>
       v must beLike {
-        case JNum(i) if i == 1 => ok
+        case JNum(i) if i == 1 =>
+          ok
       }
     }
   }
@@ -436,29 +442,39 @@ trait GrouperSpec[M[+_]]
 
               if (a == JUndefined) {
                 b must beLike {
-                  case JNum(i) if i == 7  => gs1Json must haveSize(2)
-                  case JNum(i) if i == 15 => gs1Json must haveSize(1)
-                  case JNum(i) if i == -1 => gs1Json must haveSize(1)
-                  case JNum(i) if i == 3  => gs1Json must haveSize(1)
+                  case JNum(i) if i == 7 =>
+                    gs1Json must haveSize(2)
+                  case JNum(i) if i == 15 =>
+                    gs1Json must haveSize(1)
+                  case JNum(i) if i == -1 =>
+                    gs1Json must haveSize(1)
+                  case JNum(i) if i == 3 =>
+                    gs1Json must haveSize(1)
                 }
               } else if (b == JUndefined) {
                 a must beLike {
-                  case JNum(i) if i == 12 => gs1Json must haveSize(2)
-                  case JNum(i) if i == 42 => gs1Json must haveSize(1)
-                  case JNum(i) if i == 11 => gs1Json must haveSize(1)
-                  case JNum(i) if i == -7 => gs1Json must haveSize(1)
+                  case JNum(i) if i == 12 =>
+                    gs1Json must haveSize(2)
+                  case JNum(i) if i == 42 =>
+                    gs1Json must haveSize(1)
+                  case JNum(i) if i == 11 =>
+                    gs1Json must haveSize(1)
+                  case JNum(i) if i == -7 =>
+                    gs1Json must haveSize(1)
                 }
               } else {
                 a must beLike {
                   case JNum(i) if i == 12 => {
                     b must beLike {
-                      case JNum(i) if i == 7 => ok
+                      case JNum(i) if i == 7 =>
+                        ok
                     }
                   }
 
                   case JNum(i) if i == -7 => {
                     b must beLike {
-                      case JNum(i) if i == 3 => ok
+                      case JNum(i) if i == 3 =>
+                        ok
                     }
                   }
                 }
@@ -477,7 +493,8 @@ trait GrouperSpec[M[+_]]
 
     forall(resultJson) { v =>
       v must beLike {
-        case JNum(i) if i == 2 || i == 1 => ok
+        case JNum(i) if i == 2 || i == 1 =>
+          ok
       }
     }
   }
@@ -520,7 +537,8 @@ trait GrouperSpec[M[+_]]
           gs1Json <- gs1.toJson
         } yield {
           (key.toJValue(tic_bj)) must beLike {
-            case JNum(i) => i must_== 7
+            case JNum(i) =>
+              i must_== 7
           }
 
           gs1Json must haveSize(1)
@@ -534,7 +552,8 @@ trait GrouperSpec[M[+_]]
 
     forall(resultJson) { v =>
       v must beLike {
-        case JNum(i) if i == 1 => ok
+        case JNum(i) if i == 1 =>
+          ok
       }
     }
   }
@@ -580,13 +599,18 @@ trait GrouperSpec[M[+_]]
           (key.toJValue(tic_bj)) must beLike {
             case JUndefined =>
               (gs1Json.head \ "a") must beLike {
-                case JNum(i) if i == 12 => ok
+                case JNum(i) if i == 12 =>
+                  ok
               }
 
-            case JNum(i) if i == 7  => gs1Json must haveSize(2)
-            case JNum(i) if i == 15 => gs1Json must haveSize(1)
-            case JNum(i) if i == -1 => gs1Json must haveSize(1)
-            case JNum(i) if i == 3  => gs1Json must haveSize(1)
+            case JNum(i) if i == 7 =>
+              gs1Json must haveSize(2)
+            case JNum(i) if i == 15 =>
+              gs1Json must haveSize(1)
+            case JNum(i) if i == -1 =>
+              gs1Json must haveSize(1)
+            case JNum(i) if i == 3 =>
+              gs1Json must haveSize(1)
           }
 
           fromJson(Stream(JArray(key.toJValue :: JNum(gs1Json.size) :: Nil)))
@@ -658,7 +682,8 @@ trait GrouperSpec[M[+_]]
 
           forall(gs1Json) { row =>
             row must beLike {
-              case JNum(i) => i mustEqual keyBigInt
+              case JNum(i) =>
+                i mustEqual keyBigInt
             }
           }
 
@@ -756,7 +781,8 @@ trait GrouperSpec[M[+_]]
         } yield {
           val JNum(keyBigInt) = key.toJValue(tic_aj)
           key.toJValue(tic_bj) must beLike {
-            case JNum(_) => ok
+            case JNum(_) =>
+              ok
           }
 
           gs1Json must not(beEmpty)
@@ -764,13 +790,15 @@ trait GrouperSpec[M[+_]]
 
           forall(gs1Json) { row =>
             (row \ "a") must beLike {
-              case JNum(i) => i mustEqual keyBigInt
+              case JNum(i) =>
+                i mustEqual keyBigInt
             }
           }
 
           forall(gs2Json) { row =>
             (row \ "a") must beLike {
-              case JNum(i) => i mustEqual keyBigInt
+              case JNum(i) =>
+                i mustEqual keyBigInt
             }
           }
 
@@ -791,7 +819,8 @@ trait GrouperSpec[M[+_]]
 
     val grouped1 = rawData1
       .filter({
-        case (a, b) => joinKeys(a)
+        case (a, b) =>
+          joinKeys(a)
       })
       .groupBy(_._1)
     val grouped2 = rawData2.groupBy(identity[Int]).filterKeys(joinKeys)
@@ -801,7 +830,8 @@ trait GrouperSpec[M[+_]]
     resultJson must haveSize(
       rawData1
         .filter({
-          case (a, b) => joinKeys(a)
+          case (a, b) =>
+            joinKeys(a)
         })
         .distinct
         .size)
@@ -906,7 +936,8 @@ trait GrouperSpec[M[+_]]
 
           forall(gs2Json) { row =>
             (row \ "a") must beLike {
-              case JNum(i) => i mustEqual kaValue
+              case JNum(i) =>
+                i mustEqual kaValue
             }
           }
 
@@ -928,7 +959,8 @@ trait GrouperSpec[M[+_]]
 
     val joinKeys = (rawData1.map(_._1).toSet intersect rawData2.toSet)
     val joinRows = rawData1.filter({
-      case (a, b) => joinKeys(a)
+      case (a, b) =>
+        joinKeys(a)
     })
 
     val crossRows =

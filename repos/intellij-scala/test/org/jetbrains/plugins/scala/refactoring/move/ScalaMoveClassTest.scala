@@ -151,10 +151,14 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
         .instance(getProjectAdapter)
         .getCachedClasses(GlobalSearchScope.allScope(getProjectAdapter), name)
         .filter {
-          case o: ScObject if o.isSyntheticObject       => false
-          case c: ScClass if mode == Kinds.onlyObjects  => false
-          case o: ScObject if mode == Kinds.onlyClasses => false
-          case _                                        => true
+          case o: ScObject if o.isSyntheticObject =>
+            false
+          case c: ScClass if mode == Kinds.onlyObjects =>
+            false
+          case o: ScObject if mode == Kinds.onlyClasses =>
+            false
+          case _ =>
+            true
         }
     }
     val aPackage: PsiPackage = JavaPsiFacade

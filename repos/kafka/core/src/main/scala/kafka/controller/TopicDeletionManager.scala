@@ -440,7 +440,8 @@ class TopicDeletionManager(
       else
         responseMap
           .filter {
-            case (_, error) => error != Errors.NONE.code
+            case (_, error) =>
+              error != Errors.NONE.code
           }
           .map(_._1)
           .toSet

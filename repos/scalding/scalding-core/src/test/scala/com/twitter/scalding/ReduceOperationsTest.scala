@@ -37,7 +37,8 @@ class SortWithTakeJob(args: Args) extends Job(args) {
       .project('key, 'top_items)
       .write(Tsv("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -54,7 +55,8 @@ class SortedReverseTakeJob(args: Args) extends Job(args) {
       .project('key, 'top_items)
       .write(Tsv("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -71,7 +73,8 @@ class SortedTakeJob(args: Args) extends Job(args) {
       .project('key, 'top_items)
       .write(Tsv("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -88,7 +91,8 @@ class ApproximateUniqueCountJob(args: Args) extends Job(args) {
       }
       .write(Tsv("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 

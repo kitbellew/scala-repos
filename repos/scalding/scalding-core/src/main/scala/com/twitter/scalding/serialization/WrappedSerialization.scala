@@ -125,7 +125,8 @@ object WrappedSerialization {
       confKey,
       bufs
         .map {
-          case (cls, buf) => s"${cls.getName}:${serialize(buf)}"
+          case (cls, buf) =>
+            s"${cls.getName}:${serialize(buf)}"
         }
         .mkString(","))
   }
@@ -135,7 +136,8 @@ object WrappedSerialization {
     rawSetBinary(
       bufs,
       {
-        case (k, v) => conf.set(k, v)
+        case (k, v) =>
+          conf.set(k, v)
       })
 
   def getBinary(conf: Configuration): Map[Class[_], Serialization[_]] =
@@ -152,7 +154,8 @@ object WrappedSerialization {
               def deser[T](cls: Class[T]): ClassSerialization[T] =
                 (cls, deserialize[Serialization[T]](serialization))
               deser(conf.getClassByName(className))
-            case _ => sys.error(s"ill formed bufferables: ${clsbuf}")
+            case _ =>
+              sys.error(s"ill formed bufferables: ${clsbuf}")
           }
       }
       .toMap

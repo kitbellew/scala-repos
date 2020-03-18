@@ -44,8 +44,10 @@ class ConstructorResolveProcessor(
     val fromType = getFromType(state)
     val subst =
       fromType match {
-        case Some(tp) => getSubst(state).followUpdateThisType(tp)
-        case _        => getSubst(state)
+        case Some(tp) =>
+          getSubst(state).followUpdateThisType(tp)
+        case _ =>
+          getSubst(state)
       }
 
     def nameShadow0: Option[String] = Option(state.get(ResolverEnv.nameKey))

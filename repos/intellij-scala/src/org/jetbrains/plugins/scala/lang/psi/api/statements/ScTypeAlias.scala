@@ -41,14 +41,18 @@ trait ScTypeAlias
       m: ScMember,
       isStrict: Boolean) =
     m match {
-      case t: ScTypeAlias => t.name == name
-      case _              => false
+      case t: ScTypeAlias =>
+        t.name == name
+      case _ =>
+        false
     }
 
   def isExistentialTypeAlias: Boolean = {
     getContext match {
-      case _: ScExistentialClause => true
-      case _                      => false
+      case _: ScExistentialClause =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -85,8 +89,10 @@ object ScTypeAlias {
       sign: TypeAliasSignature,
       ta: ScTypeAlias): ScTypeAlias = {
     ta match {
-      case light: ScLightTypeAliasDeclaration => getCompoundCopy(sign, light.ta)
-      case light: ScLightTypeAliasDefinition  => getCompoundCopy(sign, light.ta)
+      case light: ScLightTypeAliasDeclaration =>
+        getCompoundCopy(sign, light.ta)
+      case light: ScLightTypeAliasDefinition =>
+        getCompoundCopy(sign, light.ta)
       case decl: ScTypeAliasDeclaration =>
         new ScLightTypeAliasDeclaration(sign, decl)
       case definition: ScTypeAliasDefinition =>

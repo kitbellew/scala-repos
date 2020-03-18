@@ -239,8 +239,10 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
     val leaderAndIsrResponse = response.asInstanceOf[LeaderAndIsrResponse]
     staleControllerEpochDetected =
       Errors.forCode(leaderAndIsrResponse.errorCode) match {
-        case Errors.STALE_CONTROLLER_EPOCH => true
-        case _                             => false
+        case Errors.STALE_CONTROLLER_EPOCH =>
+          true
+        case _ =>
+          false
       }
   }
 }

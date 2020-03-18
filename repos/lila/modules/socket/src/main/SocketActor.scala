@@ -48,18 +48,24 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
   // generic message handler
   def receiveGeneric: Receive = {
 
-    case Ping(uid) => ping(uid)
+    case Ping(uid) =>
+      ping(uid)
 
-    case Broom => broom
+    case Broom =>
+      broom
 
     // when a member quits
-    case Quit(uid) => quit(uid)
+    case Quit(uid) =>
+      quit(uid)
 
-    case GetUids => sender ! SocketUids(members.keySet.toSet)
+    case GetUids =>
+      sender ! SocketUids(members.keySet.toSet)
 
-    case Resync(uid) => resync(uid)
+    case Resync(uid) =>
+      resync(uid)
 
-    case d: Deploy => onDeploy(d)
+    case d: Deploy =>
+      onDeploy(d)
   }
 
   def receive = receiveSpecific orElse receiveGeneric
@@ -155,7 +161,8 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
 
   def membersByUserId(userId: String): Iterable[M] =
     members collect {
-      case (_, member) if member.userId.contains(userId) => member
+      case (_, member) if member.userId.contains(userId) =>
+        member
     }
 
   def userIds: Iterable[String] = members.values.flatMap(_.userId)
@@ -172,8 +179,10 @@ abstract class SocketActor[M <: SocketMember](uidTtl: Duration)
             case Some(userId)
                 if !userIds(userId) && userIds.size < maxSpectatorUsers =>
               (total + 1, anons, userIds + userId)
-            case Some(_) => (total + 1, anons, userIds)
-            case _       => (total + 1, anons + 1, userIds)
+            case Some(_) =>
+              (total + 1, anons, userIds)
+            case _ =>
+              (total + 1, anons + 1, userIds)
           }
       }
 

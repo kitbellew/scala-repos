@@ -48,7 +48,8 @@ private[simul] final class Socket(
     case StartSimul(firstGame, hostId) =>
       redirectPlayer(firstGame, firstGame.playerByUserId(hostId) map (_.color))
 
-    case HostIsOn(gameId) => notifyVersion("hostGame", gameId, Messadata())
+    case HostIsOn(gameId) =>
+      notifyVersion("hostGame", gameId, Messadata())
 
     case Reload =>
       getSimul(simulId) foreach {
@@ -59,7 +60,8 @@ private[simul] final class Socket(
         }
       }
 
-    case Aborted => notifyVersion("aborted", Json.obj(), Messadata())
+    case Aborted =>
+      notifyVersion("aborted", Json.obj(), Messadata())
 
     case PingVersion(uid, v) => {
       ping(uid)
@@ -85,9 +87,11 @@ private[simul] final class Socket(
         case _ =>
       }
 
-    case GetVersion => sender ! history.version
+    case GetVersion =>
+      sender ! history.version
 
-    case Socket.GetUserIds => sender ! userIds
+    case Socket.GetUserIds =>
+      sender ! userIds
 
     case Join(uid, user) =>
       val (enumerator, channel) = Concurrent.broadcast[JsValue]

@@ -37,7 +37,8 @@ object Serialization {
     private final def configToMap(path: String): Map[String, String] = {
       import scala.collection.JavaConverters._
       config.getConfig(path).root.unwrapped.asScala.toMap map {
-        case (k, v) ⇒ (k -> v.toString)
+        case (k, v) ⇒
+          (k -> v.toString)
       }
     }
   }
@@ -61,17 +62,20 @@ object Serialization {
       actorRef match {
         case a: ActorRefWithCell ⇒
           a.underlying.system.asInstanceOf[ExtendedActorSystem]
-        case _ ⇒ null
+        case _ ⇒
+          null
       }
     Serialization.currentTransportInformation.value match {
       case null ⇒
         originalSystem match {
-          case null ⇒ path.toSerializationFormat
+          case null ⇒
+            path.toSerializationFormat
           case system ⇒
             try path.toSerializationFormatWithAddress(
               system.provider.getDefaultAddress)
             catch {
-              case NonFatal(_) ⇒ path.toSerializationFormat
+              case NonFatal(_) ⇒
+                path.toSerializationFormat
             }
         }
       case Information(address, system) ⇒
@@ -145,7 +149,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
                 "akka.actor.serializers is not in synch between the two systems.")
         }
       serializer match {
-        case s2: SerializerWithStringManifest ⇒ s2.fromBinary(bytes, manifest)
+        case s2: SerializerWithStringManifest ⇒
+          s2.fromBinary(bytes, manifest)
         case s1 ⇒
           if (manifest == "")
             s1.fromBinary(bytes, None)
@@ -228,9 +233,11 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
               ser.getClass.getName,
               clazz.getName)
             ser
-          case some ⇒ some
+          case some ⇒
+            some
         }
-      case ser ⇒ ser
+      case ser ⇒
+        ser
     }
 
   /**
@@ -281,8 +288,10 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     (
       (new ArrayBuffer[ClassSerializer](in.size) /: in) { (buf, ca) ⇒
         buf.indexWhere(_._1 isAssignableFrom ca._1) match {
-          case -1 ⇒ buf append ca
-          case x ⇒ buf insert (x, ca)
+          case -1 ⇒
+            buf append ca
+          case x ⇒
+            buf insert (x, ca)
         }
         buf
       }
@@ -304,7 +313,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     */
   val serializerByIdentity: Map[Int, Serializer] =
     Map(NullSerializer.identifier -> NullSerializer) ++ serializers map {
-      case (_, v) ⇒ (v.identifier, v)
+      case (_, v) ⇒
+        (v.identifier, v)
     }
 
   private val isJavaSerializationWarningEnabled = settings.config.getBoolean(

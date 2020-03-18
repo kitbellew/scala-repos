@@ -40,7 +40,8 @@ class CheckedBenchmarks extends MyBenchmark {
         try {
           sum = Checked.checked(sum + i * i + i)
         } catch {
-          case _: Exception => sum = 0
+          case _: Exception =>
+            sum = 0
         }
         i += 1
       }

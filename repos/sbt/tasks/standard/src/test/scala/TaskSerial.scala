@@ -108,7 +108,9 @@ object TaskTest {
       checkCycles: Boolean,
       restrictions: ConcurrentRestrictions[Task[_]]): T =
     run(root, checkCycles, restrictions) match {
-      case Value(v) => v
-      case Inc(i)   => throw i
+      case Value(v) =>
+        v
+      case Inc(i) =>
+        throw i
     }
 }

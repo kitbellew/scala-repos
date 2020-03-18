@@ -78,9 +78,12 @@ object ConvertImplicitBoundsToImplicitParameter {
         element,
         classOf[ScParameterOwner],
         false) match {
-        case x: ScFunction => (x, x, x)
-        case x: ScClass    => (x.constructor.getOrElse(return Seq.empty), x, x)
-        case _             => return Seq.empty
+        case x: ScFunction =>
+          (x, x, x)
+        case x: ScClass =>
+          (x.constructor.getOrElse(return Seq.empty), x, x)
+        case _ =>
+          return Seq.empty
       }
     def removeImplicitBounds() {
       typeParamOwner.typeParameters.foreach(_.removeImplicitBounds())
@@ -109,7 +112,8 @@ object ConvertImplicitBoundsToImplicitParameter {
             removeImplicitBounds()
             UndoUtil.markPsiFileForUndo(function.getContainingFile)
             addedClause.parameters.take(addedParametersCount)
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
       case _ =>
         function.effectiveParameterClauses.lastOption match {
@@ -133,7 +137,8 @@ object ConvertImplicitBoundsToImplicitParameter {
             removeImplicitBounds()
             UndoUtil.markPsiFileForUndo(function.getContainingFile)
             result
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
     }
   }

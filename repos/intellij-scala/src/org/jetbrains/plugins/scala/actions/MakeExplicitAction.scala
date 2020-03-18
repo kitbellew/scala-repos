@@ -26,15 +26,19 @@ class MakeExplicitAction
     val project = CommonDataKeys.PROJECT.getData(context)
     val selectedItem =
       PlatformDataKeys.SELECTED_ITEM.getData(context) match {
-        case s: Parameters => s
-        case _             => null
+        case s: Parameters =>
+          s
+        case _ =>
+          null
       }
     if (selectedItem == null || selectedItem.getNewExpression == null)
       return
     val function =
       selectedItem.getNewExpression match {
-        case f: ScFunction => f
-        case _             => null
+        case f: ScFunction =>
+          f
+        case _ =>
+          null
       }
     val expression = selectedItem.getOldExpression
     val editor = selectedItem.getEditor

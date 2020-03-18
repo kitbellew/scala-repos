@@ -24,7 +24,8 @@ object QueueExecutionContext {
           try {
             runnable.run()
           } catch {
-            case t: Throwable => reportFailure(t)
+            case t: Throwable =>
+              reportFailure(t)
           }
         },
         0)
@@ -42,7 +43,8 @@ object QueueExecutionContext {
         try {
           runnable.run()
         } catch {
-          case t: Throwable => reportFailure(t)
+          case t: Throwable =>
+            reportFailure(t)
         }
         (): Unit | js.Thenable[Unit]
       }

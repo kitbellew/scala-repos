@@ -47,8 +47,10 @@ trait TimePeriodSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -64,7 +66,8 @@ trait TimePeriodSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, period) if ids.size == 0 => period
+        case (ids, period) if ids.size == 0 =>
+          period
       }
       result2 mustEqual (Set(SString("P3Y6M4DT12H30M5S")))
     }
@@ -80,7 +83,8 @@ trait TimePeriodSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, period) if ids.size == 0 => period
+        case (ids, period) if ids.size == 0 =>
+          period
       }
       result2 mustEqual (Set(SString("P6M4DT30M5S")))
     }

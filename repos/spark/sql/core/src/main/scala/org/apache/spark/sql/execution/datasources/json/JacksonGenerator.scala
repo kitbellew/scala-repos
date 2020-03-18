@@ -36,26 +36,38 @@ private[sql] object JacksonGenerator {
   def apply(rowSchema: StructType, gen: JsonGenerator)(
       row: InternalRow): Unit = {
     def valWriter: (DataType, Any) => Unit = {
-      case (_, null) | (NullType, _) => gen.writeNull()
-      case (StringType, v)           => gen.writeString(v.toString)
+      case (_, null) | (NullType, _) =>
+        gen.writeNull()
+      case (StringType, v) =>
+        gen.writeString(v.toString)
       case (TimestampType, v: Long) =>
         gen.writeString(DateTimeUtils.toJavaTimestamp(v).toString)
-      case (IntegerType, v: Int)        => gen.writeNumber(v)
-      case (ShortType, v: Short)        => gen.writeNumber(v)
-      case (FloatType, v: Float)        => gen.writeNumber(v)
-      case (DoubleType, v: Double)      => gen.writeNumber(v)
-      case (LongType, v: Long)          => gen.writeNumber(v)
-      case (DecimalType(), v: Decimal)  => gen.writeNumber(v.toJavaBigDecimal)
-      case (ByteType, v: Byte)          => gen.writeNumber(v.toInt)
-      case (BinaryType, v: Array[Byte]) => gen.writeBinary(v)
-      case (BooleanType, v: Boolean)    => gen.writeBoolean(v)
+      case (IntegerType, v: Int) =>
+        gen.writeNumber(v)
+      case (ShortType, v: Short) =>
+        gen.writeNumber(v)
+      case (FloatType, v: Float) =>
+        gen.writeNumber(v)
+      case (DoubleType, v: Double) =>
+        gen.writeNumber(v)
+      case (LongType, v: Long) =>
+        gen.writeNumber(v)
+      case (DecimalType(), v: Decimal) =>
+        gen.writeNumber(v.toJavaBigDecimal)
+      case (ByteType, v: Byte) =>
+        gen.writeNumber(v.toInt)
+      case (BinaryType, v: Array[Byte]) =>
+        gen.writeBinary(v)
+      case (BooleanType, v: Boolean) =>
+        gen.writeBoolean(v)
       case (DateType, v: Int) =>
         gen.writeString(DateTimeUtils.toJavaDate(v).toString)
       // For UDT values, they should be in the SQL type's corresponding value type.
       // We should not see values in the user-defined class at here.
       // For example, VectorUDT's SQL type is an array of double. So, we should expect that v is
       // an ArrayData at here, instead of a Vector.
-      case (udt: UserDefinedType[_], v) => valWriter(udt.sqlType, v)
+      case (udt: UserDefinedType[_], v) =>
+        valWriter(udt.sqlType, v)
 
       case (ArrayType(ty, _), v: ArrayData) =>
         gen.writeStartArray()

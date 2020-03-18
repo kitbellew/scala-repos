@@ -37,7 +37,8 @@ class TestLatch(count: Int = 1)(implicit system: ActorSystem)
   def ready(atMost: Duration)(implicit permit: CanAwait) = {
     val waitTime =
       atMost match {
-        case f: FiniteDuration ⇒ f
+        case f: FiniteDuration ⇒
+          f
         case _ ⇒
           throw new IllegalArgumentException(
             "TestLatch does not support waiting for " + atMost)

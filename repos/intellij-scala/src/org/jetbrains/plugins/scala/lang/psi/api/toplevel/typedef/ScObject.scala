@@ -41,9 +41,12 @@ trait ScObject
   /** Is this object accessible from a stable path from the root package? */
   def isStatic: Boolean =
     containingClass match {
-      case obj: ScObject => obj.isStatic
-      case null          => true
-      case _             => false
+      case obj: ScObject =>
+        obj.isStatic
+      case null =>
+        true
+      case _ =>
+        false
     }
 
   /**

@@ -47,8 +47,10 @@ sealed class InstructionImpl(
   protected def getPresentation =
     "element: " + (
       element match {
-        case Some(x) => x
-        case z       => z
+        case Some(x) =>
+          x
+        case z =>
+          z
       }
     )
 }

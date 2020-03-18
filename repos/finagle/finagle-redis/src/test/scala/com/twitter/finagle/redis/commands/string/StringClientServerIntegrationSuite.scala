@@ -279,8 +279,10 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(SetEx(key, 10, "Hello"))) == StatusReply("OK"))
       Await.result(client(Ttl(key))) match {
         //TODO: match must beCloseTo(10, 2)
-        case IntegerReply(seconds) => assert(seconds.toInt - 10 < 2)
-        case _                     => fail("Expected IntegerReply")
+        case IntegerReply(seconds) =>
+          assert(seconds.toInt - 10 < 2)
+        case _ =>
+          fail("Expected IntegerReply")
       }
       assertBulkReply(client(Get(key)), "Hello")
     }

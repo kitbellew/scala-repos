@@ -111,8 +111,10 @@ object DecisionTreeExample {
           .text(
             s"checkpoint directory where intermediate node Id caches will be stored, " +
               s"default: ${defaultParams.checkpointDir match {
-                case Some(strVal) => strVal
-                case None         => "None"
+                case Some(strVal) =>
+                  strVal
+                case None =>
+                  "None"
               }}")
           .action((x, c) => c.copy(checkpointDir = Some(x)))
         opt[Int]("checkpointInterval")
@@ -171,9 +173,11 @@ object DecisionTreeExample {
               .option("numFeatures", numFeatures.toString)
               .format("libsvm")
               .load(path)
-          case None => sqlContext.read.format("libsvm").load(path)
+          case None =>
+            sqlContext.read.format("libsvm").load(path)
         }
-      case _ => throw new IllegalArgumentException(s"Bad data format: $format")
+      case _ =>
+        throw new IllegalArgumentException(s"Bad data format: $format")
     }
   }
 
@@ -363,7 +367,8 @@ object DecisionTreeExample {
     // Print number of classes for reference
     val numClasses =
       MetadataUtils.getNumClasses(fullPredictions.schema(labelColName)) match {
-        case Some(n) => n
+        case Some(n) =>
+          n
         case None =>
           throw new RuntimeException(
             "Unknown failure when indexing labels for classification.")

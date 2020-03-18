@@ -48,8 +48,10 @@ object TestActorRefSpec {
       case "complexRequest2" ⇒
         val worker = TestActorRef(Props[WorkerActor])
         worker ! sender()
-      case "workDone" ⇒ replyTo ! "complexReply"
-      case "simpleRequest" ⇒ sender() ! "simpleReply"
+      case "workDone" ⇒
+        replyTo ! "complexReply"
+      case "simpleRequest" ⇒
+        sender() ! "simpleReply"
     }
   }
 
@@ -60,7 +62,8 @@ object TestActorRefSpec {
         context stop self
       case replyTo: Promise[_] ⇒
         replyTo.asInstanceOf[Promise[Any]].success("complexReply")
-      case replyTo: ActorRef ⇒ replyTo ! "complexReply"
+      case replyTo: ActorRef ⇒
+        replyTo ! "complexReply"
     }
 
     val supervisor = context.parent
@@ -70,9 +73,12 @@ object TestActorRefSpec {
   class SenderActor(replyActor: ActorRef) extends TActor {
 
     def receiveT = {
-      case "complex" ⇒ replyActor ! "complexRequest"
-      case "complex2" ⇒ replyActor ! "complexRequest2"
-      case "simple" ⇒ replyActor ! "simpleRequest"
+      case "complex" ⇒
+        replyActor ! "complexRequest"
+      case "complex2" ⇒
+        replyActor ! "complexRequest2"
+      case "simple" ⇒
+        replyActor ! "simpleRequest"
       case "complexReply" ⇒ {
         counter -= 1
       }
@@ -138,7 +144,8 @@ class TestActorRefSpec
                     }
                   }))
               def receive = {
-                case _ ⇒ sender() ! nested
+                case _ ⇒
+                  sender() ! nested
               }
             }))
         a should not be (null)
@@ -159,7 +166,8 @@ class TestActorRefSpec
                     }
                   }))
               def receive = {
-                case _ ⇒ sender() ! nested
+                case _ ⇒
+                  sender() ! nested
               }
             }))
         a should not be (null)
@@ -203,13 +211,16 @@ class TestActorRefSpec
             new Actor {
               context.watch(a)
               def receive = {
-                case t: Terminated ⇒ testActor forward WrappedTerminated(t)
-                case x ⇒ testActor forward x
+                case t: Terminated ⇒
+                  testActor forward WrappedTerminated(t)
+                case x ⇒
+                  testActor forward x
               }
             }))
         a.!(PoisonPill)(testActor)
         expectMsgPF(5 seconds) {
-          case WrappedTerminated(Terminated(`a`)) ⇒ true
+          case WrappedTerminated(Terminated(`a`)) ⇒
+            true
         }
         a.isTerminated should ===(true)
         assertThread()
@@ -249,7 +260,8 @@ class TestActorRefSpec
                   List(classOf[ActorKilledException]))
 
               def receiveT = {
-                case "sendKill" ⇒ ref ! Kill
+                case "sendKill" ⇒
+                  ref ! Kill
               }
             }))
 
@@ -281,7 +293,8 @@ class TestActorRefSpec
       class TA extends TActor {
         var s: String = _
         def receiveT = {
-          case x: String ⇒ s = x
+          case x: String ⇒
+            s = x
         }
       }
       val ref = TestActorRef(new TA)

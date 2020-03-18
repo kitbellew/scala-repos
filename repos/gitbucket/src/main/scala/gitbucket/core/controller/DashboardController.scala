@@ -42,7 +42,8 @@ trait DashboardControllerBase extends ControllerBase {
               redirect(s"/dashboard/issues/assigned${condition.toURL}")
             case q if (q.contains(s"mentions:${account.userName}")) =>
               redirect(s"/dashboard/issues/mentioned${condition.toURL}")
-            case _ => searchIssues("created_by")
+            case _ =>
+              searchIssues("created_by")
           }
       } getOrElse {
         searchIssues("created_by")
@@ -80,7 +81,8 @@ trait DashboardControllerBase extends ControllerBase {
               redirect(s"/dashboard/pulls/assigned${condition.toURL}")
             case q if (q.contains(s"mentions:${account.userName}")) =>
               redirect(s"/dashboard/pulls/mentioned${condition.toURL}")
-            case _ => searchPullRequests("created_by")
+            case _ =>
+              searchPullRequests("created_by")
           }
       } getOrElse {
         searchPullRequests("created_by")
@@ -163,9 +165,12 @@ trait DashboardControllerBase extends ControllerBase {
       countIssue(condition.copy(state = "open"), false, userRepos: _*),
       countIssue(condition.copy(state = "closed"), false, userRepos: _*),
       filter match {
-        case "assigned"  => condition.copy(assigned = Some(userName))
-        case "mentioned" => condition.copy(mentioned = Some(userName))
-        case _           => condition.copy(author = Some(userName))
+        case "assigned" =>
+          condition.copy(assigned = Some(userName))
+        case "mentioned" =>
+          condition.copy(mentioned = Some(userName))
+        case _ =>
+          condition.copy(author = Some(userName))
       },
       filter,
       getGroupNames(userName)
@@ -195,9 +200,12 @@ trait DashboardControllerBase extends ControllerBase {
       countIssue(condition.copy(state = "open"), true, allRepos: _*),
       countIssue(condition.copy(state = "closed"), true, allRepos: _*),
       filter match {
-        case "assigned"  => condition.copy(assigned = Some(userName))
-        case "mentioned" => condition.copy(mentioned = Some(userName))
-        case _           => condition.copy(author = Some(userName))
+        case "assigned" =>
+          condition.copy(assigned = Some(userName))
+        case "mentioned" =>
+          condition.copy(mentioned = Some(userName))
+        case _ =>
+          condition.copy(author = Some(userName))
       },
       filter,
       getGroupNames(userName)

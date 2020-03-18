@@ -5,11 +5,14 @@ object Temp {
     def apply: A = B_inner()
     def unapply(a: A) =
       a match {
-        case B_inner() => true
-        case _         => false
+        case B_inner() =>
+          true
+        case _ =>
+          false
       }
   }
   B() match {
-    case B() => Console.println("match")
+    case B() =>
+      Console.println("match")
   }
 }

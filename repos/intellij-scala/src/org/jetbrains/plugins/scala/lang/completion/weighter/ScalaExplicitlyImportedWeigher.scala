@@ -126,13 +126,16 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
             if (qualNoPoint != null) {
               val memberName =
                 member match {
-                  case named: ScNamedElement => named.name
-                  case _                     => member.getName
+                  case named: ScNamedElement =>
+                    named.name
+                  case _ =>
+                    member.getName
                 }
               val qual = qualNoPoint + "." + memberName
               applyQualifier(qual, position) match {
-                case Some(x) => return Some(x)
-                case None    =>
+                case Some(x) =>
+                  return Some(x)
+                case None =>
               }
             }
           case _ =>
@@ -158,13 +161,15 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
       case clazz: PsiClass if clazz.qualifiedName != null =>
         val qual: String = clazz.qualifiedName
         applyQualifier(qual, position) match {
-          case Some(x) => return x
-          case None    =>
+          case Some(x) =>
+            return x
+          case None =>
         }
       case member: ScMember =>
         applyToMember(member, position) match {
-          case Some(x) => return x
-          case None    =>
+          case Some(x) =>
+            return x
+          case None =>
         }
       case member: PsiMember if member.hasModifierProperty("static") =>
         val clazz = member.containingClass
@@ -172,26 +177,31 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
           val qualNoPoint = clazz.qualifiedName
           val memberName =
             member match {
-              case named: ScNamedElement => named.name
-              case _                     => member.getName
+              case named: ScNamedElement =>
+                named.name
+              case _ =>
+                member.getName
             }
           val qual = qualNoPoint + "." + memberName
           applyQualifier(qual, position) match {
-            case Some(x) => return x
-            case None    =>
+            case Some(x) =>
+              return x
+            case None =>
           }
         }
       case b: ScBindingPattern =>
         ScalaPsiUtil.nameContext(b) match {
           case v: ScValue =>
             applyToMember(v, position) match {
-              case Some(x) => return x
-              case None    =>
+              case Some(x) =>
+                return x
+              case None =>
             }
           case v: ScVariable =>
             applyToMember(v, position) match {
-              case Some(x) => return x
-              case None    =>
+              case Some(x) =>
+                return x
+              case None =>
             }
           case _ =>
         }

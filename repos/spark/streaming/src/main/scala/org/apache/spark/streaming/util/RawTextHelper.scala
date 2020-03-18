@@ -48,11 +48,13 @@ private[streaming] object RawTextHelper {
         }
       }
       map.toIterator.map {
-        case (k, v) => (k, v)
+        case (k, v) =>
+          (k, v)
       }
     }
     map.toIterator.map {
-      case (k, v) => (k, v)
+      case (k, v) =>
+        (k, v)
     }
   }
 

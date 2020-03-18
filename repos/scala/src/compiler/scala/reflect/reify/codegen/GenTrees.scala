@@ -43,11 +43,16 @@ trait GenTrees {
     // current approach is uniform and compact
     var rtree: Tree =
       tree match {
-        case FreeDef(_, _, _, _, _) => reifyNestedFreeDef(tree)
-        case FreeRef(_, _)          => reifyNestedFreeRef(tree)
-        case BoundTerm(tree)        => reifyBoundTerm(tree)
-        case BoundType(tree)        => reifyBoundType(tree)
-        case _                      => reifyTreeSyntactically(tree)
+        case FreeDef(_, _, _, _, _) =>
+          reifyNestedFreeDef(tree)
+        case FreeRef(_, _) =>
+          reifyNestedFreeRef(tree)
+        case BoundTerm(tree) =>
+          reifyBoundTerm(tree)
+        case BoundType(tree) =>
+          reifyBoundType(tree)
+        case _ =>
+          reifyTreeSyntactically(tree)
       }
 
     // usually we don't reify symbols/types, because they can be re-inferred during subsequent reflective compilation
@@ -68,14 +73,18 @@ trait GenTrees {
 
   def reifyTreeSyntactically(tree: Tree): Tree =
     tree match {
-      case global.EmptyTree        => reifyMirrorObject(EmptyTree)
-      case global.noSelfType       => mirrorSelect(nme.noSelfType)
-      case global.pendingSuperCall => mirrorSelect(nme.pendingSuperCall)
+      case global.EmptyTree =>
+        reifyMirrorObject(EmptyTree)
+      case global.noSelfType =>
+        mirrorSelect(nme.noSelfType)
+      case global.pendingSuperCall =>
+        mirrorSelect(nme.pendingSuperCall)
       case Literal(const @ Constant(_)) =>
         mirrorCall(nme.Literal, reifyProduct(const))
       case Import(expr, selectors) =>
         mirrorCall(nme.Import, reify(expr), mkList(selectors map reifyProduct))
-      case _ => reifyProduct(tree)
+      case _ =>
+        reifyProduct(tree)
     }
 
   def reifyFlags(flags: FlagSet) =

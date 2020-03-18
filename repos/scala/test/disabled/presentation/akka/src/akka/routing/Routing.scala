@@ -32,7 +32,8 @@ object Routing {
       interceptee: PF[A, B]): PF[A, B] =
     filter(
       {
-        case a if a.isInstanceOf[A] => interceptor(a)
+        case a if a.isInstanceOf[A] =>
+          interceptor(a)
       },
       interceptee)
 
@@ -73,7 +74,8 @@ object Routing {
   def loggerActor(actorToLog: ActorRef, logger: (Any) => Unit): ActorRef =
     dispatcherActor(
       {
-        case _ => actorToLog
+        case _ =>
+          actorToLog
       },
       logger)
 }

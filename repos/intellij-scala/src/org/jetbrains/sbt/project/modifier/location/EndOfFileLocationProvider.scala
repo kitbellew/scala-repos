@@ -15,8 +15,10 @@ object EndOfFileLocationProvider extends BuildFileModificationLocationProvider {
       elementCondition: Option[PsiElement => Boolean])
       : Option[(PsiElement, Int)] = {
     elementCondition match {
-      case Some(_) => None
-      case None    => Some(file, file.getChildren.length)
+      case Some(_) =>
+        None
+      case None =>
+        Some(file, file.getChildren.length)
     }
   }
 }

@@ -47,8 +47,10 @@ object LawTester {
 
   def apply[T](g: Gen[T], laws: Iterable[Law[T]]): Prop =
     laws.foldLeft(true: Prop) {
-      case (soFar, Law1(name, fn)) => soFar && Prop.forAll(g)(fn).label(name)
-      case (soFar, Law2(name, fn)) => soFar && Prop.forAll(g, g)(fn).label(name)
+      case (soFar, Law1(name, fn)) =>
+        soFar && Prop.forAll(g)(fn).label(name)
+      case (soFar, Law2(name, fn)) =>
+        soFar && Prop.forAll(g, g)(fn).label(name)
       case (soFar, Law3(name, fn)) =>
         soFar && Prop.forAll(g, g, g)(fn).label(name)
     }
@@ -179,19 +181,25 @@ class MyData(override val _1: Int, override val _2: Option[Long])
     extends Product2[Int, Option[Long]] {
   override def canEqual(that: Any): Boolean =
     that match {
-      case o: MyData => true
-      case _         => false
+      case o: MyData =>
+        true
+      case _ =>
+        false
     }
 
   override def equals(obj: scala.Any): Boolean =
     obj match {
       case o: MyData =>
         (o._2, _2) match {
-          case (Some(l), Some(r)) => r == l && _1 == o._1
-          case (None, None)       => _1 == o._1
-          case _                  => false
+          case (Some(l), Some(r)) =>
+            r == l && _1 == o._1
+          case (None, None) =>
+            _1 == o._1
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = _1.hashCode() * _2.hashCode()
@@ -239,8 +247,10 @@ class MacroOpaqueContainer(val myField: Int) {
 
   override def equals(obj: scala.Any): Boolean =
     obj match {
-      case that: MacroOpaqueContainer => that.myField == myField
-      case _                          => false
+      case that: MacroOpaqueContainer =>
+        that.myField == myField
+      case _ =>
+        false
     }
 }
 

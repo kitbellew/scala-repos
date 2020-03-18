@@ -19,18 +19,21 @@ private[changeInfo] trait ParametersChangeInfo {
     _.getTypeText)
 
   val toRemoveParm: Array[Boolean] = oldParametersArray.zipWithIndex.map {
-    case (p, i) => !newParameters.exists(_.oldIndex == i)
+    case (p, i) =>
+      !newParameters.exists(_.oldIndex == i)
   }
 
   val isParameterSetOrOrderChanged: Boolean = {
     oldParameters.map(_.length) != newParams.map(_.length) ||
     newParameters.zipWithIndex.exists {
-      case (p, i) => p.oldIndex != i
+      case (p, i) =>
+        p.oldIndex != i
     }
   }
 
   val isParameterNamesChanged: Boolean = newParameters.zipWithIndex.exists {
-    case (p, i) => p.oldIndex == i && p.getName != getOldParameterNames(i)
+    case (p, i) =>
+      p.oldIndex == i && p.getName != getOldParameterNames(i)
   }
 
   val isParameterTypesChanged: Boolean = newParameters.zipWithIndex.exists {
@@ -62,7 +65,8 @@ private[changeInfo] trait ParametersChangeInfo {
           case c: ScClass =>
             val className = ScalaNamesUtil.toJavaName(c.name)
             s"$className.$$lessinit$$greater$$default$$${idx + 1}()"
-          case _ => p.defaultValue
+          case _ =>
+            p.defaultValue
         }
       } else
         s"${this.getNewName}$$default$$${idx + 1}()"

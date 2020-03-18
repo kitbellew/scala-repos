@@ -47,7 +47,8 @@ abstract class HttpServerTestSetupBase {
             SessionBytes(null, _)) ~> server.in2
           server.out1 ~> Flow[SslTlsOutbound]
             .collect {
-              case SendBytes(x) ⇒ x
+              case SendBytes(x) ⇒
+                x
             }
             .buffer(1, OverflowStrategy.backpressure) ~> netOut.sink
           server.out2 ~> Sink.fromSubscriber(requests)
@@ -73,8 +74,10 @@ abstract class HttpServerTestSetupBase {
     string
       .fastSplit('\n')
       .map {
-        case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
-        case s ⇒ s
+        case s if s.startsWith("Date:") ⇒
+          "Date: XXXX\r"
+        case s ⇒
+          s
       }
       .mkString("\n")
 

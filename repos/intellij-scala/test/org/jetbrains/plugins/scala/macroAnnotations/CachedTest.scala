@@ -71,8 +71,9 @@ class CachedTest extends CachedTestBase {
         new UncaughtExceptionHandler {
           override def uncaughtException(t: Thread, e: Throwable): Unit =
             e match {
-              case _: AssertionError => Foo.assertsFailed += 1
-              case _                 =>
+              case _: AssertionError =>
+                Foo.assertsFailed += 1
+              case _ =>
             }
         }
       thread1.setUncaughtExceptionHandler(eh)

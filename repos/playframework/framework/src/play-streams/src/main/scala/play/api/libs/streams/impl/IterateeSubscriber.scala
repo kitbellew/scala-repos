@@ -244,9 +244,12 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
     */
   private def getNextStepFromIteratee(iter: Iteratee[T, R]): Unit = {
     iter.pureFold {
-      case c @ Step.Cont(_)     => onContStep(c)
-      case d @ Step.Done(_, _)  => onDoneOrErrorStep(d)
-      case e @ Step.Error(_, _) => onDoneOrErrorStep(e)
+      case c @ Step.Cont(_) =>
+        onContStep(c)
+      case d @ Step.Done(_, _) =>
+        onDoneOrErrorStep(d)
+      case e @ Step.Error(_, _) =>
+        onDoneOrErrorStep(e)
     }(Execution.trampoline)
   }
 

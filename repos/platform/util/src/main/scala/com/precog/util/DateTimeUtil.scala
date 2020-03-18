@@ -73,7 +73,8 @@ object DateTimeUtil {
     try {
       Chronic.parse(s, defaultOptions) != null
     } catch {
-      case e: Exception => false
+      case e: Exception =>
+        false
     }
 
   def isValidISO(str: String): Boolean =

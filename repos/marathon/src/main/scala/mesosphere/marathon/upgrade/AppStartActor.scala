@@ -39,7 +39,8 @@ class AppStartActor(
         scheduler
           .stopApp(driver, app)
           .onFailure {
-            case NonFatal(e) => log.error(s"while stopping app ${app.id}", e)
+            case NonFatal(e) =>
+              log.error(s"while stopping app ${app.id}", e)
           }(context.dispatcher)
       }
     }

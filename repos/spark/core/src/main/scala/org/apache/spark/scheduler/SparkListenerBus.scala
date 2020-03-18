@@ -64,7 +64,8 @@ private[spark] trait SparkListenerBus
       case blockUpdated: SparkListenerBlockUpdated =>
         listener.onBlockUpdated(blockUpdated)
       case logStart: SparkListenerLogStart => // ignore event log metadata
-      case _                               => listener.onOtherEvent(event)
+      case _ =>
+        listener.onOtherEvent(event)
     }
   }
 

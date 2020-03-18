@@ -3,7 +3,8 @@ class Example {
 
   val x: PF[Int, String] =
     /*start*/ {
-      case x => x.length()
+      case x =>
+        x.length()
     } /*end*/
 }
 //PartialFunction[String, Int]

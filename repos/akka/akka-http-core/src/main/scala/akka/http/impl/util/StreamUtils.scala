@@ -311,12 +311,14 @@ private[http] object StreamUtils {
         def onPush(elem: A, ctx: Context[B]): SyncDirective = ctx.push(elem)
         def onPull(ctx: Context[B]): SyncDirective =
           recovery match {
-            case None ⇒ ctx.pull()
+            case None ⇒
+              ctx.pull()
             case Some(x) ⇒ {
               recovery = null;
               ctx.push(x)
             }
-            case null ⇒ ctx.finish()
+            case null ⇒
+              ctx.finish()
           }
         override def onUpstreamFailure(
             cause: Throwable,

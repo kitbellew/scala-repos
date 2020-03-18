@@ -64,7 +64,8 @@ class ConfigParser(
 
   def assignment =
     identToken ~ assignToken ~ value ^^ {
-      case k ~ a ~ v => map(prefix + k) = v
+      case k ~ a ~ v =>
+        map(prefix + k) = v
     }
 
   def sectionOpen =
@@ -85,9 +86,12 @@ class ConfigParser(
 
   def parse(in: String): Map[String, Any] = {
     parseAll(root, in) match {
-      case Success(result, _)  => map.toMap
-      case x @ Failure(msg, _) => throw new ConfigurationException(x.toString)
-      case x @ Error(msg, _)   => throw new ConfigurationException(x.toString)
+      case Success(result, _) =>
+        map.toMap
+      case x @ Failure(msg, _) =>
+        throw new ConfigurationException(x.toString)
+      case x @ Error(msg, _) =>
+        throw new ConfigurationException(x.toString)
     }
   }
 }

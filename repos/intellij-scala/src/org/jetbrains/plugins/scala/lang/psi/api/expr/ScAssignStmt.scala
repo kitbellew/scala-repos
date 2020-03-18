@@ -21,15 +21,18 @@ trait ScAssignStmt extends ScExpression {
 
   def getRExpression: Option[ScExpression] =
     findLastChild(classOf[ScExpression]) match {
-      case Some(expr: ScExpression) if expr != getLExpression => Some(expr)
-      case _                                                  => None
+      case Some(expr: ScExpression) if expr != getLExpression =>
+        Some(expr)
+      case _ =>
+        None
     }
 
   def assignName: Option[String] = {
     getLExpression match {
       case ref: ScReferenceExpression if ref.qualifier == None =>
         Some(ref.getText)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -41,10 +44,13 @@ trait ScAssignStmt extends ScExpression {
     getLExpression match {
       case expr: ScReferenceExpression =>
         expr.bind() match {
-          case Some(r) => r.isNamedParameter
-          case _       => false
+          case Some(r) =>
+            r.isNamedParameter
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -65,22 +71,30 @@ trait ScAssignStmt extends ScExpression {
     getLExpression match {
       case methodCall: ScMethodCall =>
         methodCall.applyOrUpdateElement match {
-          case Some(r) => r.getActualElement
-          case None    => null
+          case Some(r) =>
+            r.getActualElement
+          case None =>
+            null
         }
       case left =>
         resolveAssignment match {
-          case Some(ScalaResolveResult(elem, _)) => elem
+          case Some(ScalaResolveResult(elem, _)) =>
+            elem
           case _ =>
             left match {
               case ref: ScReferenceExpression =>
                 ref.resolve() match {
-                  case v: ScVariable                  => v
-                  case p: ScClassParameter if p.isVar => p
-                  case f: PsiField                    => f
-                  case _                              => null
+                  case v: ScVariable =>
+                    v
+                  case p: ScClassParameter if p.isVar =>
+                    p
+                  case f: PsiField =>
+                    f
+                  case _ =>
+                    null
                 }
-              case _ => null
+              case _ =>
+                null
             }
         }
     }

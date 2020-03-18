@@ -8,8 +8,10 @@ sealed abstract class LazyEither[+A, +B] {
 
   def fold[X](left: (=> A) => X, right: (=> B) => X): X =
     this match {
-      case LazyLeft(a)  => left(a())
-      case LazyRight(b) => right(b())
+      case LazyLeft(a) =>
+        left(a())
+      case LazyRight(b) =>
+        right(b())
     }
 
   /** Catamorphism of the constructor chosen. */
@@ -174,8 +176,10 @@ sealed abstract class LazyEitherInstances {
         a.fold(
           e => -\/(LazyEither.lazyLeft(e)),
           {
-            case -\/(a) => -\/(LazyEither.lazyRight(a))
-            case \/-(b) => \/-(LazyEither.lazyRight(b))
+            case -\/(a) =>
+              -\/(LazyEither.lazyRight(a))
+            case \/-(b) =>
+              \/-(LazyEither.lazyRight(b))
           })
 
       def pextract[B, A](fa: LazyEither[E, A]): LazyEither[E, B] \/ A =
@@ -191,11 +195,14 @@ sealed abstract class LazyEitherInstances {
       def tailrecM[A, B](f: A => LazyEither[E, A \/ B])(
           a: A): LazyEither[E, B] =
         f(a) match {
-          case LazyLeft(l) => LazyLeft(l)
+          case LazyLeft(l) =>
+            LazyLeft(l)
           case LazyRight(r) =>
             r() match {
-              case \/-(b)  => LazyEither.lazyRight(b)
-              case -\/(a0) => tailrecM(f)(a0)
+              case \/-(b) =>
+                LazyEither.lazyRight(b)
+              case -\/(a0) =>
+                tailrecM(f)(a0)
             }
         }
     }

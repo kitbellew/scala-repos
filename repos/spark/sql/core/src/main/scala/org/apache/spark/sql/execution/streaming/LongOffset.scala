@@ -24,7 +24,8 @@ case class LongOffset(offset: Long) extends Offset {
 
   override def compareTo(other: Offset): Int =
     other match {
-      case l: LongOffset => offset.compareTo(l.offset)
+      case l: LongOffset =>
+        offset.compareTo(l.offset)
       case _ =>
         throw new IllegalArgumentException(
           s"Invalid comparison of $getClass with ${other.getClass}")

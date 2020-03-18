@@ -59,8 +59,10 @@ final private[stream] class InputStreamSinkStage(readTimeout: FiniteDuration)
 
         private val callback: AsyncCallback[AdapterToStageMessage] =
           getAsyncCallback {
-            case ReadElementAcknowledgement ⇒ sendPullIfAllowed()
-            case Close ⇒ completeStage()
+            case ReadElementAcknowledgement ⇒
+              sendPullIfAllowed()
+            case Close ⇒
+              completeStage()
           }
 
         override def wakeUp(msg: AdapterToStageMessage): Unit =
@@ -169,7 +171,8 @@ private[akka] class InputStreamAdapter(
                     "message 'Initialized' must come first")
               }
             } catch {
-              case ex: InterruptedException ⇒ throw new IOException(ex)
+              case ex: InterruptedException ⇒
+                throw new IOException(ex)
             }
           case Some(data) ⇒
             readBytes(a, begin, length)
@@ -218,14 +221,16 @@ private[akka] class InputStreamAdapter(
           detachedChunk = Some(data.drop(length))
           gotBytes + length
         }
-      case None ⇒ gotBytes
+      case None ⇒
+        gotBytes
     }
   }
 
   private[this] def waitIfNotInitialized(): Unit = {
     if (!isInitialized) {
       sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
-        case Initialized ⇒ isInitialized = true
+        case Initialized ⇒
+          isInitialized = true
         case _ ⇒
           require(false, "First message must be Initialized notification")
       }
@@ -242,9 +247,11 @@ private[akka] class InputStreamAdapter(
           case Finished ⇒
             isStageAlive = false
             None
-          case _ ⇒ None
+          case _ ⇒
+            None
         }
-      case Some(_) ⇒ detachedChunk
+      case Some(_) ⇒
+        detachedChunk
     }
   }
 }

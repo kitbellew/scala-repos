@@ -78,7 +78,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             if (!vd.symbol.isLazy)
               check(vd.rhs)
           case _: MemberDef => // skip other member defs
-          case t            => check(t) // constructor body statement
+          case t =>
+            check(t) // constructor body statement
         }
       }
 
@@ -211,7 +212,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
                 omittables -= sym // mark usage
                 bodyOfOuterAccessor get sym foreach traverse // recurse to mark as needed the field supporting the outer-accessor-method
                 super.traverse(tree)
-              case _ => super.traverse(tree)
+              case _ =>
+                super.traverse(tree)
             }
           }
       }
@@ -396,7 +398,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             sel.symbol.isSpecialized && (
               nme.unspecializedName(sel.symbol.getterName) == sym.getterName
             )
-          case _ => false
+          case _ =>
+            false
         }
 
       /* Rewrite calls to ScalaRunTime.array_update to the proper apply method in scala.Array.
@@ -416,7 +419,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
                     Apply(
                       gen.mkAttributedSelect(xs, arrayUpdateMethod),
                       List(idx, v)))
-                case _ => super.transform(t)
+                case _ =>
+                  super.transform(t)
               }
           }
         adapter.transform(tree)
@@ -433,7 +437,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             stat match {
               case Assign(sel @ Select(This(_), field), _) =>
                 specializedAssignFor(sel.symbol).getOrElse(stat)
-              case _ => stat
+              case _ =>
+                stat
             }
           if (stat1 ne stat) {
             log("replaced " + stat + " with " + stat1)
@@ -511,8 +516,10 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           assert(genericClazz != NoSymbol, clazz)
 
           guardedCtorStats.get(genericClazz) match {
-            case Some(stats1) => mergeConstructors(genericClazz, stats1, stats)
-            case None         => stats
+            case Some(stats1) =>
+              mergeConstructors(genericClazz, stats1, stats)
+            case None =>
+              stats
           }
         } else
           stats
@@ -559,8 +566,10 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         param.name == name || param.name.startsWith(name + nme.NAME_JOIN_STRING)
 
       primaryConstrParams filter matchesName match {
-        case Nil    => abort(name + " not in " + primaryConstrParams)
-        case p :: _ => p
+        case Nil =>
+          abort(name + " not in " + primaryConstrParams)
+        case p :: _ =>
+          p
       }
     }
 
@@ -744,8 +753,10 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           case _: DefDef
               if statSym.isPrimaryConstructor || statSym.isMixinConstructor =>
             ()
-          case _: DefDef if statSym.isConstructor => auxConstructorBuf += stat
-          case _: DefDef                          => defBuf += stat
+          case _: DefDef if statSym.isConstructor =>
+            auxConstructorBuf += stat
+          case _: DefDef =>
+            defBuf += stat
 
           // If a val needs a field, an empty valdef goes into the template.
           // Except for lazy and ConstantTyped vals, the field is initialized by an assignment in:
@@ -828,7 +839,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           tree match {
             case Block(_, expr) =>
               isConstr(expr) // SI-6481 account for named argument blocks
-            case _ => (tree.symbol ne null) && tree.symbol.isConstructor
+            case _ =>
+              (tree.symbol ne null) && tree.symbol.isConstructor
           }
         val (pre, rest0) = stats span (!isConstr(_))
         val (supercalls, rest) = rest0 span (isConstr(_))

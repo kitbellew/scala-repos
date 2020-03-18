@@ -67,8 +67,10 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
       new SexpReader[SexpString] {
         def read(value: Sexp) =
           value match {
-            case s: SexpString => s
-            case x             => deserializationError(x)
+            case s: SexpString =>
+              s
+            case x =>
+              deserializationError(x)
           }
       })
 

@@ -45,8 +45,10 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
         val start: Int = e.getTextRange.getStartOffset
         var end: Int =
           ext.templateBody match {
-            case Some(x) => x.getTextRange.getStartOffset
-            case None    => e.getTextRange.getEndOffset
+            case Some(x) =>
+              x.getTextRange.getStartOffset
+            case None =>
+              e.getTextRange.getEndOffset
           }
         result.add(new TextRange(start, end))
         def isEmptyChar(c: Char): Boolean = c == ' ' || c == '\n'
@@ -83,8 +85,10 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
                     var flag = true
                     while (flag) {
                       editorText.charAt(end) match {
-                        case ' ' | '.' | '\n' => end += 1
-                        case _                => flag = false
+                        case ' ' | '.' | '\n' =>
+                          end += 1
+                        case _ =>
+                          flag = false
                       }
                     }
                     end
@@ -112,11 +116,16 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
   }
   def canSelect(e: PsiElement): Boolean = {
     e match {
-      case _: ScParameterClause | _: ScArguments => true
-      case _: ScExtendsBlock                     => true
-      case _: ScReferenceElement                 => true
-      case _: ScMethodCall                       => true
-      case _                                     => false
+      case _: ScParameterClause | _: ScArguments =>
+        true
+      case _: ScExtendsBlock =>
+        true
+      case _: ScReferenceElement =>
+        true
+      case _: ScMethodCall =>
+        true
+      case _ =>
+        false
     }
   }
 }

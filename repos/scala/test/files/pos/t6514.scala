@@ -4,8 +4,10 @@ object Test {
   // this code ain't dead.
   def a(b: Boolean) = {
     b match {
-      case true  => throw e("true")
-      case false => throw e("false")
+      case true =>
+        throw e("true")
+      case false =>
+        throw e("false")
     }
   }
 }

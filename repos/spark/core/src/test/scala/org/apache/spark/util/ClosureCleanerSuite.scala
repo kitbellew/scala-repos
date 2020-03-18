@@ -200,8 +200,10 @@ class ClosureCleanerSuite extends SparkFunSuite {
 class NonSerializable(val id: Int = -1) {
   override def equals(other: Any): Boolean = {
     other match {
-      case o: NonSerializable => id == o.id
-      case _                  => false
+      case o: NonSerializable =>
+        id == o.id
+      case _ =>
+        false
     }
   }
 }
@@ -604,7 +606,8 @@ private object TestUserClosuresActuallyCleaned {
       }: Iterator[Int] => Int,
       Seq.empty,
       {
-        case (_, _) => return
+        case (_, _) =>
+          return
       }: (Int, Int) => Unit, {
         return
       })

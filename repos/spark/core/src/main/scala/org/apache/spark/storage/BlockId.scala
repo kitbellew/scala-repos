@@ -49,8 +49,10 @@ sealed abstract class BlockId {
   override def hashCode: Int = name.hashCode
   override def equals(other: Any): Boolean =
     other match {
-      case o: BlockId => getClass == o.getClass && name.equals(o.name)
-      case _          => false
+      case o: BlockId =>
+        getClass == o.getClass && name.equals(o.name)
+      case _ =>
+        false
     }
 }
 

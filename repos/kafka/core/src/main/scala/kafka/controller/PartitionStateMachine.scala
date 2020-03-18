@@ -532,7 +532,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         replicas)
     } catch {
       case lenne: LeaderElectionNotNeededException => // swallow
-      case nroe: NoReplicaOnlineException          => throw nroe
+      case nroe: NoReplicaOnlineException =>
+        throw nroe
       case sce: Throwable =>
         val failMsg =
           "encountered error while electing leader for partition %s due to: %s."
@@ -591,7 +592,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       zkUtils,
       topic,
       partition) match {
-      case Some(currentLeaderIsrAndEpoch) => currentLeaderIsrAndEpoch
+      case Some(currentLeaderIsrAndEpoch) =>
+        currentLeaderIsrAndEpoch
       case None =>
         val failMsg =
           "LeaderAndIsr information doesn't exist for partition %s in %s state"
@@ -643,7 +645,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                 newTopics,
                 addedPartitionReplicaAssignment.keySet.toSet)
           } catch {
-            case e: Throwable => error("Error while handling new topic", e)
+            case e: Throwable =>
+              error("Error while handling new topic", e)
           }
         }
       }

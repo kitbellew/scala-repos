@@ -19,7 +19,8 @@ class PackageObjectEditorTabTitleProvider extends EditorTabTitleProvider {
       case "package.scala" if file.getParent != null =>
         val dirName = file.getParent.getName
         s"$dirName${File.separator}package.scala"
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

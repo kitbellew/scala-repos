@@ -59,7 +59,8 @@ class TagMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
       assert(
         ints.sameElements(
           range.collect {
-            case i if i != 3 + range.start && i != 8 + range.start => (i, -i)
+            case i if i != 3 + range.start && i != 8 + range.start =>
+              (i, -i)
           }))
 
       // Works in the presence of sharing the underlying
@@ -68,7 +69,8 @@ class TagMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
       assert(
         ints.sameElements(
           range.collect {
-            case i if i != 3 + range.start && i != 8 + range.start => (i, -i)
+            case i if i != 3 + range.start && i != 8 + range.start =>
+              (i, -i)
           }))
     }
   }

@@ -276,7 +276,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       private def nonSuccessToEmptyJsonEntity(
           response: HttpResponse): HttpResponse =
         response.status match {
-          case code if code.isSuccess ⇒ response
+          case code if code.isSuccess ⇒
+            response
           case code ⇒
             log.warning(
               "Dropping response entity since response status code was: {}",
@@ -319,7 +320,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         case Complete(response) =>
           // "Everything is OK!"
           Complete(response.copy(status = 200))
-        case _ => r
+        case _ =>
+          r
       }
     }
 
@@ -341,8 +343,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         case ex: IllegalArgumentException =>
           Complete(HttpResponse(StatusCodes.InternalServerError))
       } map {
-        case Complete(res) => Complete(res.addHeader(Server("MyServer 1.0")))
-        case rest          => rest
+        case Complete(res) =>
+          Complete(res.addHeader(Server("MyServer 1.0")))
+        case rest =>
+          rest
       }
     }
 
@@ -363,7 +367,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
       entity match {
         case HttpEntity.Strict(contentType, data) =>
           HttpEntity.Strict(contentType, ByteString("test") ++ data)
-        case _ => throw new IllegalStateException("Unexpected entity type")
+        case _ =>
+          throw new IllegalStateException("Unexpected entity type")
       }
 
     val prefixWithTest: Directive0 = mapResponseEntity(prefixEntity)
@@ -552,7 +557,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     //#0mapRouteResult
     val rejectAll = // not particularly useful directive
       mapRouteResult {
-        case _ => Rejected(List(AuthorizationFailedRejection))
+        case _ =>
+          Rejected(List(AuthorizationFailedRejection))
       }
     val route = rejectAll {
       complete("abc")
@@ -569,7 +575,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     case object MyCustomRejection extends Rejection
     val rejectRejections = // not particularly useful directive
       mapRouteResultPF {
-        case Rejected(_) => Rejected(List(AuthorizationFailedRejection))
+        case Rejected(_) =>
+          Rejected(List(AuthorizationFailedRejection))
       }
     val route = rejectRejections {
       reject(MyCustomRejection)
@@ -586,7 +593,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     case object MyCustomRejection extends Rejection
     val rejectRejections = // not particularly useful directive
       mapRouteResultWithPF {
-        case Rejected(_) => Future(Rejected(List(AuthorizationFailedRejection)))
+        case Rejected(_) =>
+          Future(Rejected(List(AuthorizationFailedRejection)))
       }
     val route = rejectRejections {
       reject(MyCustomRejection)
@@ -606,7 +614,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
         res match {
           case Rejected(_) =>
             Future(Rejected(List(AuthorizationFailedRejection)))
-          case _ => Future(res)
+          case _ =>
+            Future(res)
         }
       }
     val route = rejectRejections {
@@ -647,8 +656,10 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
   "cancelRejections-filter-example" in {
     //#cancelRejections-filter-example
     def isMethodRejection: Rejection => Boolean = {
-      case MethodRejection(_) => true
-      case _                  => false
+      case MethodRejection(_) =>
+        true
+      case _ =>
+        false
     }
 
     val route =
@@ -776,7 +787,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
             tail
           else
             s.copy(head = head.drop(3))
-        case _ => path
+        case _ =>
+          path
       }
     val ignoring456 = mapUnmatchedPath(ignore456)
 

@@ -36,7 +36,8 @@ object ConditionalFeatureTester extends JFXApp {
       try {
         Platform.isSupported(cf)
       } catch {
-        case _: Throwable => false
+        case _: Throwable =>
+          false
       }
 
     println(cf.toString + " : " + isSupported)

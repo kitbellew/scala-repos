@@ -65,14 +65,22 @@ object ScalaReflection extends ScalaReflection {
   private def dataTypeFor(tpe: `Type`): DataType =
     ScalaReflectionLock.synchronized {
       tpe match {
-        case t if t <:< definitions.IntTpe       => IntegerType
-        case t if t <:< definitions.LongTpe      => LongType
-        case t if t <:< definitions.DoubleTpe    => DoubleType
-        case t if t <:< definitions.FloatTpe     => FloatType
-        case t if t <:< definitions.ShortTpe     => ShortType
-        case t if t <:< definitions.ByteTpe      => ByteType
-        case t if t <:< definitions.BooleanTpe   => BooleanType
-        case t if t <:< localTypeOf[Array[Byte]] => BinaryType
+        case t if t <:< definitions.IntTpe =>
+          IntegerType
+        case t if t <:< definitions.LongTpe =>
+          LongType
+        case t if t <:< definitions.DoubleTpe =>
+          DoubleType
+        case t if t <:< definitions.FloatTpe =>
+          FloatType
+        case t if t <:< definitions.ShortTpe =>
+          ShortType
+        case t if t <:< definitions.ByteTpe =>
+          ByteType
+        case t if t <:< definitions.BooleanTpe =>
+          BooleanType
+        case t if t <:< localTypeOf[Array[Byte]] =>
+          BinaryType
         case _ =>
           val className = getClassNameFromType(tpe)
           className match {
@@ -95,14 +103,21 @@ object ScalaReflection extends ScalaReflection {
     ScalaReflectionLock.synchronized {
       val cls =
         tpe match {
-          case t if t <:< definitions.IntTpe     => classOf[Array[Int]]
-          case t if t <:< definitions.LongTpe    => classOf[Array[Long]]
-          case t if t <:< definitions.DoubleTpe  => classOf[Array[Double]]
-          case t if t <:< definitions.FloatTpe   => classOf[Array[Float]]
-          case t if t <:< definitions.ShortTpe   => classOf[Array[Short]]
-          case t if t <:< definitions.ByteTpe    => classOf[Array[Byte]]
-          case t if t <:< definitions.BooleanTpe => classOf[Array[Boolean]]
-          case other                             =>
+          case t if t <:< definitions.IntTpe =>
+            classOf[Array[Int]]
+          case t if t <:< definitions.LongTpe =>
+            classOf[Array[Long]]
+          case t if t <:< definitions.DoubleTpe =>
+            classOf[Array[Double]]
+          case t if t <:< definitions.FloatTpe =>
+            classOf[Array[Float]]
+          case t if t <:< definitions.ShortTpe =>
+            classOf[Array[Short]]
+          case t if t <:< definitions.ByteTpe =>
+            classOf[Array[Byte]]
+          case t if t <:< definitions.BooleanTpe =>
+            classOf[Array[Boolean]]
+          case other =>
             // There is probably a better way to do this, but I couldn't find it...
             val elementType = dataTypeFor(other).asInstanceOf[ObjectType].cls
             java.lang.reflect.Array.newInstance(elementType, 1).getClass
@@ -119,7 +134,8 @@ object ScalaReflection extends ScalaReflection {
       case BooleanType | ByteType | ShortType | IntegerType | LongType |
           FloatType | DoubleType | BinaryType =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   /**
@@ -197,13 +213,16 @@ object ScalaReflection extends ScalaReflection {
           expected: DataType,
           walkedTypePath: Seq[String]): Expression =
         expected match {
-          case _: StructType => expr
-          case _             => UpCast(expr, expected, walkedTypePath)
+          case _: StructType =>
+            expr
+          case _ =>
+            UpCast(expr, expected, walkedTypePath)
         }
 
       val className = getClassNameFromType(tpe)
       tpe match {
-        case t if !dataTypeFor(t).isInstanceOf[ObjectType] => getPath
+        case t if !dataTypeFor(t).isInstanceOf[ObjectType] =>
+          getPath
 
         case t if t <:< localTypeOf[Option[_]] =>
           val TypeRef(_, _, Seq(optType)) = t
@@ -283,14 +302,22 @@ object ScalaReflection extends ScalaReflection {
           // TODO: add runtime null check for primitive array
           val primitiveMethod =
             elementType match {
-              case t if t <:< definitions.IntTpe     => Some("toIntArray")
-              case t if t <:< definitions.LongTpe    => Some("toLongArray")
-              case t if t <:< definitions.DoubleTpe  => Some("toDoubleArray")
-              case t if t <:< definitions.FloatTpe   => Some("toFloatArray")
-              case t if t <:< definitions.ShortTpe   => Some("toShortArray")
-              case t if t <:< definitions.ByteTpe    => Some("toByteArray")
-              case t if t <:< definitions.BooleanTpe => Some("toBooleanArray")
-              case _                                 => None
+              case t if t <:< definitions.IntTpe =>
+                Some("toIntArray")
+              case t if t <:< definitions.LongTpe =>
+                Some("toLongArray")
+              case t if t <:< definitions.DoubleTpe =>
+                Some("toDoubleArray")
+              case t if t <:< definitions.FloatTpe =>
+                Some("toFloatArray")
+              case t if t <:< definitions.ShortTpe =>
+                Some("toShortArray")
+              case t if t <:< definitions.ByteTpe =>
+                Some("toByteArray")
+              case t if t <:< definitions.BooleanTpe =>
+                Some("toBooleanArray")
+              case _ =>
+                None
             }
 
           primitiveMethod
@@ -564,7 +591,8 @@ object ScalaReflection extends ScalaReflection {
                     // the Java type "[I".
                     case arr if arr <:< localTypeOf[Array[_]] =>
                       arrayClassFor(t)
-                    case cls => ObjectType(getClassFromType(cls))
+                    case cls =>
+                      ObjectType(getClassFromType(cls))
                   }
                 val unwrapped = UnwrapOption(optionObjectType, inputObject)
 
@@ -899,7 +927,8 @@ trait ScalaReflection {
     try {
       schemaFor(tpe)
     } catch {
-      case _: UnsupportedOperationException => Schema(NullType, nullable = true)
+      case _: UnsupportedOperationException =>
+        Schema(NullType, nullable = true)
     }
 
   /**

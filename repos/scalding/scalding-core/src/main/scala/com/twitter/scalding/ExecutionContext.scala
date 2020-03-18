@@ -110,7 +110,8 @@ trait ExecutionContext {
 
           val otherStrategies: Seq[FlowStepStrategy[JobConf]] =
             config.getFlowStepStrategies.map {
-              case Success(fn) => fn(mode, configWithId)
+              case Success(fn) =>
+                fn(mode, configWithId)
               case Failure(e) =>
                 throw new Exception(
                   "Failed to decode flow step strategy when submitting job",
@@ -125,25 +126,29 @@ trait ExecutionContext {
           }
 
           config.getFlowListeners.foreach {
-            case Success(fn) => flow.addListener(fn(mode, configWithId))
+            case Success(fn) =>
+              flow.addListener(fn(mode, configWithId))
             case Failure(e) =>
               throw new Exception("Failed to decode flow listener", e)
           }
 
           config.getFlowStepListeners.foreach {
-            case Success(fn) => flow.addStepListener(fn(mode, configWithId))
+            case Success(fn) =>
+              flow.addStepListener(fn(mode, configWithId))
             case Failure(e) =>
               new Exception(
                 "Failed to decode flow step listener when submitting job",
                 e)
           }
 
-        case _ => ()
+        case _ =>
+          ()
       }
 
       Success(flow)
     } catch {
-      case err: Throwable => Failure(err)
+      case err: Throwable =>
+        Failure(err)
     }
 
   /**
@@ -152,8 +157,10 @@ trait ExecutionContext {
     */
   final def run: Future[JobStats] =
     buildFlow match {
-      case Success(flow) => Execution.run(flow)
-      case Failure(err)  => Future.failed(err)
+      case Success(flow) =>
+        Execution.run(flow)
+      case Failure(err) =>
+        Future.failed(err)
     }
 
   /**
@@ -176,8 +183,10 @@ object ExecutionContext {
       baseFlowStep: BaseFlowStep[T]): Seq[String] = {
     baseFlowStep.getGraph.vertexSet.asScala.toSeq.flatMap(
       _ match {
-        case pipe: Pipe => RichPipe.getPipeDescriptions(pipe)
-        case _          => List() // no descriptions
+        case pipe: Pipe =>
+          RichPipe.getPipeDescriptions(pipe)
+        case _ =>
+          List() // no descriptions
       })
   }
   /*

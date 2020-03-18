@@ -26,8 +26,10 @@ package object foo {
   def printSymbolDetails(sym: Symbol): Unit = {
     def stableSignature(sym: Symbol) =
       sym.info match {
-        case ClassInfoType(_, _, _) => "ClassInfoType(...)"
-        case tpe                    => tpe.toString
+        case ClassInfoType(_, _, _) =>
+          "ClassInfoType(...)"
+        case tpe =>
+          tpe.toString
       }
     println("============")
     println(

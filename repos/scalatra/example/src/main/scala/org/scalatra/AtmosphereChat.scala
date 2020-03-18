@@ -131,7 +131,8 @@ class AtmosphereChat
     }
   }
   error {
-    case t: Throwable => t.printStackTrace()
+    case t: Throwable =>
+      t.printStackTrace()
   }
 
   val bodyHtml = <div class="row">

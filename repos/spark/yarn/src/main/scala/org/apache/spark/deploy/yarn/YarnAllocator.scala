@@ -379,8 +379,10 @@ private[yarn] class YarnAllocator(
 
   private def hostStr(request: ContainerRequest): String = {
     Option(request.getNodes) match {
-      case Some(nodes) => nodes.asScala.mkString(",")
-      case None        => "Any"
+      case Some(nodes) =>
+        nodes.asScala.mkString(",")
+      case None =>
+        "Any"
     }
   }
 

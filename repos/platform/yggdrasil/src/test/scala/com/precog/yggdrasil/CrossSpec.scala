@@ -50,7 +50,8 @@ trait CrossSpec[M[+_]]
             jvs map { jv =>
               removeUndefined(jv)
             })
-        case v => v
+        case v =>
+          v
       }
 
     val expected: Stream[JValue] =

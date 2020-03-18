@@ -204,7 +204,8 @@ trait PersistentFSMBase[S, D, E]
     def using(andThen: PartialFunction[State, State]): StateFunction =
       func andThen (
         andThen orElse {
-          case x ⇒ x
+          case x ⇒
+            x
         }
       )
   }
@@ -366,7 +367,8 @@ trait PersistentFSMBase[S, D, E]
       case null ⇒
         throw new IllegalStateException(
           "nextStateData is only available during onTransition")
-      case x ⇒ x.stateData
+      case x ⇒
+        x.stateData
     }
 
   /*
@@ -507,7 +509,8 @@ trait PersistentFSMBase[S, D, E]
 
   private[akka] def applyState(nextState: State): Unit = {
     nextState.stopReason match {
-      case None ⇒ makeTransition(nextState)
+      case None ⇒
+        makeTransition(nextState)
       case _ ⇒
         nextState.replies.reverse foreach { r ⇒
           sender() ! r
@@ -596,8 +599,10 @@ trait PersistentFSMBase[S, D, E]
     */
   protected def logTermination(reason: Reason): Unit =
     reason match {
-      case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
-      case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
+      case Failure(ex: Throwable) ⇒
+        log.error(ex, "terminating due to Failure")
+      case Failure(msg: AnyRef) ⇒
+        log.error(msg.toString)
       case _ ⇒
     }
 }
@@ -638,10 +643,14 @@ trait LoggingPersistentFSM[S, D, E] extends PersistentFSMBase[S, D, E] {
     if (debugEvent) {
       val srcstr =
         source match {
-          case s: String ⇒ s
-          case Timer(name, _, _, _) ⇒ "timer " + name
-          case a: ActorRef ⇒ a.toString
-          case _ ⇒ "unknown"
+          case s: String ⇒
+            s
+          case Timer(name, _, _, _) ⇒
+            "timer " + name
+          case a: ActorRef ⇒
+            a.toString
+          case _ ⇒
+            "unknown"
         }
       log.debug("processing " + event + " from " + srcstr)
     }

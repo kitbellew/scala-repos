@@ -86,7 +86,8 @@ class WorksheetFoldGroup(
 
     val ((fromTo, offsetsSpaces), targetInfo) =
       traverseRegions(target) match {
-        case (all, info, _) => (all.unzip, info)
+        case (all, info, _) =>
+          (all.unzip, info)
       }
 
     if (targetInfo == null || targetInfo.expanded == expand)
@@ -166,7 +167,8 @@ class WorksheetFoldGroup(
       case ((res, a, ff), reg) if reg.expanded && reg.region != target =>
         res append numbers(reg, ff)
         (res, a, ff + reg.spaces)
-      case (res, _) => res
+      case (res, _) =>
+        res
     }
   }
 
@@ -208,8 +210,10 @@ class WorksheetFoldGroup(
       lsLength: Int) {
     override def equals(obj: scala.Any): Boolean =
       obj match {
-        case info: FoldRegionInfo => this.region.equals(info.region)
-        case _                    => false
+        case info: FoldRegionInfo =>
+          this.region.equals(info.region)
+        case _ =>
+          false
       }
 
     override def hashCode(): Int = region.hashCode()
@@ -245,8 +249,9 @@ object WorksheetFoldGroup {
     lazy val group =
       new WorksheetFoldGroup(viewerEditor, originalEditor, project, splitter)
     bytes foreach {
-      case nonEmpty if nonEmpty.length > 0 => group deserialize nonEmpty
-      case _                               =>
+      case nonEmpty if nonEmpty.length > 0 =>
+        group deserialize nonEmpty
+      case _ =>
     }
   }
 }

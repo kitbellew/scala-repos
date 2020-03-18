@@ -206,8 +206,10 @@ trait BaseParsers extends RegexParsers {
           Success(f(result), next)
         case Success(result, _) =>
           Failure("Function not defined at " + result, in)
-        case Failure(msg, _) => Failure(msg, in)
-        case Error(msg, _)   => Error(msg, in)
+        case Failure(msg, _) =>
+          Failure(msg, in)
+        case Error(msg, _) =>
+          Error(msg, in)
       }
     }
 
@@ -302,7 +304,8 @@ trait BaseParsers extends RegexParsers {
     */
   def xmlName: Parser[String] =
     xmlNameStartChar ~ (xmlNameChar *) ^^ {
-      case c ~ cs => c + cs.mkString
+      case c ~ cs =>
+        c + cs.mkString
     }
 
   /** Parses a Simplified xml attribute: everything between quotes ("foo")
@@ -325,14 +328,16 @@ trait BaseParsers extends RegexParsers {
     */
   def xmlAttr: Parser[String] =
     ws ~ xmlName ~ '=' ~ xmlAttrVal ^^ {
-      case w ~ name ~ _ ~ value => w + name + '=' + value
+      case w ~ name ~ _ ~ value =>
+        w + name + '=' + value
     }
 
   /** Parses an xml start or empty tag, attribute values are escaped.
     */
   def xmlStartOrEmptyTag: Parser[String] =
     '<' ~> xmlName ~ (xmlAttr *) ~ ows ~ (">" | "/>") ^^ {
-      case name ~ attrs ~ w ~ e => '<' + name + attrs.mkString + w + e
+      case name ~ attrs ~ w ~ e =>
+        '<' + name + attrs.mkString + w + e
     }
 
   /** Parses closing xml tags.
@@ -348,7 +353,8 @@ trait BaseParsers extends RegexParsers {
     */
   def apply[T](p: Parser[T], in: String): T = {
     parseAll(p, in) match {
-      case Success(t, _) => t
+      case Success(t, _) =>
+        t
       case e: NoSuccess =>
         throw new IllegalArgumentException("Could not parse '" + in + "': " + e)
     }

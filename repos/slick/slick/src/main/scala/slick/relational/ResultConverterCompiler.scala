@@ -30,7 +30,8 @@ trait ResultConverterCompiler[Domain <: ResultConverterDomain] {
           pathConvs.head
         else
           CompoundResultConverter(1, pathConvs.toSeq: _*)
-      case Select(_, ElementSymbol(idx)) => createColumnConverter(n, idx, None)
+      case Select(_, ElementSymbol(idx)) =>
+        createColumnConverter(n, idx, None)
       case cast @ Library.SilentCast(sel @ Select(_, ElementSymbol(idx))) =>
         createColumnConverter(sel :@ cast.nodeType, idx, None)
       case OptionApply(Select(_, ElementSymbol(idx))) =>

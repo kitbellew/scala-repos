@@ -19,8 +19,10 @@ final class ScalaImportFilteringRule extends ImportFilteringRule {
             val isImport =
               element.parentsInFile.findByType(classOf[ScImportExpr]).isDefined
             !isImport
-          case None => true
+          case None =>
+            true
         }
-      case _ => true
+      case _ =>
+        true
     }
 }

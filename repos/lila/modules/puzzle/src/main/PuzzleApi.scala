@@ -46,7 +46,8 @@ private[puzzle] final class PuzzleApi(
     def insertPuzzles(
         puzzles: List[Try[PuzzleId => Puzzle]]): Fu[List[Try[PuzzleId]]] =
       puzzles match {
-        case Nil => fuccess(Nil)
+        case Nil =>
+          fuccess(Nil)
         case Failure(err) :: rest =>
           insertPuzzles(rest) map { ps =>
             (Failure(err): Try[PuzzleId]) :: ps
@@ -109,8 +110,10 @@ private[puzzle] final class PuzzleApi(
         case Some(p1) =>
           val p2 =
             a1.vote match {
-              case Some(from) => p1 withVote (_.change(from, v))
-              case None       => p1 withVote (_ add v)
+              case Some(from) =>
+                p1 withVote (_.change(from, v))
+              case None =>
+                p1 withVote (_ add v)
             }
           val a2 = a1.copy(vote = v.some)
           attemptColl.update(
@@ -122,7 +125,8 @@ private[puzzle] final class PuzzleApi(
               BSONDocument(
                 "$set" -> BSONDocument(
                   Puzzle.BSONFields.vote -> p2.vote))) map {
-            case _ => p2 -> a2
+            case _ =>
+              p2 -> a2
           }
       }
 
@@ -150,10 +154,12 @@ private[puzzle] final class PuzzleApi(
         .sort(BSONDocument(Attempt.BSONFields.date -> -1))
         .cursor[BSONDocument]()
         .collect[List](5) map {
-        case attempts if attempts.size < 5 => true
+        case attempts if attempts.size < 5 =>
+          true
         case attempts =>
           attempts.foldLeft(false) {
-            case (true, _) => true
+            case (true, _) =>
+              true
             case (false, doc) =>
               doc.getAs[Boolean](Attempt.BSONFields.vote).isDefined
           }

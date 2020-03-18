@@ -73,7 +73,8 @@ private[prediction] object SegmentIOConnector extends JsonConnector {
             s"Cannot convert unknown type ${common.`type`} to event JSON.")
       }
     } catch {
-      case e: ConnectorException => throw e
+      case e: ConnectorException =>
+        throw e
       case e: Exception =>
         throw new ConnectorException(
           s"Cannot convert $data to event JSON. ${e.getMessage}",

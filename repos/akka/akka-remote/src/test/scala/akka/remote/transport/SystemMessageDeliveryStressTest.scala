@@ -73,7 +73,8 @@ object SystemMessageDeliveryStressTest {
 
     override def sendSystemMessage(message: SystemMessage): Unit = {
       message match {
-        case Failed(_, _, seq) ⇒ testActor ! seq
+        case Failed(_, _, seq) ⇒
+          testActor ! seq
         case _ ⇒
       }
     }

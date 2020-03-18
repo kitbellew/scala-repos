@@ -40,10 +40,14 @@ class HoconFormatter(settings: CodeStyleSettings) {
       parentType: IElementType,
       rightChildType: IElementType) =
     (parentType, rightChildType) match {
-      case (_, RBrace)   => customSettings.KEEP_BLANK_LINES_BEFORE_RBRACE
-      case (_, RBracket) => customSettings.KEEP_BLANK_LINES_BEFORE_RBRACKET
-      case (Array, _)    => customSettings.KEEP_BLANK_LINES_IN_LISTS
-      case _             => customSettings.KEEP_BLANK_LINES_IN_OBJECTS
+      case (_, RBrace) =>
+        customSettings.KEEP_BLANK_LINES_BEFORE_RBRACE
+      case (_, RBracket) =>
+        customSettings.KEEP_BLANK_LINES_BEFORE_RBRACKET
+      case (Array, _) =>
+        customSettings.KEEP_BLANK_LINES_IN_LISTS
+      case _ =>
+        customSettings.KEEP_BLANK_LINES_IN_OBJECTS
     }
 
   def getFirstSpacing(parent: ASTNode, firstChild: ASTNode) =
@@ -220,7 +224,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
           Wrap.createWrap(
             customSettings.OBJECT_FIELDS_WITH_ASSIGNMENT_WRAP,
             true)
-        case _ => null
+        case _ =>
+          null
       }
 
     val keyValueSeparatorWrap =
@@ -230,7 +235,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
         case Some(Equals | PlusEquals)
             if customSettings.OBJECT_FIELDS_ASSIGNMENT_ON_NEXT_LINE =>
           fieldInnerWrap
-        case _ => null
+        case _ =>
+          null
       }
 
     val fieldValueWrap =
@@ -276,7 +282,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
       case (Include, _) =>
         wrapCache.includeInnerWrap
 
-      case _ => null
+      case _ =>
+        null
     }
 
   def getAlignment(
@@ -290,7 +297,8 @@ class HoconFormatter(settings: CodeStyleSettings) {
       case (Array, Value.extractor() | Comment.extractor()) =>
         alignmentCache.arrayValueAlignment
 
-      case _ => null
+      case _ =>
+        null
     }
 
   def getIndent(parent: ASTNode, child: ASTNode) =
@@ -310,16 +318,22 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
   def getChildIndent(parent: ASTNode) =
     parent.getElementType match {
-      case Object | Array                   => Indent.getNormalIndent
-      case Include | KeyedField.extractor() => Indent.getContinuationIndent
-      case _                                => Indent.getNoneIndent
+      case Object | Array =>
+        Indent.getNormalIndent
+      case Include | KeyedField.extractor() =>
+        Indent.getContinuationIndent
+      case _ =>
+        Indent.getNoneIndent
     }
 
   def getChildAlignment(alignmentCache: AlignmentCache, parent: ASTNode) =
     parent.getElementType match {
-      case Object => alignmentCache.objectEntryAlignment
-      case Array  => alignmentCache.arrayValueAlignment
-      case _      => null
+      case Object =>
+        alignmentCache.objectEntryAlignment
+      case Array =>
+        alignmentCache.arrayValueAlignment
+      case _ =>
+        null
     }
 
   def getChildren(node: ASTNode): Iterator[ASTNode] =
@@ -330,16 +344,21 @@ class HoconFormatter(settings: CodeStyleSettings) {
         // immediately expand ObjectEntries element
         node.childrenIterator.flatMap(child =>
           child.getElementType match {
-            case ObjectEntries => getChildren(child)
-            case _             => Iterator(child)
+            case ObjectEntries =>
+              getChildren(child)
+            case _ =>
+              Iterator(child)
           })
       case ObjectEntries =>
         // immediately expand ObjectField into its doc comments and keyed field
         node.childrenIterator.flatMap(child =>
           child.getElementType match {
-            case ObjectField => getChildren(child)
-            case _           => Iterator(child)
+            case ObjectField =>
+              getChildren(child)
+            case _ =>
+              Iterator(child)
           })
-      case _ => node.childrenIterator
+      case _ =>
+        node.childrenIterator
     }
 }

@@ -111,8 +111,10 @@ private[remote] class DefaultMessageDispatcher(
             log.debug(
               "operating in UntrustedMode, dropping inbound PossiblyHarmful message of type [{}]",
               msg.getClass.getName)
-          case msg: SystemMessage ⇒ l.sendSystemMessage(msg)
-          case msg ⇒ l.!(msg)(sender)
+          case msg: SystemMessage ⇒
+            l.sendSystemMessage(msg)
+          case msg ⇒
+            l.!(msg)(sender)
         }
 
       case r @ (_: RemoteRef | _: RepointableRef)
@@ -278,7 +280,8 @@ private[remote] class ReliableDeliverySupervisor(
 
   override val supervisorStrategy =
     OneForOneStrategy(loggingEnabled = false) {
-      case e @ (_: AssociationProblem) ⇒ Escalate
+      case e @ (_: AssociationProblem) ⇒
+        Escalate
       case NonFatal(e) ⇒
         val causedBy =
           if (e.getCause == null)
@@ -425,7 +428,8 @@ private[remote] class ReliableDeliverySupervisor(
         context.system.scheduler
           .scheduleOnce(settings.RetryGateClosedFor, self, Ungate)
       context.become(gated(writerTerminated = true, earlyUngateRequested))
-    case IsIdle ⇒ sender() ! Idle
+    case IsIdle ⇒
+      sender() ! Idle
     case Ungate ⇒
       if (!writerTerminated) {
         // Ungate was sent from EndpointManager, but we must wait for Terminated first.
@@ -452,15 +456,18 @@ private[remote] class ReliableDeliverySupervisor(
     case AttemptSysMsgRedelivery ⇒ // Ignore
     case s @ Send(msg: SystemMessage, _, _, _) ⇒
       tryBuffer(s.copy(seqOpt = Some(nextSeq())))
-    case s: Send ⇒ context.system.deadLetters ! s
-    case EndpointWriter.FlushAndStop ⇒ context.stop(self)
+    case s: Send ⇒
+      context.system.deadLetters ! s
+    case EndpointWriter.FlushAndStop ⇒
+      context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
       replyTo ! EndpointWriter.StoppedReading(w)
       sender() ! EndpointWriter.StoppedReading(w)
   }
 
   def idle: Receive = {
-    case IsIdle ⇒ sender() ! Idle
+    case IsIdle ⇒
+      sender() ! Idle
     case s: Send ⇒
       writer = createWriter()
       // Resending will be triggered by the incoming GotUid message after the connection finished
@@ -481,7 +488,8 @@ private[remote] class ReliableDeliverySupervisor(
           "Remote system has been silent for too long. " +
             s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(
               TimeUnit.HOURS)} hours)"))
-    case EndpointWriter.FlushAndStop ⇒ context.stop(self)
+    case EndpointWriter.FlushAndStop ⇒
+      context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
       replyTo ! EndpointWriter.StoppedReading(w)
   }
@@ -706,7 +714,8 @@ private[remote] class EndpointWriter(
 
   override val supervisorStrategy =
     OneForOneStrategy(loggingEnabled = false) {
-      case NonFatal(e) ⇒ publishAndThrow(e, Logging.ErrorLevel)
+      case NonFatal(e) ⇒
+        publishAndThrow(e, Logging.ErrorLevel)
     }
 
   val provider = RARP(extendedSystem).provider
@@ -726,8 +735,10 @@ private[remote] class EndpointWriter(
       reason: Throwable,
       logLevel: Logging.LogLevel): Nothing = {
     reason match {
-      case _: EndpointDisassociatedException ⇒ publishDisassociated()
-      case _ ⇒ publishError(reason, logLevel)
+      case _: EndpointDisassociatedException ⇒
+        publishDisassociated()
+      case _ ⇒
+        publishError(reason, logLevel)
     }
     throw reason
   }
@@ -799,15 +810,19 @@ private[remote] class EndpointWriter(
 
   def enqueueInBuffer(msg: AnyRef): Unit =
     msg match {
-      case s @ Send(_: PriorityMessage, _, _, _) ⇒ prioBuffer offer s
+      case s @ Send(_: PriorityMessage, _, _, _) ⇒
+        prioBuffer offer s
       case s @ Send(ActorSelectionMessage(_: PriorityMessage, _, _), _, _, _) ⇒
         prioBuffer offer s
-      case _ ⇒ buffer offer msg
+      case _ ⇒
+        buffer offer msg
     }
 
   val buffering: Receive = {
-    case s: Send ⇒ enqueueInBuffer(s)
-    case BackoffTimer ⇒ sendBufferedMessages()
+    case s: Send ⇒
+      enqueueInBuffer(s)
+    case BackoffTimer ⇒
+      sendBufferedMessages()
     case FlushAndStop ⇒
       // Flushing is postponed after the pending writes
       buffer offer FlushAndStop
@@ -1070,7 +1085,8 @@ private[remote] class EndpointWriter(
       case AckIdleCheckTimer ⇒ // Ignore
       case FlushAndStopTimeout ⇒ // ignore
       case BackoffTimer ⇒ // ignore
-      case other ⇒ super.unhandled(other)
+      case other ⇒
+        super.unhandled(other)
     }
 
   def flushAndStop(): Unit = {
@@ -1224,7 +1240,8 @@ private[remote] class EndpointReader(
   }
 
   override def receive: Receive = {
-    case Disassociated(info) ⇒ handleDisassociated(info)
+    case Disassociated(info) ⇒
+      handleDisassociated(info)
 
     case InboundPayload(p) if p.size <= transport.maximumPayloadBytes ⇒
       val (ackOption, msgOption) = tryDecodeMessageAndAck(p)
@@ -1264,7 +1281,8 @@ private[remote] class EndpointReader(
   }
 
   def notReading: Receive = {
-    case Disassociated(info) ⇒ handleDisassociated(info)
+    case Disassociated(info) ⇒
+      handleDisassociated(info)
 
     case StopReading(writer, replyTo) ⇒
       replyTo ! StoppedReading(writer)

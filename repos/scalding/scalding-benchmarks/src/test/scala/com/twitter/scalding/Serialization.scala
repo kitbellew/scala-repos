@@ -60,8 +60,10 @@ object SerializationBenchmark
           sys.error("Failed to generate after 100 tries")
         else {
           item(p) match {
-            case None    => get(attempt + 1)
-            case Some(t) => t
+            case None =>
+              get(attempt + 1)
+            case Some(t) =>
+              t
           }
         }
 

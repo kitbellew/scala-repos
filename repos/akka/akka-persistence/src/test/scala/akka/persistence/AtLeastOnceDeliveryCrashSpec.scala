@@ -14,7 +14,8 @@ object AtLeastOnceDeliveryCrashSpec {
 
     override val supervisorStrategy =
       OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 10.seconds) {
-        case _: IllegalStateException ⇒ Stop
+        case _: IllegalStateException ⇒
+          Stop
         case t ⇒
           super.supervisorStrategy.decider.applyOrElse(t, (_: Any) ⇒ Escalate)
       }
@@ -24,7 +25,8 @@ object AtLeastOnceDeliveryCrashSpec {
       "CrashingActor")
 
     def receive: Receive = {
-      case msg ⇒ crashingActor forward msg
+      case msg ⇒
+        crashingActor forward msg
     }
   }
 
@@ -43,16 +45,19 @@ object AtLeastOnceDeliveryCrashSpec {
     override def persistenceId = self.path.name
 
     override def receiveRecover: Receive = {
-      case Message ⇒ send()
+      case Message ⇒
+        send()
       case CrashMessage ⇒
         log.debug("Crash it")
         throw new IllegalStateException("Intentionally crashed")
           with NoStackTrace
-      case msg ⇒ log.debug("Recover message: " + msg)
+      case msg ⇒
+        log.debug("Recover message: " + msg)
     }
 
     override def receiveCommand: Receive = {
-      case Message ⇒ persist(Message)(_ ⇒ send())
+      case Message ⇒
+        persist(Message)(_ ⇒ send())
       case CrashMessage ⇒
         persist(CrashMessage) { evt ⇒
         }

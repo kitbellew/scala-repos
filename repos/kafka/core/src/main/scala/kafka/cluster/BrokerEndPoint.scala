@@ -35,9 +35,11 @@ object BrokerEndPoint {
       case uriParseExp(host, port) =>
         try Some(host, port.toInt)
         catch {
-          case e: NumberFormatException => None
+          case e: NumberFormatException =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -50,7 +52,8 @@ object BrokerEndPoint {
       connectionString: String): BrokerEndPoint = {
     parseHostPort(connectionString)
       .map {
-        case (host, port) => new BrokerEndPoint(brokerId, host, port)
+        case (host, port) =>
+          new BrokerEndPoint(brokerId, host, port)
       }
       .getOrElse {
         throw new KafkaException(

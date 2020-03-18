@@ -50,8 +50,10 @@ object Bippy {
       slurp(args: _*).lines filter interesting foreach println
 
     classes.zipAll(objects, "", "") foreach {
-      case (c, "") => run("-Xshow-class", c)
-      case (c, o)  => run("-Xshow-class", c, "-Xshow-object", o)
+      case (c, "") =>
+        run("-Xshow-class", c)
+      case (c, o) =>
+        run("-Xshow-class", c, "-Xshow-object", o)
     }
   }
 

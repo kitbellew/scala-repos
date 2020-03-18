@@ -59,15 +59,19 @@ trait ScVariable
             return true
         }
         false
-      case _ => false
+      case _ =>
+        false
     }
   override def getIcon(flags: Int): Icon = {
     var parent = getParent
     while (parent != null) {
       parent match {
-        case _: ScExtendsBlock => return Icons.FIELD_VAR
-        case _: ScBlock        => return Icons.VAR
-        case _                 => parent = parent.getParent
+        case _: ScExtendsBlock =>
+          return Icons.FIELD_VAR
+        case _: ScBlock =>
+          return Icons.VAR
+        case _ =>
+          parent = parent.getParent
       }
     }
     null

@@ -4,7 +4,8 @@ object Test {
   }
   def f(x: Any) =
     x match {
-      case Bob => Bob
+      case Bob =>
+        Bob
     }
 
   def main(args: Array[String]): Unit = {

@@ -55,7 +55,8 @@ class StatsSampleClient(servicePath: String) extends Actor {
   val cluster = Cluster(context.system)
   val servicePathElements =
     servicePath match {
-      case RelativeActorPath(elements) => elements
+      case RelativeActorPath(elements) =>
+        elements
       case _ =>
         throw new IllegalArgumentException(
           "servicePath [%s] is not a valid relative actor path" format servicePath)
@@ -94,10 +95,14 @@ class StatsSampleClient(servicePath: String) extends Actor {
         case m if m.hasRole("compute") && m.status == MemberStatus.Up =>
           m.address
       }
-    case MemberUp(m) if m.hasRole("compute")        => nodes += m.address
-    case other: MemberEvent                         => nodes -= other.member.address
-    case UnreachableMember(m)                       => nodes -= m.address
-    case ReachableMember(m) if m.hasRole("compute") => nodes += m.address
+    case MemberUp(m) if m.hasRole("compute") =>
+      nodes += m.address
+    case other: MemberEvent =>
+      nodes -= other.member.address
+    case UnreachableMember(m) =>
+      nodes -= m.address
+    case ReachableMember(m) if m.hasRole("compute") =>
+      nodes += m.address
   }
 
 }

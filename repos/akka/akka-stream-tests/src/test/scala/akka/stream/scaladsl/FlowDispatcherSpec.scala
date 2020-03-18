@@ -28,7 +28,8 @@ class FlowDispatcherSpec
       .to(Sink.ignore)
       .run()
     probe.receiveN(3) foreach {
-      case s: String ⇒ s should startWith(system.name + "-" + dispatcher)
+      case s: String ⇒
+        s should startWith(system.name + "-" + dispatcher)
     }
   }
 

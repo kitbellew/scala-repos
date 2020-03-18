@@ -20,13 +20,15 @@ class BigIntConvertorSpec extends EnsimeSpec {
 
   "BigIntConvertor" should "convert basic BigSet to BitInt" in {
     examples foreach {
-      case (bitset, bigint) => fromBitSet(bitset) should ===(bigint)
+      case (bitset, bigint) =>
+        fromBitSet(bitset) should ===(bigint)
     }
   }
 
   it should "convert basic BigInt to BitSet" in {
     examples foreach {
-      case (bitset, bigint) => toBitSet(bigint) should ===(bitset)
+      case (bitset, bigint) =>
+        toBitSet(bigint) should ===(bitset)
     }
   }
 }

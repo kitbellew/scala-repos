@@ -96,7 +96,8 @@ case class ASTNode(
       false
     } else {
       children.zip(other.children).forall {
-        case (l, r) => l treeEquals r
+        case (l, r) =>
+          l treeEquals r
       }
     }
   }

@@ -35,8 +35,10 @@ abstract class ScFunctionImpl protected (
   def nameId: PsiElement = {
     val n =
       getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER) match {
-        case null    => getNode.findChildByType(ScalaTokenTypes.kTHIS)
-        case notNull => notNull
+        case null =>
+          getNode.findChildByType(ScalaTokenTypes.kTHIS)
+        case notNull =>
+          notNull
       }
     if (n == null) {
       return ScalaPsiElementFactory

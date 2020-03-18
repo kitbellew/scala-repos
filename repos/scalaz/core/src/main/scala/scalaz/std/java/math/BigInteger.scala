@@ -23,9 +23,12 @@ trait BigIntegerInstances {
 
       def order(x: BigInteger, y: BigInteger) =
         x.compareTo(y) match {
-          case x if x < 0  => Ordering.LT
-          case x if x == 0 => Ordering.EQ
-          case x if x > 0  => Ordering.GT
+          case x if x < 0 =>
+            Ordering.LT
+          case x if x == 0 =>
+            Ordering.EQ
+          case x if x > 0 =>
+            Ordering.GT
         }
     }
 
@@ -50,9 +53,12 @@ trait BigIntegerInstances {
           x: BigInteger @@ Multiplication,
           y: BigInteger @@ Multiplication) =
         Tag.unwrap(x).compareTo(Tag.unwrap(y)) match {
-          case x if x < 0  => Ordering.LT
-          case x if x == 0 => Ordering.EQ
-          case x if x > 0  => Ordering.GT
+          case x if x < 0 =>
+            Ordering.LT
+          case x if x == 0 =>
+            Ordering.EQ
+          case x if x > 0 =>
+            Ordering.GT
         }
     }
 }

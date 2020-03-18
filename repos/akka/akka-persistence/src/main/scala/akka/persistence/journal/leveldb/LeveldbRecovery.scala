@@ -161,8 +161,10 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
     val ro = leveldbSnapshot()
     try {
       leveldb.get(keyToBytes(counterKey(persistenceId)), ro) match {
-        case null ⇒ 0L
-        case bytes ⇒ counterFromBytes(bytes)
+        case null ⇒
+          0L
+        case bytes ⇒
+          counterFromBytes(bytes)
       }
     } finally {
       ro.snapshot().close()

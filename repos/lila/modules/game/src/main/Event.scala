@@ -131,7 +131,8 @@ object Event {
           Event.Enpassant(_, !move.color)
         },
         castle = move.castle.map {
-          case (king, rook) => Castling(king, rook, move.color)
+          case (king, rook) =>
+            Castling(king, rook, move.color)
         },
         state = state,
         clock = clock,
@@ -199,7 +200,8 @@ object Event {
         JsNull
       else
         moves.foldLeft(JsObject(Nil)) {
-          case (res, (o, d)) => res + (o.key, JsString(d map (_.key) mkString))
+          case (res, (o, d)) =>
+            res + (o.key, JsString(d map (_.key) mkString))
         }
   }
 

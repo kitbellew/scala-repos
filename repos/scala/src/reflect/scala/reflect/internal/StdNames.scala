@@ -421,7 +421,8 @@ trait StdNames {
 
     def isOpAssignmentName(name: Name) =
       name match {
-        case raw.NE | raw.LE | raw.GE | EMPTY => false
+        case raw.NE | raw.LE | raw.GE | EMPTY =>
+          false
         case _ =>
           name.endChar == '=' && name.startChar != '=' && isOperatorPart(
             name.startChar)
@@ -451,8 +452,9 @@ trait StdNames {
       */
     def unexpandedName(name: Name): Name =
       name lastIndexOf "$$" match {
-        case 0 | -1 => name
-        case idx0   =>
+        case 0 | -1 =>
+          name
+        case idx0 =>
           // Sketchville - We've found $$ but if it's part of $$$ or $$$$
           // or something we need to keep the bonus dollars, so e.g. foo$$$outer
           // has an original name of $outer.
@@ -527,8 +529,10 @@ trait StdNames {
          nme.CONSTRUCTOR
        else
          name indexOf DEFAULT_GETTER_STRING match {
-           case -1  => name.toTermName
-           case idx => name.toTermName take idx
+           case -1 =>
+             name.toTermName
+           case idx =>
+             name.toTermName take idx
          })
 
     def localDummyName(clazz: Symbol): TermName =
@@ -589,45 +593,79 @@ trait StdNames {
     @switch
     def syntheticParamName(i: Int): TermName =
       i match {
-        case 0 => nme.x_0
-        case 1 => nme.x_1
-        case 2 => nme.x_2
-        case 3 => nme.x_3
-        case 4 => nme.x_4
-        case 5 => nme.x_5
-        case 6 => nme.x_6
-        case 7 => nme.x_7
-        case 8 => nme.x_8
-        case 9 => nme.x_9
-        case _ => newTermName("x$" + i)
+        case 0 =>
+          nme.x_0
+        case 1 =>
+          nme.x_1
+        case 2 =>
+          nme.x_2
+        case 3 =>
+          nme.x_3
+        case 4 =>
+          nme.x_4
+        case 5 =>
+          nme.x_5
+        case 6 =>
+          nme.x_6
+        case 7 =>
+          nme.x_7
+        case 8 =>
+          nme.x_8
+        case 9 =>
+          nme.x_9
+        case _ =>
+          newTermName("x$" + i)
       }
 
     @switch
     def productAccessorName(j: Int): TermName =
       j match {
-        case 1  => nme._1
-        case 2  => nme._2
-        case 3  => nme._3
-        case 4  => nme._4
-        case 5  => nme._5
-        case 6  => nme._6
-        case 7  => nme._7
-        case 8  => nme._8
-        case 9  => nme._9
-        case 10 => nme._10
-        case 11 => nme._11
-        case 12 => nme._12
-        case 13 => nme._13
-        case 14 => nme._14
-        case 15 => nme._15
-        case 16 => nme._16
-        case 17 => nme._17
-        case 18 => nme._18
-        case 19 => nme._19
-        case 20 => nme._20
-        case 21 => nme._21
-        case 22 => nme._22
-        case _  => newTermName("_" + j)
+        case 1 =>
+          nme._1
+        case 2 =>
+          nme._2
+        case 3 =>
+          nme._3
+        case 4 =>
+          nme._4
+        case 5 =>
+          nme._5
+        case 6 =>
+          nme._6
+        case 7 =>
+          nme._7
+        case 8 =>
+          nme._8
+        case 9 =>
+          nme._9
+        case 10 =>
+          nme._10
+        case 11 =>
+          nme._11
+        case 12 =>
+          nme._12
+        case 13 =>
+          nme._13
+        case 14 =>
+          nme._14
+        case 15 =>
+          nme._15
+        case 16 =>
+          nme._16
+        case 17 =>
+          nme._17
+        case 18 =>
+          nme._18
+        case 19 =>
+          nme._19
+        case 20 =>
+          nme._20
+        case 21 =>
+          nme._21
+        case 22 =>
+          nme._22
+        case _ =>
+          newTermName("_" + j)
       }
 
     val ??? = encode("???")
@@ -999,11 +1037,16 @@ trait StdNames {
 
     def toUnaryName(name: TermName): TermName =
       name match {
-        case raw.MINUS => UNARY_-
-        case raw.PLUS  => UNARY_+
-        case raw.TILDE => UNARY_~
-        case raw.BANG  => UNARY_!
-        case _         => name
+        case raw.MINUS =>
+          UNARY_-
+        case raw.PLUS =>
+          UNARY_+
+        case raw.TILDE =>
+          UNARY_~
+        case raw.BANG =>
+          UNARY_!
+        case _ =>
+          name
       }
 
     /** The name of a method which stands in for a primitive operation
@@ -1011,50 +1054,84 @@ trait StdNames {
       */
     def primitiveInfixMethodName(name: Name): TermName =
       name match {
-        case OR   => takeOr
-        case XOR  => takeXor
-        case AND  => takeAnd
-        case EQ   => testEqual
-        case NE   => testNotEqual
-        case ADD  => add
-        case SUB  => subtract
-        case MUL  => multiply
-        case DIV  => divide
-        case MOD  => takeModulo
-        case LSL  => shiftSignedLeft
-        case LSR  => shiftLogicalRight
-        case ASR  => shiftSignedRight
-        case LT   => testLessThan
-        case LE   => testLessOrEqualThan
-        case GE   => testGreaterOrEqualThan
-        case GT   => testGreaterThan
-        case ZOR  => takeConditionalOr
-        case ZAND => takeConditionalAnd
-        case _    => NO_NAME
+        case OR =>
+          takeOr
+        case XOR =>
+          takeXor
+        case AND =>
+          takeAnd
+        case EQ =>
+          testEqual
+        case NE =>
+          testNotEqual
+        case ADD =>
+          add
+        case SUB =>
+          subtract
+        case MUL =>
+          multiply
+        case DIV =>
+          divide
+        case MOD =>
+          takeModulo
+        case LSL =>
+          shiftSignedLeft
+        case LSR =>
+          shiftLogicalRight
+        case ASR =>
+          shiftSignedRight
+        case LT =>
+          testLessThan
+        case LE =>
+          testLessOrEqualThan
+        case GE =>
+          testGreaterOrEqualThan
+        case GT =>
+          testGreaterThan
+        case ZOR =>
+          takeConditionalOr
+        case ZAND =>
+          takeConditionalAnd
+        case _ =>
+          NO_NAME
       }
 
     /** Postfix/prefix, really.
       */
     def primitivePostfixMethodName(name: Name): TermName =
       name match {
-        case UNARY_!    => takeNot
-        case UNARY_+    => positive
-        case UNARY_-    => negate
-        case UNARY_~    => complement
-        case `toByte`   => toByte
-        case `toShort`  => toShort
-        case `toChar`   => toCharacter
-        case `toInt`    => toInteger
-        case `toLong`   => toLong
-        case `toFloat`  => toFloat
-        case `toDouble` => toDouble
-        case _          => NO_NAME
+        case UNARY_! =>
+          takeNot
+        case UNARY_+ =>
+          positive
+        case UNARY_- =>
+          negate
+        case UNARY_~ =>
+          complement
+        case `toByte` =>
+          toByte
+        case `toShort` =>
+          toShort
+        case `toChar` =>
+          toCharacter
+        case `toInt` =>
+          toInteger
+        case `toLong` =>
+          toLong
+        case `toFloat` =>
+          toFloat
+        case `toDouble` =>
+          toDouble
+        case _ =>
+          NO_NAME
       }
 
     def primitiveMethodName(name: Name): TermName =
       primitiveInfixMethodName(name) match {
-        case NO_NAME => primitivePostfixMethodName(name)
-        case name    => name
+        case NO_NAME =>
+          primitivePostfixMethodName(name)
+        case name =>
+          name
       }
 
     /** Translate a String into a list of simple TypeNames and TermNames.

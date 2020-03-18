@@ -37,8 +37,10 @@ sealed trait HList extends Product with Serializable
 final case class ::[+H, +T <: HList](head: H, tail: T) extends HList {
   override def toString =
     head match {
-      case _: ::[_, _] => "(" + head + ") :: " + tail.toString
-      case _           => head + " :: " + tail.toString
+      case _: ::[_, _] =>
+        "(" + head + ") :: " + tail.toString
+      case _ =>
+        head + " :: " + tail.toString
     }
 }
 
@@ -122,9 +124,12 @@ object HList extends Dynamic {
     @tailrec
     def loop(l: HList, i: Int, prefix: List[Any]): (List[Any], HList) =
       l match {
-        case HNil                        => (prefix, e :: HNil)
-        case hd :: (tl: HList) if i == 0 => (prefix, e :: tl)
-        case hd :: (tl: HList)           => loop(tl, i - 1, hd :: prefix)
+        case HNil =>
+          (prefix, e :: HNil)
+        case hd :: (tl: HList) if i == 0 =>
+          (prefix, e :: tl)
+        case hd :: (tl: HList) =>
+          loop(tl, i - 1, hd :: prefix)
       }
 
     val (prefix, suffix) = loop(l, i, Nil)

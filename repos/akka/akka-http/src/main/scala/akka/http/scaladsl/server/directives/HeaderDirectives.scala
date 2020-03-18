@@ -35,9 +35,12 @@ trait HeaderDirectives {
 
     extract(_.request.headers.collectFirst(Function.unlift(protectedF)))
       .flatMap {
-        case Some(Right(a)) ⇒ provide(a)
-        case Some(Left(rejection)) ⇒ reject(rejection)
-        case None ⇒ reject
+        case Some(Right(a)) ⇒
+          provide(a)
+        case Some(Left(rejection)) ⇒
+          reject(rejection)
+        case None ⇒
+          reject
       }
   }
 
@@ -80,7 +83,8 @@ trait HeaderDirectives {
     */
   def optionalHeaderValue[T](f: HttpHeader ⇒ Option[T]): Directive1[Option[T]] =
     headerValue(f).map(Some(_): Option[T]).recoverPF {
-      case Nil ⇒ provide(None)
+      case Nil ⇒
+        provide(None)
     }
   //#
 
@@ -108,7 +112,8 @@ trait HeaderDirectives {
     val lowerCaseName = headerName.toLowerCase
     extract(
       _.request.headers.collectFirst {
-        case HttpHeader(`lowerCaseName`, value) ⇒ value
+        case HttpHeader(`lowerCaseName`, value) ⇒
+          value
       })
   }
 
@@ -121,8 +126,10 @@ trait HeaderDirectives {
 
   private def optionalValue(
       lowerCaseName: String): HttpHeader ⇒ Option[String] = {
-    case HttpHeader(`lowerCaseName`, value) ⇒ Some(value)
-    case _ ⇒ None
+    case HttpHeader(`lowerCaseName`, value) ⇒
+      Some(value)
+    case _ ⇒
+      None
   }
 }
 

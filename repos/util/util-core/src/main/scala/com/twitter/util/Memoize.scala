@@ -58,7 +58,8 @@ object Memoize {
 
       def snap: Map[A, B] =
         synchronized(memo) collect {
-          case (a, Right(b)) => (a, b)
+          case (a, Right(b)) =>
+            (a, b)
         }
 
       /**
@@ -134,8 +135,10 @@ object Memoize {
         // present, then it is guaranteed to be the final value. If it
         // is absent, call missing() to determine what to do.
         memo.get(a) match {
-          case Some(Right(b)) => b
-          case _              => missing(a)
+          case Some(Right(b)) =>
+            b
+          case _ =>
+            missing(a)
         }
     }
 }

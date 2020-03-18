@@ -64,7 +64,8 @@ object DynamicRuleDispatch {
     val names: Array[String] =
       ruleNames.map {
         _.tree match {
-          case Literal(Constant(s: String)) ⇒ s
+          case Literal(Constant(s: String)) ⇒
+            s
           case x ⇒
             c.abort(
               x.pos,

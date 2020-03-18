@@ -49,11 +49,15 @@ object ApiBranchProtection {
     new CustomSerializer[EnforcementLevel](format =>
       (
         {
-          case JString("off")        => Off
-          case JString("non_admins") => NonAdmins
-          case JString("everyone")   => Everyone
+          case JString("off") =>
+            Off
+          case JString("non_admins") =>
+            NonAdmins
+          case JString("everyone") =>
+            Everyone
         },
         {
-          case x: EnforcementLevel => JString(x.name)
+          case x: EnforcementLevel =>
+            JString(x.name)
         }))
 }

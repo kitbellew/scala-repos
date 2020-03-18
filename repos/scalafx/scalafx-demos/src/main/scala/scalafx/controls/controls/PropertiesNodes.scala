@@ -117,7 +117,8 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
       val txt = field.text.get
       property.value = txt.toDouble
     } catch {
-      case t: NumberFormatException => onError
+      case t: NumberFormatException =>
+        onError
     }
 
     if (cleanAfterAction) {
@@ -135,7 +136,8 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
       val txt = field.text.get
       property.value = txt.toInt
     } catch {
-      case t: NumberFormatException => onError
+      case t: NumberFormatException =>
+        onError
     }
 
     if (cleanAfterAction) {

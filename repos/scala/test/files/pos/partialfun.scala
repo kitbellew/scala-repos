@@ -8,8 +8,10 @@ object partialfun {
       "<undefined>";
 
   applyPartial {
-    case Some(xxx) => xxx
-    case None      => throw new MatchError(None)
+    case Some(xxx) =>
+      xxx
+    case None =>
+      throw new MatchError(None)
   }(None);
 
 }

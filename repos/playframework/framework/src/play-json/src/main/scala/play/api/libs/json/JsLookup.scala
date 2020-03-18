@@ -15,10 +15,14 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
     */
   def head: JsLookupResult =
     result match {
-      case JsDefined(JsArray(head +: tail)) => JsDefined(head)
-      case JsDefined(arr: JsArray)          => JsUndefined("Cannot get head of " + arr)
-      case JsDefined(o)                     => JsUndefined(o + " is not an array")
-      case undef                            => undef
+      case JsDefined(JsArray(head +: tail)) =>
+        JsDefined(head)
+      case JsDefined(arr: JsArray) =>
+        JsUndefined("Cannot get head of " + arr)
+      case JsDefined(o) =>
+        JsUndefined(o + " is not an array")
+      case undef =>
+        undef
     }
 
   /**
@@ -26,10 +30,14 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
     */
   def tail: JsLookupResult =
     result match {
-      case JsDefined(JsArray(head +: tail)) => JsDefined(JsArray(tail))
-      case JsDefined(arr: JsArray)          => JsUndefined("Cannot get tail of " + arr)
-      case JsDefined(o)                     => JsUndefined(o + " is not an array")
-      case undef                            => undef
+      case JsDefined(JsArray(head +: tail)) =>
+        JsDefined(JsArray(tail))
+      case JsDefined(arr: JsArray) =>
+        JsUndefined("Cannot get tail of " + arr)
+      case JsDefined(o) =>
+        JsUndefined(o + " is not an array")
+      case undef =>
+        undef
     }
 
   /**
@@ -41,8 +49,10 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
         JsDefined(values.last)
       case JsDefined(arr: JsArray) =>
         JsUndefined("Cannot get last element of " + arr)
-      case JsDefined(o) => JsUndefined(o + " is not an array")
-      case undef        => undef
+      case JsDefined(o) =>
+        JsUndefined(o + " is not an array")
+      case undef =>
+        undef
     }
 
   /**
@@ -59,7 +69,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
           .getOrElse(JsUndefined("Array index out of bounds in " + arr))
       case JsDefined(o) =>
         JsUndefined(o + " is not an array")
-      case undef => undef
+      case undef =>
+        undef
     }
 
   /**
@@ -86,7 +97,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
             JsUndefined("'" + fieldName + "' is undefined on object: " + obj))
       case JsDefined(o) =>
         JsUndefined(o + " is not an object")
-      case undef => undef
+      case undef =>
+        undef
     }
 
   /**
@@ -101,11 +113,13 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
           pair match {
             case (key, value) if key == fieldName =>
               o ++ (value +: (value \\ fieldName))
-            case (_, value) => o ++ (value \\ fieldName)
+            case (_, value) =>
+              o ++ (value \\ fieldName)
           })
       case JsDefined(arr: JsArray) =>
         arr.value.flatMap(_ \\ fieldName)
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
 }
 
@@ -116,21 +130,27 @@ sealed trait JsLookupResult extends Any with JsReadable {
     */
   def toOption: Option[JsValue] =
     this match {
-      case JsDefined(v) => Some(v)
-      case _            => None
+      case JsDefined(v) =>
+        Some(v)
+      case _ =>
+        None
     }
   def toEither: Either[ValidationError, JsValue] =
     this match {
-      case JsDefined(v)       => Right(v)
-      case undef: JsUndefined => Left(undef.validationError)
+      case JsDefined(v) =>
+        Right(v)
+      case undef: JsUndefined =>
+        Left(undef.validationError)
     }
   def get: JsValue = toOption.get
   def getOrElse(v: => JsValue): JsValue = toOption.getOrElse(v)
 
   def validate[A](implicit rds: Reads[A]): JsResult[A] =
     this match {
-      case JsDefined(v)       => v.validate[A]
-      case undef: JsUndefined => JsError(undef.validationError)
+      case JsDefined(v) =>
+        v.validate[A]
+      case undef: JsUndefined =>
+        JsError(undef.validationError)
     }
 
   /**
@@ -139,8 +159,10 @@ sealed trait JsLookupResult extends Any with JsReadable {
     */
   def validateOpt[A](implicit rds: Reads[A]): JsResult[Option[A]] =
     this match {
-      case JsUndefined() => JsSuccess(None)
-      case JsDefined(a)  => Reads.optionWithNull(rds).reads(a)
+      case JsUndefined() =>
+        JsSuccess(None)
+      case JsDefined(a) =>
+        Reads.optionWithNull(rds).reads(a)
     }
 }
 object JsLookupResult {

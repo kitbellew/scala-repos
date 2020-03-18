@@ -120,8 +120,10 @@ object TestBuild {
     def project(ref: ProjectRef) = buildMap(ref.build).projectMap(ref.project)
     def projectFor(ref: ResolvedReference) =
       ref match {
-        case pr: ProjectRef => project(pr);
-        case BuildRef(uri)  => buildMap(uri).root
+        case pr: ProjectRef =>
+          project(pr);
+        case BuildRef(uri) =>
+          buildMap(uri).root
       }
 
     lazy val allProjects = builds.flatMap(_.allProjects)
@@ -130,8 +132,10 @@ object TestBuild {
       projectFor(ref).confMap(config.name).extended map toConfigKey
     def inheritTask(task: AttributeKey[_]) =
       taskMap.get(task) match {
-        case None    => Nil;
-        case Some(t) => t.delegates map getKey
+        case None =>
+          Nil;
+        case Some(t) =>
+          t.delegates map getKey
       }
     def inheritProject(ref: ProjectRef) = project(ref).delegates
     def resolve(ref: Reference) =
@@ -148,7 +152,8 @@ object TestBuild {
     lazy val allFullScopes: Seq[Scope] =
       for {
         (ref, p) <- (Global, root.root) +: allProjects.map {
-          case (ref, p) => (Select(ref), p)
+          case (ref, p) =>
+            (Select(ref), p)
         }
         t <- Global +: tasks.map(t => Select(t.key))
         c <- Global +: p.configurations.map(c => Select(ConfigKey(c.name)))
@@ -223,9 +228,12 @@ object TestBuild {
         _.root.configurations.map(_.name)
       }
     val defaultConfs: Option[ResolvedReference] => Seq[String] = {
-      case None                  => confs(env.root.uri)
-      case Some(BuildRef(uri))   => confs(uri)
-      case Some(ref: ProjectRef) => env.project(ref).configurations.map(_.name)
+      case None =>
+        confs(env.root.uri)
+      case Some(BuildRef(uri)) =>
+        confs(uri)
+      case Some(ref: ProjectRef) =>
+        env.project(ref).configurations.map(_.name)
     }
     Act.scopedKey(keyIndex, current, defaultConfs, keyMap, data)
   }
@@ -346,7 +354,8 @@ object TestBuild {
     genAcyclic(maxDeps, keys, Nil) flatMap { pairs =>
       sequence(
         pairs.map {
-          case (key, deps) => mapMake(key, deps, make)
+          case (key, deps) =>
+            mapMake(key, deps, make)
         }) flatMap { inputs =>
         val made = new collection.mutable.HashMap[T, A]
         for ((key, deps, mk) <- inputs)
@@ -368,7 +377,8 @@ object TestBuild {
       names: List[T],
       acc: List[Gen[(T, Seq[T])]]): Gen[Seq[(T, Seq[T])]] =
     names match {
-      case Nil => sequence(acc)
+      case Nil =>
+        sequence(acc)
       case x :: xs =>
         val next =
           for (depCount <- maxDeps;

@@ -40,7 +40,8 @@ object Twitch {
                 streamer = streamer,
                 url = url,
                 streamId = c.name))
-          case _ => None
+          case _ =>
+            None
         }
       }
   }

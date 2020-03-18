@@ -220,8 +220,11 @@ class ServiceDiscovererTest
     gd2.res() = Throw(new Exception)
 
     Await.result(f1, 1.second) match {
-      case Activity.Failed(ServiceDiscoverer.EntryLookupFailureException) => // great!
-      case other                                                          => fail(s"Expected entry lookup exception. Received $other")
+      case Activity.Failed(
+            ServiceDiscoverer.EntryLookupFailureException
+          ) => // great!
+      case other =>
+        fail(s"Expected entry lookup exception. Received $other")
     }
   }
 
@@ -282,7 +285,8 @@ class ServiceDiscovererTest
       currentValue.get match {
         case Activity.Ok(seq) =>
           assert(seq.size == 2) // both have good values now
-        case other => fail(s"Expected entry lookup exception. Received $other")
+        case other =>
+          fail(s"Expected entry lookup exception. Received $other")
       }
     }
   }

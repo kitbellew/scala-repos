@@ -98,6 +98,7 @@ class MatAny[T: ST](r: Int, c: Int, values: Array[T]) extends Mat[T] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

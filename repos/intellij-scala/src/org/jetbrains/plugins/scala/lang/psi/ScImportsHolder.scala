@@ -86,8 +86,9 @@ trait ScImportsHolder extends ScalaPsiElement {
       while (run != null) {
         ProgressManager.checkCanceled()
         run match {
-          case importStmt: ScImportStmt => buffer += importStmt
-          case _                        =>
+          case importStmt: ScImportStmt =>
+            buffer += importStmt
+          case _ =>
         }
         run = ScalaPsiUtil.getPrevStubOrPsiElement(run)
       }
@@ -109,7 +110,8 @@ trait ScImportsHolder extends ScalaPsiElement {
             for (selector <- imp.selectors) {
               res += ImportSelectorUsed(selector)
             }
-          case _ => processChild(child)
+          case _ =>
+            processChild(child)
         }
       }
     }
@@ -121,11 +123,13 @@ trait ScImportsHolder extends ScalaPsiElement {
     val buf = new ArrayBuffer[ScImportStmt]
     for (child <- getChildren) {
       child match {
-        case x: ScImportStmt => buf += x
+        case x: ScImportStmt =>
+          buf += x
         case p: ScPackaging if !p.isExplicit && buf.isEmpty =>
           return p.importStatementsInHeader
-        case _: ScTypeDefinition | _: ScPackaging => return buf.toSeq
-        case _                                    =>
+        case _: ScTypeDefinition | _: ScPackaging =>
+          return buf.toSeq
+        case _ =>
       }
     }
     buf.toSeq
@@ -141,8 +145,9 @@ trait ScImportsHolder extends ScalaPsiElement {
               if t.typeParameters.isEmpty =>
             for (tp <- t.aliasedType(TypingContext.empty)) {
               tp match {
-                case ScDesignatorType(c: PsiClass) if c == clazz => return
-                case _                                           =>
+                case ScDesignatorType(c: PsiClass) if c == clazz =>
+                  return
+                case _ =>
               }
             }
           case _ =>
@@ -158,13 +163,17 @@ trait ScImportsHolder extends ScalaPsiElement {
       cClass: Option[PsiClass] = None) {
     def needImport =
       ref match {
-        case null                    => true
-        case ref: ScReferenceElement => ref.isValid && !ref.isReferenceTo(elem)
-        case _                       => false
+        case null =>
+          true
+        case ref: ScReferenceElement =>
+          ref.isValid && !ref.isReferenceTo(elem)
+        case _ =>
+          false
       }
     ScalaNamesUtil.qualifiedName(elem) match {
-      case Some(qual) if needImport => addImportForPath(qual, ref)
-      case _                        =>
+      case Some(qual) if needImport =>
+        addImportForPath(qual, ref)
+      case _ =>
     }
   }
 
@@ -198,8 +207,10 @@ trait ScImportsHolder extends ScalaPsiElement {
 
     val file =
       this.getContainingFile match {
-        case sf: ScalaFile => sf
-        case _             => return
+        case sf: ScalaFile =>
+          sf
+        case _ =>
+          return
       }
 
     val documentManager = PsiDocumentManager.getInstance(getProject)
@@ -208,8 +219,10 @@ trait ScImportsHolder extends ScalaPsiElement {
 
     val optimizer: ScalaImportOptimizer =
       findOptimizerFor(file) match {
-        case Some(o: ScalaImportOptimizer) => o
-        case _                             => return
+        case Some(o: ScalaImportOptimizer) =>
+          o
+        case _ =>
+          return
       }
 
     def replaceWithNewInfos(
@@ -300,9 +313,12 @@ trait ScImportsHolder extends ScalaPsiElement {
     var nextChild = firstChild
     while (nextChild != null) {
       nextChild match {
-        case _: ScImportStmt     => return false
-        case _: ScBlockStatement => return true
-        case _                   => nextChild = nextChild.getNextSibling
+        case _: ScImportStmt =>
+          return false
+        case _: ScBlockStatement =>
+          return true
+        case _ =>
+          nextChild = nextChild.getNextSibling
       }
     }
     true
@@ -315,7 +331,8 @@ trait ScImportsHolder extends ScalaPsiElement {
       case Some(elem)
           if first != null && elem.getTextRange.getEndOffset > first.getTextRange.getStartOffset =>
         addImportAfter(importSt, elem)
-      case _ => addBefore(importSt, first)
+      case _ =>
+        addBefore(importSt, first)
     }
   }
 

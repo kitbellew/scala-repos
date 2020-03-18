@@ -87,7 +87,8 @@ trait RandomForestSpecs extends EvalStackSpecs {
             case SObject(obj) =>
               obj.keySet mustEqual Set("model1")
               obj("model1") must beLike {
-                case SDecimal(_) => ok
+                case SDecimal(_) =>
+                  ok
               }
           }
       }

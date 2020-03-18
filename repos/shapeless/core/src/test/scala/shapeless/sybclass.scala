@@ -68,19 +68,23 @@ class SybClassTests {
   object cycleFruit extends Poly1 {
     implicit def caseApple =
       at[Apple] {
-        case Apple(i) => Pear(i)
+        case Apple(i) =>
+          Pear(i)
       }
     implicit def casePear =
       at[Pear] {
-        case Pear(i) => Banana(i)
+        case Pear(i) =>
+          Banana(i)
       }
     implicit def caseBanana =
       at[Banana] {
-        case Banana(i) => Orange(i)
+        case Banana(i) =>
+          Orange(i)
       }
     implicit def caseOrange =
       at[Orange] {
-        case Orange(i) => Apple(i)
+        case Orange(i) =>
+          Apple(i)
       }
   }
 

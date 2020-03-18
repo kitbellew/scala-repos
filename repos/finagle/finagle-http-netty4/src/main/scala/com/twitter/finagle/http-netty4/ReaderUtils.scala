@@ -45,8 +45,10 @@ private[http4] object ReaderUtils {
         trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)
       case Some(buf) =>
         trans.write(chunkOfBuf(buf)).transform {
-          case Return(_) => streamChunks(trans, r, bufSize)
-          case _         => Future(r.discard())
+          case Return(_) =>
+            streamChunks(trans, r, bufSize)
+          case _ =>
+            Future(r.discard())
         }
     }
   }

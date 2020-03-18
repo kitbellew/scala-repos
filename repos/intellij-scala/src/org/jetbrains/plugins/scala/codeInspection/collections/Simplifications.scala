@@ -26,8 +26,10 @@ class SimplificationBuilder private[collections] (
   private var rangeInParent: TextRange = {
     val exprToHighlightFrom: ScExpression =
       exprToReplace match {
-        case MethodRepr(_, Some(base), _, _) => base
-        case _                               => exprToReplace
+        case MethodRepr(_, Some(base), _, _) =>
+          base
+        case _ =>
+          exprToReplace
       }
     rightRangeInParent(exprToHighlightFrom, exprToReplace)
   }

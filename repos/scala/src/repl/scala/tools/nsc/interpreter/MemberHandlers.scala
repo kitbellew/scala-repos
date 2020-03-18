@@ -53,7 +53,8 @@ trait MemberHandlers {
               importVars += stripped
             }
           }
-        case _ => super.traverse(ast)
+        case _ =>
+          super.traverse(ast)
       }
   }
   private object ImportVarsTraverser {
@@ -68,16 +69,26 @@ trait MemberHandlers {
 
   def chooseHandler(member: Tree): MemberHandler =
     member match {
-      case member: DefDef if isTermMacro(member) => new TermMacroHandler(member)
-      case member: DefDef                        => new DefHandler(member)
-      case member: ValDef                        => new ValHandler(member)
-      case member: ModuleDef                     => new ModuleHandler(member)
-      case member: ClassDef                      => new ClassHandler(member)
-      case member: TypeDef                       => new TypeAliasHandler(member)
-      case member: Assign                        => new AssignHandler(member)
-      case member: Import                        => new ImportHandler(member)
-      case DocDef(_, documented)                 => chooseHandler(documented)
-      case member                                => new GenericHandler(member)
+      case member: DefDef if isTermMacro(member) =>
+        new TermMacroHandler(member)
+      case member: DefDef =>
+        new DefHandler(member)
+      case member: ValDef =>
+        new ValHandler(member)
+      case member: ModuleDef =>
+        new ModuleHandler(member)
+      case member: ClassDef =>
+        new ClassHandler(member)
+      case member: TypeDef =>
+        new TypeAliasHandler(member)
+      case member: Assign =>
+        new AssignHandler(member)
+      case member: Import =>
+        new ImportHandler(member)
+      case DocDef(_, documented) =>
+        chooseHandler(documented)
+      case member =>
+        new GenericHandler(member)
     }
 
   sealed abstract class MemberDefHandler(override val member: MemberDef)
@@ -256,8 +267,10 @@ trait MemberHandlers {
     val Import(expr, selectors) = imp
     def targetType =
       intp.global.rootMirror.getModuleIfDefined("" + expr) match {
-        case NoSymbol => intp.typeOfExpression("" + expr)
-        case sym      => sym.thisType
+        case NoSymbol =>
+          intp.typeOfExpression("" + expr)
+        case sym =>
+          sym.thisType
       }
     private def importableTargetMembers = importableMembers(targetType).toList
     // wildcard imports, e.g. import foo._

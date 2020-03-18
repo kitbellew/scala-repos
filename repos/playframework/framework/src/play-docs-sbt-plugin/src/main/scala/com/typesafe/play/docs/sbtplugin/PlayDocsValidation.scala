@@ -189,7 +189,10 @@ object PlayDocsValidation {
                   full,
                   markdownFile,
                   node.getStartIndex + offset)
-              case fragment if fragment.startsWith("#") => // ignore fragments, no validation of them for now
+              case fragment
+                  if fragment.startsWith(
+                    "#"
+                  ) => // ignore fragments, no validation of them for now
               case relative =>
                 relativeLinks += LinkRef(
                   relative,
@@ -209,8 +212,10 @@ object PlayDocsValidation {
                 // Label is after the #, or if no #, then is the link label
                 val (source, label) =
                   code.getSource.split("#", 2) match {
-                    case Array(source, label) => (source, label)
-                    case Array(source)        => (source, code.getLabel)
+                    case Array(source, label) =>
+                      (source, label)
+                    case Array(source) =>
+                      (source, code.getLabel)
                   }
 
                 // The file is either relative to current page page or absolute, under the root
@@ -239,7 +244,8 @@ object PlayDocsValidation {
                   labelPos)
                 true
               }
-              case _ => false
+              case _ =>
+                false
             }
         }
 
@@ -285,8 +291,10 @@ object PlayDocsValidation {
               // Label is after the #, or if no #, then is the link label
               val (source, label) =
                 code.getSource.split("#", 2) match {
-                  case Array(source, label) => (source, label)
-                  case Array(source)        => (source, code.getLabel)
+                  case Array(source, label) =>
+                    (source, label)
+                  case Array(source) =>
+                    (source, code.getLabel)
                 }
 
               // The file is either relative to current page page or absolute, under the root
@@ -309,7 +317,8 @@ object PlayDocsValidation {
               codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
               true
             }
-            case _ => false
+            case _ =>
+              false
           }
       }
 
@@ -354,7 +363,8 @@ object PlayDocsValidation {
 
     CodeSamplesReport(
       markdownFiles.map {
-        case (file, name) => extractCodeSamples("/" + name, IO.read(file))
+        case (file, name) =>
+          extractCodeSamples("/" + name, IO.read(file))
       })
   }
 
@@ -522,21 +532,24 @@ object PlayDocsValidation {
           fileExists(javaApi.link.split('#').head)
         case resource if resource.link.startsWith("resources/") =>
           fileExists(resource.link.stripPrefix("resources/"))
-        case bad => false
+        case bad =>
+          false
       }
     }
 
     assertLinksNotMissing(
       "Relative link test",
       report.relativeLinks.collect {
-        case link if !relativeLinkOk(link) => link
+        case link if !relativeLinkOk(link) =>
+          link
       },
       "Bad relative link")
 
     assertLinksNotMissing(
       "Missing wiki resources test",
       report.resourceLinks.collect {
-        case link if !fileExists(link.link) => link
+        case link if !fileExists(link.link) =>
+          link
       },
       "Could not find resource")
 
@@ -588,8 +601,10 @@ object PlayDocsValidation {
     }
 
     repos.foreach {
-      case jarRepo: JarRepository => jarRepo.close()
-      case _                      => ()
+      case jarRepo: JarRepository =>
+        jarRepo.close()
+      case _ =>
+        ()
     }
 
     if (failed) {
@@ -643,7 +658,8 @@ object PlayDocsValidation {
               }
               refs
             }
-            case ok => Nil
+            case ok =>
+              Nil
           }
         } catch {
           case NonFatal(e) =>
@@ -691,7 +707,8 @@ object PlayDocsValidation {
       val (_, lineNo, colNo, line) =
         lines.foldLeft((0, 0, 0, None: Option[String])) { (state, line) =>
           state match {
-            case (_, _, _, Some(_)) => state
+            case (_, _, _, Some(_)) =>
+              state
             case (total, l, c, None) => {
               if (total + line.length < position) {
                 (total + line.length + 1, l + 1, c, None)
@@ -706,8 +723,10 @@ object PlayDocsValidation {
         log.error(l)
         log.error(
           l.take(colNo - 1).map {
-            case '\t' => '\t';
-            case _    => ' '
+            case '\t' =>
+              '\t';
+            case _ =>
+              ' '
           } + "^")
       }
     }

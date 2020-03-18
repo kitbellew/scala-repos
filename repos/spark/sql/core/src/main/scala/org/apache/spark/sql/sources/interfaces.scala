@@ -612,7 +612,8 @@ class HDFSFileCatalog(
         })
 
       val selected = partitions.filter {
-        case PartitionDirectory(values, _) => boundPredicate(values)
+        case PartitionDirectory(values, _) =>
+          boundPredicate(values)
       }
       logInfo {
         val total = partitions.length
@@ -745,8 +746,10 @@ class HDFSFileCatalog(
 
   override def equals(other: Any): Boolean =
     other match {
-      case hdfs: HDFSFileCatalog => paths.toSet == hdfs.paths.toSet
-      case _                     => false
+      case hdfs: HDFSFileCatalog =>
+        paths.toSet == hdfs.paths.toSet
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = paths.toSet.hashCode()

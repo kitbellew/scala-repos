@@ -38,7 +38,8 @@ case class Dependants[P <: Platform[P]](tail: Producer[P, Any])
       p match {
         case t: TailProducer[_, _] =>
           Iterable.empty // all legit writes are tails
-        case _ => dependantsOf(p).getOrElse(Nil)
+        case _ =>
+          dependantsOf(p).getOrElse(Nil)
       }
     }
     depthFirstOf(inp)(neighborFn).toList
@@ -53,13 +54,17 @@ case class Dependants[P <: Platform[P]](tail: Producer[P, Any])
     */
   def dependantsAfterMerge(inp: Producer[P, Any]): List[Producer[P, Any]] =
     dependantsOf(inp).getOrElse(Nil).flatMap {
-      case m @ MergedProducer(_, _) => dependantsAfterMerge(m)
-      case a @ AlsoProducer(_, _)   => dependantsAfterMerge(a)
-      case prod                     => List(prod)
+      case m @ MergedProducer(_, _) =>
+        dependantsAfterMerge(m)
+      case a @ AlsoProducer(_, _) =>
+        dependantsAfterMerge(a)
+      case prod =>
+        List(prod)
     }
 
   def namesOf(inp: Producer[P, Any]): List[NamedProducer[P, Any]] =
     transitiveDependantsOf(inp).collect {
-      case n @ NamedProducer(_, _) => n
+      case n @ NamedProducer(_, _) =>
+        n
     }
 }

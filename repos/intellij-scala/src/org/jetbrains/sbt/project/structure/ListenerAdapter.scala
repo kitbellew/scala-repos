@@ -16,9 +16,12 @@ class ListenerAdapter(listener: (OutputType, String) => Unit)
   override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
     val textType =
       outputType match {
-        case ProcessOutputTypes.STDOUT => Some(OutputType.StdOut)
-        case ProcessOutputTypes.STDERR => Some(OutputType.StdErr)
-        case _                         => None
+        case ProcessOutputTypes.STDOUT =>
+          Some(OutputType.StdOut)
+        case ProcessOutputTypes.STDERR =>
+          Some(OutputType.StdErr)
+        case _ =>
+          None
       }
     textType.foreach(t => listener(t, event.getText))
   }

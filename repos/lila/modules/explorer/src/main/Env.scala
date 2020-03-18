@@ -26,8 +26,10 @@ final class Env(config: Config, system: ActorSystem) {
     import play.api.libs.ws.WS
     import play.api.Play.current
     WS.url(s"$Endpoint/master/pgn/$id").get() map {
-      case res if res.status == 200 => res.body.some
-      case _                        => None
+      case res if res.status == 200 =>
+        res.body.some
+      case _ =>
+        None
     }
   }
 
@@ -37,7 +39,8 @@ final class Env(config: Config, system: ActorSystem) {
         new Actor {
           context.system.lilaBus.subscribe(self, 'finishGame)
           def receive = {
-            case lila.game.actorApi.FinishGame(game, _, _) => indexer(game)
+            case lila.game.actorApi.FinishGame(game, _, _) =>
+              indexer(game)
           }
         }))
 }

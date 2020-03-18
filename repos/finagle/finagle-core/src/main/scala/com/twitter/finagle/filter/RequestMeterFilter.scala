@@ -27,9 +27,11 @@ class RequestMeterFilter[Req, Rep](meter: AsyncMeter)
         noPermit match {
           case e: RejectedExecutionException =>
             Future.exception(Failure.rejected(noPermit))
-          case e => Future.exception(e)
+          case e =>
+            Future.exception(e)
         }
-      case _ => service(request)
+      case _ =>
+        service(request)
     }
   }
 }

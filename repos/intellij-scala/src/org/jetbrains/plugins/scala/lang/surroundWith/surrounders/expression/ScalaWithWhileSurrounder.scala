@@ -28,17 +28,21 @@ class ScalaWithWhileSurrounder extends ScalaExpressionSurrounder {
       withWhileNode.getPsi match {
         case x: ScParenthesisedExpr =>
           x.expr match {
-            case Some(y) => y
-            case _       => return x.getTextRange
+            case Some(y) =>
+              y
+            case _ =>
+              return x.getTextRange
           }
-        case x => x
+        case x =>
+          x
       }
 
     val whileStmt = element.asInstanceOf[ScWhileStmtImpl]
 
     val conditionNode: ASTNode =
       (whileStmt.condition: @unchecked) match {
-        case Some(c) => c.getNode
+        case Some(c) =>
+          c.getNode
       }
 
     val startOffset = conditionNode.getTextRange.getStartOffset

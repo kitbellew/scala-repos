@@ -73,8 +73,10 @@ abstract class JSPrimitives {
      * warning for switch matches with less than 3 non-default cases.
      */
     scalaPrimitives.getPrimitive(sym) match {
-      case F2JS | F2JSTHIS => true
-      case _               => false
+      case F2JS | F2JSTHIS =>
+        true
+      case _ =>
+        false
     }
   }
 

@@ -89,8 +89,10 @@ private[streaming] object HdfsUtils {
     // actually flushes the stream.
     val fs = path.getFileSystem(conf)
     fs match {
-      case localFs: LocalFileSystem => localFs.getRawFileSystem
-      case _                        => fs
+      case localFs: LocalFileSystem =>
+        localFs.getRawFileSystem
+      case _ =>
+        fs
     }
   }
 

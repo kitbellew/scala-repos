@@ -32,8 +32,10 @@ private[parser] trait ContentTypeHeader {
           else
             builder.result()
         getMediaType(main, sub, charset.isDefined, parameters) match {
-          case x: MediaType.Binary ⇒ ContentType.Binary(x)
-          case x: MediaType.WithFixedCharset ⇒ ContentType.WithFixedCharset(x)
+          case x: MediaType.Binary ⇒
+            ContentType.Binary(x)
+          case x: MediaType.WithFixedCharset ⇒
+            ContentType.WithFixedCharset(x)
           case x: MediaType.WithOpenCharset ⇒
             // if we have an open charset media-type but no charset parameter we default to UTF-8
             val cs =

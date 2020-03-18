@@ -36,7 +36,8 @@ final object Aggregation {
   def printSettings(xs: Seq[KeyValue[_]], print: String => Unit)(implicit
       display: Show[ScopedKey[_]]) =
     xs match {
-      case KeyValue(_, x) :: Nil => print(x.toString)
+      case KeyValue(_, x) :: Nil =>
+        print(x.toString)
       case _ =>
         xs foreach {
           case KeyValue(key, value) =>
@@ -48,7 +49,8 @@ final object Aggregation {
   def seqParser[T](ps: Values[Parser[T]]): Parser[Seq[KeyValue[T]]] =
     seq(
       ps.map {
-        case KeyValue(k, p) => p.map(v => KeyValue(k, v))
+        case KeyValue(k, p) =>
+          p.map(v => KeyValue(k, v))
       })
 
   def applyTasks[T](
@@ -82,8 +84,10 @@ final object Aggregation {
     val extracted = Project extract state
     val success =
       results match {
-        case Value(_) => true;
-        case Inc(_)   => false
+        case Value(_) =>
+          true;
+        case Inc(_) =>
+          false
       }
     results.toEither.right.foreach { r =>
       if (show.taskValues)
@@ -103,10 +107,12 @@ final object Aggregation {
     import extracted.structure
     val toRun =
       ts map {
-        case KeyValue(k, t) => t.map(v => KeyValue(k, v))
+        case KeyValue(k, t) =>
+          t.map(v => KeyValue(k, v))
       } join;
     val roots = ts map {
-      case KeyValue(k, _) => k
+      case KeyValue(k, _) =>
+        k
     }
     val config = extractedTaskConfig(extracted, structure, s)
 
@@ -129,8 +135,10 @@ final object Aggregation {
     val complete = timedRun[T](s, ts, extra)
     showRun(complete, show)
     complete.results match {
-      case Inc(i)   => complete.state.handleError(i)
-      case Value(_) => complete.state
+      case Inc(i) =>
+        complete.state.handleError(i)
+      case Value(_) =>
+        complete.state
     }
   }
 
@@ -214,13 +222,17 @@ final object Aggregation {
     else {
       val (inputTasks, other) =
         separate[InputTask[_]](kvs) {
-          case KeyValue(k, v: InputTask[_]) => Left(KeyValue(k, v))
-          case kv                           => Right(kv)
+          case KeyValue(k, v: InputTask[_]) =>
+            Left(KeyValue(k, v))
+          case kv =>
+            Right(kv)
         }
       val (tasks, settings) =
         separate[Task[_]](other) {
-          case KeyValue(k, v: Task[_]) => Left(KeyValue(k, v))
-          case kv                      => Right(kv)
+          case KeyValue(k, v: Task[_]) =>
+            Left(KeyValue(k, v))
+          case kv =>
+            Right(kv)
         }
       // currently, disallow input tasks to be mixed with normal tasks.
       // This occurs in `all` or `show`, which support multiple tasks.
@@ -265,7 +277,8 @@ final object Aggregation {
 
   private[this] def maps[T, S](vs: Values[T])(f: T => S): Values[S] =
     vs map {
-      case KeyValue(k, v) => KeyValue(k, f(v))
+      case KeyValue(k, v) =>
+        KeyValue(k, f(v))
     }
 
   def projectAggregates[Proj](

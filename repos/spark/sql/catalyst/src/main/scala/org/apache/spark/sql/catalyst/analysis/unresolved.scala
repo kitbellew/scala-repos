@@ -225,7 +225,8 @@ case class UnresolvedStar(target: Option[Seq[String]])
     val expandedAttributes: Seq[Attribute] =
       target match {
         // If there is no table specified, use all input attributes.
-        case None => input.output
+        case None =>
+          input.output
         // If there is a table, pick out attributes that are part of this table.
         case Some(t) =>
           if (t.size == 1) {

@@ -15,33 +15,44 @@ sealed abstract class ClassKind {
 
   def isClass: Boolean =
     this match {
-      case Class | ModuleClass => true
-      case _                   => false
+      case Class | ModuleClass =>
+        true
+      case _ =>
+        false
     }
 
   def isJSClass: Boolean =
     this match {
-      case JSClass | JSModuleClass => true
-      case _                       => false
+      case JSClass | JSModuleClass =>
+        true
+      case _ =>
+        false
     }
 
   def hasModuleAccessor: Boolean =
     this match {
-      case ModuleClass | JSModuleClass => true
-      case _                           => false
+      case ModuleClass | JSModuleClass =>
+        true
+      case _ =>
+        false
     }
 
   def isAnyScalaJSDefinedClass: Boolean =
     this match {
-      case Class | ModuleClass | JSClass | JSModuleClass => true
-      case _                                             => false
+      case Class | ModuleClass | JSClass | JSModuleClass =>
+        true
+      case _ =>
+        false
     }
 
   def withoutModuleAccessor: ClassKind =
     this match {
-      case ModuleClass   => Class
-      case JSModuleClass => JSClass
-      case _             => this
+      case ModuleClass =>
+        Class
+      case JSModuleClass =>
+        JSClass
+      case _ =>
+        this
     }
 }
 
@@ -56,23 +67,37 @@ object ClassKind {
 
   private[ir] def toByte(kind: ClassKind): Byte =
     kind match {
-      case ClassKind.Class         => 1
-      case ClassKind.ModuleClass   => 2
-      case ClassKind.Interface     => 3
-      case ClassKind.RawJSType     => 4
-      case ClassKind.HijackedClass => 5
-      case ClassKind.JSClass       => 6
-      case ClassKind.JSModuleClass => 7
+      case ClassKind.Class =>
+        1
+      case ClassKind.ModuleClass =>
+        2
+      case ClassKind.Interface =>
+        3
+      case ClassKind.RawJSType =>
+        4
+      case ClassKind.HijackedClass =>
+        5
+      case ClassKind.JSClass =>
+        6
+      case ClassKind.JSModuleClass =>
+        7
     }
 
   private[ir] def fromByte(b: Byte): ClassKind =
     (b: @switch) match {
-      case 1 => ClassKind.Class
-      case 2 => ClassKind.ModuleClass
-      case 3 => ClassKind.Interface
-      case 4 => ClassKind.RawJSType
-      case 5 => ClassKind.HijackedClass
-      case 6 => ClassKind.JSClass
-      case 7 => ClassKind.JSModuleClass
+      case 1 =>
+        ClassKind.Class
+      case 2 =>
+        ClassKind.ModuleClass
+      case 3 =>
+        ClassKind.Interface
+      case 4 =>
+        ClassKind.RawJSType
+      case 5 =>
+        ClassKind.HijackedClass
+      case 6 =>
+        ClassKind.JSClass
+      case 7 =>
+        ClassKind.JSModuleClass
     }
 }

@@ -30,7 +30,8 @@ package play.api.libs.iteratee {
     def eagerFuture[A](body: => A): Future[A] =
       try Future.successful(body)
       catch {
-        case NonFatal(e) => Future.failed(e)
+        case NonFatal(e) =>
+          Future.failed(e)
       }
 
     /**

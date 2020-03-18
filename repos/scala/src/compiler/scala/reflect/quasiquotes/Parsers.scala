@@ -39,7 +39,8 @@ trait Parsers {
       def containsOffset(start: Int, end: Int) = start <= offset && offset < end
       def fallbackPosition =
         posMapList match {
-          case (pos1, (start1, end1)) :: _ if start1 > offset => pos1
+          case (pos1, (start1, end1)) :: _ if start1 > offset =>
+            pos1
           case _ :+ ((pos2, (start2, end2))) if end2 <= offset =>
             pos2.withPoint(pos2.point + (end2 - start2))
         }
@@ -66,8 +67,10 @@ trait Parsers {
 
     override def token2string(token: Int): String =
       token match {
-        case EOF => "end of quote"
-        case _   => super.token2string(token)
+        case EOF =>
+          "end of quote"
+        case _ =>
+          super.token2string(token)
       }
 
     def entryPoint: QuasiquoteParser => Tree
@@ -109,10 +112,13 @@ trait Parsers {
                   // might have to be wrapped into a block depending on their value
                   case (head @ Ident(name)) :: Nil if isHole(name) =>
                     Block(Nil, head)
-                  case _ => gen.mkBlock(stats, doFlatten = true)
+                  case _ =>
+                    gen.mkBlock(stats, doFlatten = true)
                 }
-              case nme.unapply => gen.mkBlock(stats, doFlatten = false)
-              case other       => global.abort("unreachable")
+              case nme.unapply =>
+                gen.mkBlock(stats, doFlatten = false)
+              case other =>
+                global.abort("unreachable")
             }
 
           // tq"$a => $b"
@@ -125,7 +131,8 @@ trait Parsers {
             pat match {
               case TuplePlaceholder(inParensPat :: Nil) =>
                 super.makePatDef(mods, inParensPat, rhs)
-              case _ => super.makePatDef(mods, pat, rhs)
+              case _ =>
+                super.makePatDef(mods, pat, rhs)
             }
         }
       import treeBuilder.{global => _, unit => _}
@@ -145,8 +152,10 @@ trait Parsers {
       // q"($x) => ..." && q"class X { selfie => }
       override def convertToParam(tree: Tree): ValDef =
         tree match {
-          case Ident(name) if isHole(name) => ParamPlaceholder(NoFlags, name)
-          case _                           => super.convertToParam(tree)
+          case Ident(name) if isHole(name) =>
+            ParamPlaceholder(NoFlags, name)
+          case _ =>
+            super.convertToParam(tree)
         }
 
       // q"foo match { case $x }"
@@ -163,8 +172,10 @@ trait Parsers {
 
       override def caseBlock(): Tree =
         super.caseBlock() match {
-          case Block(Nil, expr) => expr
-          case other            => other
+          case Block(Nil, expr) =>
+            expr
+          case other =>
+            other
         }
 
       override def isAnnotation: Boolean =
@@ -247,14 +258,17 @@ trait Parsers {
         tree match {
           case Ident(name: TermName) if isHole(name) =>
             EarlyDefPlaceholder(name)
-          case _ => super.ensureEarlyDef(tree)
+          case _ =>
+            super.ensureEarlyDef(tree)
         }
 
       override def isTypedParam(tree: Tree) =
         super.isTypedParam(tree) || (
           tree match {
-            case Ident(name) if isHole(name) => true
-            case _                           => false
+            case Ident(name) if isHole(name) =>
+              true
+            case _ =>
+              false
           }
         )
 
@@ -285,7 +299,8 @@ trait Parsers {
       tree match {
         case Block(Nil, contents) if tree.hasAttachment[Q.type] =>
           Some(contents)
-        case _ => None
+        case _ =>
+          None
       }
   }
 

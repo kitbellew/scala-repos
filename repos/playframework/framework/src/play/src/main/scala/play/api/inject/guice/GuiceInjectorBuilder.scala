@@ -201,21 +201,26 @@ abstract class GuiceBuilder[Self] protected (
     try {
       val stage =
         environment.mode match {
-          case Mode.Prod    => Stage.PRODUCTION
-          case _ if eagerly => Stage.PRODUCTION
-          case _            => Stage.DEVELOPMENT
+          case Mode.Prod =>
+            Stage.PRODUCTION
+          case _ if eagerly =>
+            Stage.PRODUCTION
+          case _ =>
+            Stage.DEVELOPMENT
         }
       val guiceInjector = Guice.createInjector(stage, applicationModule())
       guiceInjector.getInstance(classOf[PlayInjector])
     } catch {
       case e: CreationException =>
         e.getCause match {
-          case p: PlayException => throw p
+          case p: PlayException =>
+            throw p
           case _ => {
             e.getErrorMessages.asScala.foreach(
               _.getCause match {
-                case p: PlayException => throw p
-                case _                => // do nothing
+                case p: PlayException =>
+                  throw p
+                case _ => // do nothing
               })
             throw e
           }
@@ -331,8 +336,10 @@ object GuiceableModule extends GuiceableModuleConversions {
     */
   def guiceable(module: Any): GuiceableModule =
     module match {
-      case playModule: PlayModule   => fromPlayModule(playModule)
-      case guiceModule: GuiceModule => fromGuiceModule(guiceModule)
+      case playModule: PlayModule =>
+        fromPlayModule(playModule)
+      case guiceModule: GuiceModule =>
+        fromGuiceModule(guiceModule)
       case unknown =>
         throw new PlayException(
           "Unknown module type",
@@ -437,11 +444,14 @@ trait GuiceableModuleConversions {
               builder.toProvider(provider)
             case ConstructionTarget(implementation) =>
               builder.to(implementation)
-            case BindingKeyTarget(key) => builder.to(GuiceKey(key))
+            case BindingKeyTarget(key) =>
+              builder.to(GuiceKey(key))
           }
           (binding.scope, binding.eager) match {
-            case (Some(scope), false) => builder.in(scope)
-            case (None, true)         => builder.asEagerSingleton()
+            case (Some(scope), false) =>
+              builder.in(scope)
+            case (None, true) =>
+              builder.asEagerSingleton()
             case (Some(scope), true) =>
               throw new GuiceLoadException(
                 "A binding must either declare a scope or be eager: " + binding)
@@ -479,9 +489,12 @@ object GuiceKey {
 
   def apply[T](key: BindingKey[T]): Key[T] = {
     key.qualifier match {
-      case Some(QualifierInstance(instance)) => Key.get(key.clazz, instance)
-      case Some(QualifierClass(clazz))       => Key.get(key.clazz, clazz)
-      case None                              => Key.get(key.clazz)
+      case Some(QualifierInstance(instance)) =>
+        Key.get(key.clazz, instance)
+      case Some(QualifierClass(clazz)) =>
+        Key.get(key.clazz, clazz)
+      case None =>
+        Key.get(key.clazz)
     }
   }
 }

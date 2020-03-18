@@ -38,7 +38,8 @@ private final class Analyzer(
 
   private def lookupClass(encodedName: String): ClassInfo = {
     _classInfos.get(encodedName) match {
-      case Some(info) => info
+      case Some(info) =>
+        info
       case None =>
         val c = new ClassInfo(createMissingClassInfo(encodedName))
         _classInfos += encodedName -> c
@@ -327,8 +328,10 @@ private final class Analyzer(
       def tryLookupInherited(ancestorInfo: ClassInfo): Option[MethodInfo] = {
         if (ancestorInfo ne null) {
           ancestorInfo.methodInfos.get(methodName) match {
-            case Some(m) if !m.isAbstract => Some(m)
-            case _                        => tryLookupInherited(ancestorInfo.superClass)
+            case Some(m) if !m.isAbstract =>
+              Some(m)
+            case _ =>
+              tryLookupInherited(ancestorInfo.superClass)
           }
         } else {
           None
@@ -729,7 +732,8 @@ private final class Analyzer(
     /** Throws MatchError if `!isDefaultBridge`. */
     def defaultBridgeTarget: String =
       (syntheticKind: @unchecked) match {
-        case MethodSyntheticKind.DefaultBridge(target) => target
+        case MethodSyntheticKind.DefaultBridge(target) =>
+          target
       }
 
     override def toString(): String = s"$owner.$encodedName"

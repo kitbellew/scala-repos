@@ -33,7 +33,8 @@ trait CommonRunner {
       run(urls, objectName, arguments);
       Right(true)
     } catch {
-      case e: Throwable => Left(unwrap(e))
+      case e: Throwable =>
+        Left(unwrap(e))
     }
   }
 }

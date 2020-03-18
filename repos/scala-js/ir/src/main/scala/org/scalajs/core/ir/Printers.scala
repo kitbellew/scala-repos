@@ -208,7 +208,8 @@ object Printers {
 
           printBlock(thenp)
           elsep match {
-            case Skip() => ()
+            case Skip() =>
+              ()
             case If(_, _, _) =>
               print(" else ")
               print(elsep)
@@ -342,11 +343,16 @@ object Printers {
           print('(')
           print(
             (op: @switch) match {
-              case Boolean_!                => "!"
-              case IntToLong | DoubleToLong => "(long)"
-              case DoubleToInt | LongToInt  => "(int)"
-              case DoubleToFloat            => "(float)"
-              case LongToDouble             => "(double)"
+              case Boolean_! =>
+                "!"
+              case IntToLong | DoubleToLong =>
+                "(long)"
+              case DoubleToInt | LongToInt =>
+                "(int)"
+              case DoubleToFloat =>
+                "(float)"
+              case LongToDouble =>
+                "(double)"
             })
           print(lhs)
           print(')')
@@ -391,67 +397,118 @@ object Printers {
           print(' ')
           print(
             (op: @switch) match {
-              case === => "==="
-              case !== => "!=="
+              case === =>
+                "==="
+              case !== =>
+                "!=="
 
-              case String_+ => "+[string]"
+              case String_+ =>
+                "+[string]"
 
-              case Int_+ => "+[int]"
-              case Int_- => "-[int]"
-              case Int_* => "*[int]"
-              case Int_/ => "/[int]"
-              case Int_% => "%[int]"
+              case Int_+ =>
+                "+[int]"
+              case Int_- =>
+                "-[int]"
+              case Int_* =>
+                "*[int]"
+              case Int_/ =>
+                "/[int]"
+              case Int_% =>
+                "%[int]"
 
-              case Int_|   => "|"
-              case Int_&   => "&"
-              case Int_^   => "^"
-              case Int_<<  => "<<"
-              case Int_>>> => ">>>"
-              case Int_>>  => ">>"
+              case Int_| =>
+                "|"
+              case Int_& =>
+                "&"
+              case Int_^ =>
+                "^"
+              case Int_<< =>
+                "<<"
+              case Int_>>> =>
+                ">>>"
+              case Int_>> =>
+                ">>"
 
-              case Float_+ => "+[float]"
-              case Float_- => "-[float]"
-              case Float_* => "*[float]"
-              case Float_/ => "/[float]"
-              case Float_% => "%[float]"
+              case Float_+ =>
+                "+[float]"
+              case Float_- =>
+                "-[float]"
+              case Float_* =>
+                "*[float]"
+              case Float_/ =>
+                "/[float]"
+              case Float_% =>
+                "%[float]"
 
-              case Double_+ => "+"
-              case Double_- => "-"
-              case Double_* => "*"
-              case Double_/ => "/"
-              case Double_% => "%"
+              case Double_+ =>
+                "+"
+              case Double_- =>
+                "-"
+              case Double_* =>
+                "*"
+              case Double_/ =>
+                "/"
+              case Double_% =>
+                "%"
 
-              case Num_== => "=="
-              case Num_!= => "!="
-              case Num_<  => "<"
-              case Num_<= => "<="
-              case Num_>  => ">"
-              case Num_>= => ">="
+              case Num_== =>
+                "=="
+              case Num_!= =>
+                "!="
+              case Num_< =>
+                "<"
+              case Num_<= =>
+                "<="
+              case Num_> =>
+                ">"
+              case Num_>= =>
+                ">="
 
-              case Long_+ => "+[long]"
-              case Long_- => "-[long]"
-              case Long_* => "*[long]"
-              case Long_/ => "/[long]"
-              case Long_% => "%[long]"
+              case Long_+ =>
+                "+[long]"
+              case Long_- =>
+                "-[long]"
+              case Long_* =>
+                "*[long]"
+              case Long_/ =>
+                "/[long]"
+              case Long_% =>
+                "%[long]"
 
-              case Long_|   => "|[long]"
-              case Long_&   => "&[long]"
-              case Long_^   => "^[long]"
-              case Long_<<  => "<<[long]"
-              case Long_>>> => ">>>[long]"
-              case Long_>>  => ">>[long]"
+              case Long_| =>
+                "|[long]"
+              case Long_& =>
+                "&[long]"
+              case Long_^ =>
+                "^[long]"
+              case Long_<< =>
+                "<<[long]"
+              case Long_>>> =>
+                ">>>[long]"
+              case Long_>> =>
+                ">>[long]"
 
-              case Long_== => "==[long]"
-              case Long_!= => "!=[long]"
-              case Long_<  => "<[long]"
-              case Long_<= => "<=[long]"
-              case Long_>  => ">[long]"
-              case Long_>= => ">=[long]"
+              case Long_== =>
+                "==[long]"
+              case Long_!= =>
+                "!=[long]"
+              case Long_< =>
+                "<[long]"
+              case Long_<= =>
+                "<=[long]"
+              case Long_> =>
+                ">[long]"
+              case Long_>= =>
+                ">=[long]"
 
-              case Boolean_== => "==[bool]"
-              case Boolean_!= => "!=[bool]"
-              case Boolean_|  => "|[bool]"
-              case Boolean_&  => "&[bool]"
+              case Boolean_== =>
+                "==[bool]"
+              case Boolean_!= =>
+                "!=[bool]"
+              case Boolean_| =>
+                "|[bool]"
+              case Boolean_& =>
+                "&[bool]"
             })
           print(' ')
           print(rhs)
@@ -527,11 +584,16 @@ object Printers {
         case JSNew(ctor, args) =>
           def containsOnlySelectsFromAtom(tree: Tree): Boolean =
             tree match {
-              case JSDotSelect(qual, _)     => containsOnlySelectsFromAtom(qual)
-              case JSBracketSelect(qual, _) => containsOnlySelectsFromAtom(qual)
-              case VarRef(_)                => true
-              case This()                   => true
-              case _                        => false // in particular, Apply
+              case JSDotSelect(qual, _) =>
+                containsOnlySelectsFromAtom(qual)
+              case JSBracketSelect(qual, _) =>
+                containsOnlySelectsFromAtom(qual)
+              case VarRef(_) =>
+                true
+              case This() =>
+                true
+              case _ =>
+                false // in particular, Apply
             }
           if (containsOnlySelectsFromAtom(ctor)) {
             print("new ")
@@ -622,12 +684,17 @@ object Printers {
           print('(')
           print(
             (op: @switch) match {
-              case + => "+"
-              case - => "-"
-              case ~ => "~"
-              case ! => "!"
+              case + =>
+                "+"
+              case - =>
+                "-"
+              case ~ =>
+                "~"
+              case ! =>
+                "!"
 
-              case `typeof` => "typeof "
+              case `typeof` =>
+                "typeof "
             })
           print(lhs)
           print(")")
@@ -639,32 +706,53 @@ object Printers {
           print(" ")
           print(
             (op: @switch) match {
-              case === => "==="
-              case !== => "!=="
+              case === =>
+                "==="
+              case !== =>
+                "!=="
 
-              case + => "+"
-              case - => "-"
-              case * => "*"
-              case / => "/"
-              case % => "%"
+              case + =>
+                "+"
+              case - =>
+                "-"
+              case * =>
+                "*"
+              case / =>
+                "/"
+              case % =>
+                "%"
 
-              case |   => "|"
-              case &   => "&"
-              case ^   => "^"
-              case <<  => "<<"
-              case >>  => ">>"
-              case >>> => ">>>"
+              case | =>
+                "|"
+              case & =>
+                "&"
+              case ^ =>
+                "^"
+              case << =>
+                "<<"
+              case >> =>
+                ">>"
+              case >>> =>
+                ">>>"
 
-              case <  => "<"
-              case <= => "<="
-              case >  => ">"
-              case >= => ">="
+              case < =>
+                "<"
+              case <= =>
+                "<="
+              case > =>
+                ">"
+              case >= =>
+                ">="
 
-              case && => "&&"
-              case || => "||"
+              case && =>
+                "&&"
+              case || =>
+                "||"
 
-              case `in`         => "in"
-              case `instanceof` => "instanceof"
+              case `in` =>
+                "in"
+              case `instanceof` =>
+                "instanceof"
             })
           print(" ")
           print(rhs)
@@ -790,13 +878,20 @@ object Printers {
           val ClassDef(name, kind, superClass, interfaces, jsName, defs) = tree
           print(tree.optimizerHints)
           kind match {
-            case ClassKind.Class         => print("class ")
-            case ClassKind.ModuleClass   => print("module class ")
-            case ClassKind.Interface     => print("interface ")
-            case ClassKind.RawJSType     => print("jstype ")
-            case ClassKind.HijackedClass => print("hijacked class ")
-            case ClassKind.JSClass       => print("js class ")
-            case ClassKind.JSModuleClass => print("js module class ")
+            case ClassKind.Class =>
+              print("class ")
+            case ClassKind.ModuleClass =>
+              print("module class ")
+            case ClassKind.Interface =>
+              print("interface ")
+            case ClassKind.RawJSType =>
+              print("jstype ")
+            case ClassKind.HijackedClass =>
+              print("hijacked class ")
+            case ClassKind.JSClass =>
+              print("js class ")
+            case ClassKind.JSModuleClass =>
+              print("js module class ")
           }
           print(name)
           superClass.foreach { cls =>
@@ -875,18 +970,30 @@ object Printers {
 
     def print(tpe: Type): Unit =
       tpe match {
-        case AnyType              => print("any")
-        case NothingType          => print("nothing")
-        case UndefType            => print("void")
-        case BooleanType          => print("boolean")
-        case IntType              => print("int")
-        case LongType             => print("long")
-        case FloatType            => print("float")
-        case DoubleType           => print("number")
-        case StringType           => print("string")
-        case NullType             => print("null")
-        case ClassType(className) => print(className)
-        case NoType               => print("<notype>")
+        case AnyType =>
+          print("any")
+        case NothingType =>
+          print("nothing")
+        case UndefType =>
+          print("void")
+        case BooleanType =>
+          print("boolean")
+        case IntType =>
+          print("int")
+        case LongType =>
+          print("long")
+        case FloatType =>
+          print("float")
+        case DoubleType =>
+          print("number")
+        case StringType =>
+          print("string")
+        case NullType =>
+          print("null")
+        case ClassType(className) =>
+          print(className)
+        case NoType =>
+          print("<notype>")
 
         case ArrayType(base, dims) =>
           print(base)
@@ -914,8 +1021,10 @@ object Printers {
 
     private final def print(propName: PropertyName): Unit =
       propName match {
-        case lit: StringLiteral => print(lit: Tree)
-        case ident: Ident       => print(ident)
+        case lit: StringLiteral =>
+          print(lit: Tree)
+        case ident: Ident =>
+          print(ident)
       }
 
     protected def print(s: String): Unit = out.write(s)

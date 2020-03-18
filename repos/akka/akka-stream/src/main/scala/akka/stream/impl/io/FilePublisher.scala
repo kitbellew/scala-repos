@@ -82,9 +82,12 @@ private[akka] final class FilePublisher(
   }
 
   def receive = {
-    case ActorPublisherMessage.Request(elements) ⇒ readAndSignal(maxBuffer)
-    case Continue ⇒ readAndSignal(maxBuffer)
-    case ActorPublisherMessage.Cancel ⇒ context.stop(self)
+    case ActorPublisherMessage.Request(elements) ⇒
+      readAndSignal(maxBuffer)
+    case Continue ⇒
+      readAndSignal(maxBuffer)
+    case ActorPublisherMessage.Cancel ⇒
+      context.stop(self)
   }
 
   def readAndSignal(maxReadAhead: Int): Unit =
@@ -127,7 +130,8 @@ private[akka] final class FilePublisher(
           chunks
         case 0 ⇒
           readAhead(maxChunks, chunks) // had nothing to read into this chunk
-        case Int.MinValue ⇒ Vector.empty // read failed, we're done here
+        case Int.MinValue ⇒
+          Vector.empty // read failed, we're done here
         case readBytes ⇒
           buf.flip()
           readBytesTotal += readBytes

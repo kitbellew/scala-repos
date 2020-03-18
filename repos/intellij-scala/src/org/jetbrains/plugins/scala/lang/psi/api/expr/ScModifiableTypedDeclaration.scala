@@ -14,11 +14,13 @@ trait ScModifiableTypedDeclaration extends ScalaPsiElement {
   //this function is called only from one place, which makes it fine
   def returnTypeHasChangedSinceLastCheck: Boolean = {
     modifiableReturnType match {
-      case Some(retTp) if retTp == prevModType => false
+      case Some(retTp) if retTp == prevModType =>
+        false
       case Some(retTp) =>
         prevModType = retTp
         true
-      case _ => true
+      case _ =>
+        true
     }
   }
 

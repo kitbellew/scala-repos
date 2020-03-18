@@ -283,7 +283,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         }
       }
     } catch {
-      case e: FileNotFoundException => None
+      case e: FileNotFoundException =>
+        None
     }
   }
 
@@ -440,7 +441,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         } finally {
           zipStream.close()
         }
-      case None => throw new SparkException(s"Logs for $appId not found.")
+      case None =>
+        throw new SparkException(s"Logs for $appId not found.")
     }
   }
 
@@ -583,7 +585,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
 
       attemptsToClean = leftToClean
     } catch {
-      case t: Exception => logError("Exception in cleaning logs", t)
+      case t: Exception =>
+        logError("Exception in cleaning logs", t)
     }
   }
 

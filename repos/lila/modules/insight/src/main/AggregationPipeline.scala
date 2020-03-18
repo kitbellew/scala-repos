@@ -42,9 +42,12 @@ private final class AggregationPipeline {
     ))
   private def dimensionGroupId(dim: Dimension[_]): BSONValue =
     dim match {
-      case Dimension.MovetimeRange => movetimeIdDispatcher
-      case Dimension.MaterialRange => materialIdDispatcher
-      case d                       => BSONString("$" + d.dbKey)
+      case Dimension.MovetimeRange =>
+        movetimeIdDispatcher
+      case Dimension.MaterialRange =>
+        materialIdDispatcher
+      case d =>
+        BSONString("$" + d.dbKey)
     }
 
   private val sampleGames = Sample(10 * 1000)
@@ -91,18 +94,21 @@ private final class AggregationPipeline {
     import question.{dimension, metric, filters}
     val gameMatcher = combineDocs(
       question.filters.collect {
-        case f if f.dimension.isInGame => f.matcher
+        case f if f.dimension.isInGame =>
+          f.matcher
       })
     def matchMoves(extraMatcher: BSONDocument = BSONDocument()) =
       combineDocs(
         extraMatcher :: question.filters.collect {
-          case f if f.dimension.isInMove => f.matcher
+          case f if f.dimension.isInMove =>
+            f.matcher
         }).some.filterNot(_.isEmpty) map Match
     def projectForMove =
       Project(
         BSONDocument({
             metric.dbKey :: dimension.dbKey :: filters.collect {
-              case Filter(d, _) if d.isInMove => d.dbKey
+              case Filter(d, _) if d.isInMove =>
+                d.dbKey
             }
           }.distinct.map(_ -> BSONBoolean(true)))).some
 
@@ -249,8 +255,10 @@ private final class AggregationPipeline {
           }
         ) ::: (
           dimension match {
-            case D.Opening => List(sortNb, limit(12))
-            case _         => Nil
+            case D.Opening =>
+              List(sortNb, limit(12))
+            case _ =>
+              Nil
           }
         )
       ).flatten

@@ -159,7 +159,8 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
           .toSeq(inputSchema)
           .zip(inputSchema.map(_.dataType))
           .map {
-            case (value, dt) => Literal.create(value, dt)
+            case (value, dt) =>
+              Literal.create(value, dt)
           }
         // Only test the interpreted version has same result with codegen version.
         checkEvaluation(

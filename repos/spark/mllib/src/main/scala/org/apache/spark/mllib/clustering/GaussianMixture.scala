@@ -191,7 +191,8 @@ class GaussianMixture private (
     // derived from the samples
     val (weights, gaussians) =
       initialModel match {
-        case Some(gmm) => (gmm.weights, gmm.gaussians)
+        case Some(gmm) =>
+          (gmm.weights, gmm.gaussians)
 
         case None => {
           val samples = breezeData.takeSample(
@@ -328,7 +329,8 @@ private object ExpectationSum {
       sums: ExpectationSum,
       x: BV[Double]): ExpectationSum = {
     val p = weights.zip(dists).map {
-      case (weight, dist) => MLUtils.EPSILON + weight * dist.pdf(x)
+      case (weight, dist) =>
+        MLUtils.EPSILON + weight * dist.pdf(x)
     }
     val pSum = p.sum
     sums.logLikelihood += math.log(pSum)

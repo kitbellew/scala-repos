@@ -34,8 +34,10 @@ trait ScTemplateParents extends ScalaPsiElement {
   @Cached(false, ModCount.getBlockModificationCount, this)
   def syntheticTypeElements: Seq[ScTypeElement] = {
     getContext.getContext match {
-      case td: ScTypeDefinition => SyntheticMembersInjector.injectSupers(td)
-      case _                    => Seq.empty
+      case td: ScTypeDefinition =>
+        SyntheticMembersInjector.injectSupers(td)
+      case _ =>
+        Seq.empty
     }
   }
   def allTypeElements: Seq[ScTypeElement] =
@@ -60,8 +62,10 @@ object ScTemplateParents {
               .map {
                 case tp: ScType =>
                   ScType.extractClass(tp) match {
-                    case Some(clazz) => clazz
-                    case _           => null
+                    case Some(clazz) =>
+                      clazz
+                    case _ =>
+                      null
                   }
               }
               .getOrElse(null)
@@ -71,17 +75,22 @@ object ScTemplateParents {
             val resolve = ref.resolveNoConstructor
             if (resolve.length == 1) {
               resolve(0) match {
-                case ScalaResolveResult(c: PsiClass, _) => c
+                case ScalaResolveResult(c: PsiClass, _) =>
+                  c
                 case ScalaResolveResult(ta: ScTypeAliasDefinition, _) =>
                   ta.aliasedType match {
                     case Success(te, _) =>
                       ScType.extractClass(te, Some(project)) match {
-                        case Some(c) => c
-                        case _       => null
+                        case Some(c) =>
+                          c
+                        case _ =>
+                          null
                       }
-                    case _ => null
+                    case _ =>
+                      null
                   }
-                case _ => tail()
+                case _ =>
+                  tail()
               }
             } else
               tail()
@@ -89,19 +98,25 @@ object ScTemplateParents {
           element match {
             case s: ScSimpleTypeElement =>
               s.reference match {
-                case Some(ref) => refTail(ref)
-                case _         => tail()
+                case Some(ref) =>
+                  refTail(ref)
+                case _ =>
+                  tail()
               }
             case p: ScParameterizedTypeElement =>
               p.typeElement match {
                 case s: ScSimpleTypeElement =>
                   s.reference match {
-                    case Some(ref) => refTail(ref)
-                    case _         => tail()
+                    case Some(ref) =>
+                      refTail(ref)
+                    case _ =>
+                      tail()
                   }
-                case _ => tail()
+                case _ =>
+                  tail()
               }
-            case _ => tail()
+            case _ =>
+              tail()
           }
       }
       .filter(_ != null)

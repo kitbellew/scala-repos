@@ -70,8 +70,10 @@ case class Weeks(cnt: Int)(implicit tz: TimeZone)
     @tailrec
     def recentMonday(rd: RichDate): RichDate = {
       rd.toCalendar(tz).get(Calendar.DAY_OF_WEEK) match {
-        case Calendar.MONDAY => rd
-        case _               => recentMonday(step.subtractFrom(rd))
+        case Calendar.MONDAY =>
+          rd
+        case _ =>
+          recentMonday(step.subtractFrom(rd))
       }
     }
     //Set it to the earliest point in the day:

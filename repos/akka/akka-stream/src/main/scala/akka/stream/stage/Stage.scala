@@ -60,7 +60,8 @@ private[stream] object AbstractStage {
             try {
               currentStage.onPush(grab(shape.in), ctx)
             } catch {
-              case NonFatal(ex) ⇒ onSupervision(ex)
+              case NonFatal(ex) ⇒
+                onSupervision(ex)
             }
 
           override def onPull(): Unit = currentStage.onPull(ctx)
@@ -623,8 +624,10 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
     } else {
       val nextState =
         current match {
-          case es: EmittingState if emitting ⇒ es.copy(iter = es.iter ++ iter)
-          case _ ⇒ emittingState(iter, andThen = Finish)
+          case es: EmittingState if emitting ⇒
+            es.copy(iter = es.iter ++ iter)
+          case _ ⇒
+            emittingState(iter, andThen = Finish)
         }
       become(nextState)
       ctx.absorbTermination()
@@ -660,7 +663,8 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
             case Stay ⇒ // ok
             case Become(newState) ⇒
               become(newState.asInstanceOf[StageState[In, Out]])
-            case Finish ⇒ ctx.pushAndFinish(elem)
+            case Finish ⇒
+              ctx.pushAndFinish(elem)
           }
           ctx.push(elem)
         } else

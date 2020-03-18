@@ -92,10 +92,12 @@ object DecimalPrecision extends Rule[LogicalPlan] {
   /** Decimal precision promotion for +, -, *, /, %, pmod, and binary comparison. */
   private val decimalAndDecimal: PartialFunction[Expression, Expression] = {
     // Skip nodes whose children have not been resolved yet
-    case e if !e.childrenResolved => e
+    case e if !e.childrenResolved =>
+      e
 
     // Skip nodes who is already promoted
-    case e: BinaryArithmetic if e.left.isInstanceOf[PromotePrecision] => e
+    case e: BinaryArithmetic if e.left.isInstanceOf[PromotePrecision] =>
+      e
 
     case Add(
           e1 @ DecimalType.Expression(p1, s1),

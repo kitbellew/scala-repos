@@ -125,11 +125,13 @@ trait GenMapLike[A, +B, +Repr]
                   that.get(k.asInstanceOf[b]) match {
                     case Some(`v`) =>
                       true
-                    case _ => false
+                    case _ =>
+                      false
                   }
               }
             } catch {
-              case ex: ClassCastException => false
+              case ex: ClassCastException =>
+                false
             }
           }
       case _ =>

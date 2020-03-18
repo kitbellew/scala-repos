@@ -299,7 +299,8 @@ trait VectorFunctions {
       acc match {
         case (c, v) =>
           f(c, a) match {
-            case (c, b) => (c, v :+ b)
+            case (c, b) =>
+              (c, v :+ b)
           }
       }
     }
@@ -312,7 +313,8 @@ trait VectorFunctions {
       acc match {
         case (c, v) =>
           f(c, a) match {
-            case (c, b) => (c, b +: v)
+            case (c, b) =>
+              (c, b +: v)
           }
       }
     }
@@ -370,8 +372,10 @@ private trait VectorOrder[A] extends Order[Vector[A]] with VectorEqual[A] {
         EQ
       else
         A.order(a1(ix), a2(ix)) match {
-          case EQ => receqs(ix + 1)
-          case o  => o
+          case EQ =>
+            receqs(ix + 1)
+          case o =>
+            o
         }
     Semigroup[Ordering].append(Order[Int].order(a1s, a2.length), receqs(0))
   }

@@ -78,8 +78,10 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
 
   private[this] def checkFuture(actual: Future[Message], expected: Message) {
     actual.poll match {
-      case Some(Return(msg)) => assert(msg == expected)
-      case _                 => fail()
+      case Some(Return(msg)) =>
+        assert(msg == expected)
+      case _ =>
+        fail()
     }
   }
 
@@ -450,7 +452,8 @@ class ServerTest extends FunSuite with MockitoSugar with AssertionsForJUnit {
   test("interrupts writes on Tdiscarded") {
     val writep = new Promise[Unit]
     writep.setInterruptHandler {
-      case exc => writep.setException(exc)
+      case exc =>
+        writep.setException(exc)
     }
 
     val clientToServer = new AsyncQueue[Message]

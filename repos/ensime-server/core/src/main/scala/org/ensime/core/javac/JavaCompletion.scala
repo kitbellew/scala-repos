@@ -55,8 +55,10 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
 
     val defaultPrefix =
       JavaIdentRegexp.findFirstMatchIn(preceding) match {
-        case Some(m) => m.group(1)
-        case _       => ""
+        case Some(m) =>
+          m.group(1)
+        case _ =>
+          ""
       }
 
     log.info("PREFIX: " + defaultPrefix)
@@ -171,8 +173,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     var p = path
     while (p != null) {
       p.getLeaf match {
-        case m: MemberSelectTree => return Some(m)
-        case _                   => {}
+        case m: MemberSelectTree =>
+          return Some(m)
+        case _ => {}
       }
       p = p.getParentPath
     }
@@ -182,9 +185,12 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
   private def selectedPackageName(m: MemberSelectTree): String = {
     val name = m.getIdentifier.toString
     m.getExpression match {
-      case m: MemberSelectTree => selectedPackageName(m) + "." + name
-      case i: IdentifierTree   => i.getName.toString() + "." + name
-      case _                   => name
+      case m: MemberSelectTree =>
+        selectedPackageName(m) + "." + name
+      case i: IdentifierTree =>
+        i.getName.toString() + "." + name
+      case _ =>
+        name
     }
   }
 
@@ -238,7 +244,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
             constructorInfos(info, e, relevance + 5)
           else
             List(typeInfo(e, relevance))
-        case _ => List()
+        case _ =>
+          List()
       }
     } else
       List()
@@ -276,8 +283,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       var t = tel.getEnclosingElement()
       while (t != null) {
         t match {
-          case tel: TypeElement => addTypeMembers(tel, relavence)
-          case _                =>
+          case tel: TypeElement =>
+            addTypeMembers(tel, relavence)
+          case _ =>
         }
         t = t.getEnclosingElement()
         relavence -= 10
@@ -398,9 +406,12 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
 
   private def contentsAsString(sf: SourceFileInfo, charset: Charset) =
     sf match {
-      case SourceFileInfo(f, None, None)             => f.readString()
-      case SourceFileInfo(f, Some(contents), None)   => contents
-      case SourceFileInfo(f, None, Some(contentsIn)) => contentsIn.readString()
+      case SourceFileInfo(f, None, None) =>
+        f.readString()
+      case SourceFileInfo(f, Some(contents), None) =>
+        contents
+      case SourceFileInfo(f, None, Some(contentsIn)) =>
+        contentsIn.readString()
     }
 
 }

@@ -88,7 +88,8 @@ object MainLoop {
     (old.full, logging.full) match { // well, this is a hack
       case (oldLog: AbstractLogger, newLog: AbstractLogger) =>
         Logger.transferLevels(oldLog, newLog)
-      case _ => ()
+      case _ =>
+        ()
     }
   }
 
@@ -101,19 +102,26 @@ object MainLoop {
   @tailrec
   def run(state: State): RunNext =
     state.next match {
-      case State.Continue       => run(next(state))
-      case State.ClearGlobalLog => new ClearGlobalLog(state.continue)
-      case State.KeepLastLog    => new KeepGlobalLog(state.continue)
-      case ret: State.Return    => new Return(ret.result)
+      case State.Continue =>
+        run(next(state))
+      case State.ClearGlobalLog =>
+        new ClearGlobalLog(state.continue)
+      case State.KeepLastLog =>
+        new KeepGlobalLog(state.continue)
+      case ret: State.Return =>
+        new Return(ret.result)
     }
 
   def next(state: State): State =
     ErrorHandling.wideConvert {
       state.process(Command.process)
     } match {
-      case Right(s)                  => s
-      case Left(t: xsbti.FullReload) => throw t
-      case Left(t)                   => state.handleError(t)
+      case Right(s) =>
+        s
+      case Left(t: xsbti.FullReload) =>
+        throw t
+      case Left(t) =>
+        state.handleError(t)
     }
 
   @deprecated("Use State.handleError", "0.13.0")

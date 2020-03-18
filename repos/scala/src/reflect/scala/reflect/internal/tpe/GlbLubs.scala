@@ -86,8 +86,10 @@ private[internal] trait GlbLubs {
           val mergedTypeArgs =
             (
               tp match {
-                case et: ExistentialType => et.underlying;
-                case _                   => tp
+                case et: ExistentialType =>
+                  et.underlying;
+                case _ =>
+                  tp
               }
             ).typeArgs
           exists3(typeSym.typeParams, mergedTypeArgs, arggsTransposed) {
@@ -97,7 +99,8 @@ private[internal] trait GlbLubs {
               val wasLubbed = !lubbedArgs.exists(_ =:= arg)
               (!isExistential && isInFBound && wasLubbed)
           }
-        case None => false
+        case None =>
+          false
       }
     )
   }
@@ -127,7 +130,8 @@ private[internal] trait GlbLubs {
         case TypeRef(_, _, args) if args.nonEmpty && isHotForTs(args) =>
           logResult("Retracting dummies from " + tp + " in lublist")(
             tp.typeConstructor)
-        case _ => tp
+        case _ =>
+          tp
       }
     // pretypes is a tail-recursion-preserving accumulator.
     @tailrec
@@ -147,7 +151,8 @@ private[internal] trait GlbLubs {
         // Is the frontier made up of types with the same symbol?
         val isUniformFrontier =
           (ts0: @unchecked) match {
-            case t :: ts => ts forall (_.typeSymbol == t.typeSymbol)
+            case t :: ts =>
+              ts forall (_.typeSymbol == t.typeSymbol)
           }
 
         // Produce a single type for this frontier by merging the prefixes and arguments of those
@@ -159,7 +164,8 @@ private[internal] trait GlbLubs {
           val tails = tsBts map (_.tail)
           val ts1 = elimSub(ts0, depth) map elimHigherOrderTypeParam
           mergePrefixAndArgs(ts1, Covariant, depth) match {
-            case NoType => loop(pretypes, tails)
+            case NoType =>
+              loop(pretypes, tails)
             case tp
                 if strictInference && willViolateRecursiveBounds(
                   tp,
@@ -219,7 +225,8 @@ private[internal] trait GlbLubs {
   /** A minimal type list which has a given list of types as its base type sequence */
   def spanningTypes(ts: List[Type]): List[Type] =
     ts match {
-      case List() => List()
+      case List() =>
+        List()
       case first :: rest =>
         first :: spanningTypes(
           rest filter (t => !first.typeSymbol.isSubClass(t.typeSymbol)))
@@ -229,8 +236,10 @@ private[internal] trait GlbLubs {
     *  of some other element of the list. */
   private def elimSuper(ts: List[Type]): List[Type] =
     ts match {
-      case List()  => List()
-      case List(t) => List(t)
+      case List() =>
+        List()
+      case List(t) =>
+        List(t)
       case t :: ts1 =>
         val rest = elimSuper(ts1 filter (t1 => !(t <:< t1)))
         if (rest exists (t1 => t1 <:< t))
@@ -244,8 +253,10 @@ private[internal] trait GlbLubs {
   private def elimSub(ts: List[Type], depth: Depth): List[Type] = {
     def elimSub0(ts: List[Type]): List[Type] =
       ts match {
-        case List()  => List()
-        case List(t) => List(t)
+        case List() =>
+          List()
+        case List(t) =>
+          List(t)
         case t :: ts1 =>
           val rest = elimSub0(ts1 filter (t1 => !isSubType(t1, t, depth.decr)))
           if (rest exists (t1 => isSubType(t, t1, depth.decr)))
@@ -268,8 +279,10 @@ private[internal] trait GlbLubs {
   private def stripExistentialsAndTypeVars(
       ts: List[Type]): (List[Type], List[Symbol]) = {
     val quantified = ts flatMap {
-      case ExistentialType(qs, _) => qs
-      case t                      => List()
+      case ExistentialType(qs, _) =>
+        qs
+      case t =>
+        List()
     }
     def stripType(tp: Type): Type =
       tp match {
@@ -282,7 +295,8 @@ private[internal] trait GlbLubs {
             tv
           else
             abort("trying to do lub/glb of typevar " + tp)
-        case t => t
+        case t =>
+          t
       }
     val strippedTypes = ts mapConserve stripType
     (strippedTypes, quantified)
@@ -296,8 +310,10 @@ private[internal] trait GlbLubs {
     */
   def sameWeakLubAsLub(tps: List[Type]) =
     tps match {
-      case Nil       => true
-      case tp :: Nil => !typeHasAnnotations(tp)
+      case Nil =>
+        true
+      case tp :: Nil =>
+        !typeHasAnnotations(tp)
       case tps =>
         !(tps exists typeHasAnnotations) && !(tps forall isNumericValueType)
     }
@@ -335,8 +351,10 @@ private[internal] trait GlbLubs {
 
   def lub(ts: List[Type]): Type =
     ts match {
-      case Nil      => NothingTpe
-      case t :: Nil => t
+      case Nil =>
+        NothingTpe
+      case t :: Nil =>
+        t
       case _ =>
         if (Statistics.canEnable)
           Statistics.incCounter(lubCount)
@@ -372,8 +390,10 @@ private[internal] trait GlbLubs {
   protected[internal] def lub(ts: List[Type], depth: Depth): Type = {
     def lub0(ts0: List[Type]): Type =
       elimSub(ts0, depth) match {
-        case List()  => NothingTpe
-        case List(t) => t
+        case List() =>
+          NothingTpe
+        case List(t) =>
+          t
         case ts @ PolyType(tparams, _) :: _ =>
           val tparams1 =
             map2(tparams, matchingBounds(ts, tparams).transpose)(
@@ -538,8 +558,10 @@ private[internal] trait GlbLubs {
   /** The greatest lower bound of a list of types (as determined by `<:<`). */
   def glb(ts: List[Type]): Type =
     elimSuper(ts) match {
-      case List()  => AnyTpe
-      case List(t) => t
+      case List() =>
+        AnyTpe
+      case List(t) =>
+        t
       case ts0 =>
         if (Statistics.canEnable)
           Statistics.incCounter(lubCount)
@@ -560,9 +582,12 @@ private[internal] trait GlbLubs {
 
   protected[internal] def glb(ts: List[Type], depth: Depth): Type =
     elimSuper(ts) match {
-      case List()  => AnyTpe
-      case List(t) => t
-      case ts0     => glbNorm(ts0, depth)
+      case List() =>
+        AnyTpe
+      case List(t) =>
+        t
+      case ts0 =>
+        glbNorm(ts0, depth)
     }
 
   /** The greatest lower bound of a list of types (as determined by `<:<`), which have been normalized
@@ -570,8 +595,10 @@ private[internal] trait GlbLubs {
   protected def glbNorm(ts: List[Type], depth: Depth): Type = {
     def glb0(ts0: List[Type]): Type =
       ts0 match {
-        case List()  => AnyTpe
-        case List(t) => t
+        case List() =>
+          AnyTpe
+        case List(t) =>
+          t
         case ts @ PolyType(tparams, _) :: _ =>
           val tparams1 =
             map2(tparams, matchingBounds(ts, tparams).transpose)(
@@ -610,8 +637,10 @@ private[internal] trait GlbLubs {
         val glbOwner = commonOwner(ts)
         def refinedToParents(t: Type): List[Type] =
           t match {
-            case RefinedType(ps, _) => ps flatMap refinedToParents
-            case _                  => List(t)
+            case RefinedType(ps, _) =>
+              ps flatMap refinedToParents
+            case _ =>
+              List(t)
           }
         def refinedToDecls(t: Type): List[Scope] =
           t match {
@@ -621,7 +650,8 @@ private[internal] trait GlbLubs {
                 dss
               else
                 decls :: dss
-            case _ => List()
+            case _ =>
+              List()
           }
         val ts1 = ts flatMap refinedToParents
         val glbBase = intersectionType(ts1, glbOwner)
@@ -648,8 +678,10 @@ private[internal] trait GlbLubs {
                   else {
                     def isTypeBound(tp: Type) =
                       tp match {
-                        case TypeBounds(_, _) => true
-                        case _                => false
+                        case TypeBounds(_, _) =>
+                          true
+                        case _ =>
+                          false
                       }
                     def glbBounds(bnds: List[Type]): TypeBounds = {
                       val lo = lub(bnds map (_.bounds.lo), depth.decr)

@@ -36,8 +36,10 @@ abstract class Env {
     new Env {
       def apply[b](w: Var[b]): b =
         w match {
-          case _: v.type => x // v eq w, hence a = b
-          case _         => Env.this.apply(w)
+          case _: v.type =>
+            x // v eq w, hence a = b
+          case _ =>
+            Env.this.apply(w)
         }
     }
 }
@@ -59,9 +61,12 @@ object Test {
   def eval[a](t: Term[a], env: Env): a =
     t match {
       // First three work
-      case v: Var[b]      => env(v) // a = b
-      case n @ Num(value) => value // a = Int
-      case a @ App(f, e)  => eval(f, env)(eval(e, env)) // a = c
+      case v: Var[b] =>
+        env(v) // a = b
+      case n @ Num(value) =>
+        value // a = Int
+      case a @ App(f, e) =>
+        eval(f, env)(eval(e, env)) // a = c
 
       // Next one fails like:
       //

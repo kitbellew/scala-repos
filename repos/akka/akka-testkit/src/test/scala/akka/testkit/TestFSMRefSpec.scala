@@ -18,11 +18,14 @@ class TestFSMRefSpec extends AkkaSpec {
         new Actor with FSM[Int, String] {
           startWith(1, "")
           when(1) {
-            case Event("go", _) ⇒ goto(2) using "go"
-            case Event(StateTimeout, _) ⇒ goto(2) using "timeout"
+            case Event("go", _) ⇒
+              goto(2) using "go"
+            case Event(StateTimeout, _) ⇒
+              goto(2) using "timeout"
           }
           when(2) {
-            case Event("back", _) ⇒ goto(1) using "back"
+            case Event("back", _) ⇒
+              goto(1) using "back"
           }
         },
         "test-fsm-ref-1"
@@ -49,7 +52,8 @@ class TestFSMRefSpec extends AkkaSpec {
         new Actor with FSM[Int, Null] {
           startWith(1, null)
           when(1) {
-            case x ⇒ stay
+            case x ⇒
+              stay
           }
         },
         "test-fsm-ref-2")
@@ -76,7 +80,8 @@ class TestFSMRefSpec extends AkkaSpec {
     class TestFSMActor extends Actor with FSM[Int, Null] {
       startWith(1, null)
       when(1) {
-        case x ⇒ stay
+        case x ⇒
+          stay
       }
       val supervisor = context.parent
       val name = context.self.path.name

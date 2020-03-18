@@ -42,10 +42,12 @@ trait PathFun {
           case http: HttpURLConnection =>
             http.setRequestMethod("HEAD")
             http
-          case other: URLConnection => other
+          case other: URLConnection =>
+            other
         }
       scala.concurrent.blocking(connection.getHeaderFields).asScala.toMap.map {
-        case (key, list) => (key, list.asScala.toList)
+        case (key, list) =>
+          (key, list.asScala.toList)
       }
     }
 

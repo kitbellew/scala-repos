@@ -61,7 +61,8 @@ object BaseTypes {
         get(upper.v, notAll, visitedAliases = visitedAliases)
       case ScSkolemizedType(_, Nil, _, upper) =>
         get(upper, notAll, visitedAliases = visitedAliases)
-      case a: JavaArrayType => Seq(types.Any)
+      case a: JavaArrayType =>
+        Seq(types.Any)
       case p: ScProjectionType
           if p.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         val ta = p.actualElement.asInstanceOf[ScTypeAliasDefinition]
@@ -122,7 +123,8 @@ object BaseTypes {
                 else
                   Seq(s.subst(ScType.create(t, clazz.getProject)))
               })
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
       case ScExistentialType(q, wilds) =>
         get(q, notAll, visitedAliases = visitedAliases).map { bt =>
@@ -163,9 +165,11 @@ object BaseTypes {
                     Seq(s.subst(ScType.create(st, proj)))
                 }
               })
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 
@@ -181,7 +185,8 @@ object BaseTypes {
         case Some(c) =>
           val isBest =
             all.get(c) match {
-              case None => true
+              case None =>
+                true
               case Some(ts) =>
                 ts.find(t1 => !Conformance.conforms(t1, t)) == None
             }

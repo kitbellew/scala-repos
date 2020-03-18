@@ -99,18 +99,30 @@ object ImmutableArray extends ImmutableArrayInstances {
   def make[A](x: AnyRef): ImmutableArray[A] = {
     val y =
       x match {
-        case null              => null
-        case x: Array[Byte]    => new ofByte(x)
-        case x: Array[Short]   => new ofShort(x)
-        case x: Array[Char]    => new ofChar(x)
-        case x: Array[Int]     => new ofInt(x)
-        case x: Array[Long]    => new ofLong(x)
-        case x: Array[Float]   => new ofFloat(x)
-        case x: Array[Double]  => new ofDouble(x)
-        case x: Array[Boolean] => new ofBoolean(x)
-        case x: Array[Unit]    => new ofUnit(x)
-        case x: Array[AnyRef]  => new ofRef(x)
-        case x: String         => new StringArray(x)
+        case null =>
+          null
+        case x: Array[Byte] =>
+          new ofByte(x)
+        case x: Array[Short] =>
+          new ofShort(x)
+        case x: Array[Char] =>
+          new ofChar(x)
+        case x: Array[Int] =>
+          new ofInt(x)
+        case x: Array[Long] =>
+          new ofLong(x)
+        case x: Array[Float] =>
+          new ofFloat(x)
+        case x: Array[Double] =>
+          new ofDouble(x)
+        case x: Array[Boolean] =>
+          new ofBoolean(x)
+        case x: Array[Unit] =>
+          new ofUnit(x)
+        case x: Array[AnyRef] =>
+          new ofRef(x)
+        case x: String =>
+          new StringArray(x)
       }
     y.asInstanceOf[ImmutableArray[A]]
   }
@@ -123,17 +135,28 @@ object ImmutableArray extends ImmutableArrayInstances {
   def fromArray[A](x: Array[A]): ImmutableArray[A] = {
     val y =
       x.asInstanceOf[AnyRef] match {
-        case null              => null
-        case x: Array[Byte]    => new ofByte(x)
-        case x: Array[Short]   => new ofShort(x)
-        case x: Array[Char]    => new ofChar(x)
-        case x: Array[Int]     => new ofInt(x)
-        case x: Array[Long]    => new ofLong(x)
-        case x: Array[Float]   => new ofFloat(x)
-        case x: Array[Double]  => new ofDouble(x)
-        case x: Array[Boolean] => new ofBoolean(x)
-        case x: Array[Unit]    => new ofUnit(x)
-        case _: Array[AnyRef]  => new ofRef(x.asInstanceOf[Array[AnyRef]])
+        case null =>
+          null
+        case x: Array[Byte] =>
+          new ofByte(x)
+        case x: Array[Short] =>
+          new ofShort(x)
+        case x: Array[Char] =>
+          new ofChar(x)
+        case x: Array[Int] =>
+          new ofInt(x)
+        case x: Array[Long] =>
+          new ofLong(x)
+        case x: Array[Float] =>
+          new ofFloat(x)
+        case x: Array[Double] =>
+          new ofDouble(x)
+        case x: Array[Boolean] =>
+          new ofBoolean(x)
+        case x: Array[Unit] =>
+          new ofUnit(x)
+        case _: Array[AnyRef] =>
+          new ofRef(x.asInstanceOf[Array[AnyRef]])
       }
     y.asInstanceOf[ImmutableArray[A]]
   }
@@ -257,7 +280,8 @@ object ImmutableArray extends ImmutableArrayInstances {
 
     def ++[B >: Char: ClassTag](other: ImmutableArray[B]) =
       other match {
-        case other: StringArray => new StringArray(str + other.str)
+        case other: StringArray =>
+          new StringArray(str + other.str)
         case _ => {
           val newArr = new Array[B](length + other.length)
           this.copyToArray(newArr, 0, length)
@@ -271,17 +295,28 @@ object ImmutableArray extends ImmutableArrayInstances {
       immArray: ImmutableArray[A]): WrappedImmutableArray[A] = {
     import ImmutableArray.{WrappedImmutableArray => IAO}
     immArray match {
-      case a: StringArray => new IAO.ofStringArray(a)
-      case a: ofRef[_]    => new IAO.ofRef(a)
-      case a: ofByte      => new IAO.ofByte(a)
-      case a: ofShort     => new IAO.ofShort(a)
-      case a: ofChar      => new IAO.ofChar(a)
-      case a: ofInt       => new IAO.ofInt(a)
-      case a: ofLong      => new IAO.ofLong(a)
-      case a: ofFloat     => new IAO.ofFloat(a)
-      case a: ofDouble    => new IAO.ofDouble(a)
-      case a: ofBoolean   => new IAO.ofBoolean(a)
-      case a: ofUnit      => new IAO.ofUnit(a)
+      case a: StringArray =>
+        new IAO.ofStringArray(a)
+      case a: ofRef[_] =>
+        new IAO.ofRef(a)
+      case a: ofByte =>
+        new IAO.ofByte(a)
+      case a: ofShort =>
+        new IAO.ofShort(a)
+      case a: ofChar =>
+        new IAO.ofChar(a)
+      case a: ofInt =>
+        new IAO.ofInt(a)
+      case a: ofLong =>
+        new IAO.ofLong(a)
+      case a: ofFloat =>
+        new IAO.ofFloat(a)
+      case a: ofDouble =>
+        new IAO.ofDouble(a)
+      case a: ofBoolean =>
+        new IAO.ofBoolean(a)
+      case a: ofUnit =>
+        new IAO.ofUnit(a)
     }
   }
 
@@ -374,9 +409,12 @@ object ImmutableArray extends ImmutableArrayInstances {
       extends Ops[ImmutableArray[Char]] {
     def asString =
       self match {
-        case a: StringArray => a.str
-        case a: ofChar      => wrapArray(a).mkString
-        case _              => sys.error("Unknown subtype of ImmutableArray[Char]")
+        case a: StringArray =>
+          a.str
+        case a: ofChar =>
+          wrapArray(a).mkString
+        case _ =>
+          sys.error("Unknown subtype of ImmutableArray[Char]")
       }
   }
 

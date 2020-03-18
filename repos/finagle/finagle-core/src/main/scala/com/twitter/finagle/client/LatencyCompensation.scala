@@ -82,8 +82,10 @@ object LatencyCompensation {
         val Compensator(configured) = prms[Compensator]
         val compensator =
           DefaultOverride() match {
-            case Some(v) if !prms.contains[Compensator] => v.compensator
-            case _                                      => configured
+            case Some(v) if !prms.contains[Compensator] =>
+              v.compensator
+            case _ =>
+              configured
           }
 
         val AddrMetadata(metadata) = prms[AddrMetadata]

@@ -159,8 +159,10 @@ trait PersistentView
     */
   def autoUpdateReplayMax: Long =
     viewSettings.autoUpdateReplayMax match {
-      case -1 ⇒ Long.MaxValue
-      case value ⇒ value
+      case -1 ⇒
+        Long.MaxValue
+      case value ⇒
+        value
     }
 
   /**
@@ -284,7 +286,8 @@ trait PersistentView
               replayMax,
               persistenceId,
               self)
-          case other ⇒ internalStash.stash()
+          case other ⇒
+            internalStash.stash()
         }
     }
 
@@ -367,8 +370,10 @@ trait PersistentView
             // replay must be a full replay (up to the highest stored sequence number)
             // Recover(lastSequenceNr) is sent by preRestart
             setLastSequenceNr(Long.MaxValue)
-          case _: RecoverySuccess ⇒ replayCompleted(receive)
-          case _ ⇒ internalStash.stash()
+          case _: RecoverySuccess ⇒
+            replayCompleted(receive)
+          case _ ⇒
+            internalStash.stash()
         }
 
       def replayCompleted(receive: Receive): Unit = {
@@ -399,7 +404,8 @@ trait PersistentView
             changeStateToReplayStarted(await = false, replayMax)
           case Update(awaitUpdate, replayMax) ⇒
             changeStateToReplayStarted(awaitUpdate, replayMax)
-          case other ⇒ PersistentView.super.aroundReceive(receive, other)
+          case other ⇒
+            PersistentView.super.aroundReceive(receive, other)
         }
 
       def changeStateToReplayStarted(await: Boolean, replayMax: Long): Unit = {

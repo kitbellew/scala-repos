@@ -70,7 +70,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       removeSlashAsterisk(lines, lineRange, !REVERTED_LINES) match {
         case Some((st, lr)) =>
           removeDoubleSlash(st, lr)
-        case _ => None
+        case _ =>
+          None
       }
     optionStatements.map(t => t._2)
   }
@@ -137,7 +138,8 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
                 some
               case Some((s, ln)) =>
                 removeDoubleSlashReversed(s, ln)
-              case _ => None
+              case _ =>
+                None
             }
 
           } else {

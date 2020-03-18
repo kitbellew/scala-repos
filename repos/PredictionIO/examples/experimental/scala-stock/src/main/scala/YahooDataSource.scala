@@ -114,7 +114,8 @@ class YahooDataSource(val params: YahooDataSource.Params)
       tList.zipWithIndex
         .drop(1)
         .filter {
-          case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true)
+          case (t, idx) =>
+            timeIndexSetOpt.map(_(t)).getOrElse(true)
         }
         .map {
           case (t, idx) =>

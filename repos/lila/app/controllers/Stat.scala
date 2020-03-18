@@ -14,7 +14,8 @@ object Stat extends LilaController {
           Env.user.cached.ratingDistribution(perfType) map { data =>
             Ok(html.stat.ratingDistribution(perfType, data))
           }
-        case _ => notFound
+        case _ =>
+          notFound
       }
     }
 }

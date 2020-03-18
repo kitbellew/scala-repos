@@ -505,7 +505,8 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
           }
           eq
         }
-      case _ => false
+      case _ =>
+        false
     }
 }
 

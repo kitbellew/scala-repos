@@ -39,7 +39,8 @@ abstract class AbstractFormatConversionIntention(
     }
     val results = candidates.map(parser.parse)
     candidates.zip(results).collectFirst {
-      case (candidate, Some(parts)) => (candidate, parts)
+      case (candidate, Some(parts)) =>
+        (candidate, parts)
     }
   }
 

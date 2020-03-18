@@ -42,7 +42,8 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
 
   class Echo extends Actor {
     def receive = {
-      case m ⇒ sender ! m
+      case m ⇒
+        sender ! m
     }
   }
 
@@ -377,7 +378,8 @@ abstract class SurviveNetworkInstabilitySpec
         awaitAssert(clusterView.members.map(_.address) should ===(expected))
         awaitAssert(
           clusterView.members.collectFirst {
-            case m if m.address == address(eighth) ⇒ m.status
+            case m if m.address == address(eighth) ⇒
+              m.status
           } should ===(Some(MemberStatus.Up)))
       }
 

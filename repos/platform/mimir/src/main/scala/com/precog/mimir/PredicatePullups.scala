@@ -53,11 +53,13 @@ trait PredicatePullupsModule[M[+_]] extends TransSpecableModule[M] {
                     fl <- extractFilter(left)
                     fr <- extractFilter(right)
                   } yield fl |+| fr
-                case dag.Extra(target) => Some((List(target), Nil))
+                case dag.Extra(target) =>
+                  Some((List(target), Nil))
                 case u @ dag.UnfixedSolution(id, expr)
                     if isTransSpecable(expr, target) =>
                   Some((Nil, List(u)))
-                case other => None
+                case other =>
+                  None
               }
 
             extractFilter(gchild) match {
@@ -70,10 +72,12 @@ trait PredicatePullupsModule[M[+_]] extends TransSpecableModule[M] {
                   Filter(IdentitySort, target, boolean)(target.loc)
                 List(GroupEdit(g, target -> newTarget, gchild -> newChild))
               }
-              case _ => Nil
+              case _ =>
+                Nil
             }
 
-          case other => Nil
+          case other =>
+            Nil
         }
 
       edits.foldLeft(graph) {

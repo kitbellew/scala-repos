@@ -48,8 +48,10 @@ abstract class ExecutionDirectives extends CookieDirectives {
             ctx: RequestContext,
             rejection: CustomRejection): RouteResult =
           rejection match {
-            case t: T ⇒ handler.apply(ctx, t)
-            case _ ⇒ passRejection()
+            case t: T ⇒
+              handler.apply(ctx, t)
+            case _ ⇒
+              passRejection()
           }
       })(innerRoute, moreInnerRoutes.toList)
 }

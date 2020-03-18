@@ -53,7 +53,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
   test("Graph.fromEdges") {
     withSpark { sc =>
       val ring = (0L to 100L).zip((1L to 99L) :+ 0L).map {
-        case (a, b) => Edge(a, b, 1)
+        case (a, b) =>
+          Edge(a, b, 1)
       }
       val graph = Graph.fromEdges(sc.parallelize(ring), 1.0f)
       assert(graph.edges.count() === ring.size)
@@ -64,7 +65,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val rawEdges = (0L to 98L).zip((1L to 99L) :+ 0L)
       val edges: RDD[Edge[Int]] = sc.parallelize(rawEdges).map {
-        case (s, t) => Edge(s, t, 1)
+        case (s, t) =>
+          Edge(s, t, 1)
       }
       val vertices: RDD[(VertexId, Boolean)] = sc.parallelize(
         (0L until 10L).map(id => (id, true)))
@@ -442,7 +444,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       sc.setCheckpointDir(checkpointDir.getAbsolutePath)
       val ring = (0L to 100L).zip((1L to 99L) :+ 0L).map {
-        case (a, b) => Edge(a, b, 1)
+        case (a, b) =>
+          Edge(a, b, 1)
       }
       val rdd = sc.parallelize(ring)
       val graph = Graph.fromEdges(rdd, 1.0f)

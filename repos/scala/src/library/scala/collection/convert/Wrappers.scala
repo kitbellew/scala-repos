@@ -146,7 +146,8 @@ private[collection] trait Wrappers {
       try {
         underlying.contains(o.asInstanceOf[A])
       } catch {
-        case cce: ClassCastException => false
+        case cce: ClassCastException =>
+          false
       }
     }
     override def isEmpty = underlying.isEmpty
@@ -188,7 +189,8 @@ private[collection] trait Wrappers {
     override def remove(elem: AnyRef) =
       try underlying remove elem.asInstanceOf[A]
       catch {
-        case ex: ClassCastException => false
+        case ex: ClassCastException =>
+          false
       }
     override def clear() = underlying.clear()
   }
@@ -234,11 +236,14 @@ private[collection] trait Wrappers {
     override def get(key: AnyRef): B =
       try {
         underlying get key.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
+          case None =>
+            null.asInstanceOf[B]
+          case Some(v) =>
+            v
         }
       } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
+        case ex: ClassCastException =>
+          null.asInstanceOf[B]
       }
 
     override def entrySet: ju.Set[ju.Map.Entry[A, B]] =
@@ -266,7 +271,8 @@ private[collection] trait Wrappers {
                   other match {
                     case e: ju.Map.Entry[_, _] =>
                       k == e.getKey && v == e.getValue
-                    case _ => false
+                    case _ =>
+                      false
                   }
               }
             }
@@ -296,7 +302,8 @@ private[collection] trait Wrappers {
         // wrong type is passed. This is why we need a type cast to A inside a try/catch.
         underlying.contains(key.asInstanceOf[A])
       } catch {
-        case ex: ClassCastException => false
+        case ex: ClassCastException =>
+          false
       }
   }
 
@@ -304,18 +311,23 @@ private[collection] trait Wrappers {
       extends MapWrapper[A, B](underlying) {
     override def put(k: A, v: B) =
       underlying.put(k, v) match {
-        case Some(v1) => v1
-        case None     => null.asInstanceOf[B]
+        case Some(v1) =>
+          v1
+        case None =>
+          null.asInstanceOf[B]
       }
 
     override def remove(k: AnyRef): B =
       try {
         underlying remove k.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
+          case None =>
+            null.asInstanceOf[B]
+          case Some(v) =>
+            v
         }
       } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
+        case ex: ClassCastException =>
+          null.asInstanceOf[B]
       }
 
     override def clear() = underlying.clear()
@@ -391,8 +403,10 @@ private[collection] trait Wrappers {
 
     def putIfAbsent(k: A, v: B) =
       underlying.putIfAbsent(k, v) match {
-        case Some(v) => v
-        case None    => null.asInstanceOf[B]
+        case Some(v) =>
+          v
+        case None =>
+          null.asInstanceOf[B]
       }
 
     def remove(k: AnyRef, v: AnyRef) =
@@ -405,8 +419,10 @@ private[collection] trait Wrappers {
 
     def replace(k: A, v: B): B =
       underlying.replace(k, v) match {
-        case Some(v) => v
-        case None    => null.asInstanceOf[B]
+        case Some(v) =>
+          v
+        case None =>
+          null.asInstanceOf[B]
       }
 
     def replace(k: A, oldval: B, newval: B) =
@@ -447,25 +463,33 @@ private[collection] trait Wrappers {
     def get(key: AnyRef) =
       try {
         underlying get key.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
+          case None =>
+            null.asInstanceOf[B]
+          case Some(v) =>
+            v
         }
       } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
+        case ex: ClassCastException =>
+          null.asInstanceOf[B]
       }
     def put(key: A, value: B): B =
       underlying.put(key, value) match {
-        case Some(v) => v
-        case None    => null.asInstanceOf[B]
+        case Some(v) =>
+          v
+        case None =>
+          null.asInstanceOf[B]
       }
     override def remove(key: AnyRef) =
       try {
         underlying remove key.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
+          case None =>
+            null.asInstanceOf[B]
+          case Some(v) =>
+            v
         }
       } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
+        case ex: ClassCastException =>
+          null.asInstanceOf[B]
       }
   }
 

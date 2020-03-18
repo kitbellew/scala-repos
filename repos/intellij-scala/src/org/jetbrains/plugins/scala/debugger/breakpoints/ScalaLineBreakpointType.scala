@@ -76,7 +76,8 @@ class ScalaLineBreakpointType
             case ElementType(
                   ScalaTokenTypes.kPACKAGE | ScalaTokenTypes.kIMPORT) =>
               false
-            case ws: PsiWhiteSpace => true
+            case ws: PsiWhiteSpace =>
+              true
             case _
                 if PsiTreeUtil.getParentOfType(
                   e,
@@ -91,7 +92,8 @@ class ScalaLineBreakpointType
                   classOf[ScClass]) != null =>
               result = true
               false
-            case _ => true
+            case _ =>
+              true
           }
       }
     XDebuggerUtil.getInstance.iterateLine(project, document, line, processor)
@@ -114,9 +116,12 @@ class ScalaLineBreakpointType
 
     val file =
       PsiManager.getInstance(project).findFile(position.getFile) match {
-        case null          => return emptyList
-        case sf: ScalaFile => sf
-        case _             => return emptyList
+        case null =>
+          return emptyList
+        case sf: ScalaFile =>
+          sf
+        case _ =>
+          return emptyList
       }
     val line = position.getLine
 
@@ -213,7 +218,8 @@ class ScalaLineBreakpointType
           null
         } else
           Option(getContainingMethod(lineBp)).map(_.getTextRange).orNull
-      case _ => null
+      case _ =>
+        null
     }
 
   }
@@ -222,8 +228,10 @@ class ScalaLineBreakpointType
     val xBreakpoint = breakpoint.getXBreakpoint
     if (xBreakpoint != null) {
       xBreakpoint.getProperties match {
-        case jp: JavaLineBreakpointProperties => jp.getLambdaOrdinal
-        case _                                => null
+        case jp: JavaLineBreakpointProperties =>
+          jp.getLambdaOrdinal
+        case _ =>
+          null
       }
     } else
       null
@@ -244,8 +252,10 @@ class ScalaLineBreakpointType
         AllIcons.Nodes.Function
       else
         element match {
-          case e @ (_: PsiMethod | _: PsiClass | _: PsiFile) => e.getIcon(0)
-          case _                                             => AllIcons.Debugger.Db_set_breakpoint
+          case e @ (_: PsiMethod | _: PsiClass | _: PsiFile) =>
+            e.getIcon(0)
+          case _ =>
+            AllIcons.Debugger.Db_set_breakpoint
         }
 
     }
@@ -255,7 +265,8 @@ class ScalaLineBreakpointType
         super.getText
       else {
         element match {
-          case c: ScClass => s"constructor of ${c.name}"
+          case c: ScClass =>
+            s"constructor of ${c.name}"
           case ed: ScEarlyDefinitions =>
             val clazz = PsiTreeUtil.getParentOfType(
               ed,
@@ -266,8 +277,10 @@ class ScalaLineBreakpointType
               "line in containing block"
           case Both(f: ScFunction, named: ScNamedElement) =>
             s"line in function ${named.name}"
-          case f: ScalaFile => "line in containing file"
-          case _            => "line in containing block"
+          case f: ScalaFile =>
+            "line in containing file"
+          case _ =>
+            "line in containing block"
         }
       }
     }

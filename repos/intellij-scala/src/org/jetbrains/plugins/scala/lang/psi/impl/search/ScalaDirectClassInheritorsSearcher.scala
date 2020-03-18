@@ -44,15 +44,21 @@ class ScalaDirectClassInheritorsSearcher
             clazz.containingScalaFile match {
               case Some(f) if f.getVirtualFile != null =>
                 clazz.containingScalaFile.map(GlobalSearchScope.fileScope)
-              case Some(f) => Some(GlobalSearchScope.allScope(f.getProject))
-              case None    => None
+              case Some(f) =>
+                Some(GlobalSearchScope.allScope(f.getProject))
+              case None =>
+                None
             }
-          case global: GlobalSearchScope => Some(global)
-          case _                         => None
+          case global: GlobalSearchScope =>
+            Some(global)
+          case _ =>
+            None
         }
       ScalaPsiUtil.intersectScopes(queryParameters.getScope, useScope) match {
-        case x: GlobalSearchScope => x
-        case _                    => return true
+        case x: GlobalSearchScope =>
+          x
+        case _ =>
+          return true
       }
     }
 
@@ -61,8 +67,10 @@ class ScalaDirectClassInheritorsSearcher
     def add(clazz: PsiClass): Unit = {
       val id = inReadAction {
         clazz match {
-          case o: ScObject         => s"object:${o.qualifiedName}"
-          case c: ScTypeDefinition => s"class:${c.qualifiedName}"
+          case o: ScObject =>
+            s"object:${o.qualifiedName}"
+          case c: ScTypeDefinition =>
+            s"class:${c.qualifiedName}"
           case n: ScNewTemplateDefinition =>
             anonymousClasses += n
             return

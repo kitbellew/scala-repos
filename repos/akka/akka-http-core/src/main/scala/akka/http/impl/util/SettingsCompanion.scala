@@ -58,7 +58,8 @@ private[http] object SettingsCompanion {
     val localHostName =
       try new InetSocketAddress(InetAddress.getLocalHost, 80).getHostString
       catch {
-        case NonFatal(_) ⇒ ""
+        case NonFatal(_) ⇒
+          ""
       }
     ConfigFactory.parseMap(Map("akka.http.hostname" -> localHostName).asJava)
   }

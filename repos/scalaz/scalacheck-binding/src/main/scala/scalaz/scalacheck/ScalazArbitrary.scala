@@ -206,8 +206,10 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit def DisjunctionArbitrary[A: Arbitrary, B: Arbitrary]
       : Arbitrary[A \/ B] =
     Functor[Arbitrary].map(arb[Either[A, B]]) {
-      case Left(a)  => -\/(a)
-      case Right(b) => \/-(b)
+      case Left(a) =>
+        -\/(a)
+      case Right(b) =>
+        \/-(b)
     }
 
   implicit def ValidationArbitrary[A: Arbitrary, B: Arbitrary]
@@ -305,8 +307,10 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
           a1: Arbitrary[A],
           measure1: Reducer[A, V]): Gen[FingerTree[V, A]] =
         n match {
-          case 0 => empty[V, A]
-          case 1 => arbitrary[A].map(single[V, A](_))
+          case 0 =>
+            empty[V, A]
+          case 1 =>
+            arbitrary[A].map(single[V, A](_))
           case n => {
             val nextSize = n.abs / 2
             ^^(
@@ -368,8 +372,10 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit def lazyEitherArb[F[_], A: Arbitrary, B: Arbitrary]
       : Arbitrary[LazyEither[A, B]] =
     Functor[Arbitrary].map(arb[Either[A, B]]) {
-      case Left(a)  => LazyEither.lazyLeft(a)
-      case Right(b) => LazyEither.lazyRight(b)
+      case Left(a) =>
+        LazyEither.lazyLeft(a)
+      case Right(b) =>
+        LazyEither.lazyRight(b)
     }
 
   implicit def lazyEitherTArb[F[_], A, B](implicit
@@ -459,9 +465,12 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
     Functor[Arbitrary].map(A)(
       _.grouped(2).foldLeft(Diev.empty[A]) { (working, possiblePair) =>
         possiblePair match {
-          case first :: second :: Nil => working + ((first, second))
-          case value :: Nil           => working
-          case _                      => sys.error("Unexpected amount of items in paired list.")
+          case first :: second :: Nil =>
+            working + ((first, second))
+          case value :: Nil =>
+            working
+          case _ =>
+            sys.error("Unexpected amount of items in paired list.")
         }
       })
 

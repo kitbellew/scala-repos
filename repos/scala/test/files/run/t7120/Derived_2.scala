@@ -1,6 +1,7 @@
 trait Derived extends Base[Container] {
   protected def defect = {
-    case c: Container => c.v.toString
+    case c: Container =>
+      c.v.toString
   }
 }
 

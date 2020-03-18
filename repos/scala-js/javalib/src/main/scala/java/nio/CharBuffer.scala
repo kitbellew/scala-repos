@@ -107,8 +107,10 @@ abstract class CharBuffer private[nio] (
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: CharBuffer => compareTo(that) == 0
-      case _                => false
+      case that: CharBuffer =>
+        compareTo(that) == 0
+      case _ =>
+        false
     }
 
   @noinline

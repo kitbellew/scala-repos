@@ -211,8 +211,10 @@ trait ClassHelpers {
   def classHasControllerMethod(clz: Class[_], name: String): Boolean = {
     tryo {
       clz match {
-        case null => false
-        case _    => callableMethod_?(clz.getDeclaredMethod(name))
+        case null =>
+          false
+        case _ =>
+          callableMethod_?(clz.getDeclaredMethod(name))
       }
     } openOr false
   }
@@ -357,8 +359,10 @@ trait ClassHelpers {
                 ptypes openOr params.map(_.getClass)
               List(clz.getMethod(meth, classes: _*))
             } catch {
-              case e: NullPointerException  => Nil
-              case e: NoSuchMethodException => alternateMethods
+              case e: NullPointerException =>
+                Nil
+              case e: NoSuchMethodException =>
+                alternateMethods
             }
           if (Props.productionMode) {
             methCacheLock.upgrade(methodCache(key) = ret)
@@ -386,18 +390,24 @@ trait ClassHelpers {
         })
       .find((x: Box[Any]) =>
         x match {
-          case result @ Full(_)                                 => true
-          case Failure(_, Full(c: IllegalAccessException), _)   => false
-          case Failure(_, Full(c: IllegalArgumentException), _) => false
+          case result @ Full(_) =>
+            true
+          case Failure(_, Full(c: IllegalAccessException), _) =>
+            false
+          case Failure(_, Full(c: IllegalArgumentException), _) =>
+            false
           case Failure(_, Full(c), _) =>
             if (c.getCause != null)
               throw c.getCause
             else
               throw c
-          case _ => false
+          case _ =>
+            false
         }) match {
-      case Some(result @ Full(_)) => result
-      case _                      => Failure("invokeMethod " + meth, Empty, Empty)
+      case Some(result @ Full(_)) =>
+        result
+      case _ =>
+        Failure("invokeMethod " + meth, Empty, Empty)
     }
   }
 
@@ -431,16 +441,19 @@ trait ClassHelpers {
           m.getModifiers) && m.getParameterTypes.isEmpty
       }
     on match {
-      case null => Empty
+      case null =>
+        Empty
       case instance => {
         controllerMethods(instance).toList match {
-          case Nil => Empty
+          case Nil =>
+            Empty
           case x :: xs =>
             Full(() => {
               try {
                 Full(x.invoke(instance))
               } catch {
-                case e: InvocationTargetException => throw e.getCause
+                case e: InvocationTargetException =>
+                  throw e.getCause
               }
             })
         }

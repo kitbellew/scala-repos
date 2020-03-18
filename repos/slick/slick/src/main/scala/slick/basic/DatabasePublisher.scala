@@ -44,8 +44,10 @@ abstract class DatabasePublisher[T] extends Publisher[T] {
           val l = lastMsg
           if (l ne null)
             l.onComplete {
-              case Success(_) => p.trySuccess(())
-              case Failure(t) => p.tryFailure(t)
+              case Success(_) =>
+                p.trySuccess(())
+              case Failure(t) =>
+                p.tryFailure(t)
             }(DBIO.sameThreadExecutionContext)
           else
             p.trySuccess(())
@@ -60,7 +62,8 @@ abstract class DatabasePublisher[T] extends Publisher[T] {
         def onNext(t: T): Unit = {
           lastMsg = Future(f(t))
           lastMsg.onComplete {
-            case Success(v) => subscr.request(1L)
+            case Success(v) =>
+              subscr.request(1L)
             case Failure(t) =>
               subscr.cancel()
               p.tryFailure(t)

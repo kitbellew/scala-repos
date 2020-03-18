@@ -100,11 +100,15 @@ object PageViewStream {
       Seq(1 -> "Patrick Wendell", 2 -> "Reynold Xin", 3 -> "Matei Zaharia"))
 
     metric match {
-      case "pageCounts"          => pageCounts.print()
-      case "slidingPageCounts"   => slidingPageCounts.print()
-      case "errorRatePerZipCode" => errorRatePerZipCode.print()
-      case "activeUserCount"     => activeUserCount.print()
-      case "popularUsersSeen"    =>
+      case "pageCounts" =>
+        pageCounts.print()
+      case "slidingPageCounts" =>
+        slidingPageCounts.print()
+      case "errorRatePerZipCode" =>
+        errorRatePerZipCode.print()
+      case "activeUserCount" =>
+        activeUserCount.print()
+      case "popularUsersSeen" =>
         // Look for users in our existing dataset and print it out if we have a match
         pageViews
           .map(view => (view.userID, 1))
@@ -114,7 +118,8 @@ object PageViewStream {
               .map(_._2._2)
               .take(10)
               .foreach(u => println("Saw user %s at time %s".format(u, time))))
-      case _ => println("Invalid metric entered: " + metric)
+      case _ =>
+        println("Invalid metric entered: " + metric)
     }
 
     ssc.start()

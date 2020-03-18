@@ -110,8 +110,10 @@ class RowMatrix @Since("1.0.0") (
         val a = rBrz.dot(vbr.value)
         rBrz match {
           // use specialized axpy for better performance
-          case _: BDV[_] => brzAxpy(a, rBrz.asInstanceOf[BDV[Double]], U)
-          case _: BSV[_] => brzAxpy(a, rBrz.asInstanceOf[BSV[Double]], U)
+          case _: BDV[_] =>
+            brzAxpy(a, rBrz.asInstanceOf[BDV[Double]], U)
+          case _: BSV[_] =>
+            brzAxpy(a, rBrz.asInstanceOf[BSV[Double]], U)
           case _ =>
             throw new UnsupportedOperationException(
               s"Do not support vector operation from type ${rBrz.getClass.getName}.")
@@ -269,9 +271,12 @@ class RowMatrix @Since("1.0.0") (
             // If k is small compared with n, we use ARPACK with distributed multiplication.
             SVDMode.DistARPACK
           }
-        case "local-svd"  => SVDMode.LocalLAPACK
-        case "local-eigs" => SVDMode.LocalARPACK
-        case "dist-eigs"  => SVDMode.DistARPACK
+        case "local-svd" =>
+          SVDMode.LocalLAPACK
+        case "local-eigs" =>
+          SVDMode.LocalARPACK
+        case "dist-eigs" =>
+          SVDMode.DistARPACK
         case _ =>
           throw new IllegalArgumentException(s"Do not support mode $mode.")
       }

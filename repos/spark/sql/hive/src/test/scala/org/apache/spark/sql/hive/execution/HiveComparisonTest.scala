@@ -66,7 +66,8 @@ abstract class HiveComparisonTest
     * Format `shardId:numShards`. Shard ids should be zero indexed.  E.g. -Dspark.hive.testshard=0:4.
     */
   val shardInfo = Option(System.getProperty("spark.hive.shard")).map {
-    case shardRegEx(id, total) => (id.toInt, total.toInt)
+    case shardRegEx(id, total) =>
+      (id.toInt, total.toInt)
   }
 
   protected val targetDir = new File("target")
@@ -156,8 +157,10 @@ abstract class HiveComparisonTest
       plan match {
         case _: Join | _: Aggregate | _: Generate | _: Sample | _: Distinct =>
           false
-        case PhysicalOperation(_, _, Sort(_, true, _)) => true
-        case _                                         => plan.children.iterator.exists(isSorted)
+        case PhysicalOperation(_, _, Sort(_, true, _)) =>
+          true
+        case _ =>
+          plan.children.iterator.exists(isSorted)
       }
 
     val orderedAnswer =
@@ -165,7 +168,8 @@ abstract class HiveComparisonTest
         // Clean out non-deterministic time schema info.
         // Hack: Hive simply prints the result of a SET command to screen,
         // and does not return it as a query answer.
-        case _: SetCommand => Seq("0")
+        case _: SetCommand =>
+          Seq("0")
         case HiveNativeCommand(c) if c.toLowerCase.contains("desc") =>
           answer
             .filterNot(nonDeterministicLine)
@@ -175,7 +179,8 @@ abstract class HiveComparisonTest
             .filterNot(_ == "")
         case _: HiveNativeCommand =>
           answer.filterNot(nonDeterministicLine).filterNot(_ == "")
-        case _: ExplainCommand  => answer
+        case _: ExplainCommand =>
+          answer
         case _: DescribeCommand =>
           // Filter out non-deterministic lines and lines which do not have actual results but
           // can introduce problems because of the way Hive formats these lines.
@@ -351,9 +356,12 @@ abstract class HiveComparisonTest
             }
           }
           .map {
-            case ""    => Nil
-            case "\n"  => Seq("")
-            case other => other.split("\n").toSeq
+            case "" =>
+              Nil
+            case "\n" =>
+              Seq("")
+            case other =>
+              other.split("\n").toSeq
           }
 
         val hiveResults: Seq[Seq[String]] =
@@ -387,7 +395,8 @@ abstract class HiveComparisonTest
                         case _: ExplainCommand =>
                           // No need to execute EXPLAIN queries as we don't check the output.
                           Nil
-                        case _ => TestHive.runSqlHive(queryString)
+                        case _ =>
+                          TestHive.runSqlHive(queryString)
                       }
 
                     // We need to add a new line to non-empty answers so we can differentiate Seq()
@@ -434,8 +443,10 @@ abstract class HiveComparisonTest
                     val originalQuery = new TestHive.QueryExecution(queryString)
                     val containsCommands =
                       originalQuery.analyzed.collectFirst {
-                        case _: Command                    => ()
-                        case _: LogicalInsertIntoHiveTable => ()
+                        case _: Command =>
+                          ()
+                        case _: LogicalInsertIntoHiveTable =>
+                          ()
                       }.nonEmpty
 
                     if (containsCommands) {
@@ -536,7 +547,8 @@ abstract class HiveComparisonTest
                 try {
                   val tablesRead =
                     new TestHive.QueryExecution(query).executedPlan.collect {
-                      case ts: HiveTableScan => ts.relation.tableName
+                      case ts: HiveTableScan =>
+                        ts.relation.tableName
                     }.toSet
 
                   TestHive.reset()
@@ -619,7 +631,8 @@ abstract class HiveComparisonTest
             }
         }
       } catch {
-        case tf: org.scalatest.exceptions.TestFailedException => throw tf
+        case tf: org.scalatest.exceptions.TestFailedException =>
+          throw tf
         case originalException: Exception =>
           if (System.getProperty("spark.hive.canarytest") != null) {
             // When we encounter an error we check to see if the environment is still

@@ -238,7 +238,8 @@ abstract class UnCurry
 
       deEta(fun) match {
         // nullary or parameterless
-        case fun1 if fun1 ne fun => fun1
+        case fun1 if fun1 ne fun =>
+          fun1
         case _ =>
           def typedFunPos(t: Tree) = localTyper.typedPos(fun.pos)(t)
           val funParams = fun.vparams map (_.symbol)
@@ -348,8 +349,10 @@ abstract class UnCurry
           }
           def traversableClassTag(tpe: Type): Tree = {
             (tpe baseType TraversableClass).typeArgs match {
-              case targ :: _ => getClassTag(targ)
-              case _         => EmptyTree
+              case targ :: _ =>
+                getClassTag(targ)
+              case _ =>
+                EmptyTree
             }
           }
           exitingUncurry {
@@ -452,7 +455,8 @@ abstract class UnCurry
       ddef.rhs match {
         case Apply(fn @ TypeApply(Select(sel, _), _), _) =>
           fn.symbol == Object_synchronized && sel.symbol == ddef.symbol.enclClass && !ddef.symbol.enclClass.isTrait
-        case _ => false
+        case _ =>
+          false
       }
 
     /** If an eligible method is entirely wrapped in a call to synchronized
@@ -467,7 +471,8 @@ abstract class UnCurry
             "Translating " + dd.symbol.defString + " into synchronized method")
           dd.symbol setFlag SYNCHRONIZED
           deriveDefDef(dd)(_ => body)
-        case _ => tree
+        case _ =>
+          tree
       }
     def isNonLocalReturn(ret: Return) =
       ret.symbol != currentOwner.enclMethod || currentOwner.isLazy || currentOwner.isAnonymousFunction
@@ -677,8 +682,10 @@ abstract class UnCurry
           // whole tree is a polymorphic nullary method application
           def removeNullary() =
             tree.tpe match {
-              case MethodType(_, _) => tree
-              case tp               => tree setType MethodType(Nil, tp.resultType)
+              case MethodType(_, _) =>
+                tree
+              case tp =>
+                tree setType MethodType(Nil, tp.resultType)
             }
           if (tree.symbol.isMethod && !tree.tpe.isInstanceOf[PolyType])
             gen.mkApplyIfNeeded(removeNullary())
@@ -721,8 +728,10 @@ abstract class UnCurry
               else {
                 val vparamss1 =
                   vparamss0 match {
-                    case _ :: Nil => vparamss0
-                    case _        => vparamss0.flatten :: Nil
+                    case _ :: Nil =>
+                      vparamss0
+                    case _ =>
+                      vparamss0.flatten :: Nil
                   }
                 (vparamss1, rhs0)
               }
@@ -736,7 +745,8 @@ abstract class UnCurry
                   case tp @ ConstantType(value) =>
                     Literal(
                       value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
-                  case _ => newRhs
+                  case _ =>
+                    newRhs
                 }
               } else
                 newRhs
@@ -748,7 +758,8 @@ abstract class UnCurry
                   case Some(k) =>
                     atPos(newRhs.pos)(
                       nonLocalReturnTry(literalRhsIfConst, k, ddSym))
-                  case None => literalRhsIfConst
+                  case None =>
+                    literalRhsIfConst
                 }
               )
             addJavaVarargsForwarders(dd, flatdd)
@@ -902,7 +913,8 @@ abstract class UnCurry
         val allParams = paramTransforms map (_.param)
         val (packedParams, tempVals) =
           paramTransforms.collect {
-            case Packed(param, tempVal) => (param, tempVal)
+            case Packed(param, tempVal) =>
+              (param, tempVal)
           }.unzip
 
         val rhs1 =
@@ -971,8 +983,10 @@ abstract class UnCurry
       // create the type
       val forwformals =
         map2(flatparams, isRepeated) {
-          case (p, true)  => toArrayType(p.tpe)
-          case (p, false) => p.tpe
+          case (p, true) =>
+            toArrayType(p.tpe)
+          case (p, false) =>
+            p.tpe
         }
       val forwresult = dd.symbol.tpe_*.finalResultType
       val forwformsyms =
@@ -983,8 +997,10 @@ abstract class UnCurry
       def mono = MethodType(forwformsyms, forwresult)
       val forwtype =
         dd.symbol.tpe match {
-          case MethodType(_, _) => mono
-          case PolyType(tps, _) => PolyType(tps, mono)
+          case MethodType(_, _) =>
+            mono
+          case PolyType(tps, _) =>
+            PolyType(tps, mono)
         }
 
       // create the symbol
@@ -999,7 +1015,8 @@ abstract class UnCurry
         theTyper.typedPos(dd.pos) {
           val locals =
             map3(forwParams, flatparams, isRepeated) {
-              case (_, fp, false) => null
+              case (_, fp, false) =>
+                null
               case (argsym, fp, true) =>
                 Block(
                   Nil,
@@ -1011,8 +1028,10 @@ abstract class UnCurry
             }
           val seqargs =
             map2(locals, forwParams) {
-              case (null, argsym) => Ident(argsym)
-              case (l, _)         => l
+              case (null, argsym) =>
+                Ident(argsym)
+              case (l, _) =>
+                l
             }
           val end =
             if (forwsym.isConstructor)

@@ -52,12 +52,14 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
       requiredDistribution: Distribution,
       numPartitions: Int): Partitioning = {
     requiredDistribution match {
-      case AllTuples => SinglePartition
+      case AllTuples =>
+        SinglePartition
       case ClusteredDistribution(clustering) =>
         HashPartitioning(clustering, numPartitions)
       case OrderedDistribution(ordering) =>
         RangePartitioning(ordering, numPartitions)
-      case dist => sys.error(s"Do not know how to satisfy distribution $dist")
+      case dist =>
+        sys.error(s"Do not know how to satisfy distribution $dist")
     }
   }
 
@@ -72,14 +74,17 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
       if (children.exists(_.isInstanceOf[ShuffleExchange])) {
         // Right now, ExchangeCoordinator only support HashPartitionings.
         children.forall {
-          case e @ ShuffleExchange(hash: HashPartitioning, _, _) => true
+          case e @ ShuffleExchange(hash: HashPartitioning, _, _) =>
+            true
           case child =>
             child.outputPartitioning match {
-              case hash: HashPartitioning => true
+              case hash: HashPartitioning =>
+                true
               case collection: PartitioningCollection =>
                 collection.partitionings.forall(
                   _.isInstanceOf[HashPartitioning])
-              case _ => false
+              case _ =>
+                false
             }
         }
       } else {
@@ -181,9 +186,12 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
     // then the children's output partitionings must be compatible:
     def requireCompatiblePartitioning(distribution: Distribution): Boolean =
       distribution match {
-        case UnspecifiedDistribution  => false
-        case BroadcastDistribution(_) => false
-        case _                        => true
+        case UnspecifiedDistribution =>
+          false
+        case BroadcastDistribution(_) =>
+          false
+        case _ =>
+          true
       }
     if (children.length > 1
         && requiredChildDistributions.exists(requireCompatiblePartitioning)
@@ -241,7 +249,8 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
                   // a new one having targetPartitioning.
                   case ShuffleExchange(_, c, _) =>
                     ShuffleExchange(targetPartitioning, c)
-                  case _ => ShuffleExchange(targetPartitioning, child)
+                  case _ =>
+                    ShuffleExchange(targetPartitioning, child)
                 }
               }
           }
@@ -285,8 +294,10 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
               child
             else
               operator
-          case _ => operator
+          case _ =>
+            operator
         }
-      case operator: SparkPlan => ensureDistributionAndOrdering(operator)
+      case operator: SparkPlan =>
+        ensureDistributionAndOrdering(operator)
     }
 }

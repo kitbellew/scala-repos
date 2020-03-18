@@ -322,8 +322,10 @@ final class Interleave[T] private (
         def nextInletIndex(index: Int): Int = {
           val successor =
             index + 1 match {
-              case `inputPorts` ⇒ 0
-              case x ⇒ x
+              case `inputPorts` ⇒
+                0
+              case x ⇒
+                x
             }
           if (!isClosed(in(successor)))
             successor
@@ -1132,7 +1134,8 @@ object GraphDSL extends GraphApply {
         b.addEdge(importAndGetPort(b), junction.in)
         try findOut(b, junction, 0)
         catch {
-          case e: IllegalArgumentException ⇒ new DisabledPortOps(e.getMessage)
+          case e: IllegalArgumentException ⇒
+            new DisabledPortOps(e.getMessage)
         }
       }
 

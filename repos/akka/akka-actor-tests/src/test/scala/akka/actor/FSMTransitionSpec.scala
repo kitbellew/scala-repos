@@ -21,11 +21,14 @@ object FSMTransitionSpec {
       with FSM[Int, Int] {
     startWith(0, 0)
     when(0) {
-      case Event("stay", _) ⇒ stay()
-      case Event(_, _) ⇒ goto(0)
+      case Event("stay", _) ⇒
+        stay()
+      case Event(_, _) ⇒
+        goto(0)
     }
     onTransition {
-      case from -> to ⇒ target ! (from -> to)
+      case from -> to ⇒
+        target ! (from -> to)
     }
 
     initialize()
@@ -34,13 +37,16 @@ object FSMTransitionSpec {
   class MyFSM(target: ActorRef) extends Actor with FSM[Int, Unit] {
     startWith(0, Unit)
     when(0) {
-      case Event("tick", _) ⇒ goto(1)
+      case Event("tick", _) ⇒
+        goto(1)
     }
     when(1) {
-      case Event("tick", _) ⇒ goto(0)
+      case Event("tick", _) ⇒
+        goto(0)
     }
     whenUnhandled {
-      case Event("reply", _) ⇒ stay replying "reply"
+      case Event("reply", _) ⇒
+        stay replying "reply"
     }
     initialize()
     override def preRestart(reason: Throwable, msg: Option[Any]) {
@@ -51,21 +57,27 @@ object FSMTransitionSpec {
   class OtherFSM(target: ActorRef) extends Actor with FSM[Int, Int] {
     startWith(0, 0)
     when(0) {
-      case Event("tick", _) ⇒ goto(1) using 1
-      case Event("stay", _) ⇒ stay()
+      case Event("tick", _) ⇒
+        goto(1) using 1
+      case Event("stay", _) ⇒
+        stay()
     }
     when(1) {
-      case _ ⇒ goto(1)
+      case _ ⇒
+        goto(1)
     }
     onTransition {
-      case 0 -> 1 ⇒ target ! ((stateData, nextStateData))
-      case 1 -> 1 ⇒ target ! ((stateData, nextStateData))
+      case 0 -> 1 ⇒
+        target ! ((stateData, nextStateData))
+      case 1 -> 1 ⇒
+        target ! ((stateData, nextStateData))
     }
   }
 
   class Forwarder(target: ActorRef) extends Actor {
     def receive = {
-      case x ⇒ target ! x
+      case x ⇒
+        target ! x
     }
   }
 
@@ -160,17 +172,20 @@ class FSMTransitionSpec extends AkkaSpec with ImplicitSender {
           new Actor with FSM[Int, ActorRef] {
             startWith(0, null)
             when(0) {
-              case Event("switch", _) ⇒ goto(1) using sender()
+              case Event("switch", _) ⇒
+                goto(1) using sender()
             }
             onTransition {
-              case x -> y ⇒ nextStateData ! (x -> y)
+              case x -> y ⇒
+                nextStateData ! (x -> y)
             }
             when(1) {
               case Event("test", _) ⇒
                 try {
                   sender() ! s"failed: $nextStateData"
                 } catch {
-                  case _: IllegalStateException ⇒ sender() ! "ok"
+                  case _: IllegalStateException ⇒
+                    sender() ! "ok"
                 }
                 stay()
             }

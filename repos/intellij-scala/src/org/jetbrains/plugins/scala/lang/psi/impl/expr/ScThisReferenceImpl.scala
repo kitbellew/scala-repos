@@ -35,7 +35,8 @@ class ScThisReferenceImpl(node: ASTNode)
     refTemplate match {
       case Some(td) =>
         ScThisReferenceImpl.getThisTypeForTypeDefinition(td, this)
-      case _ => Failure("Cannot infer type", Some(this))
+      case _ =>
+        Failure("Cannot infer type", Some(this))
     }
 
   def refTemplate: Option[ScTemplateDefinition] =
@@ -45,7 +46,8 @@ class ScThisReferenceImpl(node: ASTNode)
           case td: ScTypeDefinition
               if PsiTreeUtil.isContextAncestor(td, ref, false) =>
             Some(td)
-          case _ => None
+          case _ =>
+            None
         }
       case None => {
         val encl = PsiTreeUtil.getContextOfType(
@@ -67,8 +69,10 @@ class ScThisReferenceImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitThisReference(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitThisReference(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }
@@ -81,8 +85,10 @@ object ScThisReferenceImpl {
       .getTypeWithProjections(TypingContext.empty, thisProjections = true)
       .map(tp =>
         td.selfType match {
-          case Some(selfType) => Bounds.glb(tp, selfType)
-          case _              => tp
+          case Some(selfType) =>
+            Bounds.glb(tp, selfType)
+          case _ =>
+            tp
         })
 
     // SLS 6.5:  If the expression’s expected type is a stable type,

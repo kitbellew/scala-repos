@@ -51,7 +51,8 @@ object Commands {
           case Def.ScopedKey(Scope(_, Global, Global, Global), key)
               if key == publishArtifact.key =>
             false
-          case other => true
+          case other =>
+            true
         }
       }
 

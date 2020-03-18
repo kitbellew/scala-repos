@@ -26,8 +26,10 @@ class PropertyMapper(reference: Reference)
   // e.g. "partest.shootout" -> "--shootout"
   def propNameToOptionName(key: String): Option[String] =
     (key split '.').toList match {
-      case List(RunnerName, name) => Some(name)
-      case _                      => None
+      case List(RunnerName, name) =>
+        Some(name)
+      case _ =>
+        None
     }
 
   def isPassThrough(key: String): Boolean = false // e.g. "partest.options"
@@ -54,8 +56,10 @@ class PropertyMapper(reference: Reference)
       toArgs(v)
     else
       propNameToOptionName(k) match {
-        case Some(optName) => translate(optName, v)
-        case _             => Nil
+        case Some(optName) =>
+          translate(optName, v)
+        case _ =>
+          Nil
       }
   }
 }

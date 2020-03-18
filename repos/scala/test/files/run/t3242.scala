@@ -55,7 +55,8 @@ object Test {
       comparison(2000) // this will crach
 
     } catch {
-      case e: Exception => e.printStackTrace()
+      case e: Exception =>
+        e.printStackTrace()
     }
   }
 }

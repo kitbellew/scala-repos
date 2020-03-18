@@ -244,12 +244,14 @@ object ProjectStructureMatcher {
 
     def moduleEntries: Seq[roots.ModuleOrderEntry] =
       entries.collect {
-        case e: roots.ModuleOrderEntry => e
+        case e: roots.ModuleOrderEntry =>
+          e
       }
 
     def libraryEntries: Seq[roots.LibraryOrderEntry] =
       entries.collect {
-        case e: roots.LibraryOrderEntry => e
+        case e: roots.LibraryOrderEntry =>
+          e
       }
   }
 

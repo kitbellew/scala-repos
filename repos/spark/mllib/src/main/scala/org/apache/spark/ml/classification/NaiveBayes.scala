@@ -155,7 +155,8 @@ class NaiveBayesModel private[ml] (
     */
   private lazy val (thetaMinusNegTheta, negThetaSum) =
     $(modelType) match {
-      case Multinomial => (None, None)
+      case Multinomial =>
+        (None, None)
       case Bernoulli =>
         val negTheta = theta.map(value => math.log(1.0 - math.exp(value)))
         val ones =

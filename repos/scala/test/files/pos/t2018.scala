@@ -9,8 +9,10 @@ class A {
     private def getAncestor(p: A): A = {
       val c =
         (p.getChildren.find(_.b.check)) match {
-          case Some(d) => d
-          case None    => p
+          case Some(d) =>
+            d
+          case None =>
+            p
         }
 
       if (c == p)

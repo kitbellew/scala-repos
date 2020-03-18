@@ -55,7 +55,8 @@ class ProducerSendThread[K, V](
     try {
       processEvents
     } catch {
-      case e: Throwable => error("Error in sending events: ", e)
+      case e: Throwable =>
+        error("Error in sending events: ", e)
     } finally {
       shutdownLatch.countDown
     }

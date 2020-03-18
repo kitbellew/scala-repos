@@ -100,7 +100,8 @@ case class TypeAliasSignature(
           lowerBound == that.lowerBound &&
           upperBound == that.upperBound &&
           isDefinition == that.isDefinition
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {
@@ -173,7 +174,8 @@ class Signature(
         val psiSig2 = ps2.method.getSignature(psiSub2)
         MethodSignatureUtil.METHOD_PARAMETERS_ERASURE_EQUALITY
           .equals(psiSig1, psiSig2)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -229,15 +231,20 @@ class Signature(
 
   override def equals(that: Any) =
     that match {
-      case s: Signature => equiv(s) && parameterlessKind == s.parameterlessKind
-      case _            => false
+      case s: Signature =>
+        equiv(s) && parameterlessKind == s.parameterlessKind
+      case _ =>
+        false
     }
 
   def parameterlessKind: Int = {
     namedElement match {
-      case f: ScFunction if !f.hasParameterClause => 1
-      case p: PsiMethod                           => 2
-      case _                                      => 3
+      case f: ScFunction if !f.hasParameterClause =>
+        1
+      case p: PsiMethod =>
+        2
+      case _ =>
+        3
     }
   }
 
@@ -259,13 +266,20 @@ class Signature(
     (namedElement, other.namedElement) match {
       case (f1: ScFunction, f2: ScFunction) =>
         !f1.hasParameterClause ^ f2.hasParameterClause
-      case (f1: ScFunction, p: PsiMethod) => f1.hasParameterClause
-      case (p: PsiMethod, f2: ScFunction) => f2.hasParameterClause
-      case (p1: PsiMethod, p2: PsiMethod) => true
-      case (p: PsiMethod, _)              => false
-      case (_, f: ScFunction)             => !f.hasParameterClause
-      case (_, f: PsiMethod)              => false
-      case _                              => true
+      case (f1: ScFunction, p: PsiMethod) =>
+        f1.hasParameterClause
+      case (p: PsiMethod, f2: ScFunction) =>
+        f2.hasParameterClause
+      case (p1: PsiMethod, p2: PsiMethod) =>
+        true
+      case (p: PsiMethod, _) =>
+        false
+      case (_, f: ScFunction) =>
+        !f.hasParameterClause
+      case (_, f: PsiMethod) =>
+        false
+      case _ =>
+        true
     }
   }
 }
@@ -303,8 +317,10 @@ object PhysicalSignature {
         List(
           ScalaPsiUtil.mapToLazyTypesSeq(
             method.getParameterList match {
-              case p: ScParameters => p.params
-              case p               => p.getParameters.toSeq
+              case p: ScParameters =>
+                p.params
+              case p =>
+                p.getParameters.toSeq
             }))
     }
 
@@ -312,7 +328,8 @@ object PhysicalSignature {
     method match {
       case fun: ScFunction =>
         fun.effectiveParameterClauses.map(_.effectiveParameters.length).toList
-      case _ => List(method.getParameterList.getParametersCount)
+      case _ =>
+        List(method.getParameterList.getParametersCount)
     }
 
   def hasRepeatedParam(method: PsiMethod): Seq[Int] = {

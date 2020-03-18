@@ -31,6 +31,7 @@ class MutatorLikeMethodIsParameterlessInspection
     f match {
       case funDef: ScFunctionDefinition =>
         funDef.body.exists(ScUnderScoreSectionUtil.isUnderscoreFunction)
-      case _ => false
+      case _ =>
+        false
     }
 }

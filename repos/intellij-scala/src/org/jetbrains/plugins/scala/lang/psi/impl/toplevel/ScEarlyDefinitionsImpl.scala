@@ -74,7 +74,8 @@ class ScEarlyDefinitionsImpl private (
           psi = child.getPsi
           if psi.isInstanceOf[ScMember]
         } yield psi.asInstanceOf[ScMember]
-      case _ => findChildrenByClassScala(classOf[ScMember])
+      case _ =>
+        findChildrenByClassScala(classOf[ScMember])
     }
   }
 }

@@ -27,8 +27,10 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     sourceJars
       .map { sourceJar =>
         sourceJar.getJarEntry(filename) match {
-          case null  => Nil
-          case entry => List(sourceJar.getInputStream(entry))
+          case null =>
+            Nil
+          case entry =>
+            List(sourceJar.getInputStream(entry))
         }
       }
       .flatten
@@ -233,8 +235,10 @@ object AndroidClassExtractor extends JavaConversionHelpers {
               if c.getName.matches(".+(Listener|Manager|Observer|Watcher).*") =>
             c
         } match {
-          case Some(c) => c
-          case None    => classOf[Any] // Failed to find listener argument by type
+          case Some(c) =>
+            c
+          case None =>
+            classOf[Any] // Failed to find listener argument by type
         }
       val callbackMethods = extractMethodsFromListener(listenerCls)
       val androidCallbackMethods = callbackMethods.map { cm =>
@@ -337,7 +341,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         .find {
           case (key, _) =>
             types.zip(key).forall {
-              case (t, k) => t.endsWith(k)
+              case (t, k) =>
+                t.endsWith(k)
             }
         }
         .map(_._2)
@@ -353,7 +358,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       val javaTypes = cons.getGenericParameterTypes.toList
       val typeStrs =
         javaTypes.reverse match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case last :: init =>
             (
               toTypeStr(last, isVarArgs, true) :: init.map(
@@ -363,17 +369,21 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
       val args =
         typeStrs match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case _ =>
             val paramNames =
               constructorNames.get(typeStrs) match {
-                case Some(ns) => ns
-                case None     => looseConstructorLookup(typeStrs).get
+                case Some(ns) =>
+                  ns
+                case None =>
+                  looseConstructorLookup(typeStrs).get
               }
             val types = javaTypes.map(toScalaType)
 
             paramNames.zip(types).map {
-              case (n, t) => Argument(n, t)
+              case (n, t) =>
+                Argument(n, t)
             }
         }
 

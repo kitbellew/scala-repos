@@ -72,7 +72,8 @@ abstract class SessionVar[T](dflt: => T)
     with LazyLoggable {
   override protected def findFunc(name: String): Box[T] =
     S.session match {
-      case Full(s) => s.get(name)
+      case Full(s) =>
+        s.get(name)
       case _ =>
         if (LiftRules.throwOnOutOfScopeVarAccess) {
           throw new IllegalAccessException(
@@ -104,7 +105,8 @@ abstract class SessionVar[T](dflt: => T)
           "setting a SessionVar in a " +
             "stateless session: " + getClass.getName)
 
-      case Full(s) => s.set(name, value)
+      case Full(s) =>
+        s.set(name, value)
       case _ =>
         if (LiftRules.throwOnOutOfScopeVarAccess) {
           throw new IllegalAccessException(
@@ -128,7 +130,8 @@ abstract class SessionVar[T](dflt: => T)
         val lockName = name + VarConstants.lockSuffix
         val lockObj = s.synchronized {
           s.get[AnyRef](lockName) match {
-            case Full(lock) => lock
+            case Full(lock) =>
+              lock
             case _ =>
               val lock = new AnyRef
               s.set(lockName, lock)
@@ -140,7 +143,8 @@ abstract class SessionVar[T](dflt: => T)
         lockObj.synchronized {
           f
         }
-      case _ => f
+      case _ =>
+        f
     }
 
   def showWarningWhenAccessedOutOfSessionScope_? = false
@@ -209,7 +213,8 @@ abstract class ContainerVar[T](dflt: => T)(implicit
         localGet(session, name) match {
           case Full(array: Array[Byte]) =>
             Full(containerSerializer.deserialize(array))
-          case _ => Empty
+          case _ =>
+            Empty
         }
       }
       case _ => {
@@ -275,8 +280,10 @@ abstract class ContainerVar[T](dflt: => T)(implicit
   override protected def wasInitialized(name: String, bn: String): Boolean = {
     val old: Boolean = S.session.flatMap(s =>
       localGet(s, bn) match {
-        case Full(b: Boolean) => Full(b)
-        case _                => Empty
+        case Full(b: Boolean) =>
+          Full(b)
+        case _ =>
+          Empty
       }) openOr false
     S.session.foreach(s => localSet(s, bn, true))
     old
@@ -287,8 +294,10 @@ abstract class ContainerVar[T](dflt: => T)(implicit
     (
       S.session.flatMap(s =>
         localGet(s, bn) match {
-          case Full(b: Boolean) => Full(b)
-          case _                => Empty
+          case Full(b: Boolean) =>
+            Full(b)
+          case _ =>
+            Empty
         }) openOr false
     )
   }
@@ -625,7 +634,8 @@ private[http] trait CoreRequestVarHandler {
             "Access to Var outside a request or comet actor scope")
         }
         None
-      case x => Full(x)
+      case x =>
+        Full(x)
     }
 
   private[http] def get[T](name: String): Box[T] =
@@ -660,7 +670,8 @@ private[http] trait CoreRequestVarHandler {
       val toRemove: Iterable[String] = tv.flatMap {
         case (name, (it: CleanRequestVarOnSessionTransition, _, _)) =>
           List(name)
-        case _ => Nil
+        case _ =>
+          Nil
       }
 
       toRemove.foreach(n => tv -= n)

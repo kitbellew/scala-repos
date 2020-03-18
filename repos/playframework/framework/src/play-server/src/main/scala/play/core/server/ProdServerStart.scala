@@ -100,7 +100,8 @@ object ProdServerStart {
 
     def parsePort(portType: String): Option[Int] = {
       configuration.getString(s"play.server.${portType}.port").flatMap {
-        case "disabled" => None
+        case "disabled" =>
+          None
         case str =>
           val i =
             try Integer.parseInt(str)

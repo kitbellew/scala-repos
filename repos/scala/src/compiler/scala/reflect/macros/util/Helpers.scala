@@ -35,8 +35,10 @@ trait Helpers {
       paramss match {
         case Nil | _ :+ Nil =>
           NoSymbol // no implicit parameters in the signature => nothing to do
-        case _ if isBundle                                        => macroImpl.owner.tpe member nme.c
-        case (cparam :: _) :: _ if isMacroContextType(cparam.tpe) => cparam
+        case _ if isBundle =>
+          macroImpl.owner.tpe member nme.c
+        case (cparam :: _) :: _ if isMacroContextType(cparam.tpe) =>
+          cparam
         case _ =>
           NoSymbol // no context parameter in the signature => nothing to do
       }
@@ -47,14 +49,18 @@ trait Helpers {
               WeakTypeTagClass,
               targ :: Nil) =>
           transform(param, targ.typeSymbol)
-        case _ => param
+        case _ =>
+          param
       }
     ContextParam match {
-      case NoSymbol => paramss
+      case NoSymbol =>
+        paramss
       case _ =>
         paramss.last map transformTag filter (_.exists) match {
-          case Nil         => paramss.init
-          case transformed => paramss.init :+ transformed
+          case Nil =>
+            paramss.init
+          case transformed =>
+            paramss.init :+ transformed
         }
     }
   }
@@ -66,7 +72,8 @@ trait Helpers {
     */
   def increaseMetalevel(pre: Type, tp: Type): Type =
     transparentShallowTransform(RepeatedParamClass, tp) {
-      case tp => typeRef(pre, MacroContextExprClass, List(tp))
+      case tp =>
+        typeRef(pre, MacroContextExprClass, List(tp))
     }
 
   /** Transforms c.Expr[T] types into c.Tree and leaves the rest unchanged.
@@ -76,8 +83,10 @@ trait Helpers {
     import runDefinitions._
 
     transparentShallowTransform(RepeatedParamClass, tp) {
-      case ExprClassOf(_) => typeRef(tp.prefix, TreesTreeType, Nil)
-      case tp             => tp
+      case ExprClassOf(_) =>
+        typeRef(tp.prefix, TreesTreeType, Nil)
+      case tp =>
+        tp
     }
   }
 
@@ -92,11 +101,14 @@ trait Helpers {
     val runDefinitions = currentRun.runDefinitions
     import runDefinitions._
     transparentShallowTransform(RepeatedParamClass, tp) {
-      case ExprClassOf(runtimeType) => runtimeType
+      case ExprClassOf(runtimeType) =>
+        runtimeType
       // special-casing Nothing here is a useful convention
       // that enables no-hassle prototyping with `macro ???` and `macro { ...; ??? }`
-      case nothing if nothing =:= NothingTpe => NothingTpe
-      case _                                 => NoType
+      case nothing if nothing =:= NothingTpe =>
+        NothingTpe
+      case _ =>
+        NoType
     }
   }
 }

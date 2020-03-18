@@ -125,8 +125,10 @@ class Figure(
           for (plot <- plots) {
             contents.add(
               plot match {
-                case Some(plot) => plot.panel;
-                case None       => new JPanel()
+                case Some(plot) =>
+                  plot.panel;
+                case None =>
+                  new JPanel()
               })
           }
           frame.setSize(width_, height_)

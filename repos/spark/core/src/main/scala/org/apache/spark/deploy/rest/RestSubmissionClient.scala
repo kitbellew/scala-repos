@@ -264,7 +264,8 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
           logError(s"Server responded with error:\n${error.message}")
           error
         // Otherwise, simply return the response
-        case response: SubmitRestProtocolResponse => response
+        case response: SubmitRestProtocolResponse =>
+          response
         case unexpected =>
           throw new SubmitRestProtocolException(
             s"Message received from server was not a response:\n${unexpected.toJson}")
@@ -366,8 +367,10 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
       val response = requestSubmissionStatus(submissionId, quiet = true)
       val statusResponse =
         response match {
-          case s: SubmissionStatusResponse => s
-          case _                           => return // unexpected type, let upstream caller handle it
+          case s: SubmissionStatusResponse =>
+            s
+          case _ =>
+            return // unexpected type, let upstream caller handle it
         }
       if (statusResponse.success) {
         val driverState = Option(statusResponse.driverState)
@@ -378,7 +381,8 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         driverState match {
           case Some(state) =>
             logInfo(s"State of driver $submissionId is now $state.")
-          case _ => logError(s"State of driver $submissionId was not found!")
+          case _ =>
+            logError(s"State of driver $submissionId was not found!")
         }
         // Log worker node, if present
         (workerId, workerHostPort) match {

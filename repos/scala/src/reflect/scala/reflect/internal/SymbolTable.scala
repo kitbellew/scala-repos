@@ -211,8 +211,10 @@ abstract class SymbolTable
 
   def atPhaseStackMessage =
     atPhaseStack match {
-      case Nil => ""
-      case ps  => ps.reverseMap("->" + _).mkString("(", " ", ")")
+      case Nil =>
+        ""
+      case ps =>
+        ps.reverseMap("->" + _).mkString("(", " ", ")")
     }
 
   final def phase_=(p: Phase) {
@@ -385,8 +387,10 @@ abstract class SymbolTable
     val pkgModule = pkgClass.packageObject
     def fromSource =
       pkgModule.rawInfo match {
-        case ltp: SymLoader => ltp.fromSource
-        case _              => false
+        case ltp: SymLoader =>
+          ltp.fromSource
+        case _ =>
+          false
       }
     if (pkgModule.isModule && !fromSource) {
       openPackageModule(pkgModule, pkgClass)

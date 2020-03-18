@@ -32,7 +32,8 @@ object QaAnswer extends QaController {
         case (Some(q), Some(a)) if (QaAuth canEdit q) =>
           api.answer.accept(q, a) inject Redirect(
             routes.QaQuestion.show(q.id, q.slug))
-        case _ => notFound
+        case _ =>
+          notFound
       }
     }
 
@@ -49,7 +50,8 @@ object QaAnswer extends QaController {
                   routes.QaAnswer.vote(questionId, answerId).url,
                   vote,
                   true))
-            case None => NotFound
+            case None =>
+              NotFound
           }
       )
     }
@@ -62,7 +64,8 @@ object QaAnswer extends QaController {
           err => renderQuestion(q),
           body =>
             api.answer.edit(body, a.id) map {
-              case None => NotFound
+              case None =>
+                NotFound
               case Some(a2) =>
                 Redirect(
                   routes.QaQuestion.show(q.id, q.slug) + "#answer-" + a2.id)

@@ -49,8 +49,10 @@ trait Tryo {
     try {
       Full(f)
     } catch {
-      case t if handler.isDefinedAt(t) => Full(handler(t))
-      case e: Throwable                => Failure(e.getMessage, Full(e), Empty)
+      case t if handler.isDefinedAt(t) =>
+        Full(handler(t))
+      case e: Throwable =>
+        Failure(e.getMessage, Full(e), Empty)
     }
   }
 

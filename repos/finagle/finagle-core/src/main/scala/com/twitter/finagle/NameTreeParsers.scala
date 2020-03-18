@@ -87,7 +87,8 @@ private class NameTreeParsers private (str: String) {
         next()
         c
 
-      case c => illegal("hex char", c)
+      case c =>
+        illegal("hex char", c)
     }
 
   private[this] def isLabelChar(c: Char) = Path.isShowable(c) || c == '\\'
@@ -114,7 +115,8 @@ private class NameTreeParsers private (str: String) {
           val snd = parseHexChar()
           baos.write(Character.digit(fst, 16) << 4 | Character.digit(snd, 16))
 
-        case c => illegal("label char", c)
+        case c =>
+          illegal("label char", c)
       }
     } while (isLabelChar(peek))
 

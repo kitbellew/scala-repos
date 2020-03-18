@@ -145,8 +145,10 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
                 }
               }
 
-            case t: ApplyImplicitView   => add(ImplicitConversionSymbol)
-            case t: ApplyToImplicitArgs => add(ImplicitParamsSymbol)
+            case t: ApplyImplicitView =>
+              add(ImplicitConversionSymbol)
+            case t: ApplyToImplicitArgs =>
+              add(ImplicitParamsSymbol)
 
             case TypeTree() =>
               if (!qualifySymbol(sym)) {

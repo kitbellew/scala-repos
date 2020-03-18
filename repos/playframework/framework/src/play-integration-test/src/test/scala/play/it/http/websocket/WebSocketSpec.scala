@@ -48,7 +48,8 @@ trait WebSocketSpec
     val currentApp = new AtomicReference[Application]
     val app = GuiceApplicationBuilder()
       .routes {
-        case _ => webSocket(currentApp.get())
+        case _ =>
+          webSocket(currentApp.get())
       }
       .build()
     currentApp.set(app)
@@ -70,12 +71,14 @@ trait WebSocketSpec
 
   def pongFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] =
     beLike {
-      case SimpleMessage(PongMessage(data), _) => data.utf8String must matcher
+      case SimpleMessage(PongMessage(data), _) =>
+        data.utf8String must matcher
     }
 
   def textFrame(matcher: Matcher[String]): Matcher[ExtendedMessage] =
     beLike {
-      case SimpleMessage(TextMessage(text), _) => text must matcher
+      case SimpleMessage(TextMessage(text), _) =>
+        text must matcher
     }
 
   def closeFrame(status: Int = 1000): Matcher[ExtendedMessage] =
@@ -94,7 +97,8 @@ trait WebSocketSpec
   def onFramesConsumed[A](onDone: List[A] => Unit): Sink[A, _] =
     consumeFrames[A].mapMaterializedValue { future =>
       future.onSuccess {
-        case list => onDone(list)
+        case list =>
+          onDone(list)
       }
     }
 
@@ -568,7 +572,8 @@ trait WebSocketSpec
                     }
                     out ! Status.Success(())
                     def receive = {
-                      case msg: Message => ()
+                      case msg: Message =>
+                        ()
                     }
                   })
               }

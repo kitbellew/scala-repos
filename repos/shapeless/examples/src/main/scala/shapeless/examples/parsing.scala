@@ -59,7 +59,8 @@ object CombinatorTesting extends App {
     new Flatten[A ~ B] {
       def apply(m: A ~ B) =
         m match {
-          case a ~ b => flattenA(a) ::: flattenB(b)
+          case a ~ b =>
+            flattenA(a) ::: flattenB(b)
         }
     }
 

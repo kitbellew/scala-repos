@@ -54,8 +54,9 @@ object ColorChooserDemo extends SimpleSwingApplication {
           reactions += {
             case ButtonClicked(_) =>
               ColorChooser.showDialog(this, "Test", Color.red) match {
-                case Some(c) => banner.background = c
-                case None    =>
+                case Some(c) =>
+                  banner.background = c
+                case None =>
               }
           }
         }

@@ -47,7 +47,8 @@ private class BackoffOnRestartSupervisor(
               waitChildTerminatedBeforeBackoff(childRef) orElse handleBackoff)
             Stop
 
-          case other ⇒ other
+          case other ⇒
+            other
         }
     }
 

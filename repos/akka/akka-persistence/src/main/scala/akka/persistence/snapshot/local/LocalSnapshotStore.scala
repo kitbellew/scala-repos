@@ -88,7 +88,8 @@ private[persistence] class LocalSnapshotStore
   }
 
   override def receivePluginInternal: Receive = {
-    case SaveSnapshotSuccess(metadata) ⇒ saving -= metadata
+    case SaveSnapshotSuccess(metadata) ⇒
+      saving -= metadata
     case _: SaveSnapshotFailure ⇒ // ignore
     case _: DeleteSnapshotsSuccess ⇒ // ignore
     case _: DeleteSnapshotsFailure ⇒ // ignore
@@ -102,10 +103,12 @@ private[persistence] class LocalSnapshotStore
   private def load(
       metadata: immutable.Seq[SnapshotMetadata]): Option[SelectedSnapshot] =
     metadata.lastOption match {
-      case None ⇒ None
+      case None ⇒
+        None
       case Some(md) ⇒
         Try(withInputStream(md)(deserialize)) match {
-          case Success(s) ⇒ Some(SelectedSnapshot(md, s.data))
+          case Success(s) ⇒
+            Some(SelectedSnapshot(md, s.data))
           case Failure(e) ⇒
             log.error(e, s"Error loading snapshot [${md}]")
             load(metadata.init) // try older snapshot
@@ -201,7 +204,8 @@ private[persistence] class LocalSnapshotStore
       name match {
         case FilenamePattern(pid, snr, tms) ⇒
           pid.equals(URLEncoder.encode(persistenceId))
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
     }
   }
@@ -221,8 +225,10 @@ private[persistence] class LocalSnapshotStore
 
     def accept(dir: File, name: String): Boolean =
       name match {
-        case FilenamePattern(pid, snr, tms) ⇒ matches(pid, snr, tms)
-        case _ ⇒ false
+        case FilenamePattern(pid, snr, tms) ⇒
+          matches(pid, snr, tms)
+        case _ ⇒
+          false
       }
 
   }

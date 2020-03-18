@@ -7,7 +7,8 @@ object Interpreter {
         case _ =>
           val newDesc = mkDataProp(n)
           n match {
-            case _ => return
+            case _ =>
+              return
           }
       }
     } catch {

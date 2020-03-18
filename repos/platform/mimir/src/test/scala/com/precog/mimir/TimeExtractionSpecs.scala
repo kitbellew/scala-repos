@@ -47,8 +47,10 @@ trait TimeExtractionSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -64,7 +66,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain("+08:00", "+09:00", "-10:00", "-07:00", "+06:00")
@@ -81,7 +84,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain("spring", "winter", "summer")
@@ -98,7 +102,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(2010, 2011, 2012)
@@ -115,7 +120,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(1, 2, 3, 4)
@@ -132,7 +138,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(4, 2, 9, 12)
@@ -149,7 +156,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(17, 8, 36, 6, 52)
@@ -165,7 +173,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(2, 5, 4)
@@ -181,7 +190,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(52, 119, 42, 249, 363)
@@ -197,7 +207,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(21, 29, 11, 6, 28)
@@ -213,7 +224,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(1, 2, 6, 5, 4)
@@ -229,7 +241,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(20, 6, 9)
@@ -245,7 +258,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(9, 44, 11, 37, 38)
@@ -261,7 +275,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(19, 59, 52, 33)
@@ -277,7 +292,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(430, 165, 848, 394, 599)
@@ -296,7 +312,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain("+08:00", "+09:00", "-10:00", "-07:00", "+06:00")
@@ -313,7 +330,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain("spring", "winter", "summer")
@@ -330,7 +348,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(2010, 2011, 2012)
@@ -347,7 +366,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(1, 2, 3, 4)
@@ -364,7 +384,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(4, 2, 9, 12)
@@ -381,7 +402,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(17, 8, 36, 6, 52)
@@ -397,7 +419,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(2, 5, 4)
@@ -413,7 +436,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(52, 119, 42, 249, 363)
@@ -429,7 +453,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(21, 29, 11, 6, 28)
@@ -445,7 +470,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(1, 2, 6, 5, 4)
@@ -461,7 +487,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(20, 6, 9)
@@ -477,7 +504,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(9, 44, 11, 37, 38)
@@ -493,7 +521,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(19, 59, 52, 33)
@@ -509,7 +538,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(430, 165, 848, 394, 599)
@@ -529,7 +559,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain(
@@ -561,7 +592,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain("spring", "winter", "summer")
@@ -579,7 +611,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(2010, 2007, 2011, 2012, 2009, 2008)
@@ -597,7 +630,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(1, 2, 3, 4)
@@ -615,7 +649,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(5, 10, 1, 2, 12, 7, 3, 8)
@@ -633,7 +668,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -651,7 +687,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(5, 1, 6, 2, 3, 4)
@@ -668,7 +705,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -687,7 +725,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -705,7 +744,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(5, 1, 6, 2, 7, 3, 4)
@@ -722,7 +762,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -740,7 +781,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -759,7 +801,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -778,7 +821,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -800,7 +844,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain(
@@ -828,7 +873,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d.toString
+        case (ids, SString(d)) if ids.length == 1 =>
+          d.toString
       }
 
       result2 must contain("summer", "spring", "fall")
@@ -846,7 +892,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(2010, 2007, 2011, 2012, 2009, 2008)
@@ -864,7 +911,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(4, 2, 3)
@@ -882,7 +930,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(5, 10, 6, 7, 11, 8)
@@ -900,7 +949,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(25, 46, 28, 41, 34, 22, 27, 18, 43)
@@ -917,7 +967,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(3, 5, 1, 4)
@@ -934,7 +985,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(184, 325, 229, 298, 148, 176, 286, 126, 195)
@@ -951,7 +1003,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(5, 24, 25, 14, 21, 13, 2, 17, 27)
@@ -968,7 +1021,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(5, 1, 6, 2, 7, 3, 4)
@@ -985,7 +1039,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(0, 5, 1, 3, 18, 16, 11, 23, 8, 15)
@@ -1002,7 +1057,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(53, 44, 27, 54, 49, 18, 50, 58, 51, 47)
@@ -1019,7 +1075,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(10, 24, 50, 16, 43, 40, 8, 30, 19)
@@ -1036,7 +1093,8 @@ trait TimeExtractionSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(629, 873, 248, 311, 513, 858, 932, 844, 171, 506)

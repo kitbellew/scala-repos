@@ -30,7 +30,8 @@ final class Tv(actor: ActorRef) {
     (
       actor ? TvActor.GetGameIds(channel, max) mapTo manifest[List[String]]
     ) recover {
-      case e: Exception => Nil
+      case e: Exception =>
+        Nil
     } flatMap GameRepo.games
 
   def getBest = getGame(Tv.Channel.Best)

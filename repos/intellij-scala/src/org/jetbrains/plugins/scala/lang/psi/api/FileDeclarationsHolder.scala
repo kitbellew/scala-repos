@@ -54,7 +54,8 @@ trait FileDeclarationsHolder
         case scalaFile: ScalaFile
             if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     if (isScriptProcessed && !super[ScDeclarationSequenceHolder]
@@ -124,8 +125,10 @@ trait FileDeclarationsHolder
           //only packages resolve, no classes from default package
           val name =
             processor match {
-              case rp: ResolveProcessor => rp.ScalaNameHint.getName(state)
-              case _                    => null
+              case rp: ResolveProcessor =>
+                rp.ScalaNameHint.getName(state)
+              case _ =>
+                null
             }
           if (name == null) {
             val packages = defaultPackage.getSubPackages(scope)
@@ -175,14 +178,18 @@ trait FileDeclarationsHolder
 
     val checkPredefinedClassesAndPackages =
       processor match {
-        case r: ResolveProcessor => r.checkPredefinedClassesAndPackages()
-        case _                   => true
+        case r: ResolveProcessor =>
+          r.checkPredefinedClassesAndPackages()
+        case _ =>
+          true
       }
 
     val checkWildcardImports =
       processor match {
-        case r: ResolveProcessor => r.checkWildcardImports()
-        case _                   => true
+        case r: ResolveProcessor =>
+          r.checkWildcardImports()
+        case _ =>
+          true
       }
 
     def checkObjects(objects: Seq[String], precedence: Int): Boolean = {
@@ -294,8 +301,10 @@ trait FileDeclarationsHolder
   private def updateProcessor(processor: PsiScopeProcessor, priority: Int)(
       body: => Unit) {
     processor match {
-      case b: BaseProcessor => b.definePriority(priority)(body)
-      case _                => body
+      case b: BaseProcessor =>
+        b.definePriority(priority)(body)
+      case _ =>
+        body
     }
   }
 

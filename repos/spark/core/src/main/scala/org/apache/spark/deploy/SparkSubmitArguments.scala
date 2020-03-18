@@ -243,9 +243,12 @@ private[deploy] class SparkSubmitArguments(
   /** Ensure that required fields exists. Call this only once all defaults are loaded. */
   private def validateArguments(): Unit = {
     action match {
-      case SUBMIT         => validateSubmitArguments()
-      case KILL           => validateKillArguments()
-      case REQUEST_STATUS => validateStatusRequestArguments()
+      case SUBMIT =>
+        validateSubmitArguments()
+      case KILL =>
+        validateKillArguments()
+      case REQUEST_STATUS =>
+        validateStatusRequestArguments()
     }
   }
 
@@ -436,7 +439,8 @@ private[deploy] class SparkSubmitArguments(
 
       case CONF =>
         value.split("=", 2).toSeq match {
-          case Seq(k, v) => sparkProperties(k) = v
+          case Seq(k, v) =>
+            sparkProperties(k) = v
           case _ =>
             SparkSubmit.printErrorAndExit(s"Spark config without '=': $value")
         }

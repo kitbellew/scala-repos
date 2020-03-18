@@ -54,8 +54,10 @@ class ScalaParameterInfo(
 
   val wasArrayType: Boolean =
     scType match {
-      case JavaArrayType(_) => true
-      case _                => false
+      case JavaArrayType(_) =>
+        true
+      case _ =>
+        false
     }
 
   val isVarargType =
@@ -91,11 +93,15 @@ class ScalaParameterInfo(
           expr match {
             case mc: PsiMethodCallExpression =>
               mc.getMethodExpression.getQualifierExpression match {
-                case s: PsiSuperExpression => ""
-                case null                  => ""
-                case q                     => q.getText + "."
+                case s: PsiSuperExpression =>
+                  ""
+                case null =>
+                  ""
+                case q =>
+                  q.getText + "."
               }
-            case _ => ""
+            case _ =>
+              ""
           }
         qual + defaultForJava
       } else

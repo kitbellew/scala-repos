@@ -24,9 +24,12 @@ import Main.{SCALA_SIG_ANNOTATION, BYTES_VALUE}
 object Decode {
   private def getAliasSymbol(t: Type): Symbol =
     t match {
-      case TypeRefType(_, s, _) => s
-      case PolyType(typeRef, _) => getAliasSymbol(typeRef)
-      case _                    => NoSymbol
+      case TypeRefType(_, s, _) =>
+        s
+      case PolyType(typeRef, _) =>
+        getAliasSymbol(typeRef)
+      case _ =>
+        NoSymbol
     }
 
   /** Return the classfile bytes representing the scala sig classfile attribute.
@@ -61,7 +64,8 @@ object Decode {
           els find (x => constant(x.elementNameIndex) == BYTES_VALUE) orNull
         val _bytes =
           bytesElem.elementValue match {
-            case ConstValueIndex(x) => constantWrapped(x)
+            case ConstValueIndex(x) =>
+              constantWrapped(x)
           }
         val bytes = _bytes.asInstanceOf[StringBytesPair].bytes
         val length = ByteCodecs.decode(bytes)
@@ -75,8 +79,10 @@ object Decode {
   private[scala] def caseParamNames(path: String): Option[List[String]] = {
     val (outer, inner) =
       (path indexOf '$') match {
-        case -1 => (path, "")
-        case x  => (path take x, path drop (x + 1))
+        case -1 =>
+          (path, "")
+        case x =>
+          (path take x, path drop (x + 1))
       }
 
     for {
@@ -107,7 +113,8 @@ object Decode {
       ssig <- ScalaSigParser.parse(clazz)
     } yield {
       val typeAliases = ssig.symbols collect {
-        case x: AliasSymbol => x
+        case x: AliasSymbol =>
+          x
       }
       Map(typeAliases map (x => (x.name, getAliasSymbol(x.infoType).path)): _*)
     }

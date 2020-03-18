@@ -64,13 +64,17 @@ class ScSimpleTypeElementImpl(node: ASTNode)
 
   def findConstructor: Option[ScConstructor] = {
     getContext match {
-      case constr: ScConstructor => Some(constr)
+      case constr: ScConstructor =>
+        Some(constr)
       case param: ScParameterizedTypeElement =>
         param.getContext match {
-          case constr: ScConstructor => Some(constr)
-          case _                     => None
+          case constr: ScConstructor =>
+            Some(constr)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -110,8 +114,10 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         ScParameterizedType(
           tp,
           clazz.getTypeParameters.map {
-            case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
-            case ptp             => new ScTypeParameterType(ptp, subst)
+            case tp: ScTypeParam =>
+              new ScTypeParameterType(tp, subst)
+            case ptp =>
+              new ScTypeParameterType(ptp, subst)
           })
       }
     }
@@ -216,7 +222,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
       val clazz = constr.containingClass
       val (constrTypParameters: Seq[ScTypeParam], constrSubst: ScSubstitutor) =
         parentElement match {
-          case ta: ScTypeAliasDefinition => (Seq.empty, ScSubstitutor.empty)
+          case ta: ScTypeAliasDefinition =>
+            (Seq.empty, ScSubstitutor.empty)
           case s: ScTypeParametersOwner if s.typeParameters.nonEmpty =>
             constr match {
               case method: ScMethodLike =>
@@ -241,9 +248,11 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                     Map.empty,
                     None)
                 (params, subst)
-              case _ => (Seq.empty, ScSubstitutor.empty)
+              case _ =>
+                (Seq.empty, ScSubstitutor.empty)
             }
-          case _ => (Seq.empty, ScSubstitutor.empty)
+          case _ =>
+            (Seq.empty, ScSubstitutor.empty)
         }
       val subst = _subst followed constrSubst
       val tp =
@@ -354,14 +363,16 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   c.newTemplate match {
                     case Some(n) =>
                       ScUnderScoreSectionUtil.underscores(n).nonEmpty
-                    case None => false
+                    case None =>
+                      false
                   }
                 if (!fromUnderscore) {
                   updateRes(expected)
                 } else {
                   expected match {
-                    case ScFunctionType(retType, _) => updateRes(retType)
-                    case _                          => //do not update res, we haven't expected type
+                    case ScFunctionType(retType, _) =>
+                      updateRes(retType)
+                    case _ => //do not update res, we haven't expected type
                   }
                 }
               case _ =>
@@ -385,8 +396,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 withExpected,
                 params,
                 lastImplicit) match {
-                case t: ScTypePolymorphicType => nonValueType = t
-                case _                        =>
+                case t: ScTypePolymorphicType =>
+                  nonValueType = t
+                case _ =>
               }
             }
           }
@@ -403,13 +415,16 @@ class ScSimpleTypeElementImpl(node: ASTNode)
           if (inferValueType) {
             val pts =
               nonValueType match {
-                case t: ScTypePolymorphicType => t.polymorphicTypeSubstitutor
-                case _                        => ScSubstitutor.empty
+                case t: ScTypePolymorphicType =>
+                  t.polymorphicTypeSubstitutor
+                case _ =>
+                  ScSubstitutor.empty
               }
             pts.subst(nonValueType.internalType)
           } else
             nonValueType
-        case None => res
+        case None =>
+          res
       }
     }
 
@@ -440,7 +455,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
               case ptp: PsiTypeParameterListOwner
                   if ptp.getTypeParameters.nonEmpty =>
                 ptp.getTypeParameters.toSeq.map(new TypeParameter(_))
-              case _ => return (res, ScSubstitutor.empty)
+              case _ =>
+                return (res, ScSubstitutor.empty)
             }
 
           val zipped = p.typeArgList.typeArgs.zip(typeParameters)
@@ -479,7 +495,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                     params = params,
                     lastImplicit = lastImplicit)
                   tp
-                case _ => tp
+                case _ =>
+                  tp
               }
             }
           } else
@@ -573,8 +590,10 @@ class ScSimpleTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitSimpleTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitSimpleTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }
@@ -629,14 +648,17 @@ object ScSimpleTypeElementImpl {
                         .isInstanceOf[ScParameterizedTypeElement]
                     ) =>
                 Some(r)
-              case _ => ref.bind()
+              case _ =>
+                ref.bind()
             }
           } else
             ref.bind()
         } else {
           ref.shapeResolve match {
-            case Array(r: ScalaResolveResult) => Some(r)
-            case _                            => None
+            case Array(r: ScalaResolveResult) =>
+              Some(r)
+            case _ =>
+              None
           }
         }
       ) match {
@@ -644,7 +666,8 @@ object ScSimpleTypeElementImpl {
           (n.containingClass, r.fromType)
         case Some(r @ ScalaResolveResult(n: PsiNamedElement, _)) =>
           (n, r.fromType)
-        case _ => return Failure("Cannot resolve reference", Some(ref))
+        case _ =>
+          return Failure("Cannot resolve reference", Some(ref))
       }
     ref.qualifier match {
       case Some(qual) =>
@@ -676,7 +699,8 @@ object ScSimpleTypeElementImpl {
             }
           case _ =>
             calculateReferenceType(qual, shapesOnly) match {
-              case failure: Failure => failure
+              case failure: Failure =>
+                failure
               case Success(tp, _) =>
                 Success(
                   ScProjectionType(tp, resolvedElement, superReference = false),
@@ -702,7 +726,8 @@ object ScSimpleTypeElementImpl {
           case Some(superRef: ScSuperReference) =>
             val template =
               superRef.drvTemplate match {
-                case Some(x) => x
+                case Some(x) =>
+                  x
                 case None =>
                   return Failure(
                     "Cannot find enclosing container",

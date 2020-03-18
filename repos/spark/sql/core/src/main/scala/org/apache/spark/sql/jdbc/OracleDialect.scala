@@ -47,7 +47,9 @@ private case object OracleDialect extends JdbcDialect {
 
   override def getJDBCType(dt: DataType): Option[JdbcType] =
     dt match {
-      case StringType => Some(JdbcType("VARCHAR2(255)", java.sql.Types.VARCHAR))
-      case _          => None
+      case StringType =>
+        Some(JdbcType("VARCHAR2(255)", java.sql.Types.VARCHAR))
+      case _ =>
+        None
     }
 }

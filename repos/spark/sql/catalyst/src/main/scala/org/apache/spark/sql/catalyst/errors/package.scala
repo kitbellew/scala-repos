@@ -51,7 +51,8 @@ package object errors {
       f: => A): A = {
     try f
     catch {
-      case e: Exception => throw new TreeNodeException(tree, msg, e)
+      case e: Exception =>
+        throw new TreeNodeException(tree, msg, e)
     }
   }
 }

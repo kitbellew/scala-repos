@@ -55,7 +55,8 @@ object ForkRun {
       forkRun ! Close
       try system.awaitTermination(30.seconds)
       catch {
-        case _: TimeoutException => System.exit(1)
+        case _: TimeoutException =>
+          System.exit(1)
       }
     } else {
       log.info("Play fork run already stopped ...")
@@ -96,7 +97,8 @@ object ForkRun {
             config.targetDirectory,
             config.pollInterval,
             log)
-        case ForkConfig.JDK7WatchService => FileWatchService.jdk7(log)
+        case ForkConfig.JDK7WatchService =>
+          FileWatchService.jdk7(log)
         case ForkConfig.JNotifyWatchService =>
           FileWatchService.jnotify(config.targetDirectory)
         case ForkConfig.PollingWatchService(pollInterval) =>
@@ -187,7 +189,8 @@ object ForkRun {
   def waitForStop(): Unit = {
     System.in.read() match {
       case -1 | 4 => // exit on EOF or EOT/Ctrl-D
-      case _      => waitForStop()
+      case _ =>
+        waitForStop()
     }
   }
 
@@ -225,11 +228,15 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
   def settingUp: Receive = {
     case Response(`configKey`, result) =>
       result.result[ForkConfig] match {
-        case Success(config) => run(config)
-        case Failure(error)  => fail(error)
+        case Success(config) =>
+          run(config)
+        case Failure(error) =>
+          fail(error)
       }
-    case Failed(error) => fail(error)
-    case ForkRun.Close => shutdown()
+    case Failed(error) =>
+      fail(error)
+    case ForkRun.Close =>
+      shutdown()
   }
 
   def run(config: ForkConfig): Unit = {
@@ -245,13 +252,16 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
         log)
       context become running(server, config.reloadKey)
     } catch {
-      case e: Exception => fail(e)
+      case e: Exception =>
+        fail(e)
     }
   }
 
   def running(server: PlayDevServer, reloadKey: String): Receive = {
-    case ForkRun.Reload => reload(server, reloadKey)
-    case ForkRun.Close  => close(server)
+    case ForkRun.Reload =>
+      reload(server, reloadKey)
+    case ForkRun.Close =>
+      close(server)
   }
 
   def reload(server: PlayDevServer, reloadKey: String): Unit = {
@@ -269,9 +279,11 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
         case Success(result) =>
           replyTo ! result
           context become running(server, reloadKey)
-        case Failure(error) => fail(error)
+        case Failure(error) =>
+          fail(error)
       }
-    case ForkRun.Close => close(server)
+    case ForkRun.Close =>
+      close(server)
   }
 
   def close(server: PlayDevServer): Unit = {

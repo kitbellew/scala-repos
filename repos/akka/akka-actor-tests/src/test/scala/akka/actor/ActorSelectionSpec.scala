@@ -24,12 +24,18 @@ object ActorSelectionSpec {
 
   class Node extends Actor {
     def receive = {
-      case Create(name) ⇒ sender() ! context.actorOf(p, name)
-      case SelectString(path) ⇒ sender() ! context.actorSelection(path)
-      case SelectPath(path) ⇒ sender() ! context.actorSelection(path)
-      case GetSender(ref) ⇒ ref ! sender()
-      case Forward(path, msg) ⇒ context.actorSelection(path).forward(msg)
-      case msg ⇒ sender() ! msg
+      case Create(name) ⇒
+        sender() ! context.actorOf(p, name)
+      case SelectString(path) ⇒
+        sender() ! context.actorSelection(path)
+      case SelectPath(path) ⇒
+        sender() ! context.actorSelection(path)
+      case GetSender(ref) ⇒
+        ref ! sender()
+      case Forward(path, msg) ⇒
+        context.actorSelection(path).forward(msg)
+      case msg ⇒
+        sender() ! msg
     }
   }
 
@@ -55,7 +61,8 @@ class ActorSelectionSpec
     new EmptyLocalActorRef(
       sysImpl.provider,
       path match {
-        case RelativeActorPath(elems) ⇒ sysImpl.lookupRoot.path / elems
+        case RelativeActorPath(elems) ⇒
+          sysImpl.lookupRoot.path / elems
       },
       system.eventStream)
 
@@ -65,7 +72,8 @@ class ActorSelectionSpec
     selection.tell(Identify(selection), idProbe.ref)
     val result =
       idProbe.expectMsgPF() {
-        case ActorIdentity(`selection`, ref) ⇒ ref
+        case ActorIdentity(`selection`, ref) ⇒
+          ref
       }
     val asked = Await.result(
       (selection ? Identify(selection)).mapTo[ActorIdentity],
@@ -76,7 +84,8 @@ class ActorSelectionSpec
     implicit val ec = system.dispatcher
     val resolved = Await.result(
       selection.resolveOne(timeout.duration).mapTo[ActorRef] recover {
-        case _ ⇒ null
+        case _ ⇒
+          null
       },
       timeout.duration)
     Option(resolved) should ===(result)
@@ -91,8 +100,10 @@ class ActorSelectionSpec
 
   def askNode(node: ActorRef, query: Query): Option[ActorRef] = {
     Await.result(node ? query, timeout.duration) match {
-      case ref: ActorRef ⇒ Some(ref)
-      case selection: ActorSelection ⇒ identify(selection)
+      case ref: ActorRef ⇒
+        Some(ref)
+      case selection: ActorSelection ⇒
+        identify(selection)
     }
   }
 
@@ -324,7 +335,8 @@ class ActorSelectionSpec
       implicit val sender = c1
       ActorSelection(c21, "../../*") ! GetSender(testActor)
       val actors = Set() ++ receiveWhile(messages = 2) {
-        case `c1` ⇒ lastSender
+        case `c1` ⇒
+          lastSender
       }
       actors should ===(Set(c1, c2))
       expectNoMsg(1 second)
@@ -335,7 +347,8 @@ class ActorSelectionSpec
       ActorSelection(c21, "../../*/c21") ! GetSender(testActor)
       val actors =
         receiveWhile(messages = 2) {
-          case `c2` ⇒ lastSender
+          case `c2` ⇒
+            lastSender
         }
       actors should ===(Seq(c21))
       expectNoMsg(1 second)
@@ -429,7 +442,8 @@ class ActorSelectionSpec
       probe
         .receiveN(2)
         .map {
-          case ActorIdentity(1, r) ⇒ r
+          case ActorIdentity(1, r) ⇒
+            r
         }
         .toSet should ===(Set[Option[ActorRef]](Some(b1), Some(b2)))
       probe.expectNoMsg(200.millis)

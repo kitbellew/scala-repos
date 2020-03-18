@@ -91,13 +91,16 @@ trait TopComponentAction extends TopComponentDisplayable {
         PsiDocumentManager
           .getInstance(project)
           .getPsiFile(editor.getDocument) match {
-          case sf: ScalaFile if sf.isWorksheetFile => enable()
-          case _                                   => disable()
+          case sf: ScalaFile if sf.isWorksheetFile =>
+            enable()
+          case _ =>
+            disable()
         }
       }
 
     } catch {
-      case e: Exception => disable()
+      case e: Exception =>
+        disable()
     }
   }
 }

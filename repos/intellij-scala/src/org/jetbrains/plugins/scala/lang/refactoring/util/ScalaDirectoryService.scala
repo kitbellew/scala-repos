@@ -56,7 +56,8 @@ object ScalaDirectoryService {
             properties,
             dir)
       } catch {
-        case e: IncorrectOperationException => throw e
+        case e: IncorrectOperationException =>
+          throw e
         case e: Exception =>
           LOG.error(e)
           return null
@@ -81,10 +82,14 @@ object ScalaDirectoryService {
       name: String): FileTemplate = {
     val kind =
       templateName match {
-        case ScalaFileTemplateUtil.SCALA_CLASS  => "class "
-        case ScalaFileTemplateUtil.SCALA_TRAIT  => "trait "
-        case ScalaFileTemplateUtil.SCALA_OBJECT => "object "
-        case _                                  => ""
+        case ScalaFileTemplateUtil.SCALA_CLASS =>
+          "class "
+        case ScalaFileTemplateUtil.SCALA_TRAIT =>
+          "trait "
+        case ScalaFileTemplateUtil.SCALA_OBJECT =>
+          "object "
+        case _ =>
+          ""
       }
     val packageLine =
       "#if ((${PACKAGE_NAME} && ${PACKAGE_NAME} != \"\"))package ${PACKAGE_NAME} #end"

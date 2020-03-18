@@ -119,14 +119,16 @@ object PartestUtil {
                 }
             }
           } catch {
-            case _: Throwable => Nil
+            case _: Throwable =>
+              Nil
           }
         val matchingFileName =
           try {
             val filter = GlobFilter("*" + x + "*")
             testFiles.allTestCases.filter(x => filter.accept(x._1.name))
           } catch {
-            case t: Throwable => Nil
+            case t: Throwable =>
+              Nil
           }
         (matchingFileContent ++ matchingFileName).map(_._2).distinct.sorted
       }
@@ -139,8 +141,10 @@ object PartestUtil {
       val tokenCompletion = TokenCompletions.fixed((seen, level) => completion)
 
       val globOrPattern = StringBasic.map(expandGrep).flatMap {
-        case Seq() => failure("no tests match pattern / glob")
-        case x     => success(x.mkString(" "))
+        case Seq() =>
+          failure("no tests match pattern / glob")
+        case x =>
+          success(x.mkString(" "))
       }
       token(grepOption <~ Space) ~> token(globOrPattern, tokenCompletion)
     }

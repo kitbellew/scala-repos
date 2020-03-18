@@ -22,13 +22,16 @@ class ScalaWhileUnwrapper extends ScalaUnwrapper {
       case _: ScWhileStmt | _: ScDoStmt =>
         super.collectAffectedElements(e, toExtract)
         e
-      case _ => e
+      case _ =>
+        e
     }
 
   override def isApplicableTo(e: PsiElement) =
     e match {
-      case _: ScWhileStmt | _: ScDoStmt => true
-      case _                            => false
+      case _: ScWhileStmt | _: ScDoStmt =>
+        true
+      case _ =>
+        false
     }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =

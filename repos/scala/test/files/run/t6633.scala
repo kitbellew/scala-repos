@@ -8,7 +8,8 @@ object Test extends App {
   try {
     lb0.insert(9, 'x)
   } catch {
-    case ex: IndexOutOfBoundsException => println(ex)
+    case ex: IndexOutOfBoundsException =>
+      println(ex)
   }
 
   val lb1 = newLB

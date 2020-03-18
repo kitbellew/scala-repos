@@ -725,8 +725,10 @@ private[parser] trait CommonRules {
     rule {
       token ~> { s ⇒
         HttpMethods.getForKey(s) match {
-          case Some(m) ⇒ m
-          case None ⇒ HttpMethod.custom(s)
+          case Some(m) ⇒
+            m
+          case None ⇒
+            HttpMethod.custom(s)
         }
       }
     }

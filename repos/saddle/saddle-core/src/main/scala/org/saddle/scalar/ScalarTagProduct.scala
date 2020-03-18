@@ -23,8 +23,10 @@ class ScalarTagProduct[T <: Product: CLM] extends ScalarTagAny[T] {
   override def strList =
     (v: T) =>
       v.productArity match {
-        case 0 => List(v.toString)
-        case _ => v.productIterator.toList.map(_.toString)
+        case 0 =>
+          List(v.toString)
+        case _ =>
+          v.productIterator.toList.map(_.toString)
       }
 
   override def toString = "ScalarTagProduct"

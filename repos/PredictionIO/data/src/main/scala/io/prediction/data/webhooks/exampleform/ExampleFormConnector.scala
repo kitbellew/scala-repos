@@ -53,8 +53,10 @@ private[prediction] object ExampleFormConnector extends FormConnector {
     val json =
       try {
         data.get("type") match {
-          case Some("userAction")     => userActionToEventJson(data)
-          case Some("userActionItem") => userActionItemToEventJson(data)
+          case Some("userAction") =>
+            userActionToEventJson(data)
+          case Some("userActionItem") =>
+            userActionItemToEventJson(data)
           case Some(x) =>
             throw new ConnectorException(
               s"Cannot convert unknown type ${x} to event JSON")
@@ -62,7 +64,8 @@ private[prediction] object ExampleFormConnector extends FormConnector {
             throw new ConnectorException(s"The field 'type' is required.")
         }
       } catch {
-        case e: ConnectorException => throw e
+        case e: ConnectorException =>
+          throw e
         case e: Exception =>
           throw new ConnectorException(
             s"Cannot convert ${data} to event JSON. ${e.getMessage()}",

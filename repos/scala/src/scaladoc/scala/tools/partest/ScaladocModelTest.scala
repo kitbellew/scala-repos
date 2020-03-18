@@ -113,7 +113,8 @@ abstract class ScaladocModelTest extends DirectTest {
         tpl.templates
           .filter(_.name == name)
           .collect({
-            case c: DocTemplateEntity with Class => c
+            case c: DocTemplateEntity with Class =>
+              c
           })
 
       def _classMbr(name: String): MemberTemplateEntity =
@@ -124,7 +125,8 @@ abstract class ScaladocModelTest extends DirectTest {
         tpl.templates
           .filter(_.name == name)
           .collect({
-            case c: MemberTemplateEntity if c.isClass => c
+            case c: MemberTemplateEntity if c.isClass =>
+              c
           })
 
       def _trait(name: String): DocTemplateEntity =
@@ -133,7 +135,8 @@ abstract class ScaladocModelTest extends DirectTest {
         tpl.templates
           .filter(_.name == name)
           .collect({
-            case t: DocTemplateEntity with Trait => t
+            case t: DocTemplateEntity with Trait =>
+              t
           })
 
       def _traitMbr(name: String): MemberTemplateEntity =
@@ -144,7 +147,8 @@ abstract class ScaladocModelTest extends DirectTest {
         tpl.templates
           .filter(_.name == name)
           .collect({
-            case t: MemberTemplateEntity if t.isTrait => t
+            case t: MemberTemplateEntity if t.isTrait =>
+              t
           })
 
       def _object(name: String): DocTemplateEntity =
@@ -153,7 +157,8 @@ abstract class ScaladocModelTest extends DirectTest {
         tpl.templates
           .filter(_.name == name)
           .collect({
-            case o: DocTemplateEntity with Object => o
+            case o: DocTemplateEntity with Object =>
+              o
           })
 
       def _objectMbr(name: String): MemberTemplateEntity =
@@ -164,7 +169,8 @@ abstract class ScaladocModelTest extends DirectTest {
         tpl.templates
           .filter(_.name == name)
           .collect({
-            case o: MemberTemplateEntity if o.isObject => o
+            case o: MemberTemplateEntity if o.isObject =>
+              o
           })
 
       def _method(name: String): Def =
@@ -243,15 +249,19 @@ abstract class ScaladocModelTest extends DirectTest {
 
     def getTheFirst[T](list: List[T], expl: String): T =
       list.length match {
-        case 1 => list.head
-        case 0 => sys.error("Error getting " + expl + ": No such element.")
+        case 1 =>
+          list.head
+        case 0 =>
+          sys.error("Error getting " + expl + ": No such element.")
         case _ =>
           sys.error(
             "Error getting " + expl + ": " + list.length + " elements with this name. " +
               "All elements in list: [" + list
               .map({
-                case ent: Entity => ent.kind + " " + ent.qualifiedName
-                case other       => other.toString
+                case ent: Entity =>
+                  ent.kind + " " + ent.qualifiedName
+                case other =>
+                  other.toString
               })
               .mkString(", ") + "]")
       }
@@ -259,11 +269,14 @@ abstract class ScaladocModelTest extends DirectTest {
     def extractCommentText(c: Any) = {
       def extractText(body: Any): String =
         body match {
-          case s: String => s
-          case s: Seq[_] => s.toList.map(extractText(_)).mkString
+          case s: String =>
+            s
+          case s: Seq[_] =>
+            s.toList.map(extractText(_)).mkString
           case p: Product =>
             p.productIterator.toList.map(extractText(_)).mkString
-          case _ => ""
+          case _ =>
+            ""
         }
       c match {
         case c: Comment =>
@@ -279,10 +292,14 @@ abstract class ScaladocModelTest extends DirectTest {
     def countLinksInBody(body: Body, p: EntityLink => Boolean): Int = {
       def countLinks(b: Any): Int =
         b match {
-          case el: EntityLink if p(el) => 1
-          case s: Seq[_]               => s.toList.map(countLinks(_)).sum
-          case p: Product              => p.productIterator.toList.map(countLinks(_)).sum
-          case _                       => 0
+          case el: EntityLink if p(el) =>
+            1
+          case s: Seq[_] =>
+            s.toList.map(countLinks(_)).sum
+          case p: Product =>
+            p.productIterator.toList.map(countLinks(_)).sum
+          case _ =>
+            0
         }
       countLinks(body)
     }

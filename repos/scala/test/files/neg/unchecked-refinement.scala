@@ -10,21 +10,26 @@ class A {
   def f1(x: Foo[Int, Int, Int]) =
     x match {
       /* nowarn */
-      case _: Foo[Nothing, Int, Any] => true
+      case _: Foo[Nothing, Int, Any] =>
+        true
     }
   def f2[T, U, V](x: Foo[T, U, V]) =
     x match {
       /* nowarn */
-      case _: Foo[Nothing, U, Any] => true
+      case _: Foo[Nothing, U, Any] =>
+        true
     }
   def f3[T, U, V](x: Foo[T, U, V]) =
     x match {
       /*   warn */
-      case _: Foo[U, U, V] if b => ()
+      case _: Foo[U, U, V] if b =>
+        ()
       /* nowarn */
-      case _: Foo[Nothing, U, V] if b => ()
+      case _: Foo[Nothing, U, V] if b =>
+        ()
       /*   warn */
-      case _: Foo[Any, U, V] if b => ()
+      case _: Foo[Any, U, V] if b =>
+        ()
     }
 
   def f4(xs: List[Int]) =

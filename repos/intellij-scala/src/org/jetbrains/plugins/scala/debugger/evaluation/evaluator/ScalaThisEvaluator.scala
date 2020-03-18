@@ -56,7 +56,8 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
               else
                 null
           }
-        case x => x
+        case x =>
+          x
       }
     if (iterations > 0) {
       var thisRef: ObjectReference = objRef.asInstanceOf[ObjectReference]

@@ -53,8 +53,10 @@ object UserQuery {
       new Decomposer[DesiredSortOrder] {
         def decompose(sortOrder: DesiredSortOrder): JValue =
           sortOrder match {
-            case SortAscending  => JString("asc")
-            case SortDescending => JString("desc")
+            case SortAscending =>
+              JString("asc")
+            case SortDescending =>
+              JString("desc")
           }
       }
 
@@ -63,8 +65,10 @@ object UserQuery {
         def validated(
             obj: JValue): Validation[Extractor.Error, DesiredSortOrder] =
           obj match {
-            case JString("asc")  => Success(SortAscending)
-            case JString("desc") => Success(SortDescending)
+            case JString("asc") =>
+              Success(SortAscending)
+            case JString("desc") =>
+              Success(SortDescending)
             case _ =>
               Failure(
                 Extractor.Invalid(

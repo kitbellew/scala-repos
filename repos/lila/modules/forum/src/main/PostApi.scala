@@ -42,7 +42,8 @@ final class PostApi(
           categId = categ.id
         )
         PostRepo findDuplicate post flatMap {
-          case Some(dup) => fuccess(dup)
+          case Some(dup) =>
+            fuccess(dup)
           case _ =>
             $insert(post) >>
               $update(topic withPost post) >> {
@@ -90,7 +91,8 @@ final class PostApi(
           val page = nb / maxPerPage + 1
           PostUrlData(topic.categId, topic.slug, page, post.number).some
         }
-      case _ => fuccess(none)
+      case _ =>
+        fuccess(none)
     }
 
   def get(postId: String): Fu[Option[(Topic, Post)]] =

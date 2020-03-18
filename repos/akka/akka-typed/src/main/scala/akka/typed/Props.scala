@@ -37,7 +37,8 @@ object Props {
   def empty[T]: Props[T] = _empty.asInstanceOf[Props[T]]
   private val _empty: Props[Any] = Props(
     ScalaDSL.Static[Any] {
-      case _ ⇒ ScalaDSL.Unhandled
+      case _ ⇒
+        ScalaDSL.Unhandled
     })
 
   /**
@@ -56,7 +57,8 @@ object Props {
     p.args match {
       case (creator: Function0[_]) :: Nil ⇒
         Props(creator.asInstanceOf[Function0[Behavior[T]]], p.deploy)
-      case _ ⇒ throw new AssertionError("typed.Actor args must be right")
+      case _ ⇒
+        throw new AssertionError("typed.Actor args must be right")
     }
   }
 }

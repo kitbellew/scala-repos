@@ -87,7 +87,8 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val deriver =
       dTpe match {
-        case SingleType(pre, sym) => mkAttributedRef(pre, sym)
+        case SingleType(pre, sym) =>
+          mkAttributedRef(pre, sym)
         case other =>
           c.abort(c.enclosingPosition, "Deriver $dTpe not found")
       }
@@ -123,7 +124,8 @@ class OrphanMacros(val c: whitebox.Context) extends CaseClassMacros {
     } else {
       val derived =
         checkedProbe match {
-          case b: Block => b.expr
+          case b: Block =>
+            b.expr
         }
 
       if (derived.equalsStructure(inst))

@@ -127,8 +127,10 @@ object VerifyConsumerRebalance extends Logging {
           val partitionOwnerPath = topicDirs.consumerOwnerDir + "/" + partition
           val partitionOwner =
             zkUtils.readDataMaybeNull(partitionOwnerPath)._1 match {
-              case Some(m) => m
-              case None    => null
+              case Some(m) =>
+                m
+              case None =>
+                null
             }
           if (partitionOwner == null) {
             error("No owner for partition [%s,%d]".format(topic, partition))

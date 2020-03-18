@@ -106,8 +106,10 @@ private[akka] class TLSActor(
       if (buffer.isEmpty) {
         buffer = inputBunch.dequeue(idx) match {
           // this class handles both UserIn and TransportIn
-          case bs: ByteString ⇒ bs
-          case SendBytes(bs) ⇒ bs
+          case bs: ByteString ⇒
+            bs
+          case SendBytes(bs) ⇒
+            bs
           case n: NegotiateNewSession ⇒
             setNewSessionParameters(n)
             ByteString.empty
@@ -173,8 +175,10 @@ private[akka] class TLSActor(
   val engine: SSLEngine = {
     val e =
       hostInfo match {
-        case Some((hostname, port)) ⇒ sslContext.createSSLEngine(hostname, port)
-        case None ⇒ sslContext.createSSLEngine()
+        case Some((hostname, port)) ⇒
+          sslContext.createSSLEngine(hostname, port)
+        case None ⇒
+          sslContext.createSSLEngine()
       }
     sslConfig.sslEngineConfigurator.configure(e, sslContext)
     e.setUseClientMode(role == Client)
@@ -197,14 +201,18 @@ private[akka] class TLSActor(
       engine.setEnabledCipherSuites(cs.toArray))
     params.enabledProtocols foreach (p ⇒ engine.setEnabledProtocols(p.toArray))
     params.clientAuth match {
-      case Some(TLSClientAuth.None) ⇒ engine.setNeedClientAuth(false)
-      case Some(TLSClientAuth.Want) ⇒ engine.setWantClientAuth(true)
-      case Some(TLSClientAuth.Need) ⇒ engine.setNeedClientAuth(true)
+      case Some(TLSClientAuth.None) ⇒
+        engine.setNeedClientAuth(false)
+      case Some(TLSClientAuth.Want) ⇒
+        engine.setWantClientAuth(true)
+      case Some(TLSClientAuth.Need) ⇒
+        engine.setNeedClientAuth(true)
       case _ ⇒ // do nothing
     }
     params.sslParameters foreach { p ⇒
       hostInfo foreach {
-        case (host, _) ⇒ applySNI(host, p)
+        case (host, _) ⇒
+          applySNI(host, p)
       }
       engine.setSSLParameters(p)
     }
@@ -305,7 +313,8 @@ private[akka] class TLSActor(
         log.debug("flushingOutbound")
       try doWrap()
       catch {
-        case ex: SSLException ⇒ nextPhase(completedPhase)
+        case ex: SSLException ⇒
+          nextPhase(completedPhase)
       }
     }
 
@@ -317,7 +326,8 @@ private[akka] class TLSActor(
       transportInChoppingBlock.chopInto(transportInBuffer)
       try doUnwrap(ignoreOutput = true)
       catch {
-        case ex: SSLException ⇒ nextPhase(completedPhase)
+        case ex: SSLException ⇒
+          nextPhase(completedPhase)
       }
     }
 
@@ -331,7 +341,8 @@ private[akka] class TLSActor(
           log.debug("outboundClosed continue")
         try doWrap()
         catch {
-          case ex: SSLException ⇒ nextPhase(completedPhase)
+          case ex: SSLException ⇒
+            nextPhase(completedPhase)
         }
       }
     }
@@ -363,7 +374,8 @@ private[akka] class TLSActor(
         log.debug("closing inbound")
       try engine.closeInbound()
       catch {
-        case ex: SSLException ⇒ outputBunch.enqueue(UserOut, SessionTruncated)
+        case ex: SSLException ⇒
+          outputBunch.enqueue(UserOut, SessionTruncated)
       }
       completeOrFlush()
       false
@@ -489,7 +501,8 @@ private[akka] class TLSActor(
     result.getStatus match {
       case OK ⇒
         result.getHandshakeStatus match {
-          case NEED_WRAP ⇒ flushToUser()
+          case NEED_WRAP ⇒
+            flushToUser()
           case FINISHED ⇒
             flushToUser()
             handshakeFinished()

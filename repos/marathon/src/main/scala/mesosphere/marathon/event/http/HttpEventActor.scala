@@ -85,11 +85,16 @@ class HttpEventActor(
     .withDefaultValue(NoLimit)
 
   def receive: Receive = {
-    case event: MarathonEvent          => resolveSubscribersForEventAndBroadcast(event)
-    case Broadcast(event, subscribers) => broadcast(event, subscribers)
-    case NotificationSuccess(url)      => limiter += url -> NoLimit
-    case NotificationFailed(url)       => limiter += url -> limiter(url).nextFailed
-    case _                             => log.warning("Message not understood!")
+    case event: MarathonEvent =>
+      resolveSubscribersForEventAndBroadcast(event)
+    case Broadcast(event, subscribers) =>
+      broadcast(event, subscribers)
+    case NotificationSuccess(url) =>
+      limiter += url -> NoLimit
+    case NotificationFailed(url) =>
+      limiter += url -> limiter(url).nextFailed
+    case _ =>
+      log.warning("Message not understood!")
   }
 
   def resolveSubscribersForEventAndBroadcast(event: MarathonEvent): Unit = {

@@ -158,7 +158,8 @@ package mongotestrecords {
                 Map(
                   "name" -> bdbo.getString("name"),
                   "type" -> bdbo.getString("type"))
-              case _ => null
+              case _ =>
+                null
             }
           })
           .filter(_ != null)

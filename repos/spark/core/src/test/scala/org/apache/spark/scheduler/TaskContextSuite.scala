@@ -48,8 +48,10 @@ class TaskContextSuite
           rdd,
           (tc: TaskContext, it: Iterator[Int]) => {
             tc.getMetricsSources("jvm").count {
-              case source: JvmSource => true
-              case _                 => false
+              case source: JvmSource =>
+                true
+              case _ =>
+                false
             }
           })
         .sum

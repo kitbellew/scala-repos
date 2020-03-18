@@ -25,8 +25,10 @@ trait ModelBuilders {
     _locateSymbolPos(sym, needPos).orElse({
       logger.debug(s"search $sym: Try Companion")
       sym.companionSymbol match {
-        case NoSymbol  => None
-        case s: Symbol => _locateSymbolPos(s, needPos)
+        case NoSymbol =>
+          None
+        case s: Symbol =>
+          _locateSymbolPos(s, needPos)
       }
     })
   }
@@ -70,18 +72,22 @@ trait ModelBuilders {
       parents: Iterable[Type]): Iterable[InterfaceInfo] = {
     // ...filtering out non-visible and non-type members
     val visMembers: Iterable[TypeMember] = members.flatMap {
-      case m @ TypeMember(sym, tpe, true, _, _) => List(m)
-      case _                                    => List.empty
+      case m @ TypeMember(sym, tpe, true, _, _) =>
+        List(m)
+      case _ =>
+        List.empty
     }
 
     val parentMap = parents.map(_.typeSymbol -> List[TypeMember]()).toMap
     val membersMap = visMembers.groupBy {
-      case TypeMember(sym, _, _, _, _) => sym.owner
+      case TypeMember(sym, _, _, _, _) =>
+        sym.owner
     }
     // Create a list of pairs [(typeSym, membersOfSym)]
     val membersByOwner = (parentMap ++ membersMap).toList.sortWith {
       // Sort the pairs on the subtype relation
-      case ((s1, _), (s2, _)) => s1.tpe <:< s2.tpe
+      case ((s1, _), (s2, _)) =>
+        s1.tpe <:< s2.tpe
     }
 
     membersByOwner.map {
@@ -142,8 +148,10 @@ trait ModelBuilders {
     def fromPath(path: String): PackageInfo = {
       val pack = packageSymFromPath(path)
       pack match {
-        case Some(packSym) => fromSymbol(packSym)
-        case None          => nullInfo
+        case Some(packSym) =>
+          fromSymbol(packSym)
+        case None =>
+          nullInfo
       }
     }
 
@@ -183,7 +191,8 @@ trait ModelBuilders {
           None
         }
       } catch {
-        case e: Throwable => None
+        case e: Throwable =>
+          None
       }
     }
   }
@@ -199,8 +208,10 @@ trait ModelBuilders {
         typ match {
           // TODO: Instead of throwing away this information, would be better to
           // alert the user that the type is existentially quantified.
-          case et: ExistentialType => et.underlying
-          case t                   => t
+          case et: ExistentialType =>
+            et.underlying
+          case t =>
+            t
         }
       def basicTypeInfo(tpe: Type): BasicTypeInfo = {
         val typeSym = tpe.typeSymbol
@@ -219,11 +230,16 @@ trait ModelBuilders {
           symPos)
       }
       tpe match {
-        case tpe: MethodType        => ArrowTypeInfo(tpe)
-        case tpe: PolyType          => ArrowTypeInfo(tpe)
-        case tpe: NullaryMethodType => basicTypeInfo(tpe.resultType)
-        case tpe: Type              => basicTypeInfo(tpe)
-        case _                      => nullInfo
+        case tpe: MethodType =>
+          ArrowTypeInfo(tpe)
+        case tpe: PolyType =>
+          ArrowTypeInfo(tpe)
+        case tpe: NullaryMethodType =>
+          basicTypeInfo(tpe.resultType)
+        case tpe: Type =>
+          basicTypeInfo(tpe)
+        case _ =>
+          nullInfo
       }
     }
 
@@ -253,8 +269,10 @@ trait ModelBuilders {
     def apply(sym: Symbol): SymbolInfo = {
       val tpe =
         askOption(sym.tpe) match {
-          case None    => NoType
-          case Some(t) => t
+          case None =>
+            NoType
+          case Some(t) =>
+            t
         }
       val nameString = sym.nameString
       val (name, localName) =
@@ -341,7 +359,8 @@ trait ModelBuilders {
             tpe,
             tpe.paramss.map(ParamSectionInfo.apply),
             tpe.finalResultType)
-        case _ => nullInfo()
+        case _ =>
+          nullInfo()
       }
     }
 
@@ -372,7 +391,8 @@ object LineSourcePositionHelper {
   private def possiblyExtractFile(fo: FileObject)(implicit
       config: EnsimeConfig): File =
     fo.pathWithinArchive match {
-      case None       => fo.asLocalFile
+      case None =>
+        fo.asLocalFile
       case Some(path) =>
         // subpath expected by the client
         val file = (config.cacheDir / "dep-src" / "source-jars" / path)
@@ -390,7 +410,8 @@ object LineSourcePositionHelper {
       config: EnsimeConfig,
       vfs: EnsimeVFS): Option[LineSourcePosition] =
     (sym.sourceFileObject, sym.line, sym.offset) match {
-      case (None, _, _) => None
+      case (None, _, _) =>
+        None
       case (Some(fo), lineOpt, offsetOpt) =>
         val f = possiblyExtractFile(fo)
         Some(new LineSourcePosition(f, lineOpt.getOrElse(0)))
@@ -403,7 +424,8 @@ object OffsetSourcePositionHelper {
 
   def fromPosition(p: Position): Option[OffsetSourcePosition] =
     p match {
-      case NoPosition => None
+      case NoPosition =>
+        None
       case realPos =>
         Some(
           new OffsetSourcePosition(

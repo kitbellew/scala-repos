@@ -63,17 +63,28 @@ object Digit extends DigitInstances {
 
   def mod10Digit(i: Int): Digit =
     i match {
-      case 0 => _0
-      case 1 => _1
-      case 2 => _2
-      case 3 => _3
-      case 4 => _4
-      case 5 => _5
-      case 6 => _6
-      case 7 => _7
-      case 8 => _8
-      case 9 => _9
-      case _ => mod10Digit(scala.math.abs(i) % 10)
+      case 0 =>
+        _0
+      case 1 =>
+        _1
+      case 2 =>
+        _2
+      case 3 =>
+        _3
+      case 4 =>
+        _4
+      case 5 =>
+        _5
+      case 6 =>
+        _6
+      case 7 =>
+        _7
+      case 8 =>
+        _8
+      case 9 =>
+        _9
+      case _ =>
+        mod10Digit(scala.math.abs(i) % 10)
     }
 
   def longDigits[F[_]](digits: F[Digit])(implicit F: Foldable[F]): Long =
@@ -88,8 +99,10 @@ object Digit extends DigitInstances {
   def digitsCollapse[F[_]](chars: F[Char])(implicit F: MonadPlus[F]): F[Digit] =
     F.bind(chars)(a =>
       Digit.digitFromChar(a) match {
-        case None    => F.empty[Digit]
-        case Some(d) => F.point(d)
+        case None =>
+          F.empty[Digit]
+        case Some(d) =>
+          F.point(d)
       })
 
   def traverseDigits[F[_]](chars: F[Char])(implicit
@@ -110,30 +123,50 @@ sealed abstract class DigitInstances {
 
       def succ(d: Digit) =
         d match {
-          case Digit._0 => Digit._1
-          case Digit._1 => Digit._2
-          case Digit._2 => Digit._3
-          case Digit._3 => Digit._4
-          case Digit._4 => Digit._5
-          case Digit._5 => Digit._6
-          case Digit._6 => Digit._7
-          case Digit._7 => Digit._8
-          case Digit._8 => Digit._9
-          case Digit._9 => Digit._0
+          case Digit._0 =>
+            Digit._1
+          case Digit._1 =>
+            Digit._2
+          case Digit._2 =>
+            Digit._3
+          case Digit._3 =>
+            Digit._4
+          case Digit._4 =>
+            Digit._5
+          case Digit._5 =>
+            Digit._6
+          case Digit._6 =>
+            Digit._7
+          case Digit._7 =>
+            Digit._8
+          case Digit._8 =>
+            Digit._9
+          case Digit._9 =>
+            Digit._0
         }
 
       def pred(d: Digit) =
         d match {
-          case Digit._0 => Digit._9
-          case Digit._1 => Digit._0
-          case Digit._2 => Digit._1
-          case Digit._3 => Digit._2
-          case Digit._4 => Digit._3
-          case Digit._5 => Digit._4
-          case Digit._6 => Digit._5
-          case Digit._7 => Digit._6
-          case Digit._8 => Digit._7
-          case Digit._9 => Digit._8
+          case Digit._0 =>
+            Digit._9
+          case Digit._1 =>
+            Digit._0
+          case Digit._2 =>
+            Digit._1
+          case Digit._3 =>
+            Digit._2
+          case Digit._4 =>
+            Digit._3
+          case Digit._5 =>
+            Digit._4
+          case Digit._6 =>
+            Digit._5
+          case Digit._7 =>
+            Digit._6
+          case Digit._8 =>
+            Digit._7
+          case Digit._9 =>
+            Digit._8
         }
 
       override def succn(n: Int, a: Digit) = super.succn(n % 10, a)

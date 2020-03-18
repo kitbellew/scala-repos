@@ -65,7 +65,8 @@ class BatchedDeltaService[K, V: Semigroup](
     LookupJoin
       .rightSumming(incoming, servStream, reducers)
       .map {
-        case (t, (k, (w, optoptv))) => (t, (k, (w, flatOpt(optoptv))))
+        case (t, (k, (w, optoptv))) =>
+          (t, (k, (w, flatOpt(optoptv))))
       }
   }
 }

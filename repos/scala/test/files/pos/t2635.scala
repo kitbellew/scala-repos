@@ -6,8 +6,9 @@ object Test {
   def main(args: Array[String]): Unit = {
     val sc: Option[Class[_ <: Base]] = Some(classOf[Base])
     sc match {
-      case Some(c) => run(c)
-      case None    =>
+      case Some(c) =>
+        run(c)
+      case None =>
     }
   }
 }

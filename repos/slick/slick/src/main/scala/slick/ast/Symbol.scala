@@ -82,7 +82,8 @@ trait DefNode extends Node {
     }
     val mapped = all.map(f.tupled)
     if (ch.zip(mapped).force.exists {
-          case (n1, n2) => n1 ne n2
+          case (n1, n2) =>
+            n1 ne n2
         })
       rebuild(mapped).asInstanceOf[Self with DefNode]
     else
@@ -125,7 +126,8 @@ class SymbolNamer(
           val n = create(typeSymbolPrefix)
           update(a, n)
           n
-        case s => namedSymbolName(s)
+        case s =>
+          namedSymbolName(s)
       })
 
   def namedSymbolName(s: Symbol) = s.name

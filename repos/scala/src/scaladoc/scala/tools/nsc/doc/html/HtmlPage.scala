@@ -174,7 +174,8 @@ abstract class HtmlPage extends Page {
 
   def inlineToHtml(inl: Inline): NodeSeq =
     inl match {
-      case Chain(items) => items flatMap (inlineToHtml(_))
+      case Chain(items) =>
+        items flatMap (inlineToHtml(_))
       case Italic(in) =>
         <i>{
           inlineToHtml(in)
@@ -205,10 +206,14 @@ abstract class HtmlPage extends Page {
         <code>{
           inlineToHtml(in)
         }</code>
-      case Text(text)               => scala.xml.Text(text)
-      case Summary(in)              => inlineToHtml(in)
-      case HtmlTag(tag)             => scala.xml.Unparsed(tag)
-      case EntityLink(target, link) => linkToHtml(target, link, hasLinks = true)
+      case Text(text) =>
+        scala.xml.Text(text)
+      case Summary(in) =>
+        inlineToHtml(in)
+      case HtmlTag(tag) =>
+        scala.xml.Unparsed(tag)
+      case EntityLink(target, link) =>
+        linkToHtml(target, link, hasLinks = true)
     }
 
   def linkToHtml(text: Inline, link: LinkTo, hasLinks: Boolean) =
@@ -302,8 +307,10 @@ abstract class HtmlPage extends Page {
       hasLinks: Boolean,
       sep: NodeSeq): NodeSeq =
     tpess match {
-      case Nil        => NodeSeq.Empty
-      case tpe :: Nil => typeToHtml(tpe, hasLinks)
+      case Nil =>
+        NodeSeq.Empty
+      case tpe :: Nil =>
+        typeToHtml(tpe, hasLinks)
       case tpe :: tpes =>
         typeToHtml(tpe, hasLinks) ++ sep ++ typesToHtml(tpes, hasLinks, sep)
     }
@@ -345,8 +352,10 @@ abstract class HtmlPage extends Page {
   /** Returns the HTML code that represents the templates in `tpls` as a list of hyperlinked names. */
   def templatesToHtml(tplss: List[TemplateEntity], sep: NodeSeq): NodeSeq =
     tplss match {
-      case Nil        => NodeSeq.Empty
-      case tpl :: Nil => templateToHtml(tpl)
+      case Nil =>
+        NodeSeq.Empty
+      case tpl :: Nil =>
+        templateToHtml(tpl)
       case tpl :: tpls =>
         templateToHtml(tpl) ++ sep ++ templatesToHtml(tpls, sep)
     }
@@ -412,7 +421,8 @@ abstract class HtmlPage extends Page {
           " class"
         else
           ""}"
-      case None => baseString
+      case None =>
+        baseString
     }
 
   def companionAndPackage(tpl: DocTemplateEntity): NodeSeq =
@@ -435,7 +445,8 @@ abstract class HtmlPage extends Page {
             objClassTrait
           }</a>
           </div>
-        case None => NodeSeq.Empty
+        case None =>
+          NodeSeq.Empty
       }
     }</span>
 
@@ -444,9 +455,12 @@ abstract class HtmlPage extends Page {
       template match {
         case dte: DocTemplateEntity if (!isSelf) =>
           (Some(dte.signature), dte.inTemplate)
-        case dte: DocTemplateEntity => (None, dte)
-        case me: MemberEntity       => (Some(me.signature), me.inTemplate)
-        case tpl                    => (None, tpl)
+        case dte: DocTemplateEntity =>
+          (None, dte)
+        case me: MemberEntity =>
+          (Some(me.signature), me.inTemplate)
+        case tpl =>
+          (None, tpl)
       }
 
     val templatePath = templateToPath(containingTemplate)

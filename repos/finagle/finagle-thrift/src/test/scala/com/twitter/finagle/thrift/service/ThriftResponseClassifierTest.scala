@@ -15,10 +15,12 @@ import org.scalatest.junit.JUnitRunner
 class ThriftResponseClassifierTest extends FunSuite {
 
   private val classifier = ThriftResponseClassifier.usingDeserializeCtx {
-    case ReqRep(_, Return(rep: String)) if rep == "nope" => RetryableFailure
+    case ReqRep(_, Return(rep: String)) if rep == "nope" =>
+      RetryableFailure
     case ReqRep(_, Throw(e: InvalidQueryException)) if e.errorCode == 4 =>
       NonRetryableFailure
-    case ReqRep(Echo.Echo.Args(in), _) if in == "lol" => NonRetryableFailure
+    case ReqRep(Echo.Echo.Args(in), _) if in == "lol" =>
+      NonRetryableFailure
   }
 
   private val deserializer = { bytes: Array[Byte] =>

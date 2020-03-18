@@ -27,7 +27,8 @@ class ResolveArtifactsActor(
 
   // all downloads that have to be performed by this actor
   var downloads = url2Path.map {
-    case (url, path) => new CancelableDownload(url, storage, path)
+    case (url, path) =>
+      new CancelableDownload(url, storage, path)
   }
 
   override def preStart(): Unit = {

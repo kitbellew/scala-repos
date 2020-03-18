@@ -425,8 +425,10 @@ private trait LazyTuple2Order[A1, A2]
   import Ordering.EQ
   def order(f1: LazyTuple2[A1, A2], f2: LazyTuple2[A1, A2]) =
     (_1.order(f1._1, f2._1), _2.order(f1._2, f2._2)) match {
-      case (EQ, ord) => ord
-      case (ord, _)  => ord
+      case (EQ, ord) =>
+        ord
+      case (ord, _) =>
+        ord
     }
 }
 private trait LazyTuple3Order[A1, A2, A3]
@@ -441,9 +443,12 @@ private trait LazyTuple3Order[A1, A2, A3]
       _1.order(f1._1, f2._1),
       _2.order(f1._2, f2._2),
       _3.order(f1._3, f2._3)) match {
-      case (EQ, EQ, ord) => ord
-      case (EQ, ord, _)  => ord
-      case (ord, _, _)   => ord
+      case (EQ, EQ, ord) =>
+        ord
+      case (EQ, ord, _) =>
+        ord
+      case (ord, _, _) =>
+        ord
     }
 }
 private trait LazyTuple4Order[A1, A2, A3, A4]
@@ -460,10 +465,14 @@ private trait LazyTuple4Order[A1, A2, A3, A4]
       _2.order(f1._2, f2._2),
       _3.order(f1._3, f2._3),
       _4.order(f1._4, f2._4)) match {
-      case (EQ, EQ, EQ, ord) => ord
-      case (EQ, EQ, ord, _)  => ord
-      case (EQ, ord, _, _)   => ord
-      case (ord, _, _, _)    => ord
+      case (EQ, EQ, EQ, ord) =>
+        ord
+      case (EQ, EQ, ord, _) =>
+        ord
+      case (EQ, ord, _, _) =>
+        ord
+      case (ord, _, _, _) =>
+        ord
     }
 }
 

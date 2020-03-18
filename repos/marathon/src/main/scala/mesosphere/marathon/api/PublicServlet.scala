@@ -11,7 +11,8 @@ class PublicServlet extends DefaultServlet {
     name match {
       case "resourceBase" =>
         getClass.getClassLoader.getResource(path).toExternalForm
-      case _ => super.getInitParameter(name)
+      case _ =>
+        super.getInitParameter(name)
     }
 
   override def getResource(pathInContext: String): Resource = {

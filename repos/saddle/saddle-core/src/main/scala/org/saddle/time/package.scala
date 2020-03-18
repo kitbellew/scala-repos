@@ -85,7 +85,8 @@ package object time {
         Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
       case dfmt3(d, m, y) if euro =>
         Some(new DateTime(y.toInt, m.toInt, d.toInt, 0, 0, 0, 0))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -192,7 +193,8 @@ package object time {
   implicit def vecTimeAccessors(vec: Vec[DateTime]): TimeAccessors[Vec[Int]] = {
     val (times, chrono: Chronology) =
       vec match {
-        case tv: VecTime => (tv.times, tv.chrono)
+        case tv: VecTime =>
+          (tv.times, tv.chrono)
         case _ => {
           val tmp = new VecTime(vec.map(_.getMillis));
           (tmp.times, tmp.chrono)
@@ -208,7 +210,8 @@ package object time {
       ix: Index[DateTime]): TimeAccessors[Index[Int]] = {
     val (times, chrono: Chronology) =
       ix match {
-        case tv: IndexTime => (tv.times.toVec, tv.chrono)
+        case tv: IndexTime =>
+          (tv.times.toVec, tv.chrono)
         case _ => {
           val tmp = new IndexTime(ix.map(_.getMillis));
           (tmp.times.toVec, tmp.chrono)

@@ -129,7 +129,8 @@ abstract class DriverType(val name: String) {
     */
   def columnTypeMap: TypeMapFunc =
     customColumnTypeMap orElse {
-      case x => x
+      case x =>
+        x
     }
 
   /**
@@ -166,20 +167,31 @@ object DriverType {
         meta.getDatabaseProductName,
         meta.getDatabaseMajorVersion,
         meta.getDatabaseMinorVersion) match {
-        case (DerbyDriver.name, _, _) => DerbyDriver
-        case (MySqlDriver.name, _, _) => MySqlDriver
+        case (DerbyDriver.name, _, _) =>
+          DerbyDriver
+        case (MySqlDriver.name, _, _) =>
+          MySqlDriver
         case (PostgreSqlDriver.name, major, minor)
             if ((major == 8 && minor >= 2) || major > 8) =>
           PostgreSqlDriver
-        case (PostgreSqlDriver.name, _, _)                     => PostgreSqlOldDriver
-        case (H2Driver.name, _, _)                             => H2Driver
-        case (SqlServerDriver.name, major, _) if major >= 9    => SqlServerDriver
-        case (SqlServerDriver.name, _, _)                      => SqlServerPre2005Driver
-        case (SybaseSQLAnywhereDriver.name, _, _)              => SybaseSQLAnywhereDriver
-        case (SybaseASEDriver.name, _, _)                      => SybaseASEDriver
-        case (OracleDriver.name, _, _)                         => OracleDriver
-        case (MaxDbDriver.name, _, _)                          => MaxDbDriver
-        case (other, _, _) if other.startsWith(DB2Driver.name) => DB2Driver
+        case (PostgreSqlDriver.name, _, _) =>
+          PostgreSqlOldDriver
+        case (H2Driver.name, _, _) =>
+          H2Driver
+        case (SqlServerDriver.name, major, _) if major >= 9 =>
+          SqlServerDriver
+        case (SqlServerDriver.name, _, _) =>
+          SqlServerPre2005Driver
+        case (SybaseSQLAnywhereDriver.name, _, _) =>
+          SybaseSQLAnywhereDriver
+        case (SybaseASEDriver.name, _, _) =>
+          SybaseASEDriver
+        case (OracleDriver.name, _, _) =>
+          OracleDriver
+        case (MaxDbDriver.name, _, _) =>
+          MaxDbDriver
+        case (other, _, _) if other.startsWith(DB2Driver.name) =>
+          DB2Driver
         case x =>
           throw new Exception(
             "Lift mapper does not support JDBC driver %s.\n".format(x) +
@@ -473,7 +485,8 @@ object OracleDriver extends DriverType("Oracle") {
 
   import java.sql.Types
   override def customColumnTypeMap = {
-    case Types.BOOLEAN => Types.INTEGER
+    case Types.BOOLEAN =>
+      Types.INTEGER
   }
 
   override def primaryKeySetup(

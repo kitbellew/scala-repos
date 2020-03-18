@@ -24,12 +24,14 @@ private object MdnsAddrMetadata {
     metadata.get(key) match {
       case some @ Some(_: MdnsAddrMetadata) =>
         some.asInstanceOf[Option[MdnsAddrMetadata]]
-      case _ => None
+      case _ =>
+        None
     }
 
   def unapply(metadata: Addr.Metadata): Option[(String, String, String)] =
     fromAddrMetadata(metadata).map {
-      case MdnsAddrMetadata(name, regType, domain) => (name, regType, domain)
+      case MdnsAddrMetadata(name, regType, domain) =>
+        (name, regType, domain)
     }
 }
 
@@ -48,8 +50,10 @@ private trait MDNSResolverIface {
 private[mdns] object MDNS {
   lazy val pid =
     ManagementFactory.getRuntimeMXBean.getName.split("@") match {
-      case Array(pid, _) => pid
-      case _             => "unknown"
+      case Array(pid, _) =>
+        pid
+      case _ =>
+        "unknown"
     }
 
   def mkName(ps: Any*) = ps.mkString("/")
@@ -58,7 +62,8 @@ private[mdns] object MDNS {
     addr.split("\\.").toList.reverse match {
       case domain :: prot :: app :: name =>
         (name.reverse.mkString("."), app + "." + prot, domain)
-      case _ => throw new MDNSAddressException(addr)
+      case _ =>
+        throw new MDNSAddressException(addr)
     }
   }
 }
@@ -72,7 +77,8 @@ class MDNSAnnouncer extends Announcer {
     try {
       new DNSSDAnnouncer
     } catch {
-      case _: ClassNotFoundException => new JmDNSAnnouncer
+      case _: ClassNotFoundException =>
+        new JmDNSAnnouncer
     }
 
   /**
@@ -98,7 +104,8 @@ class MDNSResolver extends Resolver {
     try {
       new DNSSDResolver
     } catch {
-      case _: ClassNotFoundException => new JmDNSResolver
+      case _: ClassNotFoundException =>
+        new JmDNSResolver
     }
 
   /**
@@ -112,11 +119,14 @@ class MDNSResolver extends Resolver {
     resolver.resolve(regType, domain) map {
       case Addr.Bound(addrs, attrs) =>
         val filtered = addrs.filter {
-          case Address.Inet(ia, MdnsAddrMetadata(n, _, _)) => n.startsWith(name)
-          case _                                           => false
+          case Address.Inet(ia, MdnsAddrMetadata(n, _, _)) =>
+            n.startsWith(name)
+          case _ =>
+            false
         }
         Addr.Bound(filtered, attrs)
-      case a => a
+      case a =>
+        a
     }
   }
 }

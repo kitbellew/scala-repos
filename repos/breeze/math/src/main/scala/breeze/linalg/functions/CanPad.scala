@@ -31,9 +31,12 @@ object CanPadRight {
           optDim: Dimensions1,
           optMode: OptPadMode): DenseVector[T] = {
         optMode match {
-          case Zero => padRight1ImplZero(v, optDim)
-          case Max  => padRight1ImplFixed(v, optDim, max(v))
-          case Min  => padRight1ImplFixed(v, optDim, min(v))
+          case Zero =>
+            padRight1ImplZero(v, optDim)
+          case Max =>
+            padRight1ImplFixed(v, optDim, max(v))
+          case Min =>
+            padRight1ImplFixed(v, optDim, min(v))
           case Mean =>
             padRight1ImplFixed(
               v,
@@ -46,10 +49,13 @@ object CanPadRight {
               optDim,
               convert(median(v), T)
             ) //option "Median" with Int will return approximate Int median for padding....
-          case Value(n: T) => padRight1ImplFixed(v, optDim, n)
+          case Value(n: T) =>
+            padRight1ImplFixed(v, optDim, n)
 
-          case Wrap    => padRight1ImplDV(v, optDim, v)
-          case Reflect => padRight1ImplDV(v, optDim, reverse(v))
+          case Wrap =>
+            padRight1ImplDV(v, optDim, v)
+          case Reflect =>
+            padRight1ImplDV(v, optDim, reverse(v))
 
           case _ =>
             throw new IllegalArgumentException(
@@ -69,7 +75,8 @@ object CanPadRight {
           padValue: T): DenseVector[T] = {
         require(optDim.n1 > 0, "Cannot pad to zero or negative length!")
         v.length match {
-          case optDim.n1 => v.copy
+          case optDim.n1 =>
+            v.copy
           case num: Int if num < optDim.n1 =>
             DenseVector(
               v.toArray ++ Array.tabulate(optDim.n1 - num)(p => padValue))
@@ -92,7 +99,8 @@ object CanPadRight {
           optDim.n1 - v.length <= padDV.length,
           "Cannot pad beyond specified padding DenseVector!")
         v.length match {
-          case optDim.n1 => v.copy
+          case optDim.n1 =>
+            v.copy
           case num: Int if num < optDim.n1 =>
             DenseVector(v.toArray ++ padDV.toArray.slice(0, optDim.n1 - num))
           //ToDo 4: ditto above
@@ -121,9 +129,12 @@ object CanPadRight {
           optDim: Dimensions2,
           optMode: OptPadMode): DenseMatrix[T] = {
         optMode match {
-          case Zero => padRight2ImplZero(m, optDim)
-          case Max  => padRight2ImplFixed(m, optDim, max(m))
-          case Min  => padRight2ImplFixed(m, optDim, min(m))
+          case Zero =>
+            padRight2ImplZero(m, optDim)
+          case Max =>
+            padRight2ImplFixed(m, optDim, max(m))
+          case Min =>
+            padRight2ImplFixed(m, optDim, min(m))
           case Mean =>
             padRight2ImplFixed(
               m,
@@ -134,7 +145,8 @@ object CanPadRight {
               m,
               optDim,
               convert(median(convert(m.toDenseVector, Double)), T))
-          case Value(n: T) => padRight2ImplFixed(m, optDim, n)
+          case Value(n: T) =>
+            padRight2ImplFixed(m, optDim, n)
 
           case Wrap =>
             throw new IllegalArgumentException(
@@ -196,9 +208,12 @@ object CanPadLeft {
           optDim: Dimensions1,
           optMode: OptPadMode): DenseVector[T] = {
         optMode match {
-          case Zero => padLeft1ImplZero(v, optDim)
-          case Max  => padLeft1ImplFixed(v, optDim, max(v))
-          case Min  => padLeft1ImplFixed(v, optDim, min(v))
+          case Zero =>
+            padLeft1ImplZero(v, optDim)
+          case Max =>
+            padLeft1ImplFixed(v, optDim, max(v))
+          case Min =>
+            padLeft1ImplFixed(v, optDim, min(v))
           case Mean =>
             padLeft1ImplFixed(
               v,
@@ -211,10 +226,13 @@ object CanPadLeft {
               optDim,
               convert(median(v), T)
             ) //option "Median" with Int will return approximate Int median for padding....
-          case Value(n: T) => padLeft1ImplFixed(v, optDim, n)
+          case Value(n: T) =>
+            padLeft1ImplFixed(v, optDim, n)
 
-          case Wrap    => padLeft1ImplDV(v, optDim, v)
-          case Reflect => padLeft1ImplDV(v, optDim, reverse(v))
+          case Wrap =>
+            padLeft1ImplDV(v, optDim, v)
+          case Reflect =>
+            padLeft1ImplDV(v, optDim, reverse(v))
 
           case _ =>
             throw new IllegalArgumentException(
@@ -234,7 +252,8 @@ object CanPadLeft {
           padValue: T): DenseVector[T] = {
         require(optDim.n1 > 0, "Cannot pad to zero or negative length!")
         v.length match {
-          case optDim.n1 => v.copy
+          case optDim.n1 =>
+            v.copy
           case num: Int if num < optDim.n1 =>
             val res = new Array[T](optDim.n1)
             util.Arrays.fill(res, padValue)
@@ -258,7 +277,8 @@ object CanPadLeft {
           optDim.n1 - v.length <= padDV.length,
           "Cannot pad beyond specified padding DenseVector!")
         v.length match {
-          case optDim.n1 => v.copy
+          case optDim.n1 =>
+            v.copy
           case num: Int if num < optDim.n1 =>
             DenseVector(
               reverse(
@@ -288,9 +308,12 @@ object CanPadLeft {
           optDim: Dimensions2,
           optMode: OptPadMode): DenseMatrix[T] = {
         optMode match {
-          case Zero => padLeft2ImplZero(m, optDim)
-          case Max  => padLeft2ImplFixed(m, optDim, max(m))
-          case Min  => padLeft2ImplFixed(m, optDim, min(m))
+          case Zero =>
+            padLeft2ImplZero(m, optDim)
+          case Max =>
+            padLeft2ImplFixed(m, optDim, max(m))
+          case Min =>
+            padLeft2ImplFixed(m, optDim, min(m))
           case Mean =>
             padLeft2ImplFixed(
               m,
@@ -301,7 +324,8 @@ object CanPadLeft {
               m,
               optDim,
               convert(median(convert(m.toDenseVector, Double)), T))
-          case Value(n: T) => padLeft2ImplFixed(m, optDim, n)
+          case Value(n: T) =>
+            padLeft2ImplFixed(m, optDim, n)
 
           case Wrap =>
             throw new IllegalArgumentException(

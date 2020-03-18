@@ -82,7 +82,8 @@ private[http] final class BodyPartParser(
     if (!terminated) {
       try state(input)
       catch {
-        case e: ParsingException ⇒ fail(e.info)
+        case e: ParsingException ⇒
+          fail(e.info)
         case NotEnoughDataException ⇒
           // we are missing a try/catch{continue} wrapper somewhere
           throw new IllegalStateException(
@@ -160,8 +161,10 @@ private[http] final class BodyPartParser(
       cth: Option[`Content-Type`] = None): StateResult = {
     def contentType =
       cth match {
-        case Some(x) ⇒ x.contentType
-        case None ⇒ defaultContentType
+        case Some(x) ⇒
+          x.contentType
+        case None ⇒
+          defaultContentType
       }
 
     var lineEnd = 0
@@ -173,7 +176,8 @@ private[http] final class BodyPartParser(
         } else
           BoundaryHeader
       } catch {
-        case NotEnoughDataException ⇒ null
+        case NotEnoughDataException ⇒
+          null
       }
     resultHeader match {
       case null ⇒
@@ -232,7 +236,8 @@ private[http] final class BodyPartParser(
                 HttpEntity.IndefiniteLength(
                   ct,
                   entityParts.collect {
-                    case EntityPart(data) ⇒ data
+                    case EntityPart(data) ⇒
+                      data
                   })))
           emit(bytes)
       },
@@ -300,9 +305,12 @@ private[http] final class BodyPartParser(
   def continue(input: ByteString, offset: Int)(
       next: (ByteString, Int) ⇒ StateResult): StateResult = {
     state = math.signum(offset - input.length) match {
-      case -1 ⇒ more ⇒ next(input ++ more, offset)
-      case 0 ⇒ next(_, 0)
-      case 1 ⇒ throw new IllegalStateException
+      case -1 ⇒
+        more ⇒ next(input ++ more, offset)
+      case 0 ⇒
+        next(_, 0)
+      case 1 ⇒
+        throw new IllegalStateException
     }
     done()
   }

@@ -91,14 +91,16 @@ final class CookedReader(
 
   def snapshot(pathConstraints: Option[Set[CPath]]): Block = {
     val groupedPaths = metadata.valueOr(throw _).segments.groupBy {
-      case (segId, _) => segId.cpath
+      case (segId, _) =>
+        segId.cpath
     }
 
     val refConstraints = pathConstraints map {
       _.flatMap { path =>
         val tpes = groupedPaths.get(path) map {
           _.map {
-            case (segId, _) => segId.ctype
+            case (segId, _) =>
+              segId.ctype
           }
         } getOrElse {
           Array.empty[CType]
@@ -141,7 +143,8 @@ final class CookedReader(
 
   def structure: Iterable[ColumnRef] =
     metadata.valueOr(throw _).segments map {
-      case (segId, _) => ColumnRef(segId.cpath, segId.ctype)
+      case (segId, _) =>
+        ColumnRef(segId.cpath, segId.ctype)
     }
 
   def metadata: Validation[IOException, CookedBlockMetadata] = {

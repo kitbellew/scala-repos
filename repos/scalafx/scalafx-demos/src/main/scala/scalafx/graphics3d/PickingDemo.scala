@@ -120,7 +120,8 @@ object PickingDemo extends JFXApp {
             x = p.x + n.translateX(),
             y = p.y + n.translateY(),
             z = p.z + n.translateZ())
-        case None => println("Picked nothing.")
+        case None =>
+          println("Picked nothing.")
       }
     }
 

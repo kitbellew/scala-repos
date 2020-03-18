@@ -42,7 +42,8 @@ class DAGSchedulerEventProcessLoopTester(dagScheduler: DAGScheduler)
       // Forward event to `onReceive` directly to avoid processing event asynchronously.
       onReceive(event)
     } catch {
-      case NonFatal(e) => onError(e)
+      case NonFatal(e) =>
+        onError(e)
     }
   }
 
@@ -845,7 +846,8 @@ class DAGSchedulerSuite
             assert(
               reason.getMessage.contains(
                 "ResultStage 1 () has failed the maximum"))
-          case other => fail(s"expected JobFailed, not $other")
+          case other =>
+            fail(s"expected JobFailed, not $other")
         }
       }
     }
@@ -2426,8 +2428,10 @@ class DAGSchedulerSuite
           task.initialAccumulators.map { a =>
             a.toInfo(Some(a.zero), None)
           }
-        case ef: ExceptionFailure => ef.accumUpdates
-        case _                    => Seq.empty[AccumulableInfo]
+        case ef: ExceptionFailure =>
+          ef.accumUpdates
+        case _ =>
+          Seq.empty[AccumulableInfo]
       }
     CompletionEvent(
       task,

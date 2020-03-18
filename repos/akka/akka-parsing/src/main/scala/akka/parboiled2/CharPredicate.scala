@@ -30,8 +30,10 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
 
   def asMaskBased: MaskBased =
     this match {
-      case x: MaskBased ⇒ x
-      case _ ⇒ sys.error("CharPredicate is not MaskBased")
+      case x: MaskBased ⇒
+        x
+      case _ ⇒
+        sys.error("CharPredicate is not MaskBased")
     }
 
   def ++(that: CharPredicate): CharPredicate
@@ -48,9 +50,12 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
 
   def negated: CharPredicate =
     this match {
-      case Empty ⇒ All
-      case All ⇒ Empty
-      case x ⇒ from(c ⇒ !x(c))
+      case Empty ⇒
+        All
+      case All ⇒
+        Empty
+      case x ⇒
+        from(c ⇒ !x(c))
     }
 
   def matchesAny(string: String): Boolean = {
@@ -103,14 +108,18 @@ sealed abstract class CharPredicate extends (Char ⇒ Boolean) {
 
   def firstMatch(string: String): Option[Char] =
     indexOfFirstMatch(string) match {
-      case -1 ⇒ None
-      case ix ⇒ Some(string charAt ix)
+      case -1 ⇒
+        None
+      case ix ⇒
+        Some(string charAt ix)
     }
 
   def firstMismatch(string: String): Option[Char] =
     indexOfFirstMismatch(string) match {
-      case -1 ⇒ None
-      case ix ⇒ Some(string charAt ix)
+      case -1 ⇒
+        None
+      case ix ⇒
+        Some(string charAt ix)
     }
 
   protected def or(that: Char ⇒ Boolean): CharPredicate =
@@ -150,8 +159,10 @@ object CharPredicate {
 
   def from(predicate: Char ⇒ Boolean): CharPredicate =
     predicate match {
-      case x: CharPredicate ⇒ x
-      case x ⇒ General(x)
+      case x: CharPredicate ⇒
+        x
+      case x ⇒
+        General(x)
     }
 
   def apply(magnets: ApplyMagnet*): CharPredicate =
@@ -177,8 +188,10 @@ object CharPredicate {
             else
               rec(ix + 1, result ++ chars(ix))
           new ApplyMagnet(rec(0, Empty))
-        case r: NumericRange[Char] ⇒ new ApplyMagnet(new RangeBased(r))
-        case _ ⇒ new ApplyMagnet(new ArrayBased(chars.toArray))
+        case r: NumericRange[Char] ⇒
+          new ApplyMagnet(new RangeBased(r))
+        case _ ⇒
+          new ApplyMagnet(new ArrayBased(chars.toArray))
       }
   }
 
@@ -202,10 +215,14 @@ object CharPredicate {
 
     def ++(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case _ if this == Empty ⇒ that
-        case MaskBased(low, high) ⇒ MaskBased(lowMask | low, highMask | high)
-        case _ ⇒ this or that
+        case Empty ⇒
+          this
+        case _ if this == Empty ⇒
+          that
+        case MaskBased(low, high) ⇒
+          MaskBased(lowMask | low, highMask | high)
+        case _ ⇒
+          this or that
       }
 
     def ++(chars: Seq[Char]): CharPredicate =
@@ -214,16 +231,22 @@ object CharPredicate {
           new ArrayBased(chars.toArray) ++ new ArrayBased(toArray)
         case (MaskBased(low, high), c) if c < 64 ⇒
           MaskBased(low | 1L << c, high)
-        case (MaskBased(low, high), c) ⇒ MaskBased(low, high | 1L << c)
-        case (x, _) ⇒ x // once the fold acc is not a MaskBased we are done
+        case (MaskBased(low, high), c) ⇒
+          MaskBased(low, high | 1L << c)
+        case (x, _) ⇒
+          x // once the fold acc is not a MaskBased we are done
       }
 
     def --(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case _ if this == Empty ⇒ this
-        case MaskBased(low, high) ⇒ MaskBased(lowMask & ~low, highMask & ~high)
-        case _ ⇒ this andNot that
+        case Empty ⇒
+          this
+        case _ if this == Empty ⇒
+          this
+        case MaskBased(low, high) ⇒
+          MaskBased(lowMask & ~low, highMask & ~high)
+        case _ ⇒
+          this andNot that
       }
 
     def --(chars: Seq[Char]): CharPredicate =
@@ -233,18 +256,24 @@ object CharPredicate {
             this andNot new ArrayBased(chars.toArray)
           case (MaskBased(low, high), c) if c < 64 ⇒
             MaskBased(low & ~(1L << c), high)
-          case (MaskBased(low, high), c) ⇒ MaskBased(low, high & ~(1L << c))
-          case (x, _) ⇒ x // once the fold acc is not a MaskBased we are done
+          case (MaskBased(low, high), c) ⇒
+            MaskBased(low, high & ~(1L << c))
+          case (x, _) ⇒
+            x // once the fold acc is not a MaskBased we are done
         }
       } else
         this
 
     def intersect(that: CharPredicate) =
       that match {
-        case Empty ⇒ Empty
-        case _ if this == Empty ⇒ Empty
-        case MaskBased(low, high) ⇒ MaskBased(lowMask & low, highMask & high)
-        case _ ⇒ this and that
+        case Empty ⇒
+          Empty
+        case _ if this == Empty ⇒
+          Empty
+        case MaskBased(low, high) ⇒
+          MaskBased(lowMask & low, highMask & high)
+        case _ ⇒
+          this and that
       }
 
     def size: Int =
@@ -285,8 +314,10 @@ object CharPredicate {
 
     def ++(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case _ ⇒ this or that
+        case Empty ⇒
+          this
+        case _ ⇒
+          this or that
       }
 
     def ++(other: Seq[Char]): CharPredicate =
@@ -297,8 +328,10 @@ object CharPredicate {
 
     def --(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case _ ⇒ this andNot that
+        case Empty ⇒
+          this
+        case _ ⇒
+          this andNot that
       }
 
     def --(other: Seq[Char]): CharPredicate =
@@ -309,8 +342,10 @@ object CharPredicate {
 
     def intersect(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ Empty
-        case _ ⇒ this and that
+        case Empty ⇒
+          Empty
+        case _ ⇒
+          this and that
       }
 
     override def toString(): String =
@@ -328,9 +363,12 @@ object CharPredicate {
 
     def ++(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case x: ArrayBased ⇒ this ++ x.chars
-        case _ ⇒ this or that
+        case Empty ⇒
+          this
+        case x: ArrayBased ⇒
+          this ++ x.chars
+        case _ ⇒
+          this or that
       }
 
     def ++(other: Seq[Char]): CharPredicate =
@@ -341,9 +379,12 @@ object CharPredicate {
 
     def --(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case x: ArrayBased ⇒ this -- x.chars
-        case _ ⇒ this andNot that
+        case Empty ⇒
+          this
+        case x: ArrayBased ⇒
+          this -- x.chars
+        case _ ⇒
+          this andNot that
       }
 
     def --(other: Seq[Char]): ArrayBased =
@@ -355,9 +396,12 @@ object CharPredicate {
 
     def intersect(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ Empty
-        case x: ArrayBased ⇒ new ArrayBased(chars.intersect(x.chars))
-        case _ ⇒ this and that
+        case Empty ⇒
+          Empty
+        case x: ArrayBased ⇒
+          new ArrayBased(chars.intersect(x.chars))
+        case _ ⇒
+          this and that
       }
 
     override def toString(): String =
@@ -370,9 +414,12 @@ object CharPredicate {
 
     def ++(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
-        case General(thatPredicate) ⇒ from(c ⇒ predicate(c) || thatPredicate(c))
-        case _ ⇒ from(c ⇒ predicate(c) || that(c))
+        case Empty ⇒
+          this
+        case General(thatPredicate) ⇒
+          from(c ⇒ predicate(c) || thatPredicate(c))
+        case _ ⇒
+          from(c ⇒ predicate(c) || that(c))
       }
 
     def ++(chars: Seq[Char]): CharPredicate =
@@ -384,10 +431,12 @@ object CharPredicate {
 
     def --(that: CharPredicate): CharPredicate =
       that match {
-        case Empty ⇒ this
+        case Empty ⇒
+          this
         case General(thatPredicate) ⇒
           from(c ⇒ predicate(c) && !thatPredicate(c))
-        case _ ⇒ from(c ⇒ predicate(c) && !that(c))
+        case _ ⇒
+          from(c ⇒ predicate(c) && !that(c))
       }
 
     def --(chars: Seq[Char]): CharPredicate =
@@ -399,9 +448,12 @@ object CharPredicate {
 
     def intersect(that: CharPredicate) =
       that match {
-        case Empty ⇒ Empty
-        case General(thatPredicate) ⇒ from(c ⇒ predicate(c) && that(c))
-        case _ ⇒ this and that
+        case Empty ⇒
+          Empty
+        case General(thatPredicate) ⇒
+          from(c ⇒ predicate(c) && that(c))
+        case _ ⇒
+          this and that
       }
 
     override def toString(): String =

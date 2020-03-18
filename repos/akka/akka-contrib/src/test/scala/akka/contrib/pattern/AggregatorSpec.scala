@@ -87,9 +87,12 @@ class AccountBalanceRetriever extends Actor with Aggregator {
 
     if (types.size > 0)
       types foreach {
-        case Checking ⇒ fetchCheckingAccountsBalance()
-        case Savings ⇒ fetchSavingsAccountsBalance()
-        case MoneyMarket ⇒ fetchMoneyMarketAccountsBalance()
+        case Checking ⇒
+          fetchCheckingAccountsBalance()
+        case Savings ⇒
+          fetchSavingsAccountsBalance()
+        case MoneyMarket ⇒
+          fetchMoneyMarketAccountsBalance()
       }
     else
       collectBalances() // Empty type list yields empty response
@@ -97,7 +100,8 @@ class AccountBalanceRetriever extends Actor with Aggregator {
     context.system.scheduler.scheduleOnce(1.second, self, TimedOut)
     //#expect-timeout
     expect {
-      case TimedOut ⇒ collectBalances(force = true)
+      case TimedOut ⇒
+        collectBalances(force = true)
     }
     //#expect-timeout
 
@@ -154,7 +158,8 @@ final case class FinalResponse(qualifiedValues: List[String])
 class ChainingSample extends Actor with Aggregator {
 
   expectOnce {
-    case InitialRequest(name) ⇒ new MultipleResponseHandler(sender(), name)
+    case InitialRequest(name) ⇒
+      new MultipleResponseHandler(sender(), name)
   }
 
   class MultipleResponseHandler(originalSender: ActorRef, propName: String) {
@@ -173,7 +178,8 @@ class ChainingSample extends Actor with Aggregator {
         values += value
         if (values.size > 3)
           processList()
-      case TimedOut ⇒ processList()
+      case TimedOut ⇒
+        processList()
     }
 
     def processList() {
@@ -182,7 +188,8 @@ class ChainingSample extends Actor with Aggregator {
       if (values.size > 0) {
         context.actorSelection("/user/evaluator") ! values.toList
         expectOnce {
-          case EvaluationResults(name, eval) ⇒ processFinal(eval)
+          case EvaluationResults(name, eval) ⇒
+            processFinal(eval)
         }
       } else
         processFinal(List.empty[Int])
@@ -239,8 +246,10 @@ class WorkListSpec extends FunSuiteLike {
   test("Processing empty WorkList") {
     // ProcessAndRemove something in the middle
     val processed = workList process {
-      case TestEntry(9) ⇒ true
-      case _ ⇒ false
+      case TestEntry(9) ⇒
+        true
+      case _ ⇒
+        false
     }
     assert(!processed)
   }
@@ -278,22 +287,28 @@ class WorkListSpec extends FunSuiteLike {
     // ProcessAndRemove something in the middle
     assert(
       workList process {
-        case TestEntry(2) ⇒ true
-        case _ ⇒ false
+        case TestEntry(2) ⇒
+          true
+        case _ ⇒
+          false
       })
 
     // ProcessAndRemove the head
     assert(
       workList process {
-        case TestEntry(0) ⇒ true
-        case _ ⇒ false
+        case TestEntry(0) ⇒
+          true
+        case _ ⇒
+          false
       })
 
     // ProcessAndRemove the tail
     assert(
       workList process {
-        case TestEntry(3) ⇒ true
-        case _ ⇒ false
+        case TestEntry(3) ⇒
+          true
+        case _ ⇒
+          false
       })
   }
 
@@ -307,8 +322,10 @@ class WorkListSpec extends FunSuiteLike {
   test("Process permanent entry") {
     assert(
       workList process {
-        case TestEntry(4) ⇒ true
-        case _ ⇒ false
+        case TestEntry(4) ⇒
+          true
+        case _ ⇒
+          false
       })
   }
 
@@ -326,16 +343,20 @@ class WorkListSpec extends FunSuiteLike {
 
     val processed =
       workList process {
-        case TestEntry(2) ⇒ true
-        case _ ⇒ false
+        case TestEntry(2) ⇒
+          true
+        case _ ⇒
+          false
       }
 
     assert(!processed)
 
     val processed2 =
       workList process {
-        case TestEntry(5) ⇒ true
-        case _ ⇒ false
+        case TestEntry(5) ⇒
+          true
+        case _ ⇒
+          false
       }
 
     assert(!processed2)

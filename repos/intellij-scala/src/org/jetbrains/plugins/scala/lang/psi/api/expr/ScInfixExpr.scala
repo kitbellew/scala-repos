@@ -20,15 +20,19 @@ trait ScInfixExpr extends ScExpression with ScSugarCallExpr {
     if (children.length < 2)
       throw new RuntimeException("Wrong infix expression: " + getText)
     children.apply(1) match {
-      case re: ScReferenceExpression => re
-      case _                         => throw new RuntimeException("Wrong infix expression: " + getText)
+      case re: ScReferenceExpression =>
+        re
+      case _ =>
+        throw new RuntimeException("Wrong infix expression: " + getText)
     }
   }
 
   def typeArgs: Option[ScTypeArgs] = {
     findChildrenByClassScala(classOf[ScTypeArgs]) match {
-      case Array(tpArg: ScTypeArgs) => Some(tpArg)
-      case _                        => None
+      case Array(tpArg: ScTypeArgs) =>
+        Some(tpArg)
+      case _ =>
+        None
     }
   }
 

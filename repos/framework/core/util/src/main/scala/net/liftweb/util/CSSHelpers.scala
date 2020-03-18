@@ -94,13 +94,18 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
           case c =>
             content append c
             c.toLower match {
-              case 'u' if (seqDone == 0) => seqDone = 1;
-              case 'r' if (seqDone == 1) => seqDone = 2;
-              case 'l' if (seqDone == 2) => seqDone = 3;
+              case 'u' if (seqDone == 0) =>
+                seqDone = 1;
+              case 'r' if (seqDone == 1) =>
+                seqDone = 2;
+              case 'l' if (seqDone == 2) =>
+                seqDone = 3;
               case ' ' | '\t' | '\n' | '\r' if (seqDone == 3 || seqDone == 4) =>
                 seqDone = 4
-              case '(' if (seqDone == 3 || seqDone == 4) => seqDone = 5
-              case _                                     => seqDone = 0
+              case '(' if (seqDone == 3 || seqDone == 4) =>
+                seqDone = 5
+              case _ =>
+                seqDone = 0
             }
             seqDone == 5;
         }

@@ -87,7 +87,8 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
           }
           children
         } catch {
-          case e: IndexNotReadyException => new util.ArrayList[TreeElement]()
+          case e: IndexNotReadyException =>
+            new util.ArrayList[TreeElement]()
         }
       case valElement: ScalaValueStructureViewElement =>
         def tryTupledId(psiElement: PsiElement) =
@@ -96,7 +97,8 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
               TestNodeProvider.extractUTest(
                 testTupleDefinition,
                 testTupleDefinition.getProject)
-            case _ => new util.ArrayList[TreeElement]()
+            case _ =>
+              new util.ArrayList[TreeElement]()
           }
 
         valElement.getValue match {
@@ -104,14 +106,17 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
             valDef.getLastChild match {
               case testCall: ScMethodCall =>
                 TestNodeProvider.extractUTest(testCall, testCall.getProject)
-              case _ => tryTupledId(valElement.element)
+              case _ =>
+                tryTupledId(valElement.element)
             }
           case identifier: LeafPsiElement
               if identifier.getElementType == ScalaTokenTypes.tIDENTIFIER =>
             tryTupledId(identifier)
-          case _ => new util.ArrayList[TreeElement]()
+          case _ =>
+            new util.ArrayList[TreeElement]()
         }
-      case _ => new util.ArrayList[TreeElement]()
+      case _ =>
+        new util.ArrayList[TreeElement]()
     }
   }
 }
@@ -207,10 +212,12 @@ object TestNodeProvider {
   private def getInnerExprs(expr: PsiElement) = {
     (
       expr match {
-        case infixExpr: ScInfixExpr => expr.getLastChild.getChildren
+        case infixExpr: ScInfixExpr =>
+          expr.getLastChild.getChildren
         case methodCall: ScMethodCall =>
           methodCall.args.getLastChild.getChildren
-        case _ => Array[ScExpression]()
+        case _ =>
+          Array[ScExpression]()
       }
     ).filter(_.isInstanceOf[ScExpression]).map(_.asInstanceOf[ScExpression])
   }
@@ -222,7 +229,8 @@ object TestNodeProvider {
         args.getChildren.length == 1 && lastChild
           .isInstanceOf[ScReferenceExpression] &&
         checkRefExpr(lastChild.asInstanceOf[ScReferenceExpression], "pending")
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -267,7 +275,8 @@ object TestNodeProvider {
       paramNames: List[String]*): Boolean = {
     val methodExpr =
       expr.getEffectiveInvokedExpr match {
-        case refExpr: ScReferenceExpression => refExpr
+        case refExpr: ScReferenceExpression =>
+          refExpr
         case otherExpr =>
           otherExpr.findFirstChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
       }
@@ -279,7 +288,8 @@ object TestNodeProvider {
               resolveResult.innerResolveResult match {
                 case Some(innerResult) =>
                   innerResult.getActualElement
-                case None => resolveResult.getElement
+                case None =>
+                  resolveResult.getElement
               }
             funElement.getName == "apply" && funElement
               .isInstanceOf[ScFunctionDefinition] &&
@@ -290,7 +300,8 @@ object TestNodeProvider {
                 .clauses,
               paramNames: _*)
           }
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -303,7 +314,8 @@ object TestNodeProvider {
         clause.parameters.length == names.length && (
           clause.parameters zip names
         ).forall {
-          case (param, name) => param.getType.getCanonicalText == name
+          case (param, name) =>
+            param.getType.getCanonicalText == name
         }
     }
   }
@@ -340,8 +352,10 @@ object TestNodeProvider {
     funDef
       .orElse(
         refExpr.resolve() match {
-          case funDef: ScFunctionDefinition => Some(funDef)
-          case _                            => None
+          case funDef: ScFunctionDefinition =>
+            Some(funDef)
+          case _ =>
+            None
         })
       .exists(funDef => {
         funDef.getName == funName &&
@@ -358,14 +372,16 @@ object TestNodeProvider {
           Some(refExpr)
         case methodCall: ScMethodCall =>
           methodCall.getEffectiveInvokedExpr match {
-            case ref: ScReferenceExpression => Some(ref)
+            case ref: ScReferenceExpression =>
+              Some(ref)
             case otherExpr =>
               Option(
                 otherExpr.findFirstChildByType(
                   ScalaElementTypes.REFERENCE_EXPRESSION))
                 .map(_.asInstanceOf[ScReferenceExpression])
           }
-        case _ => None
+        case _ =>
+          None
       }
     ).exists(refExpr =>
       checkRefExpr(
@@ -409,15 +425,18 @@ object TestNodeProvider {
 
   private def checkPendingInfixExpr(expr: ScInfixExpr): Boolean = {
     expr.getLastChild match {
-      case expr: ScExpression => checkPendingExpr(expr)
-      case _                  => false
+      case expr: ScExpression =>
+        checkPendingExpr(expr)
+      case _ =>
+        false
     }
   }
 
   private def checkPendingExpr(expr: ScExpression): Boolean = {
     Option(
       expr match {
-        case refExpr: ScReferenceExpression => refExpr
+        case refExpr: ScReferenceExpression =>
+          refExpr
         case _ =>
           expr.findLastChildByType(ScalaElementTypes.REFERENCE_EXPRESSION)
       }).exists(checkRefExpr(_, "pending"))
@@ -432,9 +451,11 @@ object TestNodeProvider {
           .resolve() match {
           case pattern: ScReferencePattern if pattern.getName == "ignore" =>
             true
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -444,7 +465,8 @@ object TestNodeProvider {
         checkScInfixExpr(infixExpr, "$greater$greater", None) ||
           checkScInfixExpr(infixExpr, "$bang", None) ||
           checkScInfixExpr(infixExpr, "in", None)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -501,7 +523,8 @@ object TestNodeProvider {
             List(
               "org.specs2.control.ImplicitParameters.ImplicitParam1",
               "org.specs2.control.ImplicitParameters.ImplicitParam2"))
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -771,7 +794,8 @@ object TestNodeProvider {
                    .isInstanceOf[ScMethodCall])
               yield extractUTestInner(methodExpr, project)
           ).filter(_.isDefined).map(_.get).toList
-        case _ => new util.ArrayList[TreeElement]
+        case _ =>
+          new util.ArrayList[TreeElement]
       }
     } else
       new util.ArrayList[TreeElement]()
@@ -782,7 +806,8 @@ object TestNodeProvider {
       case inifxExpr: ScInfixExpr =>
         checkScInfixExpr(inifxExpr, "$minus", List("java.lang.Object")) ||
           checkScInfixExpr(inifxExpr, "$minus", List())
-      case _ => false
+      case _ =>
+        false
     }
 
   def isUTestApplyCall(psiElement: PsiElement): Boolean =
@@ -796,17 +821,20 @@ object TestNodeProvider {
               funDef.getName == "TestableSymbol" && funDef.isSynthetic && checkClauses(
                 funDef.getParameterList.clauses,
                 List("scala.Symbol"))
-            case _ => false
+            case _ =>
+              false
           }
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   def isUTestSuiteApplyCall(psiElement: PsiElement): Boolean =
     psiElement match {
       case methodCall: ScMethodCall =>
         checkScMethodCallApply(methodCall, "TestSuite$", List("void"))
-      case _ => false
+      case _ =>
+        false
     }
 
   private def findListOfPatternsWithIndex(
@@ -817,7 +845,8 @@ object TestNodeProvider {
       currentElement.getParent match {
         case parent if parentType.isInstance(parent) =>
           Some(parent.asInstanceOf[T])
-        case _ => None
+        case _ =>
+          None
       }
     }
 
@@ -831,7 +860,8 @@ object TestNodeProvider {
         val index =
           patternsImpl.patterns.zipWithIndex
             .find {
-              case (pat, _) => pat == refPattern
+              case (pat, _) =>
+                pat == refPattern
             }
             .get
             ._2
@@ -844,7 +874,8 @@ object TestNodeProvider {
               case parent: ScPatternDefinition if parent.bindings.size == 1 =>
                 Option(
                   PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
-              case _ => None
+              case _ =>
+                None
             })
           .map((_, None))
     }
@@ -863,15 +894,18 @@ object TestNodeProvider {
                 if size == tuple.exprs.size =>
               //left-hand is a tuple
               tuple.exprs(index)
-            case _ => null
+            case _ =>
+              null
           }
         ) match {
           case suite: ScMethodCall
               if TestNodeProvider.isUTestSuiteApplyCall(suite) =>
             Some(suite) //getTestSuiteName(suite).orNull
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 }
 

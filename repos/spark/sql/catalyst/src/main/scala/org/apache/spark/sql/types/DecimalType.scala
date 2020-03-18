@@ -79,7 +79,8 @@ case class DecimalType(precision: Int, scale: Int) extends FractionalType {
         (precision - scale) >= (dt.precision - dt.scale) && scale >= dt.scale
       case dt: IntegralType =>
         isWiderThan(DecimalType.forType(dt))
-      case _ => false
+      case _ =>
+        false
     }
 
   /**
@@ -92,7 +93,8 @@ case class DecimalType(precision: Int, scale: Int) extends FractionalType {
         (precision - scale) <= (dt.precision - dt.scale) && scale <= dt.scale
       case dt: IntegralType =>
         isTighterThan(DecimalType.forType(dt))
-      case _ => false
+      case _ =>
+        false
     }
 
   /**
@@ -128,12 +130,18 @@ object DecimalType extends AbstractDataType {
 
   private[sql] def forType(dataType: DataType): DecimalType =
     dataType match {
-      case ByteType    => ByteDecimal
-      case ShortType   => ShortDecimal
-      case IntegerType => IntDecimal
-      case LongType    => LongDecimal
-      case FloatType   => FloatDecimal
-      case DoubleType  => DoubleDecimal
+      case ByteType =>
+        ByteDecimal
+      case ShortType =>
+        ShortDecimal
+      case IntegerType =>
+        IntDecimal
+      case LongType =>
+        LongDecimal
+      case FloatType =>
+        FloatDecimal
+      case DoubleType =>
+        DoubleDecimal
     }
 
   private[sql] def bounded(precision: Int, scale: Int): DecimalType = {
@@ -156,8 +164,10 @@ object DecimalType extends AbstractDataType {
   private[sql] object Expression {
     def unapply(e: Expression): Option[(Int, Int)] =
       e.dataType match {
-        case t: DecimalType => Some((t.precision, t.scale))
-        case _              => None
+        case t: DecimalType =>
+          Some((t.precision, t.scale))
+        case _ =>
+          None
       }
   }
 
@@ -168,7 +178,8 @@ object DecimalType extends AbstractDataType {
     dt match {
       case t: DecimalType =>
         t.precision <= Decimal.MAX_INT_DIGITS
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -179,7 +190,8 @@ object DecimalType extends AbstractDataType {
     dt match {
       case t: DecimalType =>
         t.precision <= Decimal.MAX_LONG_DIGITS
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -190,7 +202,8 @@ object DecimalType extends AbstractDataType {
     dt match {
       case t: DecimalType =>
         t.precision > Decimal.MAX_LONG_DIGITS
-      case _ => false
+      case _ =>
+        false
     }
   }
 

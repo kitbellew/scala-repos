@@ -38,7 +38,8 @@ final class DList[A] private[scalaz] (f: IList[A] => Trampoline[IList[A]]) {
   def uncons[B](z: => B, f: (A, DList[A]) => B): B =
     (
       apply(IList()) >>= {
-        case INil() => return_(z)
+        case INil() =>
+          return_(z)
         case ICons(x, xs) =>
           val r = f(x, fromIList(xs))
           return_(r)
@@ -98,7 +99,8 @@ object DList extends DListInstances {
   def unfoldr[A, B](b: B, f: B => Option[(A, B)]): DList[A] = {
     def go(b: B, f: B => Option[(A, B)]): Trampoline[DList[A]] =
       f(b) map {
-        case (a, c) => suspend(go(c, f)) map (a +: _)
+        case (a, c) =>
+          suspend(go(c, f)) map (a +: _)
       } getOrElse return_(DList())
     go(b, f).run
   }

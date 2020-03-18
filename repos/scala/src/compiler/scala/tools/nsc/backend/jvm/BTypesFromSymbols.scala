@@ -166,8 +166,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         methodBTypeFromMethodType(
           transformedType(mt),
           isConstructor = false).toASMType
-      case c @ Constant(sym: Symbol)   => staticHandleFromSymbol(sym)
-      case c @ Constant(value: String) => value
+      case c @ Constant(sym: Symbol) =>
+        staticHandleFromSymbol(sym)
+      case c @ Constant(value: String) =>
+        value
       case c @ Constant(value) if c.isNonUnitAnyVal =>
         c.value.asInstanceOf[AnyRef]
       case _ =>
@@ -267,9 +269,12 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         tp match {
           case ThisType(ArrayClass) =>
             ObjectRef // was introduced in 9b17332f11 to fix SI-999, but this code is not reached in its test, or any other test
-          case ThisType(sym)      => classBTypeFromSymbol(sym)
-          case SingleType(_, sym) => primitiveOrClassToBType(sym)
-          case ConstantType(_)    => typeToBType(t.underlying)
+          case ThisType(sym) =>
+            classBTypeFromSymbol(sym)
+          case SingleType(_, sym) =>
+            primitiveOrClassToBType(sym)
+          case ConstantType(_) =>
+            typeToBType(t.underlying)
           case RefinedType(parents, _) =>
             parents
               .map(typeToBType(_).asClassBType)
@@ -292,8 +297,10 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // Additional interface parents based on annotations and other cues
     def newParentForAnnotation(ann: AnnotationInfo): Option[Type] =
       ann.symbol match {
-        case RemoteAttr => Some(RemoteInterfaceClass.tpe)
-        case _          => None
+        case RemoteAttr =>
+          Some(RemoteInterfaceClass.tpe)
+        case _ =>
+          None
       }
 
     // SI-9393: java annotations are interfaces, but the classfile / java source parsers make them look like classes.

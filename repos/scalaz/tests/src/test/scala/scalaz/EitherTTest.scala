@@ -118,11 +118,14 @@ object EitherTTest extends SpecLite {
       def filterComp =
         brokenMethod
           .filter {
-            case (abc, "Success") => true
-            case _                => false
+            case (abc, "Success") =>
+              true
+            case _ =>
+              false
           }
           .map {
-            case (abc, "Success") => "yay"
+            case (abc, "Success") =>
+              "yay"
           }
 
       for {

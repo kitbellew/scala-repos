@@ -41,7 +41,8 @@ final case class Metric private[metrics] (
             average = Some(avg :+ latest.value.doubleValue))
         case None if latest.average.isDefined ⇒
           copy(value = latest.value, average = latest.average)
-        case _ ⇒ copy(value = latest.value)
+        case _ ⇒
+          copy(value = latest.value)
       }
     else
       this
@@ -51,8 +52,10 @@ final case class Metric private[metrics] (
     */
   def smoothValue: Double =
     average match {
-      case Some(avg) ⇒ avg.value
-      case None ⇒ value.doubleValue
+      case Some(avg) ⇒
+        avg.value
+      case None ⇒
+        value.doubleValue
     }
 
   /**
@@ -68,8 +71,10 @@ final case class Metric private[metrics] (
   override def hashCode = name.##
   override def equals(obj: Any) =
     obj match {
-      case other: Metric ⇒ sameAs(other)
-      case _ ⇒ false
+      case other: Metric ⇒
+        sameAs(other)
+      case _ ⇒
+        false
     }
 
 }
@@ -101,14 +106,18 @@ object Metric extends MetricNumericConverter {
       value: Try[Number],
       decayFactor: Option[Double]): Option[Metric] =
     value match {
-      case Success(v) ⇒ create(name, v, decayFactor)
-      case Failure(_) ⇒ None
+      case Success(v) ⇒
+        create(name, v, decayFactor)
+      case Failure(_) ⇒
+        None
     }
 
   def createEWMA(value: Double, decayFactor: Option[Double]): Option[EWMA] =
     decayFactor match {
-      case Some(alpha) ⇒ Some(EWMA(value, alpha))
-      case None ⇒ None
+      case Some(alpha) ⇒
+        Some(EWMA(value, alpha))
+      case None ⇒
+        None
     }
 
 }
@@ -170,7 +179,8 @@ object StandardMetrics {
       case HeapMemory(address, timestamp, used, committed, max) ⇒
         // note that above extractor returns tuple
         HeapMemory(address, timestamp, used, committed, max)
-      case _ ⇒ null
+      case _ ⇒
+        null
     }
 
   /**
@@ -240,7 +250,8 @@ object StandardMetrics {
           cpuCombined,
           cpuStolen,
           processors)
-      case _ ⇒ null
+      case _ ⇒
+        null
     }
 
   /**
@@ -298,8 +309,10 @@ private[metrics] trait MetricNumericConverter {
     */
   def defined(value: Number): Boolean =
     convertNumber(value) match {
-      case Left(a) ⇒ a >= 0
-      case Right(b) ⇒ !(b < 0.0 || b.isNaN || b.isInfinite)
+      case Left(a) ⇒
+        a >= 0
+      case Right(b) ⇒
+        !(b < 0.0 || b.isNaN || b.isInfinite)
     }
 
   /**
@@ -307,13 +320,20 @@ private[metrics] trait MetricNumericConverter {
     */
   def convertNumber(from: Any): Either[Long, Double] =
     from match {
-      case n: Int ⇒ Left(n)
-      case n: Long ⇒ Left(n)
-      case n: Double ⇒ Right(n)
-      case n: Float ⇒ Right(n)
-      case n: BigInt ⇒ Left(n.longValue)
-      case n: BigDecimal ⇒ Right(n.doubleValue)
-      case x ⇒ throw new IllegalArgumentException(s"Not a number [$x]")
+      case n: Int ⇒
+        Left(n)
+      case n: Long ⇒
+        Left(n)
+      case n: Double ⇒
+        Right(n)
+      case n: Float ⇒
+        Right(n)
+      case n: BigInt ⇒
+        Left(n.longValue)
+      case n: BigDecimal ⇒
+        Right(n.doubleValue)
+      case x ⇒
+        throw new IllegalArgumentException(s"Not a number [$x]")
     }
 
 }
@@ -379,7 +399,8 @@ final case class NodeMetrics(
 
   def metric(key: String): Option[Metric] =
     metrics.collectFirst {
-      case m if m.name == key ⇒ m
+      case m if m.name == key ⇒
+        m
     }
 
   /**
@@ -396,8 +417,10 @@ final case class NodeMetrics(
   override def hashCode = address.##
   override def equals(obj: Any) =
     obj match {
-      case other: NodeMetrics ⇒ sameAs(other)
-      case _ ⇒ false
+      case other: NodeMetrics ⇒
+        sameAs(other)
+      case _ ⇒
+        false
     }
 
 }
@@ -448,7 +471,8 @@ private[metrics] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
         copy(nodes = nodes - existingNodeMetrics + (
           existingNodeMetrics update newNodeMetrics
         ))
-      case None ⇒ copy(nodes = nodes + newNodeMetrics)
+      case None ⇒
+        copy(nodes = nodes + newNodeMetrics)
     }
 
   /**

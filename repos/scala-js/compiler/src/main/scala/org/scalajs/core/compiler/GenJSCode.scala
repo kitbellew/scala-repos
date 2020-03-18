@@ -195,9 +195,12 @@ abstract class GenJSCode
 
         def collectClassDefs(tree: Tree): List[ClassDef] = {
           tree match {
-            case EmptyTree            => Nil
-            case PackageDef(_, stats) => stats flatMap collectClassDefs
-            case cd: ClassDef         => cd :: Nil
+            case EmptyTree =>
+              Nil
+            case PackageDef(_, stats) =>
+              stats flatMap collectClassDefs
+            case cd: ClassDef =>
+              cd :: Nil
           }
         }
         val allClassDefs = collectClassDefs(cunit.body)
@@ -335,8 +338,10 @@ abstract class GenJSCode
 
       def gen(tree: Tree): Unit = {
         tree match {
-          case EmptyTree            => ()
-          case Template(_, _, body) => body foreach gen
+          case EmptyTree =>
+            ()
+          case Template(_, _, body) =>
+            body foreach gen
 
           case ValDef(mods, name, tpt, rhs) =>
             () // fields are added via genClassFields()
@@ -359,7 +364,8 @@ abstract class GenJSCode
               exportedSymbols += sym
             }
 
-          case _ => abort("Illegal tree in gen of genClass(): " + tree)
+          case _ =>
+            abort("Illegal tree in gen of genClass(): " + tree)
         }
       }
 
@@ -432,8 +438,10 @@ abstract class GenJSCode
 
       def gen(tree: Tree): Unit = {
         tree match {
-          case EmptyTree            => ()
-          case Template(_, _, body) => body foreach gen
+          case EmptyTree =>
+            ()
+          case Template(_, _, body) =>
+            body foreach gen
 
           case ValDef(mods, name, tpt, rhs) =>
             () // fields are added via genClassFields()
@@ -460,7 +468,8 @@ abstract class GenJSCode
               }
             }
 
-          case _ => abort("Illegal tree in gen of genClass(): " + tree)
+          case _ =>
+            abort("Illegal tree in gen of genClass(): " + tree)
         }
       }
 
@@ -546,9 +555,12 @@ abstract class GenJSCode
       // fill in class info builder
       def gen(tree: Tree): List[js.MethodDef] = {
         tree match {
-          case EmptyTree            => Nil
-          case Template(_, _, body) => body.flatMap(gen)
-          case dd: DefDef           => genMethod(dd).toList
+          case EmptyTree =>
+            Nil
+          case Template(_, _, body) =>
+            body.flatMap(gen)
+          case dd: DefDef =>
+            genMethod(dd).toList
           case _ =>
             abort("Illegal tree in gen of genInterface(): " + tree)
         }
@@ -579,8 +591,10 @@ abstract class GenJSCode
 
       def gen(tree: Tree): List[js.MethodDef] = {
         tree match {
-          case EmptyTree            => Nil
-          case Template(_, _, body) => body.flatMap(gen)
+          case EmptyTree =>
+            Nil
+          case Template(_, _, body) =>
+            body.flatMap(gen)
 
           case dd: DefDef =>
             assert(
@@ -589,7 +603,8 @@ abstract class GenJSCode
             val m = genMethod(dd)
             m.toList
 
-          case _ => abort("Illegal tree in gen of genImplClass(): " + tree)
+          case _ =>
+            abort("Illegal tree in gen of genImplClass(): " + tree)
         }
       }
       val generatedMethods = gen(impl)
@@ -771,7 +786,8 @@ abstract class GenJSCode
           Some(this)
         } else {
           subConstructors.iterator.map(_.get(methodName)).collectFirst {
-            case Some(node) => node
+            case Some(node) =>
+              node
           }
         }
       }
@@ -850,7 +866,8 @@ abstract class GenJSCode
               val beforeSuperCall = stats.takeWhile {
                 case js.ApplyStatic(_, mtd, _) =>
                   !ir.Definitions.isConstructorName(mtd.name)
-                case _ => true
+                case _ =>
+                  true
               }
               val superCallParams = stats
                 .collectFirst {
@@ -866,7 +883,8 @@ abstract class GenJSCode
                 if ir.Definitions.isConstructorName(mtd.name) =>
               zipMap(outputParams, args)(js.Assign(_, _))
 
-            case _ => Nil
+            case _ =>
+              Nil
           }
         }
 
@@ -882,7 +900,8 @@ abstract class GenJSCode
           mkPostPrimaryCtorBodyOnSndCtr(ct, overrideNumRef)
         }
         overrideNumss.zip(bodies).foldRight[js.Tree](js.Skip()) {
-          case ((numBounds, js.Skip()), acc) => acc
+          case ((numBounds, js.Skip()), acc) =>
+            acc
 
           case ((numBounds, body), acc) =>
             val cond = mkOverrideNumsCond(overrideNumRef, numBounds)
@@ -899,10 +918,12 @@ abstract class GenJSCode
               stats.dropWhile {
                 case js.ApplyStatic(_, mtd, _) =>
                   !ir.Definitions.isConstructorName(mtd.name)
-                case _ => true
+                case _ =>
+                  true
               }.tail
 
-            case _ => Nil
+            case _ =>
+              Nil
           }
         }
         js.Block(
@@ -1004,7 +1025,8 @@ abstract class GenJSCode
             // Parameter count resolution
             case js.Match(selector, cases, default) =>
               val newCases = cases.map {
-                case (literals, body) => (literals, transformDispatch(body))
+                case (literals, body) =>
+                  (literals, transformDispatch(body))
               }
               val newDefault = transformDispatch(default)
               js.Match(selector, newCases, newDefault)(tree.tpe)
@@ -1052,8 +1074,10 @@ abstract class GenJSCode
           case js.Block(stats) =>
             stats.exists(_.isInstanceOf[js.JSSuperConstructorCall])
 
-          case _: js.JSSuperConstructorCall => true
-          case _                            => false
+          case _: js.JSSuperConstructorCall =>
+            true
+          case _ =>
+            false
         }
       }
 
@@ -1199,8 +1223,10 @@ abstract class GenJSCode
             mutatedLocalVars := mutable.Set.empty) {
             def isTraitImplForwarder =
               dd.rhs match {
-                case app: Apply => foreignIsImplClass(app.symbol.owner)
-                case _          => false
+                case app: Apply =>
+                  foreignIsImplClass(app.symbol.owner)
+                case _ =>
+                  false
               }
 
             val shouldMarkInline = {
@@ -1346,8 +1372,10 @@ abstract class GenJSCode
         body: js.Tree): js.Tree = {
       val bodyStats =
         body match {
-          case js.Block(stats) => stats
-          case _               => body :: Nil
+          case js.Block(stats) =>
+            stats
+          case _ =>
+            body :: Nil
         }
 
       val (beforeSuper, superCall :: afterSuper) = bodyStats.span(
@@ -1491,9 +1519,12 @@ abstract class GenJSCode
        */
       implicit val pos = tree.pos
       tree match {
-        case js.Block(stats :+ expr)   => js.Block(stats :+ exprToStat(expr))
-        case _: js.Literal | js.This() => js.Skip()
-        case _                         => tree
+        case js.Block(stats :+ expr) =>
+          js.Block(stats :+ exprToStat(expr))
+        case _: js.Literal | js.This() =>
+          js.Skip()
+        case _ =>
+          tree
       }
     }
 
@@ -1562,8 +1593,10 @@ abstract class GenJSCode
         case Return(expr) =>
           js.Return(
             toIRType(expr.tpe) match {
-              case jstpe.NoType => js.Block(genStat(expr), js.Undefined())
-              case _            => genExpr(expr)
+              case jstpe.NoType =>
+                js.Block(genStat(expr), js.Undefined())
+              case _ =>
+                genExpr(expr)
             })
 
         case t: Try =>
@@ -1973,8 +2006,10 @@ abstract class GenJSCode
 
       val finalizerAST =
         genStat(finalizer) match {
-          case js.Skip() => js.EmptyTree
-          case ast       => ast
+          case js.Skip() =>
+            js.EmptyTree
+          case ast =>
+            ast
         }
 
       if (handlerAST == js.EmptyTree && finalizerAST == js.EmptyTree)
@@ -2046,8 +2081,10 @@ abstract class GenJSCode
 
       val cast =
         sym match {
-          case Object_isInstanceOf => false
-          case Object_asInstanceOf => true
+          case Object_isInstanceOf =>
+            false
+          case Object_asInstanceOf =>
+            true
           case _ =>
             abort(
               "Unexpected type application " + fun +
@@ -2225,8 +2262,10 @@ abstract class GenJSCode
           formalArg = encodeLocalSym(formalArgSym)
           if (
             actualArg match {
-              case js.VarRef(`formalArg`) => false
-              case _                      => true
+              case js.VarRef(`formalArg`) =>
+                false
+              case _ =>
+                true
             }
           )
         } yield {
@@ -2244,7 +2283,8 @@ abstract class GenJSCode
       val jump = js.Continue(Some(encodeLabelSym(sym)))
 
       quadruplets match {
-        case Nil => jump
+        case Nil =>
+          jump
 
         case (formalArg, argType, _, actualArg) :: Nil =>
           js.Block(js.Assign(formalArg, actualArg), jump)
@@ -2276,8 +2316,10 @@ abstract class GenJSCode
 
       def isStringMethodFromObject: Boolean =
         sym.name match {
-          case nme.toString_ | nme.equals_ | nme.hashCode_ => true
-          case _                                           => false
+          case nme.toString_ | nme.equals_ | nme.hashCode_ =>
+            true
+          case _ =>
+            false
         }
 
       if (sym.owner == StringClass && !isStringMethodFromObject) {
@@ -2365,15 +2407,22 @@ abstract class GenJSCode
 
       // scalastyle:off disallow.space.before.token
       (from, to) match {
-        case (INT(_), BOOL)   => js.BinaryOp(js.BinaryOp.Num_!=, value, int0)
-        case (LONG, BOOL)     => js.BinaryOp(js.BinaryOp.Long_!=, value, long0)
-        case (FLOAT(_), BOOL) => js.BinaryOp(js.BinaryOp.Num_!=, value, float0)
+        case (INT(_), BOOL) =>
+          js.BinaryOp(js.BinaryOp.Num_!=, value, int0)
+        case (LONG, BOOL) =>
+          js.BinaryOp(js.BinaryOp.Long_!=, value, long0)
+        case (FLOAT(_), BOOL) =>
+          js.BinaryOp(js.BinaryOp.Num_!=, value, float0)
 
-        case (BOOL, INT(_))   => js.If(value, int1, int0)(jstpe.IntType)
-        case (BOOL, LONG)     => js.If(value, long1, long0)(jstpe.LongType)
-        case (BOOL, FLOAT(_)) => js.If(value, float1, float0)(jstpe.FloatType)
+        case (BOOL, INT(_)) =>
+          js.If(value, int1, int0)(jstpe.IntType)
+        case (BOOL, LONG) =>
+          js.If(value, long1, long0)(jstpe.LongType)
+        case (BOOL, FLOAT(_)) =>
+          js.If(value, float1, float0)(jstpe.FloatType)
 
-        case _ => value
+        case _ =>
+          value
       }
       // scalastyle:on disallow.space.before.token
     }
@@ -2424,8 +2473,10 @@ abstract class GenJSCode
          * be able to kick in.
          */
         value match {
-          case JSFunctionToScala(fun, _) => value
-          case _                         => default
+          case JSFunctionToScala(fun, _) =>
+            value
+          case _ =>
+            default
         }
       } else {
         default
@@ -2619,7 +2670,8 @@ abstract class GenJSCode
           case Alternative(alts) =>
             val genAlts = {
               alts map {
-                case lit: Literal => genLiteral(lit)
+                case lit: Literal =>
+                  genLiteral(lit)
                 case _ =>
                   abort(
                     "Invalid case in alternative in switch-like pattern match: " +
@@ -2934,23 +2986,40 @@ abstract class GenJSCode
 
           import js.BinaryOp._
           (code: @switch) match {
-            case ADD => js.BinaryOp(Long_+, ltree, rtree)
-            case SUB => js.BinaryOp(Long_-, ltree, rtree)
-            case MUL => js.BinaryOp(Long_*, ltree, rtree)
-            case DIV => js.BinaryOp(Long_/, ltree, rtree)
-            case MOD => js.BinaryOp(Long_%, ltree, rtree)
-            case OR  => js.BinaryOp(Long_|, ltree, rtree)
-            case XOR => js.BinaryOp(Long_^, ltree, rtree)
-            case AND => js.BinaryOp(Long_&, ltree, rtree)
-            case LSL => js.BinaryOp(Long_<<, ltree, rtreeInt)
-            case LSR => js.BinaryOp(Long_>>>, ltree, rtreeInt)
-            case ASR => js.BinaryOp(Long_>>, ltree, rtreeInt)
-            case EQ  => js.BinaryOp(Long_==, ltree, rtree)
-            case NE  => js.BinaryOp(Long_!=, ltree, rtree)
-            case LT  => js.BinaryOp(Long_<, ltree, rtree)
-            case LE  => js.BinaryOp(Long_<=, ltree, rtree)
-            case GT  => js.BinaryOp(Long_>, ltree, rtree)
-            case GE  => js.BinaryOp(Long_>=, ltree, rtree)
+            case ADD =>
+              js.BinaryOp(Long_+, ltree, rtree)
+            case SUB =>
+              js.BinaryOp(Long_-, ltree, rtree)
+            case MUL =>
+              js.BinaryOp(Long_*, ltree, rtree)
+            case DIV =>
+              js.BinaryOp(Long_/, ltree, rtree)
+            case MOD =>
+              js.BinaryOp(Long_%, ltree, rtree)
+            case OR =>
+              js.BinaryOp(Long_|, ltree, rtree)
+            case XOR =>
+              js.BinaryOp(Long_^, ltree, rtree)
+            case AND =>
+              js.BinaryOp(Long_&, ltree, rtree)
+            case LSL =>
+              js.BinaryOp(Long_<<, ltree, rtreeInt)
+            case LSR =>
+              js.BinaryOp(Long_>>>, ltree, rtreeInt)
+            case ASR =>
+              js.BinaryOp(Long_>>, ltree, rtreeInt)
+            case EQ =>
+              js.BinaryOp(Long_==, ltree, rtree)
+            case NE =>
+              js.BinaryOp(Long_!=, ltree, rtree)
+            case LT =>
+              js.BinaryOp(Long_<, ltree, rtree)
+            case LE =>
+              js.BinaryOp(Long_<=, ltree, rtree)
+            case GT =>
+              js.BinaryOp(Long_>, ltree, rtree)
+            case GE =>
+              js.BinaryOp(Long_>=, ltree, rtree)
             case _ =>
               abort("Unknown binary operation code: " + code)
           }
@@ -2962,11 +3031,16 @@ abstract class GenJSCode
 
           val opType =
             (leftKind, rightKind) match {
-              case (DoubleKind, _) | (_, DoubleKind) => jstpe.DoubleType
-              case (FloatKind, _) | (_, FloatKind)   => jstpe.FloatType
-              case (INT(_), _) | (_, INT(_))         => jstpe.IntType
-              case (BooleanKind, BooleanKind)        => jstpe.BooleanType
-              case _                                 => jstpe.AnyType
+              case (DoubleKind, _) | (_, DoubleKind) =>
+                jstpe.DoubleType
+              case (FloatKind, _) | (_, FloatKind) =>
+                jstpe.FloatType
+              case (INT(_), _) | (_, INT(_)) =>
+                jstpe.IntType
+              case (BooleanKind, BooleanKind) =>
+                jstpe.BooleanType
+              case _ =>
+                jstpe.AnyType
             }
 
           def convertArg(tree: js.Tree, kind: TypeKind) = {
@@ -3037,10 +3111,14 @@ abstract class GenJSCode
           }
 
           (code: @switch) match {
-            case EQ => genEquality(eqeq = true, not = false)
-            case NE => genEquality(eqeq = true, not = true)
-            case ID => genEquality(eqeq = false, not = false)
-            case NI => genEquality(eqeq = false, not = true)
+            case EQ =>
+              genEquality(eqeq = true, not = false)
+            case NE =>
+              genEquality(eqeq = true, not = true)
+            case ID =>
+              genEquality(eqeq = false, not = false)
+            case NI =>
+              genEquality(eqeq = false, not = true)
 
             case ZOR =>
               js.If(lsrc, js.BooleanLiteral(true), rsrc)(jstpe.BooleanType)
@@ -3053,43 +3131,71 @@ abstract class GenJSCode
                 (resultType: @unchecked) match {
                   case jstpe.IntType =>
                     (code: @switch) match {
-                      case ADD => Int_+
-                      case SUB => Int_-
-                      case MUL => Int_*
-                      case DIV => Int_/
-                      case MOD => Int_%
-                      case OR  => Int_|
-                      case AND => Int_&
-                      case XOR => Int_^
-                      case LSL => Int_<<
-                      case LSR => Int_>>>
-                      case ASR => Int_>>
+                      case ADD =>
+                        Int_+
+                      case SUB =>
+                        Int_-
+                      case MUL =>
+                        Int_*
+                      case DIV =>
+                        Int_/
+                      case MOD =>
+                        Int_%
+                      case OR =>
+                        Int_|
+                      case AND =>
+                        Int_&
+                      case XOR =>
+                        Int_^
+                      case LSL =>
+                        Int_<<
+                      case LSR =>
+                        Int_>>>
+                      case ASR =>
+                        Int_>>
                     }
                   case jstpe.FloatType =>
                     (code: @switch) match {
-                      case ADD => Float_+
-                      case SUB => Float_-
-                      case MUL => Float_*
-                      case DIV => Float_/
-                      case MOD => Float_%
+                      case ADD =>
+                        Float_+
+                      case SUB =>
+                        Float_-
+                      case MUL =>
+                        Float_*
+                      case DIV =>
+                        Float_/
+                      case MOD =>
+                        Float_%
                     }
                   case jstpe.DoubleType =>
                     (code: @switch) match {
-                      case ADD => Double_+
-                      case SUB => Double_-
-                      case MUL => Double_*
-                      case DIV => Double_/
-                      case MOD => Double_%
+                      case ADD =>
+                        Double_+
+                      case SUB =>
+                        Double_-
+                      case MUL =>
+                        Double_*
+                      case DIV =>
+                        Double_/
+                      case MOD =>
+                        Double_%
                     }
                   case jstpe.BooleanType =>
                     (code: @switch) match {
-                      case LT  => Num_<
-                      case LE  => Num_<=
-                      case GT  => Num_>
-                      case GE  => Num_>=
-                      case OR  => Boolean_|
-                      case AND => Boolean_&
-                      case XOR => Boolean_!=
+                      case LT =>
+                        Num_<
+                      case LE =>
+                        Num_<=
+                      case GT =>
+                        Num_>
+                      case GE =>
+                        Num_>=
+                      case OR =>
+                        Boolean_|
+                      case AND =>
+                        Boolean_&
+                      case XOR =>
+                        Boolean_!=
                     }
                 }
               js.BinaryOp(op, lsrc, rsrc)
@@ -3536,8 +3642,10 @@ abstract class GenJSCode
                     val reflBoxClassPatched = {
                       def isIntOrLongKind(kind: TypeKind) =
                         kind match {
-                          case _: INT | LONG => true
-                          case _             => false
+                          case _: INT | LONG =>
+                            true
+                          case _ =>
+                            false
                         }
                       if (rtClass == BoxedDoubleClass &&
                           toTypeKind(
@@ -3716,7 +3824,8 @@ abstract class GenJSCode
         def warnIfDuplicatedKey(
             pairs: List[(js.StringLiteral, js.Tree)]): Unit = {
           val allKeys = pairs.collect {
-            case (js.StringLiteral(keyName), _) => keyName
+            case (js.StringLiteral(keyName), _) =>
+              keyName
           }
           val keyCounts = allKeys.distinct.map(key =>
             key -> allKeys.count(_ == key))
@@ -3753,8 +3862,10 @@ abstract class GenJSCode
             // Delegate to a runtime method
             val tupsArray =
               tups match {
-                case List(js.JSSpread(tupsArray)) => tupsArray
-                case _                            => js.JSArrayConstr(tups)
+                case List(js.JSSpread(tupsArray)) =>
+                  tupsArray
+                case _ =>
+                  js.JSArrayConstr(tups)
               }
             genApplyMethod(
               genLoadModule(RuntimePackageModule),
@@ -3846,9 +3957,12 @@ abstract class GenJSCode
           genArgs match {
             case Nil =>
               code match {
-                case LINKING_INFO => js.JSLinkingInfo()
-                case DEBUGGER     => js.Debugger()
-                case UNITVAL      => js.Undefined()
+                case LINKING_INFO =>
+                  js.JSLinkingInfo()
+                case DEBUGGER =>
+                  js.Debugger()
+                case UNITVAL =>
+                  js.Undefined()
                 case JS_NATIVE =>
                   reporter.error(
                     pos,
@@ -4398,8 +4512,10 @@ abstract class GenJSCode
       // Find remaining js.UndefinedParam and replace by js.Undefined. This can
       // happen with named arguments or when multiple argument lists are present
       reversedArgs = reversedArgs map {
-        case js.UndefinedParam() => js.Undefined()
-        case arg                 => arg
+        case js.UndefinedParam() =>
+          js.Undefined()
+        case arg =>
+          arg
       }
 
       reversedArgs.reverse
@@ -4581,7 +4697,8 @@ abstract class GenJSCode
             try {
               Some((fun, arityStr.toInt))
             } catch {
-              case e: NumberFormatException => None
+              case e: NumberFormatException =>
+                None
             }
 
           case _ =>
@@ -4663,8 +4780,10 @@ abstract class GenJSCode
 
       def gen(tree: Tree): Unit = {
         tree match {
-          case EmptyTree            => ()
-          case Template(_, _, body) => body foreach gen
+          case EmptyTree =>
+            ()
+          case Template(_, _, body) =>
+            body foreach gen
           case vd @ ValDef(mods, name, tpt, rhs) =>
             val fsym = vd.symbol
             if (!fsym.isParamAccessor)
@@ -4977,13 +5096,20 @@ abstract class GenJSCode
     /** Generate a literal "zero" for the requested type */
     def genZeroOf(tpe: Type)(implicit pos: Position): js.Tree =
       toTypeKind(tpe) match {
-        case VOID       => abort("Cannot call genZeroOf(VOID)")
-        case BOOL       => js.BooleanLiteral(false)
-        case LONG       => js.LongLiteral(0L)
-        case INT(_)     => js.IntLiteral(0)
-        case FloatKind  => js.FloatLiteral(0.0f)
-        case DoubleKind => js.DoubleLiteral(0.0)
-        case _          => js.Null()
+        case VOID =>
+          abort("Cannot call genZeroOf(VOID)")
+        case BOOL =>
+          js.BooleanLiteral(false)
+        case LONG =>
+          js.LongLiteral(0L)
+        case INT(_) =>
+          js.IntLiteral(0)
+        case FloatKind =>
+          js.FloatLiteral(0.0f)
+        case DoubleKind =>
+          js.DoubleLiteral(0.0)
+        case _ =>
+          js.Null()
       }
 
     /** Generate loading of a module value
@@ -5043,7 +5169,8 @@ abstract class GenJSCode
       import jsPrimitives._
       if (isPrimitive(sym)) {
         getPrimitive(sym) match {
-          case UNITVAL => js.Undefined()
+          case UNITVAL =>
+            js.Undefined()
         }
       } else {
         val instance = genLoadModule(sym.owner)

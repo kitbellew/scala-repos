@@ -57,7 +57,8 @@ trait GracefulStopSupport {
     target.tell(stopMessage, Actor.noSender)
     ref.result.future.transform(
       {
-        case Terminated(t) if t.path == target.path ⇒ true
+        case Terminated(t) if t.path == target.path ⇒
+          true
         case _ ⇒ {
           internalTarget.sendSystemMessage(Unwatch(target, ref));
           false

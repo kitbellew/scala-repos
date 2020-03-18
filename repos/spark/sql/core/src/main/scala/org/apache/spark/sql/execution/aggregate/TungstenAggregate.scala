@@ -68,10 +68,12 @@ case class TungstenAggregate(
 
   override def requiredChildDistribution: List[Distribution] = {
     requiredChildDistributionExpressions match {
-      case Some(exprs) if exprs.length == 0 => AllTuples :: Nil
+      case Some(exprs) if exprs.length == 0 =>
+        AllTuples :: Nil
       case Some(exprs) if exprs.length > 0 =>
         ClusteredDistribution(exprs) :: Nil
-      case None => UnspecifiedDistribution :: Nil
+      case None =>
+        UnspecifiedDistribution :: Nil
     }
   }
 
@@ -81,8 +83,10 @@ case class TungstenAggregate(
     sqlContext.getConf(
       "spark.sql.TungstenAggregate.testFallbackStartsAt",
       null) match {
-      case null | ""        => None
-      case fallbackStartsAt => Some(fallbackStartsAt.toInt)
+      case null | "" =>
+        None
+      case fallbackStartsAt =>
+        Some(fallbackStartsAt.toInt)
     }
   }
 

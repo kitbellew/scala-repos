@@ -87,7 +87,8 @@ trait FlexMenuBuilder {
             req <- S.request.toList
             item <- buildItemMenu(loc, req.location, expandAll)
           } yield item
-        case _ => renderWhat(expandAll)
+        case _ =>
+          renderWhat(expandAll)
       }
     res
 
@@ -275,8 +276,10 @@ trait FlexMenuBuilder {
       else
         NodeSeq.Empty
     toRender.toList match {
-      case Nil if S.attr("group").isDefined => emptyGroup
-      case Nil                              => emptyMenu
+      case Nil if S.attr("group").isDefined =>
+        emptyGroup
+      case Nil =>
+        emptyMenu
       case xs =>
         def buildANavItem(i: MenuItem): NodeSeq = {
           i match {
@@ -293,7 +296,8 @@ trait FlexMenuBuilder {
             // Not current, but on the path, so we need to expand children to show the current one
             case m @ MenuItem(text, uri, kids, _, true, _) =>
               renderItemInPath(m, buildLine _)
-            case m => renderItem(m, buildLine _)
+            case m =>
+              renderItem(m, buildLine _)
           }
         }
 
@@ -317,7 +321,8 @@ trait FlexMenuBuilder {
 
               findKids(xs, lvl)
 
-            case _ => xs
+            case _ =>
+              xs
           }
         buildUlLine(realMenuItems, true)
     }

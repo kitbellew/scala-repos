@@ -42,8 +42,9 @@ case class JavaArrayType(arg: ScType) extends ValueType {
     var arrayClass: PsiClass = null
     for (clazz <- arrayClasses) {
       clazz match {
-        case _: ScClass => arrayClass = clazz
-        case _          =>
+        case _: ScClass =>
+          arrayClass = clazz
+        case _ =>
       }
     }
     if (arrayClass != null) {
@@ -63,12 +64,15 @@ case class JavaArrayType(arg: ScType) extends ValueType {
       visited: HashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         JavaArrayType(arg.recursiveUpdate(update, visited + this))
     }
@@ -79,7 +83,8 @@ case class JavaArrayType(arg: ScType) extends ValueType {
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         JavaArrayType(arg.recursiveVarianceUpdateModifiable(newData, update, 0))
     }
@@ -96,9 +101,11 @@ case class JavaArrayType(arg: ScType) extends ValueType {
         ScType.extractClass(des) match {
           case Some(td) if td.qualifiedName == "scala.Array" =>
             Equivalence.equivInner(arg, args.head, uSubst, falseUndef)
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
-      case _ => (false, uSubst)
+      case _ =>
+        (false, uSubst)
     }
   }
 
@@ -136,7 +143,8 @@ class ScParameterizedType private (
         val s = subst.followed(genericSubst)
         Some(
           AliasType(ta, ta.lowerBound.map(s.subst), ta.upperBound.map(s.subst)))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -193,7 +201,8 @@ class ScParameterizedType private (
               owner.getTypeParameters.iterator,
               s,
               (ptp: PsiTypeParameter) => ScalaPsiManager.typeVariable(ptp))
-          case _ => ScSubstitutor.empty
+          case _ =>
+            ScSubstitutor.empty
         }
     }
   }
@@ -208,13 +217,16 @@ class ScParameterizedType private (
       visited: HashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     val newVisited = visited + this
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         ScParameterizedType(
           designator.recursiveUpdate(update, newVisited),
@@ -227,17 +239,22 @@ class ScParameterizedType private (
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         val des =
           ScType.extractDesignated(designator, withoutAliases = false) match {
             case Some((n: ScTypeParametersOwner, _)) =>
               n.typeParameters.map {
-                case tp if tp.isContravariant => -1
-                case tp if tp.isCovariant     => 1
-                case _                        => 0
+                case tp if tp.isContravariant =>
+                  -1
+                case tp if tp.isCovariant =>
+                  1
+                case _ =>
+                  0
               }
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           }
         ScParameterizedType(
           designator
@@ -296,13 +313,16 @@ class ScParameterizedType private (
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
               lower match {
-                case Success(tp, _) => tp
-                case _              => return (false, uSubst)
+                case Success(tp, _) =>
+                  tp
+                case _ =>
+                  return (false, uSubst)
               },
               r,
               uSubst,
               falseUndef)
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
       case (
             ScParameterizedType(
@@ -313,13 +333,16 @@ class ScParameterizedType private (
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
               lower match {
-                case Success(tp, _) => tp
-                case _              => return (false, uSubst)
+                case Success(tp, _) =>
+                  tp
+                case _ =>
+                  return (false, uSubst)
               },
               r,
               uSubst,
               falseUndef)
-          case _ => (false, uSubst)
+          case _ =>
+            (false, uSubst)
         }
       case (
             ScParameterizedType(_, _),
@@ -347,7 +370,8 @@ class ScParameterizedType private (
           undefinedSubst = t._2
         }
         (true, undefinedSubst)
-      case _ => (false, undefinedSubst)
+      case _ =>
+        (false, undefinedSubst)
     }
   }
 
@@ -358,7 +382,8 @@ class ScParameterizedType private (
     getStandardType("scala.PartialFunction") match {
       case Some((typeDef, Seq(param, ret))) =>
         Some((ScDesignatorType(typeDef), param, ret))
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -381,11 +406,14 @@ class ScParameterizedType private (
             substituted match {
               case pt: ScParameterizedType =>
                 Some((clazz, pt.typeArgs))
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -403,8 +431,10 @@ class ScParameterizedType private (
 
   override def isFinalType: Boolean =
     designator.isFinalType && !typeArgs.exists {
-      case tp: ScTypeParameterType => tp.isContravariant || tp.isCovariant
-      case _                       => false
+      case tp: ScTypeParameterType =>
+        tp.isContravariant || tp.isCovariant
+      case _ =>
+        false
     }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[ScParameterizedType]
@@ -415,7 +445,8 @@ class ScParameterizedType private (
         (that canEqual this) &&
           designator == that.designator &&
           typeArgs == that.typeArgs
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -431,12 +462,16 @@ object ScParameterizedType {
         res.isAliasType match {
           case Some(AliasType(_: ScTypeAliasDefinition, _, upper)) =>
             upper.getOrElse(res) match {
-              case v: ValueType => v
-              case _            => res
+              case v: ValueType =>
+                v
+              case _ =>
+                res
             }
-          case _ => res
+          case _ =>
+            res
         }
-      case _ => res
+      case _ =>
+        res
     }
   }
 
@@ -468,8 +503,10 @@ case class ScTypeParameterType(
   def this(ptp: PsiTypeParameter, s: ScSubstitutor) = {
     this(
       ptp match {
-        case tp: ScTypeParam => tp.name
-        case _               => ptp.name
+        case tp: ScTypeParam =>
+          tp.name
+        case _ =>
+          ptp.name
       },
       ptp match {
         case tp: ScTypeParam =>
@@ -519,15 +556,19 @@ case class ScTypeParameterType(
 
   def isCovariant = {
     param match {
-      case tp: ScTypeParam => tp.isCovariant
-      case _               => false
+      case tp: ScTypeParam =>
+        tp.isCovariant
+      case _ =>
+        false
     }
   }
 
   def isContravariant = {
     param match {
-      case tp: ScTypeParam => tp.isContravariant
-      case _               => false
+      case tp: ScTypeParam =>
+        tp.isContravariant
+      case _ =>
+        false
     }
   }
 
@@ -542,7 +583,8 @@ case class ScTypeParameterType(
           (true, undefinedSubst)
         else
           (false, undefinedSubst)
-      case _ => (false, undefinedSubst)
+      case _ =>
+        (false, undefinedSubst)
     }
   }
 
@@ -589,8 +631,10 @@ case class ScTypeVariable(name: String) extends ValueType {
       uSubst: ScUndefinedSubstitutor,
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     r match {
-      case ScTypeVariable(`name`) => (true, uSubst)
-      case _                      => (false, uSubst)
+      case ScTypeVariable(`name`) =>
+        (true, uSubst)
+      case _ =>
+        (false, uSubst)
     }
   }
 }

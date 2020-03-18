@@ -85,8 +85,10 @@ object NonEmptyListTest extends SpecLite {
     xs.tails must_=== nel(
       xs,
       xs.tail match {
-        case INil()      => INil()
-        case ICons(h, t) => nel(h, t).tails.list
+        case INil() =>
+          INil()
+        case ICons(h, t) =>
+          nel(h, t).tails.list
       })
   }
   "toNel is self" ! forAll { xs: NonEmptyList[Int] =>

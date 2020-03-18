@@ -224,8 +224,10 @@ object Transport {
   private[finagle] def copyToWriter[A](trans: Transport[_, A], w: Writer)(
       f: A => Future[Option[Buf]]): Future[Unit] = {
     trans.read().flatMap(f).flatMap {
-      case None      => Future.Done
-      case Some(buf) => w.write(buf) before copyToWriter(trans, w)(f)
+      case None =>
+        Future.Done
+      case Some(buf) =>
+        w.write(buf) before copyToWriter(trans, w)(f)
     }
   }
 
@@ -250,8 +252,10 @@ object Transport {
       private[this] val rw = Reader.writable()
       become(
         Transport.copyToWriter(trans, rw)(chunkOfA) respond {
-          case Throw(exc) => rw.fail(exc)
-          case Return(_)  => rw.close()
+          case Throw(exc) =>
+            rw.fail(exc)
+          case Return(_) =>
+            rw.close()
         })
 
       def read(n: Int) = rw.read(n)

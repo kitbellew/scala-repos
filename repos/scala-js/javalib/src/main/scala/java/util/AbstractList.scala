@@ -108,7 +108,8 @@ abstract class AbstractList[E] protected ()
         case o: List[_] =>
           val oIter = o.listIterator
           this.forall(oIter.hasNext && _ === oIter.next()) && !oIter.hasNext
-        case _ => false
+        case _ =>
+          false
       }
     }
   }

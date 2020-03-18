@@ -250,7 +250,8 @@ trait Foldable[F[_]] {
   /** The greatest element of `fa`, or None if `fa` is empty. */
   def maximum[A: Order](fa: F[A]): Option[A] =
     foldLeft(fa, none[A]) {
-      case (None, y) => some(y)
+      case (None, y) =>
+        some(y)
       case (Some(x), y) =>
         some(
           if (Order[A].order(x, y) == GT)
@@ -262,7 +263,8 @@ trait Foldable[F[_]] {
   /** The greatest value of `f(a)` for each element `a` of `fa`, or None if `fa` is empty. */
   def maximumOf[A, B: Order](fa: F[A])(f: A => B): Option[B] =
     foldLeft(fa, none[B]) {
-      case (None, a) => some(f(a))
+      case (None, a) =>
+        some(f(a))
       case (Some(b), aa) =>
         val bb = f(aa);
         some(
@@ -275,7 +277,8 @@ trait Foldable[F[_]] {
   /** The element `a` of `fa` which yields the greatest value of `f(a)`, or None if `fa` is empty. */
   def maximumBy[A, B: Order](fa: F[A])(f: A => B): Option[A] =
     foldLeft(fa, none[(A, B)]) {
-      case (None, a) => some(a -> f(a))
+      case (None, a) =>
+        some(a -> f(a))
       case (Some(x @ (a, b)), aa) =>
         val bb = f(aa);
         some(
@@ -288,7 +291,8 @@ trait Foldable[F[_]] {
   /** The smallest element of `fa`, or None if `fa` is empty. */
   def minimum[A: Order](fa: F[A]): Option[A] =
     foldLeft(fa, none[A]) {
-      case (None, y) => some(y)
+      case (None, y) =>
+        some(y)
       case (Some(x), y) =>
         some(
           if (Order[A].order(x, y) == LT)
@@ -300,7 +304,8 @@ trait Foldable[F[_]] {
   /** The smallest value of `f(a)` for each element `a` of `fa`, or None if `fa` is empty. */
   def minimumOf[A, B: Order](fa: F[A])(f: A => B): Option[B] =
     foldLeft(fa, none[B]) {
-      case (None, a) => some(f(a))
+      case (None, a) =>
+        some(f(a))
       case (Some(b), aa) =>
         val bb = f(aa);
         some(
@@ -313,7 +318,8 @@ trait Foldable[F[_]] {
   /** The element `a` of `fa` which yields the smallest value of `f(a)`, or None if `fa` is empty. */
   def minimumBy[A, B: Order](fa: F[A])(f: A => B): Option[A] =
     foldLeft(fa, none[(A, B)]) {
-      case (None, a) => some(a -> f(a))
+      case (None, a) =>
+        some(a -> f(a))
       case (Some(x @ (a, b)), aa) =>
         val bb = f(aa);
         some(
@@ -363,7 +369,8 @@ trait Foldable[F[_]] {
       val pa = p(a)
       (
         b match {
-          case (_, None) => NonEmptyList(a) :: Nil
+          case (_, None) =>
+            NonEmptyList(a) :: Nil
           case (x, Some(q)) =>
             if (pa == q)
               (a <:: x.head) :: x.tail

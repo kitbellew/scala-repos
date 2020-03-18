@@ -36,8 +36,10 @@ object PomRepoTest extends Build {
 
   def addSlash(s: String): String =
     s match {
-      case s if s endsWith "/" => s
-      case _                   => s + "/"
+      case s if s endsWith "/" =>
+        s
+      case _ =>
+        s + "/"
     }
 
   def checkPomRepositories(file: File, args: Seq[String], s: TaskStreams) {

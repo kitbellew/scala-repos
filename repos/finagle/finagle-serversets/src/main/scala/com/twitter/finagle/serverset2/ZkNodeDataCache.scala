@@ -70,7 +70,8 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
           logger.debug(s"$path retrieved ${results.length} for ${entityType}")
         }
         results
-      case None => Nil
+      case None =>
+        Nil
     }
 
   private[this] val underlying: LoadingCache[String, Future[Seq[Entity]]] =
@@ -126,7 +127,9 @@ private[serverset2] class ZkVectorCache(
     extends ZkNodeDataCache[Vector](clusterPath, "Vector", statsReceiver) {
   override def parseNode(path: String, data: String): Seq[Vector] =
     Vector.parseJson(data) match {
-      case Some(vector) => Seq(vector)
-      case _            => Nil
+      case Some(vector) =>
+        Seq(vector)
+      case _ =>
+        Nil
     }
 }

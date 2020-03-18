@@ -192,9 +192,11 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
         }
 
     (c, c1) match {
-      case ('{', '}') => fixBrace()
-      case ('(', ')') => fixBrace()
-      case _          =>
+      case ('{', '}') =>
+        fixBrace()
+      case ('(', ')') =>
+        fixBrace()
+      case _ =>
     }
 
     false

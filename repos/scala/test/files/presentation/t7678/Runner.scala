@@ -49,8 +49,9 @@ object Test extends InteractiveTest {
           ()
         }
       }.get match {
-        case Right(t) => t.printStackTrace
-        case Left(_)  =>
+        case Right(t) =>
+          t.printStackTrace
+        case Left(_) =>
       }
     }
     resolveTypeTagHyperlink()

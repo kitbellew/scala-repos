@@ -33,11 +33,15 @@ object PullParserExamples extends Specification {
           p.nextToken match {
             case FieldStart("postalCode") =>
               p.nextToken match {
-                case IntVal(code) => code
-                case _            => p.fail("expected int")
+                case IntVal(code) =>
+                  code
+                case _ =>
+                  p.fail("expected int")
               }
-            case End => p.fail("no field named 'postalCode'")
-            case _   => parse
+            case End =>
+              p.fail("no field named 'postalCode'")
+            case _ =>
+              parse
           }
 
         parse

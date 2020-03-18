@@ -26,8 +26,10 @@ class ForceOuterBinds extends Phase {
     val gen = new AnonSymbol
     logger.debug("Introducing new Bind " + gen + " for " + n)
     n match {
-      case p: Pure => Bind(gen, Pure(ProductNode(ConstArray.empty)), p)
-      case _       => Bind(gen, n, Pure(Ref(gen)))
+      case p: Pure =>
+        Bind(gen, Pure(ProductNode(ConstArray.empty)), p)
+      case _ =>
+        Bind(gen, n, Pure(Ref(gen)))
     }
   }
 
@@ -40,12 +42,14 @@ class ForceOuterBinds extends Phase {
           else
             maybewrap(ch)
         }
-      case n => idBind(nowrap(n))
+      case n =>
+        idBind(nowrap(n))
     }
 
   def nowrap(n: Node): Node =
     n match {
-      case u: Union => u.mapChildren(wrap)
+      case u: Union =>
+        u.mapChildren(wrap)
       case f: FilteredQuery =>
         f.mapChildren { ch =>
           if ((ch eq f.from) && !(
@@ -63,14 +67,17 @@ class ForceOuterBinds extends Phase {
           else
             maybewrap(ch)
         }
-      case Path(path) => Path(path) // recreate untyped copy
-      case n          => n.mapChildren(maybewrap)
+      case Path(path) =>
+        Path(path) // recreate untyped copy
+      case n =>
+        n.mapChildren(maybewrap)
     }
 
   def maybewrap(n: Node): Node =
     n match {
       case _: Join | _: Pure | _: Union | _: FilteredQuery | _: TableNode =>
         wrap(n)
-      case _ => nowrap(n)
+      case _ =>
+        nowrap(n)
     }
 }

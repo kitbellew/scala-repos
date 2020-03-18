@@ -25,7 +25,8 @@ abstract class AddInterfaces extends InfoTransform {
           if clazz.isPackageClass || !clazz.isJavaDefined =>
         val parents1 =
           parents match {
-            case Nil => Nil
+            case Nil =>
+              Nil
             case hd :: tl =>
               assert(!hd.typeSymbol.isTrait, clazz)
               if (clazz.isTrait)
@@ -54,8 +55,9 @@ abstract class AddInterfaces extends InfoTransform {
       extends ChangeOwnerTraverser(oldowner, newowner) {
     override def traverse(tree: Tree) {
       tree match {
-        case _: Return => change(tree.symbol)
-        case _         =>
+        case _: Return =>
+          change(tree.symbol)
+        case _ =>
       }
       super.traverse(tree)
     }

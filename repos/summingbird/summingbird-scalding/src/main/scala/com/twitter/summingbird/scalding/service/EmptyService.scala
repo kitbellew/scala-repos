@@ -24,7 +24,8 @@ class EmptyService[K, V] extends ExternalService[K, V] {
     getKeys.map {
       _.map {
         _.map {
-          case (t, (k, v)) => (t, (k, (v, None: Option[V])))
+          case (t, (k, v)) =>
+            (t, (k, (v, None: Option[V])))
         }
       }
     }

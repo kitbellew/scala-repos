@@ -55,9 +55,12 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("concat_ws") {
     def testConcatWs(expected: String, sep: String, inputs: Any*): Unit = {
       val inputExprs = inputs.map {
-        case s: Seq[_] => Literal.create(s, ArrayType(StringType))
-        case null      => Literal.create(null, StringType)
-        case s: String => Literal.create(s, StringType)
+        case s: Seq[_] =>
+          Literal.create(s, ArrayType(StringType))
+        case null =>
+          Literal.create(null, StringType)
+        case s: String =>
+          Literal.create(s, StringType)
       }
       val sepExpr = Literal.create(sep, StringType)
       checkEvaluation(ConcatWs(sepExpr +: inputExprs), expected, EmptyRow)

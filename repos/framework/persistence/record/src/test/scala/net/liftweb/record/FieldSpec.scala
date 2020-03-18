@@ -82,11 +82,13 @@ object FieldSpec extends Specification {
         "which fail when set with an empty string when not optional" in {
           in.setFromString(null)
           in.valueBox must beLike {
-            case f: Failure => ok
+            case f: Failure =>
+              ok
           }
           in.setFromString("")
           in.valueBox must beLike {
-            case f: Failure => ok
+            case f: Failure =>
+              ok
           }
         }
       } else {
@@ -105,7 +107,8 @@ object FieldSpec extends Specification {
           in match {
             case mandatory: MandatoryTypedField[_] =>
               mandatory.value must_== mandatory.defaultValue
-            case _ => ()
+            case _ =>
+              ()
           }
           in.valueBox must_== in.defaultValueBox
         }
@@ -145,7 +148,8 @@ object FieldSpec extends Specification {
             owned.owner.runSafe {
               in.resetDirty
             }
-          case _ => in.resetDirty
+          case _ =>
+            in.resetDirty
         }
         in.dirty_? must_== false
         val valueBox = in.valueBox
@@ -184,7 +188,8 @@ object FieldSpec extends Specification {
         mandatory.valueBox.isDefined must_== true
         mandatory.setBox(Empty)
         mandatory.valueBox must beLike {
-          case Failure(s, _, _) => s must_== mandatory.notOptionalErrorMessage
+          case Failure(s, _, _) =>
+            s must_== mandatory.notOptionalErrorMessage
         }
       }
     }
@@ -301,7 +306,8 @@ object FieldSpec extends Specification {
                         case e: Elem =>
                           e.attribute("selected").map(_.text) == Some(
                             "selected")
-                        case _ => false
+                        case _ =>
+                          false
                       }) andThen "* [value]" #> ".*"
                   )
                 )(fprime)
@@ -604,13 +610,17 @@ object FieldSpec extends Specification {
     val rec = FieldTypeTestRecord.createRecord
     val example =
       java.util.Locale.getDefault.toString match {
-        case "en_US" => "en_GB"
-        case _       => "en_US"
+        case "en_US" =>
+          "en_GB"
+        case _ =>
+          "en_US"
       }
     val example2 =
       java.util.Locale.getDefault.toString match {
-        case "es_ES" => "en_NZ"
-        case _       => "es_ES"
+        case "es_ES" =>
+          "en_NZ"
+        case _ =>
+          "es_ES"
       }
     passBasicTests(
       example,
@@ -854,13 +864,17 @@ object FieldSpec extends Specification {
     val rec = FieldTypeTestRecord.createRecord
     val example =
       java.util.TimeZone.getDefault.getID match {
-        case "America/New_York" => "Europe/London"
-        case _                  => "America/New_York"
+        case "America/New_York" =>
+          "Europe/London"
+        case _ =>
+          "America/New_York"
       }
     val example2 =
       java.util.TimeZone.getDefault.getID match {
-        case "America/Chicago" => "Europe/Paris"
-        case _                 => "America/Chicago"
+        case "America/Chicago" =>
+          "Europe/Paris"
+        case _ =>
+          "America/Chicago"
       }
     passBasicTests(
       example,

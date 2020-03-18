@@ -15,7 +15,8 @@ class StateMachineTest extends WordSpec {
 
         def command1() {
           transition("command1") {
-            case State1() => state = State2()
+            case State1() =>
+              state = State2()
           }
         }
       }

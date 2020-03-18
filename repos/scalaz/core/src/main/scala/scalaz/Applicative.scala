@@ -51,7 +51,8 @@ trait Applicative[F[_]] extends Apply[F] {
   /** Filter `l` according to an applicative predicate. */
   def filterM[A](l: List[A])(f: A => F[Boolean]): F[List[A]] =
     l match {
-      case Nil => point(List())
+      case Nil =>
+        point(List())
       case h :: t =>
         ap(filterM(t)(f))(
           map(f(h))(b =>

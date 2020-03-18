@@ -102,8 +102,10 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
       override def toString: String =
         synchronized {
           PartialResult.this.getFinalValueInternal() match {
-            case Some(value) => "(final: " + f(value) + ")"
-            case None        => "(partial: " + initialValue + ")"
+            case Some(value) =>
+              "(final: " + f(value) + ")"
+            case None =>
+              "(partial: " + initialValue + ")"
           }
         }
       def getFinalValueInternal(): Option[T] =
@@ -144,8 +146,10 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
   override def toString: String =
     synchronized {
       finalValue match {
-        case Some(value) => "(final: " + value + ")"
-        case None        => "(partial: " + initialValue + ")"
+        case Some(value) =>
+          "(final: " + value + ")"
+        case None =>
+          "(partial: " + initialValue + ")"
       }
     }
 }

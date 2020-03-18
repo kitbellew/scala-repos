@@ -33,7 +33,8 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
           if param.typeArgList.typeArgs.size == 2 && !ref.refName.forall(
             _.isLetterOrDigit) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -45,8 +46,10 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
     val Seq(targ1, targ2) = paramTypeElement.typeArgList.typeArgs
     val needParens =
       paramTypeElement.getParent match {
-        case _: ScTypeArgs | _: ScParenthesisedTypeElement => false
-        case _                                             => true
+        case _: ScTypeArgs | _: ScParenthesisedTypeElement =>
+          false
+        case _ =>
+          true
       }
     val newTypeText = Seq(targ1, paramTypeElement.typeElement, targ2)
       .map(_.getText)

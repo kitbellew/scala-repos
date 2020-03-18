@@ -31,8 +31,10 @@ class StableCodeReferenceElementResolver(
         val typeArgs = constr.typeArgList.map(_.typeArgs).getOrElse(Seq())
         val effectiveArgs =
           constr.arguments.toList.map(_.exprs.map(new Expression(_))) match {
-            case List() => List(List())
-            case x      => x
+            case List() =>
+              List(List())
+            case x =>
+              x
           }
         new ConstructorResolveProcessor(
           ref,
@@ -69,7 +71,8 @@ class StableCodeReferenceElementResolver(
               reference.refName,
               kinds,
               infix.expectedType)
-          case _ => new ResolveProcessor(kinds, ref, reference.refName)
+          case _ =>
+            new ResolveProcessor(kinds, ref, reference.refName)
         }
 
     reference.doResolve(ref, proc)

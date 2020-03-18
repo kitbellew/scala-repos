@@ -246,7 +246,8 @@ private[spark] class HiveCatalog(client: HiveClient)
               true
             } catch {
               // Filter out the partitions that do not actually exist
-              case _: AnalysisException => false
+              case _: AnalysisException =>
+                false
             }
           }
         } else {

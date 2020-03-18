@@ -29,9 +29,12 @@ object SizeHint {
         .getOrElse(NoClue)
     }
     h match {
-      case NoClue               => NoClue
-      case FiniteHint(r, c)     => make(r, c)
-      case SparseHint(sp, r, c) => make(r, c)
+      case NoClue =>
+        NoClue
+      case FiniteHint(r, c) =>
+        make(r, c)
+      case SparseHint(sp, r, c) =>
+        make(r, c)
     }
   }
 }
@@ -65,27 +68,34 @@ case object NoClue extends SizeHint {
 case class FiniteHint(rows: BigInt = -1L, cols: BigInt = -1L) extends SizeHint {
   def *(other: SizeHint) = {
     other match {
-      case NoClue                   => NoClue
-      case FiniteHint(orows, ocols) => FiniteHint(rows, ocols)
-      case sp @ SparseHint(_, _, _) => (SparseHint(1.0, rows, cols) * sp)
+      case NoClue =>
+        NoClue
+      case FiniteHint(orows, ocols) =>
+        FiniteHint(rows, ocols)
+      case sp @ SparseHint(_, _, _) =>
+        (SparseHint(1.0, rows, cols) * sp)
     }
   }
   def +(other: SizeHint) = {
     other match {
-      case NoClue => NoClue
+      case NoClue =>
+        NoClue
       // In this case, a hint on one side, will overwrite lack of knowledge (-1L)
       case FiniteHint(orows, ocols) =>
         FiniteHint(rows.max(orows), cols.max(ocols))
-      case sp @ SparseHint(_, _, _) => (sp + this)
+      case sp @ SparseHint(_, _, _) =>
+        (sp + this)
     }
   }
   def #*#(other: SizeHint) = {
     other match {
-      case NoClue => NoClue
+      case NoClue =>
+        NoClue
       // In this case, a hint on one side, will overwrite lack of knowledge (-1L)
       case FiniteHint(orows, ocols) =>
         FiniteHint(rows.min(orows), cols.min(ocols))
-      case sp @ SparseHint(_, _, _) => (sp #*# this)
+      case sp @ SparseHint(_, _, _) =>
+        (sp #*# this)
     }
   }
   def total =
@@ -105,8 +115,10 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
     extends SizeHint {
   def *(other: SizeHint): SizeHint = {
     other match {
-      case NoClue           => NoClue
-      case FiniteHint(r, c) => (this * SparseHint(1.0, r, c))
+      case NoClue =>
+        NoClue
+      case FiniteHint(r, c) =>
+        (this * SparseHint(1.0, r, c))
       case SparseHint(sp, r, c) => {
         // if I occupy a bin with probability p, and you q, then both: pq
         // There are cols samples of the, above, so the probability one is present:
@@ -122,8 +134,10 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
   }
   def +(other: SizeHint): SizeHint = {
     other match {
-      case NoClue           => NoClue
-      case FiniteHint(r, c) => (this + SparseHint(1.0, r, c))
+      case NoClue =>
+        NoClue
+      case FiniteHint(r, c) =>
+        (this + SparseHint(1.0, r, c))
       case SparseHint(sp, r, c) => {
         // if I occupy a bin with probability p, and you q, then either: p + q - pq
         if ((sparsity == 1.0) || (sp == 1.0)) {
@@ -137,8 +151,10 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
   }
   def #*#(other: SizeHint): SizeHint = {
     other match {
-      case NoClue           => NoClue
-      case FiniteHint(r, c) => (this #*# SparseHint(1.0, r, c))
+      case NoClue =>
+        NoClue
+      case FiniteHint(r, c) =>
+        (this #*# SparseHint(1.0, r, c))
       case SparseHint(sp, r, c) => {
         val newSp = sp min sparsity
         SparseHint(newSp, rows min r, cols min c)

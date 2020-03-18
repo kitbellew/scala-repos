@@ -37,8 +37,10 @@ object Bounds {
     @tailrec
     def loop(tps: Seq[ScType], acc: Int): Int =
       tps match {
-        case tp :: rest => loop(rest, acc max tp.typeDepth)
-        case _          => acc
+        case tp :: rest =>
+          loop(rest, acc max tp.typeDepth)
+        case _ =>
+          acc
       }
     loop(ts, 0)
   }
@@ -47,8 +49,10 @@ object Bounds {
     @tailrec
     def loop(tps: Seq[ScType], acc: Int): Int =
       tps match {
-        case tp :: rest => loop(rest, acc max tp.baseTypeSeqDepth)
-        case _          => acc
+        case tp :: rest =>
+          loop(rest, acc max tp.baseTypeSeqDepth)
+        case _ =>
+          acc
       }
     loop(ts, 0)
   }
@@ -74,18 +78,23 @@ object Bounds {
   private class Options(_tp: ScType) extends {
     val tp =
       _tp match {
-        case ex: ScExistentialType => ex.skolem
-        case other                 => other
+        case ex: ScExistentialType =>
+          ex.skolem
+        case other =>
+          other
       }
   } with AnyRef {
     private val typeNamedElement: Option[(PsiNamedElement, ScSubstitutor)] = {
       ScType.extractClassType(tp) match {
         case None =>
           tp.isAliasType match {
-            case Some(AliasType(ta, _, _)) => Some(ta, ScSubstitutor.empty)
-            case _                         => None
+            case Some(AliasType(ta, _, _)) =>
+              Some(ta, ScSubstitutor.empty)
+            case _ =>
+              None
           }
-        case some => some
+        case some =>
+          some
       }
     }
     def isEmpty = typeNamedElement == None
@@ -95,8 +104,10 @@ object Bounds {
     def getSuperOptions: Seq[Options] = {
       val subst =
         this.projectionOption match {
-          case Some(proj) => new ScSubstitutor(Map.empty, Map.empty, Some(proj))
-          case None       => ScSubstitutor.empty
+          case Some(proj) =>
+            new ScSubstitutor(Map.empty, Map.empty, Some(proj))
+          case None =>
+            ScSubstitutor.empty
         }
       getNamedElement match {
         case t: ScTemplateDefinition =>
@@ -111,8 +122,10 @@ object Bounds {
           val upperType: ScType = tp.isAliasType.get.upper.getOrAny
           val options: Seq[Options] = {
             upperType match {
-              case ScCompoundType(comps1, _, _) => comps1.map(new Options(_))
-              case _                            => Seq(new Options(upperType))
+              case ScCompoundType(comps1, _, _) =>
+                comps1.map(new Options(_))
+              case _ =>
+                Seq(new Options(upperType))
             }
           }
           options.filter(!_.isEmpty)
@@ -134,7 +147,8 @@ object Bounds {
               return true
           }
           false
-        case _ => false //class can't be inheritor of type alias
+        case _ =>
+          false //class can't be inheritor of type alias
       }
     }
 
@@ -142,15 +156,18 @@ object Bounds {
 
     def getTypeParameters: Array[PsiTypeParameter] =
       typeNamedElement.get._1 match {
-        case a: ScTypeAlias => a.typeParameters.toArray
-        case p: PsiClass    => p.getTypeParameters
+        case a: ScTypeAlias =>
+          a.typeParameters.toArray
+        case p: PsiClass =>
+          p.getTypeParameters
       }
 
     def baseDesignator: ScType = {
       projectionOption match {
         case Some(proj) =>
           ScProjectionType(proj, getNamedElement, superReference = false)
-        case None => ScType.designator(getNamedElement)
+        case None =>
+          ScType.designator(getNamedElement)
       }
     }
 
@@ -169,7 +186,8 @@ object Bounds {
             visited += drv
             val superTypes: Seq[ScType] =
               drv match {
-                case td: ScTemplateDefinition => td.superTypes
+                case td: ScTemplateDefinition =>
+                  td.superTypes
                 case _ =>
                   drv.getSuperTypes.map { t =>
                     ScType.create(t, drv.getProject)
@@ -182,8 +200,9 @@ object Bounds {
                 case None =>
                 case Some((c, s)) =>
                   superSubstitutor(base, c, s, visited) match {
-                    case None        =>
-                    case Some(subst) => return Some(subst.followed(drvSubst))
+                    case None =>
+                    case Some(subst) =>
+                      return Some(subst.followed(drvSubst))
                   }
               }
             }
@@ -211,17 +230,20 @@ object Bounds {
                           (ptp.name, ScalaPsiUtil.getPsiElementId(ptp)),
                           typez)
                     })
-              case _ => return None
+              case _ =>
+                return None
             }
           }
           for (opt <- bClass.getSuperOptions) {
             this.superSubstitutor(opt) match {
-              case Some(res) => return Some(res)
-              case _         =>
+              case Some(res) =>
+                return Some(res)
+              case _ =>
             }
           }
           None
-        case _ => None //class can't be inheritor of type alias
+        case _ =>
+          None //class can't be inheritor of type alias
       }
     }
   }
@@ -257,7 +279,8 @@ object Bounds {
           glb(ex.skolem, t2, checkWeak).unpackedType
         case (_, ex: ScExistentialType) =>
           glb(t1, ex.skolem, checkWeak).unpackedType
-        case _ => ScCompoundType(Seq(t1, t2), Map.empty, Map.empty)
+        case _ =>
+          ScCompoundType(Seq(t1, t2), Map.empty, Map.empty)
       }
     }
   }
@@ -336,7 +359,8 @@ object Bounds {
               args,
               glb(lower, r, checkWeak),
               lub(upper, t2, checkWeak))
-          case (_: ValType, _: ValType) => types.AnyVal
+          case (_: ValType, _: ValType) =>
+            types.AnyVal
           case (JavaArrayType(arg1), JavaArrayType(arg2)) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
               arg1,
@@ -344,14 +368,18 @@ object Bounds {
               depth,
               checkWeak)
             ex match {
-              case Some(w) => ScExistentialType(JavaArrayType(v), List(w))
-              case None    => JavaArrayType(v)
+              case Some(w) =>
+                ScExistentialType(JavaArrayType(v), List(w))
+              case None =>
+                JavaArrayType(v)
             }
           case (JavaArrayType(arg), ScParameterizedType(des, args))
               if args.length == 1 && (
                 ScType.extractClass(des) match {
-                  case Some(q) => q.qualifiedName == "scala.Array"
-                  case _       => false
+                  case Some(q) =>
+                    q.qualifiedName == "scala.Array"
+                  case _ =>
+                    false
                 }
               ) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
@@ -362,13 +390,16 @@ object Bounds {
             ex match {
               case Some(w) =>
                 ScExistentialType(ScParameterizedType(des, Seq(v)), List(w))
-              case None => ScParameterizedType(des, Seq(v))
+              case None =>
+                ScParameterizedType(des, Seq(v))
             }
           case (ScParameterizedType(des, args), JavaArrayType(arg))
               if args.length == 1 && (
                 ScType.extractClass(des) match {
-                  case Some(q) => q.qualifiedName == "scala.Array"
-                  case _       => false
+                  case Some(q) =>
+                    q.qualifiedName == "scala.Array"
+                  case _ =>
+                    false
                 }
               ) =>
             val (v, ex) = calcForTypeParamWithoutVariance(
@@ -379,7 +410,8 @@ object Bounds {
             ex match {
               case Some(w) =>
                 ScExistentialType(ScParameterizedType(des, Seq(v)), List(w))
-              case None => ScParameterizedType(des, Seq(v))
+              case None =>
+                ScParameterizedType(des, Seq(v))
             }
           case (JavaArrayType(_), tp) =>
             if (tp.conforms(AnyRef))
@@ -394,14 +426,18 @@ object Bounds {
           case _ =>
             val aOptions: Seq[Options] = {
               t1 match {
-                case ScCompoundType(comps1, _, _) => comps1.map(new Options(_))
-                case _                            => Seq(new Options(t1))
+                case ScCompoundType(comps1, _, _) =>
+                  comps1.map(new Options(_))
+                case _ =>
+                  Seq(new Options(t1))
               }
             }
             val bOptions: Seq[Options] = {
               t2 match {
-                case ScCompoundType(comps1, _, _) => comps1.map(new Options(_))
-                case _                            => Seq(new Options(t2))
+                case ScCompoundType(comps1, _, _) =>
+                  comps1.map(new Options(_))
+                case _ =>
+                  Seq(new Options(t2))
               }
             }
             if (aOptions.exists(_.isEmpty) || bOptions.exists(_.isEmpty))
@@ -422,8 +458,10 @@ object Bounds {
                   buf += tp
               }
               buf.toArray match {
-                case a: Array[ScType] if a.length == 0 => types.Any
-                case a: Array[ScType] if a.length == 1 => a(0)
+                case a: Array[ScType] if a.length == 0 =>
+                  types.Any
+                case a: Array[ScType] if a.length == 1 =>
+                  a(0)
                 case many =>
                   new ScCompoundType(many.toSeq, Map.empty, Map.empty)
               }
@@ -585,7 +623,8 @@ object Bounds {
           ScExistentialType(
             ScParameterizedType(baseClassDesignator, resTypeArgs.toSeq),
             wildcards.toList)
-      case _ => types.Any
+      case _ =>
+        types.Any
     }
   }
 

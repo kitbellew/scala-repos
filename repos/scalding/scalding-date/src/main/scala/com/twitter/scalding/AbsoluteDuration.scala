@@ -66,9 +66,12 @@ object AbsoluteDuration extends java.io.Serializable {
     if (diffInMs == 0L) {
       //We are done:
       acc match {
-        case Nil        => units.head._1(0)
-        case (h :: Nil) => h
-        case _          => AbsoluteDurationList(acc)
+        case Nil =>
+          units.head._1(0)
+        case (h :: Nil) =>
+          h
+        case _ =>
+          AbsoluteDurationList(acc)
       }
     } else {
       units match {
@@ -147,8 +150,10 @@ sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {
 
   override def equals(eq: Any): Boolean = {
     eq match {
-      case eqo: AbsoluteDuration => (eqo.toMillisecs) == this.toMillisecs
-      case _                     => false
+      case eqo: AbsoluteDuration =>
+        (eqo.toMillisecs) == this.toMillisecs
+      case _ =>
+        false
     }
   }
   override def hashCode: Int = toMillisecs.hashCode

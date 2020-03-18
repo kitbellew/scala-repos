@@ -79,7 +79,8 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       .queryExecution
       .analyzed
       .collect {
-        case StreamingRelation(s: FileStreamSource, _) => s
+        case StreamingRelation(s: FileStreamSource, _) =>
+          s
       }
       .head
   }
@@ -106,7 +107,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
       }
     df.queryExecution.analyzed
       .collect {
-        case StreamingRelation(s: FileStreamSource, _) => s
+        case StreamingRelation(s: FileStreamSource, _) =>
+          s
       }
       .head
       .schema
@@ -380,7 +382,8 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
           assert(b1.end === b2.end)
           assert(b1.data.as[String].collect() === b2.data.as[String].collect())
         case (None, None) =>
-        case _            => fail(s"batch ($batch1) is not equal to batch ($batch2)")
+        case _ =>
+          fail(s"batch ($batch1) is not equal to batch ($batch2)")
       }
     }
 

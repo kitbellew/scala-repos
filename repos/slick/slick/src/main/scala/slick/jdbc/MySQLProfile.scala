@@ -92,9 +92,12 @@ trait MySQLProfile extends JdbcProfile {
           meta.columnDef
             .map((_, tpe))
             .collect {
-              case (v, "String")    => Some(Some(v))
-              case ("1", "Boolean") => Some(Some(true))
-              case ("0", "Boolean") => Some(Some(false))
+              case (v, "String") =>
+                Some(Some(v))
+              case ("1", "Boolean") =>
+                Some(Some(true))
+              case ("0", "Boolean") =>
+                Some(Some(false))
             }
             .getOrElse {
               val d = super.default
@@ -151,7 +154,8 @@ trait MySQLProfile extends JdbcProfile {
               s"CHAR(${l.length})"
           case None =>
             defaultStringType match {
-              case Some(s) => s
+              case Some(s) =>
+                s
               case None =>
                 if (sym
                       .flatMap(
@@ -166,7 +170,8 @@ trait MySQLProfile extends JdbcProfile {
                   "TEXT"
             }
         }
-      case _ => super.defaultSqlTypeName(tmd, sym)
+      case _ =>
+        super.defaultSqlTypeName(tmd, sym)
     }
 
   protected lazy val defaultStringType = profileConfig.getStringOpt(
@@ -208,7 +213,8 @@ trait MySQLProfile extends JdbcProfile {
               val r = RowNum(countSym, first)
               first = false
               r
-            case r @ Ref(s) if s == s1 => r.untyped
+            case r @ Ref(s) if s == s1 =>
+              r.untyped
           }),
         Subquery.Default
       ).infer()
@@ -230,23 +236,31 @@ trait MySQLProfile extends JdbcProfile {
             else
               ti.sqlTypeName(None)
           b"\({fn convert(!${ch},$tn)}\)"
-        case Library.NextValue(SequenceNode(name)) => b"`${name + "_nextval"}()"
+        case Library.NextValue(SequenceNode(name)) =>
+          b"`${name + "_nextval"}()"
         case Library.CurrentValue(SequenceNode(name)) =>
           b"`${name + "_currval"}()"
-        case RowNum(sym, true)    => b"(@`$sym := @`$sym + 1)"
-        case RowNum(sym, false)   => b"@`$sym"
-        case RowNumGen(sym, init) => b"@`$sym := $init"
-        case _                    => super.expr(n, skipParens)
+        case RowNum(sym, true) =>
+          b"(@`$sym := @`$sym + 1)"
+        case RowNum(sym, false) =>
+          b"@`$sym"
+        case RowNumGen(sym, init) =>
+          b"@`$sym := $init"
+        case _ =>
+          super.expr(n, skipParens)
       }
 
     override protected def buildFetchOffsetClause(
         fetch: Option[Node],
         offset: Option[Node]) =
       (fetch, offset) match {
-        case (Some(t), Some(d)) => b"\nlimit $d,$t"
-        case (Some(t), None)    => b"\nlimit $t"
-        case (None, Some(d))    => b"\nlimit $d,18446744073709551615"
-        case _                  =>
+        case (Some(t), Some(d)) =>
+          b"\nlimit $d,$t"
+        case (Some(t), None) =>
+          b"\nlimit $t"
+        case (None, Some(d)) =>
+          b"\nlimit $d,18446744073709551615"
+        case _ =>
       }
 
     override protected def buildOrdering(n: Node, o: Ordering) {
@@ -373,16 +387,26 @@ trait MySQLProfile extends JdbcProfile {
             sb append '\''
             for (c <- value)
               c match {
-                case '\'' => sb append "\\'"
-                case '"'  => sb append "\\\""
-                case 0    => sb append "\\0"
-                case 26   => sb append "\\Z"
-                case '\b' => sb append "\\b"
-                case '\n' => sb append "\\n"
-                case '\r' => sb append "\\r"
-                case '\t' => sb append "\\t"
-                case '\\' => sb append "\\\\"
-                case _    => sb append c
+                case '\'' =>
+                  sb append "\\'"
+                case '"' =>
+                  sb append "\\\""
+                case 0 =>
+                  sb append "\\0"
+                case 26 =>
+                  sb append "\\Z"
+                case '\b' =>
+                  sb append "\\b"
+                case '\n' =>
+                  sb append "\\n"
+                case '\r' =>
+                  sb append "\\r"
+                case '\t' =>
+                  sb append "\\t"
+                case '\\' =>
+                  sb append "\\\\"
+                case _ =>
+                  sb append c
               }
             sb append '\''
             sb.toString

@@ -34,7 +34,8 @@ object SparkSqlExample {
       sys.env.get("SPARK_AUDIT_MASTER") match {
         case Some(master) =>
           new SparkConf().setAppName("Simple Sql App").setMaster(master)
-        case None => new SparkConf().setAppName("Simple Sql App")
+        case None =>
+          new SparkConf().setAppName("Simple Sql App")
       }
     val sc = new SparkContext(conf)
     val hiveContext = new HiveContext(sc)

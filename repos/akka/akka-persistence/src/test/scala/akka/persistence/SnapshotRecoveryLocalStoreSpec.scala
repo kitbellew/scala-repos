@@ -13,9 +13,12 @@ object SnapshotRecoveryLocalStoreSpec {
       extends NamedPersistentActor(name) {
     var state = s"State for actor ${name}"
     def receiveCommand = {
-      case TakeSnapshot ⇒ saveSnapshot(state)
-      case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
-      case GetState ⇒ probe ! state
+      case TakeSnapshot ⇒
+        saveSnapshot(state)
+      case SaveSnapshotSuccess(md) ⇒
+        probe ! md.sequenceNr
+      case GetState ⇒
+        probe ! state
     }
     def receiveRecover = {
       case _ ⇒
@@ -31,7 +34,8 @@ object SnapshotRecoveryLocalStoreSpec {
       case _ ⇒
     }
     def receiveRecover = {
-      case other ⇒ probe ! other
+      case other ⇒
+        probe ! other
     }
   }
 }

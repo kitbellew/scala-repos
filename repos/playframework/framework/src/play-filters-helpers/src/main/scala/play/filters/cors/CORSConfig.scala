@@ -126,8 +126,10 @@ object CORSConfig {
       config: PlayConfig): CORSConfig = {
     CORSConfig(
       allowedOrigins = config.get[Option[Seq[String]]]("allowedOrigins") match {
-        case Some(allowed) => Origins.Matching(allowed.toSet)
-        case None          => Origins.All
+        case Some(allowed) =>
+          Origins.Matching(allowed.toSet)
+        case None =>
+          Origins.All
       },
       isHttpMethodAllowed = config
         .get[Option[Seq[String]]]("allowedHttpMethods")

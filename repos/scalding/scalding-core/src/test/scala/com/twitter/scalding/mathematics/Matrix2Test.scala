@@ -116,7 +116,8 @@ class Matrix2RowRowHad(args: Args) extends Job(args) {
   val rowSum = row1 #*# row1
   rowSum.toTypedPipe
     .map {
-      case (x, idx, v) => (idx, v)
+      case (x, idx, v) =>
+        (idx, v)
     }
     .write(TypedText.tsv[(Int, Double)]("rowRowHad"))
 }
@@ -226,14 +227,16 @@ class Matrix2PropJob(args: Args) extends Job(args) {
   val tsv2 = TypedText.tsv[(Int, Double)]("col")
   val col = MatrixLiteral(
     TypedPipe.from(tsv2).map {
-      case (idx, v) => (idx, (), v)
+      case (idx, v) =>
+        (idx, (), v)
     },
     NoClue)
 
   val tsv3 = TypedText.tsv[(Int, Double)]("row")
   val row = MatrixLiteral(
     TypedPipe.from(tsv3).map {
-      case (idx, v) => ((), idx, v)
+      case (idx, v) =>
+        ((), idx, v)
     },
     NoClue)
 
@@ -242,14 +245,16 @@ class Matrix2PropJob(args: Args) extends Job(args) {
     .propagate(col)
     .toTypedPipe
     .map {
-      case (idx, x, v) => (idx, v)
+      case (idx, x, v) =>
+        (idx, v)
     }
     .write(TypedText.tsv[(Int, Double)]("prop-col"))
   row
     .propagateRow(mat.binarizeAs[Boolean])
     .toTypedPipe
     .map {
-      case (x, idx, v) => (idx, v)
+      case (x, idx, v) =>
+        (idx, v)
     }
     .write(TypedText.tsv[(Int, Double)]("prop-row"))
 }

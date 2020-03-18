@@ -37,7 +37,8 @@ trait CommandHandler {
       res
     } else {
       val f = cmd.errors.map(_.validation) collect {
-        case Failure(e) ⇒ e
+        case Failure(e) ⇒
+          e
       }
       commandLogger.debug(
         "Command [%s] executed with %d failures.\n%s" format (

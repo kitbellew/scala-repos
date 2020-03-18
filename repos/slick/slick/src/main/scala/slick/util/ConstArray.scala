@@ -444,7 +444,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
           }
           true
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   ///////////////////////////////////////////////////////// Product

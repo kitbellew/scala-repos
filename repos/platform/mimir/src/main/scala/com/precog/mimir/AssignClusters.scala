@@ -81,7 +81,8 @@ trait AssignClusterModule[M[+_]]
                     Schema.mkType(ref :: Nil) flatMap {
                       case jType =>
                         schema.columns(jType) collectFirst {
-                          case (col: DoubleColumn) => col
+                          case (col: DoubleColumn) =>
+                            col
                         }
                     } map { col =>
                       (
@@ -91,7 +92,8 @@ trait AssignClusterModule[M[+_]]
                         col)
                     }
 
-                  case _ => None
+                  case _ =>
+                    None
                 } groupBy {
                   _._1
                 }
@@ -127,7 +129,8 @@ trait AssignClusterModule[M[+_]]
                   }.toSet
 
                 models0 filter {
-                  case Model(_, modelClusters) => !modelClusters.isEmpty
+                  case Model(_, modelClusters) =>
+                    !modelClusters.isEmpty
                 }
               }
             }
@@ -166,7 +169,8 @@ trait AssignClusterModule[M[+_]]
 
                   val resPaths =
                     res map {
-                      case (ColumnRef(cpath, _), _) => cpath
+                      case (ColumnRef(cpath, _), _) =>
+                        cpath
                     } toSet
 
                   if (resPaths == featurePaths)
@@ -177,7 +181,8 @@ trait AssignClusterModule[M[+_]]
 
                 def defined(cols: Map[ColumnRef, Column]): BitSet = {
                   val columns = cols map {
-                    case (_, col) => col
+                    case (_, col) =>
+                      col
                   }
 
                   BitSetUtil.filteredRange(range) { i =>
@@ -206,10 +211,12 @@ trait AssignClusterModule[M[+_]]
                           (model.clusters).map {
                             _.featureValues.toArray
                               .sortBy {
-                                case (path, _) => path
+                                case (path, _) =>
+                                  path
                               }
                               .map {
-                                case (_, col) => col
+                                case (_, col) =>
+                                  col
                               }
                               .toArray
                           }
@@ -221,12 +228,15 @@ trait AssignClusterModule[M[+_]]
                           } getOrElse Array.empty[CPath]
 
                         val featureColumns0 = includedModel.collect {
-                          case (ref, col: DoubleColumn) => (ref, col)
+                          case (ref, col: DoubleColumn) =>
+                            (ref, col)
                         }.toArray sortBy {
-                          case (ColumnRef(path, _), _) => path
+                          case (ColumnRef(path, _), _) =>
+                            path
                         }
                         val featureColumns = featureColumns0 map {
-                          case (_, col) => col
+                          case (_, col) =>
+                            col
                         }
 
                         val numFeatures = featureColumns.size

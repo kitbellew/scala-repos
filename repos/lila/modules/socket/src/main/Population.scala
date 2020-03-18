@@ -25,6 +25,7 @@ private[socket] final class Population extends Actor {
       nb = nb - 1
       lila.mon.socket.close()
 
-    case PopulationTell => bus.publish(NbMembers(nb), 'nbMembers)
+    case PopulationTell =>
+      bus.publish(NbMembers(nb), 'nbMembers)
   }
 }

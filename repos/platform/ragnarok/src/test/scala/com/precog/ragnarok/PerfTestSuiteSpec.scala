@@ -113,8 +113,10 @@ class PerfTestSuiteSpec extends Specification {
 
     "selecting multiple disjoint tests gives list" in {
       val ts = ex select {
-        case (_, _: RunQuery) => true
-        case (_, _)           => false
+        case (_, _: RunQuery) =>
+          true
+        case (_, _) =>
+          false
       }
 
       ts must beLike {

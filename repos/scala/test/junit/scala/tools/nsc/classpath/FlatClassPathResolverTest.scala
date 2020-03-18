@@ -127,10 +127,12 @@ class FlatClassPathResolverTest {
           packageNameParts: Seq[String],
           cp: ClassPath[AbstractFile]): ClassPath[AbstractFile] = {
         packageNameParts match {
-          case Nil => cp
+          case Nil =>
+            cp
           case h :: t =>
             cp.packages.find(_.name == h) match {
-              case Some(nestedCp) => traverseToPackage(t, nestedCp)
+              case Some(nestedCp) =>
+                traverseToPackage(t, nestedCp)
               case _ =>
                 throw new Exception(
                   s"There's no package $inPackage in recursive classpath - error when searching for '$h'")

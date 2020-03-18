@@ -47,15 +47,19 @@ trait JdbcMappingCompilerComponent {
         rc: ResultConverter[JdbcResultConverterDomain, Option[T]],
         default: () => T) =
       rc match {
-        case rc: OptionResultConverter[_] => rc.getOrElse(default)
-        case _                            => super.createGetOrElseResultConverter[T](rc, default)
+        case rc: OptionResultConverter[_] =>
+          rc.getOrElse(default)
+        case _ =>
+          super.createGetOrElseResultConverter[T](rc, default)
       }
 
     override def createIsDefinedResultConverter[T](
         rc: ResultConverter[JdbcResultConverterDomain, Option[T]]) =
       rc match {
-        case rc: OptionResultConverter[_] => rc.isDefined
-        case _                            => super.createIsDefinedResultConverter(rc)
+        case rc: OptionResultConverter[_] =>
+          rc.isDefined
+        case _ =>
+          super.createIsDefinedResultConverter(rc)
       }
 
     override def createTypeMappingResultConverter(
@@ -66,7 +70,8 @@ trait JdbcMappingCompilerComponent {
       mapper.fastPath match {
         case Some(f) =>
           f(tm).asInstanceOf[ResultConverter[JdbcResultConverterDomain, Any]]
-        case None => tm
+        case None =>
+          tm
       }
     }
   }

@@ -83,29 +83,51 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   override def manifest(obj: AnyRef): String =
     obj match {
-      case _: ORSet[_] ⇒ ORSetManifest
-      case _: GSet[_] ⇒ GSetManifest
-      case _: GCounter ⇒ GCounterManifest
-      case _: PNCounter ⇒ PNCounterManifest
-      case _: Flag ⇒ FlagManifest
-      case _: LWWRegister[_] ⇒ LWWRegisterManifest
-      case _: ORMap[_] ⇒ ORMapManifest
-      case _: LWWMap[_] ⇒ LWWMapManifest
-      case _: PNCounterMap ⇒ PNCounterMapManifest
-      case _: ORMultiMap[_] ⇒ ORMultiMapManifest
-      case DeletedData ⇒ DeletedDataManifest
-      case _: VersionVector ⇒ VersionVectorManifest
+      case _: ORSet[_] ⇒
+        ORSetManifest
+      case _: GSet[_] ⇒
+        GSetManifest
+      case _: GCounter ⇒
+        GCounterManifest
+      case _: PNCounter ⇒
+        PNCounterManifest
+      case _: Flag ⇒
+        FlagManifest
+      case _: LWWRegister[_] ⇒
+        LWWRegisterManifest
+      case _: ORMap[_] ⇒
+        ORMapManifest
+      case _: LWWMap[_] ⇒
+        LWWMapManifest
+      case _: PNCounterMap ⇒
+        PNCounterMapManifest
+      case _: ORMultiMap[_] ⇒
+        ORMultiMapManifest
+      case DeletedData ⇒
+        DeletedDataManifest
+      case _: VersionVector ⇒
+        VersionVectorManifest
 
-      case _: ORSetKey[_] ⇒ ORSetKeyManifest
-      case _: GSetKey[_] ⇒ GSetKeyManifest
-      case _: GCounterKey ⇒ GCounterKeyManifest
-      case _: PNCounterKey ⇒ PNCounterKeyManifest
-      case _: FlagKey ⇒ FlagKeyManifest
-      case _: LWWRegisterKey[_] ⇒ LWWRegisterKeyManifest
-      case _: ORMapKey[_] ⇒ ORMapKeyManifest
-      case _: LWWMapKey[_] ⇒ LWWMapKeyManifest
-      case _: PNCounterMapKey ⇒ PNCounterMapKeyManifest
-      case _: ORMultiMapKey[_] ⇒ ORMultiMapKeyManifest
+      case _: ORSetKey[_] ⇒
+        ORSetKeyManifest
+      case _: GSetKey[_] ⇒
+        GSetKeyManifest
+      case _: GCounterKey ⇒
+        GCounterKeyManifest
+      case _: PNCounterKey ⇒
+        PNCounterKeyManifest
+      case _: FlagKey ⇒
+        FlagKeyManifest
+      case _: LWWRegisterKey[_] ⇒
+        LWWRegisterKeyManifest
+      case _: ORMapKey[_] ⇒
+        ORMapKeyManifest
+      case _: LWWMapKey[_] ⇒
+        LWWMapKeyManifest
+      case _: PNCounterMapKey ⇒
+        PNCounterMapKeyManifest
+      case _: ORMultiMapKey[_] ⇒
+        ORMultiMapKeyManifest
 
       case _ ⇒
         throw new IllegalArgumentException(
@@ -114,19 +136,32 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def toBinary(obj: AnyRef): Array[Byte] =
     obj match {
-      case m: ORSet[_] ⇒ compress(orsetToProto(m))
-      case m: GSet[_] ⇒ gsetToProto(m).toByteArray
-      case m: GCounter ⇒ gcounterToProto(m).toByteArray
-      case m: PNCounter ⇒ pncounterToProto(m).toByteArray
-      case m: Flag ⇒ flagToProto(m).toByteArray
-      case m: LWWRegister[_] ⇒ lwwRegisterToProto(m).toByteArray
-      case m: ORMap[_] ⇒ compress(ormapToProto(m))
-      case m: LWWMap[_] ⇒ compress(lwwmapToProto(m))
-      case m: PNCounterMap ⇒ compress(pncountermapToProto(m))
-      case m: ORMultiMap[_] ⇒ compress(multimapToProto(m))
-      case DeletedData ⇒ dm.Empty.getDefaultInstance.toByteArray
-      case m: VersionVector ⇒ versionVectorToProto(m).toByteArray
-      case Key(id) ⇒ keyIdToBinary(id)
+      case m: ORSet[_] ⇒
+        compress(orsetToProto(m))
+      case m: GSet[_] ⇒
+        gsetToProto(m).toByteArray
+      case m: GCounter ⇒
+        gcounterToProto(m).toByteArray
+      case m: PNCounter ⇒
+        pncounterToProto(m).toByteArray
+      case m: Flag ⇒
+        flagToProto(m).toByteArray
+      case m: LWWRegister[_] ⇒
+        lwwRegisterToProto(m).toByteArray
+      case m: ORMap[_] ⇒
+        compress(ormapToProto(m))
+      case m: LWWMap[_] ⇒
+        compress(lwwmapToProto(m))
+      case m: PNCounterMap ⇒
+        compress(pncountermapToProto(m))
+      case m: ORMultiMap[_] ⇒
+        compress(multimapToProto(m))
+      case DeletedData ⇒
+        dm.Empty.getDefaultInstance.toByteArray
+      case m: VersionVector ⇒
+        versionVectorToProto(m).toByteArray
+      case Key(id) ⇒
+        keyIdToBinary(id)
       case _ ⇒
         throw new IllegalArgumentException(
           s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
@@ -134,7 +169,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     fromBinaryMap.get(manifest) match {
-      case Some(f) ⇒ f(bytes)
+      case Some(f) ⇒
+        f(bytes)
       case None ⇒
         throw new IllegalArgumentException(
           s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
@@ -148,10 +184,14 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     val longElements = new ArrayList[jl.Long]
     val otherElements = new ArrayList[dm.OtherMessage]
     gset.elements.foreach {
-      case s: String ⇒ stringElements.add(s)
-      case i: Int ⇒ intElements.add(i)
-      case l: Long ⇒ longElements.add(l)
-      case other ⇒ otherElements.add(otherMessageToProto(other))
+      case s: String ⇒
+        stringElements.add(s)
+      case i: Int ⇒
+        intElements.add(i)
+      case l: Long ⇒
+        longElements.add(l)
+      case other ⇒
+        otherElements.add(otherMessageToProto(other))
     }
     if (!stringElements.isEmpty) {
       Collections.sort(stringElements)
@@ -196,9 +236,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     val otherElements = new ArrayList[dm.OtherMessage]
     var otherElementsMap = Map.empty[dm.OtherMessage, Any]
     orset.elementsMap.keysIterator.foreach {
-      case s: String ⇒ stringElements.add(s)
-      case i: Int ⇒ intElements.add(i)
-      case l: Long ⇒ longElements.add(l)
+      case s: String ⇒
+        stringElements.add(s)
+      case i: Int ⇒
+        intElements.add(i)
+      case l: Long ⇒
+        longElements.add(l)
       case other ⇒
         val enclosedMsg = otherMessageToProto(other)
         otherElements.add(enclosedMsg)
@@ -212,8 +255,10 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       while (iter.hasNext) {
         val element =
           iter.next() match {
-            case enclosedMsg: dm.OtherMessage ⇒ otherElementsMap(enclosedMsg)
-            case e ⇒ e
+            case enclosedMsg: dm.OtherMessage ⇒
+              otherElementsMap(enclosedMsg)
+            case e ⇒
+              e
           }
         b.addDots(versionVectorToProto(orset.elementsMap(element)))
       }
@@ -288,7 +333,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     val b = rd.GCounter.newBuilder()
     gcounter.state.toVector
       .sortBy {
-        case (address, _) ⇒ address
+        case (address, _) ⇒
+          address
       }
       .foreach {
         case (address, value) ⇒
@@ -364,7 +410,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     val b = rd.ORMap.newBuilder().setKeys(orsetToProto(ormap.keys))
     ormap.entries.toVector
       .sortBy {
-        case (key, _) ⇒ key
+        case (key, _) ⇒
+          key
       }
       .foreach {
         case (key, value) ⇒
@@ -396,7 +443,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     val b = rd.LWWMap.newBuilder().setKeys(orsetToProto(lwwmap.underlying.keys))
     lwwmap.underlying.entries.toVector
       .sortBy {
-        case (key, _) ⇒ key
+        case (key, _) ⇒
+          key
       }
       .foreach {
         case (key, value) ⇒
@@ -429,7 +477,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .setKeys(orsetToProto(pncountermap.underlying.keys))
     pncountermap.underlying.entries.toVector
       .sortBy {
-        case (key, _) ⇒ key
+        case (key, _) ⇒
+          key
       }
       .foreach {
         case (key, value: PNCounter) ⇒
@@ -462,7 +511,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .setKeys(orsetToProto(multimap.underlying.keys))
     multimap.underlying.entries.toVector
       .sortBy {
-        case (key, _) ⇒ key
+        case (key, _) ⇒
+          key
       }
       .foreach {
         case (key, value) ⇒

@@ -181,9 +181,12 @@ final class Emitter private (
               Position.NoPosition)
           val allMembers =
             allMembersBlock match {
-              case js.Block(members) => members
-              case js.Skip()         => Nil
-              case oneMember         => List(oneMember)
+              case js.Block(members) =>
+                members
+              case js.Skip() =>
+                Nil
+              case oneMember =>
+                List(oneMember)
             }
           addTree(classEmitter.genES6Class(linkedClass, allMembers))
       }

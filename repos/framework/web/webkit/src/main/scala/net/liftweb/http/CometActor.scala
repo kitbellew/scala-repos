@@ -126,7 +126,8 @@ object AddAListener {
     new AddAListener(
       who,
       {
-        case _ => true
+        case _ =>
+          true
       })
 }
 
@@ -326,7 +327,8 @@ trait CometListener extends BaseCometActor {
     registerWith ! AddAListener(
       this,
       {
-        case _ => true
+        case _ =>
+          true
       })
     super.localSetup()
   }
@@ -808,7 +810,8 @@ trait BaseCometActor
   protected def calcFixedRender: Box[NodeSeq] =
     fixedRender.map(ns =>
       theSession.postPageJavaScript() match {
-        case Nil => ns
+        case Nil =>
+          ns
         case xs => {
           ns ++ Script(xs)
         }
@@ -877,8 +880,10 @@ trait BaseCometActor
     case l @ Unlisten(seq) => {
       _lastListenerTime = millis
       askingWho match {
-        case Full(who) => forwardMessageTo(l, who) // forward l
-        case _         => listeners = listeners.filter(_._1 != seq)
+        case Full(who) =>
+          forwardMessageTo(l, who) // forward l
+        case _ =>
+          listeners = listeners.filter(_._1 != seq)
       }
       listenerTransition()
     }
@@ -886,7 +891,8 @@ trait BaseCometActor
     case l @ Listen(when, seqId, toDo) => {
       _lastListenerTime = millis
       askingWho match {
-        case Full(who) => forwardMessageTo(l, who) // who forward l
+        case Full(who) =>
+          forwardMessageTo(l, who) // who forward l
         case _ =>
           if (when < lastRenderTime && !partialUpdateStream_?) {
             toDo(
@@ -903,7 +909,8 @@ trait BaseCometActor
           } else {
             _lastRenderTime = when
             deltas.filter(_.when > when) match {
-              case Nil => listeners = (seqId, toDo) :: listeners
+              case Nil =>
+                listeners = (seqId, toDo) :: listeners
 
               case all @ (hd :: xs) => {
                 toDo(
@@ -950,7 +957,8 @@ trait BaseCometActor
 
     case AskRender =>
       askingWho match {
-        case Full(who) => forwardMessageTo(AskRender, who) //  forward AskRender
+        case Full(who) =>
+          forwardMessageTo(AskRender, who) //  forward AskRender
         case _ => {
           val out =
             if (receivedDelta || alwaysReRenderOnPageLoad) {
@@ -1036,19 +1044,24 @@ trait BaseCometActor
         this ! ShutDown
       }
 
-    case ReRender(all) => performReRender(all)
+    case ReRender(all) =>
+      performReRender(all)
 
     case SetDeltaPruner(f) =>
       _deltaPruner = f
       deltas = f(this, deltas)
 
-    case Error(id, node) => notices += ((NoticeType.Error, node, id))
+    case Error(id, node) =>
+      notices += ((NoticeType.Error, node, id))
 
-    case Warning(id, node) => notices += ((NoticeType.Warning, node, id))
+    case Warning(id, node) =>
+      notices += ((NoticeType.Warning, node, id))
 
-    case Notice(id, node) => notices += ((NoticeType.Notice, node, id))
+    case Notice(id, node) =>
+      notices += ((NoticeType.Notice, node, id))
 
-    case ClearNotices => clearNotices
+    case ClearNotices =>
+      clearNotices
 
     case ShutDown =>
       logger.info("The CometActor " + this + " Received Shutdown")
@@ -1375,8 +1388,10 @@ trait BaseCometActor
       in._1,
       Text(
         in._2 match {
-          case null => "null"
-          case s    => s.toString
+          case null =>
+            "null"
+          case s =>
+            s.toString
         }))
 
   implicit def nodeSeqToFull(in: NodeSeq): Box[NodeSeq] = Full(in)
@@ -1544,8 +1559,10 @@ private[http] class XmlOrJsCmd(
           LiftRules.jsArtifacts.setHtml(
             id + "_outer",
             (spanFunc(Helpers.stripHead(xml)) ++ fixedXhtml.openOr(Text(""))))
-        case (_, Full(js), _) => js
-        case _                => JsCmds.Noop
+        case (_, Full(js), _) =>
+          js
+        case _ =>
+          JsCmds.Noop
       }
     val fullUpdateJs =
       LiftRules.cometUpdateExceptionHandler.vend.foldLeft(updateJs) {

@@ -36,7 +36,8 @@ final class BuildStructure(
     units.get(build).toList.flatMap(_.defined.values)
   def allProjectRefs: Seq[ProjectRef] =
     units.toSeq flatMap {
-      case (build, unit) => refs(build, unit.defined.values.toSeq)
+      case (build, unit) =>
+        refs(build, unit.defined.values.toSeq)
     }
   def allProjectRefs(build: URI): Seq[ProjectRef] =
     refs(build, allProjects(build))
@@ -219,7 +220,8 @@ final class DetectedPlugins(
           allDetected filterNot {
             _ == sbt.plugins.IvyPlugin
           }
-        case _ => allDetected
+        case _ =>
+          allDetected
       }
     Plugins.deducer(detected)(ps0, log)
   }
@@ -348,12 +350,14 @@ object BuildStreams {
   def pathComponent[T](axis: ScopeAxis[T], scoped: ScopedKey[_], label: String)(
       show: T => String): String =
     axis match {
-      case Global => GlobalPath
+      case Global =>
+        GlobalPath
       case This =>
         sys.error(
           "Unresolved This reference for " + label + " in " + displayFull(
             scoped))
-      case Select(t) => show(t)
+      case Select(t) =>
+        show(t)
     }
   def nonProjectPath[T](scoped: ScopedKey[T]): Seq[String] = {
     val scope = scoped.scope
@@ -365,7 +369,8 @@ object BuildStreams {
   }
   def showAMap(a: AttributeMap): String =
     a.entries.toSeq.sortBy(_.key.label).map {
-      case AttributeEntry(key, value) => key.label + "=" + value.toString
+      case AttributeEntry(key, value) =>
+        key.label + "=" + value.toString
     } mkString (" ")
   def projectPath(
       units: Map[URI, LoadedBuildUnit],

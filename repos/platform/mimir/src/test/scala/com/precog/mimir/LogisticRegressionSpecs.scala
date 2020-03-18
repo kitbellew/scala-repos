@@ -107,8 +107,10 @@ trait LogisticRegressionSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -201,7 +203,8 @@ trait LogisticRegressionSpecs[M[+_]]
     val allThetas = actualThetas zip combineResults(num, thetas)
 
     val ok = allThetas map {
-      case (t, ts) => isOk(t, ts)
+      case (t, ts) =>
+        isOk(t, ts)
     }
 
     ok mustEqual Array.fill(num)(true)
@@ -295,7 +298,8 @@ trait LogisticRegressionSpecs[M[+_]]
     val allThetas = actualThetas zip combineResults(num, thetas)
 
     val ok = allThetas map {
-      case (t, ts) => isOk(t, ts)
+      case (t, ts) =>
+        isOk(t, ts)
     }
 
     ok mustEqual Array.fill(num)(true)
@@ -333,7 +337,8 @@ trait LogisticRegressionSpecs[M[+_]]
       val samples = {
         val samples0 = createLogisticSamplePoints(num, 100, actualThetas)
         samples0 map {
-          case (xs, y) => (Random.nextGaussian +: Random.nextGaussian +: xs, y)
+          case (xs, y) =>
+            (Random.nextGaussian +: Random.nextGaussian +: xs, y)
         }
       }
       val points = jvalues(samples, cpaths, num) map {
@@ -407,7 +412,8 @@ trait LogisticRegressionSpecs[M[+_]]
     def getBooleans(thetas: List[List[Double]]): Array[Boolean] = {
       val zipped = actualThetas zip combineResults(num, thetas)
       zipped map {
-        case (t, ts) => isOk(t, ts)
+        case (t, ts) =>
+          isOk(t, ts)
       }
     }
 
@@ -450,7 +456,8 @@ trait LogisticRegressionSpecs[M[+_]]
       result0 must haveSize(19)
 
       val result = result0 collect {
-        case (ids, value) if ids.size == 2 => value
+        case (ids, value) if ids.size == 2 =>
+          value
       }
 
       result mustEqual Set(
@@ -591,7 +598,8 @@ trait LogisticRegressionSpecs[M[+_]]
       result0 must haveSize(14)
 
       val result = result0 collect {
-        case (ids, value) if ids.size == 2 => value
+        case (ids, value) if ids.size == 2 =>
+          value
       }
 
       result mustEqual Set(

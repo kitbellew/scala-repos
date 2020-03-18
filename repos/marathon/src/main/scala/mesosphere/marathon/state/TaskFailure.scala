@@ -110,8 +110,10 @@ object TaskFailure {
   protected[this] def isFailureState(state: mesos.TaskState): Boolean = {
     import mesos.TaskState._
     state match {
-      case TASK_FAILED | TASK_LOST | TASK_ERROR => true
-      case _                                    => false
+      case TASK_FAILED | TASK_LOST | TASK_ERROR =>
+        true
+      case _ =>
+        false
     }
   }
 }

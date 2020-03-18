@@ -50,7 +50,8 @@ private[sql] class GroupableUDT extends UserDefinedType[GroupableData] {
 
   override def deserialize(datum: Any): GroupableData = {
     datum match {
-      case data: Int => GroupableData(data)
+      case data: Int =>
+        GroupableData(data)
     }
   }
 

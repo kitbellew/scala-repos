@@ -172,7 +172,8 @@ object ScalaDSL {
           behavior.applyOrElse(Sig(context, PostStop), fallback)
         case Sig(context, PostRestart(_)) ⇒
           behavior.applyOrElse(Sig(context, PreStart), fallback)
-        case _ ⇒ Unhandled
+        case _ ⇒
+          Unhandled
       }
       behavior.applyOrElse(Sig(ctx, msg), fallback)
     }
@@ -210,7 +211,8 @@ object ScalaDSL {
   final case class Total[T](behavior: T ⇒ Behavior[T]) extends Behavior[T] {
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] =
       msg match {
-        case _ ⇒ Unhandled
+        case _ ⇒
+          Unhandled
       }
     override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
       behavior(msg)
@@ -231,7 +233,8 @@ object ScalaDSL {
       extends Behavior[T] {
     override def management(ctx: ActorContext[T], msg: Signal): Behavior[T] =
       msg match {
-        case _ ⇒ Unhandled
+        case _ ⇒
+          Unhandled
       }
     override def message(ctx: ActorContext[T], msg: T): Behavior[T] =
       behavior.applyOrElse(msg, unhandledFunction)
@@ -270,7 +273,8 @@ object ScalaDSL {
     def monitor[T](monitor: ActorRef[T], behavior: Behavior[T]): Tap[T] =
       Tap(
         {
-          case Msg(_, msg) ⇒ monitor ! msg
+          case Msg(_, msg) ⇒
+            monitor ! msg
         },
         behavior)
   }

@@ -23,7 +23,8 @@ object ApplicationBuild extends Build {
           case Secret("changeme") =>
             throw new RuntimeException("secret not changed!!\n" + file)
           case Secret(_) =>
-          case _         => throw new RuntimeException("secret not found!!\n" + file)
+          case _ =>
+            throw new RuntimeException("secret not found!!\n" + file)
         }
       }
     )

@@ -25,8 +25,10 @@ class ScalaMethodCallFixer extends ScalaFixer {
       psiElement: PsiElement): OperationPerformed = {
     val args =
       psiElement match {
-        case call: ScMethodCall => call.args
-        case _                  => return NoOperation
+        case call: ScMethodCall =>
+          call.args
+        case _ =>
+          return NoOperation
       }
 
     val methodCall = psiElement.asInstanceOf[ScMethodCall]
@@ -54,8 +56,10 @@ class ScalaMethodCallFixer extends ScalaFixer {
                 }
 
                 currentPsi match {
-                  case a: ScArgumentExprList => a
-                  case _                     => args
+                  case a: ScArgumentExprList =>
+                    a
+                  case _ =>
+                    args
                 }
               }
 

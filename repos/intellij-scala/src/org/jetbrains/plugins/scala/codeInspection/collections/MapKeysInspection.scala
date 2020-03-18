@@ -35,6 +35,7 @@ object MapKeys extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "keys"))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }

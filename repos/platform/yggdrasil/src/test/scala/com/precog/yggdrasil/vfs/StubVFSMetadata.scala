@@ -87,7 +87,8 @@ class StubVFSMetadata[M[+_]](
     for {
       types <- getPathMeta(path) map {
         _ collect {
-          case (ColumnRef(`property`, ctype), count) => (ctype, count)
+          case (ColumnRef(`property`, ctype), count) =>
+            (ctype, count)
         }
       }
 

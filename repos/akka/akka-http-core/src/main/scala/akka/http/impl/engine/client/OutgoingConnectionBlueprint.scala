@@ -71,7 +71,8 @@ private[http] object OutgoingConnectionBlueprint {
           Flow[HttpRequest] map { request ⇒
             val sendEntityTrigger =
               request.headers collectFirst {
-                case headers.Expect.`100-continue` ⇒ Promise[NotUsed]().future
+                case headers.Expect.`100-continue` ⇒
+                  Promise[NotUsed]().future
               }
             RequestRenderingContext(request, hostHeader, sendEntityTrigger)
           }
@@ -132,7 +133,8 @@ private[http] object OutgoingConnectionBlueprint {
 
         val collectSessionBytes = b.add(
           Flow[SslTlsInbound].collect {
-            case s: SessionBytes ⇒ s
+            case s: SessionBytes ⇒
+              s
           })
 
         renderingContextCreation.out ~> bypassFanout.in
@@ -423,10 +425,14 @@ private[http] object OutgoingConnectionBlueprint {
             else
               andThen()
           current match {
-            case NeedNextRequestMethod ⇒ e(b.result(), getNextMethod)
-            case StreamEnd ⇒ e(b.result(), () ⇒ completeStage())
-            case NeedMoreData ⇒ e(b.result(), getNextData)
-            case x ⇒ drainParser(parser.onPull(), b += x)
+            case NeedNextRequestMethod ⇒
+              e(b.result(), getNextMethod)
+            case StreamEnd ⇒
+              e(b.result(), () ⇒ completeStage())
+            case NeedMoreData ⇒
+              e(b.result(), getNextData)
+            case x ⇒
+              drainParser(parser.onPull(), b += x)
           }
         }
 

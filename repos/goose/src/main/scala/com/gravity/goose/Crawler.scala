@@ -101,7 +101,8 @@ class Crawler(config: Configuration) {
           article.cleanedArticleText = outputFormatter.getFormattedText(
             article.topNode)
         }
-        case _ => trace("NO ARTICLE FOUND")
+        case _ =>
+          trace("NO ARTICLE FOUND")
       }
       releaseResources(article)
       article
@@ -121,7 +122,8 @@ class Crawler(config: Configuration) {
         case Some(html) => {
           Some(html)
         }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }

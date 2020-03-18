@@ -95,7 +95,8 @@ class WrappedArrayTest {
     // Ascribe to right type here, so we'll actually produce a WrappedArray
     val seq: js.WrappedArray[Int] = js.Array(3, 4, 5, 6, 3, 4)
     val res = seq.collect {
-      case x if x > 4 => 2 * x
+      case x if x > 4 =>
+        2 * x
     }
 
     assertEquals(classOf[js.WrappedArray[Int]], res.getClass)

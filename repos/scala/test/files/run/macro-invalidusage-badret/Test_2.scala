@@ -9,6 +9,7 @@ object Test extends App {
     Ident(TypeName("String")))
   try cm.mkToolBox().eval(tree)
   catch {
-    case ex: Throwable => println(ex.getMessage)
+    case ex: Throwable =>
+      println(ex.getMessage)
   }
 }

@@ -35,8 +35,10 @@ scala> :quit"""
   lazy val elided = """(\s+\.{3} )\d+( elided)""".r
   override def normalize(line: String) =
     line match {
-      case elided(ellipsis, suffix) => s"$ellipsis???$suffix"
-      case s                        => s
+      case elided(ellipsis, suffix) =>
+        s"$ellipsis???$suffix"
+      case s =>
+        s
     }
   override def expected = super.expected map normalize
 }

@@ -164,7 +164,8 @@ class ClientBuilderTest
   private val retryMyExceptionOnce = RetryPolicy.tries[Try[Nothing]](
     2, // 2 tries == 1 attempt + 1 retry
     {
-      case Throw(_: MyException) => true
+      case Throw(_: MyException) =>
+        true
     })
 
   test("ClientBuilder should collect stats on 'tries' for retrypolicy") {
@@ -297,7 +298,8 @@ class ClientBuilderTest
 
     new ClientBuilderHelper {
       val specificExceptionRetry: PartialFunction[Try[Nothing], Boolean] = {
-        case Throw(e: SpecificException) => true
+        case Throw(e: SpecificException) =>
+          true
       }
       val builder = ClientBuilder()
         .name("test")

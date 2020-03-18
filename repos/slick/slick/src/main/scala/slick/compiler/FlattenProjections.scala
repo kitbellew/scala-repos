@@ -45,7 +45,8 @@ class FlattenProjections extends Phase {
                   val paths = translations(tsym)
                   logger.debug(s"  Translation for $tsym: $paths")
                   Select(base.untypedPath, paths(rest))
-                case None => p.untypedPath
+                case None =>
+                  p.untypedPath
               }
             logger.debug("Translated " + p.pathString + " to:", p2)
             p2
@@ -59,7 +60,8 @@ class FlattenProjections extends Phase {
             }
           case Library.SilentCast(ch) :@ tpe =>
             Library.SilentCast.typed(tpe.structuralRec, tr(ch, false))
-          case n => n.mapChildren(tr(_, false))
+          case n =>
+            n.mapChildren(tr(_, false))
         }
       tr(tree, true).infer()
     }
@@ -77,15 +79,19 @@ class FlattenProjections extends Phase {
       tpe match {
         case NominalType(tsym, _) if candidates contains tsym =>
           Some((n, Nil, tsym))
-        case _ => None
+        case _ =>
+          None
       }
     n match {
       case Select(in, field) =>
         splitPath(in.asInstanceOf[PathElement], candidates) match {
-          case Some((n, p, tsym)) => Some((n, field :: p, tsym))
-          case None               => checkType(n.nodeType)
+          case Some((n, p, tsym)) =>
+            Some((n, field :: p, tsym))
+          case None =>
+            checkType(n.nodeType)
         }
-      case _: Ref => checkType(n.nodeType)
+      case _: Ref =>
+        checkType(n.nodeType)
     }
   }
 
@@ -106,11 +112,13 @@ class FlattenProjections extends Phase {
       n match {
         case StructNode(ch) =>
           ch.foreach {
-            case (s, n) => flatten(n, s :: path)
+            case (s, n) =>
+              flatten(n, s :: path)
           }
         case p: ProductNode =>
           p.children.zipWithIndex.foreach {
-            case (n, i) => flatten(n, new ElementSymbol(i + 1) :: path)
+            case (n, i) =>
+              flatten(n, new ElementSymbol(i + 1) :: path)
           }
         case n =>
           if (collapse) {

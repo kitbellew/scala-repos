@@ -53,7 +53,8 @@ private[this] object JsonPathParser extends RegexParsers {
 
   def long: Parser[Long] =
     "\\d+".r ^? {
-      case x => x.toLong
+      case x =>
+        x.toLong
     }
 
   // parse `[*]` and `[123]` subscripts
@@ -160,7 +161,8 @@ case class GetJsonObject(json: Expression, path: Expression)
             }
         }
       } catch {
-        case _: JsonProcessingException => null
+        case _: JsonProcessingException =>
+          null
       }
     } else {
       null
@@ -259,9 +261,12 @@ case class GetJsonObject(json: Expression, path: Expression)
         // retain Flatten, otherwise use Quoted... cannot use Raw within an array
         val nextStyle =
           style match {
-            case RawStyle     => QuotedStyle
-            case FlattenStyle => FlattenStyle
-            case QuotedStyle  => throw new IllegalStateException()
+            case RawStyle =>
+              QuotedStyle
+            case FlattenStyle =>
+              FlattenStyle
+            case QuotedStyle =>
+              throw new IllegalStateException()
           }
 
         // temporarily buffer child matches, the emitted json will need to be
@@ -368,7 +373,8 @@ case class JsonTuple(children: Seq[Expression])
     fieldExpressions.map {
       case expr if expr.foldable =>
         expr.eval().asInstanceOf[UTF8String].toString
-      case _ => null
+      case _ =>
+        null
     }.toIndexedSeq
   }
 
@@ -378,7 +384,8 @@ case class JsonTuple(children: Seq[Expression])
 
   override def elementTypes: Seq[(DataType, Boolean, String)] =
     fieldExpressions.zipWithIndex.map {
-      case (_, idx) => (StringType, true, s"c$idx")
+      case (_, idx) =>
+        (StringType, true, s"c$idx")
     }
 
   override def prettyName: String = "json_tuple"
@@ -436,7 +443,8 @@ case class JsonTuple(children: Seq[Expression])
         foldableFieldNames.zip(fieldExpressions).map {
           case (null, expr) =>
             expr.eval(input).asInstanceOf[UTF8String].toString
-          case (fieldName, _) => fieldName
+          case (fieldName, _) =>
+            fieldName
         }
       }
 

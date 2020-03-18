@@ -140,8 +140,10 @@ object ActorMaterializer {
   private def actorSystemOf(context: ActorRefFactory): ActorSystem = {
     val system =
       context match {
-        case s: ExtendedActorSystem ⇒ s
-        case c: ActorContext ⇒ c.system
+        case s: ExtendedActorSystem ⇒
+          s
+        case c: ActorContext ⇒
+          c.system
         case null ⇒
           throw new IllegalArgumentException(
             "ActorRefFactory context must be defined")
@@ -157,7 +159,8 @@ object ActorMaterializer {
     */
   private[akka] def downcast(materializer: Materializer): ActorMaterializer =
     materializer match { //FIXME this method is going to cause trouble for other Materializer implementations
-      case m: ActorMaterializer ⇒ m
+      case m: ActorMaterializer ⇒
+        m
       case _ ⇒
         throw new IllegalArgumentException(
           s"required [${classOf[ActorMaterializer].getName}] " +
@@ -446,10 +449,14 @@ final class ActorMaterializerSettings private (
       : ActorMaterializerSettings = {
     import Supervision._
     copy(supervisionDecider = decider match {
-      case `resumingDecider` ⇒ resumingDecider
-      case `restartingDecider` ⇒ restartingDecider
-      case `stoppingDecider` ⇒ stoppingDecider
-      case other ⇒ other.apply _
+      case `resumingDecider` ⇒
+        resumingDecider
+      case `restartingDecider` ⇒
+        restartingDecider
+      case `stoppingDecider` ⇒
+        stoppingDecider
+      case other ⇒
+        other.apply _
     })
   }
 
@@ -541,7 +548,8 @@ final class ActorMaterializerSettings private (
           s.syncProcessingLimit == syncProcessingLimit &&
           s.fuzzingMode == fuzzingMode &&
           s.autoFusing == autoFusing
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   override def toString: String =
@@ -579,9 +587,12 @@ object StreamSubscriptionTimeoutSettings {
     val c = config.getConfig("subscription-timeout")
     StreamSubscriptionTimeoutSettings(
       mode = c.getString("mode").toLowerCase(Locale.ROOT) match {
-        case "no" | "off" | "false" | "noop" ⇒ NoopTermination
-        case "warn" ⇒ WarnTermination
-        case "cancel" ⇒ CancelTermination
+        case "no" | "off" | "false" | "noop" ⇒
+          NoopTermination
+        case "warn" ⇒
+          WarnTermination
+        case "cancel" ⇒
+          CancelTermination
       },
       timeout = c.getDuration("timeout", TimeUnit.MILLISECONDS).millis
     )
@@ -599,7 +610,8 @@ final class StreamSubscriptionTimeoutSettings(
     other match {
       case s: StreamSubscriptionTimeoutSettings ⇒
         s.mode == mode && s.timeout == timeout
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
   override def toString: String =
     s"StreamSubscriptionTimeoutSettings($mode,$timeout)"

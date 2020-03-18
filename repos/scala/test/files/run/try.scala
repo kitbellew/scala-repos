@@ -8,7 +8,8 @@ object Test extends AnyRef with App {
         try {
           x;
         } catch {
-          case _: Error => 1;
+          case _: Error =>
+            1;
         }
       ));
   }
@@ -20,7 +21,8 @@ object Test extends AnyRef with App {
         try {
           x
         } catch {
-          case _: Error => 1;
+          case _: Error =>
+            1;
         }
       )
         +
@@ -28,7 +30,8 @@ object Test extends AnyRef with App {
             try {
               x
             } catch {
-              case _: Error => 1;
+              case _: Error =>
+                1;
             }
           ));
   }
@@ -41,13 +44,15 @@ object Test extends AnyRef with App {
       try {
         1
       } catch {
-        case e: Error => 1;
+        case e: Error =>
+          1;
       }
     this.n =
       try {
         1
       } catch {
-        case e: Error => 1;
+        case e: Error =>
+          1;
       }
     Console.println(x + n);
   }
@@ -87,7 +92,8 @@ object Test extends AnyRef with App {
       }
       Console.println("a");
     } catch {
-      case _: Throwable => ();
+      case _: Throwable =>
+        ();
     }
 
   class A {
@@ -96,7 +102,8 @@ object Test extends AnyRef with App {
         try {
           x
         } catch {
-          case _: Error => 1;
+          case _: Error =>
+            1;
         };
       x + y
     }
@@ -114,7 +121,8 @@ object Test extends AnyRef with App {
       try {
         null
       } catch {
-        case _: Throwable => null
+        case _: Throwable =>
+          null
       }
 
     new AnyRef {

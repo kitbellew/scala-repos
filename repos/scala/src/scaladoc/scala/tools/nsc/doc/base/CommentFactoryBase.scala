@@ -73,7 +73,8 @@ trait CommentFactoryBase {
           case Some(
                 Body(List(Paragraph(Chain(List(Summary(Text(groupId)))))))) =>
             Some(groupId.toString.trim)
-          case _ => None
+          case _ =>
+            None
         }
       val groupPrio = groupPrio0 flatMap {
         case (group, body) =>
@@ -81,10 +82,12 @@ trait CommentFactoryBase {
             body match {
               case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
                 List(group -> prio.trim.toInt)
-              case _ => List()
+              case _ =>
+                List()
             }
           } catch {
-            case _: java.lang.NumberFormatException => List()
+            case _: java.lang.NumberFormatException =>
+              List()
           }
       }
       val groupNames = groupNames0 flatMap {
@@ -93,7 +96,8 @@ trait CommentFactoryBase {
             case Body(List(Paragraph(Chain(List(Summary(Text(name)))))))
                 if (!name.trim.contains("\n")) =>
               List(group -> (name.trim))
-            case _ => List()
+            case _ =>
+              List()
           }
       }
 
@@ -109,7 +113,8 @@ trait CommentFactoryBase {
           case Body(List(Paragraph(Chain(List(Summary(Text(e)))))))
               if !e.trim.contains("\n") =>
             List(e)
-          case _ => List()
+          case _ =>
+            List()
         }
     }
 
@@ -133,17 +138,28 @@ trait CommentFactoryBase {
     * if it cannot be salvaged. */
   private def htmlReplacement(mtch: Regex.Match): String =
     mtch.group(1) match {
-      case "p" | "div"           => "\n\n"
-      case "h1"                  => "\n= "
-      case "/h1"                 => " =\n"
-      case "h2"                  => "\n== "
-      case "/h2"                 => " ==\n"
-      case "h3"                  => "\n=== "
-      case "/h3"                 => " ===\n"
-      case "h4" | "h5" | "h6"    => "\n==== "
-      case "/h4" | "/h5" | "/h6" => " ====\n"
-      case "li"                  => "\n *  - "
-      case _                     => ""
+      case "p" | "div" =>
+        "\n\n"
+      case "h1" =>
+        "\n= "
+      case "/h1" =>
+        " =\n"
+      case "h2" =>
+        "\n== "
+      case "/h2" =>
+        " ==\n"
+      case "h3" =>
+        "\n=== "
+      case "/h3" =>
+        " ===\n"
+      case "h4" | "h5" | "h6" =>
+        "\n==== "
+      case "/h4" | "/h5" | "/h6" =>
+        " ====\n"
+      case "li" =>
+        "\n *  - "
+      case _ =>
+        ""
     }
 
   /** Javadoc tags that should be replaced by something useful, such as wiki
@@ -155,13 +171,20 @@ trait CommentFactoryBase {
   /** Maps a javadoc tag to a useful wiki replacement, or an empty string if it cannot be salvaged. */
   private def javadocReplacement(mtch: Regex.Match): String = {
     mtch.group(1) match {
-      case "code"      => "<code>" + mtch.group(2) + "</code>"
-      case "docRoot"   => ""
-      case "link"      => "`[[" + mtch.group(2) + "]]`"
-      case "linkplain" => "[[" + mtch.group(2) + "]]"
-      case "literal"   => "`" + mtch.group(2) + "`"
-      case "value"     => "`" + mtch.group(2) + "`"
-      case _           => ""
+      case "code" =>
+        "<code>" + mtch.group(2) + "</code>"
+      case "docRoot" =>
+        ""
+      case "link" =>
+        "`[[" + mtch.group(2) + "]]`"
+      case "linkplain" =>
+        "[[" + mtch.group(2) + "]]"
+      case "literal" =>
+        "`" + mtch.group(2) + "`"
+      case "value" =>
+        "`" + mtch.group(2) + "`"
+      case _ =>
+        ""
     }
   }
 
@@ -221,8 +244,10 @@ trait CommentFactoryBase {
       def cleanLine(line: String): String = {
         // Remove trailing whitespaces
         TrailingWhitespaceRegex.replaceAllIn(line, "") match {
-          case CleanCommentLine(ctl) => ctl
-          case tl                    => tl
+          case CleanCommentLine(ctl) =>
+            ctl
+          case tl =>
+            tl
         }
       }
       val strippedComment = comment.trim.stripPrefix("/*").stripSuffix("*/")
@@ -290,7 +315,8 @@ trait CommentFactoryBase {
               case Some(key) =>
                 val value =
                   ((tags get key): @unchecked) match {
-                    case Some(b :: bs) => (b + endOfLine + marker) :: bs
+                    case Some(b :: bs) =>
+                      (b + endOfLine + marker) :: bs
                     case None =>
                       oops("lastTagKey set when no tag exists for key")
                   }
@@ -336,7 +362,8 @@ trait CommentFactoryBase {
               case Some(key) =>
                 val value =
                   ((tags get key): @unchecked) match {
-                    case Some(b :: bs) => (b + endOfLine + marker) :: bs
+                    case Some(b :: bs) =>
+                      (b + endOfLine + marker) :: bs
                     case None =>
                       oops("lastTagKey set when no tag exists for key")
                   }
@@ -380,8 +407,10 @@ trait CommentFactoryBase {
               val key = lastTagKey.get
               val value =
                 ((tags get key): @unchecked) match {
-                  case Some(b :: bs) => (b + endOfLine + line) :: bs
-                  case None          => oops("lastTagKey set when no tag exists for key")
+                  case Some(b :: bs) =>
+                    (b + endOfLine + line) :: bs
+                  case None =>
+                    oops("lastTagKey set when no tag exists for key")
                 }
               tags + (key -> value)
             } else
@@ -403,14 +432,18 @@ trait CommentFactoryBase {
 
           val inheritDiagramText: List[String] =
             tags.get(inheritDiagramTag) match {
-              case Some(list) => list
-              case None       => List.empty
+              case Some(list) =>
+                list
+              case None =>
+                List.empty
             }
 
           val contentDiagramText: List[String] =
             tags.get(contentDiagramTag) match {
-              case Some(list) => list
-              case None       => List.empty
+              case Some(list) =>
+                list
+              case None =>
+                List.empty
             }
 
           val stripTags = List(
@@ -436,7 +469,8 @@ trait CommentFactoryBase {
                     pos,
                     s"Only one '@${key.name}' tag is allowed")
                 Some(r)
-              case _ => None
+              case _ =>
+                None
             }
 
           def allTags(key: SimpleTagKey): List[Body] =
@@ -447,13 +481,15 @@ trait CommentFactoryBase {
               filterEmpty: Boolean = true): Map[String, Body] = {
             val keys: Seq[SymbolTagKey] =
               bodyTags.keys.toSeq flatMap {
-                case stk: SymbolTagKey if (stk.name == key.name) => Some(stk)
+                case stk: SymbolTagKey if (stk.name == key.name) =>
+                  Some(stk)
                 case stk: SimpleTagKey if (stk.name == key.name) =>
                   reporter.warning(
                     pos,
                     s"Tag '@${stk.name}' must be followed by a symbol name")
                   None
-                case _ => None
+                case _ =>
+                  None
               }
             val pairs: Seq[(String, Body)] =
               for (key <- keys)
@@ -485,7 +521,8 @@ trait CommentFactoryBase {
                       val descr = Text(" ") +: content
                       val entityLink = EntityLink(Monospace(Text(name)), link)
                       Body(List(Paragraph(Chain(entityLink +: descr))))
-                    case _ => body
+                    case _ =>
+                      body
                   }
                 (name, newBody)
             }
@@ -790,16 +827,20 @@ trait CommentFactoryBase {
               iss.update(iss.length - 1, Text(t1 + endOfLine + t2))
             case (i1, i2) if skipEndOfLine =>
               iss ++= List(Text(endOfLine.toString), i2)
-            case _ => iss += current
+            case _ =>
+              iss += current
           }
         }
         iss.toList
       }
 
       inlines match {
-        case Nil      => Text("")
-        case i :: Nil => i
-        case is       => Chain(is)
+        case Nil =>
+          Text("")
+        case i :: Nil =>
+          i
+        case is =>
+          Chain(is)
       }
 
     }

@@ -101,10 +101,14 @@ trait ArgHelper {
       case (str, describedArg) =>
         val msg =
           describedArg match {
-            case RequiredArg(key, _) => s"--$key VALUE "
-            case OptionalArg(key, _) => s"[--$key VALUE] "
-            case ListArg(key, _)     => s"[--$key VALUE VALUE2] "
-            case BooleanArg(key, _)  => s"[--$key] "
+            case RequiredArg(key, _) =>
+              s"--$key VALUE "
+            case OptionalArg(key, _) =>
+              s"[--$key VALUE] "
+            case ListArg(key, _) =>
+              s"[--$key VALUE VALUE2] "
+            case BooleanArg(key, _) =>
+              s"[--$key] "
           }
         str + msg
     } + "[--help]"
@@ -125,7 +129,8 @@ trait ArgHelper {
               s"--$key(Required) :: $description \n"
             case OptionalArg(key, description) =>
               s"--$key(Optional) :: $description \n"
-            case ListArg(key, description) => s"--$key(List) :: $description \n"
+            case ListArg(key, description) =>
+              s"--$key(List) :: $description \n"
             case BooleanArg(key, description) =>
               s"--$key(Boolean) :: $description \n"
           }

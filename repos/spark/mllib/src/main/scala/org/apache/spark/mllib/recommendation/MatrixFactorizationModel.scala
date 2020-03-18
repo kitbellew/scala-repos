@@ -140,7 +140,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
 
     if (usersCount < productsCount) {
       val users = userFeatures.join(usersProducts).map {
-        case (user, (uFeatures, product)) => (product, (user, uFeatures))
+        case (user, (uFeatures, product)) =>
+          (product, (user, uFeatures))
       }
       users.join(productFeatures).map {
         case (product, ((user, uFeatures), pFeatures)) =>
@@ -151,7 +152,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
       }
     } else {
       val products = productFeatures.join(usersProducts.map(_.swap)).map {
-        case (product, (pFeatures, user)) => (user, (product, pFeatures))
+        case (product, (pFeatures, user)) =>
+          (user, (product, pFeatures))
       }
       products.join(userFeatures).map {
         case (user, ((product, pFeatures), uFeatures)) =>
@@ -242,7 +244,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
       .map {
         case (user, top) =>
           val ratings = top.map {
-            case (product, rating) => Rating(user, product, rating)
+            case (product, rating) =>
+              Rating(user, product, rating)
           }
           (user, ratings)
       }
@@ -263,7 +266,8 @@ class MatrixFactorizationModel @Since("0.8.0") (
       .map {
         case (product, top) =>
           val ratings = top.map {
-            case (user, rating) => Rating(user, product, rating)
+            case (user, rating) =>
+              Rating(user, product, rating)
           }
           (product, ratings)
       }

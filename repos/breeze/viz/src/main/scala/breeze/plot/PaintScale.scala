@@ -57,8 +57,10 @@ case class CategoricalPaintScale[T](categories: Function1[T, Paint])
 
   private def ida(v: T) =
     categories match {
-      case f: PartialFunction[T, Paint] => f.isDefinedAt(v)
-      case _                            => true
+      case f: PartialFunction[T, Paint] =>
+        f.isDefinedAt(v)
+      case _ =>
+        true
     }
 }
 
@@ -77,15 +79,24 @@ object PaintScale {
       .replace(" ", "")
       .replace("[", "")
       .replace("]", "") match {
-      case "y" | "yellow"  => yellow
-      case "m" | "magenta" => magenta
-      case "c" | "cyan"    => cyan
-      case "r" | "red"     => red
-      case "g" | "green"   => green
-      case "b" | "blue"    => blue
-      case "w" | "white"   => white
-      case "k" | "black"   => black
-      case rgbcsv(r, g, b) => new java.awt.Color(r.toInt, g.toInt, b.toInt)
+      case "y" | "yellow" =>
+        yellow
+      case "m" | "magenta" =>
+        magenta
+      case "c" | "cyan" =>
+        cyan
+      case "r" | "red" =>
+        red
+      case "g" | "green" =>
+        green
+      case "b" | "blue" =>
+        blue
+      case "w" | "white" =>
+        white
+      case "k" | "black" =>
+        black
+      case rgbcsv(r, g, b) =>
+        new java.awt.Color(r.toInt, g.toInt, b.toInt)
       case uninterpretable: String =>
         throw new IllegalArgumentException(
           "Expected color code to be either y m c r g b w k OR R,G,B or " +

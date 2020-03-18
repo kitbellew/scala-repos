@@ -259,7 +259,8 @@ class InMemoryCatalog extends ExternalCatalog {
       val existingParts = catalog(db).tables(table).partitions
       if (!ignoreIfExists) {
         val dupSpecs = parts.collect {
-          case p if existingParts.contains(p.spec) => p.spec
+          case p if existingParts.contains(p.spec) =>
+            p.spec
         }
         if (dupSpecs.nonEmpty) {
           val dupSpecsStr = dupSpecs.mkString("\n===\n")
@@ -283,7 +284,8 @@ class InMemoryCatalog extends ExternalCatalog {
       val existingParts = catalog(db).tables(table).partitions
       if (!ignoreIfNotExists) {
         val missingSpecs = partSpecs.collect {
-          case s if !existingParts.contains(s) => s
+          case s if !existingParts.contains(s) =>
+            s
         }
         if (missingSpecs.nonEmpty) {
           val missingSpecsStr = missingSpecs.mkString("\n===\n")

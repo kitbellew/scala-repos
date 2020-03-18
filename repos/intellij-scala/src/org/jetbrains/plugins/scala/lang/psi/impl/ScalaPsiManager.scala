@@ -230,9 +230,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     val allClasses = getCachedClasses(scope, fqn)
     val classes =
       classCategory match {
-        case ALL    => allClasses
-        case OBJECT => allClasses.filter(_.isInstanceOf[ScObject])
-        case TYPE   => allClasses.filter(!_.isInstanceOf[ScObject])
+        case ALL =>
+          allClasses
+        case OBJECT =>
+          allClasses.filter(_.isInstanceOf[ScObject])
+        case TYPE =>
+          allClasses.filter(!_.isInstanceOf[ScObject])
       }
     if (classes.length == 0)
       null
@@ -464,8 +467,10 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     }
 
     p match {
-      case synth: ScSyntheticPackage => synth
-      case _                         => null
+      case synth: ScSyntheticPackage =>
+        synth
+      case _ =>
+        null
     }
   }
 

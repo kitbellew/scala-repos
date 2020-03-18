@@ -105,10 +105,12 @@ object Expr {
         N],
       N[T]) =
     cache.get(expr) match {
-      case Some(node) => (cache, node)
+      case Some(node) =>
+        (cache, node)
       case None =>
         expr match {
-          case Const(n) => (cache + (expr -> n), n)
+          case Const(n) =>
+            (cache + (expr -> n), n)
           case Var(id) =>
             val (c1, n) = evaluate(idToExp, cache, idToExp(id))
             (c1 + (expr -> n), n)

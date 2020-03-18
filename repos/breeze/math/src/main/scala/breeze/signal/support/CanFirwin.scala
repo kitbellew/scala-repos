@@ -144,7 +144,8 @@ object CanFirwin {
           WindowFunctions.hammingWindow(taps, alpha, beta)
         case OptWindowFunction.Blackman(a0, a1, a2) =>
           WindowFunctions.blackmanWindow(taps, a0, a1, a2)
-        case OptWindowFunction.None => DenseVector.ones[Double](taps)
+        case OptWindowFunction.None =>
+          DenseVector.ones[Double](taps)
         case OptWindowFunction.User(dv) => {
           require(
             dv.length == taps,

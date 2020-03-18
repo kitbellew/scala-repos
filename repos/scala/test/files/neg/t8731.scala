@@ -4,14 +4,19 @@ class C {
 
   def f(x: Int) =
     (x: @annotation.switch) match {
-      case K => 0
-      case 2 => 1
+      case K =>
+        0
+      case 2 =>
+        1
     }
 
   def g(x: Int) =
     (x: @annotation.switch) match {
-      case K => 0
-      case 2 => 1
-      case 3 => 2
+      case K =>
+        0
+      case 2 =>
+        1
+      case 3 =>
+        2
     }
 }

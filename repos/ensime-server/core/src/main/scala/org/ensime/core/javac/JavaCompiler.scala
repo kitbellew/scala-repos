@@ -59,8 +59,9 @@ class JavaCompiler(
     // see comments on ensime-server/pull/1108
     val fileManager =
       sharedFileManager match {
-        case Some(fm) => fm
-        case _        =>
+        case Some(fm) =>
+          fm
+        case _ =>
           // TODO: take a charset for each invocation
           val fm = compiler.getStandardFileManager(
             listener,
@@ -134,9 +135,12 @@ class JavaCompiler(
             ))
         }
         path.getLeaf match {
-          case t: IdentifierTree   => withName(t.getName.toString)
-          case t: MemberSelectTree => withName(t.getIdentifier.toString)
-          case _                   => None
+          case t: IdentifierTree =>
+            withName(t.getName.toString)
+          case t: MemberSelectTree =>
+            withName(t.getIdentifier.toString)
+          case _ =>
+            None
         }
     }
   }
@@ -269,7 +273,8 @@ class JavaCompiler(
 
   private def getJavaFileObject(sf: SourceFileInfo): JavaFileObject =
     sf match {
-      case SourceFileInfo(f, None, None) => new JavaObjectFromFile(f)
+      case SourceFileInfo(f, None, None) =>
+        new JavaObjectFromFile(f)
       case SourceFileInfo(f, Some(contents), None) =>
         new JavaObjectWithContents(f, contents)
       case SourceFileInfo(f, None, Some(contentsIn)) =>
@@ -286,14 +291,20 @@ class JavaCompiler(
             diag.getSource().getName(),
             diag.getMessage(Locale.ENGLISH),
             diag.getKind() match {
-              case Diagnostic.Kind.ERROR             => NoteError
-              case Diagnostic.Kind.WARNING           => NoteWarn
-              case Diagnostic.Kind.MANDATORY_WARNING => NoteWarn
-              case _                                 => NoteInfo
+              case Diagnostic.Kind.ERROR =>
+                NoteError
+              case Diagnostic.Kind.WARNING =>
+                NoteWarn
+              case Diagnostic.Kind.MANDATORY_WARNING =>
+                NoteWarn
+              case _ =>
+                NoteInfo
             },
             diag.getStartPosition() match {
-              case x if x > -1 => x.toInt
-              case _           => diag.getPosition().toInt
+              case x if x > -1 =>
+                x.toInt
+              case _ =>
+                diag.getPosition().toInt
             },
             diag.getEndPosition().toInt,
             diag.getLineNumber().toInt,

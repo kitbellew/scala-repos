@@ -78,11 +78,13 @@ object SerializationBugs extends Specification {
 
       def deserialize(implicit
           format: Formats): PartialFunction[(TypeInfo, JValue), UUID] = {
-        case (TypeInfo(UUIDClass, _), JString(x)) => UUID.fromString(x)
+        case (TypeInfo(UUIDClass, _), JString(x)) =>
+          UUID.fromString(x)
       }
 
       def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-        case x: UUID => JString(x.toString)
+        case x: UUID =>
+          JString(x.toString)
       }
     }
 
@@ -99,7 +101,8 @@ object SerializationBugs extends Specification {
       val SeqClass = classOf[Seq[_]]
 
       def serialize(implicit format: Formats) = {
-        case seq: Seq[_] => JArray(seq.toList.map(Extraction.decompose))
+        case seq: Seq[_] =>
+          JArray(seq.toList.map(Extraction.decompose))
       }
 
       def deserialize(implicit format: Formats) = {
@@ -149,7 +152,8 @@ object SerializationBugs extends Specification {
       def deserialize(implicit format: Formats) = {
         case (TypeInfo(`singleOrVectorClass`, _), json) =>
           json match {
-            case JObject(List(JField("val", JDouble(x)))) => SingleValue(x)
+            case JObject(List(JField("val", JDouble(x)))) =>
+              SingleValue(x)
             case JObject(List(JField("val", JArray(xs: List[_])))) =>
               VectorValue(
                 xs.asInstanceOf[List[JDouble]].map(_.num).toIndexedSeq)
@@ -160,7 +164,8 @@ object SerializationBugs extends Specification {
       }
 
       def serialize(implicit format: Formats) = {
-        case SingleValue(x: Double) => JObject(List(JField("val", JDouble(x))))
+        case SingleValue(x: Double) =>
+          JObject(List(JField("val", JDouble(x))))
         case VectorValue(x: Vector[_]) =>
           JObject(
             List(

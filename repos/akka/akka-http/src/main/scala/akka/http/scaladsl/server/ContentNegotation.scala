@@ -24,9 +24,12 @@ final class MediaTypeNegotiator(requestHeaders: Seq[HttpHeader]) {
         range ← mediaRanges
       } yield range
     ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case x if x.isWildcard ⇒ 2f // most general, needs to come last
-      case MediaRange.One(_, qv) ⇒ -qv // most specific, needs to come first
-      case _ ⇒ 1f // simple range like `image/*`
+      case x if x.isWildcard ⇒
+        2f // most general, needs to come last
+      case MediaRange.One(_, qv) ⇒
+        -qv // most specific, needs to come first
+      case _ ⇒
+        1f // simple range like `image/*`
     }.toList
 
   /**
@@ -35,10 +38,12 @@ final class MediaTypeNegotiator(requestHeaders: Seq[HttpHeader]) {
     */
   def qValueFor(mediaType: MediaType): Float =
     acceptedMediaRanges match {
-      case Nil ⇒ 1.0f
+      case Nil ⇒
+        1.0f
       case x ⇒
         x collectFirst {
-          case r if r matches mediaType ⇒ r.qValue
+          case r if r matches mediaType ⇒
+            r.qValue
         } getOrElse 0f
     }
 
@@ -63,8 +68,10 @@ final class CharsetNegotiator(requestHeaders: Seq[HttpHeader]) {
         range ← charsetRanges
       } yield range
     ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case _: HttpCharsetRange.`*` ⇒ 1f // most general, needs to come last
-      case x ⇒ -x.qValue // all others come first
+      case _: HttpCharsetRange.`*` ⇒
+        1f // most general, needs to come last
+      case x ⇒
+        -x.qValue // all others come first
     }.toList
 
   /**
@@ -73,10 +80,12 @@ final class CharsetNegotiator(requestHeaders: Seq[HttpHeader]) {
     */
   def qValueFor(charset: HttpCharset): Float =
     acceptedCharsetRanges match {
-      case Nil ⇒ 1.0f
+      case Nil ⇒
+        1.0f
       case x ⇒
         x collectFirst {
-          case r if r matches charset ⇒ r.qValue
+          case r if r matches charset ⇒
+            r.qValue
         } getOrElse 0f
     }
 
@@ -94,10 +103,14 @@ final class CharsetNegotiator(requestHeaders: Seq[HttpHeader]) {
     */
   def pickBest: Option[HttpCharset] =
     acceptedCharsetRanges match {
-      case Nil ⇒ Some(`UTF-8`)
-      case HttpCharsetRange.One(cs, _) :: _ ⇒ Some(cs)
-      case HttpCharsetRange.`*`(qv) :: _ if qv > 0f ⇒ Some(`UTF-8`)
-      case _ ⇒ None
+      case Nil ⇒
+        Some(`UTF-8`)
+      case HttpCharsetRange.One(cs, _) :: _ ⇒
+        Some(cs)
+      case HttpCharsetRange.`*`(qv) :: _ if qv > 0f ⇒
+        Some(`UTF-8`)
+      case _ ⇒
+        None
     }
 }
 
@@ -111,7 +124,8 @@ final class ContentNegotiator(requestHeaders: Seq[HttpHeader]) {
     alternative match {
       case Alternative.ContentType(ct: ContentType.NonBinary) ⇒
         math.min(mtn.qValueFor(ct.mediaType), csn.qValueFor(ct.charset))
-      case x ⇒ mtn.qValueFor(x.mediaType)
+      case x ⇒
+        mtn.qValueFor(x.mediaType)
     }
 
   /**
@@ -129,11 +143,14 @@ final class ContentNegotiator(requestHeaders: Seq[HttpHeader]) {
       .map(alt ⇒ alt → qValueFor(alt))
       .sortBy(-_._2)
       .collectFirst {
-        case (alt, q) if q > 0f ⇒ alt
+        case (alt, q) if q > 0f ⇒
+          alt
       }
       .flatMap {
-        case Alternative.ContentType(ct) ⇒ Some(ct)
-        case Alternative.MediaType(mt) ⇒ csn.pickBest.map(mt.withCharset)
+        case Alternative.ContentType(ct) ⇒
+          Some(ct)
+        case Alternative.MediaType(mt) ⇒
+          csn.pickBest.map(mt.withCharset)
       }
 }
 
@@ -147,9 +164,12 @@ object ContentNegotiator {
       ContentType(contentType)
     implicit def apply(mediaType: model.MediaType): Alternative =
       mediaType match {
-        case x: model.MediaType.Binary ⇒ ContentType(x)
-        case x: model.MediaType.WithFixedCharset ⇒ ContentType(x)
-        case x: model.MediaType.WithOpenCharset ⇒ MediaType(x)
+        case x: model.MediaType.Binary ⇒
+          ContentType(x)
+        case x: model.MediaType.WithFixedCharset ⇒
+          ContentType(x)
+        case x: model.MediaType.WithOpenCharset ⇒
+          MediaType(x)
       }
 
     case class ContentType(contentType: model.ContentType) extends Alternative {
@@ -181,8 +201,10 @@ final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
         range ← encodingRanges
       } yield range
     ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case _: HttpEncodingRange.`*` ⇒ 1f // most general, needs to come last
-      case x ⇒ -x.qValue // all others come first
+      case _: HttpEncodingRange.`*` ⇒
+        1f // most general, needs to come last
+      case x ⇒
+        -x.qValue // all others come first
     }.toList
 
   /**
@@ -191,10 +213,12 @@ final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
     */
   def qValueFor(encoding: HttpEncoding): Float =
     acceptedEncodingRanges match {
-      case Nil ⇒ 1.0f
+      case Nil ⇒
+        1.0f
       case x ⇒
         x collectFirst {
-          case r if r matches encoding ⇒ r.qValue
+          case r if r matches encoding ⇒
+            r.qValue
         } getOrElse 0f
     }
 
@@ -224,7 +248,8 @@ final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
       .map(alt ⇒ alt → qValueFor(alt))
       .sortBy(-_._2)
       .collectFirst {
-        case (alt, q) if q > 0f ⇒ alt
+        case (alt, q) if q > 0f ⇒
+          alt
       }
 }
 
@@ -248,7 +273,8 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
         range ← languageRanges
       } yield range
     ).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case _: LanguageRange.`*` ⇒ 1f // most general, needs to come last
+      case _: LanguageRange.`*` ⇒
+        1f // most general, needs to come last
       case x ⇒
         -(
           2 * x.subTags.size + x.qValue
@@ -261,10 +287,12 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
     */
   def qValueFor(language: Language): Float =
     acceptedLanguageRanges match {
-      case Nil ⇒ 1.0f
+      case Nil ⇒
+        1.0f
       case x ⇒
         x collectFirst {
-          case r if r matches language ⇒ r.qValue
+          case r if r matches language ⇒
+            r.qValue
         } getOrElse 0f
     }
 
@@ -288,7 +316,8 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
       .map(alt ⇒ alt → qValueFor(alt))
       .sortBy(-_._2)
       .collectFirst {
-        case (alt, q) if q > 0f ⇒ alt
+        case (alt, q) if q > 0f ⇒
+          alt
       }
 }
 

@@ -32,8 +32,10 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
 
   def clauses: Option[ScParameters] =
     constructor match {
-      case Some(x: ScPrimaryConstructor) => Some(x.parameterList)
-      case None                          => None
+      case Some(x: ScPrimaryConstructor) =>
+        Some(x.parameterList)
+      case None =>
+        None
     }
 
   def addEmptyParens() {
@@ -108,7 +110,8 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                     ) + "]")
                 }
               }
-            case None => "scala.Boolean"
+            case None =>
+              "scala.Boolean"
           }
         val unapplyName =
           constructor match {
@@ -120,7 +123,8 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                   if plast.isRepeatedParameter
                 } yield "unapplySeq"
               ).getOrElse("unapply")
-            case None => "unapply"
+            case None =>
+              "unapply"
           }
         Option(
           s"def $unapplyName$typeParamString(x$$0: $name$typeParamStringRes): $paramStringRes = throw new Error()")
@@ -161,7 +165,8 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
                       ", ",
                       ")"))
                 .mkString("")
-            case None => ""
+            case None =>
+              ""
           }
 
         Option(

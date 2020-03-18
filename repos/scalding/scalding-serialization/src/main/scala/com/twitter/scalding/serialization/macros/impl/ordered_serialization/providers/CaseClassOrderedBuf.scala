@@ -46,7 +46,8 @@ object CaseClassOrderedBuf {
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
       outerType.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .map { accessorMethod =>
           val fieldType = accessorMethod.returnType

@@ -20,7 +20,8 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
           rsm.map
             .collect[TermSymbol](
               {
-                case Select(Ref(s), f) if s == rsm.generator => f
+                case Select(Ref(s), f) if s == rsm.generator =>
+                  f
               },
               stopOnMatch = true)
             .toSeq
@@ -33,7 +34,8 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
           { n =>
             val refTSyms =
               n.collect[TypeSymbol] {
-                  case Select(_ :@ NominalType(s, _), _) => s
+                  case Select(_ :@ NominalType(s, _), _) =>
+                    s
                   case Union(_, _ :@ CollectionType(_, NominalType(s, _)), _) =>
                     s
                   case Comprehension(
@@ -52,7 +54,8 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                 .toSet
             val allTSyms =
               n.collect[TypeSymbol] {
-                  case p: Pure => p.identity
+                  case p: Pure =>
+                    p.identity
                 }
                 .toSet
             val unrefTSyms = allTSyms -- refTSyms

@@ -39,8 +39,10 @@ final class ProjectNavigation(s: State) {
       case None =>
         show();
         s
-      case Some(BuildRef(uri))       => changeBuild(uri)
-      case Some(ProjectRef(uri, id)) => selectProject(uri, id)
+      case Some(BuildRef(uri)) =>
+        changeBuild(uri)
+      case Some(ProjectRef(uri, id)) =>
+        selectProject(uri, id)
       /*			else if(to.forall(_ == '.'))
 				if(to.length > 1) gotoParent(to.length - 1, nav, s) else s */ // semantics currently undefined
     }

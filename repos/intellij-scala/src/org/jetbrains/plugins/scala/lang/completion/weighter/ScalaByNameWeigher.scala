@@ -54,7 +54,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
             if (result.isDefined)
               textForPosition.put(position, result.get)
             result
-          case _ => None
+          case _ =>
+            None
         }
       }
 
@@ -66,7 +67,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
             val name = bp.name
             textForPosition.put(position, name)
             Some(name)
-          case _ => None
+          case _ =>
+            None
         }
       }
 
@@ -79,7 +81,8 @@ class ScalaByNameWeigher extends CompletionWeigher {
             patterDef.bindings.headOption.map(_.name)
           case assignement: ScAssignStmt =>
             assignement.assignName
-          case _ => None
+          case _ =>
+            None
         }
 
         if (result.isDefined)
@@ -130,9 +133,12 @@ class ScalaByNameWeigher extends CompletionWeigher {
 
       extractVariableNameFromPosition.flatMap { text =>
         text.length match {
-          case 0                                         => None
-          case 1 if oneSymbolText(element.getName, text) => Some(0)
-          case _                                         => computeDistance(element, text)
+          case 0 =>
+            None
+          case 1 if oneSymbolText(element.getName, text) =>
+            Some(0)
+          case _ =>
+            computeDistance(element, text)
         }
       }
     }
@@ -148,9 +154,11 @@ class ScalaByNameWeigher extends CompletionWeigher {
             case _: ScTypeAlias | _: ScTypeDefinition | _: PsiClass
                 if byTextResult.isDefined =>
               byTextResult.get
-            case _ => null
+            case _ =>
+              null
           }
-        case _ => null
+        case _ =>
+          null
       }
     } else
       null

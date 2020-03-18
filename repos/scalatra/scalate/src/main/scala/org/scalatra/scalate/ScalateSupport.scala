@@ -82,8 +82,10 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
 
       val ctxKey =
         config.getServletContext.getContextPath match {
-          case ""   => "ROOT"
-          case path => path.substring(1)
+          case "" =>
+            "ROOT"
+          case path =>
+            path.substring(1)
         }
 
       f"$ctxId/$ctxKey"
@@ -293,7 +295,8 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     )
 
     attrs foreach {
-      case (k, v) => context.attributes(k) = v
+      case (k, v) =>
+        context.attributes(k) = v
     }
     templateEngine.layout(uri, context)
     buffer.toString

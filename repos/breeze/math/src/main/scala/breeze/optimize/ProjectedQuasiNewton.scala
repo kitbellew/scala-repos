@@ -34,7 +34,8 @@ class CompactHessian(
   def repr: CompactHessian = this
   implicit def collectionOfVectorsToMatrix(coll: Seq[DenseVector[Double]]) =
     DenseMatrix.tabulate(coll.size, coll.headOption.map(_.size).getOrElse(0)) {
-      case (i, j) => coll(i)(j)
+      case (i, j) =>
+        coll(i)(j)
     }
   def updated(
       y: DenseVector[Double],

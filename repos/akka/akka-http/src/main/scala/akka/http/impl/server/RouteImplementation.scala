@@ -79,7 +79,8 @@ private[http] object RouteImplementation
   def apply(route: Route): ScalaRoute = {
     def directiveFor(route: DirectiveRoute): Directive0 =
       route match {
-        case RouteAlternatives() ⇒ ScalaDirective.Empty
+        case RouteAlternatives() ⇒
+          ScalaDirective.Empty
         case RawPathPrefix(elements) ⇒
           pathMatcherDirective[String](elements, rawPathPrefix)
         case RawPathPrefixTest(elements) ⇒
@@ -95,7 +96,8 @@ private[http] object RouteImplementation
           redirectToNoTrailingSlashIfPresent(
             code.asScala.asInstanceOf[Redirection])
 
-        case MethodFilter(m) ⇒ method(m.asScala)
+        case MethodFilter(m) ⇒
+          method(m.asScala)
         case Extract(extractions) ⇒
           extractRequestContext.flatMap { ctx ⇒
             extractions
@@ -177,21 +179,27 @@ private[http] object RouteImplementation
           decodeRequestWith(coders.map(_._underlyingScalaCoder()): _*)
         case Conditional(eTag, lastModified) ⇒
           conditional(eTag.map(_.asScala), lastModified.map(_.asScala))
-        case h: HostFilter ⇒ host(h.filter _)
-        case SchemeFilter(schemeName) ⇒ scheme(schemeName)
+        case h: HostFilter ⇒
+          host(h.filter _)
+        case SchemeFilter(schemeName) ⇒
+          scheme(schemeName)
 
         case HandleExceptions(handler) ⇒
           val pf: akka.http.scaladsl.server.ExceptionHandler =
             akka.http.scaladsl.server.ExceptionHandler {
-              case e: RuntimeException ⇒ apply(handler.handle(e))
+              case e: RuntimeException ⇒
+                apply(handler.handle(e))
             }
           handleExceptions(pf)
 
         case HandleRejections(handler) ⇒
           handleRejections(new RejectionHandlerWrapper(handler))
-        case Validated(isValid, errorMsg) ⇒ validate(isValid, errorMsg)
-        case RangeSupport() ⇒ withRangeSupport
-        case SetCookie(cookie) ⇒ setCookie(cookie.asScala)
+        case Validated(isValid, errorMsg) ⇒
+          validate(isValid, errorMsg)
+        case RangeSupport() ⇒
+          withRangeSupport
+        case SetCookie(cookie) ⇒
+          setCookie(cookie.asScala)
         case DeleteCookie(name, domain, path) ⇒
           deleteCookie(
             HttpCookie(name, domain = domain, path = path, value = "deleted"))
@@ -304,9 +312,12 @@ private[http] object RouteImplementation
         headers: immutable.Seq[HttpHeader],
         prefix: Vector[HttpHeader] = Vector.empty): immutable.Seq[HttpHeader] =
       headers match {
-        case (m: ExtractionMap) +: rest ⇒ f(m) +: (prefix ++ rest)
-        case other +: rest ⇒ updateExtractionMap(rest, prefix :+ other)
-        case Nil ⇒ f(ExtractionMap.Empty) +: prefix
+        case (m: ExtractionMap) +: rest ⇒
+          f(m) +: (prefix ++ rest)
+        case other +: rest ⇒
+          updateExtractionMap(rest, prefix :+ other)
+        case Nil ⇒
+          f(ExtractionMap.Empty) +: prefix
       }
     mapRequest(_.mapHeaders(updateExtractionMap(_)))
   }
@@ -317,7 +328,9 @@ private[http] object RouteImplementation
 
   def requestValToDirective[T](value: RequestVal[T]): Directive1[T] =
     value match {
-      case s: StandaloneExtractionImpl[_] ⇒ s.directive
-      case v: RequestVal[_] ⇒ extract(ctx ⇒ v.get(new RequestContextImpl(ctx)))
+      case s: StandaloneExtractionImpl[_] ⇒
+        s.directive
+      case v: RequestVal[_] ⇒
+        extract(ctx ⇒ v.get(new RequestContextImpl(ctx)))
     }
 }

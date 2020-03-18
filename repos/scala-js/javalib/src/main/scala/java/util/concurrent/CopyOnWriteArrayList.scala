@@ -187,7 +187,8 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
         case obj: List[_] =>
           val oIter = obj.listIterator
           this.forall(oIter.hasNext && _ === oIter.next()) && !oIter.hasNext
-        case _ => false
+        case _ =>
+          false
       }
     }
   }

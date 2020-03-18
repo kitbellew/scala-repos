@@ -253,17 +253,22 @@ trait Writer {
             case '\\' =>
               /**/
               sb.append("\\\\") /**/
-            case '"' => sb.append("\\\"")
+            case '"' =>
+              sb.append("\\\"")
             case '/' =>
               /**/
               sb.append("\\/") /**/
-            case '\b' => sb.append("\\b")
-            case '\t' => sb.append("\\t")
+            case '\b' =>
+              sb.append("\\b")
+            case '\t' =>
+              sb.append("\\t")
             case '\n' =>
               /**/
               sb.append("\\n") /**/
-            case '\f' => sb.append("\\f")
-            case '\r' => sb.append("\\r")
+            case '\f' =>
+              sb.append("\\f")
+            case '\r' =>
+              sb.append("\\r")
             case c =>
               if (c < ' ') {
                 val t = "000" + Integer.toHexString(c)
@@ -315,10 +320,14 @@ trait Writer {
           i += 1
         }
         sb.append("]")
-      case JsNumber(d) => sb.append(d)
-      case JsFalse     => sb.append("false")
-      case JsTrue      => sb.append("true")
-      case JsNull      => sb.append("null")
+      case JsNumber(d) =>
+        sb.append(d)
+      case JsFalse =>
+        sb.append("false")
+      case JsTrue =>
+        sb.append("true")
+      case JsNull =>
+        sb.append("null")
     }
   /**/
 }
@@ -382,10 +391,13 @@ class Json extends Writer2 {
     // *** Character => CharKind Map ***
 
     val charKind = (0 to 255).toArray.map {
-      case c if 'a'.toInt <= c && c <= 'z'.toInt => Letter
-      case c if 'A'.toInt <= c && c <= 'Z'.toInt => Letter
-      case c if '0'.toInt <= c && c <= '9'.toInt => Digit
-      case '-'                                   =>
+      case c if 'a'.toInt <= c && c <= 'z'.toInt =>
+        Letter
+      case c if 'A'.toInt <= c && c <= 'Z'.toInt =>
+        Letter
+      case c if '0'.toInt <= c && c <= '9'.toInt =>
+        Digit
+      case '-' =>
         /**/
         Minus
       case ',' =>
@@ -400,15 +412,24 @@ class Json extends Writer2 {
       case '{' =>
         /**/
         Lbra
-      case '}'  => Rbra
-      case '['  => Larr
-      case ']'  => Rarr
-      case ' '  => Blank
-      case '\t' => Blank
-      case '\n' => Blank
-      case '\r' => Blank
-      case '/'  => Slash
-      case _    => Other
+      case '}' =>
+        Rbra
+      case '[' =>
+        Larr
+      case ']' =>
+        Rarr
+      case ' ' =>
+        Blank
+      case '\t' =>
+        Blank
+      case '\n' =>
+        Blank
+      case '\r' =>
+        Blank
+      case '/' =>
+        Slash
+      case _ =>
+        Other
     }
 
     // *** Character Escapes
@@ -541,11 +562,16 @@ class Json extends Writer2 {
         if (chKind == Eof)
           chError("EOF encountered in raw string")
         state = (ch, state) match {
-          case ('}', _) => 1
-          case ('"', 1) => 2
-          case ('"', 2) => 3
-          case ('"', 3) => 0
-          case _        => 0
+          case ('}', _) =>
+            1
+          case ('"', 1) =>
+            2
+          case ('"', 2) =>
+            3
+          case ('"', 3) =>
+            0
+          case _ =>
+            0
         }
 
         chNext()
@@ -574,7 +600,8 @@ class Json extends Writer2 {
             tokenKind = ID
             tokenValue = chSubstr(first)
 
-          case Digit => handleDigit()
+          case Digit =>
+            handleDigit()
           case Minus =>
             chNext()
             handleDigit()
@@ -626,18 +653,25 @@ class Json extends Writer2 {
               handleRaw()
             }
 
-          case Colon => handle(COLON) /**/
-          case Comma => handle(COMMA) /**/
-          case Lbra  => handle(LOBJ) /**/
-          case Rbra  => handle(ROBJ) /**/
-          case Larr  => handle(LARR) /**/
-          case Rarr  => handle(RARR) /**/
+          case Colon =>
+            handle(COLON) /**/
+          case Comma =>
+            handle(COMMA) /**/
+          case Lbra =>
+            handle(LOBJ) /**/
+          case Rbra =>
+            handle(ROBJ) /**/
+          case Larr =>
+            handle(LARR) /**/
+          case Rarr =>
+            handle(RARR) /**/
           case Blank =>
             do chNext() while (chKind == Blank)
             tokenKind = BLANK
             tokenValue = ""
 
-          case Other => chError("Unexpected character: " + ch.toChar + " " + ch)
+          case Other =>
+            chError("Unexpected character: " + ch.toChar + " " + ch)
           case Eof =>
             chNext()
             tokenKind = EOF
@@ -679,7 +713,8 @@ class Json extends Writer2 {
             /**/
             tokenNext()
           case RARR => // do nothing
-          case _    => tokenError("Expecting , or ]")
+          case _ =>
+            tokenError("Expecting , or ]")
         }
       }
       tokenNext()
@@ -701,9 +736,11 @@ class Json extends Writer2 {
         tokenNext()
         result = (name -> getJson()) :: result
         tokenKind match {
-          case COMMA => tokenNext()
-          case ROBJ  => // do nothing
-          case _     => tokenError("Expecting , or }")
+          case COMMA =>
+            tokenNext()
+          case ROBJ => // do nothing
+          case _ =>
+            tokenError("Expecting , or }")
         }
       }
       tokenNext()
@@ -713,7 +750,8 @@ class Json extends Writer2 {
       try {
         f(tokenValue)
       } catch {
-        case _: Throwable => tokenError("Bad " + name)
+        case _: Throwable =>
+          tokenError("Bad " + name)
       }
       val old = tokenValue
       tokenNext()
@@ -727,10 +765,14 @@ class Json extends Writer2 {
           case ID =>
             val result: JsValue =
               tokenValue match {
-                case "true"  => JsTrue
-                case "false" => JsFalse
-                case "null"  => JsNull
-                case _       => tokenError("Not true, false, or null")
+                case "true" =>
+                  JsTrue
+                case "false" =>
+                  JsFalse
+                case "null" =>
+                  JsNull
+                case _ =>
+                  tokenError("Not true, false, or null")
               }
 
             tokenNext()
@@ -741,16 +783,26 @@ class Json extends Writer2 {
             tokenNext()
             JsString(result)
 
-          case NUMBER      => handleNumber("NUMBER", _.toLong)
-          case BIGNUMBER   => handleNumber("BIGNUMBER", _.toDouble)
-          case FLOATNUMBER => handleNumber("FLOATNUMBER", _.toDouble)
-          case COLON       => handleUnexpected(":")
-          case COMMA       => handleUnexpected(",")
-          case LOBJ        => handleObject()
-          case ROBJ        => handleUnexpected("}")
-          case LARR        => handleArray()
-          case RARR        => handleUnexpected("]")
-          case EOF         => handleEof()
+          case NUMBER =>
+            handleNumber("NUMBER", _.toLong)
+          case BIGNUMBER =>
+            handleNumber("BIGNUMBER", _.toDouble)
+          case FLOATNUMBER =>
+            handleNumber("FLOATNUMBER", _.toDouble)
+          case COLON =>
+            handleUnexpected(":")
+          case COMMA =>
+            handleUnexpected(",")
+          case LOBJ =>
+            handleObject()
+          case ROBJ =>
+            handleUnexpected("}")
+          case LARR =>
+            handleArray()
+          case RARR =>
+            handleUnexpected("]")
+          case EOF =>
+            handleEof()
         }
       result
     }

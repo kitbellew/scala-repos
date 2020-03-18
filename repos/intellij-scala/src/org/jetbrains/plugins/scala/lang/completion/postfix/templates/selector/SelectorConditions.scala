@@ -53,7 +53,8 @@ object SelectorConditions {
                 }
               }
               .getOrElse(false)
-          case _ => false
+          case _ =>
+            false
         }
     }
 
@@ -64,7 +65,8 @@ object SelectorConditions {
         t match {
           case expr: ScExpression =>
             expr.getTypeIgnoreBaseType().getOrAny == myType
-          case _ => false
+          case _ =>
+            false
         }
     }
 

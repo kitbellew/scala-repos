@@ -125,7 +125,8 @@ private[graphx] class RoutingTablePartition(
   def reverse: RoutingTablePartition = {
     new RoutingTablePartition(
       routingTable.map {
-        case (vids, srcVids, dstVids) => (vids, dstVids, srcVids)
+        case (vids, srcVids, dstVids) =>
+          (vids, dstVids, srcVids)
       })
   }
 

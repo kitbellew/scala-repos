@@ -29,8 +29,10 @@ abstract class ScalaBaseGenerateAction(val handler: CodeInsightActionHandler)
     }
     lazy val handlerIsValid =
       handler match {
-        case l: LanguageCodeInsightActionHandler => l.isValidFor(editor, file)
-        case _                                   => true
+        case l: LanguageCodeInsightActionHandler =>
+          l.isValidFor(editor, file)
+        case _ =>
+          true
       }
     file.isInstanceOf[ScalaFile] && file.isWritable && classOk && handlerIsValid
   }

@@ -51,7 +51,8 @@ private[plugin] class PluginManagerImpl(
             Map("frameworkName" -> config.frameworkName()),
             definition.configuration.get)
           plugin
-        case _ => plugin
+        case _ =>
+          plugin
       }
     val serviceLoader = ServiceLoader.load(
       ct.runtimeClass.asInstanceOf[Class[T]],

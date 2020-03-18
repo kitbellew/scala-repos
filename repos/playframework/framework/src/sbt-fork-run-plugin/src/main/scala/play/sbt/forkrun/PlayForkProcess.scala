@@ -111,7 +111,8 @@ object PlayForkProcess {
     JRuntime.getRuntime.addShutdownHook(shutdownHook)
     try process.waitFor()
     catch {
-      case _: InterruptedException => stop()
+      case _: InterruptedException =>
+        stop()
     }
     try JRuntime.getRuntime.removeShutdownHook(shutdownHook)
     catch {
@@ -168,7 +169,8 @@ object PlayForkProcess {
       line match {
         case LogLine(level, message) =>
           logger.log(Level(level).getOrElse(defaultLevel), message)
-        case message => logger.log(defaultLevel, message)
+        case message =>
+          logger.log(defaultLevel, message)
       }
 
   def spawn(f: => Unit): Thread = {

@@ -88,7 +88,8 @@ object ScopeSuggester {
       var occInCompanionObj: Array[ScTypeElement] = Array[ScTypeElement]()
       val name =
         parent match {
-          case fileType: ScalaFile => "file " + fileType.getName
+          case fileType: ScalaFile =>
+            "file " + fileType.getName
           case _ =>
             PsiTreeUtil.getParentOfType(
               parent,
@@ -113,7 +114,8 @@ object ScopeSuggester {
           parent
             .asInstanceOf[ScTemplateBody]
             .isAncestorOf(projectionType.actualElement)
-        case _ => false
+        case _ =>
+          false
       }
 
       if (!isSuitableParent(owners, parent)) {
@@ -180,7 +182,8 @@ object ScopeSuggester {
         true
       case traitType: ScTrait if traitType.name == name =>
         true
-      case _ => false
+      case _ =>
+        false
     })
 
     if (companion.isDefined)
@@ -350,7 +353,8 @@ object ScopeSuggester {
           file match {
             case scalaFile: ScalaFile if scalaFile.isScriptFile() =>
               file
-            case _ => PsiTreeUtil.findChildOfType(file, classOf[ScTemplateBody])
+            case _ =>
+              PsiTreeUtil.findChildOfType(file, classOf[ScTemplateBody])
           }
         if (parent != null) {
           allValidators += ScalaTypeValidator(

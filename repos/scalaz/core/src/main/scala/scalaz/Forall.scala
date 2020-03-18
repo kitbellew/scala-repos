@@ -32,7 +32,8 @@ trait Foralls {
         try {
           p((arg: P[A]) => throw new Control(arg))
         } catch {
-          case Control(arg) => arg
+          case Control(arg) =>
+            arg
         }
       }
     }

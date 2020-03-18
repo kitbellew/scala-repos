@@ -50,8 +50,9 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
     iterateClasses("") {
       case o: ScObject if !o.isPackageObject =>
         o.fakeCompanionClass match {
-          case Some(c) => res += c
-          case _       =>
+          case Some(c) =>
+            res += c
+          case _ =>
         }
       case _ =>
     }
@@ -59,15 +60,17 @@ class ScalaClassFinder(project: Project) extends PsiElementFinder {
     iterateClasses("$") {
       case c: ScTypeDefinition =>
         c.fakeCompanionModule match {
-          case Some(o) => res += o
-          case _       =>
+          case Some(o) =>
+            res += o
+          case _ =>
         }
       case _ =>
     }
 
     iterateClasses("$class") {
-      case c: ScTrait => res += c.fakeCompanionClass
-      case _          =>
+      case c: ScTrait =>
+        res += c.fakeCompanionClass
+      case _ =>
     }
 
     res.toArray

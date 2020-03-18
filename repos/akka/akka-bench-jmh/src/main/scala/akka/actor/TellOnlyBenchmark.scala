@@ -100,7 +100,8 @@ object TellOnlyBenchmark {
     def receive = {
       case s @ `stop` ⇒
         context stop self
-      case m ⇒ sender ! m
+      case m ⇒
+        sender ! m
     }
   }
 
@@ -149,7 +150,8 @@ object TellOnlyBenchmark {
       mbox.enqueue(receiver.self, invocation)
       mbox.messageQueue match {
         case mb: DroppingMessageQueue if mb.dropping ⇒ // do nothing
-        case _ ⇒ registerForExecution(mbox, true, false)
+        case _ ⇒
+          registerForExecution(mbox, true, false)
       }
     }
   }

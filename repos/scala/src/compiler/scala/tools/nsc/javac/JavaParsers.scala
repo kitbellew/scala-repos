@@ -208,11 +208,16 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     def acceptClosingAngle() {
       val closers: PartialFunction[Int, Int] = {
-        case GTGTGTEQ => GTGTEQ
-        case GTGTGT   => GTGT
-        case GTGTEQ   => GTEQ
-        case GTGT     => GT
-        case GTEQ     => EQUALS
+        case GTGTGTEQ =>
+          GTGTEQ
+        case GTGTGT =>
+          GTGT
+        case GTGTEQ =>
+          GTEQ
+        case GTGT =>
+          GT
+        case GTEQ =>
+          EQUALS
       }
       if (closers isDefinedAt in.token)
         in.token = closers(in.token)
@@ -244,7 +249,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       */
     def convertToTypeId(tree: Tree): Tree =
       gen.convertToTypeName(tree) match {
-        case Some(t) => t setPos tree.pos
+        case Some(t) =>
+          t setPos tree.pos
         case _ =>
           tree match {
             case AppliedTypeTree(_, _) | ExistentialTypeTree(_, _) |
@@ -331,8 +337,10 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           // turns out to be an instance ionner class instead of a static inner class.
           def typeSelect(t: Tree, name: Name) =
             t match {
-              case Ident(_) | Select(_, _) => Select(t, name)
-              case _                       => SelectFromTypeTree(t, name.toTypeName)
+              case Ident(_) | Select(_, _) =>
+                Select(t, name)
+              case _ =>
+                SelectFromTypeTree(t, name.toTypeName)
             }
           while (in.token == DOT) {
             in.nextToken()
@@ -576,8 +584,10 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       var pos = in.currentPos
       val rtptName =
         rtpt match {
-          case Ident(name) => name
-          case _           => nme.EMPTY
+          case Ident(name) =>
+            name
+          case _ =>
+            nme.EMPTY
         }
       if (in.token == LPAREN && rtptName != nme.EMPTY && !inInterface) {
         // constructor declaration
@@ -1033,10 +1043,14 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     def typeDecl(mods: Modifiers): List[Tree] =
       in.token match {
-        case ENUM      => enumDecl(mods)
-        case INTERFACE => interfaceDecl(mods)
-        case AT        => annotationDecl(mods)
-        case CLASS     => classDecl(mods)
+        case ENUM =>
+          enumDecl(mods)
+        case INTERFACE =>
+          interfaceDecl(mods)
+        case AT =>
+          annotationDecl(mods)
+        case CLASS =>
+          classDecl(mods)
         case _ =>
           in.nextToken();
           syntaxError("illegal start of type declaration", skipIt = true);
@@ -1059,8 +1073,10 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           Ident(nme.EMPTY_PACKAGE_NAME)
         }
       thisPackageName = gen.convertToTypeName(pkg) match {
-        case Some(t) => t.name.toTypeName
-        case _       => tpnme.EMPTY
+        case Some(t) =>
+          t.name.toTypeName
+        case _ =>
+          tpnme.EMPTY
       }
       val buf = new ListBuffer[Tree]
       while (in.token == IMPORT)

@@ -101,7 +101,8 @@ private[spark] class HashShuffleWriter[K, V](
         try {
           shuffle.releaseWriters(success)
         } catch {
-          case e: Exception => logError("Failed to release shuffle writers", e)
+          case e: Exception =>
+            logError("Failed to release shuffle writers", e)
         }
       }
     }

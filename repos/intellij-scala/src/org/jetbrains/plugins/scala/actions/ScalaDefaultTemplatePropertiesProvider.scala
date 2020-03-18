@@ -20,14 +20,18 @@ class ScalaDefaultTemplatePropertiesProvider
 
     val attributePackageName =
       props.get(FileTemplate.ATTRIBUTE_PACKAGE_NAME) match {
-        case name: String => name
-        case _            => return
+        case name: String =>
+          name
+        case _ =>
+          return
       }
 
     val (packageQualifier, packageSimpleName) =
       attributePackageName match {
-        case QualifiedPackagePattern(prefix, suffix) => (prefix, suffix)
-        case name                                    => ("", name)
+        case QualifiedPackagePattern(prefix, suffix) =>
+          (prefix, suffix)
+        case name =>
+          ("", name)
       }
 
     props.put("PACKAGE_QUALIFIER", packageQualifier)

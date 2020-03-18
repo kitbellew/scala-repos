@@ -123,7 +123,8 @@ class BaseReplicationClient(
             if currentRes.misses.isEmpty &&
               currentRes.failures.isEmpty =>
           Future.value(currentRes)
-        case Seq() => Future.value(currentRes)
+        case Seq() =>
+          Future.value(currentRes)
         case Seq(c, tail @ _*) =>
           val missing = currentRes.misses ++ currentRes.failures.keySet
           c.getResult(missing) flatMap {
@@ -180,8 +181,10 @@ class BaseReplicationClient(
         val replicasResult = results map {
           case r if (r.hits.contains(k)) =>
             Return(Some(r.hits.get(k).get.value))
-          case r if (r.misses.contains(k))   => Return(None)
-          case r if (r.failures.contains(k)) => Throw(r.failures.get(k).get)
+          case r if (r.misses.contains(k)) =>
+            Return(None)
+          case r if (r.failures.contains(k)) =>
+            Throw(r.failures.get(k).get)
         }
         k -> toReplicationStatus(replicasResult)
       }.toMap
@@ -216,8 +219,10 @@ class BaseReplicationClient(
         val replicasResult = results map {
           case r if (r.hits.contains(k)) =>
             Return(Some(r.hits.get(k).get.value))
-          case r if (r.misses.contains(k))   => Return(None)
-          case r if (r.failures.contains(k)) => Throw(r.failures.get(k).get)
+          case r if (r.misses.contains(k)) =>
+            Return(None)
+          case r if (r.failures.contains(k)) =>
+            Throw(r.failures.get(k).get)
         }
 
         k -> attachCas(toReplicationStatus(replicasResult), results, k)
@@ -238,14 +243,17 @@ class BaseReplicationClient(
           _.hits.get(key).get.casUnique.get
         }
         ConsistentReplication(Some((v, RCasUnique(allReplicasCas))))
-      case ConsistentReplication(None) => ConsistentReplication(None)
+      case ConsistentReplication(None) =>
+        ConsistentReplication(None)
       case InconsistentReplication(rs) =>
         val transformed = rs.zip(underlyingResults) map {
           case (Return(Some(v)), r: GetsResult) =>
             val singleReplicaCas = r.hits.get(key).get.casUnique.get
             Return(Some((v, SCasUnique(singleReplicaCas))))
-          case (Return(None), _) => Return(None)
-          case (Throw(e), _)     => Throw(e)
+          case (Return(None), _) =>
+            Return(None)
+          case (Throw(e), _) =>
+            Throw(e)
         }
         InconsistentReplication(transformed)
       case FailedReplication(fs) =>
@@ -410,7 +418,8 @@ class BaseReplicationClient(
         failedCounter.incr()
         FailedReplication(
           results collect {
-            case t @ Throw(_) => t
+            case t @ Throw(_) =>
+              t
           })
     }
   }
@@ -463,7 +472,8 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
       val getsResultSeq = resultsMap map {
         case (key, ConsistentReplication(Some((value, RCasUnique(uniques))))) =>
           val newCas = uniques map {
-            case Buf.Utf8(s) => s
+            case Buf.Utf8(s) =>
+              s
           } mkString ("|")
           val newValue = Value(Buf.Utf8(key), value, Some(Buf.Utf8(newCas)))
           GetsResult(GetResult(hits = Map(key -> newValue)))
@@ -544,7 +554,8 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
       op: BaseReplicationClient => Future[ReplicationStatus[T]],
       default: T): Future[T] =
     op(underlyingClient) flatMap {
-      case ConsistentReplication(r) => Future.value(r)
+      case ConsistentReplication(r) =>
+        Future.value(r)
       case InconsistentReplication(resultsSeq)
           if resultsSeq.forall(_.isReturn) =>
         Future.value(default)

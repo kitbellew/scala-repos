@@ -336,7 +336,8 @@ object Sorting {
         else
           mergeSort[Boolean](a, 0, a.length, ord)
       // Array[Unit] is matched as an Array[AnyRef] due to covariance in runtime matching.  Not worth catching it as a special case.
-      case null => throw new NullPointerException
+      case null =>
+        throw new NullPointerException
     }
 
   // TODO: remove unnecessary ClassTag (not binary compatible)

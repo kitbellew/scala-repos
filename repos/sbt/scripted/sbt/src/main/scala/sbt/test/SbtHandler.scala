@@ -73,7 +73,8 @@ final class SbtHandler(
           send("exit", server)
           process.exitValue()
         } catch {
-          case e: IOException => process.destroy()
+          case e: IOException =>
+            process.destroy()
         }
       case None =>
     }

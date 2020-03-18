@@ -553,7 +553,8 @@ class StandaloneDynamicAllocationSuite
     sc.schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.killExecutors(Seq(executorId), replace = false, force)
-      case _ => fail("expected coarse grained scheduler")
+      case _ =>
+        fail("expected coarse grained scheduler")
     }
   }
 

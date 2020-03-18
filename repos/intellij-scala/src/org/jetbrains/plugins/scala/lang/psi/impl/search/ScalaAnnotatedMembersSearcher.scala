@@ -37,8 +37,10 @@ class ScalaAnnotatedMembersSearcher
 
     val scope =
       p.getScope match {
-        case x: GlobalSearchScope => x
-        case _                    => return true
+        case x: GlobalSearchScope =>
+          x
+        case _ =>
+          return true
       }
 
     ApplicationManager.getApplication.runReadAction(

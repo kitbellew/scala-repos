@@ -9,7 +9,8 @@ private[concurrent] object RunNowExecutionContext
     try {
       runnable.run()
     } catch {
-      case t: Throwable => reportFailure(t)
+      case t: Throwable =>
+        reportFailure(t)
     }
   }
 

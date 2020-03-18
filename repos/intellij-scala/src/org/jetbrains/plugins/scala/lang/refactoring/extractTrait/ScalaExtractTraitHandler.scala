@@ -59,7 +59,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       dataContext: DataContext) = {
     val clazz =
       elements match {
-        case Array(clazz: ScTemplateDefinition) => clazz
+        case Array(clazz: ScTemplateDefinition) =>
+          clazz
         case _ =>
           val parent = PsiTreeUtil.findCommonParent(elements: _*)
           PsiTreeUtil.getParentOfType(
@@ -183,7 +184,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         val extendsBlock = trt.extendsBlock
         val templateBody =
           extendsBlock.templateBody match {
-            case Some(tb) => tb
+            case Some(tb) =>
+              tb
             case None =>
               extendsBlock.add(
                 ScalaPsiElementFactory.createTemplateBody(trt.getManager))
@@ -249,9 +251,12 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     private def forMember[T](elem: PsiElement)(
         action: PsiMember => Option[T]): Option[T] = {
       elem match {
-        case ScalaPsiUtil.inNameContext(m: ScMember) => action(m)
-        case m: PsiMember                            => action(m)
-        case _                                       => None
+        case ScalaPsiUtil.inNameContext(m: ScMember) =>
+          action(m)
+        case m: PsiMember =>
+          action(m)
+        case _ =>
+          None
       }
     }
 
@@ -259,10 +264,14 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       def unapply(elem: PsiElement): Option[(PsiMember, PsiClass)] = {
         forMember(elem) { m =>
           m.containingClass match {
-            case null                                   => None
-            case `clazz`                                => Some(m, clazz)
-            case c if clazz.isInheritor(c, deep = true) => Some(m, c)
-            case _                                      => None
+            case null =>
+              None
+            case `clazz` =>
+              Some(m, clazz)
+            case c if clazz.isInheritor(c, deep = true) =>
+              Some(m, c)
+            case _ =>
+              None
           }
         }
       }
@@ -276,10 +285,12 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
         forMember(elem) { m =>
           m.containingClass match {
-            case null => None
+            case null =>
+              None
             case c if selfTypeOfClazz.get.conforms(ScType.designator(c)) =>
               Some(c)
-            case _ => None
+            case _ =>
+              None
           }
         }
       }
@@ -298,8 +309,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       resolve match {
         case inSameClassOrAncestor(m, cl: PsiClass) if !selected.contains(m) =>
           addToClassesForSelfType(cl)
-        case inSelfType(cl) => addToClassesForSelfType(cl)
-        case _              =>
+        case inSelfType(cl) =>
+          addToClassesForSelfType(cl)
+        case _ =>
       }
     }
 
@@ -342,8 +354,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         new ScalaRecursiveElementVisitor {
           override def visitReference(ref: ScReferenceElement) = {
             ref.resolve() match {
-              case tp: ScTypeParam => typeParams += tp
-              case _               =>
+              case tp: ScTypeParam =>
+                typeParams += tp
+              case _ =>
             }
           }
         }
@@ -375,7 +388,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         if (info.isToAbstract)
           member.children.foreach {
             case _: ScExpression =>
-            case other           => other.accept(visitor)
+            case other =>
+              other.accept(visitor)
           }
         else
           member.accept(visitor)
@@ -396,9 +410,12 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
       val typeText = classesForSelfType
         .map {
-          case obj: ScObject        => s"${obj.qualifiedName}.type"
-          case cl: ScTypeDefinition => cl.qualifiedName
-          case cl: PsiClass         => cl.getQualifiedName
+          case obj: ScObject =>
+            s"${obj.qualifiedName}.type"
+          case cl: ScTypeDefinition =>
+            cl.qualifiedName
+          case cl: PsiClass =>
+            cl.getQualifiedName
         }
         .mkString(" with ")
 

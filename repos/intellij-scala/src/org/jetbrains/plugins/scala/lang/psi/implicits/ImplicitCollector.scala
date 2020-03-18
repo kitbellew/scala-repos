@@ -67,8 +67,10 @@ object ImplicitCollector {
     expr.getTypeWithoutImplicits(fromUnderscore = fromUnder).toOption.map {
       case tp =>
         ScType.extractDesignatorSingletonType(tp) match {
-          case Some(res) => res
-          case _         => tp
+          case Some(res) =>
+            res
+          case _ =>
+            tp
         }
     }
   }
@@ -171,7 +173,9 @@ class ImplicitCollector(
                 place))
           stop = true
         placeForTreeWalkUp match {
-          case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
+          case (
+                _: ScTemplateBody | _: ScExtendsBlock
+              ) => //template body and inherited members are at the same level
           case _ =>
             if (!processor.changedLevel)
               stop = true
@@ -180,7 +184,8 @@ class ImplicitCollector(
           if (!placeCalculated) {
             place = placeForTreeWalkUp
             place match {
-              case e: ScTemplateParents => placeCalculated = true
+              case e: ScTemplateParents =>
+                placeCalculated = true
               case m: ScModifierListOwner
                   if m.hasModifierProperty("implicit") =>
                 placeCalculated =
@@ -231,7 +236,8 @@ class ImplicitCollector(
         ScalaRecursionManager.usingPreviousRecursionMap(m) {
           calc()
         }
-      case _ => calc()
+      case _ =>
+        calc()
     }
   }
 
@@ -247,8 +253,10 @@ class ImplicitCollector(
         state.get(BaseProcessor.FROM_TYPE_KEY).toOption
       lazy val subst: ScSubstitutor =
         fromType match {
-          case Some(t) => getSubst(state).followUpdateThisType(t)
-          case _       => getSubst(state)
+          case Some(t) =>
+            getSubst(state).followUpdateThisType(t)
+          case _ =>
+            getSubst(state)
         }
       named match {
         case o: ScObject if o.hasModifierProperty("implicit") =>
@@ -491,8 +499,10 @@ class ImplicitCollector(
                         val typeParameters = fun.typeParameters
                         val lastImplicit =
                           fun.effectiveParameterClauses.lastOption.flatMap {
-                            case clause if clause.isImplicit => Some(clause)
-                            case _                           => None
+                            case clause if clause.isImplicit =>
+                              Some(clause)
+                            case _ =>
+                              None
                           }
                         if (typeParameters.isEmpty && lastImplicit.isEmpty)
                           Some(c.copy(implicitReason = OkResult), subst)
@@ -530,11 +540,14 @@ class ImplicitCollector(
                                   (
                                     newPolymorphicType.inferValueType
                                       .recursiveUpdate {
-                                        case u: ScUndefinedType => (true, u.tpt)
-                                        case tp: ScType         => (false, tp)
+                                        case u: ScUndefinedType =>
+                                          (true, u.tpt)
+                                        case tp: ScType =>
+                                          (false, tp)
                                       },
                                     typeParams)
-                                case _ => (tp.inferValueType, Seq.empty)
+                                case _ =>
+                                  (tp.inferValueType, Seq.empty)
                               }
                             } else
                               tp match {
@@ -542,7 +555,8 @@ class ImplicitCollector(
                                       internalType,
                                       typeParams) =>
                                   (tp.inferValueType, typeParams)
-                                case _ => (tp.inferValueType, Seq.empty)
+                                case _ =>
+                                  (tp.inferValueType, Seq.empty)
                               }
                           }
                           var nonValueType: TypeResult[ScType] = Success(
@@ -707,14 +721,16 @@ class ImplicitCollector(
                                   true
                                 else
                                   dominates(tp.asInstanceOf[ScType], t)
-                              case _ => false
+                              case _ =>
+                                false
                             }
                           },
                           coreTypeForTp,
                           compute(),
                           IMPLICIT_PARAM_TYPES_KEY
                         ) match {
-                          case Some(res) => res
+                          case Some(res) =>
+                            res
                           case None =>
                             if (fullInfo)
                               Some(
@@ -729,8 +745,10 @@ class ImplicitCollector(
                     val funType =
                       if (MacroInferUtil.isMacro(fun).isDefined) {
                         MacroInferUtil.checkMacro(fun, Some(tp), place) match {
-                          case Some(newTp) => newTp
-                          case _           => _funType
+                          case Some(newTp) =>
+                            newTp
+                          case _ =>
+                            _funType
                         }
                       } else
                         _funType
@@ -748,8 +766,10 @@ class ImplicitCollector(
                             if typeParameters.contains(name) =>
                           hasTypeParametersInType = true
                           (true, tp)
-                        case tp: ScType if hasTypeParametersInType => (true, tp)
-                        case tp: ScType                            => (false, tp)
+                        case tp: ScType if hasTypeParametersInType =>
+                          (true, tp)
+                        case tp: ScType =>
+                          (false, tp)
                       }
                       if (withLocalTypeInference && hasTypeParametersInType) {
                         val inferredSubst = subst.followed(
@@ -798,12 +818,15 @@ class ImplicitCollector(
 
               if (isExtensionConversion && !fullInfo) {
                 checkForFunctionType(noReturnType = true) match {
-                  case None => None
-                  case _    => checkForFunctionType(noReturnType = false)
+                  case None =>
+                    None
+                  case _ =>
+                    checkForFunctionType(noReturnType = false)
                 }
               } else
                 checkForFunctionType(noReturnType = false)
-            case _ => None
+            case _ =>
+              None
           }
         ) match {
           case Some((result, resultSubst))
@@ -814,9 +837,11 @@ class ImplicitCollector(
                 Some(
                   result.copy(implicitReason = CantFindExtensionMethodResult),
                   resultSubst)
-              case res => res
+              case res =>
+                res
             }
-          case res => res
+          case res =>
+            res
         }
       }
 
@@ -845,15 +870,18 @@ class ImplicitCollector(
                         case Some(newRes) =>
                           lastResult = Some(c)
                           results += newRes
-                        case _ => lastResult = None
+                        case _ =>
+                          lastResult = None
                       }
                     case _ =>
                       lastResult = Some(c)
                       results += res
                   }
-                case _ => lastResult = None
+                case _ =>
+                  lastResult = None
               }
-            case None => candidatesSeq = Seq.empty
+            case None =>
+              candidatesSeq = Seq.empty
           }
         }
         results.toSet
@@ -875,8 +903,10 @@ class ImplicitCollector(
       val filtered = applicable.filter {
         case (res: ScalaResolveResult, subst: ScSubstitutor) =>
           res.problems match {
-            case Seq(WrongTypeParameterInferred) => false
-            case _                               => true
+            case Seq(WrongTypeParameterInferred) =>
+              false
+            case _ =>
+              true
           }
       }
       val actuals =
@@ -886,16 +916,20 @@ class ImplicitCollector(
           filtered
 
       mostSpecific.mostSpecificForImplicitParameters(actuals) match {
-        case Some(r) => HashSet(r)
-        case _       => applicable.map(_._1)
+        case Some(r) =>
+          HashSet(r)
+        case _ =>
+          applicable.map(_._1)
       }
     }
   }
 
   private def abstractsToUpper(tp: ScType): ScType = {
     val noAbstracts = tp.recursiveUpdate {
-      case ScAbstractType(_, _, upper) => (true, upper)
-      case t                           => (false, t)
+      case ScAbstractType(_, _, upper) =>
+        (true, upper)
+      case t =>
+        (false, t)
     }
 
     @tailrec
@@ -909,13 +943,16 @@ class ImplicitCollector(
             val nonRecursiveUpper = upper.map { upper =>
               upper.recursiveUpdate { t =>
                 t.isAliasType match {
-                  case Some(AliasType(`ta`, _, _)) => (true, types.Any)
-                  case _                           => (false, t)
+                  case Some(AliasType(`ta`, _, _)) =>
+                    (true, types.Any)
+                  case _ =>
+                    (false, t)
                 }
               }
             }
             (true, nonRecursiveUpper.getOrAny)
-          case _ => (false, t)
+          case _ =>
+            (false, t)
         }
       }
       if (!updated)
@@ -948,13 +985,16 @@ class ImplicitCollector(
                       .find(_.name == a.name)
                       .map(w => (true, w.upperBound))
                       .getOrElse((false, tp))
-                  case _ => (false, tp)
+                  case _ =>
+                    (false, tp)
                 }
-              case other => (false, other)
+              case other =>
+                (false, other)
             },
             wilds
           )).removeUndefines()
-      case _ => abstractsToUpper(tp).removeUndefines()
+      case _ =>
+        abstractsToUpper(tp).removeUndefines()
     }
   }
 
@@ -966,29 +1006,37 @@ class ImplicitCollector(
 
   private def topLevelTypeConstructors(tp: ScType): Set[ScType] = {
     tp match {
-      case ScProjectionType(_, element, _)    => Set(ScDesignatorType(element))
-      case ScParameterizedType(designator, _) => Set(designator)
-      case tp @ ScDesignatorType(o: ScObject) => Set(tp)
+      case ScProjectionType(_, element, _) =>
+        Set(ScDesignatorType(element))
+      case ScParameterizedType(designator, _) =>
+        Set(designator)
+      case tp @ ScDesignatorType(o: ScObject) =>
+        Set(tp)
       case ScDesignatorType(v: ScTypedDefinition) =>
         val valueType: ScType = v.getType(TypingContext.empty).getOrAny
         topLevelTypeConstructors(valueType)
       case ScCompoundType(comps, _, _) =>
         comps.flatMap(topLevelTypeConstructors).toSet
-      case _ => Set(tp)
+      case _ =>
+        Set(tp)
     }
   }
 
   private def complexity(tp: ScType): Int = {
     tp match {
-      case ScProjectionType(proj, _, _) => 1 + complexity(proj)
+      case ScProjectionType(proj, _, _) =>
+        1 + complexity(proj)
       case ScParameterizedType(des, args) =>
         1 + args.foldLeft(0)(_ + complexity(_))
-      case ScDesignatorType(o: ScObject) => 1
+      case ScDesignatorType(o: ScObject) =>
+        1
       case ScDesignatorType(v: ScTypedDefinition) =>
         val valueType: ScType = v.getType(TypingContext.empty).getOrAny
         1 + complexity(valueType)
-      case ScCompoundType(comps, _, _) => comps.foldLeft(0)(_ + complexity(_))
-      case _                           => 1
+      case ScCompoundType(comps, _, _) =>
+        comps.foldLeft(0)(_ + complexity(_))
+      case _ =>
+        1
     }
   }
 }

@@ -51,7 +51,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         .groupBy(fk => (fk.pkTable, fk.fkName, fk.pkName, fk.fkTable))
         .toSeq
         .sortBy {
-          case (key, _) => (key._1.name, key._2, key._3, key._4.name)
+          case (key, _) =>
+            (key._1.name, key._2, key._3, key._4.name)
         }
         .map(_._2.sortBy(_.keySeq)) // respect order
     )
@@ -69,7 +70,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
         logger.debug(
           s"Skipping indices of table ${t.name.name} due to exception during getIndexInfo: " + e.getMessage.trim)
         Seq()
-      case Failure(e) => throw e
+      case Failure(e) =>
+        throw e
     }
 
   ///////////////////////////////////////////////////////////////////////////////////////////// Builder factory methods
@@ -136,19 +138,32 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     jdbcType match {
       case CHAR | VARCHAR | LONGVARCHAR | NCHAR | NVARCHAR | LONGNVARCHAR =>
         classTag[String]
-      case NUMERIC | DECIMAL                         => classTag[BigDecimal]
-      case BIT | BOOLEAN                             => classTag[Boolean]
-      case TINYINT                                   => classTag[Byte]
-      case SMALLINT                                  => classTag[Short]
-      case INTEGER                                   => classTag[Int]
-      case BIGINT                                    => classTag[Long]
-      case REAL                                      => classTag[Float]
-      case FLOAT | DOUBLE                            => classTag[Double]
-      case BINARY | VARBINARY | LONGVARBINARY | BLOB => classTag[java.sql.Blob]
-      case DATE                                      => classTag[java.sql.Date]
-      case TIME                                      => classTag[java.sql.Time]
-      case TIMESTAMP                                 => classTag[java.sql.Timestamp]
-      case CLOB                                      => classTag[java.sql.Clob]
+      case NUMERIC | DECIMAL =>
+        classTag[BigDecimal]
+      case BIT | BOOLEAN =>
+        classTag[Boolean]
+      case TINYINT =>
+        classTag[Byte]
+      case SMALLINT =>
+        classTag[Short]
+      case INTEGER =>
+        classTag[Int]
+      case BIGINT =>
+        classTag[Long]
+      case REAL =>
+        classTag[Float]
+      case FLOAT | DOUBLE =>
+        classTag[Double]
+      case BINARY | VARBINARY | LONGVARBINARY | BLOB =>
+        classTag[java.sql.Blob]
+      case DATE =>
+        classTag[java.sql.Date]
+      case TIME =>
+        classTag[java.sql.Time]
+      case TIMESTAMP =>
+        classTag[java.sql.Timestamp]
+      case CLOB =>
+        classTag[java.sql.Clob]
       // case ARRAY => classTag[java.sql.Array]
       // case STRUCT => classTag[java.sql.Struct]
       // case REF => classTag[java.sql.Ref]
@@ -156,7 +171,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       // case ROWID => classTag[java.sql.RowId]
       // case NCLOB => classTag[java.sql.NClob]
       // case SQLXML => classTag[java.sql.SQLXML]
-      case NULL => classTag[Null]
+      case NULL =>
+        classTag[Null]
       case DISTINCT =>
         logger.warn(
           s"Found jdbc type DISTINCT. Assuming Blob. This may be wrong. You can override ModelBuilder#Table#Column#tpe to fix this.");
@@ -245,7 +261,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
             "Char"
           else
             "String"
-        case t => t
+        case t =>
+          t
       }
     def name = meta.name
 
@@ -297,24 +314,35 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           // NOTE: When extending this list, please also extend the code generator accordingly
           Some(
             (v, tpe) match {
-              case (v, "Byte")   => v.toByte
-              case (v, "Short")  => v.toShort
-              case (v, "Int")    => v.toInt
-              case (v, "Long")   => v.toLong
-              case (v, "Double") => v.toDouble
-              case (v, "Float")  => v.toFloat
+              case (v, "Byte") =>
+                v.toByte
+              case (v, "Short") =>
+                v.toShort
+              case (v, "Int") =>
+                v.toInt
+              case (v, "Long") =>
+                v.toLong
+              case (v, "Double") =>
+                v.toDouble
+              case (v, "Float") =>
+                v.toFloat
               case (v, "Char") =>
                 v.length match {
-                  case 1 => v(0)
-                  case 3 => v(1) // quoted character
+                  case 1 =>
+                    v(0)
+                  case 3 =>
+                    v(1) // quoted character
                 }
               case (v, "String") if meta.typeName == "CHAR" =>
                 v.head // FIXME: check length
               case (v, "scala.math.BigDecimal") =>
                 v // FIXME: probably we shouldn't use a string here
-              case (StringPattern(str), "String") => str
-              case ("TRUE", "Boolean")            => true
-              case ("FALSE", "Boolean")           => false
+              case (StringPattern(str), "String") =>
+                str
+              case ("TRUE", "Boolean") =>
+                true
+              case ("FALSE", "Boolean") =>
+                false
             })
         }
       }

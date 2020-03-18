@@ -656,7 +656,8 @@ abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
 
     try {
       statements.zip(fs).foreach {
-        case (s, f) => f(s)
+        case (s, f) =>
+          f(s)
       }
     } finally {
       statements.foreach(_.close())

@@ -61,8 +61,10 @@ object Tournament extends LilaController {
   def help(sysStr: Option[String]) =
     Open { implicit ctx =>
       val system = sysStr flatMap {
-        case "arena" => System.Arena.some
-        case _       => none
+        case "arena" =>
+          System.Arena.some
+        case _ =>
+          none
       }
       Ok(html.tournament.faqPage(system)).fuccess
     }
@@ -90,8 +92,10 @@ object Tournament extends LilaController {
         },
         api = _ =>
           repo byId id flatMap {
-            case None => NotFound(jsonError("No such tournament")).fuccess
-            case Some(tour) => {
+            case None =>
+              NotFound(jsonError("No such tournament")).fuccess
+            case Some(tour) =>
+              {
                 get("playerInfo").?? {
                   env.api.playerInfo(tour.id, _)
                 } zip
@@ -124,8 +128,10 @@ object Tournament extends LilaController {
   def gameStanding(id: String) =
     Open { implicit ctx =>
       env.api.miniStanding(id, true) map {
-        case Some(m) if !m.tour.isCreated => Ok(html.tournament.gameStanding(m))
-        case _                            => NotFound
+        case Some(m) if !m.tour.isCreated =>
+          Ok(html.tournament.gameStanding(m))
+        case _ =>
+          NotFound
       }
     }
 
@@ -169,7 +175,8 @@ object Tournament extends LilaController {
       NoLame {
         negotiate(
           html = repo enterableById id map {
-            case None => tournamentNotFound
+            case None =>
+              tournamentNotFound
             case Some(tour) =>
               env.api.join(tour.id, me)
               Redirect(routes.Tournament.show(tour.id))

@@ -225,8 +225,10 @@ object LiftJavaScriptSpec extends Specification {
     lines
       .map {
         _.stripMargin.lines.toList match {
-          case init :+ last => (init.map(_ + " ") :+ last).mkString
-          case Nil          => ""
+          case init :+ last =>
+            (init.map(_ + " ") :+ last).mkString
+          case Nil =>
+            ""
         }
       }
       .mkString("\n")

@@ -216,13 +216,17 @@ trait LabelledTypeClassCompanion[C[_]]
         ct.value.unwrap)
       def label(v: HV :+: ct.value.V): FieldType[HK, HV] :+: TKV =
         v match {
-          case Inl(hv) => Inl(field[HK](hv))
-          case Inr(tv) => Inr(ct.value.label(tv))
+          case Inl(hv) =>
+            Inl(field[HK](hv))
+          case Inr(tv) =>
+            Inr(ct.value.label(tv))
         }
       def unlabel(rec: FieldType[HK, HV] :+: TKV): HV :+: ct.value.V =
         rec match {
-          case Inl(hkv) => Inl(hkv)
-          case Inr(tkv) => Inr(ct.value.unlabel(tkv))
+          case Inl(hkv) =>
+            Inl(hkv)
+          case Inr(tkv) =>
+            Inr(ct.value.unlabel(tkv))
         }
     }
 }

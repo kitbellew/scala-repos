@@ -842,7 +842,8 @@ object Console extends Logging {
       val variantJson = parse(Source.fromFile(ca.common.variantJson).mkString)
       val variantId =
         variantJson \ "id" match {
-          case JString(s) => s
+          case JString(s) =>
+            s
           case _ =>
             error(
               "Unable to read engine variant ID from " +
@@ -899,7 +900,8 @@ object Console extends Logging {
     try {
       val code = Http(s"${serverUrl}/stop").asString.code
       code match {
-        case 200 => 0
+        case 200 =>
+          0
         case 404 =>
           error(s"Another process is using ${serverUrl}. Unable to undeploy.")
           1
@@ -943,7 +945,8 @@ object Console extends Logging {
           .extract[String]
       WorkflowUtils.checkUpgrade("build", engineFactory)
     } catch {
-      case e: Throwable => WorkflowUtils.checkUpgrade("build")
+      case e: Throwable =>
+        WorkflowUtils.checkUpgrade("build")
     }
     val sbt = detectSbt(ca)
     info(s"Using command '${sbt}' at the current working directory to build.")

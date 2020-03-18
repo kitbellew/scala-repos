@@ -1,5 +1,6 @@
 class ObjInCase {
   0 match {
-    case _ => object o
+    case _ =>
+      object o
   }
 }

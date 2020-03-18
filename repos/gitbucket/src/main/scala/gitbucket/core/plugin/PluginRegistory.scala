@@ -175,7 +175,8 @@ object PluginRegistry {
                   val dim = x.split("\\.")
                   Version(dim(0).toInt, dim(1).toInt)
                 }
-                case None => Version(0, 0)
+                case None =>
+                  Version(0, 0)
               }
 
             Versions.update(

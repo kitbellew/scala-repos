@@ -247,6 +247,7 @@ object ThriftServiceIface {
       case se: SourcedException if !serviceName.isEmpty =>
         se.serviceName = serviceName
         se
-      case _ => ex
+      case _ =>
+        ex
     }
 }

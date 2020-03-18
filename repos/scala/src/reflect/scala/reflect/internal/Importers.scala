@@ -97,8 +97,10 @@ trait Importers {
           override def complete(my: to.Symbol): Unit = {
             val theirCore =
               their.info match {
-                case from.PolyType(_, core) => core
-                case core                   => core
+                case from.PolyType(_, core) =>
+                  core
+                case core =>
+                  core
               }
             my setInfo GenPolyType(mytypeParams, importType(theirCore))
             my setAnnotations (their.annotations map importAnnotationInfo)
@@ -153,9 +155,12 @@ trait Importers {
           case their: from.TypeSkolem =>
             val origin =
               their.unpackLocation match {
-                case null                  => null
-                case theirloc: from.Tree   => importTree(theirloc)
-                case theirloc: from.Symbol => importSymbol(theirloc)
+                case null =>
+                  null
+                case theirloc: from.Tree =>
+                  importTree(theirloc)
+                case theirloc: from.Symbol =>
+                  importSymbol(theirloc)
               }
             myowner.newTypeSkolemSymbol(
               myname.toTypeName,
@@ -187,8 +192,10 @@ trait Importers {
     def importSymbol(their0: from.Symbol): Symbol = {
       def cachedRecreateSymbol(their: from.Symbol): Symbol =
         symMap weakGet their match {
-          case Some(result) => result
-          case _            => recreateSymbol(their)
+          case Some(result) =>
+            result
+          case _ =>
+            recreateSymbol(their)
         }
 
       def recreateOrRelink: Symbol = {
@@ -284,7 +291,8 @@ trait Importers {
 
       val their = their0
       symMap.weakGet(their) match {
-        case Some(result) => result
+        case Some(result) =>
+          result
         case None =>
           pendingSyms += 1
           try {
@@ -379,7 +387,8 @@ trait Importers {
 
     def importType(their: from.Type): Type = {
       tpeMap.weakGet(their) match {
-        case Some(result) => result
+        case Some(result) =>
+          result
         case None =>
           pendingTpes += 1
           try {
@@ -524,7 +533,8 @@ trait Importers {
         case from.ReferenceToBoxed(ident) =>
           new ReferenceToBoxed(
             importTree(ident) match {
-              case ident: Ident => ident
+              case ident: Ident =>
+                ident
             })
         case from.Literal(constant @ from.Constant(_)) =>
           new Literal(importConstant(constant))
@@ -576,14 +586,16 @@ trait Importers {
 
     def importAttachments(attachments: Set[Any]): Set[Any] =
       attachments.collect {
-        case ia: ImportableAttachment => ia.importAttachment(this)
+        case ia: ImportableAttachment =>
+          ia.importAttachment(this)
       }
 
     def importAnnotationInfo(ann: from.AnnotationInfo): AnnotationInfo = {
       val atp1 = importType(ann.atp)
       val args1 = ann.args map importTree
       val assocs1 = ann.assocs map {
-        case (name, arg) => (importName(name), importAnnotArg(arg))
+        case (name, arg) =>
+          (importName(name), importAnnotArg(arg))
       }
       val original1 = importTree(ann.original)
       AnnotationInfo(atp1, args1, assocs1) setOriginal original1
@@ -649,9 +661,12 @@ trait Importers {
     def importConstant(constant: from.Constant): Constant =
       new Constant(
         constant.tag match {
-          case ClazzTag => importType(constant.value.asInstanceOf[from.Type])
-          case EnumTag  => importSymbol(constant.value.asInstanceOf[from.Symbol])
-          case _        => constant.value
+          case ClazzTag =>
+            importType(constant.value.asInstanceOf[from.Type])
+          case EnumTag =>
+            importSymbol(constant.value.asInstanceOf[from.Symbol])
+          case _ =>
+            constant.value
         })
   }
 }

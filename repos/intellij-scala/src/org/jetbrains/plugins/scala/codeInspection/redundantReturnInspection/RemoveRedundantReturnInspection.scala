@@ -41,8 +41,10 @@ class RemoveReturnKeywordQuickFix(r: ScReturnStmt)
     if (!ret.isValid)
       return
     ret.expr match {
-      case Some(e) => ret.replace(e.copy())
-      case None    => ret.delete()
+      case Some(e) =>
+        ret.replace(e.copy())
+      case None =>
+        ret.delete()
     }
   }
 }

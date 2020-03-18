@@ -45,8 +45,10 @@ sealed trait Stack[T] {
     */
   def transform(fn: Stack[T] => Stack[T]): Stack[T] =
     fn(this) match {
-      case Node(head, mk, next) => Node(head, mk, next.transform(fn))
-      case leaf @ Leaf(_, _)    => leaf
+      case Node(head, mk, next) =>
+        Node(head, mk, next.transform(fn))
+      case leaf @ Leaf(_, _) =>
+        leaf
     }
 
   /**
@@ -60,7 +62,8 @@ sealed trait Stack[T] {
         insertion +: Node(head, mk, next.insertBefore(target, insertion))
       case Node(head, mk, next) =>
         Node(head, mk, next.insertBefore(target, insertion))
-      case leaf @ Leaf(_, _) => leaf
+      case leaf @ Leaf(_, _) =>
+        leaf
     }
 
   /**
@@ -82,7 +85,8 @@ sealed trait Stack[T] {
     transform {
       case Node(head, mk, next) if head.role == target =>
         Node(head, mk, insertion +: next)
-      case stk => stk
+      case stk =>
+        stk
     }
 
   /**
@@ -106,7 +110,8 @@ sealed trait Stack[T] {
           next.remove(target)
         else
           Node(head, mk, next.remove(target))
-      case leaf @ Leaf(_, _) => leaf
+      case leaf @ Leaf(_, _) =>
+        leaf
     }
 
   /**
@@ -118,7 +123,8 @@ sealed trait Stack[T] {
     transform {
       case n @ Node(head, _, next) if head.role == target =>
         replacement +: next
-      case stk => stk
+      case stk =>
+        stk
     }
 
   /**
@@ -138,8 +144,9 @@ sealed trait Stack[T] {
   final def foreach(fn: Stack[T] => Unit): Unit = {
     fn(this)
     this match {
-      case Node(_, _, next) => next.foreach(fn)
-      case Leaf(_, _)       =>
+      case Node(_, _, next) =>
+        next.foreach(fn)
+      case Leaf(_, _) =>
     }
   }
 
@@ -150,9 +157,12 @@ sealed trait Stack[T] {
   @tailrec
   final def exists(pred: Stack[T] => Boolean): Boolean =
     this match {
-      case _ if pred(this)  => true
-      case Node(_, _, next) => next.exists(pred)
-      case Leaf(_, _)       => false
+      case _ if pred(this) =>
+        true
+      case Node(_, _, next) =>
+        next.exists(pred)
+      case Leaf(_, _) =>
+        false
     }
 
   /**
@@ -187,8 +197,10 @@ sealed trait Stack[T] {
     */
   def ++(right: Stack[T]): Stack[T] =
     this match {
-      case Node(head, mk, left) => Node(head, mk, left ++ right)
-      case Leaf(_, _)           => right
+      case Node(head, mk, left) =>
+        Node(head, mk, left ++ right)
+      case Leaf(_, _) =>
+        right
     }
 
   /**
@@ -376,8 +388,10 @@ object Stack {
     private case class Prms(map: Map[Param[_], Any]) extends Params {
       def apply[P](implicit param: Param[P]): P =
         map.get(param) match {
-          case Some(v) => v.asInstanceOf[P]
-          case None    => param.default
+          case Some(v) =>
+            v.asInstanceOf[P]
+          case None =>
+            param.default
         }
 
       def contains[P](implicit param: Param[P]): Boolean = map.contains(param)

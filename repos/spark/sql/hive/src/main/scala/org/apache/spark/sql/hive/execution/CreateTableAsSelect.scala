@@ -85,7 +85,8 @@ private[hive] case class CreateTableAsSelect(
       // Get the Metastore Relation
       hiveContext.sessionState.catalog
         .lookupRelation(tableIdentifier, None) match {
-        case r: MetastoreRelation => r
+        case r: MetastoreRelation =>
+          r
       }
     }
     // TODO ideally, we should get the output data ready first and then

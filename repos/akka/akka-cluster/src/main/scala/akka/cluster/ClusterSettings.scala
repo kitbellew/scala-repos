@@ -40,14 +40,16 @@ final class ClusterSettings(val config: Config, val systemName: String) {
 
   val SeedNodes: immutable.IndexedSeq[Address] =
     immutableSeq(cc.getStringList("seed-nodes")).map {
-      case AddressFromURIString(addr) ⇒ addr
+      case AddressFromURIString(addr) ⇒
+        addr
     }.toVector
   val SeedNodeTimeout: FiniteDuration = cc.getMillisDuration(
     "seed-node-timeout")
   val RetryUnsuccessfulJoinAfter: Duration = {
     val key = "retry-unsuccessful-join-after"
     cc.getString(key).toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ Duration.Undefined
+      case "off" ⇒
+        Duration.Undefined
       case _ ⇒
         cc.getMillisDuration(key) requiring (
           _ > Duration.Zero, key + " > 0s, or off"
@@ -67,7 +69,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val PublishStatsInterval: Duration = {
     val key = "publish-stats-interval"
     cc.getString(key).toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ Duration.Undefined
+      case "off" ⇒
+        Duration.Undefined
       case _ ⇒
         cc.getMillisDuration(key) requiring (
           _ >= Duration.Zero, key + " >= 0s, or off"
@@ -78,7 +81,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val AutoDownUnreachableAfter: Duration = {
     val key = "auto-down-unreachable-after"
     cc.getString(key).toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ Duration.Undefined
+      case "off" ⇒
+        Duration.Undefined
       case _ ⇒
         cc.getMillisDuration(key) requiring (
           _ >= Duration.Zero, key + " >= 0s, or off"
@@ -89,7 +93,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val DownRemovalMargin: FiniteDuration = {
     val key = "down-removal-margin"
     cc.getString(key).toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ Duration.Zero
+      case "off" ⇒
+        Duration.Zero
       case _ ⇒
         cc.getMillisDuration(key) requiring (
           _ >= Duration.Zero, key + " >= 0s, or off"
@@ -117,8 +122,10 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val JmxEnabled: Boolean = cc.getBoolean("jmx.enabled")
   val UseDispatcher: String =
     cc.getString("use-dispatcher") match {
-      case "" ⇒ Dispatchers.DefaultDispatcherId
-      case id ⇒ id
+      case "" ⇒
+        Dispatchers.DefaultDispatcherId
+      case id ⇒
+        id
     }
   val GossipDifferentViewProbability: Double = cc.getDouble(
     "gossip-different-view-probability")

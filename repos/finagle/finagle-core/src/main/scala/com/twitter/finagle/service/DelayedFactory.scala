@@ -86,8 +86,10 @@ object DelayedFactory {
 
     val ref = new ServiceFactoryRef[Req, Rep](delayed)
     underlying respond {
-      case Throw(e)    => ref() = new FailingFactory(e)
-      case Return(fac) => ref() = fac
+      case Throw(e) =>
+        ref() = new FailingFactory(e)
+      case Return(fac) =>
+        ref() = fac
     }
     ref
   }

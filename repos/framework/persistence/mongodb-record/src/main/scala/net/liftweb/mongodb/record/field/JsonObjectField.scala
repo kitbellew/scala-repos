@@ -54,35 +54,49 @@ abstract class JsonObjectField[OwnerType <: BsonRecord[
    */
   def setFromJValue(jvalue: JValue): Box[JObjectType] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case o: JObject                     => setBox(tryo(valueMeta.create(o)))
-      case other                          => setBox(FieldHelpers.expectedA("JObject", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case o: JObject =>
+        setBox(tryo(valueMeta.create(o)))
+      case other =>
+        setBox(FieldHelpers.expectedA("JObject", other))
     }
 
   def setFromAny(in: Any): Box[JObjectType] =
     in match {
-      case dbo: DBObject        => setFromDBObject(dbo)
-      case value: JsonObject[_] => setBox(Full(value.asInstanceOf[JObjectType]))
+      case dbo: DBObject =>
+        setFromDBObject(dbo)
+      case value: JsonObject[_] =>
+        setBox(Full(value.asInstanceOf[JObjectType]))
       case Some(value: JsonObject[_]) =>
         setBox(Full(value.asInstanceOf[JObjectType]))
       case Full(value: JsonObject[_]) =>
         setBox(Full(value.asInstanceOf[JObjectType]))
       case (value: JsonObject[_]) :: _ =>
         setBox(Full(value.asInstanceOf[JObjectType]))
-      case s: String           => setFromString(s)
-      case Some(s: String)     => setFromString(s)
-      case Full(s: String)     => setFromString(s)
-      case null | None | Empty => setBox(defaultValueBox)
-      case f: Failure          => setBox(f)
-      case o                   => setFromString(o.toString)
+      case s: String =>
+        setFromString(s)
+      case Some(s: String) =>
+        setFromString(s)
+      case Full(s: String) =>
+        setFromString(s)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case f: Failure =>
+        setBox(f)
+      case o =>
+        setFromString(o.toString)
     }
 
   // parse String into a JObject
   def setFromString(in: String): Box[JObjectType] =
     tryo(JsonParser.parse(in)) match {
-      case Full(jv: JValue) => setFromJValue(jv)
-      case f: Failure       => setBox(f)
-      case other            => setBox(Failure("Error parsing String into a JValue: " + in))
+      case Full(jv: JValue) =>
+        setFromJValue(jv)
+      case f: Failure =>
+        setBox(f)
+      case other =>
+        setBox(Failure("Error parsing String into a JValue: " + in))
     }
 
   /*

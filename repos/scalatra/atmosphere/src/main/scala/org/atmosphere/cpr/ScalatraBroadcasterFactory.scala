@@ -126,8 +126,10 @@ class ScalatraBroadcasterFactory(
 
     }
     store.get(id) match {
-      case Some(b) => b.asInstanceOf[T]
-      case None    => null.asInstanceOf[T]
+      case Some(b) =>
+        b.asInstanceOf[T]
+      case None =>
+        null.asInstanceOf[T]
     }
   }
 
@@ -165,7 +167,8 @@ class ScalatraBroadcasterFactory(
               b.removeAtmosphereResource(r)
           }
         } catch {
-          case ex: IllegalStateException => logger.debug(ex.getMessage, ex)
+          case ex: IllegalStateException =>
+            logger.debug(ex.getMessage, ex)
         }
       }
     } catch {

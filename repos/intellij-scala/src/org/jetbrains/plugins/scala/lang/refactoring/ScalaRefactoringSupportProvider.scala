@@ -43,7 +43,8 @@ class ScalaRefactoringSupportProvider extends RefactoringSupportProvider {
       case _: ScTypeDefinition | _: ScFunction | _: ScFieldId |
           _: ScReferencePattern =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   override def getExtractMethodHandler: RefactoringActionHandler =

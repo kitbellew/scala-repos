@@ -6,7 +6,8 @@ object Test {
     try {
       None
     } catch {
-      case NF(ex) => None
+      case NF(ex) =>
+        None
     }
   ) getOrElse 0
   // Was emitting a spurious warning post typer:

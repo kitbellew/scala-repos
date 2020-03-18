@@ -32,9 +32,12 @@ trait IntTypedField extends NumericTypedField[Int] {
 
   def setFromString(s: String): Box[Int] =
     s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case _                       => setBox(tryo(java.lang.Integer.parseInt(s)))
+      case null | "" if optional_? =>
+        setBox(Empty)
+      case null | "" =>
+        setBox(Failure(notOptionalErrorMessage))
+      case _ =>
+        setBox(tryo(java.lang.Integer.parseInt(s)))
     }
 
   def defaultValue = 0
@@ -44,10 +47,14 @@ trait IntTypedField extends NumericTypedField[Int] {
 
   def setFromJValue(jvalue: JValue): Box[Int] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JInt(i)                        => setBox(Full(i.intValue))
-      case JDouble(d)                     => setBox(Full(d.toInt))
-      case other                          => setBox(FieldHelpers.expectedA("JInt", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JInt(i) =>
+        setBox(Full(i.intValue))
+      case JDouble(d) =>
+        setBox(Full(d.toInt))
+      case other =>
+        setBox(FieldHelpers.expectedA("JInt", other))
     }
 }
 

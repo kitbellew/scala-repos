@@ -10,7 +10,8 @@ object InAnotherPackage {
       TypedPipe
         .from(List(1, 2, 3, 4, 555, 3))
         .map {
-          case x => (x, x)
+          case x =>
+            (x, x)
         }
     }
   }

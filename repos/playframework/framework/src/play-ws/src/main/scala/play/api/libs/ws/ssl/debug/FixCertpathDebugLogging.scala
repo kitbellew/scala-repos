@@ -117,8 +117,10 @@ object FixCertpathDebugLogging {
     try {
       val newDebug =
         debugOption match {
-          case Some(d) => d
-          case None    => new Debug()
+          case Some(d) =>
+            d
+          case None =>
+            new Debug()
         }
       val action =
         new MonkeyPatchSunSecurityUtilDebugAction(newDebug, newOptions)

@@ -7,7 +7,8 @@ case class ContextProperty(value: Any) {
 
   def toInt: Int =
     value match {
-      case n: HasToInt => n.toInt
+      case n: HasToInt =>
+        n.toInt
     }
 }
 

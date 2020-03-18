@@ -41,7 +41,8 @@ class DuplicateMatch(
 
   def parameterText(param: ExtractMethodParameter) =
     parameterValues.get(param) match {
-      case Some(e) => e.getText
+      case Some(e) =>
+        e.getText
       case None =>
         throw new IllegalStateException(
           s"Could not find value of the parameter ${param.newName}")
@@ -49,8 +50,10 @@ class DuplicateMatch(
 
   def outputName(output: ExtractMethodOutput) =
     definitionCorrespondence.get(output.fromElement) match {
-      case Some(td) => td.name
-      case None     => output.paramName
+      case Some(td) =>
+        td.name
+      case None =>
+        output.paramName
     }
 
   def textRange =
@@ -66,8 +69,10 @@ class DuplicateMatch(
     if (filteredP.size == 0)
       return true
     filteredP.zip(filteredC).forall {
-      case (e1, e2) => checkElement(e1, e2)
-      case _        => false
+      case (e1, e2) =>
+        checkElement(e1, e2)
+      case _ =>
+        false
     }
   }
 
@@ -110,7 +115,8 @@ class DuplicateMatch(
         (res1, res2) match {
           case (sf1: ScSyntheticFunction, sf2: ScSyntheticFunction) =>
             sf1.isStringPlusMethod && sf2.isStringPlusMethod
-          case _ => false
+          case _ =>
+            false
         }
       case (
             intd1: ScInterpolatedStringLiteral,
@@ -120,8 +126,10 @@ class DuplicateMatch(
             ElementType(ScalaTokenTypes.tINTERPOLATED_STRING),
             ElementType(ScalaTokenTypes.tINTERPOLATED_STRING)) =>
         subPattern.getText == candidate.getText
-      case (lit1: ScLiteral, lit2: ScLiteral) => lit1.getValue == lit2.getValue
-      case _                                  => checkChildren(subPattern, candidate)
+      case (lit1: ScLiteral, lit2: ScLiteral) =>
+        lit1.getValue == lit2.getValue
+      case _ =>
+        checkChildren(subPattern, candidate)
     }
   }
 
@@ -135,10 +143,13 @@ class DuplicateMatch(
             Some(t)
         val Seq(newTp1, newTp2) = Seq(t1, t2).map(extractFromSingletonType)
         newTp1.zip(newTp2).forall {
-          case (tp1, tp2) => tp1.equiv(tp2)
+          case (tp1, tp2) =>
+            tp1.equiv(tp2)
         }
-      case (Failure(_, _), Failure(_, _)) => true
-      case _                              => false
+      case (Failure(_, _), Failure(_, _)) =>
+        true
+      case _ =>
+        false
     }
   }
 

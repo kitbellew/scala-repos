@@ -184,7 +184,8 @@ private[json] object Meta {
                     t
               }
             Some(mkParameterizedType(x.getRawType, typeArgs))
-          case _ => None
+          case _ =>
+            None
         }
 
       def mkConstructor(t: Type) =
@@ -234,7 +235,8 @@ private[json] object Meta {
                 false)
             else
               mkConstructor(t)
-          case x => (Constructor(TypeInfo(classOf[AnyRef], None), Nil), false)
+          case x =>
+            (Constructor(TypeInfo(classOf[AnyRef], None), Nil), false)
         }
 
       val (mapping, optional) = fieldMapping(genericType)
@@ -265,9 +267,12 @@ private[json] object Meta {
 
   private[json] def rawClassOf(t: Type): Class[_] =
     t match {
-      case c: Class[_]          => c
-      case p: ParameterizedType => rawClassOf(p.getRawType)
-      case x                    => fail("Raw type of " + x + " not known")
+      case c: Class[_] =>
+        c
+      case p: ParameterizedType =>
+        rawClassOf(p.getRawType)
+      case x =>
+        fail("Raw type of " + x + " not known")
     }
 
   private[json] def mkParameterizedType(owner: Type, typeArgs: Seq[Type]) =
@@ -359,7 +364,8 @@ private[json] object Meta {
         val Name = """^((?:[^$]|[$][^0-9]+)+)([$][0-9]+)?$""".r
         def clean(name: String) =
           name match {
-            case Name(text, junk) => text
+            case Name(text, junk) =>
+              text
           }
         try {
           val names = nameReader.lookupParameterNames(c).map(clean)
@@ -377,16 +383,19 @@ private[json] object Meta {
                   .getOrElse(arg)
               else
                 arg
-            case (x, _) => x
+            case (x, _) =>
+              x
           }
           names.toList.zip(types)
         } catch {
-          case e: ParameterNamesNotFoundException => Nil
+          case e: ParameterNamesNotFoundException =>
+            Nil
         }
       }
 
       t match {
-        case c: Class[_] => argsInfo(constructor, Map())
+        case c: Class[_] =>
+          argsInfo(constructor, Map())
         case p: ParameterizedType =>
           val vars =
             Map() ++ rawClassOf(p).getTypeParameters.toList
@@ -395,7 +404,8 @@ private[json] object Meta {
                 p.getActualTypeArguments.toList
               ) // FIXME this cast should not be needed
           argsInfo(constructor, vars)
-        case x => fail("Do not know how query constructor info for " + x)
+        case x =>
+          fail("Do not know how query constructor info for " + x)
       }
     }
 
@@ -423,25 +433,34 @@ private[json] object Meta {
                     context.allArgs.map(_._1))
                 else
                   c
-              case p: ParameterizedType => p.getRawType.asInstanceOf[Class[_]]
-              case x                    => fail("do not know how to get type parameter from " + x)
+              case p: ParameterizedType =>
+                p.getRawType.asInstanceOf[Class[_]]
+              case x =>
+                fail("do not know how to get type parameter from " + x)
             }
           case clazz: Class[_] if (clazz.isArray) =>
             i match {
-              case 0 => clazz.getComponentType.asInstanceOf[Class[_]]
-              case _ => fail("Arrays only have one type parameter")
+              case 0 =>
+                clazz.getComponentType.asInstanceOf[Class[_]]
+              case _ =>
+                fail("Arrays only have one type parameter")
             }
           case clazz: GenericArrayType =>
             i match {
-              case 0 => clazz.getGenericComponentType.asInstanceOf[Class[_]]
-              case _ => fail("Arrays only have one type parameter")
+              case 0 =>
+                clazz.getGenericComponentType.asInstanceOf[Class[_]]
+              case _ =>
+                fail("Arrays only have one type parameter")
             }
-          case _ => fail("Unsupported Type: " + t + " (" + t.getClass + ")")
+          case _ =>
+            fail("Unsupported Type: " + t + " (" + t.getClass + ")")
         }
 
       k match {
-        case `* -> *`     => List(term(0))
-        case `(*,*) -> *` => List(term(0), term(1))
+        case `* -> *` =>
+          List(term(0))
+        case `(*,*) -> *` =>
+          List(term(0), term(1))
       }
     }
 
@@ -449,21 +468,27 @@ private[json] object Meta {
       def types(i: Int): Type = {
         val ptype = t.asInstanceOf[ParameterizedType]
         ptype.getActualTypeArguments()(i) match {
-          case p: ParameterizedType => p
-          case c: Class[_]          => c
+          case p: ParameterizedType =>
+            p
+          case c: Class[_] =>
+            c
         }
       }
 
       k match {
-        case `* -> *`     => List(types(0))
-        case `(*,*) -> *` => List(types(0), types(1))
+        case `* -> *` =>
+          List(types(0))
+        case `(*,*) -> *` =>
+          List(types(0), types(1))
       }
     }
 
     def primitive_?(t: Type) =
       t match {
-        case clazz: Class[_] => primitives contains clazz
-        case _               => false
+        case clazz: Class[_] =>
+          primitives contains clazz
+        case _ =>
+          false
       }
 
     def static_?(f: Field) = Modifier.isStatic(f.getModifiers)
@@ -471,7 +496,8 @@ private[json] object Meta {
       t match {
         case p: ParameterizedType =>
           p.getActualTypeArguments.exists(_.isInstanceOf[ParameterizedType])
-        case _ => false
+        case _ =>
+          false
       }
 
     def array_?(x: Any) =
@@ -489,8 +515,10 @@ private[json] object Meta {
             TypeInfo(
               f.getType,
               f.getGenericType match {
-                case p: ParameterizedType => Some(p)
-                case _                    => None
+                case p: ParameterizedType =>
+                  Some(p)
+                case _ =>
+                  None
               })))
       fs ::: (
         if (clazz.getSuperclass == null)
@@ -542,24 +570,42 @@ private[json] object Meta {
 
     def primitive2jvalue(a: Any)(implicit formats: Formats) =
       a match {
-        case x: String            => JString(x)
-        case x: Int               => JInt(x)
-        case x: Long              => JInt(x)
-        case x: Double            => JDouble(x)
-        case x: Float             => JDouble(x)
-        case x: Byte              => JInt(BigInt(x))
-        case x: BigInt            => JInt(x)
-        case x: Boolean           => JBool(x)
-        case x: Short             => JInt(BigInt(x))
-        case x: java.lang.Integer => JInt(BigInt(x.asInstanceOf[Int]))
-        case x: java.lang.Long    => JInt(BigInt(x.asInstanceOf[Long]))
-        case x: java.lang.Double  => JDouble(x.asInstanceOf[Double])
-        case x: java.lang.Float   => JDouble(x.asInstanceOf[Float])
-        case x: java.lang.Byte    => JInt(BigInt(x.asInstanceOf[Byte]))
-        case x: java.lang.Boolean => JBool(x.asInstanceOf[Boolean])
-        case x: java.lang.Short   => JInt(BigInt(x.asInstanceOf[Short]))
-        case x: Date              => JString(formats.dateFormat.format(x))
-        case x: Symbol            => JString(x.name)
+        case x: String =>
+          JString(x)
+        case x: Int =>
+          JInt(x)
+        case x: Long =>
+          JInt(x)
+        case x: Double =>
+          JDouble(x)
+        case x: Float =>
+          JDouble(x)
+        case x: Byte =>
+          JInt(BigInt(x))
+        case x: BigInt =>
+          JInt(x)
+        case x: Boolean =>
+          JBool(x)
+        case x: Short =>
+          JInt(BigInt(x))
+        case x: java.lang.Integer =>
+          JInt(BigInt(x.asInstanceOf[Int]))
+        case x: java.lang.Long =>
+          JInt(BigInt(x.asInstanceOf[Long]))
+        case x: java.lang.Double =>
+          JDouble(x.asInstanceOf[Double])
+        case x: java.lang.Float =>
+          JDouble(x.asInstanceOf[Float])
+        case x: java.lang.Byte =>
+          JInt(BigInt(x.asInstanceOf[Byte]))
+        case x: java.lang.Boolean =>
+          JBool(x.asInstanceOf[Boolean])
+        case x: java.lang.Short =>
+          JInt(BigInt(x.asInstanceOf[Short]))
+        case x: Date =>
+          JString(formats.dateFormat.format(x))
+        case x: Symbol =>
+          JString(x.name)
         case _ =>
           sys.error("not a primitive " + a.asInstanceOf[AnyRef].getClass)
       }

@@ -12,7 +12,8 @@ object Test extends SessionTest {
   // because the number seems to differ between versions/platforms/...
   def elided(s: String) =
     when(s) {
-      case elideMsg() => true
+      case elideMsg() =>
+        true
     }
   override def eval() = super.eval() filterNot elided
   def session = """

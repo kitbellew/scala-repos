@@ -15,10 +15,14 @@ trait SexpPrettyPrinter extends SexpPrinter {
 
   private def print(sexp: Sexp, sb: StringBuilder, indent: Int): Unit =
     sexp match {
-      case SexpData(data) => printData(data, sb, indent)
-      case SexpList(els)  => printList(els, sb, indent)
-      case SexpCons(x, y) => printCons(x, y, sb, indent)
-      case atom: SexpAtom => printAtom(atom, sb)
+      case SexpData(data) =>
+        printData(data, sb, indent)
+      case SexpList(els) =>
+        printList(els, sb, indent)
+      case SexpCons(x, y) =>
+        printCons(x, y, sb, indent)
+      case atom: SexpAtom =>
+        printAtom(atom, sb)
     }
 
   protected def printCons(

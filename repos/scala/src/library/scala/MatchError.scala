@@ -30,7 +30,8 @@ final class MatchError(obj: Any) extends RuntimeException {
       try {
         obj.toString() + " (" + ofClass + ")"
       } catch {
-        case _: Throwable => "an instance " + ofClass
+        case _: Throwable =>
+          "an instance " + ofClass
       }
   }
 

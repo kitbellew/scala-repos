@@ -56,7 +56,8 @@ trait ListSteroids {
   implicit final class LilaPimpedList[A](list: List[A]) {
     def sortLike[B](other: List[B], f: A => B): List[A] =
       list.sortWith {
-        case (x, y) => other.indexOf(f(x)) < other.indexOf(f(y))
+        case (x, y) =>
+          other.indexOf(f(x)) < other.indexOf(f(y))
       }
   }
 }
@@ -114,8 +115,10 @@ trait OptionSteroids {
 
     def fold[X](some: A => X, none: => X): X =
       self match {
-        case None    => none
-        case Some(a) => some(a)
+        case None =>
+          none
+        case Some(a) =>
+          some(a)
       }
 
     def |(a: => A): A = self getOrElse a

@@ -74,7 +74,8 @@ class MacrosheetFileHook(private val project: Project)
         source getSelectedEditor file match {
           case txtEditor: TextEditor if txtEditor.getEditor != null =>
             txtEditor.getEditor.getDocument
-          case _ => null
+          case _ =>
+            null
         }
       document.addDocumentListener(new MacrosheetSourceAutocopy(document))
 

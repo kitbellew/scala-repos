@@ -32,8 +32,10 @@ trait ListInstances extends ListInstances1 {
         @tailrec
         def loop(buf: ListBuffer[B], as: List[A]): List[B] =
           as match {
-            case Nil       => buf.toList
-            case _ :: rest => loop(buf += f(as), rest)
+            case Nil =>
+              buf.toList
+            case _ :: rest =>
+              loop(buf += f(as), rest)
           }
         loop(ListBuffer.empty[B], fa)
       }
@@ -45,8 +47,10 @@ trait ListInstances extends ListInstances1 {
           f: (A, Eval[B]) => Eval[B]): Eval[B] = {
         def loop(as: List[A]): Eval[B] =
           as match {
-            case Nil    => lb
-            case h :: t => f(h, Eval.defer(loop(t)))
+            case Nil =>
+              lb
+            case h :: t =>
+              f(h, Eval.defer(loop(t)))
           }
         Eval.defer(loop(fa))
       }

@@ -265,16 +265,26 @@ final class Piece(_number: Int) {
 
   {
     number match {
-      case 0 => make0
-      case 1 => make1
-      case 2 => make2
-      case 3 => make3
-      case 4 => make4
-      case 5 => make5
-      case 6 => make6
-      case 7 => make7
-      case 8 => make8
-      case 9 => make9
+      case 0 =>
+        make0
+      case 1 =>
+        make1
+      case 2 =>
+        make2
+      case 3 =>
+        make3
+      case 4 =>
+        make4
+      case 5 =>
+        make5
+      case 6 =>
+        make6
+      case 7 =>
+        make7
+      case 8 =>
+        make8
+      case 9 =>
+        make9
     }
   }
 

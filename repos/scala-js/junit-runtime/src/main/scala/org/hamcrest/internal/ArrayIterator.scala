@@ -11,8 +11,10 @@ class ArrayIterator private (array: Array[_], private var currentIndex: Int = 0)
   def this(array: AnyRef) = {
     this(
       array match {
-        case arr: Array[_] => arr
-        case _             => throw new IllegalArgumentException("not an array")
+        case arr: Array[_] =>
+          arr
+        case _ =>
+          throw new IllegalArgumentException("not an array")
       },
       0)
   }

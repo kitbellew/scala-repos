@@ -30,7 +30,8 @@ private[opening] final class Selector(
           api.attempt.playedIds(user, modulo) flatMap { ids =>
             tryRange(user, toleranceStep, ids)
           } recoverWith {
-            case e: Exception => apply(none)
+            case e: Exception =>
+              apply(none)
           }
       }
     ).mon(_.opening.selector.time) >>- lila.mon.opening.selector.count()
@@ -48,7 +49,8 @@ private[opening] final class Selector(
             "$lt" -> BSONInteger(user.perfs.opening.intRating + tolerance))
         ))
       .one[Opening] flatMap {
-      case Some(opening) => fuccess(opening)
+      case Some(opening) =>
+        fuccess(opening)
       case None =>
         if ((tolerance + toleranceStep) <= toleranceMax)
           tryRange(user, tolerance + toleranceStep, ids)

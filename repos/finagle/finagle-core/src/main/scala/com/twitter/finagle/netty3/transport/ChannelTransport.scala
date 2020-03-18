@@ -35,7 +35,8 @@ class ChannelTransport[In, Out](ch: Channel)
   private[this] val failed = new AtomicBoolean(false)
 
   private[this] val readInterruptHandler: PartialFunction[Throwable, Unit] = {
-    case e => fail(e)
+    case e =>
+      fail(e)
   }
 
   private[this] def fail(exc: Throwable) {
@@ -166,12 +167,14 @@ class ChannelTransport[In, Out](ch: Channel)
 
   val peerCertificate: Option[Certificate] =
     ch.getPipeline.get(classOf[SslHandler]) match {
-      case null => None
+      case null =>
+        None
       case handler =>
         try {
           handler.getEngine.getSession.getPeerCertificates.headOption
         } catch {
-          case NonFatal(_) => None
+          case NonFatal(_) =>
+            None
         }
     }
 

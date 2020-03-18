@@ -138,8 +138,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofRef[_] => (size == x.size) && (elems == x.elems)
-        case _           => false
+        case x: ofRef[_] =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofRef"
@@ -217,8 +219,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofByte => (size == x.size) && (elems == x.elems)
-        case _         => false
+        case x: ofByte =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofByte"
@@ -296,8 +300,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofShort => (size == x.size) && (elems == x.elems)
-        case _          => false
+        case x: ofShort =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofShort"
@@ -375,8 +381,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofChar => (size == x.size) && (elems == x.elems)
-        case _         => false
+        case x: ofChar =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofChar"
@@ -454,8 +462,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofInt => (size == x.size) && (elems == x.elems)
-        case _        => false
+        case x: ofInt =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofInt"
@@ -533,8 +543,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofLong => (size == x.size) && (elems == x.elems)
-        case _         => false
+        case x: ofLong =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofLong"
@@ -612,8 +624,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofFloat => (size == x.size) && (elems == x.elems)
-        case _          => false
+        case x: ofFloat =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofFloat"
@@ -691,8 +705,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofDouble => (size == x.size) && (elems == x.elems)
-        case _           => false
+        case x: ofDouble =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofDouble"
@@ -767,8 +783,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofBoolean => (size == x.size) && (elems == x.elems)
-        case _            => false
+        case x: ofBoolean =>
+          (size == x.size) && (elems == x.elems)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofBoolean"
@@ -808,8 +826,10 @@ object ArrayBuilder {
 
     override def equals(other: Any): Boolean =
       other match {
-        case x: ofUnit => (size == x.size)
-        case _         => false
+        case x: ofUnit =>
+          (size == x.size)
+        case _ =>
+          false
       }
 
     override def toString = "ArrayBuilder.ofUnit"

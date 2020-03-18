@@ -265,7 +265,8 @@ private class PairwiseRRDD[T: ClassTag](
         val contentPairs = new Array[Byte](contentPairsLength)
         dataStream.readFully(contentPairs)
         (hashedKey, contentPairs)
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -298,7 +299,8 @@ private class RRDD[T: ClassTag](
         val obj = new Array[Byte](length)
         dataStream.readFully(obj)
         obj
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -327,7 +329,8 @@ private class StringRRDD[T: ClassTag](
     length match {
       case length if length > 0 =>
         SerDe.readStringBytes(dataStream, length)
-      case _ => null
+      case _ =>
+        null
     }
   }
 

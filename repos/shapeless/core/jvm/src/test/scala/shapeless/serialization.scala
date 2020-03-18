@@ -264,8 +264,10 @@ object SerializationTestDefns {
         new Show[L :+: R] {
           def show(lr: L :+: R) =
             lr match {
-              case Inl(l) => s"$name(${sl.show(l)})"
-              case Inr(r) => s"${sr.show(r)}"
+              case Inl(l) =>
+                s"$name(${sl.show(l)})"
+              case Inr(r) =>
+                s"${sr.show(r)}"
             }
         }
 

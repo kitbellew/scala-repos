@@ -88,7 +88,8 @@ class ScalaTypeValidator(
               buf += ((typeDefinition, messageForClassMember(name)))
             }
             true
-          case _ => true
+          case _ =>
+            true
         }
       }
     }
@@ -119,7 +120,8 @@ class ScalaTypeValidator(
           buf += ((typeDefinition, messageForClassMember(name)))
         }
         true
-      case _ => true
+      case _ =>
+        true
     }
     buf
   }

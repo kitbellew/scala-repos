@@ -23,7 +23,8 @@ object UserTournament extends LilaController {
             Env.tournament.leaderboardApi.chart(user).map { data =>
               Ok(html.userTournament.chart(user, data))
             }
-          case _ => notFound
+          case _ =>
+            notFound
         }
       }
     }

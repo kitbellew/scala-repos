@@ -64,8 +64,9 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
     onTransition {
       case Active -> Idle =>
         stateData match {
-          case Todo(ref, queue) => ref ! Batch(queue)
-          case _                => // nothing to do
+          case Todo(ref, queue) =>
+            ref ! Batch(queue)
+          case _ => // nothing to do
         }
     }
     //#transition-elided
@@ -122,8 +123,10 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
       onTransition {
         case Idle -> Active =>
           setTimer("timeout", Tick, 1 second, repeat = true)
-        case Active -> _ => cancelTimer("timeout")
-        case x -> Idle   => log.info("entering Idle from " + x)
+        case Active -> _ =>
+          cancelTimer("timeout")
+        case x -> Idle =>
+          log.info("entering Idle from " + x)
       }
       //#transition-syntax
 

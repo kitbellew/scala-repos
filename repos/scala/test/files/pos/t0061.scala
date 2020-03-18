@@ -6,6 +6,7 @@ object O {
   // or if you write TestA
   def ga(x: testClass) =
     x match {
-      case testA() => ()
+      case testA() =>
+        ()
     }
 }

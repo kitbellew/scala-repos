@@ -8,7 +8,8 @@ object Test {
   def foo: String = {
     try return "Hello"
     finally 10 match {
-      case x => ()
+      case x =>
+        ()
     }
   }
 

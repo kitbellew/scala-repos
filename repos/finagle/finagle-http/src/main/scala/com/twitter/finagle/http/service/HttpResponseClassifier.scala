@@ -33,7 +33,8 @@ object HttpResponseClassifier {
         x match {
           case ReqRep(req: Request, Return(rep: Response)) =>
             underlying.isDefinedAt((req, rep))
-          case _ => false
+          case _ =>
+            false
         }
 
       def apply(x: ReqRep): ResponseClass =

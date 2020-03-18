@@ -409,7 +409,8 @@ object ConsumerPerformance {
         case _: ConsumerTimeoutException => {
           consumerTimeout.set(true);
         }
-        case e: Throwable => e.printStackTrace()
+        case e: Throwable =>
+          e.printStackTrace()
       }
       totalMessagesRead.addAndGet(messagesRead)
       totalBytesRead.addAndGet(bytesRead)

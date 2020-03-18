@@ -43,7 +43,8 @@ object Test extends App {
                   phase$whitespace$name.trim(),
                   id.trim(),
                   description.trim())
-              case _ => throw new Exception("format error")
+              case _ =>
+                throw new Exception("format error")
             }
           }
         }

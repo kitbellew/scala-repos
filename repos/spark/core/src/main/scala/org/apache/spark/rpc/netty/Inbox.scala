@@ -226,7 +226,8 @@ private[netty] class Inbox(
       case NonFatal(e) =>
         try endpoint.onError(e)
         catch {
-          case NonFatal(ee) => logError(s"Ignoring error", ee)
+          case NonFatal(ee) =>
+            logError(s"Ignoring error", ee)
         }
     }
   }

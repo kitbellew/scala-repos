@@ -28,7 +28,8 @@ object AdaptiveLoadBalancingRouterMultiJvmSpec extends MultiNodeConfig {
 
   class Echo extends Actor {
     def receive = {
-      case _ ⇒ sender() ! Reply(Cluster(context.system).selfAddress)
+      case _ ⇒
+        sender() ! Reply(Cluster(context.system).selfAddress)
     }
   }
 
@@ -116,10 +117,12 @@ abstract class AdaptiveLoadBalancingRouterSpec
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
     (
       receiveWhile(5 seconds, messages = expectedReplies) {
-        case Reply(address) ⇒ address
+        case Reply(address) ⇒
+          address
       }
     ).foldLeft(zero) {
-      case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
+      case (replyMap, address) ⇒
+        replyMap + (address -> (replyMap(address) + 1))
     }
   }
 
@@ -128,8 +131,10 @@ abstract class AdaptiveLoadBalancingRouterSpec
     */
   def fullAddress(actorRef: ActorRef): Address =
     actorRef.path.address match {
-      case Address(_, _, None, None) ⇒ cluster.selfAddress
-      case a ⇒ a
+      case Address(_, _, None, None) ⇒
+        cluster.selfAddress
+      case a ⇒
+        a
     }
 
   def startRouter(name: String): ActorRef = {
@@ -150,7 +155,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
     }
     val routees = currentRoutees(router)
     routees.map {
-      case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+      case ActorRefRoutee(ref) ⇒
+        fullAddress(ref)
     }.toSet should ===(roles.map(address).toSet)
     router
   }
@@ -229,7 +235,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
         }
         val routees = currentRoutees(router3)
         routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
         }.toSet should ===(Set(address(first)))
       }
       enterBarrier("after-4")
@@ -244,7 +251,8 @@ abstract class AdaptiveLoadBalancingRouterSpec
         }
         val routees = currentRoutees(router4)
         routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
         }.toSet should ===(Set(address(first), address(second), address(third)))
       }
       enterBarrier("after-5")

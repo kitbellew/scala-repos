@@ -64,9 +64,12 @@ object ParserUtils {
     */
   def unquoteString(str: String): String = {
     str match {
-      case singleQuotedString(s) => s
-      case doubleQuotedString(s) => s
-      case other                 => other
+      case singleQuotedString(s) =>
+        s
+      case doubleQuotedString(s) =>
+        s
+      case other =>
+        other
     }
   }
 
@@ -75,8 +78,10 @@ object ParserUtils {
     */
   def cleanIdentifier(ident: String): String = {
     ident match {
-      case escapedIdentifier(i) => i
-      case plainIdent           => plainIdent
+      case escapedIdentifier(i) =>
+        i
+      case plainIdent =>
+        plainIdent
     }
   }
 
@@ -116,19 +121,25 @@ object ParserUtils {
       clauseName: String,
       nodeList: Seq[ASTNode]): Option[ASTNode] = {
     nodeList.filter {
-      case ast: ASTNode => ast.text == clauseName
+      case ast: ASTNode =>
+        ast.text == clauseName
     } match {
-      case Seq(oneMatch) => Some(oneMatch)
-      case Seq()         => None
-      case _             => sys.error(s"Found multiple instances of clause $clauseName")
+      case Seq(oneMatch) =>
+        Some(oneMatch)
+      case Seq() =>
+        None
+      case _ =>
+        sys.error(s"Found multiple instances of clause $clauseName")
     }
   }
 
   def extractTableIdent(tableNameParts: ASTNode): TableIdentifier = {
     tableNameParts.children.map {
-      case Token(part, Nil) => cleanIdentifier(part)
+      case Token(part, Nil) =>
+        cleanIdentifier(part)
     } match {
-      case Seq(tableOnly) => TableIdentifier(tableOnly)
+      case Seq(tableOnly) =>
+        TableIdentifier(tableOnly)
       case Seq(databaseName, table) =>
         TableIdentifier(table, Some(databaseName))
       case other =>
@@ -144,20 +155,34 @@ object ParserUtils {
         DecimalType(precision.text.toInt, scale.text.toInt)
       case Token("TOK_DECIMAL", precision :: Nil) =>
         DecimalType(precision.text.toInt, 0)
-      case Token("TOK_DECIMAL", Nil)                  => DecimalType.USER_DEFAULT
-      case Token("TOK_BIGINT", Nil)                   => LongType
-      case Token("TOK_INT", Nil)                      => IntegerType
-      case Token("TOK_TINYINT", Nil)                  => ByteType
-      case Token("TOK_SMALLINT", Nil)                 => ShortType
-      case Token("TOK_BOOLEAN", Nil)                  => BooleanType
-      case Token("TOK_STRING", Nil)                   => StringType
-      case Token("TOK_VARCHAR", Token(_, Nil) :: Nil) => StringType
-      case Token("TOK_CHAR", Token(_, Nil) :: Nil)    => StringType
-      case Token("TOK_FLOAT", Nil)                    => FloatType
-      case Token("TOK_DOUBLE", Nil)                   => DoubleType
-      case Token("TOK_DATE", Nil)                     => DateType
-      case Token("TOK_TIMESTAMP", Nil)                => TimestampType
-      case Token("TOK_BINARY", Nil)                   => BinaryType
+      case Token("TOK_DECIMAL", Nil) =>
+        DecimalType.USER_DEFAULT
+      case Token("TOK_BIGINT", Nil) =>
+        LongType
+      case Token("TOK_INT", Nil) =>
+        IntegerType
+      case Token("TOK_TINYINT", Nil) =>
+        ByteType
+      case Token("TOK_SMALLINT", Nil) =>
+        ShortType
+      case Token("TOK_BOOLEAN", Nil) =>
+        BooleanType
+      case Token("TOK_STRING", Nil) =>
+        StringType
+      case Token("TOK_VARCHAR", Token(_, Nil) :: Nil) =>
+        StringType
+      case Token("TOK_CHAR", Token(_, Nil) :: Nil) =>
+        StringType
+      case Token("TOK_FLOAT", Nil) =>
+        FloatType
+      case Token("TOK_DOUBLE", Nil) =>
+        DoubleType
+      case Token("TOK_DATE", Nil) =>
+        DateType
+      case Token("TOK_TIMESTAMP", Nil) =>
+        TimestampType
+      case Token("TOK_BINARY", Nil) =>
+        BinaryType
       case Token("TOK_LIST", elementType :: Nil) =>
         ArrayType(nodeToDataType(elementType))
       case Token("TOK_STRUCT", Token("TOK_TABCOLLIST", fields) :: Nil) =>

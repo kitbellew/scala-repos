@@ -380,17 +380,28 @@ object Predef extends LowPriorityImplicits with DeprecatedPredef {
   implicit def genericArrayOps[T](xs: Array[T]): ArrayOps[T] =
     (
       xs match {
-        case x: Array[AnyRef]  => refArrayOps[AnyRef](x)
-        case x: Array[Boolean] => booleanArrayOps(x)
-        case x: Array[Byte]    => byteArrayOps(x)
-        case x: Array[Char]    => charArrayOps(x)
-        case x: Array[Double]  => doubleArrayOps(x)
-        case x: Array[Float]   => floatArrayOps(x)
-        case x: Array[Int]     => intArrayOps(x)
-        case x: Array[Long]    => longArrayOps(x)
-        case x: Array[Short]   => shortArrayOps(x)
-        case x: Array[Unit]    => unitArrayOps(x)
-        case null              => null
+        case x: Array[AnyRef] =>
+          refArrayOps[AnyRef](x)
+        case x: Array[Boolean] =>
+          booleanArrayOps(x)
+        case x: Array[Byte] =>
+          byteArrayOps(x)
+        case x: Array[Char] =>
+          charArrayOps(x)
+        case x: Array[Double] =>
+          doubleArrayOps(x)
+        case x: Array[Float] =>
+          floatArrayOps(x)
+        case x: Array[Int] =>
+          intArrayOps(x)
+        case x: Array[Long] =>
+          longArrayOps(x)
+        case x: Array[Short] =>
+          shortArrayOps(x)
+        case x: Array[Unit] =>
+          unitArrayOps(x)
+        case null =>
+          null
       }
     ).asInstanceOf[ArrayOps[T]]
 

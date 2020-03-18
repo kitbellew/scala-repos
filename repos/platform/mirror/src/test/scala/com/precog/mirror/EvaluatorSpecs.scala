@@ -296,7 +296,8 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
 
       expect.length == actual.length && (
         expect zip actual forall {
-          case (a, b) => a == b
+          case (a, b) =>
+            a == b
         }
       )
     }

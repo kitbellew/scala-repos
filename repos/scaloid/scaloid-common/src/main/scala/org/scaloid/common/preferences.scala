@@ -58,11 +58,16 @@ import scala.reflect._
 class Preferences(val preferences: SharedPreferences) extends Dynamic {
   def updateDynamic(name: String)(value: Any) {
     value match {
-      case v: String  => preferences.edit().putString(name, v).commit()
-      case v: Int     => preferences.edit().putInt(name, v).commit()
-      case v: Long    => preferences.edit().putLong(name, v).commit()
-      case v: Boolean => preferences.edit().putBoolean(name, v).commit()
-      case v: Float   => preferences.edit().putFloat(name, v).commit()
+      case v: String =>
+        preferences.edit().putString(name, v).commit()
+      case v: Int =>
+        preferences.edit().putInt(name, v).commit()
+      case v: Long =>
+        preferences.edit().putLong(name, v).commit()
+      case v: Boolean =>
+        preferences.edit().putBoolean(name, v).commit()
+      case v: Float =>
+        preferences.edit().putFloat(name, v).commit()
       case v: Set[String @unchecked] =>
         preferences.edit().putStringSet(name, v).commit()
     }
@@ -70,11 +75,16 @@ class Preferences(val preferences: SharedPreferences) extends Dynamic {
 
   def applyDynamic[T](name: String)(defaultVal: T): T =
     defaultVal match {
-      case v: String  => preferences.getString(name, v).asInstanceOf[T]
-      case v: Int     => preferences.getInt(name, v).asInstanceOf[T]
-      case v: Long    => preferences.getLong(name, v).asInstanceOf[T]
-      case v: Boolean => preferences.getBoolean(name, v).asInstanceOf[T]
-      case v: Float   => preferences.getFloat(name, v).asInstanceOf[T]
+      case v: String =>
+        preferences.getString(name, v).asInstanceOf[T]
+      case v: Int =>
+        preferences.getInt(name, v).asInstanceOf[T]
+      case v: Long =>
+        preferences.getLong(name, v).asInstanceOf[T]
+      case v: Boolean =>
+        preferences.getBoolean(name, v).asInstanceOf[T]
+      case v: Float =>
+        preferences.getFloat(name, v).asInstanceOf[T]
       case v: Set[String @unchecked] =>
         preferences.getStringSet(name, v).toSet.asInstanceOf[T]
     }
@@ -136,36 +146,60 @@ class Extra(val activity: SActivity) extends AnyVal with Dynamic {
     activity.intent.foreach { i =>
       value match {
         // primitives
-        case v: Boolean => i.putExtra(name, v)
-        case v: Byte    => i.putExtra(name, v)
-        case v: Char    => i.putExtra(name, v)
-        case v: Short   => i.putExtra(name, v)
-        case v: Int     => i.putExtra(name, v)
-        case v: Long    => i.putExtra(name, v)
-        case v: Float   => i.putExtra(name, v)
-        case v: Double  => i.putExtra(name, v)
+        case v: Boolean =>
+          i.putExtra(name, v)
+        case v: Byte =>
+          i.putExtra(name, v)
+        case v: Char =>
+          i.putExtra(name, v)
+        case v: Short =>
+          i.putExtra(name, v)
+        case v: Int =>
+          i.putExtra(name, v)
+        case v: Long =>
+          i.putExtra(name, v)
+        case v: Float =>
+          i.putExtra(name, v)
+        case v: Double =>
+          i.putExtra(name, v)
 
         // simple types
-        case v: String                => i.putExtra(name, v)
-        case v: CharSequence          => i.putExtra(name, v)
-        case v: android.os.Bundle     => i.putExtra(name, v)
-        case v: android.os.Parcelable => i.putExtra(name, v)
+        case v: String =>
+          i.putExtra(name, v)
+        case v: CharSequence =>
+          i.putExtra(name, v)
+        case v: android.os.Bundle =>
+          i.putExtra(name, v)
+        case v: android.os.Parcelable =>
+          i.putExtra(name, v)
 
         // array types
-        case v: Array[Boolean]      => i.putExtra(name, v)
-        case v: Array[Byte]         => i.putExtra(name, v)
-        case v: Array[Char]         => i.putExtra(name, v)
-        case v: Array[Short]        => i.putExtra(name, v)
-        case v: Array[Int]          => i.putExtra(name, v)
-        case v: Array[Long]         => i.putExtra(name, v)
-        case v: Array[Float]        => i.putExtra(name, v)
-        case v: Array[Double]       => i.putExtra(name, v)
-        case v: Array[String]       => i.putExtra(name, v)
-        case v: Array[CharSequence] => i.putExtra(name, v)
-        case v: Array[Parcelable]   => i.putExtra(name, v)
+        case v: Array[Boolean] =>
+          i.putExtra(name, v)
+        case v: Array[Byte] =>
+          i.putExtra(name, v)
+        case v: Array[Char] =>
+          i.putExtra(name, v)
+        case v: Array[Short] =>
+          i.putExtra(name, v)
+        case v: Array[Int] =>
+          i.putExtra(name, v)
+        case v: Array[Long] =>
+          i.putExtra(name, v)
+        case v: Array[Float] =>
+          i.putExtra(name, v)
+        case v: Array[Double] =>
+          i.putExtra(name, v)
+        case v: Array[String] =>
+          i.putExtra(name, v)
+        case v: Array[CharSequence] =>
+          i.putExtra(name, v)
+        case v: Array[Parcelable] =>
+          i.putExtra(name, v)
 
         // other types
-        case v: Serializable => i.putExtra(name, v) // must be after arrays
+        case v: Serializable =>
+          i.putExtra(name, v) // must be after arrays
       }
     }
   }
@@ -176,7 +210,8 @@ class Extra(val activity: SActivity) extends AnyVal with Dynamic {
         case x: android.os.Bundle if x.containsKey(name) =>
           Some(x.get(name).asInstanceOf[T])
 
-        case _ => None
+        case _ =>
+          None
       }
     }
 

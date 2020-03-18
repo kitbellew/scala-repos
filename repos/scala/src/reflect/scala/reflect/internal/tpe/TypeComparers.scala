@@ -140,10 +140,12 @@ trait TypeComparers {
   // logic of "annotationsConform" is arbitrary and unknown.
   private def isSameType1(tp1: Type, tp2: Type): Boolean =
     typeRelationPreCheck(tp1, tp2) match {
-      case state if state.isKnown => state.booleanValue
+      case state if state.isKnown =>
+        state.booleanValue
       case _ if typeHasAnnotations(tp1) || typeHasAnnotations(tp2) =>
         sameAnnotatedTypes(tp1, tp2)
-      case _ => isSameType2(tp1, tp2)
+      case _ =>
+        isSameType2(tp1, tp2)
     }
 
   private def isSameHKTypes(tp1: Type, tp2: Type) =
@@ -165,8 +167,10 @@ trait TypeComparers {
     @tailrec
     def chaseDealiasedUnderlying(tp: Type): Type =
       tp.underlying.dealias match {
-        case next: SingletonType if tp ne next => chaseDealiasedUnderlying(next)
-        case _                                 => tp
+        case next: SingletonType if tp ne next =>
+          chaseDealiasedUnderlying(next)
+        case _ =>
+          tp
       }
     val origin1 = chaseDealiasedUnderlying(tp1)
     val origin2 = chaseDealiasedUnderlying(tp2)
@@ -222,12 +226,14 @@ trait TypeComparers {
      */
     def mutateNonTypeConstructs(lhs: Type, rhs: Type) =
       lhs match {
-        case BoundedWildcardType(bounds) => bounds containsType rhs
+        case BoundedWildcardType(bounds) =>
+          bounds containsType rhs
         case tv @ TypeVar(_, _) =>
           tv.registerTypeEquality(rhs, typeVarLHS = lhs eq tp1)
         case TypeRef(tv @ TypeVar(_, _), sym, _) =>
           tv.registerTypeSelection(sym, rhs)
-        case _ => false
+        case _ =>
+          false
       }
     /*  SingletonType receives this additional scrutiny because there are
      *  a variety of Types which must be treated as equivalent even if they
@@ -245,10 +251,13 @@ trait TypeComparers {
       tp1 match {
         case tp1: SingletonType =>
           tp2 match {
-            case tp2: SingletonType => isSameSingletonType(tp1, tp2)
-            case _                  => false
+            case tp2: SingletonType =>
+              isSameSingletonType(tp1, tp2)
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     /*  Those false cases certainly are ugly. There's a proposed SIP to deuglify it.
@@ -258,59 +267,76 @@ trait TypeComparers {
       tp1 match {
         case tp1: TypeRef =>
           tp2 match {
-            case tp2: TypeRef => isSameTypeRef(tp1, tp2);
-            case _            => false
+            case tp2: TypeRef =>
+              isSameTypeRef(tp1, tp2);
+            case _ =>
+              false
           }
         case tp1: MethodType =>
           tp2 match {
-            case tp2: MethodType => isSameMethodType(tp1, tp2);
-            case _               => false
+            case tp2: MethodType =>
+              isSameMethodType(tp1, tp2);
+            case _ =>
+              false
           }
         case RefinedType(ps1, decls1) =>
           tp2 match {
             case RefinedType(ps2, decls2) =>
               isSameTypes(ps1, ps2) && (decls1 isSameScope decls2);
-            case _ => false
+            case _ =>
+              false
           }
         case SingleType(pre1, sym1) =>
           tp2 match {
             case SingleType(pre2, sym2) =>
               equalSymsAndPrefixes(sym1, pre1, sym2, pre2);
-            case _ => false
+            case _ =>
+              false
           }
         case PolyType(ps1, res1) =>
           tp2 match {
             case PolyType(ps2, res2) =>
               equalTypeParamsAndResult(ps1, res1, ps2, res2);
-            case _ => false
+            case _ =>
+              false
           }
         case ExistentialType(qs1, res1) =>
           tp2 match {
             case ExistentialType(qs2, res2) =>
               equalTypeParamsAndResult(qs1, res1, qs2, res2);
-            case _ => false
+            case _ =>
+              false
           }
         case ThisType(sym1) =>
           tp2 match {
-            case ThisType(sym2) => sym1 eq sym2;
-            case _              => false
+            case ThisType(sym2) =>
+              sym1 eq sym2;
+            case _ =>
+              false
           }
         case ConstantType(c1) =>
           tp2 match {
-            case ConstantType(c2) => c1 == c2;
-            case _                => false
+            case ConstantType(c2) =>
+              c1 == c2;
+            case _ =>
+              false
           }
         case NullaryMethodType(res1) =>
           tp2 match {
-            case NullaryMethodType(res2) => res1 =:= res2;
-            case _                       => false
+            case NullaryMethodType(res2) =>
+              res1 =:= res2;
+            case _ =>
+              false
           }
         case TypeBounds(lo1, hi1) =>
           tp2 match {
-            case TypeBounds(lo2, hi2) => lo1 =:= lo2 && hi1 =:= hi2;
-            case _                    => false
+            case TypeBounds(lo2, hi2) =>
+              lo1 =:= lo2 && hi1 =:= hi2;
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     (
@@ -409,12 +435,14 @@ trait TypeComparers {
 
   private def isSubType1(tp1: Type, tp2: Type, depth: Depth): Boolean =
     typeRelationPreCheck(tp1, tp2) match {
-      case state if state.isKnown => state.booleanValue
+      case state if state.isKnown =>
+        state.booleanValue
       case _ if typeHasAnnotations(tp1) || typeHasAnnotations(tp2) =>
         annotationsConform(tp1, tp2) && (
           tp1.withoutAnnotations <:< tp2.withoutAnnotations
         )
-      case _ => isSubType2(tp1, tp2, depth)
+      case _ =>
+        isSubType2(tp1, tp2, depth)
     }
 
   private def isPolySubType(tp1: PolyType, tp2: PolyType): Boolean = {
@@ -453,7 +481,8 @@ trait TypeComparers {
             SingleType(ThisType(lpre), v1),
             SingleType(SuperType(ThisType(rpre), _), v2)) =>
         (lpre eq rpre) && (v1.overrideChain contains v2)
-      case _ => false
+      case _ =>
+        false
     }
 
   // @assume tp1.isHigherKinded || tp2.isHigherKinded
@@ -462,7 +491,8 @@ trait TypeComparers {
       (ntp1.withoutAnnotations, ntp2.withoutAnnotations) match {
         case (TypeRef(_, AnyClass, _), _) =>
           false // avoid some warnings when Nothing/Any are on the other side
-        case (_, TypeRef(_, NothingClass, _)) => false
+        case (_, TypeRef(_, NothingClass, _)) =>
+          false
         case (pt1: PolyType, pt2: PolyType) =>
           isPolySubType(
             pt1,
@@ -615,12 +645,16 @@ trait TypeComparers {
          else
            fourthTry)
       sym2 match {
-        case SingletonClass => tp1.isStable || fourthTry
-        case _: ClassSymbol => classOnRight
+        case SingletonClass =>
+          tp1.isStable || fourthTry
+        case _: ClassSymbol =>
+          classOnRight
         case _: TypeSymbol if sym2.isDeferred =>
           abstractTypeOnRight(tp2.bounds.lo) || fourthTry
-        case _: TypeSymbol => retry(normalizePlus(tp1), normalizePlus(tp2))
-        case _             => fourthTry
+        case _: TypeSymbol =>
+          retry(normalizePlus(tp1), normalizePlus(tp2))
+        case _ =>
+          fourthTry
       }
     }
 
@@ -685,13 +719,17 @@ trait TypeComparers {
         case tr1 @ TypeRef(pre1, sym1, _) =>
           def nullOnLeft =
             tp2 match {
-              case TypeRef(_, sym2, _) => sym1 isBottomSubClass sym2
-              case _                   => isSingleType(tp2) && retry(tp1, tp2.widen)
+              case TypeRef(_, sym2, _) =>
+                sym1 isBottomSubClass sym2
+              case _ =>
+                isSingleType(tp2) && retry(tp1, tp2.widen)
             }
 
           sym1 match {
-            case NothingClass => true
-            case NullClass    => nullOnLeft
+            case NothingClass =>
+              true
+            case NullClass =>
+              nullOnLeft
             case _: ClassSymbol if isRawType(tp1) =>
               retry(normalizePlus(tp1), normalizePlus(tp2))
             case _: ClassSymbol if sym1.isModuleClass =>
@@ -700,12 +738,17 @@ trait TypeComparers {
               retry(sym1.info, tp2)
             case _: TypeSymbol if sym1.isDeferred =>
               abstractTypeOnLeft(tp1.bounds.hi)
-            case _: TypeSymbol => retry(normalizePlus(tp1), normalizePlus(tp2))
-            case _             => false
+            case _: TypeSymbol =>
+              retry(normalizePlus(tp1), normalizePlus(tp2))
+            case _ =>
+              false
           }
-        case RefinedType(parents, _) => parents exists (retry(_, tp2))
-        case _: SingletonType        => retry(tp1.underlying, tp2)
-        case _                       => false
+        case RefinedType(parents, _) =>
+          parents exists (retry(_, tp2))
+        case _: SingletonType =>
+          retry(tp1.underlying, tp2)
+        case _ =>
+          false
       }
     }
 
@@ -746,7 +789,8 @@ trait TypeComparers {
     @tailrec
     def loop(bases: List[Symbol]): Symbol =
       bases match {
-        case Nil => NoSymbol
+        case Nil =>
+          NoSymbol
         case x :: xs =>
           if (isPrimitiveValueClass(x))
             x

@@ -24,8 +24,10 @@ object ScParameterizedTypeElement {
   def unapply(pte: ScParameterizedTypeElement)
       : Option[(ScTypeElement, Seq[ScTypeElement])] = {
     pte match {
-      case null => None
-      case _    => Some(pte.typeElement, pte.typeArgList.typeArgs)
+      case null =>
+        None
+      case _ =>
+        Some(pte.typeElement, pte.typeArgList.typeArgs)
     }
   }
 }

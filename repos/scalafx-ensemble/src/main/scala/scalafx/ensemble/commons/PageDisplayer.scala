@@ -39,7 +39,8 @@ object PageDisplayer {
 
   def choosePage(value: String = "dashBoard"): Node = {
     value match {
-      case "dashBoard" => displayPage(new DashboardPage())
+      case "dashBoard" =>
+        displayPage(new DashboardPage())
       case _ =>
         if (value.startsWith("dashBoard - ")) {
           displayPage(new DashboardPage(value.split("-")(1).trim()))

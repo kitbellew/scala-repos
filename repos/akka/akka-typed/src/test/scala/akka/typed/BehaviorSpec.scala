@@ -320,7 +320,8 @@ class BehaviorSpec extends TypedSpec {
       case Sig(ctx, signal) ⇒
         monitor ! GotSignal(signal)
         signal match {
-          case f: Failed ⇒ f.decide(Failed.Restart)
+          case f: Failed ⇒
+            f.decide(Failed.Restart)
           case _ ⇒
         }
         Same
@@ -342,7 +343,8 @@ class BehaviorSpec extends TypedSpec {
       case Msg(ctx, GetState(replyTo)) ⇒
         replyTo ! state
         Same
-      case Msg(ctx, Stop) ⇒ Stopped
+      case Msg(ctx, Stop) ⇒
+        Stopped
     }
   }
 
@@ -368,7 +370,8 @@ class BehaviorSpec extends TypedSpec {
         case Sig(ctx, signal) ⇒
           monitor ! GotSignal(signal)
           signal match {
-            case f: Failed ⇒ f.decide(Failed.Restart)
+            case f: Failed ⇒
+              f.decide(Failed.Restart)
             case _ ⇒
           }
           Same
@@ -390,8 +393,10 @@ class BehaviorSpec extends TypedSpec {
         case Msg(_, GetState(replyTo)) ⇒
           replyTo ! state
           Same
-        case Msg(_, Stop) ⇒ Stopped
-        case Msg(_, _: AuxPing) ⇒ Unhandled
+        case Msg(_, Stop) ⇒
+          Stopped
+        case Msg(_, _: AuxPing) ⇒
+          Unhandled
       }
     }
   }
@@ -404,7 +409,8 @@ class BehaviorSpec extends TypedSpec {
       ScalaDSL.Widened(
         mkFull(monitor),
         {
-          case x ⇒ x
+          case x ⇒
+            x
         })
   }
 
@@ -605,7 +611,8 @@ class BehaviorSpec extends TypedSpec {
         case GetState(replyTo) ⇒
           replyTo ! state
           ScalaDSL.Same
-        case Stop ⇒ ScalaDSL.Stopped
+        case Stop ⇒
+          ScalaDSL.Stopped
       }
   }
 
@@ -623,24 +630,30 @@ class BehaviorSpec extends TypedSpec {
         case Ignore ⇒
           monitor ! Ignored
           ScalaDSL.Same
-        case GetSelf ⇒ ScalaDSL.Unhandled
+        case GetSelf ⇒
+          ScalaDSL.Unhandled
         case Swap ⇒
           monitor ! Swapped
           behv(monitor, state.next)
         case GetState(replyTo) ⇒
           replyTo ! state
           ScalaDSL.Same
-        case Stop ⇒ ScalaDSL.Stopped
-        case _: AuxPing ⇒ ScalaDSL.Unhandled
+        case Stop ⇒
+          ScalaDSL.Stopped
+        case _: AuxPing ⇒
+          ScalaDSL.Unhandled
       }
   }
 
   object `A Static Behavior` extends Messages {
     override def behavior(monitor: ActorRef[Event]): Behavior[Command] =
       ScalaDSL.Static {
-        case Ping ⇒ monitor ! Pong
-        case Miss ⇒ monitor ! Missed
-        case Ignore ⇒ monitor ! Ignored
+        case Ping ⇒
+          monitor ! Pong
+        case Miss ⇒
+          monitor ! Missed
+        case Ignore ⇒
+          monitor ! Ignored
         case GetSelf ⇒
         case Swap ⇒
         case GetState(_) ⇒

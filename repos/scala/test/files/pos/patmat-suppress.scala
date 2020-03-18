@@ -84,12 +84,15 @@ class TestSealedExhaustive { // compile only
   case object B2 extends B
   def ma8(x: B) =
     x match {
-      case _: B => true
+      case _: B =>
+        true
     }
   def ma9(x: B) =
     x match {
-      case B1() => true // missing B, which is not abstract so must be included
-      case B2   => true
+      case B1() =>
+        true // missing B, which is not abstract so must be included
+      case B2 =>
+        true
     }
 
   object ob1 {
@@ -101,8 +104,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // exhaustive: abstract sealed C1 is dead end.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
 
@@ -115,8 +120,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // not exhaustive: C1 is not sealed.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
   object ob3 {
@@ -130,8 +137,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // not exhaustive: C1 has subclasses.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
   object ob4 {
@@ -143,8 +152,10 @@ class TestSealedExhaustive { // compile only
 
     def ma10(x: C) =
       x match { // not exhaustive: C1 is not abstract.
-        case C3()    => true
-        case C2 | C4 => true
+        case C3() =>
+          true
+        case C2 | C4 =>
+          true
       }
   }
 }
@@ -152,30 +163,41 @@ class TestSealedExhaustive { // compile only
 object TestUnreachable extends App {
   def unreachable1(xs: Seq[Char]) =
     xs match {
-      case Seq(x, y, _*)   => x :: y :: Nil
-      case Seq(x, y, z, w) => List(z, w) // redundant!
+      case Seq(x, y, _*) =>
+        x :: y :: Nil
+      case Seq(x, y, z, w) =>
+        List(z, w) // redundant!
     }
   def unreachable2(xs: Seq[Char]) =
     xs match {
-      case Seq(x, y, _*) => x :: y :: Nil
-      case Seq(x, y)     => List(x, y)
+      case Seq(x, y, _*) =>
+        x :: y :: Nil
+      case Seq(x, y) =>
+        List(x, y)
     }
 
   def not_unreachable(xs: Seq[Char]) =
     xs match {
-      case Seq(x, y, _*) => x :: y :: Nil
-      case Seq(x)        => List(x)
+      case Seq(x, y, _*) =>
+        x :: y :: Nil
+      case Seq(x) =>
+        List(x)
     }
   def not_unreachable2(xs: Seq[Char]) =
     xs match {
-      case Seq(x, y)        => x :: y :: Nil
-      case Seq(x, y, z, _*) => List(x, y)
+      case Seq(x, y) =>
+        x :: y :: Nil
+      case Seq(x, y, z, _*) =>
+        List(x, y)
     }
 
   def contrivedExample[A, B, C](a: A, b: B, c: C): Unit =
     a match {
-      case b => println("matched b")
-      case c => println("matched c")
-      case _ => println("matched neither")
+      case b =>
+        println("matched b")
+      case c =>
+        println("matched c")
+      case _ =>
+        println("matched neither")
     }
 }

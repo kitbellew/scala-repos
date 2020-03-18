@@ -165,8 +165,10 @@ class SyslogFormatter(
       name: String): String = {
     val syslogLevel =
       level match {
-        case x: Level         => SyslogHandler.severityForLogLevel(x.value)
-        case x: javalog.Level => SyslogHandler.severityForLogLevel(x.intValue)
+        case x: Level =>
+          SyslogHandler.severityForLogLevel(x.value)
+        case x: javalog.Level =>
+          SyslogHandler.severityForLogLevel(x.intValue)
       }
     serverName match {
       case None =>

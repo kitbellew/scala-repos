@@ -44,15 +44,22 @@ trait SexpPrinter extends (Sexp => String) {
 
   protected def printAtom(sexp: SexpAtom, sb: StringBuilder): Unit =
     sexp match {
-      case SexpChar(c)   => sb.append('?').append(c)
-      case SexpSymbol(s) => printSymbol(s, sb)
-      case SexpString(s) => printString(s, sb)
+      case SexpChar(c) =>
+        sb.append('?').append(c)
+      case SexpSymbol(s) =>
+        printSymbol(s, sb)
+      case SexpString(s) =>
+        printString(s, sb)
       // will not work for Scheme
       // e.g. http://rosettacode.org/wiki/Infinity#Scheme
-      case SexpNil       => sb.append("nil")
-      case SexpNegInf    => sb.append("-1.0e+INF")
-      case SexpPosInf    => sb.append("1.0e+INF")
-      case SexpNaN       => sb.append("0.0e+NaN")
+      case SexpNil =>
+        sb.append("nil")
+      case SexpNegInf =>
+        sb.append("-1.0e+INF")
+      case SexpPosInf =>
+        sb.append("1.0e+INF")
+      case SexpNaN =>
+        sb.append("0.0e+NaN")
       case SexpNumber(n) =>
         // .toString and .apply does not round-trip for really big exponents
         // but PlainString can be *really* slow and eat up loads of memory
@@ -67,13 +74,15 @@ trait SexpPrinter extends (Sexp => String) {
   private val stringSpecials = SexpParser.specialChars.toList
     .map(_.swap)
     .filterNot {
-      case (from, to) => exclude(from)
+      case (from, to) =>
+        exclude(from)
     }
 
   protected def printSymbol(s: String, sb: StringBuilder): Unit = {
     val escaped =
       specials.foldLeft(s) {
-        case (r, (from, to)) => r.replace(from, "\\" + to)
+        case (r, (from, to)) =>
+          r.replace(from, "\\" + to)
       }
     sb.append(escaped)
   }
@@ -81,7 +90,8 @@ trait SexpPrinter extends (Sexp => String) {
   protected def printString(s: String, sb: StringBuilder): Unit = {
     val escaped =
       stringSpecials.foldLeft(s) {
-        case (r, (from, to)) => r.replace(from, "\\" + to)
+        case (r, (from, to)) =>
+          r.replace(from, "\\" + to)
       }
     sb.append('"').append(escaped).append('"')
   }

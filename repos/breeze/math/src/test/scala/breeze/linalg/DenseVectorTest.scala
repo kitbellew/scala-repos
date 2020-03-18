@@ -188,7 +188,8 @@ class DenseVectorTest extends FunSuite with Checkers {
         x(0 to 5);
         false
       } catch {
-        case _: Throwable => true
+        case _: Throwable =>
+          true
       })
   }
 

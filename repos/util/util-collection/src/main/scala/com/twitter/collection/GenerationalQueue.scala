@@ -22,7 +22,8 @@ trait GenerationalQueue[A] {
 class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
   private[this] val container = mutable.HashMap.empty[A, Time]
   private[this] implicit val ordering = Ordering.by[(A, Time), Time] {
-    case (_, ts) => ts
+    case (_, ts) =>
+      ts
   }
 
   /**
@@ -49,8 +50,10 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
         None
       else
         container.min match {
-          case (a, t) if (t.untilNow > age) => Some(a)
-          case _                            => None
+          case (a, t) if (t.untilNow > age) =>
+            Some(a)
+          case _ =>
+            None
         }
     }
 
@@ -58,7 +61,8 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
     synchronized {
       (
         container filter {
-          case (_, t) => t.untilNow > age
+          case (_, t) =>
+            t.untilNow > age
         }
       ).keys
     }

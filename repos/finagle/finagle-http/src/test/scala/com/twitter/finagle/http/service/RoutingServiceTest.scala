@@ -14,7 +14,8 @@ class RoutingServiceTest extends FunSuite {
 
   test("RoutingService.byPath") {
     val service = RoutingService.byPath {
-      case "/test.json" => NullService
+      case "/test.json" =>
+        NullService
     }
 
     assert(Await.result(service(Request("/test.json"))).status == Status.Ok)
@@ -23,7 +24,8 @@ class RoutingServiceTest extends FunSuite {
 
   test("RoutingService.byPathObject") {
     val service = RoutingService.byPathObject {
-      case Root / "test" ~ "json" => NullService
+      case Root / "test" ~ "json" =>
+        NullService
     }
 
     assert(Await.result(service(Request("/test.json"))).status == Status.Ok)
@@ -32,7 +34,8 @@ class RoutingServiceTest extends FunSuite {
 
   test("RoutingService.byMethodAndPath") {
     val service = RoutingService.byMethodAndPath {
-      case (Get, "/test.json") => NullService
+      case (Get, "/test.json") =>
+        NullService
     }
 
     assert(Await.result(service(Request("/test.json"))).status == Status.Ok)
@@ -44,7 +47,8 @@ class RoutingServiceTest extends FunSuite {
 
   test("RoutingService.byMethodAndPathObject") {
     val service = RoutingService.byMethodAndPathObject {
-      case Get -> Root / "test.json" => NullService
+      case Get -> Root / "test.json" =>
+        NullService
     }
 
     assert(Await.result(service(Request("/test.json"))).status == Status.Ok)

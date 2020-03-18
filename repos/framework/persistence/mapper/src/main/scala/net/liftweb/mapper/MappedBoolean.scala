@@ -136,17 +136,28 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
 
   override def setFromAny(in: Any): Boolean = {
     in match {
-      case b: Boolean                      => this.set(b)
-      case JsonAST.JBool(v)                => this.set(v)
-      case (b: Boolean) :: _               => this.set(b)
-      case Some(b: Boolean)                => this.set(b)
-      case Full(b: Boolean)                => this.set(b)
-      case Empty | Failure(_, _, _) | None => this.set(false)
-      case (s: String) :: _                => this.set(toBoolean(s))
-      case s :: _                          => this.setFromAny(s)
-      case null                            => this.set(false)
-      case s: String                       => this.set(toBoolean(s))
-      case o                               => this.set(toBoolean(o))
+      case b: Boolean =>
+        this.set(b)
+      case JsonAST.JBool(v) =>
+        this.set(v)
+      case (b: Boolean) :: _ =>
+        this.set(b)
+      case Some(b: Boolean) =>
+        this.set(b)
+      case Full(b: Boolean) =>
+        this.set(b)
+      case Empty | Failure(_, _, _) | None =>
+        this.set(false)
+      case (s: String) :: _ =>
+        this.set(toBoolean(s))
+      case s :: _ =>
+        this.setFromAny(s)
+      case null =>
+        this.set(false)
+      case s: String =>
+        this.set(toBoolean(s))
+      case o =>
+        this.set(toBoolean(o))
     }
   }
 

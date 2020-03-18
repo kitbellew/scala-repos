@@ -156,7 +156,8 @@ class MemoryLaws extends WordSpec {
         items2
           .flatMap(fnB)
           .map {
-            case (k, u) => (k, (u, serviceFn(k)))
+            case (k, u) =>
+              (k, (u, serviceFn(k)))
           }
           .flatMap(postJoinFn))
       .forall {

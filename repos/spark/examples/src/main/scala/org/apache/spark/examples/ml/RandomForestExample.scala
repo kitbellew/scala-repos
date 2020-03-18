@@ -119,8 +119,10 @@ object RandomForestExample {
           .text(
             s"checkpoint directory where intermediate node Id caches will be stored, " +
               s"default: ${defaultParams.checkpointDir match {
-                case Some(strVal) => strVal
-                case None         => "None"
+                case Some(strVal) =>
+                  strVal
+                case None =>
+                  "None"
               }}")
           .action((x, c) => c.copy(checkpointDir = Some(x)))
         opt[Int]("checkpointInterval")

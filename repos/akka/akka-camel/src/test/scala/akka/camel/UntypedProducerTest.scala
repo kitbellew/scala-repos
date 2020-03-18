@@ -50,7 +50,8 @@ class UntypedProducerTest
         "received test",
         Map(CamelMessage.MessageExchangeId -> "123"))
       Await.result(future, timeout) match {
-        case result: CamelMessage ⇒ result should ===(expected)
+        case result: CamelMessage ⇒
+          result should ===(expected)
         case unexpected ⇒
           fail("Actor responded with unexpected message:" + unexpected)
       }
@@ -105,8 +106,10 @@ object UntypedProducerTest {
         new Processor() {
           def process(exchange: Exchange) = {
             exchange.getIn.getBody match {
-              case "fail" ⇒ throw new Exception("failure")
-              case body ⇒ exchange.getOut.setBody("received %s" format body)
+              case "fail" ⇒
+                throw new Exception("failure")
+              case body ⇒
+                exchange.getOut.setBody("received %s" format body)
             }
           }
         })

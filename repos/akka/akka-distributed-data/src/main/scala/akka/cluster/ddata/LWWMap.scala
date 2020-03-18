@@ -52,7 +52,8 @@ final class LWWMap[A] private[akka] (
     */
   def entries: Map[String, A] =
     underlying.entries.map {
-      case (k, r) ⇒ k -> r.value
+      case (k, r) ⇒
+        k -> r.value
     }
 
   /**
@@ -119,8 +120,10 @@ final class LWWMap[A] private[akka] (
       clock: Clock[A]): LWWMap[A] = {
     val newRegister =
       underlying.get(key) match {
-        case Some(r) ⇒ r.withValue(node, value, clock)
-        case None ⇒ LWWRegister(node, value, clock)
+        case Some(r) ⇒
+          r.withValue(node, value, clock)
+        case None ⇒
+          LWWRegister(node, value, clock)
       }
     new LWWMap(underlying.put(node, key, newRegister))
   }
@@ -166,8 +169,10 @@ final class LWWMap[A] private[akka] (
 
   override def equals(o: Any): Boolean =
     o match {
-      case other: LWWMap[_] ⇒ underlying == other.underlying
-      case _ ⇒ false
+      case other: LWWMap[_] ⇒
+        underlying == other.underlying
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = underlying.hashCode

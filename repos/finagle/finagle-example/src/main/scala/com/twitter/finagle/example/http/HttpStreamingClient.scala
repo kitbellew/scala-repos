@@ -51,7 +51,9 @@ object HttpStreamingClient {
 
   def fromReader(reader: Reader): AsyncStream[Buf] =
     AsyncStream.fromFuture(reader.read(Int.MaxValue)).flatMap {
-      case None    => AsyncStream.empty
-      case Some(a) => a +:: fromReader(reader)
+      case None =>
+        AsyncStream.empty
+      case Some(a) =>
+        a +:: fromReader(reader)
     }
 }

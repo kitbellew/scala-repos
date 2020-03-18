@@ -52,8 +52,10 @@ object coproduct {
       new Selector[H :+: T, H] {
         def apply(c: H :+: T): Option[H] =
           c match {
-            case Inl(h) => Some(h)
-            case Inr(t) => None
+            case Inl(h) =>
+              Some(h)
+            case Inr(t) =>
+              None
           }
       }
     implicit def tlSelector[H, T <: Coproduct, S](implicit
@@ -61,8 +63,10 @@ object coproduct {
       new Selector[H :+: T, S] {
         def apply(c: H :+: T): Option[S] =
           c match {
-            case Inl(h) => None
-            case Inr(t) => st(t)
+            case Inl(h) =>
+              None
+            case Inr(t) =>
+              st(t)
           }
       }
   }
@@ -87,8 +91,10 @@ object coproduct {
 
         def apply(c: H :+: T): Out =
           c match {
-            case Inl(h) => Some(h)
-            case _      => None
+            case Inl(h) =>
+              Some(h)
+            case _ =>
+              None
           }
       }
 
@@ -99,8 +105,10 @@ object coproduct {
 
         def apply(c: H :+: T): Out =
           c match {
-            case Inl(_)    => None
-            case Inr(tail) => att(tail)
+            case Inl(_) =>
+              None
+            case Inr(tail) =>
+              att(tail)
           }
       }
   }
@@ -146,11 +154,14 @@ object coproduct {
 
         def coproduct(c: H :+: T): Prefix :+: Suffix :+: CNil =
           c match {
-            case Inl(h) => Inl(Inl(h))
+            case Inl(h) =>
+              Inl(Inl(h))
             case Inr(t) =>
               partition.coproduct(t) match {
-                case Inl(h) => Inl(Inr(h))
-                case Inr(t) => Inr(t)
+                case Inl(h) =>
+                  Inl(Inr(h))
+                case Inr(t) =>
+                  Inr(t)
               }
           }
       }
@@ -169,12 +180,16 @@ object coproduct {
 
         def coproduct(c: H :+: T): Prefix :+: Suffix :+: CNil =
           c match {
-            case Inl(h) => Inr(Inl(Inl(h)))
+            case Inl(h) =>
+              Inr(Inl(Inl(h)))
             case Inr(t) =>
               partition.coproduct(t) match {
-                case Inl(h)      => Inl(h)
-                case Inr(Inl(t)) => Inr(Inl(Inr(t)))
-                case Inr(Inr(c)) => Inr(Inr(c))
+                case Inl(h) =>
+                  Inl(h)
+                case Inr(Inl(t)) =>
+                  Inr(Inl(Inr(t)))
+                case Inr(Inr(c)) =>
+                  Inr(Inr(c))
               }
           }
       }
@@ -241,8 +256,10 @@ object coproduct {
 
     def coproduct(c: C): U :+: Rest =
       apply(c) match {
-        case Left(u)  => Inl(u)
-        case Right(r) => Inr(r)
+        case Left(u) =>
+          Inl(u)
+        case Right(r) =>
+          Inr(r)
       }
   }
 
@@ -262,19 +279,25 @@ object coproduct {
 
         def apply(c: H :+: T) =
           c match {
-            case Inl(h) => Right(Inl(h))
+            case Inl(h) =>
+              Right(Inl(h))
             case Inr(t) =>
               tailRemove(t) match {
-                case Left(i)  => Left(i)
-                case Right(r) => Right(Inr(r))
+                case Left(i) =>
+                  Left(i)
+                case Right(r) =>
+                  Right(Inr(r))
               }
           }
 
         def inverse(r: Either[U, H :+: tailRemove.Rest]) =
           r match {
-            case Left(i)       => Inr(tailRemove.inverse(Left(i)))
-            case Right(Inl(h)) => Inl(h)
-            case Right(Inr(t)) => Inr(tailRemove.inverse(Right(t)))
+            case Left(i) =>
+              Inr(tailRemove.inverse(Left(i)))
+            case Right(Inl(h)) =>
+              Inl(h)
+            case Right(Inr(t)) =>
+              Inr(tailRemove.inverse(Right(t)))
           }
       }
   }
@@ -289,14 +312,18 @@ object coproduct {
 
         def apply(c: H :+: T) =
           c match {
-            case Inl(h) => Left(h)
-            case Inr(t) => Right(t)
+            case Inl(h) =>
+              Left(h)
+            case Inr(t) =>
+              Right(t)
           }
 
         def inverse(r: Either[H, T]) =
           r match {
-            case Left(h)  => Inl(h)
-            case Right(t) => Inr(t)
+            case Left(h) =>
+              Inl(h)
+            case Right(t) =>
+              Inr(t)
           }
       }
   }
@@ -380,8 +407,10 @@ object coproduct {
 
         def apply(c: H :+: T): Out =
           c match {
-            case Inl(h) => extendBy.right(fh(h))
-            case Inr(t) => extendBy.left(ft(t))
+            case Inl(h) =>
+              extendBy.right(fh(h))
+            case Inr(t) =>
+              extendBy.left(ft(t))
           }
       }
 
@@ -415,8 +444,10 @@ object coproduct {
         type Out = OutH :+: mt.Out
         def apply(c: H :+: T): Out =
           c match {
-            case Inl(h) => Inl(fh(h))
-            case Inr(t) => Inr(mt(t))
+            case Inl(h) =>
+              Inl(fh(h))
+            case Inr(t) =>
+              Inr(mt(t))
           }
       }
   }
@@ -437,7 +468,8 @@ object coproduct {
         type Out = H
         def apply(c: H :+: CNil): Out =
           (c: @unchecked) match {
-            case Inl(h) => h
+            case Inl(h) =>
+              h
           }
       }
 
@@ -448,8 +480,10 @@ object coproduct {
         type Out = Out0
         def apply(c: H1 :+: H2 :+: T): Out =
           c match {
-            case Inl(h1) => u.left(h1)
-            case Inr(t)  => u.right(lt(t))
+            case Inl(h1) =>
+              u.left(h1)
+            case Inr(t) =>
+              u.right(lt(t))
           }
       }
   }
@@ -504,8 +538,10 @@ object coproduct {
         type Out = OutH
         def apply(c: H :+: T, in: In): Out =
           c match {
-            case Inl(h) => f(in, h)
-            case Inr(t) => ft(t, in)
+            case Inl(h) =>
+              f(in, h)
+            case Inr(t) =>
+              ft(t, in)
           }
       }
   }
@@ -542,8 +578,10 @@ object coproduct {
         type Out = FieldType[KH, VH] :+: zipWithKeys.Out
         def apply(v: VH :+: VT): Out =
           v match {
-            case Inl(vh) => Inl(field[wkh.T](vh))
-            case Inr(vt) => Inr(zipWithKeys(vt))
+            case Inl(vh) =>
+              Inl(field[wkh.T](vh))
+            case Inr(vt) =>
+              Inr(zipWithKeys(vt))
           }
       }
   }
@@ -659,8 +697,10 @@ object coproduct {
 
           def apply(c: CH :+: CT): Out =
             c match {
-              case Inl(h) => Inl((h, w.value))
-              case Inr(t) => Inr(impl(t))
+              case Inl(h) =>
+                Inl((h, w.value))
+              case Inr(t) =>
+                Inr(impl(t))
             }
         }
     }
@@ -729,8 +769,10 @@ object coproduct {
 
         def apply(c: H :+: CNil): Out =
           c match {
-            case Inl(h) => Inl(h)
-            case Inr(t) => Inr(Inr(t))
+            case Inl(h) =>
+              Inl(h)
+            case Inr(t) =>
+              Inr(Inr(t))
           }
       }
 
@@ -741,8 +783,10 @@ object coproduct {
 
         def apply(c: H :+: T) =
           c match {
-            case Inl(h) => Inl(h)
-            case Inr(t) => Inr(extendRight(t))
+            case Inl(h) =>
+              Inl(h)
+            case Inr(t) =>
+              Inr(extendRight(t))
           }
       }
   }
@@ -933,8 +977,10 @@ object coproduct {
 
           def apply(c: H :+: T): Out =
             c match {
-              case Inl(a)    => inject(a)
-              case Inr(tail) => extendRight(tail)
+              case Inl(a) =>
+                inject(a)
+              case Inr(tail) =>
+                extendRight(tail)
             }
         }
 
@@ -1085,14 +1131,18 @@ object coproduct {
 
         def head(c: H0 :+: T0): Option[H0] =
           c match {
-            case Inl(h) => Some(h)
-            case _      => None
+            case Inl(h) =>
+              Some(h)
+            case _ =>
+              None
           }
 
         def tail(c: H0 :+: T0): Option[T0] =
           c match {
-            case Inr(t) => Some(t)
-            case _      => None
+            case Inr(t) =>
+              Some(t)
+            case _ =>
+              None
           }
       }
   }
@@ -1140,11 +1190,14 @@ object coproduct {
         type Right = tail.Right
         def apply(c: H :+: T) =
           c match {
-            case Inl(h) => Left(Inl(h))
+            case Inl(h) =>
+              Left(Inl(h))
             case Inr(t) =>
               tail(t) match {
-                case Left(l)  => Left(Inr(l))
-                case Right(r) => Right(r)
+                case Left(l) =>
+                  Left(Inr(l))
+                case Right(r) =>
+                  Right(r)
               }
           }
       }
@@ -1181,8 +1234,10 @@ object coproduct {
         type Taken = H :+: tail.Taken
         def apply(c: H :+: T) =
           c match {
-            case Inl(h) => Some(Coproduct[H :+: tail.Taken](h))
-            case Inr(t) => tail(t).map(Inr[H, tail.Taken](_))
+            case Inl(h) =>
+              Some(Coproduct[H :+: tail.Taken](h))
+            case Inr(t) =>
+              tail(t).map(Inr[H, tail.Taken](_))
           }
       }
   }
@@ -1218,8 +1273,10 @@ object coproduct {
         type Remaining = tail.Remaining
         def apply(c: H :+: T) =
           c match {
-            case Inl(h) => None
-            case Inr(t) => tail(t)
+            case Inl(h) =>
+              None
+            case Inr(t) =>
+              tail(t)
           }
       }
   }
@@ -1271,9 +1328,12 @@ object coproduct {
           def apply(e: Either[Acc, InH :+: InT]) =
             rt(
               e match {
-                case Left(acc)     => Left(Inr(acc))
-                case Right(Inl(h)) => Left(Inl(h))
-                case Right(Inr(t)) => Right(t)
+                case Left(acc) =>
+                  Left(Inr(acc))
+                case Right(Inl(h)) =>
+                  Left(Inl(h))
+                case Right(Inr(t)) =>
+                  Right(t)
               })
         }
     }
@@ -1294,8 +1354,10 @@ object coproduct {
         type Out = RotateL_HReverseT
         def apply(c: H :+: T): Out =
           c match {
-            case Inl(h) => inject(h)
-            case Inr(t) => rotateLeft(Inr[H, ReverseT](reverse(t)))
+            case Inl(h) =>
+              inject(h)
+            case Inr(t) =>
+              rotateLeft(Inr[H, ReverseT](reverse(t)))
           }
       }
   }
@@ -1331,8 +1393,10 @@ object coproduct {
       new Align[A, BH :+: BT] {
         def apply(a: A) =
           remove(a) match {
-            case Left(bh)    => Inl(bh)
-            case Right(rest) => Inr(alignTail(rest))
+            case Left(bh) =>
+              Inl(bh)
+            case Right(rest) =>
+              Inr(alignTail(rest))
           }
       }
   }
@@ -1360,9 +1424,12 @@ object coproduct {
         type Out = PH :+: pt.Out
         def apply(e: Either[PH :+: PT, S]): Out =
           e match {
-            case Left(Inl(h)) => Inl(h)
-            case Left(Inr(t)) => Inr(pt(Left(t)))
-            case Right(s)     => Inr(pt(Right(s)))
+            case Left(Inl(h)) =>
+              Inl(h)
+            case Left(Inr(t)) =>
+              Inr(pt(Left(t)))
+            case Right(s) =>
+              Inr(pt(Right(s)))
           }
       }
   }
@@ -1435,17 +1502,22 @@ object coproduct {
     new PartialOrdering[H :+: T] {
       def lteq(x: H :+: T, y: H :+: T): Boolean =
         (x, y) match {
-          case (Inl(xh), Inl(yh)) => ordering.compare(xh, yh) <= 0
+          case (Inl(xh), Inl(yh)) =>
+            ordering.compare(xh, yh) <= 0
           case (Inr(xt), Inr(yt)) =>
             partialOrdering.tryCompare(xt, yt).fold(false)(_ <= 0)
-          case _ => false
+          case _ =>
+            false
         }
 
       def tryCompare(x: H :+: T, y: H :+: T): Option[Int] =
         (x, y) match {
-          case (Inl(xh), Inl(yh)) => Some(ordering.compare(xh, yh))
-          case (Inr(xt), Inr(yt)) => partialOrdering.tryCompare(xt, yt)
-          case _                  => None
+          case (Inl(xh), Inl(yh)) =>
+            Some(ordering.compare(xh, yh))
+          case (Inr(xt), Inr(yt)) =>
+            partialOrdering.tryCompare(xt, yt)
+          case _ =>
+            None
         }
     }
 
@@ -1522,19 +1594,25 @@ object coproduct {
           tailBasis(s) match {
             case Left(r) =>
               remove(r) match {
-                case Left(h)  => Right(Inl(h))
-                case Right(r) => Left(r)
+                case Left(h) =>
+                  Right(Inl(h))
+                case Right(r) =>
+                  Left(r)
               }
-            case Right(t) => Right(Inr(t))
+            case Right(t) =>
+              Right(Inr(t))
           }
 
         def inverse(e: Either[Rest, H :+: T]) =
           e match {
-            case Left(r) => tailBasis.inverse(Left(remove.inverse(Right(r))))
+            case Left(r) =>
+              tailBasis.inverse(Left(remove.inverse(Right(r))))
             case Right(c) =>
               c match {
-                case Inl(h) => tailBasis.inverse(Left(remove.inverse(Left(h))))
-                case Inr(t) => tailBasis.inverse(Right(t))
+                case Inl(h) =>
+                  tailBasis.inverse(Left(remove.inverse(Left(h))))
+                case Inr(t) =>
+                  tailBasis.inverse(Right(t))
               }
           }
       }
@@ -1543,8 +1621,11 @@ object coproduct {
   private def toEither[Prefix, Suffix](
       c: Prefix :+: Suffix :+: CNil): Either[Prefix, Suffix] =
     c match {
-      case Inl(prefix)      => Left(prefix)
-      case Inr(Inl(suffix)) => Right(suffix)
-      case _                => sys.error("Impossible")
+      case Inl(prefix) =>
+        Left(prefix)
+      case Inr(Inl(suffix)) =>
+        Right(suffix)
+      case _ =>
+        sys.error("Impossible")
     }
 }

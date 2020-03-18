@@ -194,7 +194,8 @@ object Netty3Listener {
       params[Transport.Verbose] match {
         case Transport.Verbose(true) =>
           Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
-        case _ => None
+        case _ =>
+          None
       }
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
@@ -351,7 +352,8 @@ case class Netty3Listener[In, Out](
         statsReceiver match {
           case ServerStatsReceiver if serverLabel.nonEmpty =>
             statsReceiver.scope(serverLabel)
-          case sr => sr
+          case sr =>
+            sr
         }
 
       val closer = new Closer(timer)
@@ -402,7 +404,8 @@ private[netty3] class ServerBridge[In, Out](
 
   private[this] def severity(exc: Throwable): Level =
     exc match {
-      case e: HasLogLevel => e.logLevel
+      case e: HasLogLevel =>
+        e.logLevel
       case _: java.nio.channels.ClosedChannelException |
           _: javax.net.ssl.SSLException | _: ReadTimeoutException |
           _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
@@ -410,7 +413,8 @@ private[netty3] class ServerBridge[In, Out](
       case e: java.io.IOException
           if FinestIOExceptionMessages.contains(e.getMessage) =>
         Level.FINEST
-      case _ => Level.WARNING
+      case _ =>
+        Level.WARNING
     }
 
   override def channelConnected(
@@ -431,9 +435,12 @@ private[netty3] class ServerBridge[In, Out](
     val cause = e.getCause
 
     cause match {
-      case e: ReadTimeoutException   => readTimeoutCounter.incr()
-      case e: WriteTimedOutException => writeTimeoutCounter.incr()
-      case _                         => ()
+      case e: ReadTimeoutException =>
+        readTimeoutCounter.incr()
+      case e: WriteTimedOutException =>
+        writeTimeoutCounter.incr()
+      case _ =>
+        ()
     }
 
     val msg = "Unhandled exception in connection with " +

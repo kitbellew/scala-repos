@@ -83,7 +83,8 @@ class ScalaOverridingMemberSearcher
           }
         }
         false //do not process JavaOverridingMemberSearcher
-      case _ => true
+      case _ =>
+        true
     }
   }
 }
@@ -109,8 +110,10 @@ object ScalaOverridingMemberSearcher {
     val scope = scopeOption.getOrElse(member.getUseScope)
     def inTemplateBodyOrEarlyDef(element: PsiElement) =
       element.getParent match {
-        case _: ScTemplateBody | _: ScEarlyDefinitions => true
-        case _                                         => false
+        case _: ScTemplateBody | _: ScEarlyDefinitions =>
+          true
+        case _ =>
+          false
       }
     member match {
       case _: ScFunction | _: ScTypeAlias =>
@@ -124,12 +127,14 @@ object ScalaOverridingMemberSearcher {
         val nameContext = ScalaPsiUtil.nameContext(x)
         if (nameContext == null || !inTemplateBodyOrEarlyDef(nameContext))
           return Array[PsiNamedElement]()
-      case _ => return Array[PsiNamedElement]()
+      case _ =>
+        return Array[PsiNamedElement]()
     }
 
     val parentClass =
       member match {
-        case m: PsiMethod => m.containingClass
+        case m: PsiMethod =>
+          m.containingClass
         case x: PsiNamedElement =>
           PsiTreeUtil.getParentOfType(x, classOf[ScTemplateDefinition])
       }

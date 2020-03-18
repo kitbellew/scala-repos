@@ -194,42 +194,61 @@ object BytecodeUtils {
           else
             followGoto(dest.label, seenLabels + dest.label)
 
-        case _ => label
+        case _ =>
+          label
       }
     followGoto(source.label, Set(source.label))
   }
 
   def negateJumpOpcode(jumpOpcode: Int): Int =
     (jumpOpcode: @switch) match {
-      case IFEQ => IFNE
-      case IFNE => IFEQ
+      case IFEQ =>
+        IFNE
+      case IFNE =>
+        IFEQ
 
-      case IFLT => IFGE
-      case IFGE => IFLT
+      case IFLT =>
+        IFGE
+      case IFGE =>
+        IFLT
 
-      case IFGT => IFLE
-      case IFLE => IFGT
+      case IFGT =>
+        IFLE
+      case IFLE =>
+        IFGT
 
-      case IF_ICMPEQ => IF_ICMPNE
-      case IF_ICMPNE => IF_ICMPEQ
+      case IF_ICMPEQ =>
+        IF_ICMPNE
+      case IF_ICMPNE =>
+        IF_ICMPEQ
 
-      case IF_ICMPLT => IF_ICMPGE
-      case IF_ICMPGE => IF_ICMPLT
+      case IF_ICMPLT =>
+        IF_ICMPGE
+      case IF_ICMPGE =>
+        IF_ICMPLT
 
-      case IF_ICMPGT => IF_ICMPLE
-      case IF_ICMPLE => IF_ICMPGT
+      case IF_ICMPGT =>
+        IF_ICMPLE
+      case IF_ICMPLE =>
+        IF_ICMPGT
 
-      case IF_ACMPEQ => IF_ACMPNE
-      case IF_ACMPNE => IF_ACMPEQ
+      case IF_ACMPEQ =>
+        IF_ACMPNE
+      case IF_ACMPNE =>
+        IF_ACMPEQ
 
-      case IFNULL    => IFNONNULL
-      case IFNONNULL => IFNULL
+      case IFNULL =>
+        IFNONNULL
+      case IFNONNULL =>
+        IFNULL
     }
 
   def isSize2LoadOrStore(opcode: Int): Boolean =
     (opcode: @switch) match {
-      case LLOAD | DLOAD | LSTORE | DSTORE => true
-      case _                               => false
+      case LLOAD | DLOAD | LSTORE | DSTORE =>
+        true
+      case _ =>
+        false
     }
 
   def getPop(size: Int): InsnNode = {
@@ -248,10 +267,14 @@ object BytecodeUtils {
     (sort: @switch) match {
       case Type.BOOLEAN | Type.BYTE | Type.CHAR | Type.SHORT | Type.INT =>
         new InsnNode(ICONST_0)
-      case Type.LONG   => new InsnNode(LCONST_0)
-      case Type.FLOAT  => new InsnNode(FCONST_0)
-      case Type.DOUBLE => new InsnNode(DCONST_0)
-      case Type.OBJECT => new InsnNode(ACONST_NULL)
+      case Type.LONG =>
+        new InsnNode(LCONST_0)
+      case Type.FLOAT =>
+        new InsnNode(FCONST_0)
+      case Type.DOUBLE =>
+        new InsnNode(DCONST_0)
+      case Type.OBJECT =>
+        new InsnNode(ACONST_NULL)
     }
 
   /**
@@ -275,8 +298,10 @@ object BytecodeUtils {
         res(l) = Set(ref)
 
     method.instructions.iterator().asScala foreach {
-      case jump: JumpInsnNode   => add(jump.label, jump)
-      case line: LineNumberNode => add(line.start, line)
+      case jump: JumpInsnNode =>
+        add(jump.label, jump)
+      case line: LineNumberNode =>
+        add(line.start, line)
       case switch: LookupSwitchInsnNode =>
         switch.labels.asScala.foreach(add(_, switch));
         add(switch.dflt, switch)
@@ -320,8 +345,10 @@ object BytecodeUtils {
       }
     }
     reference match {
-      case jump: JumpInsnNode   => jump.label = to
-      case line: LineNumberNode => line.start = to
+      case jump: JumpInsnNode =>
+        jump.label = to
+      case line: LineNumberNode =>
+        line.start = to
       case switch: LookupSwitchInsnNode =>
         substList(switch.labels);
         if (switch.dflt == from)
@@ -373,8 +400,9 @@ object BytecodeUtils {
     val iter = instructions.iterator()
     while (iter.hasNext)
       iter.next() match {
-        case _: LineNumberNode => iter.remove()
-        case _                 =>
+        case _: LineNumberNode =>
+          iter.remove()
+        case _ =>
       }
   }
 
@@ -383,7 +411,8 @@ object BytecodeUtils {
       .iterator()
       .asScala
       .collect({
-        case labelNode: LabelNode => (labelNode, newLabelNode)
+        case labelNode: LabelNode =>
+          (labelNode, newLabelNode)
       })
       .toMap
   }

@@ -138,12 +138,17 @@ object Menu extends MenuSingleton {
           .map(_.trim)
           .filter(_ != "**")
           .map {
-            case "*" => *
-            case ""  => NormalLocPath("index")
-            case str => NormalLocPath(str)
+            case "*" =>
+              *
+            case "" =>
+              NormalLocPath("index")
+            case str =>
+              NormalLocPath(str)
           } match {
-          case Nil => List(NormalLocPath("index"))
-          case xs  => xs
+          case Nil =>
+            List(NormalLocPath("index"))
+          case xs =>
+            xs
         },
         pathElement.endsWith("**"),
         Nil,
@@ -550,7 +555,8 @@ object Menu extends MenuSingleton {
       @tailrec
       def doExtract(op: List[String], mp: List[LocPath]): Boolean =
         (op, mp) match {
-          case (Nil, Nil) => true
+          case (Nil, Nil) =>
+            true
           case (o :: Nil, Nil) => {
             retParams += o
             headMatch || !gotStar
@@ -559,8 +565,10 @@ object Menu extends MenuSingleton {
           case (op, Nil) =>
             retParams ++= op;
             headMatch
-          case (Nil, _)                                      => false
-          case (o :: _, NormalLocPath(str) :: _) if o != str => false
+          case (Nil, _) =>
+            false
+          case (o :: _, NormalLocPath(str) :: _) if o != str =>
+            false
           case (o :: os, * :: ms) => {
             gotStar = true
             retParams += o
@@ -602,7 +610,8 @@ object Menu extends MenuSingleton {
       */
     def /(pathElement: MenuPath): BuiltType =
       pathElement match {
-        case ** => buildOne(path, true)
+        case ** =>
+          buildOne(path, true)
         case AMenuPath(pathItem) =>
           buildOne(path ::: List(NormalLocPath(pathItem)), headMatch)
       }
@@ -770,8 +779,10 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
   private[sitemap] def testParentAccess
       : Either[Boolean, Box[() => LiftResponse]] =
     _parent match {
-      case Full(p) => p.testAccess
-      case _       => Left(true)
+      case Full(p) =>
+        p.testAccess
+      case _ =>
+        Left(true)
     }
 
   override private[sitemap] def testAccess
@@ -829,21 +840,28 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
 
   private def _inPath(in: List[Loc[_]]): Boolean =
     in match {
-      case Nil                 => false
-      case x :: xs if x eq loc => true
-      case x :: xs             => _inPath(xs)
+      case Nil =>
+        false
+      case x :: xs if x eq loc =>
+        true
+      case x :: xs =>
+        _inPath(xs)
     }
 
   private def _lastInPath(path: List[Loc[_]]): Boolean =
     path match {
-      case Nil => false
-      case xs  => xs.last eq loc
+      case Nil =>
+        false
+      case xs =>
+        xs.last eq loc
     }
 
   def breadCrumbs: List[Loc[_]] =
     _parent match {
-      case Full(m: Menu) => m.loc.breadCrumbs
-      case _             => Nil
+      case Full(m: Menu) =>
+        m.loc.breadCrumbs
+      case _ =>
+        Nil
     }
 }
 
@@ -856,12 +874,18 @@ final class ParamLocLink[T](
   @tailrec
   def test(toTest: List[String], path: List[LocPath]): Boolean = {
     (toTest, path) match {
-      case (Nil, Nil)                                    => true
-      case (Nil, _)                                      => false
-      case (_, Nil)                                      => matchHead_?
-      case (str :: _, NormalLocPath(p) :: _) if str != p => false
-      case (_ :: ts, * :: ps)                            => test(ts, ps)
-      case (_ :: ts, _ :: ps)                            => test(ts, ps)
+      case (Nil, Nil) =>
+        true
+      case (Nil, _) =>
+        false
+      case (_, Nil) =>
+        matchHead_?
+      case (str :: _, NormalLocPath(p) :: _) if str != p =>
+        false
+      case (_ :: ts, * :: ps) =>
+        test(ts, ps)
+      case (_ :: ts, _ :: ps) =>
+        test(ts, ps)
     }
   }
 
@@ -879,7 +903,8 @@ final class ParamLocLink[T](
     @tailrec
     def merge(path: List[LocPath], params: List[String]) {
       (path, params) match {
-        case (Nil, p) => ret ++= p
+        case (Nil, p) =>
+          ret ++= p
         case (* :: ps, Nil) =>
           ret += "?";
           merge(ps, Nil)

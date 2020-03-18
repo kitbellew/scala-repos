@@ -29,8 +29,10 @@ object ORSet {
     */
   def unapply(a: ReplicatedData): Option[Set[Any]] =
     a match {
-      case s: ORSet[Any] @unchecked ⇒ Some(s.elements)
-      case _ ⇒ None
+      case s: ORSet[Any] @unchecked ⇒
+        Some(s.elements)
+      case _ ⇒
+        None
     }
 
   /**
@@ -54,7 +56,8 @@ object ORSet {
         remaining: List[(UniqueAddress, Long)],
         acc: List[(UniqueAddress, Long)]): List[(UniqueAddress, Long)] =
       remaining match {
-        case Nil ⇒ acc
+        case Nil ⇒
+          acc
         case (d @ (node, v1)) :: rest ⇒
           val v2 = vvector.versionAt(node)
           if (v2 >= v1)
@@ -119,7 +122,8 @@ object ORSet {
             }
           case (ManyVersionVector(lhsVs), ManyVersionVector(rhsVs)) ⇒
             val commonDots = lhsVs.filter {
-              case (thisDotNode, v) ⇒ rhsVs.get(thisDotNode).exists(_ == v)
+              case (thisDotNode, v) ⇒
+                rhsVs.get(thisDotNode).exists(_ == v)
             }
             val commonDotsKeys = commonDots.keys
             val lhsUniqueDots = lhsVs -- commonDotsKeys
@@ -138,7 +142,8 @@ object ORSet {
               acc.updated(k, merged)
           case (ManyVersionVector(lhsVs), OneVersionVector(n2, v2)) ⇒
             val commonDots = lhsVs.filter {
-              case (n1, v1) ⇒ v1 == v2 && n1 == n2
+              case (n1, v1) ⇒
+                v1 == v2 && n1 == n2
             }
             val commonDotsKeys = commonDots.keys
             val lhsUniqueDots = lhsVs -- commonDotsKeys
@@ -159,7 +164,8 @@ object ORSet {
               acc.updated(k, merged)
           case (OneVersionVector(n1, v1), ManyVersionVector(rhsVs)) ⇒
             val commonDots = rhsVs.filter {
-              case (n2, v2) ⇒ v1 == v2 && n1 == n2
+              case (n2, v2) ⇒
+                v1 == v2 && n1 == n2
             }
             val commonDotsKeys = commonDots.keys
             val lhsUnique =
@@ -393,7 +399,8 @@ final class ORSet[A] private[akka] (
           elementsMap = elementsMap ++ pruned,
           vvector = vvector.prune(removedNode, collapseInto))
       pruned.keys.foldLeft(newSet) {
-        case (s, elem) ⇒ s.add(collapseInto, elem)
+        case (s, elem) ⇒
+          s.add(collapseInto, elem)
       }
     }
   }
@@ -423,7 +430,8 @@ final class ORSet[A] private[akka] (
     o match {
       case other: ORSet[_] ⇒
         vvector == other.vvector && elementsMap == other.elementsMap
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = {

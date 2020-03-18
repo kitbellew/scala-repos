@@ -56,9 +56,12 @@ private[http] abstract class HttpMessageParser[
           output: Output,
           ctx: Context[Output]): SyncDirective =
         output match {
-          case StreamEnd ⇒ ctx.finish()
-          case NeedMoreData ⇒ ctx.pull()
-          case x ⇒ ctx.push(x)
+          case StreamEnd ⇒
+            ctx.finish()
+          case NeedMoreData ⇒
+            ctx.pull()
+          case x ⇒
+            ctx.push(x)
         }
       override def onUpstreamFinish(
           ctx: Context[Output]): TerminationDirective =
@@ -81,7 +84,8 @@ private[http] abstract class HttpMessageParser[
       (
         try next(input)
         catch {
-          case e: ParsingException ⇒ failMessageStart(e.status, e.info)
+          case e: ParsingException ⇒
+            failMessageStart(e.status, e.info)
           case NotEnoughDataException ⇒
             // we are missing a try/catch{continue} wrapper somewhere
             throw new IllegalStateException(
@@ -89,8 +93,10 @@ private[http] abstract class HttpMessageParser[
               NotEnoughDataException)
         }
       ) match {
-        case Trampoline(x) ⇒ run(x)
-        case x ⇒ x
+        case Trampoline(x) ⇒
+          run(x)
+        case x ⇒
+          x
       }
 
     if (result.nonEmpty)
@@ -111,7 +117,8 @@ private[http] abstract class HttpMessageParser[
 
   final def onUpstreamFinish(): Boolean = {
     completionHandling() match {
-      case Some(x) ⇒ emit(x)
+      case Some(x) ⇒
+        emit(x)
       case None ⇒ // nothing to do
     }
     terminated = true
@@ -125,7 +132,8 @@ private[http] abstract class HttpMessageParser[
       setCompletionHandling(CompletionIsMessageStartError)
     try parseMessage(input, offset)
     catch {
-      case NotEnoughDataException ⇒ continue(input, offset)(startNewMessage)
+      case NotEnoughDataException ⇒
+        continue(input, offset)(startNewMessage)
     }
   }
 
@@ -136,9 +144,12 @@ private[http] abstract class HttpMessageParser[
     if (c(0) == 'H' && c(1) == 'T' && c(2) == 'T' && c(3) == 'P' && c(
           4) == '/' && c(5) == '1' && c(6) == '.') {
       protocol = c(7) match {
-        case '0' ⇒ `HTTP/1.0`
-        case '1' ⇒ `HTTP/1.1`
-        case _ ⇒ badProtocol
+        case '0' ⇒
+          `HTTP/1.0`
+        case '1' ⇒
+          `HTTP/1.1`
+        case _ ⇒
+          badProtocol
       }
       cursor + 8
     } else
@@ -166,7 +177,8 @@ private[http] abstract class HttpMessageParser[
           lineEnd = headerParser.parseHeaderLine(input, lineStart)()
           headerParser.resultHeader
         } catch {
-          case NotEnoughDataException ⇒ null
+          case NotEnoughDataException ⇒
+            null
         }
       resultHeader match {
         case null ⇒
@@ -480,9 +492,12 @@ private[http] abstract class HttpMessageParser[
               totalBytesRead + chunkSize))
         }
         byteChar(input, chunkBodyEnd) match {
-          case '\r' if byteChar(input, chunkBodyEnd + 1) == '\n' ⇒ result(2)
-          case '\n' ⇒ result(1)
-          case x ⇒ failEntityStream("Illegal chunk termination")
+          case '\r' if byteChar(input, chunkBodyEnd + 1) == '\n' ⇒
+            result(2)
+          case '\n' ⇒
+            result(1)
+          case x ⇒
+            failEntityStream("Illegal chunk termination")
         }
       } else
         parseTrailer(extension, cursor)
@@ -495,8 +510,10 @@ private[http] abstract class HttpMessageParser[
         byteChar(input, cursor) match {
           case '\r' if byteChar(input, cursor + 1) == '\n' ⇒
             parseChunkBody(chunkSize, extension, cursor + 2)
-          case '\n' ⇒ parseChunkBody(chunkSize, extension, cursor + 1)
-          case _ ⇒ parseChunkExtensions(chunkSize, cursor + 1)(startIx)
+          case '\n' ⇒
+            parseChunkBody(chunkSize, extension, cursor + 1)
+          case _ ⇒
+            parseChunkExtensions(chunkSize, cursor + 1)(startIx)
         }
       } else
         failEntityStream(
@@ -534,8 +551,10 @@ private[http] abstract class HttpMessageParser[
       case -1 ⇒
         val remaining = input.drop(offset)
         (more ⇒ next(remaining ++ more, 0))
-      case 0 ⇒ next(_, 0)
-      case 1 ⇒ throw new IllegalStateException
+      case 0 ⇒
+        next(_, 0)
+      case 1 ⇒
+        throw new IllegalStateException
     }
     done()
   }
@@ -585,8 +604,10 @@ private[http] abstract class HttpMessageParser[
 
   def contentType(cth: Option[`Content-Type`]) =
     cth match {
-      case Some(x) ⇒ x.contentType
-      case None ⇒ ContentTypes.`application/octet-stream`
+      case Some(x) ⇒
+        x.contentType
+      case None ⇒
+        ContentTypes.`application/octet-stream`
     }
 
   def emptyEntity(cth: Option[`Content-Type`]) =
@@ -611,8 +632,10 @@ private[http] abstract class HttpMessageParser[
       contentLength: Long) =
     StreamedEntityCreator[A, UniversalEntity] { entityParts ⇒
       val data = entityParts.collect {
-        case EntityPart(bytes) ⇒ bytes
-        case EntityStreamError(info) ⇒ throw EntityStreamException(info)
+        case EntityPart(bytes) ⇒
+          bytes
+        case EntityStreamError(info) ⇒
+          throw EntityStreamException(info)
       }
       HttpEntity.Default(
         contentType(cth),
@@ -623,8 +646,10 @@ private[http] abstract class HttpMessageParser[
   def chunkedEntity[A <: ParserOutput](cth: Option[`Content-Type`]) =
     StreamedEntityCreator[A, RequestEntity] { entityChunks ⇒
       val chunks = entityChunks.collect {
-        case EntityChunk(chunk) ⇒ chunk
-        case EntityStreamError(info) ⇒ throw EntityStreamException(info)
+        case EntityChunk(chunk) ⇒
+          chunk
+        case EntityStreamError(info) ⇒
+          throw EntityStreamException(info)
       }
       HttpEntity.Chunked(
         contentType(cth),
@@ -635,8 +660,10 @@ private[http] abstract class HttpMessageParser[
       headers: List[HttpHeader],
       teh: `Transfer-Encoding`): List[HttpHeader] =
     teh.withChunkedPeeled match {
-      case Some(x) ⇒ x :: headers
-      case None ⇒ headers
+      case Some(x) ⇒
+        x :: headers
+      case None ⇒
+        headers
     }
 
   def setCompletionHandling(completionHandling: CompletionHandling): Unit =

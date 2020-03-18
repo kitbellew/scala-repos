@@ -93,10 +93,14 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       case (locality, count) =>
         val localityName =
           locality match {
-            case TaskLocality.PROCESS_LOCAL => "Process local"
-            case TaskLocality.NODE_LOCAL    => "Node local"
-            case TaskLocality.RACK_LOCAL    => "Rack local"
-            case TaskLocality.ANY           => "Any"
+            case TaskLocality.PROCESS_LOCAL =>
+              "Process local"
+            case TaskLocality.NODE_LOCAL =>
+              "Node local"
+            case TaskLocality.RACK_LOCAL =>
+              "Rack local"
+            case TaskLocality.ANY =>
+              "Any"
           }
         s"$localityName: $count"
     }
@@ -364,7 +368,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             }</td><td>{
               value
             }</td></tr>
-          case _ => Seq.empty[Node]
+          case _ =>
+            Seq.empty[Node]
         }
       }
       val accumulableTable = UIUtils.listingTable(
@@ -1208,7 +1213,8 @@ private[ui] class TaskDataSource(
         (a.name, a.update) match {
           case (Some(name), Some(update)) =>
             Some(StringEscapeUtils.escapeHtml4(s"$name: $update"))
-          case _ => None
+          case _ =>
+            None
         }
       }
     val peakExecutionMemoryUsed = metrics

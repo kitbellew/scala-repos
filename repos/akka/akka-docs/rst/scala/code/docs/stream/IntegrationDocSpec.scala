@@ -144,7 +144,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val emailAddresses: Source[String, NotUsed] = authors
       .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
       .collect {
-        case Some(emailAddress) => emailAddress
+        case Some(emailAddress) =>
+          emailAddress
       }
     //#email-addresses-mapAsync
 
@@ -198,7 +199,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val emailAddresses: Source[String, NotUsed] = authors
       .mapAsyncUnordered(4)(author => addressSystem.lookupEmail(author.handle))
       .collect {
-        case Some(emailAddress) => emailAddress
+        case Some(emailAddress) =>
+          emailAddress
       }
 
     val sendEmails: RunnableGraph[NotUsed] = emailAddresses
@@ -233,7 +235,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val phoneNumbers = authors
       .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
       .collect {
-        case Some(phoneNo) => phoneNo
+        case Some(phoneNo) =>
+          phoneNo
       }
 
     //#blocking-mapAsync
@@ -273,7 +276,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val phoneNumbers = authors
       .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
       .collect {
-        case Some(phoneNo) => phoneNo
+        case Some(phoneNo) =>
+          phoneNo
       }
 
     //#blocking-map

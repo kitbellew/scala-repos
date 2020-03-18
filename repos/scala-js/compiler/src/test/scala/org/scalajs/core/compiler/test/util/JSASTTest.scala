@@ -32,7 +32,8 @@ abstract class JSASTTest extends DirectTest {
           clDefs.map(traverse)
           false
         } catch {
-          case Found => true
+          case Found =>
+            true
         }
       }
 

@@ -43,7 +43,8 @@ object TestStrategy extends Strategy {
     plan match {
       case Project(Seq(attr), _) if attr.name == "a" =>
         FastOperator(attr.toAttribute :: Nil) :: Nil
-      case _ => Nil
+      case _ =>
+        Nil
     }
 }
 

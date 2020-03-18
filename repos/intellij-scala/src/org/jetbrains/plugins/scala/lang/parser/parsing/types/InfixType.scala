@@ -60,14 +60,16 @@ object InfixType {
       s.charAt(s.length - 1) match {
         case ':' =>
           assoc match {
-            case 0 => assoc = -1
+            case 0 =>
+              assoc = -1
             case 1 =>
               builder error ScalaBundle.message("wrong.type.associativity")
             case -1 =>
           }
         case _ =>
           assoc match {
-            case 0 => assoc = 1
+            case 0 =>
+              assoc = 1
             case 1 =>
             case -1 =>
               builder error ScalaBundle.message("wrong.type.associativity")

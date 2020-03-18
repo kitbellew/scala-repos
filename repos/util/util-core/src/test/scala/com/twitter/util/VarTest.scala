@@ -118,8 +118,10 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
       us match {
         case Seq(hd, tl @ _*) =>
           hd flatMap {
-            case 0 => short(tl)
-            case i => Var(i)
+            case 0 =>
+              short(tl)
+            case i =>
+              Var(i)
           }
         case Seq() =>
           Var(-1)
@@ -306,7 +308,8 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val v1 = Var(1)
     val v2 = v1.map(_ * 2)
     val v = Var.collect(Seq(v1, v2)).map {
-      case Seq(a, b) => (a, b)
+      case Seq(a, b) =>
+        (a, b)
     }
 
     val ref = new AtomicReference[Seq[(Int, Int)]]
@@ -405,13 +408,15 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val v = Var(123)
     v match {
       case Var.Sampled(123) =>
-      case _                => fail()
+      case _ =>
+        fail()
     }
 
     v() = 333
     v match {
       case Var.Sampled(333) =>
-      case _                => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -438,8 +443,10 @@ class VarTest extends FunSuite with GeneratorDrivenPropertyChecks {
       val w1 = newVar(333)
       val w2 = newVar(444)
       val x = v flatMap {
-        case 123 => w1
-        case _   => w2
+        case 123 =>
+          w1
+        case _ =>
+          w2
       }
 
       var buf = mutable.Buffer[Int]()

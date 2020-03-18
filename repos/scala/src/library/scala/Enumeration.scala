@@ -231,7 +231,8 @@ abstract class Enumeration(initial: Int) extends Serializable {
       other match {
         case that: Enumeration#Value =>
           (outerEnum eq that.outerEnum) && (id == that.id)
-        case _ => false
+        case _ =>
+          false
       }
     override def hashCode: Int = id.##
 

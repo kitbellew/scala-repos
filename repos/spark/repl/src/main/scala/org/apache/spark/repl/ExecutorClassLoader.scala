@@ -62,8 +62,10 @@ class ExecutorClassLoader(
 
   private val fetchFn: (String) => InputStream =
     uri.getScheme() match {
-      case "spark"                  => getClassFileInputStreamFromSparkRPC
-      case "http" | "https" | "ftp" => getClassFileInputStreamFromHttpServer
+      case "spark" =>
+        getClassFileInputStreamFromSparkRPC
+      case "http" | "https" | "ftp" =>
+        getClassFileInputStreamFromHttpServer
       case _ =>
         val fileSystem = FileSystem.get(
           uri,
@@ -97,7 +99,8 @@ class ExecutorClassLoader(
                 // its behavior will be changed if there is a cause and the compilation
                 // of generated class will fail.
                 throw new ClassNotFoundException(name)
-              case Some(a) => a
+              case Some(a) =>
+                a
             }
           }
         }

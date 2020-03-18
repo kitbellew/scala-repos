@@ -12,8 +12,10 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScForStatement
 class ScalaForStmtUnwrapper extends ScalaUnwrapper {
   override def isApplicableTo(e: PsiElement) =
     e match {
-      case fSt: ScForStatement => fSt.body.isDefined
-      case _                   => false
+      case fSt: ScForStatement =>
+        fSt.body.isDefined
+      case _ =>
+        false
     }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =

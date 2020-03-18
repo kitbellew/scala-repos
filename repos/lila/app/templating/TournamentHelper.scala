@@ -61,21 +61,24 @@ trait TournamentHelper {
     def apply(name: String) =
       Html {
         replacements.foldLeft(name) {
-          case (n, (from, to)) => n.replace(from, to)
+          case (n, (from, to)) =>
+            n.replace(from, to)
         }
       }
   }
 
   def systemName(sys: System)(implicit ctx: UserContext) =
     sys match {
-      case System.Arena => System.Arena.toString
+      case System.Arena =>
+        System.Arena.toString
     }
 
   def tournamentIconChar(tour: Tournament): Char =
     tour.schedule.map(_.freq) match {
       case Some(Schedule.Freq.Marathon | Schedule.Freq.ExperimentalMarathon) =>
         '\\'
-      case _ => tour.perfType.fold('g')(_.iconChar)
+      case _ =>
+        tour.perfType.fold('g')(_.iconChar)
     }
 
   private def longTournamentDescription(tour: Tournament) =

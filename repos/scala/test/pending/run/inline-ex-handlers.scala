@@ -78,7 +78,8 @@ object TestInlineHandlersFinallyInline {
         throw new IllegalArgumentException("something")
       result = 1
     } catch {
-      case e: Exception => throw e
+      case e: Exception =>
+        throw e
     } finally {
       println("finally")
       result = (result - 1) / 2
@@ -102,7 +103,8 @@ object TestInlineHandlersCaseClassExceptionInline {
         throw new MyException("something")
       result = 1
     } catch {
-      case MyException(message) => println(message)
+      case MyException(message) =>
+        println(message)
     }
 
     result
@@ -122,10 +124,12 @@ object TestInlineHandlersNestedHandlerInnerInline {
           throw new MyException("something")
         result = 1
       } catch {
-        case MyException(message) => println(message)
+        case MyException(message) =>
+          println(message)
       }
     } catch {
-      case e: IllegalArgumentException => println("IllegalArgumentException")
+      case e: IllegalArgumentException =>
+        println("IllegalArgumentException")
     }
 
     result
@@ -145,10 +149,12 @@ object TestInlineHandlersNestedHandlerOuterInline {
           throw new MyException("something")
         result = 1
       } catch {
-        case e: IllegalArgumentException => println("IllegalArgumentException")
+        case e: IllegalArgumentException =>
+          println("IllegalArgumentException")
       }
     } catch {
-      case MyException(message) => println(message)
+      case MyException(message) =>
+        println(message)
     }
 
     result
@@ -301,7 +307,8 @@ object TestInlineHandlersDoubleNoLocal {
         }
       }
     } catch {
-      case t: Throwable => println("Caught crash: " + t.toString)
+      case t: Throwable =>
+        println("Caught crash: " + t.toString)
     }
 
     /*        try {

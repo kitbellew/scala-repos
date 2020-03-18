@@ -36,13 +36,18 @@ object ScalaCompletionUtil {
 
   def completeThis(ref: ScReferenceExpression): Boolean = {
     ref.qualifier match {
-      case Some(_) => false
+      case Some(_) =>
+        false
       case None =>
         ref.getParent match {
-          case inf: ScInfixExpr if inf.operation == ref       => false
-          case postf: ScPostfixExpr if postf.operation == ref => false
-          case pref: ScPrefixExpr if pref.operation == ref    => false
-          case _                                              => true
+          case inf: ScInfixExpr if inf.operation == ref =>
+            false
+          case postf: ScPostfixExpr if postf.operation == ref =>
+            false
+          case pref: ScPrefixExpr if pref.operation == ref =>
+            false
+          case _ =>
+            true
         }
     }
   }
@@ -57,8 +62,9 @@ object ScalaCompletionUtil {
       return false
     if (dummyPosition.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
       dummyPosition.getParent match {
-        case ref: ScReferenceElement if ref.qualifier.isDefined => return false
-        case _                                                  =>
+        case ref: ScReferenceElement if ref.qualifier.isDefined =>
+          return false
+        case _ =>
       }
     }
     if (checkInvocationCount && parameters.getInvocationCount >= 2)
@@ -82,7 +88,8 @@ object ScalaCompletionUtil {
     val paramNamesWithTypes = new ArrayBuffer[(String, ScType)]
     def contains(name: String): Boolean = {
       paramNamesWithTypes.exists {
-        case (s, _) => s == name
+        case (s, _) =>
+          s == name
       }
     }
     for (param <- params) {
@@ -160,10 +167,13 @@ object ScalaCompletionUtil {
           case x: PsiErrorElement =>
             val s = ErrMsg("wrong.top.statment.declaration")
             x.getErrorDescription match {
-              case `s` => return (true, true)
-              case _   => return (true, false)
+              case `s` =>
+                return (true, true)
+              case _ =>
+                return (true, false)
             }
-          case _ => return (true, true)
+          case _ =>
+            return (true, true)
         }
       case expr: ScReferenceExpression =>
         parent.getParent match {
@@ -341,8 +351,9 @@ object ScalaCompletionUtil {
 
   private def checkErrors(elem: PsiElement): Boolean = {
     elem match {
-      case _: PsiErrorElement => return true
-      case _                  =>
+      case _: PsiErrorElement =>
+        return true
+      case _ =>
     }
     val iterator = elem.getChildren.iterator
     while (iterator.hasNext) {
@@ -362,8 +373,10 @@ object ScalaCompletionUtil {
       l.getContainingFile match {
         case scriptFile: ScalaFile if scriptFile.isScriptFile() =>
           (leaf.getParent, true)
-        case scalaFile: ScalaFile => (leaf, false)
-        case _                    => (null, false)
+        case scalaFile: ScalaFile =>
+          (leaf, false)
+        case _ =>
+          (null, false)
       }
     } getOrElse (null, false)
 
@@ -377,7 +390,8 @@ object ScalaCompletionUtil {
     if (element != null && ref != null) {
       val text =
         ref match {
-          case ref: PsiElement => ref.getText
+          case ref: PsiElement =>
+            ref.getText
           case ref: PsiReference =>
             ref.getElement.getText //this case for anonymous method in ScAccessModifierImpl
         }
@@ -444,7 +458,8 @@ object ScalaCompletionUtil {
               .getOrElse(parameters.getPosition)
           } else
             parameters.getPosition
-        case _ => inner(element.getContext)
+        case _ =>
+          inner(element.getContext)
       }
     inner(parameters.getOriginalPosition)
   }

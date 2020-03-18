@@ -43,14 +43,16 @@ abstract class SyntaxAnalyzer
     override def traverse(t: Tree): Unit =
       t match {
         case md: MemberDef if prune(md) =>
-        case md @ PackageDef(_, stats)  => traverseTrees(stats)
+        case md @ PackageDef(_, stats) =>
+          traverseTrees(stats)
         case md: ImplDef =>
           onMember(md);
           lower(traverseTrees(md.impl.body))
         case md: ValOrDefDef =>
           onMember(md);
           lower(traverse(md.rhs))
-        case _ => super.traverse(t)
+        case _ =>
+          super.traverse(t)
       }
   }
 

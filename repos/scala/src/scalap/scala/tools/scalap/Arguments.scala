@@ -50,7 +50,8 @@ object Arguments {
         case -1 =>
           argumentError(s"missing '$separator' in binding '$str'");
           ("", "")
-        case idx => ((str take idx).trim, (str drop (idx + 1)).trim)
+        case idx =>
+          ((str take idx).trim, (str drop (idx + 1)).trim)
       }
 
     def parse(args: Array[String]): Arguments = {

@@ -121,8 +121,9 @@ class ScFunctionWrapper(
       var res: PsiClass = function.containingClass
       if (isStatic) {
         res match {
-          case o: ScObject => res = o.fakeCompanionClassOrCompanionClass
-          case _           =>
+          case o: ScObject =>
+            res = o.fakeCompanionClassOrCompanionClass
+          case _ =>
         }
       }
       assert(
@@ -170,10 +171,12 @@ with LightScalaMethod {
 
   override def hasModifierProperty(name: String): Boolean = {
     name match {
-      case "abstract" if isInterface => true
+      case "abstract" if isInterface =>
+        true
       case "final" if containingClass.isInstanceOf[ScTrait] =>
         false //fix for SCL-5824
-      case _ => super.hasModifierProperty(name)
+      case _ =>
+        super.hasModifierProperty(name)
     }
   }
 
@@ -289,8 +292,9 @@ object ScFunctionWrapper {
                     case Success(scType, _) =>
                       ScType
                         .extractClass(scType, Some(function.getProject)) match {
-                        case Some(clazz) => classes += clazz.getQualifiedName
-                        case _           =>
+                        case Some(clazz) =>
+                          classes += clazz.getQualifiedName
+                        case _ =>
                       }
                     case _ =>
                   }
@@ -310,8 +314,10 @@ object ScFunctionWrapper {
 
     val defaultParam =
       forDefault match {
-        case Some(i) => Some(params(i - 1))
-        case None    => None
+        case Some(i) =>
+          Some(params(i - 1))
+        case None =>
+          None
       }
 
     def evalType(typeResult: TypeResult[ScType]) {
@@ -322,11 +328,13 @@ object ScFunctionWrapper {
             function.getProject,
             function.getResolveScope)
           builder.append(typeText)
-        case _ => builder.append("java.lang.Object")
+        case _ =>
+          builder.append("java.lang.Object")
       }
     }
     defaultParam match {
-      case Some(param) => evalType(param.getType(TypingContext.empty))
+      case Some(param) =>
+        evalType(param.getType(TypingContext.empty))
       case _ =>
         function match {
           case fun: ScFunction if !fun.isConstructor =>
@@ -343,9 +351,12 @@ object ScFunctionWrapper {
       forDefault match {
         case Some(i) if function.isConstructor =>
           "$lessinit$greater$default$" + i
-        case Some(i)                     => function.getName + "$default$" + i
-        case _ if function.isConstructor => function.containingClass.getName
-        case _                           => function.getName
+        case Some(i) =>
+          function.getName + "$default$" + i
+        case _ if function.isConstructor =>
+          function.containingClass.getName
+        case _ =>
+          function.getName
       }
     builder.append(name)
 
@@ -353,8 +364,10 @@ object ScFunctionWrapper {
       function.effectiveParameterClauses
         .takeWhile { clause =>
           defaultParam match {
-            case Some(param) => !clause.effectiveParameters.contains(param)
-            case None        => true
+            case Some(param) =>
+              !clause.effectiveParameters.contains(param)
+            case None =>
+              true
           }
         }
         .flatMap(_.effectiveParameters)
@@ -388,7 +401,8 @@ object ScFunctionWrapper {
                     subst.subst(tp),
                     function.getProject,
                     function.getResolveScope))
-              case _ => builder.append("java.lang.Object")
+              case _ =>
+                builder.append("java.lang.Object")
             }
 
             if (varargs)
@@ -423,12 +437,16 @@ object ScFunctionWrapper {
           case td: ScTypeDefinition =>
             td.signaturesByName(function.name)
               .find(_.method == function) match {
-              case Some(sign) => sign.substitutor
-              case _          => ScSubstitutor.empty
+              case Some(sign) =>
+                sign.substitutor
+              case _ =>
+                ScSubstitutor.empty
             }
-          case _ => ScSubstitutor.empty
+          case _ =>
+            ScSubstitutor.empty
         }
-      case _ => ScSubstitutor.empty
+      case _ =>
+        ScSubstitutor.empty
     }
   }
 }

@@ -95,7 +95,8 @@ private[sql] object StatFunctions extends Logging {
         sum1: Array[QuantileSummaries],
         sum2: Array[QuantileSummaries]): Array[QuantileSummaries] = {
       sum1.zip(sum2).map {
-        case (s1, s2) => s1.compress().merge(s2.compress())
+        case (s1, s2) =>
+          s1.compress().merge(s2.compress())
       }
     }
     val summaries =

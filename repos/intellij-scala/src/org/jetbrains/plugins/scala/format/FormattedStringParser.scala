@@ -46,8 +46,10 @@ object FormattedStringParser extends StringParser {
           if literal.isString && isFormatMethod(owner.qualifiedName, f.name) =>
         val args =
           arg match {
-            case tuple: ScTuple => tuple.exprs
-            case it             => Seq(it)
+            case tuple: ScTuple =>
+              tuple.exprs
+            case it =>
+              Seq(it)
           }
         (literal, args)
 
@@ -155,8 +157,10 @@ object FormattedStringParser extends StringParser {
     }
 
     val prefix = intersperse(texts.toList, bindings.toList).filter {
-      case Text("") => false
-      case _        => true
+      case Text("") =>
+        false
+      case _ =>
+        true
     }
 
     val unusedArguments =
@@ -170,8 +174,11 @@ object FormattedStringParser extends StringParser {
 
   private def intersperse[T](as: List[T], bs: List[T]): List[T] =
     (as, bs) match {
-      case (x :: xs, y :: ys) => x :: y :: intersperse(xs, ys)
-      case (xs, Nil)          => xs
-      case (Nil, ys)          => ys
+      case (x :: xs, y :: ys) =>
+        x :: y :: intersperse(xs, ys)
+      case (xs, Nil) =>
+        xs
+      case (Nil, ys) =>
+        ys
     }
 }

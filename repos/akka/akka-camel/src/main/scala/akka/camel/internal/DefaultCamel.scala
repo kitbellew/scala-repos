@@ -108,8 +108,10 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
         .ask(AwaitActivation(endpoint))(timeout)
       )
       .map[ActorRef]({
-        case EndpointActivated(`endpoint`) ⇒ endpoint
-        case EndpointFailedToActivate(`endpoint`, cause) ⇒ throw cause
+        case EndpointActivated(`endpoint`) ⇒
+          endpoint
+        case EndpointFailedToActivate(`endpoint`, cause) ⇒
+          throw cause
       })
 
   /**
@@ -127,7 +129,9 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
         .ask(AwaitDeActivation(endpoint))(timeout)
       )
       .map[ActorRef]({
-        case EndpointDeActivated(`endpoint`) ⇒ endpoint
-        case EndpointFailedToDeActivate(`endpoint`, cause) ⇒ throw cause
+        case EndpointDeActivated(`endpoint`) ⇒
+          endpoint
+        case EndpointFailedToDeActivate(`endpoint`, cause) ⇒
+          throw cause
       })
 }

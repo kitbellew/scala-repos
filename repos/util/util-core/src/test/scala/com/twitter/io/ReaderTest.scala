@@ -20,7 +20,8 @@ class ReaderTest
 
   def toSeq(b: Option[Buf]) =
     b match {
-      case None => fail("Expected full buffer")
+      case None =>
+        fail("Expected full buffer")
       case Some(buf) =>
         val a = new Array[Byte](buf.length)
         buf.write(a, 0)

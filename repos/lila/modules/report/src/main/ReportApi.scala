@@ -61,7 +61,8 @@ private[report] final class ReportApi {
             gameId = "",
             move = ""),
           lichess)
-      case _ => funit
+      case _ =>
+        funit
     }
   }
 
@@ -77,7 +78,8 @@ private[report] final class ReportApi {
             gameId = "",
             move = ""),
           lichess)
-      case _ => funit
+      case _ =>
+        funit
     }
   }
 
@@ -92,7 +94,8 @@ private[report] final class ReportApi {
             gameId = "",
             move = ""),
           lichess)
-      case _ => funit
+      case _ =>
+        funit
     }
   }
 
@@ -109,7 +112,8 @@ private[report] final class ReportApi {
             gameId = "",
             move = ""),
           lichess)
-      case _ => funit
+      case _ =>
+        funit
     }
   }
 
@@ -166,7 +170,8 @@ private[report] final class ReportApi {
             gameId = "",
             move = ""),
           lichess)
-      case _ => funit
+      case _ =>
+        funit
     }
   } >>- monitorUnprocessed
 

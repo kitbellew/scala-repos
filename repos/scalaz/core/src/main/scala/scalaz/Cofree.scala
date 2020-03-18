@@ -293,8 +293,10 @@ private trait CofreeFoldable[F[_]] extends Foldable1[Cofree[F, ?]] {
       f: (A, => B) => B): B = {
     import std.option.none
     foldRight(fa, none[B]) {
-      case (l, None)    => Some(z(l))
-      case (l, Some(r)) => Some(f(l, r))
+      case (l, None) =>
+        Some(z(l))
+      case (l, Some(r)) =>
+        Some(f(l, r))
     }.getOrElse(sys.error("foldMapRight1"))
   }
 

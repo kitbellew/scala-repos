@@ -106,7 +106,8 @@ private[thrift] class ThriftServerChannelBufferEncoder
         Channels.write(ctx, e.getFuture, buffer)
       case array: Array[Byte] =>
         e.getFuture.setSuccess()
-      case _ => throw new IllegalArgumentException("no byte array")
+      case _ =>
+        throw new IllegalArgumentException("no byte array")
     }
   }
 }

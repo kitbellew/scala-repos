@@ -172,8 +172,10 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
       : Stream[A] = {
     def go(s: StreamT[Id, A]): Stream[A] =
       s.uncons match {
-        case None          => Stream.empty[A]
-        case Some((a, s1)) => Stream.cons(a, go(s1))
+        case None =>
+          Stream.empty[A]
+        case Some((a, s1)) =>
+          Stream.cons(a, go(s1))
       }
 
     go(StreamT(ev(step)))
@@ -199,9 +201,12 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
 
   def foreach(f: A => M[Unit])(implicit M: Monad[M]): M[Unit] =
     M.bind(step) {
-      case Yield(a, s) => M.bind(f(a))(_ => s().foreach(f))
-      case Skip(s)     => s().foreach(f)
-      case Done        => M.pure(())
+      case Yield(a, s) =>
+        M.bind(f(a))(_ => s().foreach(f))
+      case Skip(s) =>
+        s().foreach(f)
+      case Done =>
+        M.pure(())
     }
 
   private def stepMap[B](f: Step[A, StreamT[M, A]] => Step[B, StreamT[M, B]])(
@@ -279,8 +284,10 @@ object StreamT extends StreamTInstances {
       M: Applicative[M]): StreamT[M, A] = {
     def loop(as: Stream[A]): Step[A, StreamT[M, A]] =
       as match {
-        case head #:: tail => Yield(head, apply(M.point(loop(tail))))
-        case _             => Done
+        case head #:: tail =>
+          Yield(head, apply(M.point(loop(tail))))
+        case _ =>
+          Done
       }
 
     apply[M, A](M.map(mas)(loop))
@@ -290,8 +297,10 @@ object StreamT extends StreamTInstances {
       M: Functor[M]): StreamT[M, A] =
     StreamT[M, A](
       M.map(f(start)) {
-        case Some((a, b)) => Yield(a, unfoldM(b)(f))
-        case None         => Done
+        case Some((a, b)) =>
+          Yield(a, unfoldM(b)(f))
+        case None =>
+          Done
       })
 
   def unfold[A, B](b: B)(f: B => Option[(A, B)]): StreamT[Id, A] =

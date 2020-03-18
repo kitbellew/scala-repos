@@ -74,15 +74,22 @@ object ResolveUtils {
     kinds == null ||
       (
         element match {
-          case _: PsiPackage | _: ScPackaging       => kinds contains PACKAGE
-          case obj: ScObject if obj.isPackageObject => kinds contains PACKAGE
+          case _: PsiPackage | _: ScPackaging =>
+            kinds contains PACKAGE
+          case obj: ScObject if obj.isPackageObject =>
+            kinds contains PACKAGE
           case obj: ScObject =>
             (kinds contains OBJECT) || (kinds contains METHOD)
-          case _: ScTypeVariableTypeElement => kinds contains CLASS
-          case _: ScTypeParam               => kinds contains CLASS
-          case _: ScTypeAlias               => kinds contains CLASS
-          case _: ScTypeDefinition          => kinds contains CLASS
-          case _: ScSyntheticClass          => kinds contains CLASS
+          case _: ScTypeVariableTypeElement =>
+            kinds contains CLASS
+          case _: ScTypeParam =>
+            kinds contains CLASS
+          case _: ScTypeAlias =>
+            kinds contains CLASS
+          case _: ScTypeDefinition =>
+            kinds contains CLASS
+          case _: ScSyntheticClass =>
+            kinds contains CLASS
           case c: PsiClass =>
             if (kinds contains CLASS)
               true
@@ -102,8 +109,10 @@ object ResolveUtils {
               classOf[ScVariable],
               classOf[ScValue])
             parent match {
-              case x: ScVariable => kinds contains VAR
-              case _             => kinds contains VAL
+              case x: ScVariable =>
+                kinds contains VAR
+              case _ =>
+                kinds contains VAL
             }
           case patt: ScFieldId =>
             if (patt.getParent /*list of ids*/ .getParent
@@ -116,11 +125,16 @@ object ResolveUtils {
               kinds.contains(VAR)
             else
               kinds.contains(VAL)
-          case param: ScParameter   => kinds contains VAL
-          case _: ScSelfTypeElement => kinds contains VAL
-          case _: PsiMethod         => kinds contains METHOD
-          case _: ScFun             => kinds contains METHOD
-          case _: ScSyntheticValue  => kinds contains VAL
+          case param: ScParameter =>
+            kinds contains VAL
+          case _: ScSelfTypeElement =>
+            kinds contains VAL
+          case _: PsiMethod =>
+            kinds contains METHOD
+          case _: ScFun =>
+            kinds contains METHOD
+          case _: ScSyntheticValue =>
+            kinds contains VAL
           case f: PsiField =>
             (kinds contains VAR) || (
               f.hasModifierPropertyScala(PsiModifier.FINAL) && kinds.contains(
@@ -128,7 +142,8 @@ object ResolveUtils {
             )
           case _: PsiParameter =>
             kinds contains VAL //to enable named Parameters resolve in Play 2.0 routing file for java methods
-          case _ => false
+          case _ =>
+            false
         }
       )
 
@@ -154,15 +169,18 @@ object ResolveUtils {
       returnType: Option[ScType] = None): ScMethodType = {
     val retType: ScType =
       (m, returnType) match {
-        case (f: FakePsiMethod, None) => s.subst(f.retType)
+        case (f: FakePsiMethod, None) =>
+          s.subst(f.retType)
         case (_, None) =>
           s.subst(ScType.create(m.getReturnType, m.getProject, scope))
-        case (_, Some(x)) => x
+        case (_, Some(x)) =>
+          x
       }
     new ScMethodType(
       retType,
       m match {
-        case f: FakePsiMethod => f.params.toSeq
+        case f: FakePsiMethod =>
+          f.params.toSeq
         case _ =>
           m.getParameterList.getParameters.map { param =>
             val scType = s.subst(param.exactParamType())
@@ -203,14 +221,17 @@ object ResolveUtils {
     memb match {
       case b: ScBindingPattern =>
         b.nameContext match {
-          case memb: ScMember => return isAccessible(memb, place)
-          case _              => return true
+          case memb: ScMember =>
+            return isAccessible(memb, place)
+          case _ =>
+            return true
         }
       //todo: ugly workaround, probably FakePsiMethod is better to remove?
       case f: FakePsiMethod =>
         f.navElement match {
-          case memb: PsiMember => return isAccessible(memb, place)
-          case _               =>
+          case memb: PsiMember =>
+            return isAccessible(memb, place)
+          case _ =>
         }
       case _ =>
     }
@@ -247,15 +268,18 @@ object ResolveUtils {
     }
 
     member match {
-      case f: ScFunction if f.isBridge => return false
-      case _                           =>
+      case f: ScFunction if f.isBridge =>
+        return false
+      case _ =>
     }
 
     def checkProtected(td: PsiClass, withCompanion: Boolean): Boolean = {
       val isConstr =
         member match {
-          case m: PsiMethod => m.isConstructor
-          case _            => false
+          case m: PsiMethod =>
+            m.isConstructor
+          case _ =>
+            false
         }
       var placeTd: ScTemplateDefinition = getPlaceTd(place, isConstr)
       if (isConstr) {
@@ -295,7 +319,8 @@ object ResolveUtils {
     member match {
       case scMember: ScMember =>
         scMember.getModifierList.accessModifier match {
-          case None => true
+          case None =>
+            true
           case Some(am: ScAccessModifier) =>
             if (am.isPrivate) {
               if (am.access == ScAccessModifier.Type.THIS_PRIVATE) {
@@ -326,7 +351,8 @@ object ResolveUtils {
                         if (enclosing == null)
                           return true
                         t.refTemplate match {
-                          case Some(t) => return t == enclosing
+                          case Some(t) =>
+                            return t == enclosing
                           case _ =>
                             return PsiTreeUtil.isContextAncestor(
                               enclosing,
@@ -346,7 +372,8 @@ object ResolveUtils {
                           return true
                         else
                           return false
-                      case _ => return false
+                      case _ =>
+                        return false
                     }
                   case _ =>
                     val enclosing = PsiTreeUtil.getContextOfType(
@@ -383,9 +410,12 @@ object ResolveUtils {
                     return false //not Scala
                   val placePackageName =
                     placeEnclosing match {
-                      case file: ScalaFile   => ""
-                      case obj: ScObject     => obj.qualifiedName
-                      case pack: ScPackaging => pack.fqn
+                      case file: ScalaFile =>
+                        ""
+                      case obj: ScObject =>
+                        obj.qualifiedName
+                      case pack: ScPackaging =>
+                        pack.fqn
                     }
                   packageContains(packageName, placePackageName)
                 }
@@ -405,7 +435,8 @@ object ResolveUtils {
                   case pack: PsiPackage =>
                     val packageName = pack.getQualifiedName
                     processPackage(packageName)
-                  case _ => true
+                  case _ =>
+                    true
                 }
               } else {
                 /*
@@ -435,9 +466,12 @@ object ResolveUtils {
                   case _ =>
                     val packageName =
                       enclosing match {
-                        case file: ScalaFile        => ""
-                        case packaging: ScPackaging => packaging.getPackageName
-                        case _                      => ""
+                        case file: ScalaFile =>
+                          ""
+                        case packaging: ScPackaging =>
+                          packaging.getPackageName
+                        case _ =>
+                          ""
                       }
                     val placeEnclosing: PsiElement = ScalaPsiUtil
                       .getContextOfType(
@@ -449,8 +483,10 @@ object ResolveUtils {
                       return false //not Scala
                     val placePackageName =
                       placeEnclosing match {
-                        case file: ScalaFile   => ""
-                        case pack: ScPackaging => pack.getPackageName
+                        case file: ScalaFile =>
+                          ""
+                        case pack: ScPackaging =>
+                          pack.getPackageName
                       }
                     packageContains(packageName, placePackageName)
                 }
@@ -480,9 +516,12 @@ object ResolveUtils {
                     return Some(false) //not Scala
                   val placePackageName =
                     placeEnclosing match {
-                      case file: ScalaFile   => ""
-                      case obj: ScObject     => obj.qualifiedName
-                      case pack: ScPackaging => pack.fqn
+                      case file: ScalaFile =>
+                        ""
+                      case obj: ScObject =>
+                        obj.qualifiedName
+                      case pack: ScPackaging =>
+                        pack.fqn
                     }
                   if (packageContains(packageName, placePackageName))
                     return Some(true)
@@ -503,18 +542,21 @@ object ResolveUtils {
                     td match {
                       case o: ScObject if o.isPackageObject =>
                         processPackage(o.qualifiedName) match {
-                          case Some(x) => return x
-                          case None    =>
+                          case Some(x) =>
+                            return x
+                          case None =>
                         }
                       case _ =>
                     }
                   case pack: PsiPackage => //like private (nothing related to real life)
                     val packageName = pack.getQualifiedName
                     processPackage(packageName) match {
-                      case Some(x) => return x
-                      case None    =>
+                      case Some(x) =>
+                        return x
+                      case None =>
                     }
-                  case _ => return true
+                  case _ =>
+                    return true
                 }
               }
               val enclosing = ScalaPsiUtil.getContextOfType(
@@ -544,7 +586,8 @@ object ResolveUtils {
                         if (enclosing.extendsBlock.selfTypeElement != Some(
                               resolve))
                           return false
-                      case _ => return false
+                      case _ =>
+                        return false
                     }
                   case _ =>
                 }
@@ -569,8 +612,10 @@ object ResolveUtils {
                   //same as for private
                   val packageName =
                     enclosing match {
-                      case file: ScalaFile        => ""
-                      case packaging: ScPackaging => packaging.fullPackageName
+                      case file: ScalaFile =>
+                        ""
+                      case packaging: ScPackaging =>
+                        packaging.fullPackageName
                     }
                   val placeEnclosing: PsiElement = ScalaPsiUtil
                     .getContextOfType(
@@ -582,8 +627,10 @@ object ResolveUtils {
                     return false //not Scala
                   val placePackageName =
                     placeEnclosing match {
-                      case file: ScalaFile   => ""
-                      case pack: ScPackaging => pack.fullPackageName
+                      case file: ScalaFile =>
+                        ""
+                      case pack: ScPackaging =>
+                        pack.fullPackageName
                     }
                   packageContains(packageName, placePackageName)
               }
@@ -601,9 +648,12 @@ object ResolveUtils {
         else {
           val packageName =
             member.getContainingFile match {
-              case s: ScalaFile     => ""
-              case f: PsiClassOwner => f.getPackageName
-              case _                => return false
+              case s: ScalaFile =>
+                ""
+              case f: PsiClassOwner =>
+                f.getPackageName
+              case _ =>
+                return false
             }
           val placeEnclosing: PsiElement = ScalaPsiUtil.getContextOfType(
             place,
@@ -614,8 +664,10 @@ object ResolveUtils {
             return false
           val placePackageName =
             placeEnclosing match {
-              case file: ScalaFile   => ""
-              case pack: ScPackaging => pack.fullPackageName
+              case file: ScalaFile =>
+                ""
+              case pack: ScPackaging =>
+                pack.fullPackageName
             }
           packageContains(packageName, placePackageName)
         }
@@ -628,12 +680,14 @@ object ResolveUtils {
       place: ScalaPsiElement) {
     if (superRef.isHardCoded) {
       superRef.drvTemplate match {
-        case Some(c) => processor.processType(ScThisType(c), place)
-        case None    =>
+        case Some(c) =>
+          processor.processType(ScThisType(c), place)
+        case None =>
       }
     } else {
       superRef.staticSuper match {
-        case Some(t) => processor.processType(t, place)
+        case Some(t) =>
+          processor.processType(t, place)
         case None =>
           superRef.drvTemplate match {
             case Some(c) =>
@@ -653,8 +707,10 @@ object ResolveUtils {
   def getPlacePackage(place: PsiElement): String = {
     val pack: ScPackaging =
       ScalaPsiUtil.getContextOfType(place, true, classOf[ScPackaging]) match {
-        case pack: ScPackaging => pack
-        case _                 => null
+        case pack: ScPackaging =>
+          pack
+        case _ =>
+          null
       }
     if (pack == null)
       return ""
@@ -747,8 +803,10 @@ object ResolveUtils {
                     name
                 val scope =
                   base match {
-                    case r: ResolveProcessor => r.getResolveScope
-                    case _                   => place.getResolveScope
+                    case r: ResolveProcessor =>
+                      r.getResolveScope
+                    case _ =>
+                      place.getResolveScope
                   }
                 var classes: Array[PsiClass] = manager.getCachedClasses(
                   scope,
@@ -784,7 +842,8 @@ object ResolveUtils {
                       r.name
                     else
                       stateName
-                  case _ => name
+                  case _ =>
+                    name
                 }
               }
               if (scalaName != name && !calcForName(scalaName))
@@ -795,8 +854,10 @@ object ResolveUtils {
             if (base.kinds.contains(ResolveTargets.PACKAGE)) {
               val psiPack =
                 pack match {
-                  case s: ScPackageImpl => s.pack
-                  case _                => pack
+                  case s: ScPackageImpl =>
+                    s.pack
+                  case _ =>
+                    pack
                 }
               val qName: String = psiPack.getQualifiedName
               val subpackageQName: String =
@@ -826,8 +887,10 @@ object ResolveUtils {
               val manager = ScalaPsiManager.instance(pack.getProject)
               val scope =
                 base match {
-                  case r: ResolveProcessor => r.getResolveScope
-                  case _                   => place.getResolveScope
+                  case r: ResolveProcessor =>
+                    r.getResolveScope
+                  case _ =>
+                    place.getResolveScope
                 }
               val iterator = manager.getClasses(pack, scope).iterator
               while (iterator.hasNext) {
@@ -857,7 +920,8 @@ object ResolveUtils {
             base.setClassKind(classKind = true)
           }
         }
-      case _ => pack.processDeclarations(processor, state, lastParent, place)
+      case _ =>
+        pack.processDeclarations(processor, state, lastParent, place)
     }
   }
 }

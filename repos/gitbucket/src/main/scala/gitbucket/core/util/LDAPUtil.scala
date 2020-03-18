@@ -63,7 +63,8 @@ object LDAPUtil {
         ldapSettings.additionalFilterCondition) match {
         case Some(userDN) =>
           userAuthentication(ldapSettings, userDN, userName, password)
-        case None => Left("User does not exist.")
+        case None =>
+          Left("User does not exist.")
       }
     }
   }
@@ -122,7 +123,8 @@ object LDAPUtil {
                   .getOrElse(userName),
                 mailAddress = mailAddress
               ))
-          case None => Left("Can't find mail address.")
+          case None =>
+            Left("Can't find mail address.")
         }
       }
     }
@@ -131,8 +133,10 @@ object LDAPUtil {
   private def getUserNameFromMailAddress(userName: String): String = {
     (
       userName.indexOf('@') match {
-        case i if i >= 0 => userName.substring(0, i)
-        case i           => userName
+        case i if i >= 0 =>
+          userName.substring(0, i)
+        case i =>
+          userName
       }
     ).replaceAll("[^a-zA-Z0-9\\-_.]", "").replaceAll("^[_\\-]", "")
   }
@@ -226,14 +230,17 @@ object LDAPUtil {
 
     val filterCond =
       additionalFilterCondition.getOrElse("") match {
-        case "" => userNameAttribute + "=" + userName
-        case x  => "(&(" + x + ")(" + userNameAttribute + "=" + userName + "))"
+        case "" =>
+          userNameAttribute + "=" + userName
+        case x =>
+          "(&(" + x + ")(" + userNameAttribute + "=" + userName + "))"
       }
 
     getEntries(
       conn.search(baseDN, LDAPConnection.SCOPE_SUB, filterCond, null, false))
       .collectFirst {
-        case x => x.getDN
+        case x =>
+          x.getDN
       }
   }
 

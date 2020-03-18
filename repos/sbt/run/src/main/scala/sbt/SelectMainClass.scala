@@ -9,8 +9,10 @@ object SelectMainClass {
       promptIfMultipleChoices: Option[String => Option[String]],
       mainClasses: Seq[String]): Option[String] = {
     mainClasses.toList match {
-      case Nil         => None
-      case head :: Nil => Some(head)
+      case Nil =>
+        None
+      case head :: Nil =>
+        Some(head)
       case multiple =>
         promptIfMultipleChoices flatMap { prompt =>
           println("\nMultiple main classes detected, select one to run:\n")

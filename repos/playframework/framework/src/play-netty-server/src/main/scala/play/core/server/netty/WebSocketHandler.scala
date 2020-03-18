@@ -54,12 +54,18 @@ private[server] object WebSocketHandler {
 
     val messageType =
       frame match {
-        case _: TextWebSocketFrame         => MessageType.Text
-        case _: BinaryWebSocketFrame       => MessageType.Binary
-        case close: CloseWebSocketFrame    => MessageType.Close
-        case _: PingWebSocketFrame         => MessageType.Ping
-        case _: PongWebSocketFrame         => MessageType.Pong
-        case _: ContinuationWebSocketFrame => MessageType.Continuation
+        case _: TextWebSocketFrame =>
+          MessageType.Text
+        case _: BinaryWebSocketFrame =>
+          MessageType.Binary
+        case close: CloseWebSocketFrame =>
+          MessageType.Close
+        case _: PingWebSocketFrame =>
+          MessageType.Ping
+        case _: PongWebSocketFrame =>
+          MessageType.Pong
+        case _: ContinuationWebSocketFrame =>
+          MessageType.Continuation
       }
 
     RawMessage(messageType, bytes, frame.isFinalFragment)
@@ -78,7 +84,8 @@ private[server] object WebSocketHandler {
     }
 
     message match {
-      case TextMessage(data) => new TextWebSocketFrame(data)
+      case TextMessage(data) =>
+        new TextWebSocketFrame(data)
       case BinaryMessage(data) =>
         new BinaryWebSocketFrame(byteStringToByteBuf(data))
       case PingMessage(data) =>
@@ -87,7 +94,8 @@ private[server] object WebSocketHandler {
         new PongWebSocketFrame(byteStringToByteBuf(data))
       case CloseMessage(Some(statusCode), reason) =>
         new CloseWebSocketFrame(statusCode, reason)
-      case CloseMessage(None, _) => new CloseWebSocketFrame()
+      case CloseMessage(None, _) =>
+        new CloseWebSocketFrame()
     }
   }
 }

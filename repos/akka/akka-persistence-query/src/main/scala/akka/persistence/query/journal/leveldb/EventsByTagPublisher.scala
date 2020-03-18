@@ -78,9 +78,11 @@ private[akka] abstract class AbstractEventsByTagPublisher(
   def receive = init
 
   def init: Receive = {
-    case _: Request ⇒ receiveInitialRequest()
+    case _: Request ⇒
+      receiveInitialRequest()
     case Continue ⇒ // skip, wait for first Request
-    case Cancel ⇒ context.stop(self)
+    case Cancel ⇒
+      context.stop(self)
   }
 
   def receiveInitialRequest(): Unit
@@ -142,7 +144,8 @@ private[akka] abstract class AbstractEventsByTagPublisher(
     case _: Request ⇒
       deliverBuf()
 
-    case Continue | _: LeveldbJournal.TaggedEventAppended ⇒ // skip during replay
+    case Continue |
+        _: LeveldbJournal.TaggedEventAppended ⇒ // skip during replay
 
     case Cancel ⇒
       context.stop(self)

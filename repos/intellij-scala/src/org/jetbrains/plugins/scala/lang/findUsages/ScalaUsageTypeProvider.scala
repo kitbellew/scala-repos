@@ -80,8 +80,10 @@ final class ScalaUsageTypeProvider extends UsageTypeProviderEx {
            tp <- value.typeElement
            if isAncestor(tp, element, false)) {
         value.getContext match {
-          case _: ScTemplateBody => return UsageType.CLASS_FIELD_DECLARATION
-          case _                 => return UsageType.CLASS_LOCAL_VAR_DECLARATION
+          case _: ScTemplateBody =>
+            return UsageType.CLASS_FIELD_DECLARATION
+          case _ =>
+            return UsageType.CLASS_LOCAL_VAR_DECLARATION
         }
       }
 
@@ -89,8 +91,10 @@ final class ScalaUsageTypeProvider extends UsageTypeProviderEx {
            tp <- variable.typeElement
            if isAncestor(tp, element, false)) {
         variable.getContext match {
-          case _: ScTemplateBody => return UsageType.CLASS_FIELD_DECLARATION
-          case _                 => return UsageType.CLASS_LOCAL_VAR_DECLARATION
+          case _: ScTemplateBody =>
+            return UsageType.CLASS_FIELD_DECLARATION
+          case _ =>
+            return UsageType.CLASS_LOCAL_VAR_DECLARATION
         }
       }
 

@@ -87,7 +87,8 @@ object Test extends Properties("concurrent.TrieMap") {
   def hasGrown[K, V](last: Map[K, V], current: Map[K, V]) = {
     (last.size <= current.size) && {
       last forall {
-        case (k, v) => current.get(k) == Some(v)
+        case (k, v) =>
+          current.get(k) == Some(v)
       }
     }
   }
@@ -136,7 +137,8 @@ object Test extends Properties("concurrent.TrieMap") {
 
       val ok = growing && (
         (0 until sz) forall {
-          case i => ct.get(Wrap(i)) == Some(i)
+          case i =>
+            ct.get(Wrap(i)) == Some(i)
         }
       )
 
@@ -149,7 +151,8 @@ object Test extends Properties("concurrent.TrieMap") {
       for (i <- 0 until n)
         ct(i) = i
       (0 until n) forall {
-        case i => ct(i) == i
+        case i =>
+          ct(i) == i
       }
     }
 
@@ -164,7 +167,8 @@ object Test extends Properties("concurrent.TrieMap") {
         }
 
         (0 until sz) forall {
-          case i => ct(Wrap(i)) == i
+          case i =>
+            ct(Wrap(i)) == i
         }
     }
 
@@ -180,7 +184,8 @@ object Test extends Properties("concurrent.TrieMap") {
       }
 
       (0 until sz) forall {
-        case i => ct.get(Wrap(i)) == None
+        case i =>
+          ct.get(Wrap(i)) == None
       }
     }
 
@@ -196,7 +201,8 @@ object Test extends Properties("concurrent.TrieMap") {
 
       (results forall (_ == None)) && (
         (0 until sz) forall {
-          case i => ct.get(Wrap(i)) == Some(i)
+          case i =>
+            ct.get(Wrap(i)) == Some(i)
         }
       )
     }
@@ -217,7 +223,8 @@ object Test extends Properties("concurrent.TrieMap") {
 
       (totalInserts.get == sz) && (
         (0 until sz) forall {
-          case i => ct(Wrap(i)).split(":")(1).toInt == i
+          case i =>
+            ct(Wrap(i)).split(":")(1).toInt == i
         }
       )
     }

@@ -201,7 +201,8 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
         case Some(brokerMetadata: BrokerMetadata) =>
           if (brokerMetadata.brokerId != brokerId)
             return false
-        case _ => return false
+        case _ =>
+          return false
       }
     }
     true

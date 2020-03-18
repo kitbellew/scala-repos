@@ -17,7 +17,8 @@ final class Analyser(
 
   def apply(game: Game, sender: Work.Sender): Fu[Boolean] =
     AnalysisRepo exists game.id flatMap {
-      case true => fuccess(false)
+      case true =>
+        fuccess(false)
       case false =>
         limiter(sender) flatMap { accepted =>
           accepted ?? {
@@ -25,15 +26,18 @@ final class Analyser(
               sequencer {
                 repo getSimilarAnalysis work flatMap {
                   // already in progress, do nothing
-                  case Some(similar) if similar.isAcquired => funit
+                  case Some(similar) if similar.isAcquired =>
+                    funit
                   // queued by system, reschedule for the human sender
                   case Some(similar)
                       if similar.sender.system && !sender.system =>
                     repo.updateAnalysis(similar.copy(sender = sender))
                   // queued for someone else, do nothing
-                  case Some(similar) => funit
+                  case Some(similar) =>
+                    funit
                   // first request, store
-                  case _ => repo addAnalysis work
+                  case _ =>
+                    repo addAnalysis work
                 }
               }
             }

@@ -76,8 +76,10 @@ case class IterableSource[+T](
         new MemoryTap[InputStream, OutputStream](
           new NullScheme(fields, fields),
           asBuffer)
-      case Hdfs(_, _)       => hdfsTap
-      case HadoopTest(_, _) => hdfsTap
+      case Hdfs(_, _) =>
+        hdfsTap
+      case HadoopTest(_, _) =>
+        hdfsTap
       case _ =>
         throw ModeException(
           "Unsupported mode for IterableSource: " + mode.toString)

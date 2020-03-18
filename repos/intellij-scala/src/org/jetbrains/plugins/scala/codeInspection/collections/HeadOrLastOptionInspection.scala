@@ -42,7 +42,8 @@ object IfElseToHeadOption extends SimplificationType {
           replace(expr)
             .withText(invocationText(coll, "headOption"))
             .highlightAll)
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -72,7 +73,8 @@ object IfElseToLastOption extends SimplificationType {
           replace(expr)
             .withText(invocationText(coll, "lastOption"))
             .highlightAll)
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -89,7 +91,8 @@ object LiftToHeadOption extends SimplificationType {
           replace(expr)
             .withText(invocationText(coll, "headOption"))
             .highlightFrom(coll))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -108,6 +111,7 @@ object LiftToLastOption extends SimplificationType {
           replace(expr)
             .withText(invocationText(coll, "lastOption"))
             .highlightFrom(coll))
-      case _ => None
+      case _ =>
+        None
     }
 }

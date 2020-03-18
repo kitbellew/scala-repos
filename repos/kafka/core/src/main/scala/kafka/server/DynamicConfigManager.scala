@@ -86,14 +86,17 @@ class DynamicConfigManager(
         // Ignore non-json notifications because they can be from the deprecated TopicConfigManager
         case Some(mapAnon: Map[_, _]) =>
           val map = mapAnon collect {
-            case (k: String, v: Any) => k -> v
+            case (k: String, v: Any) =>
+              k -> v
           }
           require(map("version") == 1)
 
           val entityType =
             map.get("entity_type") match {
-              case Some(ConfigType.Topic)  => ConfigType.Topic
-              case Some(ConfigType.Client) => ConfigType.Client
+              case Some(ConfigType.Topic) =>
+                ConfigType.Topic
+              case Some(ConfigType.Client) =>
+                ConfigType.Client
               case _ =>
                 throw new IllegalArgumentException(
                   "Config change notification must have 'entity_type' set to either 'client' or 'topic'." +
@@ -102,7 +105,8 @@ class DynamicConfigManager(
 
           val entity =
             map.get("entity_name") match {
-              case Some(value: String) => value
+              case Some(value: String) =>
+                value
               case _ =>
                 throw new IllegalArgumentException(
                   "Config change notification does not specify 'entity_name'. Received: " + json)

@@ -5,7 +5,8 @@ object ObjectGraph {
     case s2 @ (a, _) =>
       /*start*/
       s2 /*end*/
-    case s3 => s3
+    case s3 =>
+      s3
   }
 }
 //(Int, Int)

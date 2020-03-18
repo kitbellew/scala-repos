@@ -51,8 +51,10 @@ with AbstractTestConfigurationProducer {
           .isInstanceOf[PsiDirectory]) {
       val name =
         element match {
-          case p: PsiPackage   => p.getName
-          case d: PsiDirectory => d.getName
+          case p: PsiPackage =>
+            p.getName
+          case d: PsiDirectory =>
+            d.getName
         }
       return Some(
         (
@@ -160,7 +162,8 @@ with AbstractTestConfigurationProducer {
           if configuration.getTestKind == TestKind.TEST_NAME =>
         testClassPath == configuration.getTestClassPath && testName != null &&
           testName == configuration.getTestName
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -204,7 +207,8 @@ with AbstractTestConfigurationProducer {
       e => TestNodeProvider.isSpecs2TestExpr(e)) match {
       case Some(infixExpr: ScInfixExpr) =>
         (testClassDef, extractStaticTestName(infixExpr).orNull)
-      case _ => (testClassDef, null)
+      case _ =>
+        (testClassDef, null)
     }
   }
 }

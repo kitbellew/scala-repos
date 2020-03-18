@@ -56,8 +56,10 @@ case class Game(
 
   def player(color: Color): Player =
     color match {
-      case White => whitePlayer
-      case Black => blackPlayer
+      case White =>
+        whitePlayer
+      case Black =>
+        blackPlayer
     }
 
   def player(playerId: String): Option[Player] = players find (_.id == playerId)
@@ -134,7 +136,8 @@ case class Game(
       else
         1
     moveTimes.toList.zipWithIndex.collect {
-      case (e, i) if (i % 2) == pivot => e
+      case (e, i) if (i % 2) == pivot =>
+        e
     }
   }
 
@@ -151,7 +154,8 @@ case class Game(
       else
         1
     pgnMoves.zipWithIndex.collect {
-      case (e, i) if (i % 2) == pivot => e
+      case (e, i) if (i % 2) == pivot =>
+        e
     }
   }
 
@@ -170,7 +174,8 @@ case class Game(
 
   lazy val toChessHistory = ChessHistory(
     lastMove = castleLastMoveTime.lastMove map {
-      case (orig, dest) => Uci.Move(orig, dest)
+      case (orig, dest) =>
+        Uci.Move(orig, dest)
     },
     castles = castleLastMoveTime.castles,
     positionHashes = positionHashes,
@@ -457,9 +462,12 @@ case class Game(
 
   def playerWhoDidNotMove: Option[Player] =
     playedTurns match {
-      case 0 => player(White).some
-      case 1 => player(Black).some
-      case _ => none
+      case 0 =>
+        player(White).some
+      case 1 =>
+        player(Black).some
+      case _ =>
+        none
     }
 
   def onePlayerHasMoved = playedTurns > 0
@@ -504,9 +512,12 @@ case class Game(
 
   def averageUsersRating =
     userRatings match {
-      case a :: b :: Nil => Some((a + b) / 2)
-      case a :: Nil      => Some((a + 1500) / 2)
-      case _             => None
+      case a :: b :: Nil =>
+        Some((a + b) / 2)
+      case a :: Nil =>
+        Some((a + 1500) / 2)
+      case _ =>
+        None
     }
 
   def withTournamentId(id: String) =
@@ -662,7 +673,8 @@ case class CastleLastMoveTime(
 
   def lastMoveString =
     lastMove map {
-      case (a, b) => s"$a$b"
+      case (a, b) =>
+        s"$a$b"
     }
 }
 

@@ -224,7 +224,8 @@ class ScalaPsiElementFactoryImpl(manager: PsiManager)
         context,
         context)
     } catch {
-      case e: Throwable => throw new IncorrectOperationException
+      case e: Throwable =>
+        throw new IncorrectOperationException
     }
   }
 }
@@ -308,8 +309,10 @@ object ScalaPsiElementFactory {
       context,
       contextLastChild(context),
       ImplicitParamClause.parse(_)) match {
-      case clause: ScParameterClause => clause
-      case _                         => null
+      case clause: ScParameterClause =>
+        clause
+      case _ =>
+        null
     }
   }
 
@@ -322,8 +325,10 @@ object ScalaPsiElementFactory {
       context,
       contextLastChild(context),
       ImplicitClassParamClause.parse(_)) match {
-      case clause: ScParameterClause => clause
-      case _                         => null
+      case clause: ScParameterClause =>
+        clause
+      case _ =>
+        null
     }
   }
 
@@ -335,8 +340,10 @@ object ScalaPsiElementFactory {
       context,
       contextLastChild(context),
       ClassParamClause.parse(_)) match {
-      case clause: ScParameterClause => clause
-      case _                         => null
+      case clause: ScParameterClause =>
+        clause
+      case _ =>
+        null
     }
   }
 
@@ -348,8 +355,10 @@ object ScalaPsiElementFactory {
       context,
       contextLastChild(context),
       ClassParamClauses.parse(_)) match {
-      case parameters: ScParameters => parameters
-      case _                        => null
+      case parameters: ScParameters =>
+        parameters
+      case _ =>
+        null
     }
   }
 
@@ -358,8 +367,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScConstructor = {
     createElementWithContext(text, context, child, Constructor.parse(_)) match {
-      case c: ScConstructor => c
-      case _                => null
+      case c: ScConstructor =>
+        c
+      case _ =>
+        null
     }
   }
 
@@ -372,8 +383,10 @@ object ScalaPsiElementFactory {
       context,
       child,
       ParamClauses.parse(_)) match {
-      case parameters: ScParameters => parameters
-      case _                        => null
+      case parameters: ScParameters =>
+        parameters
+      case _ =>
+        null
     }
   }
 
@@ -387,7 +400,8 @@ object ScalaPsiElementFactory {
           null
         else
           children.get(size - 1).getPsi
-      case _ => context.getLastChild
+      case _ =>
+        context.getLastChild
     }
   }
 
@@ -539,10 +553,13 @@ object ScalaPsiElementFactory {
       throw new IllegalArgumentException("Expression not found")) match {
       case x: ScParenthesisedExpr =>
         x.expr match {
-          case Some(y) => y
-          case _       => x
+          case Some(y) =>
+            y
+          case _ =>
+            x
         }
-      case x => x
+      case x =>
+        x
     }
   }
 
@@ -553,8 +570,10 @@ object ScalaPsiElementFactory {
       text,
       manager,
       Block.parse(_, hasBrace = false, needNode = true)) match {
-      case b: ScBlockImpl => b
-      case _              => null
+      case b: ScBlockImpl =>
+        b
+      case _ =>
+        null
     }
   }
 
@@ -576,7 +595,8 @@ object ScalaPsiElementFactory {
           Some(expr)
         else
           None
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -656,8 +676,10 @@ object ScalaPsiElementFactory {
       val expr: ScImportExpr = imp.importExprs.apply(0)
       val ref =
         expr.reference match {
-          case Some(x) => x
-          case None    => return null
+          case Some(x) =>
+            x
+          case None =>
+            return null
         }
       ref
     } catch {
@@ -674,15 +696,18 @@ object ScalaPsiElementFactory {
     val qualifiedName = clazz.qualifiedName
     val packageName =
       holder match {
-        case packaging: ScPackaging => packaging.getPackageName
+        case packaging: ScPackaging =>
+          packaging.getPackageName
         case _ =>
           var element: PsiElement = holder
           while (element != null && !element.isInstanceOf[ScalaFile] && !element
                    .isInstanceOf[ScPackaging])
             element = element.getParent
           element match {
-            case packaging: ScPackaging => packaging.getPackageName
-            case _                      => null
+            case packaging: ScPackaging =>
+              packaging.getPackageName
+            case _ =>
+              null
           }
       }
     val name = getShortName(qualifiedName, packageName)
@@ -700,8 +725,9 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     dummyFile.getImportStatements.headOption match {
-      case Some(x) => x
-      case None    =>
+      case Some(x) =>
+        x
+      case None =>
         //cannot be
         null
     }
@@ -744,8 +770,9 @@ object ScalaPsiElementFactory {
         text)
       .asInstanceOf[ScalaFile]
     dummyFile.getImportStatements.headOption match {
-      case Some(x) => x
-      case None    =>
+      case Some(x) =>
+        x
+      case None =>
         //cannot be
         null
     }
@@ -771,9 +798,11 @@ object ScalaPsiElementFactory {
         (
           elements.head.asInstanceOf[ScSimpleTypeElement].reference: @unchecked
         ) match {
-          case Some(r) => r
+          case Some(r) =>
+            r
         }
-      case _ => throw new com.intellij.util.IncorrectOperationException()
+      case _ =>
+        throw new com.intellij.util.IncorrectOperationException()
     }
   }
 
@@ -813,7 +842,8 @@ object ScalaPsiElementFactory {
       manager: PsiManager): ScMember = {
     def stmtText(stmt: ScBlockStatement): String =
       stmt match {
-        case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
+        case block @ ScBlock(st) if !block.hasRBrace =>
+          stmtText(st)
         case fun @ ScFunctionExpr(parSeq, Some(result)) =>
           val paramText =
             if (parSeq.size == 1) {
@@ -829,13 +859,17 @@ object ScalaPsiElementFactory {
               case block: ScBlock
                   if !block.hasRBrace && block.statements.size != 1 =>
                 s"{\n${block.getText}\n}"
-              case block @ ScBlock(st) if !block.hasRBrace => stmtText(st)
-              case _                                       => result.getText
+              case block @ ScBlock(st) if !block.hasRBrace =>
+                stmtText(st)
+              case _ =>
+                result.getText
             }
           val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
           s"$paramText $arrow $resultText"
-        case null => ""
-        case _    => stmt.getText
+        case null =>
+          ""
+        case _ =>
+          stmt.getText
       }
     val beforeColon =
       if (ScalaNamesUtil.isOpCharacter(name.last))
@@ -974,8 +1008,10 @@ object ScalaPsiElementFactory {
     val classDef: ScTypeDefinition = dummyFile.typeDefinitions(0)
     val body =
       classDef.extendsBlock.templateBody match {
-        case Some(x) => x
-        case None    => return null
+        case Some(x) =>
+          x
+        case None =>
+          return null
       }
     body
   }
@@ -1086,7 +1122,8 @@ object ScalaPsiElementFactory {
       .asInstanceOf[ScalaFile]
     val classDef = dummyFile.typeDefinitions(0)
     classDef.members(0) match {
-      case member: ScMember => member
+      case member: ScMember =>
+        member
     }
   }
 
@@ -1114,19 +1151,23 @@ object ScalaPsiElementFactory {
     val imp: ScStableCodeReferenceElement =
       (
         dummyFile.getImportStatements.headOption match {
-          case Some(x) => x
-          case None    =>
+          case Some(x) =>
+            x
+          case None =>
             //cannot be
             null
         }
       ).importExprs(0).reference match {
-        case Some(x) => x
-        case None    => return false
+        case Some(x) =>
+          x
+        case None =>
+          return false
       }
     imp.resolve() match {
       case x: PsiClass =>
         x.qualifiedName == clazz.qualifiedName
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -1189,17 +1230,22 @@ object ScalaPsiElementFactory {
                 ""
             val clauseText =
               typeParam.typeParametersClause match {
-                case None => ""
+                case None =>
+                  ""
                 case Some(x) =>
                   x.typeParameters.map(buildText).mkString("[", ",", "]")
               }
             val lowerBoundText = typeParam.lowerBound.toOption collect {
-              case psi.types.Nothing => ""
-              case x                 => " >: " + ScType.canonicalText(substitutor.subst(x))
+              case psi.types.Nothing =>
+                ""
+              case x =>
+                " >: " + ScType.canonicalText(substitutor.subst(x))
             }
             val upperBoundText = typeParam.upperBound.toOption collect {
-              case psi.types.Any => ""
-              case x             => " <: " + ScType.canonicalText(substitutor.subst(x))
+              case psi.types.Any =>
+                ""
+              case x =>
+                " <: " + ScType.canonicalText(substitutor.subst(x))
             }
             val viewBoundText = typeParam.viewBound map { x =>
               " <% " + ScType.canonicalText(substitutor.subst(x))
@@ -1246,7 +1292,8 @@ object ScalaPsiElementFactory {
                     else
                       ""
                   )
-                case _ => name
+                case _ =>
+                  name
               }
             }
             val params = for (t <- paramClause.parameters) yield buildText(t)
@@ -1314,10 +1361,13 @@ object ScalaPsiElementFactory {
                   param.name match {
                     case null =>
                       param match {
-                        case param: ClsParameterImpl => param.getStub.getName
-                        case _                       => null
+                        case param: ClsParameterImpl =>
+                          param.getStub.getName
+                        case _ =>
+                          null
                       }
-                    case x => x
+                    case x =>
+                      x
                   }
                 val pName: String = ScalaNamesUtil.changeKeyword(paramName)
                 val colon =
@@ -1330,10 +1380,12 @@ object ScalaPsiElementFactory {
                     .create(param.getTypeElement.getType, method.getProject))
                 val typeText =
                   scType match {
-                    case types.AnyRef => "scala.Any"
+                    case types.AnyRef =>
+                      "scala.Any"
                     case JavaArrayType(arg: ScType) if param.isVarArgs =>
                       ScType.canonicalText(arg) + "*"
-                    case _ => ScType.canonicalText(scType)
+                    case _ =>
+                      ScType.canonicalText(scType)
                   }
                 s"$pName$colon$typeText"
               }
@@ -1398,8 +1450,10 @@ object ScalaPsiElementFactory {
       needsInferType: Boolean): String = {
     val modOwner: ScModifierListOwner =
       ScalaPsiUtil.nameContext(variable) match {
-        case m: ScModifierListOwner => m
-        case _                      => null
+        case m: ScModifierListOwner =>
+          m
+        case _ =>
+          null
       }
     val overrideText =
       if (needsOverride && (
@@ -1450,15 +1504,21 @@ object ScalaPsiElementFactory {
 
   def getStandardValue(typez: ScType): String = {
     typez match {
-      case ValType("Unit")                  => "()"
-      case ValType("Boolean")               => "false"
-      case ValType("Char" | "Int" | "Byte") => "0"
-      case ValType("Long")                  => "0L"
-      case ValType("Float" | "Double")      => "0.0"
+      case ValType("Unit") =>
+        "()"
+      case ValType("Boolean") =>
+        "false"
+      case ValType("Char" | "Int" | "Byte") =>
+        "0"
+      case ValType("Long") =>
+        "0L"
+      case ValType("Float" | "Double") =>
+        "0.0"
       case ScDesignatorType(c: PsiClass)
           if c.qualifiedName == "java.lang.String" =>
         "\"\""
-      case _ => "null"
+      case _ =>
+        "null"
     }
   }
 
@@ -1478,8 +1538,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScFunction = {
     createElementWithContext(text, context, child, Def.parse(_)) match {
-      case fun: ScFunction => fun
-      case _               => null
+      case fun: ScFunction =>
+        fun
+      case _ =>
+        null
     }
   }
 
@@ -1488,8 +1550,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScMember = {
     createElementWithContext(text, context, child, Def.parse(_)) match {
-      case memb: ScMember => memb
-      case _              => null
+      case memb: ScMember =>
+        memb
+      case _ =>
+        null
     }
   }
 
@@ -1498,8 +1562,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScObject = {
     createElementWithContext(text, context, child, TmplDef.parse(_)) match {
-      case o: ScObject => o
-      case _           => null
+      case o: ScObject =>
+        o
+      case _ =>
+        null
     }
   }
 
@@ -1508,8 +1574,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScTypeDefinition = {
     createElementWithContext(text, context, child, TmplDef.parse(_)) match {
-      case td: ScTypeDefinition => td
-      case _                    => null
+      case td: ScTypeDefinition =>
+        td
+      case _ =>
+        null
     }
   }
 
@@ -1522,8 +1590,10 @@ object ScalaPsiElementFactory {
       context,
       child,
       StableId.parse(_, ScalaElementTypes.REFERENCE)) match {
-      case ref: ScStableCodeReferenceElement => ref
-      case _                                 => null
+      case ref: ScStableCodeReferenceElement =>
+        ref
+      case _ =>
+        null
     }
   }
 
@@ -1545,7 +1615,8 @@ object ScalaPsiElementFactory {
         if (res != null)
           res.setContext(context, child)
         res
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -1561,7 +1632,8 @@ object ScalaPsiElementFactory {
       case expr: ScExpression =>
         expr.setContext(context, child)
         expr
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -1630,7 +1702,8 @@ object ScalaPsiElementFactory {
       case element: ScalaPsiElement =>
         element.setContext(context, child)
         element
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -1639,8 +1712,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScImportStmt = {
     createElementWithContext(text, context, child, Import.parse) match {
-      case imp: ScImportStmt => imp
-      case _                 => null
+      case imp: ScImportStmt =>
+        imp
+      case _ =>
+        null
     }
   }
 
@@ -1712,8 +1787,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScTypeElement = {
     createElementWithContext(text, context, child, Type.parse(_)) match {
-      case te: ScTypeElement => te
-      case _                 => null
+      case te: ScTypeElement =>
+        te
+      case _ =>
+        null
     }
   }
 
@@ -1722,8 +1799,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScTypeElement = {
     createElementWithContext(text, context, child, Constructor.parse(_)) match {
-      case constructor: ScConstructor => constructor.typeElement
-      case _                          => null
+      case constructor: ScConstructor =>
+        constructor.typeElement
+      case _ =>
+        null
     }
   }
 
@@ -1736,8 +1815,10 @@ object ScalaPsiElementFactory {
       context,
       child,
       TypeParamClause.parse(_)) match {
-      case clause: ScTypeParamClause => clause
-      case _                         => null
+      case clause: ScTypeParamClause =>
+        clause
+      case _ =>
+        null
     }
   }
 
@@ -1787,7 +1868,8 @@ object ScalaPsiElementFactory {
         val res = patternDef.pList
         res.setContext(context, child)
         res
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -1810,8 +1892,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScTemplateDefinition = {
     createElementWithContext(text, context, child, TmplDef.parse(_)) match {
-      case tmplDef: ScTemplateDefinition => tmplDef
-      case _                             => null
+      case tmplDef: ScTemplateDefinition =>
+        tmplDef
+      case _ =>
+        null
     }
   }
 
@@ -1820,8 +1904,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScDeclaration = {
     createElementWithContext(text, context, child, Dcl.parse(_)) match {
-      case decl: ScDeclaration => decl
-      case _                   => null
+      case decl: ScDeclaration =>
+        decl
+      case _ =>
+        null
     }
   }
 
@@ -1830,8 +1916,10 @@ object ScalaPsiElementFactory {
       context: PsiElement,
       child: PsiElement): ScTypeAliasDefinition = {
     createElementWithContext(text, context, child, Def.parse(_)) match {
-      case typeAlias: ScTypeAliasDefinition => typeAlias
-      case _                                => null
+      case typeAlias: ScTypeAliasDefinition =>
+        typeAlias
+      case _ =>
+        null
     }
   }
 
@@ -1989,14 +2077,18 @@ object ScalaPsiElementFactory {
     val opText = infixExpr.operation.getText
     val typeArgText =
       infixExpr.typeArgs match {
-        case Some(tpArg) => tpArg.getText
-        case _           => ""
+        case Some(tpArg) =>
+          tpArg.getText
+        case _ =>
+          ""
       }
     val argText = infixExpr.getArgExpr.getText
     val clauseText =
       infixExpr.getArgExpr match {
-        case _: ScTuple | _: ScParenthesisedExpr | _: ScUnitExpr => argText
-        case _                                                   => s"($argText)"
+        case _: ScTuple | _: ScParenthesisedExpr | _: ScUnitExpr =>
+          argText
+        case _ =>
+          s"($argText)"
       }
     val exprText = s"($baseText).$opText$typeArgText$clauseText"
 
@@ -2011,7 +2103,8 @@ object ScalaPsiElementFactory {
       infixExpr).asInstanceOf[ScMethodCall]
     val referenceExpr =
       methodCallExpr.getInvokedExpr match {
-        case ref: ScReferenceExpression => ref
+        case ref: ScReferenceExpression =>
+          ref
         case call: ScGenericCall =>
           call.referencedExpr.asInstanceOf[ScReferenceExpression]
       }

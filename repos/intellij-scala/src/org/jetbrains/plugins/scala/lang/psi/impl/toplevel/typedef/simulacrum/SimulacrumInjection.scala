@@ -52,9 +52,11 @@ class SimulacrumInjection extends SyntheticMembersInjector {
             val tpText = ScalaPsiUtil.typeParamString(clazz.typeParameters.head)
             Seq(
               s"def apply[$tpText](implicit instance: ${clazz.name}[$tpName]): ${clazz.name}[$tpName] = instance")
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 
@@ -86,7 +88,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                       ScTypeParameterType(_, _, _, _, param),
                       Seq(p: ScTypeParameterType)) if param == clazzTypeParam =>
                   Some(Some(p))
-                case _ => None
+                case _ =>
+                  None
               }
             }
             val ops = clazz.functions
@@ -118,19 +121,26 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                                   case Some(l: ScLiteral)
                                                       if l.getValue == true =>
                                                     Seq(value, f.name)
-                                                  case _ => Seq(value)
+                                                  case _ =>
+                                                    Seq(value)
                                                 }
-                                              case _ => Seq(value)
+                                              case _ =>
+                                                Seq(value)
                                             }
-                                          case _ => Seq(value)
+                                          case _ =>
+                                            Seq(value)
                                         }
-                                      case _ => Seq(f.name)
+                                      case _ =>
+                                        Seq(f.name)
                                     }
-                                  case _ => Seq(f.name)
+                                  case _ =>
+                                    Seq(f.name)
                                 }
-                              case None => Seq(f.name)
+                              case None =>
+                                Seq(f.name)
                             }
-                          case _ => Seq(f.name)
+                          case _ =>
+                            Seq(f.name)
                         }
                       names.map {
                         case name =>
@@ -147,7 +157,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                     ScSubstitutor.empty)
                                 )
                                 Some(subst)
-                              case _ => None
+                              case _ =>
+                                None
                             }
                           def paramText(p: ScParameter): String = {
                             substOpt match {
@@ -156,7 +167,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                   .subst(
                                     p.getType(TypingContext.empty).getOrAny)
                                   .canonicalText
-                              case _ => p.getText
+                              case _ =>
+                                p.getText
                             }
                           }
                           def clauseText(p: ScParameterClause): String = {
@@ -190,11 +202,13 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             substOpt match {
                               case Some(subst) =>
                                 subst.subst(f.returnType.getOrAny).canonicalText
-                              case None => f.returnType.getOrAny.canonicalText
+                              case None =>
+                                f.returnType.getOrAny.canonicalText
                             }
                           s"def $name$typeParamClasue$restHeadClause$restClauses: $rt = ???"
                       }
-                    case _ => Seq.empty
+                    case _ =>
+                      Seq.empty
                   }
               }
               .mkString("\n  ")
@@ -224,7 +238,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                               case Some(cl: ScTypeDefinition) =>
                                 Seq(
                                   s" with ${cl.qualifiedName}.AllOps[$tpName$additionalWithComma]")
-                              case _ => Seq.empty
+                              case _ =>
+                                Seq.empty
                             }
                           }
                           //in most cases we have to resolve exactly the same reference
@@ -236,7 +251,8 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             } yield Seq(
                               s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]")
                           ).getOrElse(fromType)
-                        case _ => Seq.empty
+                        case _ =>
+                          Seq.empty
                       }
                   })
                 .mkString
@@ -251,9 +267,11 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                  |}
                """.stripMargin
             Seq(OpsTrait, ToOpsTrait, AllOpsTrait, opsObject)
-          case _ => Seq.empty
+          case _ =>
+            Seq.empty
         }
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 }

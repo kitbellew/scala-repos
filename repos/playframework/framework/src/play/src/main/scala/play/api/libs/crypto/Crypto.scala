@@ -307,7 +307,8 @@ class DefaultCSRFTokenSigner @Inject() (signer: CookieSigner, clock: Clock)
       case Array(signature, nonce, raw)
           if constantTimeEquals(signature, signer.sign(nonce + "-" + raw)) =>
         Some(raw)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -393,8 +394,10 @@ class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
     // '2-*' represents an encrypted payload with an IV
     // '1-*' represents an encrypted payload without an IV
     Option(cipher.getIV()) match {
-      case Some(iv) => s"2-${Base64.encodeBase64String(iv ++ encryptedValue)}"
-      case None     => s"1-${Base64.encodeBase64String(encryptedValue)}"
+      case Some(iv) =>
+        s"2-${Base64.encodeBase64String(iv ++ encryptedValue)}"
+      case None =>
+        s"1-${Base64.encodeBase64String(encryptedValue)}"
     }
   }
 
@@ -552,7 +555,8 @@ class CryptoConfigParser @Inject() (
           logger.debug(
             s"Generated dev mode secret $md5Secret for app at ${appConfLocation.getOrElse("unknown location")}")
           md5Secret
-        case Some(s) => s
+        case Some(s) =>
+          s
       }
 
     val provider = config.get[Option[String]]("play.crypto.provider")

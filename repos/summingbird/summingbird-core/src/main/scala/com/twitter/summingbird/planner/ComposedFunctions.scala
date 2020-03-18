@@ -31,17 +31,22 @@ trait IrreducibleContainer {
 object IrreducibleContainer {
   def flatten(item: Any): Iterable[Any] =
     item match {
-      case (ic: IrreducibleContainer) => ic.irreducibles
-      case _                          => Seq(item)
+      case (ic: IrreducibleContainer) =>
+        ic.irreducibles
+      case _ =>
+        Seq(item)
     }
 
   def flatten(left: Any, right: Any): Iterable[Any] =
     (left, right) match {
       case (li: IrreducibleContainer, ri: IrreducibleContainer) =>
         li.irreducibles ++ ri.irreducibles
-      case (li: IrreducibleContainer, _) => Seq(right) ++ li.irreducibles
-      case (_, ri: IrreducibleContainer) => Seq(left) ++ ri.irreducibles
-      case _                             => Seq(left, right)
+      case (li: IrreducibleContainer, _) =>
+        Seq(right) ++ li.irreducibles
+      case (_, ri: IrreducibleContainer) =>
+        Seq(left) ++ ri.irreducibles
+      case _ =>
+        Seq(left, right)
     }
 }
 

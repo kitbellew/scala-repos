@@ -2,7 +2,8 @@ object Test {
   val xs = List(1)
   val f: Int = {
     xs match {
-      case List(x) => x
+      case List(x) =>
+        x
     }
   }
 }
@@ -27,8 +28,10 @@ object Baz extends Foo {
 object Test_ {
   def matcher(s: String) =
     s match {
-      case Bar(x) => println("bar")
-      case Baz(x) => println("baz")
+      case Bar(x) =>
+        println("bar")
+      case Baz(x) =>
+        println("baz")
 //                          ^
 // error: unreachable code
     }

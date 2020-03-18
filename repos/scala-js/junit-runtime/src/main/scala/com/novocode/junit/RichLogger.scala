@@ -165,7 +165,8 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
       trace: Array[StackTraceElement],
       testClassName: String): String = {
     trace.collectFirst {
-      case e if testClassName.equals(e.getClassName) => e.getFileName
+      case e if testClassName.equals(e.getClassName) =>
+        e.getFileName
     }.orNull
   }
 

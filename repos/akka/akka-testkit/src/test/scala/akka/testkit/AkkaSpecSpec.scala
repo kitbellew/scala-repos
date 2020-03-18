@@ -75,7 +75,8 @@ class AkkaSpecSpec extends WordSpec with Matchers {
           Props(
             new Actor {
               def receive = {
-                case m: DeadLetter ⇒ locker :+= m
+                case m: DeadLetter ⇒
+                  locker :+= m
                 case "Die!" ⇒
                   sender() ! "finally gone";
                   context.stop(self)

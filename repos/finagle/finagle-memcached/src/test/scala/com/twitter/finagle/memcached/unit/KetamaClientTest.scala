@@ -71,7 +71,8 @@ class KetamaClientTest extends FunSuite with MockitoSugar {
     info("pick the correct node")
     val ipToService =
       clients.map {
-        case (key, service) => key.host -> service
+        case (key, service) =>
+          key.host -> service
       }.toMap
     val rng = new scala.util.Random
     for (testcase <- expected) {
@@ -108,7 +109,8 @@ class KetamaClientTest extends FunSuite with MockitoSugar {
       Await.result(r)
       assert(false)
     } catch {
-      case e: Throwable => Unit
+      case e: Throwable =>
+        Unit
     }
 
     // a second request must not be resolved yet

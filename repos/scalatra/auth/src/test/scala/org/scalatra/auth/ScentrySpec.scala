@@ -47,10 +47,12 @@ object ScentrySpec extends Specification with Mockito {
       new Scentry[User](
         context,
         {
-          case User(id) => id
+          case User(id) =>
+            id
         },
         {
-          case s: String => User(s)
+          case s: String =>
+            User(s)
         },
         new SessionAuthStore(context))
     var beforeFetchCalled = false

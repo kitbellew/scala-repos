@@ -39,8 +39,10 @@ sealed trait AnyContent {
     */
   def asFormUrlEncoded: Option[Map[String, Seq[String]]] =
     this match {
-      case AnyContentAsFormUrlEncoded(data) => Some(data)
-      case _                                => None
+      case AnyContentAsFormUrlEncoded(data) =>
+        Some(data)
+      case _ =>
+        None
     }
 
   /**
@@ -48,8 +50,10 @@ sealed trait AnyContent {
     */
   def asText: Option[String] =
     this match {
-      case AnyContentAsText(txt) => Some(txt)
-      case _                     => None
+      case AnyContentAsText(txt) =>
+        Some(txt)
+      case _ =>
+        None
     }
 
   /**
@@ -57,8 +61,10 @@ sealed trait AnyContent {
     */
   def asXml: Option[NodeSeq] =
     this match {
-      case AnyContentAsXml(xml) => Some(xml)
-      case _                    => None
+      case AnyContentAsXml(xml) =>
+        Some(xml)
+      case _ =>
+        None
     }
 
   /**
@@ -66,8 +72,10 @@ sealed trait AnyContent {
     */
   def asJson: Option[JsValue] =
     this match {
-      case AnyContentAsJson(json) => Some(json)
-      case _                      => None
+      case AnyContentAsJson(json) =>
+        Some(json)
+      case _ =>
+        None
     }
 
   /**
@@ -75,8 +83,10 @@ sealed trait AnyContent {
     */
   def asMultipartFormData: Option[MultipartFormData[TemporaryFile]] =
     this match {
-      case AnyContentAsMultipartFormData(mfd) => Some(mfd)
-      case _                                  => None
+      case AnyContentAsMultipartFormData(mfd) =>
+        Some(mfd)
+      case _ =>
+        None
     }
 
   /**
@@ -84,8 +94,10 @@ sealed trait AnyContent {
     */
   def asRaw: Option[RawBuffer] =
     this match {
-      case AnyContentAsRaw(raw) => Some(raw)
-      case _                    => None
+      case AnyContentAsRaw(raw) =>
+        Some(raw)
+      case _ =>
+        None
     }
 
 }
@@ -397,7 +409,8 @@ trait BodyParsers {
               }
             sink.mapMaterializedValue { future =>
               future andThen {
-                case _ => buffer.close()
+                case _ =>
+                  buffer.close()
               }
             }
           } map (buffer => Right(buffer))
@@ -546,7 +559,8 @@ trait BodyParsers {
                 // XML, and therefore nothing about RFC 3023, but rather conforms to RFC 2616, will send ISO-8859-1.
                 // Since decoding as ISO-8859-1 works for both clients that conform to RFC 3023, and clients that conform
                 // to RFC 2616, we use that.
-                case mt if mt.mediaType == "text" => "iso-8859-1"
+                case mt if mt.mediaType == "text" =>
+                  "iso-8859-1"
                 // Otherwise, there should be no default, it will be detected by the XML parser.
               })
             .foreach { charset =>
@@ -778,8 +792,10 @@ trait BodyParsers {
                   Future.successful(Right(Left(exceeded)))
                 case _ =>
                   resultFuture.map {
-                    case Left(result) => Left(result)
-                    case Right(a)     => Right(Right(a))
+                    case Left(result) =>
+                      Left(result)
+                    case Right(a) =>
+                      Right(Right(a))
                   }
               }
             })
@@ -850,7 +866,8 @@ trait BodyParsers {
                       "Request Entity Too Large",
                       REQUEST_ENTITY_TOO_LARGE)(request))(defaultCtx)
               badResult.map(Left(_))
-            case MaxSizeNotExceeded => resultFuture
+            case MaxSizeNotExceeded =>
+              resultFuture
           }
         })
     }

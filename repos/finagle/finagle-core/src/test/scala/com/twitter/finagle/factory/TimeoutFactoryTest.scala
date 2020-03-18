@@ -23,7 +23,8 @@ class TimeoutFactoryTest extends FunSuite with MockitoSugar {
         @volatile
         var interrupted: Option[Throwable] = None
         setInterruptHandler {
-          case exc => interrupted = Some(exc)
+          case exc =>
+            interrupted = Some(exc)
         }
       }
     when(underlying(any[ClientConnection])).thenReturn(promise)
@@ -59,8 +60,10 @@ class TimeoutFactoryTest extends FunSuite with MockitoSugar {
     new AfterHelper {
       assert(
         promise.interrupted forall {
-          case _: java.util.concurrent.TimeoutException => true
-          case _                                        => false
+          case _: java.util.concurrent.TimeoutException =>
+            true
+          case _ =>
+            false
         })
     }
   }

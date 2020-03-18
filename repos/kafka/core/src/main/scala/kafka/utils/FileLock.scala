@@ -52,7 +52,8 @@ class FileLock(val file: File) extends Logging {
         flock = channel.tryLock()
         flock != null
       } catch {
-        case e: OverlappingFileLockException => false
+        case e: OverlappingFileLockException =>
+          false
       }
     }
   }

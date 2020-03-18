@@ -119,7 +119,8 @@ trait TypeDiagnostics {
         def forString = params map (_.defString)
 
         forString.mkString("(", ",", ")") + resultType
-      case x => x.toString
+      case x =>
+        x.toString
     }
 
   /**
@@ -131,8 +132,10 @@ trait TypeDiagnostics {
     val arity = names.length
     val varPatterNames: Option[List[String]] = sequence(
       names map {
-        case name if nme.isVariableName(name) => Some(name.decode)
-        case _                                => None
+        case name if nme.isVariableName(name) =>
+          Some(name.decode)
+        case _ =>
+          None
       })
     def parenthesize(a: String) = s"($a)"
     def genericParams =
@@ -147,8 +150,10 @@ trait TypeDiagnostics {
 
   def alternatives(tree: Tree): List[Type] =
     tree.tpe match {
-      case OverloadedType(pre, alternatives) => alternatives map pre.memberType
-      case _                                 => Nil
+      case OverloadedType(pre, alternatives) =>
+        alternatives map pre.memberType
+      case _ =>
+        Nil
     }
   def alternativesString(tree: Tree) =
     alternatives(tree) map (x => "  " + methodTypeErrorString(x)) mkString (
@@ -218,12 +223,15 @@ trait TypeDiagnostics {
 
   def disambiguate(ss: List[String]) =
     ss match {
-      case Nil => Nil
+      case Nil =>
+        Nil
       case s :: ss =>
         s :: (
           ss map {
-            case `s` => "(some other)" + s;
-            case x   => x
+            case `s` =>
+              "(some other)" + s;
+            case x =>
+              x
           }
         )
     }
@@ -231,7 +239,8 @@ trait TypeDiagnostics {
   // todo: use also for other error messages
   def existentialContext(tp: Type) =
     tp.skolemsExceptMethodTypeParams match {
-      case Nil => ""
+      case Nil =>
+        ""
       case xs =>
         " where " + (disambiguate(xs map (_.existentialToString)) mkString ", ")
     }
@@ -393,8 +402,10 @@ trait TypeDiagnostics {
       else
         "`case _: " + (
           clazz.typeParams match {
-            case Nil => "" + clazz.name
-            case xs  => xs map (_ => "_") mkString (clazz.name + "[", ",", "]")
+            case Nil =>
+              "" + clazz.name
+            case xs =>
+              xs map (_ => "_") mkString (clazz.name + "[", ",", "]")
           }
         ) + "`"
 
@@ -497,9 +508,12 @@ trait TypeDiagnostics {
     for (tpe <- types;
          t <- tpe) {
       t match {
-        case ConstantType(_)    => record(t, t.underlying.typeSymbol)
-        case TypeRef(_, sym, _) => record(t, sym)
-        case _                  => ()
+        case ConstantType(_) =>
+          record(t, t.underlying.typeSymbol)
+        case TypeRef(_, sym, _) =>
+          record(t, sym)
+        case _ =>
+          ()
       }
     }
 
@@ -521,7 +535,8 @@ trait TypeDiagnostics {
   def withDisambiguation[T](locals: List[Symbol], types: Type*)(op: => T): T = {
     val typeRefs = typeDiags(locals, types: _*)
     val toCheck = pairs(typeRefs) filterNot {
-      case (td1, td2) => td1 sym_== td2
+      case (td1, td2) =>
+        td1 sym_== td2
     }
 
     ultimately(typeRefs foreach (_.restoreName())) {
@@ -599,10 +614,13 @@ trait TypeDiagnostics {
 
         override def traverse(t: Tree): Unit = {
           t match {
-            case t: MemberDef if qualifies(t.symbol)  => defnTrees += t
-            case t: RefTree if t.symbol ne null       => targets += t.symbol
-            case Assign(lhs, _) if lhs.symbol != null => setVars += lhs.symbol
-            case _                                    =>
+            case t: MemberDef if qualifies(t.symbol) =>
+              defnTrees += t
+            case t: RefTree if t.symbol ne null =>
+              targets += t.symbol
+            case Assign(lhs, _) if lhs.symbol != null =>
+              setVars += lhs.symbol
+            case _ =>
           }
           // Only record type references which don't originate within the
           // definition of the class being referenced.
@@ -620,8 +638,9 @@ trait TypeDiagnostics {
             }
             // e.g. val a = new Foo ; new a.Bar ; don't let a be reported as unused.
             t.tpe.prefix foreach {
-              case SingleType(_, sym) => targets += sym
-              case _                  =>
+              case SingleType(_, sym) =>
+                targets += sym
+              case _ =>
             }
           }
           super.traverse(t)
@@ -663,8 +682,10 @@ trait TypeDiagnostics {
                        sym.pos
                      else
                        sym match {
-                         case sym: TermSymbol => sym.referenced.pos
-                         case _               => NoPosition
+                         case sym: TermSymbol =>
+                           sym.referenced.pos
+                         case _ =>
+                           NoPosition
                        })
           val why =
             if (sym.isPrivate)
@@ -722,8 +743,10 @@ trait TypeDiagnostics {
       private def treeOK(tree: Tree) = {
         val isLabelDef =
           tree match {
-            case _: LabelDef => true;
-            case _           => false
+            case _: LabelDef =>
+              true;
+            case _ =>
+              false
           }
         tree.tpe != null && tree.tpe.typeSymbol == NothingClass && !isLabelDef
       }
@@ -830,8 +853,10 @@ trait TypeDiagnostics {
           } else {
             val pos =
               info.tree match {
-                case Import(expr, _) => expr.pos
-                case _               => ex.pos
+                case Import(expr, _) =>
+                  expr.pos
+                case _ =>
+                  ex.pos
               }
             context0.error(
               pos,

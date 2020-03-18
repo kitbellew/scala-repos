@@ -153,7 +153,8 @@ class ClientRegistryTest
           "low" -> "0",
           "idleTime" -> "Duration.Top",
           "maxWaiters" -> "2147483647").map {
-          case (key, value) => Entry(prefix :+ key, value)
+          case (key, value) =>
+            Entry(prefix :+ key, value)
         }
 
         expected.foreach { entry =>

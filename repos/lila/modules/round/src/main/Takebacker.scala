@@ -16,7 +16,8 @@ private[round] final class Takebacker(
             single(game)
           else
             double(game)
-        case Pov(game, _) if pov.opponent.isAi => double(game)
+        case Pov(game, _) if pov.opponent.isAi =>
+          double(game)
         case Pov(game, color) if (game playerCanProposeTakeback color) =>
           messenger.system(game, _.takebackPropositionSent)
           val progress = Progress(game) map { g =>
@@ -24,7 +25,8 @@ private[round] final class Takebacker(
           }
           GameRepo save progress inject List(
             Event.TakebackOffers(color.white, color.black))
-        case _ => fufail(ClientError("[takebacker] invalid yes " + pov))
+        case _ =>
+          fufail(ClientError("[takebacker] invalid yes " + pov))
       }
     }
 
@@ -45,7 +47,8 @@ private[round] final class Takebacker(
               g.updatePlayer(!color, _.removeTakebackProposition)
             }
           } inject List(Event.TakebackOffers(false, false))
-        case _ => fufail(ClientError("[takebacker] invalid no " + pov))
+        case _ =>
+          fufail(ClientError("[takebacker] invalid no " + pov))
       }
     }
 

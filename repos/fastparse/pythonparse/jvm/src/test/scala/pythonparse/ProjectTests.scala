@@ -62,8 +62,10 @@ object ProjectTests extends TestSuite {
     }
 
     selfParsed.get(classOf[fastparse.core.Parsed.Failure]) match {
-      case None     => (grouped.mapValues(_.length), selfParsed.mapValues(_.length))
-      case Some(xs) => throw new Exception(xs.mkString("\n"))
+      case None =>
+        (grouped.mapValues(_.length), selfParsed.mapValues(_.length))
+      case Some(xs) =>
+        throw new Exception(xs.mkString("\n"))
     }
 
   }

@@ -67,7 +67,8 @@ object Transform {
         fileMappings in transformSources,
         sourceProperties) map { (rs, props) =>
         rs map {
-          case (in, out) => transform(in, out, props)
+          case (in, out) =>
+            transform(in, out, props)
         }
       },
       sourceGenerators <+= transformSources
@@ -97,7 +98,8 @@ object Transform {
         fileMappings in transformResources,
         resourceProperties) map { (rs, props) =>
         rs map {
-          case (in, out) => transform(in, out, props)
+          case (in, out) =>
+            transform(in, out, props)
         }
       },
       resourceGenerators <+= transformResources
@@ -122,7 +124,8 @@ object Transform {
     try {
       Some(IO.read(file))
     } catch {
-      case _: java.io.IOException => None
+      case _: java.io.IOException =>
+        None
     }
   lazy val Property = """\$\{\{([\w.-]+)\}\}""".r
 }

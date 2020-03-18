@@ -137,7 +137,8 @@ trait Symbols extends api.Symbols {
         newFlags: Long,
         isClass: Boolean): Symbol =
       name match {
-        case n: TermName => newTermSymbol(n, pos, newFlags)
+        case n: TermName =>
+          newTermSymbol(n, pos, newFlags)
         case n: TypeName =>
           if (isClass)
             newClassSymbol(n, pos, newFlags)
@@ -673,8 +674,10 @@ trait Symbols extends api.Symbols {
 
     final def newErrorSymbol(name: Name): Symbol =
       name match {
-        case x: TypeName => newErrorClass(x)
-        case x: TermName => newErrorValue(x)
+        case x: TypeName =>
+          newErrorClass(x)
+        case x: TermName =>
+          newErrorValue(x)
       }
 
     /** Creates a placeholder symbol for when a name is encountered during
@@ -692,7 +695,8 @@ trait Symbols extends api.Symbols {
             new StubPackageClassSymbol(this, n, missingMessage)
           else
             new StubClassSymbol(this, n, missingMessage)
-        case _ => new StubTermSymbol(this, name.toTermName, missingMessage)
+        case _ =>
+          new StubTermSymbol(this, name.toTermName, missingMessage)
       }
 
     /** Given a field, construct a term symbol that represents the source construct that gave rise the field */
@@ -725,8 +729,10 @@ trait Symbols extends api.Symbols {
         (settings.Yrecursion.value != 0) &&
         (
           recursionTable get this match {
-            case Some(n) => (n <= settings.Yrecursion.value)
-            case None    => true
+            case Some(n) =>
+              (n <= settings.Yrecursion.value)
+            case None =>
+              true
           }
         )
       )
@@ -869,8 +875,10 @@ trait Symbols extends api.Symbols {
     def hasOnlyBottomSubclasses = {
       def loop(tparams: List[Symbol]): Boolean =
         tparams match {
-          case Nil     => true
-          case x :: xs => x.variance.isInvariant && loop(xs)
+          case Nil =>
+            true
+          case x :: xs =>
+            x.variance.isInvariant && loop(xs)
         }
       isClass && isFinal && loop(typeParams)
     }
@@ -1101,8 +1109,10 @@ trait Symbols extends api.Symbols {
       )
     def isFBounded =
       info match {
-        case TypeBounds(_, _) => info.baseTypeSeq exists (_ contains this)
-        case _                => false
+        case TypeBounds(_, _) =>
+          info.baseTypeSeq exists (_ contains this)
+        case _ =>
+          false
       }
 
     /** Is symbol a monomorphic type?
@@ -1347,8 +1357,10 @@ trait Symbols extends api.Symbols {
       !isTopLevel || {
         val isSourceLoader =
           rawInfo match {
-            case sl: SymLoader => sl.fromSource
-            case _             => false
+            case sl: SymLoader =>
+              sl.fromSource
+            case _ =>
+              false
           }
         def warnIfSourceLoader() {
           if (isSourceLoader)
@@ -1440,9 +1452,12 @@ trait Symbols extends api.Symbols {
             searchIn(fallback, base + params.length)
         }
         tpe match {
-          case PolyType(tparams, res)  => searchList(tparams, res)
-          case MethodType(params, res) => searchList(params, res)
-          case _                       => -1
+          case PolyType(tparams, res) =>
+            searchList(tparams, res)
+          case MethodType(params, res) =>
+            searchList(params, res)
+          case _ =>
+            -1
         }
       }
       searchIn(owner.info, 0)
@@ -2860,11 +2875,14 @@ trait Symbols extends api.Symbols {
     final def allOverriddenSymbols: List[Symbol] = {
       def loop(xs: List[Symbol]): List[Symbol] =
         xs match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case x :: xs =>
             overriddenSymbol(x) match {
-              case NoSymbol => loop(xs)
-              case sym      => sym :: loop(xs)
+              case NoSymbol =>
+                loop(xs)
+              case sym =>
+                sym :: loop(xs)
             }
         }
       if (isOverridingSymbol)
@@ -2882,7 +2900,8 @@ trait Symbols extends api.Symbols {
       @tailrec
       def loop(bases: List[Symbol]): Symbol =
         bases match {
-          case Nil => NoSymbol
+          case Nil =>
+            NoSymbol
           case base :: rest =>
             val sym = overriddenSymbol(base)
             if (sym == NoSymbol)
@@ -3013,8 +3032,10 @@ trait Symbols extends api.Symbols {
       */
     def firstParam =
       info.params match {
-        case p :: _ => p
-        case _      => NoSymbol
+        case p :: _ =>
+          p
+        case _ =>
+          NoSymbol
       }
 
     // Desire to re-use the field in ClassSymbol which stores the source
@@ -3296,8 +3317,10 @@ trait Symbols extends api.Symbols {
       */
     def locationString: String =
       ownsString match {
-        case "" => ""
-        case s  => " in " + s
+        case "" =>
+          ""
+        case s =>
+          " in " + s
       }
     def fullLocationString: String = toString + locationString
     def signatureString: String =
@@ -3325,20 +3348,26 @@ trait Symbols extends api.Symbols {
             " = " + tp.resultType
           else
             tp.resultType match {
-              case rt @ TypeBounds(_, _) => "" + rt
-              case rt                    => " <: " + rt
+              case rt @ TypeBounds(_, _) =>
+                "" + rt
+              case rt =>
+                " <: " + rt
             }
         )
       else if (isModule)
         "" //  avoid "object X of type X.type"
       else
         tp match {
-          case PolyType(tparams, res) => typeParamsString(tp) + infoString(res)
-          case NullaryMethodType(res) => infoString(res)
+          case PolyType(tparams, res) =>
+            typeParamsString(tp) + infoString(res)
+          case NullaryMethodType(res) =>
+            infoString(res)
           case MethodType(params, res) =>
             valueParamsString(tp) + infoString(res)
-          case _ if isStructuralThisType => ": " + owner.name
-          case _                         => ": " + tp
+          case _ if isStructuralThisType =>
+            ": " + owner.name
+          case _ =>
+            ": " + tp
         }
     }
 
@@ -3346,9 +3375,12 @@ trait Symbols extends api.Symbols {
     def debugLocationString = {
       val pre =
         flagString match {
-          case ""                  => ""
-          case s if s contains ' ' => "(" + s + ") "
-          case s                   => s + " "
+          case "" =>
+            ""
+          case s if s contains ' ' =>
+            "(" + s + ") "
+          case s =>
+            s + " "
         }
       pre + fullLocationString
     }
@@ -3467,16 +3499,21 @@ trait Symbols extends api.Symbols {
     // TODO - rescue CAPTURED from BYNAMEPARAM so we can see all the names.
     override def resolveOverloadedFlag(flag: Long) =
       flag match {
-        case DEFAULTPARAM => "<defaultparam>" // TRAIT
-        case MIXEDIN      => "<mixedin>" // EXISTENTIAL
-        case LABEL        => "<label>" // CONTRAVARIANT / INCONSTRUCTOR
-        case PRESUPER     => "<presuper>" // IMPLCLASS
+        case DEFAULTPARAM =>
+          "<defaultparam>" // TRAIT
+        case MIXEDIN =>
+          "<mixedin>" // EXISTENTIAL
+        case LABEL =>
+          "<label>" // CONTRAVARIANT / INCONSTRUCTOR
+        case PRESUPER =>
+          "<presuper>" // IMPLCLASS
         case BYNAMEPARAM =>
           if (this.isValueParameter)
             "<bynameparam>"
           else
             "<captured>" // COVARIANT
-        case _ => super.resolveOverloadedFlag(flag)
+        case _ =>
+          super.resolveOverloadedFlag(flag)
       }
 
     def referenced: Symbol = _referenced
@@ -3647,10 +3684,14 @@ trait Symbols extends api.Symbols {
     override def returnType: Type = {
       def loop(tpe: Type): Type =
         tpe match {
-          case NullaryMethodType(ret) => loop(ret)
-          case MethodType(_, ret)     => loop(ret)
-          case PolyType(_, tpe)       => loop(tpe)
-          case tpe                    => tpe
+          case NullaryMethodType(ret) =>
+            loop(ret)
+          case MethodType(_, ret) =>
+            loop(ret)
+          case PolyType(_, tpe) =>
+            loop(tpe)
+          case tpe =>
+            tpe
         }
       loop(info)
     }
@@ -3732,12 +3773,16 @@ trait Symbols extends api.Symbols {
 
     override def resolveOverloadedFlag(flag: Long) =
       flag match {
-        case TRAIT       => "<trait>" // DEFAULTPARAM
-        case EXISTENTIAL => "<existential>" // MIXEDIN
-        case COVARIANT   => "<covariant>" // BYNAMEPARAM / CAPTURED
+        case TRAIT =>
+          "<trait>" // DEFAULTPARAM
+        case EXISTENTIAL =>
+          "<existential>" // MIXEDIN
+        case COVARIANT =>
+          "<covariant>" // BYNAMEPARAM / CAPTURED
         case CONTRAVARIANT =>
           "<contravariant>" // LABEL / INCONSTRUCTOR (overridden again in ClassSymbol)
-        case _ => super.resolveOverloadedFlag(flag)
+        case _ =>
+          super.resolveOverloadedFlag(flag)
       }
 
     private var tyconCache: Type = null
@@ -3905,8 +3950,10 @@ trait Symbols extends api.Symbols {
     /** If typeskolem comes from a type parameter, that parameter, otherwise skolem itself */
     override def deSkolemize =
       origin match {
-        case s: Symbol => s
-        case _         => this
+        case s: Symbol =>
+          s
+        case _ =>
+          this
       }
 
     /** If type skolem comes from an existential, the tree where it was created */
@@ -3945,8 +3992,10 @@ trait Symbols extends api.Symbols {
       flag match {
         case INCONSTRUCTOR =>
           "<inconstructor>" // INCONSTRUCTOR / CONTRAVARIANT / LABEL
-        case EXISTENTIAL => "<existential>" // EXISTENTIAL / MIXEDIN
-        case _           => super.resolveOverloadedFlag(flag)
+        case EXISTENTIAL =>
+          "<existential>" // EXISTENTIAL / MIXEDIN
+        case _ =>
+          super.resolveOverloadedFlag(flag)
       }
 
     final override def isNonClassType = false
@@ -4547,8 +4596,10 @@ trait Symbols extends api.Symbols {
       syms: List[Symbol],
       owner: Symbol): Boolean =
     syms match {
-      case sym :: rest => sym.owner == owner && allSymbolsHaveOwner(rest, owner)
-      case _           => true
+      case sym :: rest =>
+        sym.owner == owner && allSymbolsHaveOwner(rest, owner)
+      case _ =>
+        true
     }
 
 // -------------- Statistics --------------------------------------------------------

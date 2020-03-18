@@ -12,8 +12,10 @@ trait OrderingInstances {
         new SOrdering[A] {
           def compare(x: A, y: A): Int =
             f1.compare(x, y) match {
-              case 0 => f2.compare(x, y)
-              case o => o
+              case 0 =>
+                f2.compare(x, y)
+              case o =>
+                o
             }
         }
       def zero =

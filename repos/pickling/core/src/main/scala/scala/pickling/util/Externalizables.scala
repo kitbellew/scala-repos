@@ -43,7 +43,8 @@ object Externalizables {
 
     val targs =
       tag.tpe match {
-        case TypeRef(_, _, args) => args
+        case TypeRef(_, _, args) =>
+          args
       }
 
     // extract argument trees of `arg` tuple (to avoid allocating and destructuring a tuple)
@@ -100,7 +101,8 @@ object Externalizables {
     // per type a sorted list of indices
     val perType = targs.zipWithIndex
       .groupBy {
-        case (targ, i) => targ
+        case (targ, i) =>
+          targ
       }
       .map {
         case (targ, things) =>
@@ -108,7 +110,8 @@ object Externalizables {
             targ,
             (
               things.map {
-                case (_, i) => i
+                case (_, i) =>
+                  i
               }
             ).sorted)
       }
@@ -180,7 +183,8 @@ object Externalizables {
 
     val targs =
       tag.tpe match {
-        case TypeRef(_, _, args) => args
+        case TypeRef(_, _, args) =>
+          args
       }
 
     /* see java.io.DataOutput:
@@ -243,7 +247,8 @@ object Externalizables {
     // per type a sorted list of indices
     val perType = targs.zipWithIndex
       .groupBy {
-        case (targ, i) => targ
+        case (targ, i) =>
+          targ
       }
       .map {
         case (targ, things) =>
@@ -251,7 +256,8 @@ object Externalizables {
             targ,
             (
               things.map {
-                case (_, i) => i
+                case (_, i) =>
+                  i
               }
             ).sorted)
       }

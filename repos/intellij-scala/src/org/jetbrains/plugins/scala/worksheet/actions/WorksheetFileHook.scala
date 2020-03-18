@@ -80,8 +80,9 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
                 val panel = ref.get()
                 if (panel != null) {
                   panel.getComponents.foreach {
-                    case ab: ActionButton => ab.addNotify()
-                    case _                =>
+                    case ab: ActionButton =>
+                      ab.addNotify()
+                    case _ =>
                   }
                 }
             }
@@ -161,7 +162,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       source getSelectedEditor file match {
         case txtEditor: TextEditor if txtEditor.getEditor != null =>
           txtEditor.getEditor.getDocument
-        case _ => null
+        case _ =>
+          null
       }
 
     private def isPluggable(file: VirtualFile): Boolean = {
@@ -177,7 +179,8 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
               .getRootType(file)
               .isInstanceOf[ScratchRootType] =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
 

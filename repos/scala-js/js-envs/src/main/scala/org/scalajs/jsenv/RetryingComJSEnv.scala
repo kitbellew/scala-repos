@@ -115,7 +115,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
           case Failure(t) =>
             retry(t)
             recLoop()
-          case Success(v) => v
+          case Success(v) =>
+            v
         }
       }
 
@@ -162,8 +163,9 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
       // Replay the whole log
       // Need to use Try for tailrec
       Try(log.foreach(executeTask)) match {
-        case Failure(t) => retry(t)
-        case _          =>
+        case Failure(t) =>
+          retry(t)
+        case _ =>
       }
     }
 
@@ -171,7 +173,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
       log += task
       try executeTask(task)
       catch {
-        case NonFatal(t) => retry(t)
+        case NonFatal(t) =>
+          retry(t)
       }
     }
 

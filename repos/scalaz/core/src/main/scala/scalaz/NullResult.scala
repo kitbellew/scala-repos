@@ -30,35 +30,44 @@ final class NullResult[A, B] private (_apply: A => Option[B]) {
 
   def ***[C, D](x: C =>? D): (A, C) =>? (B, D) =
     NullResult {
-      case (a, c) => apply(a) flatMap (b => x(c) map (d => (b, d)))
+      case (a, c) =>
+        apply(a) flatMap (b => x(c) map (d => (b, d)))
     }
 
   def +++[C, D](x: C =>? D): (A \/ C) =>? (B \/ D) =
     NullResult {
-      case -\/(a) => apply(a) map (\/.left)
-      case \/-(c) => x(c) map (\/.right)
+      case -\/(a) =>
+        apply(a) map (\/.left)
+      case \/-(c) =>
+        x(c) map (\/.right)
     }
 
   def first[C]: (A, C) =>? (B, C) =
     NullResult {
-      case (a, c) => apply(a) map (b => (b, c))
+      case (a, c) =>
+        apply(a) map (b => (b, c))
     }
 
   def second[C]: (C, A) =>? (C, B) =
     NullResult {
-      case (c, a) => apply(a) map (b => (c, b))
+      case (c, a) =>
+        apply(a) map (b => (c, b))
     }
 
   def left[C]: (A \/ C) =>? (B \/ C) =
     NullResult {
-      case -\/(a)     => apply(a) map (\/.left)
-      case c @ \/-(_) => Some(c)
+      case -\/(a) =>
+        apply(a) map (\/.left)
+      case c @ \/-(_) =>
+        Some(c)
     }
 
   def right[C]: (C \/ A) =>? (C \/ B) =
     NullResult {
-      case c @ -\/(_) => Some(c)
-      case \/-(a)     => apply(a) map (\/.right)
+      case c @ -\/(_) =>
+        Some(c)
+      case \/-(a) =>
+        apply(a) map (\/.right)
     }
 
   def |(x: => A =>? B): A =>? B = NullResult(a => apply(a) orElse x(a))
@@ -118,8 +127,10 @@ object NullResult extends NullResultInstances {
 
     def tail[A]: List[A] =>? List[A] =
       NullResult {
-        case Nil    => None
-        case _ :: t => Some(t)
+        case Nil =>
+          None
+        case _ :: t =>
+          Some(t)
       }
   }
 }
@@ -170,8 +181,10 @@ sealed abstract class NullResultInstances extends NullResultInstances0 {
           f: => NullResult[A, C],
           g: => NullResult[B, C]) =
         NullResult {
-          case \/-(a) => g(a)
-          case -\/(a) => f(a)
+          case \/-(a) =>
+            g(a)
+          case -\/(a) =>
+            f(a)
         }
     }
 

@@ -89,8 +89,10 @@ trait ModelFactoryTypeSupport {
                   case Some(bTpl) if owner == bSym.owner =>
                     // (0) the owner's class is linked AND has a template - lovely
                     bTpl match {
-                      case dtpl: DocTemplateEntity => new LinkToTpl(dtpl)
-                      case _                       => new Tooltip(bTpl.qualifiedName)
+                      case dtpl: DocTemplateEntity =>
+                        new LinkToTpl(dtpl)
+                      case _ =>
+                        new Tooltip(bTpl.qualifiedName)
                     }
                   case _ =>
                     val oTpl = findTemplateMaybe(owner)
@@ -184,8 +186,10 @@ trait ModelFactoryTypeSupport {
               val ignoreParents = Set[Symbol](AnyClass, ObjectClass)
               val filtParents =
                 parents filterNot (x => ignoreParents(x.typeSymbol)) match {
-                  case Nil => parents
-                  case ps  => ps
+                  case Nil =>
+                    parents
+                  case ps =>
+                    ps
                 }
               appendTypes0(filtParents, " with ")
               // XXX Still todo: properly printing refinements.
@@ -193,8 +197,10 @@ trait ModelFactoryTypeSupport {
               // printing single method refinements (which should be the most common) and printing
               // the number of members if there are more.
               defs.toList match {
-                case Nil      => ()
-                case x :: Nil => nameBuffer append (" { " + x.defString + " }")
+                case Nil =>
+                  ()
+                case x :: Nil =>
+                  nameBuffer append (" { " + x.defString + " }")
                 case xs =>
                   nameBuffer append (
                     " { ... /* %d definitions in type refinement */ }" format xs.size

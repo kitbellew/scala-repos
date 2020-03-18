@@ -13,10 +13,14 @@ class Tester {
       m1: ClassTag[T],
       m2: ClassTag[V]): java.util.Map[_, _] = {
     map match {
-      case m0: Map[Int, Int] => new java.util.HashMap[Integer, Integer]
-      case m1: Map[Int, V]   => new java.util.HashMap[Integer, V]
-      case m2: Map[T, Int]   => new java.util.HashMap[T, Integer]
-      case _                 => new java.util.HashMap[T, V]
+      case m0: Map[Int, Int] =>
+        new java.util.HashMap[Integer, Integer]
+      case m1: Map[Int, V] =>
+        new java.util.HashMap[Integer, V]
+      case m2: Map[T, Int] =>
+        new java.util.HashMap[T, Integer]
+      case _ =>
+        new java.util.HashMap[T, V]
     }
   }
 }

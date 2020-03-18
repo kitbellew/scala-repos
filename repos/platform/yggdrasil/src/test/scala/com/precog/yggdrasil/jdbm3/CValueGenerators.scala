@@ -73,10 +73,14 @@ trait CValueGenerators {
 
   def genValueForCValueType[A](cType: CValueType[A]): Gen[CWrappedValue[A]] =
     cType match {
-      case CString  => arbString.arbitrary map (CString(_))
-      case CBoolean => Gen.oneOf(true, false) map (CBoolean(_))
-      case CLong    => arbLong.arbitrary map (CLong(_))
-      case CDouble  => arbDouble.arbitrary map (CDouble(_))
+      case CString =>
+        arbString.arbitrary map (CString(_))
+      case CBoolean =>
+        Gen.oneOf(true, false) map (CBoolean(_))
+      case CLong =>
+        arbLong.arbitrary map (CLong(_))
+      case CDouble =>
+        arbDouble.arbitrary map (CDouble(_))
       case CNum =>
         for {
           scale <- arbInt.arbitrary
@@ -95,10 +99,15 @@ trait CValueGenerators {
 
   def genCValue(tpe: CType): Gen[CValue] =
     tpe match {
-      case tpe: CValueType[_] => genValueForCValueType(tpe)
-      case CNull              => Gen.value(CNull)
-      case CEmptyObject       => Gen.value(CEmptyObject)
-      case CEmptyArray        => Gen.value(CEmptyArray)
-      case invalid            => sys.error("No values for type " + invalid)
+      case tpe: CValueType[_] =>
+        genValueForCValueType(tpe)
+      case CNull =>
+        Gen.value(CNull)
+      case CEmptyObject =>
+        Gen.value(CEmptyObject)
+      case CEmptyArray =>
+        Gen.value(CEmptyArray)
+      case invalid =>
+        sys.error("No values for type " + invalid)
     }
 }

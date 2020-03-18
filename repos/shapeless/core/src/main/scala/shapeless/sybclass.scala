@@ -89,8 +89,10 @@ object Data extends Data1 {
     new Data[P, H :+: T, R] {
       def gmapQ(c: H :+: T) =
         c match {
-          case Inl(h) => List(ch.value(h :: HNil))
-          case Inr(t) => dt.value.gmapQ(t)
+          case Inl(h) =>
+            List(ch.value(h :: HNil))
+          case Inr(t) =>
+            dt.value.gmapQ(t)
         }
     }
 }
@@ -176,8 +178,10 @@ object DataT extends DataT1 {
       type Out = OutH :+: OutT
       def gmapT(c: H :+: T) =
         c match {
-          case Inl(h) => Inl(ch.value(h :: HNil))
-          case Inr(t) => Inr(dtt.value.gmapT(t))
+          case Inl(h) =>
+            Inl(ch.value(h :: HNil))
+          case Inr(t) =>
+            Inr(dtt.value.gmapT(t))
         }
     }
 }

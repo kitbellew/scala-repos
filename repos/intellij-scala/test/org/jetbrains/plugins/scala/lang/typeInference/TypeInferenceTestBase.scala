@@ -87,8 +87,10 @@ abstract class TypeInferenceTestBase
     assert(expr != null, "Not specified expression in range to infer type.")
     val typez =
       expr.getType(TypingContext.empty) match {
-        case Success(Unit, _) => expr.getTypeIgnoreBaseType(TypingContext.empty)
-        case x                => x
+        case Success(Unit, _) =>
+          expr.getTypeIgnoreBaseType(TypingContext.empty)
+        case x =>
+          x
       }
     typez match {
       case Success(ttypez, _) =>
@@ -97,7 +99,8 @@ abstract class TypeInferenceTestBase
         val text = lastPsi.getText
         val output =
           lastPsi.getNode.getElementType match {
-            case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+            case ScalaTokenTypes.tLINE_COMMENT =>
+              text.substring(2).trim
             case ScalaTokenTypes.tBLOCK_COMMENT |
                 ScalaTokenTypes.tDOC_COMMENT =>
               val resText = text.substring(2, text.length - 2).trim
@@ -135,15 +138,18 @@ abstract class TypeInferenceTestBase
             assertEquals(
               expectedText,
               ScTypePresentation.withoutAliases(ttypez))
-          case _ => assertEquals(output, res)
+          case _ =>
+            assertEquals(output, res)
         }
       case Failure(msg, elem) =>
         assert(
           assertion = false,
           msg + " :: " + (
             elem match {
-              case Some(x) => x.getText
-              case None    => "empty element"
+              case Some(x) =>
+                x.getText
+              case None =>
+                "empty element"
             }
           ))
     }

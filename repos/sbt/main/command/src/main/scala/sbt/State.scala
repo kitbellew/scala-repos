@@ -222,7 +222,8 @@ object State {
     new StateOps {
       def process(f: (String, State) => State): State =
         s.remainingCommands match {
-          case Seq() => exit(true)
+          case Seq() =>
+            exit(true)
           case Seq(x, xs @ _*) =>
             log.debug(s"> $x")
             f(x, s.copy(remainingCommands = xs, history = x :: s.history))
@@ -237,8 +238,10 @@ object State {
       def setNext(n: Next) = s.copy(next = n)
       def setResult(ro: Option[xsbti.MainResult]) =
         ro match {
-          case None    => continue;
-          case Some(r) => setNext(new Return(r))
+          case None =>
+            continue;
+          case Some(r) =>
+            setNext(new Return(r))
         }
       def continue = setNext(Continue)
       def reboot(full: Boolean) = {
@@ -282,7 +285,8 @@ object State {
         s.onFailure match {
           case Some(c) =>
             s.copy(remainingCommands = c +: remaining, onFailure = None)
-          case None => noHandler
+          case None =>
+            noHandler
         }
 
       def addExitHook(act: => Unit): State =
@@ -317,9 +321,12 @@ object State {
       s: State,
       log: Logger): State = {
     ExceptionCategory(t) match {
-      case AlreadyHandled => ()
-      case m: MessageOnly => log.error(m.message)
-      case f: Full        => logFullException(f.exception, log)
+      case AlreadyHandled =>
+        ()
+      case m: MessageOnly =>
+        log.error(m.message)
+      case f: Full =>
+        logFullException(f.exception, log)
     }
     s.fail
   }

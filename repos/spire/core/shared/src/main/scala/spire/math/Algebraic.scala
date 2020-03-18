@@ -178,22 +178,33 @@ final class Algebraic private (val expr: Algebraic.Expr)
 
   override def equals(that: Any): Boolean =
     that match {
-      case (that: Algebraic)     => this === that
-      case (that: Real)          => this.toReal == that
-      case (that: Number)        => this.compare(Algebraic(that.toBigDecimal)) == 0
-      case (that: Rational)      => this.compare(Algebraic(that)) == 0
-      case (that: BigInt)        => isWhole && toBigInt == that
-      case (that: Natural)       => isWhole && signum >= 0 && that == toBigInt
-      case (that: SafeLong)      => isWhole && that == this
-      case (that: Complex[_])    => that == this
-      case (that: Quaternion[_]) => that == this
+      case (that: Algebraic) =>
+        this === that
+      case (that: Real) =>
+        this.toReal == that
+      case (that: Number) =>
+        this.compare(Algebraic(that.toBigDecimal)) == 0
+      case (that: Rational) =>
+        this.compare(Algebraic(that)) == 0
+      case (that: BigInt) =>
+        isWhole && toBigInt == that
+      case (that: Natural) =>
+        isWhole && signum >= 0 && that == toBigInt
+      case (that: SafeLong) =>
+        isWhole && that == this
+      case (that: Complex[_]) =>
+        that == this
+      case (that: Quaternion[_]) =>
+        that == this
       case (that: BigDecimal) =>
         try {
           toBigDecimal(that.mc) == that
         } catch {
-          case ae: ArithmeticException => false
+          case ae: ArithmeticException =>
+            false
         }
-      case _ => unifiedPrimitiveEquals(that)
+      case _ =>
+        unifiedPrimitiveEquals(that)
     }
 
   def ===(that: Algebraic): Boolean = this.compare(that) == 0
@@ -213,20 +224,34 @@ final class Algebraic private (val expr: Algebraic.Expr)
 
     def recur(e: Expr): String =
       e match {
-        case ConstantLong(n)             => n.toString
-        case ConstantDouble(n)           => n.toString
-        case ConstantBigDecimal(n)       => n.toString
-        case ConstantRational(n)         => s"(${n})"
-        case ConstantRoot(poly, i, _, _) => s"root($poly, $i)"
-        case Neg(sub)                    => s"-$sub"
-        case Add(lhs, rhs)               => s"(${recur(lhs)}) + (${recur(rhs)})"
-        case Sub(lhs, rhs)               => s"(${recur(lhs)}) - (${recur(rhs)})"
-        case Mul(lhs, rhs)               => s"(${recur(lhs)}) * (${recur(rhs)})"
-        case Div(lhs, rhs)               => s"(${recur(lhs)}) / (${recur(rhs)})"
-        case KRoot(sub, 2)               => s"(${recur(sub)}).sqrt"
-        case KRoot(sub, 3)               => s"(${recur(sub)}).cbrt"
-        case KRoot(sub, k)               => s"(${recur(sub)}).nroot($k)"
-        case Pow(sub, k)                 => s"${recur(sub)}.pow(k)"
+        case ConstantLong(n) =>
+          n.toString
+        case ConstantDouble(n) =>
+          n.toString
+        case ConstantBigDecimal(n) =>
+          n.toString
+        case ConstantRational(n) =>
+          s"(${n})"
+        case ConstantRoot(poly, i, _, _) =>
+          s"root($poly, $i)"
+        case Neg(sub) =>
+          s"-$sub"
+        case Add(lhs, rhs) =>
+          s"(${recur(lhs)}) + (${recur(rhs)})"
+        case Sub(lhs, rhs) =>
+          s"(${recur(lhs)}) - (${recur(rhs)})"
+        case Mul(lhs, rhs) =>
+          s"(${recur(lhs)}) * (${recur(rhs)})"
+        case Div(lhs, rhs) =>
+          s"(${recur(lhs)}) / (${recur(rhs)})"
+        case KRoot(sub, 2) =>
+          s"(${recur(sub)}).sqrt"
+        case KRoot(sub, 3) =>
+          s"(${recur(sub)}).cbrt"
+        case KRoot(sub, k) =>
+          s"(${recur(sub)}).nroot($k)"
+        case Pow(sub, k) =>
+          s"${recur(sub)}.pow(k)"
       }
 
     recur(expr)
@@ -471,19 +496,30 @@ final class Algebraic private (val expr: Algebraic.Expr)
 
     def eval(e: Expr): A =
       e match {
-        case ConstantLong(n)       => conv.fromLong(n)
-        case ConstantDouble(n)     => conv.fromDouble(n)
-        case ConstantBigDecimal(n) => conv.fromBigDecimal(n)
-        case ConstantRational(n)   => conv.fromRational(n)
+        case ConstantLong(n) =>
+          conv.fromLong(n)
+        case ConstantDouble(n) =>
+          conv.fromDouble(n)
+        case ConstantBigDecimal(n) =>
+          conv.fromBigDecimal(n)
+        case ConstantRational(n) =>
+          conv.fromRational(n)
         case ConstantRoot(poly, i, _, _) =>
           RootFinder[A].findRoots(poly.map(conv.fromBigInt)).get(i)
-        case Neg(n)      => -eval(n)
-        case Add(a, b)   => eval(a) + eval(b)
-        case Sub(a, b)   => eval(a) - eval(b)
-        case Mul(a, b)   => eval(a) * eval(b)
-        case Div(a, b)   => eval(a) / eval(b)
-        case KRoot(a, k) => eval(a).nroot(k)
-        case Pow(a, k)   => eval(a).pow(k)
+        case Neg(n) =>
+          -eval(n)
+        case Add(a, b) =>
+          eval(a) + eval(b)
+        case Sub(a, b) =>
+          eval(a) - eval(b)
+        case Mul(a, b) =>
+          eval(a) * eval(b)
+        case Div(a, b) =>
+          eval(a) / eval(b)
+        case KRoot(a, k) =>
+          eval(a).nroot(k)
+        case Pow(a, k) =>
+          eval(a).pow(k)
       }
 
     eval(expr)
@@ -971,8 +1007,10 @@ object Algebraic extends AlgebraicInstances {
         val rValue = rhs.toBigDecimal(digits + 1)
         val sum =
           this match {
-            case (_: Add) => lValue.add(rValue)
-            case (_: Sub) => lValue.subtract(rValue)
+            case (_: Add) =>
+              lValue.add(rValue)
+            case (_: Sub) =>
+              lValue.subtract(rValue)
           }
         val result = sum.setScale(digits, RoundingMode.DOWN)
         result
@@ -1297,9 +1335,12 @@ object Algebraic extends AlgebraicInstances {
     } else {
       val adjustedMode =
         mode match {
-          case CEILING => FLOOR
-          case FLOOR   => CEILING
-          case _       => mode
+          case CEILING =>
+            FLOOR
+          case FLOOR =>
+            CEILING
+          case _ =>
+            mode
         }
       roundPositive(-exact, approx.abs, scale, adjustedMode).negate()
     }
@@ -1361,8 +1402,10 @@ object Algebraic extends AlgebraicInstances {
               val cmp = exact compare Algebraic(splitter)
               val roundUp =
                 (mode: @unchecked) match {
-                  case HALF_DOWN => cmp > 0
-                  case HALF_UP   => cmp >= 0
+                  case HALF_DOWN =>
+                    cmp > 0
+                  case HALF_UP =>
+                    cmp >= 0
                   case HALF_EVEN =>
                     cmp > 0 || cmp == 0 && truncatedUnscaledValue.testBit(0)
                 }
@@ -1583,19 +1626,30 @@ object Algebraic extends AlgebraicInstances {
 
     def apply(expr: Algebraic.Expr): Bound =
       expr match {
-        case ConstantLong(n)       => integer(n)
-        case ConstantDouble(n)     => rational(n)
-        case ConstantBigDecimal(n) => rational(n)
-        case ConstantRational(n)   => rational(n)
+        case ConstantLong(n) =>
+          integer(n)
+        case ConstantDouble(n) =>
+          rational(n)
+        case ConstantBigDecimal(n) =>
+          rational(n)
+        case ConstantRational(n) =>
+          rational(n)
         case root @ ConstantRoot(poly, _, _, _) =>
           Bound(root.lead.bitLength + 1, Roots.upperBound(poly))
-        case Neg(sub)      => sub.getBound(this)
-        case Add(lhs, rhs) => add(lhs.getBound(this), rhs.getBound(this))
-        case Sub(lhs, rhs) => add(lhs.getBound(this), rhs.getBound(this))
-        case Mul(lhs, rhs) => mul(lhs.getBound(this), rhs.getBound(this))
-        case Div(lhs, rhs) => div(lhs.getBound(this), rhs.getBound(this))
-        case KRoot(sub, k) => nroot(sub.getBound(this), k)
-        case Pow(sub, k)   => pow(sub.getBound(this), k)
+        case Neg(sub) =>
+          sub.getBound(this)
+        case Add(lhs, rhs) =>
+          add(lhs.getBound(this), rhs.getBound(this))
+        case Sub(lhs, rhs) =>
+          add(lhs.getBound(this), rhs.getBound(this))
+        case Mul(lhs, rhs) =>
+          mul(lhs.getBound(this), rhs.getBound(this))
+        case Div(lhs, rhs) =>
+          div(lhs.getBound(this), rhs.getBound(this))
+        case KRoot(sub, k) =>
+          nroot(sub.getBound(this), k)
+        case Pow(sub, k) =>
+          pow(sub.getBound(this), k)
       }
 
     private def integer(n: Long): Bound = integer(BigInt(n))

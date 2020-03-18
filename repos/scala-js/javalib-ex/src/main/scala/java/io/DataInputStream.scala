@@ -18,8 +18,10 @@ class DataInputStream(in: InputStream)
   // creating byte arrays first
   private val inArrayBufferStream =
     in match {
-      case in: ArrayBufferInputStream => in
-      case _                          => null
+      case in: ArrayBufferInputStream =>
+        in
+      case _ =>
+        null
     }
   private val hasArrayBuffer = inArrayBufferStream != null
   private val bufDataView = {

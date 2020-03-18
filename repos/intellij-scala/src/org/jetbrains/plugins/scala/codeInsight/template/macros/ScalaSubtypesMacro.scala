@@ -60,9 +60,11 @@ class ScalaSubtypesMacro extends Macro {
               .flatMap(_.toOption)
               .flatMap(MacroUtil.getTypeLookupItem(_, project))
               .toArray
-          case _ => Array[LookupElement]()
+          case _ =>
+            Array[LookupElement]()
         }
-      case _ => Array[LookupElement]()
+      case _ =>
+        Array[LookupElement]()
     }
   }
 }

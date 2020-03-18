@@ -19,8 +19,10 @@ class DesugarForIntention extends PsiElementBaseIntentionAction {
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
     element match {
-      case e @ Parent(_: ScForStatement) => true
-      case _                             => false
+      case e @ Parent(_: ScForStatement) =>
+        true
+      case _ =>
+        false
     }
   }
 

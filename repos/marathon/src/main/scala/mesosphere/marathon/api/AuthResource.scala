@@ -42,8 +42,10 @@ trait AuthResource extends RestResource {
       maybeResource: Option[T],
       ifNotExists: Exception)(implicit identity: Identity): Unit = {
     maybeResource match {
-      case Some(resource) => checkAuthorization(action, resource)
-      case None           => throw ifNotExists
+      case Some(resource) =>
+        checkAuthorization(action, resource)
+      case None =>
+        throw ifNotExists
     }
   }
 
@@ -56,7 +58,8 @@ trait AuthResource extends RestResource {
       case Some(resource) =>
         checkAuthorization(action, resource)
         fn(resource)
-      case None => ifNotExists
+      case None =>
+        ifNotExists
     }
   }
 

@@ -46,8 +46,10 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def getUnderEqualsMethod: PsiMethod = {
     val hasModifierProperty: String => Boolean =
       nameContext match {
-        case v: ScModifierListOwner => v.hasModifierProperty
-        case _                      => _ => false
+        case v: ScModifierListOwner =>
+          v.hasModifierProperty
+        case _ =>
+          _ => false
       }
     val tType = getType(TypingContext.empty).getOrAny
     new FakePsiMethod(
@@ -65,8 +67,10 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def getGetBeanMethod: PsiMethod = {
     val hasModifierProperty: String => Boolean =
       nameContext match {
-        case v: ScModifierListOwner => v.hasModifierProperty
-        case _                      => _ => false
+        case v: ScModifierListOwner =>
+          v.hasModifierProperty
+        case _ =>
+          _ => false
       }
     new FakePsiMethod(
       this,
@@ -83,8 +87,10 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def getSetBeanMethod: PsiMethod = {
     val hasModifierProperty: String => Boolean =
       nameContext match {
-        case v: ScModifierListOwner => v.hasModifierProperty
-        case _                      => _ => false
+        case v: ScModifierListOwner =>
+          v.hasModifierProperty
+        case _ =>
+          _ => false
       }
     val tType = getType(TypingContext.empty).getOrAny
     new FakePsiMethod(
@@ -102,8 +108,10 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
   def getIsBeanMethod: PsiMethod = {
     val hasModifierProperty: String => Boolean =
       nameContext match {
-        case v: ScModifierListOwner => v.hasModifierProperty
-        case _                      => _ => false
+        case v: ScModifierListOwner =>
+          v.hasModifierProperty
+        case _ =>
+          _ => false
       }
     new FakePsiMethod(
       this,
@@ -154,7 +162,8 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
         valueSeq(v)
       case v: ScClassParameter if v.isVar =>
         variableSeq(v)
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 
@@ -188,7 +197,9 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
       case _: ScFunctionDefinition | _: ScPatternDefinition |
           _: ScVariableDefinition =>
         false
-      case cp: ScClassParameter => false
-      case _                    => true
+      case cp: ScClassParameter =>
+        false
+      case _ =>
+        true
     }
 }

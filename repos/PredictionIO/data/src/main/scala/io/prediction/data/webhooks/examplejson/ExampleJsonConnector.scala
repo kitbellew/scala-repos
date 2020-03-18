@@ -85,7 +85,8 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
               s"Cannot convert unknown type '${x}' to Event JSON.")
         }
       } catch {
-        case e: ConnectorException => throw e
+        case e: ConnectorException =>
+          throw e
         case e: Exception =>
           throw new ConnectorException(
             s"Cannot convert ${data} to eventJson. ${e.getMessage()}",

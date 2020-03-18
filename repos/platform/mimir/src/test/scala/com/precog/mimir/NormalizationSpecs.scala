@@ -38,8 +38,10 @@ trait NormalizationSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -94,7 +96,8 @@ trait NormalizationSpecs[M[+_]]
           }
         }
 
-        case _ => ko
+        case _ =>
+          ko
       }
     }
   }
@@ -134,11 +137,13 @@ trait NormalizationSpecs[M[+_]]
       result must haveSize(10)
 
       val resultValue = result collect {
-        case (ids, value) if ids.size == 1 => value
+        case (ids, value) if ids.size == 1 =>
+          value
       }
 
       val expectedValue = testEval(expected) collect {
-        case (ids, value) if ids.size == 1 => value
+        case (ids, value) if ids.size == 1 =>
+          value
       }
 
       expectedValue mustEqual resultValue

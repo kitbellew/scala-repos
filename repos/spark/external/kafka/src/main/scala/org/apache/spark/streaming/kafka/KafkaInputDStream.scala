@@ -140,7 +140,8 @@ private[streaming] class KafkaReceiver[K: ClassTag, V: ClassTag, U <: Decoder[
           store((msgAndMetadata.key, msgAndMetadata.message))
         }
       } catch {
-        case e: Throwable => reportError("Error handling message; exiting", e)
+        case e: Throwable =>
+          reportError("Error handling message; exiting", e)
       }
     }
   }

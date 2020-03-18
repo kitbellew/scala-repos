@@ -348,11 +348,16 @@ object ClusterEvent {
           newMember
       }
       val memberEvents = (newMembers ++ changedMembers) collect {
-        case m if m.status == Joining ⇒ MemberJoined(m)
-        case m if m.status == WeaklyUp ⇒ MemberWeaklyUp(m)
-        case m if m.status == Up ⇒ MemberUp(m)
-        case m if m.status == Leaving ⇒ MemberLeft(m)
-        case m if m.status == Exiting ⇒ MemberExited(m)
+        case m if m.status == Joining ⇒
+          MemberJoined(m)
+        case m if m.status == WeaklyUp ⇒
+          MemberWeaklyUp(m)
+        case m if m.status == Up ⇒
+          MemberUp(m)
+        case m if m.status == Leaving ⇒
+          MemberLeft(m)
+        case m if m.status == Exiting ⇒
+          MemberExited(m)
         // no events for other transitions
       }
 
@@ -449,13 +454,18 @@ private[cluster] final class ClusterDomainEventPublisher
   }
 
   def receive = {
-    case PublishChanges(newGossip) ⇒ publishChanges(newGossip)
-    case currentStats: CurrentInternalStats ⇒ publishInternalStats(currentStats)
-    case SendCurrentClusterState(receiver) ⇒ sendCurrentClusterState(receiver)
+    case PublishChanges(newGossip) ⇒
+      publishChanges(newGossip)
+    case currentStats: CurrentInternalStats ⇒
+      publishInternalStats(currentStats)
+    case SendCurrentClusterState(receiver) ⇒
+      sendCurrentClusterState(receiver)
     case Subscribe(subscriber, initMode, to) ⇒
       subscribe(subscriber, initMode, to)
-    case Unsubscribe(subscriber, to) ⇒ unsubscribe(subscriber, to)
-    case PublishEvent(event) ⇒ publish(event)
+    case Unsubscribe(subscriber, to) ⇒
+      unsubscribe(subscriber, to)
+    case PublishEvent(event) ⇒
+      publish(event)
   }
 
   def eventStream: EventStream = context.system.eventStream
@@ -467,7 +477,8 @@ private[cluster] final class ClusterDomainEventPublisher
   def sendCurrentClusterState(receiver: ActorRef): Unit = {
     val unreachable: Set[Member] =
       latestGossip.overview.reachability.allUnreachableOrTerminated.collect {
-        case node if node != selfUniqueAddress ⇒ latestGossip.member(node)
+        case node if node != selfUniqueAddress ⇒
+          latestGossip.member(node)
       }
     val state = CurrentClusterState(
       members = latestGossip.members,
@@ -505,8 +516,10 @@ private[cluster] final class ClusterDomainEventPublisher
 
   def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit =
     to match {
-      case None ⇒ eventStream.unsubscribe(subscriber)
-      case Some(c) ⇒ eventStream.unsubscribe(subscriber, c)
+      case None ⇒
+        eventStream.unsubscribe(subscriber)
+      case Some(c) ⇒
+        eventStream.unsubscribe(subscriber, c)
     }
 
   def publishChanges(newGossip: Gossip): Unit = {

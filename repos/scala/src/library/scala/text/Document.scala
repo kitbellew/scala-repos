@@ -91,7 +91,8 @@ abstract class Document {
 
     def fmt(k: Int, state: List[FmtState]): Unit =
       state match {
-        case List() => ()
+        case List() =>
+          ()
         case (_, _, DocNil) :: z =>
           fmt(k, z)
         case (i, b, DocCons(h, t)) :: z =>

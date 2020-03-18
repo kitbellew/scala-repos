@@ -106,7 +106,8 @@ object ParameterDirectives extends ParameterDirectives {
     private def handleParamResult[T](paramName: String, result: Future[T])(
         implicit ec: ExecutionContext): Directive1[T] =
       onComplete(result).flatMap {
-        case Success(x) ⇒ provide(x)
+        case Success(x) ⇒
+          provide(x)
         case Failure(Unmarshaller.NoContentException) ⇒
           reject(MissingQueryParamRejection(paramName))
         case Failure(x) ⇒
@@ -178,8 +179,10 @@ object ParameterDirectives extends ParameterDirectives {
         import ctx.executionContext
         import ctx.materializer
         onComplete(fsou(ctx.request.uri.query().get(paramName))) flatMap {
-          case Success(value) if value == requiredValue ⇒ pass
-          case _ ⇒ reject
+          case Success(value) if value == requiredValue ⇒
+            pass
+          case _ ⇒
+            reject
         }
       }
     implicit def forRVR[T](implicit

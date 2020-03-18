@@ -73,7 +73,8 @@ class ScalaGlobalMembersCompletionContributor
           case ref: ScReferenceExpression =>
             val qualifier =
               ref.qualifier match {
-                case Some(qual) => qual
+                case Some(qual) =>
+                  qual
                 case None =>
                   ref.getContext match {
                     case inf: ScInfixExpr if inf.operation == ref =>
@@ -129,8 +130,10 @@ class ScalaGlobalMembersCompletionContributor
           case o: ScObject if o.isStatic =>
             // filter out type class instances, such as scala.math.Numeric.String, to avoid too many results.
             !o.hasModifierProperty("implicit")
-          case _: ScTypeDefinition => false
-          case _                   => memb.hasModifierProperty("static")
+          case _: ScTypeDefinition =>
+            false
+          case _ =>
+            memb.hasModifierProperty("static")
         }
     }
   }
@@ -156,8 +159,10 @@ class ScalaGlobalMembersCompletionContributor
         val name = elem.name
         val containingClass =
           ScalaPsiUtil.nameContext(elem) match {
-            case member: PsiMember => member.containingClass
-            case _                 => null
+            case member: PsiMember =>
+              member.containingClass
+            case _ =>
+              null
           }
         if (containingClass == null)
           return false
@@ -169,8 +174,10 @@ class ScalaGlobalMembersCompletionContributor
           if element.name == name
           if element.getContainingFile == file
           cClass = ScalaPsiUtil.nameContext(element) match {
-            case member: PsiMember => member.containingClass
-            case _                 => null
+            case member: PsiMember =>
+              member.containingClass
+            case _ =>
+              null
           }
           if cClass != null
           if cClass.qualifiedName != null
@@ -214,8 +221,10 @@ class ScalaGlobalMembersCompletionContributor
     val candidates = proc.candidates.map(convertible.forMap(_, originalType))
 
     ref.getVariants(implicits = false, filterNotNamedVariants = false).foreach {
-      case ScalaLookupItem(elem: PsiNamedElement) => addElemToSet(elem)
-      case elem: PsiNamedElement                  => addElemToSet(elem)
+      case ScalaLookupItem(elem: PsiNamedElement) =>
+        addElemToSet(elem)
+      case elem: PsiNamedElement =>
+        addElemToSet(elem)
     }
 
     val iterator = candidates.iterator
@@ -281,8 +290,10 @@ class ScalaGlobalMembersCompletionContributor
         val name = elem.name
         val containingClass =
           ScalaPsiUtil.nameContext(elem) match {
-            case member: PsiMember => member.containingClass
-            case _                 => null
+            case member: PsiMember =>
+              member.containingClass
+            case _ =>
+              null
           }
         if (containingClass == null)
           return false
@@ -294,8 +305,10 @@ class ScalaGlobalMembersCompletionContributor
           if element.name == name
           if element.getContainingFile == file
           cClass = ScalaPsiUtil.nameContext(element) match {
-            case member: PsiMember => member.containingClass
-            case _                 => null
+            case member: PsiMember =>
+              member.containingClass
+            case _ =>
+              null
           }
           if cClass != null
           if cClass.qualifiedName != null
@@ -309,8 +322,10 @@ class ScalaGlobalMembersCompletionContributor
     }
 
     ref.getVariants(implicits = false, filterNotNamedVariants = false).foreach {
-      case ScalaLookupItem(elem) => addElemToSet(elem)
-      case elem: PsiNamedElement => addElemToSet(elem)
+      case ScalaLookupItem(elem) =>
+        addElemToSet(elem)
+      case elem: PsiNamedElement =>
+        addElemToSet(elem)
     }
 
     val namesCache = ScalaShortNamesCacheManager.getInstance(ref.getProject)
@@ -362,7 +377,8 @@ class ScalaGlobalMembersCompletionContributor
 
                 val overloads =
                   containingClass match {
-                    case o: ScObject => o.functionsByName(methodName)
+                    case o: ScObject =>
+                      o.functionsByName(methodName)
                     case _ =>
                       containingClass.getAllMethods.toSeq.filter(m =>
                         m.name == methodName)

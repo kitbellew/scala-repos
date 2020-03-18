@@ -69,7 +69,8 @@ class BindingFactoryTest
       }
       verify(tracer, atLeastOnce()).record(captor.capture())
       val annotations = captor.getAllValues.asScala collect {
-        case Record(_, _, a, _) => a
+        case Record(_, _, a, _) =>
+          a
       }
       assert(expected == annotations)
     }
@@ -448,7 +449,8 @@ class BindingFactoryTest
           dest match {
             case BindingFactory.Dest(bound: Name.Bound) =>
               assert(bound.id == Path.read("/$/inet/0/1"))
-            case _ => fail()
+            case _ =>
+              fail()
           }
           ServiceFactory.const(Service.mk[String, String](Future.value))
         }
@@ -559,7 +561,8 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
       f1.poll match {
         case Some(Throw(cce: CancelledConnectionException)) =>
           assert(cce.getCause == exc)
-        case _ => fail()
+        case _ =>
+          fail()
       }
       assert(f2.poll == None)
 

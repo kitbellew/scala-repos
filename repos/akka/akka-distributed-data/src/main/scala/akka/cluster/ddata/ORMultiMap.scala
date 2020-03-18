@@ -31,8 +31,10 @@ object ORMultiMap {
     */
   def unapply(value: Any): Option[Map[String, Set[Any]]] =
     value match {
-      case m: ORMultiMap[Any] @unchecked ⇒ Some(m.entries)
-      case _ ⇒ None
+      case m: ORMultiMap[Any] @unchecked ⇒
+        Some(m.entries)
+      case _ ⇒
+        None
     }
 }
 
@@ -59,7 +61,8 @@ final class ORMultiMap[A] private[akka] (
     */
   def entries: Map[String, Set[A]] =
     underlying.entries.map {
-      case (k, v) ⇒ k -> v.elements
+      case (k, v) ⇒
+        k -> v.elements
     }
 
   /**
@@ -69,7 +72,8 @@ final class ORMultiMap[A] private[akka] (
     import scala.collection.JavaConverters._
     val result = new java.util.HashMap[String, java.util.Set[A]]
     underlying.entries.foreach {
-      case (k, v) ⇒ result.put(k, v.elements.asJava)
+      case (k, v) ⇒
+        result.put(k, v.elements.asJava)
     }
     result
   }
@@ -205,8 +209,10 @@ final class ORMultiMap[A] private[akka] (
       val u =
         underlying.updated(node, key, ORSet.empty[A])(_.remove(node, element))
       u.get(key) match {
-        case Some(s) if s.isEmpty ⇒ u.remove(node, key)
-        case _ ⇒ u
+        case Some(s) if s.isEmpty ⇒
+          u.remove(node, key)
+        case _ ⇒
+          u
       }
     }
     new ORMultiMap(newUnderlying)
@@ -251,8 +257,10 @@ final class ORMultiMap[A] private[akka] (
 
   override def equals(o: Any): Boolean =
     o match {
-      case other: ORMultiMap[_] ⇒ underlying == other.underlying
-      case _ ⇒ false
+      case other: ORMultiMap[_] ⇒
+        underlying == other.underlying
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = underlying.hashCode

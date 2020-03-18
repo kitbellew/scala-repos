@@ -19,8 +19,10 @@ object Maths {
     @tailrec
     def recurse(a: List[T], sum: T, depth: Int): Double = {
       a match {
-        case Nil     => n.toDouble(sum) / depth
-        case x :: xs => recurse(xs, n.plus(sum, x), depth + 1)
+        case Nil =>
+          n.toDouble(sum) / depth
+        case x :: xs =>
+          recurse(xs, n.plus(sum, x), depth + 1)
       }
     }
     recurse(a.tail, a.head, 1)

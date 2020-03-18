@@ -100,7 +100,8 @@ class LRUMap[K, V](
     */
   def get(key: K): Box[V] =
     localMap.get(key) match {
-      case null => Empty
+      case null =>
+        Empty
       case v =>
         v.remove
         addAtHead(v)

@@ -11,8 +11,10 @@ class CookieSupportServlet extends ScalatraServlet {
       response.setHeader("X-Another-Cookie", cookie)
     }
     cookies.get("somecookie") match {
-      case Some(v) => v
-      case _       => "None"
+      case Some(v) =>
+        v
+      case _ =>
+        "None"
     }
   }
 

@@ -86,8 +86,10 @@ private[http] class ChannelBufferManager(
 
   override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
     e.getMessage match {
-      case buffer: ChannelBuffer => increaseBufferUsage(buffer.capacity())
-      case _                     => ()
+      case buffer: ChannelBuffer =>
+        increaseBufferUsage(buffer.capacity())
+      case _ =>
+        ()
     }
 
     super.messageReceived(ctx, e)

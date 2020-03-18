@@ -33,11 +33,14 @@ object AccessModifier {
         builder.getTokenType match {
           case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.kTHIS =>
             builder.advanceLexer //Ate identifier or this
-          case _ => builder error ErrMsg("identifier.expected")
+          case _ =>
+            builder error ErrMsg("identifier.expected")
         }
         builder.getTokenType match {
-          case ScalaTokenTypes.tRSQBRACKET => builder.advanceLexer //Ate ]
-          case _                           => builder error ErrMsg("rsqbracket.expected")
+          case ScalaTokenTypes.tRSQBRACKET =>
+            builder.advanceLexer //Ate ]
+          case _ =>
+            builder error ErrMsg("rsqbracket.expected")
         }
         builder.restoreNewlinesState
         accessMarker.done(ScalaElementTypes.ACCESS_MODIFIER)

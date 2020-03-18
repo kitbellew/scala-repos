@@ -187,7 +187,8 @@ object ReplicaVerificationTool extends Logging {
         .groupBy(_._2)
         .mapValues(topicAndPartitionAndLeaderIds =>
           topicAndPartitionAndLeaderIds.map {
-            case (topicAndPartition, leaderId) => topicAndPartition
+            case (topicAndPartition, leaderId) =>
+              topicAndPartition
           })
     debug("Leaders per broker: " + leadersPerBroker)
 

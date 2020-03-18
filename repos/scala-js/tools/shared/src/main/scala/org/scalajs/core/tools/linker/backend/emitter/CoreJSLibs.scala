@@ -94,8 +94,10 @@ private[scalajs] object CoreJSLibs {
                   val optionValue = getOption(option)
                   val success =
                     op match {
-                      case "==" => optionValue == value
-                      case "!=" => optionValue != value
+                      case "==" =>
+                        optionValue == value
+                      case "!=" =>
+                        optionValue != value
                     }
                   if (!success) {
                     skipping = true

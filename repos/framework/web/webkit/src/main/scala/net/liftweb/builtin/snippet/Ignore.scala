@@ -24,7 +24,8 @@ import net.liftweb.http._
 object Ignore extends DispatchSnippet {
 
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   def render(kids: NodeSeq): NodeSeq = NodeSeq.Empty

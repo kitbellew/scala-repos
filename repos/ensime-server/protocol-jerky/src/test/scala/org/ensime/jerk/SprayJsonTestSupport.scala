@@ -15,7 +15,8 @@ trait SprayJsonTestSupport {
       case None =>
         println(
           s"check and add the following assertion: $value = ${json.prettyPrint}")
-      case Some(expected) => json shouldBe expected.parseJson
+      case Some(expected) =>
+        json shouldBe expected.parseJson
     }
 
     val recovered = json.convertTo[T]

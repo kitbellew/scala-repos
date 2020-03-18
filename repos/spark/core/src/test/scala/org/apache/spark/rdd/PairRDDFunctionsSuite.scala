@@ -272,7 +272,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd1 = sc.parallelize(stacked)
     val counted1 = rdd1.countApproxDistinctByKey(p, sp).collect()
     counted1.foreach {
-      case (k, count) => assert(error(count, k) < relativeSD)
+      case (k, count) =>
+        assert(error(count, k) < relativeSD)
     }
 
     val rnd = new Random(42)

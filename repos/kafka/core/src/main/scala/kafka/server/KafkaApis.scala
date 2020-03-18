@@ -126,24 +126,40 @@ class KafkaApis(
             request.securityProtocol,
             request.session.principal))
       ApiKeys.forId(request.requestId) match {
-        case ApiKeys.PRODUCE             => handleProducerRequest(request)
-        case ApiKeys.FETCH               => handleFetchRequest(request)
-        case ApiKeys.LIST_OFFSETS        => handleOffsetRequest(request)
-        case ApiKeys.METADATA            => handleTopicMetadataRequest(request)
-        case ApiKeys.LEADER_AND_ISR      => handleLeaderAndIsrRequest(request)
-        case ApiKeys.STOP_REPLICA        => handleStopReplicaRequest(request)
-        case ApiKeys.UPDATE_METADATA_KEY => handleUpdateMetadataRequest(request)
+        case ApiKeys.PRODUCE =>
+          handleProducerRequest(request)
+        case ApiKeys.FETCH =>
+          handleFetchRequest(request)
+        case ApiKeys.LIST_OFFSETS =>
+          handleOffsetRequest(request)
+        case ApiKeys.METADATA =>
+          handleTopicMetadataRequest(request)
+        case ApiKeys.LEADER_AND_ISR =>
+          handleLeaderAndIsrRequest(request)
+        case ApiKeys.STOP_REPLICA =>
+          handleStopReplicaRequest(request)
+        case ApiKeys.UPDATE_METADATA_KEY =>
+          handleUpdateMetadataRequest(request)
         case ApiKeys.CONTROLLED_SHUTDOWN_KEY =>
           handleControlledShutdownRequest(request)
-        case ApiKeys.OFFSET_COMMIT     => handleOffsetCommitRequest(request)
-        case ApiKeys.OFFSET_FETCH      => handleOffsetFetchRequest(request)
-        case ApiKeys.GROUP_COORDINATOR => handleGroupCoordinatorRequest(request)
-        case ApiKeys.JOIN_GROUP        => handleJoinGroupRequest(request)
-        case ApiKeys.HEARTBEAT         => handleHeartbeatRequest(request)
-        case ApiKeys.LEAVE_GROUP       => handleLeaveGroupRequest(request)
-        case ApiKeys.SYNC_GROUP        => handleSyncGroupRequest(request)
-        case ApiKeys.DESCRIBE_GROUPS   => handleDescribeGroupRequest(request)
-        case ApiKeys.LIST_GROUPS       => handleListGroupsRequest(request)
+        case ApiKeys.OFFSET_COMMIT =>
+          handleOffsetCommitRequest(request)
+        case ApiKeys.OFFSET_FETCH =>
+          handleOffsetFetchRequest(request)
+        case ApiKeys.GROUP_COORDINATOR =>
+          handleGroupCoordinatorRequest(request)
+        case ApiKeys.JOIN_GROUP =>
+          handleJoinGroupRequest(request)
+        case ApiKeys.HEARTBEAT =>
+          handleHeartbeatRequest(request)
+        case ApiKeys.LEAVE_GROUP =>
+          handleLeaveGroupRequest(request)
+        case ApiKeys.SYNC_GROUP =>
+          handleSyncGroupRequest(request)
+        case ApiKeys.DESCRIBE_GROUPS =>
+          handleDescribeGroupRequest(request)
+        case ApiKeys.LIST_GROUPS =>
+          handleListGroupsRequest(request)
         case requestId =>
           throw new KafkaException("Unknown api code " + requestId)
       }
@@ -406,7 +422,8 @@ class KafkaApis(
                 (topicPartition, Errors.NONE.code)
               }
             } catch {
-              case e: Throwable => (topicPartition, Errors.forException(e).code)
+              case e: Throwable =>
+                (topicPartition, Errors.forException(e).code)
             }
         }
         sendResponseCallback(responseInfo)
@@ -533,7 +550,8 @@ class KafkaApis(
           val respHeader = new ResponseHeader(request.header.correlationId)
           val respBody =
             request.header.apiVersion match {
-              case 0 => new ProduceResponse(mergedResponseStatus.asJava)
+              case 0 =>
+                new ProduceResponse(mergedResponseStatus.asJava)
               case version @ (1 | 2) =>
                 new ProduceResponse(
                   mergedResponseStatus.asJava,

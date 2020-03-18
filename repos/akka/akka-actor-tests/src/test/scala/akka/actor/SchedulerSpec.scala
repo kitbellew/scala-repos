@@ -83,7 +83,8 @@ trait SchedulerSpec
         Props(
           new Actor {
             def receive = {
-              case x ⇒ sender() ! x
+              case x ⇒
+                sender() ! x
             }
           }))
 
@@ -121,7 +122,8 @@ trait SchedulerSpec
         Props(
           new Actor {
             def receive = {
-              case Tick ⇒ countDownLatch.countDown()
+              case Tick ⇒
+                countDownLatch.countDown()
             }
           }))
 
@@ -222,8 +224,10 @@ trait SchedulerSpec
       val props = Props(
         new Actor {
           def receive = {
-            case Ping ⇒ pingLatch.countDown()
-            case Crash ⇒ throw new Exception("CRASH")
+            case Ping ⇒
+              pingLatch.countDown()
+            case Crash ⇒
+              throw new Exception("CRASH")
           }
 
           override def postRestart(reason: Throwable) = restartLatch.open
@@ -284,7 +288,8 @@ trait SchedulerSpec
         Props(
           new Actor {
             def receive = {
-              case Msg ⇒ ticks.countDown()
+              case Msg ⇒
+                ticks.countDown()
             }
           }))
 
@@ -652,12 +657,15 @@ class LightArrayRevolverSchedulerSpec
           prb.ref ! ns
           try time += (
             lbq.get match {
-              case q: LinkedBlockingQueue[Long] ⇒ q.take()
-              case _ ⇒ 0L
+              case q: LinkedBlockingQueue[Long] ⇒
+                q.take()
+              case _ ⇒
+                0L
             }
           )
           catch {
-            case _: InterruptedException ⇒ Thread.currentThread.interrupt()
+            case _: InterruptedException ⇒
+              Thread.currentThread.interrupt()
           }
         }
       }
@@ -665,7 +673,8 @@ class LightArrayRevolverSchedulerSpec
       new Driver {
         def wakeUp(d: FiniteDuration) =
           lbq.get match {
-            case q: LinkedBlockingQueue[Long] ⇒ q.offer(d.toNanos)
+            case q: LinkedBlockingQueue[Long] ⇒
+              q.offer(d.toNanos)
             case _ ⇒
           }
         def expectWait(): FiniteDuration = probe.expectMsgType[Long].nanos
@@ -673,7 +682,8 @@ class LightArrayRevolverSchedulerSpec
         def step = sched.TickDuration
         def close() =
           lbq.getAndSet(null) match {
-            case q: LinkedBlockingQueue[Long] ⇒ q.offer(0L)
+            case q: LinkedBlockingQueue[Long] ⇒
+              q.offer(0L)
             case _ ⇒
           }
       }

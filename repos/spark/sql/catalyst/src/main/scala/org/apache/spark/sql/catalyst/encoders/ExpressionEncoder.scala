@@ -70,7 +70,8 @@ object ExpressionEncoder {
 
     val schema =
       ScalaReflection.schemaFor[T] match {
-        case ScalaReflection.Schema(s: StructType, _) => s
+        case ScalaReflection.Schema(s: StructType, _) =>
+          s
         case ScalaReflection.Schema(dt, nullable) =>
           new StructType().add("value", dt, nullable)
       }
@@ -124,8 +125,10 @@ object ExpressionEncoder {
 
     val toRowExpressions = encoders
       .map {
-        case e if e.flat => e.toRowExpressions.head
-        case other       => CreateStruct(other.toRowExpressions)
+        case e if e.flat =>
+          e.toRowExpressions.head
+        case other =>
+          CreateStruct(other.toRowExpressions)
       }
       .zipWithIndex
       .map {
@@ -143,7 +146,8 @@ object ExpressionEncoder {
       case (enc, index) =>
         if (enc.flat) {
           enc.fromRowExpression.transform {
-            case b: BoundReference => b.copy(ordinal = index)
+            case b: BoundReference =>
+              b.copy(ordinal = index)
           }
         } else {
           val input = BoundReference(index, enc.schema, nullable = true)
@@ -245,8 +249,10 @@ case class ExpressionEncoder[T](
     */
   def namedExpressions: Seq[NamedExpression] =
     schema.map(_.name).zip(toRowExpressions).map {
-      case (_, ne: NamedExpression) => ne.newInstance()
-      case (name, e)                => Alias(e, name)()
+      case (_, ne: NamedExpression) =>
+        ne.newInstance()
+      case (name, e) =>
+        Alias(e, name)()
     }
 
   /**
@@ -329,7 +335,8 @@ case class ExpressionEncoder[T](
     // Note that, `BoundReference` contains the expected type, but here we need the actual type, so
     // we unbound it by the given `schema` and propagate the actual type to `GetStructField`.
     val unbound = fromRowExpression transform {
-      case b: BoundReference => schema(b.ordinal)
+      case b: BoundReference =>
+        schema(b.ordinal)
     }
 
     val exprToMaxOrdinal = scala.collection.mutable.HashMap
@@ -385,21 +392,26 @@ case class ExpressionEncoder[T](
     */
   def shift(delta: Int): ExpressionEncoder[T] = {
     copy(fromRowExpression = fromRowExpression transform {
-      case r: BoundReference => r.copy(ordinal = r.ordinal + delta)
+      case r: BoundReference =>
+        r.copy(ordinal = r.ordinal + delta)
     })
   }
 
   protected val attrs = toRowExpressions.flatMap(
     _.collect {
-      case _: UnresolvedAttribute => ""
-      case a: Attribute           => s"#${a.exprId}"
-      case b: BoundReference      => s"[${b.ordinal}]"
+      case _: UnresolvedAttribute =>
+        ""
+      case a: Attribute =>
+        s"#${a.exprId}"
+      case b: BoundReference =>
+        s"[${b.ordinal}]"
     })
 
   protected val schemaString = schema
     .zip(attrs)
     .map {
-      case (f, a) => s"${f.name}$a: ${f.dataType.simpleString}"
+      case (f, a) =>
+        s"${f.name}$a: ${f.dataType.simpleString}"
     }
     .mkString(", ")
 

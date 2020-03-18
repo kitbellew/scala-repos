@@ -100,8 +100,10 @@ class SparkILoop(
     /** Strip NullaryMethodType artifacts. */
     private def replInfo(sym: Symbol) = {
       sym.info match {
-        case NullaryMethodType(restpe) if sym.isAccessor => restpe
-        case info                                        => info
+        case NullaryMethodType(restpe) if sym.isAccessor =>
+          restpe
+        case info =>
+          info
       }
     }
     def echoTypeStructure(sym: Symbol) =
@@ -240,8 +242,10 @@ class SparkILoop(
       helpSummary()
     else
       uniqueCommand(line) match {
-        case Some(lc) => echo("\n" + lc.longHelp)
-        case _        => ambiguousError(line)
+        case Some(lc) =>
+          echo("\n" + lc.longHelp)
+        case _ =>
+          ambiguousError(line)
       }
   }
   private def helpSummary() = {
@@ -262,7 +266,8 @@ class SparkILoop(
   }
   private def ambiguousError(cmd: String): Result = {
     matchingCommands(cmd) match {
-      case Nil => echo(cmd + ": no such command.  Type :help for help.")
+      case Nil =>
+        echo(cmd + ": no such command.  Type :help for help.")
       case xs =>
         echo(
           cmd + " is ambiguous: did you mean " + xs
@@ -276,9 +281,11 @@ class SparkILoop(
   private def uniqueCommand(cmd: String): Option[LoopCommand] = {
     // this lets us add commands willy-nilly and only requires enough command to disambiguate
     matchingCommands(cmd) match {
-      case List(x) => Some(x)
+      case List(x) =>
+        Some(x)
       // exact match OK even if otherwise appears ambiguous
-      case xs => xs find (_.name == cmd)
+      case xs =>
+        xs find (_.name == cmd)
     }
   }
   private var fallbackMode = false
@@ -317,7 +324,8 @@ class SparkILoop(
         val count =
           try xs.head.toInt
           catch {
-            case _: Exception => defaultLines
+            case _: Exception =>
+              defaultLines
           }
         val lines = history.asStrings takeRight count
         val offset = current - lines.size + 1
@@ -526,7 +534,8 @@ class SparkILoop(
           // This groups the members by where the symbol is defined
           val byOwner = syms groupBy (_.owner)
           val sortedOwners = byOwner.toList sortBy {
-            case (owner, _) => afterTyper(source.info.baseClasses indexOf owner)
+            case (owner, _) =>
+              afterTyper(source.info.baseClasses indexOf owner)
           }
 
           sortedOwners foreach {
@@ -576,7 +585,8 @@ class SparkILoop(
       findToolsJar match {
         case Some(tools) =>
           ScalaClassLoader.fromURLs(Seq(tools.toURL), intp.classLoader)
-        case _ => intp.classLoader
+        case _ =>
+          intp.classLoader
       }
     if (Javap.isAvailable(cl)) {
       logDebug(":javap available.")
@@ -604,7 +614,8 @@ class SparkILoop(
                 bytes
               else
                 super.tryClass(clazz + MODULE_SUFFIX_STRING)
-            case _ => super.tryClass(path)
+            case _ =>
+              super.tryClass(path)
           }
         } else {
           // Look for Foo first, then Foo$, but if Foo$ is given explicitly,
@@ -628,16 +639,19 @@ class SparkILoop(
   private lazy val javap =
     try newJavap()
     catch {
-      case _: Exception => null
+      case _: Exception =>
+        null
     }
 
   // Still todo: modules.
   private def typeCommand(line0: String): Result = {
     line0.trim match {
-      case "" => ":type [-v] <expression>"
+      case "" =>
+        ":type [-v] <expression>"
       case s if s startsWith "-v " =>
         typeCommandInternal(s stripPrefix "-v " trim, true)
-      case s => typeCommandInternal(s, false)
+      case s =>
+        typeCommandInternal(s, false)
     }
   }
 
@@ -646,7 +660,8 @@ class SparkILoop(
       "Can't find any cached warnings."
     else
       intp.lastWarnings foreach {
-        case (pos, msg) => intp.reporter.warning(pos, msg)
+        case (pos, msg) =>
+          intp.reporter.warning(pos, msg)
       }
   }
 
@@ -676,12 +691,15 @@ class SparkILoop(
       words(line) match {
         case Nil =>
           intp.executionWrapper match {
-            case "" => "No execution wrapper is set."
-            case s  => "Current execution wrapper: " + s
+            case "" =>
+              "No execution wrapper is set."
+            case s =>
+              "Current execution wrapper: " + s
           }
         case "clear" :: Nil =>
           intp.executionWrapper match {
-            case "" => "No execution wrapper is set."
+            case "" =>
+              "No execution wrapper is set."
             case s =>
               intp.clearExecutionWrapper();
               "Cleared execution wrapper."
@@ -694,7 +712,8 @@ class SparkILoop(
             case tp =>
               failMsg + "\nFound: <unknown>"
           }
-        case _ => failMsg
+        case _ =>
+          failMsg
       }
     }
   }
@@ -758,7 +777,8 @@ class SparkILoop(
               fn()
             })
           catch {
-            case _: RuntimeException => false
+            case _: RuntimeException =>
+              false
           }
 
         if (fn())
@@ -789,11 +809,13 @@ class SparkILoop(
         false // assume null means EOF
       else
         command(line) match {
-          case Result(false, _) => false
+          case Result(false, _) =>
+            false
           case Result(_, Some(finalLine)) =>
             addReplay(finalLine);
             true
-          case _ => true
+          case _ =>
+            true
         }
     }
     def innerLoop() {
@@ -801,7 +823,8 @@ class SparkILoop(
         try {
           processLine(readOneLine())
         } catch {
-          case t: Throwable => crashRecovery(t)
+          case t: Throwable =>
+            crashRecovery(t)
         }
       if (shouldContinue)
         innerLoop()
@@ -867,7 +890,8 @@ class SparkILoop(
       override def usage = "<command line>"
       def apply(line: String): Result =
         line match {
-          case "" => showUsage()
+          case "" =>
+            showUsage()
           case _ =>
             val toRun =
               classOf[ProcessResult].getName + "(" + string2codeQuoted(
@@ -967,7 +991,8 @@ class SparkILoop(
       uniqueCommand(cmd) match {
         case Some(lc) =>
           lc(line.tail stripPrefix cmd dropWhile (_.isWhitespace))
-        case _ => ambiguousError(cmd)
+        case _ =>
+          ambiguousError(cmd)
       }
     } else if (intp.global == null)
       Result(false, None) // Notice failure to create compiler
@@ -1019,8 +1044,10 @@ class SparkILoop(
       (
         reallyResult,
         reallyResult match {
-          case IR.Error   => None
-          case IR.Success => Some(code)
+          case IR.Error =>
+            None
+          case IR.Success =>
+            Some(code)
           case IR.Incomplete =>
             if (in.interactive && code.endsWith("\n\n")) {
               echo("You typed two blank lines.  Starting a new command.")
@@ -1035,7 +1062,8 @@ class SparkILoop(
                   intp.compileString(code)
                   None
 
-                case line => interpretStartingWith(code + "\n" + line)
+                case line =>
+                  interpretStartingWith(code + "\n" + line)
               }
         })
     }
@@ -1122,14 +1150,16 @@ class SparkILoop(
 
       // sets in to some kind of reader depending on environmental cues
       in = in0 match {
-        case Some(reader) => SimpleReader(reader, out, true)
-        case None         =>
+        case Some(reader) =>
+          SimpleReader(reader, out, true)
+        case None =>
           // some post-initialization
           chooseReader(settings) match {
             case x: SparkJLineReader =>
               addThunk(x.consoleReader.postInit);
               x
-            case x => x
+            case x =>
+              x
           }
       }
       lazy val tagOfSparkIMain = tagOfStaticClass[
@@ -1227,7 +1257,8 @@ class SparkILoop(
   private def getMaster(): String = {
     val master =
       this.master match {
-        case Some(m) => m
+        case Some(m) =>
+          m
         case None =>
           val envMaster = sys.env.get("MASTER")
           val propMaster = sys.props.get("spark.master")
@@ -1255,7 +1286,8 @@ class SparkILoop(
 
     // if they asked for no help and command is valid, we call the real main
     neededHelp() match {
-      case "" => command.ok && process(command.settings)
+      case "" =>
+        command.ok && process(command.settings)
       case help =>
         echoNoNL(help);
         true

@@ -321,8 +321,10 @@ private[kafka] class Acceptor(
           // We catch all the throwables to prevent the acceptor thread from exiting on exceptions due
           // to a select operation on a specific channel or a bad request. We don't want the
           // the broker to stop responding to requests from other clients in these scenarios.
-          case e: ControlThrowable => throw e
-          case e: Throwable        => error("Error occurred", e)
+          case e: ControlThrowable =>
+            throw e
+          case e: Throwable =>
+            error("Error occurred", e)
         }
       }
     } finally {
@@ -431,7 +433,8 @@ private[kafka] class Processor(
                   ConnectionId(localHost, localPort, remoteHost, remotePort)
               }
           }
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -554,7 +557,8 @@ private[kafka] class Processor(
         // letting a processor exit might cause bigger impact on the broker. Usually the exceptions thrown would
         // be either associated with a specific socket channel or a bad request. We just ignore the bad socket channel
         // or request. This behavior might need to be reviewed if we see an exception that need the entire broker to stop.
-        case e: ControlThrowable => throw e
+        case e: ControlThrowable =>
+          throw e
         case e: Throwable =>
           error("Processor got uncaught exception.", e)
       }
@@ -652,7 +656,8 @@ private[kafka] class Processor(
 class ConnectionQuotas(val defaultMax: Int, overrideQuotas: Map[String, Int]) {
 
   private val overrides = overrideQuotas.map {
-    case (host, count) => (InetAddress.getByName(host), count)
+    case (host, count) =>
+      (InetAddress.getByName(host), count)
   }
   private val counts = mutable.Map[InetAddress, Int]()
 

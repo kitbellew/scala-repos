@@ -126,7 +126,8 @@ object build extends Build {
       "-unchecked"
     ) ++ (
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 10)) => scalac210Options
+        case Some((2, 10)) =>
+          scalac210Options
         case _ =>
           Seq("-Ybackend:GenBCode", "-Ydelambdafy:method", "-target:jvm-1.8")
       }

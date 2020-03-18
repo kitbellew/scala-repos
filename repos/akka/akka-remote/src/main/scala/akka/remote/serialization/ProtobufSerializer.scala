@@ -73,7 +73,8 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
         def parsingMethod(method: Method = null): Method = {
           val parsingMethodBinding = parsingMethodBindingRef.get()
           parsingMethodBinding.get(clazz) match {
-            case Some(cachedParsingMethod) ⇒ cachedParsingMethod
+            case Some(cachedParsingMethod) ⇒
+              cachedParsingMethod
             case None ⇒
               val unCachedParsingMethod =
                 if (method eq null)
@@ -104,7 +105,8 @@ class ProtobufSerializer(val system: ExtendedActorSystem)
     def toByteArrayMethod(method: Method = null): Method = {
       val toByteArrayMethodBinding = toByteArrayMethodBindingRef.get()
       toByteArrayMethodBinding.get(clazz) match {
-        case Some(cachedtoByteArrayMethod) ⇒ cachedtoByteArrayMethod
+        case Some(cachedtoByteArrayMethod) ⇒
+          cachedtoByteArrayMethod
         case None ⇒
           val unCachedtoByteArrayMethod =
             if (method eq null)

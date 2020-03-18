@@ -67,7 +67,8 @@ object Test4 {
       Direction.withName("Nord")
       assert(false)
     } catch {
-      case e: Exception => /* do nothing */
+      case e: Exception =>
+      /* do nothing */
     }
     0
   }

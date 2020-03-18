@@ -43,8 +43,10 @@ object JsonExtractor {
       case JsonExtractorOption.Both =>
         val json4sResult = Extraction.decompose(o)(json4sFormats)
         json4sResult.children.size match {
-          case 0 => parse(gson(gsonTypeAdapterFactories).toJson(o))
-          case _ => json4sResult
+          case 0 =>
+            parse(gson(gsonTypeAdapterFactories).toJson(o))
+          case _ =>
+            json4sResult
         }
       case JsonExtractorOption.Json4sNative =>
         Extraction.decompose(o)(json4sFormats)

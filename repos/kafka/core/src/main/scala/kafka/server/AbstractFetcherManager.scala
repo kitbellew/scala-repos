@@ -95,7 +95,8 @@ abstract class AbstractFetcherManager(
       for ((brokerAndFetcherId, partitionAndOffsets) <- partitionsPerFetcher) {
         var fetcherThread: AbstractFetcherThread = null
         fetcherThreadMap.get(brokerAndFetcherId) match {
-          case Some(f) => fetcherThread = f
+          case Some(f) =>
+            fetcherThread = f
           case None =>
             fetcherThread = createFetcherThread(
               brokerAndFetcherId.fetcherId,

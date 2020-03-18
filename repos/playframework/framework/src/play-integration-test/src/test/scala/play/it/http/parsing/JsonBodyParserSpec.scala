@@ -34,26 +34,30 @@ object JsonBodyParserSpec extends PlaySpecification {
     "parse JSON bodies" in new WithApplication() {
       parse("""{"foo":"bar"}""", Some("application/json"), "utf-8") must beRight
         .like {
-          case json => (json \ "foo").as[String] must_== "bar"
+          case json =>
+            (json \ "foo").as[String] must_== "bar"
         }
     }
 
     "automatically detect the charset" in new WithApplication() {
       parse("""{"foo":"bär"}""", Some("application/json"), "utf-8") must beRight
         .like {
-          case json => (json \ "foo").as[String] must_== "bär"
+          case json =>
+            (json \ "foo").as[String] must_== "bär"
         }
       parse(
         """{"foo":"bär"}""",
         Some("application/json"),
         "utf-16") must beRight.like {
-        case json => (json \ "foo").as[String] must_== "bär"
+        case json =>
+          (json \ "foo").as[String] must_== "bär"
       }
       parse(
         """{"foo":"bär"}""",
         Some("application/json"),
         "utf-32") must beRight.like {
-        case json => (json \ "foo").as[String] must_== "bär"
+        case json =>
+          (json \ "foo").as[String] must_== "bär"
       }
     }
 
@@ -62,7 +66,8 @@ object JsonBodyParserSpec extends PlaySpecification {
         """{"foo":"bär"}""",
         Some("application/json; charset=iso-8859-1"),
         "utf-16") must beRight.like {
-        case json => (json \ "foo").as[String] must_== "bär"
+        case json =>
+          (json \ "foo").as[String] must_== "bär"
       }
     }
 
@@ -72,14 +77,16 @@ object JsonBodyParserSpec extends PlaySpecification {
         Some("application/json"),
         "utf-8",
         BodyParsers.parse.json) must beRight.like {
-        case json => (json \ "foo").as[String] must_== "bar"
+        case json =>
+          (json \ "foo").as[String] must_== "bar"
       }
       parse(
         """{"foo":"bar"}""",
         Some("text/json"),
         "utf-8",
         BodyParsers.parse.json) must beRight.like {
-        case json => (json \ "foo").as[String] must_== "bar"
+        case json =>
+          (json \ "foo").as[String] must_== "bar"
       }
     }
 
@@ -134,7 +141,8 @@ object JsonBodyParserSpec extends PlaySpecification {
         Some("application/json"),
         "utf-8",
         BodyParsers.parse.json[Foo]) must beRight.like {
-        case foo => foo must_== Foo(1, "bar")
+        case foo =>
+          foo must_== Foo(1, "bar")
       }
       parse(
         """{"foo":"bar"}""",

@@ -10,21 +10,33 @@ sealed trait Bound[A] {
   lhs =>
   def map[B](f: A => B): Bound[B] =
     this match {
-      case Open(a)      => Open(f(a))
-      case Closed(a)    => Closed(f(a))
-      case Unbound()    => Unbound()
-      case EmptyBound() => EmptyBound()
+      case Open(a) =>
+        Open(f(a))
+      case Closed(a) =>
+        Closed(f(a))
+      case Unbound() =>
+        Unbound()
+      case EmptyBound() =>
+        EmptyBound()
     }
   def combine[B](rhs: Bound[A])(f: (A, A) => A): Bound[A] =
     (lhs, rhs) match {
-      case (EmptyBound(), _)      => lhs
-      case (_, EmptyBound())      => rhs
-      case (Unbound(), _)         => lhs
-      case (_, Unbound())         => rhs
-      case (Closed(a), Closed(b)) => Closed(f(a, b))
-      case (Closed(a), Open(b))   => Open(f(a, b))
-      case (Open(a), Closed(b))   => Open(f(a, b))
-      case (Open(a), Open(b))     => Open(f(a, b))
+      case (EmptyBound(), _) =>
+        lhs
+      case (_, EmptyBound()) =>
+        rhs
+      case (Unbound(), _) =>
+        lhs
+      case (_, Unbound()) =>
+        rhs
+      case (Closed(a), Closed(b)) =>
+        Closed(f(a, b))
+      case (Closed(a), Open(b)) =>
+        Open(f(a, b))
+      case (Open(a), Closed(b)) =>
+        Open(f(a, b))
+      case (Open(a), Open(b)) =>
+        Open(f(a, b))
     }
 
   def unary_-()(implicit ev: AdditiveGroup[A]): Bound[A] = lhs.map(-_)
@@ -62,15 +74,24 @@ object Bound {
           rhs
         else
           lhs
-      case (Unbound(), _) | (_, Unbound())      => Unbound()
-      case (Closed(lv), Closed(rv)) if lv <= rv => lhs
-      case (Closed(_), Closed(_))               => rhs
-      case (Open(lv), Open(rv)) if lv <= rv     => lhs
-      case (Open(_), Open(_))                   => rhs
-      case (Closed(lv), Open(rv)) if lv <= rv   => lhs
-      case (Closed(_), Open(_))                 => rhs
-      case (Open(lv), Closed(rv)) if rv <= lv   => rhs
-      case (Open(_), Closed(_))                 => lhs
+      case (Unbound(), _) | (_, Unbound()) =>
+        Unbound()
+      case (Closed(lv), Closed(rv)) if lv <= rv =>
+        lhs
+      case (Closed(_), Closed(_)) =>
+        rhs
+      case (Open(lv), Open(rv)) if lv <= rv =>
+        lhs
+      case (Open(_), Open(_)) =>
+        rhs
+      case (Closed(lv), Open(rv)) if lv <= rv =>
+        lhs
+      case (Closed(_), Open(_)) =>
+        rhs
+      case (Open(lv), Closed(rv)) if rv <= lv =>
+        rhs
+      case (Open(_), Closed(_)) =>
+        lhs
     }
 
   private[spire] def maxLower[A: Order](
@@ -88,16 +109,26 @@ object Bound {
           rhs
         else
           lhs
-      case (Unbound(), _)                       => rhs
-      case (_, Unbound())                       => lhs
-      case (Closed(lv), Closed(rv)) if lv >= rv => lhs
-      case (Closed(_), Closed(_))               => rhs
-      case (Open(lv), Open(rv)) if lv >= rv     => lhs
-      case (Open(_), Open(_))                   => rhs
-      case (Closed(lv), Open(rv)) if rv >= lv   => rhs
-      case (Closed(_), Open(_))                 => lhs
-      case (Open(lv), Closed(rv)) if lv >= rv   => lhs
-      case (Open(_), Closed(_))                 => rhs
+      case (Unbound(), _) =>
+        rhs
+      case (_, Unbound()) =>
+        lhs
+      case (Closed(lv), Closed(rv)) if lv >= rv =>
+        lhs
+      case (Closed(_), Closed(_)) =>
+        rhs
+      case (Open(lv), Open(rv)) if lv >= rv =>
+        lhs
+      case (Open(_), Open(_)) =>
+        rhs
+      case (Closed(lv), Open(rv)) if rv >= lv =>
+        rhs
+      case (Closed(_), Open(_)) =>
+        lhs
+      case (Open(lv), Closed(rv)) if lv >= rv =>
+        lhs
+      case (Open(_), Closed(_)) =>
+        rhs
     }
 
   private[spire] def minUpper[A: Order](
@@ -115,16 +146,26 @@ object Bound {
           rhs
         else
           lhs
-      case (Unbound(), _)                       => rhs
-      case (_, Unbound())                       => lhs
-      case (Closed(lv), Closed(rv)) if lv <= rv => lhs
-      case (Closed(_), Closed(_))               => rhs
-      case (Open(lv), Open(rv)) if lv <= rv     => lhs
-      case (Open(_), Open(_))                   => rhs
-      case (Closed(lv), Open(rv)) if rv <= lv   => rhs
-      case (Closed(_), Open(_))                 => lhs
-      case (Open(lv), Closed(rv)) if lv <= rv   => lhs
-      case (Open(_), Closed(_))                 => rhs
+      case (Unbound(), _) =>
+        rhs
+      case (_, Unbound()) =>
+        lhs
+      case (Closed(lv), Closed(rv)) if lv <= rv =>
+        lhs
+      case (Closed(_), Closed(_)) =>
+        rhs
+      case (Open(lv), Open(rv)) if lv <= rv =>
+        lhs
+      case (Open(_), Open(_)) =>
+        rhs
+      case (Closed(lv), Open(rv)) if rv <= lv =>
+        rhs
+      case (Closed(_), Open(_)) =>
+        lhs
+      case (Open(lv), Closed(rv)) if lv <= rv =>
+        lhs
+      case (Open(_), Closed(_)) =>
+        rhs
     }
 
   private[spire] def maxUpper[A: Order](
@@ -142,15 +183,24 @@ object Bound {
           rhs
         else
           lhs
-      case (Unbound(), _) | (_, Unbound())      => Unbound()
-      case (Closed(lv), Closed(rv)) if lv >= rv => lhs
-      case (Closed(_), Closed(_))               => rhs
-      case (Open(lv), Open(rv)) if lv >= rv     => lhs
-      case (Open(_), Open(_))                   => rhs
-      case (Closed(lv), Open(rv)) if lv >= rv   => lhs
-      case (Closed(_), Open(_))                 => rhs
-      case (Open(lv), Closed(rv)) if rv >= lv   => rhs
-      case (Open(_), Closed(_))                 => lhs
+      case (Unbound(), _) | (_, Unbound()) =>
+        Unbound()
+      case (Closed(lv), Closed(rv)) if lv >= rv =>
+        lhs
+      case (Closed(_), Closed(_)) =>
+        rhs
+      case (Open(lv), Open(rv)) if lv >= rv =>
+        lhs
+      case (Open(_), Open(_)) =>
+        rhs
+      case (Closed(lv), Open(rv)) if lv >= rv =>
+        lhs
+      case (Closed(_), Open(_)) =>
+        rhs
+      case (Open(lv), Closed(rv)) if rv >= lv =>
+        rhs
+      case (Open(_), Closed(_)) =>
+        lhs
     }
 }
 
@@ -233,9 +283,12 @@ case class Closed[A](a: A) extends ValueBound[A] {
 object ValueBound {
   def unapply[A](b: Bound[A]): Option[A] =
     b match {
-      case Open(a)   => Some(a)
-      case Closed(a) => Some(a)
-      case _         => None
+      case Open(a) =>
+        Some(a)
+      case Closed(a) =>
+        Some(a)
+      case _ =>
+        None
     }
 
   /** Returns the interval containing the two given bounds. */

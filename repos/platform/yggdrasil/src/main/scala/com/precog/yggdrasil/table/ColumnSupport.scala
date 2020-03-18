@@ -379,7 +379,8 @@ object ArraySetColumn {
           columnSet.map(_.asInstanceOf[EmptyArrayColumn]))
           with EmptyArrayColumn {}
 
-      case CUndefined => UndefinedColumn(columnSet(0))
+      case CUndefined =>
+        UndefinedColumn(columnSet(0))
     }
   }
 }

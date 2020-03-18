@@ -38,8 +38,10 @@ object Producer {
   def parentsOf[P <: Platform[P]](
       in: Producer[P, Any]): List[Producer[P, Any]] = {
     in match {
-      case AlsoProducer(l, r) => List(l, r)
-      case _                  => dependenciesOf(in)
+      case AlsoProducer(l, r) =>
+        List(l, r)
+      case _ =>
+        dependenciesOf(in)
     }
   }
 
@@ -47,7 +49,8 @@ object Producer {
   def retrieveSummer[P <: Platform[P]](
       paths: List[Producer[P, _]]): Option[Summer[P, _, _]] =
     paths.collectFirst {
-      case s: Summer[P, _, _] => s
+      case s: Summer[P, _, _] =>
+        s
     }
 
   /**
@@ -82,18 +85,30 @@ object Producer {
   def dependenciesOf[P <: Platform[P]](
       p: Producer[P, Any]): List[Producer[P, Any]] =
     p match {
-      case Source(_)                            => List()
-      case AlsoProducer(_, producer)            => List(producer)
-      case NamedProducer(producer, _)           => List(producer)
-      case IdentityKeyedProducer(producer)      => List(producer)
-      case OptionMappedProducer(producer, _)    => List(producer)
-      case FlatMappedProducer(producer, _)      => List(producer)
-      case KeyFlatMappedProducer(producer, _)   => List(producer)
-      case ValueFlatMappedProducer(producer, _) => List(producer)
-      case WrittenProducer(producer, _)         => List(producer)
-      case LeftJoinedProducer(producer, _)      => List(producer)
-      case Summer(producer, _, _)               => List(producer)
-      case MergedProducer(l, r)                 => List(l, r)
+      case Source(_) =>
+        List()
+      case AlsoProducer(_, producer) =>
+        List(producer)
+      case NamedProducer(producer, _) =>
+        List(producer)
+      case IdentityKeyedProducer(producer) =>
+        List(producer)
+      case OptionMappedProducer(producer, _) =>
+        List(producer)
+      case FlatMappedProducer(producer, _) =>
+        List(producer)
+      case KeyFlatMappedProducer(producer, _) =>
+        List(producer)
+      case ValueFlatMappedProducer(producer, _) =>
+        List(producer)
+      case WrittenProducer(producer, _) =>
+        List(producer)
+      case LeftJoinedProducer(producer, _) =>
+        List(producer)
+      case Summer(producer, _, _) =>
+        List(producer)
+      case MergedProducer(l, r) =>
+        List(l, r)
     }
 
   /**
@@ -101,26 +116,40 @@ object Producer {
     */
   def isNoOp[P <: Platform[P]](p: Producer[P, Any]): Boolean =
     p match {
-      case IdentityKeyedProducer(_) => true
-      case NamedProducer(_, _)      => true
-      case MergedProducer(_, _)     => true
-      case AlsoProducer(_, _)       => true
+      case IdentityKeyedProducer(_) =>
+        true
+      case NamedProducer(_, _) =>
+        true
+      case MergedProducer(_, _) =>
+        true
+      case AlsoProducer(_, _) =>
+        true
       // The rest do something
-      case Source(_)                     => false
-      case OptionMappedProducer(_, _)    => false
-      case FlatMappedProducer(_, _)      => false
-      case KeyFlatMappedProducer(_, _)   => false
-      case ValueFlatMappedProducer(_, _) => false
-      case WrittenProducer(_, _)         => false
-      case LeftJoinedProducer(_, _)      => false
-      case Summer(_, _, _)               => false
+      case Source(_) =>
+        false
+      case OptionMappedProducer(_, _) =>
+        false
+      case FlatMappedProducer(_, _) =>
+        false
+      case KeyFlatMappedProducer(_, _) =>
+        false
+      case ValueFlatMappedProducer(_, _) =>
+        false
+      case WrittenProducer(_, _) =>
+        false
+      case LeftJoinedProducer(_, _) =>
+        false
+      case Summer(_, _, _) =>
+        false
     }
 
   /** returns true if this Producer is an output of the DAG (Summer and WrittenProducer) */
   def isOutput[P <: Platform[P]](p: Producer[P, Any]): Boolean =
     p match {
-      case Summer(_, _, _) | WrittenProducer(_, _) => true
-      case _                                       => false
+      case Summer(_, _, _) | WrittenProducer(_, _) =>
+        true
+      case _ =>
+        false
     }
 
   /**
@@ -173,7 +202,8 @@ sealed trait Producer[P <: Platform[P], +T] {
   def lookup[U >: T, V](
       service: P#Service[U, V]): KeyedProducer[P, U, Option[V]] =
     map[(U, Unit)]((_, ())).leftJoin(service).mapValues {
-      case (_, v) => v
+      case (_, v) =>
+        v
     }
 
   /** Map each item to a new value */
@@ -298,7 +328,8 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
   def collectKeys[K2](pf: PartialFunction[K, K2]): KeyedProducer[P, K2, V] =
     IdentityKeyedProducer(
       collect {
-        case (k, v) if pf.isDefinedAt(k) => (pf(k), v)
+        case (k, v) if pf.isDefinedAt(k) =>
+          (pf(k), v)
       })
 
   /** Builds a new KeyedProvider by applying a partial function to values of elements of this one on which the function is defined.*/
@@ -319,7 +350,8 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
   def filterKeys(pred: K => Boolean): KeyedProducer[P, K, V] =
     IdentityKeyedProducer(
       filter {
-        case (k, _) => pred(k)
+        case (k, _) =>
+          pred(k)
       })
 
   /**

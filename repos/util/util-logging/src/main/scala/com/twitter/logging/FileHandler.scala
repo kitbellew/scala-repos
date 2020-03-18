@@ -65,10 +65,14 @@ object Policy {
       s,
       singletonPolicyNames.get(s.toLowerCase),
       Try(StorageUnit.parse(s.toLowerCase))) match {
-      case (weeklyRegex(dayOfWeek), _, _) => Weekly(dayOfWeek.toInt)
-      case (_, Some(singleton), _)        => singleton
-      case (_, _, Return(storageUnit))    => MaxSize(storageUnit)
-      case _                              => throw new Exception("Invalid log roll policy: " + s)
+      case (weeklyRegex(dayOfWeek), _, _) =>
+        Weekly(dayOfWeek.toInt)
+      case (_, Some(singleton), _) =>
+        singleton
+      case (_, _, Return(storageUnit)) =>
+        MaxSize(storageUnit)
+      case _ =>
+        throw new Exception("Invalid log roll policy: " + s)
     }
 }
 
@@ -145,8 +149,10 @@ class FileHandler(
 
   private val maxFileSize: Option[StorageUnit] =
     rollPolicy match {
-      case Policy.MaxSize(size) => Some(size)
-      case _                    => None
+      case Policy.MaxSize(size) =>
+        Some(size)
+      case _ =>
+        None
     }
 
   openLog()
@@ -164,7 +170,8 @@ class FileHandler(
       try {
         oldStream.close()
       } catch {
-        case e: Throwable => handleThrowable(e)
+        case e: Throwable =>
+          handleThrowable(e)
       }
     }
   }
@@ -181,7 +188,8 @@ class FileHandler(
       try {
         stream.close()
       } catch {
-        case e: Throwable => handleThrowable(e)
+        case e: Throwable =>
+          handleThrowable(e)
       }
     }
   }
@@ -208,12 +216,18 @@ class FileHandler(
   def timeSuffix(date: Date) = {
     val dateFormat =
       rollPolicy match {
-        case Policy.Never      => TwitterDateFormat("yyyy")
-        case Policy.SigHup     => TwitterDateFormat("yyyy")
-        case Policy.Hourly     => TwitterDateFormat("yyyyMMdd-HH")
-        case Policy.Daily      => TwitterDateFormat("yyyyMMdd")
-        case Policy.Weekly(_)  => TwitterDateFormat("yyyyMMdd")
-        case Policy.MaxSize(_) => TwitterDateFormat("yyyyMMdd-HHmmss")
+        case Policy.Never =>
+          TwitterDateFormat("yyyy")
+        case Policy.SigHup =>
+          TwitterDateFormat("yyyy")
+        case Policy.Hourly =>
+          TwitterDateFormat("yyyyMMdd-HH")
+        case Policy.Daily =>
+          TwitterDateFormat("yyyyMMdd")
+        case Policy.Weekly(_) =>
+          TwitterDateFormat("yyyyMMdd")
+        case Policy.MaxSize(_) =>
+          TwitterDateFormat("yyyyMMdd-HHmmss")
       }
     dateFormat.setCalendar(formatter.calendar)
     dateFormat.format(date)
@@ -235,7 +249,8 @@ class FileHandler(
 
     val rv =
       rollPolicy match {
-        case Policy.MaxSize(_) | Policy.Never | Policy.SigHup => None
+        case Policy.MaxSize(_) | Policy.Never | Policy.SigHup =>
+          None
         case Policy.Hourly => {
           next.add(Calendar.HOUR_OF_DAY, 1)
           Some(next)
@@ -321,7 +336,8 @@ class FileHandler(
         bytesWrittenToFile += lineSizeBytes
       }
     } catch {
-      case e: Throwable => handleThrowable(e)
+      case e: Throwable =>
+        handleThrowable(e)
     }
   }
 

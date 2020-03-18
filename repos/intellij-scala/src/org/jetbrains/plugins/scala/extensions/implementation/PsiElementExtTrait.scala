@@ -25,8 +25,10 @@ trait PsiElementExtTrait {
 
   def parentsInFile: Iterator[PsiElement] = {
     repr match {
-      case _: PsiFile | _: PsiDirectory => Iterator.empty
-      case _                            => new ParentsIterator(repr).takeWhile(!_.isInstanceOf[PsiFile])
+      case _: PsiFile | _: PsiDirectory =>
+        Iterator.empty
+      case _ =>
+        new ParentsIterator(repr).takeWhile(!_.isInstanceOf[PsiFile])
     }
   }
 
@@ -119,7 +121,9 @@ trait PsiElementExtTrait {
 
   def containingScalaFile: Option[ScalaFile] =
     repr.getContainingFile match {
-      case sf: ScalaFile => Some(sf)
-      case _             => None
+      case sf: ScalaFile =>
+        Some(sf)
+      case _ =>
+        None
     }
 }

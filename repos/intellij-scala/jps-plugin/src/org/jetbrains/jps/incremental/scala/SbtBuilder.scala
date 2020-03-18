@@ -116,8 +116,10 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         chunk.representativeTarget.getTargetType match {
           case JavaModuleBuildTargetType.PRODUCTION =>
             ResourcesTargetType.PRODUCTION
-          case JavaModuleBuildTargetType.TEST => ResourcesTargetType.TEST
-          case _                              => ResourcesTargetType.PRODUCTION
+          case JavaModuleBuildTargetType.TEST =>
+            ResourcesTargetType.TEST
+          case _ =>
+            ResourcesTargetType.PRODUCTION
         }
       sourceModules.map(new ResourcesTarget(_, targetType))
     }
@@ -209,8 +211,10 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         .getSourceDependenciesFor(chunk)
       val targetType =
         chunk.representativeTarget.getTargetType match {
-          case javaBuildTarget: JavaModuleBuildTargetType => javaBuildTarget
-          case _                                          => JavaModuleBuildTargetType.PRODUCTION
+          case javaBuildTarget: JavaModuleBuildTargetType =>
+            javaBuildTarget
+          case _ =>
+            JavaModuleBuildTargetType.PRODUCTION
         }
       sourceModules.map(new ModuleBuildTarget(_, targetType))
     }

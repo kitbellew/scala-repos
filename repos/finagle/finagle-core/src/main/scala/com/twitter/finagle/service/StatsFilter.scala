@@ -122,11 +122,16 @@ class StatsFilter[Req, Rep](
 
   private[this] def latencyStatSuffix: String = {
     timeUnit match {
-      case TimeUnit.NANOSECONDS  => "ns"
-      case TimeUnit.MICROSECONDS => "us"
-      case TimeUnit.MILLISECONDS => "ms"
-      case TimeUnit.SECONDS      => "secs"
-      case _                     => timeUnit.toString.toLowerCase
+      case TimeUnit.NANOSECONDS =>
+        "ns"
+      case TimeUnit.MICROSECONDS =>
+        "us"
+      case TimeUnit.MILLISECONDS =>
+        "ms"
+      case TimeUnit.SECONDS =>
+        "secs"
+      case _ =>
+        timeUnit.toString.toLowerCase
     }
   }
 

@@ -11,7 +11,8 @@ object Test extends ReplTest with HangingRepl with Welcoming {
         m copyInto t
         t processArgumentString s"-i $script"
         t
-      case _ => s
+      case _ =>
+        s
     }
   def code = "Console println Try(8)"
 }
@@ -38,6 +39,7 @@ trait HangingRepl extends ReplTest {
   def hanging[A](a: => A): A = Future(a) resultWithin timeout
   override def show() =
     Try(hanging(super.show())) recover {
-      case e => e.printStackTrace()
+      case e =>
+        e.printStackTrace()
     }
 }

@@ -68,7 +68,8 @@ class DelimitedPartitionTestJob(args: Args) extends Job(args) {
   try {
     Tsv("input", ('col1, 'col2)).read.write(DelimitedPartitionedTsv)
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -77,7 +78,8 @@ class CustomPartitionTestJob(args: Args) extends Job(args) {
   try {
     Tsv("input", ('col1, 'col2, 'col3)).read.write(CustomPartitionedTsv)
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -87,7 +89,8 @@ class PartialPartitionTestJob(args: Args) extends Job(args) {
   try {
     Tsv("input", ('col1, 'col2, 'col3)).read.write(PartialPartitionedTsv)
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 

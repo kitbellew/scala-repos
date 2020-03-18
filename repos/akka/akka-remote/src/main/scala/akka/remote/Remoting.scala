@@ -79,7 +79,8 @@ private[remote] object Remoting {
     transportMapping.get(remote.protocol) match {
       case Some(transports) ⇒
         val responsibleTransports = transports.filter {
-          case (t, _) ⇒ t.isResponsibleFor(remote)
+          case (t, _) ⇒
+            t.isResponsibleFor(remote)
         }
 
         responsibleTransports.size match {
@@ -116,7 +117,8 @@ private[remote] object Remoting {
       with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
     override def supervisorStrategy =
       OneForOneStrategy() {
-        case NonFatal(e) ⇒ Restart
+        case NonFatal(e) ⇒
+          Restart
       }
 
     def receive = {
@@ -228,9 +230,11 @@ private[remote] class Remoting(
               null)
 
           transportMapping = transports.groupBy {
-            case (transport, _) ⇒ transport.schemeIdentifier
+            case (transport, _) ⇒
+              transport.schemeIdentifier
           } map {
-            case (k, v) ⇒ k -> v.toSet
+            case (k, v) ⇒
+              k -> v.toSet
           }
 
           defaultAddress = transports.head._2
@@ -282,7 +286,8 @@ private[remote] class Remoting(
         import system.dispatcher
         implicit val timeout = CommandAckTimeout
         manager ? ManagementCommand(cmd) map {
-          case ManagementCommandAck(status) ⇒ status
+          case ManagementCommandAck(status) ⇒
+            status
         }
       case None ⇒
         throw new RemoteTransportExceptionNoStackTrace(
@@ -292,7 +297,8 @@ private[remote] class Remoting(
 
   override def quarantine(remoteAddress: Address, uid: Option[Int]): Unit =
     endpointManager match {
-      case Some(manager) ⇒ manager ! Quarantine(remoteAddress, uid)
+      case Some(manager) ⇒
+        manager ! Quarantine(remoteAddress, uid)
       case _ ⇒
         throw new RemoteTransportExceptionNoStackTrace(
           s"Attempted to quarantine address [$remoteAddress] with uid [$uid] but Remoting is not running",
@@ -308,7 +314,8 @@ private[remote] class Remoting(
       case (scheme, transports) ⇒
         scheme -> transports.flatMap {
           // Need to do like this for binary compatibility reasons
-          case (t, _) ⇒ Option(t.boundAddress)
+          case (t, _) ⇒
+            Option(t.boundAddress)
         }
     }
   }
@@ -426,8 +433,10 @@ private[remote] object EndpointManager {
       if (isWritable(endpoint)) {
         val address = writableToAddress(endpoint)
         addressToWritable.get(address) match {
-          case Some(policy) if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
-          case _ ⇒ addressToWritable -= address
+          case Some(policy)
+              if policy.isTombstone ⇒ // There is already a tombstone directive, leave it there
+          case _ ⇒
+            addressToWritable -= address
         }
         writableToAddress -= endpoint
       } else if (isReadOnly(endpoint)) {
@@ -444,8 +453,10 @@ private[remote] object EndpointManager {
 
     def hasWritableEndpointFor(address: Address): Boolean =
       writableEndpointWithPolicyFor(address) match {
-        case Some(Pass(_, _, _)) ⇒ true
-        case _ ⇒ false
+        case Some(Pass(_, _, _)) ⇒
+          true
+        case _ ⇒
+          false
       }
 
     def readOnlyEndpointFor(address: Address): Option[(ActorRef, Int)] =
@@ -461,17 +472,22 @@ private[remote] object EndpointManager {
       writableEndpointWithPolicyFor(address) match {
         // timeOfRelease is only used for garbage collection. If an address is still probed, we should report the
         // known fact that it is quarantined.
-        case Some(Quarantined(`uid`, _)) ⇒ true
-        case _ ⇒ false
+        case Some(Quarantined(`uid`, _)) ⇒
+          true
+        case _ ⇒
+          false
       }
 
     def refuseUid(address: Address): Option[Int] =
       writableEndpointWithPolicyFor(address) match {
         // timeOfRelease is only used for garbage collection. If an address is still probed, we should report the
         // known fact that it is quarantined.
-        case Some(Quarantined(uid, _)) ⇒ Some(uid)
-        case Some(Pass(_, _, refuseUid)) ⇒ refuseUid
-        case _ ⇒ None
+        case Some(Quarantined(uid, _)) ⇒
+          Some(uid)
+        case Some(Pass(_, _, refuseUid)) ⇒
+          refuseUid
+        case _ ⇒
+          None
       }
 
     /**
@@ -500,9 +516,12 @@ private[remote] object EndpointManager {
 
     def prune(): Unit = {
       addressToWritable = addressToWritable.filter {
-        case (_, Gated(timeOfRelease)) ⇒ timeOfRelease.hasTimeLeft
-        case (_, Quarantined(_, timeOfRelease)) ⇒ timeOfRelease.hasTimeLeft
-        case _ ⇒ true
+        case (_, Gated(timeOfRelease)) ⇒
+          timeOfRelease.hasTimeLeft
+        case (_, Quarantined(_, timeOfRelease)) ⇒
+          timeOfRelease.hasTimeLeft
+        case _ ⇒
+          true
       }
     }
   }
@@ -564,7 +583,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           remoteAddress,
           uid,
           Deadline.now + settings.QuarantineDuration)
-      case None ⇒ body
+      case None ⇒
+        body
     }
 
   override val supervisorStrategy =
@@ -647,7 +667,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         e match {
           case _: EndpointDisassociatedException |
               _: EndpointAssociationException ⇒ // no logging
-          case _ ⇒ log.error(e, e.getMessage)
+          case _ ⇒
+            log.error(e, e.getMessage)
         }
         endpoints.markAsFailed(
           sender(),
@@ -663,17 +684,20 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       listens map {
         ListensResult(addressesPromise, _)
       } recover {
-        case NonFatal(e) ⇒ ListensFailure(addressesPromise, e)
+        case NonFatal(e) ⇒
+          ListensFailure(addressesPromise, e)
       } pipeTo self
     case ListensResult(addressesPromise, results) ⇒
       transportMapping = results.groupBy {
-        case (_, transportAddress, _) ⇒ transportAddress
+        case (_, transportAddress, _) ⇒
+          transportAddress
       } map {
         case (a, t) if t.size > 1 ⇒
           throw new RemoteTransportException(
             s"There are more than one transports listening on local address [$a]",
             null)
-        case (a, t) ⇒ a -> t.head._1
+        case (a, t) ⇒
+          a -> t.head._1
       }
       // Register to each transport as listener and collect mapping to addresses
       val transportsAndAddresses = results map {
@@ -730,7 +754,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
       // Stop inbound read-only associations
       (endpoints.readOnlyEndpointFor(address), uidToQuarantineOption) match {
-        case (Some((endpoint, _)), None) ⇒ context.stop(endpoint)
+        case (Some((endpoint, _)), None) ⇒
+          context.stop(endpoint)
         case (Some((endpoint, currentUid)), Some(quarantineUid))
             if currentUid == quarantineUid ⇒
           context.stop(endpoint)
@@ -834,7 +859,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         (Future sequence resources.map(shutdown)) map {
           _.forall(identity)
         } recover {
-          case NonFatal(_) ⇒ false
+          case NonFatal(_) ⇒
+            false
         }
       }
 
@@ -858,7 +884,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   }
 
   def flushing: Receive = {
-    case s: Send ⇒ extendedSystem.deadLetters ! s
+    case s: Send ⇒
+      extendedSystem.deadLetters ! s
     case InboundAssociation(h: AkkaProtocolHandle) ⇒
       h.disassociate(AssociationHandle.Shutdown)
     case Terminated(_) ⇒ // why should we care now?
@@ -876,7 +903,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             endpoint ! EndpointWriter.TakeOver(handle, self)
             endpoints.writableEndpointWithPolicyFor(
               handle.remoteAddress) match {
-              case Some(Pass(ep, _, _)) ⇒ ep ! ReliableDeliverySupervisor.Ungate
+              case Some(Pass(ep, _, _)) ⇒
+                ep ! ReliableDeliverySupervisor.Ungate
               case _ ⇒
             }
           case None ⇒

@@ -136,7 +136,8 @@ object CachedMacroUtil {
             q"$psiModificationTrackerFQN.MODIFICATION_COUNT"
           case Some(ModCount.getJavaStructureModificationCount) =>
             q"$psiModificationTrackerFQN.JAVA_STRUCTURE_MODIFICATION_COUNT"
-          case _ => tree
+          case _ =>
+            tree
         }
     }
   }

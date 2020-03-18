@@ -39,13 +39,17 @@ class OrderingSuite extends SparkFunSuite with ExpressionEvalHelper {
       Seq(Ascending, Descending).foreach { direction =>
         val sortOrder =
           direction match {
-            case Ascending  => BoundReference(0, dataType, nullable = true).asc
-            case Descending => BoundReference(0, dataType, nullable = true).desc
+            case Ascending =>
+              BoundReference(0, dataType, nullable = true).asc
+            case Descending =>
+              BoundReference(0, dataType, nullable = true).desc
           }
         val expectedCompareResult =
           direction match {
-            case Ascending  => signum(expected)
-            case Descending => -1 * signum(expected)
+            case Ascending =>
+              signum(expected)
+            case Descending =>
+              -1 * signum(expected)
           }
         val intOrdering = new InterpretedOrdering(sortOrder :: Nil)
         val genOrdering = GenerateOrdering.generate(sortOrder :: Nil)

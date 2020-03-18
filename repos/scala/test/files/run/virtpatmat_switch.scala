@@ -1,9 +1,12 @@
 object Test extends App {
   def intSwitch(x: Int) =
     x match {
-      case 0 => "zero"
-      case 1 => "one"
-      case _ => "many"
+      case 0 =>
+        "zero"
+      case 1 =>
+        "one"
+      case _ =>
+        "many"
     }
 
   println(intSwitch(0))
@@ -12,16 +15,22 @@ object Test extends App {
 
   def charSwitch(x: Char) =
     x match {
-      case 'a' => "got a"
-      case 'b' => "got b"
-      case _   => "got some letter"
+      case 'a' =>
+        "got a"
+      case 'b' =>
+        "got b"
+      case _ =>
+        "got some letter"
     }
 
   def byteSwitch(x: Byte) =
     x match {
-      case 'a' => "got a"
-      case 'b' => "got b"
-      case _   => "got some letter"
+      case 'a' =>
+        "got a"
+      case 'b' =>
+        "got b"
+      case _ =>
+        "got some letter"
     }
 
   println(charSwitch('a'))
@@ -30,13 +39,15 @@ object Test extends App {
 
   def implicitDefault(x: Int) =
     x match {
-      case 0 => 0
+      case 0 =>
+        0
     }
 
   try {
     implicitDefault(5)
   } catch {
-    case e: MatchError => println(e)
+    case e: MatchError =>
+      println(e)
   }
 
 }

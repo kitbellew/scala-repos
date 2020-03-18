@@ -47,10 +47,14 @@ abstract class CreateTypeDefinitionQuickFix(
   override def isAvailable(project: Project, editor: Editor, file: PsiFile) = {
     def goodQualifier =
       ref.qualifier match {
-        case Some(InstanceOfClass(typeDef: ScTypeDefinition)) => true
-        case Some(ResolvesTo(pack: PsiPackage))               => true
-        case None                                             => true
-        case _                                                => false
+        case Some(InstanceOfClass(typeDef: ScTypeDefinition)) =>
+          true
+        case Some(ResolvesTo(pack: PsiPackage)) =>
+          true
+        case None =>
+          true
+        case _ =>
+          false
       }
     super.isAvailable(project, editor, file) && goodQualifier
   }
@@ -63,11 +67,14 @@ abstract class CreateTypeDefinitionQuickFix(
       ref.qualifier match {
         case Some(InstanceOfClass(typeDef: ScTypeDefinition)) =>
           createInnerClassIn(typeDef)
-        case Some(ResolvesTo(pack: PsiPackage)) => createClassInPackage(pack)
+        case Some(ResolvesTo(pack: PsiPackage)) =>
+          createClassInPackage(pack)
         case None =>
           val inThisFile = (Iterator(ref) ++ ref.parentsInFile).collect {
-            case inner childOf (_: ScTemplateBody)     => inner
-            case td: ScTypeDefinition if td.isTopLevel => td
+            case inner childOf (_: ScTemplateBody) =>
+              inner
+            case td: ScTypeDefinition if td.isTopLevel =>
+              td
           }
           val fileOption =
             if (file == null || file.getContainingDirectory == null)
@@ -84,7 +91,8 @@ abstract class CreateTypeDefinitionQuickFix(
   private def createClassInPackage(psiPackage: PsiPackage): Unit = {
     val directory =
       psiPackage.getDirectories.filter(_.isWritable) match {
-        case Array(dir) => dir
+        case Array(dir) =>
+          dir
         case Array() =>
           throw new IllegalStateException(
             s"Cannot find directory for the package `${psiPackage.getName}`")
@@ -139,7 +147,8 @@ abstract class CreateTypeDefinitionQuickFix(
       new PsiElementListCellRenderer[PsiElement] {
         override def getElementText(element: PsiElement) =
           element match {
-            case f: PsiFile => "New file"
+            case f: PsiFile =>
+              "New file"
             case td: ScTypeDefinition if td.isTopLevel =>
               "Top level in this file"
             case _ childOf (tb: ScTemplateBody) =>
@@ -147,7 +156,8 @@ abstract class CreateTypeDefinitionQuickFix(
                 tb,
                 classOf[ScTemplateDefinition])
               s"Inner in ${containingClass.name}"
-            case _ => "Local scope"
+            case _ =>
+              "Local scope"
           }
 
         override def getContainerText(element: PsiElement, name: String) = null
@@ -155,8 +165,9 @@ abstract class CreateTypeDefinitionQuickFix(
         override def getIcon(element: PsiElement) = null
       }
     siblings match {
-      case Seq()     =>
-      case Seq(elem) => createClassAtLevel(elem)
+      case Seq() =>
+      case Seq(elem) =>
+        createClassAtLevel(elem)
       case _ =>
         val selection = siblings.head
         val processor =
@@ -181,7 +192,8 @@ abstract class CreateTypeDefinitionQuickFix(
 
   private def createClassAtLevel(sibling: PsiElement): Unit = {
     sibling match {
-      case file: PsiFile => createClassInDirectory(file.getContainingDirectory)
+      case file: PsiFile =>
+        createClassInDirectory(file.getContainingDirectory)
       case td: ScTypeDefinition if td.isTopLevel =>
         createClassIn(td.getParent, None)
       case _ childOf (tb: ScTemplateBody) =>
@@ -247,7 +259,8 @@ abstract class CreateTypeDefinitionQuickFix(
       case pt: ScParameterizedTypeElement =>
         val paramsText =
           pt.typeArgList.typeArgs match {
-            case args if args.size == 1 => "[T]"
+            case args if args.size == 1 =>
+              "[T]"
             case args =>
               args.indices.map(i => s"T${i + 1}").mkString("[", ", ", "]")
           }

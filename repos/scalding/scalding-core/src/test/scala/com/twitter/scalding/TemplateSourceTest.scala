@@ -25,7 +25,8 @@ class TemplateTestJob(args: Args) extends Job(args) {
   try {
     Tsv("input", ('col1, 'col2)).read.write(TemplatedTsv("base", "%s", 'col1))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 

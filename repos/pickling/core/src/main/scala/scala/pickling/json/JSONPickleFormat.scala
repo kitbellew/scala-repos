@@ -35,7 +35,8 @@ package json {
         new JSONPickleReader(null, this)
       else
         JSON.parseRaw(pickle.value) match {
-          case Some(raw) => new JSONPickleReader(raw, this)
+          case Some(raw) =>
+            new JSONPickleReader(raw, this)
           case None =>
             throw new PicklingException(
               "failed to parse \"" + pickle.value + "\" as JSON")
@@ -316,7 +317,8 @@ package json {
             datum match {
               case JSONObject(fields) if fields.contains("$ref") =>
                 FastTypeTag.Ref.key
-              case _ => hints.elidedType.get.key
+              case _ =>
+                hints.elidedType.get.key
             }
           } else {
             datum match {
@@ -373,14 +375,16 @@ package json {
     def beginCollection(): PReader = readField("elems")
     def readLength(): Int = {
       datum match {
-        case JSONArray(list) => list.length
+        case JSONArray(list) =>
+          list.length
       }
     }
     private var i = 0
     def readElement(): PReader = {
       val reader = {
         datum match {
-          case JSONArray(list) => mkNestedReader(list(i))
+          case JSONArray(list) =>
+            mkNestedReader(list(i))
         }
       }
       i += 1

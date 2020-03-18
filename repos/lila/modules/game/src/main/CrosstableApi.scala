@@ -16,8 +16,10 @@ final class CrosstableApi(coll: Coll) {
 
   def apply(game: Game): Fu[Option[Crosstable]] =
     game.userIds.distinct match {
-      case List(u1, u2) => apply(u1, u2)
-      case _            => fuccess(none)
+      case List(u1, u2) =>
+        apply(u1, u2)
+      case _ =>
+        fuccess(none)
     }
 
   def apply(u1: String, u2: String): Fu[Option[Crosstable]] =
@@ -41,15 +43,21 @@ final class CrosstableApi(coll: Coll) {
             Crosstable.BSONFields.nbGames -> BSONInteger(1),
             "s1" -> BSONInteger(
               game.winnerUserId match {
-                case Some(u) if u == u1 => 10
-                case None               => 5
-                case _                  => 0
+                case Some(u) if u == u1 =>
+                  10
+                case None =>
+                  5
+                case _ =>
+                  0
               }),
             "s2" -> BSONInteger(
               game.winnerUserId match {
-                case Some(u) if u == u2 => 10
-                case None               => 5
-                case _                  => 0
+                case Some(u) if u == u2 =>
+                  10
+                case None =>
+                  5
+                case _ =>
+                  0
               })
           )) ++ BSONDocument(
           "$push" -> BSONDocument(
@@ -57,7 +65,8 @@ final class CrosstableApi(coll: Coll) {
               "$each" -> List(bsonResult),
               "$slice" -> -maxGames)))
         coll.update(select(u1, u2), bson).void
-      case _ => funit
+      case _ =>
+        funit
     }
 
   private def exists(u1: String, u2: String) =
@@ -116,7 +125,8 @@ final class CrosstableApi(coll: Coll) {
           _ <- coll insert crosstable
         } yield crosstable.some
 
-      case _ => fuccess(none)
+      case _ =>
+        fuccess(none)
     }
 
   private def select(u1: String, u2: String) =

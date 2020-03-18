@@ -39,7 +39,8 @@ class RangeDirectivesExamplesSpec extends RoutingSpec {
         ByteRange(1, 2),
         ByteRange(6, 7))) ~> route ~> check {
       headers.collectFirst {
-        case `Content-Range`(_, _) => true
+        case `Content-Range`(_, _) =>
+          true
       } shouldBe None
       val responseF =
         responseAs[Multipart.ByteRanges].parts

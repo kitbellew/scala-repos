@@ -198,7 +198,8 @@ trait Future[+T] extends Awaitable[T] {
     */
   def failed: Future[Throwable] =
     transform({
-      case Failure(t) => Success(t)
+      case Failure(t) =>
+        Success(t)
       case Success(v) =>
         Failure(
           new NoSuchElementException(
@@ -235,8 +236,10 @@ trait Future[+T] extends Awaitable[T] {
   def transform[S](s: T => S, f: Throwable => Throwable)(implicit
       executor: ExecutionContext): Future[S] =
     transform {
-      case Success(r) => Try(s(r))
-      case Failure(t) => Try(throw f(t)) // will throw fatal errors!
+      case Success(r) =>
+        Try(s(r))
+      case Failure(t) =>
+        Try(throw f(t)) // will throw fatal errors!
     }
 
   /** Creates a new Future by applying the specified function to the result
@@ -298,8 +301,10 @@ trait Future[+T] extends Awaitable[T] {
   def flatMap[S](f: T => Future[S])(implicit
       executor: ExecutionContext): Future[S] =
     transformWith {
-      case Success(s) => f(s)
-      case Failure(_) => this.asInstanceOf[Future[S]]
+      case Success(s) =>
+        f(s)
+      case Failure(_) =>
+        this.asInstanceOf[Future[S]]
     }
 
   /** Creates a new future with one level of nesting flattened, this method is equivalent
@@ -420,8 +425,10 @@ trait Future[+T] extends Awaitable[T] {
   def recoverWith[U >: T](pf: PartialFunction[Throwable, Future[U]])(implicit
       executor: ExecutionContext): Future[U] =
     transformWith {
-      case Failure(t) => pf.applyOrElse(t, (_: Throwable) => this)
-      case Success(_) => this
+      case Failure(t) =>
+        pf.applyOrElse(t, (_: Throwable) => this)
+      case Success(_) =>
+        this
     }
 
   /** Zips the values of `this` and `that` future, and creates
@@ -487,9 +494,11 @@ trait Future[+T] extends Awaitable[T] {
     else {
       implicit val ec = internalExecutor
       recoverWith {
-        case _ => that
+        case _ =>
+          that
       } recoverWith {
-        case _ => this
+        case _ =>
+          this
       }
     }
 
@@ -545,7 +554,8 @@ trait Future[+T] extends Awaitable[T] {
     transform { result =>
       try pf.applyOrElse[Try[T], Any](result, Predef.conforms[Try[T]])
       catch {
-        case NonFatal(t) => executor reportFailure t
+        case NonFatal(t) =>
+          executor reportFailure t
       }
 
       result
@@ -582,7 +592,8 @@ object Future {
       atMost match {
         case e if e eq Duration.Undefined =>
           throw new IllegalArgumentException("cannot wait for Undefined period")
-        case Duration.Inf      => new CountDownLatch(1).await()
+        case Duration.Inf =>
+          new CountDownLatch(1).await()
         case Duration.MinusInf => // Drop out
         case f: FiniteDuration =>
           if (f > Duration.Zero)
@@ -744,8 +755,9 @@ object Future {
         v =>
           try {
             v match {
-              case Success(r) if p(r) => result tryComplete Success(Some(r))
-              case _                  =>
+              case Success(r) if p(r) =>
+                result tryComplete Success(Some(r))
+              case _ =>
             }
           } finally {
             if (ref.decrementAndGet == 0) {
@@ -775,8 +787,10 @@ object Future {
         successful[Option[T]](None)
       else {
         i.next().transformWith {
-          case Success(r) if p(r) => successful(Some(r))
-          case other              => searchNext(i)
+          case Success(r) if p(r) =>
+            successful(Some(r))
+          case other =>
+            searchNext(i)
         }
       }
     searchNext(futures.iterator)

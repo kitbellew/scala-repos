@@ -160,7 +160,8 @@ class EventLoggingListenerSuite
       extraConf: Map[String, String] = Map()) {
     val conf = getLoggingConf(testDirPath, compressionCodec)
     extraConf.foreach {
-      case (k, v) => conf.set(k, v)
+      case (k, v) =>
+        conf.set(k, v)
     }
     val logName = compressionCodec.map("test-" + _).getOrElse("test")
     val eventLogger =

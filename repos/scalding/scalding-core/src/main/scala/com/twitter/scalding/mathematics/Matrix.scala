@@ -222,11 +222,13 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       .mapValueStream(s =>
         Iterator(
           s.map {
-            case (_, _, c, v) => (c, v)
+            case (_, _, c, v) =>
+              (c, v)
           }.toMap))
       .toTypedPipe
       .map {
-        case ((g, r), m) => (r, g, m)
+        case ((g, r), m) =>
+          (r, g, m)
       }
       .toPipe(('row, 'col, 'val))
     new BlockMatrix[Group, Row, Col, Val](new Matrix('row, 'col, 'val, matPipe))

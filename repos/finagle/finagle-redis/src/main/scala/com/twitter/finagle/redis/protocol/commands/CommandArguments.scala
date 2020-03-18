@@ -13,8 +13,10 @@ case object WithScores extends CommandArgument {
   def commandBytes = StringToChannelBuffer(command)
   def unapply(s: String) =
     s.toUpperCase match {
-      case WITHSCORES => Some(s)
-      case _          => None
+      case WITHSCORES =>
+        Some(s)
+      case _ =>
+        None
     }
   override def toString = command
   def toChannelBuffer = commandBytes
@@ -98,7 +100,8 @@ object Weights {
           }(collection.breakOut)
         }
         Some(new Weights(weights))
-      case _ => None
+      case _ =>
+        None
     }
   }
   override def toString = Weights.WEIGHTS
@@ -132,14 +135,18 @@ object Aggregate {
           argLength == 2,
           "AGGREGATE requires a type (MIN, MAX, SUM)")
         args(1).toUpperCase match {
-          case Aggregate.Sum.name => Some(Aggregate.Sum)
-          case Aggregate.Max.name => Some(Aggregate.Max)
-          case Aggregate.Min.name => Some(Aggregate.Min)
+          case Aggregate.Sum.name =>
+            Some(Aggregate.Sum)
+          case Aggregate.Max.name =>
+            Some(Aggregate.Max)
+          case Aggregate.Min.name =>
+            Some(Aggregate.Min)
           case _ =>
             throw new ClientError(
               "AGGREGATE type must be one of MIN, MAX or SUM")
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -159,7 +166,8 @@ object Count {
           RequireClientProtocol.safe {
             NumberFormat.toLong(args(1))
           })
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -173,8 +181,10 @@ object Pattern {
       args != null && !args.isEmpty,
       "AGGREGATE can not be specified with empty list")
     args.head.toUpperCase match {
-      case PATTERN => Some(args(1))
-      case _       => None
+      case PATTERN =>
+        Some(args(1))
+      case _ =>
+        None
     }
   }
 }

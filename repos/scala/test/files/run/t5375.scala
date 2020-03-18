@@ -6,6 +6,7 @@ object Test extends App {
     else
       i)
   catch {
-    case ex: RuntimeException => println("Runtime exception")
+    case ex: RuntimeException =>
+      println("Runtime exception")
   }
 }

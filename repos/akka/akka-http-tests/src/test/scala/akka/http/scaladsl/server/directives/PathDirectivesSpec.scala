@@ -358,7 +358,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       val test = testFor(
         path(
           Rest.tmap {
-            case Tuple1(s) ⇒ Tuple1(s.split('-').toList)
+            case Tuple1(s) ⇒
+              Tuple1(s.split('-').toList)
           }) {
           echoComplete
         })
@@ -375,7 +376,8 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
       val test = testFor(
         path(
           Rest.tflatMap {
-            case Tuple1(s) ⇒ Some(s).filter("yes" ==).map(x ⇒ Tuple1(x))
+            case Tuple1(s) ⇒
+              Some(s).filter("yes" ==).map(x ⇒ Tuple1(x))
           }) {
           echoComplete
         })

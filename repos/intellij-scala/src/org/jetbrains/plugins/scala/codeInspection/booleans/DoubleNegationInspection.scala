@@ -53,23 +53,27 @@ object DoubleNegationUtil {
   def hasDoubleNegation(expr: ScExpression): Boolean = {
     if (hasNegation(expr))
       expr match {
-        case ScPrefixExpr(_, operand) => hasNegation(operand)
+        case ScPrefixExpr(_, operand) =>
+          hasNegation(operand)
         case ScInfixExpr(left, _, right) =>
           hasNegation(left) || hasNegation(right)
-        case _ => false
+        case _ =>
+          false
       }
     else
       expr match {
         case ScInfixExpr(left, operation, right) =>
           operation.refName == "==" && hasNegation(left) && hasNegation(right)
-        case _ => false
+        case _ =>
+          false
       }
   }
 
   def removeDoubleNegation(expr: ScExpression): ScExpression = {
     val text: String =
       stripParentheses(expr) match {
-        case ScPrefixExpr(_, operand) => invertedNegationText(operand)
+        case ScPrefixExpr(_, operand) =>
+          invertedNegationText(operand)
         case infix @ ScInfixExpr(left, _, right) =>
           val hasNegLeft = hasNegation(left)
           val hasNegRight = hasNegation(right)
@@ -98,16 +102,21 @@ object DoubleNegationUtil {
   @tailrec
   private def stripParentheses(expr: ScExpression): ScExpression =
     expr match {
-      case ScParenthesisedExpr(inner) => stripParentheses(inner)
-      case expr: ScExpression         => expr
+      case ScParenthesisedExpr(inner) =>
+        stripParentheses(inner)
+      case expr: ScExpression =>
+        expr
     }
 
   private def hasNegation(expr: ScExpression): Boolean = {
     val withoutParentheses = stripParentheses(expr)
     withoutParentheses match {
-      case ScPrefixExpr(operation, _)   => operation.refName == "!"
-      case ScInfixExpr(_, operation, _) => operation.refName == "!="
-      case _                            => false
+      case ScPrefixExpr(operation, _) =>
+        operation.refName == "!"
+      case ScInfixExpr(_, operation, _) =>
+        operation.refName == "!="
+      case _ =>
+        false
     }
   }
 
@@ -115,8 +124,10 @@ object DoubleNegationUtil {
     require(hasNegation(expr))
     val withoutParentheses = stripParentheses(expr)
     withoutParentheses match {
-      case ScPrefixExpr(_, operand)    => operand.getText
-      case ScInfixExpr(left, _, right) => left.getText + "==" + right.getText
+      case ScPrefixExpr(_, operand) =>
+        operand.getText
+      case ScInfixExpr(left, _, right) =>
+        left.getText + "==" + right.getText
     }
   }
 }

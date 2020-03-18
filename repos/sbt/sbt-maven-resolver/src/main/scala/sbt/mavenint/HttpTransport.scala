@@ -32,8 +32,9 @@ class HttpTransport(repository: RemoteRepository) extends AbstractTransporter {
   override def implPut(put: PutTask): Unit = {
     val to = toURL(put)
     Option(put.getDataFile) match {
-      case Some(file) => URLHandlerRegistry.getDefault.upload(file, to, null)
-      case None       =>
+      case Some(file) =>
+        URLHandlerRegistry.getDefault.upload(file, to, null)
+      case None =>
         // TODO - Ivy does not support uploading not from a file.  This isn't very efficient in ANY way,
         //        so if we rewrite the URL handler for Ivy we should fix this as well.
         sbt.io.IO.withTemporaryFile("tmp", "upload") { file =>
@@ -47,7 +48,9 @@ class HttpTransport(repository: RemoteRepository) extends AbstractTransporter {
   override def classify(err: Throwable): Int =
     err match {
       // TODO - Have we caught all the important exceptions here.
-      case _: NotFoundException => Transporter.ERROR_NOT_FOUND
-      case _                    => Transporter.ERROR_OTHER
+      case _: NotFoundException =>
+        Transporter.ERROR_NOT_FOUND
+      case _ =>
+        Transporter.ERROR_OTHER
     }
 }

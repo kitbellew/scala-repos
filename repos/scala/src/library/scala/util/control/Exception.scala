@@ -58,10 +58,13 @@ object Exception {
     */
   def shouldRethrow(x: Throwable): Boolean =
     x match {
-      case _: ControlThrowable     => true
-      case _: InterruptedException => true
+      case _: ControlThrowable =>
+        true
+      case _: InterruptedException =>
+        true
       // case _: java.lang.Error       => true ?
-      case _ => false
+      case _ =>
+        false
     }
 
   trait Described {
@@ -112,15 +115,19 @@ object Exception {
     def apply[U >: T](body: => U): U =
       try body
       catch {
-        case x if rethrow(x)       => throw x
-        case x if pf isDefinedAt x => pf(x)
+        case x if rethrow(x) =>
+          throw x
+        case x if pf isDefinedAt x =>
+          pf(x)
       } finally fin foreach (_.invoke())
 
     /* Create an empty Try container with this Catch and the supplied `Finally`. */
     def andFinally(body: => Unit): Catch[T] =
       fin match {
-        case None    => new Catch(pf, Some(new Finally(body)), rethrow)
-        case Some(f) => new Catch(pf, Some(f and body), rethrow)
+        case None =>
+          new Catch(pf, Some(new Finally(body)), rethrow)
+        case Some(f) =>
+          new Catch(pf, Some(f and body), rethrow)
       }
 
     /** Apply this catch logic to the supplied body, mapping the result
@@ -162,8 +169,10 @@ object Exception {
   final def nonFatalCatcher[T]: Catcher[T] =
     mkThrowableCatcher(
       {
-        case NonFatal(_) => true;
-        case _           => false
+        case NonFatal(_) =>
+          true;
+        case _ =>
+          false
       },
       throw _)
   final def allCatcher[T]: Catcher[T] = mkThrowableCatcher(_ => true, throw _)
@@ -254,6 +263,7 @@ object Exception {
 
   private def pfFromExceptions(
       exceptions: Class[_]*): PartialFunction[Throwable, Nothing] = {
-    case x if wouldMatch(x, exceptions) => throw x
+    case x if wouldMatch(x, exceptions) =>
+      throw x
   }
 }

@@ -36,15 +36,20 @@ trait StringTypedField extends TypedField[String] with StringValidators {
 
   def setFromAny(in: Any): Box[String] =
     in match {
-      case seq: Seq[_] if !seq.isEmpty => setFromAny(seq.head)
-      case _                           => genericSetFromAny(in)
+      case seq: Seq[_] if !seq.isEmpty =>
+        setFromAny(seq.head)
+      case _ =>
+        genericSetFromAny(in)
     }
 
   def setFromString(s: String): Box[String] =
     s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case _                       => setBox(Full(s))
+      case null | "" if optional_? =>
+        setBox(Empty)
+      case null | "" =>
+        setBox(Failure(notOptionalErrorMessage))
+      case _ =>
+        setBox(Full(s))
     }
 
   private def elem =
@@ -67,8 +72,10 @@ trait StringTypedField extends TypedField[String] with StringValidators {
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def defaultValue = ""
@@ -78,9 +85,12 @@ trait StringTypedField extends TypedField[String] with StringValidators {
   def asJValue: JValue = valueBox.map(v => JString(v)) openOr (JNothing: JValue)
   def setFromJValue(jvalue: JValue): Box[MyType] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JString(s)                     => setFromString(s)
-      case other                          => setBox(FieldHelpers.expectedA("JString", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JString(s) =>
+        setFromString(s)
+      case other =>
+        setBox(FieldHelpers.expectedA("JString", other))
     }
 }
 

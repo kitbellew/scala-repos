@@ -169,8 +169,10 @@ class BinaryResultSetTest extends FunSuite with HexDump {
     assert(rs.rows.size == 1)
     assert(rs.fields(0).name == "col1")
     rs.rows(0)("col1") match {
-      case Some(StringValue(s)) => assert(s == "foobar")
-      case v                    => fail("expected StringValue(foobar), but got %s".format(v))
+      case Some(StringValue(s)) =>
+        assert(s == "foobar")
+      case v =>
+        fail("expected StringValue(foobar), but got %s".format(v))
     }
   }
 }

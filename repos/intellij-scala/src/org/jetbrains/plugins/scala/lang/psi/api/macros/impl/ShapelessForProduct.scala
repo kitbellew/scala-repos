@@ -96,8 +96,10 @@ object ShapelessForProduct extends ScalaMacroTypeable {
             ScalaPsiUtil.getCompanionModule(c) match {
               case Some(obj: ScObject) =>
                 val elem = obj.members.find {
-                  case a: ScTypeAlias if a.name == "Aux" => true
-                  case _                                 => false
+                  case a: ScTypeAlias if a.name == "Aux" =>
+                    true
+                  case _ =>
+                    false
                 }
                 if (!elem.isDefined)
                   return None
@@ -108,11 +110,14 @@ object ShapelessForProduct extends ScalaMacroTypeable {
                       elem.get.asInstanceOf[PsiNamedElement],
                       superReference = false),
                     Seq(productLikeType, repr)))
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

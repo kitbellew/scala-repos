@@ -31,8 +31,9 @@ trait CodegenFallback extends Expression {
 
   protected def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     foreach {
-      case n: Nondeterministic => n.setInitialValues()
-      case _                   =>
+      case n: Nondeterministic =>
+        n.setInitialValues()
+      case _ =>
     }
 
     // LeafNode does not need `input`

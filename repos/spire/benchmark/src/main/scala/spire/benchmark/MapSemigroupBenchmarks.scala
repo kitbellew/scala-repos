@@ -61,7 +61,8 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
                   semigroup.op(kv._2, u)
                 else
                   semigroup.op(u, kv._2)
-              case None => kv._2
+              case None =>
+                kv._2
             }))
     }
   }

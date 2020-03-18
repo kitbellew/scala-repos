@@ -135,7 +135,8 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     // TODO 2.12 -- move out alternate implementations into child classes
     val i: Iterator[A] =
       self match {
-        case it: Iterator[A] => it
+        case it: Iterator[A] =>
+          it
         case _: GenIterable[_] =>
           self.toIterator // If it might be parallel, be sure to .seq or use iterator!
         case _ => // Not parallel, not iterable--just traverse
@@ -471,9 +472,11 @@ object TraversableOnce {
       from match {
         case xs: generic.GenericTraversableTemplate[_, _] =>
           xs.genericBuilder.asInstanceOf[Builder[A, Traversable[A]]] mapResult {
-            case res => traversableToColl(res.asInstanceOf[GenTraversable[A]])
+            case res =>
+              traversableToColl(res.asInstanceOf[GenTraversable[A]])
           }
-        case _ => newIterator
+        case _ =>
+          newIterator
       }
 
     /** Creates a new builder from scratch

@@ -37,7 +37,8 @@ trait PostalCodeTypedField extends StringTypedField {
 
   def validatePostalCode(in: ValueType): List[FieldError] = {
     toBoxMyType(in) match {
-      case Full(zip) if (optional_? && zip.isEmpty) => Nil
+      case Full(zip) if (optional_? && zip.isEmpty) =>
+        Nil
       case _ =>
         country.value match {
           case Countries.USA =>
@@ -56,15 +57,19 @@ trait PostalCodeTypedField extends StringTypedField {
             valRegex(
               RegexPattern.compile("[A-Z][0-9][A-Z][ ][0-9][A-Z][0-9]"),
               S.?("invalid.postal.code"))(in)
-          case _ => genericCheck(in)
+          case _ =>
+            genericCheck(in)
         }
     }
   }
   private def genericCheck(zip: ValueType): List[FieldError] = {
     toBoxMyType(zip) flatMap {
-      case null              => Full(Text(S.?("invalid.postal.code")))
-      case s if s.length < 3 => Full(Text(S.?("invalid.postal.code")))
-      case _                 => Empty
+      case null =>
+        Full(Text(S.?("invalid.postal.code")))
+      case s if s.length < 3 =>
+        Full(Text(S.?("invalid.postal.code")))
+      case _ =>
+        Empty
     }
   }
 }

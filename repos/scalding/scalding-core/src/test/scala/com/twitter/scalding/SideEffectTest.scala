@@ -89,8 +89,10 @@ class ZipBuffer(args: Args) extends Job(args) {
   val zipped = Tsv("line", ('line)).pipe
     .map('line -> 'oddOrEven) { line: String =>
       line.substring(line.length - 1).toInt % 2 match {
-        case 0 => "even"
-        case 1 => "odd"
+        case 0 =>
+          "even"
+        case 1 =>
+          "odd"
       }
     }
     .groupBy('oddOrEven) {

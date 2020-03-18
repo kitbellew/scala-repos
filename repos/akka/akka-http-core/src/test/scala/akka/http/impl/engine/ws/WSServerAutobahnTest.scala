@@ -39,7 +39,8 @@ object WSServerAutobahnTest extends App {
             case None ⇒
               HttpResponse(400, entity = "Not a valid websocket request!")
           }
-        case _: HttpRequest ⇒ HttpResponse(404, entity = "Unknown resource!")
+        case _: HttpRequest ⇒
+          HttpResponse(404, entity = "Unknown resource!")
       },
       interface = host, // adapt to your docker host IP address if necessary
       port = port
@@ -51,8 +52,10 @@ object WSServerAutobahnTest extends App {
       case "sleep" ⇒
         while (true)
           Thread.sleep(1.minute.toMillis)
-      case "read" ⇒ Console.readLine("Press RETURN to stop...")
-      case _ ⇒ throw new Exception("akka.ws-mode MUST be sleep or read.")
+      case "read" ⇒
+        Console.readLine("Press RETURN to stop...")
+      case _ ⇒
+        throw new Exception("akka.ws-mode MUST be sleep or read.")
     }
   } finally {
     system.terminate()

@@ -29,7 +29,8 @@ class FlowRecoverSpec extends AkkaSpec {
             a
         }
         .recover {
-          case t: Throwable ⇒ 0
+          case t: Throwable ⇒
+            0
         }
         .runWith(TestSink.probe[Int])
         .requestNext(1)
@@ -48,7 +49,8 @@ class FlowRecoverSpec extends AkkaSpec {
             a
         }
         .recover {
-          case t: IndexOutOfBoundsException ⇒ 0
+          case t: IndexOutOfBoundsException ⇒
+            0
         }
         .runWith(TestSink.probe[Int])
         .requestNext(1)
@@ -60,7 +62,8 @@ class FlowRecoverSpec extends AkkaSpec {
       Source(1 to 3)
         .map(identity)
         .recover {
-          case t: Throwable ⇒ 0
+          case t: Throwable ⇒
+            0
         }
         .runWith(TestSink.probe[Int])
         .request(3)
@@ -72,7 +75,8 @@ class FlowRecoverSpec extends AkkaSpec {
       Source.empty
         .map(identity)
         .recover {
-          case t: Throwable ⇒ 0
+          case t: Throwable ⇒
+            0
         }
         .runWith(TestSink.probe[Int])
         .request(1)

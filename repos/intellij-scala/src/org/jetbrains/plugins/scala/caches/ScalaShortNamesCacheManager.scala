@@ -52,7 +52,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
           case file: ScalaFile =>
             if (!file.isScriptFile(withCaching = true))
               return clazz
-          case _ => return clazz
+          case _ =>
+            return clazz
         }
       }
     }
@@ -206,9 +207,12 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
         .getInstance(project)
         .getMethodsByName(name, scope)
         .filter {
-          case f: ScFunction       => false
-          case f: LightScalaMethod => false
-          case _                   => true
+          case f: ScFunction =>
+            false
+          case f: LightScalaMethod =>
+            false
+          case _ =>
+            true
         }
         .toSeq
     }

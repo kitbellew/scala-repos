@@ -114,8 +114,10 @@ class ScalaElementVisitor extends PsiElementVisitor {
 
   override def visitFile(file: PsiFile) {
     file match {
-      case sf: ScalaFile => visitElement(sf)
-      case _             => visitElement(file)
+      case sf: ScalaFile =>
+        visitElement(sf)
+      case _ =>
+        visitElement(file)
     }
   }
 

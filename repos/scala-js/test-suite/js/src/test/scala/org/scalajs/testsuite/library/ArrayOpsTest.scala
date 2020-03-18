@@ -105,7 +105,8 @@ class ArrayOpsTest {
     def ct[A: ClassTag](x: A): ClassTag[A] = implicitly[ClassTag[A]]
     val array = js.Array(3, 4, 5, 6, 3, 4)
     val res = array.collect {
-      case x if x > 4 => 2 * x
+      case x if x > 4 =>
+        2 * x
     }
 
     assertTrue(ct(res).runtimeClass == classOf[js.Array[Int]])

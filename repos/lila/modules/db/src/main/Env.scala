@@ -14,8 +14,10 @@ final class Env(
   lazy val db = {
     val parsedUri: MongoConnection.ParsedURI =
       MongoConnection.parseURI(config.getString("uri")) match {
-        case Success(parsedURI) => parsedURI
-        case Failure(e)         => sys error s"Invalid mongodb.uri"
+        case Success(parsedURI) =>
+          parsedURI
+        case Failure(e) =>
+          sys error s"Invalid mongodb.uri"
       }
     val driver = new MongoDriver(Some(config))
     val connection = driver.connection(parsedUri)

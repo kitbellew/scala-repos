@@ -74,8 +74,10 @@ final class RuntimeLong(val lo: Int, val hi: Int)
 
   override def equals(that: Any): Boolean =
     that match {
-      case b: RuntimeLong => inline_equals(b)
-      case _              => false
+      case b: RuntimeLong =>
+        inline_equals(b)
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = lo ^ hi

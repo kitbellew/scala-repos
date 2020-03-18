@@ -159,7 +159,8 @@ class JsonProtocolSuite extends SparkFunSuite {
         .accumulatorUpdates()
         .zipWithIndex
         .map {
-          case (a, i) => a.copy(id = i)
+          case (a, i) =>
+            a.copy(id = i)
         }
       SparkListenerExecutorMetricsUpdate("exec3", Seq((1L, 2, 3, accumUpdates)))
     }
@@ -284,10 +285,12 @@ class JsonProtocolSuite extends SparkFunSuite {
     assert(info.accumulables.nonEmpty)
     val oldJson = newJson
       .removeField {
-        case (field, _) => field == "Details"
+        case (field, _) =>
+          field == "Details"
       }
       .removeField {
-        case (field, _) => field == "Accumulables"
+        case (field, _) =>
+          field == "Accumulables"
       }
 
     val newInfo = JsonProtocol.stageInfoFromJson(oldJson)
@@ -311,7 +314,8 @@ class JsonProtocolSuite extends SparkFunSuite {
     assert(metrics.inputMetrics.nonEmpty)
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
     val oldJson = newJson.removeField {
-      case (field, _) => field == "Input Metrics"
+      case (field, _) =>
+        field == "Input Metrics"
     }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.inputMetrics.isEmpty)
@@ -334,10 +338,12 @@ class JsonProtocolSuite extends SparkFunSuite {
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
     val oldJson = newJson
       .removeField {
-        case (field, _) => field == "Records Read"
+        case (field, _) =>
+          field == "Records Read"
       }
       .removeField {
-        case (field, _) => field == "Records Written"
+        case (field, _) =>
+          field == "Records Written"
       }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.inputMetrics.get.recordsRead == 0)
@@ -361,10 +367,12 @@ class JsonProtocolSuite extends SparkFunSuite {
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
     val oldJson = newJson
       .removeField {
-        case (field, _) => field == "Total Records Read"
+        case (field, _) =>
+          field == "Total Records Read"
       }
       .removeField {
-        case (field, _) => field == "Shuffle Records Written"
+        case (field, _) =>
+          field == "Shuffle Records Written"
       }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.shuffleReadMetrics.get.recordsRead == 0)
@@ -385,7 +393,8 @@ class JsonProtocolSuite extends SparkFunSuite {
     assert(metrics.outputMetrics.nonEmpty)
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
     val oldJson = newJson.removeField {
-      case (field, _) => field == "Output Metrics"
+      case (field, _) =>
+        field == "Output Metrics"
     }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.outputMetrics.isEmpty)
@@ -466,7 +475,8 @@ class JsonProtocolSuite extends SparkFunSuite {
     assert(metrics.shuffleReadMetrics.nonEmpty)
     val newJson = JsonProtocol.taskMetricsToJson(metrics)
     val oldJson = newJson.removeField {
-      case (field, _) => field == "Local Bytes Read"
+      case (field, _) =>
+        field == "Local Bytes Read"
     }
     val newMetrics = JsonProtocol.taskMetricsFromJson(oldJson)
     assert(newMetrics.shuffleReadMetrics.get.localBytesRead == 0)
@@ -879,7 +889,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
         )
       case (e1, e2) =>
         assert(e1 === e2)
-      case _ => fail("Events don't match in types!")
+      case _ =>
+        fail("Events don't match in types!")
     }
   }
 
@@ -986,7 +997,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
       case (JobSucceeded, JobSucceeded) =>
       case (r1: JobFailed, r2: JobFailed) =>
         assertEquals(r1.exception, r2.exception)
-      case _ => fail("Job results don't match in types!")
+      case _ =>
+        fail("Job results don't match in types!")
     }
   }
 
@@ -1027,7 +1039,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
         assert(exit1CausedByApp === exit2CausedByApp)
         assert(reason1 === reason2)
       case (UnknownReason, UnknownReason) =>
-      case _                              => fail("Task end reasons don't match in types!")
+      case _ =>
+        fail("Task end reasons don't match in types!")
     }
   }
 
@@ -1040,7 +1053,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
             (key2, values2: Seq[(String, String)])) =>
         assert(key1 === key2)
         values1.zip(values2).foreach {
-          case (v1, v2) => assert(v1 === v2)
+          case (v1, v2) =>
+            assert(v1 === v2)
         }
     }
   }

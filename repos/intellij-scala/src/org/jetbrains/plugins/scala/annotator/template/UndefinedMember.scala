@@ -36,7 +36,8 @@ object UndefinedMember extends AnnotatorPart[ScTemplateDefinition] {
           declaration match {
             case a: ScAnnotationsHolder =>
               a.hasAnnotation("scala.native").isDefined
-            case _ => false
+            case _ =>
+              false
           }
         if (!isNative)
           holder.createErrorAnnotation(declaration, Message)

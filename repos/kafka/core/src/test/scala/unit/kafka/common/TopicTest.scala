@@ -65,7 +65,8 @@ class TopicTest {
       try {
         Topic.validate(validTopicNames(i))
       } catch {
-        case e: Exception => fail("Should not throw exception.")
+        case e: Exception =>
+          fail("Should not throw exception.")
       }
     }
   }

@@ -134,8 +134,10 @@ final case class ClusterRouterPoolSettings(
 private[akka] object ClusterRouterSettingsBase {
   def useRoleOption(role: String): Option[String] =
     role match {
-      case null | "" ⇒ None
-      case _ ⇒ Some(role)
+      case null | "" ⇒
+        None
+      case _ ⇒
+        Some(role)
     }
 
   /**
@@ -146,8 +148,10 @@ private[akka] object ClusterRouterSettingsBase {
     */
   def getMaxTotalNrOfInstances(config: Config): Int =
     config.getInt("nr-of-instances") match {
-      case 1 | 0 ⇒ config.getInt("cluster.max-nr-of-instances-per-node")
-      case other ⇒ other
+      case 1 | 0 ⇒
+        config.getInt("cluster.max-nr-of-instances-per-node")
+      case other ⇒
+        other
     }
 }
 
@@ -371,7 +375,8 @@ private[akka] class ClusterRouterGroupActor(
 
   val group =
     cell.routerConfig match {
-      case x: Group ⇒ x
+      case x: Group ⇒
+        x
       case other ⇒
         throw ActorInitializationException(
           "ClusterRouterGroupActor can only be used with group, not " + other.getClass)
@@ -421,11 +426,13 @@ private[akka] class ClusterRouterGroupActor(
         Some((unusedNodes.head, settings.routeesPaths.head))
       } else {
         val (address, used) = usedRouteePaths.minBy {
-          case (address, used) ⇒ used.size
+          case (address, used) ⇒
+            used.size
         }
         // pick next of the unused paths
         settings.routeesPaths.collectFirst {
-          case p if !used.contains(p) ⇒ (address, p)
+          case p if !used.contains(p) ⇒
+            (address, p)
         }
       }
     }
@@ -464,7 +471,8 @@ private[akka] trait ClusterRouterActor {
   var nodes: immutable.SortedSet[Address] = {
     import akka.cluster.Member.addressOrdering
     cluster.readView.members.collect {
-      case m if isAvailable(m) ⇒ m.address
+      case m if isAvailable(m) ⇒
+        m.address
     }
   }
 
@@ -475,8 +483,10 @@ private[akka] trait ClusterRouterActor {
 
   private def satisfiesRole(memberRoles: Set[String]): Boolean =
     settings.useRole match {
-      case None ⇒ true
-      case Some(r) ⇒ memberRoles.contains(r)
+      case None ⇒
+        true
+      case Some(r) ⇒
+        memberRoles.contains(r)
     }
 
   def availableNodes: immutable.SortedSet[Address] = {
@@ -495,12 +505,16 @@ private[akka] trait ClusterRouterActor {
   def fullAddress(routee: Routee): Address = {
     val a =
       routee match {
-        case ActorRefRoutee(ref) ⇒ ref.path.address
-        case ActorSelectionRoutee(sel) ⇒ sel.anchor.path.address
+        case ActorRefRoutee(ref) ⇒
+          ref.path.address
+        case ActorSelectionRoutee(sel) ⇒
+          sel.anchor.path.address
       }
     a match {
-      case Address(_, _, None, None) ⇒ cluster.selfAddress
-      case a ⇒ a
+      case Address(_, _, None, None) ⇒
+        cluster.selfAddress
+      case a ⇒
+        a
     }
   }
 
@@ -531,7 +545,8 @@ private[akka] trait ClusterRouterActor {
     case s: CurrentClusterState ⇒
       import akka.cluster.Member.addressOrdering
       nodes = s.members.collect {
-        case m if isAvailable(m) ⇒ m.address
+        case m if isAvailable(m) ⇒
+          m.address
       }
       addRoutees()
 

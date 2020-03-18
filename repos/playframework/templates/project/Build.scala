@@ -262,8 +262,10 @@ object Templates {
                 case Some(json) if json.startsWith("application/json") =>
                   val js = resp.json
                   (js \ "status").as[String] match {
-                    case "pending"   => TemplatePending(uuid)
-                    case "validated" => TemplateValidated(uuid)
+                    case "pending" =>
+                      TemplatePending(uuid)
+                    case "validated" =>
+                      TemplateValidated(uuid)
                     case "failed" =>
                       TemplateFailed(uuid, (js \ "errors").as[Seq[String]])
                   }
@@ -285,8 +287,10 @@ object Templates {
             }
 
           status.flatMap {
-            case TemplatePending(uuid) => waitUntilNotPending(uuid, statusUrl)
-            case TemplateValidated(_)  => Future.successful(Right(uuid))
+            case TemplatePending(uuid) =>
+              waitUntilNotPending(uuid, statusUrl)
+            case TemplateValidated(_) =>
+              Future.successful(Right(uuid))
             case TemplateFailed(_, errors) =>
               Future.successful(Left(errors.mkString("\n")))
           }
@@ -351,8 +355,10 @@ object Templates {
             s3delete
           }
         } yield result match {
-          case true  => ()
-          case false => throw new TemplatePublishFailed
+          case true =>
+            ()
+          case false =>
+            throw new TemplatePublishFailed
         }
     },
     commands += templatesCommand
@@ -398,8 +404,10 @@ object Templates {
       .examples(templateSourcesList.map(_.name): _*)
       .flatMap { name =>
         templateSourcesList.find(_.name == name) match {
-          case Some(templateSources) => success(templateSources)
-          case None                  => failure("No template with name " + name)
+          case Some(templateSources) =>
+            success(templateSources)
+          case None =>
+            failure("No template with name " + name)
         }
       }
     (Space ~> rep1sep(templateParser, Space)) ~ (

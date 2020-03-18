@@ -58,7 +58,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SArray(arr)) =>
           ids must haveSize(1)
           arr.head must beOneOf(pageIds: _*)
-        case _ => ko
+        case _ =>
+          ko
       }
     }
 
@@ -204,21 +205,26 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
           elems.keys mustEqual (Set("weight", "increasedWeight"))
 
-        case _ => ko
+        case _ =>
+          ko
       }
 
       val weights = result collect {
-        case (_, SObject(elems)) => elems("weight")
+        case (_, SObject(elems)) =>
+          elems("weight")
       }
       val expectedWeights = result2 collect {
-        case (_, w) => w
+        case (_, w) =>
+          w
       }
 
       val weightsPlus = result collect {
-        case (_, SObject(elems)) => elems("increasedWeight")
+        case (_, SObject(elems)) =>
+          elems("increasedWeight")
       }
       val expectedWeightsPlus = expectedWeights collect {
-        case SDecimal(d) => SDecimal(d + 5)
+        case SDecimal(d) =>
+          SDecimal(d + 5)
       }
 
       weights mustEqual (expectedWeights)
@@ -255,18 +261,22 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val fives = result collect {
         case (_, SObject(elems)) =>
           (elems("five"): @unchecked) match {
-            case SDecimal(d) => d
+            case SDecimal(d) =>
+              d
           }
       }
       val weights = result2 collect {
-        case (_, w) => w
+        case (_, w) =>
+          w
       }
 
       val weightsPlus = result collect {
-        case (_, SObject(elems)) => elems("increasedWeight")
+        case (_, SObject(elems)) =>
+          elems("increasedWeight")
       }
       val expectedWeightsPlus = weights collect {
-        case SDecimal(d) => SDecimal(d + 5)
+        case SDecimal(d) =>
+          SDecimal(d + 5)
       }
 
       fives must contain(BigDecimal(5)).only
@@ -325,7 +335,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
           elems must haveSize(4)
 
           val decimals = elems collect {
-            case SDecimal(d) => d
+            case SDecimal(d) =>
+              d
           }
 
           decimals(0) must be < (decimals(1))
@@ -344,7 +355,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val result = evalE(input)
 
       result must haveAllElementsLike {
-        case (ids, SObject(fields)) => fields must haveKey("a")
+        case (ids, SObject(fields)) =>
+          fields must haveKey("a")
       }
     }
 
@@ -363,7 +375,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       val actual = result collect {
-        case (ids, SString(str)) if ids.length == 1 => str
+        case (ids, SString(str)) if ids.length == 1 =>
+          str
       }
 
       actual mustEqual Set("2012-02-09T00:31:13.610-09:00")
@@ -384,7 +397,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       val actual = result collect {
-        case (ids, SString(str)) if ids.length == 1 => str
+        case (ids, SString(str)) if ids.length == 1 =>
+          str
       }
 
       actual mustEqual Set("2012-02-09T00:31:13.610-09:00")
@@ -407,11 +421,13 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result.size mustEqual expectedResult.size
 
       val actual = result collect {
-        case (ids, SString(str)) if ids.length == 1 => str
+        case (ids, SString(str)) if ids.length == 1 =>
+          str
       }
 
       val expected = expectedResult collect {
-        case (ids, SString(str)) if ids.length == 1 => str
+        case (ids, SString(str)) if ids.length == 1 =>
+          str
       }
 
       actual mustEqual expected
@@ -447,11 +463,13 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result.size mustEqual expectedResult.size
 
       val actual = result collect {
-        case (ids, SArray(arr)) if ids.length == 1 => arr
+        case (ids, SArray(arr)) if ids.length == 1 =>
+          arr
       }
 
       val expected = expectedResult collect {
-        case (ids, SArray(arr)) if ids.length == 1 => arr
+        case (ids, SArray(arr)) if ids.length == 1 =>
+          arr
       }
 
       actual mustEqual expected
@@ -487,7 +505,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       val actual = result collect {
-        case (ids, SString(time)) if ids.length == 0 => time
+        case (ids, SString(time)) if ids.length == 0 =>
+          time
       }
 
       actual mustEqual Set("2011-02-21T01:09:59.000Z")
@@ -503,7 +522,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val result1 = evalE(input1)
 
       val actual = result1 collect {
-        case (ids, value) if ids.length == 1 => value
+        case (ids, value) if ids.length == 1 =>
+          value
       }
 
       val input2 = """
@@ -514,7 +534,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val result2 = evalE(input2)
 
       val expected = result2 collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => SDecimal(d)
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          SDecimal(d)
       }
 
       actual mustEqual expected
@@ -528,7 +549,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val result = evalE(input)
 
       val actual = result collect {
-        case (ids, SDecimal(year)) if ids.length == 0 => year
+        case (ids, SDecimal(year)) if ids.length == 0 =>
+          year
       }
 
       actual mustEqual Set(2011)
@@ -676,23 +698,28 @@ trait MiscStackSpecs extends EvalStackSpecs {
           obj must haveKey("minmax")
 
           obj("sum") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 4965) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 4965) must beTrue
           }
           obj("max") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 208) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 208) must beTrue
           }
           obj("min") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 39) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 39) must beTrue
           }
           obj("stdDev") must beLike {
             case SDecimal(num) =>
               (num.toDouble ~= 0.9076874907113496) must beTrue
           }
           obj("count") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 1019) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 1019) must beTrue
           }
           obj("minmax") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 208) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 208) must beTrue
           }
       }
     }
@@ -714,7 +741,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(2)
 
       val results2 = result collect {
-        case (ids, obj) if ids.length == 1 => obj
+        case (ids, obj) if ids.length == 1 =>
+          obj
       }
 
       results2 mustEqual (
@@ -743,7 +771,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(2)
 
       val results2 = result collect {
-        case (ids, obj) if ids.length == 1 => obj
+        case (ids, obj) if ids.length == 1 =>
+          obj
       }
 
       results2 mustEqual (
@@ -798,7 +827,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       resultsE must haveSize(473)
 
       val results = resultsE collect {
-        case (ids, str) if ids.length == 2 => str
+        case (ids, str) if ids.length == 2 =>
+          str
       }
 
       results must contain(SString("page-2page-2"))
@@ -850,12 +880,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       val containsUserId = results collect {
-        case (_, SObject(obj)) if obj contains "userId" => obj
+        case (_, SObject(obj)) if obj contains "userId" =>
+          obj
       }
 
       containsUserId must haveSize(21)
       containsUserId collect {
-        case obj => obj("userId")
+        case obj =>
+          obj("userId")
       } mustEqual Set(
         SString("user-1000"),
         SString("user-1001"),
@@ -881,12 +913,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
       )
 
       val containsPageId = results collect {
-        case (_, SObject(obj)) if obj contains "pageId" => obj
+        case (_, SObject(obj)) if obj contains "pageId" =>
+          obj
       }
 
       containsPageId must haveSize(5)
       containsPageId collect {
-        case obj => obj("pageId")
+        case obj =>
+          obj("pageId")
       } mustEqual Set(
         SString("page-0"),
         SString("page-1"),
@@ -962,7 +996,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(16 + 570)
 
       val maps = results.toSeq collect {
-        case (ids, SObject(obj)) => obj
+        case (ids, SObject(obj)) =>
+          obj
       }
 
       val india = maps filter {
@@ -997,7 +1032,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(16)
 
       val maps = results.toSeq collect {
-        case (ids, SObject(obj)) => obj
+        case (ids, SObject(obj)) =>
+          obj
       }
 
       val india = maps filter {
@@ -1077,10 +1113,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
           obj.keys mustEqual Set("min", "max", "stdDev")
 
           obj("min") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 50) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 50) must beTrue
           }
           obj("max") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 2768) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 2768) must beTrue
           }
           obj("stdDev") must beLike {
             case SDecimal(num) =>
@@ -1111,10 +1149,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
           obj.keys mustEqual Set("min", "max", "stdDev")
 
           obj("min") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 50) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 50) must beTrue
           }
           obj("max") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 2768) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 2768) must beTrue
           }
           obj("stdDev") must beLike {
             case SDecimal(num) =>
@@ -1203,7 +1243,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         results must haveSize(10000)
 
         results must haveAllElementsLike {
-          case (ids, _) => ids must haveSize(2)
+          case (ids, _) =>
+            ids must haveSize(2)
         }
       }
 
@@ -1218,7 +1259,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
         results must haveSize(10000)
 
         results must haveAllElementsLike {
-          case (ids, _) => ids must haveSize(2)
+          case (ids, _) =>
+            ids must haveSize(2)
         }
       }
     }
@@ -1675,7 +1717,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       resultsE must haveSize(52)
 
       val results = resultsE collect {
-        case (ids, sv) if ids.length == 1 => sv
+        case (ids, sv) if ids.length == 1 =>
+          sv
       }
 
       results must contain(
@@ -2017,14 +2060,16 @@ trait MiscStackSpecs extends EvalStackSpecs {
           obj must haveKey("stdDev")
 
           obj("sum") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 1590) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 1590) must beTrue
           }
           obj("mean") must beLike {
             case SDecimal(num) =>
               (num.toDouble ~= 26.371933267909714) must beTrue
           }
           obj("max") must beLike {
-            case SDecimal(num) => (num.toDouble ~= 2.5) must beTrue
+            case SDecimal(num) =>
+              (num.toDouble ~= 2.5) must beTrue
           }
           obj("stdDev") must beLike {
             case SDecimal(num) =>
@@ -2216,7 +2261,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(5)
 
       val stripped = results collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       stripped must contain(12)
@@ -2290,7 +2336,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       resultsE must haveSize(63)
 
       val results = resultsE collect {
-        case (ids, obj) if ids.length == 1 => obj
+        case (ids, obj) if ids.length == 1 =>
+          obj
       }
 
       results must contain(
@@ -3195,7 +3242,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
       resultsE must haveSize(20)
 
       val results = resultsE collect {
-        case (ids, sv) if ids.length == 1 => sv
+        case (ids, sv) if ids.length == 1 =>
+          sv
       }
 
       results must contain(
@@ -3615,7 +3663,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       val total =
         totalResult.collectFirst {
-          case (_, SDecimal(d)) => d
+          case (_, SDecimal(d)) =>
+            d
         }.get
 
       val result = evalE(input)
@@ -3647,7 +3696,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
       val total =
         totalResult.collectFirst {
-          case (_, SDecimal(d)) => d
+          case (_, SDecimal(d)) =>
+            d
         }.get
 
       val result = evalE(input)
@@ -4043,11 +4093,13 @@ trait MiscStackSpecs extends EvalStackSpecs {
           arr(0) must beOneOf(SDecimal(2), SDecimal(3), SDecimal(4))
           arr(1) mustEqual SArray(Vector(SDecimal(2), SDecimal(3), SDecimal(4)))
         }
-        case _ => ko
+        case _ =>
+          ko
       }
 
       val result2 = result collect {
-        case (_, SArray(arr)) if !(arr.isEmpty) => arr.head
+        case (_, SArray(arr)) if !(arr.isEmpty) =>
+          arr.head
       }
       result2 mustEqual Set(SDecimal(2), SDecimal(3), SDecimal(4))
     }
@@ -4074,11 +4126,13 @@ trait MiscStackSpecs extends EvalStackSpecs {
           arr(0) must beOneOf(SDecimal(2), SDecimal(3), SDecimal(4))
           arr(1) mustEqual SArray(Vector(SDecimal(2), SDecimal(3), SDecimal(4)))
         }
-        case _ => ko
+        case _ =>
+          ko
       }
 
       val result2 = result collect {
-        case (_, SArray(arr)) if !(arr.isEmpty) => arr.head
+        case (_, SArray(arr)) if !(arr.isEmpty) =>
+          arr.head
       }
       result2 mustEqual Set(SDecimal(2), SDecimal(3), SDecimal(4))
     }
@@ -4116,7 +4170,8 @@ trait MiscStackSpecs extends EvalStackSpecs {
           else
             obj("ack") mustEqual SDecimal(0)
         }
-        case _ => ko
+        case _ =>
+          ko
       }
     }
 

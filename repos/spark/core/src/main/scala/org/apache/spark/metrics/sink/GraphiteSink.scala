@@ -59,14 +59,18 @@ private[spark] class GraphiteSink(
 
   val pollPeriod =
     propertyToOption(GRAPHITE_KEY_PERIOD) match {
-      case Some(s) => s.toInt
-      case None    => GRAPHITE_DEFAULT_PERIOD
+      case Some(s) =>
+        s.toInt
+      case None =>
+        GRAPHITE_DEFAULT_PERIOD
     }
 
   val pollUnit: TimeUnit =
     propertyToOption(GRAPHITE_KEY_UNIT) match {
-      case Some(s) => TimeUnit.valueOf(s.toUpperCase())
-      case None    => TimeUnit.valueOf(GRAPHITE_DEFAULT_UNIT)
+      case Some(s) =>
+        TimeUnit.valueOf(s.toUpperCase())
+      case None =>
+        TimeUnit.valueOf(GRAPHITE_DEFAULT_UNIT)
     }
 
   val prefix = propertyToOption(GRAPHITE_KEY_PREFIX).getOrElse(
@@ -76,9 +80,12 @@ private[spark] class GraphiteSink(
 
   val graphite =
     propertyToOption(GRAPHITE_KEY_PROTOCOL).map(_.toLowerCase) match {
-      case Some("udp")        => new GraphiteUDP(new InetSocketAddress(host, port))
-      case Some("tcp") | None => new Graphite(new InetSocketAddress(host, port))
-      case Some(p)            => throw new Exception(s"Invalid Graphite protocol: $p")
+      case Some("udp") =>
+        new GraphiteUDP(new InetSocketAddress(host, port))
+      case Some("tcp") | None =>
+        new Graphite(new InetSocketAddress(host, port))
+      case Some(p) =>
+        throw new Exception(s"Invalid Graphite protocol: $p")
     }
 
   val reporter: GraphiteReporter = GraphiteReporter

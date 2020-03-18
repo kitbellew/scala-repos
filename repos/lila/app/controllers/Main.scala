@@ -50,7 +50,8 @@ object Main extends LilaController {
   def captchaCheck(id: String) =
     Open { implicit ctx =>
       Env.hub.actor.captcher ? ValidCaptcha(id, ~get("solution")) map {
-        case valid: Boolean => Ok(valid fold (1, 0))
+        case valid: Boolean =>
+          Ok(valid fold (1, 0))
       }
     }
 
@@ -89,7 +90,8 @@ object Main extends LilaController {
   def mobile =
     Open { implicit ctx =>
       OptionOk(Prismic getBookmark "mobile-apk") {
-        case (doc, resolver) => html.mobile.home(doc, resolver)
+        case (doc, resolver) =>
+          html.mobile.home(doc, resolver)
       }
     }
 

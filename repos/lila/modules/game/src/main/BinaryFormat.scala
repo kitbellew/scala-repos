@@ -43,8 +43,10 @@ object BinaryFormat {
             Some(b)
           else
             findClose(v, (c, d) :: rest)
-        case (a, b) :: rest => Some(b)
-        case _              => None
+        case (a, b) :: rest =>
+          Some(b)
+        case _ =>
+          None
       }
 
     def write(mts: Vector[MT]): ByteArray =
@@ -53,8 +55,10 @@ object BinaryFormat {
           encodeMap get mt orElse findClose(mt, encodeList) getOrElse (size - 1)
         (
           mts grouped 2 map {
-            case Vector(a, b) => (enc(a) << 4) + enc(b)
-            case Vector(a)    => enc(a) << 4
+            case Vector(a, b) =>
+              (enc(a) << 4) + enc(b)
+            case Vector(a) =>
+              enc(a) << 4
           }
         ).map(_.toByte).toArray
       }
@@ -167,14 +171,17 @@ object BinaryFormat {
 
       val castleInt =
         clmt.castles.toList.zipWithIndex.foldLeft(0) {
-          case (acc, (false, _)) => acc
-          case (acc, (true, p))  => acc + (1 << (3 - p))
+          case (acc, (false, _)) =>
+            acc
+          case (acc, (true, p)) =>
+            acc + (1 << (3 - p))
         }
 
       def posInt(pos: Pos): Int = ((pos.x - 1) << 3) + pos.y - 1
       val lastMoveInt =
         clmt.lastMove.fold(0) {
-          case (f, t) => (posInt(f) << 6) + posInt(t)
+          case (f, t) =>
+            (posInt(f) << 6) + posInt(t)
         }
       val time = clmt.lastMoveTime getOrElse 0
 
@@ -187,7 +194,8 @@ object BinaryFormat {
 
     def read(ba: ByteArray): CastleLastMoveTime = {
       ba.value map toInt match {
-        case Array(b1, b2, b3, b4, b5) => doRead(b1, b2, b3, b4, b5, None)
+        case Array(b1, b2, b3, b4, b5) =>
+          doRead(b1, b2, b3, b4, b5, None)
         case Array(b1, b2, b3, b4, b5, b6) =>
           doRead(b1, b2, b3, b4, b5, b6.some)
         case x =>
@@ -227,7 +235,8 @@ object BinaryFormat {
 
     private val groupedPos =
       Pos.all grouped 2 collect {
-        case List(p1, p2) => (p1, p2)
+        case List(p1, p2) =>
+          (p1, p2)
       } toArray
 
     def write(pieces: PieceMap): ByteArray = {
@@ -237,7 +246,8 @@ object BinaryFormat {
         }
       ByteArray(
         groupedPos map {
-          case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
+          case (p1, p2) =>
+            ((posInt(p1) << 4) + posInt(p2)).toByte
         })
     }
 
@@ -253,7 +263,8 @@ object BinaryFormat {
       val pieceInts = ba.value flatMap splitInts
       (
         Pos.all zip pieceInts flatMap {
-          case (pos, int) => intPiece(int) map (pos -> _)
+          case (pos, int) =>
+            intPiece(int) map (pos -> _)
         }
       ).toMap
     }
@@ -263,24 +274,38 @@ object BinaryFormat {
 
     private def intToRole(int: Int, variant: Variant): Option[Role] =
       int match {
-        case 6 => Some(Pawn)
-        case 1 => Some(King)
-        case 2 => Some(Queen)
-        case 3 => Some(Rook)
-        case 4 => Some(Knight)
-        case 5 => Some(Bishop)
+        case 6 =>
+          Some(Pawn)
+        case 1 =>
+          Some(King)
+        case 2 =>
+          Some(Queen)
+        case 3 =>
+          Some(Rook)
+        case 4 =>
+          Some(Knight)
+        case 5 =>
+          Some(Bishop)
         // Legacy from when we used to have an 'Antiking' piece
-        case 7 if variant.antichess => Some(King)
-        case _                      => None
+        case 7 if variant.antichess =>
+          Some(King)
+        case _ =>
+          None
       }
     private def roleToInt(role: Role): Int =
       role match {
-        case Pawn   => 6
-        case King   => 1
-        case Queen  => 2
-        case Rook   => 3
-        case Knight => 4
-        case Bishop => 5
+        case Pawn =>
+          6
+        case King =>
+          1
+        case Queen =>
+          2
+        case Rook =>
+          3
+        case Knight =>
+          4
+        case Bishop =>
+          5
       }
   }
 

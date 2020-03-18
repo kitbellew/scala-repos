@@ -26,8 +26,10 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
     if (elements.length != 1)
       return false
     elements(0) match {
-      case x: ScExpression => true
-      case _               => return false
+      case x: ScExpression =>
+        true
+      case _ =>
+        return false
     }
   }
 
@@ -49,11 +51,14 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
                 else
                   defaultRange
               }
-              case _ => defaultRange
+              case _ =>
+                defaultRange
             }
-          case _ => defaultRange
+          case _ =>
+            defaultRange
         }
-      case _ => defaultRange
+      case _ =>
+        defaultRange
     }
   }
 }

@@ -46,7 +46,8 @@ class HttpClientDispatcher(
       // Log an error immediately if we find any Dtab headers already in the request and report them
       val headersString = dtabHeaders
         .map({
-          case (k, v) => s"[$k: $v]"
+          case (k, v) =>
+            s"[$k: $v]"
         })
         .mkString(", ")
       log.error(

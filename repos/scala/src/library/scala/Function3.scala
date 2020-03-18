@@ -36,7 +36,8 @@ trait Function3[-T1, -T2, -T3, +R] extends AnyRef {
     */
   @annotation.unspecialized
   def tupled: Tuple3[T1, T2, T3] => R = {
-    case Tuple3(x1, x2, x3) => apply(x1, x2, x3)
+    case Tuple3(x1, x2, x3) =>
+      apply(x1, x2, x3)
   }
   override def toString() = "<function3>"
 }

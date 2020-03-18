@@ -65,8 +65,10 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
         val operator = infixExpr.operation
         val parentRef =
           infixExpr.rOp match {
-            case ref: ScReferenceExpression => ref
-            case _                          => return
+            case ref: ScReferenceExpression =>
+              ref
+            case _ =>
+              return
           }
 
         // Check if we're on the right side of expression
@@ -93,11 +95,14 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                         if collectionTypeNames contains qualifiedName(
                           seqType) =>
                       Some(valType)
-                    case _ => None
+                    case _ =>
+                      None
                   }
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
         }
 
@@ -122,8 +127,10 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
             getScopeType).flatten
         val expectedType =
           expectedTypes match {
-            case Seq(t, rest @ _*) => t
-            case _                 => return
+            case Seq(t, rest @ _*) =>
+              t
+            case _ =>
+              return
           }
 
         def isAccessible(cls: PsiMember): Boolean =
@@ -148,10 +155,13 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
                 applyVariant(lookup)
               }
               obj.members.foreach {
-                case v: ScValue    => v.declaredElements foreach fetchAndApply
-                case v: ScVariable => v.declaredElements foreach fetchAndApply
-                case obj: ScObject => fetchAndApply(obj)
-                case _             => // do nothing
+                case v: ScValue =>
+                  v.declaredElements foreach fetchAndApply
+                case v: ScVariable =>
+                  v.declaredElements foreach fetchAndApply
+                case obj: ScObject =>
+                  fetchAndApply(obj)
+                case _ => // do nothing
               }
             case _ => // do nothing
           }
@@ -163,9 +173,12 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
           }
           val variant =
             variantObj match {
-              case el: ScalaLookupItem         => el
-              case ch: ScalaChainLookupElement => ch.element
-              case _                           => return
+              case el: ScalaLookupItem =>
+                el
+              case ch: ScalaChainLookupElement =>
+                ch.element
+              case _ =>
+                return
             }
           variant.element match {
             case f: PsiField

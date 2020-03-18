@@ -239,15 +239,20 @@ trait ScalatraBase
       case e: HaltException => {
         try {
           handleStatusCode(extractStatusCode(e)) match {
-            case Some(result) => renderResponse(result)
-            case _            => renderHaltException(e)
+            case Some(result) =>
+              renderResponse(result)
+            case _ =>
+              renderHaltException(e)
           }
         } catch {
-          case e: HaltException => renderHaltException(e)
-          case e: Throwable     => error(e)
+          case e: HaltException =>
+            renderHaltException(e)
+          case e: Throwable =>
+            error(e)
         }
       }
-      case e: Throwable => error(e)
+      case e: Throwable =>
+        error(e)
     }
   }
 
@@ -319,7 +324,8 @@ trait ScalatraBase
     try {
       Some(action())
     } catch {
-      case e: PassException => None
+      case e: PassException =>
+        None
     }
   }
 
@@ -379,7 +385,8 @@ trait ScalatraBase
     * before filters or the routes.
     */
   protected var errorHandler: ErrorHandler = {
-    case t => throw t
+    case t =>
+      throw t
   }
 
   def error(handler: ErrorHandler): Unit = {
@@ -436,19 +443,25 @@ trait ScalatraBase
     * $ - "text/html" for any other result
     */
   protected def contentTypeInferrer: ContentTypeInferrer = {
-    case s: String               => "text/plain"
-    case bytes: Array[Byte]      => MimeTypes(bytes)
-    case is: java.io.InputStream => MimeTypes(is)
-    case file: File              => MimeTypes(file)
+    case s: String =>
+      "text/plain"
+    case bytes: Array[Byte] =>
+      MimeTypes(bytes)
+    case is: java.io.InputStream =>
+      MimeTypes(is)
+    case file: File =>
+      MimeTypes(file)
     case actionResult: ActionResult =>
       actionResult.headers
         .find {
-          case (name, value) => name equalsIgnoreCase "CONTENT-TYPE"
+          case (name, value) =>
+            name equalsIgnoreCase "CONTENT-TYPE"
         }
         .getOrElse(("Content-Type", contentTypeInferrer(actionResult.body)))
         ._2
     //    case Unit | _: Unit => null
-    case _ => "text/html"
+    case _ =>
+      "text/html"
   }
 
   /**
@@ -460,8 +473,10 @@ trait ScalatraBase
     @tailrec
     def loop(ar: Any): Any =
       ar match {
-        case _: Unit | Unit => runRenderCallbacks(Success(actionResult))
-        case a              => loop(renderPipeline.lift(a).getOrElse(()))
+        case _: Unit | Unit =>
+          runRenderCallbacks(Success(actionResult))
+        case a =>
+          loop(renderPipeline.lift(a).getOrElse(()))
       }
     try {
       runCallbacks(Success(actionResult))
@@ -488,7 +503,8 @@ trait ScalatraBase
     case ActionResult(status, x: Int, resultHeaders) =>
       response.status = status
       resultHeaders foreach {
-        case (name, value) => response.addHeader(name, value)
+        case (name, value) =>
+          response.addHeader(name, value)
       }
       response.writer.print(x.toString)
     case status: Int =>
@@ -510,11 +526,13 @@ trait ScalatraBase
     // If an action returns Unit, it assumes responsibility for the response
     case _: Unit | Unit | null =>
     // If an action returns Unit, it assumes responsibility for the response
-    case ActionResult(ResponseStatus(404, _), _: Unit | Unit, _) => doNotFound()
+    case ActionResult(ResponseStatus(404, _), _: Unit | Unit, _) =>
+      doNotFound()
     case actionResult: ActionResult =>
       response.status = actionResult.status
       actionResult.headers.foreach {
-        case (name, value) => response.addHeader(name, value)
+        case (name, value) =>
+          response.addHeader(name, value)
       }
       actionResult.body
     case x =>
@@ -585,7 +603,8 @@ trait ScalatraBase
         case HaltException(None, _, _, _) => // leave status line alone
       }
       e.headers foreach {
-        case (name, value) => response.addHeader(name, value)
+        case (name, value) =>
+          response.addHeader(name, value)
       }
       if (!rendered)
         renderResponse(e.body)
@@ -599,8 +618,10 @@ trait ScalatraBase
 
   protected def extractStatusCode(e: HaltException): Int =
     e match {
-      case HaltException(Some(status), _, _, _) => status
-      case _                                    => response.status.code
+      case HaltException(Some(status), _, _, _) =>
+        status
+      case _ =>
+        response.status.code
     }
 
   def get(transformers: RouteTransformer*)(action: => Any): Route =
@@ -693,7 +714,8 @@ trait ScalatraBase
       contextPath match {
         case "" =>
           "/" // The root servlet is "", but the root cookie path is "/"
-        case p => p
+        case p =>
+          p
       }
     servletContext(CookieSupport.CookieOptionsKey) = CookieOptions(path = path)
   }
@@ -750,14 +772,19 @@ trait ScalatraBase
           request.getServletPath.blankOption map {
             ensureSlash(_) + ensureServletPathStripped(ensureSlash(path))
           } getOrElse "/"
-        case _ if absolutize => ensureContextPathsStripped(ensureSlash(path))
-        case _               => path
+        case _ if absolutize =>
+          ensureContextPathsStripped(ensureSlash(path))
+        case _ =>
+          path
       }
 
     val pairs = params map {
-      case (key, None)        => key.urlEncode + "="
-      case (key, Some(value)) => key.urlEncode + "=" + value.toString.urlEncode
-      case (key, value)       => key.urlEncode + "=" + value.toString.urlEncode
+      case (key, None) =>
+        key.urlEncode + "="
+      case (key, Some(value)) =>
+        key.urlEncode + "=" + value.toString.urlEncode
+      case (key, value) =>
+        key.urlEncode + "=" + value.toString.urlEncode
     }
     val queryString =
       if (pairs.isEmpty)

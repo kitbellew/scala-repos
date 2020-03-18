@@ -62,7 +62,8 @@ private[io] class TcpListener(
       socket.bind(bind.localAddress, bind.backlog)
       val ret =
         socket.getLocalSocketAddress match {
-          case isa: InetSocketAddress ⇒ isa
+          case isa: InetSocketAddress ⇒
+            isa
           case x ⇒
             throw new IllegalArgumentException(
               s"bound to unknown SocketAddress [$x]")
@@ -75,7 +76,8 @@ private[io] class TcpListener(
           SelectionKey.OP_ACCEPT)
       log.debug("Successfully bound to {}", ret)
       bind.options.foreach {
-        case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
+        case o: Inet.SocketOptionV2 ⇒
+          o.afterBind(channel.socket)
         case _ ⇒
       }
       ret
@@ -114,7 +116,8 @@ private[io] class TcpListener(
         "Could not register incoming connection since selector capacity limit is reached, closing connection")
       try socketChannel.close()
       catch {
-        case NonFatal(e) ⇒ log.debug("Error closing socket channel: {}", e)
+        case NonFatal(e) ⇒
+          log.debug("Error closing socket channel: {}", e)
       }
 
     case Unbind ⇒
@@ -170,7 +173,8 @@ private[io] class TcpListener(
         channel.close()
       }
     } catch {
-      case NonFatal(e) ⇒ log.debug("Error closing ServerSocketChannel: {}", e)
+      case NonFatal(e) ⇒
+        log.debug("Error closing ServerSocketChannel: {}", e)
     }
   }
 }

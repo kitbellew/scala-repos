@@ -52,7 +52,8 @@ object Databases {
     val driver = "org.h2.Driver"
     val urlExtra = urlOptions
       .map {
-        case (k, v) => k + "=" + v
+        case (k, v) =>
+          k + "=" + v
       }
       .mkString(";", ";", "")
     val url = "jdbc:h2:mem:" + name + urlExtra
@@ -248,8 +249,10 @@ class PooledDatabase(
 
   def closeDataSource(dataSource: DataSource): Unit = {
     dataSource match {
-      case ds: LogSqlDataSource => pool.close(ds.getTargetDatasource)
-      case _                    => pool.close(dataSource)
+      case ds: LogSqlDataSource =>
+        pool.close(ds.getTargetDatasource)
+      case _ =>
+        pool.close(dataSource)
     }
   }
 

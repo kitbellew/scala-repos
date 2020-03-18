@@ -267,7 +267,8 @@ object Conformance {
               subst.subst(a.lower) match {
                 case ScParameterizedType(lower, _) =>
                   ScParameterizedType(lower, p.typeArgs)
-                case lower => ScParameterizedType(lower, p.typeArgs)
+                case lower =>
+                  ScParameterizedType(lower, p.typeArgs)
               }
             if (!lower.equiv(Nothing)) {
               result = conformsInner(
@@ -381,7 +382,8 @@ object Conformance {
               } else {
                 result = (true, undefinedSubst)
               }
-            case _ => result = (true, undefinedSubst)
+            case _ =>
+              result = (true, undefinedSubst)
           }
         }
       }
@@ -440,7 +442,8 @@ object Conformance {
             val subst = proj.actualSubst
             val upper: ScType =
               a.upperBound.toOption match {
-                case Some(up) => up
+                case Some(up) =>
+                  up
                 case _ =>
                   result = (false, undefinedSubst)
                   return
@@ -459,7 +462,8 @@ object Conformance {
                 val args = p.typeArgs
                 val uBound =
                   a.upperBound.toOption match {
-                    case Some(tp) => tp
+                    case Some(tp) =>
+                      tp
                     case _ =>
                       result = (false, undefinedSubst)
                       return
@@ -488,8 +492,10 @@ object Conformance {
           case a: ScTypeAlias =>
             val upper: ScType =
               a.upperBound.toOption match {
-                case Some(up) => up
-                case _        => return
+                case Some(up) =>
+                  up
+                case _ =>
+                  return
               }
             val res = conformsInner(l, upper, visited, undefinedSubst)
             if (stopDesignatorAliasOnFailure || res._1)
@@ -518,7 +524,8 @@ object Conformance {
                   Success(comp: ScCompoundType, _),
                   _)) =>
             conformsInner(comp, c, HashSet.empty, undefinedSubst)
-          case _ => (false, undefinedSubst)
+          case _ =>
+            (false, undefinedSubst)
         }
       }
     }
@@ -538,8 +545,10 @@ object Conformance {
             val subst = proj2.actualSubst
             val upper: ScType =
               ta.upperBound.toOption match {
-                case Some(up) => up
-                case _        => return
+                case Some(up) =>
+                  up
+                case _ =>
+                  return
               }
             val uBound = subst.subst(upper)
             val res = conformsInner(l, uBound, visited, undefinedSubst)
@@ -805,9 +814,11 @@ object Conformance {
           undefinedSubst = t._2
           t._1
         }) && c.signatureMap.forall {
-          case (s: Signature, retType) => workWithSignature(s, retType)
+          case (s: Signature, retType) =>
+            workWithSignature(s, retType)
         } && c.typesMap.forall {
-          case (s, sign) => workWithTypeAlias(sign)
+          case (s, sign) =>
+            workWithTypeAlias(sign)
         },
         undefinedSubst)
     }
@@ -879,7 +890,8 @@ object Conformance {
           if (!ta.isExistentialTypeAlias) {
             val lower =
               ta.lowerBound.toOption match {
-                case Some(low) => low
+                case Some(low) =>
+                  low
                 case _ =>
                   result = (false, undefinedSubst)
                   return
@@ -893,14 +905,16 @@ object Conformance {
           } else {
             val lower =
               ta.lowerBound.toOption match {
-                case Some(low) => low
+                case Some(low) =>
+                  low
                 case _ =>
                   result = (false, undefinedSubst)
                   return
               }
             val upper =
               ta.upperBound.toOption match {
-                case Some(up) => up
+                case Some(up) =>
+                  up
                 case _ =>
                   result = (false, undefinedSubst)
                   return
@@ -1081,8 +1095,10 @@ object Conformance {
           val des = p2.designator
           if (args.length == 1 && (
                 ScType.extractClass(des) match {
-                  case Some(q) => q.qualifiedName == "scala.Array"
-                  case _       => false
+                  case Some(q) =>
+                    q.qualifiedName == "scala.Array"
+                  case _ =>
+                    false
                 }
               )) {
             val arg = a1.arg
@@ -1237,7 +1253,8 @@ object Conformance {
             subst.subst(a.upper) match {
               case ScParameterizedType(upper, _) =>
                 ScParameterizedType(upper, p.typeArgs)
-              case upper => ScParameterizedType(upper, p.typeArgs)
+              case upper =>
+                ScParameterizedType(upper, p.typeArgs)
             }
           if (!upper.equiv(Any)) {
             result = conformsInner(upper, r, visited, undefinedSubst, checkWeak)
@@ -1249,7 +1266,8 @@ object Conformance {
               subst.subst(a.lower) match {
                 case ScParameterizedType(lower, _) =>
                   ScParameterizedType(lower, p.typeArgs)
-                case lower => ScParameterizedType(lower, p.typeArgs)
+                case lower =>
+                  ScParameterizedType(lower, p.typeArgs)
               }
             if (!lower.equiv(Nothing)) {
               val t = conformsInner(r, lower, visited, result._2, checkWeak)
@@ -1318,7 +1336,8 @@ object Conformance {
           case Some((ownerDesignator, _)) =>
             val parametersIterator =
               ownerDesignator match {
-                case td: ScTypeParametersOwner => td.typeParameters.iterator
+                case td: ScTypeParametersOwner =>
+                  td.typeParameters.iterator
                 case ownerDesignator: PsiTypeParameterListOwner =>
                   ownerDesignator.getTypeParameters.iterator
                 case _ =>
@@ -1357,7 +1376,8 @@ object Conformance {
           val subst = proj.actualSubst
           val lower: ScType =
             a.lowerBound.toOption match {
-              case Some(low) => low
+              case Some(low) =>
+                low
               case _ =>
                 result = (false, undefinedSubst)
                 return
@@ -1385,7 +1405,8 @@ object Conformance {
           val args = p.typeArgs
           val lower: ScType =
             a.lowerBound.toOption match {
-              case Some(low) => low
+              case Some(low) =>
+                low
               case _ =>
                 result = (false, undefinedSubst)
                 return
@@ -1416,8 +1437,10 @@ object Conformance {
           val des = p.designator
           if (args.length == 1 && (
                 ScType.extractClass(des) match {
-                  case Some(q) => q.qualifiedName == "scala.Array"
-                  case _       => false
+                  case Some(q) =>
+                    q.qualifiedName == "scala.Array"
+                  case _ =>
+                    false
                 }
               )) {
             val arg = r.asInstanceOf[JavaArrayType].arg
@@ -1700,8 +1723,10 @@ object Conformance {
                 case Some(ownerClazz) =>
                   val parametersIterator =
                     ownerClazz match {
-                      case td: ScTypeDefinition => td.typeParameters.iterator
-                      case _                    => ownerClazz.getTypeParameters.iterator
+                      case td: ScTypeDefinition =>
+                        td.typeParameters.iterator
+                      case _ =>
+                        ownerClazz.getTypeParameters.iterator
                     }
                   result = checkParameterizedType(
                     parametersIterator,
@@ -1753,7 +1778,8 @@ object Conformance {
               }
               val parametersIterator =
                 proj1.actualElement match {
-                  case td: ScTypeParametersOwner => td.typeParameters.iterator
+                  case td: ScTypeParametersOwner =>
+                    td.typeParameters.iterator
                   case td: PsiTypeParameterListOwner =>
                     td.getTypeParameters.iterator
                   case _ =>
@@ -1870,7 +1896,8 @@ object Conformance {
                   )
                 )
                 (true, tpt)
-              case _ => (false, t)
+              case _ =>
+                (false, t)
             }
           case tp @ ScDesignatorType(ta: ScTypeAlias)
               if ta.getContext.isInstanceOf[ScExistentialClause] =>
@@ -1889,11 +1916,13 @@ object Conformance {
                   )
                 )
                 (true, tpt)
-              case _ => (false, tp)
+              case _ =>
+                (false, tp)
             }
           case ex: ScExistentialType =>
             (true, ex) //todo: this seems just fast solution
-          case tp: ScType => (false, tp)
+          case tp: ScType =>
+            (false, tp)
         }
       }
       val q = updateType(e.quantified)
@@ -1952,7 +1981,8 @@ object Conformance {
               undefinedSubst += newUndefSubst
               result = (true, undefinedSubst)
             }
-          case None => result = (false, undefinedSubst)
+          case None =>
+            result = (false, undefinedSubst)
         }
       }
     }
@@ -2023,7 +2053,8 @@ object Conformance {
         case a: ScTypeAlias if a.isExistentialTypeAlias =>
           val upper: ScType =
             a.upperBound.toOption match {
-              case Some(u) => u
+              case Some(u) =>
+                u
               case _ =>
                 result = (false, undefinedSubst)
                 return
@@ -2036,7 +2067,8 @@ object Conformance {
           undefinedSubst = t._2
           val lower: ScType =
             a.lowerBound.toOption match {
-              case Some(low) => low
+              case Some(low) =>
+                low
               case _ =>
                 result = (false, undefinedSubst)
                 return
@@ -2064,7 +2096,8 @@ object Conformance {
           if (!a.isExistentialTypeAlias) {
             val lower: ScType =
               a.lowerBound.toOption match {
-                case Some(low) => low
+                case Some(low) =>
+                  low
                 case _ =>
                   result = (false, undefinedSubst)
                   return
@@ -2073,7 +2106,8 @@ object Conformance {
           } else {
             val upper: ScType =
               a.upperBound.toOption match {
-                case Some(low) => low
+                case Some(low) =>
+                  low
                 case _ =>
                   result = (false, undefinedSubst)
                   return
@@ -2086,7 +2120,8 @@ object Conformance {
             undefinedSubst = t._2
             val lower: ScType =
               a.lowerBound.toOption match {
-                case Some(low) => low
+                case Some(low) =>
+                  low
                 case _ =>
                   result = (false, undefinedSubst)
                   return
@@ -2423,7 +2458,8 @@ object Conformance {
                           p.typeParameters.toList.map {
                             new ScTypeParameterType(_, ScSubstitutor.empty)
                           }
-                        case _ => Nil
+                        case _ =>
+                          Nil
                       },
                       new Suspension(tuple._2.lowerType),
                       new Suspension(tuple._2.upperType),
@@ -2516,7 +2552,8 @@ object Conformance {
               if (lClass.hasTypeParameters) {
                 l match {
                   case p: ScParameterizedType =>
-                  case _                      => return (true, uSubst)
+                  case _ =>
+                    return (true, uSubst)
                 }
               }
               val t = conformsInner(
@@ -2592,8 +2629,10 @@ object Conformance {
     ProgressManager.checkCanceled()
     val bases: Seq[Any] =
       leftClass match {
-        case td: ScTypeDefinition => td.superTypes
-        case _                    => leftClass.getSuperTypes
+        case td: ScTypeDefinition =>
+          td.superTypes
+        case _ =>
+          leftClass.getSuperTypes
       }
     val iterator = bases.iterator
     val later: ArrayBuffer[(PsiClass, ScSubstitutor)] =
@@ -2602,12 +2641,14 @@ object Conformance {
     while (iterator.hasNext) {
       val tp: ScType =
         iterator.next() match {
-          case tp: ScType => substitutor.subst(tp)
+          case tp: ScType =>
+            substitutor.subst(tp)
           case pct: PsiClassType =>
             substitutor.subst(ScType.create(pct, leftClass.getProject)) match {
               case ex: ScExistentialType =>
                 ex.skolem //it's required for the raw types
-              case r => r
+              case r =>
+                r
             }
         }
       ScType.extractClassType(tp) match {

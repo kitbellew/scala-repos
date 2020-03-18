@@ -115,7 +115,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
       _.toString
     }
     data2.zip(metadata2).foreach {
-      case (d, m) => blockGenerator.addDataWithCallback(d, m)
+      case (d, m) =>
+        blockGenerator.addDataWithCallback(d, m)
     }
     assert(listener.onAddDataCalled === true)
     listener.addedData.asScala.toSeq should contain theSameElementsInOrderAs (

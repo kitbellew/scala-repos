@@ -30,8 +30,10 @@ object ActorRefSpec {
       case "complexRequest2" ⇒
         val worker = context.actorOf(Props[WorkerActor])
         worker ! ReplyTo(sender())
-      case "workDone" ⇒ replyTo ! "complexReply"
-      case "simpleRequest" ⇒ sender() ! "simpleReply"
+      case "workDone" ⇒
+        replyTo ! "complexReply"
+      case "simpleRequest" ⇒
+        sender() ! "simpleReply"
     }
   }
 
@@ -55,9 +57,12 @@ object ActorRefSpec {
   class SenderActor(replyActor: ActorRef, latch: TestLatch) extends Actor {
 
     def receive = {
-      case "complex" ⇒ replyActor ! "complexRequest"
-      case "complex2" ⇒ replyActor ! "complexRequest2"
-      case "simple" ⇒ replyActor ! "simpleRequest"
+      case "complex" ⇒
+        replyActor ! "complexRequest"
+      case "complex2" ⇒
+        replyActor ! "complexRequest2"
+      case "simple" ⇒
+        replyActor ! "simpleRequest"
       case "complexReply" ⇒ {
         latch.countDown()
       }
@@ -69,8 +74,10 @@ object ActorRefSpec {
 
   class OuterActor(val inner: ActorRef) extends Actor {
     def receive = {
-      case "self" ⇒ sender() ! self
-      case x ⇒ inner forward x
+      case "self" ⇒
+        sender() ! self
+      case x ⇒
+        inner forward x
     }
   }
 
@@ -78,8 +85,10 @@ object ActorRefSpec {
     val fail = new InnerActor
 
     def receive = {
-      case "self" ⇒ sender() ! self
-      case x ⇒ inner forward x
+      case "self" ⇒
+        sender() ! self
+      case x ⇒
+        inner forward x
     }
   }
 
@@ -90,8 +99,10 @@ object ActorRefSpec {
 
   class InnerActor extends Actor {
     def receive = {
-      case "innerself" ⇒ sender() ! self
-      case other ⇒ sender() ! other
+      case "innerself" ⇒
+        sender() ! self
+      case other ⇒
+        sender() ! other
     }
   }
 
@@ -99,8 +110,10 @@ object ActorRefSpec {
     val fail = new InnerActor
 
     def receive = {
-      case "innerself" ⇒ sender() ! self
-      case other ⇒ sender() ! other
+      case "innerself" ⇒
+        sender() ! self
+      case other ⇒
+        sender() ! other
     }
   }
 
@@ -431,7 +444,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
                   }
                 }))
             def receive = {
-              case _ ⇒ sender() ! nested
+              case _ ⇒
+                sender() ! nested
             }
           }))
 
@@ -491,8 +505,10 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         Props(
           new Actor {
             def receive = {
-              case 5 ⇒ sender() ! "five"
-              case 0 ⇒ sender() ! "null"
+              case 5 ⇒
+                sender() ! "five"
+              case 0 ⇒
+                sender() ! "null"
             }
           }))
 
@@ -534,7 +550,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
                   }))
 
               def receive = {
-                case "sendKill" ⇒ ref ! Kill
+                case "sendKill" ⇒
+                  ref ! Kill
               }
             }))
 
@@ -558,7 +575,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
               "child")
 
             def receive = {
-              case name: String ⇒ sender() ! context.child(name).isDefined
+              case name: String ⇒
+                sender() ! context.child(name).isDefined
             }
           }),
         "parent"

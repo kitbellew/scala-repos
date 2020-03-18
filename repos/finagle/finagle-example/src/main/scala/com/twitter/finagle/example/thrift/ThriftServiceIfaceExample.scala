@@ -83,7 +83,8 @@ object ThriftServiceIfaceExample {
     val retryPolicy = RetryPolicy.tries[Try[GetLogSize.Result]](
       3,
       {
-        case Throw(ex: ReadException) => true
+        case Throw(ex: ReadException) =>
+          true
       })
 
     val retriedGetLogSize =

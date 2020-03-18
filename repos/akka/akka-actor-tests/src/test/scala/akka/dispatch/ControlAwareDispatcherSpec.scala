@@ -51,7 +51,8 @@ class ControlAwareDispatcherSpec
                 self ! ImportantMessage
 
                 def receive = {
-                  case x ⇒ testActor ! x
+                  case x ⇒
+                    testActor ! x
                 }
               }).withDispatcher(dispatcherKey))
 

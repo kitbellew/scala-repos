@@ -155,8 +155,9 @@ abstract class QueryTest extends PlanTest {
     assertEmptyMissingInput(df)
 
     QueryTest.checkAnswer(analyzedDF, expectedAnswer) match {
-      case Some(errorMessage) => fail(errorMessage)
-      case None               =>
+      case Some(errorMessage) =>
+        fail(errorMessage)
+      case None =>
     }
   }
 
@@ -205,7 +206,8 @@ abstract class QueryTest extends PlanTest {
   def assertCached(query: Queryable, numCachedTables: Int = 1): Unit = {
     val planWithCaching = query.queryExecution.withCachedData
     val cachedData = planWithCaching collect {
-      case cached: InMemoryRelation => cached
+      case cached: InMemoryRelation =>
+        cached
     }
 
     assert(
@@ -219,14 +221,20 @@ abstract class QueryTest extends PlanTest {
     // bypass some cases that we can't handle currently.
     logicalPlan
       .transform {
-        case _: MapPartitions   => return
-        case _: MapGroups       => return
-        case _: AppendColumns   => return
-        case _: CoGroup         => return
-        case _: LogicalRelation => return
+        case _: MapPartitions =>
+          return
+        case _: MapGroups =>
+          return
+        case _: AppendColumns =>
+          return
+        case _: CoGroup =>
+          return
+        case _: LogicalRelation =>
+          return
       }
       .transformAllExpressions {
-        case a: ImperativeAggregate => return
+        case a: ImperativeAggregate =>
+          return
       }
 
     // bypass hive tests before we fix all corner cases in hive module.
@@ -247,21 +255,26 @@ abstract class QueryTest extends PlanTest {
     // scala function is not serializable to JSON, use null to replace them so that we can compare
     // the plans later.
     val normalized1 = logicalPlan.transformAllExpressions {
-      case udf: ScalaUDF             => udf.copy(function = null)
-      case gen: UserDefinedGenerator => gen.copy(function = null)
+      case udf: ScalaUDF =>
+        udf.copy(function = null)
+      case gen: UserDefinedGenerator =>
+        gen.copy(function = null)
     }
 
     // RDDs/data are not serializable to JSON, so we need to collect LogicalPlans that contains
     // these non-serializable stuff, and use these original ones to replace the null-placeholders
     // in the logical plans parsed from JSON.
     var logicalRDDs = logicalPlan.collect {
-      case l: LogicalRDD => l
+      case l: LogicalRDD =>
+        l
     }
     var localRelations = logicalPlan.collect {
-      case l: LocalRelation => l
+      case l: LocalRelation =>
+        l
     }
     var inMemoryRelations = logicalPlan.collect {
-      case i: InMemoryRelation => i
+      case i: InMemoryRelation =>
+        i
     }
 
     val jsonBackPlan =
@@ -347,7 +360,8 @@ object QueryTest {
   def checkAnswer(df: DataFrame, expectedAnswer: Seq[Row]): Option[String] = {
     val isSorted =
       df.logicalPlan.collect {
-        case s: logical.Sort => s
+        case s: logical.Sort =>
+          s
       }.nonEmpty
 
     val sparkAnswer =
@@ -391,12 +405,17 @@ object QueryTest {
   def prepareRow(row: Row): Row = {
     Row.fromSeq(
       row.toSeq.map {
-        case null                    => null
-        case d: java.math.BigDecimal => BigDecimal(d)
+        case null =>
+          null
+        case d: java.math.BigDecimal =>
+          BigDecimal(d)
         // Convert array to Seq for easy equality check.
-        case b: Array[_] => b.toSeq
-        case r: Row      => prepareRow(r)
-        case o           => o
+        case b: Array[_] =>
+          b.toSeq
+        case r: Row =>
+          prepareRow(r)
+        case o =>
+          o
       })
   }
 
@@ -453,8 +472,10 @@ object QueryTest {
       df: DataFrame,
       expectedAnswer: java.util.List[Row]): String = {
     checkAnswer(df, expectedAnswer.asScala) match {
-      case Some(errorMessage) => errorMessage
-      case None               => null
+      case Some(errorMessage) =>
+        errorMessage
+      case None =>
+        null
     }
   }
 }

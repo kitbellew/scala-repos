@@ -32,8 +32,10 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
     val tUpper = findLastChildByType[PsiElement](ScalaTokenTypes.tUPPER_BOUND)
     if (tUpper != null) {
       ScalaPsiUtil.getNextSiblingOfType(tUpper, classOf[ScTypeElement]) match {
-        case null => None
-        case te   => Some(te)
+        case null =>
+          None
+        case te =>
+          Some(te)
       }
     } else
       None
@@ -43,8 +45,10 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
     val tLower = findLastChildByType[PsiElement](ScalaTokenTypes.tLOWER_BOUND)
     if (tLower != null) {
       ScalaPsiUtil.getNextSiblingOfType(tLower, classOf[ScTypeElement]) match {
-        case null => None
-        case te   => Some(te)
+        case null =>
+          None
+        case te =>
+          Some(te)
       }
     } else
       None
@@ -74,8 +78,9 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
     if (node == null)
       return
     node.getPsi.getPrevSibling match {
-      case ws: PsiWhiteSpace => ws.delete()
-      case _                 =>
+      case ws: PsiWhiteSpace =>
+        ws.delete()
+      case _ =>
     }
     node.getTreeParent.removeRange(node, null)
   }

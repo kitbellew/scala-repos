@@ -94,10 +94,14 @@ object EventHandler extends ListenerManagement {
 
   val level: Int =
     config.getString("akka.event-handler-level", "INFO") match {
-      case "ERROR"   => ErrorLevel
-      case "WARNING" => WarningLevel
-      case "INFO"    => InfoLevel
-      case "DEBUG"   => DebugLevel
+      case "ERROR" =>
+        ErrorLevel
+      case "WARNING" =>
+        WarningLevel
+      case "INFO" =>
+        InfoLevel
+      case "DEBUG" =>
+        DebugLevel
       case unknown =>
         throw new ConfigurationException(
           "Configuration option 'akka.event-handler-level' is invalid [" + unknown + "]")
@@ -241,15 +245,18 @@ object EventHandler extends ListenerManagement {
 
   val defaultListeners =
     config.getList("akka.event-handlers") match {
-      case Nil       => "akka.event.EventHandler$DefaultListener" :: Nil
-      case listeners => listeners
+      case Nil =>
+        "akka.event.EventHandler$DefaultListener" :: Nil
+      case listeners =>
+        listeners
     }
   defaultListeners foreach { listenerName =>
     try {
       ReflectiveAccess.getClassFor[Actor](listenerName) match {
         case r: Right[_, Class[Actor]] =>
           addListener(Actor.actorOf(r.b).start())
-        case l: Left[Exception, _] => throw l.a
+        case l: Left[Exception, _] =>
+          throw l.a
       }
     } catch {
       case e: Exception =>

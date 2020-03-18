@@ -49,8 +49,10 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
     test("Session expiration 2") {
       implicit val timer = new MockTimer
       val connected: (WatchState => Boolean) = {
-        case WatchState.SessionState(SessionState.SyncConnected) => true
-        case _                                                   => false
+        case WatchState.SessionState(SessionState.SyncConnected) =>
+          true
+        case _ =>
+          false
       }
       val notConnected: (WatchState => Boolean) = w => !connected(w)
       val session1 = ZkSession.retrying(
@@ -69,8 +71,9 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
       state.changes.register(
         Witness({ ws =>
           ws match {
-            case WatchState.SessionState(s) => states = s +: states
-            case _                          =>
+            case WatchState.SessionState(s) =>
+              states = s +: states
+            case _ =>
           }
         }))
 
@@ -192,7 +195,8 @@ class ZkSessionEndToEndTest extends FunSuite with BeforeAndAfter {
         assert(
           (
             zkStates map {
-              case (s, _) => s
+              case (s, _) =>
+                s
             }
           ).reverse ==
             Seq(

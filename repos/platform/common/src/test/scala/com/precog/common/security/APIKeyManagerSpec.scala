@@ -65,7 +65,8 @@ trait APIKeyManagerSpec[M[+_]] extends Specification {
 
       grantParents must not be empty
       grantParents must haveAllElementsLike({
-        case gid => gid must_== rootGrantId
+        case gid =>
+          gid must_== rootGrantId
       })
     }
   }

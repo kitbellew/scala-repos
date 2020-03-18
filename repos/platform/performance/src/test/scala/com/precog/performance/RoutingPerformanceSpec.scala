@@ -143,8 +143,10 @@ case class MockIngestReset(barrier: CountDownLatch)
 
 class MockMetadataActor extends Actor {
   def receive = {
-    case UpdateMetadata(_) => sender ! ()
-    case _                 => println("Unplanned metadata actor action")
+    case UpdateMetadata(_) =>
+      sender ! ()
+    case _ =>
+      println("Unplanned metadata actor action")
   }
 }
 
@@ -166,7 +168,8 @@ class MockIngestActor(toSend: Int, messageBatch: Seq[IngestMessage])
         replyTo ! NoIngestData
       }
     case () =>
-    case x  => println("Unplanned ingest actor action: " + x.getClass.getName)
+    case x =>
+      println("Unplanned ingest actor action: " + x.getClass.getName)
   }
 }
 
@@ -181,9 +184,11 @@ class MockProjectionActors(projectionActor: ActorRef) extends Actor {
         map += (descItr.next -> projectionActor)
       }
       sender ! ProjectionBatchAcquired(map)
-    case ReleaseProjection(_)      =>
-    case ReleaseProjectionBatch(_) => sender ! ()
-    case _                         => println("Unplanned projection actors action")
+    case ReleaseProjection(_) =>
+    case ReleaseProjectionBatch(_) =>
+      sender ! ()
+    case _ =>
+      println("Unplanned projection actors action")
   }
 }
 
@@ -193,6 +198,7 @@ class MockProjectionActor extends Actor {
       sender ! ()
     case ProjectionBatchInsert(_) =>
       sender ! ()
-    case _ => println("Unplanned projection actor action")
+    case _ =>
+      println("Unplanned projection actor action")
   }
 }

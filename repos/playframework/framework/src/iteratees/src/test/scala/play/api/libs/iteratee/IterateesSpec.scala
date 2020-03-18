@@ -255,7 +255,8 @@ object IterateesSpec
           recurseTimes(n)
           false // Didn't overflow
         } catch {
-          case _: StackOverflowError => true
+          case _: StackOverflowError =>
+            true
         }
       }
       val overflowDepth: Int = (12 until 20).map(1 << _).find(overflows).get
@@ -265,7 +266,8 @@ object IterateesSpec
       val flatMapped: Iteratee[Unit, Unit] =
         (0 until overflowDepth)
           .foldLeft[Iteratee[Unit, Unit]](Cont(_ => unitDone)) {
-            case (it, _) => it.flatMap(_ => unitDone)
+            case (it, _) =>
+              it.flatMap(_ => unitDone)
           }
       await(await(flatMapped.feed(Input.EOF)).unflatten) must equalTo(
         Step.Done((), Input.Empty))
@@ -393,7 +395,8 @@ object IterateesSpec
     "do nothing on a Done iteratee" in {
       mustExecute(1) { implicit foldEC =>
         val it = done(expected).recover {
-          case t: Throwable => unexpected
+          case t: Throwable =>
+            unexpected
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -403,7 +406,8 @@ object IterateesSpec
     "do nothing on an eventually Done iteratee" in {
       mustExecute(1) { implicit foldEC =>
         val it = delayed(done(expected)).recover {
-          case t: Throwable => unexpected
+          case t: Throwable =>
+            unexpected
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -413,7 +417,8 @@ object IterateesSpec
     "recover with the expected fallback value from an Error iteratee" in {
       mustExecute(2) { implicit foldEC =>
         val it = error(unexpected).recover {
-          case t: Throwable => expected
+          case t: Throwable =>
+            expected
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -423,7 +428,8 @@ object IterateesSpec
     "leave the Error iteratee unchanged if the Exception type doesn't match the partial function" in {
       mustExecute(1) { implicit foldEC =>
         val it = error(expected).recover {
-          case t: IllegalArgumentException => unexpected
+          case t: IllegalArgumentException =>
+            unexpected
         }
         val actual = await((Enumerator(unexpected) |>>> it).failed)
         actual.getMessage must equalTo(expected)
@@ -433,7 +439,8 @@ object IterateesSpec
     "recover with the expected fallback value from an eventually Error iteratee" in {
       mustExecute(2) { implicit foldEC =>
         val it = delayed(error(unexpected)).recover {
-          case t: Throwable => expected
+          case t: Throwable =>
+            expected
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -443,7 +450,8 @@ object IterateesSpec
     "recover with the expected fallback value from an iteratee that eventually throws an exception" in {
       mustExecute(2) { implicit foldEC =>
         val it = delayed(throw new RuntimeException(unexpected)).recover {
-          case t: Throwable => expected
+          case t: Throwable =>
+            expected
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -453,7 +461,8 @@ object IterateesSpec
     "do nothing on a Cont iteratee that becomes Done with input" in {
       mustExecute(2) { implicit foldEC =>
         val it = cont(input => done(input)).recover {
-          case t: Throwable => unexpected
+          case t: Throwable =>
+            unexpected
         }
         val actual = await(Enumerator(expected) |>>> it)
         actual must equalTo(expected)
@@ -463,7 +472,8 @@ object IterateesSpec
     "do nothing on an eventually Cont iteratee that becomes Done with input" in {
       mustExecute(2) { implicit foldEC =>
         val it = delayed(cont(input => done(input))).recover {
-          case t: Throwable => unexpected
+          case t: Throwable =>
+            unexpected
         }
         val actual = await(Enumerator(expected) |>>> it)
         actual must equalTo(expected)
@@ -473,7 +483,8 @@ object IterateesSpec
     "do nothing on a Cont iteratee that eventually becomes Done with input" in {
       mustExecute(2) { implicit foldEC =>
         val it = cont(input => delayed(done(input))).recover {
-          case t: Throwable => unexpected
+          case t: Throwable =>
+            unexpected
         }
         val actual = await(Enumerator(expected) |>>> it)
         actual must equalTo(expected)
@@ -489,7 +500,8 @@ object IterateesSpec
                 delayed(
                   cont(input3 => delayed(done(input1 + input2 + input3))))))))
           .recover {
-            case t: Throwable => unexpected
+            case t: Throwable =>
+              unexpected
           }
         val actual = await(Enumerator(expected, expected, expected) |>>> it)
         actual must equalTo(expected * 3)
@@ -505,7 +517,8 @@ object IterateesSpec
                 delayed(
                   cont(input3 => delayed(error(input1 + input2 + input3))))))))
           .recover {
-            case t: Throwable => expected
+            case t: Throwable =>
+              expected
           }
         val actual = await(
           Enumerator(unexpected, unexpected, unexpected) |>>> it)
@@ -523,7 +536,8 @@ object IterateesSpec
       mustExecute(1) { implicit foldEC =>
         val it =
           done(expected).recoverM {
-            case t: Throwable => Future.successful(unexpected)
+            case t: Throwable =>
+              Future.successful(unexpected)
           }(foldEC)
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -534,7 +548,8 @@ object IterateesSpec
       mustExecute(1) { implicit foldEC =>
         val it =
           done(expected).recoverM {
-            case t: Throwable => Future.failed(new RuntimeException(unexpected))
+            case t: Throwable =>
+              Future.failed(new RuntimeException(unexpected))
           }(foldEC)
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -545,7 +560,8 @@ object IterateesSpec
       mustExecute(2) { implicit foldEC =>
         val it =
           error(unexpected).recoverM {
-            case t: Throwable => Future.successful(expected)
+            case t: Throwable =>
+              Future.successful(expected)
           }(foldEC)
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -556,7 +572,8 @@ object IterateesSpec
       mustExecute(1) { implicit foldEC =>
         val it =
           error(expected).recoverM {
-            case t: IllegalArgumentException => Future.successful(unexpected)
+            case t: IllegalArgumentException =>
+              Future.successful(unexpected)
           }(foldEC)
         val actual = await((Enumerator(unexpected) |>>> it).failed)
         actual.getMessage must equalTo(expected)
@@ -567,7 +584,8 @@ object IterateesSpec
       mustExecute(2) { implicit foldEC =>
         val exception = new RuntimeException(expected)
         val it = error(unexpected).recoverM {
-          case t: Throwable => Future.failed(exception)
+          case t: Throwable =>
+            Future.failed(exception)
         }
         val actual = await((Enumerator(unexpected) |>>> it).failed)
         actual must equalTo(exception)
@@ -583,7 +601,8 @@ object IterateesSpec
     "do nothing on a Done iteratee" in {
       mustExecute(1) { implicit foldEC =>
         val it = done(expected).recoverWith {
-          case t: Throwable => done(unexpected)
+          case t: Throwable =>
+            done(unexpected)
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -593,7 +612,8 @@ object IterateesSpec
     "do nothing on a Done iteratee even if the recover block gets an error Iteratee" in {
       mustExecute(1) { implicit foldEC =>
         val it = done(expected).recoverWith {
-          case t: Throwable => error(unexpected)
+          case t: Throwable =>
+            error(unexpected)
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -603,7 +623,8 @@ object IterateesSpec
     "recover with the expected fallback Iteratee from an Error iteratee" in {
       mustExecute(1) { implicit foldEC =>
         val it = error(unexpected).recoverWith {
-          case t: Throwable => done(expected)
+          case t: Throwable =>
+            done(expected)
         }
         val actual = await(Enumerator(unexpected) |>>> it)
         actual must equalTo(expected)
@@ -613,7 +634,8 @@ object IterateesSpec
     "leave the Error iteratee unchanged if the Exception type doesn't match the partial function" in {
       mustExecute(1) { implicit foldEC =>
         val it = error(expected).recoverWith {
-          case t: IllegalArgumentException => done(unexpected)
+          case t: IllegalArgumentException =>
+            done(unexpected)
         }
         val actual = await((Enumerator(unexpected) |>>> it).failed)
         actual.getMessage must equalTo(expected)
@@ -623,7 +645,8 @@ object IterateesSpec
     "return a failed Future if you try to recover from an Error iteratee with an Error iteratee" in {
       mustExecute(1) { implicit foldEC =>
         val it = error(unexpected).recoverWith {
-          case t: Throwable => error(expected)
+          case t: Throwable =>
+            error(expected)
         }
         val actual = await((Enumerator(unexpected) |>>> it).failed)
         actual.getMessage must equalTo(expected)

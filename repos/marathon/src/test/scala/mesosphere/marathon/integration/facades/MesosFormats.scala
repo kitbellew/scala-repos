@@ -20,13 +20,18 @@ object MesosFormats {
 
   implicit lazy val ITResourceValueFormat: Format[ITResourceValue] = Format(
     Reads[ITResourceValue] {
-      case JsNumber(value)       => JsSuccess(ITResourceScalarValue(value.toDouble))
-      case JsString(portsString) => JsSuccess(ITResourcePortValue(portsString))
-      case _                     => JsError("expected string or number")
+      case JsNumber(value) =>
+        JsSuccess(ITResourceScalarValue(value.toDouble))
+      case JsString(portsString) =>
+        JsSuccess(ITResourcePortValue(portsString))
+      case _ =>
+        JsError("expected string or number")
     },
     Writes[ITResourceValue] {
-      case ITResourceScalarValue(value)     => JsNumber(value)
-      case ITResourcePortValue(portsString) => JsString(portsString)
+      case ITResourceScalarValue(value) =>
+        JsNumber(value)
+      case ITResourcePortValue(portsString) =>
+        JsString(portsString)
     }
   )
 

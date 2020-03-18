@@ -87,7 +87,8 @@ final case class ProductResultConverter[
 
   override def getDumpInfo =
     super.getDumpInfo.copy(children = elementConverters.zipWithIndex.map {
-      case (ch, i) => ((i + 1).toString, ch)
+      case (ch, i) =>
+        ((i + 1).toString, ch)
     })
 }
 
@@ -155,7 +156,8 @@ final class GetOrElseResultConverter[M <: ResultConverterDomain, T](
       mainInfo = (
         try default().toString
         catch {
-          case e: Throwable => "[" + e.getClass.getName + "]"
+          case e: Throwable =>
+            "[" + e.getClass.getName + "]"
         }
       ),
       children = Vector(("child", child)))

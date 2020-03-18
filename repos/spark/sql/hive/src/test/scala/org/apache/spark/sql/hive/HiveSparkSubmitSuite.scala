@@ -121,7 +121,8 @@ class HiveSparkSubmitSuite
       Properties.versionNumberString match {
         case v if v.startsWith("2.10") || v.startsWith("2.11") =>
           v.substring(0, 4)
-        case x => throw new Exception(s"Unsupported Scala Version: $x")
+        case x =>
+          throw new Exception(s"Unsupported Scala Version: $x")
       }
     val testJar =
       s"sql/hive/src/test/resources/regression-test-SPARK-8489/test-$version.jar"
@@ -240,7 +241,8 @@ class HiveSparkSubmitSuite
             s" See the log4j logs for more detail." +
             s"\n$historyLog",
           to)
-      case t: Throwable => throw t
+      case t: Throwable =>
+        throw t
     } finally {
       // Ensure we still kill the process in case it timed out
       process.destroy()

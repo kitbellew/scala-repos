@@ -31,8 +31,10 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
   def flatMapF[B](f: A => F[Option[B]])(implicit F: Monad[F]): OptionT[F, B] =
     OptionT(
       F.flatMap(value) {
-        case Some(a) => f(a)
-        case None    => F.pure(None)
+        case Some(a) =>
+          f(a)
+        case None =>
+          F.pure(None)
       })
 
   def transform[B](f: Option[A] => Option[B])(implicit
@@ -46,8 +48,10 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
 
   def getOrElseF(default: => F[A])(implicit F: Monad[F]): F[A] =
     F.flatMap(value) {
-      case Some(a) => F.pure(a)
-      case None    => default
+      case Some(a) =>
+        F.pure(a)
+      case None =>
+        default
     }
 
   def collect[B](f: PartialFunction[A, B])(implicit
@@ -75,8 +79,10 @@ final case class OptionT[F[_], A](value: F[Option[A]]) {
   def orElseF(default: => F[Option[A]])(implicit F: Monad[F]): OptionT[F, A] =
     OptionT(
       F.flatMap(value) {
-        case s @ Some(_) => F.pure(s)
-        case None        => default
+        case s @ Some(_) =>
+          F.pure(s)
+        case None =>
+          default
       })
 
   def toRight[L](left: => L)(implicit F: Functor[F]): XorT[F, L, A] =

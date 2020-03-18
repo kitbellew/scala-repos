@@ -24,16 +24,22 @@ object `.contains _` {
           case qual `.contains`(stripped(ResolvesTo(`x`)))
               if isIndependentOf(qual, x) =>
             Some(qual)
-          case _ => None
+          case _ =>
+            None
         }
-      case qual `.contains`(underscore()) => Some(qual)
+      case qual `.contains`(underscore()) =>
+        Some(qual)
       case undSect: ScUnderscoreSection =>
         undSect.bindingExpr match {
-          case Some(qual `.contains` ()) => Some(qual)
-          case _                         => None
+          case Some(qual `.contains` ()) =>
+            Some(qual)
+          case _ =>
+            None
         }
-      case qual `.contains` () => Some(qual)
-      case _                   => None
+      case qual `.contains` () =>
+        Some(qual)
+      case _ =>
+        None
     }
   }
 }
@@ -46,9 +52,11 @@ object `!.contains _` {
           case !(qual `.contains`(stripped(ResolvesTo(`x`))))
               if isIndependentOf(qual, x) =>
             Some(qual)
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -71,7 +79,8 @@ object FilterContainsToIntersect extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "intersect", other))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -93,6 +102,7 @@ object FilterNotContainsToDiff extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "diff", other))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }

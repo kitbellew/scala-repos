@@ -67,7 +67,8 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
             tr(
               sel.replace(
                 {
-                  case Ref(s) if s == gen => Ref(expansionRef)
+                  case Ref(s) if s == gen =>
+                    Ref(expansionRef)
                 },
                 keepType = true))
           case _ =>

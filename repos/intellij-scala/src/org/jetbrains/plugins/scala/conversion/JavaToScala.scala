@@ -54,12 +54,18 @@ object JavaToScala {
       (el: PsiReferenceExpression) => PsiUtil.isAccessedForWriting(el))
 
     references.length match {
-      case 0 if possibleVal => false
-      case 0 if possibleVar => true
-      case 0                => false
-      case 1 if possibleVal => false
-      case 1 if possibleVar => true
-      case _                => true
+      case 0 if possibleVal =>
+        false
+      case 0 if possibleVar =>
+        true
+      case 0 =>
+        false
+      case 1 if possibleVal =>
+        false
+      case 1 if possibleVar =>
+        true
+      case _ =>
+        true
     }
   }
 
@@ -86,10 +92,12 @@ object JavaToScala {
           m
         case e: PsiExpressionStatement =>
           convertPsiToIntermdeiate(e.getExpression, externalProperties)
-        case l: PsiLiteralExpression => LiteralExpression(l.getText)
+        case l: PsiLiteralExpression =>
+          LiteralExpression(l.getText)
         case t: PsiTypeElement =>
           TypeConstruction.createStringTypePresentation(t.getType, t.getProject)
-        case w: PsiWhiteSpace => LiteralExpression(w.getText)
+        case w: PsiWhiteSpace =>
+          LiteralExpression(w.getText)
         case r: PsiReturnStatement =>
           ReturnStatement(
             convertPsiToIntermdeiate(r.getReturnValue, externalProperties))
@@ -182,8 +190,10 @@ object JavaToScala {
             .map(convertPsiToIntermdeiate(_, externalProperties))
           val condition = Some(
             f.getCondition match {
-              case empty: PsiEmptyStatement => LiteralExpression("true")
-              case null                     => LiteralExpression("true")
+              case empty: PsiEmptyStatement =>
+                LiteralExpression("true")
+              case null =>
+                LiteralExpression("true")
               case _ =>
                 convertPsiToIntermdeiate(f.getCondition, externalProperties)
             })
@@ -293,9 +303,12 @@ object JavaToScala {
 
           val operation =
             be.getOperationSign.getText match {
-              case "==" if isOk => "eq"
-              case "!=" if isOk => "ne"
-              case x            => x
+              case "==" if isOk =>
+                "eq"
+              case "!=" if isOk =>
+                "ne"
+              case x =>
+                x
             }
 
           BinaryExpressionConstruction(
@@ -464,7 +477,8 @@ object JavaToScala {
                 null
             )
           }
-        case c: PsiClass => createClass(c, externalProperties)
+        case c: PsiClass =>
+          createClass(c, externalProperties)
         case p: PsiParenthesizedExpression =>
           val expr = Option(p.getExpression)
             .map(convertPsiToIntermdeiate(_, externalProperties))
@@ -480,7 +494,8 @@ object JavaToScala {
               case method: PsiMethod =>
                 val returnType = method.getReturnType
                 returnType != null && returnType.isInstanceOf[PsiArrayType]
-              case _ => false
+              case _ =>
+                false
             }
           }
 
@@ -498,7 +513,8 @@ object JavaToScala {
                   convertPsiToIntermdeiate(
                     attribute.getValue,
                     externalProperties)
-                case _ => null
+                case _ =>
+                  null
               }
             attrResult += ((Option(attribute.getName), Option(value)))
           }
@@ -569,7 +585,8 @@ object JavaToScala {
                     case r: PsiJavaCodeReferenceElement
                         if n == r.getQualifier =>
                       Seq(LiteralExpression("()"))
-                    case _ => null
+                    case _ =>
+                      null
                   }
                 } else {
                   Seq(
@@ -657,9 +674,12 @@ object JavaToScala {
           NotSupported(
             statements,
             s.getLabelIdentifier.getText + " //todo: labels is not supported")
-        case e: PsiEmptyStatement => EmptyConstruction()
-        case e: PsiErrorElement   => EmptyConstruction()
-        case e                    => LiteralExpression(e.getText)
+        case e: PsiEmptyStatement =>
+          EmptyConstruction()
+        case e: PsiErrorElement =>
+          EmptyConstruction()
+        case e =>
+          LiteralExpression(e.getText)
       }
 
     hanldleAssociations(element, result)
@@ -675,8 +695,9 @@ object JavaToScala {
       case expression: PsiNewExpression
           if expression.getClassReference != null =>
         associations ++= associationFor(expression.getClassReference)
-      case e: PsiElement => associations ++= associationFor(e)
-      case _             =>
+      case e: PsiElement =>
+        associations ++= associationFor(e)
+      case _ =>
     }
 
     result match {
@@ -888,7 +909,8 @@ object JavaToScala {
         context.get().push((false, inClass.qualifiedName))
         try {
           inClass match {
-            case clazz: PsiAnonymousClass => handleAnonymousClass(clazz)
+            case clazz: PsiAnonymousClass =>
+              handleAnonymousClass(clazz)
             case _ =>
               val typeParams = inClass.getTypeParameters.map(
                 convertPsiToIntermdeiate(_, externalProperties))
@@ -935,7 +957,8 @@ object JavaToScala {
       .map(_.getStatements)
       .flatMap(_.headOption)
       .collect {
-        case exp: PsiExpressionStatement => exp
+        case exp: PsiExpressionStatement =>
+          exp
       }
   }
 
@@ -952,15 +975,18 @@ object JavaToScala {
           case mc: PsiMethodCallExpression
               if mc.getMethodExpression.getQualifiedName == "this" =>
             Some(mc.getMethodExpression)
-          case _ => None
+          case _ =>
+            None
         }
 
       if (refExpr.isDefined) {
         val resolved = Option(refExpr.get.resolve())
 
         val target = resolved.flatMap {
-          case m: PsiMethod => Some(m)
-          case _            => None
+          case m: PsiMethod =>
+            Some(m)
+          case _ =>
+            None
         }
 
         if (target.isDefined && target.get.isConstructor) {
@@ -1002,7 +1028,8 @@ object JavaToScala {
           case mc: PsiMethodCallExpression
               if mc.getMethodExpression.getQualifiedName == "super" =>
             Some(mc)
-          case _ => None
+          case _ =>
+            None
         }
         if (isSuper.isDefined) {
           dropStatements += firstStatement.get
@@ -1025,7 +1052,8 @@ object JavaToScala {
                 if (ae.getOperationSign.getTokenType == JavaTokenType.EQ)
                   && ae.getLExpression.isInstanceOf[PsiReferenceExpression] =>
               Some(ae.getLExpression.asInstanceOf[PsiReferenceExpression])
-            case _ => None
+            case _ =>
+              None
           }
 
           val field =
@@ -1034,7 +1062,8 @@ object JavaToScala {
                 case f: PsiField
                     if f.getContainingClass == constructor.getContainingClass && f.getInitializer == null =>
                   Some(f)
-                case _ => None
+                case _ =>
+                  None
               }
             else
               None
@@ -1109,8 +1138,10 @@ object JavaToScala {
         val emptyParamsConstructors = constructors.filter(
           _.getParameterList.getParametersCount == 0)
         emptyParamsConstructors.length match {
-          case 1 => emptyParamsConstructors.head
-          case _ => null
+          case 1 =>
+            emptyParamsConstructors.head
+          case _ =>
+            null
         }
       }
 
@@ -1118,13 +1149,16 @@ object JavaToScala {
       // or try to use constructor with empty parameters if it is defined
       // and there are other constructors
       candidates.length match {
-        case 1 => candidates.head
-        case _ => tryFindWithoutParamConstructor()
+        case 1 =>
+          candidates.head
+        case _ =>
+          tryFindWithoutParamConstructor()
       }
     }
 
     constructors.length match {
-      case 0 => (None, None)
+      case 0 =>
+        (None, None)
       case 1 =>
         val updatedConstructor = createPrimaryConstructor(constructors.head)
         (Some(constructors.head +: dropFields.toSeq), Some(updatedConstructor))
@@ -1174,7 +1208,8 @@ object JavaToScala {
       val modifiers = new ArrayBuffer[IntermediateNode]()
       val simpleList =
         SIMPLE_MODIFIERS_MAP.filter {
-          case (psiType, el) => owner.hasModifierProperty(psiType)
+          case (psiType, el) =>
+            owner.hasModifierProperty(psiType)
         }.values
 
       modifiers ++= simpleList.map(SimpleModifier)
@@ -1280,11 +1315,15 @@ object JavaToScala {
     expr.getParent match {
       case b: PsiExpressionStatement =>
         b.getParent match {
-          case b: PsiBlockStatement => true
-          case b: PsiCodeBlock      => true
-          case _                    => false
+          case b: PsiBlockStatement =>
+            true
+          case b: PsiCodeBlock =>
+            true
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

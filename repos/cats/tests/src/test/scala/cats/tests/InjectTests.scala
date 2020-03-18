@@ -23,7 +23,8 @@ class InjectTests extends CatsSuite {
     new Functor[Test1Algebra] {
       def map[A, B](a: Test1Algebra[A])(f: A => B): Test1Algebra[B] =
         a match {
-          case Test1(k, h) => Test1(k, x => f(h(x)))
+          case Test1(k, h) =>
+            Test1(k, x => f(h(x)))
         }
     }
 
@@ -31,7 +32,8 @@ class InjectTests extends CatsSuite {
     new Functor[Test2Algebra] {
       def map[A, B](a: Test2Algebra[A])(f: A => B): Test2Algebra[B] =
         a match {
-          case Test2(k, h) => Test2(k, x => f(h(x)))
+          case Test2(k, h) =>
+            Test2(k, x => f(h(x)))
         }
     }
 
@@ -56,14 +58,16 @@ class InjectTests extends CatsSuite {
   object Test1Interpreter extends (Test1Algebra ~> Id) {
     override def apply[A](fa: Test1Algebra[A]): Id[A] =
       fa match {
-        case Test1(k, h) => Id.pure[A](h(k))
+        case Test1(k, h) =>
+          Id.pure[A](h(k))
       }
   }
 
   object Test2Interpreter extends (Test2Algebra ~> Id) {
     override def apply[A](fa: Test2Algebra[A]): Id[A] =
       fa match {
-        case Test2(k, h) => Id.pure[A](h(k))
+        case Test2(k, h) =>
+          Id.pure[A](h(k))
       }
   }
 

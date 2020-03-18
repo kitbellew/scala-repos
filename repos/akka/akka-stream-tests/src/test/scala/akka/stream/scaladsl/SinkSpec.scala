@@ -35,10 +35,12 @@ class SinkSpec extends AkkaSpec {
         s.request(3)
       }
       probes.zipWithIndex.foreach {
-        case (p, i) ⇒ p.expectNext(i)
+        case (p, i) ⇒
+          p.expectNext(i)
       }
       probes.foreach {
-        case p ⇒ p.expectComplete()
+        case p ⇒
+          p.expectComplete()
       }
     }
 
@@ -59,10 +61,12 @@ class SinkSpec extends AkkaSpec {
         s.request(3)
       }
       probes.zipWithIndex.foreach {
-        case (p, i) ⇒ p.expectNext(i)
+        case (p, i) ⇒
+          p.expectNext(i)
       }
       probes.foreach {
-        case p ⇒ p.expectComplete()
+        case p ⇒
+          p.expectComplete()
       }
     }
 
@@ -85,10 +89,12 @@ class SinkSpec extends AkkaSpec {
         s.request(3)
       }
       probes.zipWithIndex.foreach {
-        case (p, i) ⇒ p.expectNext(i)
+        case (p, i) ⇒
+          p.expectNext(i)
       }
       probes.foreach {
-        case p ⇒ p.expectComplete()
+        case p ⇒
+          p.expectComplete()
       }
     }
 
@@ -113,10 +119,12 @@ class SinkSpec extends AkkaSpec {
         s.request(3)
       }
       probes.zipWithIndex.foreach {
-        case (p, i) ⇒ p.expectNext(i)
+        case (p, i) ⇒
+          p.expectNext(i)
       }
       probes.foreach {
-        case p ⇒ p.expectComplete()
+        case p ⇒
+          p.expectComplete()
       }
     }
 

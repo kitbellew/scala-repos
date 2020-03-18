@@ -45,7 +45,8 @@ object UnwrappedExamples {
     def toJson(t: T): String =
       fields(t)
         .map {
-          case (k, v) => s""""$k":$v"""
+          case (k, v) =>
+            s""""$k":$v"""
         }
         .mkString("{", ",", "}")
     def fields(t: T): Map[String, String]
@@ -107,7 +108,8 @@ object UnwrappedExamples {
     def toJson(t: T): String =
       fields(t)
         .map {
-          case (k, v) => s""""$k":$v"""
+          case (k, v) =>
+            s""""$k":$v"""
         }
         .mkString("{", ",", "}")
     def fields(t: T): Map[String, String]

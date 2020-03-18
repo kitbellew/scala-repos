@@ -89,8 +89,10 @@ class HTTPRequestServlet(
 
   def param(name: String): List[String] =
     req.getParameterValues(name) match {
-      case null => Nil
-      case x    => x.toList
+      case null =>
+        Nil
+      case x =>
+        x.toList
     }
 
   lazy val params: List[HTTPParam] = enumToList[String](
@@ -302,7 +304,8 @@ private class OfflineRequestSnapshot(
           .filter(a => a)
           .map(a => 443)
           .headOption getOrElse 80
-      case x => x
+      case x =>
+        x
     }
 
   val method: String = req.method

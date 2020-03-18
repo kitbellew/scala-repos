@@ -194,7 +194,8 @@ object AtLeastOnceDeliverySpec {
         // this is not supported currently, so expecting exception
         try deliver(context.actorSelection("*"))(id ⇒ s"$any$id")
         catch {
-          case ex: Exception ⇒ sender() ! Failure(ex)
+          case ex: Exception ⇒
+            sender() ! Failure(ex)
         }
     }
 
@@ -444,7 +445,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       val unconfirmed =
         probe
           .receiveWhile(5.seconds) {
-            case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
+            case UnconfirmedWarning(unconfirmed) ⇒
+              unconfirmed
           }
           .flatten
       unconfirmed.map(_.destination).toSet should ===(
@@ -491,19 +493,22 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       probeA
         .receiveN(N, deliverWithin)
         .map {
-          case a: Action ⇒ a.payload
+          case a: Action ⇒
+            a.payload
         }
         .toSet should ===((1 to N).map(n ⇒ "a-" + n).toSet)
       probeB
         .receiveN(N, deliverWithin)
         .map {
-          case a: Action ⇒ a.payload
+          case a: Action ⇒
+            a.payload
         }
         .toSet should ===((1 to N).map(n ⇒ "b-" + n).toSet)
       probeC
         .receiveN(N, deliverWithin)
         .map {
-          case a: Action ⇒ a.payload
+          case a: Action ⇒
+            a.payload
         }
         .toSet should ===((1 to N).map(n ⇒ "c-" + n).toSet)
     }

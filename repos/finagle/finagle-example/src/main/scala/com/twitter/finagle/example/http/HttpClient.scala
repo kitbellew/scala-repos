@@ -25,9 +25,12 @@ object HttpClient {
       // success and failure values:
       service(request) flatMap { response =>
         response.status match {
-          case Status.Ok        => Future.value(response)
-          case Status.Forbidden => Future.exception(new InvalidRequest)
-          case _                => Future.exception(new Exception(response.status.reason))
+          case Status.Ok =>
+            Future.value(response)
+          case Status.Forbidden =>
+            Future.exception(new InvalidRequest)
+          case _ =>
+            Future.exception(new Exception(response.status.reason))
         }
       }
     }

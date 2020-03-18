@@ -80,8 +80,10 @@ class ScalaResolveResult(
     */
   def getActualElement = {
     parentElement match {
-      case Some(e) => e
-      case None    => element
+      case Some(e) =>
+        e
+      case None =>
+        element
     }
   }
 
@@ -93,8 +95,10 @@ class ScalaResolveResult(
 
   def isApplicableInternal(withExpectedType: Boolean): Boolean = {
     innerResolveResult match {
-      case Some(r) => r.isApplicable(withExpectedType)
-      case None    => isApplicable(withExpectedType)
+      case Some(r) =>
+        r.isApplicable(withExpectedType)
+      case None =>
+        isApplicable(withExpectedType)
     }
   }
 
@@ -165,7 +169,8 @@ class ScalaResolveResult(
         if (implicitFunction != rr.implicitFunction)
           return false
         innerResolveResult == rr.innerResolveResult
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode: Int =
@@ -175,8 +180,10 @@ class ScalaResolveResult(
   override def toString = {
     val name =
       element match {
-        case named: ScNamedElement => named.name
-        case it                    => it.toString
+        case named: ScNamedElement =>
+          named.name
+        case it =>
+          it.toString
       }
     s"""$name [${problems.mkString(", ")}]"""
   }
@@ -209,7 +216,8 @@ class ScalaResolveResult(
         @tailrec
         def getPackageName(element: PsiElement): String = {
           element match {
-            case null => ""
+            case null =>
+              ""
             case o: ScObject if o.isPackageObject =>
               val qualifier = o.qualifiedName
               val packageSuffix: String = ".`package`"
@@ -217,8 +225,10 @@ class ScalaResolveResult(
                 qualifier.substring(0, qualifier.length - packageSuffix.length)
               else
                 qualifier
-            case p: ScPackaging => p.fullPackageName
-            case _              => getPackageName(element.getParent)
+            case p: ScPackaging =>
+              p.fullPackageName
+            case _ =>
+              getPackageName(element.getParent)
           }
         }
         val q =
@@ -250,7 +260,8 @@ class ScalaResolveResult(
       }
       if (importsUsed.size == 0) {
         ScalaPsiUtil.nameContext(getActualElement) match {
-          case synthetic: ScSyntheticClass => return SCALA //like scala.Int
+          case synthetic: ScSyntheticClass =>
+            return SCALA //like scala.Int
           case obj: ScObject if obj.isPackageObject =>
             val qualifier = obj.qualifiedName
             return getPackagePrecedence(qualifier)
@@ -266,17 +277,22 @@ class ScalaResolveResult(
               classOf[PsiClass])
             val clazz: PsiClass =
               clazzStub match {
-                case clazz: PsiClass => clazz
-                case _               => null
+                case clazz: PsiClass =>
+                  clazz
+                case _ =>
+                  null
               }
             //val clazz = PsiTreeUtil.getParentOfType(result.getActualElement, classOf[PsiClass])
             if (clazz == null)
               return OTHER_MEMBERS
             else {
               clazz.qualifiedName match {
-                case "scala.Predef"               => return SCALA_PREDEF
-                case "scala.LowPriorityImplicits" => return SCALA_PREDEF
-                case "scala"                      => return SCALA
+                case "scala.Predef" =>
+                  return SCALA_PREDEF
+                case "scala.LowPriorityImplicits" =>
+                  return SCALA_PREDEF
+                case "scala" =>
+                  return SCALA
                 case _ =>
                   clazz match {
                     case o: ScObject
@@ -292,7 +308,8 @@ class ScalaResolveResult(
                         return OTHER_MEMBERS
                       else
                         return PACKAGE_LOCAL
-                    case _ => return OTHER_MEMBERS
+                    case _ =>
+                      return OTHER_MEMBERS
                   }
               }
             }
@@ -308,28 +325,40 @@ class ScalaResolveResult(
       importUsed match {
         case _: ImportWildcardSelectorUsed =>
           getActualElement match {
-            case p: PsiPackage                    => WILDCARD_IMPORT_PACKAGE
-            case o: ScObject if o.isPackageObject => WILDCARD_IMPORT_PACKAGE
-            case _                                => WILDCARD_IMPORT
+            case p: PsiPackage =>
+              WILDCARD_IMPORT_PACKAGE
+            case o: ScObject if o.isPackageObject =>
+              WILDCARD_IMPORT_PACKAGE
+            case _ =>
+              WILDCARD_IMPORT
           }
         case _: ImportSelectorUsed =>
           getActualElement match {
-            case p: PsiPackage                    => IMPORT_PACKAGE
-            case o: ScObject if o.isPackageObject => IMPORT_PACKAGE
-            case _                                => IMPORT
+            case p: PsiPackage =>
+              IMPORT_PACKAGE
+            case o: ScObject if o.isPackageObject =>
+              IMPORT_PACKAGE
+            case _ =>
+              IMPORT
           }
         case ImportExprUsed(expr) =>
           if (expr.singleWildcard) {
             getActualElement match {
-              case p: PsiPackage                    => WILDCARD_IMPORT_PACKAGE
-              case o: ScObject if o.isPackageObject => WILDCARD_IMPORT_PACKAGE
-              case _                                => WILDCARD_IMPORT
+              case p: PsiPackage =>
+                WILDCARD_IMPORT_PACKAGE
+              case o: ScObject if o.isPackageObject =>
+                WILDCARD_IMPORT_PACKAGE
+              case _ =>
+                WILDCARD_IMPORT
             }
           } else {
             getActualElement match {
-              case p: PsiPackage                    => IMPORT_PACKAGE
-              case o: ScObject if o.isPackageObject => IMPORT_PACKAGE
-              case _                                => IMPORT
+              case p: PsiPackage =>
+                IMPORT_PACKAGE
+              case o: ScObject if o.isPackageObject =>
+                IMPORT_PACKAGE
+              case _ =>
+                IMPORT
             }
           }
       }

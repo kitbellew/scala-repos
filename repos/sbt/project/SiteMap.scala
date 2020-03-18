@@ -78,7 +78,8 @@ object SiteMap {
         </sitemapindex>
     def indexEntries(subs: Seq[File]) =
       relativize(subs) map {
-        case (f, path) => indexEntryXML(f, path)
+        case (f, path) =>
+          indexEntryXML(f, path)
       }
     def siteMapIndex(dir: File, subs: Seq[File]): File = {
       val xml = indexEntriesXML(indexEntries(subs))

@@ -59,8 +59,10 @@ sealed trait FunctionInstances0 extends FunctionInstances1 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -100,8 +102,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)() match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -128,14 +132,17 @@ trait FunctionInstances extends FunctionInstances0 {
       def id[A]: A => A = a => a
 
       def choice[A, B, C](f: => A => C, g: => B => C): (A \/ B) => C = {
-        case -\/(a) => f(a)
-        case \/-(b) => g(b)
+        case -\/(a) =>
+          f(a)
+        case \/-(b) =>
+          g(b)
       }
 
       override def split[A, B, C, D](
           f: A => B,
           g: C => D): ((A, C)) => (B, D) = {
-        case (a, c) => (f(a), g(c))
+        case (a, c) =>
+          (f(a), g(c))
       }
     }
 
@@ -165,8 +172,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -190,8 +199,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -211,8 +222,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2, t3) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -233,8 +246,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2, t3, t4) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -257,8 +272,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2, t3, t4, t5) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -282,8 +299,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2, t3, t4, t5, t6) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -307,8 +326,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2, t3, t4, t5, t6, t7) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }
@@ -332,8 +353,10 @@ trait FunctionInstances extends FunctionInstances0 {
           @scala.annotation.tailrec
           def go(a0: A): B =
             f(a0)(t1, t2, t3, t4, t5, t6, t7, t8) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }

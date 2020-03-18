@@ -53,7 +53,8 @@ trait MapSubInstances0 extends MapSub {
       else
         Equal[Set[K]].equal(a1.keySet, a2.keySet) && {
           a1.forall {
-            case (k, v) => a2.get(k).exists(v2 => Equal[V].equal(v, v2))
+            case (k, v) =>
+              a2.get(k).exists(v2 => Equal[V].equal(v, v2))
           }
         }
     }
@@ -104,37 +105,48 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
       def isEmpty[V](fa: XMap[K, V]) = fa.isEmpty
       def bind[A, B](fa: XMap[K, A])(f: A => XMap[K, B]) =
         fa.collect {
-          case (k, v) if f(v).isDefinedAt(k) => k -> f(v)(k)
+          case (k, v) if f(v).isDefinedAt(k) =>
+            k -> f(v)(k)
         }
       override def map[A, B](fa: XMap[K, A])(f: A => B) =
         fa.map {
-          case (k, v) => (k, f(v))
+          case (k, v) =>
+            (k, f(v))
         }
       def traverseImpl[G[_], A, B](m: XMap[K, A])(f: A => G[B])(implicit
           G: Applicative[G]): G[XMap[K, B]] =
         G.map(
           list.listInstance.traverseImpl(m.toList)({
-            case (k, v) => G.map(f(v))(k -> _)
+            case (k, v) =>
+              G.map(f(v))(k -> _)
           }))(xs => fromSeq(xs: _*))
       import \&/._
       override def alignWith[A, B, C](f: A \&/ B => C) = {
-        case (a, b) if b.isEmpty => map(a)(v => f(This(v)))
-        case (a, b) if a.isEmpty => map(b)(v => f(That(v)))
+        case (a, b) if b.isEmpty =>
+          map(a)(v => f(This(v)))
+        case (a, b) if a.isEmpty =>
+          map(b)(v => f(That(v)))
         case (a, b) =>
           map(
             unionWith(map(a)(This(_): A \&/ B), map(b)(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) => Both(aa, bb)
-              case _                    => sys.error("Map alignWith")
+              case (This(aa), That(bb)) =>
+                Both(aa, bb)
+              case _ =>
+                sys.error("Map alignWith")
             })(f)
       }
       override def align[A, B](a: XMap[K, A], b: XMap[K, B]) =
         (a, b) match {
-          case (a, b) if b.isEmpty => map(a)(This(_))
-          case (a, b) if a.isEmpty => map(b)(That(_))
+          case (a, b) if b.isEmpty =>
+            map(a)(This(_))
+          case (a, b) if a.isEmpty =>
+            map(b)(That(_))
           case (a, b) =>
             unionWith(map(a)(This(_): A \&/ B), map(b)(That(_): A \&/ B)) {
-              case (This(aa), That(bb)) => Both(aa, bb)
-              case _                    => sys.error("Map align")
+              case (This(aa), That(bb)) =>
+                Both(aa, bb)
+              case _ =>
+                sys.error("Map align")
             }
         }
     }
@@ -170,7 +182,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
         Cord.mkCord(
           ", ",
           m.toSeq.view.map {
-            case (k, v) => Cord(K show k, "->", V show v)
+            case (k, v) =>
+              Cord(K show k, "->", V show v)
           }: _*) :+ "]")
 
   implicit def mapOrder[K: Order, V: Order]: Order[XMap[K, V]] =
@@ -205,7 +218,8 @@ trait MapSubFunctions extends MapSub {
       m1: XMap[K, A],
       m2: XMap[K, B])(f: (K, A, B) => C): XMap[K, C] =
     m1 collect {
-      case (k, v) if m2 contains k => k -> f(k, v, m2(k))
+      case (k, v) if m2 contains k =>
+        k -> f(k, v, m2(k))
     }
 
   /** Collect only elements with matching keys, joining their
@@ -223,7 +237,8 @@ trait MapSubFunctions extends MapSub {
   final def mapKeys[K, K2: BuildKeyConstraint, A](m: XMap[K, A])(
       f: K => K2): XMap[K2, A] =
     m map {
-      case (k, v) => f(k) -> v
+      case (k, v) =>
+        f(k) -> v
     }
 
   /** Like `unionWith`, but telling `f` about the key. */

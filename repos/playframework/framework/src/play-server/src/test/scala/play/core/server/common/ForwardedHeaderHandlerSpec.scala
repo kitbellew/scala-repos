@@ -505,8 +505,10 @@ class ForwardedHeaderHandlerSpec extends Specification {
 
     def split(s: String, regex: String): Option[(String, String)] =
       s.split(regex, 2).toList match {
-        case k :: v :: Nil => Some(k -> v)
-        case _             => None
+        case k :: v :: Nil =>
+          Some(k -> v)
+        case _ =>
+          None
       }
 
     new Headers(s.split("\n").flatMap(split(_, ":\\s*")))
@@ -520,7 +522,8 @@ class ForwardedHeaderHandlerSpec extends Specification {
       val errorOrConnection = configuration.parseEntry(forwardedEntry)
       val trusted =
         errorOrConnection match {
-          case Left(_) => None
+          case Left(_) =>
+            None
           case Right(connection) =>
             Some(configuration.isTrustedProxy(connection))
         }

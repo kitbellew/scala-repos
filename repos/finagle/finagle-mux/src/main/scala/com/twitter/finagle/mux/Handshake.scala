@@ -135,7 +135,8 @@ private[finagle] object Handshake {
         // failures will be handled by the layers above (i.e. the dispatcher).
         // This is a workaround since our initial implementation of mux didn't
         // implement handshaking.
-        case Return(false) => Future.value(msgTrans)
+        case Return(false) =>
+          Future.value(msgTrans)
 
         case t @ Throw(_) =>
           Future.const(t.cast[Transport[Message, Message]])
@@ -217,7 +218,8 @@ private[finagle] object Handshake {
               def write(req: Message): Future[Unit] = msgTrans.write(req)
             })
 
-        case Throw(_) => Future.value(msgTrans)
+        case Throw(_) =>
+          Future.value(msgTrans)
       }
 
     handshake.onFailure { _ =>
@@ -255,9 +257,12 @@ private class DeferredTransport(
 
   def status: Status =
     underlying.poll match {
-      case Some(Return(t)) => t.status
-      case None            => Status.Busy
-      case _               => Status.Closed
+      case Some(Return(t)) =>
+        t.status
+      case None =>
+        Status.Busy
+      case _ =>
+        Status.Closed
     }
 
   val onClose: Future[Throwable] = gate().flatMap(_.onClose)

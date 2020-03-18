@@ -220,7 +220,8 @@ class PromiseTests extends MinimalScalaTest {
       f((future, result) =>
         Await.result(
           future.recover({
-            case _ => "pigdog"
+            case _ =>
+              "pigdog"
           }),
           defaultTimeout) mustBe (result))
     }
@@ -229,7 +230,8 @@ class PromiseTests extends MinimalScalaTest {
       f { (future, result) =>
         val p = Promise[Any]()
         future.onSuccess {
-          case x => p.success(x)
+          case x =>
+            p.success(x)
         }
         Await.result(p.future, defaultTimeout) mustBe (result)
       }
@@ -249,7 +251,8 @@ class PromiseTests extends MinimalScalaTest {
           future
             .mapTo[Boolean]
             .recover({
-              case _: ClassCastException ⇒ false
+              case _: ClassCastException ⇒
+                false
             }),
           defaultTimeout) mustBe (false)
       }
@@ -327,7 +330,8 @@ class PromiseTests extends MinimalScalaTest {
       f { (future, message) =>
         Await.result(
           future.recover({
-            case e if e.getMessage == message ⇒ "pigdog"
+            case e if e.getMessage == message ⇒
+              "pigdog"
           }),
           defaultTimeout) mustBe ("pigdog")
       }
@@ -342,7 +346,8 @@ class PromiseTests extends MinimalScalaTest {
       f { (future, message) =>
         val p = Promise[Any]()
         future.onFailure {
-          case _ => p.success(message)
+          case _ =>
+            p.success(message)
         }
         Await.result(p.future, defaultTimeout) mustBe (message)
       }

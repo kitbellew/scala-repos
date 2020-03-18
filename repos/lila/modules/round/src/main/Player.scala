@@ -46,7 +46,8 @@ private[round] final class Player(
                         progress.events ::: _
                       }, {
                         cheatDetector(progress.game) addEffect {
-                          case Some(color) => round ! Cheat(color)
+                          case Some(color) =>
+                            round ! Cheat(color)
                           case None =>
                             if (progress.game.playableByAi)
                               requestFishnet(progress.game)
@@ -71,7 +72,8 @@ private[round] final class Player(
             fufail(ClientError(s"$pov game is aborted"))
           case Pov(game, color) if !game.turnOf(color) =>
             fufail(ClientError(s"$pov not your turn"))
-          case _ => fufail(ClientError(s"$pov move refused for some reason"))
+          case _ =>
+            fufail(ClientError(s"$pov move refused for some reason"))
         }
     }
 
@@ -108,11 +110,13 @@ private[round] final class Player(
       uci match {
         case Uci.Move(orig, dest, prom) =>
           game.toChess.apply(orig, dest, prom, lag) map {
-            case (ncg, move) => ncg -> (Left(move): MoveOrDrop)
+            case (ncg, move) =>
+              ncg -> (Left(move): MoveOrDrop)
           }
         case Uci.Drop(role, pos) =>
           game.toChess.drop(role, pos, lag) map {
-            case (ncg, drop) => ncg -> (Right(drop): MoveOrDrop)
+            case (ncg, drop) =>
+              ncg -> (Right(drop): MoveOrDrop)
           }
       }
     ).map {
@@ -139,11 +143,14 @@ private[round] final class Player(
   private def moveFinish(game: Game, color: Color): Fu[Events] = {
     lazy val winner = game.toChess.situation.winner
     game.status match {
-      case Status.Mate       => finisher.other(game, _.Mate, winner)
-      case Status.VariantEnd => finisher.other(game, _.VariantEnd, winner)
+      case Status.Mate =>
+        finisher.other(game, _.Mate, winner)
+      case Status.VariantEnd =>
+        finisher.other(game, _.VariantEnd, winner)
       case status @ (Status.Stalemate | Status.Draw) =>
         finisher.other(game, _ => status)
-      case _ => fuccess(Nil)
+      case _ =>
+        fuccess(Nil)
     }
   }
 }

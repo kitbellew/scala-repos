@@ -32,7 +32,8 @@ object DottyDownloader extends Downloader {
               e.getChild("artifactId").getText,
               e.getChild("version").getText,
               Option(e.getChild("scope")).map(_.getText))).toOption
-        case _ => None
+        case _ =>
+          None
       }
     val element = Try(
       HttpConfigurable.getInstance().openHttpConnection(pomFileUrl)).map {

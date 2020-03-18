@@ -58,8 +58,10 @@ object GenerateMutableProjection
     val ctx = newCodeGenContext()
     val (validExpr, index) =
       expressions.zipWithIndex.filter {
-        case (NoOp, _) => false
-        case _         => true
+        case (NoOp, _) =>
+          false
+        case _ =>
+          true
       }.unzip
     val exprVals = ctx.generateExpressions(validExpr, useSubexprElimination)
     val projectionCodes = exprVals.zip(index).map {

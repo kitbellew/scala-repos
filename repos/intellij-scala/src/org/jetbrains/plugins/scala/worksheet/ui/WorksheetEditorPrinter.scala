@@ -111,7 +111,8 @@ class WorksheetEditorPrinter(
           if (!inited) {
             val first = init()
             val diffBetweenFirst = first map {
-              case i => Math.min(i, start)
+              case i =>
+                Math.min(i, start)
             } getOrElse start
 
             if (diffBetweenFirst > 0)
@@ -416,8 +417,10 @@ object WorksheetEditorPrinter {
     class MyCaretAdapterBase extends CaretAdapter {
       override def equals(obj: Any): Boolean =
         obj match {
-          case _: MyCaretAdapterBase => true
-          case _                     => false
+          case _: MyCaretAdapterBase =>
+            true
+          case _ =>
+            false
         }
 
       override def hashCode(): Int = 12345
@@ -535,7 +538,8 @@ object WorksheetEditorPrinter {
           try {
             java.lang.Float.parseFloat(rr)
           } catch {
-            case _: NumberFormatException => 0.5f
+            case _: NumberFormatException =>
+              0.5f
           }
       } getOrElse 0.5f
 
@@ -566,8 +570,10 @@ object WorksheetEditorPrinter {
         virtualFile,
         getOrCreateViewerEditorFor(editor, isPlain)),
       PsiManager getInstance editor.getProject findFile virtualFile match {
-        case scalaFile: ScalaFile => scalaFile
-        case _                    => null
+        case scalaFile: ScalaFile =>
+          scalaFile
+        case _ =>
+          null
       })
 
   def createWorksheetEditor(editor: Editor) =
@@ -589,10 +595,12 @@ object WorksheetEditorPrinter {
     val prop =
       if (editorComponent.getComponentCount > 0)
         editorComponent.getComponent(0) match {
-          case splitter: JBSplitter => splitter.getProportion
+          case splitter: JBSplitter =>
+            splitter.getProportion
           case _ if worksheetViewer.getUserData(DIFF_SPLITTER_KEY) != null =>
             worksheetViewer.getUserData(DIFF_SPLITTER_KEY).getProportion
-          case _ => 0.5f
+          case _ =>
+            0.5f
         }
       else
         0.5f
@@ -652,7 +660,8 @@ object WorksheetEditorPrinter {
               parent.remove(1)
               parent.add(diffPane, 1)
             }
-          case _ => patchEditor()
+          case _ =>
+            patchEditor()
         }
       else
         patchEditor()
@@ -664,7 +673,8 @@ object WorksheetEditorPrinter {
 
   private def getOrCreateViewerEditorFor(editor: Editor, isPlain: Boolean) = {
     WorksheetViewerInfo getViewer editor match {
-      case editorImpl: EditorImpl => editorImpl
+      case editorImpl: EditorImpl =>
+        editorImpl
       case _ =>
         if (isPlain)
           createBlankEditor(editor.getProject)

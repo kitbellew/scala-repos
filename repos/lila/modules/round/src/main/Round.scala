@@ -104,8 +104,10 @@ private[round] final class Round(
       handle(playerId) { pov =>
         (pov.game.resignable && !pov.game.hasAi && pov.game.hasClock) ?? {
           socketHub ? Ask(pov.gameId, IsGone(!pov.color)) flatMap {
-            case true => finisher.rageQuit(pov.game, Some(pov.color))
-            case _    => fuccess(List(Event.Reload))
+            case true =>
+              finisher.rageQuit(pov.game, Some(pov.color))
+            case _ =>
+              fuccess(List(Event.Reload))
           }
         }
       }
@@ -119,8 +121,10 @@ private[round] final class Round(
       handle(playerId) { pov =>
         (pov.game.drawable && !pov.game.hasAi && pov.game.hasClock) ?? {
           socketHub ? Ask(pov.gameId, IsGone(!pov.color)) flatMap {
-            case true => finisher.rageQuit(pov.game, None)
-            case _    => fuccess(List(Event.Reload))
+            case true =>
+              finisher.rageQuit(pov.game, None)
+            case _ =>
+              fuccess(List(Event.Reload))
           }
         }
       }
@@ -146,10 +150,14 @@ private[round] final class Round(
         }
       }
 
-    case DrawYes(playerRef)  => handle(playerRef)(drawer.yes)
-    case DrawNo(playerRef)   => handle(playerRef)(drawer.no)
-    case DrawClaim(playerId) => handle(playerId)(drawer.claim)
-    case DrawForce           => handle(drawer force _)
+    case DrawYes(playerRef) =>
+      handle(playerRef)(drawer.yes)
+    case DrawNo(playerRef) =>
+      handle(playerRef)(drawer.no)
+    case DrawClaim(playerId) =>
+      handle(playerId)(drawer.claim)
+    case DrawForce =>
+      handle(drawer force _)
     case Cheat(color) =>
       handle { game =>
         (game.playable && !game.imported) ?? {
@@ -178,11 +186,15 @@ private[round] final class Round(
         }
       }
 
-    case RematchYes(playerRef) => handle(playerRef)(rematcher.yes)
-    case RematchNo(playerRef)  => handle(playerRef)(rematcher.no)
+    case RematchYes(playerRef) =>
+      handle(playerRef)(rematcher.yes)
+    case RematchNo(playerRef) =>
+      handle(playerRef)(rematcher.no)
 
-    case TakebackYes(playerRef) => handle(playerRef)(takebacker.yes)
-    case TakebackNo(playerRef)  => handle(playerRef)(takebacker.no)
+    case TakebackYes(playerRef) =>
+      handle(playerRef)(takebacker.yes)
+    case TakebackNo(playerRef) =>
+      handle(playerRef)(takebacker.no)
 
     case Moretime(playerRef) =>
       handle(playerRef) { pov =>
@@ -289,15 +301,20 @@ private[round] final class Round(
       if (events.nonEmpty)
         socketHub ! Tell(gameId, EventList(events))
       if (events exists {
-            case e: Event.Move => e.threefold
-            case _             => false
+            case e: Event.Move =>
+              e.threefold
+            case _ =>
+              false
           })
         self ! Threefold
     }.void recover errorHandler("publish")
 
   private def errorHandler(name: String): PartialFunction[Throwable, Unit] = {
-    case e: ClientError  => lila.mon.round.error.client()
-    case e: FishnetError => lila.mon.round.error.fishnet()
-    case e: Exception    => logger.warn(s"$name: ${e.getMessage}")
+    case e: ClientError =>
+      lila.mon.round.error.client()
+    case e: FishnetError =>
+      lila.mon.round.error.fishnet()
+    case e: Exception =>
+      logger.warn(s"$name: ${e.getMessage}")
   }
 }

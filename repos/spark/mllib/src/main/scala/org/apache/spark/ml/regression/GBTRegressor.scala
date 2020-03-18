@@ -154,9 +154,11 @@ final class GBTRegressor @Since("1.4.0") (
   /** (private[ml]) Convert new loss to old loss. */
   override private[ml] def getOldLossType: OldLoss = {
     getLossType match {
-      case "squared"  => OldSquaredError
-      case "absolute" => OldAbsoluteError
-      case _          =>
+      case "squared" =>
+        OldSquaredError
+      case "absolute" =>
+        OldAbsoluteError
+      case _ =>
         // Should never happen because of check in setter method.
         throw new RuntimeException(
           s"GBTRegressorParams was given bad loss type: $getLossType")

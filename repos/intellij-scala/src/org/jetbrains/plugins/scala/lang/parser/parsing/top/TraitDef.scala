@@ -27,8 +27,10 @@ object TraitDef {
     }
     //parsing type parameters
     builder.getTokenType match {
-      case ScalaTokenTypes.tLSQBRACKET => TypeParamClause parse builder
-      case _                           => /*it could be without type parameters*/
+      case ScalaTokenTypes.tLSQBRACKET =>
+        TypeParamClause parse builder
+      case _ =>
+      /*it could be without type parameters*/
     }
     TraitTemplateOpt parse builder
     return true

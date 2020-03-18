@@ -12,7 +12,8 @@ class TestParser extends JavaTokenParsers {
 
     def valid =
       "value is" ~ parser ^^ {
-        case "value is" ~ value => convert( /*start*/ value /*end*/ )
+        case "value is" ~ value =>
+          convert( /*start*/ value /*end*/ )
       }
 
     override def apply(in: Input) = valid(in)

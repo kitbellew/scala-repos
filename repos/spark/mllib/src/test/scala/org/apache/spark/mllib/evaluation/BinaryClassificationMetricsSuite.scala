@@ -103,10 +103,12 @@ class BinaryClassificationMetricsSuite
     val pr = recalls.zip(precisions)
     val prCurve = Seq((0.0, 1.0)) ++ pr
     val f1 = pr.map {
-      case (r, p) => 2.0 * (p * r) / (p + r)
+      case (r, p) =>
+        2.0 * (p * r) / (p + r)
     }
     val f2 = pr.map {
-      case (r, p) => 5.0 * (p * r) / (4.0 * p + r)
+      case (r, p) =>
+        5.0 * (p * r) / (4.0 * p + r)
     }
 
     validateMetrics(
@@ -133,10 +135,12 @@ class BinaryClassificationMetricsSuite
     val pr = recalls.zip(precisions)
     val prCurve = Seq((0.0, 1.0)) ++ pr
     val f1 = pr.map {
-      case (r, p) => 2.0 * (p * r) / (p + r)
+      case (r, p) =>
+        2.0 * (p * r) / (p + r)
     }
     val f2 = pr.map {
-      case (r, p) => 5.0 * (p * r) / (4.0 * p + r)
+      case (r, p) =>
+        5.0 * (p * r) / (4.0 * p + r)
     }
 
     validateMetrics(
@@ -163,12 +167,16 @@ class BinaryClassificationMetricsSuite
     val pr = recalls.zip(precisions)
     val prCurve = Seq((0.0, 1.0)) ++ pr
     val f1 = pr.map {
-      case (0, 0) => 0.0
-      case (r, p) => 2.0 * (p * r) / (p + r)
+      case (0, 0) =>
+        0.0
+      case (r, p) =>
+        2.0 * (p * r) / (p + r)
     }
     val f2 = pr.map {
-      case (0, 0) => 0.0
-      case (r, p) => 5.0 * (p * r) / (4.0 * p + r)
+      case (0, 0) =>
+        0.0
+      case (r, p) =>
+        5.0 * (p * r) / (4.0 * p + r)
     }
 
     validateMetrics(

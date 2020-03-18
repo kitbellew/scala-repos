@@ -52,8 +52,10 @@ private object MissingSpireOps {
   def meanSeq(xs: List[Double]): Double = {
     def loop(sum: Double, count: Double, acc: List[Double]): Double =
       acc match {
-        case x :: tail => loop(sum + x, count + 1, tail)
-        case Nil       => sum / count
+        case x :: tail =>
+          loop(sum + x, count + 1, tail)
+        case Nil =>
+          sum / count
       }
 
     loop(0d, 0d, xs)

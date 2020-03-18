@@ -14,7 +14,8 @@ object ContentNegotiationSpec extends PlaySpecification with Controller {
       status(
         Action { implicit req =>
           render {
-            case Accepts.Json() => Ok
+            case Accepts.Json() =>
+              Ok
           }
         }(FakeRequest().withHeaders(ACCEPT -> "application/json"))) must_== 200
     }
@@ -24,7 +25,8 @@ object ContentNegotiationSpec extends PlaySpecification with Controller {
         Action.async { implicit req =>
           Future.successful(
             render {
-              case Accepts.Json() => Ok
+              case Accepts.Json() =>
+                Ok
             })
         }(FakeRequest().withHeaders(ACCEPT -> "application/json"))) must_== 200
     }
@@ -33,7 +35,8 @@ object ContentNegotiationSpec extends PlaySpecification with Controller {
       status(
         Action.async { implicit req =>
           render.async {
-            case Accepts.Json() => Future.successful(Ok)
+            case Accepts.Json() =>
+              Future.successful(Ok)
           }
         }(FakeRequest().withHeaders(ACCEPT -> "application/json"))) must_== 200
     }

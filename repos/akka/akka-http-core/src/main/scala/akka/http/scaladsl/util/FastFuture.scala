@@ -46,23 +46,30 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
     def strictTransform[T](x: T, f: T ⇒ Future[B]) =
       try f(x)
       catch {
-        case NonFatal(e) ⇒ ErrorFuture(e)
+        case NonFatal(e) ⇒
+          ErrorFuture(e)
       }
 
     future match {
-      case FulfilledFuture(a) ⇒ strictTransform(a, s)
-      case ErrorFuture(e) ⇒ strictTransform(e, f)
+      case FulfilledFuture(a) ⇒
+        strictTransform(a, s)
+      case ErrorFuture(e) ⇒
+        strictTransform(e, f)
       case _ ⇒
         future.value match {
           case None ⇒
             val p = Promise[B]()
             future.onComplete {
-              case Success(a) ⇒ p completeWith strictTransform(a, s)
-              case Failure(e) ⇒ p completeWith strictTransform(e, f)
+              case Success(a) ⇒
+                p completeWith strictTransform(a, s)
+              case Failure(e) ⇒
+                p completeWith strictTransform(e, f)
             }
             p.future
-          case Some(Success(a)) ⇒ strictTransform(a, s)
-          case Some(Failure(e)) ⇒ strictTransform(e, f)
+          case Some(Success(a)) ⇒
+            strictTransform(a, s)
+          case Some(Failure(e)) ⇒
+            strictTransform(e, f)
         }
     }
   }
@@ -87,8 +94,10 @@ class FastFuture[A](val future: Future[A]) extends AnyVal {
 object FastFuture {
   def apply[T](value: Try[T]): Future[T] =
     value match {
-      case Success(t) ⇒ FulfilledFuture(t)
-      case Failure(e) ⇒ ErrorFuture(e)
+      case Success(t) ⇒
+        FulfilledFuture(t)
+      case Failure(e) ⇒
+        ErrorFuture(e)
     }
   private[this] val _successful: Any ⇒ Future[Any] = FulfilledFuture.apply
   def successful[T]: T ⇒ Future[T] = _successful.asInstanceOf[T ⇒ Future[T]]

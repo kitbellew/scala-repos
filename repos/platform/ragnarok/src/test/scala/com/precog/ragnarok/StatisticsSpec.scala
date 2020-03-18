@@ -48,7 +48,8 @@ class StatisticsSpec extends Specification with ScalaCheck {
         a.min must_== b.min
         a.max must_== b.max
 
-      case _ => ok
+      case _ =>
+        ok
     }
 
   implicit val arbDouble: Arbitrary[Double] = Arbitrary(

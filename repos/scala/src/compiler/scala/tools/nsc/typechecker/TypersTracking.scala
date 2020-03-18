@@ -25,8 +25,10 @@ trait TypersTracking {
       (if (settings.debug.value) {
          def flags_s =
            context.owner.debugFlagString match {
-             case "" => ""
-             case s  => " with flags " + inLightMagenta(s)
+             case "" =>
+               ""
+             case s =>
+               " with flags " + inLightMagenta(s)
            }
          s", a ${context.owner.shortSymbolClass}$flags_s"
        } else
@@ -38,8 +40,10 @@ trait TypersTracking {
         "site"
     def undet_s =
       context.undetparams match {
-        case Nil => ""
-        case ps  => ps.mkString(" solving: ", ",", "")
+        case Nil =>
+          ""
+        case ps =>
+          ps.mkString(" solving: ", ",", "")
       }
     def implicits_s =
       (if (context.enrichmentEnabled)
@@ -85,11 +89,14 @@ trait TypersTracking {
     private def greenType(tp: Type): String = tpe_s(tp, inGreen)
     private def greenType(tree: Tree): String =
       tree match {
-        case null => "[exception]"
+        case null =>
+          "[exception]"
         case md: MemberDef if md.tpe == NoType =>
           inBlue(s"[${md.keyword} ${md.name}]") + " " + greenType(md.symbol.tpe)
-        case _ if tree.tpe.isComplete => greenType(tree.tpe)
-        case _                        => "<?>"
+        case _ if tree.tpe.isComplete =>
+          greenType(tree.tpe)
+        case _ =>
+          "<?>"
       }
     def indented(s: String): String =
       if (s == "")
@@ -161,8 +168,10 @@ trait TypersTracking {
     def showTyped(tree: Tree) {
       def class_s =
         tree match {
-          case _: RefTree => ""
-          case _          => " " + tree.shortClass
+          case _: RefTree =>
+            ""
+          case _ =>
+            " " + tree.shortClass
         }
       if (!noPrintTyping(tree))
         show(indented(s"[typed$class_s] " + truncAndOneLine(ptTree(tree))))
@@ -196,7 +205,8 @@ trait TypersTracking {
     tp match {
       case OverloadedType(pre, alts) =>
         alts map (alt => tpe_s(pre memberType alt, colorize)) mkString " <and> "
-      case _ => colorize(tp.toLongString)
+      case _ =>
+        colorize(tp.toLongString)
     }
   // def sym_s(s: Symbol) = if (s eq null) "" + s else s.getClass.getName split '.' last;
 

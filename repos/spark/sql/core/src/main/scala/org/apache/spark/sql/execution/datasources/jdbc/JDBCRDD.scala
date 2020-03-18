@@ -67,57 +67,92 @@ private[sql] object JDBCRDD extends Logging {
     val answer =
       sqlType match {
         // scalastyle:off
-        case java.sql.Types.ARRAY => null
+        case java.sql.Types.ARRAY =>
+          null
         case java.sql.Types.BIGINT =>
           if (signed) {
             LongType
           } else {
             DecimalType(20, 0)
           }
-        case java.sql.Types.BINARY   => BinaryType
-        case java.sql.Types.BIT      => BooleanType // @see JdbcDialect for quirks
-        case java.sql.Types.BLOB     => BinaryType
-        case java.sql.Types.BOOLEAN  => BooleanType
-        case java.sql.Types.CHAR     => StringType
-        case java.sql.Types.CLOB     => StringType
-        case java.sql.Types.DATALINK => null
-        case java.sql.Types.DATE     => DateType
+        case java.sql.Types.BINARY =>
+          BinaryType
+        case java.sql.Types.BIT =>
+          BooleanType // @see JdbcDialect for quirks
+        case java.sql.Types.BLOB =>
+          BinaryType
+        case java.sql.Types.BOOLEAN =>
+          BooleanType
+        case java.sql.Types.CHAR =>
+          StringType
+        case java.sql.Types.CLOB =>
+          StringType
+        case java.sql.Types.DATALINK =>
+          null
+        case java.sql.Types.DATE =>
+          DateType
         case java.sql.Types.DECIMAL if precision != 0 || scale != 0 =>
           DecimalType.bounded(precision, scale)
-        case java.sql.Types.DECIMAL  => DecimalType.SYSTEM_DEFAULT
-        case java.sql.Types.DISTINCT => null
-        case java.sql.Types.DOUBLE   => DoubleType
-        case java.sql.Types.FLOAT    => FloatType
+        case java.sql.Types.DECIMAL =>
+          DecimalType.SYSTEM_DEFAULT
+        case java.sql.Types.DISTINCT =>
+          null
+        case java.sql.Types.DOUBLE =>
+          DoubleType
+        case java.sql.Types.FLOAT =>
+          FloatType
         case java.sql.Types.INTEGER =>
           if (signed) {
             IntegerType
           } else {
             LongType
           }
-        case java.sql.Types.JAVA_OBJECT   => null
-        case java.sql.Types.LONGNVARCHAR  => StringType
-        case java.sql.Types.LONGVARBINARY => BinaryType
-        case java.sql.Types.LONGVARCHAR   => StringType
-        case java.sql.Types.NCHAR         => StringType
-        case java.sql.Types.NCLOB         => StringType
-        case java.sql.Types.NULL          => null
+        case java.sql.Types.JAVA_OBJECT =>
+          null
+        case java.sql.Types.LONGNVARCHAR =>
+          StringType
+        case java.sql.Types.LONGVARBINARY =>
+          BinaryType
+        case java.sql.Types.LONGVARCHAR =>
+          StringType
+        case java.sql.Types.NCHAR =>
+          StringType
+        case java.sql.Types.NCLOB =>
+          StringType
+        case java.sql.Types.NULL =>
+          null
         case java.sql.Types.NUMERIC if precision != 0 || scale != 0 =>
           DecimalType.bounded(precision, scale)
-        case java.sql.Types.NUMERIC   => DecimalType.SYSTEM_DEFAULT
-        case java.sql.Types.NVARCHAR  => StringType
-        case java.sql.Types.OTHER     => null
-        case java.sql.Types.REAL      => DoubleType
-        case java.sql.Types.REF       => StringType
-        case java.sql.Types.ROWID     => LongType
-        case java.sql.Types.SMALLINT  => IntegerType
-        case java.sql.Types.SQLXML    => StringType
-        case java.sql.Types.STRUCT    => StringType
-        case java.sql.Types.TIME      => TimestampType
-        case java.sql.Types.TIMESTAMP => TimestampType
-        case java.sql.Types.TINYINT   => IntegerType
-        case java.sql.Types.VARBINARY => BinaryType
-        case java.sql.Types.VARCHAR   => StringType
-        case _                        => null
+        case java.sql.Types.NUMERIC =>
+          DecimalType.SYSTEM_DEFAULT
+        case java.sql.Types.NVARCHAR =>
+          StringType
+        case java.sql.Types.OTHER =>
+          null
+        case java.sql.Types.REAL =>
+          DoubleType
+        case java.sql.Types.REF =>
+          StringType
+        case java.sql.Types.ROWID =>
+          LongType
+        case java.sql.Types.SMALLINT =>
+          IntegerType
+        case java.sql.Types.SQLXML =>
+          StringType
+        case java.sql.Types.STRUCT =>
+          StringType
+        case java.sql.Types.TIME =>
+          TimestampType
+        case java.sql.Types.TIMESTAMP =>
+          TimestampType
+        case java.sql.Types.TINYINT =>
+          IntegerType
+        case java.sql.Types.VARBINARY =>
+          BinaryType
+        case java.sql.Types.VARCHAR =>
+          StringType
+        case _ =>
+          null
         // scalastyle:on
       }
 
@@ -211,11 +246,16 @@ private[sql] object JDBCRDD extends Logging {
     */
   private def compileValue(value: Any): Any =
     value match {
-      case stringValue: String       => s"'${escapeSql(stringValue)}'"
-      case timestampValue: Timestamp => "'" + timestampValue + "'"
-      case dateValue: Date           => "'" + dateValue + "'"
-      case arrayValue: Array[Any]    => arrayValue.map(compileValue).mkString(", ")
-      case _                         => value
+      case stringValue: String =>
+        s"'${escapeSql(stringValue)}'"
+      case timestampValue: Timestamp =>
+        "'" + timestampValue + "'"
+      case dateValue: Date =>
+        "'" + dateValue + "'"
+      case arrayValue: Array[Any] =>
+        arrayValue.map(compileValue).mkString(", ")
+      case _ =>
+        value
     }
 
   private def escapeSql(value: String): String =
@@ -231,23 +271,34 @@ private[sql] object JDBCRDD extends Logging {
   private[jdbc] def compileFilter(f: Filter): Option[String] = {
     Option(
       f match {
-        case EqualTo(attr, value) => s"$attr = ${compileValue(value)}"
+        case EqualTo(attr, value) =>
+          s"$attr = ${compileValue(value)}"
         case EqualNullSafe(attr, value) =>
           s"(NOT ($attr != ${compileValue(value)} OR $attr IS NULL OR " +
             s"${compileValue(value)} IS NULL) OR ($attr IS NULL AND ${compileValue(value)} IS NULL))"
-        case LessThan(attr, value)        => s"$attr < ${compileValue(value)}"
-        case GreaterThan(attr, value)     => s"$attr > ${compileValue(value)}"
-        case LessThanOrEqual(attr, value) => s"$attr <= ${compileValue(value)}"
+        case LessThan(attr, value) =>
+          s"$attr < ${compileValue(value)}"
+        case GreaterThan(attr, value) =>
+          s"$attr > ${compileValue(value)}"
+        case LessThanOrEqual(attr, value) =>
+          s"$attr <= ${compileValue(value)}"
         case GreaterThanOrEqual(attr, value) =>
           s"$attr >= ${compileValue(value)}"
-        case IsNull(attr)                  => s"$attr IS NULL"
-        case IsNotNull(attr)               => s"$attr IS NOT NULL"
-        case StringStartsWith(attr, value) => s"${attr} LIKE '${value}%'"
-        case StringEndsWith(attr, value)   => s"${attr} LIKE '%${value}'"
-        case StringContains(attr, value)   => s"${attr} LIKE '%${value}%'"
-        case In(attr, value)               => s"$attr IN (${compileValue(value)})"
-        case Not(f)                        => compileFilter(f).map(p => s"(NOT ($p))").getOrElse(null)
-        case Or(f1, f2)                    =>
+        case IsNull(attr) =>
+          s"$attr IS NULL"
+        case IsNotNull(attr) =>
+          s"$attr IS NOT NULL"
+        case StringStartsWith(attr, value) =>
+          s"${attr} LIKE '${value}%'"
+        case StringEndsWith(attr, value) =>
+          s"${attr} LIKE '%${value}'"
+        case StringContains(attr, value) =>
+          s"${attr} LIKE '%${value}%'"
+        case In(attr, value) =>
+          s"$attr IN (${compileValue(value)})"
+        case Not(f) =>
+          compileFilter(f).map(p => s"(NOT ($p))").getOrElse(null)
+        case Or(f1, f2) =>
           // We can't compile Or filter unless both sub-filters are compiled successfully.
           // It applies too for the following And filter.
           // If we can make sure compileFilter supports all filters, we can remove this check.
@@ -264,7 +315,8 @@ private[sql] object JDBCRDD extends Logging {
           } else {
             null
           }
-        case _ => null
+        case _ =>
+          null
       })
   }
 
@@ -392,21 +444,31 @@ private[sql] class JDBCRDD(
 
   private def getConversions(dt: DataType, metadata: Metadata): JDBCConversion =
     dt match {
-      case BooleanType             => BooleanConversion
-      case DateType                => DateConversion
-      case DecimalType.Fixed(p, s) => DecimalConversion(p, s)
-      case DoubleType              => DoubleConversion
-      case FloatType               => FloatConversion
-      case IntegerType             => IntegerConversion
+      case BooleanType =>
+        BooleanConversion
+      case DateType =>
+        DateConversion
+      case DecimalType.Fixed(p, s) =>
+        DecimalConversion(p, s)
+      case DoubleType =>
+        DoubleConversion
+      case FloatType =>
+        FloatConversion
+      case IntegerType =>
+        IntegerConversion
       case LongType =>
         if (metadata.contains("binarylong"))
           BinaryLongConversion
         else
           LongConversion
-      case StringType       => StringConversion
-      case TimestampType    => TimestampConversion
-      case BinaryType       => BinaryConversion
-      case ArrayType(et, _) => ArrayConversion(getConversions(et, metadata))
+      case StringType =>
+        StringConversion
+      case TimestampType =>
+        TimestampConversion
+      case BinaryType =>
+        BinaryConversion
+      case ArrayType(et, _) =>
+        ArrayConversion(getConversions(et, metadata))
       case _ =>
         throw new IllegalArgumentException(
           s"Unsupported type ${dt.simpleString}")
@@ -486,9 +548,12 @@ private[sql] class JDBCRDD(
                 }
               case DoubleConversion =>
                 mutableRow.setDouble(i, rs.getDouble(pos))
-              case FloatConversion   => mutableRow.setFloat(i, rs.getFloat(pos))
-              case IntegerConversion => mutableRow.setInt(i, rs.getInt(pos))
-              case LongConversion    => mutableRow.setLong(i, rs.getLong(pos))
+              case FloatConversion =>
+                mutableRow.setFloat(i, rs.getFloat(pos))
+              case IntegerConversion =>
+                mutableRow.setInt(i, rs.getInt(pos))
+              case LongConversion =>
+                mutableRow.setLong(i, rs.getLong(pos))
               // TODO(davies): use getBytes for better performance, if the encoding is UTF-8
               case StringConversion =>
                 mutableRow.update(i, UTF8String.fromString(rs.getString(pos)))
@@ -499,7 +564,8 @@ private[sql] class JDBCRDD(
                 } else {
                   mutableRow.update(i, null)
                 }
-              case BinaryConversion => mutableRow.update(i, rs.getBytes(pos))
+              case BinaryConversion =>
+                mutableRow.update(i, rs.getBytes(pos))
               case BinaryLongConversion =>
                 val bytes = rs.getBytes(pos)
                 var ans = 0L
@@ -542,7 +608,8 @@ private[sql] class JDBCRDD(
                       case _: ArrayConversion =>
                         throw new IllegalArgumentException(
                           "Nested arrays unsupported")
-                      case _ => array.asInstanceOf[Array[Any]]
+                      case _ =>
+                        array.asInstanceOf[Array[Any]]
                     }
                   mutableRow.update(i, new GenericArrayData(data))
                 } else {
@@ -568,14 +635,16 @@ private[sql] class JDBCRDD(
             rs.close()
           }
         } catch {
-          case e: Exception => logWarning("Exception closing resultset", e)
+          case e: Exception =>
+            logWarning("Exception closing resultset", e)
         }
         try {
           if (null != stmt) {
             stmt.close()
           }
         } catch {
-          case e: Exception => logWarning("Exception closing statement", e)
+          case e: Exception =>
+            logWarning("Exception closing statement", e)
         }
         try {
           if (null != conn) {
@@ -591,7 +660,8 @@ private[sql] class JDBCRDD(
           }
           logInfo("closed connection")
         } catch {
-          case e: Exception => logWarning("Exception closing connection", e)
+          case e: Exception =>
+            logWarning("Exception closing connection", e)
         }
         closed = true
       }

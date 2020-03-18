@@ -88,7 +88,8 @@ private[orc] object OrcFilters extends Logging {
           true
         case _: DateWritable | _: HiveDecimal | _: HiveChar | _: HiveVarchar =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     expression match {
@@ -156,7 +157,8 @@ private[orc] object OrcFilters extends Logging {
             .in(attribute, values.map(_.asInstanceOf[AnyRef]): _*)
             .end())
 
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

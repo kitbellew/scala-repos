@@ -26,10 +26,14 @@ class InnerProductJob(args: Args) extends Job(args) {
   val r = args.getOrElse("right", "1").toInt
   val j =
     args.getOrElse("joiner", "i") match {
-      case "i" => new InnerJoin
-      case "l" => new LeftJoin
-      case "r" => new RightJoin
-      case "o" => new OuterJoin
+      case "i" =>
+        new InnerJoin
+      case "l" =>
+        new LeftJoin
+      case "r" =>
+        new RightJoin
+      case "o" =>
+        new OuterJoin
     }
 
   val in0 =

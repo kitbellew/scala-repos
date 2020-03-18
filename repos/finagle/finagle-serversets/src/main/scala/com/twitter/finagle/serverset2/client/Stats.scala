@@ -17,8 +17,10 @@ private[serverset2] trait StatsClient extends ZooKeeperClient {
           success.incr()
         }
         .onFailure {
-          case ke: KeeperException => stats.counter(ke.name).incr()
-          case _                   => failure.incr()
+          case ke: KeeperException =>
+            stats.counter(ke.name).incr()
+          case _ =>
+            failure.incr()
         }
       result
     }
@@ -96,7 +98,8 @@ private[serverset2] trait StatsWriter extends StatsClient with ZooKeeperWriter {
         EphemeralFilter(underlying.create(path, data, acl, createMode))
       case CreateMode.EphemeralSequential =>
         EphemeralFilter(underlying.create(path, data, acl, createMode))
-      case _ => WriteFilter(underlying.create(path, data, acl, createMode))
+      case _ =>
+        WriteFilter(underlying.create(path, data, acl, createMode))
     }
 
   def delete(path: String, version: Option[Int]): Future[Unit] =
@@ -154,12 +157,18 @@ private[serverset2] trait EventStats {
 
   protected def EventFilter(event: NodeEvent): NodeEvent = {
     event match {
-      case Created           => createdCounter.incr()
-      case DataChanged       => dataChangedCounter.incr()
-      case Deleted           => deletedCounter.incr()
-      case ChildrenChanged   => childrenChangedCounter.incr()
-      case DataWatchRemoved  => dataWatchRemovedCounter.incr()
-      case ChildWatchRemoved => childWatchRemovedCounter.incr()
+      case Created =>
+        createdCounter.incr()
+      case DataChanged =>
+        dataChangedCounter.incr()
+      case Deleted =>
+        deletedCounter.incr()
+      case ChildrenChanged =>
+        childrenChangedCounter.incr()
+      case DataWatchRemoved =>
+        dataWatchRemovedCounter.incr()
+      case ChildWatchRemoved =>
+        childWatchRemovedCounter.incr()
     }
     event
   }
@@ -190,16 +199,25 @@ object SessionStats {
             stateTracker.transition(newState)
 
             newState match {
-              case Unknown           => unknownCounter.incr()
-              case AuthFailed        => authFailedCounter.incr()
-              case Disconnected      => disconnectedCounter.incr()
-              case Expired           => expiredCounter.incr()
-              case SyncConnected     => syncConnectedCounter.incr()
-              case NoSyncConnected   => noSyncConnectedCounter.incr()
-              case ConnectedReadOnly => connectedReadOnlyCounter.incr()
-              case SaslAuthenticated => saslAuthenticatedCounter.incr()
+              case Unknown =>
+                unknownCounter.incr()
+              case AuthFailed =>
+                authFailedCounter.incr()
+              case Disconnected =>
+                disconnectedCounter.incr()
+              case Expired =>
+                expiredCounter.incr()
+              case SyncConnected =>
+                syncConnectedCounter.incr()
+              case NoSyncConnected =>
+                noSyncConnectedCounter.incr()
+              case ConnectedReadOnly =>
+                connectedReadOnlyCounter.incr()
+              case SaslAuthenticated =>
+                saslAuthenticatedCounter.incr()
             }
-          case _ => ()
+          case _ =>
+            ()
         }
         v() = w
       }

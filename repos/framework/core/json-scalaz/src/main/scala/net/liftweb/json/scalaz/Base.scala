@@ -27,8 +27,10 @@ trait Base {
     new JSON[Boolean] {
       def read(json: JValue) =
         json match {
-          case JBool(b) => success(b)
-          case x        => UnexpectedJSONError(x, classOf[JBool]).fail.liftFailNel
+          case JBool(b) =>
+            success(b)
+          case x =>
+            UnexpectedJSONError(x, classOf[JBool]).fail.liftFailNel
         }
 
       def write(value: Boolean) = JBool(value)
@@ -38,8 +40,10 @@ trait Base {
     new JSON[Int] {
       def read(json: JValue) =
         json match {
-          case JInt(x) => success(x.intValue)
-          case x       => UnexpectedJSONError(x, classOf[JInt]).fail.liftFailNel
+          case JInt(x) =>
+            success(x.intValue)
+          case x =>
+            UnexpectedJSONError(x, classOf[JInt]).fail.liftFailNel
         }
 
       def write(value: Int) = JInt(BigInt(value))
@@ -49,8 +53,10 @@ trait Base {
     new JSON[Long] {
       def read(json: JValue) =
         json match {
-          case JInt(x) => success(x.longValue)
-          case x       => UnexpectedJSONError(x, classOf[JInt]).fail.liftFailNel
+          case JInt(x) =>
+            success(x.longValue)
+          case x =>
+            UnexpectedJSONError(x, classOf[JInt]).fail.liftFailNel
         }
 
       def write(value: Long) = JInt(BigInt(value))
@@ -60,8 +66,10 @@ trait Base {
     new JSON[Double] {
       def read(json: JValue) =
         json match {
-          case JDouble(x) => success(x)
-          case x          => UnexpectedJSONError(x, classOf[JDouble]).fail.liftFailNel
+          case JDouble(x) =>
+            success(x)
+          case x =>
+            UnexpectedJSONError(x, classOf[JDouble]).fail.liftFailNel
         }
 
       def write(value: Double) = JDouble(value)
@@ -71,8 +79,10 @@ trait Base {
     new JSON[String] {
       def read(json: JValue) =
         json match {
-          case JString(x) => success(x)
-          case x          => UnexpectedJSONError(x, classOf[JString]).fail.liftFailNel
+          case JString(x) =>
+            success(x)
+          case x =>
+            UnexpectedJSONError(x, classOf[JString]).fail.liftFailNel
         }
 
       def write(value: String) = JString(value)
@@ -82,8 +92,10 @@ trait Base {
     new JSON[BigInt] {
       def read(json: JValue) =
         json match {
-          case JInt(x) => success(x)
-          case x       => UnexpectedJSONError(x, classOf[JInt]).fail.liftFailNel
+          case JInt(x) =>
+            success(x)
+          case x =>
+            UnexpectedJSONError(x, classOf[JInt]).fail.liftFailNel
         }
 
       def write(value: BigInt) = JInt(value)
@@ -102,7 +114,8 @@ trait Base {
           case JArray(xs) =>
             xs.map(fromJSON[A])
               .sequence[PartialApply1Of2[ValidationNEL, Error]#Apply, A]
-          case x => UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JArray]).fail.liftFailNel
         }
     }
   implicit def listJSONW[A: JSONW]: JSONW[List[A]] =
@@ -114,8 +127,10 @@ trait Base {
     new JSONR[Option[A]] {
       def read(json: JValue) =
         json match {
-          case JNothing | JNull => success(None)
-          case x                => fromJSON[A](x).map(some)
+          case JNothing | JNull =>
+            success(None)
+          case x =>
+            fromJSON[A](x).map(some)
         }
     }
   implicit def optionJSONW[A: JSONW]: JSONW[Option[A]] =
@@ -135,7 +150,8 @@ trait Base {
                 ValidationNEL,
                 Error]#Apply, (String, A)]
             r.map(_.toMap)
-          case x => UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
+          case x =>
+            UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
         }
     }
   implicit def mapJSONW[A: JSONW]: JSONW[Map[String, A]] =
@@ -143,7 +159,8 @@ trait Base {
       def write(values: Map[String, A]) =
         JObject(
           values.map {
-            case (k, v) => JField(k, toJSON(v))
+            case (k, v) =>
+              JField(k, toJSON(v))
           }(breakOut): _*)
     }
 }

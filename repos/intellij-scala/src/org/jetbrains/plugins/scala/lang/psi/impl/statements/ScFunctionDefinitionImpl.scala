@@ -94,13 +94,17 @@ class ScFunctionDefinitionImpl protected (
 
   def returnTypeInner: TypeResult[ScType] =
     returnTypeElement match {
-      case None if !hasAssign => Success(Unit, Some(this))
+      case None if !hasAssign =>
+        Success(Unit, Some(this))
       case None =>
         body match {
-          case Some(b) => b.getType(TypingContext.empty)
-          case _       => Success(Unit, Some(this))
+          case Some(b) =>
+            b.getType(TypingContext.empty)
+          case _ =>
+            Success(Unit, Some(this))
         }
-      case Some(rte: ScTypeElement) => rte.getType(TypingContext.empty)
+      case Some(rte: ScTypeElement) =>
+        rte.getType(TypingContext.empty)
     }
 
   def body: Option[ScExpression] = {
@@ -140,7 +144,8 @@ class ScFunctionDefinitionImpl protected (
         new FakePsiCodeBlock(
           b
         ) // Needed so that LineBreakpoint.canAddLineBreakpoint allows line breakpoints on one-line method definitions
-      case None => null
+      case None =>
+        null
     }
 
   override def accept(visitor: ScalaElementVisitor) {
@@ -149,8 +154,10 @@ class ScFunctionDefinitionImpl protected (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitFunctionDefinition(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitFunctionDefinition(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

@@ -74,7 +74,8 @@ object Osgi {
     val builder = new Builder
     builder.setClasspath(fullClasspath.toArray)
     headers foreach {
-      case (k, v) => builder.setProperty(k, v)
+      case (k, v) =>
+        builder.setProperty(k, v)
     }
     val includeRes = resourceDirectories
       .filter(_.exists)
@@ -83,7 +84,8 @@ object Osgi {
     if (!includeRes.isEmpty)
       builder.setProperty(INCLUDERESOURCE, includeRes)
     builder.getProperties.foreach {
-      case (k, v) => log.debug(s"bnd: $k: $v")
+      case (k, v) =>
+        log.debug(s"bnd: $k: $v")
     }
     // builder.build is not thread-safe because it uses a static SimpleDateFormat.  This ensures
     // that all calls to builder.build are serialized.

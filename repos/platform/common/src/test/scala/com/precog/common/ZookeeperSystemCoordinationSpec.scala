@@ -41,7 +41,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
       val result = sc.registerRelayAgent("test_agent", 10000)
 
       result must beLike {
-        case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) => ok
+        case Success(EventRelayState(0, 1, IdSequenceBlock(0, 1, 10000))) =>
+          ok
       }
     }
 
@@ -145,7 +146,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result1 = sc1.registerRelayAgent("test_agent", 10000)
         result1 must beLike {
-          case Success(_) => ok
+          case Success(_) =>
+            ok
         }
 
         val client2 = factory()
@@ -153,7 +155,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result2 = sc2.registerRelayAgent("test_agent", 10000)
         result2 must beLike {
-          case Failure(_) => ok
+          case Failure(_) =>
+            ok
         }
     }
 
@@ -236,7 +239,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
         client.close
         result
       } catch {
-        case ex => false
+        case ex =>
+          false
       }
     }
 

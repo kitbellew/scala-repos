@@ -433,71 +433,136 @@ class Flags extends ModifierFlags {
   @annotation.switch
   override def flagToString(flag: Long): String =
     flag match {
-      case PROTECTED           => "protected" // (1L << 0)
-      case OVERRIDE            => "override" // (1L << 1)
-      case PRIVATE             => "private" // (1L << 2)
-      case ABSTRACT            => "abstract" // (1L << 3)
-      case DEFERRED            => "<deferred>" // (1L << 4)
-      case FINAL               => "final" // (1L << 5)
-      case METHOD              => "<method>" // (1L << 6)
-      case INTERFACE           => "<interface>" // (1L << 7)
-      case MODULE              => "<module>" // (1L << 8)
-      case IMPLICIT            => "implicit" // (1L << 9)
-      case SEALED              => "sealed" // (1L << 10)
-      case CASE                => "case" // (1L << 11)
-      case MUTABLE             => "<mutable>" // (1L << 12)
-      case PARAM               => "<param>" // (1L << 13)
-      case PACKAGE             => "<package>" // (1L << 14)
-      case MACRO               => "<macro>" // (1L << 15)
-      case BYNAMEPARAM         => "<bynameparam/captured/covariant>" // (1L << 16)
-      case CONTRAVARIANT       => "<contravariant/inconstructor/label>" // (1L << 17)
-      case ABSOVERRIDE         => "absoverride" // (1L << 18)
-      case LOCAL               => "<local>" // (1L << 19)
-      case JAVA                => "<java>" // (1L << 20)
-      case SYNTHETIC           => "<synthetic>" // (1L << 21)
-      case STABLE              => "<stable>" // (1L << 22)
-      case STATIC              => "<static>" // (1L << 23)
-      case CASEACCESSOR        => "<caseaccessor>" // (1L << 24)
-      case DEFAULTPARAM        => "<defaultparam/trait>" // (1L << 25)
-      case BRIDGE              => "<bridge>" // (1L << 26)
-      case ACCESSOR            => "<accessor>" // (1L << 27)
-      case SUPERACCESSOR       => "<superaccessor>" // (1L << 28)
-      case PARAMACCESSOR       => "<paramaccessor>" // (1L << 29)
-      case MODULEVAR           => "<modulevar>" // (1L << 30)
-      case LAZY                => "lazy" // (1L << 31)
-      case IS_ERROR            => "<is_error>" // (1L << 32)
-      case OVERLOADED          => "<overloaded>" // (1L << 33)
-      case LIFTED              => "<lifted>" // (1L << 34)
-      case EXISTENTIAL         => "<existential/mixedin>" // (1L << 35)
-      case EXPANDEDNAME        => "<expandedname>" // (1L << 36)
-      case PRESUPER            => "<presuper>" // (1L << 37)
-      case TRANS_FLAG          => "<trans_flag>" // (1L << 38)
-      case LOCKED              => "<locked>" // (1L << 39)
-      case SPECIALIZED         => "<specialized>" // (1L << 40)
-      case DEFAULTINIT         => "<defaultinit>" // (1L << 41)
-      case VBRIDGE             => "<vbridge>" // (1L << 42)
-      case VARARGS             => "<varargs>" // (1L << 43)
-      case TRIEDCOOKING        => "<triedcooking>" // (1L << 44)
-      case SYNCHRONIZED        => "<synchronized>" // (1L << 45)
-      case ARTIFACT            => "<artifact>" // (1L << 46)
-      case JAVA_DEFAULTMETHOD  => "<defaultmethod>" // (1L << 47)
-      case JAVA_ENUM           => "<enum>" // (1L << 48)
-      case JAVA_ANNOTATION     => "<annotation>" // (1L << 49)
-      case 0x4000000000000L    => "" // (1L << 50)
-      case `lateDEFERRED`      => "<latedeferred>" // (1L << 51)
-      case `lateFINAL`         => "<latefinal>" // (1L << 52)
-      case `lateMETHOD`        => "<latemethod>" // (1L << 53)
-      case 0x80000000000000L   => "" // (1L << 54)
-      case `lateMODULE`        => "<latemodule>" // (1L << 55)
-      case `notPROTECTED`      => "<notprotected>" // (1L << 56)
-      case `notOVERRIDE`       => "<notoverride>" // (1L << 57)
-      case `notPRIVATE`        => "<notprivate>" // (1L << 58)
-      case 0x800000000000000L  => "" // (1L << 59)
-      case 0x1000000000000000L => "" // (1L << 60)
-      case 0x2000000000000000L => "" // (1L << 61)
-      case 0x4000000000000000L => "" // (1L << 62)
-      case 0x8000000000000000L => "" // (1L << 63)
-      case _                   => ""
+      case PROTECTED =>
+        "protected" // (1L << 0)
+      case OVERRIDE =>
+        "override" // (1L << 1)
+      case PRIVATE =>
+        "private" // (1L << 2)
+      case ABSTRACT =>
+        "abstract" // (1L << 3)
+      case DEFERRED =>
+        "<deferred>" // (1L << 4)
+      case FINAL =>
+        "final" // (1L << 5)
+      case METHOD =>
+        "<method>" // (1L << 6)
+      case INTERFACE =>
+        "<interface>" // (1L << 7)
+      case MODULE =>
+        "<module>" // (1L << 8)
+      case IMPLICIT =>
+        "implicit" // (1L << 9)
+      case SEALED =>
+        "sealed" // (1L << 10)
+      case CASE =>
+        "case" // (1L << 11)
+      case MUTABLE =>
+        "<mutable>" // (1L << 12)
+      case PARAM =>
+        "<param>" // (1L << 13)
+      case PACKAGE =>
+        "<package>" // (1L << 14)
+      case MACRO =>
+        "<macro>" // (1L << 15)
+      case BYNAMEPARAM =>
+        "<bynameparam/captured/covariant>" // (1L << 16)
+      case CONTRAVARIANT =>
+        "<contravariant/inconstructor/label>" // (1L << 17)
+      case ABSOVERRIDE =>
+        "absoverride" // (1L << 18)
+      case LOCAL =>
+        "<local>" // (1L << 19)
+      case JAVA =>
+        "<java>" // (1L << 20)
+      case SYNTHETIC =>
+        "<synthetic>" // (1L << 21)
+      case STABLE =>
+        "<stable>" // (1L << 22)
+      case STATIC =>
+        "<static>" // (1L << 23)
+      case CASEACCESSOR =>
+        "<caseaccessor>" // (1L << 24)
+      case DEFAULTPARAM =>
+        "<defaultparam/trait>" // (1L << 25)
+      case BRIDGE =>
+        "<bridge>" // (1L << 26)
+      case ACCESSOR =>
+        "<accessor>" // (1L << 27)
+      case SUPERACCESSOR =>
+        "<superaccessor>" // (1L << 28)
+      case PARAMACCESSOR =>
+        "<paramaccessor>" // (1L << 29)
+      case MODULEVAR =>
+        "<modulevar>" // (1L << 30)
+      case LAZY =>
+        "lazy" // (1L << 31)
+      case IS_ERROR =>
+        "<is_error>" // (1L << 32)
+      case OVERLOADED =>
+        "<overloaded>" // (1L << 33)
+      case LIFTED =>
+        "<lifted>" // (1L << 34)
+      case EXISTENTIAL =>
+        "<existential/mixedin>" // (1L << 35)
+      case EXPANDEDNAME =>
+        "<expandedname>" // (1L << 36)
+      case PRESUPER =>
+        "<presuper>" // (1L << 37)
+      case TRANS_FLAG =>
+        "<trans_flag>" // (1L << 38)
+      case LOCKED =>
+        "<locked>" // (1L << 39)
+      case SPECIALIZED =>
+        "<specialized>" // (1L << 40)
+      case DEFAULTINIT =>
+        "<defaultinit>" // (1L << 41)
+      case VBRIDGE =>
+        "<vbridge>" // (1L << 42)
+      case VARARGS =>
+        "<varargs>" // (1L << 43)
+      case TRIEDCOOKING =>
+        "<triedcooking>" // (1L << 44)
+      case SYNCHRONIZED =>
+        "<synchronized>" // (1L << 45)
+      case ARTIFACT =>
+        "<artifact>" // (1L << 46)
+      case JAVA_DEFAULTMETHOD =>
+        "<defaultmethod>" // (1L << 47)
+      case JAVA_ENUM =>
+        "<enum>" // (1L << 48)
+      case JAVA_ANNOTATION =>
+        "<annotation>" // (1L << 49)
+      case 0x4000000000000L =>
+        "" // (1L << 50)
+      case `lateDEFERRED` =>
+        "<latedeferred>" // (1L << 51)
+      case `lateFINAL` =>
+        "<latefinal>" // (1L << 52)
+      case `lateMETHOD` =>
+        "<latemethod>" // (1L << 53)
+      case 0x80000000000000L =>
+        "" // (1L << 54)
+      case `lateMODULE` =>
+        "<latemodule>" // (1L << 55)
+      case `notPROTECTED` =>
+        "<notprotected>" // (1L << 56)
+      case `notOVERRIDE` =>
+        "<notoverride>" // (1L << 57)
+      case `notPRIVATE` =>
+        "<notprivate>" // (1L << 58)
+      case 0x800000000000000L =>
+        "" // (1L << 59)
+      case 0x1000000000000000L =>
+        "" // (1L << 60)
+      case 0x2000000000000000L =>
+        "" // (1L << 61)
+      case 0x4000000000000000L =>
+        "" // (1L << 62)
+      case 0x8000000000000000L =>
+        "" // (1L << 63)
+      case _ =>
+        ""
     }
 
   private def accessString(flags: Long, privateWithin: String) =

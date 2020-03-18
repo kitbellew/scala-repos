@@ -143,7 +143,8 @@ private[sql] class ExchangeCoordinator(
             16)
           math.min(maxPostShuffleInputSize, advisoryTargetPostShuffleInputSize)
 
-        case None => advisoryTargetPostShuffleInputSize
+        case None =>
+          advisoryTargetPostShuffleInputSize
       }
 
     logInfo(

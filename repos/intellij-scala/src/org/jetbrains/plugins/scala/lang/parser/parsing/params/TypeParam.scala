@@ -32,8 +32,9 @@ object TypeParam {
 
     if (mayHaveVariance) {
       builder.getTokenText match {
-        case "+" | "-" => builder.advanceLexer()
-        case _         =>
+        case "+" | "-" =>
+          builder.advanceLexer()
+        case _ =>
       }
     }
     builder.getTokenType match {
@@ -66,7 +67,8 @@ object TypeParam {
         if (!Type.parse(builder))
           builder error ErrMsg("wrong.type")
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

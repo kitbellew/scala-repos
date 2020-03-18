@@ -11,7 +11,8 @@ object Messages {
       props.load(getClass.getResourceAsStream("/reference.conf"))
       props
     } catch {
-      case _: Throwable => new Properties()
+      case _: Throwable =>
+        new Properties()
     }
   }
 
@@ -24,7 +25,8 @@ object Messages {
       val message = rawMessage.substring(0, rawMessage.length - 1).substring(1)
       MessageFormat.format(message, args: _*)
     } catch {
-      case _: Throwable => customMessage.getOrElse("")
+      case _: Throwable =>
+        customMessage.getOrElse("")
     }
   }
 

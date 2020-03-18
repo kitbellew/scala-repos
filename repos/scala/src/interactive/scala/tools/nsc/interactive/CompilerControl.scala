@@ -117,8 +117,10 @@ trait CompilerControl {
     */
   def askReload(sources: List[SourceFile], response: Response[Unit]) = {
     val superseeded = scheduler.dequeueAll {
-      case ri: ReloadItem if ri.sources == sources => Some(ri)
-      case _                                       => None
+      case ri: ReloadItem if ri.sources == sources =>
+        Some(ri)
+      case _ =>
+        None
     }
     superseeded.foreach(_.response.set(()))
     postWorkItem(new ReloadItem(sources, response))
@@ -244,8 +246,10 @@ trait CompilerControl {
   def askStructure(
       keepSrcLoaded: Boolean)(source: SourceFile, response: Response[Tree]) = {
     getUnit(source) match {
-      case Some(_) => askLoadedTyped(source, keepSrcLoaded, response)
-      case None    => askParsedEntered(source, keepSrcLoaded, response)
+      case Some(_) =>
+        askLoadedTyped(source, keepSrcLoaded, response)
+      case None =>
+        askParsedEntered(source, keepSrcLoaded, response)
     }
   }
 
@@ -295,14 +299,17 @@ trait CompilerControl {
       try {
         r set op()
       } catch {
-        case exc: Throwable => r raise exc
+        case exc: Throwable =>
+          r raise exc
       }
       r
     } else {
       val ir = scheduler askDoQuickly op
       ir onComplete {
-        case Left(result) => r set result
-        case Right(exc)   => r raise exc
+        case Left(result) =>
+          r set result
+        case Right(exc) =>
+          r raise exc
       }
       r
     }
@@ -491,7 +498,8 @@ trait CompilerControl {
     override def postWorkItem(action: Action) =
       synchronized {
         action match {
-          case w: WorkItem    => w.raiseMissing()
+          case w: WorkItem =>
+            w.raiseMissing()
           case e: EmptyAction => // do nothing
           case _ =>
             println("don't know what to do with this " + action.getClass)

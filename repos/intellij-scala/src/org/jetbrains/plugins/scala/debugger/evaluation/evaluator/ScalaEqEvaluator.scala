@@ -18,7 +18,8 @@ class ScalaEqEvaluator(left: Evaluator, right: Evaluator) extends Evaluator {
     val rightResult = right.evaluate(context).asInstanceOf[Value]
     val vm = context.getDebugProcess.getVirtualMachineProxy
     (leftResult, rightResult) match {
-      case (null, null) => DebuggerUtilsEx.createValue(vm, "boolean", true)
+      case (null, null) =>
+        DebuggerUtilsEx.createValue(vm, "boolean", true)
       case (null, _) =>
         DebuggerUtilsEx.createValue(vm, "boolean", rightResult == leftResult)
       case (_, null) =>

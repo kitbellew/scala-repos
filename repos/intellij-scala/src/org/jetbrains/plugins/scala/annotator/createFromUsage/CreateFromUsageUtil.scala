@@ -51,7 +51,8 @@ object CreateFromUsageUtil {
 
   def nameAndTypeForArg(arg: PsiElement): (String, ScType) =
     arg match {
-      case ref: ScReferenceExpression => (ref.refName, ref.getType().getOrAny)
+      case ref: ScReferenceExpression =>
+        (ref.refName, ref.getType().getOrAny)
       case expr: ScExpression =>
         val tp = expr.getType().getOrAny
         (nameByType(tp), tp)
@@ -60,7 +61,8 @@ object CreateFromUsageUtil {
       case p: ScPattern =>
         val tp: ScType = p.getType(TypingContext.empty).getOrAny
         (nameByType(tp), tp)
-      case _ => ("value", scTypeAny)
+      case _ =>
+        ("value", scTypeAny)
     }
 
   def paramsText(args: Seq[PsiElement]) = {
@@ -74,7 +76,8 @@ object CreateFromUsageUtil {
     ref.getParent match {
       case p: ScPattern =>
         paramsText(patternArgs(p))
-      case MethodRepr(_, _, _, args) => paramsText(args) //for case class
+      case MethodRepr(_, _, _, args) =>
+        paramsText(args) //for case class
       case _ =>
         val fromConstrArguments =
           PsiTreeUtil.getParentOfType(ref, classOf[ScConstructor]) match {
@@ -84,7 +87,8 @@ object CreateFromUsageUtil {
             case ScConstructor(pt: ScParameterizedTypeElement, args)
                 if ref.getParent == pt.typeElement =>
               args
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           }
         fromConstrArguments.map(argList => paramsText(argList.exprs)).mkString
     }
@@ -92,9 +96,12 @@ object CreateFromUsageUtil {
 
   def patternArgs(pattern: ScPattern): Seq[ScPattern] = {
     pattern match {
-      case cp: ScConstructorPattern => cp.args.patterns
-      case inf: ScInfixPattern      => inf.leftPattern +: inf.rightPattern.toSeq
-      case _                        => Seq.empty
+      case cp: ScConstructorPattern =>
+        cp.args.patterns
+      case inf: ScInfixPattern =>
+        inf.leftPattern +: inf.rightPattern.toSeq
+      case _ =>
+        Seq.empty
     }
   }
 
@@ -166,9 +173,12 @@ object CreateFromUsageUtil {
       .map(_.getType(TypingContext.empty).getOrAny)
     val typesText = types.map(_.canonicalText).mkString(", ")
     types.size match {
-      case 0 => "Boolean"
-      case 1 => s"Option[$typesText]"
-      case _ => s"Option[($typesText)]"
+      case 0 =>
+        "Boolean"
+      case 1 =>
+        s"Option[$typesText]"
+      case _ =>
+        s"Option[($typesText)]"
     }
   }
 }
@@ -176,24 +186,30 @@ object CreateFromUsageUtil {
 object InstanceOfClass {
   def unapply(elem: PsiElement): Option[PsiClass] =
     elem match {
-      case ScExpression.Type(TypeAsClass(psiClass)) => Some(psiClass)
+      case ScExpression.Type(TypeAsClass(psiClass)) =>
+        Some(psiClass)
       case ResolvesTo(typed: ScTypedDefinition) =>
         typed.getType().toOption match {
-          case Some(TypeAsClass(psiClass)) => Some(psiClass)
-          case _                           => None
+          case Some(TypeAsClass(psiClass)) =>
+            Some(psiClass)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 }
 
 object TypeAsClass {
   def unapply(scType: ScType): Option[PsiClass] =
     scType match {
-      case ScType.ExtractClass(aClass) => Some(aClass)
+      case ScType.ExtractClass(aClass) =>
+        Some(aClass)
       case t: ScType =>
         ScType
           .extractDesignatorSingletonType(t)
           .flatMap(ScType.extractClass(_, None))
-      case _ => None
+      case _ =>
+        None
     }
 }

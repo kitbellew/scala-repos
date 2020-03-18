@@ -27,8 +27,10 @@ case class MemcacheRequest(
   override def toString = {
     "<Request: " + line.mkString("[", " ", "]") + (
       data match {
-        case None    => ""
-        case Some(x) => " data=" + x.remaining
+        case None =>
+          ""
+        case Some(x) =>
+          " data=" + x.remaining
       }
     ) + " read=" + bytesRead + ">"
   }
@@ -39,8 +41,10 @@ case class MemcacheResponse(line: String, data: Option[ByteBuffer] = None)
   override def toString = {
     "<Response: " + line + (
       data match {
-        case None    => ""
-        case Some(x) => " data=" + x.remaining
+        case None =>
+          ""
+        case Some(x) =>
+          " data=" + x.remaining
       }
     ) + ">"
   }

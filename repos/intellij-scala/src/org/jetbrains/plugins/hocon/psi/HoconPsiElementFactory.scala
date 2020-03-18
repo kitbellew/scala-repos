@@ -22,7 +22,8 @@ object HoconPsiElementFactory {
     Iterator
       .iterate(element)(_.getParent)
       .collectFirst({
-        case t: T => t
+        case t: T =>
+          t
       })
       .get
   }

@@ -215,7 +215,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                           else
                             nme.NO_NAME)
         getDeclIfDefined(BoxesRunTimeClass, methodName) match {
-          case NoSymbol => None
+          case NoSymbol =>
+            None
           case sym =>
             assert(!sym.isOverloaded, sym);
             Some((sym, testForName(name)))
@@ -259,13 +260,17 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           val isArrayMethodSignature = {
             def typesMatchApply =
               paramTypes match {
-                case List(tp) => tp <:< IntTpe
-                case _        => false
+                case List(tp) =>
+                  tp <:< IntTpe
+                case _ =>
+                  false
               }
             def typesMatchUpdate =
               paramTypes match {
-                case List(tp1, tp2) => (tp1 <:< IntTpe) && isMaybeUnit
-                case _              => false
+                case List(tp1, tp2) =>
+                  (tp1 <:< IntTpe) && isMaybeUnit
+                case _ =>
+                  false
               }
 
             (methSym.name == nme.length && params.isEmpty) ||
@@ -370,7 +375,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                   REF(arrayApplyMethod) APPLY List(
                     args(0),
                     (REF(unboxMethod(IntClass)) APPLY args(1)))
-                case nme.clone_ => REF(arrayCloneMethod) APPLY List(args(0))
+                case nme.clone_ =>
+                  REF(arrayCloneMethod) APPLY List(args(0))
               },
               mustBeUnit = methSym.name == nme.update
             )
@@ -469,7 +475,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                    |  - declared parameter types: '${paramsToString(mparams)}'
                    |  - passed argument types:    '${paramsToString(params)}'
                    |  - result type:              '${resType.toString}'"""
-              case _ => ""
+              case _ =>
+                ""
             }
           log(
             s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(

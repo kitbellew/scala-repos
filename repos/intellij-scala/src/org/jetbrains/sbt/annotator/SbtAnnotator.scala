@@ -39,8 +39,10 @@ class SbtAnnotator extends Annotator {
       holder: AnnotationHolder) {
     def annotate(): Unit = {
       sbtFileElements.collect {
-        case exp: ScExpression => annotateTypeMismatch(exp)
-        case element           => annotateNonExpression(element)
+        case exp: ScExpression =>
+          annotateTypeMismatch(exp)
+        case element =>
+          annotateNonExpression(element)
       }
       if (sbtVersionLessThan("0.13.7"))
         annotateMissingBlankLines()

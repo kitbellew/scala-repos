@@ -11,8 +11,10 @@ object Test extends InteractiveTest {
       })
       println(
         res.get(5000) match {
-          case Some(_) => "passed"
-          case None    => "timeout"
+          case Some(_) =>
+            "passed"
+          case None =>
+            "timeout"
         })
     })
 

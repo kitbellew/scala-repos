@@ -52,14 +52,18 @@ import net.liftweb.common._
   */
 object Loc extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case "i" => ns => i(ns)
-    case s   => ns => render(s, ns)
+    case "i" =>
+      ns => i(ns)
+    case s =>
+      ns => render(s, ns)
   }
 
   def i(ns: NodeSeq): NodeSeq = {
     ns match {
-      case e: Elem => e.copy(child = S.loc(ns.text, Text(ns.text)))
-      case _       => render("i", ns)
+      case e: Elem =>
+        e.copy(child = S.loc(ns.text, Text(ns.text)))
+      case _ =>
+        render("i", ns)
     }
   }
 
@@ -67,8 +71,10 @@ object Loc extends DispatchSnippet {
     S.loc(locId) openOr
       (
         S.attr("locid") match {
-          case Full(id) => S.loc(id, kids)
-          case _        => S.loc(kids.text, kids)
+          case Full(id) =>
+            S.loc(id, kids)
+          case _ =>
+            S.loc(kids.text, kids)
         }
       )
   }

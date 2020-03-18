@@ -266,7 +266,8 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
                 count += 1
                 true
               } catch {
-                case _: InterruptedException ⇒ false
+                case _: InterruptedException ⇒
+                  false
               }
             if (cont)
               run()

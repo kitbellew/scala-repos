@@ -192,7 +192,8 @@ class BinaryFieldTestRecord
       other match {
         case that: BinaryField[_] =>
           this.value.zip(that.value).filter(t => t._1 != t._2).length == 0
-        case _ => false
+        case _ =>
+          false
       }
   }
   object legacyOptionalBinaryField extends BinaryField(this) {
@@ -202,12 +203,15 @@ class BinaryFieldTestRecord
       other match {
         case that: BinaryField[_] =>
           (this.valueBox, that.valueBox) match {
-            case (Empty, Empty) => true
+            case (Empty, Empty) =>
+              true
             case (Full(a), Full(b)) =>
               a.zip(b).filter(t => t._1 != t._2).length == 0
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
   }
   object optionalBinaryField extends OptionalBinaryField(this) {
@@ -216,12 +220,15 @@ class BinaryFieldTestRecord
       other match {
         case that: OptionalBinaryField[_] =>
           (this.valueBox, that.valueBox) match {
-            case (Empty, Empty) => true
+            case (Empty, Empty) =>
+              true
             case (Full(a), Full(b)) =>
               a.zip(b).filter(t => t._1 != t._2).length == 0
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
   }
 
@@ -232,7 +239,8 @@ class BinaryFieldTestRecord
           this.mandatoryBinaryField == that.mandatoryBinaryField &&
           this.legacyOptionalBinaryField == that.legacyOptionalBinaryField &&
           this.optionalBinaryField == that.optionalBinaryField
-      case _ => false
+      case _ =>
+        false
     }
 }
 object BinaryFieldTestRecord

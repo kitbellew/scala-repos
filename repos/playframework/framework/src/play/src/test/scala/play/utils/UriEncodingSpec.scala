@@ -42,7 +42,8 @@ object UriEncodingSpec extends Specification {
           encoded
         ) // Decoding should have failed
       } catch {
-        case _: InvalidUriEncodingException => () // This is expected behaviour
+        case _: InvalidUriEncodingException =>
+          () // This is expected behaviour
       }
       PercentEncoded(encoded)
     }

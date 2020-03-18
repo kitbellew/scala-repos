@@ -19,7 +19,8 @@ object FileAttributeUtilCache {
     file.getVirtualFile match {
       case normalFile: VirtualFileWithId =>
         Option(attribute readAttributeBytes normalFile) map (new String(_))
-      case other => lightKeys get other flatMap (map => map get attribute)
+      case other =>
+        lightKeys get other flatMap (map => map get attribute)
     }
   }
 
@@ -29,8 +30,10 @@ object FileAttributeUtilCache {
         attribute.writeAttributeBytes(normalFile, data.getBytes)
       case other =>
         lightKeys get other match {
-          case Some(e) => e.put(attribute, data)
-          case _       => lightKeys.put(other, mutable.HashMap(attribute -> data))
+          case Some(e) =>
+            e.put(attribute, data)
+          case _ =>
+            lightKeys.put(other, mutable.HashMap(attribute -> data))
         }
     }
   }

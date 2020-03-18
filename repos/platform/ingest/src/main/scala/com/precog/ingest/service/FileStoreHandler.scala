@@ -75,8 +75,10 @@ class FileStoreHandler(
       method: HttpMethod): Validation[String, WriteMode] = {
     import FileContent._
     (contentType, method) match {
-      case (_, HttpMethods.POST) => Success(AccessMode.Create)
-      case (_, HttpMethods.PUT)  => Success(AccessMode.Replace)
+      case (_, HttpMethods.POST) =>
+        Success(AccessMode.Create)
+      case (_, HttpMethods.PUT) =>
+        Success(AccessMode.Replace)
       case (otherType, otherMethod) =>
         Failure(
           "Content-Type %s is not supported for use with method %s."

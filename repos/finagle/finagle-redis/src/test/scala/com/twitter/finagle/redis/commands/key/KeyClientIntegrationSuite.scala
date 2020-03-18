@@ -75,8 +75,10 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
 
       val result =
         Await.result(client.ttl(foo)) match {
-          case Some(num) => num
-          case None      => fail("Could not retrieve key for TTL test")
+          case Some(num) =>
+            num
+          case None =>
+            fail("Could not retrieve key for TTL test")
         }
       assert(result <= time)
     }
@@ -94,8 +96,10 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
 
       val result =
         Await.result(client.ttl(foo)) match {
-          case Some(num) => num
-          case None      => fail("Could not retrieve key for TTL")
+          case Some(num) =>
+            num
+          case None =>
+            fail("Could not retrieve key for TTL")
         }
       assert(result <= ttl)
     }
@@ -129,8 +133,10 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
 
       val result =
         Await.result(client.pTtl(foo)) match {
-          case Some(num) => num
-          case None      => fail("Could not retrieve pTtl for key")
+          case Some(num) =>
+            num
+          case None =>
+            fail("Could not retrieve pTtl for key")
         }
       assert(result <= ttl)
     }
@@ -148,8 +154,10 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
 
       val result =
         Await.result(client.pTtl(foo)) match {
-          case Some(num) => num
-          case None      => fail("Could not retrieve pTtl for key")
+          case Some(num) =>
+            num
+          case None =>
+            fail("Could not retrieve pTtl for key")
         }
       assert(result <= horizon)
     }

@@ -98,26 +98,33 @@ private[http] trait LiftMerge {
 
     val processedSnippets: Map[String, NodeSeq] = Map(
       snippetHashs.toList.flatMap {
-        case (name, Full(value)) => List((name, value))
+        case (name, Full(value)) =>
+          List((name, value))
         case (name, f: Failure) =>
           List((name, LiftRules.deferredSnippetFailure.vend(f)))
         case (name, Empty) =>
           List((name, LiftRules.deferredSnippetTimeout.vend))
-        case _ => Nil
+        case _ =>
+          Nil
       }: _*)
 
     val hasHtmlHeadAndBody: Boolean =
       xhtml.find {
         case e: Elem if e.label == "html" =>
           e.child.find {
-            case e: Elem if e.label == "head" => true
-            case _                            => false
+            case e: Elem if e.label == "head" =>
+              true
+            case _ =>
+              false
           }.isDefined &&
             e.child.find {
-              case e: Elem if e.label == "body" => true
-              case _                            => false
+              case e: Elem if e.label == "body" =>
+                true
+              case _ =>
+                false
             }.isDefined
-        case _ => false
+        case _ =>
+          false
       }.isDefined
 
     var htmlElement =
@@ -259,8 +266,10 @@ private[http] trait LiftMerge {
           HtmlState(mergeHeadAndTail = false)).nodes
 
       fixedHtml.find {
-        case e: Elem => true
-        case _       => false
+        case e: Elem =>
+          true
+        case _ =>
+          false
       } getOrElse Text("")
     } else {
       val eventJs =
@@ -342,7 +351,8 @@ private[http] trait LiftMerge {
       val ret: Node =
         if (Props.devMode) {
           LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
-            case Nil => tmpRet
+            case Nil =>
+              tmpRet
             case xs =>
               import scala.xml.transform._
 
@@ -362,7 +372,8 @@ private[http] trait LiftMerge {
                       case e: Elem if e.label == "body" =>
                         e.copy(child = e.child ++ errors)
 
-                      case x => super.transform(x)
+                      case x =>
+                        super.transform(x)
                     }
                 }
               (new RuleTransformer(rule)).transform(tmpRet)(0)

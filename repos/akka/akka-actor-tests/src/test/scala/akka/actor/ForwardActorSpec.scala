@@ -17,7 +17,8 @@ object ForwardActorSpec {
       Props(
         new Actor {
           def receive = {
-            case x ⇒ sender() ! x
+            case x ⇒
+              sender() ! x
           }
         }))
 
@@ -26,7 +27,8 @@ object ForwardActorSpec {
         Props(
           new Actor {
             def receive = {
-              case x ⇒ forwardTo forward x
+              case x ⇒
+                forwardTo forward x
             }
           }))
 
@@ -45,7 +47,8 @@ class ForwardActorSpec extends AkkaSpec {
         Props(
           new Actor {
             def receive = {
-              case ExpectedMessage ⇒ testActor ! ExpectedMessage
+              case ExpectedMessage ⇒
+                testActor ! ExpectedMessage
             }
           }))
 

@@ -90,7 +90,8 @@ trait StandardLiftables {
 
     implicit def liftSome[T: Liftable]: Liftable[Some[T]] =
       Liftable {
-        case Some(v) => callScala(stdnme.Some)(lift(v) :: Nil)
+        case Some(v) =>
+          callScala(stdnme.Some)(lift(v) :: Nil)
       }
     implicit def liftNone: Liftable[None.type] =
       Liftable { _ =>
@@ -98,22 +99,28 @@ trait StandardLiftables {
       }
     implicit def liftOption[T: Liftable]: Liftable[Option[T]] =
       Liftable {
-        case some: Some[T]   => lift(some)
-        case none: None.type => lift(none)
+        case some: Some[T] =>
+          lift(some)
+        case none: None.type =>
+          lift(none)
       }
 
     implicit def liftLeft[L: Liftable, R]: Liftable[Left[L, R]] =
       Liftable {
-        case Left(v) => callScala(stdnme.util, stdnme.Left)(lift(v) :: Nil)
+        case Left(v) =>
+          callScala(stdnme.util, stdnme.Left)(lift(v) :: Nil)
       }
     implicit def liftRight[L, R: Liftable]: Liftable[Right[L, R]] =
       Liftable {
-        case Right(v) => callScala(stdnme.util, stdnme.Right)(lift(v) :: Nil)
+        case Right(v) =>
+          callScala(stdnme.util, stdnme.Right)(lift(v) :: Nil)
       }
     implicit def liftEither[L: Liftable, R: Liftable]: Liftable[Either[L, R]] =
       Liftable {
-        case left: Left[L, R]   => lift(left)
-        case right: Right[L, R] => lift(right)
+        case left: Left[L, R] =>
+          lift(left)
+        case right: Right[L, R] =>
+          lift(right)
       }
 
     implicit def liftTuple2[T1, T2](implicit
@@ -892,7 +899,8 @@ trait StandardLiftables {
       unliftPrimitive[Unit, scala.runtime.BoxedUnit]
     implicit def unliftString: Unliftable[String] =
       Unliftable {
-        case Literal(Constant(s: String)) => s
+        case Literal(Constant(s: String)) =>
+          s
       }
 
     implicit def unliftScalaSymbol: Unliftable[scala.Symbol] =
@@ -905,16 +913,20 @@ trait StandardLiftables {
 
     implicit def unliftName[T <: Name: ClassTag]: Unliftable[T] =
       Unliftable[T] {
-        case Ident(name: T)                        => name;
-        case Bind(name: T, Ident(stdnme.WILDCARD)) => name
+        case Ident(name: T) =>
+          name;
+        case Bind(name: T, Ident(stdnme.WILDCARD)) =>
+          name
       }
     implicit def unliftType: Unliftable[Type] =
       Unliftable[Type] {
-        case tt: TypeTree if tt.tpe != null => tt.tpe
+        case tt: TypeTree if tt.tpe != null =>
+          tt.tpe
       }
     implicit def unliftConstant: Unliftable[Constant] =
       Unliftable[Constant] {
-        case Literal(const) => const
+        case Literal(const) =>
+          const
       }
 
     implicit def unliftTuple2[T1, T2](implicit

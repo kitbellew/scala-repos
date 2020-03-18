@@ -48,8 +48,10 @@ trait ParquetThriftBase[T]
       .withRecordClass(mf.runtimeClass.asInstanceOf[Class[T]])
     val configWithFp =
       withFilter match {
-        case Some(fp) => config.withFilterPredicate(fp)
-        case None     => config
+        case Some(fp) =>
+          config.withFilterPredicate(fp)
+        case None =>
+          config
       }
 
     val configWithProjection =
@@ -58,7 +60,8 @@ trait ParquetThriftBase[T]
           configWithFp.withProjectionString(s.asSemicolonString)
         case Some(s @ StrictColumnProjectionString(_)) =>
           configWithFp.withStrictProjectionString(s.asSemicolonString)
-        case None => configWithFp
+        case None =>
+          configWithFp
       }
 
     configWithProjection

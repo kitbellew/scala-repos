@@ -560,7 +560,8 @@ object AkkaBuild extends Build {
 
   val (mavenLocalResolver, mavenLocalResolverSettings) =
     System.getProperty("akka.build.M2Dir") match {
-      case null => (Resolver.mavenLocal, Seq.empty)
+      case null =>
+        (Resolver.mavenLocal, Seq.empty)
       case path =>
         // Maven resolver settings
         val resolver = Resolver.file("user-publish-m2-local", new File(path))
@@ -714,7 +715,8 @@ object AkkaBuild extends Build {
           scalaBinaryVersion.value match {
             case "2.11" if !akka24NewArtifacts.contains(id) =>
               akka23Versions ++ akka24Versions
-            case _ => akka24Versions // Only Akka 2.4.x for scala > than 2.11
+            case _ =>
+              akka24Versions // Only Akka 2.4.x for scala > than 2.11
           }
         }
 

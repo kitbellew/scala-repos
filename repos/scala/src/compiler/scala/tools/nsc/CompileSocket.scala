@@ -28,7 +28,8 @@ trait HasCompileSocket {
 
       def loop(): Boolean =
         in.readLine() match {
-          case null => noErrors
+          case null =>
+            noErrors
           case line =>
             if (isErrorMessage(line))
               noErrors = false
@@ -60,7 +61,8 @@ class CompileSocket extends CompileOutputCommon {
   /** The vm part of the command to start a new scala compile server */
   protected val vmCommand =
     Properties.scalaHome match {
-      case "" => cmdName
+      case "" =>
+        cmdName
       case dirname =>
         val trial = File(dirname) / "bin" / cmdName
         if (trial.canRead)
@@ -115,8 +117,10 @@ class CompileSocket extends CompileOutputCommon {
 
     // Hiding inadequate daemonized implementation from public API for now
     Process(cmd) match {
-      case x: ProcessBuilder.AbstractBuilder => x.daemonized().run()
-      case x                                 => x.run()
+      case x: ProcessBuilder.AbstractBuilder =>
+        x.daemonized().run()
+      case x =>
+        x.run()
     }
   }
 
@@ -132,7 +136,8 @@ class CompileSocket extends CompileOutputCommon {
         -1
     } else
       portsDir.list.toList match {
-        case Nil => -1
+        case Nil =>
+          -1
         case x :: xs =>
           try x.name.toInt
           catch {
@@ -234,7 +239,8 @@ class CompileSocket extends CompileOutputCommon {
     try {
       Some(x.toInt)
     } catch {
-      case _: NumberFormatException => None
+      case _: NumberFormatException =>
+        None
     }
 
   def getSocket(serverAdr: String): Option[Socket] =

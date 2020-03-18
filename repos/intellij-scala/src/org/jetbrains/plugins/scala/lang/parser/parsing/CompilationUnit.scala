@@ -103,7 +103,8 @@ object CompilationUnit {
         }
 
         parsePackageSequence(completed = true, ())
-      case _ => parsePackagingBody(false)
+      case _ =>
+        parsePackagingBody(false)
     }
     return parseState
   }

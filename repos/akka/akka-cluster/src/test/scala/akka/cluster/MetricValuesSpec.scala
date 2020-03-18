@@ -31,7 +31,8 @@ class MetricValuesSpec
       nodes map { n ⇒
         n.copy(metrics = collector.sample.metrics.flatMap(latest ⇒
           n.metrics.collect {
-            case streaming if latest sameAs streaming ⇒ streaming :+ latest
+            case streaming if latest sameAs streaming ⇒
+              streaming :+ latest
           }))
       }
     }

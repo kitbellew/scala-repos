@@ -37,7 +37,8 @@ trait HeadActionSpec
 
   private def route(verb: String, path: String)(
       handler: EssentialAction): PartialFunction[(String, String), Handler] = {
-    case (v, p) if v == verb && p == path => handler
+    case (v, p) if v == verb && p == path =>
+      handler
   }
   sequential
 
@@ -69,7 +70,8 @@ trait HeadActionSpec
     def serverWithAction[T](action: EssentialAction)(
         block: WSClient => T): T = {
       Server.withRouter() {
-        case _ => action
+        case _ =>
+          action
       } { implicit port =>
         implicit val mat = Play.current.materializer
         WsTestClient.withClient(block)

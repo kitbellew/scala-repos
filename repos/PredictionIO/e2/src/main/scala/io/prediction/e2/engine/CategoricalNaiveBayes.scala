@@ -63,7 +63,8 @@ object CategoricalNaiveBayes {
               featureCounts1.zip(featureCounts2).map {
                 case (m1, m2) =>
                   m2 ++ m2.map {
-                    case (k, v) => k -> (v + m2(k))
+                    case (k, v) =>
+                      k -> (v + m2(k))
                   }
               })
           }
@@ -182,8 +183,10 @@ case class LabeledPoint(label: String, features: Array[String]) {
 
   override def equals(other: Any): Boolean =
     other match {
-      case that: LabeledPoint => that.toString == this.toString
-      case _                  => false
+      case that: LabeledPoint =>
+        that.toString == this.toString
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {

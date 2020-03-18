@@ -39,37 +39,61 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
   // That is just a hueristic, and in some cases perhaps we should
   private def mergableWithSource(dep: Producer[P, _]): Boolean =
     dep match {
-      case NamedProducer(producer, _)        => true
-      case IdentityKeyedProducer(producer)   => true
-      case OptionMappedProducer(producer, _) => true
-      case Source(_)                         => true
-      case AlsoProducer(_, _)                => true
+      case NamedProducer(producer, _) =>
+        true
+      case IdentityKeyedProducer(producer) =>
+        true
+      case OptionMappedProducer(producer, _) =>
+        true
+      case Source(_) =>
+        true
+      case AlsoProducer(_, _) =>
+        true
       // The rest are flatMaps, joins, merges or tails
-      case FlatMappedProducer(_, _)      => false
-      case ValueFlatMappedProducer(_, _) => false
-      case KeyFlatMappedProducer(_, _)   => false
-      case LeftJoinedProducer(_, _)      => false
-      case Summer(_, _, _)               => false
-      case WrittenProducer(_, _)         => false
-      case MergedProducer(_, _)          => false
+      case FlatMappedProducer(_, _) =>
+        false
+      case ValueFlatMappedProducer(_, _) =>
+        false
+      case KeyFlatMappedProducer(_, _) =>
+        false
+      case LeftJoinedProducer(_, _) =>
+        false
+      case Summer(_, _, _) =>
+        false
+      case WrittenProducer(_, _) =>
+        false
+      case MergedProducer(_, _) =>
+        false
     }
 
   private def noOpProducer(dep: Producer[P, _]): Boolean =
     dep match {
       // These are merely planning hint nodes, and don't do any logic
-      case NamedProducer(_, _)      => true
-      case IdentityKeyedProducer(_) => true
-      case MergedProducer(_, _)     => true
-      case AlsoProducer(_, _)       => true
+      case NamedProducer(_, _) =>
+        true
+      case IdentityKeyedProducer(_) =>
+        true
+      case MergedProducer(_, _) =>
+        true
+      case AlsoProducer(_, _) =>
+        true
       // All the rest have some direct effect on the plan
-      case FlatMappedProducer(_, _)      => false
-      case ValueFlatMappedProducer(_, _) => false
-      case KeyFlatMappedProducer(_, _)   => false
-      case LeftJoinedProducer(_, _)      => false
-      case OptionMappedProducer(_, _)    => false
-      case Source(_)                     => false
-      case Summer(_, _, _)               => false
-      case WrittenProducer(_, _)         => false
+      case FlatMappedProducer(_, _) =>
+        false
+      case ValueFlatMappedProducer(_, _) =>
+        false
+      case KeyFlatMappedProducer(_, _) =>
+        false
+      case LeftJoinedProducer(_, _) =>
+        false
+      case OptionMappedProducer(_, _) =>
+        false
+      case Source(_) =>
+        false
+      case Summer(_, _, _) =>
+        false
+      case WrittenProducer(_, _) =>
+        false
     }
 
   private def noOpNode(c: CNode): Boolean = c.members.forall(noOpProducer)
@@ -79,7 +103,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
       .dependantsOf(p)
       .get
       .collect {
-        case s: Summer[_, _, _] => s
+        case s: Summer[_, _, _] =>
+          s
       }
       .headOption
       .isDefined
@@ -88,7 +113,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
     Producer
       .dependenciesOf(p)
       .collect {
-        case s: Summer[_, _, _] => s
+        case s: Summer[_, _, _] =>
+          s
       }
       .headOption
       .isDefined
@@ -153,14 +179,16 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
              * If dep, the next node up the chain, has two dependants, we cannot pull it into this
              * node
              */
-            case _ if (forkedNodes.contains(dep)) => true
+            case _ if (forkedNodes.contains(dep)) =>
+              true
             /*
              * This next rule says: we can pull no-ops down into summer nodes, otherwise
              * we split to enable map-side aggregation. If the Semigroup is not commutative,
              * it might make possibly sense to pull value flatMap-ing down, but generally
              * we want to push things higher up in the Dag, not further down.
              */
-            case SummerNode(_) if !noOpProducer(dep) => true
+            case SummerNode(_) if !noOpProducer(dep) =>
+              true
             /*
              * Currently, SummerNodes cannot have any other logic than sum. So, we check to see
              * if this node has something that is not no-op, and if the next node will be a summer, we split
@@ -192,7 +220,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
                   ) && allTransDepsMergeableWithSource(dep)
                 ) =>
               true
-            case _ => false
+            case _ =>
+              false
           }
         // Note the currentProducer is *ALREADY* a part of activeBolt
         if (doSplit) {
@@ -229,7 +258,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
             (
               distinctAddToList((lMergeNodes ::: rMergeNodes).distinct, p),
               (lSiblings ::: rSiblings).distinct)
-          case _ => (List(), List(p))
+          case _ =>
+            (List(), List(p))
         }
 
       dependantProducer match {
@@ -294,7 +324,8 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
     Set())
   require(
     nodeSet.collect {
-      case n @ SourceNode(_) => n
+      case n @ SourceNode(_) =>
+        n
     }.size > 0,
     "Valid nodeSet should have at least one source node")
 }

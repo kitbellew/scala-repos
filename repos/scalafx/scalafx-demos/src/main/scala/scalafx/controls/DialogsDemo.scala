@@ -167,8 +167,10 @@ object DialogsDemo extends JFXApp {
     val result = alert.showAndWait()
 
     result match {
-      case Some(ButtonType.OK) => println("OK")
-      case _                   => println("Cancel or closed")
+      case Some(ButtonType.OK) =>
+        println("OK")
+      case _ =>
+        println("Cancel or closed")
     }
   }
 
@@ -195,10 +197,14 @@ object DialogsDemo extends JFXApp {
     val result = alert.showAndWait()
 
     result match {
-      case Some(ButtonTypeOne)   => println("... user chose \"One\"")
-      case Some(ButtonTypeTwo)   => println("... user chose \"Two\"")
-      case Some(ButtonTypeThree) => println("... user chose \"Three\"")
-      case _                     => println("... user chose CANCEL or closed the dialog")
+      case Some(ButtonTypeOne) =>
+        println("... user chose \"One\"")
+      case Some(ButtonTypeTwo) =>
+        println("... user chose \"Two\"")
+      case Some(ButtonTypeThree) =>
+        println("... user chose \"Three\"")
+      case _ =>
+        println("... user chose CANCEL or closed the dialog")
     }
   }
 
@@ -213,8 +219,10 @@ object DialogsDemo extends JFXApp {
 
     val result = dialog.showAndWait()
     result match {
-      case Some(name) => println("Your name: " + name)
-      case None       => println("Dialog was canceled.")
+      case Some(name) =>
+        println("Your name: " + name)
+      case None =>
+        println("Dialog was canceled.")
     }
   }
 
@@ -233,8 +241,10 @@ object DialogsDemo extends JFXApp {
     val result = dialog.showAndWait()
 
     result match {
-      case Some(choice) => println("Your choice: " + choice)
-      case None         => println("No selection")
+      case Some(choice) =>
+        println("Your choice: " + choice)
+      case None =>
+        println("No selection")
     }
   }
 

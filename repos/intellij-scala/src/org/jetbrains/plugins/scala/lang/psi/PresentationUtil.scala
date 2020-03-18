@@ -50,7 +50,8 @@ object PresentationUtil {
           if (param.isDefault)
             builder.append(" = _")
           builder.toString()
-        case tp: ScType => ScType.presentableText(substitutor.subst(tp))
+        case tp: ScType =>
+          ScType.presentableText(substitutor.subst(tp))
         case tp: PsiEllipsisType =>
           presentationString(tp.getComponentType, substitutor) + "*"
         case tp: PsiType =>
@@ -132,8 +133,9 @@ object PresentationUtil {
           }
           buffer.append(fun.name)
           fun.typeParametersClause match {
-            case Some(tpc) => buffer.append(presentationString(tpc))
-            case _         =>
+            case Some(tpc) =>
+              buffer.append(presentationString(tpc))
+            case _ =>
           }
           buffer
             .append(presentationString(fun.paramClauses, substitutor))
@@ -141,9 +143,12 @@ object PresentationUtil {
           buffer.append(
             presentationString(fun.returnType.getOrAny, substitutor))
           buffer.toString()
-        case elem: PsiElement => elem.getText
-        case null             => ""
-        case _                => obj.toString
+        case elem: PsiElement =>
+          elem.getText
+        case null =>
+          ""
+        case _ =>
+          obj.toString
       }
     res.replace(ScalaUtils.typeParameter, "T")
   }

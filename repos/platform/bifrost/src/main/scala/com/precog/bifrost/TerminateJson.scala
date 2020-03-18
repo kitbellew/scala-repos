@@ -117,8 +117,10 @@ object TerminateJson {
             case '{' =>
               stack.push(CloseObject);
               true
-            case s if isWhitespace(s) => false
-            case c                    => true
+            case s if isWhitespace(s) =>
+              false
+            case c =>
+              true
           }
 
         if (stack.isEmpty) {
@@ -183,14 +185,22 @@ object TerminateJson {
           while (stack.nonEmpty) {
             sb ++= (
               stack.pop() match {
-                case ExpectValue => "null"
-                case ExpectField => "\"\":null"
-                case SkipChar    => "\""
-                case FieldDelim  => ":"
-                case CloseString => "\""
-                case CloseArray  => "]"
-                case CloseObject => "}"
-                case _           => sys.error("Unreachable.")
+                case ExpectValue =>
+                  "null"
+                case ExpectField =>
+                  "\"\":null"
+                case SkipChar =>
+                  "\""
+                case FieldDelim =>
+                  ":"
+                case CloseString =>
+                  "\""
+                case CloseArray =>
+                  "]"
+                case CloseObject =>
+                  "}"
+                case _ =>
+                  sys.error("Unreachable.")
               }
             )
           }

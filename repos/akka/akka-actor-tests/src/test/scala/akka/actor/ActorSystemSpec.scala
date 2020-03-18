@@ -85,14 +85,16 @@ object ActorSystemSpec {
 
   class Terminater extends Actor {
     def receive = {
-      case "run" ⇒ context.stop(self)
+      case "run" ⇒
+        context.stop(self)
     }
   }
 
   class Strategy extends SupervisorStrategyConfigurator {
     def create() =
       OneForOneStrategy() {
-        case _ ⇒ SupervisorStrategy.Escalate
+        case _ ⇒
+          SupervisorStrategy.Escalate
       }
   }
 
@@ -130,7 +132,8 @@ object ActorSystemSpec {
           doneIt.switchOn {
             TestKit.awaitCond(mbox.actor.actor != null, 1.second)
             mbox.actor.actor match {
-              case FastActor(latch, _) ⇒ Await.ready(latch, 1.second)
+              case FastActor(latch, _) ⇒
+                Await.ready(latch, 1.second)
             }
           }
           ret
@@ -344,7 +347,8 @@ class ActorSystemSpec
           if (created.size % 1000 == 0)
             Thread.sleep(50) // in case of unfair thread scheduling
         } catch {
-          case _: IllegalStateException ⇒ failing = true
+          case _: IllegalStateException ⇒
+            failing = true
         }
 
         if (!failing && system.uptime >= 10) {
@@ -380,7 +384,8 @@ class ActorSystemSpec
         Props(
           new Actor {
             def receive = {
-              case "die" ⇒ throw new Exception("hello")
+              case "die" ⇒
+                throw new Exception("hello")
             }
           }))
       val probe = TestProbe()
@@ -406,7 +411,8 @@ class ActorSystemSpec
         Props(
           new Actor {
             def receive = {
-              case "die" ⇒ throw new Exception("hello")
+              case "die" ⇒
+                throw new Exception("hello")
             }
           }))
       EventFilter[Exception]("hello") intercept {
@@ -431,7 +437,8 @@ class ActorSystemSpec
           Props(
             new Actor {
               def receive = {
-                case "ping" ⇒ sender() ! "pong"
+                case "ping" ⇒
+                  sender() ! "pong"
               }
             }))
 
@@ -465,7 +472,8 @@ class ActorSystemSpec
           Props(
             new Actor {
               def receive = {
-                case "ping" ⇒ sender() ! "pong"
+                case "ping" ⇒
+                  sender() ! "pong"
               }
             }))
 

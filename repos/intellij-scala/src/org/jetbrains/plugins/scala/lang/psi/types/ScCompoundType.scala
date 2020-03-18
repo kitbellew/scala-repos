@@ -102,14 +102,17 @@ case class ScCompoundType(
                     fun)
                 case b: ScBindingPattern =>
                   ScBindingPattern.getCompoundCopy(rt, b)
-                case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-                case named        => named
+                case f: ScFieldId =>
+                  ScFieldId.getCompoundCopy(rt, f)
+                case named =>
+                  named
               },
               s.hasRepeatedParam),
             rt)
       },
       typesMap.map {
-        case (s: String, sign) => (s, sign.updateTypes(_.removeAbstracts))
+        case (s: String, sign) =>
+          (s, sign.updateTypes(_.removeAbstracts))
       }
     )
 
@@ -120,12 +123,15 @@ case class ScCompoundType(
       visited: IHashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         def updateTypeParam(tp: TypeParameter): TypeParameter = {
           new TypeParameter(
@@ -167,8 +173,10 @@ case class ScCompoundType(
                         fun)
                     case b: ScBindingPattern =>
                       ScBindingPattern.getCompoundCopy(rt, b)
-                    case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-                    case named        => named
+                    case f: ScFieldId =>
+                      ScFieldId.getCompoundCopy(rt, f)
+                    case named =>
+                      named
                   },
                   s.hasRepeatedParam),
                 rt)
@@ -185,7 +193,8 @@ case class ScCompoundType(
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         def updateTypeParam(tp: TypeParameter): TypeParameter = {
           new TypeParameter(
@@ -268,7 +277,8 @@ case class ScCompoundType(
         while (iterator2.hasNext) {
           val (sig, t) = iterator2.next()
           r.signatureMap.get(sig) match {
-            case None => return (false, undefinedSubst)
+            case None =>
+              return (false, undefinedSubst)
             case Some(t1) =>
               val f = Equivalence.equivInner(t, t1, undefinedSubst, falseUndef)
               if (!f._1)
@@ -286,7 +296,8 @@ case class ScCompoundType(
           while (types1iterator.hasNext) {
             val (name, bounds1) = types1iterator.next()
             types2.get(name) match {
-              case None => return (false, undefinedSubst)
+              case None =>
+                return (false, undefinedSubst)
               case Some(bounds2) =>
                 var t = Equivalence.equivInner(
                   bounds1.lowerBound,
@@ -311,7 +322,8 @@ case class ScCompoundType(
       case _ =>
         if (signatureMap.size == 0 && typesMap.size == 0) {
           val filtered = components.filter {
-            case psi.types.Any => false
+            case psi.types.Any =>
+              false
             case psi.types.AnyRef =>
               if (!r.conforms(psi.types.AnyRef))
                 return (false, undefinedSubst)
@@ -321,7 +333,8 @@ case class ScCompoundType(
               if (!r.conforms(psi.types.AnyRef))
                 return (false, undefinedSubst)
               false
-            case _ => true
+            case _ =>
+              true
           }
           if (filtered.length == 1)
             Equivalence.equivInner(filtered(0), r, undefinedSubst, falseUndef)

@@ -16,7 +16,8 @@ trait Keys {
     */
   def del(keys: Seq[ChannelBuffer]): Future[JLong] =
     doRequest(Del(keys)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -27,8 +28,10 @@ trait Keys {
     */
   def dump(key: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(Dump(key)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -38,7 +41,8 @@ trait Keys {
     */
   def exists(key: ChannelBuffer): Future[JBoolean] =
     doRequest(Exists(key)) {
-      case IntegerReply(n) => Future.value((n == 1))
+      case IntegerReply(n) =>
+        Future.value((n == 1))
     }
 
   /**
@@ -50,7 +54,8 @@ trait Keys {
     */
   def expire(key: ChannelBuffer, ttl: JLong): Future[JBoolean] =
     doRequest(Expire(key, ttl)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -62,7 +67,8 @@ trait Keys {
     */
   def expireAt(key: ChannelBuffer, ttl: JLong): Future[JBoolean] =
     doRequest(ExpireAt(key, Time.fromMilliseconds(ttl))) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -74,7 +80,8 @@ trait Keys {
     doRequest(Keys(pattern)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**
@@ -88,7 +95,8 @@ trait Keys {
     */
   def move(key: ChannelBuffer, db: ChannelBuffer): Future[JBoolean] =
     doRequest(Move(key, db)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -101,7 +109,8 @@ trait Keys {
     */
   def pExpire(key: ChannelBuffer, milliseconds: JLong): Future[JBoolean] =
     doRequest(PExpire(key, milliseconds)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -115,7 +124,8 @@ trait Keys {
     */
   def pExpireAt(key: ChannelBuffer, timestamp: JLong): Future[JBoolean] =
     doRequest(PExpireAt(key, Time.fromMilliseconds(timestamp))) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -147,7 +157,8 @@ trait Keys {
     doRequest(Scan(cursor, count, pattern)) {
       case MBulkReply(messages) =>
         Future.value(ReplyFormat.toChannelBuffers(messages))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
 
   /**

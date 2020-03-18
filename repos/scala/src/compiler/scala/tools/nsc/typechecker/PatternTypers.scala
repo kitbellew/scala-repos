@@ -42,7 +42,8 @@ trait PatternTypers {
       types match {
         case init :+ last if isRepeatedParamType(last) =>
           Some((init, dropRepeated(last)))
-        case _ => Some((types, NoType))
+        case _ =>
+          Some((types, NoType))
       }
   }
 
@@ -74,12 +75,15 @@ trait PatternTypers {
       fun.symbol filter p match {
         case sym if sym.exists && (sym ne fun.symbol) =>
           fun setSymbol sym modifyType (tp => filterOverloadedAlts(tp)(p))
-        case _ => fun
+        case _ =>
+          fun
       }
     private def filterOverloadedAlts(tpe: Type)(p: Symbol => Boolean): Type =
       tpe match {
-        case OverloadedType(pre, alts) => overloadedType(pre, alts filter p)
-        case tp                        => tp
+        case OverloadedType(pre, alts) =>
+          overloadedType(pre, alts filter p)
+        case tp =>
+          tp
       }
 
     def typedConstructorPattern(fun0: Tree, pt: Type): Tree = {
@@ -143,8 +147,10 @@ trait PatternTypers {
         )
 
       elem match {
-        case NoType => front
-        case _      => front ::: rest
+        case NoType =>
+          front
+        case _ =>
+          front ::: rest
       }
     }
 
@@ -159,21 +165,26 @@ trait PatternTypers {
       val exprTyped = typed(expr, mode)
       val baseClass =
         exprTyped.tpe.typeSymbol match {
-          case ArrayClass => ArrayClass
-          case _          => SeqClass
+          case ArrayClass =>
+            ArrayClass
+          case _ =>
+            SeqClass
         }
       val starType =
         baseClass match {
           case ArrayClass if isPrimitiveValueType(pt) || !isFullyDefined(pt) =>
             arrayType(pt)
-          case ArrayClass => boundedArrayType(pt)
-          case _          => seqType(pt)
+          case ArrayClass =>
+            boundedArrayType(pt)
+          case _ =>
+            seqType(pt)
         }
       val exprAdapted = adapt(exprTyped, mode, starType)
       exprAdapted.tpe baseType baseClass match {
         case TypeRef(_, _, elemtp :: Nil) =>
           treeCopy.Typed(tree, exprAdapted, tpt setType elemtp) setType elemtp
-        case _ => setError(tree)
+        case _ =>
+          setError(tree)
       }
     }
 
@@ -186,17 +197,22 @@ trait PatternTypers {
 
       val canRemedy =
         tpe match {
-          case RefinedType(_, decls) if !decls.isEmpty                 => false
-          case RefinedType(parents, _) if parents exists isUncheckable => false
-          case _                                                       => extractor.nonEmpty
+          case RefinedType(_, decls) if !decls.isEmpty =>
+            false
+          case RefinedType(parents, _) if parents exists isUncheckable =>
+            false
+          case _ =>
+            extractor.nonEmpty
         }
 
       val ownType = inferTypedPattern(tptTyped, tpe, pt, canRemedy)
       val treeTyped = treeCopy.Typed(tree, exprTyped, tptTyped) setType ownType
 
       extractor match {
-        case EmptyTree => treeTyped
-        case _         => wrapClassTagUnapply(treeTyped, extractor, tpe)
+        case EmptyTree =>
+          treeTyped
+        case _ =>
+          wrapClassTagUnapply(treeTyped, extractor, tpe)
       }
     }
     private class VariantToSkolemMap extends TypeMap(trackVariance = true) {
@@ -230,7 +246,8 @@ trait PatternTypers {
             logResult(
               s"Created gadt skolem $skolem: ${skolem.tpe_*} to stand in for $tpSym")(
               skolem.tpe_*)
-          case tp1 => tp1
+          case tp1 =>
+            tp1
         }
     }
 
@@ -315,7 +332,8 @@ trait PatternTypers {
             ctorArgs map (_ modifyInfo extrapolate),
             extrapolate(restpe)
           ) // no need to clone ctorArgs, this is OUR method type
-        case tp => tp
+        case tp =>
+          tp
       }
     }
 
@@ -337,7 +355,8 @@ trait PatternTypers {
 
       def freshArgType(tp: Type): Type =
         tp match {
-          case MethodType(param :: _, _) => param.tpe
+          case MethodType(param :: _, _) =>
+            param.tpe
           case PolyType(tparams, restpe) =>
             createFromClonedSymbols(tparams, freshArgType(restpe))(genPolyType)
           case OverloadedType(_, _) =>
@@ -355,9 +374,12 @@ trait PatternTypers {
       def extractor = extractorForUncheckedType(fun.pos, unapplyParamType)
       def canRemedy =
         unapplyParamType match {
-          case RefinedType(_, decls) if !decls.isEmpty                 => false
-          case RefinedType(parents, _) if parents exists isUncheckable => false
-          case _                                                       => extractor.nonEmpty
+          case RefinedType(_, decls) if !decls.isEmpty =>
+            false
+          case RefinedType(parents, _) if parents exists isUncheckable =>
+            false
+          case _ =>
+            extractor.nonEmpty
         }
 
       def freshUnapplyArgType(): Type = {
@@ -477,13 +499,15 @@ trait PatternTypers {
                 sym,
                 sym.typeParams map (_.tpeHK)
               ) // replace actual type args with dummies
-            case pt1 => pt1
+            case pt1 =>
+              pt1
           }
         if (isCheckable(pt1))
           EmptyTree
         else
           resolveClassTag(pos, pt1) match {
-            case tree if unapplyMember(tree.tpe).exists => tree
+            case tree if unapplyMember(tree.tpe).exists =>
+              tree
             case _ =>
               devWarning(s"Cannot create runtime type test for $pt1");
               EmptyTree

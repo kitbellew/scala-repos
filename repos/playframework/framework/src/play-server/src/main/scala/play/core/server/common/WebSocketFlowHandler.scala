@@ -90,11 +90,16 @@ object WebSocketFlowHandler {
                 messageType: MessageType.Type,
                 data: ByteString): Message = {
               messageType match {
-                case MessageType.Text   => TextMessage(data.utf8String)
-                case MessageType.Binary => BinaryMessage(data)
-                case MessageType.Ping   => PingMessage(data)
-                case MessageType.Pong   => PongMessage(data)
-                case MessageType.Close  => parseCloseMessage(data)
+                case MessageType.Text =>
+                  TextMessage(data.utf8String)
+                case MessageType.Binary =>
+                  BinaryMessage(data)
+                case MessageType.Ping =>
+                  PingMessage(data)
+                case MessageType.Pong =>
+                  PongMessage(data)
+                case MessageType.Close =>
+                  parseCloseMessage(data)
               }
             }
 

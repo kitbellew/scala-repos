@@ -66,7 +66,8 @@ trait TreeAndTypeAnalysis extends Debugging {
       // the other patterns imply type tests, so we can safely assume the binder has the pattern's type when the pattern matches
       // concretely, a literal, type pattern, a case class (the constructor's result type) or extractor (the unapply's argument type) all imply type tests
       // (and, inductively, an alternative)
-      case _ => pat.tpe
+      case _ =>
+        pat.tpe
     }
 
   // we use subtyping as a model for implication between instanceof tests
@@ -98,13 +99,17 @@ trait TreeAndTypeAnalysis extends Debugging {
     (a, b) match {
       case (Select(qual1, _), Select(qual2, _)) =>
         equivalentTree(qual1, qual2) && a.symbol == b.symbol
-      case (Ident(_), Ident(_))       => a.symbol == b.symbol
-      case (Literal(c1), Literal(c2)) => c1 == c2
-      case (This(_), This(_))         => a.symbol == b.symbol
+      case (Ident(_), Ident(_)) =>
+        a.symbol == b.symbol
+      case (Literal(c1), Literal(c2)) =>
+        c1 == c2
+      case (This(_), This(_)) =>
+        a.symbol == b.symbol
       case (Apply(fun1, args1), Apply(fun2, args2)) =>
         equivalentTree(fun1, fun2) && args1.corresponds(args2)(equivalentTree)
       // Those are the only cases we need to handle in the pattern matcher
-      case _ => false
+      case _ =>
+        false
     }
 
   trait CheckableTreeAndTypeAnalysis {
@@ -184,7 +189,8 @@ trait TreeAndTypeAnalysis extends Debugging {
                   val filtered = (traits.map(List(_)) ++ List(nonTraits))
                     .map(filterChildren)
                   groupChildren(tl ++ children, acc ++ filtered)
-                case Nil => acc
+                case Nil =>
+                  acc
               }
 
             groupChildren(sym :: Nil, Nil)
@@ -350,10 +356,12 @@ trait MatchApproximation
       def uniqueTp(tp: Type): Type =
         tp match {
           // typerefs etc are already hashconsed
-          case _: UniqueType => tp
+          case _: UniqueType =>
+            tp
           case tp @ RefinedType(parents, EmptyScope) =>
             tp.memo(tp: Type)(identity) // TODO: does this help?
-          case _ => tp
+          case _ =>
+            tp
         }
 
       // produce the unique tree used to refer to this binder
@@ -449,12 +457,16 @@ trait MatchApproximation
               \/(altss map (alts => /\(alts map this)))
             case ProductExtractorTreeMaker(testedBinder, None) =>
               uniqueNonNullProp(binderToUniqueTree(testedBinder))
-            case SubstOnlyTreeMaker(_, _) => True
+            case SubstOnlyTreeMaker(_, _) =>
+              True
             case GuardTreeMaker(guard) =>
               guard.tpe match {
-                case ConstantTrue  => True
-                case ConstantFalse => False
-                case _             => handleUnknown(tm)
+                case ConstantTrue =>
+                  True
+                case ConstantFalse =>
+                  False
+                case _ =>
+                  handleUnknown(tm)
               }
             case ExtractorTreeMaker(_, _, _) | ProductExtractorTreeMaker(_, _) |
                 BodyTreeMaker(_, _) =>
@@ -466,7 +478,8 @@ trait MatchApproximation
       private val irrefutableExtractor: PartialFunction[TreeMaker, Prop] = {
         // the extra condition is None, the extractor's result indicates it always succeeds,
         // (the potential type-test for the argument is represented by a separate TypeTestTreeMaker)
-        case IrrefutableExtractorTreeMaker(_, _) => True
+        case IrrefutableExtractorTreeMaker(_, _) =>
+          True
       }
 
       // special-case: interpret pattern `List()` as `Nil`
@@ -775,8 +788,10 @@ trait MatchAnalysis extends MatchApproximation {
       protected[MatchAnalyzer] override def flattenConsArgs
           : List[CounterExample] =
         ctorArgs match {
-          case hd :: tl :: Nil => hd :: tl.flattenConsArgs
-          case _               => Nil
+          case hd :: tl :: Nil =>
+            hd :: tl.flattenConsArgs
+          case _ =>
+            Nil
         }
       protected[MatchAnalyzer] lazy val elems = flattenConsArgs
 
@@ -786,10 +801,12 @@ trait MatchAnalysis extends MatchApproximation {
             this == other || (
               (elems.length == other.elems.length) && (elems zip other.elems)
                 .forall {
-                  case (a, b) => a coveredBy b
+                  case (a, b) =>
+                    a coveredBy b
                 }
             )
-          case _ => super.coveredBy(other)
+          case _ =>
+            super.coveredBy(other)
         }
 
       override def toString = elems.mkString("List(", ", ", ")")
@@ -804,10 +821,12 @@ trait MatchAnalysis extends MatchApproximation {
             this == other || (
               (ctorArgs.length == otherArgs.length) && (ctorArgs zip otherArgs)
                 .forall {
-                  case (a, b) => a coveredBy b
+                  case (a, b) =>
+                    a coveredBy b
                 }
             )
-          case _ => super.coveredBy(other)
+          case _ =>
+            super.coveredBy(other)
         }
     }
     case class ConstructorExample(cls: Symbol, ctorArgs: List[CounterExample])
@@ -834,7 +853,8 @@ trait MatchAnalysis extends MatchApproximation {
       model.toSeq
         .groupBy { f =>
           f match {
-            case (sym, value) => sym.variable
+            case (sym, value) =>
+              sym.variable
           }
         }
         .mapValues { xs =>
@@ -973,9 +993,11 @@ trait MatchAnalysis extends MatchApproximation {
       // chop a path into a list of symbols
       def chop(path: Tree): List[Symbol] =
         path match {
-          case Ident(_)          => List(path.symbol)
-          case Select(pre, name) => chop(pre) :+ path.symbol
-          case _                 =>
+          case Ident(_) =>
+            List(path.symbol)
+          case Select(pre, name) =>
+            chop(pre) :+ path.symbol
+          case _ =>
             // debug.patmat("don't know how to chop "+ path)
             Nil
         }
@@ -986,11 +1008,13 @@ trait MatchAnalysis extends MatchApproximation {
       object VariableAssignment {
         private def findVar(path: List[Symbol]) =
           path match {
-            case List(root) if root == scrutVar.path.symbol => Some(scrutVar)
+            case List(root) if root == scrutVar.path.symbol =>
+              Some(scrutVar)
             case _ =>
               varAssignment
                 .find {
-                  case (v, a) => chop(v.path) == path
+                  case (v, a) =>
+                    chop(v.path) == path
                 }
                 .map(_._1)
           }
@@ -1043,8 +1067,10 @@ trait MatchAnalysis extends MatchApproximation {
         private lazy val ctor =
           (
             prunedEqualTo match {
-              case List(TypeConst(tp)) => tp
-              case _                   => variable.staticTpCheckable
+              case List(TypeConst(tp)) =>
+                tp
+              case _ =>
+                variable.staticTpCheckable
             }
           ).typeSymbol.primaryConstructor
         private lazy val ctorParams =
@@ -1128,7 +1154,8 @@ trait MatchAnalysis extends MatchApproximation {
                             // if we find a counter example `??::*` we report `*::*` instead
                             // since the `??` originates from uniqueEqualTo containing several instanced of the same type
                             List(WildcardExample, l)
-                          case args => args
+                          case args =>
+                            args
                         }
                         .map(ListExample)
                     case _ if isTupleSymbol(cls) =>
@@ -1139,11 +1166,13 @@ trait MatchAnalysis extends MatchApproximation {
                       // 2) we are already reporting any missing subclass (since we know the full domain)
                       // (see patmatexhaust.scala)
                       None
-                    case _ => args().map(ConstructorExample(cls, _))
+                    case _ =>
+                      args().map(ConstructorExample(cls, _))
                   }
 
                 // a definite assignment to a type
-                case List(eq) if fields.isEmpty => Some(TypeExample(eq))
+                case List(eq) if fields.isEmpty =>
+                  Some(TypeExample(eq))
 
                 // negative information
                 case Nil if nonTrivialNonEqualTo.nonEmpty =>
@@ -1159,11 +1188,13 @@ trait MatchAnalysis extends MatchApproximation {
                 // if uniqueEqualTo contains more than one symbol of the same domain
                 // then we can safely ignore these counter examples since we will eventually encounter
                 // both counter examples separately
-                case _ if inSameDomain => None
+                case _ if inSameDomain =>
+                  None
 
                 // not a valid counter-example, possibly since we have a definite type but there was a field mismatch
                 // TODO: improve reasoning -- in the mean time, a false negative is better than an annoying false positive
-                case _ => Some(NoExample)
+                case _ =>
+                  Some(NoExample)
               }
             debug.patmatResult("described as")(res)
           }

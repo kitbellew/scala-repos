@@ -37,7 +37,8 @@ object IPC {
         try {
           new ServerSocket(nextPort, 1, loopback)
         } catch {
-          case _: Exception => createServer(attempts - 1)
+          case _: Exception =>
+            createServer(attempts - 1)
         }
       else
         sys.error("Could not connect to socket: maximum attempts exceeded")
@@ -49,8 +50,10 @@ object IPC {
   private def serverImpl[T](server: ServerSocket, f: IPC => Option[T]): T = {
     def listen(): T = {
       ipc(server.accept())(f) match {
-        case Some(done) => done
-        case None       => listen()
+        case Some(done) =>
+          done
+        case None =>
+          listen()
       }
     }
 

@@ -197,14 +197,16 @@ class LogisticGradient(numClasses: Int) extends Gradient {
           */
         val weightsArray =
           weights match {
-            case dv: DenseVector => dv.values
+            case dv: DenseVector =>
+              dv.values
             case _ =>
               throw new IllegalArgumentException(
                 s"weights only supports dense vector but got type ${weights.getClass}.")
           }
         val cumGradientArray =
           cumGradient match {
-            case dv: DenseVector => dv.values
+            case dv: DenseVector =>
+              dv.values
             case _ =>
               throw new IllegalArgumentException(
                 s"cumGradient only supports dense vector but got type ${cumGradient.getClass}.")

@@ -713,7 +713,8 @@ class GroupMetadataManager(
                   magicValue = magicValue))
           }
           .groupBy {
-            case (partition, tombstone) => partition
+            case (partition, tombstone) =>
+              partition
           }
 
         // Append the tombstone messages to the offset partitions. It is okay if the replicas don't receive these (say,
@@ -959,7 +960,8 @@ object GroupMetadataManager {
   private def schemaForKey(version: Int) = {
     val schemaOpt = MESSAGE_TYPE_SCHEMAS.get(version)
     schemaOpt match {
-      case Some(schema) => schema
+      case Some(schema) =>
+        schema
       case _ =>
         throw new KafkaException("Unknown offset schema version " + version)
     }
@@ -968,7 +970,8 @@ object GroupMetadataManager {
   private def schemaForOffset(version: Int) = {
     val schemaOpt = OFFSET_VALUE_SCHEMAS.get(version)
     schemaOpt match {
-      case Some(schema) => schema
+      case Some(schema) =>
+        schema
       case _ =>
         throw new KafkaException("Unknown offset schema version " + version)
     }
@@ -977,7 +980,8 @@ object GroupMetadataManager {
   private def schemaForGroup(version: Int) = {
     val schemaOpt = GROUP_VALUE_SCHEMAS.get(version)
     schemaOpt match {
-      case Some(schema) => schema
+      case Some(schema) =>
+        schema
       case _ =>
         throw new KafkaException("Unknown group metadata version " + version)
     }

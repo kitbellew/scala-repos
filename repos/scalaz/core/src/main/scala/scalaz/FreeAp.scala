@@ -14,8 +14,10 @@ sealed abstract class FreeAp[F[_], A] {
     */
   def foldMap[G[_]: Applicative](f: F ~> G): G[A] =
     this match {
-      case Pure(x)  => Applicative[G].pure(x)
-      case x @ Ap() => Applicative[G].ap(f(x.v()))(x.k() foldMap f)
+      case Pure(x) =>
+        Applicative[G].pure(x)
+      case x @ Ap() =>
+        Applicative[G].ap(f(x.v()))(x.k() foldMap f)
     }
 
   /** Provides access to the first instruction of this program, if present */
@@ -23,8 +25,10 @@ sealed abstract class FreeAp[F[_], A] {
       pure: A => B,
       ap: λ[α => (F[α], FreeAp[F, α => A])] ~> λ[α => B]): B =
     this match {
-      case Pure(x)  => pure(x)
-      case x @ Ap() => ap(x.v() -> x.k())
+      case Pure(x) =>
+        pure(x)
+      case x @ Ap() =>
+        ap(x.v() -> x.k())
     }
 
   /**
@@ -51,8 +55,10 @@ sealed abstract class FreeAp[F[_], A] {
     */
   def hoist[G[_]](f: F ~> G): FreeAp[G, A] =
     this match {
-      case Pure(a)  => Pure(a)
-      case x @ Ap() => FreeAp(f(x.v()), x.k() hoist f)
+      case Pure(a) =>
+        Pure(a)
+      case x @ Ap() =>
+        FreeAp(f(x.v()), x.k() hoist f)
     }
 
   /**
@@ -61,8 +67,10 @@ sealed abstract class FreeAp[F[_], A] {
     */
   def retract(implicit F: Applicative[F]): F[A] =
     this match {
-      case Pure(a)  => Applicative[F].pure(a)
-      case x @ Ap() => Applicative[F].ap(x.v())(x.k().retract)
+      case Pure(a) =>
+        Applicative[F].pure(a)
+      case x @ Ap() =>
+        Applicative[F].ap(x.v())(x.k().retract)
     }
 
   /**
@@ -77,7 +85,8 @@ sealed abstract class FreeAp[F[_], A] {
   /** Idiomatic function application */
   def ap[B](f: FreeAp[F, A => B]): FreeAp[F, B] =
     f match {
-      case Pure(g) => map(g)
+      case Pure(g) =>
+        map(g)
       case x @ Ap() =>
         FreeAp(x.v(), ap(x.k().map(g => (a: A) => (b: x.I) => g(b)(a))))
     }
@@ -85,8 +94,10 @@ sealed abstract class FreeAp[F[_], A] {
   /** Append a function to the end of this program */
   def map[B](f: A => B): FreeAp[F, B] =
     this match {
-      case Pure(a)  => Pure(f(a))
-      case x @ Ap() => FreeAp(x.v(), x.k().map(f compose _))
+      case Pure(a) =>
+        Pure(f(a))
+      case x @ Ap() =>
+        FreeAp(x.v(), x.k().map(f compose _))
     }
 }
 

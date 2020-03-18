@@ -21,7 +21,8 @@ private final class TvBroadcast extends Actor {
 
   def receive = {
 
-    case TvBroadcast.GetEnumerator => sender ! enumerator
+    case TvBroadcast.GetEnumerator =>
+      sender ! enumerator
 
     case ChangeFeatured(id, msg) =>
       featuredId = id.some

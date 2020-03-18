@@ -24,7 +24,8 @@ abstract class D {
   val a: B[Int] = new B[Int]
   val b: A[Int] = /*start*/ A(1) /*end*/
   a match {
-    case A(r) => r
+    case A(r) =>
+      r
   }
 }
 //D.this.global.analyzer.A[Int]

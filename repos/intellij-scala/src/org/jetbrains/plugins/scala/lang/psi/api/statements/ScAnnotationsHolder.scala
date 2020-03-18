@@ -33,8 +33,10 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
           st.getStub.asInstanceOf[StubElement[
             _ <: PsiElement
           ]] // !!! Appeasing an unexplained compile error
-        case file: PsiFileImpl if file.getStub != null => file.getStub
-        case _                                         => null
+        case file: PsiFileImpl if file.getStub != null =>
+          file.getStub
+        case _ =>
+          null
       }
     if (stub != null) {
       val annots: Array[ScAnnotations] = stub.getChildrenByType(
@@ -86,7 +88,8 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
             acceptType(
               ta.aliasedType(TypingContext.empty).getOrAny,
               qualifiedName)
-          case _ => false
+          case _ =>
+            false
         }
     }
   }
@@ -108,8 +111,10 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
 
   def findAnnotation(qualifiedName: String): PsiAnnotation = {
     hasAnnotation(qualifiedName) match {
-      case Some(x) => x
-      case None    => null
+      case Some(x) =>
+        x
+      case None =>
+        null
     }
   }
 
@@ -119,8 +124,10 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
       return null
 
     hasAnnotation(qualifiedName) match {
-      case Some(x) => x
-      case None    => null
+      case Some(x) =>
+        x
+      case None =>
+        null
     }
   }
 

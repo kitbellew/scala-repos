@@ -223,7 +223,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               None
             } else
               some
-          case none => none
+          case none =>
+            none
         }
       Some(
         EnclosingMethodEntry(
@@ -446,7 +447,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         m.info match {
           case MethodType(p :: Nil, _) =>
             p.tpe.typeSymbol == definitions.ArrayClass
-          case _ => false
+          case _ =>
+            false
         }
       }
       // At this point it's a module with a main-looking method, so either succeed or warn that it isn't.
@@ -515,7 +517,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
         new DirectToJarfileWriter(f.file)
 
-      case _ => factoryNonJarBytecodeWriter()
+      case _ =>
+        factoryNonJarBytecodeWriter()
     }
   }
 
@@ -533,7 +536,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
    */
   def methodSymbols(cd: ClassDef): List[Symbol] = {
     cd.impl.body collect {
-      case dd: DefDef => dd.symbol
+      case dd: DefDef =>
+        dd.symbol
     }
   }
 
@@ -1020,7 +1024,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           op;
           true
         } catch {
-          case _: Throwable => false
+          case _: Throwable =>
+            false
         }
       }
 
@@ -1099,7 +1104,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         meth.annotations.exists {
           case ThrownException(exc) =>
             exc.typeSymbol == definitions.RemoteExceptionClass
-          case _ => false
+          case _ =>
+            false
         }
       val needsAnnotation = {
         (
@@ -1230,7 +1236,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       lazy val conflictingNames: Set[Name] = {
         (
           linkedClass.info.members collect {
-            case sym if sym.name.isTermName => sym.name
+            case sym if sym.name.isTermName =>
+              sym.name
           }
         ).toSet
       }
@@ -1580,12 +1587,18 @@ object BCodeHelpers {
     import TestOp._
     def negate =
       this match {
-        case EQ => NE
-        case NE => EQ
-        case LT => GE
-        case GE => LT
-        case GT => LE
-        case LE => GT
+        case EQ =>
+          NE
+        case NE =>
+          EQ
+        case LT =>
+          GE
+        case GE =>
+          LT
+        case GT =>
+          LE
+        case LE =>
+          GT
       }
     def opcodeIF = asm.Opcodes.IFEQ + op
     def opcodeIFICMP = asm.Opcodes.IF_ICMPEQ + op

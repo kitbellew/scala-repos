@@ -122,8 +122,10 @@ case class SourceBuilder[T: Manifest] private (
           }
         })
     copy(node = node.either(newNode).flatMap[T] {
-      case Left(t)  => Some(t)
-      case Right(u) => None
+      case Left(t) =>
+        Some(t)
+      case Right(u) =>
+        None
     })
   }
 
@@ -255,7 +257,8 @@ case class SourceBuilder[T: Manifest] private (
             nextName[(K, V)],
             opts)
 
-        case _ => sys.error("Unknown environment: " + env)
+        case _ =>
+          sys.error("Unknown environment: " + env)
       }
     env.builder = cb
     cb

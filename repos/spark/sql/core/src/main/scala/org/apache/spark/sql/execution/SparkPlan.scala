@@ -165,7 +165,8 @@ abstract class SparkPlan
   protected def prepareSubqueries(): Unit = {
     val allSubqueries = expressions.flatMap(
       _.collect {
-        case e: ScalarSubquery => e
+        case e: ScalarSubquery =>
+          e
       })
     allSubqueries.asInstanceOf[Seq[ScalarSubquery]].foreach { e =>
       val futureResult =

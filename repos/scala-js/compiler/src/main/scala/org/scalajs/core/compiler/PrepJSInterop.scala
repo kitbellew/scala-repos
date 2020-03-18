@@ -393,7 +393,8 @@ abstract class PrepJSInterop
               }
             typer.typed(newTree, Mode.FUNmode, tree.tpe)
 
-          case _ => super.transform(tree)
+          case _ =>
+            super.transform(tree)
         }
       }
 
@@ -477,7 +478,8 @@ abstract class PrepJSInterop
 
           memDef
 
-        case _ => tree
+        case _ =>
+          tree
       }
 
     /**
@@ -487,8 +489,10 @@ abstract class PrepJSInterop
     private def transformJSAny(implDef: ImplDef) = {
       val sym =
         implDef match {
-          case _: ModuleDef => implDef.symbol.moduleClass
-          case _            => implDef.symbol
+          case _: ModuleDef =>
+            implDef.symbol.moduleClass
+          case _ =>
+            implDef.symbol
         }
 
       lazy val badParent = sym.info.parents find { t =>
@@ -1053,7 +1057,8 @@ abstract class PrepJSInterop
             meth.symbol == nameArg
           case Apply(meth, List(_, Literal(Constant(null)))) =>
             meth.symbol == fullMeth
-          case _ => false
+          case _ =>
+            false
         }
     }
 
@@ -1124,7 +1129,8 @@ abstract class PrepJSInterop
     */
   private def getPrimCtor(tpe: Type) =
     tpe.declaration(nme.CONSTRUCTOR).alternatives.collectFirst {
-      case ctor: MethodSymbol if ctor.isPrimaryConstructor => ctor
+      case ctor: MethodSymbol if ctor.isPrimaryConstructor =>
+        ctor
     }
 
   private def wasPublicBeforeTyper(sym: Symbol): Boolean =

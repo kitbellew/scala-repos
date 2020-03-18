@@ -284,7 +284,8 @@ trait MapTest {
     def entrySet(): java.util.Set[java.util.Map.Entry[K, V]] = {
       setAsJavaSet(
         inner.map {
-          case (k, v) => new ju.AbstractMap.SimpleImmutableEntry(k, v)
+          case (k, v) =>
+            new ju.AbstractMap.SimpleImmutableEntry(k, v)
         }.toSet)
     }
   }

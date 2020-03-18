@@ -292,7 +292,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey(v => (v._1, "word"))
     val agged = grouped.mapGroups {
-      case (g, iter) => (g._1, iter.map(_._2).sum)
+      case (g, iter) =>
+        (g._1, iter.map(_._2).sum)
     }
 
     checkDataset(agged, ("a", 30), ("b", 3), ("c", 1))
@@ -327,7 +328,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey($"_1")
     val agged = grouped.mapGroups {
-      case (g, iter) => (g.getString(0), iter.map(_._2).sum)
+      case (g, iter) =>
+        (g.getString(0), iter.map(_._2).sum)
     }
 
     checkDataset(agged, ("a", 30), ("b", 3), ("c", 1))
@@ -344,7 +346,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey($"_1").keyAs[String]
     val agged = grouped.mapGroups {
-      case (g, iter) => (g, iter.map(_._2).sum)
+      case (g, iter) =>
+        (g, iter.map(_._2).sum)
     }
 
     checkDataset(agged, ("a", 30), ("b", 3), ("c", 1))
@@ -354,7 +357,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey($"_1", lit(1)).keyAs[(String, Int)]
     val agged = grouped.mapGroups {
-      case (g, iter) => (g, iter.map(_._2).sum)
+      case (g, iter) =>
+        (g, iter.map(_._2).sum)
     }
 
     checkDataset(agged, (("a", 1), 30), (("b", 1), 3), (("c", 1), 1))
@@ -364,7 +368,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey($"_1".as("a"), lit(1).as("b")).keyAs[ClassData]
     val agged = grouped.mapGroups {
-      case (g, iter) => (g, iter.map(_._2).sum)
+      case (g, iter) =>
+        (g, iter.map(_._2).sum)
     }
 
     checkDataset(
@@ -630,7 +635,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("grouping key and grouped value has field with same name") {
     val ds = Seq(ClassData("a", 1), ClassData("a", 2)).toDS()
     val agged = ds.groupByKey(d => ClassNullableData(d.a, null)).mapGroups {
-      case (key, values) => key.a + values.map(_.b).sum
+      case (key, values) =>
+        key.a + values.map(_.b).sum
     }
 
     checkDataset(agged, "a3")

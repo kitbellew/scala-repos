@@ -49,10 +49,12 @@ class ScalaGenerateCompanionObjectHandler
 
   private def canAddCompanionObject(clazz: ScTemplateDefinition): Boolean =
     clazz match {
-      case td: ScTypeDefinition if td.fakeCompanionModule.nonEmpty => false
+      case td: ScTypeDefinition if td.fakeCompanionModule.nonEmpty =>
+        false
       case _: ScTrait | _: ScClass =>
         ScalaPsiUtil.getBaseCompanionModule(clazz).isEmpty
-      case _ => false
+      case _ =>
+        false
     }
 
   private def createCompanionObject(clazz: ScTemplateDefinition): ScObject = {

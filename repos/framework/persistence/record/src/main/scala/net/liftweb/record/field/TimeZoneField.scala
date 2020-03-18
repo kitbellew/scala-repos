@@ -56,8 +56,10 @@ trait TimeZoneTypedField extends StringTypedField {
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 }
 
@@ -69,8 +71,10 @@ class TimeZoneField[OwnerType <: Record[OwnerType]](rec: OwnerType)
 
   def isAsTimeZone: TimeZone =
     TimeZone.getTimeZone(value) match {
-      case null => TimeZone.getDefault
-      case x    => x
+      case null =>
+        TimeZone.getDefault
+      case x =>
+        x
     }
 }
 

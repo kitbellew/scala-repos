@@ -34,9 +34,12 @@ trait BinaryTypedField extends TypedField[Array[Byte]] {
 
   def setFromString(s: String): Box[Array[Byte]] =
     s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case _                       => setBox(tryo(s.getBytes("UTF-8")))
+      case null | "" if optional_? =>
+        setBox(Empty)
+      case null | "" =>
+        setBox(Failure(notOptionalErrorMessage))
+      case _ =>
+        setBox(tryo(s.getBytes("UTF-8")))
     }
 
   def toForm: Box[NodeSeq] = Empty

@@ -34,7 +34,8 @@ final class Broker private (
       case that: Broker =>
         this.host == that.host &&
           this.port == that.port
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode: Int = {

@@ -40,16 +40,19 @@ trait RankSpecs extends EvalStackSpecs {
       val input2 = """count((//clicks).time)"""
       val results2 = evalE(input2)
       val size = results2 collect {
-        case (_, SDecimal(d)) => d.toInt
+        case (_, SDecimal(d)) =>
+          d.toInt
       }
 
       val result = evalE(input)
 
       val actual = result collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
       val expected = evalE("(//clicks).time") collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
 
       result must haveSize(size.head)
@@ -73,16 +76,19 @@ trait RankSpecs extends EvalStackSpecs {
       val input2 = """count(distinct((//clicks).time))"""
       val results2 = evalE(input2)
       val size = results2 collect {
-        case (_, SDecimal(d)) => d.toInt
+        case (_, SDecimal(d)) =>
+          d.toInt
       }
 
       val result = evalE(input)
 
       val actual = result collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
       val expected = evalE("distinct((//clicks).time)") collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
 
       result must haveSize(size.head)
@@ -145,16 +151,19 @@ trait RankSpecs extends EvalStackSpecs {
       val input2 = """count(distinct((//clicks).time))"""
       val results2 = evalE(input2)
       val size = results2 collect {
-        case (_, SDecimal(d)) => d.toInt
+        case (_, SDecimal(d)) =>
+          d.toInt
       }
 
       val result = evalE(input)
 
       val actual = result collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
       val expected = evalE("distinct((//clicks).time)") collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
 
       result must haveSize(size.head)
@@ -175,16 +184,19 @@ trait RankSpecs extends EvalStackSpecs {
       val input2 = """count((//clicks).time)"""
       val results2 = evalE(input2)
       val size = results2 collect {
-        case (_, SDecimal(d)) => d.toInt
+        case (_, SDecimal(d)) =>
+          d.toInt
       }
 
       val result = evalE(input)
 
       val actual = result collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
       val expected = evalE("(//clicks).time") collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
 
       result must not(beEmpty)
@@ -207,17 +219,20 @@ trait RankSpecs extends EvalStackSpecs {
         """count(//clicks where (//clicks).time = min((//clicks).time))"""
       val results2 = evalE(input2)
       val size = results2 collect {
-        case (_, SDecimal(d)) => d.toInt
+        case (_, SDecimal(d)) =>
+          d.toInt
       }
 
       val result = evalE(input)
 
       val actual = result collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
       val expected = evalE(
         "(//clicks).time where (//clicks).time = min((//clicks).time)") collect {
-        case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.size == 1 =>
+          d.toInt
       }
 
       result must haveSize(size.head)
@@ -241,7 +256,8 @@ trait RankSpecs extends EvalStackSpecs {
             obj must haveSize(5)
             obj must contain("cpm" -> SDecimal(6))
           }
-          case r => failure("Result has wrong shape: " + r)
+          case r =>
+            failure("Result has wrong shape: " + r)
         }
       }
 
@@ -260,7 +276,8 @@ trait RankSpecs extends EvalStackSpecs {
             obj must haveSize(5)
             obj must contain("cpm" -> SDecimal(6))
           }
-          case r => failure("Result has wrong shape: " + r)
+          case r =>
+            failure("Result has wrong shape: " + r)
         }
       }
 
@@ -346,7 +363,8 @@ trait RankSpecs extends EvalStackSpecs {
             obj must haveSize(5)
             obj must contain("cpm" -> SDecimal(6))
           }
-          case r => failure("Result has wrong shape: " + r)
+          case r =>
+            failure("Result has wrong shape: " + r)
         }
       }
 

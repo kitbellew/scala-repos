@@ -201,7 +201,8 @@ class ProducerBounceTest extends KafkaServerTestHarness {
         futures.map(_.get)
         sent += numRecords
       } catch {
-        case e: Exception => failed = true
+        case e: Exception =>
+          failed = true
       }
     }
 

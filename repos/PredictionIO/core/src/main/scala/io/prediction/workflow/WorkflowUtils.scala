@@ -167,8 +167,10 @@ object WorkflowUtils extends Logging {
       engineLanguage: EngineLanguage.Value,
       jsonExtractor: JsonExtractorOption): (String, Params) = {
     variantJson findField {
-      case JField(f, _) => f == field
-      case _            => false
+      case JField(f, _) =>
+        f == field
+      case _ =>
+        false
     } map { jv =>
       implicit lazy val formats =
         Utils.json4sDefaultFormats + new NameParamsSerializer
@@ -240,7 +242,8 @@ object WorkflowUtils extends Logging {
         case d: AnyRef => {
           d.toString
         }
-        case null => "null"
+        case null =>
+          "null"
       }
     s
   }
@@ -340,8 +343,10 @@ object WorkflowUtils extends Logging {
           error("Arrays are not allowed in the sparkConf section of engine.js.")
           sys.exit(1)
         }
-        case JNothing => List()
-        case _        => List(List() -> jv.values.toString)
+        case JNothing =>
+          List()
+        case _ =>
+          List(List() -> jv.values.toString)
       }
     }
 
@@ -356,7 +361,8 @@ class NameParamsSerializer
     extends CustomSerializer[NameParams](format =>
       (
         {
-          case jv: JValue => WorkflowUtils.extractNameParams(jv)
+          case jv: JValue =>
+            WorkflowUtils.extractNameParams(jv)
         },
         {
           case x: NameParams =>

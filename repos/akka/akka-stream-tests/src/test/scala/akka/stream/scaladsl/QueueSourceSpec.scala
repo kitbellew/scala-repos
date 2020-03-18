@@ -261,7 +261,8 @@ class QueueSourceSpec extends AkkaSpec {
       expectMsg(Done)
 
       queue.offer(1).onFailure {
-        case e ⇒ e.isInstanceOf[IllegalStateException] should ===(true)
+        case e ⇒
+          e.isInstanceOf[IllegalStateException] should ===(true)
       }
     }
 

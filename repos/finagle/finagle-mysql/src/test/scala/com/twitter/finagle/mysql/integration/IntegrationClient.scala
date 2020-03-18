@@ -18,7 +18,8 @@ trait IntegrationClient {
       socket.close()
       true
     } catch {
-      case e: BindException => false
+      case e: BindException =>
+        false
     }
 
   val propFile =

@@ -94,8 +94,10 @@ package object util {
       _.getClassName contains "Predef") take 1 mkString ""
     val msg =
       ex.getMessage match {
-        case null | "" => "";
-        case s         => s"""("$s")"""
+        case null | "" =>
+          "";
+        case s =>
+          s"""("$s")"""
       }
     val clazz = ex.getClass.getName.split('.').last
 

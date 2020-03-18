@@ -67,7 +67,8 @@ class SorterSuite extends SparkFunSuite with Logging {
       keyValueArray
         .grouped(2)
         .map {
-          case Array(k, v) => k.doubleValue() -> v.intValue()
+          case Array(k, v) =>
+            k.doubleValue() -> v.intValue()
         }
         .toMap
 

@@ -33,8 +33,10 @@ private[serverset2] object Zk2Resolver {
   /** Compute the size of an Addr, where non-bound equates to a size of zero. */
   def sizeOf(addr: Addr): Int =
     addr match {
-      case Addr.Bound(set, _) => set.size
-      case _                  => 0
+      case Addr.Bound(set, _) =>
+        set.size
+      case _ =>
+        0
     }
 
   /**
@@ -132,7 +134,8 @@ class Zk2Resolver(
 
   private[this] val serverSetOf = Memoize[(ServiceDiscoverer, String), Var[
     Activity.State[Seq[(Entry, Double)]]]] {
-    case (discoverer, path) => discoverer(path).run
+    case (discoverer, path) =>
+      discoverer(path).run
   }
 
   private[this] val addrOf_ = Memoize[
@@ -145,7 +148,8 @@ class Zk2Resolver(
             .split("/")
             .filter(_.nonEmpty)
             .foldLeft(discoverer.statsReceiver) {
-              case (sr, ns) => sr.scope(ns)
+              case (sr, ns) =>
+                sr.scope(ns)
             }
         sr.scope(s"endpoint=${endpointOption.getOrElse("default")}")
       }
@@ -168,8 +172,10 @@ class Zk2Resolver(
       // Var[Addr], filtering out only the endpoints we are
       // interested in.
       val va: Var[Addr] = serverSetOf((discoverer, path)).flatMap {
-        case Activity.Pending     => Var.value(Addr.Pending)
-        case Activity.Failed(exc) => Var.value(Addr.Failed(exc))
+        case Activity.Pending =>
+          Var.value(Addr.Pending)
+        case Activity.Failed(exc) =>
+          Var.value(Addr.Failed(exc))
         case Activity.Ok(eps) =>
           val endpoint = endpointOption.getOrElse(null)
           val subseq = eps collect {

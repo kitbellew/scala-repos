@@ -10,13 +10,17 @@ import com.twitter.util.Throwables.RootCause
 object MuxCancelledCategorizer {
   def unapply(exc: Throwable): Option[ClientDiscardedRequestException] = {
     exc match {
-      case t: ClientDiscardedRequestException    => Some(t)
-      case RootCause(MuxCancelledCategorizer(t)) => Some(t)
-      case _                                     => None
+      case t: ClientDiscardedRequestException =>
+        Some(t)
+      case RootCause(MuxCancelledCategorizer(t)) =>
+        Some(t)
+      case _ =>
+        None
     }
   }
 
   val Instance: PartialFunction[Throwable, String] = {
-    case MuxCancelledCategorizer(_) => CancelledCategorizer.Cancelled
+    case MuxCancelledCategorizer(_) =>
+      CancelledCategorizer.Cancelled
   }
 }

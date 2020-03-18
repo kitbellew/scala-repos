@@ -231,7 +231,8 @@ class CatalystQlSuite extends PlanTest {
     assert(
       expr
         .collect({
-          case EqualTo(_, _) => true
+          case EqualTo(_, _) =>
+            true
         })
         .size == 1000)
 
@@ -240,7 +241,8 @@ class CatalystQlSuite extends PlanTest {
     assert(
       expr2
         .collect({
-          case EqualTo(_, _) => true
+          case EqualTo(_, _) =>
+            true
         })
         .size == 1000)
   }

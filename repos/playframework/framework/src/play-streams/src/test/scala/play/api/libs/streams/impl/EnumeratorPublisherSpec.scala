@@ -196,7 +196,8 @@ class EnumeratorPublisherSpec extends Specification {
       testEnv.request(1)
       testEnv.next must_== RequestMore(1)
       testEnv.next must beLike {
-        case OnError(e) => e.getMessage must_== exception.getMessage
+        case OnError(e) =>
+          e.getMessage must_== exception.getMessage
       }
       testEnv.isEmptyAfterDelay() must beTrue
     }

@@ -48,13 +48,17 @@ object MyBuild extends Build {
 
   def inMemorySetting =
     keep <<= getPrevious(keep) map {
-      case None    => 3;
-      case Some(x) => x + 1
+      case None =>
+        3;
+      case Some(x) =>
+        x + 1
     } keepAs (keep)
   def persistedSetting =
     persisted <<= loadPrevious(persisted) map {
-      case None    => 17;
-      case Some(x) => x + 1
+      case None =>
+        17;
+      case Some(x) =>
+        x + 1
     } storeAs (persisted)
 
   def inMemoryCheck =
@@ -75,7 +79,9 @@ object MyBuild extends Build {
       }
   def str(o: Option[Int]) =
     o match {
-      case None    => "blue";
-      case Some(i) => i.toString
+      case None =>
+        "blue";
+      case Some(i) =>
+        i.toString
     }
 }

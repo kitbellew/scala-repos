@@ -33,6 +33,7 @@ object Bridge {
             .ServiceFactory(sf: ServiceFactory[Req, Rep], _),
           _) =>
       sf
-    case (Address.Failed(e), _) => new FailingFactory(e)
+    case (Address.Failed(e), _) =>
+      new FailingFactory(e)
   }
 }

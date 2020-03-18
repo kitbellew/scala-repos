@@ -62,9 +62,12 @@ final class JavaAccFlags private (val coded: Int) extends AnyVal {
   def toJavaFlags: Int = flags
   def toScalaFlags: Long =
     flagCarrierId match {
-      case Method | Constructor => FlagTranslation methodFlags flags
-      case Class                => FlagTranslation classFlags flags
-      case _                    => FlagTranslation fieldFlags flags
+      case Method | Constructor =>
+        FlagTranslation methodFlags flags
+      case Class =>
+        FlagTranslation classFlags flags
+      case _ =>
+        FlagTranslation fieldFlags flags
     }
 }
 
@@ -87,9 +90,13 @@ object JavaAccFlags {
   def apply(clazz: jClass[_]): JavaAccFlags = classFlags(clazz.getModifiers)
   def apply(member: jMember): JavaAccFlags =
     member match {
-      case x: jConstructor[_] => constructorFlags(x.getModifiers)
-      case x: jMethod         => methodFlags(x.getModifiers)
-      case x: jField          => fieldFlags(x.getModifiers)
-      case _                  => apply(member.getModifiers)
+      case x: jConstructor[_] =>
+        constructorFlags(x.getModifiers)
+      case x: jMethod =>
+        methodFlags(x.getModifiers)
+      case x: jField =>
+        fieldFlags(x.getModifiers)
+      case _ =>
+        apply(member.getModifiers)
     }
 }

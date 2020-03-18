@@ -32,8 +32,10 @@ object ThrottlerTransportAdapterSpec {
 
   class Echo extends Actor {
     override def receive = {
-      case "ping" ⇒ sender() ! "pong"
-      case x ⇒ sender() ! x
+      case "ping" ⇒
+        sender() ! "pong"
+      case x ⇒
+        sender() ! x
     }
   }
 
@@ -161,8 +163,10 @@ class ThrottlerTransportAdapterSpec
 
       here ! "Cleanup"
       fishForMessage(5.seconds) {
-        case "Cleanup" ⇒ true
-        case Lost("Blackhole 3") ⇒ false
+        case "Cleanup" ⇒
+          true
+        case Lost("Blackhole 3") ⇒
+          false
       }
     }
 

@@ -140,7 +140,8 @@ class ESEvaluationInstances(
     try {
       client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
     } catch {
-      case e: ElasticsearchException => error(e.getMessage)
+      case e: ElasticsearchException =>
+        error(e.getMessage)
     }
   }
 
@@ -148,7 +149,8 @@ class ESEvaluationInstances(
     try {
       client.prepareDelete(index, estype, id).get
     } catch {
-      case e: ElasticsearchException => error(e.getMessage)
+      case e: ElasticsearchException =>
+        error(e.getMessage)
     }
   }
 }

@@ -96,8 +96,10 @@ final class JSONIngestProcessing(
         recordStyle match {
           case JSONValueStyle =>
             values flatMap {
-              case JArray(elements) => elements
-              case value            => Seq(value)
+              case JArray(elements) =>
+                elements
+              case value =>
+                Seq(value)
             }
 
           case JSONStreamStyle =>

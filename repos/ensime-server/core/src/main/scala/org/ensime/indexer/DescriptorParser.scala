@@ -13,7 +13,8 @@ object DescriptorParser {
   def parse(desc: String): Descriptor = {
     val parser = new DescriptorParser(desc)
     parser.Desc.run() match {
-      case Success(d) => d
+      case Success(d) =>
+        d
       case Failure(error: ParseError) =>
         val msg = parser.formatError(
           error,
@@ -27,7 +28,8 @@ object DescriptorParser {
   def parseType(desc: String): DescriptorType = {
     val parser = new DescriptorParser(desc)
     parser.Type.run() match {
-      case Success(d) => d
+      case Success(d) =>
+        d
       case Failure(error: ParseError) =>
         val msg = parser.formatError(
           error,
@@ -58,18 +60,30 @@ class DescriptorParser(val input: ParserInput) extends Parser {
       // all descriptor types can be inferred from the first character
       run {
         (cursorChar: @switch) match {
-          case 'L' => Class
-          case 'Z' => Boolean
-          case 'B' => Byte
-          case 'C' => Char
-          case 'S' => Short
-          case 'I' => Int
-          case 'J' => Long
-          case 'F' => Float
-          case 'D' => Double
-          case 'V' => Void
-          case '[' => Array
-          case _   => MISMATCH
+          case 'L' =>
+            Class
+          case 'Z' =>
+            Boolean
+          case 'B' =>
+            Byte
+          case 'C' =>
+            Char
+          case 'S' =>
+            Short
+          case 'I' =>
+            Int
+          case 'J' =>
+            Long
+          case 'F' =>
+            Float
+          case 'D' =>
+            Double
+          case 'V' =>
+            Void
+          case '[' =>
+            Array
+          case _ =>
+            MISMATCH
         }
       }
     }

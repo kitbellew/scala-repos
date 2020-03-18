@@ -224,9 +224,11 @@ case class DefaultOptimalSizeExploringResizer(
               else
                 0
             )
-          case cell ⇒ cell.numberOfMessages
+          case cell ⇒
+            cell.numberOfMessages
         }
-      case x ⇒ 0
+      case x ⇒
+        0
     }
 
     val totalQueueLength = messagesInRoutees.sum
@@ -322,7 +324,8 @@ case class DefaultOptimalSizeExploringResizer(
         .lastOption
         .getOrElse(currentSize)
       performanceLog.filter {
-        case (size, _) ⇒ size >= leftBoundary && size <= rightBoundary
+        case (size, _) ⇒
+          size >= leftBoundary && size <= rightBoundary
       }
     }
 

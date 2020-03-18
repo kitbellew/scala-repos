@@ -58,13 +58,17 @@ case class ImportData(pgn: String, analyse: Option[String]) {
               case chess.variant.Chess960
                   if !Chess960.isStartPosition(setup.board) =>
                 chess.variant.FromPosition
-              case v => v
+              case v =>
+                v
             }
 
             val result = tag(_.Result) ifFalse game.situation.end collect {
-              case "1-0"     => Result(Status.UnknownFinish, Color.White.some)
-              case "0-1"     => Result(Status.UnknownFinish, Color.Black.some)
-              case "1/2-1/2" => Result(Status.Draw, none)
+              case "1-0" =>
+                Result(Status.UnknownFinish, Color.White.some)
+              case "0-1" =>
+                Result(Status.UnknownFinish, Color.Black.some)
+              case "1/2-1/2" =>
+                Result(Status.Draw, none)
             }
 
             val date = tag(_.Date)

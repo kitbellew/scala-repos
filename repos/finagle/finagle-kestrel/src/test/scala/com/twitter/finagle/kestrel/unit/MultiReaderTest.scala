@@ -87,7 +87,8 @@ class MultiReaderTest
                     promise.setValue(interpreter(request))
                   }
                 })
-            case None => promise.setValue(interpreter(request))
+            case None =>
+              promise.setValue(interpreter(request))
           }
           promise
         }
@@ -205,7 +206,8 @@ class MultiReaderTest
                     promise.setValue(interpreter(request))
                   }
                 })
-            case None => promise.setValue(interpreter(request))
+            case None =>
+              promise.setValue(interpreter(request))
           }
           promise
         }

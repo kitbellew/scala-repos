@@ -99,27 +99,36 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(
       (denseData, data1, data1RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
 
     assert(
       (denseData, data2, data2RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
 
     assert(
       (denseData, data3, data3RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
@@ -187,27 +196,36 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(
       (denseData, data1, data1RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
 
     assert(
       (denseData, data2, data2RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
 
     assert(
       (denseData, data3, data3RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
@@ -286,9 +304,12 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(
       (sparseData, data2, data2RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )
@@ -338,9 +359,12 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     assert(
       (sparseData, data2, data2RDD.collect()).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector, v3: DenseVector)    => true
-        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) => true
-        case _                                                      => false
+        case (v1: DenseVector, v2: DenseVector, v3: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector, v3: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after standardization."
     )

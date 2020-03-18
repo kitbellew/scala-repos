@@ -117,8 +117,10 @@ object AlterTableCommandParser {
                 val k = cleanAndUnquoteString(key.text)
                 val v =
                   value match {
-                    case Token("TOK_NULL", Nil) => null
-                    case _                      => cleanAndUnquoteString(value.text)
+                    case Token("TOK_NULL", Nil) =>
+                      null
+                    case _ =>
+                      cleanAndUnquoteString(value.text)
                   }
                 (k, v)
             }
@@ -187,8 +189,10 @@ object AlterTableCommandParser {
             Token("TOK_ALTERTABLE_BUCKETS", b) :: Nil) :: _ =>
         val clusterCols: Seq[String] =
           b.head match {
-            case Token("TOK_TABCOLNAME", children) => children.map(_.text)
-            case _                                 => parseFailed("Invalid ALTER TABLE command", node)
+            case Token("TOK_TABCOLNAME", children) =>
+              children.map(_.text)
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
           }
         // If sort columns are specified, num buckets should be the third arg.
         // If sort columns are not specified, num buckets should be the second arg.
@@ -284,8 +288,10 @@ object AlterTableCommandParser {
           }
         val storedAsDirs =
           rest match {
-            case Token("TOK_STOREDASDIRS", Nil) :: Nil => true
-            case _                                     => false
+            case Token("TOK_STOREDASDIRS", Nil) :: Nil =>
+              true
+            case _ =>
+              false
           }
         AlterTableSkewed(tableIdent, names, values, storedAsDirs)(node.source)
 
@@ -349,8 +355,10 @@ object AlterTableCommandParser {
       case Token("TOK_ALTERTABLE_ADDPARTS", args) :: _ =>
         val (ifNotExists, parts) =
           args.head match {
-            case Token("TOK_IFNOTEXISTS", Nil) => (true, args.tail)
-            case _                             => (false, args)
+            case Token("TOK_IFNOTEXISTS", Nil) =>
+              (true, args.tail)
+            case _ =>
+              (false, args)
           }
         // List of (spec, location) to describe partitions to add
         // Each partition spec may or may not be followed by a location
@@ -393,7 +401,8 @@ object AlterTableCommandParser {
       // ALTER TABLE table_name DROP [IF EXISTS] PARTITION spec1[, PARTITION spec2, ...] [PURGE];
       case Token("TOK_ALTERTABLE_DROPPARTS", args) :: _ =>
         val parts = args.collect {
-          case p @ Token("TOK_PARTSPEC", _) => parsePartitionSpec(p)
+          case p @ Token("TOK_PARTSPEC", _) =>
+            parsePartitionSpec(p)
         }
         val ifExists = getClauseOption("TOK_IFEXISTS", args).isDefined
         val purge = getClauseOption("PURGE", args).isDefined
@@ -466,18 +475,25 @@ object AlterTableCommandParser {
           "TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION",
           args).map { ap =>
           ap.children match {
-            case Token(col, Nil) :: Nil => col
-            case _                      => parseFailed("Invalid ALTER TABLE command", node)
+            case Token(col, Nil) :: Nil =>
+              col
+            case _ =>
+              parseFailed("Invalid ALTER TABLE command", node)
           }
         }
         val restrict = getClauseOption("TOK_RESTRICT", args).isDefined
         val cascade = getClauseOption("TOK_CASCADE", args).isDefined
         val comment = args.headOption.map {
-          case Token("TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION", _) => null
-          case Token("TOK_RESTRICT", _)                            => null
-          case Token("TOK_CASCADE", _)                             => null
-          case Token(commentStr, Nil)                              => cleanAndUnquoteString(commentStr)
-          case _                                                   => parseFailed("Invalid ALTER TABLE command", node)
+          case Token("TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION", _) =>
+            null
+          case Token("TOK_RESTRICT", _) =>
+            null
+          case Token("TOK_CASCADE", _) =>
+            null
+          case Token(commentStr, Nil) =>
+            cleanAndUnquoteString(commentStr)
+          case _ =>
+            parseFailed("Invalid ALTER TABLE command", node)
         }
         AlterTableChangeCol(
           tableIdent,

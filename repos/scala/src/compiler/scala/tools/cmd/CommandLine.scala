@@ -63,8 +63,10 @@ class CommandLine(val spec: Reference, val originalArgs: List[String])
         }
 
       args match {
-        case Nil              => Map()
-        case Terminator :: xs => residual(xs)
+        case Nil =>
+          Map()
+        case Terminator :: xs =>
+          residual(xs)
         case x :: Nil =>
           expand(x) foreach (exp => return loop(exp))
           if (isBinaryOption(x) && enforceArity)

@@ -96,7 +96,8 @@ trait PrecogLibModule[M[+_]]
               defined.set(row)
               Some((row, defined))
 
-            case _ :: tail => addOrCreate(row, tail, order)
+            case _ :: tail =>
+              addOrCreate(row, tail, order)
           }
         }
 
@@ -107,7 +108,8 @@ trait PrecogLibModule[M[+_]]
               case Some((head, tail)) =>
                 sb.append(head.toString)
                 build(tail)
-              case None => M point sb.toString
+              case None =>
+                M point sb.toString
             }
           build(stream0)
         }
@@ -119,8 +121,10 @@ trait PrecogLibModule[M[+_]]
           val params = slice.deref(CPathIndex(1))
           val urls =
             params.columns.get(ColumnRef(CPath("url"), CString)) match {
-              case Some(col: StrColumn) => col
-              case _                    => ArrayStrColumn.empty(0)
+              case Some(col: StrColumn) =>
+                col
+              case _ =>
+                ArrayStrColumn.empty(0)
             }
           val values = slice.deref(CPathIndex(0))
 
@@ -133,7 +137,8 @@ trait PrecogLibModule[M[+_]]
                 addOrCreate(row, acc, paramsOrder) map { pair =>
                   pair :: acc
                 } getOrElse acc
-              case (acc, _) => acc
+              case (acc, _) =>
+                acc
             }
 
           val options = params.deref(CPathField("options"))
@@ -148,8 +153,10 @@ trait PrecogLibModule[M[+_]]
                 val url = urls(row)
                 val opts =
                   options.toJValue(row) match {
-                    case JObject(elems) => elems ++ baseOpts
-                    case _              => baseOpts
+                    case JObject(elems) =>
+                      elems ++ baseOpts
+                    case _ =>
+                      baseOpts
                   }
                 ((url, opts), members)
             }

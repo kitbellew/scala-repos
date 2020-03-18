@@ -35,7 +35,8 @@ class FlatMapMergeBenchmark {
     val source =
       NumberOfStreams match {
         // Base line: process NumberOfElements-many elements from a single source without using flatMapMerge
-        case 0 => createSource(NumberOfElements)
+        case 0 =>
+          createSource(NumberOfElements)
         // Stream merging: process NumberOfElements-many elements from n sources, each producing (NumberOfElements/n)-many elements
         case n =>
           val subSource = createSource(NumberOfElements / n)

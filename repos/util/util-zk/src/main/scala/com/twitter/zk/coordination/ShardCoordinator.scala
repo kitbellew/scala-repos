@@ -72,8 +72,10 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
           (futureShardOption, id) =>
             futureShardOption flatMap { shardOption =>
               shardOption match {
-                case Some(shard) => Future.value(shardOption)
-                case None        => createShardNode(id, permit)
+                case Some(shard) =>
+                  Future.value(shardOption)
+                case None =>
+                  createShardNode(id, permit)
               }
             }
         }
@@ -90,7 +92,8 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
           Future.exception(SemaphoreError(err))
         case err: PermitMismatchException =>
           Future.exception(SemaphoreError(err))
-        case err: PermitNodeException => Future.exception(SemaphoreError(err))
+        case err: PermitNodeException =>
+          Future.exception(SemaphoreError(err))
       } onFailure { err =>
         permit.release()
       }
@@ -103,7 +106,8 @@ class ShardCoordinator(zk: ZkClient, path: String, numShards: Int) {
     zk(shardPath(id)).create(mode = CreateMode.EPHEMERAL) map { node =>
       Some(Shard(id, node, permit))
     } handle {
-      case err: KeeperException.NodeExistsException => None
+      case err: KeeperException.NodeExistsException =>
+        None
     }
   }
 

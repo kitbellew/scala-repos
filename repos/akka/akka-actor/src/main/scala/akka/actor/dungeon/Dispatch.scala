@@ -90,7 +90,8 @@ private[akka] trait Dispatch {
                   self,
                   s"Actor [$self] requires mailbox type [$req] got [$gotType]")))
           }
-        case _ ⇒ Create(None)
+        case _ ⇒
+          Create(None)
       }
 
     swapMailbox(mbox)
@@ -175,8 +176,10 @@ private[akka] trait Dispatch {
         val unwrapped =
           (
             msg.message match {
-              case DeadLetter(wrapped, _, _) ⇒ wrapped
-              case other ⇒ other
+              case DeadLetter(wrapped, _, _) ⇒
+                wrapped
+              case other ⇒
+                other
             }
           ).asInstanceOf[AnyRef]
         if (!unwrapped.isInstanceOf[NoSerializationVerificationNeeded]) {

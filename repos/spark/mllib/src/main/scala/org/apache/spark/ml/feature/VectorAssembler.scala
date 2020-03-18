@@ -108,8 +108,10 @@ class VectorAssembler(override val uid: String)
     }
     val args = $(inputCols).map { c =>
       schema(c).dataType match {
-        case DoubleType   => dataset(c)
-        case _: VectorUDT => dataset(c)
+        case DoubleType =>
+          dataset(c)
+        case _: VectorUDT =>
+          dataset(c)
         case _: NumericType | BooleanType =>
           dataset(c).cast(DoubleType).as(s"${c}_double_$uid")
       }

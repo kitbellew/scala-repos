@@ -62,9 +62,11 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
             Some(element.getText)
           case call: ScMethodCall =>
             extractSubprojectPathFromProjectCall(call, element)
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -109,7 +111,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
       case ScMethodCall(expr, ScLiteralImpl.string(path) :: _)
           if expr.getText == "file" =>
         Option(path)
-      case _ => None
+      case _ =>
+        None
     }
 
   private def extractPathFromFileCtor(ctor: ScConstructor): Option[String] = {
@@ -120,7 +123,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
         Some(parent + File.separator + child)
       case Seq(parentElt, ScLiteralImpl.string(child)) =>
         extractPathFromFileParam(parentElt).map(_ + File.separator + child)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -134,7 +138,8 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
           parent <- extractPathFromFileParam(concatExpr.lOp)
           child <- extractPathFromFileParam(partRef)
         } yield parent + File.separator + child
-      case _ => None
+      case _ =>
+        None
     }
 
   private def extractPathFromReference(ref: PsiElement): Option[String] = {
@@ -142,8 +147,10 @@ class SbtSubprojectReferenceProvider extends PsiReferenceProvider {
       listOfPatterns <- Option(ref.getParent)
       patternDef <- Option(listOfPatterns.getParent)
     } yield patternDef match {
-      case ScPatternDefinition.expr(e) => extractPathFromFileParam(e)
-      case _                           => None
+      case ScPatternDefinition.expr(e) =>
+        extractPathFromFileParam(e)
+      case _ =>
+        None
     }
   }.flatten
 }

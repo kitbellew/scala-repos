@@ -630,7 +630,8 @@ class LogisticRegressionModel private[spark] (
         (
           copy(ParamMap.empty).setProbabilityCol(probabilityColName),
           probabilityColName)
-      case p => (this, p)
+      case p =>
+        (this, p)
     }
   }
 
@@ -986,7 +987,8 @@ class BinaryLogisticRegressionSummary private[classification] (
   private val binaryMetrics =
     new BinaryClassificationMetrics(
       predictions.select(probabilityCol, labelCol).rdd.map {
-        case Row(score: Vector, label: Double) => (score(1), label)
+        case Row(score: Vector, label: Double) =>
+          (score(1), label)
       },
       100)
 
@@ -1093,7 +1095,8 @@ private class LogisticAggregator(
 
   private val coefficientsArray =
     coefficients match {
-      case dv: DenseVector => dv.values
+      case dv: DenseVector =>
+        dv.values
       case _ =>
         throw new IllegalArgumentException(
           s"coefficients only supports dense vector but got type ${coefficients.getClass}.")

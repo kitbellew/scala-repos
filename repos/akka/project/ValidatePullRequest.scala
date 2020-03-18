@@ -136,7 +136,8 @@ object ValidatePullRequest extends AutoPlugin {
     },
     targetBranch in Global in ValidatePR := {
       (localTargetBranch, jenkinsTargetBranch) match {
-        case (Some(local), _) => local // local override
+        case (Some(local), _) =>
+          local // local override
         case (None, Some(branch)) =>
           s"origin/$branch" // usually would be "master" or "release-2.3" etc
         case (None, None) =>
@@ -278,7 +279,8 @@ object ValidatePullRequest extends AutoPlugin {
           buildMode match {
             case BuildSkip =>
               Seq.empty // do not run the additional task if project is skipped during pr validation
-            case _ => (additionalTasks in ValidatePR).value
+            case _ =>
+              (additionalTasks in ValidatePR).value
           }
         )
 

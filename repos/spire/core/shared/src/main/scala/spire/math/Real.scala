@@ -15,8 +15,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def toRational(p: Int): Rational =
     this match {
-      case Exact(n) => n
-      case _        => Rational(x(p), SafeLong.two.pow(p))
+      case Exact(n) =>
+        n
+      case _ =>
+        Rational(x(p), SafeLong.two.pow(p))
     }
 
   def toRational: Rational = toRational(Real.bits)
@@ -57,8 +59,10 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   override def equals(y: Any): Boolean =
     y match {
-      case y: Real => this === y
-      case y       => toRational.equals(y)
+      case y: Real =>
+        this === y
+      case y =>
+        toRational.equals(y)
     }
 
   def ===(y: Real): Boolean = (x compare y) == 0
@@ -67,38 +71,50 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def compare(y: Real): Int =
     (x, y) match {
-      case (Exact(nx), Exact(ny)) => nx compare ny
-      case _                      => (x - y).signum
+      case (Exact(nx), Exact(ny)) =>
+        nx compare ny
+      case _ =>
+        (x - y).signum
     }
 
   def min(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny)) => Exact(nx min ny)
-      case _                      => Real(p => x(p) min y(p))
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx min ny)
+      case _ =>
+        Real(p => x(p) min y(p))
     }
 
   def max(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny)) => Exact(nx max ny)
-      case _                      => Real(p => x(p) max y(p))
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx max ny)
+      case _ =>
+        Real(p => x(p) max y(p))
     }
 
   def abs(): Real =
     this match {
-      case Exact(n) => Exact(n.abs)
-      case _        => Real(p => x(p).abs)
+      case Exact(n) =>
+        Exact(n.abs)
+      case _ =>
+        Real(p => x(p).abs)
     }
 
   def signum(): Int =
     this match {
-      case Exact(n) => n.signum
-      case _        => x(Real.bits).signum
+      case Exact(n) =>
+        n.signum
+      case _ =>
+        x(Real.bits).signum
     }
 
   def unary_-(): Real =
     this match {
-      case Exact(n) => Exact(-n)
-      case _        => Real(p => -x(p))
+      case Exact(n) =>
+        Exact(-n)
+      case _ =>
+        Real(p => -x(p))
     }
 
   def reciprocal(): Real = {
@@ -109,7 +125,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
         findNonzero(i + 1)
 
     this match {
-      case Exact(n) => Exact(n.reciprocal)
+      case Exact(n) =>
+        Exact(n.reciprocal)
       case _ =>
         Real({ p =>
           val s = findNonzero(0)
@@ -121,21 +138,30 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def +(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny))    => Exact(nx + ny)
-      case (Exact(Rational.zero), _) => y
-      case (_, Exact(Rational.zero)) => x
-      case _                         => Real(p => roundUp(Rational(x(p + 2) + y(p + 2), 4)))
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx + ny)
+      case (Exact(Rational.zero), _) =>
+        y
+      case (_, Exact(Rational.zero)) =>
+        x
+      case _ =>
+        Real(p => roundUp(Rational(x(p + 2) + y(p + 2), 4)))
     }
 
   def -(y: Real): Real = x + (-y)
 
   def *(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny))    => Exact(nx * ny)
-      case (Exact(Rational.zero), _) => Real.zero
-      case (_, Exact(Rational.zero)) => Real.zero
-      case (Exact(Rational.one), _)  => y
-      case (_, Exact(Rational.one))  => x
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx * ny)
+      case (Exact(Rational.zero), _) =>
+        Real.zero
+      case (_, Exact(Rational.zero)) =>
+        Real.zero
+      case (Exact(Rational.one), _) =>
+        y
+      case (_, Exact(Rational.one)) =>
+        x
       case _ =>
         Real({ p =>
           val x0 = x(0).abs + 2
@@ -183,7 +209,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def %(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny)) => Exact(nx % ny)
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx % ny)
       case _ =>
         Real({ p =>
           val d = x / y
@@ -199,7 +226,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def /~(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny)) => Exact(nx /~ ny)
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx /~ ny)
       case _ =>
         Real({ p =>
           val d = x / y
@@ -215,7 +243,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def gcd(y: Real): Real =
     (x, y) match {
-      case (Exact(nx), Exact(ny)) => Exact(nx gcd ny)
+      case (Exact(nx), Exact(ny)) =>
+        Exact(nx gcd ny)
       case _ =>
         Real({ p =>
           val g = x.toRational(p) gcd y.toRational(p)
@@ -225,7 +254,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def ceil(): Real =
     x match {
-      case Exact(n) => Exact(n.ceil)
+      case Exact(n) =>
+        Exact(n.ceil)
       case _ =>
         Real({ p =>
           val n = x(p)
@@ -242,7 +272,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def floor(): Real =
     x match {
-      case Exact(n) => Exact(n.floor)
+      case Exact(n) =>
+        Exact(n.floor)
       case _ =>
         Real({ p =>
           val n = x(p)
@@ -257,7 +288,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   def round(): Real =
     x match {
-      case Exact(n) => Exact(n.round)
+      case Exact(n) =>
+        Exact(n.round)
       case _ =>
         Real({ p =>
           val n = x(p)
@@ -295,7 +327,8 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
   // a bit hand-wavy
   def fpow(y: Real): Real =
     y match {
-      case Exact(n) => x.fpow(n)
+      case Exact(n) =>
+        x.fpow(n)
       case _ =>
         Real({ p =>
           x.fpow(Rational(y(p), SafeLong.two.pow(p)))(p)
@@ -304,14 +337,18 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
 
   override def toString: String =
     x match {
-      case Exact(n) => n.toString
-      case _        => getString(Real.digits)
+      case Exact(n) =>
+        n.toString
+      case _ =>
+        getString(Real.digits)
     }
 
   def repr: String =
     x match {
-      case Exact(n) => s"Exact(${n.toString})"
-      case _        => s"Inexact(${toRational})"
+      case Exact(n) =>
+        s"Exact(${n.toString})"
+      case _ =>
+        s"Inexact(${toRational})"
     }
 
   def getString(d: Int): String = {
@@ -320,9 +357,12 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions {
     val m = roundUp(r)
     val (sign, str) =
       m.signum match {
-        case -1 => ("-", m.abs.toString)
-        case 0  => ("", "0")
-        case 1  => ("", m.toString)
+        case -1 =>
+          ("-", m.abs.toString)
+        case 0 =>
+          ("", "0")
+        case 1 =>
+          ("", m.toString)
       }
     val i = str.length - d
     val s =
@@ -401,14 +441,22 @@ object Real extends RealInstances {
       else
         m
     n match {
-      case 0 => sinDr(y)
-      case 1 => sqrt1By2 * (cosDr(y) + sinDr(y))
-      case 2 => cosDr(y)
-      case 3 => sqrt1By2 * (cosDr(y) - sinDr(y))
-      case 4 => -sinDr(y)
-      case 5 => -sqrt1By2 * (cosDr(y) + sinDr(y))
-      case 6 => -cosDr(y)
-      case 7 => -sqrt1By2 * (cosDr(y) - sinDr(y))
+      case 0 =>
+        sinDr(y)
+      case 1 =>
+        sqrt1By2 * (cosDr(y) + sinDr(y))
+      case 2 =>
+        cosDr(y)
+      case 3 =>
+        sqrt1By2 * (cosDr(y) - sinDr(y))
+      case 4 =>
+        -sinDr(y)
+      case 5 =>
+        -sqrt1By2 * (cosDr(y) + sinDr(y))
+      case 6 =>
+        -cosDr(y)
+      case 7 =>
+        -sqrt1By2 * (cosDr(y) - sinDr(y))
     }
   }
 
@@ -423,14 +471,22 @@ object Real extends RealInstances {
       else
         m
     n match {
-      case 0 => cosDr(y)
-      case 1 => sqrt1By2 * (cosDr(y) - sinDr(y))
-      case 2 => -sinDr(y)
-      case 3 => -sqrt1By2 * (cosDr(y) + sinDr(y))
-      case 4 => -cosDr(y)
-      case 5 => -sqrt1By2 * (cosDr(y) - sinDr(y))
-      case 6 => sinDr(y)
-      case 7 => sqrt1By2 * (cosDr(y) + sinDr(y))
+      case 0 =>
+        cosDr(y)
+      case 1 =>
+        sqrt1By2 * (cosDr(y) - sinDr(y))
+      case 2 =>
+        -sinDr(y)
+      case 3 =>
+        -sqrt1By2 * (cosDr(y) + sinDr(y))
+      case 4 =>
+        -cosDr(y)
+      case 5 =>
+        -sqrt1By2 * (cosDr(y) - sinDr(y))
+      case 6 =>
+        sinDr(y)
+      case 7 =>
+        sqrt1By2 * (cosDr(y) + sinDr(y))
     }
   }
 
@@ -486,9 +542,12 @@ object Real extends RealInstances {
     val x0 = x(0)
     val s = (Real.one - x * x).sqrt
     x0.signum match {
-      case n if n > 0 => (Real.pi / Real.two) - atan(s / x)
-      case 0          => atan(x / s)
-      case _          => (-Real.pi / Real.two) - atan(s / x)
+      case n if n > 0 =>
+        (Real.pi / Real.two) - atan(s / x)
+      case 0 =>
+        atan(x / s)
+      case _ =>
+        (-Real.pi / Real.two) - atan(s / x)
     }
   }
 
@@ -553,8 +612,10 @@ object Real extends RealInstances {
       xs: Stream[SafeLong],
       cs: Stream[Rational]): SafeLong = {
     (xs, cs) match {
-      case (_, Stream.Empty) => total
-      case (Stream.Empty, _) => sys.error("nooooo")
+      case (_, Stream.Empty) =>
+        total
+      case (Stream.Empty, _) =>
+        sys.error("nooooo")
       case (x #:: xs, c #:: cs) =>
         val t = roundUp(c * Rational(x))
         if (t == 0)

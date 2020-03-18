@@ -49,8 +49,10 @@ object ByteArray {
           bytes ← fromHexStr(hexStr).toOption
         } yield bytes
       ) match {
-        case None     => JsError(s"error reading ByteArray from $json")
-        case Some(ba) => JsSuccess(ba)
+        case None =>
+          JsError(s"error reading ByteArray from $json")
+        case Some(ba) =>
+          JsSuccess(ba)
       }
 
     def writes(byteArray: ByteArray) =
@@ -63,9 +65,11 @@ object ByteArray {
     var mult = 1
     while (i >= 0) {
       s.charAt(i) match {
-        case '1' => sum += mult
+        case '1' =>
+          sum += mult
         case '0' =>
-        case x   => sys error s"invalid binary literal: $x in $s"
+        case x =>
+          sys error s"invalid binary literal: $x in $s"
       }
       mult *= 2
       i -= 1

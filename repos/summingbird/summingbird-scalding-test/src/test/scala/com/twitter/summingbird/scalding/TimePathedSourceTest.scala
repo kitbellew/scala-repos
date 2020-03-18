@@ -104,7 +104,8 @@ object TimePathSourceLaws extends Properties("Time path source") {
           genEmbiggen(data.embiggen),
           genVertractor(data.availableRange))(data.requestedRange)
       retData match {
-        case None => true
+        case None =>
+          true
         case Some(range) =>
           (
             data.availableRange.contains(range)
@@ -131,7 +132,8 @@ object TimePathSourceLaws extends Properties("Time path source") {
                 data.availableRange.end
               ) // Disjoint
           )
-        case Some(_) => true // Not in this test
+        case Some(_) =>
+          true // Not in this test
       }
     }
 

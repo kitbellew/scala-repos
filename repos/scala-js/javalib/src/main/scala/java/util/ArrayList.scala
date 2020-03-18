@@ -67,7 +67,8 @@ class ArrayList[E] private (private[ArrayList] val inner: js.Array[E])
       case other: ArrayList[_] =>
         inner.splice(index, 0, other.inner: _*)
         other.size > 0
-      case _ => super.addAll(index, c)
+      case _ =>
+        super.addAll(index, c)
     }
   }
 

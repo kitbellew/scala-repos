@@ -43,9 +43,12 @@ class ReplReporter(intp: IMain)
 
   def severityColor(severity: Severity): String =
     severity match {
-      case ERROR   => RED
-      case WARNING => YELLOW
-      case INFO    => RESET
+      case ERROR =>
+        RED
+      case WARNING =>
+        YELLOW
+      case INFO =>
+        RESET
     }
 
   override def print(pos: Position, msg: String, severity: Severity) {

@@ -12,7 +12,9 @@ object test1 {
   def f2(x: Int)(y: Int, y: Float) = x + y
   val closure = (x: Int, x: Float) => x
   List() match {
-    case x :: x => x
-    case Nil    => Nil
+    case x :: x =>
+      x
+    case Nil =>
+      Nil
   }
 }

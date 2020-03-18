@@ -48,13 +48,17 @@ class ScTypeParamElementType[Func <: ScTypeParam]
       parentStub: StubElement[ParentPsi]): ScTypeParamStub = {
     val upperText =
       psi.upperTypeElement match {
-        case Some(te) => te.getText
-        case None     => ""
+        case Some(te) =>
+          te.getText
+        case None =>
+          ""
       }
     val lowerText =
       psi.lowerTypeElement match {
-        case Some(te) => te.getText
-        case None     => ""
+        case Some(te) =>
+          te.getText
+        case None =>
+          ""
       }
     val viewText = psi.viewTypeElement.map(te =>
       StringRef.fromString(te.getText))

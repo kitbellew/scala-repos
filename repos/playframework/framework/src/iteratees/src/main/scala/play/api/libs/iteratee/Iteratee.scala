@@ -33,8 +33,10 @@ object Iteratee {
 
   def isDoneOrError[E, A](it: Iteratee[E, A]): Future[Boolean] =
     it.pureFoldNoEC {
-      case Step.Cont(_) => false;
-      case _            => true
+      case Step.Cont(_) =>
+        false;
+      case _ =>
+        true
     }
 
   /**
@@ -71,8 +73,10 @@ object Iteratee {
     def step(s: A)(i: Input[E]): Iteratee[E, A] =
       i match {
 
-        case Input.EOF   => Done(s, Input.EOF)
-        case Input.Empty => Cont[E, A](step(s))
+        case Input.EOF =>
+          Done(s, Input.EOF)
+        case Input.Empty =>
+          Cont[E, A](step(s))
         case Input.El(e) => {
           val newS = executeFuture(f(s, e))(pec);
           flatten(newS.map(s1 => Cont[E, A](step(s1)))(dec))
@@ -95,8 +99,10 @@ object Iteratee {
     def step(s: A)(i: Input[E]): Iteratee[E, A] =
       i match {
 
-        case Input.EOF   => Done(s, Input.EOF)
-        case Input.Empty => Cont[E, A](step(s))
+        case Input.EOF =>
+          Done(s, Input.EOF)
+        case Input.Empty =>
+          Cont[E, A](step(s))
         case Input.El(e) => {
           val newS = executeFuture(f(s, e))(pec);
           flatten(
@@ -171,9 +177,12 @@ object Iteratee {
   def head[E]: Iteratee[E, Option[E]] = {
 
     def step: K[E, Option[E]] = {
-      case Input.Empty => Cont(step)
-      case Input.EOF   => Done(None, Input.EOF)
-      case Input.El(e) => Done(Some(e), Input.Empty)
+      case Input.Empty =>
+        Cont(step)
+      case Input.EOF =>
+        Done(None, Input.EOF)
+      case Input.El(e) =>
+        Done(Some(e), Input.Empty)
     }
     Cont(step)
   }
@@ -237,8 +246,10 @@ object Iteratee {
   def skipToEof[E]: Iteratee[E, Unit] = {
     def cont: Iteratee[E, Unit] =
       Cont {
-        case Input.EOF => Done((), Input.EOF)
-        case _         => cont
+        case Input.EOF =>
+          Done((), Input.EOF)
+        case _ =>
+          cont
       }
     cont
   }
@@ -265,9 +276,12 @@ object Iteratee {
         def cont: Iteratee[E, Either[B, A]] =
           Cont((in: Input[E]) => {
             in match {
-              case Input.El(e) => Done(Left(otherwise), in)
-              case Input.EOF   => Done(Right(eofValue), in)
-              case Input.Empty => cont
+              case Input.El(e) =>
+                Done(Left(otherwise), in)
+              case Input.EOF =>
+                Done(Right(eofValue), in)
+              case Input.Empty =>
+                cont
             }
           })
         cont
@@ -304,17 +318,21 @@ object Iteratee {
 
     def step(s: Seq[A])(input: Input[E]): Iteratee[E, Seq[A]] = {
       input match {
-        case Input.EOF => Done(s, Input.EOF)
+        case Input.EOF =>
+          Done(s, Input.EOF)
 
-        case Input.Empty => Cont(step(s))
+        case Input.Empty =>
+          Cont(step(s))
 
         case Input.El(e) =>
           i.pureFlatFold {
-            case Step.Done(a, e) => Done(s :+ a, input)
+            case Step.Done(a, e) =>
+              Done(s :+ a, input)
             case Step.Cont(k) =>
               k(input)
                 .flatMap(a => repeat(i).map(az => s ++ (a +: az))(dec))(dec)
-            case Step.Error(msg, e) => Error(msg, e)
+            case Step.Error(msg, e) =>
+              Error(msg, e)
           }(dec)
       }
     }
@@ -331,9 +349,12 @@ object Iteratee {
 sealed trait Input[+E] {
   def map[U](f: (E => U)): Input[U] =
     this match {
-      case Input.El(e) => Input.El(f(e))
-      case Input.Empty => Input.Empty
-      case Input.EOF   => Input.EOF
+      case Input.El(e) =>
+        Input.El(f(e))
+      case Input.Empty =>
+        Input.Empty
+      case Input.EOF =>
+        Input.EOF
     }
 }
 
@@ -365,9 +386,12 @@ sealed trait Step[E, +A] {
   // but could be called by custom implementations.
   def it: Iteratee[E, A] =
     this match {
-      case Step.Done(a, e)    => Done(a, e)
-      case Step.Cont(k)       => Cont(k)
-      case Step.Error(msg, e) => Error(msg, e)
+      case Step.Done(a, e) =>
+        Done(a, e)
+      case Step.Cont(k) =>
+        Cont(k)
+      case Step.Error(msg, e) =>
+        Error(msg, e)
     }
 
 }
@@ -446,14 +470,19 @@ trait Iteratee[E, +A] {
     */
   def run: Future[A] =
     fold({
-      case Step.Done(a, _) => Future.successful(a)
+      case Step.Done(a, _) =>
+        Future.successful(a)
       case Step.Cont(k) =>
         k(Input.EOF).fold({
-          case Step.Done(a1, _)   => Future.successful(a1)
-          case Step.Cont(_)       => sys.error("diverging iteratee after Input.EOF")
-          case Step.Error(msg, e) => sys.error(msg)
+          case Step.Done(a1, _) =>
+            Future.successful(a1)
+          case Step.Cont(_) =>
+            sys.error("diverging iteratee after Input.EOF")
+          case Step.Error(msg, e) =>
+            sys.error(msg)
         })(dec)
-      case Step.Error(msg, e) => sys.error(msg)
+      case Step.Error(msg, e) =>
+        sys.error(msg)
     })(dec)
 
   /**
@@ -487,9 +516,12 @@ trait Iteratee[E, +A] {
       error: (String, Input[E]) => Future[B])(implicit
       ec: ExecutionContext): Future[B] =
     fold({
-      case Step.Done(a, e)    => done(a, e)
-      case Step.Cont(k)       => cont(k)
-      case Step.Error(msg, e) => error(msg, e)
+      case Step.Done(a, e) =>
+        done(a, e)
+      case Step.Cont(k) =>
+        cont(k)
+      case Step.Error(msg, e) =>
+        error(msg, e)
     })(ec)
 
   /**
@@ -619,15 +651,19 @@ trait Iteratee[E, +A] {
         executeIteratee(f(a))(
           ec /* still on same thread; let executeIteratee do preparation */ )
           .pureFlatFold {
-            case Step.Done(a, _)    => Done(a, e)
-            case Step.Cont(k)       => k(e)
-            case Step.Error(msg, e) => Error(msg, e)
+            case Step.Done(a, _) =>
+              Done(a, e)
+            case Step.Cont(k) =>
+              k(e)
+            case Step.Error(msg, e) =>
+              Error(msg, e)
           }(dec)
       case Step.Cont(k) => {
         implicit val pec = ec.prepare()
         Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
       }
-      case Step.Error(msg, e) => Error(msg, e)
+      case Step.Error(msg, e) =>
+        Error(msg, e)
     }
   }
 
@@ -660,26 +696,36 @@ trait Iteratee[E, +A] {
       ec: ExecutionContext): Iteratee[E, B] = {
     val pec = ec.prepare()
     self.pureFlatFold {
-      case Step.Done(a, Input.Empty) => f(a)
+      case Step.Done(a, Input.Empty) =>
+        f(a)
       case Step.Done(a, e) =>
         executeIteratee(f(a))(pec).pureFlatFold {
           case Step.Done(a, eIn) => {
             val fullIn =
               (e, eIn) match {
-                case (Input.Empty, in)            => in
-                case (in, Input.Empty)            => in
-                case (Input.EOF, _)               => Input.EOF
-                case (in, Input.EOF)              => in
-                case (Input.El(e1), Input.El(e2)) => Input.El[E](p(e1) ++ p(e2))
+                case (Input.Empty, in) =>
+                  in
+                case (in, Input.Empty) =>
+                  in
+                case (Input.EOF, _) =>
+                  Input.EOF
+                case (in, Input.EOF) =>
+                  in
+                case (Input.El(e1), Input.El(e2)) =>
+                  Input.El[E](p(e1) ++ p(e2))
               }
 
             Done(a, fullIn)
           }
-          case Step.Cont(k)       => k(e)
-          case Step.Error(msg, e) => Error(msg, e)
+          case Step.Cont(k) =>
+            k(e)
+          case Step.Error(msg, e) =>
+            Error(msg, e)
         }(dec)
-      case Step.Cont(k)       => Cont((in: Input[E]) => k(in).flatMap(f)(pec))
-      case Step.Error(msg, e) => Error(msg, e)
+      case Step.Cont(k) =>
+        Cont((in: Input[E]) => k(in).flatMap(f)(pec))
+      case Step.Error(msg, e) =>
+        Error(msg, e)
     }(dec)
   }
 
@@ -707,7 +753,8 @@ trait Iteratee[E, +A] {
   def recover[B >: A](pf: PartialFunction[Throwable, B])(implicit
       ec: ExecutionContext): Iteratee[E, B] = {
     recoverM {
-      case t: Throwable if pf.isDefinedAt(t) => Future.successful(pf(t))
+      case t: Throwable if pf.isDefinedAt(t) =>
+        Future.successful(pf(t))
     }(ec)
   }
 
@@ -751,7 +798,8 @@ trait Iteratee[E, +A] {
               }
             case Step.Error(msg, _) =>
               throw new IterateeException(msg)
-            case done => done.it
+            case done =>
+              done.it
           }(dec)
           .unflatten
           .map(_.it)(dec)
@@ -766,15 +814,19 @@ trait Iteratee[E, +A] {
     this.flatMap { a =>
       val inner = in(a)
       inner.pureFlatFold[E, AIn] {
-        case Step.Done(a, _) => Done(a, Input.Empty)
+        case Step.Done(a, _) =>
+          Done(a, Input.Empty)
         case Step.Cont(k) =>
           k(Input.EOF).pureFlatFold[E, AIn] {
-            case Step.Done(a, _) => Done(a, Input.Empty)
+            case Step.Done(a, _) =>
+              Done(a, Input.Empty)
             case Step.Cont(k) =>
               Error("divergent inner iteratee on joinI after EOF", Input.EOF)
-            case Step.Error(msg, e) => Error(msg, Input.EOF)
+            case Step.Error(msg, e) =>
+              Error(msg, Input.EOF)
           }(dec)
-        case Step.Error(msg, e) => Error(msg, Input.Empty)
+        case Step.Error(msg, e) =>
+          Error(msg, Input.Empty)
       }(dec)
     }(dec)
   }
@@ -786,15 +838,19 @@ trait Iteratee[E, +A] {
     this.flatMapTraversable { a =>
       val inner = in(a)
       inner.pureFlatFold[E, AIn] {
-        case Step.Done(a, e) => Done(a, e)
+        case Step.Done(a, e) =>
+          Done(a, e)
         case Step.Cont(k) =>
           k(Input.EOF).pureFlatFold[E, AIn] {
-            case Step.Done(a, e) => Done(a, e)
+            case Step.Done(a, e) =>
+              Done(a, e)
             case Step.Cont(k) =>
               Error("divergent inner iteratee on joinI after EOF", Input.EOF)
-            case Step.Error(msg, e) => Error(msg, Input.EOF)
+            case Step.Error(msg, e) =>
+              Error(msg, Input.EOF)
           }(dec)
-        case Step.Error(msg, e) => Error(msg, Input.Empty)
+        case Step.Error(msg, e) =>
+          Error(msg, Input.Empty)
       }(dec)
     }
   }
@@ -836,7 +892,8 @@ private sealed trait StepIteratee[E, A] extends Iteratee[E, A] with Step[E, A] {
       folder: Step[E, A] => B): Future[B] = {
     try Future.successful(folder(immediateUnflatten))
     catch {
-      case NonFatal(e) => Future.failed(e)
+      case NonFatal(e) =>
+        Future.failed(e)
     }
   }
 

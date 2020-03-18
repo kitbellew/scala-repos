@@ -57,15 +57,19 @@ package object reflect {
 
       def display(info: Info): Unit =
         info.severity match {
-          case API_INFO    => reporter.info(info.pos, info.msg, force = false)
-          case API_WARNING => reporter.warning(info.pos, info.msg)
-          case API_ERROR   => reporter.error(info.pos, info.msg)
+          case API_INFO =>
+            reporter.info(info.pos, info.msg, force = false)
+          case API_WARNING =>
+            reporter.warning(info.pos, info.msg)
+          case API_ERROR =>
+            reporter.error(info.pos, info.msg)
         }
 
       def interactive(): Unit =
         reporter match {
-          case reporter: AbstractReporter => reporter.displayPrompt()
-          case _                          => // do nothing
+          case reporter: AbstractReporter =>
+            reporter.displayPrompt()
+          case _ => // do nothing
         }
 
       override def flush(): Unit = {
@@ -99,9 +103,12 @@ package object reflect {
           pos,
           msg,
           nscSeverity match {
-            case NSC_INFO    => API_INFO
-            case NSC_WARNING => API_WARNING
-            case NSC_ERROR   => API_ERROR
+            case NSC_INFO =>
+              API_INFO
+            case NSC_WARNING =>
+              API_WARNING
+            case NSC_ERROR =>
+              API_ERROR
           })
 
       def displayPrompt(): Unit = frontEnd.interactive()

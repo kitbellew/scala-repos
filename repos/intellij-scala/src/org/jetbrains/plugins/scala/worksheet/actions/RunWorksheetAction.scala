@@ -282,7 +282,8 @@ object RunWorksheetAction {
         Option(
           ProjectFileIndex.SERVICE getInstance project getModuleForFile
             vFile) getOrElse project.anyScalaModule.map(_.module).orNull
-      case _ => project.anyScalaModule.map(_.module).orNull
+      case _ =>
+        project.anyScalaModule.map(_.module).orNull
     }
   }
 

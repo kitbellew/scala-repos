@@ -10,10 +10,15 @@ class Foo extends {
   // case can a switch be generated.
   def f(p: Int) =
     (p: @switch) match {
-      case `b0` => 1
-      case `b1` => 2
-      case 15   => 3
-      case 20   => 4
-      case _    => 5
+      case `b0` =>
+        1
+      case `b1` =>
+        2
+      case 15 =>
+        3
+      case 20 =>
+        4
+      case _ =>
+        5
     }
 }

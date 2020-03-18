@@ -93,9 +93,12 @@ trait MathLibModule[M[+_]]
       val tpe = UnaryOperationType(JNumberT, JNumberT)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::math::op1dd::" + name) {
-          case c: DoubleColumn => new DoubleFrom.D(c, defined, f)
-          case c: LongColumn   => new DoubleFrom.L(c, defined, f)
-          case c: NumColumn    => new DoubleFrom.N(c, defined, f)
+          case c: DoubleColumn =>
+            new DoubleFrom.D(c, defined, f)
+          case c: LongColumn =>
+            new DoubleFrom.L(c, defined, f)
+          case c: NumColumn =>
+            new DoubleFrom.N(c, defined, f)
         }
     }
 

@@ -86,7 +86,8 @@ trait DAGRewriterSpecs[M[+_]]
       val optimizedDAG = fullRewriteDAG(optimize, ctx)(input)
       val megaReduce =
         optimizedDAG.foldDown(true) {
-          case m @ MegaReduce(_, _) => Tag(Some(m)): FirstOption[DepGraph]
+          case m @ MegaReduce(_, _) =>
+            Tag(Some(m)): FirstOption[DepGraph]
         }
 
       megaReduce must beSome
@@ -95,11 +96,13 @@ trait DAGRewriterSpecs[M[+_]]
 
       val hasMegaReduce =
         rewritten.foldDown(false) {
-          case m @ MegaReduce(_, _) => true
+          case m @ MegaReduce(_, _) =>
+            true
         }(disjunction)
       val hasConst =
         rewritten.foldDown(false) {
-          case m @ Const(CNum(n)) if n == 42 => true
+          case m @ Const(CNum(n)) if n == 42 =>
+            true
         }(disjunction)
 
       // Must be turned into a Const node

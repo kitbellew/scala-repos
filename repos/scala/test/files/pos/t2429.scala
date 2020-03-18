@@ -13,7 +13,8 @@ object Msg {
         a match {
           case _ =>
             b match {
-              case _ => sys.error("stub")
+              case _ =>
+                sys.error("stub")
             }
         }
       }
@@ -24,6 +25,7 @@ object Oops {
   implicit def someImplicit(s: Seq[_]): String = sys.error("stub")
   def item: String =
     Nil map {
-      case e: Any => e
+      case e: Any =>
+        e
     }
 }

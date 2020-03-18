@@ -117,8 +117,10 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       private def build(c: StrColumn) = new StrFrom.S(c, _ != null, f)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::str::op1ss::" + name) {
-          case c: StrColumn  => build(c)
-          case c: DateColumn => build(dateToStrCol(c))
+          case c: StrColumn =>
+            build(c)
+          case c: DateColumn =>
+            build(dateToStrCol(c))
         }
     }
 
@@ -135,7 +137,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = UnaryOperationType(StrAndDateT, JBooleanT)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::str::isEmpty") {
-          case c: StrColumn => new BoolFrom.S(c, _ != null, _.isEmpty)
+          case c: StrColumn =>
+            new BoolFrom.S(c, _ != null, _.isEmpty)
           case c: DateColumn =>
             new BoolFrom.S(dateToStrCol(c), _ != null, _ => false)
         }
@@ -149,8 +152,10 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       private def build(c: StrColumn) = new LongFrom.S(c, _ != null, _.length)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::str::length") {
-          case c: StrColumn  => build(c)
-          case c: DateColumn => build(dateToStrCol(c))
+          case c: StrColumn =>
+            build(c)
+          case c: DateColumn =>
+            build(dateToStrCol(c))
         }
     }
 
@@ -162,9 +167,12 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         new BoolFrom.SS(c1, c2, neitherNull, f)
       def f2(ctx: MorphContext): F2 =
         CF2P("builtin::str::op2ss" + name) {
-          case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
-          case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
-          case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
+          case (c1: StrColumn, c2: StrColumn) =>
+            build(c1, c2)
+          case (c1: StrColumn, c2: DateColumn) =>
+            build(c1, dateToStrCol(c2))
+          case (c1: DateColumn, c2: StrColumn) =>
+            build(dateToStrCol(c1), c2)
           case (c1: DateColumn, c2: DateColumn) =>
             build(dateToStrCol(c1), dateToStrCol(c2))
         }
@@ -444,8 +452,10 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::str::parseNum") {
-          case c: StrColumn  => build(c)
-          case c: DateColumn => build(dateToStrCol(c))
+          case c: StrColumn =>
+            build(c)
+          case c: DateColumn =>
+            build(dateToStrCol(c))
         }
     }
 
@@ -453,7 +463,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = UnaryOperationType(JNumberT, JTextT)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::str::numToString") {
-          case c: LongColumn => new StrFrom.L(c, _ => true, _.toString)
+          case c: LongColumn =>
+            new StrFrom.L(c, _ => true, _.toString)
           case c: DoubleColumn => {
             new StrFrom.D(
               c,
@@ -466,7 +477,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   back
               })
           }
-          case c: NumColumn => new StrFrom.N(c, _ => true, _.toString)
+          case c: NumColumn =>
+            new StrFrom.N(c, _ => true, _.toString)
         }
     }
 
@@ -493,9 +505,12 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def f2(ctx: MorphContext): F2 =
         CF2P("builtin::str::parseNum") {
-          case (c1: StrColumn, c2: StrColumn)  => build(c1, c2)
-          case (c1: DateColumn, c2: StrColumn) => build(dateToStrCol(c1), c2)
-          case (c1: StrColumn, c2: DateColumn) => build(c1, dateToStrCol(c2))
+          case (c1: StrColumn, c2: StrColumn) =>
+            build(c1, c2)
+          case (c1: DateColumn, c2: StrColumn) =>
+            build(dateToStrCol(c1), c2)
+          case (c1: StrColumn, c2: DateColumn) =>
+            build(c1, dateToStrCol(c2))
           case (c1: DateColumn, c2: DateColumn) =>
             build(dateToStrCol(c1), dateToStrCol(c2))
         }
@@ -544,8 +559,10 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     val UnifyStrDate =
       CF1P("builtin::str::unifyStrDate")({
-        case c: StrColumn  => c
-        case c: DateColumn => dateToStrCol(c)
+        case c: StrColumn =>
+          c
+        case c: DateColumn =>
+          dateToStrCol(c)
       })
   }
 }

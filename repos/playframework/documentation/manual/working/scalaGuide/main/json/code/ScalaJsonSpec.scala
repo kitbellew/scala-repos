@@ -293,8 +293,10 @@ class ScalaJsonSpec extends Specification {
 
       // Pattern matching
       nameResult match {
-        case s: JsSuccess[String] => println("Name: " + s.get)
-        case e: JsError           => println("Errors: " + JsError.toJson(e).toString())
+        case s: JsSuccess[String] =>
+          println("Name: " + s.get)
+        case e: JsError =>
+          println("Errors: " + JsError.toJson(e).toString())
       }
 
       // Fallback value
@@ -316,7 +318,8 @@ class ScalaJsonSpec extends Specification {
         })
       //#convert-to-type-validate
       nameResult must beLike {
-        case x: JsSuccess[String] => x.get === "Watership Down"
+        case x: JsSuccess[String] =>
+          x.get === "Watership Down"
       }
     }
 
@@ -360,10 +363,12 @@ class ScalaJsonSpec extends Specification {
       //#convert-to-model
 
       placeResult must beLike {
-        case x: JsSuccess[Place] => x.get.name === "Watership Down"
+        case x: JsSuccess[Place] =>
+          x.get.name === "Watership Down"
       }
       residentResult must beLike {
-        case x: JsSuccess[Resident] => x.get.name === "Bigwig"
+        case x: JsSuccess[Resident] =>
+          x.get.name === "Bigwig"
       }
     }
 

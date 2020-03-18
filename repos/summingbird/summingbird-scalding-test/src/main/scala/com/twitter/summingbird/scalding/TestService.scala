@@ -57,10 +57,12 @@ class TestService[K, V](
   val sourceToBuffer: Map[ScaldingSource, Buffer[Tuple]] =
     (
       lasts.map {
-        case (b, it) => lastMappable(b) -> toBuffer(it)
+        case (b, it) =>
+          lastMappable(b) -> toBuffer(it)
       } ++
         streams.map {
-          case (b, it) => streamMappable(b) -> toBuffer(it)
+          case (b, it) =>
+            streamMappable(b) -> toBuffer(it)
         }
     ).toMap
 
@@ -80,15 +82,18 @@ class TestService[K, V](
                 map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
                 case (innerMap, (time, (k, v))) =>
                   v match {
-                    case None    => innerMap - k
-                    case Some(v) => innerMap + (k -> (time -> v))
+                    case None =>
+                      innerMap - k
+                    case Some(v) =>
+                      innerMap + (k -> (time -> v))
                   }
               }
             map + (batch -> thisBatch)
         }
         .mapValues { innerMap =>
           innerMap.toSeq.map {
-            case (k, (time, v)) => (time, (k, v))
+            case (k, (time, v)) =>
+              (time, (k, v))
           }
         }
     ) + (minBatch -> Iterable.empty)

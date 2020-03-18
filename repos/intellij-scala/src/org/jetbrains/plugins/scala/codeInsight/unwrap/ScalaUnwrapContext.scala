@@ -20,8 +20,9 @@ class ScalaUnwrapContext extends AbstractUnwrapper.AbstractContext {
     blockStmt match {
       case block: ScBlock if block.statements.nonEmpty =>
         extract(block.statements.head, block.statements.last, from)
-      case stmt: ScBlockStatement => extract(stmt, stmt, from)
-      case _                      =>
+      case stmt: ScBlockStatement =>
+        extract(stmt, stmt, from)
+      case _ =>
     }
 
   def insertNewLine() {

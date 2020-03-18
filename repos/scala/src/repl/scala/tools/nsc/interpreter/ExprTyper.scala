@@ -26,7 +26,8 @@ trait ExprTyper {
           val sym0 = symbolOfTerm(name)
           // drop NullaryMethodType
           sym0.cloneSymbol setInfo exitingTyper(sym0.tpe_*.finalResultType)
-        case _ => NoSymbol
+        case _ =>
+          NoSymbol
       }
     }
     def asDefn(): Symbol = {
@@ -35,11 +36,15 @@ trait ExprTyper {
       interpretSynthetic(code) match {
         case IR.Success =>
           repl.definedSymbolList filterNot old match {
-            case Nil        => NoSymbol
-            case sym :: Nil => sym
-            case syms       => NoSymbol.newOverloaded(NoPrefix, syms)
+            case Nil =>
+              NoSymbol
+            case sym :: Nil =>
+              sym
+            case syms =>
+              NoSymbol.newOverloaded(NoPrefix, syms)
           }
-        case _ => NoSymbol
+        case _ =>
+          NoSymbol
       }
     }
     def asError(): Symbol = {
@@ -61,8 +66,10 @@ trait ExprTyper {
     // is an error, and errors are desired, then it re-evaluates non-silently
     // to induce the error message.
     try beSilentDuring(symbolOfLine(expr).tpe) match {
-      case NoType if !silent => symbolOfLine(expr).tpe // generate error
-      case tpe               => tpe
+      case NoType if !silent =>
+        symbolOfLine(expr).tpe // generate error
+      case tpe =>
+        tpe
     } finally typeOfExpressionDepth -= 1
   }
 
@@ -75,7 +82,8 @@ trait ExprTyper {
         case IR.Success =>
           val sym0 = symbolOfTerm(name)
           Some(sym0.asMethod.returnType)
-        case _ => None
+        case _ =>
+          None
       }
     }
     beSilentDuring(asProperType()) getOrElse NoType

@@ -256,9 +256,12 @@ class SyncQueryServiceHandler(
       slices.map(_.deref(TransSpecModule.paths.Value)))
 
     val format = request.parameters get 'format map {
-      case "simple"   => Right(Simple)
-      case "detailed" => Right(Detailed)
-      case badFormat  => Left("unknown format '%s'" format badFormat)
+      case "simple" =>
+        Right(Simple)
+      case "detailed" =>
+        Right(Detailed)
+      case badFormat =>
+        Left("unknown format '%s'" format badFormat)
     } getOrElse Right(defaultFormat)
 
     (format, jobId, charBuffers) match {
@@ -354,8 +357,10 @@ class SyncQueryServiceHandler(
         stream: StreamT[Future, CharBuffer]): StreamT[Future, CharBuffer] = {
       StreamT(
         stream.uncons map {
-          case Some((s, tail)) => StreamT.Yield(s, loop(tail))
-          case None            => StreamT.Done
+          case Some((s, tail)) =>
+            StreamT.Yield(s, loop(tail))
+          case None =>
+            StreamT.Done
         } recover {
           case _: QueryCancelledException =>
             StreamT.Done

@@ -70,7 +70,8 @@ private[stat] object ChiSqTest extends Logging {
   // Method identification based on input methodName string
   private def methodFromString(methodName: String): Method = {
     methodName match {
-      case PEARSON.name => PEARSON
+      case PEARSON.name =>
+        PEARSON
       case _ =>
         throw new IllegalArgumentException(
           "Unrecognized method for Chi squared test.")

@@ -148,9 +148,12 @@ private[http] object Renderer {
             r
 
         value match {
-          case Nil ⇒ r ~~ empty
-          case x: IndexedSeq[T] ⇒ recI(x)
-          case x: LinearSeq[T] ⇒ recL(x)
+          case Nil ⇒
+            r ~~ empty
+          case x: IndexedSeq[T] ⇒
+            recI(x)
+          case x: LinearSeq[T] ⇒
+            recL(x)
         }
       }
     }

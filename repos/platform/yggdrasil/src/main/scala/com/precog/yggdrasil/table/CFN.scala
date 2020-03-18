@@ -39,8 +39,10 @@ trait CF {
   def identity: CFId
   override final def equals(other: Any): Boolean =
     other match {
-      case cf: CF => identity == cf.identity
-      case _      => false
+      case cf: CF =>
+        identity == cf.identity
+      case _ =>
+        false
     }
 
   override final def hashCode: Int = identity.hashCode
@@ -365,7 +367,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         columns
       }
 
-      case (tpe, _) => sys.error("Unsupported CFArray type: " + tpe)
+      case (tpe, _) =>
+        sys.error("Unsupported CFArray type: " + tpe)
     }
 
     columns

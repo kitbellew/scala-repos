@@ -59,9 +59,11 @@ object PersistentActorFailureSpec {
       messages.exists {
         case a: AtomicWrite ⇒
           a.payload.exists {
-            case PersistentRepr(Evt(s: String), _) ⇒ s.contains("wrong")
+            case PersistentRepr(Evt(s: String), _) ⇒
+              s.contains("wrong")
           }
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
 
     def checkSerializable(
@@ -73,14 +75,17 @@ object PersistentActorFailureSpec {
                 if s.contains("not serializable") ⇒
               s
           } match {
-            case Some(s) ⇒ Failure(new SimulatedSerializationException(s))
-            case None ⇒ AsyncWriteJournal.successUnit
+            case Some(s) ⇒
+              Failure(new SimulatedSerializationException(s))
+            case None ⇒
+              AsyncWriteJournal.successUnit
           }
       }
 
     def isCorrupt(events: Seq[PersistentRepr]): Boolean =
       events.exists {
-        case PersistentRepr(Evt(s: String), _) ⇒ s.contains("corrupt")
+        case PersistentRepr(Evt(s: String), _) ⇒
+          s.contains("corrupt")
       }
 
   }
@@ -88,7 +93,8 @@ object PersistentActorFailureSpec {
   class OnRecoveryFailurePersistentActor(name: String, probe: ActorRef)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = commonBehavior orElse {
-      case c @ Cmd(txt) ⇒ persist(Evt(txt))(updateState)
+      case c @ Cmd(txt) ⇒
+        persist(Evt(txt))(updateState)
     }
 
     override protected def onRecoveryFailure(
@@ -106,8 +112,10 @@ object PersistentActorFailureSpec {
       }
 
     def receive = {
-      case props: Props ⇒ sender() ! context.actorOf(props)
-      case m ⇒ sender() ! m
+      case props: Props ⇒
+        sender() ! context.actorOf(props)
+      case m ⇒
+        sender() ! m
     }
   }
 
@@ -126,7 +134,8 @@ object PersistentActorFailureSpec {
     def this(name: String) = this(name, None)
 
     override val receiveCommand: Receive = commonBehavior orElse {
-      case Cmd(data) ⇒ persist(Evt(s"${data}"))(updateState)
+      case Cmd(data) ⇒
+        persist(Evt(s"${data}"))(updateState)
     }
 
     val failingRecover: Receive = {

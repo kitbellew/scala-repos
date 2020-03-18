@@ -41,7 +41,8 @@ class Statements(indent: Int) {
     "@" ~/ dotted_name ~ (
       "(" ~ arglist ~ ")"
     ).? ~~ Lexical.nonewlinewscomment.? ~~ NEWLINE).map {
-    case (name, None) => collapse_dotted_name(name)
+    case (name, None) =>
+      collapse_dotted_name(name)
     case (name, Some((args, (keywords, starargs, kwargs)))) =>
       val x = collapse_dotted_name(name)
       Ast.expr.Call(x, args, keywords, starargs, kwargs)
@@ -49,17 +50,20 @@ class Statements(indent: Int) {
 
   val decorators = P(decorator.rep)
   val decorated: P[Ast.stmt] = P(decorators ~ (classdef | funcdef)).map {
-    case (a, b) => b(a)
+    case (a, b) =>
+      b(a)
   }
   val classdef: P[Seq[Ast.expr] => Ast.stmt.ClassDef] = P(
     kw("class") ~/ NAME ~ ("(" ~ testlist.? ~ ")").?.map(
       _.toSeq.flatten.flatten) ~ ":" ~~ suite).map {
-    case (a, b, c) => Ast.stmt.ClassDef(a, b, c, _)
+    case (a, b, c) =>
+      Ast.stmt.ClassDef(a, b, c, _)
   }
 
   val funcdef: P[Seq[Ast.expr] => Ast.stmt.FunctionDef] = P(
     kw("def") ~/ NAME ~ parameters ~ ":" ~~ suite).map {
-    case (name, args, suite) => Ast.stmt.FunctionDef(name, args, suite, _)
+    case (name, args, suite) =>
+      Ast.stmt.FunctionDef(name, args, suite, _)
   }
   val parameters: P[Ast.arguments] = P("(" ~ varargslist ~ ")")
 
@@ -75,11 +79,14 @@ class Statements(indent: Int) {
 
     P(
       aug.map {
-        case (a, b, c) => Ast.stmt.AugAssign(tuplize(a), b, c)
+        case (a, b, c) =>
+          Ast.stmt.AugAssign(tuplize(a), b, c)
       } |
         assign.map {
-          case (a, Nil) => Ast.stmt.Expr(tuplize(a))
-          case (a, b)   => Ast.stmt.Assign(Seq(tuplize(a)) ++ b.init, b.last)
+          case (a, Nil) =>
+            Ast.stmt.Expr(tuplize(a))
+          case (a, b) =>
+            Ast.stmt.Assign(Seq(tuplize(a)) ++ b.init, b.last)
         })
   }
 
@@ -101,7 +108,8 @@ class Statements(indent: Int) {
     val noDest = P(test.rep(sep = ",") ~ ",".?)
       .map(Ast.stmt.Print(None, _, true))
     val dest = P(">>" ~ test ~ ("," ~ test).rep ~ ",".?).map {
-      case (dest, exprs) => Ast.stmt.Print(Some(dest), exprs, true)
+      case (dest, exprs) =>
+        Ast.stmt.Print(Some(dest), exprs, true)
     }
     P("print" ~~ " ".rep ~~ (noDest | dest))
   }
@@ -149,7 +157,8 @@ class Statements(indent: Int) {
     .map(Ast.stmt.Global)
   val exec_stmt: P[Ast.stmt.Exec] = P(
     kw("exec") ~ expr ~ (kw("in") ~ test ~ ("," ~ test).?).?).map {
-    case (expr, None) => Ast.stmt.Exec(expr, None, None)
+    case (expr, None) =>
+      Ast.stmt.Exec(expr, None, None)
     case (expr, Some((globals, None))) =>
       Ast.stmt.Exec(expr, Some(globals), None)
     case (expr, Some((globals, Some(locals)))) =>
@@ -170,7 +179,8 @@ class Statements(indent: Int) {
         val (last_test, last_body) = last
         init.foldRight(
           Ast.stmt.If(last_test, last_body, orelse.toSeq.flatten)) {
-          case ((test, body), rhs) => Ast.stmt.If(test, body, Seq(rhs))
+          case ((test, body), rhs) =>
+            Ast.stmt.If(test, body, Seq(rhs))
         }
     }
   }
@@ -194,7 +204,8 @@ class Statements(indent: Int) {
     val `try` = P(kw("try") ~/ ":" ~~ suite)
     val excepts: P[Seq[Ast.excepthandler]] = P(
       (except_clause ~ ":" ~~ suite).map {
-        case (None, body) => Ast.excepthandler.ExceptHandler(None, None, body)
+        case (None, body) =>
+          Ast.excepthandler.ExceptHandler(None, None, body)
         case (Some((x, None)), body) =>
           Ast.excepthandler.ExceptHandler(Some(x), None, body)
         case (Some((x, Some(y))), body) =>
@@ -219,7 +230,8 @@ class Statements(indent: Int) {
       val (last_expr, last_vars) = items.last
       val inner = Ast.stmt.With(last_expr, last_vars, body)
       items.init.foldRight(inner) {
-        case ((expr, vars), body) => Ast.stmt.With(expr, vars, Seq(body))
+        case ((expr, vars), body) =>
+          Ast.stmt.With(expr, vars, Seq(body))
       }
   }
   val with_item: P[(Ast.expr, Option[Ast.expr])] = P(test ~ (kw("as") ~ expr).?)
@@ -238,7 +250,8 @@ class Statements(indent: Int) {
       P(Lexical.nonewlinewscomment.? ~~ (endLine | commentLine).repX(1))
         .map {
           _.collectFirst {
-            case (s, None) => s
+            case (s, None) =>
+              s
           }
         }
         .filter(_.isDefined)

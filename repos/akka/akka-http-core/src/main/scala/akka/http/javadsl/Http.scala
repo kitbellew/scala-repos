@@ -1014,7 +1014,8 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
       result: (Future[scaladsl.model.ws.WebSocketUpgradeResponse], T))
       : Pair[CompletionStage[WebSocketUpgradeResponse], T] =
     result match {
-      case (fut, tMat) ⇒ Pair(adaptWsUpgradeResponse(fut), tMat)
+      case (fut, tMat) ⇒
+        Pair(adaptWsUpgradeResponse(fut), tMat)
     }
   private def adaptWsUpgradeResponse(
       responseFuture: Future[scaladsl.model.ws.WebSocketUpgradeResponse])

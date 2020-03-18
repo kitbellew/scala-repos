@@ -117,11 +117,13 @@ private[streaming] object Checkpoint extends Logging {
     def sortFunc(path1: Path, path2: Path): Boolean = {
       val (time1, bk1) =
         path1.getName match {
-          case REGEX(x, y) => (x.toLong, !y.isEmpty)
+          case REGEX(x, y) =>
+            (x.toLong, !y.isEmpty)
         }
       val (time2, bk2) =
         path2.getName match {
-          case REGEX(x, y) => (x.toLong, !y.isEmpty)
+          case REGEX(x, y) =>
+            (x.toLong, !y.isEmpty)
         }
       (time1 < time2) || (time1 == time2 && bk1)
     }

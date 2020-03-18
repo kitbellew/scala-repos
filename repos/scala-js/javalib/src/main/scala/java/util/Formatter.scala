@@ -18,8 +18,9 @@ final class Formatter(private val dest: Appendable)
   def close(): Unit = {
     if (!closed) {
       dest match {
-        case cl: Closeable => cl.close()
-        case _             =>
+        case cl: Closeable =>
+          cl.close()
+        case _ =>
       }
     }
     closed = true
@@ -28,8 +29,9 @@ final class Formatter(private val dest: Appendable)
   def flush(): Unit =
     ifNotClosed {
       dest match {
-        case fl: Flushable => fl.flush()
-        case _             =>
+        case fl: Flushable =>
+          fl.flush()
+        case _ =>
       }
     }
 
@@ -105,13 +107,17 @@ final class Formatter(private val dest: Appendable)
 
             def intArg: Int =
               (arg: Any) match {
-                case arg: Int  => arg
-                case arg: Char => arg.toInt
+                case arg: Int =>
+                  arg
+                case arg: Char =>
+                  arg.toInt
               }
             def numberArg: scala.Double =
               (arg: Any) match {
-                case arg: Number => arg.doubleValue()
-                case arg: Char   => arg.toDouble
+                case arg: Number =>
+                  arg.doubleValue()
+                case arg: Char =>
+                  arg.toDouble
               }
 
             def padCaptureSign(argStr: String, prefix: String) = {
@@ -191,9 +197,12 @@ final class Formatter(private val dest: Appendable)
               case 'b' | 'B' =>
                 pad {
                   arg match {
-                    case null       => "false"
-                    case b: Boolean => String.valueOf(b)
-                    case _          => "true"
+                    case null =>
+                      "false"
+                    case b: Boolean =>
+                      String.valueOf(b)
+                    case _ =>
+                      "true"
                   }
                 }
               case 'h' | 'H' =>
@@ -251,8 +260,10 @@ final class Formatter(private val dest: Appendable)
               case 'o' =>
                 val str =
                   (arg: Any) match {
-                    case arg: scala.Int  => Integer.toOctalString(arg)
-                    case arg: scala.Long => Long.toOctalString(arg)
+                    case arg: scala.Int =>
+                      Integer.toOctalString(arg)
+                    case arg: scala.Long =>
+                      Long.toOctalString(arg)
                   }
                 padCaptureSign(
                   str,
@@ -263,8 +274,10 @@ final class Formatter(private val dest: Appendable)
               case 'x' | 'X' =>
                 val str =
                   (arg: Any) match {
-                    case arg: scala.Int  => Integer.toHexString(arg)
-                    case arg: scala.Long => Long.toHexString(arg)
+                    case arg: scala.Int =>
+                      Integer.toHexString(arg)
+                    case arg: scala.Long =>
+                      Long.toHexString(arg)
                   }
                 padCaptureSign(
                   str,

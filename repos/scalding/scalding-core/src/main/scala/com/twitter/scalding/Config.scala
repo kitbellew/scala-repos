@@ -57,8 +57,10 @@ trait Config extends Serializable {
   def update[R](k: String)(
       fn: Option[String] => (Option[String], R)): (R, Config) =
     fn(get(k)) match {
-      case (Some(v), r) => (r, this + (k -> v))
-      case (None, r)    => (r, this - k)
+      case (Some(v), r) =>
+        (r, this + (k -> v))
+      case (None, r) =>
+        (r, this - k)
     }
 
   /**
@@ -95,7 +97,8 @@ trait Config extends Serializable {
           Class
             .forName(str, true, Thread.currentThread().getContextClassLoader))
       } catch {
-        case err: Throwable => Failure(err)
+        case err: Throwable =>
+          Failure(err)
       }
     }
 
@@ -155,8 +158,10 @@ trait Config extends Serializable {
         @annotation.tailrec
         def kryoClasses(idx: Int, acc: Set[Class[_]]): Set[Class[_]] =
           Option(cr.getRegistration(idx)) match {
-            case Some(reg) => kryoClasses(idx + 1, acc + reg.getType)
-            case None      => acc // The first null is the end of the line
+            case Some(reg) =>
+              kryoClasses(idx + 1, acc + reg.getType)
+            case None =>
+              acc // The first null is the end of the line
           }
 
         kryoClasses(0, Set[Class[_]]())
@@ -202,7 +207,8 @@ trait Config extends Serializable {
     kryo match {
       case Left((bootstrap, inst)) =>
         ConfiguredInstantiator.setSerialized(chillConf, bootstrap, inst)
-      case Right(refl) => ConfiguredInstantiator.setReflect(chillConf, refl)
+      case Right(refl) =>
+        ConfiguredInstantiator.setReflect(chillConf, refl)
     }
     val withKryo = Config(chillConf.toMap + hadoopKV)
 
@@ -224,8 +230,10 @@ trait Config extends Serializable {
 
   def getArgs: Args =
     get(Config.ScaldingJobArgs) match {
-      case None      => new Args(Map.empty)
-      case Some(str) => Args(str)
+      case None =>
+        new Args(Map.empty)
+      case Some(str) =>
+        Args(str)
     }
 
   def setArgs(args: Args): Config =
@@ -266,7 +274,8 @@ trait Config extends Serializable {
    */
   def addUniqueId(u: UniqueID): Config =
     update(UniqueID.UNIQUE_JOB_ID) {
-      case None => (Some(u.get), ())
+      case None =>
+        (Some(u.get), ())
       case Some(str) =>
         (
           Some((StringUtility.fastSplit(str, ",").toSet + u.get).mkString(",")),
@@ -313,8 +322,10 @@ trait Config extends Serializable {
   def maybeSetSubmittedTimestamp(
       date: RichDate = RichDate.now): (Option[RichDate], Config) =
     update(ScaldingFlowSubmittedTimestamp) {
-      case s @ Some(ts) => (s, Some(RichDate(ts.toLong)))
-      case None         => (Some(date.timestamp.toString), None)
+      case s @ Some(ts) =>
+        (s, Some(RichDate(ts.toLong)))
+      case None =>
+        (Some(date.timestamp.toString), None)
     }
 
   /**
@@ -330,8 +341,10 @@ trait Config extends Serializable {
     */
   def addReducerEstimator(clsName: String): Config =
     update(Config.ReducerEstimators) {
-      case None      => (Some(clsName), ())
-      case Some(lst) => (Some(s"$clsName,$lst"), ())
+      case None =>
+        (Some(clsName), ())
+      case Some(lst) =>
+        (Some(s"$clsName,$lst"), ())
     }._2
 
   /** Set the entire list of reducer estimators (overriding the existing list) */
@@ -345,8 +358,10 @@ trait Config extends Serializable {
       flowListenerProvider: (Mode, Config) => FlowListener): Config = {
     val serializedListener = flowListenerSerializer(flowListenerProvider)
     update(Config.FlowListeners) {
-      case None      => (Some(serializedListener), ())
-      case Some(lst) => (Some(s"$serializedListener,$lst"), ())
+      case None =>
+        (Some(serializedListener), ())
+      case Some(lst) =>
+        (Some(s"$serializedListener,$lst"), ())
     }._2
   }
 
@@ -360,8 +375,10 @@ trait Config extends Serializable {
       flowListenerProvider: (Mode, Config) => FlowStepListener): Config = {
     val serializedListener = flowStepListenerSerializer(flowListenerProvider)
     update(Config.FlowStepListeners) {
-      case None      => (Some(serializedListener), ())
-      case Some(lst) => (Some(s"$serializedListener,$lst"), ())
+      case None =>
+        (Some(serializedListener), ())
+      case Some(lst) =>
+        (Some(s"$serializedListener,$lst"), ())
     }._2
   }
 
@@ -376,8 +393,10 @@ trait Config extends Serializable {
       : Config = {
     val serializedListener = flowStepStrategiesSerializer(flowStrategyProvider)
     update(Config.FlowStepStrategies) {
-      case None      => (Some(serializedListener), ())
-      case Some(lst) => (Some(s"$serializedListener,$lst"), ())
+      case None =>
+        (Some(serializedListener), ())
+      case Some(lst) =>
+        (Some(s"$serializedListener,$lst"), ())
     }._2
   }
 
@@ -410,8 +429,10 @@ trait Config extends Serializable {
   override def hashCode = toMap.hashCode
   override def equals(that: Any) =
     that match {
-      case thatConf: Config => toMap == thatConf.toMap
-      case _                => false
+      case thatConf: Config =>
+        toMap == thatConf.toMap
+      case _ =>
+        false
     }
 }
 
@@ -488,8 +509,10 @@ object Config {
   def defaultFrom(mode: Mode): Config =
     default ++ (
       mode match {
-        case m: HadoopMode => Config.fromHadoop(m.jobConf) - IoSerializationsKey
-        case _             => empty
+        case m: HadoopMode =>
+          Config.fromHadoop(m.jobConf) - IoSerializationsKey
+        case _ =>
+          empty
       }
     )
 
@@ -523,9 +546,11 @@ object Config {
                 nonStrings - AppProps.APP_JAR_CLASS,
                 initConf.setCascadingAppJar(cls)))
           } catch {
-            case err: Throwable => Failure(err)
+            case err: Throwable =>
+              Failure(err)
           }
-        case None => Success((nonStrings, initConf))
+        case None =>
+          Success((nonStrings, initConf))
       }
     ).flatMap {
       case (unhandled, withJar) =>
@@ -545,8 +570,10 @@ object Config {
     m.foldLeft((Map.empty[K, V], Map.empty[String, String])) {
       case ((kvs, conf), kv) =>
         kv match {
-          case (ks: String, vs: String) => (kvs, conf + (ks -> vs))
-          case _                        => (kvs + kv, conf)
+          case (ks: String, vs: String) =>
+            (kvs, conf + (ks -> vs))
+          case _ =>
+            (kvs + kv, conf)
         }
     }
 

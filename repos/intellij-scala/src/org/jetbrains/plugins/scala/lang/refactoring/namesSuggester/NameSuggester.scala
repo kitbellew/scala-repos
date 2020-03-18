@@ -87,8 +87,10 @@ object NameSuggester {
       emptyValidator(DecompilerUtil.obtainProject))
     val result = names
       .map {
-        case "class" => "clazz"
-        case s       => s
+        case "class" =>
+          "clazz"
+        case s =>
+          s
       }
       .filter(name => name != "" && ScalaNamesUtil.isIdentifier(name))
     if (result.length == 0) {
@@ -127,16 +129,22 @@ object NameSuggester {
           add(s)
         else {
           s match {
-            case "x"     => add("xs")
-            case "index" => add("indices")
-            case _       => add(English.plural(s))
+            case "x" =>
+              add("xs")
+            case "index" =>
+              add("indices")
+            case _ =>
+              add(English.plural(s))
           }
         }
       }
       arg match {
-        case ValType(name)        => addPlural(name.toLowerCase)
-        case ScTupleType(_)       => addPlural("tuple")
-        case ScFunctionType(_, _) => addPlural("function")
+        case ValType(name) =>
+          addPlural(name.toLowerCase)
+        case ScTupleType(_) =>
+          addPlural("tuple")
+        case ScFunctionType(_, _) =>
+          addPlural("function")
         case ScDesignatorType(e) =>
           val camelNames = getCamelNames(e.name)
           camelNames.foreach(addPlural)
@@ -174,12 +182,14 @@ object NameSuggester {
             case Success(ExtractClass(c), _) =>
               generateNamesByType(baseType)
               inner(c)
-            case _ => generateNamesByType(baseType)
+            case _ =>
+              generateNamesByType(baseType)
           }
         case ScDesignatorType(c: PsiClass) =>
           generateNamesByType(baseType)
           inner(c)
-        case _ => generateNamesByType(baseType)
+        case _ =>
+          generateNamesByType(baseType)
       }
 
       def inner(classOfBaseType: PsiClass) {
@@ -267,8 +277,10 @@ object NameSuggester {
                 "i"
               else
                 "int")
-          case "Unit" => add("unit")
-          case "Byte" => add("byte")
+          case "Unit" =>
+            add("unit")
+          case "Byte" =>
+            add("byte")
           case "Long" =>
             add(
               if (shortVersion)
@@ -307,15 +319,20 @@ object NameSuggester {
                 "char")
           case _ =>
         }
-      case ScTupleType(comps)          => add("tuple")
-      case ScFunctionType(ret, params) => addForFunctionType(ret, params)
-      case ScDesignatorType(e)         => addForNamedElement(e)
+      case ScTupleType(comps) =>
+        add("tuple")
+      case ScFunctionType(ret, params) =>
+        addForFunctionType(ret, params)
+      case ScDesignatorType(e) =>
+        addForNamedElement(e)
       case ScTypeParameterType(name, typeParams, lowerType, upperType, ptp) =>
         addForNamedElementString(name)
-      case ScProjectionType(p, e, _) => addForNamedElement(e)
+      case ScProjectionType(p, e, _) =>
+        addForNamedElement(e)
       case ScParameterizedType(tp, args) =>
         addForParameterizedType(tp, args)
-      case JavaArrayType(arg) => addPlurals(arg)
+      case JavaArrayType(arg) =>
+        addPlurals(arg)
       case ScCompoundType(comps, _, _) =>
         if (comps.size > 0)
           generateNamesByType(comps(0))
@@ -328,8 +345,10 @@ object NameSuggester {
       names: ArrayBuffer[String],
       validator: NameValidator) {
     expr match {
-      case _: ScThisReference  => add("thisInstance")
-      case _: ScSuperReference => add("superInstance")
+      case _: ScThisReference =>
+        add("thisInstance")
+      case _: ScSuperReference =>
+        add("superInstance")
       case x: ScReferenceElement if x.refName != null =>
         val name = x.refName
         if (name != null && name.toUpperCase == name) {
@@ -347,11 +366,13 @@ object NameSuggester {
         }
       case _ =>
         expr.getContext match {
-          case x: ScAssignStmt => x.assignName.foreach(add)
+          case x: ScAssignStmt =>
+            x.assignName.foreach(add)
           case x: ScArgumentExprList =>
             x.matchedParameters.find(_._1 == expr) match {
-              case Some((_, parameter)) => add(parameter.name)
-              case _                    =>
+              case Some((_, parameter)) =>
+                add(parameter.name)
+              case _ =>
             }
           case _ =>
         }
@@ -366,8 +387,10 @@ object NameSuggester {
     val s =
       if (Array("get", "set", "is").exists(name.startsWith))
         name.charAt(0) match {
-          case 'g' | 's' => name.substring(3, name.length)
-          case _         => name.substring(2, name.length)
+          case 'g' | 's' =>
+            name.substring(3, name.length)
+          case _ =>
+            name.substring(2, name.length)
         }
       else
         name
@@ -389,8 +412,10 @@ object NameSuggester {
     val s =
       if (Array("get", "set", "is").exists(name.startsWith))
         name.charAt(0) match {
-          case 'g' | 's' => name.substring(3, name.length)
-          case _         => name.substring(2, name.length)
+          case 'g' | 's' =>
+            name.substring(3, name.length)
+          case _ =>
+            name.substring(2, name.length)
         }
       else
         name

@@ -24,7 +24,8 @@ class ByteBufferBackedInputStream(buffer: ByteBuffer) extends InputStream {
     buffer.hasRemaining match {
       case true =>
         (buffer.get() & 0xFF)
-      case false => -1
+      case false =>
+        -1
     }
   }
 
@@ -35,7 +36,8 @@ class ByteBufferBackedInputStream(buffer: ByteBuffer) extends InputStream {
         val realLen = math.min(len, buffer.remaining())
         buffer.get(bytes, off, realLen)
         realLen
-      case false => -1
+      case false =>
+        -1
     }
   }
 }

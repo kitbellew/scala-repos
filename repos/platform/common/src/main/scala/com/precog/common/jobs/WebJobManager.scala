@@ -191,7 +191,8 @@ trait WebJobManager
         client.put[JValue]("/jobs/" + jobId + "/status")(update) map {
           case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
             obj.validated[Message] map (Status.fromMessage(_)) match {
-              case Success(Some(status)) => right(Right(status))
+              case Success(Some(status)) =>
+                right(Right(status))
               case Success(None) =>
                 left("Invalid status message returned from server.")
               case Failure(error) =>
@@ -217,7 +218,8 @@ trait WebJobManager
         client.get[JValue]("/jobs/" + jobId + "/status") map {
           case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
             obj.validated[Message] map (Status.fromMessage(_)) match {
-              case Success(Some(status)) => right(Some(status))
+              case Success(Some(status)) =>
+                right(Some(status))
               case _ =>
                 left("Invalid status returned from upstream server:\n" + obj)
             }
@@ -286,8 +288,10 @@ trait WebJobManager
                   state.serialize)) flatMap {
                 case HttpResponse(HttpStatus(OK, _), _, _, _) =>
                   findJob(jobId) map {
-                    case Some(job) => Right(job)
-                    case None      => Left("Could not find job with ID: " + jobId)
+                    case Some(job) =>
+                      Right(job)
+                    case None =>
+                      Left("Could not find job with ID: " + jobId)
                   }
                 case HttpResponse(
                       HttpStatus(BadRequest, _),
@@ -322,10 +326,12 @@ trait WebJobManager
             val t = ResponseStreamAsFutureStream
             Right(t(data))
           } map {
-          case HttpResponse(HttpStatus(OK, _), _, _, _) => right(Right(()))
+          case HttpResponse(HttpStatus(OK, _), _, _, _) =>
+            right(Right(()))
           case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
             right(Left("Cannot find job with id: " + jobId))
-          case res => left(unexpected(res))
+          case res =>
+            left(unexpected(res))
         })
     }
   }

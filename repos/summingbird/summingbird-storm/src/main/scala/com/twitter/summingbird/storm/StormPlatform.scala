@@ -213,7 +213,8 @@ abstract class Storm(
       .addConfigurations(tickConfig)
 
     val dependenciesNames = stormDag.dependenciesOf(node).collect {
-      case x: StormNode => stormDag.getNodeName(x)
+      case x: StormNode =>
+        stormDag.getNodeName(x)
     }
     if (usePreferLocalDependency.get) {
       dependenciesNames.foreach {
@@ -232,7 +233,8 @@ abstract class Storm(
       node: StormNode)(implicit topologyBuilder: TopologyBuilder) = {
     val (spout, parOpt) =
       node.members.collect {
-        case Source(SpoutSource(s, parOpt)) => (s, parOpt)
+        case Source(SpoutSource(s, parOpt)) =>
+          (s, parOpt)
       }.head
     val nodeName = stormDag.getNodeName(node)
 
@@ -249,9 +251,12 @@ abstract class Storm(
                     (time, x)
                   }
               }
-            case NamedProducer(_, _)      => spout
-            case IdentityKeyedProducer(_) => spout
-            case AlsoProducer(_, _)       => spout
+            case NamedProducer(_, _) =>
+              spout
+            case IdentityKeyedProducer(_) =>
+              spout
+            case AlsoProducer(_, _) =>
+              spout
             case _ =>
               sys.error("not possible, given the above call to span.\n" + p)
           }
@@ -290,7 +295,8 @@ abstract class Storm(
       node: StormNode)(implicit topologyBuilder: TopologyBuilder) = {
     val summer: Summer[Storm, K, V] =
       node.members.collect {
-        case c: Summer[Storm, K, V] => c
+        case c: Summer[Storm, K, V] =>
+          c
       }.head
     implicit val semigroup = summer.semigroup
     implicit val batcher = summer.store.mergeableBatcher
@@ -302,7 +308,8 @@ abstract class Storm(
 
     val supplier: MergeableStoreFactory[ExecutorKeyType, V] =
       summer.store match {
-        case m: MergeableStoreFactory[ExecutorKeyType, V] => m
+        case m: MergeableStoreFactory[ExecutorKeyType, V] =>
+          m
         case _ =>
           sys.error(
             "Should never be able to get here, looking for a MergeableStoreFactory from %s"
@@ -373,7 +380,8 @@ abstract class Storm(
       .setBolt(nodeName, sinkBolt, parallelism)
       .addConfigurations(tickConfig)
     val dependenciesNames = stormDag.dependenciesOf(node).collect {
-      case x: StormNode => stormDag.getNodeName(x)
+      case x: StormNode =>
+        stormDag.getNodeName(x)
     }
     dependenciesNames.foreach { parentName =>
       declarer.fieldsGrouping(parentName, new Fields(AGG_KEY))
@@ -460,9 +468,12 @@ abstract class Storm(
 
     stormDag.nodes.foreach { node =>
       node match {
-        case _: SummerNode[_]  => scheduleSummerBolt(jobID, stormDag, node)
-        case _: FlatMapNode[_] => scheduleFlatMapper(jobID, stormDag, node)
-        case _: SourceNode[_]  => scheduleSpout(jobID, stormDag, node)
+        case _: SummerNode[_] =>
+          scheduleSummerBolt(jobID, stormDag, node)
+        case _: FlatMapNode[_] =>
+          scheduleFlatMapper(jobID, stormDag, node)
+        case _: SourceNode[_] =>
+          scheduleSpout(jobID, stormDag, node)
       }
     }
     PlannedTopology(config, topologyBuilder.createTopology)

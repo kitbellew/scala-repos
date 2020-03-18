@@ -67,7 +67,8 @@ private[spark] class TimeStampedHashMap[A, B](
       .asInstanceOf[ConcurrentHashMap[A, TimeStampedValue[B1]]]
     newMap.internalMap.putAll(oldInternalMap)
     kv match {
-      case (a, b) => newMap.internalMap.put(a, TimeStampedValue(b, currentTime))
+      case (a, b) =>
+        newMap.internalMap.put(a, TimeStampedValue(b, currentTime))
     }
     newMap
   }
@@ -81,7 +82,8 @@ private[spark] class TimeStampedHashMap[A, B](
 
   override def +=(kv: (A, B)): this.type = {
     kv match {
-      case (a, b) => internalMap.put(a, TimeStampedValue(b, currentTime))
+      case (a, b) =>
+        internalMap.put(a, TimeStampedValue(b, currentTime))
     }
     this
   }
@@ -104,7 +106,8 @@ private[spark] class TimeStampedHashMap[A, B](
   override def filter(p: ((A, B)) => Boolean): mutable.Map[A, B] = {
     internalMap.asScala
       .map {
-        case (k, TimeStampedValue(v, t)) => (k, v)
+        case (k, TimeStampedValue(v, t)) =>
+          (k, v)
       }
       .filter(p)
   }
@@ -131,7 +134,8 @@ private[spark] class TimeStampedHashMap[A, B](
 
   def putAll(map: Map[A, B]) {
     map.foreach {
-      case (k, v) => update(k, v)
+      case (k, v) =>
+        update(k, v)
     }
   }
 

@@ -19,7 +19,8 @@ class X1(val s: String) extends AnyVal {
     i2.z
 
     {
-      case x => x
+      case x =>
+        x
     }: PartialFunction[Int, Int] // allowed
   }
 }

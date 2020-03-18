@@ -77,8 +77,10 @@ class ReadSupportInstanceProxy[T] extends ReadSupport[T] {
       readSupport)
 
     readSupportInstance match {
-      case Success(obj) => obj.asInstanceOf[ReadSupport[T]]
-      case Failure(e)   => throw e
+      case Success(obj) =>
+        obj.asInstanceOf[ReadSupport[T]]
+      case Failure(e) =>
+        throw e
     }
   }
 
@@ -146,8 +148,10 @@ class ParquetOutputFormatFromWriteSupportInstance[T]
     val writeSupportInstance = ParquetInputOutputFormat.injection.invert(
       writeSupport)
     writeSupportInstance match {
-      case Success(obj) => obj.asInstanceOf[WriteSupport[T]]
-      case Failure(e)   => throw e
+      case Success(obj) =>
+        obj.asInstanceOf[WriteSupport[T]]
+      case Failure(e) =>
+        throw e
     }
   }
 }

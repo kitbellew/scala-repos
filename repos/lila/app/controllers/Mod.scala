@@ -33,8 +33,10 @@ object Mod extends LilaController {
     Secure(_.MarkTroll) { implicit ctx => me =>
       modApi.troll(me.id, username, getBool("set")) inject {
         get("then") match {
-          case Some("reports") => Redirect(routes.Report.list)
-          case _               => redirect(username)
+          case Some("reports") =>
+            Redirect(routes.Report.list)
+          case _ =>
+            redirect(username)
         }
       }
     }
@@ -118,7 +120,8 @@ object Mod extends LilaController {
             .map(p => Env.chat.api.playerChat findNonEmpty p.gameId)
             .sequence
           povWithChats = (povs zip chats) collect {
-            case (p, Some(c)) => p -> c
+            case (p, Some(c)) =>
+              p -> c
           } take 9
           threads <- {
             lila.message.ThreadRepo.visibleByUser(user.id, 50) map {

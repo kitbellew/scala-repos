@@ -79,8 +79,10 @@ object MiMa extends AutoPlugin {
     import com.typesafe.tools.mima.core._
     override def apply(p: Problem): Boolean =
       p match {
-        case t: TemplateProblem => !t.ref.fullName.startsWith(start)
-        case m: MemberProblem   => !m.ref.owner.fullName.startsWith(start)
+        case t: TemplateProblem =>
+          !t.ref.fullName.startsWith(start)
+        case m: MemberProblem =>
+          !m.ref.owner.fullName.startsWith(start)
       }
   }
 

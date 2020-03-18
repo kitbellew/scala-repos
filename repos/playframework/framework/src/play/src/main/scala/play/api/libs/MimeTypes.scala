@@ -58,9 +58,12 @@ object MimeTypes {
     */
   def isText(mimeType: String): Boolean = {
     mimeType.trim match {
-      case text if text.startsWith("text/")      => true
-      case text if additionalText.contains(text) => true
-      case _                                     => false
+      case text if text.startsWith("text/") =>
+        true
+      case text if additionalText.contains(text) =>
+        true
+      case _ =>
+        false
     }
   }
 

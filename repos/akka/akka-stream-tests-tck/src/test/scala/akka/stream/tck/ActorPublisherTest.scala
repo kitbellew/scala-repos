@@ -31,7 +31,8 @@ object ActorPublisherTest {
 
       case Produce if totalDemand > 0 && !isCompleted && source.hasNext ⇒
         onNext(source.next())
-      case Produce if !isCompleted && !source.hasNext ⇒ onComplete()
+      case Produce if !isCompleted && !source.hasNext ⇒
+        onComplete()
       case Produce if isCompleted ⇒ // no-op
       case _ ⇒ // no-op
     }

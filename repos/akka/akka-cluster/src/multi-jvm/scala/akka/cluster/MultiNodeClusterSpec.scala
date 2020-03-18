@@ -173,7 +173,8 @@ trait MultiNodeClusterSpec
         val address = node(role).address
         cachedAddresses.put(role, address)
         address
-      case address ⇒ address
+      case address ⇒
+        address
     }
   }
 
@@ -272,7 +273,8 @@ trait MultiNodeClusterSpec
     val members = gotMembers.toIndexedSeq
     members.size should ===(expectedAddresses.length)
     expectedAddresses.sorted.zipWithIndex.foreach {
-      case (a, i) ⇒ members(i).address should ===(a)
+      case (a, i) ⇒
+        members(i).address should ===(a)
     }
   }
 
@@ -401,9 +403,11 @@ trait MultiNodeClusterSpec
     cluster.failureDetector match {
       case reg: DefaultFailureDetectorRegistry[Address] ⇒
         reg.failureDetector(address) collect {
-          case p: FailureDetectorPuppet ⇒ p
+          case p: FailureDetectorPuppet ⇒
+            p
         }
-      case _ ⇒ None
+      case _ ⇒
+        None
     }
 
 }

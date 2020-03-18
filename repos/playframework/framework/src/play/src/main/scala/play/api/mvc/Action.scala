@@ -231,8 +231,10 @@ trait BodyParser[+A]
     new BodyParser[B] {
       def apply(request: RequestHeader) =
         self(request).map {
-          case Left(e)  => Left(e)
-          case Right(a) => f(a)
+          case Left(e) =>
+            Left(e)
+          case Right(a) =>
+            f(a)
         }(pec)
       override def toString = self.toString
     }
@@ -497,9 +499,11 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
             invokeBlock(request, block)
           } catch {
             // NotImplementedError is not caught by NonFatal, wrap it
-            case e: NotImplementedError => throw new RuntimeException(e)
+            case e: NotImplementedError =>
+              throw new RuntimeException(e)
             // LinkageError is similarly harmless in Play Framework, since automatic reloading could easily trigger it
-            case e: LinkageError => throw new RuntimeException(e)
+            case e: LinkageError =>
+              throw new RuntimeException(e)
           }
         override def executionContext = ActionBuilder.this.executionContext
       })

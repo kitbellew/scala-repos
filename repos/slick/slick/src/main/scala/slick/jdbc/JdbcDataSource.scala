@@ -38,14 +38,16 @@ object JdbcDataSource extends Logging {
     }
     val pf: JdbcDataSourceFactory =
       c.getStringOr("connectionPool", "HikariCP") match {
-        case "disabled" => DataSourceJdbcDataSource
+        case "disabled" =>
+          DataSourceJdbcDataSource
         case "HikariCP" =>
           loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
         case "slick.jdbc.HikariCPJdbcDataSource" =>
           logger.warn(
             "connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")
           loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
-        case name => loadFactory(name)
+        case name =>
+          loadFactory(name)
       }
     pf.forConfig(c, driver, name, classLoader)
   }
@@ -87,8 +89,9 @@ class DataSourceJdbcDataSource(
     try if (keepAliveConnection && (openedKeepAliveConnection ne null))
       openedKeepAliveConnection.close()
     finally ds match {
-      case ds: Closeable => ds.close()
-      case _             =>
+      case ds: Closeable =>
+        ds.close()
+      case _ =>
     }
   }
 }
@@ -146,7 +149,8 @@ trait DriverBasedJdbcDataSource extends JdbcDataSource {
       val oldDriver =
         try DriverManager.getDriver(url)
         catch {
-          case ex: SQLException if "08001" == ex.getSQLState => null
+          case ex: SQLException if "08001" == ex.getSQLState =>
+            null
         }
       if (oldDriver eq null) {
         Class.forName(driverName)
@@ -252,11 +256,16 @@ object DriverJdbcDataSource extends JdbcDataSourceFactory {
 /** Set parameters on a new Connection. This is used by [[DataSourceJdbcDataSource]]. */
 class ConnectionPreparer(c: Config) extends (Connection => Unit) {
   val isolation = c.getStringOpt("isolation").map {
-    case "NONE"             => Connection.TRANSACTION_NONE
-    case "READ_COMMITTED"   => Connection.TRANSACTION_READ_COMMITTED
-    case "READ_UNCOMMITTED" => Connection.TRANSACTION_READ_UNCOMMITTED
-    case "REPEATABLE_READ"  => Connection.TRANSACTION_REPEATABLE_READ
-    case "SERIALIZABLE"     => Connection.TRANSACTION_SERIALIZABLE
+    case "NONE" =>
+      Connection.TRANSACTION_NONE
+    case "READ_COMMITTED" =>
+      Connection.TRANSACTION_READ_COMMITTED
+    case "READ_UNCOMMITTED" =>
+      Connection.TRANSACTION_READ_UNCOMMITTED
+    case "REPEATABLE_READ" =>
+      Connection.TRANSACTION_REPEATABLE_READ
+    case "SERIALIZABLE" =>
+      Connection.TRANSACTION_SERIALIZABLE
     case unknown =>
       throw new SlickException(
         s"Unknown transaction isolation level [$unknown]")

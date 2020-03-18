@@ -80,7 +80,8 @@ private[akka] class ActorPublisher[T](val impl: ActorRef) extends Publisher[T] {
     shutdownReason = reason
     pendingSubscribers.getAndSet(null) match {
       case null ⇒ // already called earlier
-      case pending ⇒ pending foreach reportSubscribeFailure
+      case pending ⇒
+        pending foreach reportSubscribeFailure
     }
   }
 

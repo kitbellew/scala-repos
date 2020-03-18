@@ -51,8 +51,10 @@ object TypedActorSpec {
         val currentItems = current.get
         val newItems =
           currentItems match {
-            case Nil ⇒ items
-            case xs ⇒ xs
+            case Nil ⇒
+              items
+            case xs ⇒
+              xs
           }
 
         if (current.compareAndSet(currentItems, newItems.tail))
@@ -199,7 +201,8 @@ object TypedActorSpec {
       TypedActor.context match {
         case null ⇒
           throw new IllegalStateException("TypedActor.context is null!")
-        case some ⇒ f
+        case some ⇒
+          f
       }
 
     override def crash(): Unit = throw new IllegalStateException("Crash!")
@@ -224,7 +227,8 @@ object TypedActorSpec {
     override def onReceive(msg: Any, sender: ActorRef): Unit = {
       ensureContextAvailable(
         msg match {
-          case "pigdog" ⇒ sender ! "dogpig"
+          case "pigdog" ⇒
+            sender ! "dogpig"
         })
     }
   }

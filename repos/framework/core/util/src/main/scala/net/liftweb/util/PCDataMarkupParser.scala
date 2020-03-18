@@ -292,12 +292,14 @@ object HtmlEntities {
   )
 
   val entMap: Map[String, Char] = Map.empty ++ entList.map {
-    case (name, value) => (name, value.toChar)
+    case (name, value) =>
+      (name, value.toChar)
   }
 
   val revMap: Map[Char, String] = Map(
     entList.map {
-      case (name, value) => (value.toChar, name)
+      case (name, value) =>
+        (value.toChar, name)
     }: _*)
 
   val entities = entList.map {
@@ -388,14 +390,16 @@ class PCDataXmlParser(val input: Source)
 
     def findIt(base: MetaData, what: MetaData): MetaData =
       (base, what) match {
-        case (_, Null) => Null
+        case (_, Null) =>
+          Null
         case (upb: UnprefixedAttribute, upn: UnprefixedAttribute)
             if upb.key == upn.key =>
           upn
         case (pb: PrefixedAttribute, pn: PrefixedAttribute)
             if pb.key == pn.key && pb.pre == pn.key =>
           pn
-        case _ => findIt(base, what.next)
+        case _ =>
+          findIt(base, what.next)
       }
 
     if (!aMap.wellformed(scope)) {
@@ -493,9 +497,12 @@ case class PCData(_data: String) extends Atom[String](_data) {
 
   final override def equals(x: Any) =
     x match {
-      case s: String  => s.equals(data.toString())
-      case s: Atom[_] => data == s.data
-      case _          => false
+      case s: String =>
+        s.equals(data.toString())
+      case s: Atom[_] =>
+        data == s.data
+      case _ =>
+        false
     }
 
   /** Returns text, with some characters escaped according to the XML
@@ -557,13 +564,17 @@ object AltXML {
       stripComment: Boolean,
       convertAmp: Boolean): Unit =
     x match {
-      case Text(str) => escape(str, sb, !convertAmp)
+      case Text(str) =>
+        escape(str, sb, !convertAmp)
 
-      case c: PCData => c.buildString(sb)
+      case c: PCData =>
+        c.buildString(sb)
 
-      case c: scala.xml.PCData => c.buildString(sb)
+      case c: scala.xml.PCData =>
+        c.buildString(sb)
 
-      case up: Unparsed => up.buildString(sb)
+      case up: Unparsed =>
+        up.buildString(sb)
 
       case a: Atom[_] if a.getClass eq classOf[Atom[_]] =>
         escape(a.data.toString, sb, !convertAmp)
@@ -573,8 +584,10 @@ object AltXML {
 
       case er: EntityRef if convertAmp =>
         HtmlEntities.entMap.get(er.entityName) match {
-          case Some(chr) if chr.toInt >= 128 => sb.append(chr)
-          case _                             => er.buildString(sb)
+          case Some(chr) if chr.toInt >= 128 =>
+            sb.append(chr)
+          case _ =>
+            er.buildString(sb)
         }
 
       case x: SpecialNode =>
@@ -613,13 +626,20 @@ object AltXML {
     var pos = 0
     while (pos < len) {
       str.charAt(pos) match {
-        case '<'  => sb.append("&lt;")
-        case '>'  => sb.append("&gt;")
-        case '&'  => sb.append("&amp;")
-        case '"'  => sb.append("&quot;")
-        case '\n' => sb.append('\n')
-        case '\r' => sb.append('\r')
-        case '\t' => sb.append('\t')
+        case '<' =>
+          sb.append("&lt;")
+        case '>' =>
+          sb.append("&gt;")
+        case '&' =>
+          sb.append("&amp;")
+        case '"' =>
+          sb.append("&quot;")
+        case '\n' =>
+          sb.append('\n')
+        case '\r' =>
+          sb.append('\r')
+        case '\t' =>
+          sb.append('\t')
         case c =>
           if (reverse) {
             HtmlEntities.revMap.get(c) match {
@@ -659,13 +679,17 @@ object AltXML {
       convertAmp: Boolean,
       legacyIeCompatibilityMode: Boolean): Unit =
     x match {
-      case Text(str) => escape(str, sb, !convertAmp)
+      case Text(str) =>
+        escape(str, sb, !convertAmp)
 
-      case c: PCData => c.buildString(sb)
+      case c: PCData =>
+        c.buildString(sb)
 
-      case c: scala.xml.PCData => c.buildString(sb)
+      case c: scala.xml.PCData =>
+        c.buildString(sb)
 
-      case up: Unparsed => up.buildString(sb)
+      case up: Unparsed =>
+        up.buildString(sb)
 
       case a: Atom[_] if a.getClass eq classOf[Atom[_]] =>
         escape(a.data.toString, sb, !convertAmp)
@@ -675,8 +699,10 @@ object AltXML {
 
       case er: EntityRef if convertAmp =>
         HtmlEntities.entMap.get(er.entityName) match {
-          case Some(chr) if chr.toInt >= 128 => sb.append(chr)
-          case _                             => er.buildString(sb)
+          case Some(chr) if chr.toInt >= 128 =>
+            sb.append(chr)
+          case _ =>
+            er.buildString(sb)
         }
 
       case x: SpecialNode =>

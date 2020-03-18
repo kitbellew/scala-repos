@@ -122,8 +122,10 @@ class ServerMediator(project: Project) extends ProjectComponent {
 
               val outputUrlParts =
                 extension.getCompilerOutputUrl match {
-                  case null => Seq.empty
-                  case url  => url.split("/").toSeq
+                  case null =>
+                    Seq.empty
+                  case url =>
+                    url.split("/").toSeq
                 }
               val nameForTests =
                 if (outputUrlParts.lastOption.contains("classes"))

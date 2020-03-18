@@ -311,7 +311,8 @@ object DumpLogSegments {
           "Failed to decode message using offset topic decoder (message had a missing key)")
       } else {
         GroupMetadataManager.readMessageKey(message.key) match {
-          case offsetKey: OffsetKey => parseOffsets(offsetKey, message.payload)
+          case offsetKey: OffsetKey =>
+            parseOffsets(offsetKey, message.payload)
           case groupMetadataKey: GroupMetadataKey =>
             parseGroupMetadata(groupMetadataKey, message.payload)
           case _ =>

@@ -83,7 +83,8 @@ final class SinatraRouteMatcher(pattern: String)
       if (!splats.isEmpty)
         throw new Exception("Too many splats for builder \"%s\"" format pattern)
       val pairs = params map {
-        case (key, value) => key.urlEncode + "=" + value.urlEncode
+        case (key, value) =>
+          key.urlEncode + "=" + value.urlEncode
       }
       val queryString =
         if (pairs.isEmpty)
@@ -114,7 +115,8 @@ final class SinatraRouteMatcher(pattern: String)
 
     private def prefixedOptional: Parser[Builder => Builder] =
       ("." | "/") ~ "?:" ~ """\w+""".r ~ "?" ^^ {
-        case p ~ "?:" ~ o ~ "?" => builder => builder addPrefixedOptional (o, p)
+        case p ~ "?:" ~ o ~ "?" =>
+          builder => builder addPrefixedOptional (o, p)
       }
 
     private def optional: Parser[Builder => Builder] =
@@ -168,13 +170,15 @@ final class RailsRouteMatcher(pattern: String)
     def optional(builder: Builder => Builder): Builder =
       try builder(this)
       catch {
-        case e: Exception => this
+        case e: Exception =>
+          this
       }
 
     // appends additional params as a query string
     def get: String = {
       val pairs = params map {
-        case (key, value) => key.urlEncode + "=" + value.urlEncode
+        case (key, value) =>
+          key.urlEncode + "=" + value.urlEncode
       }
       val queryString =
         if (pairs.isEmpty)
@@ -258,8 +262,10 @@ final class RegexRouteMatcher(regex: Regex) extends RouteMatcher {
   def apply(requestPath: String): Option[MultiMap] =
     regex.findFirstMatchIn(requestPath) map {
       _.subgroups match {
-        case Nil => MultiMap()
-        case xs  => Map("captures" -> xs)
+        case Nil =>
+          MultiMap()
+        case xs =>
+          Map("captures" -> xs)
       }
     }
 

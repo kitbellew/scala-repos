@@ -47,7 +47,8 @@ class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
       element: PsiElement,
       context: ProcessingContext): Array[PsiReference] = {
     element match {
-      case s: ScInterpolatedStringLiteral => Array.empty
+      case s: ScInterpolatedStringLiteral =>
+        Array.empty
       case l: ScLiteral
           if (l.isString || l.isMultiLineString) && l.getText.contains("$") =>
         val interpolated = ScalaPsiElementFactory.createExpressionFromText(
@@ -55,9 +56,12 @@ class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
           l.getContext)
         interpolated.getChildren
           .filter {
-            case r: ScInterpolatedStringPartReference => false
-            case ref: ScReferenceExpression           => true
-            case _                                    => false
+            case r: ScInterpolatedStringPartReference =>
+              false
+            case ref: ScReferenceExpression =>
+              true
+            case _ =>
+              false
           }
           .map {
             case ref: ScReferenceExpression =>
@@ -90,7 +94,8 @@ class InterpolatedStringReferenceProvider extends PsiReferenceProvider {
                 override def resolve(): PsiElement = null
               }
           }
-      case _ => Array.empty
+      case _ =>
+        Array.empty
     }
   }
 }
@@ -141,7 +146,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
               createMethod.setAccessible(true)
               createMethod.invoke(directory)
             } catch {
-              case t: Exception => LOG.warn(t)
+              case t: Exception =>
+                LOG.warn(t)
             }
           } else {
             result.add(directory)

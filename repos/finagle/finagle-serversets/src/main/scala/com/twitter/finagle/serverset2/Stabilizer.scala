@@ -218,7 +218,8 @@ private[serverset2] object Stabilizer {
             }
         }
         .collect {
-          case States(Some(publish), _, _, _) => publish
+          case States(Some(publish), _, _, _) =>
+            publish
         }
 
       batchedUpdates.register(Witness(u))

@@ -232,7 +232,8 @@ trait DocumentCleaner {
           try {
             elem.appendChild(n)
           } catch {
-            case ex: Exception => info(ex, "Failed to append cleaned child!")
+            case ex: Exception =>
+              info(ex, "Failed to append cleaned child!")
           }
         })
       }
@@ -266,7 +267,8 @@ trait DocumentCleaner {
             try {
               div.appendChild(node)
             } catch {
-              case e: Exception => info(e, e.toString)
+              case e: Exception =>
+                info(e, e.toString)
             }
 
           })

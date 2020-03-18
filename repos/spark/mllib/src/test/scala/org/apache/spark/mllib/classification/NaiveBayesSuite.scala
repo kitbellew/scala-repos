@@ -75,7 +75,8 @@ object NaiveBayesSuite {
               val mult = BrzMultinomial(BDV(_theta(y)))
               val emptyMap = (0 until D).map(x => (x, 0.0)).toMap
               val counts = emptyMap ++ mult.sample(sample).groupBy(x => x).map {
-                case (index, reps) => (index, reps.size.toDouble)
+                case (index, reps) =>
+                  (index, reps.size.toDouble)
               }
               counts.toArray.sortBy(_._1).map(_._2)
             case _ =>
@@ -197,7 +198,8 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(predicted.sum ~== 1.0 relTol 1.0e-10)
       val expected = expectedMultinomialProbabilities(model, features)
       expected.zip(predicted).foreach {
-        case (e, p) => assert(e ~== p relTol 1.0e-10)
+        case (e, p) =>
+          assert(e ~== p relTol 1.0e-10)
       }
     }
   }
@@ -271,7 +273,8 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(predicted.sum ~== 1.0 relTol 1.0e-10)
       val expected = expectedBernoulliProbabilities(model, features)
       expected.zip(predicted).foreach {
-        case (e, p) => assert(e ~== p relTol 1.0e-10)
+        case (e, p) =>
+          assert(e ~== p relTol 1.0e-10)
       }
     }
   }

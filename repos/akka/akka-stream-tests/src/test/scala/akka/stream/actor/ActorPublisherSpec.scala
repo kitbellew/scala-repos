@@ -50,15 +50,22 @@ object ActorPublisherSpec {
     import akka.stream.actor.ActorPublisherMessage._
 
     def receive = {
-      case Request(element) ⇒ probe ! TotalDemand(totalDemand)
-      case Produce(elem) ⇒ onNext(elem)
-      case Err(reason) ⇒ onError(new RuntimeException(reason) with NoStackTrace)
+      case Request(element) ⇒
+        probe ! TotalDemand(totalDemand)
+      case Produce(elem) ⇒
+        onNext(elem)
+      case Err(reason) ⇒
+        onError(new RuntimeException(reason) with NoStackTrace)
       case ErrThenStop(reason) ⇒
         onErrorThenStop(new RuntimeException(reason) with NoStackTrace)
-      case Complete ⇒ onComplete()
-      case CompleteThenStop ⇒ onCompleteThenStop()
-      case Boom ⇒ throw new RuntimeException("boom") with NoStackTrace
-      case ThreadName ⇒ probe ! Thread.currentThread.getName
+      case Complete ⇒
+        onComplete()
+      case CompleteThenStop ⇒
+        onCompleteThenStop()
+      case Boom ⇒
+        throw new RuntimeException("boom") with NoStackTrace
+      case ThreadName ⇒
+        probe ! Thread.currentThread.getName
     }
   }
 
@@ -337,7 +344,8 @@ class ActorPublisherSpec
 
         val (snd, rcv) = source
           .collect {
-            case n if n % 2 == 0 ⇒ "elem-" + n
+            case n if n % 2 == 0 ⇒
+              "elem-" + n
           }
           .toMat(sink)(Keep.both)
           .run()

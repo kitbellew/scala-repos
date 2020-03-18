@@ -74,8 +74,10 @@ abstract class LongBuffer private[nio] (
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: LongBuffer => compareTo(that) == 0
-      case _                => false
+      case that: LongBuffer =>
+        compareTo(that) == 0
+      case _ =>
+        false
     }
 
   @noinline

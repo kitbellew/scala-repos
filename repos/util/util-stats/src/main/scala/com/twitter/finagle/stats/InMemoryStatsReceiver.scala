@@ -95,8 +95,10 @@ class InMemoryStatsReceiver extends StatsReceiver {
           // avoid holding a reference to `f`
           val current =
             gauges.get(name) match {
-              case Some(fn) => fn()
-              case None     => -0.0f
+              case Some(fn) =>
+                fn()
+              case None =>
+                -0.0f
             }
           s"Gauge(${name.mkString("/")}=$current)"
         }

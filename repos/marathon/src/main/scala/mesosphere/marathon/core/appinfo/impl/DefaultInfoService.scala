@@ -27,7 +27,8 @@ private[appinfo] class DefaultInfoService(
     appRepository.currentVersion(id).flatMap {
       case Some(app) if selector.matches(app) =>
         newBaseData().appInfoFuture(app, embed).map(Some(_))
-      case None => Future.successful(None)
+      case None =>
+        Future.successful(None)
     }
   }
 
@@ -61,7 +62,8 @@ private[appinfo] class DefaultInfoService(
     groupManager.group(groupId).flatMap {
       case Some(group) =>
         queryForGroup(group, groupSelector, appEmbed, groupEmbed)
-      case None => Future.successful(None)
+      case None =>
+        Future.successful(None)
     }
   }
 
@@ -73,7 +75,8 @@ private[appinfo] class DefaultInfoService(
     groupManager.group(groupId, version).flatMap {
       case Some(group) =>
         queryForGroup(group, groupSelector, Set.empty, groupEmbed)
-      case None => Future.successful(None)
+      case None =>
+        Future.successful(None)
     }
   }
 

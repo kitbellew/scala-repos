@@ -72,7 +72,8 @@ trait ScalaClassLoader extends JClassLoader {
           val maybes = clazz.getConstructors filter (c =>
             c.getParameterCount == args.size &&
               (c.getParameterTypes zip args).forall {
-                case (k, a) => k isAssignableFrom a.getClass
+                case (k, a) =>
+                  k isAssignableFrom a.getClass
               })
           if (maybes.size == 1)
             maybes.head
@@ -100,8 +101,10 @@ trait ScalaClassLoader extends JClassLoader {
   /** The actual bytes for a class file, or an empty array if it can't be found. */
   def classBytes(className: String): Array[Byte] =
     classAsStream(className) match {
-      case null   => Array()
-      case stream => scala.reflect.io.Streamable.bytes(stream)
+      case null =>
+        Array()
+      case stream =>
+        scala.reflect.io.Streamable.bytes(stream)
     }
 
   /** An InputStream representing the given class name, or null if not found. */
@@ -126,7 +129,8 @@ trait ScalaClassLoader extends JClassLoader {
       method.invoke(null, Array(arguments.toArray: AnyRef): _*)
     ) // !!! : AnyRef shouldn't be necessary
     catch unwrapHandler({
-      case ex => throw ex
+      case ex =>
+        throw ex
     })
   }
 }
@@ -145,10 +149,12 @@ object ScalaClassLoader {
     */
   implicit def apply(cl: JClassLoader): ScalaClassLoader =
     cl match {
-      case cl: ScalaClassLoader => cl
+      case cl: ScalaClassLoader =>
+        cl
       case cl: JURLClassLoader =>
         new URLClassLoader(cl.getURLs.toSeq, cl.getParent)
-      case _ => new JClassLoader(cl) with ScalaClassLoader
+      case _ =>
+        new JClassLoader(cl) with ScalaClassLoader
     }
   def contextLoader = apply(Thread.currentThread.getContextClassLoader)
   def appLoader = apply(JClassLoader.getSystemClassLoader)

@@ -89,7 +89,8 @@ object SlickBuild extends Build {
 
   val scalaSettings = {
     sys.props("scala.home.local") match {
-      case null => publishedScalaSettings
+      case null =>
+        publishedScalaSettings
       case path =>
         scala.Console.err.println("Using local scala at " + path)
         localScalaSettings(path)
@@ -104,8 +105,10 @@ object SlickBuild extends Build {
 
   def extTarget(extName: String): Seq[Setting[File]] = {
     sys.props("slick.build.target") match {
-      case null => Seq.empty
-      case path => Seq(target := file(path + "/" + extName))
+      case null =>
+        Seq.empty
+      case path =>
+        Seq(target := file(path + "/" + extName))
     }
   }
 
@@ -197,11 +200,15 @@ object SlickBuild extends Build {
     tasks match {
       case t :: ts =>
         Project.runTask(t.asInstanceOf[TaskKey[Any]], state) match {
-          case None              => state.fail
-          case Some((s, Inc(_))) => s.fail
-          case Some((s, _))      => runTasksSequentially(ts)(s)
+          case None =>
+            state.fail
+          case Some((s, Inc(_))) =>
+            s.fail
+          case Some((s, _)) =>
+            runTasksSequentially(ts)(s)
         }
-      case Nil => state
+      case Nil =>
+        state
     }
 
   /* A command that runs all tests sequentially */

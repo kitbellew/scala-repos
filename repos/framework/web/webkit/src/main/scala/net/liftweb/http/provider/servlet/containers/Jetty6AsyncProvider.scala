@@ -56,7 +56,8 @@ object Jetty6AsyncProvider extends AsyncProviderMeta {
       val isPending = cci.getMethod("isPending")
       (true, (cc), (meth), (getObj), (setObj), (suspend), resume, isPending)
     } catch {
-      case e: Exception => (false, null, null, null, null, null, null, null)
+      case e: Exception =>
+        (false, null, null, null, null, null, null, null)
     }
   }
 
@@ -98,11 +99,14 @@ class Jetty6AsyncProvider(req: HTTPRequest)
       try {
         setObject.invoke(cont, null)
         ret match {
-          case (r: Req, lr: LiftResponse) => Some(r -> lr)
-          case _                          => None
+          case (r: Req, lr: LiftResponse) =>
+            Some(r -> lr)
+          case _ =>
+            None
         }
       } catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     }
 

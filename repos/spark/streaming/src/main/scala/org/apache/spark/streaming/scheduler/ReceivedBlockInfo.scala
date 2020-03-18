@@ -44,7 +44,8 @@ private[streaming] case class ReceivedBlockInfo(
     blockStoreResult match {
       case walStoreResult: WriteAheadLogBasedStoreResult =>
         Some(walStoreResult.walRecordHandle)
-      case _ => None
+      case _ =>
+        None
     }
   }
 

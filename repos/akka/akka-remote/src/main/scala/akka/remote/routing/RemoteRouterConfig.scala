@@ -87,7 +87,8 @@ final case class RemoteRouterConfig(local: Pool, nodes: Iterable[Address])
           "RemoteRouterConfig is not allowed to wrap a RemoteRouterConfig")
       case RemoteRouterConfig(local: Pool, nodes) ⇒
         copy(local = this.local.withFallback(local).asInstanceOf[Pool])
-      case _ ⇒ copy(local = this.local.withFallback(other).asInstanceOf[Pool])
+      case _ ⇒
+        copy(local = this.local.withFallback(other).asInstanceOf[Pool])
     }
 
 }

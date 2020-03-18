@@ -70,10 +70,12 @@ object MockWebSpec extends Specification {
             case mocked: MockHttpServletRequest => {
               mocked.remoteAddr = "1.2.3.4"
             }
-            case _ => println("Not a mocked request?")
+            case _ =>
+              println("Not a mocked request?")
           }
         }
-        case _ => println("Not a servlet request?")
+        case _ =>
+          println("Not a servlet request?")
       }
     }
   }

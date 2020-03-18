@@ -52,8 +52,10 @@ class BinomialHeap[T <% Ordered[T]]
       l2: List[Node[T]],
       acc: List[Node[T]]): List[Node[T]] =
     (l1, l2) match {
-      case (Nil, l2) => acc.reverse ++ l2
-      case (l1, Nil) => acc.reverse ++ l1
+      case (Nil, l2) =>
+        acc.reverse ++ l2
+      case (l1, Nil) =>
+        acc.reverse ++ l1
       case (n1 :: r1, n2 :: r2) =>
         if (n1.rank < n2.rank)
           merge(r1, l2, n1 :: acc)
@@ -86,7 +88,8 @@ class BinomialHeap[T <% Ordered[T]]
       Some(findMin(trees))
   private def findMin(trees: List[Node[T]]): T = {
     trees match {
-      case (t :: Nil) => t.x
+      case (t :: Nil) =>
+        t.x
       case (t :: ts) =>
         val x = t.x
         val y = findMin(ts)
@@ -94,7 +97,8 @@ class BinomialHeap[T <% Ordered[T]]
           x
         else
           y
-      case _ => throw new IllegalArgumentException("Shouldn't get Nil!")
+      case _ =>
+        throw new IllegalArgumentException("Shouldn't get Nil!")
     }
   }
 
@@ -104,7 +108,8 @@ class BinomialHeap[T <% Ordered[T]]
     else {
       def getMin(t: List[Node[T]]): (Node[T], List[Node[T]]) =
         t match {
-          case (n :: Nil) => (n, Nil)
+          case (n :: Nil) =>
+            (n, Nil)
           case (n :: ts) => {
             val (n2, ts2) = getMin(ts)
             if (n.x <= n2.x)
@@ -112,7 +117,8 @@ class BinomialHeap[T <% Ordered[T]]
             else
               (n2, n :: ts2)
           }
-          case _ => throw new IllegalArgumentException("Shouldn't get Nil!")
+          case _ =>
+            throw new IllegalArgumentException("Shouldn't get Nil!")
         }
       val (Node(_, x, t1), t2) = getMin(trees)
       merge(t1.reverse, t2, Nil)

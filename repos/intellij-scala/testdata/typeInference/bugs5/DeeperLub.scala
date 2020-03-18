@@ -14,8 +14,10 @@ object DeeperLub {
 
   val g =
     1 match {
-      case 1 => new B
-      case 2 => new C
+      case 1 =>
+        new B
+      case 2 =>
+        new C
     }
 
   /*start*/

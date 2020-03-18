@@ -107,7 +107,8 @@ class MarathonStore[S <: MarathonState[_, S]](
 
   private[this] def exceptionTransform[T](
       errorMessage: String): PartialFunction[Throwable, T] = {
-    case NonFatal(ex) => throw new StoreCommandFailedException(errorMessage, ex)
+    case NonFatal(ex) =>
+      throw new StoreCommandFailedException(errorMessage, ex)
   }
 
   private def stateFromBytes(bytes: Array[Byte]): S = {

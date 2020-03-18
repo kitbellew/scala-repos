@@ -109,7 +109,8 @@ object PowerIterationClusteringExample {
       .groupBy(_.cluster)
       .mapValues(_.map(_.id))
     val assignments = clusters.toList.sortBy {
-      case (k, v) => v.length
+      case (k, v) =>
+        v.length
     }
     val assignmentsStr = assignments
       .map {

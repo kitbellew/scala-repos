@@ -63,7 +63,8 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
       tokenId: ResetTokenId,
       newPassword: String): M[String \/ Boolean] = {
     findAccountByResetToken(accountId, tokenId).flatMap {
-      case errD @ -\/(error) => M.point(errD)
+      case errD @ -\/(error) =>
+        M.point(errD)
       case \/-(account) =>
         for {
           updated <- updateAccountPassword(account, newPassword)
@@ -133,9 +134,12 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
     } else {
       child.parentId map { id =>
         findAccountById(id) flatMap {
-          case None          => false.point[M]
-          case Some(`child`) => false.point[M] // avoid infinite loops
-          case Some(parent)  => hasAncestor(parent, ancestor)
+          case None =>
+            false.point[M]
+          case Some(`child`) =>
+            false.point[M] // avoid infinite loops
+          case Some(parent) =>
+            hasAncestor(parent, ancestor)
         }
       } getOrElse {
         false.point[M]
@@ -157,8 +161,10 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
               password,
               account.passwordSalt) =>
         Success(account)
-      case Some(account) => Failure("password mismatch")
-      case None          => Failure("account not found")
+      case Some(account) =>
+        Failure("password mismatch")
+      case None =>
+        Failure("account not found")
     }
   }
 

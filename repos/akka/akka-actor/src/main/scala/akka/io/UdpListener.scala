@@ -37,7 +37,8 @@ private[io] class UdpListener(
 
   val channel = bind.options
     .collectFirst {
-      case creator: DatagramChannelCreator ⇒ creator
+      case creator: DatagramChannelCreator ⇒
+        creator
     }
     .getOrElse(DatagramChannelCreator())
     .create()
@@ -50,7 +51,8 @@ private[io] class UdpListener(
       socket.bind(bind.localAddress)
       val ret =
         socket.getLocalSocketAddress match {
-          case isa: InetSocketAddress ⇒ isa
+          case isa: InetSocketAddress ⇒
+            isa
           case x ⇒
             throw new IllegalArgumentException(
               s"bound to unknown SocketAddress [$x]")
@@ -58,7 +60,8 @@ private[io] class UdpListener(
       channelRegistry.register(channel, OP_READ)
       log.debug("Successfully bound to [{}]", ret)
       bind.options.foreach {
-        case o: Inet.SocketOptionV2 ⇒ o.afterBind(channel.socket)
+        case o: Inet.SocketOptionV2 ⇒
+          o.afterBind(channel.socket)
         case _ ⇒
       }
       ret
@@ -82,9 +85,12 @@ private[io] class UdpListener(
   }
 
   def readHandlers(registration: ChannelRegistration): Receive = {
-    case SuspendReading ⇒ registration.disableInterest(OP_READ)
-    case ResumeReading ⇒ registration.enableInterest(OP_READ)
-    case ChannelReadable ⇒ doReceive(registration, bind.handler)
+    case SuspendReading ⇒
+      registration.disableInterest(OP_READ)
+    case ResumeReading ⇒
+      registration.enableInterest(OP_READ)
+    case ChannelReadable ⇒
+      doReceive(registration, bind.handler)
 
     case Unbind ⇒
       log.debug("Unbinding endpoint [{}]", bind.localAddress)
@@ -124,7 +130,8 @@ private[io] class UdpListener(
       log.debug("Closing DatagramChannel after being stopped")
       try channel.close()
       catch {
-        case NonFatal(e) ⇒ log.debug("Error closing DatagramChannel: {}", e)
+        case NonFatal(e) ⇒
+          log.debug("Error closing DatagramChannel: {}", e)
       }
     }
   }

@@ -38,11 +38,16 @@ class JavaLogger
     with RequiresMessageQueue[LoggerMessageQueueSemantics] {
 
   def receive = {
-    case event @ Error(cause, _, _, _) ⇒ log(logging.Level.SEVERE, cause, event)
-    case event: Warning ⇒ log(logging.Level.WARNING, null, event)
-    case event: Info ⇒ log(logging.Level.INFO, null, event)
-    case event: Debug ⇒ log(logging.Level.CONFIG, null, event)
-    case InitializeLogger(_) ⇒ sender() ! LoggerInitialized
+    case event @ Error(cause, _, _, _) ⇒
+      log(logging.Level.SEVERE, cause, event)
+    case event: Warning ⇒
+      log(logging.Level.WARNING, null, event)
+    case event: Info ⇒
+      log(logging.Level.INFO, null, event)
+    case event: Debug ⇒
+      log(logging.Level.CONFIG, null, event)
+    case InitializeLogger(_) ⇒
+      sender() ! LoggerInitialized
   }
 
   @inline
@@ -103,7 +108,8 @@ trait JavaLoggingAdapter extends LoggingAdapter {
     if (loggingExecutionContext.isDefined) {
       implicit val context = loggingExecutionContext.get
       Future(logger.log(record)).onFailure {
-        case thrown: Throwable ⇒ thrown.printStackTrace()
+        case thrown: Throwable ⇒
+          thrown.printStackTrace()
       }
     } else
       logger.log(record)

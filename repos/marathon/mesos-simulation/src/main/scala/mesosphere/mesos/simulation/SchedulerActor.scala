@@ -29,7 +29,8 @@ class SchedulerActor(scheduler: Scheduler) extends Actor with Stash {
         context.become(handleCmds(driver))
         unstashAll()
 
-      case _ => stash()
+      case _ =>
+        stash()
     }
 
   def handleCmds(driver: SchedulerDriver): Receive =

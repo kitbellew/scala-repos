@@ -176,7 +176,8 @@ class ReplicatorSpec
       replicator ! Get(KeyJ, ReadLocal)
       val s =
         expectMsgPF() {
-          case g @ GetSuccess(KeyJ, _) ⇒ g.get(KeyJ)
+          case g @ GetSuccess(KeyJ, _) ⇒
+            g.get(KeyJ)
         }
       s should ===(GSet.empty[String] + "a" + "b" + "c")
     }
@@ -212,14 +213,16 @@ class ReplicatorSpec
           replicator ! Get(KeyA, ReadLocal)
           val c =
             expectMsgPF() {
-              case g @ GetSuccess(KeyA, _) ⇒ g.get(KeyA)
+              case g @ GetSuccess(KeyA, _) ⇒
+                g.get(KeyA)
             }
           c.value should be(6)
         }
       }
       val c =
         changedProbe.expectMsgPF() {
-          case c @ Changed(KeyA) ⇒ c.get(KeyA)
+          case c @ Changed(KeyA) ⇒
+            c.get(KeyA)
         }
       c.value should be(6)
     }
@@ -243,7 +246,8 @@ class ReplicatorSpec
         replicator ! Get(KeyB, readTwo)
         val c =
           expectMsgPF() {
-            case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB)
+            case g @ GetSuccess(KeyB, _) ⇒
+              g.get(KeyB)
           }
         c.value should be(42)
       }
@@ -260,7 +264,8 @@ class ReplicatorSpec
         replicator ! Get(KeyB, readAll)
         val c =
           expectMsgPF() {
-            case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB)
+            case g @ GetSuccess(KeyB, _) ⇒
+              g.get(KeyB)
           }
         c.value should be(44)
       }
@@ -277,7 +282,8 @@ class ReplicatorSpec
         replicator ! Get(KeyB, readMajority)
         val c =
           expectMsgPF() {
-            case g @ GetSuccess(KeyB, _) ⇒ g.get(KeyB)
+            case g @ GetSuccess(KeyB, _) ⇒
+              g.get(KeyB)
           }
         c.value should be(46)
       }
@@ -296,7 +302,8 @@ class ReplicatorSpec
       replicator ! Update(KeyC, GCounter(), writeTwo)(_ + 30)
       expectMsg(UpdateSuccess(KeyC, None))
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+        case c @ Changed(KeyC) ⇒
+          c.get(KeyC).value
       } should be(30)
 
       replicator ! Update(KeyY, GCounter(), writeTwo)(_ + 30)
@@ -311,18 +318,21 @@ class ReplicatorSpec
       replicator ! Get(KeyC, ReadLocal)
       val c30 =
         expectMsgPF() {
-          case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+          case g @ GetSuccess(KeyC, _) ⇒
+            g.get(KeyC)
         }
       c30.value should be(30)
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+        case c @ Changed(KeyC) ⇒
+          c.get(KeyC).value
       } should be(30)
 
       // replicate with gossip after WriteLocal
       replicator ! Update(KeyC, GCounter(), WriteLocal)(_ + 1)
       expectMsg(UpdateSuccess(KeyC, None))
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+        case c @ Changed(KeyC) ⇒
+          c.get(KeyC).value
       } should be(31)
 
       replicator ! Delete(KeyY, WriteLocal)
@@ -330,7 +340,8 @@ class ReplicatorSpec
 
       replicator ! Get(KeyZ, readMajority)
       expectMsgPF() {
-        case g @ GetSuccess(KeyZ, _) ⇒ g.get(KeyZ).value
+        case g @ GetSuccess(KeyZ, _) ⇒
+          g.get(KeyZ).value
       } should be(30)
     }
     enterBarrier("update-c31")
@@ -342,7 +353,8 @@ class ReplicatorSpec
           replicator ! Get(KeyC, ReadLocal)
           val c =
             expectMsgPF() {
-              case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+              case g @ GetSuccess(KeyC, _) ⇒
+                g.get(KeyC)
             }
           c.value should be(31)
 
@@ -351,7 +363,8 @@ class ReplicatorSpec
         }
       }
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyC) ⇒ c.get(KeyC).value
+        case c @ Changed(KeyC) ⇒
+          c.get(KeyC).value
       } should be(31)
     }
     enterBarrier("verified-c31")
@@ -361,7 +374,8 @@ class ReplicatorSpec
       replicator ! Get(KeyC, ReadLocal)
       val c31 =
         expectMsgPF() {
-          case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+          case g @ GetSuccess(KeyC, _) ⇒
+            g.get(KeyC)
         }
       c31.value should be(31)
 
@@ -373,7 +387,8 @@ class ReplicatorSpec
           replicator ! Get(KeyC, ReadLocal)
           val c =
             expectMsgPF() {
-              case g @ GetSuccess(KeyC, _) ⇒ g.get(KeyC)
+              case g @ GetSuccess(KeyC, _) ⇒
+                g.get(KeyC)
             }
           c.value should be(33)
         }
@@ -396,7 +411,8 @@ class ReplicatorSpec
       replicator ! Get(KeyD, ReadLocal)
       val c40 =
         expectMsgPF() {
-          case g @ GetSuccess(KeyD, _) ⇒ g.get(KeyD)
+          case g @ GetSuccess(KeyD, _) ⇒
+            g.get(KeyD)
         }
       c40.value should be(40)
       replicator ! Update(KeyD, GCounter() + 1, writeTwo)(_ + 1)
@@ -422,7 +438,8 @@ class ReplicatorSpec
       replicator ! Get(KeyD, readTwo)
       val c44 =
         expectMsgPF() {
-          case g @ GetSuccess(KeyD, _) ⇒ g.get(KeyD)
+          case g @ GetSuccess(KeyD, _) ⇒
+            g.get(KeyD)
         }
       c44.value should be(44)
 
@@ -432,7 +449,8 @@ class ReplicatorSpec
             val KeyDn = GCounterKey("D" + n)
             replicator ! Get(KeyDn, ReadLocal)
             expectMsgPF() {
-              case g @ GetSuccess(KeyDn, _) ⇒ g.get(KeyDn)
+              case g @ GetSuccess(KeyDn, _) ⇒
+                g.get(KeyDn)
             }.value should be(n)
           }
         }
@@ -465,7 +483,8 @@ class ReplicatorSpec
       replicator ! Get(KeyE, readMajority)
       val c150 =
         expectMsgPF() {
-          case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE)
+          case g @ GetSuccess(KeyE, _) ⇒
+            g.get(KeyE)
         }
       c150.value should be(150)
     }
@@ -503,7 +522,8 @@ class ReplicatorSpec
       probe2.expectMsg(UpdateSuccess(KeyE, None))
       val c152 =
         probe3.expectMsgPF() {
-          case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE)
+          case g @ GetSuccess(KeyE, _) ⇒
+            g.get(KeyE)
         }
       c152.value should be(152)
     }
@@ -533,7 +553,8 @@ class ReplicatorSpec
       probe3.expectMsg(UpdateSuccess(KeyE, Some(155)))
       val c155 =
         probe5.expectMsgPF() {
-          case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE)
+          case g @ GetSuccess(KeyE, _) ⇒
+            g.get(KeyE)
         }
       c155.value should be(155)
     }
@@ -557,7 +578,8 @@ class ReplicatorSpec
       replicator ! Get(KeyE, readMajority)
       val c155 =
         expectMsgPF() {
-          case g @ GetSuccess(KeyE, _) ⇒ g.get(KeyE)
+          case g @ GetSuccess(KeyE, _) ⇒
+            g.get(KeyE)
         }
       c155.value should be(155)
     }
@@ -580,7 +602,8 @@ class ReplicatorSpec
       replicator ! Get(KeyF, readTwo)
       val c =
         expectMsgPF() {
-          case g @ GetSuccess(KeyF, _) ⇒ g.get(KeyF)
+          case g @ GetSuccess(KeyF, _) ⇒
+            g.get(KeyF)
         }
       c.value should be(3 * 100)
     }
@@ -596,11 +619,13 @@ class ReplicatorSpec
     runOn(second) {
       replicator ! Get(KeyG, readAll)
       expectMsgPF() {
-        case g @ GetSuccess(KeyG, _) ⇒ g.get(KeyG).elements
+        case g @ GetSuccess(KeyG, _) ⇒
+          g.get(KeyG).elements
       } should be(Set("a", "b"))
       replicator ! Get(KeyG, ReadLocal)
       expectMsgPF() {
-        case g @ GetSuccess(KeyG, _) ⇒ g.get(KeyG).elements
+        case g @ GetSuccess(KeyG, _) ⇒
+          g.get(KeyG).elements
       } should be(Set("a", "b"))
     }
     enterBarrierAfterTestStep()
@@ -614,7 +639,8 @@ class ReplicatorSpec
       replicator ! Update(KeyH, ORMap.empty[Flag], writeTwo)(
         _ + ("a" -> Flag(enabled = false)))
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyH) ⇒ c.get(KeyH).entries
+        case c @ Changed(KeyH) ⇒
+          c.get(KeyH).entries
       } should be(Map("a" -> Flag(enabled = false)))
     }
 
@@ -627,13 +653,15 @@ class ReplicatorSpec
 
     runOn(second) {
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyH) ⇒ c.get(KeyH).entries
+        case c @ Changed(KeyH) ⇒
+          c.get(KeyH).entries
       } should be(Map("a" -> Flag(enabled = true)))
 
       replicator ! Update(KeyH, ORMap.empty[Flag], writeTwo)(
         _ + ("b" -> Flag(enabled = true)))
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyH) ⇒ c.get(KeyH).entries
+        case c @ Changed(KeyH) ⇒
+          c.get(KeyH).entries
       } should be(Map("a" -> Flag(enabled = true), "b" -> Flag(enabled = true)))
     }
 
@@ -651,7 +679,8 @@ class ReplicatorSpec
 
     within(5.seconds) { // gossip to third
       changedProbe.expectMsgPF() {
-        case c @ Changed(KeyI) ⇒ c.get(KeyI).elements
+        case c @ Changed(KeyI) ⇒
+          c.get(KeyI).elements
       } should be(Set("a"))
     }
 

@@ -35,7 +35,8 @@ case class Last(child: Expression, ignoreNullsExpr: Expression)
 
   private val ignoreNulls: Boolean =
     ignoreNullsExpr match {
-      case Literal(b: Boolean, BooleanType) => b
+      case Literal(b: Boolean, BooleanType) =>
+        b
       case _ =>
         throw new AnalysisException(
           "The second argument of First should be a boolean literal.")

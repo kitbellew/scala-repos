@@ -59,7 +59,8 @@ case class PathPattern(parts: Seq[PathPart]) {
         Map.empty[String, Matcher => Either[Throwable, String]],
         0) { (s, e) =>
         e match {
-          case StaticPart(p) => ((s._1 + Pattern.quote(p)), s._2, s._3)
+          case StaticPart(p) =>
+            ((s._1 + Pattern.quote(p)), s._2, s._3)
           case DynamicPart(k, r, encodeable) => {
             (
               (s._1 + "(" + r + ")"),
@@ -68,7 +69,8 @@ case class PathPattern(parts: Seq[PathPart]) {
           }
         }
       }).map {
-      case (r, g, _) => Pattern.compile("^" + r + "$") -> g
+      case (r, g, _) =>
+        Pattern.compile("^" + r + "$") -> g
     }.get
   }
 
@@ -83,7 +85,8 @@ case class PathPattern(parts: Seq[PathPart]) {
     if (matcher.matches) {
       Some(
         groups.map {
-          case (name, g) => name -> g(matcher)
+          case (name, g) =>
+            name -> g(matcher)
         }.toMap)
     } else {
       None
@@ -94,7 +97,8 @@ case class PathPattern(parts: Seq[PathPart]) {
     parts.map {
       case DynamicPart(name, constraint, _) =>
         "$" + name + "<" + constraint + ">"
-      case StaticPart(path) => path
+      case StaticPart(path) =>
+        path
     }.mkString
 
 }

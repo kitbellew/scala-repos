@@ -374,12 +374,15 @@ object PersistentFSMSpec {
     startWith(LookingAround, EmptyShoppingCart)
 
     when(LookingAround) {
-      case Event("stay", _) ⇒ stay
-      case Event(e, _) ⇒ goto(LookingAround)
+      case Event("stay", _) ⇒
+        stay
+      case Event(e, _) ⇒
+        goto(LookingAround)
     }
 
     onTransition {
-      case (from, to) ⇒ reportActor ! s"$from -> $to"
+      case (from, to) ⇒
+        reportActor ! s"$from -> $to"
     }
 
     override def applyEvent(
@@ -418,7 +421,8 @@ object PersistentFSMSpec {
         }
       case Event(Leave, _) ⇒
         stop applying OrderDiscarded andThen {
-          case _ ⇒ reportActor ! ShoppingCardDiscarded
+          case _ ⇒
+            reportActor ! ShoppingCardDiscarded
         }
       case Event(GetCurrentCart, data) ⇒
         stay replying data
@@ -431,12 +435,14 @@ object PersistentFSMSpec {
         goto(Shopping) applying ItemAdded(item) forMax (1 seconds)
       case Event(StateTimeout, _) ⇒
         stop applying OrderDiscarded andThen {
-          case _ ⇒ reportActor ! ShoppingCardDiscarded
+          case _ ⇒
+            reportActor ! ShoppingCardDiscarded
         }
     }
 
     when(Paid) {
-      case Event(Leave, _) ⇒ stop()
+      case Event(Leave, _) ⇒
+        stop()
       case Event(GetCurrentCart, data) ⇒
         stay replying data
     }
@@ -453,9 +459,12 @@ object PersistentFSMSpec {
         event: DomainEvent,
         cartBeforeEvent: ShoppingCart): ShoppingCart = {
       event match {
-        case ItemAdded(item) ⇒ cartBeforeEvent.addItem(item)
-        case OrderExecuted ⇒ cartBeforeEvent
-        case OrderDiscarded ⇒ cartBeforeEvent.empty()
+        case ItemAdded(item) ⇒
+          cartBeforeEvent.addItem(item)
+        case OrderExecuted ⇒
+          cartBeforeEvent
+        case OrderDiscarded ⇒
+          cartBeforeEvent.empty()
       }
     }
     //#customer-apply-event
@@ -472,7 +481,8 @@ object PersistentFSMSpec {
 
     def receiveRecover = {
       case RecoveryCompleted ⇒ // do nothing
-      case persistentEvent ⇒ client ! persistentEvent
+      case persistentEvent ⇒
+        client ! persistentEvent
     }
 
     def receiveCommand = {

@@ -62,8 +62,10 @@ private[parser] trait Base64Parsing {
     rule {
       oneOrMore(alphabet) ~ run {
         decoder(input.sliceCharArray(start, cursor)) match {
-          case null ⇒ MISMATCH
-          case bytes ⇒ push(bytes)
+          case null ⇒
+            MISMATCH
+          case bytes ⇒
+            push(bytes)
         }
       }
     }

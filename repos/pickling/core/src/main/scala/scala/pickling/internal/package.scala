@@ -131,11 +131,13 @@ package object internal {
     }
     def isEffectivelyPrimitive: Boolean =
       tpe match {
-        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
+        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive =>
+          true
         case TypeRef(_, sym, eltpe :: Nil)
             if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
           true
-        case _ => false
+        case _ =>
+          false
       }
   }
 

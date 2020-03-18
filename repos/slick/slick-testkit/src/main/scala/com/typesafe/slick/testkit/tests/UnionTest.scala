@@ -172,7 +172,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
           m <- TableQuery[Messages] if d.messageId === m.id
         } yield (d, m)
       ).filter {
-        case (d, m) => d.sentAt >= 1400000000L
+        case (d, m) =>
+          d.sentAt >= 1400000000L
       }
     }
 
@@ -183,7 +184,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
           m <- TableQuery[Messages] if d.messageId === m.id
         } yield (d, m)
       ).filter {
-        case (d, m) => d.sentAt < 1400000000L
+        case (d, m) =>
+          d.sentAt < 1400000000L
       }
     }
 

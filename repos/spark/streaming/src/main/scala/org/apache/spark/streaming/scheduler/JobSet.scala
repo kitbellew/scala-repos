@@ -38,7 +38,8 @@ private[streaming] case class JobSet(
     -1L // when the last job of this jobset finished processing
 
   jobs.zipWithIndex.foreach {
-    case (job, i) => job.setOutputOpId(i)
+    case (job, i) =>
+      job.setOutputOpId(i)
   }
   incompleteJobs ++= jobs
 

@@ -78,7 +78,8 @@ object ImageUtils extends Logging {
             (0, 0)
           }
         }
-        case None => (0, 0)
+        case None =>
+          (0, 0)
       }
     imageDetails.setMimeType(mimeType)
     imageDetails.setWidth(width)
@@ -210,11 +211,16 @@ object ImageUtils extends Logging {
   private def getFileExtensionName(imageDetails: ImageDetails) = {
     val mimeType =
       imageDetails.getMimeType.toLowerCase match {
-        case "png"  => ".png"
-        case "jpg"  => ".jpg"
-        case "jpeg" => ".jpg"
-        case ".gif" => ".gif"
-        case _      => "NA"
+        case "png" =>
+          ".png"
+        case "jpg" =>
+          ".jpg"
+        case "jpeg" =>
+          ".jpg"
+        case ".gif" =>
+          ".gif"
+        case _ =>
+          "NA"
       }
     mimeType
   }
@@ -267,14 +273,16 @@ object ImageUtils extends Logging {
       val fileCopyBytes = IOUtils.copy(instream, outstream)
       trace(fileCopyBytes + " bytes copied to disk")
     } catch {
-      case e: Exception => info(e, e.toString)
+      case e: Exception =>
+        info(e, e.toString)
     } finally {
       try {
         outstream.flush()
         outstream.close()
         instream.close()
       } catch {
-        case e: Exception => info(e, e.toString)
+        case e: Exception =>
+          info(e, e.toString)
       }
     }
     //    entity.writeTo(outstream)
@@ -310,7 +318,8 @@ object ImageUtils extends Logging {
           try {
             config.getHtmlFetcher.getHttpClient.execute(httpget, localContext)
           } catch {
-            case ex: Exception => throw new ImageFetchException(imageSrc, ex)
+            case ex: Exception =>
+              throw new ImageFetchException(imageSrc, ex)
           }
 
         val respStatus = response.getStatusLine.getStatusCode

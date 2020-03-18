@@ -38,7 +38,8 @@ trait SigarProvider {
       SigarProvider.close(sigar)
       true
     } catch {
-      case e: Throwable ⇒ false
+      case e: Throwable ⇒
+        false
     }
 
   /** Create sigar and verify it works. */
@@ -67,7 +68,8 @@ trait SigarProvider {
       provisionSigarLibrary()
       verifiedSigarInstance
     } recover {
-      case e: Throwable ⇒ throw new RuntimeException("Failed to load sigar:", e)
+      case e: Throwable ⇒
+        throw new RuntimeException("Failed to load sigar:", e)
     } get
   }
 
@@ -102,6 +104,7 @@ private[metrics] object TryNative {
     try Success(r)
     catch {
       // catching all, for example java.lang.LinkageError that are not caught by `NonFatal` in `Try`
-      case e: Throwable ⇒ Failure(e)
+      case e: Throwable ⇒
+        Failure(e)
     }
 }

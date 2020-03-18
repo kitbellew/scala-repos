@@ -22,14 +22,15 @@ abstract class MapGetOrElseBoolean(
 
   override def getSimplification(expr: ScExpression): Option[Simplification] = {
     expr match {
-      case qual `.map` (
-            f @ returnsBoolean()
-          ) `.getOrElse`(literal(`defaultValue`)) if isOption(qual) =>
+      case qual `.map` (f @ returnsBoolean()) `.getOrElse`(
+            literal(`defaultValue`)
+          ) if isOption(qual) =>
         Some(
           replace(expr)
             .withText(invocationText(qual, newMethodName, f))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

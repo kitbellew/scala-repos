@@ -38,13 +38,16 @@ class ScalaSourcePositionProvider extends SourcePositionProvider {
 
     descriptor match {
       case _: FieldDescriptor | _: LocalVariableDescriptor =>
-      case _                                               => return null
+      case _ =>
+        return null
     }
 
     val name = descriptor.getName
     resolveReferenceWithName(name, contextElement) match {
-      case bp: ScBindingPattern => SourcePosition.createFromElement(bp)
-      case _                    => null
+      case bp: ScBindingPattern =>
+        SourcePosition.createFromElement(bp)
+      case _ =>
+        null
     }
   }
 
@@ -65,7 +68,8 @@ class ScalaSourcePositionProvider extends SourcePositionProvider {
       case null if name.contains("$") =>
         val fixedName = name.substring(0, name.indexOf('$'))
         resolveReferenceWithName(fixedName, context)
-      case elem => elem
+      case elem =>
+        elem
     }
   }
 }

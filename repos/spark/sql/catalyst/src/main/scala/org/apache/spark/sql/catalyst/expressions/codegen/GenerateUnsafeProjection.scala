@@ -35,14 +35,22 @@ object GenerateUnsafeProjection
   /** Returns true iff we support this data type. */
   def canSupport(dataType: DataType): Boolean =
     dataType match {
-      case NullType                                               => true
-      case t: AtomicType                                          => true
-      case _: CalendarIntervalType                                => true
-      case t: StructType                                          => t.toSeq.forall(field => canSupport(field.dataType))
-      case t: ArrayType if canSupport(t.elementType)              => true
-      case MapType(kt, vt, _) if canSupport(kt) && canSupport(vt) => true
-      case udt: UserDefinedType[_]                                => canSupport(udt.sqlType)
-      case _                                                      => false
+      case NullType =>
+        true
+      case t: AtomicType =>
+        true
+      case _: CalendarIntervalType =>
+        true
+      case t: StructType =>
+        t.toSeq.forall(field => canSupport(field.dataType))
+      case t: ArrayType if canSupport(t.elementType) =>
+        true
+      case MapType(kt, vt, _) if canSupport(kt) && canSupport(vt) =>
+        true
+      case udt: UserDefinedType[_] =>
+        canSupport(udt.sqlType)
+      case _ =>
+        false
     }
 
   // TODO: if the nullability of field is correct, we can use it to save null check.
@@ -108,8 +116,10 @@ object GenerateUnsafeProjection
       case ((input, dataType), index) =>
         val dt =
           dataType match {
-            case udt: UserDefinedType[_] => udt.sqlType
-            case other                   => other
+            case udt: UserDefinedType[_] =>
+              udt.sqlType
+            case other =>
+              other
           }
         val tmpCursor = ctx.freshName("tmpCursor")
 
@@ -118,7 +128,8 @@ object GenerateUnsafeProjection
             case t: DecimalType if t.precision > Decimal.MAX_LONG_DIGITS =>
               // Can't call setNullAt() for DecimalType with precision larger than 18.
               s"$rowWriter.write($index, (Decimal) null, ${t.precision}, ${t.scale});"
-            case _ => s"$rowWriter.setNullAt($index);"
+            case _ =>
+              s"$rowWriter.setNullAt($index);"
           }
 
         val writeField =
@@ -159,9 +170,11 @@ object GenerateUnsafeProjection
             case t: DecimalType =>
               s"$rowWriter.write($index, ${input.value}, ${t.precision}, ${t.scale});"
 
-            case NullType => ""
+            case NullType =>
+              ""
 
-            case _ => s"$rowWriter.write($index, ${input.value});"
+            case _ =>
+              s"$rowWriter.write($index, ${input.value});"
           }
 
         if (input.isNull == "false") {
@@ -205,17 +218,22 @@ object GenerateUnsafeProjection
 
     val et =
       elementType match {
-        case udt: UserDefinedType[_] => udt.sqlType
-        case other                   => other
+        case udt: UserDefinedType[_] =>
+          udt.sqlType
+        case other =>
+          other
       }
 
     val jt = ctx.javaType(et)
 
     val fixedElementSize =
       et match {
-        case t: DecimalType if t.precision <= Decimal.MAX_LONG_DIGITS => 8
-        case _ if ctx.isPrimitiveType(jt)                             => et.defaultSize
-        case _                                                        => 0
+        case t: DecimalType if t.precision <= Decimal.MAX_LONG_DIGITS =>
+          8
+        case _ if ctx.isPrimitiveType(jt) =>
+          et.defaultSize
+        case _ =>
+          0
       }
 
     val writeElement =
@@ -241,9 +259,11 @@ object GenerateUnsafeProjection
         case t: DecimalType =>
           s"$arrayWriter.write($index, $element, ${t.precision}, ${t.scale});"
 
-        case NullType => ""
+        case NullType =>
+          ""
 
-        case _ => s"$arrayWriter.write($index, $element);"
+        case _ =>
+          s"$arrayWriter.write($index, $element);"
       }
 
     s"""
@@ -326,9 +346,11 @@ object GenerateUnsafeProjection
     val exprTypes = expressions.map(_.dataType)
 
     val numVarLenFields = exprTypes.count {
-      case dt if UnsafeRow.isFixedLength(dt) => false
+      case dt if UnsafeRow.isFixedLength(dt) =>
+        false
       // TODO: consider large decimal and interval type
-      case _ => true
+      case _ =>
+        true
     }
 
     val result = ctx.freshName("result")

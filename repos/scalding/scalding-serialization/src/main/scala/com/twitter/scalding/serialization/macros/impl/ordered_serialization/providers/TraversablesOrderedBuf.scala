@@ -330,7 +330,8 @@ object TraversablesOrderedBuf {
             }
             """)
           // Something we can't workout the size of ahead of time
-          case _ => MaybeLengthCalculation(c)(q"""
+          case _ =>
+            MaybeLengthCalculation(c)(q"""
               if($element.isEmpty) {
                 val sizeOfZero = 1 // writing the constant 0, for length, takes 1 byte
                 _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(sizeOfZero)

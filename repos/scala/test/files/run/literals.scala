@@ -23,7 +23,8 @@ object Test {
         else
           Some(s" failed: expected $expected, found $actual")
       } catch {
-        case exception: Throwable => Some(s" raised exception $exception")
+        case exception: Throwable =>
+          Some(s" raised exception $exception")
       }
     for (e <- res)
       println(s"test $name $e")

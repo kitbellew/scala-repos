@@ -20,7 +20,8 @@ class TraceInitializationTest extends FunSuite {
   def assertAnnotationsInOrder(records: Seq[Record], annos: Seq[Annotation]) {
     assert(
       records.collect {
-        case Record(_, _, ann, _) if annos.contains(ann) => ann
+        case Record(_, _, ann, _) if annos.contains(ann) =>
+          ann
       } == annos)
   }
 

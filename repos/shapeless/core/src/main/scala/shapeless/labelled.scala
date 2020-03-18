@@ -118,7 +118,8 @@ class LabelledMacros(val c: whitebox.Context)
     val labelsTpe = mkHListTpe(labelTpes)
     val labelsValue =
       labelValues.foldRight(q"_root_.shapeless.HNil": Tree) {
-        case (elem, acc) => q"_root_.shapeless.::($elem, $acc)"
+        case (elem, acc) =>
+          q"_root_.shapeless.::($elem, $acc)"
       }
 
     q"""

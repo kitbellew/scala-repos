@@ -33,7 +33,8 @@ object WithParamVar extends RequestVar[Map[String, NodeSeq]](Map.empty)
 object WithParam extends DispatchSnippet {
 
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   /**
@@ -53,9 +54,12 @@ object WithParam extends DispatchSnippet {
         NodeSeq.Empty
       }
     ) match {
-      case Full(x)            => x
-      case Empty              => Comment("FIX" + "ME: session or request are invalid")
-      case Failure(msg, _, _) => Comment(msg)
+      case Full(x) =>
+        x
+      case Empty =>
+        Comment("FIX" + "ME: session or request are invalid")
+      case Failure(msg, _, _) =>
+        Comment(msg)
     }
   }
 

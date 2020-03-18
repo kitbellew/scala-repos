@@ -80,11 +80,14 @@ class PostToEventStreamStepImpl @Inject() (
           ipAddresses = launched.networking match {
             case networkInfoList: Task.NetworkInfoList =>
               networkInfoList.addresses.to[Seq]
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           },
           ports = launched.networking match {
-            case Task.HostPorts(ports) => ports
-            case _                     => Iterable.empty
+            case Task.HostPorts(ports) =>
+              ports
+            case _ =>
+              Iterable.empty
           },
           version = launched.appVersion.toString,
           timestamp = timestamp.toString

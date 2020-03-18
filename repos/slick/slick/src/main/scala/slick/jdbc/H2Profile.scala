@@ -79,8 +79,10 @@ trait H2Profile extends JdbcProfile {
             }
         override def tpe =
           dbType match {
-            case Some("UUID") => "java.util.UUID"
-            case _            => super.tpe
+            case Some("UUID") =>
+              "java.util.UUID"
+            case _ =>
+              super.tpe
           }
       }
   }
@@ -115,7 +117,8 @@ trait H2Profile extends JdbcProfile {
             s"VARCHAR(${l.length})"
           else
             s"CHAR(${l.length})")
-      case _ => super.defaultSqlTypeName(tmd, sym)
+      case _ =>
+        super.defaultSqlTypeName(tmd, sym)
     }
 
   class QueryBuilder(tree: Node, state: CompilerState)
@@ -131,18 +134,23 @@ trait H2Profile extends JdbcProfile {
           b"nextval(schema(), '$name')"
         case Library.CurrentValue(SequenceNode(name)) =>
           b"currval(schema(), '$name')"
-        case RowNumber(_) => b"rownum"
-        case _            => super.expr(n, skipParens)
+        case RowNumber(_) =>
+          b"rownum"
+        case _ =>
+          super.expr(n, skipParens)
       }
 
     override protected def buildFetchOffsetClause(
         fetch: Option[Node],
         offset: Option[Node]) =
       (fetch, offset) match {
-        case (Some(t), Some(d)) => b"\nlimit $t offset $d"
-        case (Some(t), None)    => b"\nlimit $t"
-        case (None, Some(d))    => b"\nlimit -1 offset $d"
-        case _                  =>
+        case (Some(t), Some(d)) =>
+          b"\nlimit $t offset $d"
+        case (Some(t), None) =>
+          b"\nlimit $t"
+        case (None, Some(d)) =>
+          b"\nlimit -1 offset $d"
+        case _ =>
       }
   }
 

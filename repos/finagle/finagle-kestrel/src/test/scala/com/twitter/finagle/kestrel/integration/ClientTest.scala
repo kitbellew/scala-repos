@@ -27,7 +27,8 @@ class ClientTest extends FunSuite {
     assert(Await.result(client.get("foo")) == None)
     Await.result(client.set("foo", Buf.Utf8("bar")))
     val rep = Await.result(client.get("foo")) map {
-      case Buf.Utf8(s) => s
+      case Buf.Utf8(s) =>
+        s
     }
     assert(rep == Some("bar"))
   }
@@ -47,7 +48,8 @@ class ClientTest extends FunSuite {
     assert(Await.result(client.get("foo")) == None)
     Await.result(client.set("foo", Buf.Utf8("bar")))
     val rep = Await.result(client.get("foo")) map {
-      case Buf.Utf8(s) => s
+      case Buf.Utf8(s) =>
+        s
     }
     assert(rep == Some("bar"))
   }

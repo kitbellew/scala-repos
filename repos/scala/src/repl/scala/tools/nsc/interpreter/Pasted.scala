@@ -32,8 +32,10 @@ abstract class Pasted(prompt: String) {
   def isPrompted(line: String) = matchesPrompt(line)
   def isPromptOnly(line: String) =
     line match {
-      case anyPrompt() => true;
-      case _           => false
+      case anyPrompt() =>
+        true;
+      case _ =>
+        false
     }
 
   private val testBoth = PromptString != AltPromptString
@@ -51,8 +53,10 @@ abstract class Pasted(prompt: String) {
       (line.nonEmpty && spacey(line.head) && matchesString(line.tail, target)))
   private def stripString(line: String, target: String) =
     line indexOf target match {
-      case -1  => line
-      case idx => line drop (idx + target.length)
+      case -1 =>
+        line
+      case idx =>
+        line drop (idx + target.length)
     }
   private var isRunning = false
   private val resReference = """(?<!^)(res\d+)""".r
@@ -103,15 +107,19 @@ abstract class Pasted(prompt: String) {
       line match {
         case resCreation(resName) if referenced(resName) =>
           code.lastIndexOf(ActualPromptString) match {
-            case -1 => code
+            case -1 =>
+              code
             case idx =>
               val (str1, str2) = code splitAt (idx + ActualPromptString.length)
               str2 match {
-                case resAssign(`resName`) => code
-                case _                    => "%sval %s = { %s }".format(str1, resName, str2)
+                case resAssign(`resName`) =>
+                  code
+                case _ =>
+                  "%sval %s = { %s }".format(str1, resName, str2)
               }
           }
-        case _ => code
+        case _ =>
+          code
       }
 
     def interpreted(line: String) = {

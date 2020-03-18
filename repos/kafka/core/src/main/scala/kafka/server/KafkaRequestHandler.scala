@@ -65,7 +65,8 @@ class KafkaRequestHandler(
             .format(id, brokerId, req))
         apis.handle(req)
       } catch {
-        case e: Throwable => error("Exception when handling request", e)
+        case e: Throwable =>
+          error("Exception when handling request", e)
       }
     }
   }
@@ -115,8 +116,10 @@ class KafkaRequestHandlerPool(
 class BrokerTopicMetrics(name: Option[String]) extends KafkaMetricsGroup {
   val tags: scala.collection.Map[String, String] =
     name match {
-      case None        => scala.collection.Map.empty
-      case Some(topic) => Map("topic" -> topic)
+      case None =>
+        scala.collection.Map.empty
+      case Some(topic) =>
+        Map("topic" -> topic)
     }
 
   val messagesInRate = newMeter(

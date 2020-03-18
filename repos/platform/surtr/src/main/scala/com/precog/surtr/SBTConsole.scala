@@ -210,8 +210,10 @@ object SBTConsole {
 
       def eval(str: String): Set[SValue] =
         evalE(str) match {
-          case Success(results) => results.map(_._2)
-          case Failure(t)       => throw t
+          case Success(results) =>
+            results.map(_._2)
+          case Failure(t) =>
+            throw t
         }
 
       def evalE(str: String) = {

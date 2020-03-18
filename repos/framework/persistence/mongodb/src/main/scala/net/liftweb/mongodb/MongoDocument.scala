@@ -44,8 +44,10 @@ trait MongoDocument[BaseDocument] extends JsonObject[BaseDocument] {
 
   def getRef: Option[MongoRef] =
     _id match {
-      case oid: ObjectId => Some(MongoRef(meta.collectionName, oid))
-      case _             => None
+      case oid: ObjectId =>
+        Some(MongoRef(meta.collectionName, oid))
+      case _ =>
+        None
     }
 }
 
@@ -82,7 +84,8 @@ trait MongoDocumentMeta[BaseDocument]
   def find(qry: DBObject): Option[BaseDocument] = {
     MongoDB.useCollection(connectionIdentifier, collectionName)(coll =>
       coll.findOne(qry) match {
-        case null => None
+        case null =>
+          None
         case dbo => {
           Some(create(dbo))
         }

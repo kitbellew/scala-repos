@@ -85,7 +85,8 @@ class Scentry[UserType <: AnyRef](
 
   def strategies: mutable.Map[String, ScentryStrategy[UserType]] =
     (globalStrategies ++ _strategies) map {
-      case (nm, fact) ⇒ (nm -> fact.asInstanceOf[StrategyFactory](app))
+      case (nm, fact) ⇒
+        (nm -> fact.asInstanceOf[StrategyFactory](app))
     }
 
   def userOption(implicit
@@ -191,7 +192,8 @@ class Scentry[UserType <: AnyRef](
           _.beforeAuthenticate
         }
         strat.authenticate() match {
-          case Some(usr) ⇒ Some(strat.name -> usr)
+          case Some(usr) ⇒
+            Some(strat.name -> usr)
           case _ ⇒
             strat.unauthenticated()
             None
@@ -223,7 +225,8 @@ class Scentry[UserType <: AnyRef](
   private[this] def runCallbacks(guard: StrategyType ⇒ Boolean = s ⇒ true)(
       which: StrategyType ⇒ Unit) {
     strategies foreach {
-      case (_, v) if guard(v) ⇒ which(v)
+      case (_, v) if guard(v) ⇒
+        which(v)
       case _ ⇒ // guard failed
     }
   }

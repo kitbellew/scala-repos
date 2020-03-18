@@ -174,7 +174,8 @@ class ScalaMoveClassesOrPackagesHandler
     val companions =
       for {
         elem <- elements.collect {
-          case psiClass: PsiClass => psiClass
+          case psiClass: PsiClass =>
+            psiClass
         }
         companion <- ScalaPsiUtil.getBaseCompanionModule(elem)
       } yield companion

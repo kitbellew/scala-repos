@@ -18,8 +18,10 @@ object StatusPlugin extends AutoPlugin {
         val SnapshotQualifier = """(.+)(-.*SNAPSHOT)(.*)""".r
         val v = version.value
         v match {
-          case SnapshotQualifier(_, _, _) => true
-          case _                          => false
+          case SnapshotQualifier(_, _, _) =>
+            true
+          case _ =>
+            false
         }
       },
       publishStatus := {

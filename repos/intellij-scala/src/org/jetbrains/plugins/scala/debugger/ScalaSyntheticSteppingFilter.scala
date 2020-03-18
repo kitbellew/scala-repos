@@ -37,8 +37,10 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
       debugProcess: DebugProcess): Boolean = {
     val positionManager =
       ScalaPositionManager.instance(debugProcess) match {
-        case Some(m) => m
-        case None    => return true
+        case Some(m) =>
+          m
+        case None =>
+          return true
       }
 
     val method = location.method()
@@ -61,7 +63,8 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
         case Some(td: ScTemplateDefinition) =>
           td.functions
             .forall(f => !nameMatches(name, f.name)) && !hasLocalFun(name, td)
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -70,8 +73,10 @@ class ScalaSyntheticSteppingFilter extends ExtraSteppingFilter {
     td.depthFirst(elem =>
         elem == td || !ScalaEvaluatorBuilderUtil.isGenerateClass(elem))
       .exists {
-        case fun: ScFunction if fun.isLocal => nameMatches(name, fun.name)
-        case _                              => false
+        case fun: ScFunction if fun.isLocal =>
+          nameMatches(name, fun.name)
+        case _ =>
+          false
       }
   }
 

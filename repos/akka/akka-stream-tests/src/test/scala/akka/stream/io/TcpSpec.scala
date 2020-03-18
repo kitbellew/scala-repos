@@ -496,7 +496,8 @@ class TcpSpec
         Await.result(result, 3.seconds)
 
       binding.map(_.unbind()).recover {
-        case NonFatal(_) ⇒ ()
+        case NonFatal(_) ⇒
+          ()
       } foreach (_ ⇒ system2.shutdown())
     }
 

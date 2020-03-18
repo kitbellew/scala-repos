@@ -64,9 +64,12 @@ package object interpolation {
 
     private def bisearch(low: Int, high: Int, x: T): Int =
       (low + high) / 2 match {
-        case mid if low == high => mid
-        case mid if X(mid) < x  => bisearch(mid + 1, high, x)
-        case mid                => bisearch(low, mid, x)
+        case mid if low == high =>
+          mid
+        case mid if X(mid) < x =>
+          bisearch(mid + 1, high, x)
+        case mid =>
+          bisearch(low, mid, x)
       }
   }
 

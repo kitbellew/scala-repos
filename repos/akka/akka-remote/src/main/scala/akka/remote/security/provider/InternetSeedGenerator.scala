@@ -63,7 +63,8 @@ final class InternetSeedGenerator extends SeedGenerator {
       .flatMap(g ⇒
         try Option(g.generateSeed(length))
         catch {
-          case _: SeedException ⇒ None
+          case _: SeedException ⇒
+            None
         })
       .headOption
       .getOrElse(

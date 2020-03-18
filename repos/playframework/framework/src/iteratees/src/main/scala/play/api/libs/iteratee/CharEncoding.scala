@@ -44,7 +44,8 @@ object CharEncoding {
                   val newIt = Iteratee.flatten(it.feed(Input.El(bytes)))
                   Cont(step(remaining)(newIt))
               })
-          case _ => Done(it)
+          case _ =>
+            Done(it)
         }(defaultExecutionContext)
       case in @ Input.Empty =>
         val newIt = Iteratee.flatten(it.feed(in))

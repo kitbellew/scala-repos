@@ -102,7 +102,8 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
             .append(" ")
             .append(second)
           buf.toString()
-        case _ => IntentionUtils.negate(ifStmt.condition.get)
+        case _ =>
+          IntentionUtils.negate(ifStmt.condition.get)
       }
 
     val elseBranch = ifStmt.elseBranch.orNull
@@ -119,8 +120,10 @@ class InvertIfConditionIntention extends PsiElementBaseIntentionAction {
       .append(" else ")
     val res =
       ifStmt.thenBranch.get match {
-        case e: ScBlockExpr => e.getText
-        case _              => "{\n" + ifStmt.thenBranch.get.getText + "\n}"
+        case e: ScBlockExpr =>
+          e.getText
+        case _ =>
+          "{\n" + ifStmt.thenBranch.get.getText + "\n}"
       }
     expr.append(res)
     val newStmt: ScExpression = ScalaPsiElementFactory.createExpressionFromText(

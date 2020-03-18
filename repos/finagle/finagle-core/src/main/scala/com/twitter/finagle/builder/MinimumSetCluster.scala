@@ -41,8 +41,10 @@ class MinimumSetCluster[T](
         val ignore = minimum.contains(update.value)
         if (ignore) {
           update match {
-            case Cluster.Add(_) => censoredAdd.incr()
-            case Cluster.Rem(_) => censoredRem.incr()
+            case Cluster.Add(_) =>
+              censoredAdd.incr()
+            case Cluster.Rem(_) =>
+              censoredRem.incr()
           }
         }
 

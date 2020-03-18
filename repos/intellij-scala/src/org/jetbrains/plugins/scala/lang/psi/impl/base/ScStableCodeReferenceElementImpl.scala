@@ -53,8 +53,10 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     with ResolvableStableCodeReferenceElement {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -71,15 +73,18 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             isInImport = isInImport,
             qualifierType = qualifier,
             isInStableCodeReference = true)
-        case r => Seq(r.getElement)
+        case r =>
+          Seq(r.getElement)
       }
   }
 
   def getResolveResultVariants: Array[ScalaResolveResult] = {
     doResolve(this, new CompletionProcessor(getKinds(incomplete = true), this))
       .flatMap {
-        case res: ScalaResolveResult => Seq(res)
-        case r                       => Seq.empty
+        case res: ScalaResolveResult =>
+          Seq(res)
+        case r =>
+          Seq.empty
       }
   }
 
@@ -89,13 +94,18 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
         s.getContext match {
           case p: ScParameterizedTypeElement =>
             p.getContext match {
-              case constr: ScConstructor => Some(constr)
-              case _                     => None
+              case constr: ScConstructor =>
+                Some(constr)
+              case _ =>
+                None
             }
-          case constr: ScConstructor => Some(constr)
-          case _                     => None
+          case constr: ScConstructor =>
+            Some(constr)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -117,14 +127,17 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             case l: LeafPsiElement
                 if l.getNode.getElementType == ScalaTokenTypes.kMACRO =>
               true
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     val result =
       getContext match {
-        case _: ScStableCodeReferenceElement => stableQualRef
+        case _: ScStableCodeReferenceElement =>
+          stableQualRef
         case e: ScImportExpr =>
           if (e.selectorSet != None
               //import Class._ is not allowed
@@ -141,15 +154,24 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             stableQualRef
           else
             stableClass
-        case _: ScTypeAlias                           => stableClass
-        case _: ScInterpolationPattern                => stableImportSelector
-        case _: ScConstructorPattern                  => objectOrValue
-        case _: ScInfixPattern                        => objectOrValue
-        case _: ScThisReference | _: ScSuperReference => stableClassOrObject
-        case _: ScImportSelector                      => stableImportSelector
-        case _: ScInfixTypeElement                    => stableClass
-        case _ if isInMacroDef                        => methodsOnly
-        case _                                        => stableQualRef
+        case _: ScTypeAlias =>
+          stableClass
+        case _: ScInterpolationPattern =>
+          stableImportSelector
+        case _: ScConstructorPattern =>
+          objectOrValue
+        case _: ScInfixPattern =>
+          objectOrValue
+        case _: ScThisReference | _: ScSuperReference =>
+          stableClassOrObject
+        case _: ScImportSelector =>
+          stableImportSelector
+        case _: ScInfixTypeElement =>
+          stableClass
+        case _ if isInMacroDef =>
+          methodsOnly
+        case _ =>
+          stableQualRef
       }
     if (completion)
       result + ResolveTargets.PACKAGE + ResolveTargets.OBJECT + ResolveTargets.VAL
@@ -235,7 +257,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                   c match {
                     case ClassTypeToImport(clazz) =>
                       holder.addImportForClass(clazz)
-                    case ta => holder.addImportForPath(ta.qualifiedName)
+                    case ta =>
+                      holder.addImportForPath(ta.qualifiedName)
                   }
                 //todo: so what to return? probable PIEAE after such code invocation
                 case _ =>
@@ -275,7 +298,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
           this
         }
         element match {
-          case c: PsiClass => bindToType(ClassTypeToImport(c))
+          case c: PsiClass =>
+            bindToType(ClassTypeToImport(c))
           case ta: ScTypeAlias =>
             if (ta.containingClass != null && ScalaPsiUtil.hasStablePath(ta)) {
               bindToType(TypeAliasToImport(ta))
@@ -302,7 +326,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
             bindToElement(fun.containingClass)
           case m: PsiMethod if m.isConstructor =>
             bindToElement(m.getContainingClass)
-          case pckg: PsiPackage => bindToPackage(pckg)
+          case pckg: PsiPackage =>
+            bindToPackage(pckg)
           case _ =>
             throw new IncorrectOperationException(s"Cannot bind to $element")
         }
@@ -321,9 +346,12 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
 
   override def delete() {
     getContext match {
-      case sel: ScImportSelector => sel.deleteSelector()
-      case expr: ScImportExpr    => expr.deleteExpr()
-      case _                     => super.delete()
+      case sel: ScImportSelector =>
+        sel.deleteSelector()
+      case expr: ScImportExpr =>
+        expr.deleteExpr()
+      case _ =>
+        super.delete()
     }
   }
 }

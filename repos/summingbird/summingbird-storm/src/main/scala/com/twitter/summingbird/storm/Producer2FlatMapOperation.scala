@@ -54,10 +54,14 @@ object Producer2FlatMapOperation {
                 FlatMapOperation(op).asInstanceOf[FlatMapOperation[Any, Any]])
             case WrittenProducer(_, sinkSupplier) =>
               acc.andThen(FlatMapOperation.write(() => sinkSupplier.toFn))
-            case IdentityKeyedProducer(_) => acc
-            case MergedProducer(_, _)     => acc
-            case NamedProducer(_, _)      => acc
-            case AlsoProducer(_, _)       => acc
+            case IdentityKeyedProducer(_) =>
+              acc
+            case MergedProducer(_, _) =>
+              acc
+            case NamedProducer(_, _) =>
+              acc
+            case AlsoProducer(_, _) =>
+              acc
             case Source(_) =>
               sys.error("Should not schedule a source inside a flat mapper")
             case Summer(_, _, _) =>

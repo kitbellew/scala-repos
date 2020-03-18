@@ -46,17 +46,23 @@ class ScAnnotationElementType[Func <: ScAnnotation]
           p.typeElement match {
             case Some(s: ScSimpleTypeElement) =>
               s.reference match {
-                case Some(ref: ScStableCodeReferenceElement) => ref.refName
-                case _                                       => ""
+                case Some(ref: ScStableCodeReferenceElement) =>
+                  ref.refName
+                case _ =>
+                  ""
               }
-            case _ => ""
+            case _ =>
+              ""
           }
         case s: ScSimpleTypeElement =>
           s.reference match {
-            case Some(ref) => ref.refName
-            case _         => ""
+            case Some(ref) =>
+              ref.refName
+            case _ =>
+              ""
           }
-        case _ => ""
+        case _ =>
+          ""
       }
     val typeText = psi.typeElement.getText
     val nameRef =

@@ -29,7 +29,8 @@ class RouteeCreationSpec extends AkkaSpec {
       for (i ← 1 to N) {
         expectMsgType[ActorIdentity] match {
           case ActorIdentity(_, Some(_)) ⇒ // fine
-          case x ⇒ fail(s"routee $i was not found $x")
+          case x ⇒
+            fail(s"routee $i was not found $x")
         }
       }
     }
@@ -42,12 +43,14 @@ class RouteeCreationSpec extends AkkaSpec {
             new Actor {
               context.parent ! "one"
               def receive = {
-                case "one" ⇒ testActor forward "two"
+                case "one" ⇒
+                  testActor forward "two"
               }
             })))
       val gotit =
         receiveWhile(messages = N) {
-          case "two" ⇒ lastSender.toString
+          case "two" ⇒
+            lastSender.toString
         }
       expectNoMsg(100.millis)
       if (gotit.size != N) {

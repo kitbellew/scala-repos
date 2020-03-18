@@ -132,7 +132,8 @@ class PerformanceSpec
         replicator.tell(Get(key, ReadLocal), readProbe.ref)
         val result =
           readProbe.expectMsgPF() {
-            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+            case g @ GetSuccess(`key`, _) ⇒
+              g.get(key)
           }
         result.elements should be(expectedData)
       }
@@ -239,7 +240,8 @@ class PerformanceSpec
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
           val result =
             readProbe.expectMsgPF() {
-              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+              case g @ GetSuccess(`key`, _) ⇒
+                g.get(key)
             }
           result.value should be(3 * n)
         }

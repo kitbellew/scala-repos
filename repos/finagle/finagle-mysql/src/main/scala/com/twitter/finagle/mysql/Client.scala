@@ -111,8 +111,10 @@ private[mysql] class StdClient(factory: ServiceFactory[Request, Result])
 
   def select[T](sql: String)(f: Row => T): Future[Seq[T]] =
     query(sql) map {
-      case rs: ResultSet => rs.rows.map(f)
-      case _             => Nil
+      case rs: ResultSet =>
+        rs.rows.map(f)
+      case _ =>
+        Nil
     }
 
   def prepare(sql: String): PreparedStatement =
@@ -120,7 +122,8 @@ private[mysql] class StdClient(factory: ServiceFactory[Request, Result])
       def apply(ps: Parameter*): Future[Result] =
         factory() flatMap { svc =>
           svc(PrepareRequest(sql)).flatMap {
-            case ok: PrepareOK => svc(ExecuteRequest(ok.id, ps.toIndexedSeq))
+            case ok: PrepareOK =>
+              svc(ExecuteRequest(ok.id, ps.toIndexedSeq))
             case r =>
               Future.exception(
                 new Exception(

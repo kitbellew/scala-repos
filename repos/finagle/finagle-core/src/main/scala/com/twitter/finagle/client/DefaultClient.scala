@@ -106,7 +106,8 @@ case class DefaultClient[Req, Rep](
               .defaultFailureAccrual(statsReceiver, classifier)
               .andThen(factory)
           }
-        case _ => failureAccrual
+        case _ =>
+          failureAccrual
       }
 
     val stk = stack

@@ -99,7 +99,8 @@ object CanFilterMedian {
           }
 
           overhang match {
-            case OptOverhang.PreserveLength => DenseVector(tempret)
+            case OptOverhang.PreserveLength =>
+              DenseVector(tempret)
             case OptOverhang.None =>
               DenseVector(tempret.slice(halfWindow, data.length - halfWindow))
           }

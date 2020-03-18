@@ -35,10 +35,14 @@ import org.jetbrains.plugins.scala.lang.psi.types.Signature
 trait OverridingAnnotator {
   private def isConcreteElement(element: PsiElement): Boolean = {
     element match {
-      case _: ScFunctionDefinition                => true
-      case f: ScFunctionDeclaration if f.isNative => true
-      case _: ScFunctionDeclaration               => false
-      case _: ScFun                               => true
+      case _: ScFunctionDefinition =>
+        true
+      case f: ScFunctionDeclaration if f.isNative =>
+        true
+      case _: ScFunctionDeclaration =>
+        false
+      case _: ScFun =>
+        true
       case method: PsiMethod
           if method.getContainingClass != null && method.getContainingClass.isInterface =>
         false
@@ -48,12 +52,18 @@ trait OverridingAnnotator {
       case method: PsiMethod
           if method.hasModifierProperty(PsiModifier.NATIVE) =>
         true
-      case _: ScPatternDefinition   => true
-      case _: ScVariableDefinition  => true
-      case _: ScClassParameter      => true
-      case _: ScTypeDefinition      => true
-      case _: ScTypeAliasDefinition => true
-      case _                        => false
+      case _: ScPatternDefinition =>
+        true
+      case _: ScVariableDefinition =>
+        true
+      case _: ScClassParameter =>
+        true
+      case _: ScTypeDefinition =>
+        true
+      case _: ScTypeAliasDefinition =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -157,9 +167,11 @@ trait OverridingAnnotator {
       tp: ScNamedElement with ScModifierListOwner,
       holder: AnnotationHolder) {
     tp match {
-      case c: ScTypeDefinition => return
-      case a: ScTypeAlias      =>
-      case _                   => return
+      case c: ScTypeDefinition =>
+        return
+      case a: ScTypeAlias =>
+      case _ =>
+        return
     }
     val supersWithSelfType = ScalaPsiUtil
       .superTypeMembers(tp, withSelfType = true)
@@ -255,8 +267,10 @@ trait OverridingAnnotator {
       for (signature <- superSignatures if !overridesFinal) {
         val e =
           signature match {
-            case signature: Signature => signature.namedElement
-            case _                    => signature
+            case signature: Signature =>
+              signature.namedElement
+            case _ =>
+              signature
           }
         e match {
           case owner1: PsiModifierListOwner if owner1.hasFinalModifier =>
@@ -292,11 +306,15 @@ trait OverridingAnnotator {
             signature match {
               case s: Signature =>
                 s.namedElement match {
-                  case rp: ScBindingPattern if rp.isVal => annotVal()
-                  case rp: ScBindingPattern if rp.isVar => annotVar()
-                  case cp: ScClassParameter if cp.isVal => annotVal()
-                  case cp: ScClassParameter if cp.isVar => annotVar()
-                  case _                                =>
+                  case rp: ScBindingPattern if rp.isVal =>
+                    annotVal()
+                  case rp: ScBindingPattern if rp.isVar =>
+                    annotVar()
+                  case cp: ScClassParameter if cp.isVal =>
+                    annotVal()
+                  case cp: ScClassParameter if cp.isVar =>
+                    annotVar()
+                  case _ =>
                 }
               case _ =>
             }

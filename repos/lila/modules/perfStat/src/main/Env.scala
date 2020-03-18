@@ -39,7 +39,8 @@ final class Env(
       new Actor {
         context.system.lilaBus.subscribe(self, 'finishGame)
         def receive = {
-          case lila.game.actorApi.FinishGame(game, _, _) => indexer addGame game
+          case lila.game.actorApi.FinishGame(game, _, _) =>
+            indexer addGame game
         }
       }))
 }

@@ -34,7 +34,8 @@ class HDFSModels(fs: FileSystem, config: StorageClientConfig, prefix: String)
       fsdos.write(i.models)
       fsdos.close
     } catch {
-      case e: IOException => error(e.getMessage)
+      case e: IOException =>
+        error(e.getMessage)
     }
   }
 

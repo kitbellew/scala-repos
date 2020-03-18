@@ -52,7 +52,8 @@ class ScalaCaseClassParametersNameContributer
             case fundef: ScFunctionDefinition
                 if fundef.getName == "unapply" || fundef.getName == "unapplySeq" =>
               fundef.getParameterList.params
-            case _ => return
+            case _ =>
+              return
           }
 
         if (caseClassParams.isEmpty)
@@ -117,9 +118,11 @@ class ScalaCaseClassParametersNameContributer
                       -1
                     else
                       math.abs(currentPosition - positionInClassParameters)
-                  case _ => 0
+                  case _ =>
+                    0
                 }
-              case _ => null
+              case _ =>
+                null
             }
           }
         }

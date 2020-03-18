@@ -102,7 +102,8 @@ class ModelValidationTest
     val empty = ImportantTitle("")
 
     validate(empty) match {
-      case Success => fail()
+      case Success =>
+        fail()
       case f: Failure =>
         val errors = (Json.toJson(f) \ "details").as[Seq[JsObject]]
         errors should have size 1
@@ -126,7 +127,8 @@ class ModelValidationTest
     )
 
     validate(group) match {
-      case Success => fail()
+      case Success =>
+        fail()
       case f: Failure =>
         val errors = (Json.toJson(f) \ "details").as[Seq[JsObject]]
         errors should have size 1

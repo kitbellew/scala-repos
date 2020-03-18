@@ -127,8 +127,9 @@ private[spark] final class ShuffleBlockFetcherIterator(
   private[storage] def releaseCurrentResultBuffer(): Unit = {
     // Release the current buffer if necessary
     currentResult match {
-      case SuccessFetchResult(_, _, _, buf, _) => buf.release()
-      case _                                   =>
+      case SuccessFetchResult(_, _, _, buf, _) =>
+        buf.release()
+      case _ =>
     }
     currentResult = null
   }
@@ -170,7 +171,8 @@ private[spark] final class ShuffleBlockFetcherIterator(
     // so we can look up the size of each blockID
     val sizeMap =
       req.blocks.map {
-        case (blockId, size) => (blockId.toString, size)
+        case (blockId, size) =>
+          (blockId.toString, size)
       }.toMap
     val remainingBlocks = new HashSet[String]() ++= sizeMap.keys
     val blockIds = req.blocks.map(_._1.toString)

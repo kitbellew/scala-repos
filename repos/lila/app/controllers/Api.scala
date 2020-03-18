@@ -82,11 +82,14 @@ object Api extends LilaController {
   private def ApiResult(js: lila.api.Context => Fu[Option[JsValue]]) =
     Open { implicit ctx =>
       js(ctx) map {
-        case None => NotFound
+        case None =>
+          NotFound
         case Some(json) =>
           get("callback") match {
-            case None           => Ok(json) as JSON
-            case Some(callback) => Ok(s"$callback($json)") as JAVASCRIPT
+            case None =>
+              Ok(json) as JSON
+            case Some(callback) =>
+              Ok(s"$callback($json)") as JAVASCRIPT
           }
       }
     }

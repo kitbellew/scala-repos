@@ -131,7 +131,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           }
         }
         r.element match {
-          case f: ScFunction => checkCallByName(f.paramClauses.clauses)
+          case f: ScFunction =>
+            checkCallByName(f.paramClauses.clauses)
           case f: ScPrimaryConstructor =>
             checkCallByName(f.effectiveParameterClauses)
           case _ =>
@@ -176,7 +177,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             tp: ScType,
             existential: Boolean): Either[Seq[Parameter], ScType] = {
           tp match {
-            case ScMethodType(_, params, _) => Left(params)
+            case ScMethodType(_, params, _) =>
+              Left(params)
             case ScTypePolymorphicType(
                   ScMethodType(_, params, _),
                   typeParams) =>
@@ -237,7 +239,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                     s.subst(tp.upperType())))
                 Right(ScExistentialType(s.subst(internal), arguments))
               }
-            case _ => Right(tp)
+            case _ =>
+              Right(tp)
           }
         }
 
@@ -301,7 +304,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         isByName = p.isByName)
                     } else
                       p
-                  case p => p
+                  case p =>
+                    p
                 }
               val i: Int =
                 if (params1.length > 0)
@@ -332,8 +336,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
               ) //todo: with implcits?
             //todo this is possible, when one variant is empty with implicit parameters, and second without parameters.
             //in this case it's logical that method without parameters must win...
-            case (Left(_), Right(_)) if !r1.implicitCase => return false
-            case _                                       => return true
+            case (Left(_), Right(_)) if !r1.implicitCase =>
+              return false
+            case _ =>
+              return true
           }
 
         var u = conformance._2
@@ -352,12 +358,14 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
                           tpt.name, tpt.getId
                         )) match {
-                        case None => (true, tpt)
+                        case None =>
+                          (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true
                           (true, tpt)
                       }
-                    case tp: ScType => (hasRecursiveTypeParameters, tp)
+                    case tp: ScType =>
+                      (hasRecursiveTypeParameters, tp)
                   }
                   hasRecursiveTypeParameters
                 }
@@ -381,12 +389,14 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                     }
                   }
                 })
-              case None => return false
+              case None =>
+                return false
             }
           case _ =>
         }
         u.getSubstitutor.isDefined
-      case (_, m2: PsiMethod) => true
+      case (_, m2: PsiMethod) =>
+        true
       case (e1, e2) =>
         Compatibility.compatibleWithViewApplicability(
           getType(e2, r2.implicitCase),
@@ -403,7 +413,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
           None
         else
           Some(clazz)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -425,9 +436,11 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             isDerived(ScalaPsiUtil.getCompanionModule(clazz1), Some(clazz2))
           case (_, clazz2: ScObject) =>
             isDerived(Some(clazz1), ScalaPsiUtil.getCompanionModule(clazz2))
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -502,7 +515,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       filterRest match {
         case Some(r) =>
           rest.filter(!isMoreSpecific(r, _, checkImplicits = false))
-        case _ => rest
+        case _ =>
+          rest
       }
     if (filteredRest.isEmpty)
       return (None, Seq.empty)
@@ -528,17 +542,21 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
   def getType(e: PsiNamedElement, implicitCase: Boolean): ScType = {
     val res =
       e match {
-        case fun: ScFun => fun.polymorphicType
+        case fun: ScFun =>
+          fun.polymorphicType
         case f: ScFunction if f.isConstructor =>
           f.containingClass match {
             case td: ScTypeDefinition if td.hasTypeParameters =>
               ScTypePolymorphicType(
                 f.methodType,
                 td.typeParameters.map(new TypeParameter(_)))
-            case _ => f.polymorphicType()
+            case _ =>
+              f.polymorphicType()
           }
-        case f: ScFunction           => f.polymorphicType()
-        case p: ScPrimaryConstructor => p.polymorphicType
+        case f: ScFunction =>
+          f.polymorphicType()
+        case p: ScPrimaryConstructor =>
+          p.polymorphicType
         case m: PsiMethod =>
           ResolveUtils.javaPolymorphicType(
             m,
@@ -549,28 +567,36 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             case pd: ScPatternDefinition
                 if PsiTreeUtil.isContextAncestor(pd, elem, true) =>
               pd.declaredType match {
-                case Some(t) => t
-                case None    => types.Nothing
+                case Some(t) =>
+                  t
+                case None =>
+                  types.Nothing
               }
             case vd: ScVariableDefinition
                 if PsiTreeUtil.isContextAncestor(vd, elem, true) =>
               vd.declaredType match {
-                case Some(t) => t
-                case None    => types.Nothing
+                case Some(t) =>
+                  t
+                case None =>
+                  types.Nothing
               }
-            case _ => refPatt.getType(TypingContext.empty).getOrAny
+            case _ =>
+              refPatt.getType(TypingContext.empty).getOrAny
           }
         case typed: ScTypedDefinition =>
           typed.getType(TypingContext.empty).getOrAny
-        case _ => types.Nothing
+        case _ =>
+          types.Nothing
       }
 
     res match {
-      case ScMethodType(retType, _, true) if implicitCase => retType
+      case ScMethodType(retType, _, true) if implicitCase =>
+        retType
       case ScTypePolymorphicType(ScMethodType(retType, _, true), typeParameters)
           if implicitCase =>
         ScTypePolymorphicType(retType, typeParameters)
-      case tp => tp
+      case tp =>
+        tp
     }
   }
 }

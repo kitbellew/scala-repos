@@ -155,9 +155,11 @@ private[http] class RequestContextImpl(
                   else
                     ranges :+ MediaRanges.`*/*;q=MIN`
                 accept.copy(mediaRanges = acceptAll)
-              case x ⇒ x
+              case x ⇒
+                x
             }))
-      case _ ⇒ this
+      case _ ⇒
+        this
     }
 
   /** Attempts recovering from the special case when non-2xx response is sent, yet content negotiation was unable to find a match. */

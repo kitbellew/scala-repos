@@ -114,8 +114,10 @@ abstract class Filter[-ReqIn, +RepOut, +ReqOut, -RepIn]
       condAndFilter: (Boolean, Filter[ReqOut, RepIn, Req2, Rep2]))
       : Filter[ReqIn, RepOut, Req2, Rep2] =
     condAndFilter match {
-      case (true, filter) => andThen(filter)
-      case (false, _)     => this
+      case (true, filter) =>
+        andThen(filter)
+      case (false, _) =>
+        this
     }
 }
 

@@ -98,9 +98,12 @@ object ClientStore {
       b: BatchID,
       v: Future[Option[(BatchID, V)]]): Future[Option[(BatchID, V)]] =
     v.flatMap {
-      case s @ Some((bOld, v)) if (bOld.id <= b.id) => Future.value(s)
-      case Some((bOld, v))                          => Future.exception(OfflinePassedBatch(k, bOld, b))
-      case None                                     => Future.None
+      case s @ Some((bOld, v)) if (bOld.id <= b.id) =>
+        Future.value(s)
+      case Some((bOld, v)) =>
+        Future.exception(OfflinePassedBatch(k, bOld, b))
+      case None =>
+        Future.None
     }
 }
 
@@ -177,7 +180,8 @@ class ClientStore[K, V: Semigroup](
          * for the key
          */
         .map {
-          case (k, bv) => (k, ClientStore.offlineLTEQBatch(k, batch.next, bv))
+          case (k, bv) =>
+            (k, ClientStore.offlineLTEQBatch(k, batch.next, bv))
         }(breakOut)
 
     // For combining later we move the offline result batch id from being the exclusive upper bound

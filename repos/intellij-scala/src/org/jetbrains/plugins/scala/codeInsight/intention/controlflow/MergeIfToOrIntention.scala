@@ -63,7 +63,8 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
       new util.Comparator[PsiElement]() {
         def compare(element1: PsiElement, element2: PsiElement): Int = {
           (element1, element2) match {
-            case _ if element1 == element2 => 0
+            case _ if element1 == element2 =>
+              0
             case (block1: ScBlockExpr, block2: ScBlockExpr)
                 if block1.exprs.size != block2.exprs.size =>
               1
@@ -72,7 +73,8 @@ class MergeIfToOrIntention extends PsiElementBaseIntentionAction {
               0
             case (expr1: ScExpression, expr2: ScExpression) if expr1 == expr2 =>
               0
-            case _ => 1
+            case _ =>
+              1
           }
         }
       }

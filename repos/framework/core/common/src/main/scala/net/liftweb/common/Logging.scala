@@ -201,8 +201,9 @@ trait Logger {
             String.valueOf(msg) + ": " +
               fmsg: AnyRef,
             e: Throwable)
-        case Failure(fmsg, _, _) => trace(String.valueOf(msg) + ": " + fmsg)
-        case _                   =>
+        case Failure(fmsg, _, _) =>
+          trace(String.valueOf(msg) + ": " + fmsg)
+        case _ =>
       }
     }
   }
@@ -234,8 +235,9 @@ trait Logger {
             String.valueOf(msg) + ": " +
               fmsg,
             e)
-        case Failure(fmsg, _, _) => debug(String.valueOf(msg) + ": " + fmsg)
-        case _                   =>
+        case Failure(fmsg, _, _) =>
+          debug(String.valueOf(msg) + ": " + fmsg)
+        case _ =>
       }
     }
   }
@@ -267,8 +269,9 @@ trait Logger {
             String.valueOf(msg) + ": " +
               fmsg,
             e)
-        case Failure(fmsg, _, _) => info(String.valueOf(msg) + ": " + fmsg)
-        case _                   =>
+        case Failure(fmsg, _, _) =>
+          info(String.valueOf(msg) + ": " + fmsg)
+        case _ =>
       }
     }
   }
@@ -299,8 +302,9 @@ trait Logger {
             String.valueOf(msg) + ": " +
               fmsg,
             e)
-        case Failure(fmsg, _, _) => warn(String.valueOf(msg) + ": " + fmsg)
-        case _                   =>
+        case Failure(fmsg, _, _) =>
+          warn(String.valueOf(msg) + ": " + fmsg)
+        case _ =>
       }
     }
   }
@@ -331,8 +335,9 @@ trait Logger {
             String.valueOf(msg) + ": " +
               fmsg,
             e)
-        case Failure(fmsg, _, _) => error(String.valueOf(msg) + ": " + fmsg)
-        case _                   =>
+        case Failure(fmsg, _, _) =>
+          error(String.valueOf(msg) + ": " + fmsg)
+        case _ =>
       }
     }
   }

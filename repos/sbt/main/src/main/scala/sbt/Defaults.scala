@@ -547,9 +547,12 @@ object Defaults extends BuildCommon {
           override def triggeredMessage(s: WatchState) = trigMsg(s)
           override def watchPaths(s: State) =
             EvaluateTask.evaluateTask(Project structure s, key, s, base) match {
-              case Some(Value(ps)) => ps
-              case Some(Inc(i))    => throw i
-              case None            => sys.error("key not found: " + Def.displayFull(key))
+              case Some(Value(ps)) =>
+                ps
+              case Some(Inc(i)) =>
+                throw i
+              case None =>
+                sys.error("key not found: " + Def.displayFull(key))
             }
         }
     }
@@ -561,7 +564,8 @@ object Defaults extends BuildCommon {
       // if this logic changes, ensure that `unmanagedScalaInstanceOnly` and `update` are changed
       //  appropriately to avoid cycles
       scalaHome.value match {
-        case Some(h) => scalaInstanceFromHome(h)
+        case Some(h) =>
+          scalaInstanceFromHome(h)
         case None =>
           val scalaProvider = appConfiguration.value.provider.scalaProvider
           val version = scalaVersion.value
@@ -707,8 +711,10 @@ object Defaults extends BuildCommon {
     val scope = baseKey.scope
     val extra =
       scope.extra match {
-        case Select(x) => x;
-        case _         => AttributeMap.empty
+        case Select(x) =>
+          x;
+        case _ =>
+          AttributeMap.empty
       }
     val key = ScopedKey(
       scope.copy(extra = Select(testExtra(extra, tdef))),
@@ -722,8 +728,10 @@ object Defaults extends BuildCommon {
     val scope = baseKey.scope
     val extra =
       scope.extra match {
-        case Select(x) => x;
-        case _         => AttributeMap.empty
+        case Select(x) =>
+          x;
+        case _ =>
+          AttributeMap.empty
       }
     val key = ScopedKey(
       scope.copy(extra = Select(testExtra(extra, tdef))),
@@ -735,9 +743,12 @@ object Defaults extends BuildCommon {
   def testExtra(extra: AttributeMap, tdef: TestDefinition): AttributeMap = {
     val mod =
       tdef.fingerprint match {
-        case f: SubclassFingerprint  => f.isModule;
-        case f: AnnotatedFingerprint => f.isModule;
-        case _                       => false
+        case f: SubclassFingerprint =>
+          f.isModule;
+        case f: AnnotatedFingerprint =>
+          f.isModule;
+        case _ =>
+          false
       }
     extra.put(name.key, tdef.name).put(isModule, mod)
   }
@@ -785,7 +796,8 @@ object Defaults extends BuildCommon {
   def testQuickFilter: Initialize[Task[Seq[String] => Seq[String => Boolean]]] =
     (fullClasspath in test, streams in test) map { (cp, s) =>
       val ans: Seq[Analysis] = cp.flatMap(_.metadata get Keys.analysis) map {
-        case a0: Analysis => a0
+        case a0: Analysis =>
+          a0
       }
       val succeeded = TestStatus.read(succeededFile(s.cacheDirectory))
       val stamps = collection.mutable.Map.empty[File, Long]
@@ -814,8 +826,10 @@ object Defaults extends BuildCommon {
       }
       def noSuccessYet(test: String) =
         succeeded.get(test) match {
-          case None     => true
-          case Some(ts) => stamp(test) > ts
+          case None =>
+            true
+          case Some(ts) =>
+            stamp(test) > ts
         }
 
       args =>
@@ -867,8 +881,10 @@ object Defaults extends BuildCommon {
     frameworks.map {
       case (tf, f) =>
         val args = opts.flatMap {
-          case Argument(None | Some(`tf`), args) => args
-          case _                                 => Nil
+          case Argument(None | Some(`tf`), args) =>
+            args
+          case _ =>
+            Nil
         }
         val mainRunner = f.runner(args.toArray, Array.empty[String], loader)
         tf -> mainRunner
@@ -1047,7 +1063,8 @@ object Defaults extends BuildCommon {
   def concatMappings(as: Mappings, bs: Mappings) =
     (as zipWith bs)((a, b) =>
       (a, b) map {
-        case (a, b) => a ++ b
+        case (a, b) =>
+          a ++ b
       })
 
   // drop base directories, since there are no valid mappings for these
@@ -1089,9 +1106,12 @@ object Defaults extends BuildCommon {
     ((artifact, artifactClassifier).identity zipWith configuration.?) {
       case ((a, classifier), cOpt) =>
         val cPart = cOpt flatMap {
-          case Compile => None
-          case Test    => Some(Artifact.TestsClassifier)
-          case c       => Some(c.name)
+          case Compile =>
+            None
+          case Test =>
+            Some(Artifact.TestsClassifier)
+          case c =>
+            Some(c.name)
         }
         val combined = cPart.toList ++ classifier.toList
         if (combined.isEmpty)
@@ -1115,8 +1135,10 @@ object Defaults extends BuildCommon {
       scope: Configuration,
       classifier: Option[String]): Iterable[Configuration] =
     classifier match {
-      case Some(c) => Artifact.classifierConf(c) :: Nil
-      case None    => scope :: Nil
+      case Some(c) =>
+        Artifact.classifierConf(c) :: Nil
+      case None =>
+        scope :: Nil
     }
 
   @deprecated("Use `Util.pairID` instead", "0.12.0")
@@ -1184,7 +1206,8 @@ object Defaults extends BuildCommon {
         .flatMap(_.allPaths.get)
         .partition(_.isDirectory)
       val mappings = files.zipWithIndex map {
-        case (f, i) => (f, new File(temp, i.toHexString))
+        case (f, i) =>
+          (f, new File(temp, i.toHexString))
       }
       IO.move(mappings)
       IO.delete(clean)
@@ -1272,7 +1295,8 @@ object Defaults extends BuildCommon {
           val s = streams.value
           val cs: IncrementalCompilerImpl.Compilers =
             compilers.value match {
-              case c: IncrementalCompilerImpl.Compilers => c
+              case c: IncrementalCompilerImpl.Compilers =>
+                c
             }
           val srcs = sources.value
           val out = target.value
@@ -1306,7 +1330,8 @@ object Defaults extends BuildCommon {
                 javacOptions.value.toList,
                 s.log,
                 reporter)
-            case _ => () // do nothing
+            case _ =>
+              () // do nothing
           }
           out
         }
@@ -1321,7 +1346,8 @@ object Defaults extends BuildCommon {
     Discovery
       .applications(Tests.allDefs(analysis))
       .collect({
-        case (definition, discovered) if discovered.hasMain => definition.name
+        case (definition, discovered) if discovered.hasMain =>
+          definition.name
       })
       .sorted
 
@@ -1413,7 +1439,8 @@ object Defaults extends BuildCommon {
         javac = cs.javac /*.onArgs(exported(x, "javac"))*/ )
     val compilers: IncrementalCompilerImpl.Compilers =
       ci.compilers match {
-        case compilers: IncrementalCompilerImpl.Compilers => compilers
+        case compilers: IncrementalCompilerImpl.Compilers =>
+          compilers
       }
     val i = ci.withCompilers(onArgs(compilers))
     try Compiler.compile(i, s.log)
@@ -1626,9 +1653,12 @@ object Defaults extends BuildCommon {
         aggregate,
         getDependencies(structure, classpath = false, aggregate = true))
     (classpath, aggregate) match {
-      case (true, true)  => (fullCp ++ fullAgg).distinct
-      case (true, false) => fullCp
-      case _             => fullAgg
+      case (true, true) =>
+        (fullCp ++ fullAgg).distinct
+      case (true, false) =>
+        fullCp
+      case _ =>
+        fullAgg
     }
   }
   def getDependencies(
@@ -1797,7 +1827,8 @@ object Classpaths {
       pkgTasks: Seq[TaskKey[File]]): Initialize[Seq[T]] =
     (forallIn(key, pkgTasks) zipWith forallIn(publishArtifact, pkgTasks))(
       _ zip _ collect {
-        case (a, true) => a
+        case (a, true) =>
+          a
       })
   def forallIn[T](
       key: SettingKey[T],
@@ -1912,7 +1943,8 @@ object Classpaths {
         resolvers,
         appResolvers,
         useJCenter) {
-        case (Some(delegated), Seq(), _, _) => delegated
+        case (Some(delegated), Seq(), _, _) =>
+          delegated
         case (_, rs, Some(ars), uj) =>
           task {
             ars ++ rs
@@ -1939,7 +1971,8 @@ object Classpaths {
         overrideBuildResolvers) map {
         (proj, rs, isPlugin, sbtr, boot, overrideFlag) =>
           boot match {
-            case Some(repos) if overrideFlag => proj +: repos
+            case Some(repos) if overrideFlag =>
+              proj +: repos
             case _ =>
               val base =
                 if (isPlugin)
@@ -2207,7 +2240,8 @@ object Classpaths {
       apiURL.value match {
         case Some(u) =>
           base.extra(SbtPomExtraProperties.POM_API_KEY -> u.toExternalForm)
-        case _ => base
+        case _ =>
+          base
       }
     }
 
@@ -2378,7 +2412,8 @@ object Classpaths {
       val fullUpdateOutput = s.cacheDirectory / "out"
       val forceUpdateByTime =
         forceUpdate match {
-          case None => false
+          case None =>
+            false
           case Some(period) =>
             val elapsedDuration =
               new FiniteDuration(
@@ -2397,13 +2432,17 @@ object Classpaths {
             partialVersion(sv),
             partialVersion(subVersion),
             partialVersion(scalaVersion.value)) match {
-            case (Some(res), Some(sh), _) if res == sh     => jars
-            case (Some(res), _, Some(decl)) if res == decl => jars
-            case _                                         => Nil
+            case (Some(res), Some(sh), _) if res == sh =>
+              jars
+            case (Some(res), _, Some(decl)) if res == decl =>
+              jars
+            case _ =>
+              Nil
           }
       val subScalaJars: String => Seq[File] =
         Defaults.unmanagedScalaInstanceOnly.value match {
-          case Some(si) => subUnmanaged(si.version, si.allJars)
+          case Some(si) =>
+            subUnmanaged(si.version, si.allJars)
           case None =>
             sv =>
               if (scalaProvider.version == sv)
@@ -2431,7 +2470,8 @@ object Classpaths {
             uc0.copy(logging = Full)
           case Some(x) if uc0.logging == Default =>
             uc0.copy(logging = DownloadOnly)
-          case _ => uc0
+          case _ =>
+            uc0
         }
       val ewo =
         if (executionRoots.value exists {
@@ -2520,7 +2560,8 @@ object Classpaths {
               logicalClock,
               depDir,
               log) match {
-              case Right(ur) => ur
+              case Right(ur) =>
+                ur
               case Left(uw) =>
                 uw.lines foreach {
                   log.warn(_)
@@ -2553,7 +2594,8 @@ object Classpaths {
     val outCacheFile = cacheFile / "output"
     def skipWork: In => UpdateReport =
       Tracked.lastOutput[In, UpdateReport](outCacheFile) {
-        case (_, Some(out)) => out
+        case (_, Some(out)) =>
+          out
         case _ =>
           sys.error(
             "Skipping update requested, but update has not previously run successfully.")
@@ -2563,8 +2605,10 @@ object Classpaths {
         (inChanged: Boolean, in: In) =>
           val outCache =
             Tracked.lastOutput[In, UpdateReport](outCacheFile) {
-              case (_, Some(out)) if uptodate(inChanged, out) => out
-              case _                                          => work(in)
+              case (_, Some(out)) if uptodate(inChanged, out) =>
+                out
+              case _ =>
+                work(in)
             }
           try {
             outCache(in)
@@ -2622,7 +2666,8 @@ object Classpaths {
                 }
             }: _*)
         } catch {
-          case _: Throwable => Map()
+          case _: Throwable =>
+            Map()
         }
 
       val outCacheFile = cacheFile / "output_dsp"
@@ -2632,8 +2677,10 @@ object Classpaths {
             val outCache =
               Tracked.lastOutput[Seq[ModuleID], Map[ModuleID, SourcePosition]](
                 outCacheFile) {
-                case (_, Some(out)) if !inChanged => out
-                case _                            => modulePositions
+                case (_, Some(out)) if !inChanged =>
+                  out
+                case _ =>
+                  modulePositions
               }
             outCache(in)
         }
@@ -3120,20 +3167,23 @@ object Classpaths {
     try {
       Option(app.provider.scalaProvider.launcher.ivyHome)
     } catch {
-      case _: NoSuchMethodError => None
+      case _: NoSuchMethodError =>
+        None
     }
 
   def bootChecksums(app: xsbti.AppConfiguration): Seq[String] =
     try {
       app.provider.scalaProvider.launcher.checksums.toSeq
     } catch {
-      case _: NoSuchMethodError => IvySbt.DefaultChecksums
+      case _: NoSuchMethodError =>
+        IvySbt.DefaultChecksums
     }
 
   def isOverrideRepositories(app: xsbti.AppConfiguration): Boolean =
     try app.provider.scalaProvider.launcher.isOverrideRepositories
     catch {
-      case _: NoSuchMethodError => false
+      case _: NoSuchMethodError =>
+        false
     }
 
   /** Loads the `appRepositories` configured for this launcher, if supported. */
@@ -3142,7 +3192,8 @@ object Classpaths {
       Some(
         app.provider.scalaProvider.launcher.appRepositories.toSeq map bootRepository)
     } catch {
-      case _: NoSuchMethodError => None
+      case _: NoSuchMethodError =>
+        None
     }
 
   def bootRepositories(app: xsbti.AppConfiguration): Option[Seq[Resolver]] =
@@ -3150,14 +3201,16 @@ object Classpaths {
       Some(
         app.provider.scalaProvider.launcher.ivyRepositories.toSeq map bootRepository)
     } catch {
-      case _: NoSuchMethodError => None
+      case _: NoSuchMethodError =>
+        None
     }
 
   private[this] def mavenCompatible(ivyRepo: xsbti.IvyRepository): Boolean =
     try {
       ivyRepo.mavenCompatible
     } catch {
-      case _: NoSuchMethodError => false
+      case _: NoSuchMethodError =>
+        false
     }
 
   private[this] def skipConsistencyCheck(
@@ -3165,20 +3218,23 @@ object Classpaths {
     try {
       ivyRepo.skipConsistencyCheck
     } catch {
-      case _: NoSuchMethodError => false
+      case _: NoSuchMethodError =>
+        false
     }
 
   private[this] def descriptorOptional(ivyRepo: xsbti.IvyRepository): Boolean =
     try {
       ivyRepo.descriptorOptional
     } catch {
-      case _: NoSuchMethodError => false
+      case _: NoSuchMethodError =>
+        false
     }
 
   private[this] def bootRepository(repo: xsbti.Repository): Resolver = {
     import xsbti.Predefined
     repo match {
-      case m: xsbti.MavenRepository => MavenRepository(m.id, m.url.toString)
+      case m: xsbti.MavenRepository =>
+        MavenRepository(m.id, m.url.toString)
       case i: xsbti.IvyRepository =>
         val patterns = Patterns(
           i.ivyPattern :: Nil,
@@ -3193,18 +3249,25 @@ object Classpaths {
               try {
                 new File(i.url.toURI)
               } catch {
-                case e: java.net.URISyntaxException => new File(i.url.getPath)
+                case e: java.net.URISyntaxException =>
+                  new File(i.url.getPath)
               }
             Resolver.file(i.id, file)(patterns)
-          case _ => Resolver.url(i.id, i.url)(patterns)
+          case _ =>
+            Resolver.url(i.id, i.url)(patterns)
         }
       case p: xsbti.PredefinedRepository =>
         p.id match {
-          case Predefined.Local               => Resolver.defaultLocal
-          case Predefined.MavenLocal          => Resolver.mavenLocal
-          case Predefined.MavenCentral        => DefaultMavenRepository
-          case Predefined.ScalaToolsReleases  => Resolver.ScalaToolsReleases
-          case Predefined.ScalaToolsSnapshots => Resolver.ScalaToolsSnapshots
+          case Predefined.Local =>
+            Resolver.defaultLocal
+          case Predefined.MavenLocal =>
+            Resolver.mavenLocal
+          case Predefined.MavenCentral =>
+            DefaultMavenRepository
+          case Predefined.ScalaToolsReleases =>
+            Resolver.ScalaToolsReleases
+          case Predefined.ScalaToolsSnapshots =>
+            Resolver.ScalaToolsSnapshots
           case Predefined.SonatypeOSSReleases =>
             Resolver.sonatypeRepo("releases")
           case Predefined.SonatypeOSSSnapshots =>

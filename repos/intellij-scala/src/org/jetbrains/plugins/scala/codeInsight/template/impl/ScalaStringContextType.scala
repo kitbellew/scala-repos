@@ -27,7 +27,8 @@ object ScalaStringContextType {
     PsiTreeUtil.getParentOfType(element, classOf[ScLiteral]) match {
       case literal: ScLiteral =>
         literal.isString
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

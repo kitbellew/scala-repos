@@ -56,7 +56,8 @@ object RemoteAddress {
     require(bytes.length == 4 || bytes.length == 16)
     try IP(InetAddress.getByAddress(bytes))
     catch {
-      case _: UnknownHostException ⇒ Unknown
+      case _: UnknownHostException ⇒
+        Unknown
     }
   }
 }

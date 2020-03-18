@@ -48,8 +48,10 @@ trait Foldable1[F[_]] extends Foldable[F] {
   def foldMapLeft1[A, B](fa: F[A])(z: A => B)(f: (B, A) => B): B = {
     import std.option._
     foldLeft(fa, none[B]) {
-      case (None, r)    => some(z(r))
-      case (Some(l), r) => some(f(l, r))
+      case (None, r) =>
+        some(z(r))
+      case (Some(l), r) =>
+        some(f(l, r))
     }.getOrElse(sys.error("foldMapLeft1"))
   }
 

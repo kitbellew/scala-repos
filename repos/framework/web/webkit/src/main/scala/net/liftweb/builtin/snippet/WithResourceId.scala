@@ -37,7 +37,8 @@ import Helpers._
   */
 object WithResourceId extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case _ => render
+    case _ =>
+      render
   }
 
   import Helpers._
@@ -65,7 +66,8 @@ object WithResourceId extends DispatchSnippet {
                 LiftRules.attachResourceId(src),
                 Null)))
           } openOr e
-        case e => e
+        case e =>
+          e
       }
     )
   }
@@ -73,15 +75,21 @@ object WithResourceId extends DispatchSnippet {
   private def attrStr(attrs: MetaData, attr: String): Box[String] =
     (
       attrs.get(attr) match {
-        case None      => Empty
-        case Some(Nil) => Empty
-        case Some(x)   => Full(x.toString)
+        case None =>
+          Empty
+        case Some(Nil) =>
+          Empty
+        case Some(x) =>
+          Full(x.toString)
       }
     ) or (
       attrs.get(attr.toLowerCase) match {
-        case None      => Empty
-        case Some(Nil) => Empty
-        case Some(x)   => Full(x.toString)
+        case None =>
+          Empty
+        case Some(Nil) =>
+          Empty
+        case Some(x) =>
+          Full(x.toString)
       }
     )
 }

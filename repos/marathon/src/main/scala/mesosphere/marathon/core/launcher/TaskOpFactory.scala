@@ -34,7 +34,8 @@ object TaskOpFactory {
       FrameworkId("").mergeFromProto(offer.getFrameworkId)
     def tasks: Iterable[Task] = taskMap.values
     lazy val reserved: Iterable[Task.Reserved] = tasks.collect {
-      case r: Task.Reserved => r
+      case r: Task.Reserved =>
+        r
     }
     def hasWaitingReservations: Boolean = reserved.nonEmpty
     def numberOfWaitingReservations: Int = reserved.size

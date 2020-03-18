@@ -71,8 +71,10 @@ class CircuitBreaker(potentiallyFailingService: ActorRef)
       resetTimeout = 30.seconds)
       .copy(failureDetector = {
         _ match {
-          case Response(Left(_)) ⇒ true
-          case _ ⇒ false
+          case Response(Left(_)) ⇒
+            true
+          case _ ⇒
+            false
         }
       })
       .props(potentiallyFailingService),
@@ -117,8 +119,10 @@ class CircuitBreakerAsk(potentiallyFailingService: ActorRef)
       resetTimeout = 30.seconds)
       .copy(failureDetector = {
         _ match {
-          case Response(Left(_)) ⇒ true
-          case _ ⇒ false
+          case Response(Left(_)) ⇒
+            true
+          case _ ⇒
+            false
         }
       })
       .copy(openCircuitFailureConverter = { failure ⇒

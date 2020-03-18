@@ -69,10 +69,14 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     */
   def mode(saveMode: String): DataFrameWriter = {
     this.mode = saveMode.toLowerCase match {
-      case "overwrite"         => SaveMode.Overwrite
-      case "append"            => SaveMode.Append
-      case "ignore"            => SaveMode.Ignore
-      case "error" | "default" => SaveMode.ErrorIfExists
+      case "overwrite" =>
+        SaveMode.Overwrite
+      case "append" =>
+        SaveMode.Append
+      case "ignore" =>
+        SaveMode.Ignore
+      case "error" | "default" =>
+        SaveMode.ErrorIfExists
       case _ =>
         throw new IllegalArgumentException(
           s"Unknown save mode: $saveMode. " +

@@ -52,7 +52,8 @@ private[akka] class ActorRefBackpressureSinkStage[In](
               dequeueAndSend()
             }
           }
-          case Terminated(`ref`) ⇒ completeStage()
+          case Terminated(`ref`) ⇒
+            completeStage()
           case _ ⇒ //ignore all other messages
         }
       }

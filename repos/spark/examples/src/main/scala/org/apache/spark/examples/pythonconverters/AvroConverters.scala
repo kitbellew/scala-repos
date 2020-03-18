@@ -35,20 +35,34 @@ object AvroConversionUtil extends Serializable {
       return null
     }
     schema.getType match {
-      case UNION   => unpackUnion(obj, schema)
-      case ARRAY   => unpackArray(obj, schema)
-      case FIXED   => unpackFixed(obj, schema)
-      case MAP     => unpackMap(obj, schema)
-      case BYTES   => unpackBytes(obj)
-      case RECORD  => unpackRecord(obj)
-      case STRING  => obj.toString
-      case ENUM    => obj.toString
-      case NULL    => obj
-      case BOOLEAN => obj
-      case DOUBLE  => obj
-      case FLOAT   => obj
-      case INT     => obj
-      case LONG    => obj
+      case UNION =>
+        unpackUnion(obj, schema)
+      case ARRAY =>
+        unpackArray(obj, schema)
+      case FIXED =>
+        unpackFixed(obj, schema)
+      case MAP =>
+        unpackMap(obj, schema)
+      case BYTES =>
+        unpackBytes(obj)
+      case RECORD =>
+        unpackRecord(obj)
+      case STRING =>
+        obj.toString
+      case ENUM =>
+        obj.toString
+      case NULL =>
+        obj
+      case BOOLEAN =>
+        obj
+      case DOUBLE =>
+        obj
+      case FLOAT =>
+        obj
+      case INT =>
+        obj
+      case LONG =>
+        obj
       case other =>
         throw new SparkException(s"Unknown Avro schema type ${other.getName}")
     }
@@ -91,7 +105,8 @@ object AvroConversionUtil extends Serializable {
           val arr = new Array[Byte](buf.remaining())
           buf.get(arr)
           arr
-        case arr: Array[Byte] => arr
+        case arr: Array[Byte] =>
+          arr
         case other =>
           throw new SparkException(
             s"Unknown BYTES type ${other.getClass.getName}")
@@ -116,9 +131,12 @@ object AvroConversionUtil extends Serializable {
 
   def unpackUnion(obj: Any, schema: Schema): Any = {
     schema.getTypes.asScala.toList match {
-      case List(s)                         => fromAvro(obj, s)
-      case List(n, s) if n.getType == NULL => fromAvro(obj, s)
-      case List(s, n) if n.getType == NULL => fromAvro(obj, s)
+      case List(s) =>
+        fromAvro(obj, s)
+      case List(n, s) if n.getType == NULL =>
+        fromAvro(obj, s)
+      case List(s, n) if n.getType == NULL =>
+        fromAvro(obj, s)
       case _ =>
         throw new SparkException(
           "Unions may only consist of a concrete type and null")
@@ -152,8 +170,10 @@ class AvroWrapperToJavaConverter extends Converter[Any, Any] {
       return null
     }
     obj.asInstanceOf[AvroWrapper[_]].datum() match {
-      case null                  => null
-      case record: IndexedRecord => AvroConversionUtil.unpackRecord(record)
+      case null =>
+        null
+      case record: IndexedRecord =>
+        AvroConversionUtil.unpackRecord(record)
       case other =>
         throw new SparkException(
           s"Unsupported top-level Avro data type ${other.getClass.getName}")

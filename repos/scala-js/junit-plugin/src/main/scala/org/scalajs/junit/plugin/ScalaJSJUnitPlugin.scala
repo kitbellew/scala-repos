@@ -158,7 +158,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                   val hasAnnotationInClass = sym.selfType.members.exists {
                     case mtdSym: MethodSymbol =>
                       hasAnnotation(mtdSym, TestClass)
-                    case _ => false
+                    case _ =>
+                      false
                   }
                   if (hasAnnotationInClass)
                     true
@@ -166,13 +167,16 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                     sym.parentSymbols.headOption
                       .fold(false)(isClassWithJUnitAnnotation)
 
-                case _ => false
+                case _ =>
+                  false
               }
 
             val bootstrappers = tree.stats
               .groupBy { // Group the class with its module
-                case clDef: ClassDef => Some(clDef.name)
-                case _               => None
+                case clDef: ClassDef =>
+                  Some(clDef.name)
+                case _ =>
+                  None
               }
               .iterator
               .flatMap {
@@ -190,13 +194,15 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                     case clDef: ClassDef if isTestClass(clDef) =>
                       // Get the module definition
                       val modDefOption = xs collectFirst {
-                        case clDef: ClassDef if isModule(clDef) => clDef
+                        case clDef: ClassDef if isModule(clDef) =>
+                          clDef
                       }
                       // Create a new module for the JUnit entry point.
                       mkBootstrapperClass(clDef, modDefOption)
                   }
 
-                case (_, xs) => None
+                case (_, xs) =>
+                  None
               }
 
             val newStats = tree.stats.map(transform) ++ bootstrappers
@@ -281,7 +287,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
 
       def jUnitAnnotatedMethods(sym: Symbol): List[MethodSymbol] = {
         sym.selfType.members.collect {
-          case m: MethodSymbol if hasJUnitMethodAnnotation(m) => m
+          case m: MethodSymbol if hasJUnitMethodAnnotation(m) =>
+            m
         }.toList
       }
 

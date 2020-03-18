@@ -107,8 +107,10 @@ object TupleConverter extends GeneratedTupleConverters {
         new Product {
           def canEqual(that: Any) =
             that match {
-              case p: Product => true
-              case _          => false
+              case p: Product =>
+                true
+              case _ =>
+                false
             }
           def productArity = tup.size
           def productElement(idx: Int) = tup.getObject(idx)

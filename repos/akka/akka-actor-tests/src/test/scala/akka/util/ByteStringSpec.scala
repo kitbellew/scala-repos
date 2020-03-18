@@ -532,7 +532,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
         check { (a: ByteString, b: Byte) ⇒
           likeVector(a)({
             _.span(_ != b) match {
-              case (a, b) ⇒ (a, b)
+              case (a, b) ⇒
+                (a, b)
             }
           })
         }
@@ -691,7 +692,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
           likeVecIt(a)(
             {
               _.duplicate match {
-                case (a, b) ⇒ (a.toSeq, b.toSeq)
+                case (a, b) ⇒
+                  (a.toSeq, b.toSeq)
               }
             },
             strict = false)
@@ -706,7 +708,8 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
           likeVecIt(a)(
             {
               _.span(_ != b) match {
-                case (a, b) ⇒ (a.toList, b.toList)
+                case (a, b) ⇒
+                  (a.toList, b.toList)
               }
             },
             strict = false)

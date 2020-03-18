@@ -146,7 +146,8 @@ class LightArrayRevolverScheduler(
       @tailrec
       final def cancel(): Boolean = {
         get match {
-          case null ⇒ false
+          case null ⇒
+            false
           case c ⇒
             if (c.cancel())
               compareAndSet(c, null)
@@ -157,7 +158,8 @@ class LightArrayRevolverScheduler(
 
       override def isCancelled: Boolean = get == null
     } catch {
-      case SchedulerException(msg) ⇒ throw new IllegalStateException(msg)
+      case SchedulerException(msg) ⇒
+        throw new IllegalStateException(msg)
     }
   }
 
@@ -165,16 +167,19 @@ class LightArrayRevolverScheduler(
       executor: ExecutionContext): Cancellable =
     try schedule(executor.prepare(), runnable, roundUp(delay))
     catch {
-      case SchedulerException(msg) ⇒ throw new IllegalStateException(msg)
+      case SchedulerException(msg) ⇒
+        throw new IllegalStateException(msg)
     }
 
   override def close(): Unit =
     Await.result(stop(), getShutdownTimeout) foreach { task ⇒
       try task.run()
       catch {
-        case e: InterruptedException ⇒ throw e
+        case e: InterruptedException ⇒
+          throw e
         case _: SchedulerException ⇒ // ignore terminated actors
-        case NonFatal(e) ⇒ log.error(e, "exception while executing timer task")
+        case NonFatal(e) ⇒
+          log.error(e, "exception while executing timer task")
       }
     }
 
@@ -243,8 +248,10 @@ class LightArrayRevolverScheduler(
         @tailrec
         def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] = {
           q.poll() match {
-            case null ⇒ acc
-            case x ⇒ collect(q, acc :+ x)
+            case null ⇒
+              acc
+            case x ⇒
+              collect(q, acc :+ x)
           }
         }
         (
@@ -255,10 +262,12 @@ class LightArrayRevolverScheduler(
       @tailrec
       private def checkQueue(time: Long): Unit =
         queue.pollNode() match {
-          case null ⇒ ()
+          case null ⇒
+            ()
           case node ⇒
             node.value.ticks match {
-              case 0 ⇒ node.value.executeTask()
+              case 0 ⇒
+                node.value.executeTask()
               case ticks ⇒
                 val futureTick =
                   (
@@ -323,7 +332,8 @@ class LightArrayRevolverScheduler(
           @tailrec
           def executeBucket(): Unit =
             tasks.pollNode() match {
-              case null ⇒ ()
+              case null ⇒
+                ()
               case node ⇒
                 val task = node.value
                 if (!task.isCancelled) {
@@ -341,7 +351,8 @@ class LightArrayRevolverScheduler(
           tick += 1
         }
         stopped.get match {
-          case null ⇒ nextTick()
+          case null ⇒
+            nextTick()
           case p ⇒
             assert(
               stopped.compareAndSet(p, Promise successful Nil),
@@ -378,7 +389,8 @@ object LightArrayRevolverScheduler {
     @tailrec
     private final def extractTask(replaceWith: Runnable): Runnable =
       task match {
-        case t @ (ExecutedTask | CancelledTask) ⇒ t
+        case t @ (ExecutedTask | CancelledTask) ⇒
+          t
         case x ⇒
           if (unsafe.compareAndSwapObject(this, taskOffset, x, replaceWith))
             x
@@ -388,7 +400,8 @@ object LightArrayRevolverScheduler {
 
     private[akka] final def executeTask(): Boolean =
       extractTask(ExecutedTask) match {
-        case ExecutedTask | CancelledTask ⇒ false
+        case ExecutedTask | CancelledTask ⇒
+          false
         case other ⇒
           try {
             executionContext execute other
@@ -410,8 +423,10 @@ object LightArrayRevolverScheduler {
 
     override def cancel(): Boolean =
       extractTask(CancelledTask) match {
-        case ExecutedTask | CancelledTask ⇒ false
-        case _ ⇒ true
+        case ExecutedTask | CancelledTask ⇒
+          false
+        case _ ⇒
+          true
       }
 
     override def isCancelled: Boolean = task eq CancelledTask

@@ -90,12 +90,18 @@ private[hive] class HiveClientImpl(
 
   private val shim =
     version match {
-      case hive.v12  => new Shim_v0_12()
-      case hive.v13  => new Shim_v0_13()
-      case hive.v14  => new Shim_v0_14()
-      case hive.v1_0 => new Shim_v1_0()
-      case hive.v1_1 => new Shim_v1_1()
-      case hive.v1_2 => new Shim_v1_2()
+      case hive.v12 =>
+        new Shim_v0_12()
+      case hive.v13 =>
+        new Shim_v0_13()
+      case hive.v14 =>
+        new Shim_v0_14()
+      case hive.v1_0 =>
+        new Shim_v1_0()
+      case hive.v1_1 =>
+        new Shim_v1_1()
+      case hive.v1_2 =>
+        new Shim_v1_2()
     }
 
   // Create an internal session state for this HiveClientImpl.
@@ -344,10 +350,14 @@ private[hive] class HiveClientImpl(
         CatalogTable(
           name = TableIdentifier(h.getTableName, Option(h.getDbName)),
           tableType = h.getTableType match {
-            case HiveTableType.EXTERNAL_TABLE => CatalogTableType.EXTERNAL_TABLE
-            case HiveTableType.MANAGED_TABLE  => CatalogTableType.MANAGED_TABLE
-            case HiveTableType.INDEX_TABLE    => CatalogTableType.INDEX_TABLE
-            case HiveTableType.VIRTUAL_VIEW   => CatalogTableType.VIRTUAL_VIEW
+            case HiveTableType.EXTERNAL_TABLE =>
+              CatalogTableType.EXTERNAL_TABLE
+            case HiveTableType.MANAGED_TABLE =>
+              CatalogTableType.MANAGED_TABLE
+            case HiveTableType.INDEX_TABLE =>
+              CatalogTableType.INDEX_TABLE
+            case HiveTableType.VIRTUAL_VIEW =>
+              CatalogTableType.VIRTUAL_VIEW
           },
           schema = h.getCols.asScala.map(fromHiveColumn),
           partitionColumns = h.getPartCols.asScala.map(fromHiveColumn),
@@ -741,10 +751,14 @@ private[hive] class HiveClientImpl(
     val hiveTable = new HiveTable(table.database, table.name.table)
     hiveTable.setTableType(
       table.tableType match {
-        case CatalogTableType.EXTERNAL_TABLE => HiveTableType.EXTERNAL_TABLE
-        case CatalogTableType.MANAGED_TABLE  => HiveTableType.MANAGED_TABLE
-        case CatalogTableType.INDEX_TABLE    => HiveTableType.INDEX_TABLE
-        case CatalogTableType.VIRTUAL_VIEW   => HiveTableType.VIRTUAL_VIEW
+        case CatalogTableType.EXTERNAL_TABLE =>
+          HiveTableType.EXTERNAL_TABLE
+        case CatalogTableType.MANAGED_TABLE =>
+          HiveTableType.MANAGED_TABLE
+        case CatalogTableType.INDEX_TABLE =>
+          HiveTableType.INDEX_TABLE
+        case CatalogTableType.VIRTUAL_VIEW =>
+          HiveTableType.VIRTUAL_VIEW
       })
     hiveTable.setFields(table.schema.map(toHiveColumn).asJava)
     hiveTable.setPartCols(table.partitionColumns.map(toHiveColumn).asJava)
@@ -764,10 +778,12 @@ private[hive] class HiveClientImpl(
       .foreach(hiveTable.setOutputFormatClass)
     table.storage.serde.foreach(hiveTable.setSerializationLib)
     table.storage.serdeProperties.foreach {
-      case (k, v) => hiveTable.setSerdeParam(k, v)
+      case (k, v) =>
+        hiveTable.setSerdeParam(k, v)
     }
     table.properties.foreach {
-      case (k, v) => hiveTable.setProperty(k, v)
+      case (k, v) =>
+        hiveTable.setProperty(k, v)
     }
     table.viewOriginalText.foreach { t =>
       hiveTable.setViewOriginalText(t)

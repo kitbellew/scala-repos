@@ -32,10 +32,12 @@ final class RemoteSettings(val config: Config) {
   val RemoteLifecycleEventsLogLevel: LogLevel =
     getString("akka.remote.log-remote-lifecycle-events").toLowerCase(
       Locale.ROOT) match {
-      case "on" ⇒ Logging.DebugLevel
+      case "on" ⇒
+        Logging.DebugLevel
       case other ⇒
         Logging.levelFor(other) match {
-          case Some(level) ⇒ level
+          case Some(level) ⇒
+            level
           case None ⇒
             throw new ConfigurationException(
               "Logging level must be one of (on, off, debug, info, warning, error)")
@@ -76,8 +78,10 @@ final class RemoteSettings(val config: Config) {
   val LogBufferSizeExceeding: Int = {
     val key = "akka.remote.log-buffer-size-exceeding"
     config.getString(key).toLowerCase match {
-      case "off" | "false" ⇒ Int.MaxValue
-      case _ ⇒ config.getInt(key)
+      case "off" | "false" ⇒
+        Int.MaxValue
+      case _ ⇒
+        config.getInt(key)
     }
   }
 
@@ -163,7 +167,8 @@ final class RemoteSettings(val config: Config) {
 
   private def configToMap(cfg: Config): Map[String, String] =
     cfg.root.unwrapped.asScala.toMap.map {
-      case (k, v) ⇒ (k, v.toString)
+      case (k, v) ⇒
+        (k, v.toString)
     }
 
 }

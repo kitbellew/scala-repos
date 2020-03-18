@@ -23,8 +23,10 @@ class ForSomeFilter extends ElementFilter {
       if (parent == null)
         return false
       parent.getParent match {
-        case _: ScInfixTypeElement => return true
-        case _                     => return false
+        case _: ScInfixTypeElement =>
+          return true
+        case _ =>
+          return false
       }
     }
     false

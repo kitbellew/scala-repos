@@ -17,7 +17,8 @@ private[client] object EventDeliveryThread
       try {
         u() = s
       } catch {
-        case exc: Throwable => Monitor.handle(exc)
+        case exc: Throwable =>
+          Monitor.handle(exc)
       }
     }
   }

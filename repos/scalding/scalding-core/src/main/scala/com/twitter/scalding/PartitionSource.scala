@@ -58,7 +58,8 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
             openWritesThreshold match {
               case Some(threshold) =>
                 new LPartitionTap(localTap, partition, threshold)
-              case None => new LPartitionTap(localTap, partition)
+              case None =>
+                new LPartitionTap(localTap, partition)
             }
           }
           case hdfsMode @ Hdfs(_, _) => {
@@ -72,7 +73,8 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
               sinkMode)
             getHPartitionTap(hfsTap)
           }
-          case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
+          case _ =>
+            TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
         }
       }
     }
@@ -92,8 +94,10 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
 
   private[this] def getHPartitionTap(hfsTap: Hfs): HPartitionTap = {
     openWritesThreshold match {
-      case Some(threshold) => new HPartitionTap(hfsTap, partition, threshold)
-      case None            => new HPartitionTap(hfsTap, partition)
+      case Some(threshold) =>
+        new HPartitionTap(hfsTap, partition, threshold)
+      case None =>
+        new HPartitionTap(hfsTap, partition)
     }
   }
 }

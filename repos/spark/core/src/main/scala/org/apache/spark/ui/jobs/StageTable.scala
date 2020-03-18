@@ -196,8 +196,10 @@ private[ui] class StageTableBase(
     val stageData = stageDataOption.get
     val submissionTime =
       s.submissionTime match {
-        case Some(t) => UIUtils.formatDate(new Date(t))
-        case None    => "Unknown"
+        case Some(t) =>
+          UIUtils.formatDate(new Date(t))
+        case None =>
+          "Unknown"
       }
     val finishTime = s.completionTime.getOrElse(System.currentTimeMillis)
 

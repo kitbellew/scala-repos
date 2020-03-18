@@ -35,8 +35,10 @@ class ScConstructorPatternImpl(node: ASTNode)
     with ScConstructorPattern {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -82,11 +84,14 @@ class ScConstructorPatternImpl(node: ASTNode)
                   }
                   true
                 }
-              case _ => subpatterns.isEmpty
+              case _ =>
+                subpatterns.isEmpty
             }
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -107,7 +112,8 @@ class ScConstructorPatternImpl(node: ASTNode)
                     tp match {
                       case tp: ScTypeParam =>
                         new ScTypeParameterType(tp, r.substitutor)
-                      case _ => new ScTypeParameterType(tp, r.substitutor)
+                      case _ =>
+                        new ScTypeParameterType(tp, r.substitutor)
                     }))
               )
               val emptySubst: ScSubstitutor =
@@ -123,12 +129,15 @@ class ScConstructorPatternImpl(node: ASTNode)
                   if (t) {
                     val undefSubst = Conformance.undefinedSubst(tp, clazzType)
                     undefSubst.getSubstitutor match {
-                      case Some(subst) => subst followed emptySubst
-                      case _           => emptySubst
+                      case Some(subst) =>
+                        subst followed emptySubst
+                      case _ =>
+                        emptySubst
                     }
                   } else
                     emptySubst
-                case _ => emptySubst
+                case _ =>
+                  emptySubst
               }
             }
             Success(
@@ -140,8 +149,10 @@ class ScConstructorPatternImpl(node: ASTNode)
                   })
                   .toSeq),
               Some(this))
-          case td: ScClass   => Success(ScType.designator(td), Some(this))
-          case obj: ScObject => Success(ScType.designator(obj), Some(this))
+          case td: ScClass =>
+            Success(ScType.designator(td), Some(this))
+          case obj: ScObject =>
+            Success(ScType.designator(obj), Some(this))
           case fun: ScFunction /*It's unapply method*/
               if (fun.name == "unapply" || fun.name == "unapplySeq") &&
                 fun.parameters.length == 1 =>
@@ -174,11 +185,13 @@ class ScConstructorPatternImpl(node: ASTNode)
                         undefSubst.getSubstitutor match {
                           case Some(newSubst) =>
                             newSubst followed substitutor followed emptySubst
-                          case _ => emptyRes
+                          case _ =>
+                            emptyRes
                         }
                       } else
                         emptyRes
-                    case _ => emptyRes
+                    case _ =>
+                      emptyRes
                   }
                 }
               }
@@ -188,9 +201,11 @@ class ScConstructorPatternImpl(node: ASTNode)
               .apply(0)
               .getType(TypingContext.empty)
               .map(subst.subst)
-          case _ => Success(Nothing, Some(this))
+          case _ =>
+            Success(Nothing, Some(this))
         }
-      case _ => Failure("Cannot resolve symbol", Some(this))
+      case _ =>
+        Failure("Cannot resolve symbol", Some(this))
     }
   }
 

@@ -25,7 +25,8 @@ trait Apply[F[_]]
     */
   def ap2[A, B, Z](ff: F[(A, B) => Z])(fa: F[A], fb: F[B]): F[Z] =
     map(product(fa, product(fb, ff))) {
-      case (a, (b, f)) => f(a, b)
+      case (a, (b, f)) =>
+        f(a, b)
     }
 
   /**
@@ -35,7 +36,8 @@ trait Apply[F[_]]
     */
   def map2[A, B, Z](fa: F[A], fb: F[B])(f: (A, B) => Z): F[Z] =
     map(product(fa, fb)) {
-      case (a, b) => f(a, b)
+      case (a, b) =>
+        f(a, b)
     }
 
   /**

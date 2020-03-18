@@ -15,8 +15,10 @@ object TestUnit {
   def goo =
     Apply { i =>
       i match {
-        case 1 => Success(Some(1))
-        case _ => Success(None)
+        case 1 =>
+          Success(Some(1))
+        case _ =>
+          Success(None)
       }
     }
 
@@ -27,8 +29,10 @@ object TestUnit {
         type t >: Some[Int] with None.type <: Option[Int]
       }] { i =>
       i match {
-        case 1 => Success(Some(1))
-        case _ => Success(None)
+        case 1 =>
+          Success(Some(1))
+        case _ =>
+          Success(None)
       }
     }
 }

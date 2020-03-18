@@ -4,7 +4,8 @@ object Test {
       return try {
         1
       } catch {
-        case _: Throwable => 0
+        case _: Throwable =>
+          0
       }
     f()
   }

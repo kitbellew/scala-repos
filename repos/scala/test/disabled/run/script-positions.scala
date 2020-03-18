@@ -57,8 +57,10 @@ object Test {
   // strip the random temp filename from error msgs
   def stripFilename(s: String) =
     (s indexOf ".scala:") match {
-      case -1  => s
-      case idx => s drop (idx + 7)
+      case -1 =>
+        s
+      case idx =>
+        s drop (idx + 7)
     }
   def toLines(text: String) = lines(text) map stripFilename
 
@@ -67,7 +69,8 @@ object Test {
       val out = toLines(runScript(code))
       val exp = toLines(expected)
       val nomatch = out zip exp filter {
-        case (x, y) => x != y
+        case (x, y) =>
+          x != y
       }
       val success = out.size == exp.size && nomatch.isEmpty
 

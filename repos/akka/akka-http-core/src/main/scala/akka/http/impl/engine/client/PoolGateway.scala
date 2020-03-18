@@ -99,7 +99,8 @@ private[http] class PoolGateway(
         } else
           shutdown() // CAS loop (not a spinlock)
 
-      case IsShutdown(x) ⇒ x
+      case IsShutdown(x) ⇒
+        x
 
       case NewIncarnation(newGatewayFuture) ⇒
         newGatewayFuture.flatMap(_.shutdownAux())

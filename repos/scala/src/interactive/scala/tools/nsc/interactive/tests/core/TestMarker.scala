@@ -8,7 +8,8 @@ object TestMarker {
 
   private def checkForDuplicate(marker: TestMarker) {
     markers.get(marker.marker) match {
-      case None => markers(marker.marker) = marker
+      case None =>
+        markers(marker.marker) = marker
       case Some(otherMarker) =>
         val msg =
           "Marker `%s` is already used by %s. Please choose a different marker for %s"

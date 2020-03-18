@@ -59,10 +59,12 @@ case class SortBasedAggregate(
 
   override def requiredChildDistribution: List[Distribution] = {
     requiredChildDistributionExpressions match {
-      case Some(exprs) if exprs.length == 0 => AllTuples :: Nil
+      case Some(exprs) if exprs.length == 0 =>
+        AllTuples :: Nil
       case Some(exprs) if exprs.length > 0 =>
         ClusteredDistribution(exprs) :: Nil
-      case None => UnspecifiedDistribution :: Nil
+      case None =>
+        UnspecifiedDistribution :: Nil
     }
   }
 

@@ -31,7 +31,8 @@ object SuperMethodTestUtil {
                   clazz.qualifiedName + "."
                 else
                   ""
-              case _ => ""
+              case _ =>
+                ""
             }
           res.append(s + sign.namedElement.name + "\n")
         }
@@ -40,7 +41,8 @@ object SuperMethodTestUtil {
             ""
           else
             res.substring(0, res.length - 1).toString
-      case _ => resa = "Not implemented test"
+      case _ =>
+        resa = "Not implemented test"
     }
     resa
   }

@@ -27,7 +27,8 @@ object LocalModifier {
           ScalaTokenTypes.kLAZY =>
         builder.advanceLexer //Ate modifier
         return true
-      case _ => return false
+      case _ =>
+        return false
     }
   }
 }

@@ -9,6 +9,7 @@ class IncludedFileReferenceProvider extends PsiReferenceProvider {
     element match {
       case includeTarget: HIncludeTarget =>
         includeTarget.getFileReferences.asInstanceOf[Array[PsiReference]]
-      case _ => PsiReference.EMPTY_ARRAY
+      case _ =>
+        PsiReference.EMPTY_ARRAY
     }
 }

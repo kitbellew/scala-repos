@@ -51,8 +51,10 @@ object ByteBufferMessageSet {
     } else {
       val magicAndTimestamp =
         wrapperMessageTimestamp match {
-          case Some(ts) => MagicAndTimestamp(messages.head.magic, ts)
-          case None     => MessageSet.magicAndLargestTimestamp(messages)
+          case Some(ts) =>
+            MagicAndTimestamp(messages.head.magic, ts)
+          case None =>
+            MessageSet.magicAndLargestTimestamp(messages)
         }
       var offset = -1L
       val messageWriter =
@@ -175,7 +177,8 @@ object ByteBufferMessageSet {
           // Using inner offset and timestamps
           case Some(innerMessageAndOffsets) =>
             innerMessageAndOffsets.pollFirst() match {
-              case null => allDone()
+              case null =>
+                allDone()
               case MessageAndOffset(message, offset) =>
                 val relativeOffset = offset - lastInnerOffset
                 val absoluteOffset = wrapperMessageOffset + relativeOffset
@@ -716,7 +719,8 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
     other match {
       case that: ByteBufferMessageSet =>
         buffer.equals(that.buffer)
-      case _ => false
+      case _ =>
+        false
     }
   }
 

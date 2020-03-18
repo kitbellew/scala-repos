@@ -17,7 +17,11 @@ object Test extends ScaladocModelTest {
 
     // just need to check the member exists, access methods will throw an error if there's a problem
     rootPackage._class("Test4324").asInstanceOf[Class].valueParams match {
-      case List(List(arg11, arg12), List(arg21, arg22), List(arg31, arg32)) => //yeeey, do nothing
+      case List(
+            List(arg11, arg12),
+            List(arg21, arg22),
+            List(arg31, arg32)
+          ) => //yeeey, do nothing
       case other =>
         assert(
           false,

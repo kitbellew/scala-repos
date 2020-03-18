@@ -150,9 +150,12 @@ object WebSocketHandler {
     message match {
       case TextMessage(data) =>
         frameEvent(Protocol.Opcode.Text, ByteString(data))
-      case BinaryMessage(data) => frameEvent(Protocol.Opcode.Binary, data)
-      case PingMessage(data)   => frameEvent(Protocol.Opcode.Ping, data)
-      case PongMessage(data)   => frameEvent(Protocol.Opcode.Pong, data)
+      case BinaryMessage(data) =>
+        frameEvent(Protocol.Opcode.Binary, data)
+      case PingMessage(data) =>
+        frameEvent(Protocol.Opcode.Ping, data)
+      case PongMessage(data) =>
+        frameEvent(Protocol.Opcode.Pong, data)
       case CloseMessage(Some(statusCode), reason) =>
         FrameEvent.closeFrame(statusCode, reason)
       case CloseMessage(None, _) =>

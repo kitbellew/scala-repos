@@ -220,7 +220,8 @@ object AutoUpdate {
             }
             .getOrElse(Version(0, 0))
         }
-        case _ => Version(0, 0)
+        case _ =>
+          Version(0, 0)
       }
     } else
       Version(0, 0)

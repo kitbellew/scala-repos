@@ -133,7 +133,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       fail("Test should fail because the broker list provided are not valid")
     } catch {
       case e: FailedToSendMessageException => // this is expected
-      case oe: Throwable                   => fail("fails with exception", oe)
+      case oe: Throwable =>
+        fail("fails with exception", oe)
     } finally {
       producer1.close()
     }
@@ -148,7 +149,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     try {
       producer2.send(new KeyedMessage[String, String](topic, "test", "test1"))
     } catch {
-      case e: Throwable => fail("Should succeed sending the message", e)
+      case e: Throwable =>
+        fail("Should succeed sending the message", e)
     } finally {
       producer2.close()
     }
@@ -162,7 +164,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     try {
       producer3.send(new KeyedMessage[String, String](topic, "test", "test1"))
     } catch {
-      case e: Throwable => fail("Should succeed sending the message", e)
+      case e: Throwable =>
+        fail("Should succeed sending the message", e)
     } finally {
       producer3.close()
     }
@@ -253,7 +256,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       fail("we don't support request.required.acks greater than 1")
     } catch {
       case iae: IllegalArgumentException => // this is expected
-      case e: Throwable                  => fail("Not expected", e)
+      case e: Throwable =>
+        fail("Not expected", e)
 
     }
   }
@@ -291,7 +295,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       // on broker 0
       producer.send(new KeyedMessage[String, String](topic, "test", "test1"))
     } catch {
-      case e: Throwable => fail("Unexpected exception: " + e)
+      case e: Throwable =>
+        fail("Unexpected exception: " + e)
     }
     val endTime = System.currentTimeMillis()
     // kill the broker
@@ -330,7 +335,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
         "Message set should have another message",
         messageSet1.hasNext)
     } catch {
-      case e: Exception => fail("Not expected", e)
+      case e: Exception =>
+        fail("Not expected", e)
     }
     producer.close
   }
@@ -372,7 +378,8 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       assertTrue("Message set should have 1 message", messageSet1.hasNext)
       assertEquals(new Message("test".getBytes), messageSet1.next.message)
     } catch {
-      case e: Throwable => case e: Exception =>
+      case e: Throwable =>
+      case e: Exception =>
         producer.close;
         fail("Not expected", e)
     }
@@ -387,8 +394,10 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       // broker 0 will not response within timeoutMs millis.
       producer.send(new KeyedMessage[String, String](topic, "test", "test"))
     } catch {
-      case e: FailedToSendMessageException => /* success */
-      case e: Exception                    => fail("Not expected", e)
+      case e: FailedToSendMessageException =>
+      /* success */
+      case e: Exception =>
+        fail("Not expected", e)
     } finally {
       producer.close()
     }

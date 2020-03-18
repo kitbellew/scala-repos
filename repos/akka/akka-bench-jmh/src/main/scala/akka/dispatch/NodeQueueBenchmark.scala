@@ -46,8 +46,9 @@ mailbox {
     Props(
       new Actor {
         def receive = {
-          case Stop => sender() ! Stop
-          case _    =>
+          case Stop =>
+            sender() ! Stop
+          case _ =>
         }
       }).withDispatcher("dispatcher").withMailbox("mailbox"),
     "receiver")

@@ -165,8 +165,10 @@ final class Eval(
         def write(value: Seq[String], file: File) = IO.writeLines(file, value)
         def extraHash =
           file match {
-            case Some(f) => f.getAbsolutePath
-            case None    => ""
+            case Some(f) =>
+              f.getAbsolutePath
+            case None =>
+              ""
           }
       }
     val i = evalCommon(definitions.map(_._1), imports, Some(""), ev)
@@ -269,14 +271,18 @@ final class Eval(
 
   private[this] def expectedType(tpeName: Option[String]): Tree =
     tpeName match {
-      case Some(tpe) => parseType(tpe)
-      case None      => TypeTree(NoType)
+      case Some(tpe) =>
+        parseType(tpe)
+      case None =>
+        TypeTree(NoType)
     }
 
   private[this] def outputDirectory(backing: Option[File]): AbstractFile =
     backing match {
-      case None      => new VirtualDirectory("<virtual>", None);
-      case Some(dir) => new PlainFile(dir)
+      case None =>
+        new VirtualDirectory("<virtual>", None);
+      case Some(dir) =>
+        new PlainFile(dir)
     }
 
   def load(dir: AbstractFile, moduleName: String): ClassLoader => Any =
@@ -345,7 +351,8 @@ final class Eval(
       tree match {
         case d: DefDef if d.symbol.nameString == WrapValName =>
           result = d.symbol.tpe.finalResultType.toString
-        case _ => super.traverse(tree)
+        case _ =>
+          super.traverse(tree)
       }
   }
 
@@ -368,7 +375,8 @@ final class Eval(
             if isTopLevelModule(tree.symbol.owner) && isAcceptableType(
               actualTpe.tpe) =>
           vals ::= nme.localToGetter(n).encoded
-        case _ => super.traverse(tree)
+        case _ =>
+          super.traverse(tree)
       }
   }
   // inlined implemented of Symbol.isTopLevelModule that was removed in e5b050814deb2e7e1d6d05511d3a6cb6b013b549
@@ -388,15 +396,19 @@ final class Eval(
       backing: Option[File],
       moduleName: String): Seq[File] =
     backing match {
-      case None      => Nil
-      case Some(dir) => dir listFiles moduleFileFilter(moduleName)
+      case None =>
+        Nil
+      case Some(dir) =>
+        dir listFiles moduleFileFilter(moduleName)
     }
   private[this] def getClassFiles(
       backing: Option[File],
       moduleName: String): Seq[File] =
     backing match {
-      case None      => Nil
-      case Some(dir) => dir listFiles moduleClassFilter(moduleName)
+      case None =>
+        Nil
+      case Some(dir) =>
+        dir listFiles moduleClassFilter(moduleName)
     }
   private[this] def moduleFileFilter(moduleName: String) =
     new java.io.FilenameFilter {
@@ -442,17 +454,22 @@ final class Eval(
     val tree = f(parser)
     val extra =
       parser.in.token match {
-        case EOF => errors.extraBlank
-        case _   => ""
+        case EOF =>
+          errors.extraBlank
+        case _ =>
+          ""
       }
     checkError(errors.base + extra)
 
     parser.accept(EOF)
     val extra2 =
       parser.in.token match {
-        case SEMI               => errors.extraSemi
-        case NEWLINE | NEWLINES => errors.missingBlank
-        case _                  => ""
+        case SEMI =>
+          errors.extraSemi
+        case NEWLINE | NEWLINES =>
+          errors.missingBlank
+        case _ =>
+          ""
       }
     checkError(errors.base + extra2)
 
@@ -469,7 +486,8 @@ final class Eval(
   }
   private[this] def parseImports(imports: EvalImports): Seq[Tree] =
     imports.strings flatMap {
-      case (s, line) => parseImport(mkUnit(imports.srcName, line, s))
+      case (s, line) =>
+        parseImport(mkUnit(imports.srcName, line, s))
     }
   private[this] def parseImport(importUnit: CompilationUnit): Seq[Tree] = {
     val parser = new syntaxAnalyzer.UnitParser(importUnit)

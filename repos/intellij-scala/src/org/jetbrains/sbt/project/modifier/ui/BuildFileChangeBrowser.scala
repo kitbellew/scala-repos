@@ -63,7 +63,8 @@ class BuildFileChangeBrowser(
                       newStatus))
                 } else
                   myChange
-              case _ => myChange
+              case _ =>
+                myChange
             }
             .getOrElse(myChange)
         }

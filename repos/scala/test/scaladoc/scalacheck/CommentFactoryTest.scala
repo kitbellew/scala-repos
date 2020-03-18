@@ -19,8 +19,10 @@ class Factory(val g: Global, val s: doc.Settings)
 
   def strip(c: Comment): Option[Inline] = {
     c.body match {
-      case Body(List(Paragraph(Chain(List(Summary(inner)))))) => Some(inner)
-      case _                                                  => None
+      case Body(List(Paragraph(Chain(List(Summary(inner)))))) =>
+        Some(inner)
+      case _ =>
+        None
     }
   }
 
@@ -187,7 +189,8 @@ object Test extends Properties("CommentFactory") {
   * @deprecated
   */
       """).deprecated match {
-      case Some(Body(l)) if l.isEmpty => true
+      case Some(Body(l)) if l.isEmpty =>
+        true
       case other =>
         println(other)
         false

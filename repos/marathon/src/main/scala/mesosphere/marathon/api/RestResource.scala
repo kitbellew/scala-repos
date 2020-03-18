@@ -93,7 +93,8 @@ trait RestResource {
         //scalastyle:off magic.number
         Response.status(422).entity(entity).build()
       //scalastyle:on
-      case Success => fn(t)
+      case Success =>
+        fn(t)
     }
   }
 }

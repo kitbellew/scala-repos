@@ -32,13 +32,20 @@ private[streaming] object UIUtils {
     */
   def shortTimeUnitString(unit: TimeUnit): String =
     unit match {
-      case TimeUnit.NANOSECONDS  => "ns"
-      case TimeUnit.MICROSECONDS => "us"
-      case TimeUnit.MILLISECONDS => "ms"
-      case TimeUnit.SECONDS      => "sec"
-      case TimeUnit.MINUTES      => "min"
-      case TimeUnit.HOURS        => "hrs"
-      case TimeUnit.DAYS         => "days"
+      case TimeUnit.NANOSECONDS =>
+        "ns"
+      case TimeUnit.MICROSECONDS =>
+        "us"
+      case TimeUnit.MILLISECONDS =>
+        "ms"
+      case TimeUnit.SECONDS =>
+        "sec"
+      case TimeUnit.MINUTES =>
+        "min"
+      case TimeUnit.HOURS =>
+        "hrs"
+      case TimeUnit.DAYS =>
+        "days"
     }
 
   /**
@@ -71,13 +78,20 @@ private[streaming] object UIUtils {
     */
   def convertToTimeUnit(milliseconds: Long, unit: TimeUnit): Double =
     unit match {
-      case TimeUnit.NANOSECONDS  => milliseconds * 1000 * 1000
-      case TimeUnit.MICROSECONDS => milliseconds * 1000
-      case TimeUnit.MILLISECONDS => milliseconds
-      case TimeUnit.SECONDS      => milliseconds / 1000.0
-      case TimeUnit.MINUTES      => milliseconds / 1000.0 / 60.0
-      case TimeUnit.HOURS        => milliseconds / 1000.0 / 60.0 / 60.0
-      case TimeUnit.DAYS         => milliseconds / 1000.0 / 60.0 / 60.0 / 24.0
+      case TimeUnit.NANOSECONDS =>
+        milliseconds * 1000 * 1000
+      case TimeUnit.MICROSECONDS =>
+        milliseconds * 1000
+      case TimeUnit.MILLISECONDS =>
+        milliseconds
+      case TimeUnit.SECONDS =>
+        milliseconds / 1000.0
+      case TimeUnit.MINUTES =>
+        milliseconds / 1000.0 / 60.0
+      case TimeUnit.HOURS =>
+        milliseconds / 1000.0 / 60.0 / 60.0
+      case TimeUnit.DAYS =>
+        milliseconds / 1000.0 / 60.0 / 60.0 / 24.0
     }
 
   // SimpleDateFormat is not thread-safe. Don't expose it to avoid improper use.

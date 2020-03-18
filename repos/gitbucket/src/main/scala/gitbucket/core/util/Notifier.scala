@@ -55,7 +55,8 @@ object Notifier {
     new SystemSettingsService {}.loadSystemSettings match {
       case settings if (settings.notification && settings.useSMTP) =>
         new Mailer(settings.smtp.get)
-      case _ => new MockMailer
+      case _ =>
+        new MockMailer
     }
 
   def msgIssue(url: String) = (content: String) => s"""
@@ -136,10 +137,12 @@ class Mailer(private val smtp: Smtp) extends Notifier {
       "Notifications Successful."
     }
     f onSuccess {
-      case s => logger.debug(s)
+      case s =>
+        logger.debug(s)
     }
     f onFailure {
-      case t => logger.error("Notifications Failed.", t)
+      case t =>
+        logger.error("Notifications Failed.", t)
     }
   }
 }

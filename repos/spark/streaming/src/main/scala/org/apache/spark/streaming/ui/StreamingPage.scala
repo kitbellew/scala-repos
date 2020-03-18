@@ -526,7 +526,8 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .flatMap {
         case streamAndRates =>
           streamAndRates.map {
-            case (_, eventRate) => eventRate
+            case (_, eventRate) =>
+              eventRate
           }
       }
       .reduceOption[Double](math.max)

@@ -40,7 +40,8 @@ class InsertGapIntoStringIntention extends PsiElementBaseIntentionAction {
     }
 
     element.getNode.getElementType match {
-      case ScalaTokenTypes.tSTRING => insertString("\" +  + \"", 4)
+      case ScalaTokenTypes.tSTRING =>
+        insertString("\" +  + \"", 4)
       case ScalaTokenTypes.tMULTILINE_STRING =>
         insertString("\"\"\" +  + \"\"\"", 6)
       case _ =>

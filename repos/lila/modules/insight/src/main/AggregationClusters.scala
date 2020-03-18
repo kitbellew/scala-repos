@@ -48,7 +48,8 @@ object AggregationClusters {
           points
         else
           points.map {
-            case (n, p) => n -> Point(100 * p.y / total)
+            case (n, p) =>
+              n -> Point(100 * p.y / total)
           }
         ids <- doc.getAs[List[String]]("ids")
       } yield Cluster(x, Insight.Stacked(percents), total, ids)
@@ -57,7 +58,9 @@ object AggregationClusters {
   private def postSort[X](q: Question[X])(
       clusters: List[Cluster[X]]): List[Cluster[X]] =
     q.dimension match {
-      case Dimension.Opening => clusters
-      case _                 => clusters.sortLike(Dimension.valuesOf(q.dimension), _.x)
+      case Dimension.Opening =>
+        clusters
+      case _ =>
+        clusters.sortLike(Dimension.valuesOf(q.dimension), _.x)
     }
 }

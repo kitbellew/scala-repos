@@ -78,7 +78,8 @@ class VotingServiceSpec
         awaitAssert {
           votingService.tell(GetVotes, p.ref)
           p.expectMsgPF(3.seconds) {
-            case Votes(_, true) ⇒ true
+            case Votes(_, true) ⇒
+              true
           }
         }
         for (n ← 1 to N) {

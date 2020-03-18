@@ -49,11 +49,13 @@ private[finagle] class CachingPool[Req, Rep](
   @tailrec
   private[this] def get(): Option[Service[Req, Rep]] = {
     cache.get() match {
-      case s @ Some(service) if service.status != Status.Closed => s
+      case s @ Some(service) if service.status != Status.Closed =>
+        s
       case Some(service) /* unavailable */ =>
         service.close();
         get()
-      case None => None
+      case None =>
+        None
     }
   }
 

@@ -99,7 +99,8 @@ object EventJson4sSupport {
         EventValidation.validate(newEvent)
         newEvent
       } catch {
-        case e: Exception => throw new MappingException(e.toString, e)
+        case e: Exception =>
+          throw new MappingException(e.toString, e)
       }
     }
   }
@@ -236,7 +237,8 @@ object BatchEventsJson4sSupport {
         try {
           Success(EventJson4sSupport.readJson(event))
         } catch {
-          case e: Exception => Failure(e)
+          case e: Exception =>
+            Failure(e)
         }
       }
     }

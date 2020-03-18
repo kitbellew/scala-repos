@@ -159,6 +159,7 @@ class VecInt(values: Array[Int]) extends Vec[Int] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

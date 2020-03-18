@@ -33,7 +33,8 @@ object XmlExamples extends Specification {
 
   "Conversion transformation example 1" in {
     val json = toJson(users1).transformField {
-      case JField("id", JString(s)) => JField("id", JInt(s.toInt))
+      case JField("id", JString(s)) =>
+        JField("id", JInt(s.toInt))
     }
     compactRender(
       json) mustEqual """{"users":{"count":"2","user":[{"disabled":"true","id":1,"name":"Harry"},{"id":2,"name":"David","nickname":"Dave"}]}}"""
@@ -41,8 +42,10 @@ object XmlExamples extends Specification {
 
   "Conversion transformation example 2" in {
     val json = toJson(users2).transformField {
-      case JField("id", JString(s))   => JField("id", JInt(s.toInt))
-      case JField("user", x: JObject) => JField("user", JArray(x :: Nil))
+      case JField("id", JString(s)) =>
+        JField("id", JInt(s.toInt))
+      case JField("user", x: JObject) =>
+        JField("user", JArray(x :: Nil))
     }
     compactRender(
       json) mustEqual """{"users":{"user":[{"id":1,"name":"Harry"}]}}"""
@@ -162,9 +165,11 @@ object XmlExamples extends Specification {
     json.transformField {
       case JField(n, v: JString) if n == attrName =>
         JField(fieldName, JObject(JField(n, f(v)) :: Nil))
-      case JField(n, JString("")) if n == fieldName => JField(n, JNothing)
+      case JField(n, JString("")) if n == fieldName =>
+        JField(n, JNothing)
     } transformField {
-      case JField(n, x: JObject) if n == attrName => JField(fieldName, x)
+      case JField(n, x: JObject) if n == attrName =>
+        JField(fieldName, x)
     }
 
   "Example with multiple attributes, multiple nested elements " in {

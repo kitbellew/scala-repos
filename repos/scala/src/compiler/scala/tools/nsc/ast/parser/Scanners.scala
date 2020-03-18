@@ -42,14 +42,16 @@ trait ScannersCommon {
       keywords: Seq[(Name, Token)],
       defaultToken: Token): (Token, Array[Token]) = {
     val names = keywords sortBy (_._1.start) map {
-      case (k, v) => (k.start, v)
+      case (k, v) =>
+        (k.start, v)
     }
     val low = names.head._1
     val high = names.last._1
     val arr = Array.fill(high - low + 1)(defaultToken)
 
     names foreach {
-      case (k, v) => arr(k + low) = v
+      case (k, v) =>
+        arr(k + low) = v
     }
     (low, arr)
   }
@@ -152,7 +154,8 @@ trait Scanners extends ScannersCommon {
         case '*' =>
           if (!maybeClose())
             skipNestedComments()
-        case SU => incompleteInputError("unclosed comment")
+        case SU =>
+          incompleteInputError("unclosed comment")
         case _ =>
           putCommentChar();
           skipNestedComments()
@@ -189,7 +192,8 @@ trait Scanners extends ScannersCommon {
         case '/' | '*' =>
           skipToCommentEnd(isLineComment = ch == '/');
           true
-        case _ => false
+        case _ =>
+          false
       }
     def flushDoc(): DocComment = null
 
@@ -508,7 +512,8 @@ trait Scanners extends ScannersCommon {
               case 'x' | 'X' =>
                 base = 16;
                 nextChar()
-              case _ => base = 8 // single decimal zero, perhaps
+              case _ =>
+                base = 8 // single decimal zero, perhaps
             }
           }
           fetchLeadingZero()
@@ -915,15 +920,24 @@ trait Scanners extends ScannersCommon {
           putChar(oct.toChar)
         } else {
           ch match {
-            case 'b'  => putChar('\b')
-            case 't'  => putChar('\t')
-            case 'n'  => putChar('\n')
-            case 'f'  => putChar('\f')
-            case 'r'  => putChar('\r')
-            case '\"' => putChar('\"')
-            case '\'' => putChar('\'')
-            case '\\' => putChar('\\')
-            case _    => invalidEscape()
+            case 'b' =>
+              putChar('\b')
+            case 't' =>
+              putChar('\t')
+            case 'n' =>
+              putChar('\n')
+            case 'f' =>
+              putChar('\f')
+            case 'r' =>
+              putChar('\r')
+            case '\"' =>
+              putChar('\"')
+            case '\'' =>
+              putChar('\'')
+            case '\\' =>
+              putChar('\\')
+            case _ =>
+              invalidEscape()
           }
           nextChar()
         }
@@ -1306,33 +1320,58 @@ trait Scanners extends ScannersCommon {
   /** Returns the string representation of given token. */
   def token2string(token: Token): String =
     (token: @switch) match {
-      case IDENTIFIER | BACKQUOTED_IDENT            => "identifier"
-      case CHARLIT                                  => "character literal"
-      case INTLIT                                   => "integer literal"
-      case LONGLIT                                  => "long literal"
-      case FLOATLIT                                 => "float literal"
-      case DOUBLELIT                                => "double literal"
-      case STRINGLIT | STRINGPART | INTERPOLATIONID => "string literal"
-      case SYMBOLLIT                                => "symbol literal"
-      case LPAREN                                   => "'('"
-      case RPAREN                                   => "')'"
-      case LBRACE                                   => "'{'"
-      case RBRACE                                   => "'}'"
-      case LBRACKET                                 => "'['"
-      case RBRACKET                                 => "']'"
-      case EOF                                      => "eof"
-      case ERROR                                    => "something"
-      case SEMI                                     => "';'"
-      case NEWLINE                                  => "';'"
-      case NEWLINES                                 => "';'"
-      case COMMA                                    => "','"
-      case CASECLASS                                => "case class"
-      case CASEOBJECT                               => "case object"
-      case XMLSTART                                 => "$XMLSTART$<"
+      case IDENTIFIER | BACKQUOTED_IDENT =>
+        "identifier"
+      case CHARLIT =>
+        "character literal"
+      case INTLIT =>
+        "integer literal"
+      case LONGLIT =>
+        "long literal"
+      case FLOATLIT =>
+        "float literal"
+      case DOUBLELIT =>
+        "double literal"
+      case STRINGLIT | STRINGPART | INTERPOLATIONID =>
+        "string literal"
+      case SYMBOLLIT =>
+        "symbol literal"
+      case LPAREN =>
+        "'('"
+      case RPAREN =>
+        "')'"
+      case LBRACE =>
+        "'{'"
+      case RBRACE =>
+        "'}'"
+      case LBRACKET =>
+        "'['"
+      case RBRACKET =>
+        "']'"
+      case EOF =>
+        "eof"
+      case ERROR =>
+        "something"
+      case SEMI =>
+        "';'"
+      case NEWLINE =>
+        "';'"
+      case NEWLINES =>
+        "';'"
+      case COMMA =>
+        "','"
+      case CASECLASS =>
+        "case class"
+      case CASEOBJECT =>
+        "case object"
+      case XMLSTART =>
+        "$XMLSTART$<"
       case _ =>
         (token2name get token) match {
-          case Some(name) => "'" + name + "'"
-          case _          => "'<" + token + ">'"
+          case Some(name) =>
+            "'" + name + "'"
+          case _ =>
+            "'<" + token + ">'"
         }
     }
 
@@ -1579,7 +1618,8 @@ trait Scanners extends ScannersCommon {
         patches: List[BracePatch],
         patch: BracePatch): List[BracePatch] =
       patches match {
-        case List() => List(patch)
+        case List() =>
+          List(patch)
         case bp :: bps =>
           if (patch.off < bp.off)
             patch :: patches
@@ -1590,7 +1630,8 @@ trait Scanners extends ScannersCommon {
     def insertRBrace(): List[BracePatch] = {
       def insert(bps: List[BracePair]): List[BracePatch] =
         bps match {
-          case List() => patches
+          case List() =>
+            patches
           case (bp @ BracePair(loff, lindent, roff, rindent, nested)) :: bps1 =>
             if (lindent <= rindent)
               insert(bps1)
@@ -1624,7 +1665,8 @@ trait Scanners extends ScannersCommon {
     def deleteRBrace(): List[BracePatch] = {
       def delete(bps: List[BracePair]): List[BracePatch] =
         bps match {
-          case List() => patches
+          case List() =>
+            patches
           case BracePair(loff, lindent, roff, rindent, nested) :: bps1 =>
             if (lindent >= rindent)
               delete(bps1)

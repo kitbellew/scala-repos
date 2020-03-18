@@ -120,9 +120,11 @@ object InfixExpr {
   //Associations of operator
   def associate(id: String): Int = {
     id.charAt(id.length - 1) match {
-      case ':' => -1
+      case ':' =>
+        -1
       // right
-      case _ => +1 // left
+      case _ =>
+        +1 // left
     }
   }
 }

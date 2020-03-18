@@ -60,7 +60,8 @@ object MaxLengthBodyParserSpec extends Specification with AfterAll {
   def assertDidNotParse(parsed: Future[Unit]) = {
     Await.ready(parsed, 5.seconds)
     parsed.value must beSome[Try[Unit]].like {
-      case Failure(t: BodyParsers.MaxLengthLimitAttained) => ok
+      case Failure(t: BodyParsers.MaxLengthLimitAttained) =>
+        ok
     }
   }
 

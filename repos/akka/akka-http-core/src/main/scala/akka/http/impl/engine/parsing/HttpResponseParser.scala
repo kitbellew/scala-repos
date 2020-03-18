@@ -69,11 +69,14 @@ private[http] class HttpResponseParser(
       }
       val code = intValue(0) * 100 + intValue(1) * 10 + intValue(2)
       statusCode = code match {
-        case 200 ⇒ StatusCodes.OK
+        case 200 ⇒
+          StatusCodes.OK
         case _ ⇒
           StatusCodes.getForKey(code) match {
-            case Some(x) ⇒ x
-            case None ⇒ customStatusCodes(code) getOrElse badStatusCode
+            case Some(x) ⇒
+              x
+            case None ⇒
+              customStatusCodes(code) getOrElse badStatusCode
           }
       }
     }
@@ -120,7 +123,8 @@ private[http] class HttpResponseParser(
         headers: List[HttpHeader] = headers) = {
       val close =
         contextForCurrentResponse.get.oneHundredContinueTrigger match {
-          case None ⇒ closeAfterResponseCompletion
+          case None ⇒
+            closeAfterResponseCompletion
           case Some(trigger) if statusCode.isSuccess ⇒
             trigger.trySuccess(())
             closeAfterResponseCompletion
@@ -175,7 +179,8 @@ private[http] class HttpResponseParser(
               emitResponseStart {
                 StreamedEntityCreator { entityParts ⇒
                   val data = entityParts.collect {
-                    case EntityPart(bytes) ⇒ bytes
+                    case EntityPart(bytes) ⇒
+                      bytes
                   }
                   HttpEntity.CloseDelimited(
                     contentType(cth),

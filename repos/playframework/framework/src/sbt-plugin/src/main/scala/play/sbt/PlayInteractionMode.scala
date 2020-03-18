@@ -71,7 +71,8 @@ object PlayConsoleInteractionMode extends PlayInteractionMode {
           case 10 =>
             println();
             waitEOF()
-          case x => waitEOF()
+          case x =>
+            waitEOF()
         }
       }
       doWithoutEcho(waitEOF())
@@ -124,7 +125,8 @@ object StaticPlayNonBlockingInteractionMode
           println("Stopping server")
           server.close()
           current = None
-        case None => println("Not stopping server since none is started")
+        case None =>
+          println("Not stopping server since none is started")
       }
     }
 }

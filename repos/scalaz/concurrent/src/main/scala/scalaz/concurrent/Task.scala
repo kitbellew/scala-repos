@@ -36,11 +36,14 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   def flatMap[B](f: A => Task[B]): Task[B] =
     new Task(
       get flatMap {
-        case -\/(e) => Future.now(-\/(e))
+        case -\/(e) =>
+          Future.now(-\/(e))
         case \/-(a) =>
           Task.Try(f(a)) match {
-            case e @ -\/(_) => Future.now(e)
-            case \/-(task)  => task.get
+            case e @ -\/(_) =>
+              Future.now(e)
+            case \/-(task) =>
+              task.get
           }
       })
 
@@ -56,8 +59,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   def attempt: Task[Throwable \/ A] =
     new Task(
       get map {
-        case -\/(e) => \/-(-\/(e))
-        case \/-(a) => \/-(\/-(a))
+        case -\/(e) =>
+          \/-(-\/(e))
+        case \/-(a) =>
+          \/-(\/-(a))
       })
 
   /**
@@ -92,8 +97,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     */
   def handleWith[B >: A](f: PartialFunction[Throwable, Task[B]]): Task[B] =
     attempt flatMap {
-      case -\/(e) => f.lift(e) getOrElse Task.fail(e)
-      case \/-(a) => Task.now(a)
+      case -\/(e) =>
+        f.lift(e) getOrElse Task.fail(e)
+      case \/-(a) =>
+        Task.now(a)
     }
 
   /**
@@ -104,8 +111,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   def or[B >: A](t2: Task[B]): Task[B] =
     new Task(
       this.get flatMap {
-        case -\/(e) => t2.get
-        case a      => Future.now(a)
+        case -\/(e) =>
+          t2.get
+        case a =>
+          Future.now(a)
       })
 
   /**
@@ -115,8 +124,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     */
   def unsafePerformSync: A =
     get.unsafePerformSync match {
-      case -\/(e) => throw e
-      case \/-(a) => a
+      case -\/(e) =>
+        throw e
+      case \/-(a) =>
+        a
     }
 
   @deprecated("use unsafePerformSync", "7.2")
@@ -126,7 +137,8 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   def unsafePerformSyncAttempt: Throwable \/ A =
     try get.unsafePerformSync
     catch {
-      case t: Throwable => -\/(t)
+      case t: Throwable =>
+        -\/(t)
     }
 
   @deprecated("use unsafePerformSyncAttempt", "7.2")
@@ -173,7 +185,8 @@ class Task[+A](val get: Future[Throwable \/ A]) {
         case None if !completed.get =>
           completed.set(true)
           f(left(Task.TaskInterrupted))
-        case _ => () //already completed
+        case _ =>
+          () //already completed
       })(Strategy.Sequential)
 
     get.unsafePerformAsyncInterruptibly(r => a ! Some(r), completed)
@@ -206,8 +219,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     */
   def unsafePerformSyncFor(timeoutInMillis: Long): A =
     get.unsafePerformSyncFor(timeoutInMillis) match {
-      case -\/(e) => throw e
-      case \/-(a) => a
+      case -\/(e) =>
+        throw e
+      case \/-(a) =>
+        a
     }
 
   def unsafePerformSyncFor(timeout: Duration): A =
@@ -305,12 +320,14 @@ class Task[+A](val get: Future[Throwable \/ A]) {
         else
           Nil
       ds match {
-        case Seq() => get map (_.map(_ -> acc))
+        case Seq() =>
+          get map (_.map(_ -> acc))
         case Seq(t, ts @ _*) =>
           get flatMap {
             case -\/(e) if p(e) =>
               help(ts, e #:: es) after t
-            case x => Future.now(x.map(_ -> acc))
+            case x =>
+              Future.now(x.map(_ -> acc))
           }
       }
     }
@@ -364,7 +381,8 @@ object Task {
       def raiseError[A](e: Throwable): Task[A] = fail(e)
       def handleError[A](fa: Task[A])(f: Throwable => Task[A]): Task[A] =
         fa.handleWith {
-          case t => f(t)
+          case t =>
+            f(t)
         }
     }
 
@@ -399,8 +417,10 @@ object Task {
     new Task(
       Future.suspend(
         Try(a.get) match {
-          case -\/(e) => Future.now(-\/(e))
-          case \/-(f) => f
+          case -\/(e) =>
+            Future.now(-\/(e))
+          case \/-(f) =>
+            f
         }))
 
   /** Create a `Task` that will evaluate `a` using the given `ExecutorService`. */
@@ -463,8 +483,10 @@ object Task {
         // Unfortunately we cannot reuse the future's combinator
         // due to early terminating requirement on task
         // when task fails.  This also makes implementation a bit trickier
-        case Seq()  => Task.now(R.zero)
-        case Seq(t) => t.map(R.unit)
+        case Seq() =>
+          Task.now(R.zero)
+        case Seq(t) =>
+          t.map(R.unit)
         case _ =>
           new Task(
             Future.Async { cb =>
@@ -527,7 +549,8 @@ object Task {
   def Try[A](a: => A): Throwable \/ A =
     try \/-(a)
     catch {
-      case e: Throwable => -\/(e)
+      case e: Throwable =>
+        -\/(e)
     }
 
   def fromMaybe[A](ma: Maybe[A])(t: => Throwable): Task[A] =
@@ -538,8 +561,10 @@ object Task {
 
   def tailrecM[A, B](f: A => Task[A \/ B])(a: A): Task[B] =
     f(a).flatMap {
-      case -\/(a0) => tailrecM(f)(a0)
-      case \/-(b)  => point(b)
+      case -\/(a0) =>
+        tailrecM(f)(a0)
+      case \/-(b) =>
+        point(b)
     }
 
   /** type for Tasks which need to be executed in parallel when using an Applicative instance */

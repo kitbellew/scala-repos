@@ -90,7 +90,8 @@ private object ScalaGoToSuperActionHandler {
         case _: ScTemplateDefinition | _: ScFunction | _: ScValue |
             _: ScVariable | _: ScTypeAlias | _: ScObject =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     while (element != null && !test(element))
       element = element.getParent
@@ -129,8 +130,10 @@ private object ScalaGoToSuperActionHandler {
             ScalaPsiUtil.superValsSignatures(elements.head)
         ).flatMap(
           _.namedElement match {
-            case n: NavigatablePsiElement => Some(n)
-            case _                        => None
+            case n: NavigatablePsiElement =>
+              Some(n)
+            case _ =>
+              None
           }): _*)
       supers.toArray
     }
@@ -146,8 +149,10 @@ private object ScalaGoToSuperActionHandler {
         val supers = mutable.HashSet[NavigatablePsiElement](
           func.superSignatures.flatMap(
             _.namedElement match {
-              case n: NavigatablePsiElement => Some(n)
-              case _                        => None
+              case n: NavigatablePsiElement =>
+                Some(n)
+              case _ =>
+                None
             }): _*)
         (Seq(), supers.toSeq)
       case d: ScDeclaredElementsHolder =>

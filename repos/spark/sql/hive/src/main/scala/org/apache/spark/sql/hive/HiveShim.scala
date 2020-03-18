@@ -169,7 +169,8 @@ private[hive] object HiveShim {
           } else {
             true
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     @transient

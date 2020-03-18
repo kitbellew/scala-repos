@@ -58,8 +58,10 @@ trait ScBlock
           Bounds.lub(
             tp,
             clause.expr match {
-              case Some(expr) => expr.getType(TypingContext.empty).getOrNothing
-              case _          => types.Nothing
+              case Some(expr) =>
+                expr.getType(TypingContext.empty).getOrNothing
+              case _ =>
+                types.Nothing
             }))
 
       getContext match {
@@ -115,8 +117,10 @@ trait ScBlock
       lastExpr match {
         case None =>
           ScalaPsiUtil.fileContext(this) match {
-            case scalaFile: ScalaFile if scalaFile.isCompiled => Nothing
-            case _                                            => Unit
+            case scalaFile: ScalaFile if scalaFile.isCompiled =>
+              Nothing
+            case _ =>
+              Unit
           }
         case Some(e) =>
           val m = new mutable.HashMap[String, ScExistentialArgument]
@@ -172,7 +176,8 @@ trait ScBlock
                       typed.name,
                       new ScExistentialArgument(typed.name, Nil, t, t))
                     new ScTypeVariable(typed.name)
-                  case _ => t
+                  case _ =>
+                    t
                 }
               case proj @ ScProjectionType(p, elem, s) =>
                 ScProjectionType(existize(p, visitedWithT), elem, s)
@@ -216,7 +221,8 @@ trait ScBlock
                               ScBindingPattern.getCompoundCopy(rt, b)
                             case f: ScFieldId =>
                               ScFieldId.getCompoundCopy(rt, f)
-                            case named => named
+                            case named =>
+                              named
                           },
                           s.hasRepeatedParam),
                         rt)
@@ -241,7 +247,8 @@ trait ScBlock
                       existize(ex.lowerBound, visitedWithT),
                       existize(ex.upperBound, visitedWithT))
                   })
-              case _ => t
+              case _ =>
+                t
             }
           }
           val t = existize(
@@ -263,7 +270,8 @@ trait ScBlock
           (
             b.holders: Seq[ScDeclaredElementsHolder],
             b.aliases: Seq[ScTypeAlias])
-        case None => (Seq.empty, Seq.empty)
+        case None =>
+          (Seq.empty, Seq.empty)
       }
 
     val superTypes = t.extendsBlock.superTypes
@@ -291,8 +299,10 @@ trait ScBlock
 
   def getRBrace: Option[ASTNode] =
     getNode.getChildren(TokenSet.create(ScalaTokenTypes.tRBRACE)) match {
-      case Array(node) => Some(node)
-      case _           => None
+      case Array(node) =>
+        Some(node)
+      case _ =>
+        None
     }
 
   def lastExpr = findLastChild(classOf[ScExpression])

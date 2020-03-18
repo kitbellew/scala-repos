@@ -730,8 +730,10 @@ private class JavaIterableWrapperSerializer
       in: KryoInput,
       clz: Class[java.lang.Iterable[_]]): java.lang.Iterable[_] = {
     kryo.readClassAndObject(in) match {
-      case scalaIterable: Iterable[_]          => scalaIterable.asJava
-      case javaIterable: java.lang.Iterable[_] => javaIterable
+      case scalaIterable: Iterable[_] =>
+        scalaIterable.asJava
+      case javaIterable: java.lang.Iterable[_] =>
+        javaIterable
     }
   }
 }

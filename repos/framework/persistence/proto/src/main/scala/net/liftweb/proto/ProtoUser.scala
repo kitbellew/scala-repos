@@ -117,9 +117,12 @@ trait ProtoUser {
       (getFirstName, getLastName, getEmail) match {
         case (f, l, e) if f.length > 1 && l.length > 1 =>
           f + " " + l + " (" + e + ")"
-        case (f, _, e) if f.length > 1 => f + " (" + e + ")"
-        case (_, l, e) if l.length > 1 => l + " (" + e + ")"
-        case (_, _, e)                 => e
+        case (f, _, e) if f.length > 1 =>
+          f + " (" + e + ")"
+        case (_, l, e) if l.length > 1 =>
+          l + " (" + e + ")"
+        case (_, _, e) =>
+          e
       }
 
     /**
@@ -127,10 +130,14 @@ trait ProtoUser {
       */
     def shortName: String =
       (getFirstName, getLastName) match {
-        case (f, l) if f.length > 1 && l.length > 1 => f + " " + l
-        case (f, _) if f.length > 1                 => f
-        case (_, l) if l.length > 1                 => l
-        case _                                      => getEmail
+        case (f, l) if f.length > 1 && l.length > 1 =>
+          f + " " + l
+        case (f, _) if f.length > 1 =>
+          f
+        case (_, l) if l.length > 1 =>
+          l
+        case _ =>
+          getEmail
       }
 
     /**
@@ -314,8 +321,10 @@ trait ProtoUser {
     lazy val pathStr: String = path.mkString("/", "/", "")
     lazy val display =
       name match {
-        case null | "" => false
-        case _         => true
+        case null | "" =>
+          false
+        case _ =>
+          true
       }
   }
 
@@ -590,9 +599,12 @@ trait ProtoUser {
     */
   def sitemapMutator: SiteMap => SiteMap =
     SiteMap.sitemapMutator {
-      case AfterUnapply(menu) => menu :: sitemap
-      case HereUnapply(_)     => sitemap
-      case UnderUnapply(menu) => List(menu.rebuild(_ ::: sitemap))
+      case AfterUnapply(menu) =>
+        menu :: sitemap
+      case HereUnapply(_) =>
+        sitemap
+      case UnderUnapply(menu) =>
+        List(menu.rebuild(_ ::: sitemap))
     }(SiteMap.addMenusAtEndMutator(sitemap))
 
   lazy val sitemap: List[Menu] = List(
@@ -890,8 +902,10 @@ trait ProtoUser {
 
   def testLoggedIn(page: String): Boolean =
     ItemList.filter(_.endOfPath == page) match {
-      case x :: xs if x.loggedIn == loggedIn_? => true
-      case _                                   => false
+      case x :: xs if x.loggedIn == loggedIn_? =>
+        true
+      case _ =>
+        false
     }
 
   def validateUser(id: String): NodeSeq =
@@ -1003,7 +1017,8 @@ trait ProtoUser {
         case Full(user) if !user.validated_? =>
           S.error(S.?("account.validation.error"))
 
-        case _ => S.error(S.?("invalid.credentials"))
+        case _ =>
+          S.error(S.?("invalid.credentials"))
       }
     }
 
@@ -1125,7 +1140,8 @@ trait ProtoUser {
         S.notice(S.?("account.validation.resent"))
         S.redirectTo(homePage)
 
-      case _ => S.error(userNameNotFoundString)
+      case _ =>
+        S.error(userNameNotFoundString)
     }
   }
 
@@ -1173,7 +1189,8 @@ trait ProtoUser {
               user.resetUniqueId().save
               logUserIn(user, () => S.redirectTo(homePage))
 
-            case xs => S.error(xs)
+            case xs =>
+              S.error(xs)
           }
         }
 
@@ -1239,7 +1256,8 @@ trait ProtoUser {
             user.save;
             S.notice(S.?("password.changed"));
             S.redirectTo(homePage)
-          case xs => S.error(xs)
+          case xs =>
+            S.error(xs)
         }
       }
     }
@@ -1363,8 +1381,10 @@ trait ProtoUser {
         new RewriteRule {
           override def transform(n: Node) =
             n match {
-              case e: Elem if "bind" == e.label && "lift" == e.prefix => in
-              case _                                                  => n
+              case e: Elem if "bind" == e.label && "lift" == e.prefix =>
+                in
+              case _ =>
+                n
             }
         })) openOr in
 }

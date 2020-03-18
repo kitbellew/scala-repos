@@ -34,8 +34,10 @@ sealed trait JobQueryState[+A] {
 
   def getOrElse[AA >: A](aa: => AA) =
     this match {
-      case Cancelled | Expired => aa
-      case Running(_, value)   => value
+      case Cancelled | Expired =>
+        aa
+      case Running(_, value) =>
+        value
     }
 }
 
@@ -67,9 +69,12 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
   def swap[M[+_], A](state: JobQueryState[M[A]])(implicit
       M: Monad[M]): M[JobQueryState[A]] = {
     state match {
-      case Running(resources, ma) => M.map(ma)(Running(resources, _))
-      case Cancelled              => M.point(Cancelled)
-      case Expired                => M.point(Expired)
+      case Running(resources, ma) =>
+        M.map(ma)(Running(resources, _))
+      case Cancelled =>
+        M.point(Cancelled)
+      case Expired =>
+        M.point(Expired)
     }
   }
 
@@ -94,9 +99,12 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
 
   override def map[A, B](fa: JobQueryState[A])(f: A => B): JobQueryState[B] =
     maybeCancel(fa) match {
-      case Running(resources, value) => Running(resources, f(value))
-      case Cancelled                 => Cancelled
-      case Expired                   => Expired
+      case Running(resources, value) =>
+        Running(resources, f(value))
+      case Cancelled =>
+        Cancelled
+      case Expired =>
+        Expired
     }
 
   def bind[A, B](fa: JobQueryState[A])(
@@ -106,10 +114,14 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
         f(value0) match {
           case Running(resources1, value) =>
             Running(resources0 ++ resources1, value)
-          case Cancelled => Cancelled
-          case Expired   => Expired
+          case Cancelled =>
+            Cancelled
+          case Expired =>
+            Expired
         }
-      case Cancelled => Cancelled
-      case Expired   => Expired
+      case Cancelled =>
+        Cancelled
+      case Expired =>
+        Expired
     }
 }

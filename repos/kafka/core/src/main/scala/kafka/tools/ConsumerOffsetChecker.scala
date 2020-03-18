@@ -116,8 +116,10 @@ object ConsumerOffsetChecker extends Logging {
                 logSize,
                 lagString.getOrElse("unknown"),
                 owner match {
-                  case Some(ownerStr) => ownerStr
-                  case None           => "none"
+                  case Some(ownerStr) =>
+                    ownerStr
+                  case None =>
+                    "none"
                 }))
           case None => // ignore
         }
@@ -228,7 +230,8 @@ object ConsumerOffsetChecker extends Logging {
 
       val topicList =
         topics match {
-          case Some(x) => x.split(",").view.toList
+          case Some(x) =>
+            x.split(",").view.toList
           case None =>
             zkUtils.getChildren(groupDirs.consumerGroupDir + "/owners").toList
         }
@@ -299,8 +302,9 @@ object ConsumerOffsetChecker extends Logging {
 
       for ((_, consumerOpt) <- consumerMap)
         consumerOpt match {
-          case Some(consumer) => consumer.close()
-          case None           => // ignore
+          case Some(consumer) =>
+            consumer.close()
+          case None => // ignore
         }
     } catch {
       case t: Throwable =>
@@ -308,8 +312,9 @@ object ConsumerOffsetChecker extends Logging {
     } finally {
       for (consumerOpt <- consumerMap.values) {
         consumerOpt match {
-          case Some(consumer) => consumer.close()
-          case None           => // ignore
+          case Some(consumer) =>
+            consumer.close()
+          case None => // ignore
         }
       }
       if (zkUtils != null)

@@ -52,14 +52,16 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
                 try {
                   onError(e)
                 } catch {
-                  case NonFatal(e) => logError("Unexpected error in " + name, e)
+                  case NonFatal(e) =>
+                    logError("Unexpected error in " + name, e)
                 }
               }
             }
           }
         } catch {
           case ie: InterruptedException => // exit even if eventQueue is not empty
-          case NonFatal(e)              => logError("Unexpected error in " + name, e)
+          case NonFatal(e) =>
+            logError("Unexpected error in " + name, e)
         }
       }
 

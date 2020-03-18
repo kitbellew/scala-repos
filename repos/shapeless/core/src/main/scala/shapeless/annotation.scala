@@ -159,7 +159,8 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
     val tpe = weakTypeOf[T]
 
     val annTreeOpt = tpe.typeSymbol.annotations.collectFirst {
-      case ann if ann.tree.tpe =:= annTpe => construct0(ann.tree.children.tail)
+      case ann if ann.tree.tpe =:= annTpe =>
+        construct0(ann.tree.children.tail)
     }
 
     annTreeOpt match {
@@ -217,16 +218,19 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
     val wrapTpeTrees = annTreeOpts.map {
       case Some(annTree) =>
         appliedType(someTpe, annTpe) -> q"_root_.scala.Some($annTree)"
-      case None => noneTpe -> q"_root_.scala.None"
+      case None =>
+        noneTpe -> q"_root_.scala.None"
     }
 
     val outTpe = mkHListTpe(
       wrapTpeTrees.map {
-        case (aTpe, _) => aTpe
+        case (aTpe, _) =>
+          aTpe
       })
     val outTree =
       wrapTpeTrees.foldRight(q"_root_.shapeless.HNil": Tree) {
-        case ((_, bound), acc) => pq"_root_.shapeless.::($bound, $acc)"
+        case ((_, bound), acc) =>
+          pq"_root_.shapeless.::($bound, $acc)"
       }
 
     q"_root_.shapeless.Annotations.mkAnnotations[$annTpe, $tpe, $outTpe]($outTree)"

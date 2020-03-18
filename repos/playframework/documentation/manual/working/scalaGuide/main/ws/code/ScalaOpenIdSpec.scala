@@ -51,7 +51,8 @@ object ScalaOpenIdSpec extends PlaySpecification {
               routes.Application.openIdCallback.absoluteURL())
             .map(url => Redirect(url))
             .recover {
-              case t: Throwable => Redirect(routes.Application.login)
+              case t: Throwable =>
+                Redirect(routes.Application.login)
             }
         }
       )

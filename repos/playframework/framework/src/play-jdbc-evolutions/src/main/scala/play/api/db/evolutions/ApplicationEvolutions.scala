@@ -59,7 +59,8 @@ class ApplicationEvolutions @Inject() (
           import Evolutions.toHumanReadableScript
 
           environment.mode match {
-            case Mode.Test => evolutions.evolve(db, scripts, autocommit, schema)
+            case Mode.Test =>
+              evolutions.evolve(db, scripts, autocommit, schema)
             case Mode.Dev if dbConfig.autoApply =>
               evolutions.evolve(db, scripts, autocommit, schema)
             case Mode.Prod if !hasDown && dbConfig.autoApply =>
@@ -155,8 +156,10 @@ class ApplicationEvolutions @Inject() (
     import ApplicationEvolutions._
     val lockScripts =
       url match {
-        case MysqlJdbcUrl(_) => lockPlayEvolutionsLockMysqlSqls
-        case _               => lockPlayEvolutionsLockSqls
+        case MysqlJdbcUrl(_) =>
+          lockPlayEvolutionsLockMysqlSqls
+        case _ =>
+          lockPlayEvolutionsLockSqls
       }
     try {
       for (script <- lockScripts)
@@ -465,7 +468,8 @@ class EvolutionsWebCommands @Inject() (
         }
       }
 
-      case _ => None
+      case _ =>
+        None
 
     }
   }

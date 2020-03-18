@@ -133,8 +133,10 @@ class FailFastFactoryTest
 
       assert {
         failfast().poll match {
-          case Some(Throw(_: FailedFastException)) => true
-          case _                                   => false
+          case Some(Throw(_: FailedFastException)) =>
+            true
+          case _ =>
+            false
         }
       }
       verify(underlying).apply() // nothing new
@@ -158,8 +160,10 @@ class FailFastFactoryTest
       r() = Return(service)
       assert {
         failfast().poll match {
-          case Some(Return(s)) => s eq service
-          case _               => false
+          case Some(Return(s)) =>
+            s eq service
+          case _ =>
+            false
         }
       }
     }
@@ -181,9 +185,12 @@ class FailFastFactoryTest
 
       val status =
         underlying.status match {
-          case Status.Open   => Status.Closed
-          case Status.Closed => Status.Open
-          case status        => fail(s"bad status $status")
+          case Status.Open =>
+            Status.Closed
+          case Status.Closed =>
+            Status.Open
+          case status =>
+            fail(s"bad status $status")
         }
       when(underlying.status).thenReturn(status)
       assert(failfast.status == underlying.status)
@@ -225,7 +232,8 @@ class FailFastFactoryTest
             ex.serviceName = "threadOne"
             assert(beat == 0)
           }
-          case _ => throw new Exception
+          case _ =>
+            throw new Exception
         }
         threadCompletionCount.incrementAndGet()
       }
@@ -238,7 +246,8 @@ class FailFastFactoryTest
           case Some(Throw(ex: FailedFastException)) => {
             assert(ex.serviceName == SourcedException.UnspecifiedServiceName)
           }
-          case _ => throw new Exception
+          case _ =>
+            throw new Exception
         }
         threadCompletionCount.incrementAndGet()
       }

@@ -82,7 +82,8 @@ object IngestSystem extends Logging {
         config.logPrefix + " Stop call for " + name + " actor returned " + b)
     }
   } recover {
-    case e => logger.error("Error stopping " + name + " actor", e)
+    case e =>
+      logger.error("Error stopping " + name + " actor", e)
   }
 }
 
@@ -110,8 +111,10 @@ trait ShardSystemActorModule extends YggConfigComponent with Logging {
             logger.error("Unable to load Kafka checkpoint: " + errors)
             sys.error("Unable to load Kafka checkpoint: " + errors)
 
-          case Some(Success(checkpoint)) => Some(checkpoint)
-          case None                      => None
+          case Some(Success(checkpoint)) =>
+            Some(checkpoint)
+          case None =>
+            None
         }
       }
 

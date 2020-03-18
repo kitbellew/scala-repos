@@ -22,8 +22,10 @@ class PostfixMethodCallInspection
 
   private def safe(pexpr: ScPostfixExpr): Boolean = {
     pexpr.getContext match {
-      case _: ScParenthesisedExpr => true
-      case _: ScArgumentExprList  => true
+      case _: ScParenthesisedExpr =>
+        true
+      case _: ScArgumentExprList =>
+        true
       case (_: ScAssignStmt) childOf (_: ScArgumentExprList) =>
         true //named arguments
       case _ =>

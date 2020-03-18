@@ -25,8 +25,10 @@ class ScDocTagImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => accept(s)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        accept(s)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -36,8 +38,10 @@ class ScDocTagImpl(node: ASTNode)
 
   def getContainingComment: PsiDocComment =
     getParent match {
-      case docComment: PsiDocComment => docComment
-      case _                         => null
+      case docComment: PsiDocComment =>
+        docComment
+      case _ =>
+        null
     }
 
   def getNameElement: PsiElement =
@@ -77,7 +81,8 @@ class ScDocTagImpl(node: ASTNode)
           TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
           ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS))
       .map {
-        case nd => handler(nd.getPsi)
+        case nd =>
+          handler(nd.getPsi)
       }
       .mkString(" ")
 }

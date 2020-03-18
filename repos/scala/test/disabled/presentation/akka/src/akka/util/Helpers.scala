@@ -85,14 +85,17 @@ object Helpers {
         try {
           Left(value)
         } catch {
-          case (error: Throwable) => Right(error)
+          case (error: Throwable) =>
+            Right(error)
         }
     }
 
     def apply() =
       contents match {
-        case Left(result) => result
-        case Right(error) => throw error.fillInStackTrace
+        case Left(result) =>
+          result
+        case Right(error) =>
+          throw error.fillInStackTrace
       }
   }
   object ResultOrError {

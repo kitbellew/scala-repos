@@ -96,8 +96,10 @@ class ScalaEvaluatorCompileHelper(project: Project)
     val connector = new ServerConnector(module, files, outputDir)
     try {
       connector.compile() match {
-        case Left(output)  => output
-        case Right(errors) => throw EvaluationException(errors.mkString("\n"))
+        case Left(output) =>
+          output
+        case Right(errors) =>
+          throw EvaluationException(errors.mkString("\n"))
       }
     } catch {
       case e: Exception =>

@@ -214,8 +214,10 @@ class LazyStrictTests {
       new Show[List[T]] {
         def apply(t: List[T]) =
           t match {
-            case n: Nil     => show(n)
-            case c: Cons[T] => show(c)(sc.value)
+            case n: Nil =>
+              show(n)
+            case c: Cons[T] =>
+              show(c)(sc.value)
           }
       }
   }
@@ -233,8 +235,10 @@ class LazyStrictTests {
       new Show[List[T]] {
         def apply(t: List[T]) =
           t match {
-            case n: Nil     => show(n)
-            case c: Cons[T] => show(c)(sc.value)
+            case n: Nil =>
+              show(n)
+            case c: Cons[T] =>
+              show(c)(sc.value)
           }
       }
   }

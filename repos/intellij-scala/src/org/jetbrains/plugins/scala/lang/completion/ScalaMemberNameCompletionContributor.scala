@@ -38,16 +38,22 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
         if (parent == null)
           return
         parent.getChildren.foreach {
-          case c: ScClass  => classesNames += c.name
-          case t: ScTrait  => classesNames += t.name
-          case o: ScObject => objectNames += o.name
-          case _           =>
+          case c: ScClass =>
+            classesNames += c.name
+          case t: ScTrait =>
+            classesNames += t.name
+          case o: ScObject =>
+            objectNames += o.name
+          case _ =>
         }
         val shouldCompleteFileName =
           parent match {
-            case f: ScalaFile   => true
-            case p: ScPackaging => true
-            case _              => false
+            case f: ScalaFile =>
+              true
+            case p: ScPackaging =>
+              true
+            case _ =>
+              false
           }
         if (shouldCompleteFileName && !classesNames.contains(
               fileName) && !objectNames.contains(fileName)) {

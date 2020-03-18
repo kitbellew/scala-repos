@@ -240,9 +240,12 @@ private[akka] trait DeathWatch {
       block: ⇒ T): T = {
     def isNonLocal(ref: ActorRef) =
       ref match {
-        case null ⇒ true
-        case a: InternalActorRef if !a.isLocal ⇒ true
-        case _ ⇒ false
+        case null ⇒
+          true
+        case a: InternalActorRef if !a.isLocal ⇒
+          true
+        case _ ⇒
+          false
       }
 
     if (isNonLocal(change)) {

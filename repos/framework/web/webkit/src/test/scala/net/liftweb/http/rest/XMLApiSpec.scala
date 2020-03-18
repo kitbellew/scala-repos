@@ -44,30 +44,42 @@ object XmlApiSpec extends Specification {
     def produce(in: Any): LiftResponse =
       in match {
         // Tests boolToResponse
-        case "true"  => true
-        case "false" => false
+        case "true" =>
+          true
+        case "false" =>
+          false
         // Tests canBoolToResponse
         case s: String =>
           tryo[Boolean] {
             s.toInt > 5
           }
         // Tests pairToResponse
-        case i: Int if i == 42 => (true, "But what is the question?")
+        case i: Int if i == 42 =>
+          (true, "But what is the question?")
         // These test the listElemToResponse conversion
-        case f: Float if f == 42f => (<float>perfect</float>: Elem)
-        case f: Float if f == 0f  => (<float>zero</float>: Node)
-        case f: Float if f > 0f   => (<float>positive</float>: NodeSeq)
-        case f: Float if f < 0f   => (<float>negative</float>: Seq[Node])
+        case f: Float if f == 42f =>
+          (<float>perfect</float>: Elem)
+        case f: Float if f == 0f =>
+          (<float>zero</float>: Node)
+        case f: Float if f > 0f =>
+          (<float>positive</float>: NodeSeq)
+        case f: Float if f < 0f =>
+          (<float>negative</float>: Seq[Node])
       }
 
     // This method tests the XML implicit conversions on XMLApiHelper
     def calculator: LiftRules.DispatchPF = {
-      case r @ Req(List("api", "sum"), _, GetRequest)     => () => doSum(r)
-      case r @ Req(List("api", "product"), _, GetRequest) => () => doProduct(r)
-      case r @ Req(List("api", "max"), _, GetRequest)     => () => doMax(r)
-      case r @ Req(List("api", "min"), _, GetRequest) => () => doMin(r)
+      case r @ Req(List("api", "sum"), _, GetRequest) =>
+        () => doSum(r)
+      case r @ Req(List("api", "product"), _, GetRequest) =>
+        () => doProduct(r)
+      case r @ Req(List("api", "max"), _, GetRequest) =>
+        () => doMax(r)
+      case r @ Req(List("api", "min"), _, GetRequest) =>
+        () => doMin(r)
       // Tests putResponseInBox
-      case Req("api" :: _, _, _) => () => BadRequestResponse()
+      case Req("api" :: _, _, _) =>
+        () => BadRequestResponse()
     }
 
     // ===== Handler methods =====
@@ -81,9 +93,12 @@ object XmlApiSpec extends Specification {
           }
         ) ?~ "Missing args"
       } match {
-        case Full(x)    => x
-        case f: Failure => f
-        case Empty      => Empty
+        case Full(x) =>
+          x
+        case f: Failure =>
+          f
+        case Empty =>
+          Empty
       }
 
     // We specify the LiftResponse return type to force use of the implicit
@@ -110,7 +125,8 @@ object XmlApiSpec extends Specification {
             "%s does not match %s".format(converted, expected),
             response)
         }
-        case other => result(false, "matches", "not an XmlResponse", response)
+        case other =>
+          result(false, "matches", "not an XmlResponse", response)
       }
   }
 

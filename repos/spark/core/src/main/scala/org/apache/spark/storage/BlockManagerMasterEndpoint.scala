@@ -144,7 +144,8 @@ private[spark] class BlockManagerMasterEndpoint(
           } else {
             context.reply(false)
           }
-        case None => context.reply(false)
+        case None =>
+          context.reply(false)
       }
   }
 

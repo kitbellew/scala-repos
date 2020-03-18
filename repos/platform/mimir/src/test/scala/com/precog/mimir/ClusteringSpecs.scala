@@ -48,8 +48,10 @@ trait ClusteringLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -80,7 +82,8 @@ trait ClusteringLibSpecs[M[+_]]
 
     clusterMap must haveSize(k)
     clusterMap.keys must haveAllElementsLike {
-      case ClusterIdPattern(_) => ok
+      case ClusterIdPattern(_) =>
+        ok
     }
 
     def getPoint(sval: SValue): List[Double] =
@@ -88,14 +91,17 @@ trait ClusteringLibSpecs[M[+_]]
         case SArray(arr) =>
           arr
             .collect({
-              case SDecimal(n) => n.toDouble
+              case SDecimal(n) =>
+                n.toDouble
             })
             .toList
         case SObject(obj) =>
           obj.toList.sortBy(_._1) flatMap {
-            case (_, v) => getPoint(v)
+            case (_, v) =>
+              getPoint(v)
           }
-        case _ => sys.error("not supported")
+        case _ =>
+          sys.error("not supported")
       }
 
     val clusters: Array[Array[Double]] =
@@ -163,7 +169,8 @@ trait ClusteringLibSpecs[M[+_]]
             case SObject(clusterMap) =>
               clusterMap.keys mustEqual clusterIds
               clusterIds.map(clusterMap(_)) must haveAllElementsLike {
-                case SDecimal(d) => d mustEqual (4.4)
+                case SDecimal(d) =>
+                  d mustEqual (4.4)
               }
           }
       }
@@ -184,7 +191,8 @@ trait ClusteringLibSpecs[M[+_]]
       result must haveSize(1)
 
       val expected = resultNumbers collect {
-        case (_, SDecimal(num)) => num
+        case (_, SDecimal(num)) =>
+          num
       }
 
       result must haveAllElementsLike {
@@ -194,11 +202,13 @@ trait ClusteringLibSpecs[M[+_]]
             case SObject(clusterMap) =>
               clusterMap.keys mustEqual clusterIds
               clusterIds.map(clusterMap(_)) must haveAllElementsLike {
-                case SDecimal(d) => expected must contain(d)
+                case SDecimal(d) =>
+                  expected must contain(d)
               }
 
               val actual = clusterIds.map(clusterMap(_)) collect {
-                case SDecimal(d) => d
+                case SDecimal(d) =>
+                  d
               }
               actual.toSet mustEqual expected
           }
@@ -220,7 +230,8 @@ trait ClusteringLibSpecs[M[+_]]
       result must haveSize(1)
 
       val expected = resultData collect {
-        case (_, SObject(obj)) => obj
+        case (_, SObject(obj)) =>
+          obj
       }
 
       result must haveAllElementsLike {
@@ -230,11 +241,13 @@ trait ClusteringLibSpecs[M[+_]]
             case SObject(clusterMap) =>
               clusterMap.keys mustEqual clusterIds
               clusterIds.map(clusterMap(_)) must haveAllElementsLike {
-                case SObject(obj) => expected must contain(obj)
+                case SObject(obj) =>
+                  expected must contain(obj)
               }
 
               val actual = clusterIds.map(clusterMap(_)) collect {
-                case SObject(obj) => obj
+                case SObject(obj) =>
+                  obj
               }
               actual.toSet mustEqual expected
           }
@@ -304,8 +317,10 @@ trait ClusteringLibSpecs[M[+_]]
       val GeneratedPointSet(pointsA, centersA) = genPoints(5000, dimension, k)
 
       val points = pointsA.zipWithIndex map {
-        case (p, i) if i % 3 == 2 => p ++ Array.fill(3)(Random.nextDouble)
-        case (p, _)               => p
+        case (p, i) if i % 3 == 2 =>
+          p ++ Array.fill(3)(Random.nextDouble)
+        case (p, _) =>
+          p
       }
 
       writePointsToDataset(points) { dataset =>
@@ -391,18 +406,21 @@ trait ClusteringLibSpecs[M[+_]]
     model("clusterCenter") must beLike {
       case SArray(arr0) =>
         val arr = arr0 collect {
-          case SDecimal(d) => d
+          case SDecimal(d) =>
+            d
         }
 
         val rvalue = clusterMap(
           (model("clusterId"): @unchecked) match {
-            case SString(s) => s
+            case SString(s) =>
+              s
           })
         val res =
           (rvalue: @unchecked) match {
             case RArray(values) =>
               values collect {
-                case CNum(x) => x
+                case CNum(x) =>
+                  x
               }
           }
 
@@ -422,7 +440,8 @@ trait ClusteringLibSpecs[M[+_]]
 
       val clusterMap =
         clusters match {
-          case RObject(xs) => xs
+          case RObject(xs) =>
+            xs
         }
 
       val model1 = RObject(Map("model1" -> clusters))
@@ -467,11 +486,13 @@ trait ClusteringLibSpecs[M[+_]]
 
       val clusterMapA =
         clustersA match {
-          case RObject(xs) => xs
+          case RObject(xs) =>
+            xs
         }
       val clusterMapB =
         clustersB match {
-          case RObject(xs) => xs
+          case RObject(xs) =>
+            xs
         }
 
       val models = RObject(Map("model1" -> clustersA, "model2" -> clustersB))
@@ -531,15 +552,18 @@ trait ClusteringLibSpecs[M[+_]]
       val GeneratedPointSet(points0, centers) = genPoints(size, dimension, k)
 
       val points = points0.zipWithIndex map {
-        case (p, i) if i % 3 == 2 => p ++ Array.fill(3)(Random.nextDouble)
-        case (p, _)               => p
+        case (p, i) if i % 3 == 2 =>
+          p ++ Array.fill(3)(Random.nextDouble)
+        case (p, _) =>
+          p
       }
 
       val clusters = makeClusters(centers)
 
       val clusterMap =
         clusters match {
-          case RObject(xs) => xs
+          case RObject(xs) =>
+            xs
         }
 
       val model = RObject(Map("model1" -> clusters))
@@ -583,7 +607,8 @@ trait ClusteringLibSpecs[M[+_]]
       result0 must haveSize(7)
 
       val result = result0 collect {
-        case (ids, value) if ids.size == 2 => value
+        case (ids, value) if ids.size == 2 =>
+          value
       }
 
       result mustEqual Set(

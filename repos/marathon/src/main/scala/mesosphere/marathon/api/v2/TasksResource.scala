@@ -78,7 +78,8 @@ class TasksResource @Inject() (
 
       val appToPorts =
         appIdsToApps.map {
-          case (appId, app) => appId -> app.map(_.servicePorts).getOrElse(Nil)
+          case (appId, app) =>
+            appId -> app.map(_.servicePorts).getOrElse(Nil)
         }.toMap
 
       val health =
@@ -161,7 +162,8 @@ class TasksResource @Inject() (
           result(
             Future.sequence(
               toKill.map {
-                case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
+                case (appId, tasks) =>
+                  taskKiller.kill(appId, _ => tasks)
               })).flatten
         ok(
           jsonObjString(
@@ -178,7 +180,8 @@ class TasksResource @Inject() (
           task.taskId.appId
         }
         .map {
-          case (appId, tasks) => appId -> tasks
+          case (appId, tasks) =>
+            appId -> tasks
         }
 
       if (scale)
@@ -189,8 +192,11 @@ class TasksResource @Inject() (
 
   private def toTaskState(state: String): Option[TaskState] =
     state.toLowerCase match {
-      case "running" => Some(TaskState.TASK_RUNNING)
-      case "staging" => Some(TaskState.TASK_STAGING)
-      case _         => None
+      case "running" =>
+        Some(TaskState.TASK_RUNNING)
+      case "staging" =>
+        Some(TaskState.TASK_STAGING)
+      case _ =>
+        None
     }
 }

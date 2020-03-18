@@ -50,10 +50,12 @@ object ApiCommit {
       message = commit.fullMessage,
       timestamp = commit.commitTime,
       added = diffs._1.collect {
-        case x if x.changeType == DiffEntry.ChangeType.ADD => x.newPath
+        case x if x.changeType == DiffEntry.ChangeType.ADD =>
+          x.newPath
       },
       removed = diffs._1.collect {
-        case x if x.changeType == DiffEntry.ChangeType.DELETE => x.oldPath
+        case x if x.changeType == DiffEntry.ChangeType.DELETE =>
+          x.oldPath
       },
       modified = diffs._1.collect {
         case x

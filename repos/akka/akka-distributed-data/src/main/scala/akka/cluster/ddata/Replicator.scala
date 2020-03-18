@@ -54,8 +54,10 @@ object ReplicatorSettings {
   def apply(config: Config): ReplicatorSettings = {
     val dispatcher =
       config.getString("use-dispatcher") match {
-        case "" ⇒ Dispatchers.DefaultDispatcherId
-        case id ⇒ id
+        case "" ⇒
+          Dispatchers.DefaultDispatcherId
+        case id ⇒
+          id
       }
     new ReplicatorSettings(
       role = roleOption(config.getString("role")),
@@ -127,8 +129,10 @@ final class ReplicatorSettings(
   def withDispatcher(dispatcher: String): ReplicatorSettings = {
     val d =
       dispatcher match {
-        case "" ⇒ Dispatchers.DefaultDispatcherId
-        case id ⇒ id
+        case "" ⇒
+          Dispatchers.DefaultDispatcherId
+        case id ⇒
+          id
       }
     copy(dispatcher = d)
   }
@@ -381,8 +385,10 @@ object Replicator {
     private def modifyWithInitial[A <: ReplicatedData](
         initial: A,
         modify: A ⇒ A): Option[A] ⇒ A = {
-      case Some(data) ⇒ modify(data)
-      case None ⇒ modify(initial)
+      case Some(data) ⇒
+        modify(data)
+      case None ⇒
+        modify(initial)
     }
   }
 
@@ -578,8 +584,10 @@ object Replicator {
 
       def needPruningFrom(removedNode: UniqueAddress): Boolean =
         data match {
-          case r: RemovedNodePruning ⇒ r.needPruningFrom(removedNode)
-          case _ ⇒ false
+          case r: RemovedNodePruning ⇒
+            r.needPruningFrom(removedNode)
+          case _ ⇒
+            false
         }
 
       def initRemovedNodePruning(
@@ -599,7 +607,8 @@ object Replicator {
               data = prunedData,
               pruning = pruning
                 .updated(from, PruningState(to, PruningPerformed)))
-          case _ ⇒ this
+          case _ ⇒
+            this
         }
 
       }
@@ -646,7 +655,8 @@ object Replicator {
               c.pruningCleanup(removed)
             else
               c
-          case (c, _) ⇒ c
+          case (c, _) ⇒
+            c
         }
 
       def addSeen(node: Address): DataEnvelope = {
@@ -968,33 +978,53 @@ final class Replicator(settings: ReplicatorSettings)
   def receive = normalReceive
 
   val normalReceive: Receive = {
-    case Get(key, consistency, req) ⇒ receiveGet(key, consistency, req)
+    case Get(key, consistency, req) ⇒
+      receiveGet(key, consistency, req)
     case u @ Update(key, writeC, req) ⇒
       receiveUpdate(key, u.modify, writeC, req)
-    case Read(key) ⇒ receiveRead(key)
-    case Write(key, envelope) ⇒ receiveWrite(key, envelope)
-    case ReadRepair(key, envelope) ⇒ receiveReadRepair(key, envelope)
-    case FlushChanges ⇒ receiveFlushChanges()
-    case GossipTick ⇒ receiveGossipTick()
-    case ClockTick ⇒ receiveClockTick()
+    case Read(key) ⇒
+      receiveRead(key)
+    case Write(key, envelope) ⇒
+      receiveWrite(key, envelope)
+    case ReadRepair(key, envelope) ⇒
+      receiveReadRepair(key, envelope)
+    case FlushChanges ⇒
+      receiveFlushChanges()
+    case GossipTick ⇒
+      receiveGossipTick()
+    case ClockTick ⇒
+      receiveClockTick()
     case Status(otherDigests, chunk, totChunks) ⇒
       receiveStatus(otherDigests, chunk, totChunks)
-    case Gossip(updatedData, sendBack) ⇒ receiveGossip(updatedData, sendBack)
-    case Subscribe(key, subscriber) ⇒ receiveSubscribe(key, subscriber)
-    case Unsubscribe(key, subscriber) ⇒ receiveUnsubscribe(key, subscriber)
-    case Terminated(ref) ⇒ receiveTerminated(ref)
-    case MemberUp(m) ⇒ receiveMemberUp(m)
-    case MemberRemoved(m, _) ⇒ receiveMemberRemoved(m)
+    case Gossip(updatedData, sendBack) ⇒
+      receiveGossip(updatedData, sendBack)
+    case Subscribe(key, subscriber) ⇒
+      receiveSubscribe(key, subscriber)
+    case Unsubscribe(key, subscriber) ⇒
+      receiveUnsubscribe(key, subscriber)
+    case Terminated(ref) ⇒
+      receiveTerminated(ref)
+    case MemberUp(m) ⇒
+      receiveMemberUp(m)
+    case MemberRemoved(m, _) ⇒
+      receiveMemberRemoved(m)
     case _: MemberEvent ⇒ // not of interest
-    case UnreachableMember(m) ⇒ receiveUnreachable(m)
-    case ReachableMember(m) ⇒ receiveReachable(m)
-    case LeaderChanged(leader) ⇒ receiveLeaderChanged(leader, None)
+    case UnreachableMember(m) ⇒
+      receiveUnreachable(m)
+    case ReachableMember(m) ⇒
+      receiveReachable(m)
+    case LeaderChanged(leader) ⇒
+      receiveLeaderChanged(leader, None)
     case RoleLeaderChanged(role, leader) ⇒
       receiveLeaderChanged(leader, Some(role))
-    case GetKeyIds ⇒ receiveGetKeyIds()
-    case Delete(key, consistency) ⇒ receiveDelete(key, consistency)
-    case RemovedNodePruningTick ⇒ receiveRemovedNodePruningTick()
-    case GetReplicaCount ⇒ receiveGetReplicaCount()
+    case GetKeyIds ⇒
+      receiveGetKeyIds()
+    case Delete(key, consistency) ⇒
+      receiveDelete(key, consistency)
+    case RemovedNodePruningTick ⇒
+      receiveRemovedNodePruningTick()
+    case GetReplicaCount ⇒
+      receiveGetReplicaCount()
   }
 
   def receiveGet(
@@ -1006,9 +1036,12 @@ final class Replicator(settings: ReplicatorSettings)
     if (isLocalGet(consistency)) {
       val reply =
         localValue match {
-          case Some(DataEnvelope(DeletedData, _)) ⇒ DataDeleted(key)
-          case Some(DataEnvelope(data, _)) ⇒ GetSuccess(key, req)(data)
-          case None ⇒ NotFound(key, req)
+          case Some(DataEnvelope(DeletedData, _)) ⇒
+            DataDeleted(key)
+          case Some(DataEnvelope(data, _)) ⇒
+            GetSuccess(key, req)(data)
+          case None ⇒
+            NotFound(key, req)
         }
       sender() ! reply
     } else
@@ -1020,9 +1053,12 @@ final class Replicator(settings: ReplicatorSettings)
 
   def isLocalGet(readConsistency: ReadConsistency): Boolean =
     readConsistency match {
-      case ReadLocal ⇒ true
-      case _: ReadMajority | _: ReadAll ⇒ nodes.isEmpty
-      case _ ⇒ false
+      case ReadLocal ⇒
+        true
+      case _: ReadMajority | _: ReadAll ⇒
+        nodes.isEmpty
+      case _ ⇒
+        false
     }
 
   def receiveRead(key: String): Unit = {
@@ -1039,10 +1075,12 @@ final class Replicator(settings: ReplicatorSettings)
     val localValue = getData(key.id)
     Try {
       localValue match {
-        case Some(DataEnvelope(DeletedData, _)) ⇒ throw new DataDeleted(key)
+        case Some(DataEnvelope(DeletedData, _)) ⇒
+          throw new DataDeleted(key)
         case Some(envelope @ DataEnvelope(existing, _)) ⇒
           existing.merge(modify(Some(existing)).asInstanceOf[existing.T])
-        case None ⇒ modify(None)
+        case None ⇒
+          modify(None)
       }
     } match {
       case Success(newData) ⇒
@@ -1071,9 +1109,12 @@ final class Replicator(settings: ReplicatorSettings)
 
   def isLocalUpdate(writeConsistency: WriteConsistency): Boolean =
     writeConsistency match {
-      case WriteLocal ⇒ true
-      case _: WriteMajority | _: WriteAll ⇒ nodes.isEmpty
-      case _ ⇒ false
+      case WriteLocal ⇒
+        true
+      case _: WriteMajority | _: WriteAll ⇒
+        nodes.isEmpty
+      case _ ⇒
+        false
     }
 
   def receiveWrite(key: String, envelope: DataEnvelope): Unit = {
@@ -1111,7 +1152,8 @@ final class Replicator(settings: ReplicatorSettings)
   def receiveGetKeyIds(): Unit = {
     val keys: Set[String] =
       dataEntries.collect {
-        case (key, (DataEnvelope(data, _), _)) if data != DeletedData ⇒ key
+        case (key, (DataEnvelope(data, _), _)) if data != DeletedData ⇒
+          key
       }(collection.breakOut)
     sender() ! GetKeyIdsResult(keys)
   }
@@ -1155,8 +1197,10 @@ final class Replicator(settings: ReplicatorSettings)
         val d = digest(envelope)
         dataEntries = dataEntries.updated(key, (envelope, d))
         d
-      case Some((_, digest)) ⇒ digest
-      case None ⇒ NotFoundDigest
+      case Some((_, digest)) ⇒
+        digest
+      case None ⇒
+        NotFoundDigest
     }
   }
 
@@ -1170,7 +1214,8 @@ final class Replicator(settings: ReplicatorSettings)
 
   def getData(key: String): Option[DataEnvelope] =
     dataEntries.get(key).map {
-      case (envelope, _) ⇒ envelope
+      case (envelope, _) ⇒
+        envelope
     }
 
   def receiveFlushChanges(): Unit = {
@@ -1219,7 +1264,8 @@ final class Replicator(settings: ReplicatorSettings)
     if (dataEntries.size <= maxDeltaElements) {
       val status = Status(
         dataEntries.map {
-          case (key, (_, _)) ⇒ (key, getDigest(key))
+          case (key, (_, _)) ⇒
+            (key, getDigest(key))
         },
         chunk = 0,
         totChunks = 1)
@@ -1273,7 +1319,8 @@ final class Replicator(settings: ReplicatorSettings)
       d != NotFoundDigest && d != otherDigest
     }
     val otherDifferentKeys = otherDigests.collect {
-      case (key, otherDigest) if isOtherDifferent(key, otherDigest) ⇒ key
+      case (key, otherDigest) if isOtherDifferent(key, otherDigest) ⇒
+        key
     }
     val otherKeys = otherDigests.keySet
     val myKeys =
@@ -1353,24 +1400,28 @@ final class Replicator(settings: ReplicatorSettings)
   def hasSubscriber(subscriber: ActorRef): Boolean =
     (
       subscribers.exists {
-        case (k, s) ⇒ s.contains(subscriber)
+        case (k, s) ⇒
+          s.contains(subscriber)
       }
     ) ||
       (
         newSubscribers.exists {
-          case (k, s) ⇒ s.contains(subscriber)
+          case (k, s) ⇒
+            s.contains(subscriber)
         }
       )
 
   def receiveTerminated(ref: ActorRef): Unit = {
     val keys1 = subscribers.collect {
-      case (k, s) if s.contains(ref) ⇒ k
+      case (k, s) if s.contains(ref) ⇒
+        k
     }
     keys1.foreach { key ⇒
       subscribers.removeBinding(key, ref)
     }
     val keys2 = newSubscribers.collect {
-      case (k, s) if s.contains(ref) ⇒ k
+      case (k, s) if s.contains(ref) ⇒
+        k
     }
     keys2.foreach { key ⇒
       newSubscribers.removeBinding(key, ref)
@@ -1452,7 +1503,8 @@ final class Replicator(settings: ReplicatorSettings)
           envelope.data match {
             case dataWithRemovedNodePruning: RemovedNodePruning ⇒
               envelope.pruning.get(removed) match {
-                case None ⇒ init()
+                case None ⇒
+                  init()
                 case Some(PruningState(owner, PruningInitialized(_)))
                     if owner != selfUniqueAddress ⇒
                   init()
@@ -1499,10 +1551,13 @@ final class Replicator(settings: ReplicatorSettings)
               key,
               (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
           pruning.get(removed) match {
-            case Some(PruningState(_, PruningInitialized(_))) ⇒ false
-            case _ ⇒ true
+            case Some(PruningState(_, PruningInitialized(_))) ⇒
+              false
+            case _ ⇒
+              true
           }
-        case _ ⇒ true // deleted, or pruning not needed
+        case _ ⇒
+          true // deleted, or pruning not needed
       }
     }
 
@@ -1560,7 +1615,8 @@ final class Replicator(settings: ReplicatorSettings)
           dataWithRemovedNodePruning.pruningCleanup(removed)
         else
           data
-      case _ ⇒ data
+      case _ ⇒
+        data
     }
 
   def receiveGetReplicaCount(): Unit = {
@@ -1654,8 +1710,10 @@ private[akka] class WriteAggregator(
 
   override val doneWhenRemainingSize =
     consistency match {
-      case WriteTo(n, _) ⇒ nodes.size - (n - 1)
-      case _: WriteAll ⇒ 0
+      case WriteTo(n, _) ⇒
+        nodes.size - (n - 1)
+      case _: WriteAll ⇒
+        0
       case _: WriteMajority ⇒
         val N = nodes.size + 1
         val w = N / 2 + 1 // write to at least (N/2+1) nodes
@@ -1687,7 +1745,8 @@ private[akka] class WriteAggregator(
       secondaryNodes.foreach {
         replica(_) ! writeMsg
       }
-    case ReceiveTimeout ⇒ reply(ok = false)
+    case ReceiveTimeout ⇒
+      reply(ok = false)
   }
 
   def senderAddress(): Address = sender().path.address
@@ -1742,8 +1801,10 @@ private[akka] class ReadAggregator(
   var result = localValue
   override val doneWhenRemainingSize =
     consistency match {
-      case ReadFrom(n, _) ⇒ nodes.size - (n - 1)
-      case _: ReadAll ⇒ 0
+      case ReadFrom(n, _) ⇒
+        nodes.size - (n - 1)
+      case _: ReadAll ⇒
+        0
       case _: ReadMajority ⇒
         val N = nodes.size + 1
         val r = N / 2 + 1 // read from at least (N/2+1) nodes
@@ -1769,10 +1830,14 @@ private[akka] class ReadAggregator(
   def receive = {
     case ReadResult(envelope) ⇒
       result = (result, envelope) match {
-        case (Some(a), Some(b)) ⇒ Some(a.merge(b))
-        case (r @ Some(_), None) ⇒ r
-        case (None, r @ Some(_)) ⇒ r
-        case (None, None) ⇒ None
+        case (Some(a), Some(b)) ⇒
+          Some(a.merge(b))
+        case (r @ Some(_), None) ⇒
+          r
+        case (None, r @ Some(_)) ⇒
+          r
+        case (None, None) ⇒
+          None
       }
       remaining -= sender().path.address
       if (remaining.size == doneWhenRemainingSize)
@@ -1781,7 +1846,8 @@ private[akka] class ReadAggregator(
       secondaryNodes.foreach {
         replica(_) ! readMsg
       }
-    case ReceiveTimeout ⇒ reply(ok = false)
+    case ReceiveTimeout ⇒
+      reply(ok = false)
   }
 
   def reply(ok: Boolean): Unit =

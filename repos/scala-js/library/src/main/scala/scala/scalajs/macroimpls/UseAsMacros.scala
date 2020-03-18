@@ -374,8 +374,10 @@ private[scalajs] object UseAsMacros {
     private def annotStringArg(annot: Annotation): Option[String] = {
       val args = annot.tree.children.tail
       args match {
-        case List(Literal(Constant(s: String))) => Some(s)
-        case _                                  => None
+        case List(Literal(Constant(s: String))) =>
+          Some(s)
+        case _ =>
+          None
       }
     }
 

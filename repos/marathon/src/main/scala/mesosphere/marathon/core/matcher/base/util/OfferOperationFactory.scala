@@ -19,7 +19,8 @@ class OfferOperationFactory(
 
   private[this] lazy val principal: String =
     principalOpt match {
-      case Some(value) => value
+      case Some(value) =>
+        value
       case _ =>
         throw new WrongConfigurationException(
           "No principal set. Set --mesos_authentication_principal to enable using local volumes in Marathon.")
@@ -27,7 +28,8 @@ class OfferOperationFactory(
 
   private[this] lazy val role: String =
     roleOpt match {
-      case Some(value) => value
+      case Some(value) =>
+        value
       case _ =>
         throw new WrongConfigurationException(
           "No role set. Set --mesos_role to enable using local volumes in Marathon.")

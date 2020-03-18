@@ -62,7 +62,8 @@ class ParquetFilterSuite
       expected: Seq[Row]): Unit = {
     val output =
       predicate.collect {
-        case a: Attribute => a
+        case a: Attribute =>
+          a
       }.distinct
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {

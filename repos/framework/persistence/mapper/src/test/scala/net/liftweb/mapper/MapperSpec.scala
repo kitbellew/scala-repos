@@ -470,7 +470,8 @@ class MapperSpec extends Specification with BeforeExample {
     } catch {
       case e if !provider.required_? =>
         skipped("Provider %s not available: %s".format(provider, e))
-      case _: Exception => skipped
+      case _: Exception =>
+        skipped
     }
   })
 }

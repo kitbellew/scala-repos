@@ -32,8 +32,10 @@ class ClassloadVerify extends ScalaMatchingTask {
 
   private def getClasspath: Array[String] =
     classpath match {
-      case None    => buildError("Member 'classpath' is empty.")
-      case Some(x) => x.list.toArray
+      case None =>
+        buildError("Member 'classpath' is empty.")
+      case Some(x) =>
+        x.list.toArray
     }
 
   override def execute(): Unit = {

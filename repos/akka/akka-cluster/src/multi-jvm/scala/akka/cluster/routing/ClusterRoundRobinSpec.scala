@@ -32,7 +32,8 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
     def this() = this(PoolRoutee)
 
     def receive = {
-      case "hit" ⇒ sender() ! Reply(routeeType, self)
+      case "hit" ⇒
+        sender() ! Reply(routeeType, self)
     }
   }
 
@@ -131,10 +132,12 @@ abstract class ClusterRoundRobinSpec
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
     (
       receiveWhile(5 seconds, messages = expectedReplies) {
-        case Reply(`routeeType`, ref) ⇒ fullAddress(ref)
+        case Reply(`routeeType`, ref) ⇒
+          fullAddress(ref)
       }
     ).foldLeft(zero) {
-      case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
+      case (replyMap, address) ⇒
+        replyMap + (address -> (replyMap(address) + 1))
     }
   }
 
@@ -143,8 +146,10 @@ abstract class ClusterRoundRobinSpec
     */
   private def fullAddress(actorRef: ActorRef): Address =
     actorRef.path.address match {
-      case Address(_, _, None, None) ⇒ cluster.selfAddress
-      case a ⇒ a
+      case Address(_, _, None, None) ⇒
+        cluster.selfAddress
+      case a ⇒
+        a
     }
 
   def currentRoutees(router: ActorRef) =
@@ -327,7 +332,8 @@ abstract class ClusterRoundRobinSpec
         // note that router2 has totalInstances = 3, maxInstancesPerNode = 1
         val routees = currentRoutees(router2)
         val routeeAddresses = routees map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
         }
 
         routeeAddresses.size should ===(3)
@@ -346,7 +352,8 @@ abstract class ClusterRoundRobinSpec
       def routeeAddresses =
         (
           routees map {
-            case ActorSelectionRoutee(sel) ⇒ fullAddress(sel.anchor)
+            case ActorSelectionRoutee(sel) ⇒
+              fullAddress(sel.anchor)
           }
         ).toSet
 
@@ -376,19 +383,22 @@ abstract class ClusterRoundRobinSpec
         def routeeAddresses =
           (
             routees map {
-              case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+              case ActorRefRoutee(ref) ⇒
+                fullAddress(ref)
             }
           ).toSet
 
         routees foreach {
-          case ActorRefRoutee(ref) ⇒ watch(ref)
+          case ActorRefRoutee(ref) ⇒
+            watch(ref)
         }
         val notUsedAddress =
           ((roles map address).toSet diff routeeAddresses).head
         val downAddress = routeeAddresses.find(_ != address(first)).get
         val downRouteeRef =
           routees.collectFirst {
-            case ActorRefRoutee(ref) if ref.path.address == downAddress ⇒ ref
+            case ActorRefRoutee(ref) if ref.path.address == downAddress ⇒
+              ref
           }.get
 
         cluster.down(downAddress)

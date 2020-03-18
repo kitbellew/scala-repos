@@ -242,7 +242,8 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
         try {
           handler.close()
         } catch {
-          case _: Throwable => ()
+          case _: Throwable =>
+            ()
         }
         removeHandler(handler)
       }

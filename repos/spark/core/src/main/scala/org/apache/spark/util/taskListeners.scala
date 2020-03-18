@@ -57,7 +57,8 @@ private[spark] class TaskCompletionListenerException(
     } else {
       errorMessages.zipWithIndex
         .map {
-          case (msg, i) => s"Exception $i: $msg"
+          case (msg, i) =>
+            s"Exception $i: $msg"
         }
         .mkString("\n")
     } +

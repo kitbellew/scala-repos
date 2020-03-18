@@ -154,8 +154,10 @@ class Strategy @Since("1.3.0") (
   @Since("1.2.0")
   def setAlgo(algo: String): Unit =
     algo match {
-      case "Classification" => setAlgo(Classification)
-      case "Regression"     => setAlgo(Regression)
+      case "Classification" =>
+        setAlgo(Classification)
+      case "Regression" =>
+        setAlgo(Regression)
     }
 
   /**

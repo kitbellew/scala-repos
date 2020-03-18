@@ -159,7 +159,8 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
         that.fields.corresponds(this.fields) { (a, b) =>
           a.name == b.name && a.valueBox == b.valueBox
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -168,10 +169,14 @@ trait Record[MyType <: Record[MyType]] extends FieldContainer {
       "%s=%s" format (
         f.name,
         f.valueBox match {
-          case Full(c: java.util.Calendar) => c.getTime().toString()
-          case Full(null)                  => "null"
-          case Full(v)                     => v.toString
-          case x                           => x.toString
+          case Full(c: java.util.Calendar) =>
+            c.getTime().toString()
+          case Full(null) =>
+            "null"
+          case Full(v) =>
+            v.toString
+          case x =>
+            x.toString
         }
       ))
 

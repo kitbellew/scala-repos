@@ -23,7 +23,8 @@ class SbtCompiler(
 
     val order =
       compilationData.order match {
-        case CompileOrder.Mixed => xsbti.compile.CompileOrder.Mixed
+        case CompileOrder.Mixed =>
+          xsbti.compile.CompileOrder.Mixed
         case CompileOrder.JavaThenScala =>
           xsbti.compile.CompileOrder.JavaThenScala
         case CompileOrder.ScalaThenJava =>
@@ -35,7 +36,8 @@ class SbtCompiler(
     val analysisStore = fileToStore(compilationData.cacheFile)
     val (previousAnalysis, previousSetup) = {
       analysisStore.get().map {
-        case (a, s) => (a, Some(s))
+        case (a, s) =>
+          (a, Some(s))
       } getOrElse {
         (Analysis.Empty, None)
       }
@@ -56,7 +58,8 @@ class SbtCompiler(
 
     val incOptions =
       compilationData.sbtIncOptions match {
-        case None => IncOptions.Default
+        case None =>
+          IncOptions.Default
         case Some(opt) =>
           IncOptions.Default
             .withNameHashing(opt.nameHashing)

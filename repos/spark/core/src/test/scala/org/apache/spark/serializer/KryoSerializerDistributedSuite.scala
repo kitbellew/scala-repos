@@ -52,7 +52,8 @@ class KryoSerializerDistributedSuite
     // Randomly mix the keys so that the join below will require a shuffle with each partition
     // sending data to multiple other partitions.
     val shuffledRDD = cachedRDD.map {
-      case (i, o) => (i * i * i - 10 * i * i, o)
+      case (i, o) =>
+        (i * i * i - 10 * i * i, o)
     }
 
     // Join the two RDDs, and force evaluation

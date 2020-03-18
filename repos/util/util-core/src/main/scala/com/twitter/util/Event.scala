@@ -53,7 +53,8 @@ trait Event[+T] {
     */
   def filter(p: T => Boolean): Event[T] =
     collect {
-      case t if p(t) => t
+      case t if p(t) =>
+        t
     }
 
   /**
@@ -61,7 +62,8 @@ trait Event[+T] {
     */
   def map[U](f: T => U): Event[U] =
     collect {
-      case t => f(t)
+      case t =>
+        f(t)
     }
 
   /**
@@ -361,8 +363,10 @@ trait Event[+T] {
     */
   def dedupWith(eq: (T, T) => Boolean): Event[T] =
     sliding(2).collect {
-      case Seq(init)                                => init
-      case Seq(current, next) if !eq(current, next) => next
+      case Seq(init) =>
+        init
+      case Seq(current, next) if !eq(current, next) =>
+        next
     }
 
   /**

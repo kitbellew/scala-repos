@@ -93,7 +93,8 @@ private[client] class ClientBuilder(config: ClientConfig) {
       .sortBy(_.priority) match {
       case Seq() =>
         throw new RuntimeException("No ZooKeeper ClientFactory Found")
-      case Seq(f, _*) => f
+      case Seq(f, _*) =>
+        f
     }
 
   override def toString() = "ClientBuilder(%s)".format(config.toString)

@@ -212,8 +212,10 @@ package object sbt {
 
   private def parse(fileName: String): (String, String) =
     fileName match {
-      case NameWithExtension(name, extension) => (name, extension)
-      case name                               => (name, "")
+      case NameWithExtension(name, extension) =>
+        (name, extension)
+      case name =>
+        (name, "")
     }
 
   def inWriteAction[T](body: => T): T = {

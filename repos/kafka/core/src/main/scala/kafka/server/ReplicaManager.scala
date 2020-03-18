@@ -67,8 +67,10 @@ case class LogAppendResult(
     error: Option[Throwable] = None) {
   def errorCode =
     error match {
-      case None    => Errors.NONE.code
-      case Some(e) => Errors.forException(e).code
+      case None =>
+        Errors.NONE.code
+      case Some(e) =>
+        Errors.forException(e).code
     }
 }
 
@@ -90,8 +92,10 @@ case class LogReadResult(
 
   def errorCode =
     error match {
-      case None    => Errors.NONE.code
-      case Some(e) => Errors.forException(e).code
+      case None =>
+        Errors.NONE.code
+      case Some(e) =>
+        Errors.forException(e).code
     }
 
   override def toString = {
@@ -380,7 +384,8 @@ class ReplicaManager(
             .format(topic, partitionId, config.brokerId))
       case Some(partition) =>
         partition.leaderReplicaIfLocal match {
-          case Some(leaderReplica) => leaderReplica
+          case Some(leaderReplica) =>
+            leaderReplica
           case None =>
             throw new NotLeaderForPartitionException(
               "Leader not local for partition [%s,%d] on broker %d"
@@ -395,8 +400,10 @@ class ReplicaManager(
       replicaId: Int = config.brokerId): Option[Replica] = {
     val partitionOpt = getPartition(topic, partitionId)
     partitionOpt match {
-      case None            => None
-      case Some(partition) => partition.getReplica(replicaId)
+      case None =>
+        None
+      case Some(partition) =>
+        partition.getReplica(replicaId)
     }
   }
 

@@ -29,9 +29,12 @@ package object util {
   private[http] def actorSystem(implicit
       refFactory: ActorRefFactory): ExtendedActorSystem =
     refFactory match {
-      case x: ActorContext ⇒ actorSystem(x.system)
-      case x: ExtendedActorSystem ⇒ x
-      case _ ⇒ throw new IllegalStateException
+      case x: ActorContext ⇒
+        actorSystem(x.system)
+      case x: ExtendedActorSystem ⇒
+        x
+      case _ ⇒
+        throw new IllegalStateException
     }
 
   private[http] implicit def enhanceByteArray(
@@ -99,7 +102,8 @@ package object util {
     def awaitResult(atMost: Duration): T = {
       Await.ready(future, atMost)
       future.value.get match {
-        case Success(t) ⇒ t
+        case Success(t) ⇒
+          t
         case Failure(ex) ⇒
           throw new RuntimeException(
             "Trying to await result of failed Future, see the cause for the original problem.",
@@ -216,7 +220,8 @@ package util {
 
   private[http] class EventStreamLogger extends Actor with ActorLogging {
     def receive = {
-      case x ⇒ log.warning(x.toString)
+      case x ⇒
+        log.warning(x.toString)
     }
   }
 

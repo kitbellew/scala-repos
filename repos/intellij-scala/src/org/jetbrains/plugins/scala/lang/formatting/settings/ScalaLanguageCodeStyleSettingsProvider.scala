@@ -21,12 +21,16 @@ class ScalaLanguageCodeStyleSettingsProvider
     extends LanguageCodeStyleSettingsProvider {
   def getCodeSample(settingsType: SettingsType): String = {
     settingsType match {
-      case SettingsType.BLANK_LINES_SETTINGS => BLANK_LINES_CODE_SAMPLE
-      case SettingsType.LANGUAGE_SPECIFIC    => GENERAL_CODE_SAMPLE //todo:
-      case SettingsType.SPACING_SETTINGS     => GENERAL_CODE_SAMPLE //todo:
+      case SettingsType.BLANK_LINES_SETTINGS =>
+        BLANK_LINES_CODE_SAMPLE
+      case SettingsType.LANGUAGE_SPECIFIC =>
+        GENERAL_CODE_SAMPLE //todo:
+      case SettingsType.SPACING_SETTINGS =>
+        GENERAL_CODE_SAMPLE //todo:
       case SettingsType.WRAPPING_AND_BRACES_SETTINGS =>
         WRAPPING_AND_BRACES_SAMPLE
-      case _ => GENERAL_CODE_SAMPLE //todo:
+      case _ =>
+        GENERAL_CODE_SAMPLE //todo:
     }
   }
 

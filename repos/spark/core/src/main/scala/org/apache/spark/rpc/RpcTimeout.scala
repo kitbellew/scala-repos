@@ -63,9 +63,11 @@ private[spark] class RpcTimeout(
     */
   def addMessageIfTimeout[T]: PartialFunction[Throwable, T] = {
     // The exception has already been converted to a RpcTimeoutException so just raise it
-    case rte: RpcTimeoutException => throw rte
+    case rte: RpcTimeoutException =>
+      throw rte
     // Any other TimeoutException get converted to a RpcTimeoutException with modified message
-    case te: TimeoutException => throw createRpcTimeoutException(te)
+    case te: TimeoutException =>
+      throw createRpcTimeoutException(te)
   }
 
   /**

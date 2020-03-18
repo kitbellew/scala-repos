@@ -111,7 +111,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transformUp {
-      case a: Aggregate => rewrite(a)
+      case a: Aggregate =>
+        rewrite(a)
     }
 
   def rewrite(a: Aggregate): Aggregate = {
@@ -119,7 +120,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
     // Collect all aggregate expressions.
     val aggExpressions = a.aggregateExpressions.flatMap { e =>
       e.collect {
-        case ae: AggregateExpression => ae
+        case ae: AggregateExpression =>
+          ae
       }
     }
 
@@ -134,8 +136,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       val gid =
         new AttributeReference("gid", IntegerType, false)(isGenerated = true)
       val groupByMap = a.groupingExpressions.collect {
-        case ne: NamedExpression => ne -> ne.toAttribute
-        case e                   => e -> new AttributeReference(e.sql, e.dataType, e.nullable)()
+        case ne: NamedExpression =>
+          ne -> ne.toAttribute
+        case e =>
+          e -> new AttributeReference(e.sql, e.dataType, e.nullable)()
       }
       val groupByAttrs = groupByMap.map(_._2)
 
@@ -146,7 +150,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
           attrs: Expression => Expression): AggregateFunction = {
         af.withNewChildren(
             af.children.map {
-              case afc => attrs(afc)
+              case afc =>
+                attrs(afc)
             })
           .asInstanceOf[AggregateFunction]
       }
@@ -165,8 +170,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
           // Expand projection
           val projection = distinctAggChildren.map {
-            case e if group.contains(e) => e
-            case e                      => nullify(e)
+            case e if group.contains(e) =>
+              e
+            case e =>
+              nullify(e)
           } :+ id
 
           // Final aggregate
@@ -211,8 +218,10 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
         // non-null result without any input. We need to make sure we return a result in this case.
         val resultWithDefault =
           af.defaultResult match {
-            case Some(lit) => Coalesce(Seq(result, lit))
-            case None      => result
+            case Some(lit) =>
+              Coalesce(Seq(result, lit))
+            case None =>
+              result
           }
 
         // Return a Tuple3 containing:

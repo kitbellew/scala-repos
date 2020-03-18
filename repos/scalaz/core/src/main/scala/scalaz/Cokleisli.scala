@@ -73,8 +73,10 @@ private trait CokleisliMonad[F[_], R]
     @annotation.tailrec
     def go(a0: A)(r: F[R]): B =
       f(a0).run(r) match {
-        case -\/(a1) => go(a1)(r)
-        case \/-(b)  => b
+        case -\/(a1) =>
+          go(a1)(r)
+        case \/-(b) =>
+          b
       }
 
     Cokleisli(go(a))
@@ -112,16 +114,20 @@ private trait CokleisliArrow[F[_]]
   def left[A, B, C](fa: Cokleisli[F, A, B]): Cokleisli[F, A \/ C, B \/ C] =
     Cokleisli { (ac: F[A \/ C]) =>
       F.copoint(ac) match {
-        case -\/(a) => -\/(fa run (F.map(ac)(_ => a)))
-        case \/-(b) => \/-(b)
+        case -\/(a) =>
+          -\/(fa run (F.map(ac)(_ => a)))
+        case \/-(b) =>
+          \/-(b)
       }
     }
 
   def right[A, B, C](fa: Cokleisli[F, A, B]): Cokleisli[F, C \/ A, C \/ B] =
     Cokleisli { (ac: F[C \/ A]) =>
       F.copoint(ac) match {
-        case -\/(b) => -\/(b)
-        case \/-(a) => \/-(fa run (F.map(ac)(_ => a)))
+        case -\/(b) =>
+          -\/(b)
+        case \/-(a) =>
+          \/-(fa run (F.map(ac)(_ => a)))
       }
     }
 

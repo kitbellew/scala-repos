@@ -68,7 +68,8 @@ private[mllib] class GridPartitioner(
     */
   override def getPartition(key: Any): Int = {
     key match {
-      case i: Int => i
+      case i: Int =>
+        i
       case (i: Int, j: Int) =>
         getPartitionId(i, j)
       case (i: Int, j: Int, _: Int) =>
@@ -554,7 +555,8 @@ class BlockMatrix @Since("1.3.0") (
                   case (rightRowIndex, rightColIndex, rightBlock) =>
                     val C =
                       rightBlock match {
-                        case dense: DenseMatrix => leftBlock.multiply(dense)
+                        case dense: DenseMatrix =>
+                          leftBlock.multiply(dense)
                         case sparse: SparseMatrix =>
                           leftBlock.multiply(sparse.toDense)
                         case _ =>

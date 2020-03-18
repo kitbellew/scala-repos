@@ -10,8 +10,10 @@ trait Trees {
   }
   def test(tree: Tree) =
     tree match {
-      case TypeTree(_) => println("lolwut")
-      case null        => println("correct")
+      case TypeTree(_) =>
+        println("lolwut")
+      case null =>
+        println("correct")
     }
 }
 

@@ -12,10 +12,14 @@ trait Symbol extends Flags {
 
   def isType =
     this match {
-      case _: ClassSymbol if !isModule => true
-      case _: TypeSymbol               => true
-      case _ if isTrait                => true
-      case _                           => false
+      case _: ClassSymbol if !isModule =>
+        true
+      case _: TypeSymbol =>
+        true
+      case _ if isTrait =>
+        true
+      case _ =>
+        false
     }
 
   def path: String =
@@ -42,11 +46,13 @@ abstract class ScalaSigSymbol extends Symbol {
   lazy val attributes: Seq[AttributeInfo] = {
     applyScalaSigRule(ScalaSigParsers.attributes) filter { attr =>
       (attr.symbol, this) match {
-        case (s, t) if s == t => true
+        case (s, t) if s == t =>
+          true
         case (MethodSymbol(info1, ref1), MethodSymbol(info2, ref2))
             if info1.name == (info2.name + " ") =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -70,16 +76,20 @@ case class SymbolInfo(
     entry: ScalaSig#Entry) {
   def symbolString(any: AnyRef) =
     any match {
-      case sym: SymbolInfoSymbol => sym.index.toString
-      case other                 => other.toString
+      case sym: SymbolInfoSymbol =>
+        sym.index.toString
+      case other =>
+        other.toString
     }
 
   override def toString =
     name + ", owner=" + symbolString(
       owner) + ", flags=" + flags.toHexString + ", info=" + info + (
       privateWithin match {
-        case Some(any) => ", privateWithin=" + symbolString(any)
-        case None      => " "
+        case Some(any) =>
+          ", privateWithin=" + symbolString(any)
+        case None =>
+          " "
       }
     )
 }

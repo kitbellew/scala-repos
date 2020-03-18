@@ -156,8 +156,10 @@ trait OneAndLowPriority0 {
         @tailrec
         def consume(as: List[A], buf: ListBuffer[B]): List[B] =
           as match {
-            case Nil     => buf.toList
-            case a :: as => consume(as, buf += f(OneAnd(a, as)))
+            case Nil =>
+              buf.toList
+            case a :: as =>
+              consume(as, buf += f(OneAnd(a, as)))
           }
         OneAnd(f(fa), consume(fa.tail, ListBuffer.empty))
       }

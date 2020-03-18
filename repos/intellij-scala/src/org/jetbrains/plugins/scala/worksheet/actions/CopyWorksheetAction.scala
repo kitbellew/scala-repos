@@ -84,8 +84,10 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
     val marker = viewer.getFoldingModel
       .asInstanceOf[FoldingModelImpl]
       .getAllFoldRegions find {
-      case r: WorksheetFoldRegionDelegate => true
-      case _                              => false
+      case r: WorksheetFoldRegionDelegate =>
+        true
+      case _ =>
+        false
     }
 
     var lastLeftEnd = 0

@@ -39,11 +39,16 @@ trait MatchTranslation {
         pat match {
           case Bind(nme.WILDCARD, WildcardPattern()) =>
             true // don't skip when binding an interesting symbol!
-          case Star(WildcardPattern()) => true
-          case x: Ident                => treeInfo.isVarPattern(x)
-          case Alternative(ps)         => ps forall unapply
-          case EmptyTree               => true
-          case _                       => false
+          case Star(WildcardPattern()) =>
+            true
+          case x: Ident =>
+            treeInfo.isVarPattern(x)
+          case Alternative(ps) =>
+            ps forall unapply
+          case EmptyTree =>
+            true
+          case _ =>
+            false
         }
     }
 
@@ -52,24 +57,31 @@ trait MatchTranslation {
         pat match {
           case Bind(nme.WILDCARD, _) =>
             true // don't skip when binding an interesting symbol!
-          case Ident(nme.WILDCARD)                  => true
-          case Alternative(ps)                      => ps forall unapply
-          case Typed(PatternBoundToUnderscore(), _) => true
-          case _                                    => false
+          case Ident(nme.WILDCARD) =>
+            true
+          case Alternative(ps) =>
+            ps forall unapply
+          case Typed(PatternBoundToUnderscore(), _) =>
+            true
+          case _ =>
+            false
         }
     }
 
     object SymbolBound {
       def unapply(tree: Tree): Option[(Symbol, Tree)] =
         tree match {
-          case Bind(_, expr) if hasSym(tree) => Some(tree.symbol -> expr)
-          case _                             => None
+          case Bind(_, expr) if hasSym(tree) =>
+            Some(tree.symbol -> expr)
+          case _ =>
+            None
         }
     }
 
     def newBoundTree(tree: Tree, pt: Type): BoundTree =
       tree match {
-        case SymbolBound(sym, expr) => BoundTree(setVarInfo(sym, pt), expr)
+        case SymbolBound(sym, expr) =>
+          BoundTree(setVarInfo(sym, pt), expr)
         case _ =>
           BoundTree(setVarInfo(freshSym(tree.pos, prefix = "p"), pt), tree)
       }
@@ -82,26 +94,34 @@ trait MatchTranslation {
         binder.info.dealiasWiden // the type of the variable bound to the pattern
       def pt =
         unbound match {
-          case Star(tpt)      => this glbWith seqType(tpt.tpe)
-          case TypeBound(tpe) => tpe
-          case tree           => tree.tpe
+          case Star(tpt) =>
+            this glbWith seqType(tpt.tpe)
+          case TypeBound(tpe) =>
+            tpe
+          case tree =>
+            tree.tpe
         }
       def glbWith(other: Type) = glb(tpe :: other :: Nil).normalize
 
       object SymbolAndTypeBound {
         def unapply(tree: Tree): Option[(Symbol, Type)] =
           tree match {
-            case SymbolBound(sym, TypeBound(tpe)) => Some(sym -> tpe)
-            case TypeBound(tpe)                   => Some(binder -> tpe)
-            case _                                => None
+            case SymbolBound(sym, TypeBound(tpe)) =>
+              Some(sym -> tpe)
+            case TypeBound(tpe) =>
+              Some(binder -> tpe)
+            case _ =>
+              None
           }
       }
 
       object TypeBound {
         def unapply(tree: Tree): Option[Type] =
           tree match {
-            case Typed(Ident(_), _) if tree.tpe != null => Some(tree.tpe)
-            case _                                      => None
+            case Typed(Ident(_), _) if tree.tpe != null =>
+              Some(tree.tpe)
+            case _ =>
+              None
           }
       }
 
@@ -175,14 +195,20 @@ trait MatchTranslation {
       //     don't fail here though (or should we?)
       def nextStep(): TranslationStep =
         tree match {
-          case WildcardPattern()            => noStep()
-          case _: UnApply | _: Apply        => extractorStep()
-          case SymbolAndTypeBound(sym, tpe) => typeTestStep(sym, tpe)
-          case TypeBound(tpe)               => typeTestStep(binder, tpe)
-          case SymbolBound(sym, expr)       => bindingStep(sym, expr)
+          case WildcardPattern() =>
+            noStep()
+          case _: UnApply | _: Apply =>
+            extractorStep()
+          case SymbolAndTypeBound(sym, tpe) =>
+            typeTestStep(sym, tpe)
+          case TypeBound(tpe) =>
+            typeTestStep(binder, tpe)
+          case SymbolBound(sym, expr) =>
+            bindingStep(sym, expr)
           case Literal(Constant(_)) | Ident(_) | Select(_, _) | This(_) =>
             equalityTestStep()
-          case Alternative(alts) => alternativesStep(alts)
+          case Alternative(alts) =>
+            alternativesStep(alts)
           case _ =>
             reporter.error(pos, unsupportedPatternMsg);
             noStep()
@@ -213,8 +239,10 @@ trait MatchTranslation {
           s"$pt (binder: $tpe)"
       private def at_s =
         unbound match {
-          case WildcardPattern() => ""
-          case pat               => s" @ $pat"
+          case WildcardPattern() =>
+            ""
+          case pat =>
+            s" @ $pat"
         }
       override def toString = s"${binder.name}: $tpe_s$at_s"
     }
@@ -249,7 +277,8 @@ trait MatchTranslation {
         cases match {
           case init :+ last if treeInfo isSyntheticDefaultCase last =>
             (init, Some(((scrut: Tree) => last.body)))
-          case _ => (cases, None)
+          case _ =>
+            (cases, None)
         }
 
       if (!settings.XnoPatmatAnalysis)
@@ -522,7 +551,8 @@ trait MatchTranslation {
       // never store these in local variables (for PreserveSubPatBinders)
       lazy val ignoredSubPatBinders: Set[Symbol] =
         subPatBinders zip args collect {
-          case (b, PatternBoundToUnderscore()) => b
+          case (b, PatternBoundToUnderscore()) =>
+            b
         } toSet
 
       // do repeated-parameter expansion to match up with the expected number of arguments (in casu, subpatterns)
@@ -599,7 +629,8 @@ trait MatchTranslation {
                 compareInts(
                   Select(seqTree(binder), nme.length),
                   LIT(expectedLength))
-              case lencmp => (seqTree(binder) DOT lencmp)(LIT(expectedLength))
+              case lencmp =>
+                (seqTree(binder) DOT lencmp)(LIT(expectedLength))
             }
 
           // the comparison to perform
@@ -651,8 +682,10 @@ trait MatchTranslation {
         // to optimize matching on List
         val hasRepeated =
           paramAccessors.lastOption match {
-            case Some(x) => definitions.isRepeated(x)
-            case _       => false
+            case Some(x) =>
+              definitions.isRepeated(x)
+            case _ =>
+              false
           }
         val mutableBinders =
           (if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&

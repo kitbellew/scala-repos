@@ -47,8 +47,10 @@ trait PrecogLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -90,7 +92,8 @@ trait PrecogLibSpecs[M[+_]]
       val result = testEval(input)
       result must haveSize(6)
       val numbers = result collect {
-        case (_, SDecimal(n)) => n
+        case (_, SDecimal(n)) =>
+          n
       }
       numbers must_== Set(0, -1, 1, 42, 1, -23)
     }
@@ -108,7 +111,8 @@ trait PrecogLibSpecs[M[+_]]
       val numbers = result flatMap {
         case (_, SObject(fields)) =>
           fields get "abc" collect {
-            case SDecimal(n) => n
+            case SDecimal(n) =>
+              n
           }
       }
       numbers must_== Set(0, -1, 1, 42, 1, -23)
@@ -125,7 +129,8 @@ trait PrecogLibSpecs[M[+_]]
       val result = testEval(input)
       result must haveSize(18)
       val data = result map {
-        case (_, x) => x
+        case (_, x) =>
+          x
       }
       data must contain(
         SDecimal(-10),

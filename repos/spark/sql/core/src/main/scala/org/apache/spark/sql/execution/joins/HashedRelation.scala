@@ -747,6 +747,7 @@ private[execution] case class HashedRelationBroadcastMode(
       case m: HashedRelationBroadcastMode =>
         canJoinKeyFitWithinLong == m.canJoinKeyFitWithinLong &&
           canonicalizedKeys == m.canonicalizedKeys
-      case _ => false
+      case _ =>
+        false
     }
 }

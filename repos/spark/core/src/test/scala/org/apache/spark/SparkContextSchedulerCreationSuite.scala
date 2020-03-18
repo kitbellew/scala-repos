@@ -73,8 +73,10 @@ class SparkContextSchedulerCreationSuite
   test("local") {
     val sched = createTaskScheduler("local")
     sched.backend match {
-      case s: LocalBackend => assert(s.totalCores === 1)
-      case _               => fail()
+      case s: LocalBackend =>
+        assert(s.totalCores === 1)
+      case _ =>
+        fail()
     }
   }
 
@@ -83,7 +85,8 @@ class SparkContextSchedulerCreationSuite
     sched.backend match {
       case s: LocalBackend =>
         assert(s.totalCores === Runtime.getRuntime.availableProcessors())
-      case _ => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -91,8 +94,10 @@ class SparkContextSchedulerCreationSuite
     val sched = createTaskScheduler("local[5]")
     assert(sched.maxTaskFailures === 1)
     sched.backend match {
-      case s: LocalBackend => assert(s.totalCores === 5)
-      case _               => fail()
+      case s: LocalBackend =>
+        assert(s.totalCores === 5)
+      case _ =>
+        fail()
     }
   }
 
@@ -102,7 +107,8 @@ class SparkContextSchedulerCreationSuite
     sched.backend match {
       case s: LocalBackend =>
         assert(s.totalCores === Runtime.getRuntime.availableProcessors())
-      case _ => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -110,8 +116,10 @@ class SparkContextSchedulerCreationSuite
     val sched = createTaskScheduler("local[4, 2]")
     assert(sched.maxTaskFailures === 2)
     sched.backend match {
-      case s: LocalBackend => assert(s.totalCores === 4)
-      case _               => fail()
+      case s: LocalBackend =>
+        assert(s.totalCores === 4)
+      case _ =>
+        fail()
     }
   }
 
@@ -134,15 +142,18 @@ class SparkContextSchedulerCreationSuite
     val sched = createTaskScheduler("local", "client", conf)
 
     sched.backend match {
-      case s: LocalBackend => assert(s.defaultParallelism() === 16)
-      case _               => fail()
+      case s: LocalBackend =>
+        assert(s.defaultParallelism() === 16)
+      case _ =>
+        fail()
     }
   }
 
   test("local-cluster") {
     createTaskScheduler("local-cluster[3, 14, 1024]").backend match {
       case s: SparkDeploySchedulerBackend => // OK
-      case _                              => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -155,7 +166,8 @@ class SparkContextSchedulerCreationSuite
         assert(e.getMessage.contains("YARN mode not available"))
         logWarning(
           "YARN not available, could not test actual YARN scheduler creation")
-      case e: Throwable => fail(e)
+      case e: Throwable =>
+        fail(e)
     }
   }
 
@@ -183,7 +195,8 @@ class SparkContextSchedulerCreationSuite
         assert(e.getMessage.contains("mesos"))
         logWarning(
           "Mesos not available, could not test actual Mesos scheduler creation")
-      case e: Throwable => fail(e)
+      case e: Throwable =>
+        fail(e)
     }
   }
 

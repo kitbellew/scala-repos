@@ -35,7 +35,8 @@ object LeveldbPersistenceQueryDocSpec {
             event
           else
             Tagged(event, tags)
-        case _ ⇒ event
+        case _ ⇒
+          event
       }
 
     override def manifest(event: Any): String = ""

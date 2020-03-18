@@ -7,11 +7,16 @@ trait AB extends B with A
 object Test extends App {
   def foo(x: Any) =
     x match {
-      case _: C          => println("C")
-      case _: AB         => println("AB")
-      case _: (A with B) => println("AB'")
-      case _: B          => println("B")
-      case _: A          => println("A")
+      case _: C =>
+        println("C")
+      case _: AB =>
+        println("AB")
+      case _: (A with B) =>
+        println("AB'")
+      case _: B =>
+        println("B")
+      case _: A =>
+        println("A")
     }
 
   foo(new A {})

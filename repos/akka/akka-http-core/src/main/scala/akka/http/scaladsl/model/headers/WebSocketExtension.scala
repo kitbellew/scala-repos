@@ -18,8 +18,10 @@ final case class WebSocketExtension(
     r ~~ name
     if (params.nonEmpty)
       params.foreach {
-        case (k, "") ⇒ r ~~ "; " ~~ k
-        case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v
+        case (k, "") ⇒
+          r ~~ "; " ~~ k
+        case (k, v) ⇒
+          r ~~ "; " ~~ k ~~ '=' ~~# v
       }
     r
   }

@@ -46,7 +46,8 @@ case class TestFramework(implClassNames: String*) {
         try {
           Some(
             Class.forName(head, true, loader).newInstance match {
-              case newFramework: Framework => newFramework
+              case newFramework: Framework =>
+                newFramework
               case oldFramework: OldFramework =>
                 new FrameworkWrapper(oldFramework)
             })
@@ -74,7 +75,8 @@ final class TestDefinition(
     t match {
       case r: TestDefinition =>
         name == r.name && TestFramework.matches(fingerprint, r.fingerprint)
-      case _ => false
+      case _ =>
+        false
     }
   override def hashCode: Int =
     (name.hashCode, TestFramework.hashCode(fingerprint)).hashCode
@@ -145,7 +147,8 @@ final class TestRunner(
 object TestFramework {
   def getFingerprints(framework: Framework): Seq[Fingerprint] =
     framework.getClass.getMethod("fingerprints").invoke(framework) match {
-      case fingerprints: Array[Fingerprint] => fingerprints.toList
+      case fingerprints: Array[Fingerprint] =>
+        fingerprints.toList
       case _ =>
         sys.error("Could not call 'fingerprints' on framework " + framework)
     }
@@ -162,9 +165,12 @@ object TestFramework {
 
   private[sbt] def hashCode(f: Fingerprint): Int =
     f match {
-      case s: SubclassFingerprint  => (s.isModule, s.superclassName).hashCode
-      case a: AnnotatedFingerprint => (a.isModule, a.annotationName).hashCode
-      case _                       => 0
+      case s: SubclassFingerprint =>
+        (s.isModule, s.superclassName).hashCode
+      case a: AnnotatedFingerprint =>
+        (a.isModule, a.annotationName).hashCode
+      case _ =>
+        0
     }
   def matches(a: Fingerprint, b: Fingerprint) =
     (a, b) match {
@@ -172,7 +178,8 @@ object TestFramework {
         a.isModule == b.isModule && a.superclassName == b.superclassName
       case (a: AnnotatedFingerprint, b: AnnotatedFingerprint) =>
         a.isModule == b.isModule && a.annotationName == b.annotationName
-      case _ => false
+      case _ =>
+        false
     }
   def toString(f: Fingerprint): String =
     f match {
@@ -180,7 +187,8 @@ object TestFramework {
         "subclass(" + sf.isModule + ", " + sf.superclassName + ")"
       case af: AnnotatedFingerprint =>
         "annotation(" + af.isModule + ", " + af.annotationName + ")"
-      case _ => f.toString
+      case _ =>
+        f.toString
     }
 
   def testTasks(
@@ -200,7 +208,8 @@ object TestFramework {
       createTestTasks(
         testLoader,
         runners.map {
-          case (tf, r) => (frameworks(tf), new TestRunner(r, listeners, log))
+          case (tf, r) =>
+            (frameworks(tf), new TestRunner(r, listeners, log))
         },
         mappedTests,
         tests,
@@ -242,7 +251,8 @@ object TestFramework {
       log: Logger,
       listeners: Seq[TestReportListener]) = {
     val testsListeners = listeners collect {
-      case tl: TestsListener => tl
+      case tl: TestsListener =>
+        tl
     }
 
     def foreachListenerSafe(f: TestsListener => Unit): () => Unit =

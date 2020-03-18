@@ -34,7 +34,8 @@ class ScalaEditorTextProvider extends EditorTextProvider {
       element: PsiElement,
       allowMethodCalls: Boolean): Pair[PsiElement, TextRange] = {
     findExpressionInner(element, allowMethodCalls) match {
-      case None => null
+      case None =>
+        null
       case Some(elem) =>
         Try {
           val expressionCopy = ScalaPsiElementFactory
@@ -66,11 +67,14 @@ class ScalaEditorTextProvider extends EditorTextProvider {
       case (ref: ScReferenceExpression) childOf (inf: ScInfixExpr)
           if inf.operation == ref =>
         allowed(inf)
-      case expr: ScExpression  => allowed(expr)
-      case b: ScBindingPattern => Some(b.nameId)
+      case expr: ScExpression =>
+        allowed(expr)
+      case b: ScBindingPattern =>
+        Some(b.nameId)
       case p: ScParameter if !p.isCallByNameParameter || allowMethodCalls =>
         Some(p.nameId)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

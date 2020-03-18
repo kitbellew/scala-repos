@@ -81,8 +81,10 @@ class RemoteServerConnector(
             val eventClient = new ClientEventProcessor(client)
 
             val encodedArgs = arguments map {
-              case "" => Base64Converter.encode("#STUB#" getBytes "UTF-8")
-              case s  => Base64Converter.encode(s getBytes "UTF-8")
+              case "" =>
+                Base64Converter.encode("#STUB#" getBytes "UTF-8")
+              case s =>
+                Base64Converter.encode(s getBytes "UTF-8")
             }
 
             val errorHandler =
@@ -127,7 +129,8 @@ class RemoteServerConnector(
 
   private def outputDirs =
     (ModuleRootManager.getInstance(module).getDependencies :+ module).map {
-      case m => CompilerPaths.getModuleOutputPath(m, false)
+      case m =>
+        CompilerPaths.getModuleOutputPath(m, false)
     }
 }
 
@@ -198,12 +201,15 @@ object RemoteServerConnector {
 
       val category =
         kind match {
-          case BuildMessage.Kind.INFO => CompilerMessageCategory.INFORMATION
+          case BuildMessage.Kind.INFO =>
+            CompilerMessageCategory.INFORMATION
           case BuildMessage.Kind.ERROR =>
             hasErrors = true
             CompilerMessageCategory.ERROR
-          case BuildMessage.Kind.PROGRESS => CompilerMessageCategory.STATISTICS
-          case BuildMessage.Kind.WARNING  => CompilerMessageCategory.WARNING
+          case BuildMessage.Kind.PROGRESS =>
+            CompilerMessageCategory.STATISTICS
+          case BuildMessage.Kind.WARNING =>
+            CompilerMessageCategory.WARNING
         }
 
       consumer.message(

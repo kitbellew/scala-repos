@@ -58,9 +58,12 @@ case object NoteInfo extends NoteSeverity
 object NoteSeverity {
   def apply(severity: Int) =
     severity match {
-      case 2 => NoteError
-      case 1 => NoteWarn
-      case 0 => NoteInfo
+      case 2 =>
+        NoteError
+      case 1 =>
+        NoteWarn
+      case 0 =>
+        NoteInfo
     }
 }
 

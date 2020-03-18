@@ -193,8 +193,10 @@ class VecStatsCheck extends Specification with ScalaCheck {
         val med = v.median
         (len == 0 && med.isNaN) || {
           len % 2 match {
-            case 0 => areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
-            case 1 => areClose(med, data(len / 2))
+            case 0 =>
+              areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
+            case 1 =>
+              areClose(med, data(len / 2))
           }
         }
       }
@@ -209,8 +211,10 @@ class VecStatsCheck extends Specification with ScalaCheck {
         val med = v.median
         (len == 0 && med.isNaN) || {
           len % 2 match {
-            case 0 => areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
-            case 1 => areClose(med, data(len / 2))
+            case 0 =>
+              areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
+            case 1 =>
+              areClose(med, data(len / 2))
           }
         }
       }
@@ -532,8 +536,10 @@ class VecStatsCheck extends Specification with ScalaCheck {
         val med = v.median
         (len == 0 && med.isNaN) || {
           len % 2 match {
-            case 0 => areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
-            case 1 => areClose(med, data(len / 2))
+            case 0 =>
+              areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
+            case 1 =>
+              areClose(med, data(len / 2))
           }
         }
       }
@@ -548,8 +554,10 @@ class VecStatsCheck extends Specification with ScalaCheck {
         val med = v.median
         (len == 0 && med.isNaN) || {
           len % 2 match {
-            case 0 => areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
-            case 1 => areClose(med, data(len / 2))
+            case 0 =>
+              areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
+            case 1 =>
+              areClose(med, data(len / 2))
           }
         }
       }
@@ -836,8 +844,10 @@ class VecStatsCheck extends Specification with ScalaCheck {
         val med = v.median
         (len == 0 && med.isNaN) || {
           len % 2 match {
-            case 0 => areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
-            case 1 => areClose(med, data(len / 2))
+            case 0 =>
+              areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
+            case 1 =>
+              areClose(med, data(len / 2))
           }
         }
       }
@@ -852,8 +862,10 @@ class VecStatsCheck extends Specification with ScalaCheck {
         val med = v.median
         (len == 0 && med.isNaN) || {
           len % 2 match {
-            case 0 => areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
-            case 1 => areClose(med, data(len / 2))
+            case 0 =>
+              areClose(med, (data(len / 2) + data(len / 2 - 1)) / 2.0)
+            case 1 =>
+              areClose(med, data(len / 2))
           }
         }
       }

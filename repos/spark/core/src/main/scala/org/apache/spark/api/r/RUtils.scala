@@ -98,7 +98,8 @@ private[spark] object RUtils {
       val builder = new ProcessBuilder(Arrays.asList("R", "--version"))
       builder.start().waitFor() == 0
     } catch {
-      case e: Exception => false
+      case e: Exception =>
+        false
     }
   }
 }

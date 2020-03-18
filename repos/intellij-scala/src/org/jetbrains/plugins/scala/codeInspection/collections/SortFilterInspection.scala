@@ -23,7 +23,8 @@ object SortFilter extends SimplificationType {
         swapLastTwoMethods(expr)
       case qual `.sort` (_) `.filter` (pred) if !hasSideEffects(pred) =>
         swapLastTwoMethods(expr)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -43,10 +44,12 @@ object SortFilter extends SimplificationType {
             arg match {
               case x @ (_: ScBlock | _: ScParenthesisedExpr | _: ScTuple) =>
                 x.getText
-              case _ => s"(${arg.getText})"
+              case _ =>
+                s"(${arg.getText})"
             }
           Some(s".${op.refName}${argListFromInfix(right)}")
-        case _ => None
+        case _ =>
+          None
       }
 
     expr match {
@@ -65,7 +68,8 @@ object SortFilter extends SimplificationType {
           return Some(simplification)
         }
         None
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

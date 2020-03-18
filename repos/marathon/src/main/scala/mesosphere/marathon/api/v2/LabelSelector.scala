@@ -54,22 +54,27 @@ class LabelSelectorParsers extends RegexParsers {
 
   def existenceSelector: Parser[LabelSelector] =
     term ^^ {
-      case existence: String => LabelSelector(existence, _ => true, List.empty)
+      case existence: String =>
+        LabelSelector(existence, _ => true, List.empty)
     }
 
   def equalityOp: Parser[String] = """(==|!=)""".r
   def equalitySelector: Parser[LabelSelector] =
     term ~ equalityOp ~ term ^^ {
-      case label ~ "==" ~ value => LabelSelector(label, value == _, List(value))
-      case label ~ "!=" ~ value => LabelSelector(label, value != _, List(value))
+      case label ~ "==" ~ value =>
+        LabelSelector(label, value == _, List(value))
+      case label ~ "!=" ~ value =>
+        LabelSelector(label, value != _, List(value))
     }
 
   def set: Parser[List[String]] = "(" ~> repsep(term, ",") <~ ")"
   def setOp: Parser[String] = """(in|notin)""".r
   def setSelector: Parser[LabelSelector] =
     term ~ setOp ~ set ^^ {
-      case label ~ "in" ~ set    => LabelSelector(label, set.contains, set)
-      case label ~ "notin" ~ set => LabelSelector(label, !set.contains(_), set)
+      case label ~ "in" ~ set =>
+        LabelSelector(label, set.contains, set)
+      case label ~ "notin" ~ set =>
+        LabelSelector(label, !set.contains(_), set)
     }
 
   def selector: Parser[LabelSelector] =
@@ -79,8 +84,10 @@ class LabelSelectorParsers extends RegexParsers {
   def parseSelectors(in: String): Either[String, LabelSelectors] = {
     try {
       parseAll(selectors, in) match {
-        case Success(selectors, _) => Right(LabelSelectors(selectors))
-        case NoSuccess(message, _) => Left(message)
+        case Success(selectors, _) =>
+          Right(LabelSelectors(selectors))
+        case NoSuccess(message, _) =>
+          Left(message)
       }
     } catch {
       case NonFatal(ex) =>
@@ -94,6 +101,7 @@ class LabelSelectorParsers extends RegexParsers {
       case Left(message) =>
         throw new IllegalArgumentException(
           s"Can not parse label selector $in. Reason: $message")
-      case Right(selectors) => selectors
+      case Right(selectors) =>
+        selectors
     }
 }

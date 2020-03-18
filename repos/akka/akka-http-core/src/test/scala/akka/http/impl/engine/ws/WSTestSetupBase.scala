@@ -117,7 +117,8 @@ trait WSTestSetupBase extends Matchers {
             (length64Bytes(5) & 0xff).toLong << 16 |
             (length64Bytes(6) & 0xff).toLong << 8 |
             (length64Bytes(7) & 0xff).toLong << 0
-        case x ⇒ x
+        case x ⇒
+          x
       }
     val mask =
       if (hasMask) {

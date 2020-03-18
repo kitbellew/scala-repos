@@ -49,9 +49,12 @@ case class ShuffledHashJoin(
       case Inner =>
         PartitioningCollection(
           Seq(left.outputPartitioning, right.outputPartitioning))
-      case LeftSemi   => left.outputPartitioning
-      case LeftOuter  => left.outputPartitioning
-      case RightOuter => right.outputPartitioning
+      case LeftSemi =>
+        left.outputPartitioning
+      case LeftOuter =>
+        left.outputPartitioning
+      case RightOuter =>
+        right.outputPartitioning
       case FullOuter =>
         UnknownPartitioning(left.outputPartitioning.numPartitions)
       case x =>

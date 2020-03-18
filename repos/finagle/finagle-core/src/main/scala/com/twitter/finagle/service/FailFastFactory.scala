@@ -142,16 +142,20 @@ private[finagle] class FailFastFactory[Req, Rep](
   private[this] val unhealthyForMsGauge =
     statsReceiver.addGauge("unhealthy_for_ms") {
       state match {
-        case r: Retrying => r.since.untilNow.inMilliseconds
-        case _           => 0
+        case r: Retrying =>
+          r.since.untilNow.inMilliseconds
+        case _ =>
+          0
       }
     }
 
   private[this] val unhealthyNumRetriesGauge =
     statsReceiver.addGauge("unhealthy_num_tries") {
       state match {
-        case r: Retrying => r.ntries
-        case _           => 0
+        case r: Retrying =>
+          r.ntries
+        case _ =>
+          0
       }
     }
 
@@ -180,8 +184,10 @@ private[finagle] class FailFastFactory[Req, Rep](
           case Observation.Fail if state == Ok =>
             val (wait, rest) =
               getBackoffs() match {
-                case Stream.Empty  => (Duration.Zero, Stream.empty[Duration])
-                case wait #:: rest => (wait, rest)
+                case Stream.Empty =>
+                  (Duration.Zero, Stream.empty[Duration])
+                case wait #:: rest =>
+                  (wait, rest)
               }
             val now = Time.now
             val task =
@@ -199,7 +205,8 @@ private[finagle] class FailFastFactory[Req, Rep](
 
           case Observation.Timeout if state != Ok =>
             underlying(ClientConnection.nil).respond {
-              case Throw(_) => this.apply(Observation.TimeoutFail)
+              case Throw(_) =>
+                this.apply(Observation.TimeoutFail)
               case Return(service) =>
                 this.apply(Observation.Success)
                 service.close()
@@ -221,7 +228,8 @@ private[finagle] class FailFastFactory[Req, Rep](
                   }
                 state = Retrying(since, newTask, ntries + 1, rest)
 
-              case Ok => assert(false)
+              case Ok =>
+                assert(false)
             }
 
           case Observation.Close =>
@@ -233,7 +241,8 @@ private[finagle] class FailFastFactory[Req, Rep](
               case _ =>
             }
 
-          case _ => ()
+          case _ =>
+            ()
 
         }
     }
@@ -243,16 +252,20 @@ private[finagle] class FailFastFactory[Req, Rep](
       futureExc
     else {
       underlying(conn).respond {
-        case Throw(_)                 => update(Observation.Fail)
-        case Return(_) if state != Ok => update(Observation.Success)
-        case _                        =>
+        case Throw(_) =>
+          update(Observation.Fail)
+        case Return(_) if state != Ok =>
+          update(Observation.Success)
+        case _ =>
       }
     }
   }
   override def status =
     state match {
-      case Ok          => underlying.status
-      case _: Retrying => Status.Busy
+      case Ok =>
+        underlying.status
+      case _: Retrying =>
+        Status.Busy
     }
 
   override val toString = "fail_fast_%s".format(underlying.toString)

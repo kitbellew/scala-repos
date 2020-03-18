@@ -841,7 +841,8 @@ class LowLevelOutgoingConnectionSpec
             Source.fromPublisher(netIn) ~> Flow[ByteString].map(
               SessionBytes(null, _)) ~> client.in2
             client.out1 ~> Flow[SslTlsOutbound].collect {
-              case SendBytes(x) ⇒ x
+              case SendBytes(x) ⇒
+                x
             } ~> Sink.fromSubscriber(netOut)
             Source.fromPublisher(requests) ~> client.in1
             client.out2 ~> Sink.fromSubscriber(responses)
@@ -856,8 +857,10 @@ class LowLevelOutgoingConnectionSpec
       string
         .fastSplit('\n')
         .map {
-          case s if s.startsWith("Date:") ⇒ "Date: XXXX\r"
-          case s ⇒ s
+          case s if s.startsWith("Date:") ⇒
+            "Date: XXXX\r"
+          case s ⇒
+            s
         }
         .mkString("\n")
 

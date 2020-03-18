@@ -28,8 +28,10 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     val file =
       element.getContainingFile match {
-        case sc: ScalaFile => sc
-        case _             => return false
+        case sc: ScalaFile =>
+          sc
+        case _ =>
+          return false
       }
     val selectionModel = editor.getSelectionModel
     selectionModel.hasSelection && {
@@ -46,8 +48,10 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Unit = {
     val file =
       element.getContainingFile match {
-        case sf: ScalaFile => sf
-        case _             => return
+        case sf: ScalaFile =>
+          sf
+        case _ =>
+          return
       }
     val elements = ScalaRefactoringUtil.selectedElements(
       editor,
@@ -62,6 +66,7 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
         ref.qualifier.isDefined && PsiTreeUtil.getParentOfType(
           ref,
           classOf[ScImportExpr]) == null
-      case _ => false
+      case _ =>
+        false
     }
 }

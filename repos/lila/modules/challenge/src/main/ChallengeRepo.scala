@@ -27,7 +27,8 @@ private final class ChallengeRepo(coll: Coll, maxPerUser: Int) {
   def insert(c: Challenge): Funit =
     coll.insert(c) >> c.challenger.right.toOption.?? { challenger =>
       createdByChallengerId(challenger.id).flatMap {
-        case challenges if challenges.size <= maxPerUser => funit
+        case challenges if challenges.size <= maxPerUser =>
+          funit
         case challenges =>
           challenges.drop(maxPerUser).map(_.id).map(remove).sequenceFu.void
       }

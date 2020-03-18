@@ -103,7 +103,8 @@ object Sync {
     try {
       readUncaught(file)(infoFormat)
     } catch {
-      case e: IOException => (Relation.empty, Map.empty)
+      case e: IOException =>
+        (Relation.empty, Map.empty)
     }
 
   def readUncaught[F <: FileInfo](file: File)(implicit

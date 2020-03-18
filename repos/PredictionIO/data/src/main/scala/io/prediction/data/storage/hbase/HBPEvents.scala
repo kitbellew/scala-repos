@@ -95,7 +95,8 @@ class HBPEvents(
         classOf[ImmutableBytesWritable],
         classOf[Result])
       .map {
-        case (key, row) => HBEventsUtil.resultToEvent(row, appId)
+        case (key, row) =>
+          HBEventsUtil.resultToEvent(row, appId)
       }
 
     rdd

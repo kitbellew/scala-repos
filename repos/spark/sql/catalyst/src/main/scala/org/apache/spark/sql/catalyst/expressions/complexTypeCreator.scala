@@ -143,14 +143,16 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
     */
   def flatten: Seq[NamedExpression] =
     valExprs.zip(names).map {
-      case (v, n) => Alias(v, n.toString)()
+      case (v, n) =>
+        Alias(v, n.toString)()
     }
 
   private lazy val (nameExprs, valExprs) =
     children
       .grouped(2)
       .map {
-        case Seq(name, value) => (name, value)
+        case Seq(name, value) =>
+          (name, value)
       }
       .toList
       .unzip
@@ -280,7 +282,8 @@ case class CreateNamedStructUnsafe(children: Seq[Expression])
     children
       .grouped(2)
       .map {
-        case Seq(name, value) => (name, value)
+        case Seq(name, value) =>
+          (name, value)
       }
       .toList
       .unzip

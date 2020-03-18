@@ -183,12 +183,18 @@ class AkkaGraphiteReporter(
   private def sendNumericOrIgnore(key: String, value: Any, now: Long) {
     // seriously nothing better than this? (without Any => String => Num)
     value match {
-      case v: Int ⇒ send(key, v, now)
-      case v: Long ⇒ send(key, v, now)
-      case v: Byte ⇒ send(key, v, now)
-      case v: Short ⇒ send(key, v, now)
-      case v: Float ⇒ send(key, v, now)
-      case v: Double ⇒ send(key, v, now)
+      case v: Int ⇒
+        send(key, v, now)
+      case v: Long ⇒
+        send(key, v, now)
+      case v: Byte ⇒
+        send(key, v, now)
+      case v: Short ⇒
+        send(key, v, now)
+      case v: Float ⇒
+        send(key, v, now)
+      case v: Double ⇒
+        send(key, v, now)
       case _ ⇒ // ignore non-numeric metric...
     }
   }

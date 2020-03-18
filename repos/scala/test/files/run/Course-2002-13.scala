@@ -52,8 +52,10 @@ object Terms {
 
   case class Binding(name: String, term: Term) {
     term match {
-      case Var(n) if (name == n) => sys.error("bad binding")
-      case _                     => ()
+      case Var(n) if (name == n) =>
+        sys.error("bad binding")
+      case _ =>
+        ()
     }
     override def toString() = name + " = " + term;
   }
@@ -62,7 +64,8 @@ object Terms {
 
   def lookup(s: Subst, name: String): Option[Term] =
     s match {
-      case List() => None
+      case List() =>
+        None
       case b :: s1 =>
         if (name == b.name)
           Some(b.term)
@@ -74,8 +77,10 @@ object Terms {
     override def toString() = a;
     def map(s: Subst): Term =
       lookup(s, a) match {
-        case Some(b) => b map s
-        case None    => this;
+        case Some(b) =>
+          b map s
+        case None =>
+          this;
       }
     def tyvars = List(a);
   }
@@ -106,7 +111,8 @@ object Terms {
         Some(s)
       case (Var(a), _) =>
         lookup(s, a) match {
-          case Some(x1) => unify(x1, y, s)
+          case Some(x1) =>
+            unify(x1, y, s)
           case None =>
             if (y.tyvars contains a)
               None
@@ -115,7 +121,8 @@ object Terms {
         }
       case (_, Var(b)) =>
         lookup(s, b) match {
-          case Some(y1) => unify(x, y1, s)
+          case Some(y1) =>
+            unify(x, y1, s)
           case None =>
             if (x.tyvars contains b)
               None
@@ -124,7 +131,8 @@ object Terms {
         }
       case (Con(a, xs), Con(b, ys)) if (a == b) =>
         unify(xs, ys, s)
-      case _ => None
+      case _ =>
+        None
     }
 
   def unify(x: Term, y: Term, s: Subst): Option[Subst] = {
@@ -136,13 +144,17 @@ object Terms {
 
   def unify(xs: List[Term], ys: List[Term], s: Subst): Option[Subst] =
     (xs, ys) match {
-      case (List(), List()) => Some(s)
+      case (List(), List()) =>
+        Some(s)
       case (x :: xs1, y :: ys1) =>
         unify(x, y, s) match {
-          case Some(s1) => unify(xs1, ys1, s1)
-          case None     => None
+          case Some(s1) =>
+            unify(xs1, ys1, s1)
+          case None =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -165,13 +177,17 @@ object Programs {
 
   def list2stream[a](xs: List[a]): Stream[a] =
     xs match {
-      case List()   => Stream.empty
-      case x :: xs1 => Stream.cons(x, list2stream(xs1))
+      case List() =>
+        Stream.empty
+      case x :: xs1 =>
+        Stream.cons(x, list2stream(xs1))
     }
   def option2stream[a](xo: Option[a]): Stream[a] =
     xo match {
-      case None    => Stream.empty
-      case Some(x) => Stream.cons(x, Stream.empty)
+      case None =>
+        Stream.empty
+      case Some(x) =>
+        Stream.cons(x, Stream.empty)
     }
 
   def solve(query: List[Term], clauses: List[Clause]): Stream[Subst] = {

@@ -113,8 +113,10 @@ object VersionLog {
           for {
             jv <- JParser.parseFromFile(headFile).leftMap(Error.thrown)
             version <- jv match {
-              case JString(`unsetSentinel`) => Success(None)
-              case other                    => other.validated[VersionEntry].map(Some(_))
+              case JString(`unsetSentinel`) =>
+                Success(None)
+              case other =>
+                other.validated[VersionEntry].map(Some(_))
             }
           } yield version
         } else {

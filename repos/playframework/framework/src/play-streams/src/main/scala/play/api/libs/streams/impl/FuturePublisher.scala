@@ -86,8 +86,10 @@ private[streams] class FutureSubscription[T, U >: T](
 
   override def isActive: Boolean =
     state match {
-      case AwaitingRequest | Requested => true
-      case Cancelled | Completed       => false
+      case AwaitingRequest | Requested =>
+        true
+      case Cancelled | Completed =>
+        false
     }
 
   override def subscriber: Subscriber[U] = subr

@@ -5,8 +5,10 @@ class DefInput {
     val g = 77
     /*start*/
     g match {
-      case 77 => print(g)
-      case _  => print(goo(g))
+      case 77 =>
+        print(g)
+      case _ =>
+        print(goo(g))
     }
     /*end*/
     print("exit")

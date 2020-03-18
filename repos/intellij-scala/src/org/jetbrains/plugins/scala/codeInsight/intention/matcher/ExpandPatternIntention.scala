@@ -37,7 +37,8 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
       case Some((_, newPatternText)) =>
         setText("Expand to: " + StringUtils.abbreviate(newPatternText, 25))
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -71,7 +72,8 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
         val expectedType = wildcardPattern.expectedType
         nestedPatternText(expectedType).map(patText =>
           (wildcardPattern, patText))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -94,9 +96,11 @@ class ExpandPatternIntention extends PsiElementBaseIntentionAction {
                   primaryConstructor.effectiveFirstParameterSection
                 val constructorParams = parameters.map(_.name).mkParenString
                 Some(cls.qualifiedName + constructorParams)
-              case None => None
+              case None =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
     }
   }

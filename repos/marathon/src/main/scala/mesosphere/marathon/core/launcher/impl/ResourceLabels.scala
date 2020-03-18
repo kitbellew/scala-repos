@@ -18,7 +18,8 @@ case class ResourceLabels(labels: Map[String, String]) {
   override def toString: String =
     labels
       .map {
-        case (k, v) => s"$k: $v"
+        case (k, v) =>
+          s"$k: $v"
       }
       .mkString(", ")
 }

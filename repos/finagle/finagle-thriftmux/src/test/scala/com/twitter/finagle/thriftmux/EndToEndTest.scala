@@ -335,9 +335,11 @@ class EndToEndTest
       new Tracer {
         def record(record: Record) {
           record match {
-            case Record(id, _, ServerRecv(), _) => srvTraceId = Some(id)
-            case Record(id, _, ClientSend(), _) => cltTraceId = Some(id)
-            case _                              =>
+            case Record(id, _, ServerRecv(), _) =>
+              srvTraceId = Some(id)
+            case Record(id, _, ClientSend(), _) =>
+              cltTraceId = Some(id)
+            case _ =>
           }
         }
         def sampleTrace(traceId: TraceId): Option[Boolean] = None
@@ -361,7 +363,8 @@ class EndToEndTest
     Await.result(client.query("ok"), 5.seconds)
 
     (srvTraceId, cltTraceId) match {
-      case (Some(id1), Some(id2)) => assert(id1 == id2)
+      case (Some(id1), Some(id2)) =>
+        assert(id1 == id2)
       case _ =>
         assert(
           false,

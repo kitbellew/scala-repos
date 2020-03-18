@@ -47,7 +47,8 @@ object CaseClassBasedSetterImpl {
       def columns = 1
       def setTree(value: Tree, offset: Int) =
         fsetter.from(c)(tpe, offset, container, value) match {
-          case Success(tree) => tree
+          case Success(tree) =>
+            tree
           case Failure(e) =>
             c.abort(
               c.enclosingPosition,
@@ -86,7 +87,8 @@ object CaseClassBasedSetterImpl {
                 Some(q"val $cca = ${access(value)}; ${sb.setTree(ccaT, off)}"))
           }
           .collect {
-            case (_, Some(tree)) => tree
+            case (_, Some(tree)) =>
+              tree
           }
         q"""..$setters"""
       }
@@ -130,7 +132,8 @@ object CaseClassBasedSetterImpl {
     def expandMethod(outerTpe: Type): Vector[(Tree => Tree, Type)] =
       outerTpe.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .map { accessorMethod =>
           val fieldType = normalized(

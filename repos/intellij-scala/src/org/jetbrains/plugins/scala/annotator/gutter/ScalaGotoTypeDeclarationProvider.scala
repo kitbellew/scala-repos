@@ -17,15 +17,20 @@ class ScalaGotoTypeDeclarationProvider extends TypeDeclarationProvider {
         val res = typed.getType(TypingContext.empty)
         def getForType(tp: ScType): Seq[PsiElement] =
           ScType.extractClass(tp) match {
-            case Some(clazz: PsiClass) => Seq[PsiElement](clazz)
-            case _                     => Seq.empty
+            case Some(clazz: PsiClass) =>
+              Seq[PsiElement](clazz)
+            case _ =>
+              Seq.empty
           }
         val tp = res.getOrElse(return null)
         tp match {
-          case ScCompoundType(comps, _, _) => comps.flatMap(getForType).toArray
-          case _                           => getForType(tp).toArray
+          case ScCompoundType(comps, _, _) =>
+            comps.flatMap(getForType).toArray
+          case _ =>
+            getForType(tp).toArray
         }
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

@@ -125,7 +125,8 @@ object CassandraCQLTest {
     }
     val aggregatedRDD = productSaleRDD.reduceByKey(_ + _)
     aggregatedRDD.collect().foreach {
-      case (productId, saleCount) => println(productId + ":" + saleCount)
+      case (productId, saleCount) =>
+        println(productId + ":" + saleCount)
     }
 
     val casoutputCF = aggregatedRDD.map {

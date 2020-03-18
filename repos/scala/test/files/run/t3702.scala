@@ -1,8 +1,10 @@
 object Test {
   def foo(h: Any, t: List[Any]) =
     h match {
-      case 5 :: _     => ()
-      case List(from) => from
+      case 5 :: _ =>
+        ()
+      case List(from) =>
+        from
     }
 
   def main(args: Array[String]): Unit = {

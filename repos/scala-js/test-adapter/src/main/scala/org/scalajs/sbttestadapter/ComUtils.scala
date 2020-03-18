@@ -19,8 +19,10 @@ private[testadapter] object ComUtils {
   def receiveLoop[T](com: ComJSRunner, timeout: Duration)(
       handler: LoopHandler[T]): T = {
     receiveResponse(com, timeout)(handler) match {
-      case Some(v) => v
-      case None    => receiveLoop(com, timeout)(handler)
+      case Some(v) =>
+        v
+      case None =>
+        receiveLoop(com, timeout)(handler)
     }
   }
 
@@ -28,8 +30,10 @@ private[testadapter] object ComUtils {
   def receiveLoop[T](com: ComJSRunner, deadline: Deadline)(
       handler: LoopHandler[T]): T = {
     receiveResponse(com, deadline.timeLeft)(handler) match {
-      case Some(v) => v
-      case None    => receiveLoop(com, deadline)(handler)
+      case Some(v) =>
+        v
+      case None =>
+        receiveLoop(com, deadline)(handler)
     }
   }
 
@@ -67,7 +71,8 @@ private[testadapter] object ComUtils {
     def throwable = {
       try fromJSON[RemoteException](readJSON(data))
       catch {
-        case t: Throwable => badResponse(t)
+        case t: Throwable =>
+          badResponse(t)
       }
     }
 
@@ -86,7 +91,8 @@ private[testadapter] object ComUtils {
     val result = {
       try handler.lift((status, data))
       catch {
-        case t: Throwable => badResponse(t)
+        case t: Throwable =>
+          badResponse(t)
       }
     }
 
@@ -94,7 +100,8 @@ private[testadapter] object ComUtils {
   }
 
   val doneHandler: LoopHandler[Unit] = {
-    case ("ok", "") => Some(())
+    case ("ok", "") =>
+      Some(())
   }
 
   val okHandler: Handler[Unit] = {

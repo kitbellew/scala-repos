@@ -41,7 +41,8 @@ trait FutureCallbacks extends TestBase {
         x = 1
       }
       f onSuccess {
-        case _ => done(x == 1)
+        case _ =>
+          done(x == 1)
       }
     }
 
@@ -55,7 +56,8 @@ trait FutureCallbacks extends TestBase {
         case _ if x == 1 =>
           x = 2
           f onSuccess {
-            case _ => done(x == 2)
+            case _ =>
+              done(x == 2)
           }
       }
     }
@@ -66,10 +68,12 @@ trait FutureCallbacks extends TestBase {
         throw new Exception
       }
       f onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       f onFailure {
-        case _ => done(true)
+        case _ =>
+          done(true)
       }
     }
 
@@ -79,10 +83,12 @@ trait FutureCallbacks extends TestBase {
         throw new Exception
       }
       f onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       f onFailure {
-        case _ => done(true)
+        case _ =>
+          done(true)
       }
     }
 
@@ -92,11 +98,14 @@ trait FutureCallbacks extends TestBase {
         throw cause
       }
       f onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       f onFailure {
-        case e: ExecutionException if e.getCause == cause => done(true)
-        case _                                            => done(false)
+        case e: ExecutionException if e.getCause == cause =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -106,11 +115,14 @@ trait FutureCallbacks extends TestBase {
         throw new TimeoutException()
       }
       f onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       f onFailure {
-        case e: TimeoutException => done(true)
-        case _                   => done(false)
+        case e: TimeoutException =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -146,10 +158,12 @@ trait FutureCombinators extends TestBase {
         "result: " + x
       }
       g onSuccess {
-        case s => done(s == "result: 5")
+        case s =>
+          done(s == "result: 5")
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -162,10 +176,12 @@ trait FutureCombinators extends TestBase {
         "result: " + x
       }
       g onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g onFailure {
-        case t => done(t.getMessage() == "exception message")
+        case t =>
+          done(t.getMessage() == "exception message")
       }
     }
 
@@ -175,13 +191,16 @@ trait FutureCombinators extends TestBase {
         5
       }
       val g = f map {
-        case r => "result: " + r
+        case r =>
+          "result: " + r
       }
       g onSuccess {
-        case s => done(s == "result: 5")
+        case s =>
+          done(s == "result: 5")
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -192,10 +211,12 @@ trait FutureCombinators extends TestBase {
       }
       val g = f.transform(r => "result: " + r, identity)
       g onSuccess {
-        case s => done(s == "result: 5")
+        case s =>
+          done(s == "result: 5")
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -206,14 +227,17 @@ trait FutureCombinators extends TestBase {
       }
       val g = f.transform(
         {
-          case r => "result: " + r
+          case r =>
+            "result: " + r
         },
         identity)
       g onSuccess {
-        case s => done(s == "result: 5")
+        case s =>
+          done(s == "result: 5")
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -225,10 +249,12 @@ trait FutureCombinators extends TestBase {
       }
       val g = f.transform(identity, _ => transformed)
       g onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g onFailure {
-        case e => done(e eq transformed)
+        case e =>
+          done(e eq transformed)
       }
     }
 
@@ -242,24 +268,31 @@ trait FutureCombinators extends TestBase {
       val g = f.transform(
         identity,
         {
-          case `e` => transformed
+          case `e` =>
+            transformed
         })
       g onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g onFailure {
-        case e => done(e eq transformed)
+        case e =>
+          done(e eq transformed)
       }
     }
 
   def testTransformResultToResult(): Unit =
     once { done =>
       Future("foo").transform {
-        case Success(s) => Success(s.toUpperCase)
-        case Failure(f) => throw new Exception("test failed")
+        case Success(s) =>
+          Success(s.toUpperCase)
+        case Failure(f) =>
+          throw new Exception("test failed")
       } onComplete {
-        case Success("FOO") => done(true)
-        case _              => done(false)
+        case Success("FOO") =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -267,11 +300,15 @@ trait FutureCombinators extends TestBase {
     once { done =>
       val e = new Exception("expected")
       Future("foo").transform {
-        case Success(s) => Failure(e)
-        case Failure(f) => throw new Exception("test failed")
+        case Success(s) =>
+          Failure(e)
+        case Failure(f) =>
+          throw new Exception("test failed")
       } onComplete {
-        case Failure(`e`) => done(true)
-        case _            => done(false)
+        case Failure(`e`) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -279,11 +316,15 @@ trait FutureCombinators extends TestBase {
     once { done =>
       val e = "foo"
       Future(throw new Exception("initial")).transform {
-        case Success(s) => throw new Exception("test failed")
-        case Failure(f) => Success(e)
+        case Success(s) =>
+          throw new Exception("test failed")
+        case Failure(f) =>
+          Success(e)
       } onComplete {
-        case Success(`e`) => done(true)
-        case _            => done(false)
+        case Success(`e`) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -291,22 +332,30 @@ trait FutureCombinators extends TestBase {
     once { done =>
       val e = new Exception("expected")
       Future(throw new Exception("initial")).transform {
-        case Success(s) => throw new Exception("test failed")
-        case Failure(f) => Failure(e)
+        case Success(s) =>
+          throw new Exception("test failed")
+        case Failure(f) =>
+          Failure(e)
       } onComplete {
-        case Failure(`e`) => done(true)
-        case _            => done(false)
+        case Failure(`e`) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
   def testTransformWithResultToResult(): Unit =
     once { done =>
       Future("foo").transformWith {
-        case Success(s) => Future(s.toUpperCase)
-        case Failure(f) => throw new Exception("test failed")
+        case Success(s) =>
+          Future(s.toUpperCase)
+        case Failure(f) =>
+          throw new Exception("test failed")
       } onComplete {
-        case Success("FOO") => done(true)
-        case _              => done(false)
+        case Success("FOO") =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -314,11 +363,15 @@ trait FutureCombinators extends TestBase {
     once { done =>
       val e = new Exception("expected")
       Future("foo").transformWith {
-        case Success(s) => Future(throw e)
-        case Failure(f) => throw new Exception("test failed")
+        case Success(s) =>
+          Future(throw e)
+        case Failure(f) =>
+          throw new Exception("test failed")
       } onComplete {
-        case Failure(`e`) => done(true)
-        case _            => done(false)
+        case Failure(`e`) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -326,11 +379,15 @@ trait FutureCombinators extends TestBase {
     once { done =>
       val e = "foo"
       Future(throw new Exception("initial")).transformWith {
-        case Success(s) => throw new Exception("test failed")
-        case Failure(f) => Future(e)
+        case Success(s) =>
+          throw new Exception("test failed")
+        case Failure(f) =>
+          Future(e)
       } onComplete {
-        case Success(`e`) => done(true)
-        case _            => done(false)
+        case Success(`e`) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -338,11 +395,15 @@ trait FutureCombinators extends TestBase {
     once { done =>
       val e = new Exception("expected")
       Future(throw new Exception("initial")).transformWith {
-        case Success(s) => throw new Exception("test failed")
-        case Failure(f) => Future(throw e)
+        case Success(s) =>
+          throw new Exception("test failed")
+        case Failure(f) =>
+          Future(throw e)
       } onComplete {
-        case Failure(`e`) => done(true)
-        case _            => done(false)
+        case Failure(`e`) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -353,10 +414,12 @@ trait FutureCombinators extends TestBase {
       }
       val g = f.transform(r => "result: " + r, identity)
       g onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g onFailure {
-        case t => done(t.getMessage() == "expected")
+        case t =>
+          done(t.getMessage() == "expected")
       }
     }
 
@@ -371,10 +434,12 @@ trait FutureCombinators extends TestBase {
         }
       }
       g onSuccess {
-        case x => done(x == 10)
+        case x =>
+          done(x == 10)
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -389,10 +454,12 @@ trait FutureCombinators extends TestBase {
         }
       }
       g onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g onFailure {
-        case t => done(t.getMessage() == "expected")
+        case t =>
+          done(t.getMessage() == "expected")
       }
     }
 
@@ -405,10 +472,12 @@ trait FutureCombinators extends TestBase {
         _ % 2 == 0
       }
       g onSuccess {
-        case x: Int => done(x == 4)
+        case x: Int =>
+          done(x == 4)
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -421,11 +490,14 @@ trait FutureCombinators extends TestBase {
         _ % 2 == 1
       }
       g onSuccess {
-        case x: Int => done(false)
+        case x: Int =>
+          done(false)
       }
       g onFailure {
-        case e: NoSuchElementException => done(true)
-        case _                         => done(false)
+        case e: NoSuchElementException =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -435,13 +507,16 @@ trait FutureCombinators extends TestBase {
         -5
       }
       val g = f collect {
-        case x if x < 0 => -x
+        case x if x < 0 =>
+          -x
       }
       g onSuccess {
-        case x: Int => done(x == 5)
+        case x: Int =>
+          done(x == 5)
       }
       g onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -451,14 +526,18 @@ trait FutureCombinators extends TestBase {
         -5
       }
       val g = f collect {
-        case x if x > 0 => x * 2
+        case x if x > 0 =>
+          x * 2
       }
       g onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g onFailure {
-        case e: NoSuchElementException => done(true)
-        case _                         => done(false)
+        case e: NoSuchElementException =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -477,10 +556,12 @@ trait FutureCombinators extends TestBase {
       val g = p.future
 
       g.onSuccess {
-        case res: Int => done(res == 10)
+        case res: Int =>
+          done(res == 10)
       }
       g.onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -494,15 +575,18 @@ trait FutureCombinators extends TestBase {
         p.success(x * 2)
       }
       f onFailure {
-        case _ => p.failure(new Exception)
+        case _ =>
+          p.failure(new Exception)
       }
       val g = p.future
 
       g.onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       g.onFailure {
-        case _ => done(true)
+        case _ =>
+          done(true)
       }
     }
 
@@ -516,10 +600,12 @@ trait FutureCombinators extends TestBase {
           "recovered"
       }
       f onSuccess {
-        case x => done(x == "recovered")
+        case x =>
+          done(x == "recovered")
       }
       f onFailure {
-        case any => done(false)
+        case any =>
+          done(false)
       }
     }
 
@@ -529,13 +615,16 @@ trait FutureCombinators extends TestBase {
       val f = Future {
         throw cause
       } recover {
-        case te: TimeoutException => "timeout"
+        case te: TimeoutException =>
+          "timeout"
       }
       f onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       f onFailure {
-        case any => done(any == cause)
+        case any =>
+          done(any == cause)
       }
     }
 
@@ -551,10 +640,12 @@ trait FutureCombinators extends TestBase {
           }
       }
       f onSuccess {
-        case x => done(x == "recovered")
+        case x =>
+          done(x == "recovered")
       }
       f onFailure {
-        case any => done(false)
+        case any =>
+          done(false)
       }
     }
 
@@ -570,10 +661,12 @@ trait FutureCombinators extends TestBase {
           }
       }
       f onSuccess {
-        case x => done(false)
+        case x =>
+          done(false)
       }
       f onFailure {
-        case any => done(any == cause)
+        case any =>
+          done(any == cause)
       }
     }
 
@@ -587,10 +680,12 @@ trait FutureCombinators extends TestBase {
       }
       val h = f zip g
       h onSuccess {
-        case (l: Int, r: Int) => done(l + r == 11)
+        case (l: Int, r: Int) =>
+          done(l + r == 11)
       }
       h onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -605,10 +700,12 @@ trait FutureCombinators extends TestBase {
       }
       val h = f zip g
       h onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       h onFailure {
-        case e: Exception => done(e.getMessage == "expected")
+        case e: Exception =>
+          done(e.getMessage == "expected")
       }
     }
 
@@ -623,10 +720,12 @@ trait FutureCombinators extends TestBase {
       }
       val h = f zip g
       h onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       h onFailure {
-        case e: Exception => done(e.getMessage == "expected")
+        case e: Exception =>
+          done(e.getMessage == "expected")
       }
     }
 
@@ -640,10 +739,12 @@ trait FutureCombinators extends TestBase {
       }
       val h = f fallbackTo g
       h onSuccess {
-        case x: Int => done(x == 5)
+        case x: Int =>
+          done(x == 5)
       }
       h onFailure {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -659,10 +760,12 @@ trait FutureCombinators extends TestBase {
       val h = f fallbackTo g
 
       h onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
       h onFailure {
-        case e => done(e eq cause)
+        case e =>
+          done(e eq cause)
       }
     }
 
@@ -720,8 +823,10 @@ trait FutureProjections extends TestBase {
         throw cause
       }
       f.failed onComplete {
-        case Success(t) => done(t == cause)
-        case Failure(t) => done(false)
+        case Success(t) =>
+          done(t == cause)
+        case Failure(t) =>
+          done(false)
       }
     }
 
@@ -732,7 +837,8 @@ trait FutureProjections extends TestBase {
         throw cause
       }
       f.failed onSuccess {
-        case t => done(t == cause)
+        case t =>
+          done(t == cause)
       }
     }
 
@@ -742,8 +848,10 @@ trait FutureProjections extends TestBase {
         0
       }
       f.failed onComplete {
-        case Failure(_: NoSuchElementException) => done(true)
-        case _                                  => done(false)
+        case Failure(_: NoSuchElementException) =>
+          done(true)
+        case _ =>
+          done(false)
       }
     }
 
@@ -753,11 +861,14 @@ trait FutureProjections extends TestBase {
         0
       }
       f.failed onFailure {
-        case e: NoSuchElementException => done(true)
-        case _                         => done(false)
+        case e: NoSuchElementException =>
+          done(true)
+        case _ =>
+          done(false)
       }
       f.failed onSuccess {
-        case _ => done(false)
+        case _ =>
+          done(false)
       }
     }
 
@@ -779,8 +890,10 @@ trait FutureProjections extends TestBase {
         Await.result(f.failed, Duration(500, "ms"))
         done(false)
       } catch {
-        case nsee: NoSuchElementException => done(true)
-        case _: Throwable                 => done(false)
+        case nsee: NoSuchElementException =>
+          done(true)
+        case _: Throwable =>
+          done(false)
       }
     }
 
@@ -798,7 +911,8 @@ trait FutureProjections extends TestBase {
         Await.ready(f, Duration.Inf)
         done(true)
       } onFailure {
-        case x => done(throw x)
+        case x =>
+          done(throw x)
       }
     }
 
@@ -817,7 +931,8 @@ trait FutureProjections extends TestBase {
         }
         done(true)
       } onFailure {
-        case x => done(throw x)
+        case x =>
+          done(throw x)
       }
     }
 
@@ -852,7 +967,8 @@ trait Blocking extends TestBase {
         Await.result(f, Duration(500, "ms"))
         done(false)
       } catch {
-        case t: Throwable => done(t == cause)
+        case t: Throwable =>
+          done(t == cause)
       }
     }
 
@@ -942,10 +1058,12 @@ trait Promises extends TestBase {
       val f = p.future
 
       f onSuccess {
-        case x => done(x == 5)
+        case x =>
+          done(x == 5)
       }
       f onFailure {
-        case any => done(false)
+        case any =>
+          done(false)
       }
 
       p.success(5)
@@ -958,10 +1076,12 @@ trait Promises extends TestBase {
       val f = p.future
 
       f onSuccess {
-        case x => done(false)
+        case x =>
+          done(false)
       }
       f onFailure {
-        case any => done(any eq e)
+        case any =>
+          done(any eq e)
       }
 
       p.failure(e)
@@ -1156,7 +1276,8 @@ trait ExecutionContextPrepare extends TestBase {
         42
       }
       fut onComplete {
-        case _ => done(theLocal.get == "secret")
+        case _ =>
+          done(theLocal.get == "secret")
       }
     }
 

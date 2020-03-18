@@ -31,7 +31,8 @@ trait StdAttachments {
       tree match {
         case Apply(fn, _) if tree.isInstanceOf[ApplyToImplicitArgs] =>
           macroExpanderAttachment(fn)
-        case _ => MacroExpanderAttachment(tree, EmptyTree)
+        case _ =>
+          MacroExpanderAttachment(tree, EmptyTree)
       }
     }
 
@@ -54,8 +55,10 @@ trait StdAttachments {
     */
   def hasMacroExpansionAttachment(any: Any): Boolean =
     any match {
-      case tree: Tree => tree.hasAttachment[MacroExpansionAttachment]
-      case _          => false
+      case tree: Tree =>
+        tree.hasAttachment[MacroExpansionAttachment]
+      case _ =>
+        false
     }
 
   /** Returns the original tree of the macro expansion if the argument is a macro expansion or EmptyTree otherwise.
@@ -99,9 +102,11 @@ trait StdAttachments {
     tree match {
       // see the comment to `isMacroExpansionSuppressed` to learn why we need
       // a special traversal strategy here
-      case Apply(fn, _)     => unsuppressMacroExpansion(fn)
-      case TypeApply(fn, _) => unsuppressMacroExpansion(fn)
-      case _                => // do nothing
+      case Apply(fn, _) =>
+        unsuppressMacroExpansion(fn)
+      case TypeApply(fn, _) =>
+        unsuppressMacroExpansion(fn)
+      case _ => // do nothing
     }
     tree
   }
@@ -116,9 +121,12 @@ trait StdAttachments {
           // we have to account for the fact that during typechecking an expandee might become wrapped,
           // i.e. surrounded by an inferred implicit argument application or by an inferred type argument application.
           // in that case the expandee itself will no longer be suppressed and we need to look at the core
-          case Apply(fn, _)     => isMacroExpansionSuppressed(fn)
-          case TypeApply(fn, _) => isMacroExpansionSuppressed(fn)
-          case _                => false
+          case Apply(fn, _) =>
+            isMacroExpansionSuppressed(fn)
+          case TypeApply(fn, _) =>
+            isMacroExpansionSuppressed(fn)
+          case _ =>
+            false
         }
       ))
 
@@ -135,7 +143,8 @@ trait StdAttachments {
     */
   def superArgs(tree: Tree): Option[List[List[Tree]]] =
     tree.attachments.get[SuperArgsAttachment] collect {
-      case SuperArgsAttachment(argss) => argss
+      case SuperArgsAttachment(argss) =>
+        argss
     }
 
   /** Determines whether the given tree has an associated SuperArgsAttachment.

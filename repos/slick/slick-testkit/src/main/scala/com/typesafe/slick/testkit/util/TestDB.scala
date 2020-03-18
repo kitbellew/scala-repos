@@ -266,7 +266,8 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
   protected[this] def await[T](f: Future[T]): T =
     try Await.result(f, TestkitConfig.asyncTimeout)
     catch {
-      case ex: ExecutionException => throw ex.getCause
+      case ex: ExecutionException =>
+        throw ex.getCause
     }
 }
 

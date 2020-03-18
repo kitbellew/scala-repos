@@ -67,15 +67,19 @@ object FoldableTest extends SpecLite {
 
   "sumr1Opt" ! forAll { (xs: List[String]) =>
     xs match {
-      case Nil => xs.sumr1Opt must_== None
-      case _   => xs.sumr1Opt must_== Some(xs.mkString)
+      case Nil =>
+        xs.sumr1Opt must_== None
+      case _ =>
+        xs.sumr1Opt must_== Some(xs.mkString)
     }
   }
 
   "suml1Opt" ! forAll { (xs: List[String]) =>
     xs match {
-      case Nil => xs.suml1Opt must_== None
-      case _   => xs.suml1Opt must_== Some(xs.mkString)
+      case Nil =>
+        xs.suml1Opt must_== None
+      case _ =>
+        xs.suml1Opt must_== Some(xs.mkString)
     }
   }
 
@@ -90,14 +94,17 @@ object FoldableTest extends SpecLite {
 
     "foldLeft1Opt" ! forAll { (xs: List[Int]) =>
       xs match {
-        case Nil     => (xs foldLeft1Opt gt1) must_== None
-        case y :: ys => (xs foldLeft1Opt gt1) must_== Some(ys.foldLeft(y)(gt1))
+        case Nil =>
+          (xs foldLeft1Opt gt1) must_== None
+        case y :: ys =>
+          (xs foldLeft1Opt gt1) must_== Some(ys.foldLeft(y)(gt1))
       }
     }
 
     "foldRight1Opt" ! forAll { (xs: List[Int]) =>
       xs match {
-        case Nil => (xs foldRight1Opt gt2) must_== None
+        case Nil =>
+          (xs foldRight1Opt gt2) must_== None
         case _ =>
           (xs foldRight1Opt gt2) must_== Some(xs.init.foldRight(xs.last)(gt1))
       }
@@ -105,7 +112,8 @@ object FoldableTest extends SpecLite {
 
     "foldl1Opt" ! forAll { (xs: List[Int]) =>
       xs match {
-        case Nil => (xs foldl1Opt gt1.curried) must_== None
+        case Nil =>
+          (xs foldl1Opt gt1.curried) must_== None
         case y :: ys =>
           (xs foldl1Opt gt1.curried) must_== Some(ys.foldLeft(y)(gt1))
       }
@@ -113,7 +121,8 @@ object FoldableTest extends SpecLite {
 
     "foldr1Opt" ! forAll { (xs: List[Int]) =>
       xs match {
-        case Nil => (xs foldr1Opt gt2.curried) must_== None
+        case Nil =>
+          (xs foldr1Opt gt2.curried) must_== None
         case _ =>
           (xs foldr1Opt gt2.curried) must_== Some(
             xs.init.foldRight(xs.last)(gt1))
@@ -122,7 +131,8 @@ object FoldableTest extends SpecLite {
 
     "foldMap1Opt" ! forAll { (xs: List[String]) =>
       xs.toNel match {
-        case None => (xs foldMap1Opt strlen) must_== None
+        case None =>
+          (xs foldMap1Opt strlen) must_== None
         case Some(nel) =>
           (xs foldMap1Opt strlen) must_== Some(nel.foldMap1(strlen))
       }

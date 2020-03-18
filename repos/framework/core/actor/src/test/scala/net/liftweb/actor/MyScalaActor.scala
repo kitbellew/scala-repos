@@ -30,7 +30,9 @@ class MyScalaActor extends LiftActor {
     case Sub(n) =>
       value -= n;
       reply(Answer(value))
-    case Set(n) => value = n
-    case Get()  => reply(Answer(value))
+    case Set(n) =>
+      value = n
+    case Get() =>
+      reply(Answer(value))
   }
 }

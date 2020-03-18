@@ -53,7 +53,8 @@ class BaseParsersTest extends FlatSpec with ShouldMatchers with BaseParsers {
     apply(
       (
         (elem('a') ~ lookbehind(Set('a')) ~ elem('b')) ^^ {
-          case a ~ lb ~ b => a + "" + b
+          case a ~ lb ~ b =>
+            a + "" + b
         }
       ),
       "ab") should equal("ab")
@@ -61,7 +62,8 @@ class BaseParsersTest extends FlatSpec with ShouldMatchers with BaseParsers {
       apply(
         (
           (elem('a') ~ lookbehind(Set('b')) ~ elem('b')) ^^ {
-            case a ~ b => a + "" + b
+            case a ~ b =>
+              a + "" + b
           }
         ),
         "ab")

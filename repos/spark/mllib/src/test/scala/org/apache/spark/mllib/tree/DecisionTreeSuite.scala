@@ -1345,23 +1345,26 @@ object DecisionTreeSuite extends SparkFunSuite {
     assert(a.split === b.split)
     (a.stats, b.stats) match {
       // TODO: Check other fields besides the information gain.
-      case (Some(aStats), Some(bStats)) => assert(aStats.gain === bStats.gain)
-      case (None, None)                 =>
+      case (Some(aStats), Some(bStats)) =>
+        assert(aStats.gain === bStats.gain)
+      case (None, None) =>
       case _ =>
         throw new AssertionError(
           s"Only one instance has stats defined. (a.stats: ${a.stats}, b.stats: ${b.stats})")
     }
     (a.leftNode, b.leftNode) match {
-      case (Some(aNode), Some(bNode)) => checkEqual(aNode, bNode)
-      case (None, None)               =>
+      case (Some(aNode), Some(bNode)) =>
+        checkEqual(aNode, bNode)
+      case (None, None) =>
       case _ =>
         throw new AssertionError(
           "Only one instance has leftNode defined. " +
             s"(a.leftNode: ${a.leftNode}, b.leftNode: ${b.leftNode})")
     }
     (a.rightNode, b.rightNode) match {
-      case (Some(aNode: Node), Some(bNode: Node)) => checkEqual(aNode, bNode)
-      case (None, None)                           =>
+      case (Some(aNode: Node), Some(bNode: Node)) =>
+        checkEqual(aNode, bNode)
+      case (None, None) =>
       case _ =>
         throw new AssertionError(
           "Only one instance has rightNode defined. " +

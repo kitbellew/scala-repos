@@ -33,9 +33,12 @@ private class DynNameFactory[Req, Rep](
 
   override def status =
     state match {
-      case Pending(_)           => Status.Busy
-      case Named(name)          => cache.status(name)
-      case Failed(_) | Closed() => Status.Closed
+      case Pending(_) =>
+        Status.Busy
+      case Named(name) =>
+        cache.status(name)
+      case Failed(_) | Closed() =>
+        Status.Closed
     }
 
   @volatile
@@ -120,7 +123,8 @@ private class DynNameFactory[Req, Rep](
           state = Pending(q enqueue el)
           p
 
-        case other => apply(conn)
+        case other =>
+          apply(conn)
       }
     }
 
@@ -187,7 +191,8 @@ private[finagle] object NameTreeFactory {
       tree match {
         case NameTree.Neg | NameTree.Fail | NameTree.Empty =>
           noBrokersAvailableFactory
-        case NameTree.Leaf(key) => Leaf(key)
+        case NameTree.Leaf(key) =>
+          Leaf(key)
 
         // it's an invariant of Namer.bind that it returns no Alts
         case NameTree.Alt(_*) =>
@@ -195,7 +200,8 @@ private[finagle] object NameTreeFactory {
 
         case NameTree.Union(weightedTrees @ _*) =>
           val (weights, trees) = weightedTrees.unzip {
-            case NameTree.Weighted(w, t) => (w, t)
+            case NameTree.Weighted(w, t) =>
+              (w, t)
           }
           Weighted(Drv.fromWeights(weights), trees.map(factoryOfTree))
       }
@@ -393,7 +399,8 @@ object BindingFactory {
 
       val factory =
         dest match {
-          case bound @ Name.Bound(addr) => newStack(label, bound)
+          case bound @ Name.Bound(addr) =>
+            newStack(label, bound)
 
           case Name.Path(path) =>
             val BaseDtab(baseDtab) = params[BaseDtab]

@@ -36,8 +36,10 @@ object Hashers {
   /** Hash definitions from a ClassDef where applicable */
   def hashDefs(defs: List[Tree]): List[Tree] =
     defs map {
-      case methodDef: MethodDef => hashMethodDef(methodDef)
-      case otherDef             => otherDef
+      case methodDef: MethodDef =>
+        hashMethodDef(methodDef)
+      case otherDef =>
+        otherDef
     }
 
   /** Hash the definitions in a ClassDef (where applicable) */
@@ -454,17 +456,28 @@ object Hashers {
 
     def mixType(tpe: Type): Unit =
       tpe match {
-        case AnyType     => mixTag(TagAnyType)
-        case NothingType => mixTag(TagNothingType)
-        case UndefType   => mixTag(TagUndefType)
-        case BooleanType => mixTag(TagBooleanType)
-        case IntType     => mixTag(TagIntType)
-        case LongType    => mixTag(TagLongType)
-        case FloatType   => mixTag(TagFloatType)
-        case DoubleType  => mixTag(TagDoubleType)
-        case StringType  => mixTag(TagStringType)
-        case NullType    => mixTag(TagNullType)
-        case NoType      => mixTag(TagNoType)
+        case AnyType =>
+          mixTag(TagAnyType)
+        case NothingType =>
+          mixTag(TagNothingType)
+        case UndefType =>
+          mixTag(TagUndefType)
+        case BooleanType =>
+          mixTag(TagBooleanType)
+        case IntType =>
+          mixTag(TagIntType)
+        case LongType =>
+          mixTag(TagLongType)
+        case FloatType =>
+          mixTag(TagFloatType)
+        case DoubleType =>
+          mixTag(TagDoubleType)
+        case StringType =>
+          mixTag(TagStringType)
+        case NullType =>
+          mixTag(TagNullType)
+        case NoType =>
+          mixTag(TagNoType)
 
         case tpe: ClassType =>
           mixTag(TagClassType)
@@ -495,8 +508,10 @@ object Hashers {
 
     def mixPropertyName(name: PropertyName): Unit =
       name match {
-        case name: Ident         => mixIdent(name)
-        case name: StringLiteral => mixTree(name)
+        case name: Ident =>
+          mixIdent(name)
+        case name: StringLiteral =>
+          mixTree(name)
       }
 
     def mixPos(pos: Position): Unit = {

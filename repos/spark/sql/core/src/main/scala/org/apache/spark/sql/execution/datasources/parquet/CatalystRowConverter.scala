@@ -557,8 +557,10 @@ private[parquet] class CatalystRowConverter(
         catalystElementType: DataType,
         parentName: String): Boolean = {
       (parquetRepeatedType, catalystElementType) match {
-        case (t: PrimitiveType, _)                    => true
-        case (t: GroupType, _) if t.getFieldCount > 1 => true
+        case (t: PrimitiveType, _) =>
+          true
+        case (t: GroupType, _) if t.getFieldCount > 1 =>
+          true
         case (t: GroupType, _)
             if t.getFieldCount == 1 && t.getName == "array" =>
           true
@@ -568,7 +570,8 @@ private[parquet] class CatalystRowConverter(
         case (t: GroupType, StructType(Array(f)))
             if f.name == t.getFieldName(0) =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
 

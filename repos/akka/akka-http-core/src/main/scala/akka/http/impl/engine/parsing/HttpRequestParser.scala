@@ -62,7 +62,8 @@ private[http] class HttpRequestParser(
                   NotImplemented,
                   ErrorInfo("Unsupported HTTP method", sb.toString))
             }
-          case c ⇒ parseCustomMethod(ix + 1, sb.append(c))
+          case c ⇒
+            parseCustomMethod(ix + 1, sb.append(c))
         }
       } else
         throw new ParsingException(
@@ -88,20 +89,31 @@ private[http] class HttpRequestParser(
 
     import HttpMethods._
     byteChar(input, cursor) match {
-      case 'G' ⇒ parseMethod(GET)
+      case 'G' ⇒
+        parseMethod(GET)
       case 'P' ⇒
         byteChar(input, cursor + 1) match {
-          case 'O' ⇒ parseMethod(POST, 2)
-          case 'U' ⇒ parseMethod(PUT, 2)
-          case 'A' ⇒ parseMethod(PATCH, 2)
-          case _ ⇒ parseCustomMethod()
+          case 'O' ⇒
+            parseMethod(POST, 2)
+          case 'U' ⇒
+            parseMethod(PUT, 2)
+          case 'A' ⇒
+            parseMethod(PATCH, 2)
+          case _ ⇒
+            parseCustomMethod()
         }
-      case 'D' ⇒ parseMethod(DELETE)
-      case 'H' ⇒ parseMethod(HEAD)
-      case 'O' ⇒ parseMethod(OPTIONS)
-      case 'T' ⇒ parseMethod(TRACE)
-      case 'C' ⇒ parseMethod(CONNECT)
-      case _ ⇒ parseCustomMethod()
+      case 'D' ⇒
+        parseMethod(DELETE)
+      case 'H' ⇒
+        parseMethod(HEAD)
+      case 'O' ⇒
+        parseMethod(OPTIONS)
+      case 'T' ⇒
+        parseMethod(TRACE)
+      case 'C' ⇒
+        parseMethod(CONNECT)
+      case _ ⇒
+        parseCustomMethod()
     }
   }
 
@@ -166,8 +178,10 @@ private[http] class HttpRequestParser(
           if (method == HttpMethods.GET) {
             Handshake.Server
               .websocketUpgrade(headers, hostHeaderPresent) match {
-              case Some(upgrade) ⇒ upgrade :: allHeaders0
-              case None ⇒ allHeaders0
+              case Some(upgrade) ⇒
+                upgrade :: allHeaders0
+              case None ⇒
+                allHeaders0
             }
           } else
             allHeaders0
@@ -187,8 +201,10 @@ private[http] class HttpRequestParser(
         case None ⇒
           val contentLength =
             clh match {
-              case Some(`Content-Length`(len)) ⇒ len
-              case None ⇒ 0
+              case Some(`Content-Length`(len)) ⇒
+                len
+              case None ⇒
+                0
             }
           if (contentLength == 0) {
             emitRequestStart(emptyEntity(cth))

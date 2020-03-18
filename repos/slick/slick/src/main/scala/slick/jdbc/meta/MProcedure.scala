@@ -24,9 +24,12 @@ object MProcedure {
         MQName.from(r),
         r.skip.skip.skip.<<,
         r.nextShort match {
-          case DatabaseMetaData.procedureNoResult      => Some(false)
-          case DatabaseMetaData.procedureReturnsResult => Some(true)
-          case _                                       => None
+          case DatabaseMetaData.procedureNoResult =>
+            Some(false)
+          case DatabaseMetaData.procedureReturnsResult =>
+            Some(true)
+          case _ =>
+            None
         },
         r.<<?
       )

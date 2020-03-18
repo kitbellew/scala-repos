@@ -38,10 +38,14 @@ object SwaggerAuthSpec {
         request: HttpServletRequest,
         response: HttpServletResponse) = {
       token match {
-        case Some("token1")    => Option(Users(0))
-        case Some("token2")    => Option(Users(1))
-        case Some("the_token") => Option(Users(2))
-        case _                 => None
+        case Some("token1") =>
+          Option(Users(0))
+        case Some("token2") =>
+          Option(Users(1))
+        case Some("the_token") =>
+          Option(Users(2))
+        case _ =>
+          None
       }
     }
   }
@@ -54,10 +58,12 @@ object SwaggerAuthSpec {
     protected val scentryConfig: ScentryConfiguration = new ScentryConfig {}
 
     protected val fromSession: PartialFunction[String, User] = {
-      case s: String => Users.find(_.login == s).get
+      case s: String =>
+        Users.find(_.login == s).get
     }
     protected val toSession: PartialFunction[User, String] = {
-      case u: User => u.login
+      case u: User =>
+        u.login
     }
     override def configureScentry = {
       //      scentry.store = new CookieAuthStore(this)
@@ -67,8 +73,10 @@ object SwaggerAuthSpec {
     }
 
     error {
-      case t: Throwable => t.printStackTrace()
-      case t            => t.printStackTrace()
+      case t: Throwable =>
+        t.printStackTrace()
+      case t =>
+        t.printStackTrace()
     }
   }
 
@@ -79,7 +87,8 @@ object SwaggerAuthSpec {
       with SwaggerAuthBase[User] {
 
     error {
-      case t: Throwable => t.printStackTrace()
+      case t: Throwable =>
+        t.printStackTrace()
     }
 
     protected val userManifest = manifest[User]

@@ -503,7 +503,8 @@ class HoconPsiParser extends PsiParser {
               text.toLong
             true
           } catch {
-            case e: NumberFormatException => false
+            case e: NumberFormatException =>
+              false
           }
         }
 

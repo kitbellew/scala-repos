@@ -226,7 +226,8 @@ trait APIKeyManager[M[+_]] extends Logging {
             expiration) map {
             some
           }
-        case _ => none[Grant].point[M]
+        case _ =>
+          none[Grant].point[M]
       }
     }
   }
@@ -245,7 +246,8 @@ trait APIKeyManager[M[+_]] extends Logging {
             grant
           }
         }
-      case None => none[Grant].point[M]
+      case None =>
+        none[Grant].point[M]
     }
   }
 

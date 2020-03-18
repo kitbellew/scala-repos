@@ -78,11 +78,13 @@ object StaticPsiTypedDefinitionWrapper {
 
     val result = b.getType(TypingContext.empty)
     result match {
-      case _ if role == SETTER || role == EQ => builder.append("void")
+      case _ if role == SETTER || role == EQ =>
+        builder.append("void")
       case Success(tp, _) =>
         builder.append(
           JavaConversionUtil.typeText(tp, b.getProject, b.getResolveScope))
-      case _ => builder.append("java.lang.Object")
+      case _ =>
+        builder.append("java.lang.Object")
     }
 
     val qualName = containingClass.getQualifiedName
@@ -91,11 +93,16 @@ object StaticPsiTypedDefinitionWrapper {
     builder.append(" ")
     val name =
       role match {
-        case SIMPLE_ROLE => b.getName
-        case GETTER      => "get" + b.getName.capitalize
-        case IS_GETTER   => "is" + b.getName.capitalize
-        case SETTER      => "set" + b.getName.capitalize
-        case EQ          => b.getName + "_$eq"
+        case SIMPLE_ROLE =>
+          b.getName
+        case GETTER =>
+          "get" + b.getName.capitalize
+        case IS_GETTER =>
+          "is" + b.getName.capitalize
+        case SETTER =>
+          "set" + b.getName.capitalize
+        case EQ =>
+          b.getName + "_$eq"
       }
     builder.append(name)
 
@@ -107,7 +114,8 @@ object StaticPsiTypedDefinitionWrapper {
         case Success(tp, _) =>
           builder.append(
             JavaConversionUtil.typeText(tp, b.getProject, b.getResolveScope))
-        case _ => builder.append("java.lang.Object")
+        case _ =>
+          builder.append("java.lang.Object")
       }
       builder.append(" ").append(b.getName).append(")")
     }

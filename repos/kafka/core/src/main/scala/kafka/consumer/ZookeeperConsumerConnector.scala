@@ -265,8 +265,9 @@ private[kafka] class ZookeeperConsumerConnector(
           if (config.autoCommitEnable)
             scheduler.shutdown()
           fetcher match {
-            case Some(f) => f.stopConnections
-            case None    =>
+            case Some(f) =>
+              f.stopConnections
+            case None =>
           }
           sendShutdownToAllQueues()
           if (config.autoCommitEnable)
@@ -535,7 +536,8 @@ private[kafka] class ZookeeperConsumerConnector(
     offsetString match {
       case Some(offsetStr) =>
         (topicPartition, OffsetMetadataAndError(offsetStr.toLong))
-      case None => (topicPartition, OffsetMetadataAndError.NoOffset)
+      case None =>
+        (topicPartition, OffsetMetadataAndError.NoOffset)
     }
   }
 
@@ -749,7 +751,8 @@ private[kafka] class ZookeeperConsumerConnector(
               if (doRebalance)
                 syncedRebalance
             } catch {
-              case t: Throwable => error("error during syncedRebalance", t)
+              case t: Throwable =>
+                error("error during syncedRebalance", t)
             }
           }
           info(
@@ -932,7 +935,8 @@ private[kafka] class ZookeeperConsumerConnector(
 
             partitionAssignment.view
               .groupBy {
-                case (topicPartition, consumerThreadId) => topicPartition.topic
+                case (topicPartition, consumerThreadId) =>
+                  topicPartition.topic
               }
               .foreach {
                 case (topic, partitionThreadPairs) =>
@@ -954,7 +958,8 @@ private[kafka] class ZookeeperConsumerConnector(
               // to the rebalance callback.
               val partitionAssginmentGroupByTopic =
                 globalPartitionAssignment.values.flatten.groupBy[String] {
-                  case (topicPartition, _) => topicPartition.topic
+                  case (topicPartition, _) =>
+                    topicPartition.topic
                 }
               val partitionAssigmentMapForCallback =
                 partitionAssginmentGroupByTopic.map({
@@ -1093,7 +1098,8 @@ private[kafka] class ZookeeperConsumerConnector(
               info(
                 "waiting for the partition ownership to be deleted: " + partition)
               false
-            case e2: Throwable => throw e2
+            case e2: Throwable =>
+              throw e2
           }
       }
       val hasPartitionOwnershipFailed =

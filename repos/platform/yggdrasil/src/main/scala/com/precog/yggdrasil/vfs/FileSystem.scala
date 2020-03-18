@@ -96,8 +96,10 @@ object PathData {
           }
 
           (v.validated[String]("type") tuple mimeTypeV) flatMap {
-            case ("blob", mimeType)                  => success(BLOB(mimeType))
-            case ("nihdb", FileContent.XQuirrelData) => success(NIHDB)
+            case ("blob", mimeType) =>
+              success(BLOB(mimeType))
+            case ("nihdb", FileContent.XQuirrelData) =>
+              success(NIHDB)
             case (unknownType, mimeType) =>
               failure(
                 Extractor.Error.invalid(

@@ -477,7 +477,8 @@ object ConsoleConsumer extends Logging {
       val zk = ZkUtils.createZkClient(zkUrl, 30 * 1000, 30 * 1000)
       zk.exists(path)
     } catch {
-      case _: Throwable => false
+      case _: Throwable =>
+        false
     }
   }
 }

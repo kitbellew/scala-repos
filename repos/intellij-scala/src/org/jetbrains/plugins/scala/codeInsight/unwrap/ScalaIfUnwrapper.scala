@@ -15,9 +15,12 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScIfStmt
 class ScalaIfUnwrapper extends ScalaUnwrapper {
   override def isApplicableTo(e: PsiElement) =
     e.getParent match {
-      case (_: ScIfStmt) childOf (_: ScIfStmt) => false
-      case ScIfStmt(_, Some(`e`), _)           => true
-      case _                                   => false
+      case (_: ScIfStmt) childOf (_: ScIfStmt) =>
+        false
+      case ScIfStmt(_, Some(`e`), _) =>
+        true
+      case _ =>
+        false
     }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
@@ -35,7 +38,8 @@ class ScalaIfUnwrapper extends ScalaUnwrapper {
       case ifSt @ ScIfStmt(_, Some(`e`), _) =>
         super.collectAffectedElements(e, toExtract)
         ifSt
-      case _ => e
+      case _ =>
+        e
     }
 
   override def getDescription(e: PsiElement) =

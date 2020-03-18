@@ -432,8 +432,10 @@ object EvaluateTask {
   }
   def logIncResult(result: Result[_], state: State, streams: Streams) =
     result match {
-      case Inc(i) => logIncomplete(i, state, streams);
-      case _      => ()
+      case Inc(i) =>
+        logIncomplete(i, state, streams);
+      case _ =>
+        ()
     }
   def logIncomplete(
       result: Incomplete,
@@ -451,11 +453,13 @@ object EvaluateTask {
     for ((key, msg, Some(ex)) <- keyed) {
       def log = getStreams(key, streams).log
       ExceptionCategory(ex) match {
-        case AlreadyHandled => ()
+        case AlreadyHandled =>
+          ()
         case m: MessageOnly =>
           if (msg.isEmpty)
             log.error(m.message)
-        case f: Full => log.trace(f.exception)
+        case f: Full =>
+          log.trace(f.exception)
       }
     }
 
@@ -561,8 +565,10 @@ object EvaluateTask {
     // propagate the defining key for reporting the origin
     def overwriteNode(i: Incomplete): Boolean =
       i.node match {
-        case Some(t: Task[_]) => transformNode(t).isEmpty
-        case _                => true
+        case Some(t: Task[_]) =>
+          transformNode(t).isEmpty
+        case _ =>
+          true
       }
     def run() = {
       val x =
@@ -576,7 +582,8 @@ object EvaluateTask {
           storeValuesForPrevious(results, state, streams)
           applyResults(results, state, root)
         } catch {
-          case inc: Incomplete => (state, Inc(inc))
+          case inc: Incomplete =>
+            (state, Inc(inc))
         } finally shutdown()
       val replaced = transformInc(result)
       logIncResult(replaced, state, streams)
@@ -615,7 +622,8 @@ object EvaluateTask {
       results.toTypedSeq flatMap {
         case results.TPair(Task(info, _), Value(v)) =>
           info.post(v) get transformState
-        case _ => Nil
+        case _ =>
+          Nil
       })
 
   def transformInc[T](result: Result[T]): Result[T] =
@@ -627,13 +635,15 @@ object EvaluateTask {
   def taskToKey: Incomplete => Incomplete = {
     case in @ Incomplete(Some(node: Task[_]), _, _, _, _) =>
       in.copy(node = transformNode(node))
-    case i => i
+    case i =>
+      i
   }
   type AnyCyclic = Execute[Task]#CyclicException[_]
   def convertCyclicInc: Incomplete => Incomplete = {
     case in @ Incomplete(_, _, _, _, Some(c: AnyCyclic)) =>
       in.copy(directCause = Some(new RuntimeException(convertCyclic(c))))
-    case i => i
+    case i =>
+      i
   }
   def convertCyclic(c: AnyCyclic): String =
     (c.caller, c.target) match {
@@ -644,7 +654,8 @@ object EvaluateTask {
           else
             "(caller: " + name(caller) + ", target: " + name(target) + ")"
         )
-      case _ => c.toString
+      case _ =>
+        c.toString
     }
 
   def liftAnonymous: Incomplete => Incomplete = {
@@ -655,9 +666,11 @@ object EvaluateTask {
         )) match {
         case Some(lift) =>
           i.copy(directCause = lift.directCause, message = lift.message)
-        case None => i
+        case None =>
+          i
       }
-    case i => i
+    case i =>
+      i
   }
 
   def processResult[T](
@@ -671,8 +684,10 @@ object EvaluateTask {
     }
   def onResult[T, S](result: Result[T], log: Logger)(f: T => S): S =
     result match {
-      case Value(v) => f(v)
-      case Inc(inc) => throw inc
+      case Value(v) =>
+        f(v)
+      case Inc(inc) =>
+        throw inc
     }
 
   // if the return type Seq[Setting[_]] is not explicitly given, scalac hangs

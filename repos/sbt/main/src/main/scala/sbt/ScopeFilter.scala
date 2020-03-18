@@ -103,8 +103,10 @@ object ScopeFilter {
     def inAnyProject: ProjectFilter =
       selectAxis(
         const {
-          case p: ProjectRef => true;
-          case _             => false
+          case p: ProjectRef =>
+            true;
+          case _ =>
+            false
         })
 
     /** Accepts all values for the task axis except Global. */
@@ -181,15 +183,19 @@ object ScopeFilter {
     val thisRef = Keys.thisProjectRef.?.value
     val current =
       thisRef match {
-        case Some(ProjectRef(uri, _)) => uri
-        case None                     => build.root
+        case Some(ProjectRef(uri, _)) =>
+          uri
+        case None =>
+          build.root
       }
     val rootProject = Load.getRootProject(build.units)
     val resolve: ProjectReference => ProjectRef =
       p =>
         (p, thisRef) match {
-          case (ThisProject, Some(pref)) => pref
-          case _                         => Scope.resolveProjectRef(current, rootProject, p)
+          case (ThisProject, Some(pref)) =>
+            pref
+          case _ =>
+            Scope.resolveProjectRef(current, rootProject, p)
         }
     new Data(build.units, resolve, scopes)
   }
@@ -259,8 +265,10 @@ object ScopeFilter {
         val g = f(data)
         s =>
           s match {
-            case Select(t) => g(t)
-            case _         => false
+            case Select(t) =>
+              g(t)
+            case _ =>
+              false
           }
       }
     }

@@ -106,11 +106,13 @@ object RecoverJson {
           case '"' =>
             val next =
               accum.stack.headOption match {
-                case Some(NullValue) => accum.decrement
+                case Some(NullValue) =>
+                  accum.decrement
                 case Some(Key(Colon(value))) =>
                   val decremented = accum.decrement
                   decremented.copy(stack = decremented.stack push Colon(value))
-                case _ => accum
+                case _ =>
+                  accum
               }
 
             buildState(
@@ -132,7 +134,8 @@ object RecoverJson {
                     quoted)
               })
 
-          case _ => buildState(accum.skip)
+          case _ =>
+            buildState(accum.skip)
         }
       }
 
@@ -146,13 +149,20 @@ object RecoverJson {
 
     def balancedToString(b: Balanced): String =
       b match {
-        case Brace      => "}"
-        case Bracket    => "]"
-        case Colon(v)   => ":" + balancedToString(v)
-        case Key(v)     => "\"null\"" + balancedToString(v)
-        case Quote      => "\""
-        case EscapeChar => "\\"
-        case NullValue  => "null"
+        case Brace =>
+          "}"
+        case Bracket =>
+          "]"
+        case Colon(v) =>
+          ":" + balancedToString(v)
+        case Key(v) =>
+          "\"null\"" + balancedToString(v)
+        case Quote =>
+          "\""
+        case EscapeChar =>
+          "\\"
+        case NullValue =>
+          "null"
       }
 
     val stringStack = balancedStack(buffers).map(balancedToString)

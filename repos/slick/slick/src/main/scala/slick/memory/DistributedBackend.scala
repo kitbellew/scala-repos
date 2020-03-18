@@ -87,7 +87,8 @@ trait DistributedBackend extends RelationalBackend with Logging {
       sessions
         .map(s => Try(s.close()))
         .collectFirst {
-          case Failure(t) => t
+          case Failure(t) =>
+            t
         }
         .foreach(throw _)
     }

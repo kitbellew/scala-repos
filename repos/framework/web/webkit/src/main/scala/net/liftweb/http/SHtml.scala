@@ -108,11 +108,13 @@ trait SHtml extends Loggable {
 
     def applyToAllElems(in: Seq[Node], elemAttrs: Seq[ElemAttr]): Seq[Node] =
       in map {
-        case Group(ns) => Group(applyToAllElems(ns, elemAttrs))
+        case Group(ns) =>
+          Group(applyToAllElems(ns, elemAttrs))
         case e: Elem =>
           val updated = elemAttrs.foldLeft(e)((e, f) => f(e))
           updated.copy(child = applyToAllElems(updated.child, elemAttrs))
-        case n => n
+        case n =>
+          n
       }
   }
 
@@ -398,7 +400,8 @@ trait SHtml extends Loggable {
           case Some(id) =>
             latestId = id.text;
             e
-          case None => e % ("id" -> latestId)
+          case None =>
+            e % ("id" -> latestId)
         }
       }
 
@@ -789,8 +792,10 @@ trait SHtml extends Loggable {
       attrs.foldLeft(
         <input type="text" value={
           value match {
-            case null => ""
-            case s    => s
+            case null =>
+              ""
+            case s =>
+              s
           }
         }/>)(_ % _)
     ) %
@@ -902,7 +907,8 @@ trait SHtml extends Loggable {
                     JsCrVar(key, JsRaw("this")) & deferCall(
                       raw(funcName, key),
                       f)
-                  case _ => makeAjaxCall(raw(funcName, "this"))
+                  case _ =>
+                    makeAjaxCall(raw(funcName, "this"))
                 }
               )
             )
@@ -984,7 +990,8 @@ trait SHtml extends Loggable {
             jsFunc match {
               case Full(f) =>
                 JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-              case _ => makeAjaxCall(raw(funcName, "this"))
+              case _ =>
+                makeAjaxCall(raw(funcName, "this"))
             }
           )
         )
@@ -1016,7 +1023,8 @@ trait SHtml extends Loggable {
     def coords: String =
       polyCoords
         .map {
-          case (x, y) => "" + x + ", " + y
+          case (x, y) =>
+            "" + x + ", " + y
         }
         .mkString(", ")
   }
@@ -1150,7 +1158,8 @@ trait SHtml extends Loggable {
             jsFunc match {
               case Full(f) =>
                 JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-              case _ => makeAjaxCall(raw(funcName, "this"))
+              case _ =>
+                makeAjaxCall(raw(funcName, "this"))
             }
           )
         )
@@ -1326,7 +1335,8 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): Elem = {
 
     val id = attrs.collectFirst {
-      case BasicElemAttr(name, value) if name == "id" => value
+      case BasicElemAttr(name, value) if name == "id" =>
+        value
     } getOrElse nextFuncName
     val attributes =
       if (attrs.contains(BasicElemAttr("id", id)))
@@ -1382,8 +1392,10 @@ trait SHtml extends Loggable {
     val testFunc = LFuncHolder(
       in =>
         in.filter(v => vals.contains(v)) match {
-          case Nil => false
-          case xs  => func(xs)
+          case Nil =>
+            false
+          case xs =>
+            func(xs)
         },
       func.owner)
     fmapFunc((testFunc)) { funcName =>
@@ -1401,7 +1413,8 @@ trait SHtml extends Loggable {
             jsFunc match {
               case Full(f) =>
                 JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-              case _ => makeAjaxCall(raw(funcName, "this"))
+              case _ =>
+                makeAjaxCall(raw(funcName, "this"))
             }
           )
         )
@@ -1463,7 +1476,8 @@ trait SHtml extends Loggable {
 
   private def dealWithBlur(elem: Elem, blurCmd: String): Elem = {
     (elem \ "@onblur").toList match {
-      case Nil => elem % ("onblur" -> blurCmd)
+      case Nil =>
+        elem % ("onblur" -> blurCmd)
       case x :: xs =>
         val attrs = elem.attributes.filter(_.key != "onblur")
         elem.copy(attributes =
@@ -1525,7 +1539,8 @@ trait SHtml extends Loggable {
           Text(ajaxCall(JsRaw("this.value"), func)._2.toJsCmd),
           Null)
 
-      case _ => Null
+      case _ =>
+        Null
     }
 
   def text_*(
@@ -1538,8 +1553,10 @@ trait SHtml extends Loggable {
       "value",
       Text(
         value match {
-          case null => ""
-          case s    => s
+          case null =>
+            ""
+          case s =>
+            s
         }),
       Null) % (
       if (ignoreBlur)
@@ -1564,8 +1581,10 @@ trait SHtml extends Loggable {
     def doit = makeFormElement("submit", func, attrs: _*) % ("value" -> value)
 
     _formGroup.is match {
-      case Empty => formGroup(1)(doit)
-      case _     => doit
+      case Empty =>
+        formGroup(1)(doit)
+      case _ =>
+        doit
     }
   }
 
@@ -1576,7 +1595,8 @@ trait SHtml extends Loggable {
       elem.attributes.filter {
         case up: UnprefixedAttribute =>
           up.key != "name"
-        case _ => true
+        case _ =>
+          true
       }))
   }
 
@@ -1601,15 +1621,18 @@ trait SHtml extends Loggable {
     ns => {
       def runNodes(in: NodeSeq): NodeSeq =
         in.flatMap {
-          case Group(g) => runNodes(g)
+          case Group(g) =>
+            runNodes(g)
           // button
           case e: Elem => {
             val oldAttr: Map[String, String] = Map(
               allEvent.flatMap(a => e.attribute(a).map(v => a -> (v.text))): _*)
 
             val newAttr = e.attributes.filter {
-              case up: UnprefixedAttribute => !oldAttr.contains(up.key)
-              case _                       => true
+              case up: UnprefixedAttribute =>
+                !oldAttr.contains(up.key)
+              case _ =>
+                true
             }
 
             fmapFunc(func) { funcName =>
@@ -1626,7 +1649,8 @@ trait SHtml extends Loggable {
             }
           }
 
-          case x => x
+          case x =>
+            x
         }
 
       runNodes(ns)
@@ -1674,7 +1698,8 @@ trait SHtml extends Loggable {
     ns => {
       def runNodes(in: NodeSeq): NodeSeq =
         in.flatMap {
-          case Group(g) => runNodes(g)
+          case Group(g) =>
+            runNodes(g)
           // button
           case e: Elem => {
             val oldAttr: Map[String, String] = Map(
@@ -1682,8 +1707,10 @@ trait SHtml extends Loggable {
                 e.attribute(a).map(v => a -> (v.text + "; "))): _*)
 
             val newAttr = e.attributes.filter {
-              case up: UnprefixedAttribute => !oldAttr.contains(up.key)
-              case _                       => true
+              case up: UnprefixedAttribute =>
+                !oldAttr.contains(up.key)
+              case _ =>
+                true
             }
 
             val cmd = ajaxCall(JsRaw("this.value"), func)._2.toJsCmd
@@ -1699,7 +1726,8 @@ trait SHtml extends Loggable {
               })
           }
 
-          case x => x
+          case x =>
+            x
         }
 
       runNodes(ns)
@@ -1760,7 +1788,8 @@ trait SHtml extends Loggable {
 
         def runNodes(in: NodeSeq): NodeSeq =
           in.flatMap {
-            case Group(g) => runNodes(g)
+            case Group(g) =>
+              runNodes(g)
             // button
             case e: Elem if e.label == "button" =>
               _formGroup.is match {
@@ -1790,7 +1819,8 @@ trait SHtml extends Loggable {
             // radio
             case e: Elem if e.label == "input" && isRadio(e.attributes) =>
               radioName match {
-                case Full(name) => dupWithName(e, name)
+                case Full(name) =>
+                  dupWithName(e, name)
                 case _ =>
                   fmapFunc(func) { name =>
                     {
@@ -1839,7 +1869,8 @@ trait SHtml extends Loggable {
                 dupWithName(e, _)
               }
 
-            case x => x
+            case x =>
+              x
           }
 
         val ret = runNodes(in)
@@ -1852,7 +1883,8 @@ trait SHtml extends Loggable {
             } value="false"/>
           }
 
-          case _ => ret
+          case _ =>
+            ret
         }
       }
   }
@@ -2144,8 +2176,10 @@ trait SHtml extends Loggable {
     }
 
     _formGroup.is match {
-      case Empty => formGroup(1)(doit)
-      case _     => doit
+      case Empty =>
+        formGroup(1)(doit)
+      case _ =>
+        doit
     }
   }
 
@@ -2164,8 +2198,10 @@ trait SHtml extends Loggable {
     }
 
     _formGroup.is match {
-      case Empty => formGroup(1)(doit)
-      case _     => doit
+      case Empty =>
+        formGroup(1)(doit)
+      case _ =>
+        doit
     }
   }
 
@@ -2210,7 +2246,8 @@ trait SHtml extends Loggable {
       _formGroup.is match {
         case Empty =>
           formGroup(1)(fmapFunc(func)(id => id))
-        case _ => fmapFunc(func)(id => id)
+        case _ =>
+          fmapFunc(func)(id => id)
       }
 
     (in: NodeSeq) => {
@@ -2222,7 +2259,8 @@ trait SHtml extends Loggable {
         }
 
         ns.flatMap {
-          case Group(nodes) => runNodes(nodes)
+          case Group(nodes) =>
+            runNodes(nodes)
 
           case e: Elem
               if (e.label == "button") ||
@@ -2309,13 +2347,19 @@ trait SHtml extends Loggable {
             val newMeta = e.attributes.filter {
               case up: UnprefixedAttribute =>
                 up.key match {
-                  case "id"       => false
-                  case "action"   => false
-                  case "onsubmit" => false
-                  case "method"   => false
-                  case _          => true
+                  case "id" =>
+                    false
+                  case "action" =>
+                    false
+                  case "onsubmit" =>
+                    false
+                  case "method" =>
+                    false
+                  case _ =>
+                    true
                 }
-              case _ => true
+              case _ =>
+                true
             }
 
             e.copy(attributes = newMeta) % ("id" -> id) %
@@ -2330,7 +2374,8 @@ trait SHtml extends Loggable {
                   )
               )
           }
-          case x => x
+          case x =>
+            x
         }
       ): NodeSeq)
 
@@ -2397,7 +2442,8 @@ trait SHtml extends Loggable {
     implicit def tupleSeqToSelectableOptionSeq[T](
         seq: Seq[(T, String)]): Seq[SelectableOption[T]] =
       seq.collect {
-        case (value, label) => SelectableOption(value, label)
+        case (value, label) =>
+          SelectableOption(value, label)
       }
     implicit def tupleToSelectableOption[T](
         tuple: (T, String)): SelectableOption[T] =
@@ -2513,8 +2559,10 @@ trait SHtml extends Loggable {
     val testFunc = LFuncHolder(
       in =>
         in.filter(v => vals.contains(v)) match {
-          case Nil => false
-          case xs  => func(xs)
+          case Nil =>
+            false
+          case xs =>
+            func(xs)
         },
       func.owner)
 
@@ -2693,8 +2741,10 @@ trait SHtml extends Loggable {
     val testFunc = LFuncHolder(
       in =>
         in match {
-          case Nil => false
-          case xs  => func(xs)
+          case Nil =>
+            false
+          case xs =>
+            func(xs)
         },
       func.owner)
     fmapFunc(contextFuncBuilder(testFunc)) {
@@ -2715,7 +2765,8 @@ trait SHtml extends Loggable {
               jsFunc match {
                 case Full(f) =>
                   JsCrVar(key, JsRaw("this")) & deferCall(raw(funcName, key), f)
-                case _ => makeAjaxCall(raw(funcName, "this"))
+                case _ =>
+                  makeAjaxCall(raw(funcName, "this"))
               }
             )
           )
@@ -2838,8 +2889,10 @@ trait SHtml extends Loggable {
           funcName
         }>{
           value match {
-            case null => ""
-            case s    => s
+            case null =>
+              ""
+            case s =>
+              s
           }
         }</textarea>)(_ % _))
 
@@ -2863,7 +2916,8 @@ trait SHtml extends Loggable {
     fmapFunc(
       LFuncHolder(lst =>
         lst.filter(_ != hiddenId) match {
-          case Nil => onSubmit(Empty)
+          case Nil =>
+            onSubmit(Empty)
           case x :: _ =>
             onSubmit(possible.filter(_._1 == x).headOption.map(_._2))
         })) { name =>
@@ -3058,8 +3112,10 @@ trait SHtml extends Loggable {
 
   private def setId(in: Box[String]) =
     in match {
-      case Full(id) => new UnprefixedAttribute("id", Text(id), Null);
-      case _        => Null
+      case Full(id) =>
+        new UnprefixedAttribute("id", Text(id), Null);
+      case _ =>
+        Null
     }
 
   /**

@@ -24,8 +24,10 @@ object PopupDemo extends SimpleSwingApplication {
         }
       val button = new Button("Show Popup Menu")
       reactions += {
-        case ButtonClicked(b)     => popupMenu.show(b, 0, b.bounds.height)
-        case PopupMenuCanceled(m) => println("Menu " + m + " canceled.")
+        case ButtonClicked(b) =>
+          popupMenu.show(b, 0, b.bounds.height)
+        case PopupMenuCanceled(m) =>
+          println("Menu " + m + " canceled.")
       }
       listenTo(popupMenu)
       listenTo(button)

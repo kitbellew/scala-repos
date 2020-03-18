@@ -29,8 +29,10 @@ package object service {
   class RichJPath(jpath: JPath) {
     def endsInInfiniteValueSpace =
       jpath.nodes.exists {
-        case JPathField(name) => name startsWith "~"
-        case _                => false
+        case JPathField(name) =>
+          name startsWith "~"
+        case _ =>
+          false
       }
   }
 }

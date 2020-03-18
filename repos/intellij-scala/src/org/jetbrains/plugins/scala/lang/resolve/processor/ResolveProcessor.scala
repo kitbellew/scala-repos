@@ -48,27 +48,36 @@ object ResolveProcessor {
     }
 
     result.getActualElement match {
-      case c: ScTypeParam => null
-      case c: ScObject    => "Object:" + c.qualifiedName
-      case c: PsiClass    => "Class:" + c.qualifiedName
+      case c: ScTypeParam =>
+        null
+      case c: ScObject =>
+        "Object:" + c.qualifiedName
+      case c: PsiClass =>
+        "Class:" + c.qualifiedName
       case t: ScTypeAliasDefinition if t.typeParameters.length == 0 =>
         t.aliasedType(TypingContext.empty) match {
           case Success(tp, elem) =>
             ScType.extractClass(tp, Option(place).map(_.getProject)) match {
-              case Some(c: ScObject) => defaultForTypeAlias(t)
+              case Some(c: ScObject) =>
+                defaultForTypeAlias(t)
               case Some(td: ScTypeDefinition)
                   if td.typeParameters.length == 0 && ScalaPsiUtil
                     .hasStablePath(td) =>
                 "Class:" + td.qualifiedName
               case Some(c: PsiClass) if c.getTypeParameters.length == 0 =>
                 "Class:" + c.qualifiedName
-              case _ => defaultForTypeAlias(t)
+              case _ =>
+                defaultForTypeAlias(t)
             }
-          case _ => defaultForTypeAlias(t)
+          case _ =>
+            defaultForTypeAlias(t)
         }
-      case t: ScTypeAlias => defaultForTypeAlias(t)
-      case p: PsiPackage  => "Package:" + p.getQualifiedName
-      case _              => null
+      case t: ScTypeAlias =>
+        defaultForTypeAlias(t)
+      case p: PsiPackage =>
+        "Package:" + p.getQualifiedName
+      case _ =>
+        null
     }
   }
 }
@@ -92,8 +101,10 @@ class ResolveProcessor(
 
   val isThisOrSuperResolve =
     ref.getParent match {
-      case _: ScThisReference | _: ScSuperReference => true
-      case _                                        => false
+      case _: ScThisReference | _: ScSuperReference =>
+        true
+      case _ =>
+        false
     }
 
   def emptyResultSet: Boolean = candidatesSet.isEmpty || levelSet.isEmpty
@@ -152,11 +163,14 @@ class ResolveProcessor(
   def isAccessible(named: PsiNamedElement, place: PsiElement): Boolean = {
     val memb: PsiMember = {
       named match {
-        case memb: PsiMember => memb
+        case memb: PsiMember =>
+          memb
         case pl =>
           ScalaPsiUtil.nameContext(named) match {
-            case memb: PsiMember => memb
-            case _               => return true //something strange
+            case memb: PsiMember =>
+              memb
+            case _ =>
+              return true //something strange
           }
       }
     }
@@ -236,8 +250,10 @@ class ResolveProcessor(
 
   override def getHint[T](hintKey: Key[T]): T = {
     hintKey match {
-      case NameHint.KEY if name != "" => ScalaNameHint.asInstanceOf[T]
-      case _                          => super.getHint(hintKey)
+      case NameHint.KEY if name != "" =>
+        ScalaNameHint.asInstanceOf[T]
+      case _ =>
+        super.getHint(hintKey)
     }
   }
 
@@ -275,7 +291,8 @@ class ResolveProcessor(
             _: ScTypeAlias | _: ScClass | _: ScTrait,
             _) =>
         res.foldLeft(true) {
-          case (false, _) => false
+          case (false, _) =>
+            false
           case (
                 true,
                 rr @ ScalaResolveResult(
@@ -285,9 +302,11 @@ class ResolveProcessor(
               ScalaPsiUtil
                 .superTypeMembers(rr.element)
                 .find(_ == r.element) == None
-          case (true, _) => true
+          case (true, _) =>
+            true
         }
-      case _ => true
+      case _ =>
+        true
     }
   }
 

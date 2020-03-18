@@ -127,8 +127,10 @@ object Coproduct extends Dynamic {
   @tailrec
   def unsafeGet(c: Coproduct): Any =
     c match {
-      case Inl(h) => h
-      case Inr(c) => unsafeGet(c)
+      case Inl(h) =>
+        h
+      case Inr(c) =>
+        unsafeGet(c)
     }
 
   /**

@@ -84,7 +84,8 @@ object OWrites extends PathWrites with ConstraintWrites {
 
       def apply[A, B](wa: OWrites[A], wb: OWrites[B]): OWrites[A ~ B] =
         OWrites[A ~ B] {
-          case a ~ b => wa.writes(a).deepMerge(wb.writes(b))
+          case a ~ b =>
+            wa.writes(a).deepMerge(wb.writes(b))
         }
 
     }
@@ -239,8 +240,10 @@ trait DefaultWrites {
     new Writes[Option[T]] {
       def writes(o: Option[T]) =
         o match {
-          case Some(value) => fmt.writes(value)
-          case None        => JsNull
+          case Some(value) =>
+            fmt.writes(value)
+          case None =>
+            JsNull
         }
     }
 
@@ -536,15 +539,24 @@ trait DefaultWrites {
   private[json] object anyWrites extends Writes[Any] {
     def writes(a: Any): JsValue =
       a match {
-        case s: String   => JsString(s)
-        case nb: Int     => JsNumber(nb)
-        case nb: Short   => JsNumber(nb)
-        case nb: Long    => JsNumber(nb)
-        case nb: Double  => JsNumber(nb)
-        case nb: Float   => JsNumber(nb)
-        case b: Boolean  => JsBoolean(b)
-        case js: JsValue => js
-        case x           => JsString(x.toString)
+        case s: String =>
+          JsString(s)
+        case nb: Int =>
+          JsNumber(nb)
+        case nb: Short =>
+          JsNumber(nb)
+        case nb: Long =>
+          JsNumber(nb)
+        case nb: Double =>
+          JsNumber(nb)
+        case nb: Float =>
+          JsNumber(nb)
+        case b: Boolean =>
+          JsBoolean(b)
+        case js: JsValue =>
+          js
+        case x =>
+          JsString(x.toString)
       }
   }
 }

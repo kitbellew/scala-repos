@@ -58,15 +58,18 @@ class SystemEventIdSequence private (
       offset,
       state.block.producerId,
       blockSize) match {
-      case Success(ers @ EventRelayState(_, _, _)) => InternalState(ers)
-      case Failure(e)                              => sys.error("Error trying to renew relay agent: " + e)
+      case Success(ers @ EventRelayState(_, _, _)) =>
+        InternalState(ers)
+      case Failure(e) =>
+        sys.error("Error trying to renew relay agent: " + e)
     }
   }
 
   def saveState(offset: Long) = {
     state =
       coordination.saveEventRelayState(agent, currentRelayState(offset)) match {
-        case Success(ers @ EventRelayState(_, _, _)) => InternalState(ers)
+        case Success(ers @ EventRelayState(_, _, _)) =>
+          InternalState(ers)
         case Failure(e) =>
           sys.error("Error trying to save relay agent state: " + e)
       }

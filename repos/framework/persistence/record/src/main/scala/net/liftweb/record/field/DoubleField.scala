@@ -46,10 +46,14 @@ trait DoubleTypedField extends NumericTypedField[Double] {
 
   def setFromJValue(jvalue: JValue) =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JDouble(d)                     => setBox(Full(d))
-      case JInt(i)                        => setBox(Full(i.toDouble))
-      case other                          => setBox(FieldHelpers.expectedA("JDouble", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JDouble(d) =>
+        setBox(Full(d))
+      case JInt(i) =>
+        setBox(Full(i.toDouble))
+      case other =>
+        setBox(FieldHelpers.expectedA("JDouble", other))
     }
 }
 

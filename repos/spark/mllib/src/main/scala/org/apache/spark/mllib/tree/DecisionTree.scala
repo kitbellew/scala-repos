@@ -1242,7 +1242,8 @@ object DecisionTree extends Serializable with Logging {
           continuousFeatures.map(idx => (idx, point.features(idx))))
         .groupByKey(numPartitions)
         .map {
-          case (k, v) => findSplits(k, v)
+          case (k, v) =>
+            findSplits(k, v)
         }
         .collectAsMap()
     }

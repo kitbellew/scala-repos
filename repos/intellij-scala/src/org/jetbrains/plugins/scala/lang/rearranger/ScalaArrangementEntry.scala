@@ -67,6 +67,7 @@ class ScalaArrangementEntry(
       case other: ScalaArrangementEntry =>
         other.getStartOffset == startOffset && other.getEndOffset == endOffset &&
           other.getType == entryType && other.getParent == parent
-      case _ => false
+      case _ =>
+        false
     }
 }

@@ -13,10 +13,14 @@ trait LongIsEuclideanRing extends EuclideanRing[Long] {
   def plus(a: Long, b: Long): Long = a + b
   override def pow(a: Long, b: Int): Long =
     b match {
-      case 0 => 1
-      case 1 => a
-      case 2 => a * a
-      case 3 => a * a * a
+      case 0 =>
+        1
+      case 1 =>
+        a
+      case 2 =>
+        a * a
+      case 3 =>
+        a * a * a
       case _ =>
         if (b > 0) {
           val e = b >> 1

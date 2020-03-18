@@ -535,7 +535,8 @@ trait GenJSExports extends SubComponent {
                     val params = p.tpe.params
                     params.size > paramIndex &&
                     params(paramIndex).hasFlag(Flags.DEFAULTPARAM)
-                  case _: ExportedBody => false
+                  case _: ExportedBody =>
+                    false
                 }
 
               val optCond =
@@ -889,8 +890,10 @@ trait GenJSExports extends SubComponent {
   private final case class InstanceOfTypeTest(tpe: Type) extends RTTypeTest {
     override def equals(that: Any): Boolean = {
       that match {
-        case InstanceOfTypeTest(thatTpe) => tpe =:= thatTpe
-        case _                           => false
+        case InstanceOfTypeTest(thatTpe) =>
+          tpe =:= thatTpe
+        case _ =>
+          false
       }
     }
   }
@@ -915,8 +918,10 @@ trait GenJSExports extends SubComponent {
       override def lteq(lhs: RTTypeTest, rhs: RTTypeTest): Boolean = {
         (lhs, rhs) match {
           // NoTypeTest is always last
-          case (_, NoTypeTest) => true
-          case (NoTypeTest, _) => false
+          case (_, NoTypeTest) =>
+            true
+          case (NoTypeTest, _) =>
+            false
 
           case (HijackedTypeTest(_, rank1), HijackedTypeTest(_, rank2)) =>
             rank1 <= rank2
@@ -924,8 +929,10 @@ trait GenJSExports extends SubComponent {
           case (InstanceOfTypeTest(t1), InstanceOfTypeTest(t2)) =>
             t1 <:< t2
 
-          case (_: HijackedTypeTest, _: InstanceOfTypeTest) => true
-          case (_: InstanceOfTypeTest, _: HijackedTypeTest) => false
+          case (_: HijackedTypeTest, _: InstanceOfTypeTest) =>
+            true
+          case (_: InstanceOfTypeTest, _: HijackedTypeTest) =>
+            false
         }
       }
 
@@ -964,22 +971,34 @@ trait GenJSExports extends SubComponent {
       case _ =>
         import ir.{Definitions => Defs}
         (toTypeKind(tpe): @unchecked) match {
-          case VoidKind    => HijackedTypeTest(Defs.BoxedUnitClass, 0)
-          case BooleanKind => HijackedTypeTest(Defs.BoxedBooleanClass, 1)
-          case ByteKind    => HijackedTypeTest(Defs.BoxedByteClass, 2)
-          case ShortKind   => HijackedTypeTest(Defs.BoxedShortClass, 3)
-          case IntKind     => HijackedTypeTest(Defs.BoxedIntegerClass, 4)
-          case FloatKind   => HijackedTypeTest(Defs.BoxedFloatClass, 5)
-          case DoubleKind  => HijackedTypeTest(Defs.BoxedDoubleClass, 6)
+          case VoidKind =>
+            HijackedTypeTest(Defs.BoxedUnitClass, 0)
+          case BooleanKind =>
+            HijackedTypeTest(Defs.BoxedBooleanClass, 1)
+          case ByteKind =>
+            HijackedTypeTest(Defs.BoxedByteClass, 2)
+          case ShortKind =>
+            HijackedTypeTest(Defs.BoxedShortClass, 3)
+          case IntKind =>
+            HijackedTypeTest(Defs.BoxedIntegerClass, 4)
+          case FloatKind =>
+            HijackedTypeTest(Defs.BoxedFloatClass, 5)
+          case DoubleKind =>
+            HijackedTypeTest(Defs.BoxedDoubleClass, 6)
 
-          case CharKind => InstanceOfTypeTest(boxedClass(CharClass).tpe)
-          case LongKind => InstanceOfTypeTest(boxedClass(LongClass).tpe)
+          case CharKind =>
+            InstanceOfTypeTest(boxedClass(CharClass).tpe)
+          case LongKind =>
+            InstanceOfTypeTest(boxedClass(LongClass).tpe)
 
           case REFERENCE(cls) =>
             cls match {
-              case BoxedUnitClass => HijackedTypeTest(Defs.BoxedUnitClass, 0)
-              case StringClass    => HijackedTypeTest(Defs.StringClass, 7)
-              case ObjectClass    => NoTypeTest
+              case BoxedUnitClass =>
+                HijackedTypeTest(Defs.BoxedUnitClass, 0)
+              case StringClass =>
+                HijackedTypeTest(Defs.StringClass, 7)
+              case ObjectClass =>
+                NoTypeTest
               case _ =>
                 if (isRawJSType(tpe))
                   NoTypeTest
@@ -987,7 +1006,8 @@ trait GenJSExports extends SubComponent {
                   InstanceOfTypeTest(tpe)
             }
 
-          case ARRAY(_) => InstanceOfTypeTest(tpe)
+          case ARRAY(_) =>
+            InstanceOfTypeTest(tpe)
         }
     }
   }

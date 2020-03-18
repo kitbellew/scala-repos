@@ -34,7 +34,8 @@ private[kestrel] class DecodingToCommand
       case SET =>
         val (name, _, expiry, _) = validateStorageCommand(args, data)
         Set(name, expiry, data)
-      case _ => throw new NonexistentCommand(commandName.toString)
+      case _ =>
+        throw new NonexistentCommand(commandName.toString)
     }
   }
 
@@ -42,15 +43,24 @@ private[kestrel] class DecodingToCommand
     val commandName = tokens.head
     val args = tokens.tail
     commandName match {
-      case GET        => validateGetCommand(args)
-      case DELETE     => Delete(validateDeleteCommand(args))
-      case FLUSH      => Flush(validateDeleteCommand(args))
-      case FLUSH_ALL  => FlushAll()
-      case VERSION    => Version()
-      case SHUTDOWN   => ShutDown()
-      case STATS      => Stats()
-      case DUMP_STATS => DumpStats()
-      case _          => throw new NonexistentCommand(commandName.toString)
+      case GET =>
+        validateGetCommand(args)
+      case DELETE =>
+        Delete(validateDeleteCommand(args))
+      case FLUSH =>
+        Flush(validateDeleteCommand(args))
+      case FLUSH_ALL =>
+        FlushAll()
+      case VERSION =>
+        Version()
+      case SHUTDOWN =>
+        ShutDown()
+      case STATS =>
+        Stats()
+      case DUMP_STATS =>
+        DumpStats()
+      case _ =>
+        throw new NonexistentCommand(commandName.toString)
     }
   }
 
@@ -69,20 +79,28 @@ private[kestrel] class DecodingToCommand
     val queueName = split.head
 
     val timeout = splitTimeout.lastOption.map {
-      case Buf.Utf8(s) => s.drop(2).toInt.milliseconds
+      case Buf.Utf8(s) =>
+        s.drop(2).toInt.milliseconds
     }
 
     split.tail match {
-      case Seq()            => Get(queueName, timeout)
-      case Seq(OPEN)        => Open(queueName, timeout)
-      case Seq(CLOSE)       => Close(queueName, timeout)
-      case Seq(CLOSE, OPEN) => CloseAndOpen(queueName, timeout)
-      case Seq(ABORT)       => Abort(queueName, timeout)
-      case Seq(PEEK)        => Peek(queueName, timeout)
+      case Seq() =>
+        Get(queueName, timeout)
+      case Seq(OPEN) =>
+        Open(queueName, timeout)
+      case Seq(CLOSE) =>
+        Close(queueName, timeout)
+      case Seq(CLOSE, OPEN) =>
+        CloseAndOpen(queueName, timeout)
+      case Seq(ABORT) =>
+        Abort(queueName, timeout)
+      case Seq(PEEK) =>
+        Peek(queueName, timeout)
       case _ =>
         throw new NonexistentCommand(
           tokens.map {
-            case Buf.Utf8(s) => s
+            case Buf.Utf8(s) =>
+              s
           }.mkString)
     }
   }

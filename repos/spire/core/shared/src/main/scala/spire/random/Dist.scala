@@ -190,7 +190,8 @@ trait Dist[@sp A] extends Any {
 
   def histogram(n: Int)(implicit gen: Generator): Map[A, Double] =
     rawHistogram(n).map {
-      case (k, v) => (k, 1.0 * v / n)
+      case (k, v) =>
+        (k, 1.0 * v / n)
     }
 
   def rawHistogram(n: Int)(implicit gen: Generator): Map[A, Int] =

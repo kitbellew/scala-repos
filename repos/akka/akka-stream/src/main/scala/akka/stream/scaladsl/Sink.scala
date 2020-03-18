@@ -102,9 +102,12 @@ object Sink {
     */
   def fromGraph[T, M](g: Graph[SinkShape[T], M]): Sink[T, M] =
     g match {
-      case s: Sink[T, M] ⇒ s
-      case s: javadsl.Sink[T, M] ⇒ s.asScala
-      case other ⇒ new Sink(other.module)
+      case s: Sink[T, M] ⇒
+        s
+      case s: javadsl.Sink[T, M] ⇒
+        s.asScala
+      case other ⇒
+        new Sink(other.module)
     }
 
   /**

@@ -37,10 +37,13 @@ class PackageFilter extends ElementFilter {
             case x: PsiErrorElement =>
               val s = ErrMsg("wrong.top.statment.declaration")
               x.getErrorDescription match {
-                case `s` => return true
-                case _   => return false
+                case `s` =>
+                  return true
+                case _ =>
+                  return false
               }
-            case _ => return true
+            case _ =>
+              return true
           }
         }
       }

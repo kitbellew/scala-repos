@@ -73,8 +73,10 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
    */
   protected def isSizeConstraintException(e: Exception): Boolean =
     e match {
-      case _: IllegalStateException => true
-      case _                        => false
+      case _: IllegalStateException =>
+        true
+      case _ =>
+        false
     }
 
   override def handle(
@@ -103,8 +105,10 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
     val isPostOrPut = Set("POST", "PUT", "PATCH").contains(req.getMethod)
     isPostOrPut && (
       req.contentType match {
-        case Some(contentType) => contentType.startsWith("multipart/")
-        case _                 => false
+        case Some(contentType) =>
+          contentType.startsWith("multipart/")
+        case _ =>
+          false
       }
     )
   }
@@ -319,10 +323,12 @@ object Util {
               .substring(attributeValue.indexOf('=') + 1)
               .trim()
               .replace("\"", "")
-          case _ => defaultValue
+          case _ =>
+            defaultValue
         }
       }
-      case _ => defaultValue
+      case _ =>
+        defaultValue
     }
   }
 

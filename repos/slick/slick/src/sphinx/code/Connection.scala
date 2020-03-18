@@ -76,7 +76,8 @@ object Connection extends App {
       val f: Future[Seq[String]] = db.run(a)
 
       f.onSuccess {
-        case s => println(s"Result: $s")
+        case s =>
+          println(s"Result: $s")
       }
       //#materialize
       Await.result(f, Duration.Inf)
@@ -140,8 +141,10 @@ object Connection extends App {
         }.transactionally
 
       val errorHandleAction = rollbackAction.asTry.flatMap {
-        case Failure(e: Throwable) => DBIO.successful(e.getMessage)
-        case Success(_)            => DBIO.successful("never reached")
+        case Failure(e: Throwable) =>
+          DBIO.successful(e.getMessage)
+        case Success(_) =>
+          DBIO.successful("never reached")
       }
 
       // Here we show that that coffee count is the same before and after the attempted insert.

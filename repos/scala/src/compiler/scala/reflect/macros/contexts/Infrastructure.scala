@@ -8,7 +8,8 @@ trait Infrastructure {
     val us = universe.settings
     import us._
     userSetSettings collectFirst {
-      case x: MultiStringSetting if x.name == XmacroSettings.name => x.value
+      case x: MultiStringSetting if x.name == XmacroSettings.name =>
+        x.value
     } getOrElse Nil
   }
 

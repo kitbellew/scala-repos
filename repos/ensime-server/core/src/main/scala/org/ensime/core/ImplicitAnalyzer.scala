@@ -29,8 +29,10 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
             case t: ApplyToImplicitArgs =>
               val funIsImplicit =
                 t.fun match {
-                  case tt: ApplyImplicitView => true
-                  case _                     => false
+                  case tt: ApplyImplicitView =>
+                    true
+                  case _ =>
+                    false
                 }
               implicits.append(
                 ImplicitParamInfo(
@@ -61,7 +63,8 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
         val traverser = new ImplicitsTraverser(p)
         traverser.traverse(tree)
         traverser.implicits.toList
-      case _ => List.empty
+      case _ =>
+        List.empty
     }
   }
 

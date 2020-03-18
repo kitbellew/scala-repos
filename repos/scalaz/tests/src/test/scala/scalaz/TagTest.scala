@@ -49,8 +49,10 @@ object TagTest extends SpecLite {
   "of.unapply" should {
     "support unwrapping in pattern match" in {
       Monoid[Int @@ Mult].append(Mult(3), Mult(3)) match {
-        case Mult(9) ⇒ true
-        case Mult(_) ⇒ false
+        case Mult(9) ⇒
+          true
+        case Mult(_) ⇒
+          false
       }
     }
   }

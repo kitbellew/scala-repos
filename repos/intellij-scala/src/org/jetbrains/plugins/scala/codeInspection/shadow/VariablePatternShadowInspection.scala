@@ -24,7 +24,8 @@ class VariablePatternShadowInspection
       "Suspicious shadowing by a Variable Pattern") {
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
-    case refPat: ScReferencePattern => check(refPat, holder)
+    case refPat: ScReferencePattern =>
+      check(refPat, holder)
   }
 
   private def check(refPat: ScReferencePattern, holder: ProblemsHolder) {
@@ -46,8 +47,10 @@ class VariablePatternShadowInspection
         .doResolve(dummyRef, proc)
       def isAccessible(rr: ResolveResult): Boolean =
         rr.getElement match {
-          case named: PsiNamedElement => proc.isAccessible(named, refPat)
-          case _                      => false
+          case named: PsiNamedElement =>
+            proc.isAccessible(named, refPat)
+          case _ =>
+            false
         }
       if (results.exists(isAccessible)) {
         holder.registerProblem(

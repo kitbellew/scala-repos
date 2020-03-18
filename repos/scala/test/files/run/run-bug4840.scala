@@ -9,8 +9,10 @@ object Test {
     for (x <- g(true))
       yield {
         g(false) match {
-          case Some(_) => sys.error("")
-          case None    => 5
+          case Some(_) =>
+            sys.error("")
+          case None =>
+            5
         }
       }
   }
@@ -26,8 +28,10 @@ object Test {
           yield {
             g(true) map { _ =>
               (null: Any) match {
-                case Some(x: Int) => x
-                case _            => 5
+                case Some(x: Int) =>
+                  x
+                case _ =>
+                  5
               }
             }
           }

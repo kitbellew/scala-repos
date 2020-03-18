@@ -115,14 +115,16 @@ final case class DeploymentPlan(
       a match {
         case StartApplication(app, scale) =>
           s"Start(${appString(app)}, instances=$scale)"
-        case StopApplication(app) => s"Stop(${appString(app)})"
+        case StopApplication(app) =>
+          s"Stop(${appString(app)})"
         case ScaleApplication(app, scale, toKill) =>
           val killTasksString = toKill
             .filter(_.nonEmpty)
             .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
             .getOrElse("")
           s"Scale(${appString(app)}, instances=$scale$killTasksString)"
-        case RestartApplication(app) => s"Restart(${appString(app)})"
+        case RestartApplication(app) =>
+          s"Restart(${appString(app)})"
         case ResolveArtifacts(app, urls) =>
           s"Resolve(${appString(app)}, $urls})"
       }
@@ -134,7 +136,8 @@ final case class DeploymentPlan(
           }
           .zipWithIndex
           .map {
-            case (stepsString, index) => s"step ${index + 1}:\n$stepsString"
+            case (stepsString, index) =>
+              s"step ${index + 1}:\n$stepsString"
           }
           .mkString("\n", "\n", "")
       } else

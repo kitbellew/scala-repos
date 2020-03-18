@@ -282,7 +282,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
               None
           val dispatcher = codec.newServerDispatcher(transport, service)
           (idle, life) match {
-            case (None, None) => dispatcher
+            case (None, None) =>
+              dispatcher
             case _ =>
               new ExpiringService(
                 service,

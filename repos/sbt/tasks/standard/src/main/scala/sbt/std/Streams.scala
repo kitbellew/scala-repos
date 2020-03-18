@@ -105,7 +105,8 @@ object Streams {
       try {
         c.close()
       } catch {
-        case _: IOException => ()
+        case _: IOException =>
+          ()
       }
 
   def closeable[Key](delegate: Streams[Key]): CloseableStreams[Key] =
@@ -116,7 +117,8 @@ object Streams {
       def apply(key: Key): ManagedStreams[Key] =
         synchronized {
           streams.get(key) match {
-            case Some(s) if !s.isClosed => s
+            case Some(s) if !s.isClosed =>
+              s
             case _ =>
               val newS = delegate(key)
               streams.put(key, newS)

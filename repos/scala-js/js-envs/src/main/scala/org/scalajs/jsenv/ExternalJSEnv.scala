@@ -193,7 +193,8 @@ abstract class ExternalJSEnv(
 
           // Store IO exception
           pipeResult recover {
-            case e => ioThreadEx = e
+            case e =>
+              ioThreadEx = e
           }
 
           // Chain Try's the other way: We want VM failure first, then IO failure

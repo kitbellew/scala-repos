@@ -45,8 +45,10 @@ class Replica(
 
   def isLocal: Boolean = {
     log match {
-      case Some(l) => true
-      case None    => false
+      case Some(l) =>
+        true
+      case None =>
+        false
     }
   }
 

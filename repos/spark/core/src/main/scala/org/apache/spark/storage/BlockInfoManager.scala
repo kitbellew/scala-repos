@@ -191,7 +191,8 @@ private[storage] class BlockInfoManager extends Logging {
         s"Task $currentTaskAttemptId trying to acquire read lock for $blockId")
       do {
         infos.get(blockId) match {
-          case None => return None
+          case None =>
+            return None
           case Some(info) =>
             if (info.writerTask == BlockInfo.NO_WRITER) {
               info.readerCount += 1
@@ -231,7 +232,8 @@ private[storage] class BlockInfoManager extends Logging {
         s"Task $currentTaskAttemptId trying to acquire write lock for $blockId")
       do {
         infos.get(blockId) match {
-          case None => return None
+          case None =>
+            return None
           case Some(info) =>
             if (info.writerTask == currentTaskAttemptId) {
               throw new IllegalStateException(

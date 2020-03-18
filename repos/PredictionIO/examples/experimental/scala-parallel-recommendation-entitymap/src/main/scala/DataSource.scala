@@ -65,8 +65,10 @@ class DataSource(val dsp: DataSourceParams)
         try {
           val ratingValue: Double =
             event.event match {
-              case "rate" => event.properties.get[Double]("rating")
-              case "buy"  => 4.0 // map buy event to rating value of 4
+              case "rate" =>
+                event.properties.get[Double]("rating")
+              case "buy" =>
+                4.0 // map buy event to rating value of 4
               case _ =>
                 throw new Exception(s"Unexpected event ${event} is read.")
             }

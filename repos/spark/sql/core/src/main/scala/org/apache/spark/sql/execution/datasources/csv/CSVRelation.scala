@@ -76,7 +76,8 @@ object CSVRelation extends Logging {
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
     schemaFields.zipWithIndex
       .filter {
-        case (field, _) => safeRequiredFields.contains(field)
+        case (field, _) =>
+          safeRequiredFields.contains(field)
       }
       .foreach {
         case (field, index) =>

@@ -133,7 +133,8 @@ trait Emitter
         val e2 = e.copy(lineStack = (line, col, text) :: e.lineStack)
 
         e.lineStack match {
-          case (`line`, `col`, `text`) :: _ => (e2, ())
+          case (`line`, `col`, `text`) :: _ =>
+            (e2, ())
 
           case stack =>
             emitInstr(Line(line, col, text))(e2)
@@ -143,9 +144,11 @@ trait Emitter
     def emitPopLine: EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
         e.lineStack match {
-          case Nil => (e, ())
+          case Nil =>
+            (e, ())
 
-          case _ :: Nil => (e.copy(lineStack = Nil), ())
+          case _ :: Nil =>
+            (e.copy(lineStack = Nil), ())
 
           case _ :: (stack @ (line, col, text) :: _) =>
             emitInstr(Line(line, col, text))(e.copy(lineStack = stack))
@@ -468,7 +471,8 @@ trait Emitter
         } find { c =>
           (
             c zip dtracePrefix takeWhile {
-              case (a, b) => a == b
+              case (a, b) =>
+                a == b
             } map {
               _._2
             }
@@ -492,11 +496,13 @@ trait Emitter
               }
             }
 
-            case _ => prepareContext(tail, dispatches)(f)
+            case _ =>
+              prepareContext(tail, dispatches)(f)
           }
         }
 
-        case Nil => f(dispatches)
+        case Nil =>
+          f(dispatches)
       }
 
     def createJoins(
@@ -549,7 +555,8 @@ trait Emitter
 
       def sub(target: Provenance): Provenance = {
         zipped.foldLeft(target) {
-          case (target, (id, sub)) => substituteParam(id, let, target, sub)
+          case (target, (id, sub)) =>
+            substituteParam(id, let, target, sub)
         }
       }
 
@@ -654,7 +661,8 @@ trait Emitter
                   }
                 }
 
-                case _ => notImpl(expr)
+                case _ =>
+                  notImpl(expr)
               }
             }
 
@@ -667,8 +675,10 @@ trait Emitter
             case ast.BoolLit(_, value) =>
               emitInstr(
                 value match {
-                  case true  => PushTrue
-                  case false => PushFalse
+                  case true =>
+                    PushTrue
+                  case false =>
+                    PushFalse
                 })
 
             case ast.NullLit(_) =>
@@ -691,11 +701,13 @@ trait Emitter
                   .groupBy(_._2.provenance)
                   .toList
                   .sortBy {
-                    case (p, _) => p
+                    case (p, _) =>
+                      p
                   }(Provenance.order.toScalaOrdering)
               val provs =
                 provToField map {
-                  case (p, _) => p
+                  case (p, _) =>
+                    p
                 } reverse
 
               val groups =
@@ -735,11 +747,13 @@ trait Emitter
                   .groupBy(_._1.provenance)
                   .toList
                   .sortBy {
-                    case (p, _) => p
+                    case (p, _) =>
+                      p
                   }(Provenance.order.toScalaOrdering)
               val provs =
                 provToElements map {
-                  case (p, _) => p
+                  case (p, _) =>
+                    p
                 } reverse
 
               val (groups, indices) =
@@ -807,7 +821,8 @@ trait Emitter
                     (remap + (j -> i2), state >> state2)
                   }
 
-                  case (pair, _) => pair
+                  case (pair, _) =>
+                    pair
                 }
 
               joined >> swaps
@@ -993,7 +1008,8 @@ trait Emitter
       case (acc, line: Line) if !acc.isEmpty && acc.last.isInstanceOf[Line] =>
         acc.updated(acc.length - 1, line)
 
-      case (acc, instr) => acc :+ instr
+      case (acc, instr) =>
+        acc :+ instr
     }
   }
 }

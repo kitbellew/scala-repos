@@ -99,6 +99,7 @@ class MatLong(r: Int, c: Int, values: Array[Long]) extends Mat[Long] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

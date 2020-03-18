@@ -85,7 +85,8 @@ private[finagle] object MemcachedTraceInitializer {
                 val cmd = command.asInstanceOf[RetrievalCommand]
                 val misses = mutable.Set.empty[String]
                 cmd.keys foreach {
-                  case Buf.Utf8(key) => misses += key
+                  case Buf.Utf8(key) =>
+                    misses += key
                 }
                 vals foreach { value =>
                   val Buf.Utf8(key) = value.key
@@ -300,7 +301,8 @@ object Memcached
       // See KetamaPartitionedClient for more details.
       val va =
         _dest match {
-          case Name.Bound(va) => va
+          case Name.Bound(va) =>
+            va
           case n =>
             throw new IllegalArgumentException(
               s"Memcached client only supports Bound Names, was: $n")

@@ -9,10 +9,12 @@ class MonadCombineTest extends CatsSuite {
   test("separate") {
     forAll { (list: List[Xor[Int, String]]) =>
       val ints = list.collect {
-        case Xor.Left(i) => i
+        case Xor.Left(i) =>
+          i
       }
       val strings = list.collect {
-        case Xor.Right(s) => s
+        case Xor.Right(s) =>
+          s
       }
       val expected = (ints, strings)
 

@@ -100,8 +100,10 @@ trait BaseTypeSeqs {
       */
     def typeSymbol(i: Int): Symbol = {
       elems(i) match {
-        case RefinedType(v :: vs, _) => v.typeSymbol
-        case tp                      => tp.typeSymbol
+        case RefinedType(v :: vs, _) =>
+          v.typeSymbol
+        case tp =>
+          tp.typeSymbol
       }
     }
 
@@ -220,8 +222,10 @@ trait BaseTypeSeqs {
           @annotation.tailrec
           def loop(tps: List[Type]): Boolean =
             tps match {
-              case Nil     => false
-              case x :: xs => (tp =:= x) || loop(xs)
+              case Nil =>
+                false
+              case x :: xs =>
+                (tp =:= x) || loop(xs)
             }
           loop(minTypes)
         }

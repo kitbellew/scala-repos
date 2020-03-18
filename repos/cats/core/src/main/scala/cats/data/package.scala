@@ -28,14 +28,17 @@ package object data {
         F: Reducible[F]): Eval[NonEmptyList[A]] =
       F.reduceRightTo(fa)(a => NonEmptyList(a, Nil)) { (a, lnel) =>
         lnel.map {
-          case OneAnd(h, t) => OneAnd(a, h :: t)
+          case OneAnd(h, t) =>
+            OneAnd(a, h :: t)
         }
       }
 
     def fromList[A](la: List[A]): Option[NonEmptyList[A]] =
       la match {
-        case (h :: t) => Some(OneAnd(h, t))
-        case Nil      => None
+        case (h :: t) =>
+          Some(OneAnd(h, t))
+        case Nil =>
+          None
       }
   }
 

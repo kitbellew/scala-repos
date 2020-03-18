@@ -116,7 +116,8 @@ class QueueingHandler(
 
   private[this] def loop(): Future[Unit] = {
     queue.poll().map(doPublish).respond {
-      case Return(_)                   => loop()
+      case Return(_) =>
+        loop()
       case Throw(QueueClosedException) => // indicates we should shutdown
       case Throw(e)                    =>
         // `doPublish` can throw, and we want to keep on publishing...

@@ -74,7 +74,8 @@ class DataMap(val fields: Map[String, JValue]) extends Serializable {
     fields(name) match {
       case JNull =>
         throw new DataMapException(s"The required field $name cannot be null.")
-      case x: JValue => x.extract[T]
+      case x: JValue =>
+        x.extract[T]
     }
   }
 
@@ -118,9 +119,12 @@ class DataMap(val fields: Map[String, JValue]) extends Serializable {
       }
 
     fields.get(name) match {
-      case None        => null.asInstanceOf[T]
-      case Some(JNull) => null.asInstanceOf[T]
-      case Some(x)     => x.extract[T](formats, manifest)
+      case None =>
+        null.asInstanceOf[T]
+      case Some(JNull) =>
+        null.asInstanceOf[T]
+      case Some(x) =>
+        x.extract[T](formats, manifest)
     }
   }
 
@@ -132,8 +136,10 @@ class DataMap(val fields: Map[String, JValue]) extends Serializable {
     */
   def getStringList(name: String): java.util.List[String] = {
     fields.get(name) match {
-      case None        => null
-      case Some(JNull) => null
+      case None =>
+        null
+      case Some(JNull) =>
+        null
       case Some(x) =>
         JavaConversions.seqAsJavaList(
           x.extract[List[String]](formats, manifest[List[String]]))
@@ -197,7 +203,8 @@ class DataMap(val fields: Map[String, JValue]) extends Serializable {
     other match {
       case that: DataMap =>
         that.canEqual(this) && this.fields.equals(that.fields)
-      case _ => false
+      case _ =>
+        false
     }
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[DataMap]

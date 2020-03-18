@@ -132,7 +132,8 @@ final class PNCounter private[akka] (
     o match {
       case other: PNCounter ⇒
         increments == other.increments && decrements == other.decrements
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = {

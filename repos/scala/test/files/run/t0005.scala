@@ -17,7 +17,8 @@ object Test {
     import B1.B2.q
     val res =
       5 match {
-        case q(x) => x
+        case q(x) =>
+          x
       }
     println(res)
   }

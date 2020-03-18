@@ -51,7 +51,8 @@ class GroupTest extends FunSuite {
     import ctx._
 
     val group2 = group collect {
-      case i if i % 2 == 0 => i * 2
+      case i if i % 2 == 0 =>
+        i * 2
     }
     assert(group2().isEmpty)
     group() = Set(1, 2, 3, 4, 5)

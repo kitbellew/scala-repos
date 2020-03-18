@@ -221,8 +221,10 @@ abstract class Erasure
 
   private def hiBounds(bounds: TypeBounds): List[Type] =
     bounds.hi.dealiasWiden match {
-      case RefinedType(parents, _) => parents map (_.dealiasWiden)
-      case tp                      => tp :: Nil
+      case RefinedType(parents, _) =>
+        parents map (_.dealiasWiden)
+      case tp =>
+        tp :: Nil
     }
 
   private def isErasedValueType(tpe: Type) = tpe.isInstanceOf[ErasedValueType]
@@ -269,10 +271,12 @@ abstract class Erasure
         // a signature should always start with a class
         def ensureClassAsFirstParent(tps: List[Type]) =
           tps match {
-            case Nil => ObjectTpe :: Nil
+            case Nil =>
+              ObjectTpe :: Nil
             case head :: tail if isInterfaceOrTrait(head.typeSymbol) =>
               ObjectTpe :: tps
-            case _ => tps
+            case _ =>
+              tps
           }
 
         val minParents = minimizeParents(parents)
@@ -292,8 +296,10 @@ abstract class Erasure
         val (isTrait, isClass) = bounds partition (_.typeSymbol.isTrait)
         val classPart =
           isClass match {
-            case Nil    => ":" // + boxedSig(ObjectTpe)
-            case x :: _ => ":" + boxedSig(x)
+            case Nil =>
+              ":" // + boxedSig(ObjectTpe)
+            case x :: _ =>
+              ":" + boxedSig(x)
           }
         classPart :: (isTrait map boxedSig) mkString ":"
       }
@@ -448,7 +454,8 @@ abstract class Erasure
             .map("^" + jsig(_, toplevel = true))
             .mkString(""))
         catch {
-          case ex: UnknownSig => None
+          case ex: UnknownSig =>
+            None
         }
       } else
         None
@@ -475,12 +482,14 @@ abstract class Erasure
       // generation and failing bytecode. See ticket #4753.
       def apply(tp: Type): Type =
         tp match {
-          case PolyType(_, _) => mapOver(tp)
+          case PolyType(_, _) =>
+            mapOver(tp)
           case MethodType(_, _) =>
             mapOver(tp) // nullarymethod was eliminated during uncurry
           case ConstantType(Constant(_: Type)) =>
             ClassClass.tpe // all classOfs erase to Class
-          case _ => tp.deconst
+          case _ =>
+            tp.deconst
         }
     }
 
@@ -635,7 +644,8 @@ abstract class Erasure
       val shouldAdd = (!sigContainsValueClass
         || (
           checkBridgeOverrides(member, other, bridge) match {
-            case Nil => true
+            case Nil =>
+              true
             case es if member.owner.isAnonymousClass =>
               resolveAnonymousBridgeClash(member, bridge);
               true
@@ -695,7 +705,8 @@ abstract class Erasure
         }
         val rhs =
           member.tpe match {
-            case MethodType(Nil, ConstantType(c)) => Literal(c)
+            case MethodType(Nil, ConstantType(c)) =>
+              Literal(c)
             case _ =>
               val sel: Tree = Select(This(root), member)
               val bridgingCall = (sel /: bridge.paramss)((fun, vparams) =>
@@ -775,8 +786,9 @@ abstract class Erasure
         case Apply(TypeApply(sel @ Select(qual, name), List(targ)), List())
             if tree.symbol == Any_isInstanceOf =>
           targ.tpe match {
-            case ErasedValueType(clazz, _) => targ.setType(clazz.tpe)
-            case _                         =>
+            case ErasedValueType(clazz, _) =>
+              targ.setType(clazz.tpe)
+            case _ =>
           }
           tree
         case Select(qual, name) =>
@@ -1073,8 +1085,10 @@ abstract class Erasure
 
           def qualifier =
             fn match {
-              case Select(qual, _)               => qual
-              case TypeApply(Select(qual, _), _) => qual
+              case Select(qual, _) =>
+                qual
+              case TypeApply(Select(qual, _), _) =>
+                qual
             }
           def preEraseAsInstanceOf = {
             (fn: @unchecked) match {
@@ -1141,7 +1155,8 @@ abstract class Erasure
                   case _ =>
                     tree
                 }
-              case _ => tree
+              case _ =>
+                tree
             }
           }
 
@@ -1203,10 +1218,14 @@ abstract class Erasure
                   global.typer.typedPos(tree.pos) {
                     val arrayMethodName =
                       name match {
-                        case nme.apply  => nme.array_apply
-                        case nme.length => nme.array_length
-                        case nme.update => nme.array_update
-                        case nme.clone_ => nme.array_clone
+                        case nme.apply =>
+                          nme.array_apply
+                        case nme.length =>
+                          nme.array_length
+                        case nme.update =>
+                          nme.array_update
+                        case nme.clone_ =>
+                          nme.array_clone
                         case _ =>
                           reporter.error(
                             tree.pos,
@@ -1233,12 +1252,15 @@ abstract class Erasure
                   // This must be because some earlier transformation is being skipped on ##, but so
                   // far I don't know what.  For null we now define null.## == 0.
                   qual.tpe.typeSymbol match {
-                    case UnitClass | NullClass => LIT(0)
-                    case IntClass              => qual
+                    case UnitClass | NullClass =>
+                      LIT(0)
+                    case IntClass =>
+                      qual
                     case s @ (ShortClass | ByteClass | CharClass) =>
                       numericConversion(qual, s)
-                    case BooleanClass => If(qual, LIT(true.##), LIT(false.##))
-                    case _            =>
+                    case BooleanClass =>
+                      If(qual, LIT(true.##), LIT(false.##))
+                    case _ =>
                       // Since we are past typer, we need to avoid creating trees carrying
                       // overloaded types.  This logic is custom (and technically incomplete,
                       // although serviceable) for def hash.  What is really needed is for
@@ -1384,7 +1406,8 @@ abstract class Erasure
                 ct.typeValue match {
                   case tr @ TypeRef(_, clazz, _) if clazz.isDerivedValueClass =>
                     scalaErasure.eraseNormalClassRef(tr)
-                  case tpe => specialScalaErasure(tpe)
+                  case tpe =>
+                    specialScalaErasure(tpe)
                 }
               treeCopy.Literal(tree, Constant(erased))
 

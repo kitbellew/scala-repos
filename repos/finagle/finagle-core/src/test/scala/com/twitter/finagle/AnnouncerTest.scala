@@ -32,8 +32,10 @@ class AnnouncerTest extends FunSuite {
 
   test("resolve ServiceLoaded announcers") {
     Await.result(Announcer.announce(addr, "test!xyz")) match {
-      case p: Proxy => assert(p.self == TestAnnouncement(addr, "xyz"))
-      case _        => assert(false)
+      case p: Proxy =>
+        assert(p.self == TestAnnouncement(addr, "xyz"))
+      case _ =>
+        assert(false)
     }
   }
 

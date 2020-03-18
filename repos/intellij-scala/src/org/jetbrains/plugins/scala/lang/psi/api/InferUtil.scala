@@ -277,9 +277,11 @@ object InferUtil {
               MacroContext(place, Some(paramType))) match {
               case Some(tp) =>
                 exprs += new Expression(polymorphicSubst subst tp)
-              case None => updateExpr()
+              case None =>
+                updateExpr()
             }
-          case _ => updateExpr()
+          case _ =>
+            updateExpr()
         }
         paramsForInfer += param
       } else {
@@ -292,9 +294,11 @@ object InferUtil {
                       if skipQualSet.contains(clazz.qualifiedName) =>
                     //do not throw, it's safe
                     new ScalaResolveResult(clazz, p.substitutor)
-                  case _ => null
+                  case _ =>
+                    null
                 }
-              case _ => null
+              case _ =>
+                null
             }
           fun(result)
         }
@@ -354,7 +358,8 @@ object InferUtil {
               case ScMethodType(inter, _, innerImpl)
                   if innerImpl && !fromImplicitParameters =>
                 inter
-              case _ => internal
+              case _ =>
+                internal
             }
           val update: ScTypePolymorphicType = localTypeInference(
             m,
@@ -457,15 +462,18 @@ object InferUtil {
             mt,
             ScalaPsiUtil.toSAMType(tp, expr.getResolveScope),
             fromSAM = true)
-        case _ => mt
+        case _ =>
+          mt
       }
     }
 
     nonValueType.map {
       case tpt @ ScTypePolymorphicType(mt: ScMethodType, typeParams) =>
         tpt.copy(internalType = applyImplicitViewToResult(mt, expectedType))
-      case mt: ScMethodType => applyImplicitViewToResult(mt, expectedType)
-      case tp               => tp
+      case mt: ScMethodType =>
+        applyImplicitViewToResult(mt, expectedType)
+      case tp =>
+        tp
     }
   }
 
@@ -603,12 +611,14 @@ object InferUtil {
                           (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
                             tpt.name, tpt.getId
                           )) match {
-                          case None => (true, tpt)
+                          case None =>
+                            (true, tpt)
                           case _ =>
                             hasRecursiveTypeParameters = true
                             (true, tpt)
                         }
-                      case tp: ScType => (hasRecursiveTypeParameters, tp)
+                      case tp: ScType =>
+                        (hasRecursiveTypeParameters, tp)
                     }
                     hasRecursiveTypeParameters
                   }
@@ -682,12 +692,14 @@ object InferUtil {
                             (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
                               tpt.name, tpt.getId
                             )) match {
-                            case None => (true, tpt)
+                            case None =>
+                              (true, tpt)
                             case _ =>
                               hasRecursiveTypeParameters = true
                               (true, tpt)
                           }
-                        case tp: ScType => (hasRecursiveTypeParameters, tp)
+                        case tp: ScType =>
+                          (hasRecursiveTypeParameters, tp)
                       }
                       hasRecursiveTypeParameters
                     }
@@ -761,7 +773,8 @@ object InferUtil {
                                         return false
                                       typeParams.forall(
                                         _.typeParameters.isEmpty)
-                                    case _ => false
+                                    case _ =>
+                                      false
                                   }
                                 }
                                 ScType.extractDesignated(
@@ -773,7 +786,8 @@ object InferUtil {
                                     tp match {
                                       case tpt: ScTypeParameterType =>
                                         checkNamed(tpt.param, typeParams)
-                                      case _ => false
+                                      case _ =>
+                                        false
                                     }
                                 }
                             }
@@ -803,12 +817,16 @@ object InferUtil {
               }
 
               un.getSubstitutor match {
-                case Some(unSubstitutor) => updateWithSubst(unSubstitutor)
-                case _ if safeCheck      => throw new SafeCheckException
-                case _                   => updateWithSubst(unSubst)
+                case Some(unSubstitutor) =>
+                  updateWithSubst(unSubstitutor)
+                case _ if safeCheck =>
+                  throw new SafeCheckException
+                case _ =>
+                  updateWithSubst(unSubst)
               }
             }
-          case None => throw new SafeCheckException
+          case None =>
+            throw new SafeCheckException
         }
       } else
         ScTypePolymorphicType(retType, typeParams)

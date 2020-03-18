@@ -142,8 +142,10 @@ private[scheduler] abstract class Stage(
 
   override final def equals(other: Any): Boolean =
     other match {
-      case stage: Stage => stage != null && stage.id == id
-      case _            => false
+      case stage: Stage =>
+        stage != null && stage.id == id
+      case _ =>
+        false
     }
 
   /** Returns the sequence of partition ids that are missing (i.e. needs to be computed). */

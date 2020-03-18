@@ -127,7 +127,8 @@ trait Mapper[A <: Mapper[A]]
     */
   def asValid: Box[A] =
     validate match {
-      case Nil => Full(this)
+      case Nil =>
+        Full(this)
       case xs =>
         ParamFailure(xs.map(_.msg.text).mkString(", "), Empty, Empty, xs)
     }
@@ -216,7 +217,8 @@ trait Mapper[A <: Mapper[A]]
           case Nil =>
             what.save;
             S.redirectTo(onSuccess)
-          case xs => S.error(xs)
+          case xs =>
+            S.error(xs)
         }
       })
 
@@ -260,7 +262,8 @@ trait Mapper[A <: Mapper[A]]
     val snipName = S.currentSnippet
     def doSubmit() {
       this.validate match {
-        case Nil => onSuccess(this)
+        case Nil =>
+          onSuccess(this)
         case xs =>
           S.error(xs)
           snipName.foreach(n => S.mapSnippet(n, redoSnippet))
@@ -313,7 +316,8 @@ trait Mapper[A <: Mapper[A]]
     runSafe {
       getSingleton match {
         case null =>
-        case s    => s.checkFieldNames(this)
+        case s =>
+          s.checkFieldNames(this)
       }
     }
   }
@@ -501,12 +505,14 @@ trait KeyedMapper[KeyType, OwnerType <: KeyedMapper[KeyType, OwnerType]]
 
   override def equals(other: Any): Boolean = {
     other match {
-      case null => false
+      case null =>
+        false
       case km: KeyedMapper[_, _]
           if this.getClass.isAssignableFrom(km.getClass) ||
             km.getClass.isAssignableFrom(this.getClass) =>
         this.primaryKeyField == km.primaryKeyField
-      case k => super.equals(k)
+      case k =>
+        super.equals(k)
     }
   }
 }

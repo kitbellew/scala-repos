@@ -72,8 +72,10 @@ class ExpandBooleanIntention extends PsiElementBaseIntentionAction {
     expr.append("if ")
 
     value match {
-      case v: ScParenthesisedExpr => expr.append(v.getText)
-      case _                      => expr.append("(").append(value.getText).append(")")
+      case v: ScParenthesisedExpr =>
+        expr.append(v.getText)
+      case _ =>
+        expr.append("(").append(value.getText).append(")")
     }
 
     expr.append("{ return true } else { return false }")

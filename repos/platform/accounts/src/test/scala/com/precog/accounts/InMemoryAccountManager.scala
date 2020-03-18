@@ -45,7 +45,8 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(implicit
       case Some(acct) =>
         accounts.put(account.accountId, account);
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 

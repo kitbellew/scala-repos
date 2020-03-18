@@ -292,7 +292,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
     // Verify whether all the elements received are as expected
     assert(output.size === expectedOutput.size)
     output.zipWithIndex.foreach {
-      case (e, i) => assert(e == expectedOutput(i))
+      case (e, i) =>
+        assert(e == expectedOutput(i))
     }
   }
 
@@ -346,7 +347,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
     // Verify whether all the elements received are as expected
     assert(output.size === expectedOutput.size)
     output.zipWithIndex.foreach {
-      case (e, i) => assert(e == expectedOutput(i))
+      case (e, i) =>
+        assert(e == expectedOutput(i))
     }
   }
 
@@ -495,7 +497,8 @@ class TestServer(portToBind: Int = 0) extends Logging {
                   }
                 }
               } catch {
-                case e: SocketException => logError("TestServer error", e)
+                case e: SocketException =>
+                  logError("TestServer error", e)
               } finally {
                 logInfo("Connection closed")
                 if (!clientSocket.isClosed) {

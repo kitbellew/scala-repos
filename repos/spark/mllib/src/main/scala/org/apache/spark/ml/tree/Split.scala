@@ -127,7 +127,8 @@ final class CategoricalSplit private[ml] (
       case other: CategoricalSplit =>
         featureIndex == other.featureIndex &&
           isLeft == other.isLeft && categories == other.categories
-      case _ => false
+      case _ =>
+        false
     }
   }
 

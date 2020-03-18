@@ -110,7 +110,8 @@ class HighLevelOutgoingConnectionSpec extends AkkaSpec {
         {
           case HttpRequest(_, Uri.Path("/b"), _, _, _) ⇒
             HttpResponse(headers = List(headers.Connection("close")))
-          case _ ⇒ HttpResponse()
+          case _ ⇒
+            HttpResponse()
         },
         serverHostName,
         serverPort)

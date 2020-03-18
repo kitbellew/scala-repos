@@ -110,8 +110,10 @@ object Command {
   private[this] def separateCommands(
       cmds: Seq[Command]): (Seq[SimpleCommand], Seq[ArbitraryCommand]) =
     Util.separate(cmds) {
-      case s: SimpleCommand    => Left(s);
-      case a: ArbitraryCommand => Right(a)
+      case s: SimpleCommand =>
+        Left(s);
+      case a: ArbitraryCommand =>
+        Right(a)
     }
   private[this] def apply1[A, B, C](f: (A, B) => C, a: A): B => () => C =
     b => () => f(a, b)
@@ -132,15 +134,18 @@ object Command {
     (state: State) =>
       token(OpOrID examples commandMap.keys.toSet) flatMap { id =>
         (commandMap get id) match {
-          case None    => failure(invalidValue("command", commandMap.keys)(id))
-          case Some(c) => c(state)
+          case None =>
+            failure(invalidValue("command", commandMap.keys)(id))
+          case Some(c) =>
+            c(state)
         }
       }
 
   def process(command: String, state: State): State = {
     val parser = combine(state.definedCommands)
     parse(command, parser(state)) match {
-      case Right(s) => s() // apply command.  command side effects happen here
+      case Right(s) =>
+        s() // apply command.  command side effects happen here
       case Left(errMsg) =>
         state.log.error(errMsg)
         state.fail
@@ -185,7 +190,8 @@ object Command {
   def spacedAny(name: String): Parser[String] = spacedC(name, any)
   def spacedC(name: String, c: Parser[Char]): Parser[String] =
     ((c & opOrIDSpaced(name)) ~ c.+) map {
-      case (f, rem) => (f +: rem).mkString
+      case (f, rem) =>
+        (f +: rem).mkString
     }
 }
 
@@ -237,7 +243,8 @@ object Help {
 
   def message(h: Help, arg: Option[String]): String =
     arg match {
-      case Some(x) => detail(x, h.detail)
+      case Some(x) =>
+        detail(x, h.detail)
       case None =>
         val brief = aligned("  ", "   ", h.brief).mkString("\n", "\n", "\n")
         val more = h.more.toSeq.sorted

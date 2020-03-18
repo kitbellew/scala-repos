@@ -53,8 +53,10 @@ class ScAnnotationImpl private (
 
   def getQualifiedName: String =
     getClazz match {
-      case None    => null
-      case Some(c) => c.qualifiedName
+      case None =>
+        null
+      case Some(c) =>
+        c.qualifiedName
     }
 
   def typeElement: ScTypeElement = {
@@ -77,18 +79,24 @@ class ScAnnotationImpl private (
                   case ref: ScReferenceExpression
                       if ref.refName == attributeName =>
                     ass.getRExpression match {
-                      case Some(expr) => (true, expr)
-                      case _          => (false, expr)
+                      case Some(expr) =>
+                        (true, expr)
+                      case _ =>
+                        (false, expr)
                     }
-                  case _ => (false, expr)
+                  case _ =>
+                    (false, expr)
                 }
-              case _ if attributeName == "value" => (true, expr)
-              case _                             => (false, expr)
+              case _ if attributeName == "value" =>
+                (true, expr)
+              case _ =>
+                (false, expr)
             })
           .find(p => p._1)
           .getOrElse(false, null)
           ._2
-      case None => null
+      case None =>
+        null
     }
   }
 
@@ -154,13 +162,16 @@ class ScAnnotationImpl private (
                 elem.delete()
               }
             }
-          case _ => elem.delete()
+          case _ =>
+            elem.delete()
         }
       }
 
       existing.getParent match {
-        case args: ScArgumentExprList => delete(existing)
-        case other                    => delete(other)
+        case args: ScArgumentExprList =>
+          delete(existing)
+        case other =>
+          delete(other)
       }
     } else {
       if (existing != null) {
@@ -206,8 +217,10 @@ class ScAnnotationImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitAnnotation(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitAnnotation(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

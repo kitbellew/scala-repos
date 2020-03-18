@@ -491,8 +491,10 @@ class SArrayAdapter[V <: android.view.View, T <: AnyRef](
 
   def setItem(view: TextView, pos: Int): TextView = {
     getItem(pos) match {
-      case i: CharSequence => view.setText(i)
-      case i               => view.setText(i.toString)
+      case i: CharSequence =>
+        view.setText(i)
+      case i =>
+        view.setText(i.toString)
     }
     view
   }
@@ -1854,8 +1856,10 @@ class STableLayout()(implicit
   override val parentViewGroup = parentVGroup
   implicit def defaultLayoutParams[V <: View](v: V): LayoutParams[V] =
     v.getLayoutParams() match {
-      case p: LayoutParams[V @unchecked] => p
-      case _                             => new LayoutParams(v)
+      case p: LayoutParams[V @unchecked] =>
+        p
+      case _ =>
+        new LayoutParams(v)
     }
 
   class LayoutParams[V <: View](v: V)
@@ -2432,8 +2436,10 @@ class SRadioGroup()(implicit
   override val parentViewGroup = parentVGroup
   implicit def defaultLayoutParams[V <: View](v: V): LayoutParams[V] =
     v.getLayoutParams() match {
-      case p: LayoutParams[V @unchecked] => p
-      case _                             => new LayoutParams(v)
+      case p: LayoutParams[V @unchecked] =>
+        p
+      case _ =>
+        new LayoutParams(v)
     }
 
   class LayoutParams[V <: View](v: V)
@@ -3210,8 +3216,10 @@ class SRelativeLayout()(implicit
   override val parentViewGroup = parentVGroup
   implicit def defaultLayoutParams[V <: View](v: V): LayoutParams[V] =
     v.getLayoutParams() match {
-      case p: LayoutParams[V @unchecked] => p
-      case _                             => new LayoutParams(v)
+      case p: LayoutParams[V @unchecked] =>
+        p
+      case _ =>
+        new LayoutParams(v)
     }
 
   class LayoutParams[V <: View](v: V)
@@ -7648,8 +7656,10 @@ class SLinearLayout()(implicit
 
   implicit def defaultLayoutParams[V <: View](v: V): LayoutParams[V] =
     v.getLayoutParams() match {
-      case p: LayoutParams[V @unchecked] => p
-      case _                             => new LayoutParams(v)
+      case p: LayoutParams[V @unchecked] =>
+        p
+      case _ =>
+        new LayoutParams(v)
     }
 
   <<
@@ -9054,8 +9064,10 @@ class STableRow()(implicit
   override val parentViewGroup = parentVGroup
   implicit def defaultLayoutParams[V <: View](v: V): LayoutParams[V] =
     v.getLayoutParams() match {
-      case p: LayoutParams[V @unchecked] => p
-      case _                             => new LayoutParams(v)
+      case p: LayoutParams[V @unchecked] =>
+        p
+      case _ =>
+        new LayoutParams(v)
     }
 
   class LayoutParams[V <: View](v: V)
@@ -11265,8 +11277,10 @@ trait TraitFrameLayout[This <: android.widget.FrameLayout]
 
   implicit def defaultLayoutParams[V <: View](v: V): LayoutParams[V] =
     v.getLayoutParams() match {
-      case p: LayoutParams[V @unchecked] => p
-      case _                             => new LayoutParams(v)
+      case p: LayoutParams[V @unchecked] =>
+        p
+      case _ =>
+        new LayoutParams(v)
     }
 
   class LayoutParams[V <: View](v: V)

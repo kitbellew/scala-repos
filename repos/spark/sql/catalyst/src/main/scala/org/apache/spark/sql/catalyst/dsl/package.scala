@@ -295,8 +295,10 @@ package object dsl {
       def groupBy(groupingExprs: Expression*)(
           aggregateExprs: Expression*): LogicalPlan = {
         val aliasedExprs = aggregateExprs.map {
-          case ne: NamedExpression => ne
-          case e                   => Alias(e, e.toString)()
+          case ne: NamedExpression =>
+            ne
+          case e =>
+            Alias(e, e.toString)()
         }
         Aggregate(groupingExprs, aliasedExprs, logicalPlan)
       }

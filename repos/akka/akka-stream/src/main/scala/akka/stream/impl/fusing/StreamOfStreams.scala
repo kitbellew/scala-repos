@@ -292,8 +292,10 @@ final class Split[T](
 
   private val propagateSubstreamCancel =
     substreamCancelStrategy match {
-      case SubstreamCancelStrategies.Propagate ⇒ true
-      case SubstreamCancelStrategies.Drain ⇒ false
+      case SubstreamCancelStrategies.Propagate ⇒
+        true
+      case SubstreamCancelStrategies.Drain ⇒
+        false
     }
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
@@ -443,7 +445,8 @@ final class Split[T](
                 substreamSource.push(elem)
             }
           } catch {
-            case NonFatal(ex) ⇒ onUpstreamFailure(ex)
+            case NonFatal(ex) ⇒
+              onUpstreamFailure(ex)
           }
         }
 
@@ -491,7 +494,8 @@ final class SubSink[T](
 
   def pullSubstream(): Unit =
     status.get match {
-      case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(RequestOne)
+      case f: AsyncCallback[Any] @unchecked ⇒
+        f.invoke(RequestOne)
       case null ⇒
         if (!status.compareAndSet(null, RequestOne))
           status.get.asInstanceOf[Command ⇒ Unit](RequestOne)
@@ -499,7 +503,8 @@ final class SubSink[T](
 
   def cancelSubstream(): Unit =
     status.get match {
-      case f: AsyncCallback[Any] @unchecked ⇒ f.invoke(Cancel)
+      case f: AsyncCallback[Any] @unchecked ⇒
+        f.invoke(Cancel)
       case x ⇒ // a potential RequestOne is overwritten
         if (!status.compareAndSet(x, Cancel))
           status.get.asInstanceOf[Command ⇒ Unit](Cancel)
@@ -539,9 +544,12 @@ final class SubSink[T](
 
       override def preStart(): Unit = {
         val ourOwnCallback = getAsyncCallback[Command] {
-          case RequestOne ⇒ tryPull(in)
-          case Cancel ⇒ completeStage()
-          case _ ⇒ throw new IllegalStateException("Bug")
+          case RequestOne ⇒
+            tryPull(in)
+          case Cancel ⇒
+            completeStage()
+          case _ ⇒
+            throw new IllegalStateException("Bug")
         }
         setCB(ourOwnCallback)
       }
@@ -570,7 +578,8 @@ object SubSource {
           case null ⇒
             throw new UnsupportedOperationException(
               s"cannot drop Source of type ${m.getClass.getName}")
-          case intp ⇒ s.runWith(Sink.ignore)(intp.subFusingMaterializer)
+          case intp ⇒
+            s.runWith(Sink.ignore)(intp.subFusingMaterializer)
         }
     }
   }
@@ -638,8 +647,10 @@ final class SubSource[T](
           case null ⇒
             if (!status.compareAndSet(null, cb))
               setCB(cb)
-          case ActorSubscriberMessage.OnComplete ⇒ completeStage()
-          case ActorSubscriberMessage.OnError(ex) ⇒ failStage(ex)
+          case ActorSubscriberMessage.OnComplete ⇒
+            completeStage()
+          case ActorSubscriberMessage.OnError(ex) ⇒
+            failStage(ex)
           case _: AsyncCallback[_] ⇒
             failStage(
               new IllegalStateException(
@@ -649,8 +660,10 @@ final class SubSource[T](
 
       override def preStart(): Unit = {
         val ourOwnCallback = getAsyncCallback[ActorSubscriberMessage] {
-          case ActorSubscriberMessage.OnComplete ⇒ completeStage()
-          case ActorSubscriberMessage.OnError(ex) ⇒ failStage(ex)
+          case ActorSubscriberMessage.OnComplete ⇒
+            completeStage()
+          case ActorSubscriberMessage.OnError(ex) ⇒
+            failStage(ex)
           case ActorSubscriberMessage.OnNext(elem) ⇒
             push(out, elem.asInstanceOf[T])
         }

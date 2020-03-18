@@ -85,8 +85,10 @@ trait ArrayOps[T]
     val b = Array.newBuilder[U]
     b.sizeHint(
       map {
-        case is: scala.collection.IndexedSeq[_] => is.size
-        case _                                  => 0
+        case is: scala.collection.IndexedSeq[_] =>
+          is.size
+        case _ =>
+          0
       }.sum)
     for (xs <- this)
       b ++= asTrav(xs)

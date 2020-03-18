@@ -32,7 +32,8 @@ object Opts {
       else
         mappings
           .map {
-            case (f, u) => s"${f.getAbsolutePath}#${u.toExternalForm}"
+            case (f, u) =>
+              s"${f.getAbsolutePath}#${u.toExternalForm}"
           }
           .mkString("-doc-external-doc:", ",", "") :: Nil
   }

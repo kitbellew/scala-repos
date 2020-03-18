@@ -4,7 +4,8 @@ package foo {
   class Parametrized1[T] extends Abstract1[Parametrized2[T]] {
     def bar(a: AnyRef) {
       a match {
-        case d: Parametrized1[_] => println("ok")
+        case d: Parametrized1[_] =>
+          println("ok")
       }
     }
   }

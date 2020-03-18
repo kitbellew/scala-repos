@@ -98,9 +98,12 @@ object v1 {
       expirationDate: Option[DateTime]) {
     def isExpired(at: Option[DateTime]) =
       (expirationDate, at) match {
-        case (None, _)                 => false
-        case (_, None)                 => true
-        case (Some(expiry), Some(ref)) => expiry.isBefore(ref)
+        case (None, _) =>
+          false
+        case (_, None) =>
+          true
+        case (Some(expiry), Some(ref)) =>
+          expiry.isBefore(ref)
       }
   }
 

@@ -110,8 +110,10 @@ private[sql] object TypeCollection {
 
   def unapply(typ: AbstractDataType): Option[Seq[AbstractDataType]] =
     typ match {
-      case typ: TypeCollection => Some(typ.types)
-      case _                   => None
+      case typ: TypeCollection =>
+        Some(typ.types)
+      case _ =>
+        None
     }
 }
 

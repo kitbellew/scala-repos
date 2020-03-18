@@ -93,8 +93,10 @@ private class ResolversModel(val resolvers: Seq[SbtResolver])
 
   def getValueAt(rowIndex: Int, columnIndex: Int) =
     columnIndex match {
-      case 0 => resolvers(rowIndex).name
-      case 1 => resolvers(rowIndex).root
+      case 0 =>
+        resolvers(rowIndex).name
+      case 1 =>
+        resolvers(rowIndex).root
       case 2 =>
         val ts: Long = resolvers(rowIndex).associatedIndex
           .map(_.timestamp)

@@ -100,8 +100,10 @@ private[sql] class LongSQLMetricValue(private var _value: Long)
   // Needed for SQLListenerSuite
   override def equals(other: Any): Boolean = {
     other match {
-      case o: LongSQLMetricValue => value == o.value
-      case _                     => false
+      case o: LongSQLMetricValue =>
+        value == o.value
+      case _ =>
+        false
     }
   }
 }
@@ -210,8 +212,10 @@ private[sql] object SQLMetrics {
       StaticsLongSQLMetricParam)
     val metricParam =
       metricParamName match {
-        case `longSQLMetricParam`    => LongSQLMetricParam
-        case `staticsSQLMetricParam` => StaticsLongSQLMetricParam
+        case `longSQLMetricParam` =>
+          LongSQLMetricParam
+        case `staticsSQLMetricParam` =>
+          StaticsLongSQLMetricParam
       }
     metricParam.asInstanceOf[SQLMetricParam[SQLMetricValue[Any], Any]]
   }

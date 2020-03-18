@@ -154,7 +154,8 @@ trait IndicesModule[M[+_]]
           buf: mutable.ListBuffer[SliceIndex],
           stream: StreamT[M, SliceIndex]): M[TableIndex] =
         stream.uncons flatMap {
-          case None => M.point(new TableIndex(buf.toList))
+          case None =>
+            M.point(new TableIndex(buf.toList))
           case Some((si, tail)) => {
             buf += si;
             accumulate(buf, tail)
@@ -363,8 +364,10 @@ trait IndicesModule[M[+_]]
       val vt = composeSliceTransform(valueSpec)
 
       table.slices.uncons flatMap {
-        case Some((slice, _)) => createFromSlice(slice, sts, vt)
-        case None             => M.point(SliceIndex.empty)
+        case Some((slice, _)) =>
+          createFromSlice(slice, sts, vt)
+        case None =>
+          M.point(SliceIndex.empty)
       }
     }
 
@@ -468,7 +471,8 @@ trait IndicesModule[M[+_]]
               val rv = keySlice.toRValue(i)
               rv match {
                 case CUndefined =>
-                case rv         => arr(i) = rv
+                case rv =>
+                  arr(i) = rv
               }
               i += 1
             }

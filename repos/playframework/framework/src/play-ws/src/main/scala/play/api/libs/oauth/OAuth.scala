@@ -41,7 +41,8 @@ case class OAuth(info: ServiceInfo, use10a: Boolean = true) {
       provider.retrieveRequestToken(consumer, callbackURL)
       Right(RequestToken(consumer.getToken(), consumer.getTokenSecret()))
     } catch {
-      case e: OAuthException => Left(e)
+      case e: OAuthException =>
+        Left(e)
     }
   }
 
@@ -61,7 +62,8 @@ case class OAuth(info: ServiceInfo, use10a: Boolean = true) {
       provider.retrieveAccessToken(consumer, verifier)
       Right(RequestToken(consumer.getToken(), consumer.getTokenSecret()))
     } catch {
-      case e: OAuthException => Left(e)
+      case e: OAuthException =>
+        Left(e)
     }
   }
 

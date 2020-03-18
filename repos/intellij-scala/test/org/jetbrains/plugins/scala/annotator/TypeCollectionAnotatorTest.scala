@@ -49,8 +49,10 @@ class TypeCollectionAnotatorTest
 
     assert(
       holder.annotations.exists {
-        case Info(`highlightedText`, `highlightingMessage`) => true
-        case _                                              => false
+        case Info(`highlightedText`, `highlightingMessage`) =>
+          true
+        case _ =>
+          false
       })
   }
 
@@ -62,8 +64,10 @@ class TypeCollectionAnotatorTest
 
     assert(
       !holder.annotations.exists {
-        case Info(`textCantHighlight`._1, `textCantHighlight`._2) => true
-        case _                                                    => false
+        case Info(`textCantHighlight`._1, `textCantHighlight`._2) =>
+          true
+        case _ =>
+          false
       })
   }
 

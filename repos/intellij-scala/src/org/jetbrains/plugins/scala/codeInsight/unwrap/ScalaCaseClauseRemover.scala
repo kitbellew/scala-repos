@@ -38,7 +38,8 @@ class ScalaCaseClauseRemover extends ScalaUnwrapper {
       case (cl: ScCaseClause) childOf (cls: ScCaseClauses)
           if cls.caseClauses.size > 1 =>
         ifClause(cl)
-      case _ => ifNot
+      case _ =>
+        ifNot
     }
   }
 

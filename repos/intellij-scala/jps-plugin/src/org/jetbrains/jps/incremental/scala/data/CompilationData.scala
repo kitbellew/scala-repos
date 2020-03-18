@@ -39,8 +39,9 @@ object CompilationData {
     val module = target.getModule
 
     outputsNotSpecified(chunk) match {
-      case Some(message) => return Left(message)
-      case None          =>
+      case Some(message) =>
+        return Left(message)
+      case None =>
     }
     val output = target.getOutputDir
     checkOrCreate(output)

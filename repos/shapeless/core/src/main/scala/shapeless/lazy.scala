@@ -198,7 +198,8 @@ trait OpenImplicitMacros {
     c.openImplicits match {
       case (List(_, second, _ @_*)) =>
         Some(second.pt)
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -226,7 +227,8 @@ class LazyMacros(val c: whitebox.Context)
   def mkImpl[I](mkInst: (Tree, Type) => Tree, nullInst: => Tree)(implicit
       iTag: WeakTypeTag[I]): Tree = {
     openImplicitTpeParam match {
-      case Some(tpe) => LazyMacros.deriveInstance(this)(tpe, mkInst)
+      case Some(tpe) =>
+        LazyMacros.deriveInstance(this)(tpe, mkInst)
       case None =>
         val tpe = iTag.tpe.dealias
         if (tpe.typeSymbol.isParameter)
@@ -248,8 +250,10 @@ class LazyMacros(val c: whitebox.Context)
       override def transform(tree: Tree): Tree = {
         super.transform {
           tree match {
-            case Literal(Constant("dummy")) => Literal(Constant(msg))
-            case t                          => t
+            case Literal(Constant("dummy")) =>
+              Literal(Constant(msg))
+            case t =>
+              t
           }
         }
       }
@@ -287,8 +291,10 @@ class LazyMacros(val c: whitebox.Context)
     class TypeWrapper(val tpe: Type) {
       override def equals(other: Any): Boolean =
         other match {
-          case TypeWrapper(tpe0) => tpe =:= tpe0
-          case _                 => false
+          case TypeWrapper(tpe0) =>
+            tpe =:= tpe0
+          case _ =>
+            false
         }
       override def toString = tpe.toString
     }
@@ -394,7 +400,8 @@ class LazyMacros(val c: whitebox.Context)
         import scala.::
         val open0 =
           open match {
-            case Nil => Nil
+            case Nil =>
+              Nil
             case h :: t =>
               h.copy(dependsOn =
                 if (h.instTpe =:= tpe || h.dependsOn.exists(_ =:= tpe))
@@ -431,8 +438,10 @@ class LazyMacros(val c: whitebox.Context)
 
       def lookup(instTpe: Type): Either[State, (State, Instance)] =
         dict.get(TypeWrapper(instTpe)) match {
-          case Some(i) => Right((addDependency(instTpe), i))
-          case None    => Left(openInst(instTpe)._1)
+          case Some(i) =>
+            Right((addDependency(instTpe), i))
+          case None =>
+            Left(openInst(instTpe)._1)
         }
 
       def dependsOn(tpe: Type): List[Instance] = {
@@ -441,7 +450,8 @@ class LazyMacros(val c: whitebox.Context)
             tpes: List[List[Type]],
             acc: List[Instance]): List[Instance] =
           tpes match {
-            case Nil => acc
+            case Nil =>
+              acc
             case Nil :: t =>
               helper(t, acc)
             case (h :: t0) :: t =>
@@ -459,14 +469,17 @@ class LazyMacros(val c: whitebox.Context)
 
     def stripRefinements(tpe: Type): Option[Type] =
       tpe match {
-        case RefinedType(parents, decls) => Some(parents.head)
-        case _                           => None
+        case RefinedType(parents, decls) =>
+          Some(parents.head)
+        case _ =>
+          None
       }
 
     def resolve(state: State)(inst: Instance): Option[(State, Instance)] =
       resolve0(state)(inst.instTpe)
         .filter {
-          case (_, tree, _) => !tree.equalsStructure(inst.ident)
+          case (_, tree, _) =>
+            !tree.equalsStructure(inst.ident)
         }
         .map {
           case (state0, extInst, actualTpe) =>
@@ -502,7 +515,8 @@ class LazyMacros(val c: whitebox.Context)
             case (state2, inst) =>
               if (inst.inst.isEmpty)
                 resolve0(state2)(innerTpe).map {
-                  case (_, tree, _) => tree
+                  case (_, tree, _) =>
+                    tree
                 }
               else
                 Some(inst.inst.get)
@@ -513,7 +527,8 @@ class LazyMacros(val c: whitebox.Context)
             actualTree match {
               case TypeApply(method, other) =>
                 method.toString().endsWith(ignoring)
-              case _ => false
+              case _ =>
+                false
             }
 
           ignoring.isEmpty || !ignored
@@ -542,13 +557,16 @@ class LazyMacros(val c: whitebox.Context)
           case LowPriorityFor(ignored, tpe) =>
             val res =
               state0.lookup(instTpe) match {
-                case Left(state) => helper(state, instTpe, tpe, ignored)
-                case Right(res)  => res
+                case Left(state) =>
+                  helper(state, instTpe, tpe, ignored)
+                case Right(res) =>
+                  res
               }
 
             Some(Right(res))
 
-          case _ => None
+          case _ =>
+            None
         }
     }
 
@@ -582,7 +600,8 @@ class LazyMacros(val c: whitebox.Context)
                     List(Ident(nme.SELECTOR_DUMMY))),
                   args) =>
               Apply(transform(qual), transformTrees(args))
-            case t => t
+            case t =>
+              t
           }
         }
       }

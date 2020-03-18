@@ -37,8 +37,10 @@ trait PartitionAssignor {
 object PartitionAssignor {
   def createInstance(assignmentStrategy: String) =
     assignmentStrategy match {
-      case "roundrobin" => new RoundRobinAssignor()
-      case _            => new RangeAssignor()
+      case "roundrobin" =>
+        new RoundRobinAssignor()
+      case _ =>
+        new RangeAssignor()
     }
 }
 

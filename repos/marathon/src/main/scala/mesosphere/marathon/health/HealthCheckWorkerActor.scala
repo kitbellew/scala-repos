@@ -34,8 +34,9 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
 
       doCheck(app, task, launched, check)
         .andThen {
-          case Success(Some(result)) => replyTo ! result
-          case Success(None)         => // ignore
+          case Success(Some(result)) =>
+            replyTo ! result
+          case Success(None) => // ignore
           case Failure(t) =>
             replyTo ! Unhealthy(
               task.taskId,
@@ -43,7 +44,8 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
               s"${t.getClass.getSimpleName}: ${t.getMessage}")
         }
         .onComplete {
-          case _ => self ! PoisonPill
+          case _ =>
+            self ! PoisonPill
         }
   }
 
@@ -63,9 +65,12 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
         }
       case Some(port) =>
         check.protocol match {
-          case HTTP  => http(app, task, launched, check, port)
-          case TCP   => tcp(app, task, launched, check, port)
-          case HTTPS => https(app, task, launched, check, port)
+          case HTTP =>
+            http(app, task, launched, check, port)
+          case TCP =>
+            tcp(app, task, launched, check, port)
+          case HTTPS =>
+            https(app, task, launched, check, port)
           case COMMAND =>
             Future.failed {
               val message = s"COMMAND health checks can only be performed " +

@@ -327,8 +327,10 @@ private[spark] class TaskSetManager(
         val prefs = tasks(index).preferredLocations
         val executors = prefs.flatMap(
           _ match {
-            case e: ExecutorCacheTaskLocation => Some(e.executorId)
-            case _                            => None
+            case e: ExecutorCacheTaskLocation =>
+              Some(e.executorId)
+            case _ =>
+              None
           });
         if (executors.contains(execId)) {
           speculatableTasks -= index
@@ -432,7 +434,8 @@ private[spark] class TaskSetManager(
 
     // find a speculative task if all others tasks have been scheduled
     dequeueSpeculativeTask(execId, host, maxLocality).map {
-      case (taskIndex, allowedLocality) => (taskIndex, allowedLocality, true)
+      case (taskIndex, allowedLocality) =>
+        (taskIndex, allowedLocality, true)
     }
   }
 
@@ -595,9 +598,12 @@ private[spark] class TaskSetManager(
         myLocalityLevels(currentLocalityIndex) match {
           case TaskLocality.PROCESS_LOCAL =>
             moreTasksToRunIn(pendingTasksForExecutor)
-          case TaskLocality.NODE_LOCAL => moreTasksToRunIn(pendingTasksForHost)
-          case TaskLocality.NO_PREF    => pendingTasksWithNoPrefs.nonEmpty
-          case TaskLocality.RACK_LOCAL => moreTasksToRunIn(pendingTasksForRack)
+          case TaskLocality.NODE_LOCAL =>
+            moreTasksToRunIn(pendingTasksForHost)
+          case TaskLocality.NO_PREF =>
+            pendingTasksWithNoPrefs.nonEmpty
+          case TaskLocality.RACK_LOCAL =>
+            moreTasksToRunIn(pendingTasksForRack)
         }
       if (!moreTasks) {
         // This is a performance optimization: if there are no more tasks that can
@@ -892,9 +898,12 @@ private[spark] class TaskSetManager(
          if info.running && info.executorId == execId) {
       val exitCausedByApp: Boolean =
         reason match {
-          case exited: ExecutorExited => exited.exitCausedByApp
-          case ExecutorKilled         => false
-          case _                      => true
+          case exited: ExecutorExited =>
+            exited.exitCausedByApp
+          case ExecutorKilled =>
+            false
+          case _ =>
+            true
         }
       handleFailedTask(
         tid,
@@ -957,10 +966,14 @@ private[spark] class TaskSetManager(
     val defaultWait = conf.get("spark.locality.wait", "3s")
     val localityWaitKey =
       level match {
-        case TaskLocality.PROCESS_LOCAL => "spark.locality.wait.process"
-        case TaskLocality.NODE_LOCAL    => "spark.locality.wait.node"
-        case TaskLocality.RACK_LOCAL    => "spark.locality.wait.rack"
-        case _                          => null
+        case TaskLocality.PROCESS_LOCAL =>
+          "spark.locality.wait.process"
+        case TaskLocality.NODE_LOCAL =>
+          "spark.locality.wait.node"
+        case TaskLocality.RACK_LOCAL =>
+          "spark.locality.wait.rack"
+        case _ =>
+          null
       }
 
     if (localityWaitKey != null) {

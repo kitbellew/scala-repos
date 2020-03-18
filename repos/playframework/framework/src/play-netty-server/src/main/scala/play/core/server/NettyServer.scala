@@ -58,8 +58,10 @@ class NettyServer(
 
   private lazy val transport =
     nettyConfig.getString("transport") match {
-      case "native" => Native
-      case "jdk"    => Jdk
+      case "native" =>
+        Native
+      case "jdk" =>
+        Jdk
       case _ =>
         throw ServerStartException(
           "Netty transport configuration value should be either jdk or native")
@@ -76,8 +78,10 @@ class NettyServer(
     val threadCount = nettyConfig.getInt("eventLoopThreads")
     val threadFactory = NamedThreadFactory("netty-event-loop")
     transport match {
-      case Native => new EpollEventLoopGroup(threadCount, threadFactory)
-      case Jdk    => new NioEventLoopGroup(threadCount, threadFactory)
+      case Native =>
+        new EpollEventLoopGroup(threadCount, threadFactory)
+      case Jdk =>
+        new NioEventLoopGroup(threadCount, threadFactory)
     }
   }
 
@@ -103,8 +107,10 @@ class NettyServer(
       config: Config) = {
     def unwrap(value: ConfigValue) =
       value.unwrapped() match {
-        case number: Number => number.intValue().asInstanceOf[Integer]
-        case other          => other
+        case number: Number =>
+          number.intValue().asInstanceOf[Integer]
+        case other =>
+          other
       }
     config.entrySet().asScala.filterNot(_.getKey.startsWith("child.")).foreach {
       option =>
@@ -139,8 +145,10 @@ class NettyServer(
 
     val channelClass =
       transport match {
-        case Native => classOf[EpollServerSocketChannel]
-        case Jdk    => classOf[NioServerSocketChannel]
+        case Native =>
+          classOf[EpollServerSocketChannel]
+        case Jdk =>
+          classOf[NioServerSocketChannel]
       }
 
     val bootstrap = new Bootstrap()
@@ -276,12 +284,14 @@ class NettyServer(
     try {
       super.stop()
     } catch {
-      case NonFatal(e) => logger.error("Error while stopping logger", e)
+      case NonFatal(e) =>
+        logger.error("Error while stopping logger", e)
     }
 
     mode match {
       case Mode.Test =>
-      case _         => logger.info("Stopping server...")
+      case _ =>
+        logger.info("Stopping server...")
     }
 
     // Call provided hook

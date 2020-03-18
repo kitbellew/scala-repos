@@ -83,7 +83,8 @@ trait StructureViewBuilder {
         val traverser = new StructureTraverser()
         traverser.traverse(tree)
         traverser.stucture.toList
-      case Right(ex) => List.empty
+      case Right(ex) =>
+        List.empty
     }
   }
 

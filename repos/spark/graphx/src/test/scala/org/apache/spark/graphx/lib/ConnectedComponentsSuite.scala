@@ -30,7 +30,8 @@ class ConnectedComponentsSuite extends SparkFunSuite with LocalSparkContext {
       val ccGraph = gridGraph.connectedComponents()
       val maxCCid = ccGraph.vertices
         .map {
-          case (vid, ccId) => ccId
+          case (vid, ccId) =>
+            ccId
         }
         .sum()
       assert(maxCCid === 0)
@@ -43,7 +44,8 @@ class ConnectedComponentsSuite extends SparkFunSuite with LocalSparkContext {
       val ccGraph = gridGraph.connectedComponents()
       val maxCCid = ccGraph.vertices
         .map {
-          case (vid, ccId) => ccId
+          case (vid, ccId) =>
+            ccId
         }
         .sum()
       assert(maxCCid === 0)
@@ -55,7 +57,8 @@ class ConnectedComponentsSuite extends SparkFunSuite with LocalSparkContext {
       val chain1 = (0 until 9).map(x => (x, x + 1))
       val chain2 = (10 until 20).map(x => (x, x + 1))
       val rawEdges = sc.parallelize(chain1 ++ chain2, 3).map {
-        case (s, d) => (s.toLong, d.toLong)
+        case (s, d) =>
+          (s.toLong, d.toLong)
       }
       val twoChains = Graph.fromEdgeTuples(rawEdges, 1.0)
       val ccGraph = twoChains.connectedComponents()
@@ -83,7 +86,8 @@ class ConnectedComponentsSuite extends SparkFunSuite with LocalSparkContext {
       val chain1 = (0 until 9).map(x => (x, x + 1))
       val chain2 = (10 until 20).map(x => (x, x + 1))
       val rawEdges = sc.parallelize(chain1 ++ chain2, 3).map {
-        case (s, d) => (s.toLong, d.toLong)
+        case (s, d) =>
+          (s.toLong, d.toLong)
       }
       val twoChains = Graph.fromEdgeTuples(rawEdges, true).reverse
       val ccGraph = twoChains.connectedComponents()

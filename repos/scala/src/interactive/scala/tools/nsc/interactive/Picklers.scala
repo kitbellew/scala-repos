@@ -77,7 +77,8 @@ trait Picklers {
   implicit lazy val sourceFile: Pickler[SourceFile] =
     (pkl[AbstractFile] ~ pkl[Diff])
       .wrapped[SourceFile] {
-        case f ~ d => new BatchSourceFile(f, patch(f, d))
+        case f ~ d =>
+          new BatchSourceFile(f, patch(f, d))
       } { f =>
         f.file ~ delta(f.file, f.content)
       }
@@ -85,7 +86,8 @@ trait Picklers {
 
   lazy val offsetPosition: CondPickler[Position] = (pkl[SourceFile] ~ pkl[Int])
     .wrapped {
-      case x ~ y => Position.offset(x, y)
+      case x ~ y =>
+        Position.offset(x, y)
     } { p =>
       p.source ~ p.point
     }
@@ -173,7 +175,8 @@ trait Picklers {
   implicit def workEvent: Pickler[WorkEvent] = {
     (pkl[Int] ~ pkl[Long])
       .wrapped {
-        case id ~ ms => WorkEvent(id, ms)
+        case id ~ ms =>
+          WorkEvent(id, ms)
       } { w =>
         w.atNode ~ w.atMillis
       }
@@ -250,7 +253,8 @@ trait Picklers {
   implicit def askLinkPosItem: CondPickler[AskLinkPosItem] =
     (pkl[Symbol] ~ pkl[SourceFile])
       .wrapped {
-        case sym ~ source => new AskLinkPosItem(sym, source, new Response)
+        case sym ~ source =>
+          new AskLinkPosItem(sym, source, new Response)
       } { item =>
         item.sym ~ item.source
       }

@@ -179,7 +179,8 @@ class AkkaHttpServer(
         val actionWithErrorHandling = EssentialAction { rh =>
           import play.api.libs.iteratee.Execution.Implicits.trampoline
           action(rh).recoverWith {
-            case error => handleHandlerError(tryApp, taggedRequestHeader, error)
+            case error =>
+              handleHandlerError(tryApp, taggedRequestHeader, error)
           }
         }
         executeAction(
@@ -218,8 +219,10 @@ class AkkaHttpServer(
       rh: RequestHeader,
       t: Throwable): Future[Result] = {
     tryApp match {
-      case Success(app) => app.errorHandler.onServerError(rh, t)
-      case Failure(_)   => DefaultHttpErrorHandler.onServerError(rh, t)
+      case Success(app) =>
+        app.errorHandler.onServerError(rh, t)
+      case Failure(_) =>
+        DefaultHttpErrorHandler.onServerError(rh, t)
     }
   }
 
@@ -250,8 +253,10 @@ class AkkaHttpServer(
 
     val resultFuture: Future[Result] =
       source match {
-        case None    => actionAccumulator.run()
-        case Some(s) => actionAccumulator.run(s)
+        case None =>
+          actionAccumulator.run()
+        case Some(s) =>
+          actionAccumulator.run(s)
       }
     val responseFuture: Future[HttpResponse] = resultFuture.map { result =>
       val cleanedResult: Result = ServerResultUtils.cleanFlashCookie(
@@ -280,7 +285,8 @@ class AkkaHttpServer(
 
     mode match {
       case Mode.Test =>
-      case _         => logger.info("Stopping server...")
+      case _ =>
+        logger.info("Stopping server...")
     }
 
     // First, stop listening
@@ -293,7 +299,8 @@ class AkkaHttpServer(
     try {
       super.stop()
     } catch {
-      case NonFatal(e) => logger.error("Error while stopping logger", e)
+      case NonFatal(e) =>
+        logger.error("Error while stopping logger", e)
     }
 
     system.terminate()

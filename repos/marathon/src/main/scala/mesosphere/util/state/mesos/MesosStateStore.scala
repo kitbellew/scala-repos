@@ -65,8 +65,10 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
       .flatMap { variable =>
         futureToFuture(state.expunge(variable))
           .map {
-            case java.lang.Boolean.TRUE  => true
-            case java.lang.Boolean.FALSE => false
+            case java.lang.Boolean.TRUE =>
+              true
+            case java.lang.Boolean.FALSE =>
+              false
           }
       }
       .recover(mapException(s"Can not delete entity with key $key"))
@@ -99,7 +101,8 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
 
   private[this] def throwOnNull[T](t: T): T = {
     Option(t) match {
-      case Some(value) => value
+      case Some(value) =>
+        value
       case None =>
         throw new StoreCommandFailedException("Null returned from state store!")
     }
@@ -107,7 +110,8 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
 
   private[this] def mapException[T](
       message: String): PartialFunction[Throwable, T] = {
-    case NonFatal(ex) => throw new StoreCommandFailedException(message, ex)
+    case NonFatal(ex) =>
+      throw new StoreCommandFailedException(message, ex)
   }
 }
 

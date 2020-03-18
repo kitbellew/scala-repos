@@ -163,7 +163,8 @@ private class AppTaskLauncherActor(
       case msg @ RateLimiterActor.DelayUpdate(delayApp, delayUntil)
           if delayApp != app =>
         log.warning("Received delay update for other app: {}", msg)
-      case message: Any => stash()
+      case message: Any =>
+        stash()
     }
 
   private[this] def active: Receive =
@@ -189,7 +190,8 @@ private class AppTaskLauncherActor(
     }
 
   private[this] def receiveStop: Receive = {
-    case AppTaskLauncherActor.Stop => waitingForInFlight()
+    case AppTaskLauncherActor.Stop =>
+      waitingForInFlight()
   }
 
   private[this] def waitingForInFlight(): Unit = {
@@ -290,8 +292,10 @@ private class AppTaskLauncherActor(
       }
 
       tasksMap.get(taskId) match {
-        case Some(oldTask) => handleTask(oldTask)
-        case _             => log.warning("ignore update of unknown {}", taskId)
+        case Some(oldTask) =>
+          handleTask(oldTask)
+        case _ =>
+          log.warning("ignore update of unknown {}", taskId)
       }
 
       if (status.terminal) {
@@ -395,8 +399,10 @@ private class AppTaskLauncherActor(
         tasksToLaunch)
       val taskOp: Option[TaskOp] = taskOpFactory.buildTaskOp(matchRequest)
       taskOp match {
-        case Some(op) => handleTaskOp(op, offer)
-        case None     => sender() ! MatchedTaskOps(offer.getId, Seq.empty)
+        case Some(op) =>
+          handleTaskOp(op, offer)
+        case None =>
+          sender() ! MatchedTaskOps(offer.getId, Seq.empty)
       }
   }
 
@@ -404,8 +410,10 @@ private class AppTaskLauncherActor(
     def updateActorState(): Unit = {
       taskOp match {
         // only decrement for launched tasks, not for reservations:
-        case _: TaskOp.Launch => tasksToLaunch -= 1
-        case _                => ()
+        case _: TaskOp.Launch =>
+          tasksToLaunch -= 1
+        case _ =>
+          ()
       }
 
       val taskId = taskOp.taskId
@@ -464,7 +472,8 @@ private class AppTaskLauncherActor(
       backOffUntil match {
         case Some(until) if until > clock.now() =>
           s"currently waiting for backoff($until)"
-        case _ => "not backing off"
+        case _ =>
+          "not backing off"
       }
 
     val inFlight = inFlightTaskOperations.size

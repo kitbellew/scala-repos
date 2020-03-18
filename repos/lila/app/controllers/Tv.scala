@@ -20,7 +20,8 @@ object Tv extends LilaController {
   def sides(chanKey: String, gameId: String, color: String) =
     Open { implicit ctx =>
       lila.tv.Tv.Channel.byKey get chanKey match {
-        case None => notFound
+        case None =>
+          notFound
         case Some(channel) =>
           OptionFuResult(GameRepo.pov(gameId, color)) { pov =>
             Env.tv.tv.getChampions zip
@@ -84,8 +85,10 @@ object Tv extends LilaController {
         Env.tv.streamsOnAir.all flatMap { streams =>
           val others = streams.filter(_.id != id)
           streams find (_.id == id) match {
-            case None    => fuccess(Ok(html.tv.notStreaming(streamer, others)))
-            case Some(s) => fuccess(Ok(html.tv.stream(s, others)))
+            case None =>
+              fuccess(Ok(html.tv.notStreaming(streamer, others)))
+            case Some(s) =>
+              fuccess(Ok(html.tv.stream(s, others)))
           }
         }
       }
@@ -136,7 +139,8 @@ object Tv extends LilaController {
   def frame =
     Action.async { req =>
       Env.tv.tv.getBest map {
-        case None => NotFound
+        case None =>
+          NotFound
         case Some(game) =>
           Ok(
             views.html.tv.embed(

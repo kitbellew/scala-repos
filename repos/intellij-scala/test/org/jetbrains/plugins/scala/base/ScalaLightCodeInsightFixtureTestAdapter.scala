@@ -278,7 +278,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
             null
           )
         myFixture.checkResult(assumedStub, /*stripTrailingSpaces = */ true)
-      case _ => assert(false, "There is no fixes with such hint.")
+      case _ =>
+        assert(false, "There is no fixes with such hint.")
     }
   }
 

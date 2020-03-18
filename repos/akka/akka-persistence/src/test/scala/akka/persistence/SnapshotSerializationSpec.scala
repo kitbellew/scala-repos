@@ -17,8 +17,10 @@ object SnapshotSerializationSpec {
     class MySnapshot(val id: String) extends SerializationMarker {
       override def equals(obj: scala.Any) =
         obj match {
-          case s: MySnapshot ⇒ s.id.equals(id)
-          case _ ⇒ false
+          case s: MySnapshot ⇒
+            s.id.equals(id)
+          case _ ⇒
+            false
         }
     }
   }
@@ -34,8 +36,10 @@ object SnapshotSerializationSpec {
       val pStream = new PrintStream(bStream)
       val msg: String =
         obj match {
-          case s: MySnapshot ⇒ s.id
-          case _ ⇒ "unknown"
+          case s: MySnapshot ⇒
+            s.id
+          case _ ⇒
+            "unknown"
         }
       pStream.println(msg)
       bStream.toByteArray
@@ -52,15 +56,20 @@ object SnapshotSerializationSpec {
       extends NamedPersistentActor(name) {
 
     override def receiveRecover: Receive = {
-      case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
+      case SnapshotOffer(md, s) ⇒
+        probe ! ((md, s))
       case RecoveryCompleted ⇒ // ignore
-      case other ⇒ probe ! other
+      case other ⇒
+        probe ! other
     }
 
     override def receiveCommand = {
-      case s: String ⇒ saveSnapshot(new MySnapshot(s))
-      case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
-      case other ⇒ probe ! other
+      case s: String ⇒
+        saveSnapshot(new MySnapshot(s))
+      case SaveSnapshotSuccess(md) ⇒
+        probe ! md.sequenceNr
+      case other ⇒
+        probe ! other
     }
   }
 

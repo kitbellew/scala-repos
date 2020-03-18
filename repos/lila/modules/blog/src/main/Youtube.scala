@@ -37,6 +37,7 @@ object Youtube {
         for {
           sec <- parseIntOption(secS)
         } yield sec
-      case _ => None
+      case _ =>
+        None
     }
 }

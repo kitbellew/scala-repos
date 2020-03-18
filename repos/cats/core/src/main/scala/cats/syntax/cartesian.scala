@@ -25,12 +25,14 @@ abstract class CartesianOps[F[_], A] extends Cartesian.Ops[F, A] {
 
   def *>[B](fb: F[B])(implicit F: Functor[F]): F[B] =
     F.map(typeClassInstance.product(self, fb)) {
-      case (a, b) => b
+      case (a, b) =>
+        b
     }
 
   def <*[B](fb: F[B])(implicit F: Functor[F]): F[A] =
     F.map(typeClassInstance.product(self, fb)) {
-      case (a, b) => a
+      case (a, b) =>
+        a
     }
 
 }

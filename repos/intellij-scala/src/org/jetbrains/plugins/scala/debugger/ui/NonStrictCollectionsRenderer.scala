@@ -101,12 +101,15 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
             context) || isStreamView(objectRef.referenceType()))
         return Success[String]("?")
     } catch {
-      case e: EvaluateException => return Fail(e)
+      case e: EvaluateException =>
+        return Fail(e)
     }
 
     invoke("size") match {
-      case result @ Success(_) => result
-      case a                   => a
+      case result @ Success(_) =>
+        result
+      case a =>
+        a
     }
   }
 
@@ -160,8 +163,10 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 
         for (i <- 0 until getStartIndex) {
           getTail(currentTail, currentTail.referenceType()) match {
-            case newTail: ObjectReference => currentTail = newTail
-            case _                        => return //ourCollection.size < startIndex
+            case newTail: ObjectReference =>
+              currentTail = newTail
+            case _ =>
+              return //ourCollection.size < startIndex
           }
         }
 
@@ -201,7 +206,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
           .createExpressionFromText(watch.calcValueName(), null)
       case collectionItem: CollectionElementNodeDescriptor =>
         collectionItem.getDescriptorEvaluation(context)
-      case _ => null
+      case _ =>
+        null
     }
 
   }
@@ -213,14 +219,16 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
     value match {
       case objectRef: ObjectReferenceImpl =>
         ScalaCollectionRenderer.nonEmpty(objectRef, evaluationContext)
-      case _ => false
+      case _ =>
+        false
     }
 
   def isApplicable(tpe: Type): Boolean =
     tpe match {
       case refType: ReferenceType if !mustNotExpandStreams =>
         isStream(tpe) || isView(tpe)
-      case _ => false
+      case _ =>
+        false
     }
 
   private def isView(tpe: Type): Boolean =
@@ -243,8 +251,10 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
         val tpe = obj.referenceType()
         val sizeString = " size = " + (
           tryToGetSize(obj, context) match {
-            case Success(value: Int) => value
-            case _                   => "?"
+            case Success(value: Int) =>
+              value
+            case _ =>
+              "?"
           }
         )
 
@@ -254,7 +264,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
           else
             "{...}"
         )
-      case _ => stringBuilder append "{...}"
+      case _ =>
+        stringBuilder append "{...}"
     }
 
     val label = stringBuilder.toString
@@ -278,11 +289,14 @@ object NonStrictCollectionsRenderer {
         obj,
         method,
         EMPTY_ARGS) match {
-        case intValue: IntegerValue => Success[Int](intValue.intValue())
+        case intValue: IntegerValue =>
+          Success[Int](intValue.intValue())
         case boolValue: BooleanValue =>
           Success[Boolean](boolValue.booleanValue())
-        case objValue: ObjectReference => Success[Value](objValue)
-        case _                         => MethodNotFound()
+        case objValue: ObjectReference =>
+          Success[Value](objValue)
+        case _ =>
+          MethodNotFound()
       }
     } catch {
       case e @ (
@@ -326,7 +340,8 @@ object NonStrictCollectionsRenderer {
             name,
             PositionUtil getContextElement context)
       } catch {
-        case e: IncorrectOperationException => null
+        case e: IncorrectOperationException =>
+          null
       }
     }
 

@@ -39,8 +39,10 @@ sealed abstract case class Uri(
       charset: Charset = UTF8,
       mode: Uri.ParsingMode = Uri.ParsingMode.Relaxed): Query =
     rawQueryString match {
-      case Some(q) ⇒ new UriParser(q, charset, mode).parseQuery()
-      case None ⇒ Query.Empty
+      case Some(q) ⇒
+        new UriParser(q, charset, mode).parseQuery()
+      case None ⇒
+        Query.Empty
     }
 
   /**
@@ -482,8 +484,10 @@ object Uri {
 
     def apply(address: InetAddress): Host =
       address match {
-        case ipv4: Inet4Address ⇒ apply(ipv4)
-        case ipv6: Inet6Address ⇒ apply(ipv6)
+        case ipv4: Inet4Address ⇒
+          apply(ipv4)
+        case ipv6: Inet6Address ⇒
+          apply(ipv6)
         case _ ⇒
           throw new IllegalArgumentException(
             s"Unexpected address type(${address.getClass.getSimpleName}): $address")
@@ -506,8 +510,10 @@ object Uri {
     require(!address.isEmpty, "address must not be empty")
     def equalsIgnoreCase(other: Host): Boolean =
       other match {
-        case IPv4Host(`bytes`, _) ⇒ true
-        case _ ⇒ false
+        case IPv4Host(`bytes`, _) ⇒
+          true
+        case _ ⇒
+          false
       }
 
     override def isIPv4: Boolean = true
@@ -532,8 +538,10 @@ object Uri {
     require(!address.isEmpty, "address must not be empty")
     def equalsIgnoreCase(other: Host): Boolean =
       other match {
-        case IPv6Host(`bytes`, _) ⇒ true
-        case _ ⇒ false
+        case IPv6Host(`bytes`, _) ⇒
+          true
+        case _ ⇒
+          false
       }
 
     override def isIPv6: Boolean = true
@@ -560,8 +568,10 @@ object Uri {
   final case class NamedHost(address: String) extends NonEmptyHost {
     def equalsIgnoreCase(other: Host): Boolean =
       other match {
-        case NamedHost(otherAddress) ⇒ address equalsIgnoreCase otherAddress
-        case _ ⇒ false
+        case NamedHost(otherAddress) ⇒
+          address equalsIgnoreCase otherAddress
+        case _ ⇒
+          false
       }
 
     override def isNamedHost: Boolean = true
@@ -578,10 +588,14 @@ object Uri {
       @tailrec
       def check(path: Path): Boolean =
         path match {
-          case PEmpty ⇒ false
-          case Slash(PEmpty) ⇒ true
-          case Slash(tail) ⇒ check(tail)
-          case Segment(head, tail) ⇒ check(tail)
+          case PEmpty ⇒
+            false
+          case Slash(PEmpty) ⇒
+            true
+          case Slash(tail) ⇒
+            check(tail)
+          case Segment(head, tail) ⇒
+            check(tail)
         }
       check(this)
     }
@@ -702,9 +716,12 @@ object Uri {
         tail.reverseAndPrependTo(head :: prefix)
       def startsWith(that: Path): Boolean =
         that match {
-          case Segment(`head`, t) ⇒ tail.startsWith(t)
-          case Segment(h, Empty) ⇒ head.startsWith(h)
-          case x ⇒ x.isEmpty
+          case Segment(`head`, t) ⇒
+            tail.startsWith(t)
+          case Segment(h, Empty) ⇒
+            head.startsWith(h)
+          case x ⇒
+            x.isEmpty
         }
       def dropChars(count: Int): Path =
         if (count < 1)
@@ -815,12 +832,15 @@ object Uri {
         charset: Charset,
         mode: Uri.ParsingMode): Query =
       input match {
-        case None ⇒ Query.Empty
-        case Some(string) ⇒ apply(string, charset, mode)
+        case None ⇒
+          Query.Empty
+        case Some(string) ⇒
+          apply(string, charset, mode)
       }
     def apply(params: (String, String)*): Query =
       params.foldRight(Query.Empty: Query) {
-        case ((key, value), acc) ⇒ Cons(key, value, acc)
+        case ((key, value), acc) ⇒
+          Cons(key, value, acc)
       }
     def apply(params: Map[String, String]): Query = apply(params.toSeq: _*)
 
@@ -877,8 +897,10 @@ object Uri {
 
     def apply(string: String): ParsingMode =
       string match {
-        case "strict" ⇒ Strict
-        case "relaxed" ⇒ Relaxed
+        case "strict" ⇒
+          Strict
+        case "relaxed" ⇒
+          Relaxed
         case x ⇒
           throw new IllegalArgumentException(
             x + " is not a legal UriParsingMode")
@@ -914,7 +936,8 @@ object Uri {
               import Path._
               def replaceLastSegment(p: Path, replacement: Path): Path =
                 p match {
-                  case Path.Empty | Segment(_, Path.Empty) ⇒ replacement
+                  case Path.Empty | Segment(_, Path.Empty) ⇒
+                    replacement
                   case Segment(string, tail) ⇒
                     string :: replaceLastSegment(tail, replacement)
                   case Slash(tail) ⇒
@@ -1011,7 +1034,8 @@ object Uri {
             sb.append(new String(bytes, charset))
           decode(string, charset, lastPercentSignIndexPlus3)(sb)
 
-        case x ⇒ decode(string, charset, ix + 1)(sb.append(x))
+        case x ⇒
+          decode(string, charset, ix + 1)(sb.append(x))
       }
     else
       sb.toString
@@ -1033,8 +1057,10 @@ object Uri {
       else
         -2
     verify() match {
-      case -2 ⇒ scheme.toLowerCase
-      case -1 ⇒ scheme
+      case -2 ⇒
+        scheme.toLowerCase
+      case -1 ⇒
+        scheme
       case ix ⇒
         fail(
           s"Invalid URI scheme, unexpected character at pos $ix ('${scheme charAt ix}')")
@@ -1065,17 +1091,22 @@ object Uri {
     @tailrec
     def hasDotOrDotDotSegment(p: Path): Boolean =
       p match {
-        case Path.Empty ⇒ false
-        case Path.Segment(".", _) | Path.Segment("..", _) ⇒ true
-        case _ ⇒ hasDotOrDotDotSegment(p.tail)
+        case Path.Empty ⇒
+          false
+        case Path.Segment(".", _) | Path.Segment("..", _) ⇒
+          true
+        case _ ⇒
+          hasDotOrDotDotSegment(p.tail)
       }
     // http://tools.ietf.org/html/rfc3986#section-5.2.4
     @tailrec
     def process(input: Path, output: Path = Path.Empty): Path = {
       import Path._
       input match {
-        case Path.Empty ⇒ output.reverse
-        case Segment("." | "..", Slash(tail)) ⇒ process(tail, output)
+        case Path.Empty ⇒
+          output.reverse
+        case Segment("." | "..", Slash(tail)) ⇒
+          process(tail, output)
         case Slash(Segment(".", tail)) ⇒
           process(
             if (tail.isEmpty)
@@ -1098,9 +1129,12 @@ object Uri {
                   tail
               else
                 output)
-        case Segment("." | "..", tail) ⇒ process(tail, output)
-        case Slash(tail) ⇒ process(tail, Slash(output))
-        case Segment(string, tail) ⇒ process(tail, string :: output)
+        case Segment("." | "..", tail) ⇒
+          process(tail, output)
+        case Slash(tail) ⇒
+          process(tail, Slash(output))
+        case Segment(string, tail) ⇒
+          process(tail, string :: output)
       }
     }
     if (hasDotOrDotDotSegment(path))
@@ -1145,10 +1179,14 @@ object UriRendering {
   implicit object HostRenderer extends Renderer[Host] {
     def render[R <: Rendering](r: R, value: Host): r.type =
       value match {
-        case Host.Empty ⇒ r
-        case IPv4Host(_, address) ⇒ r ~~ address
-        case IPv6Host(_, address) ⇒ r ~~ '[' ~~ address ~~ ']'
-        case NamedHost(address) ⇒ encode(r, address, UTF8, `reg-name-char`)
+        case Host.Empty ⇒
+          r
+        case IPv4Host(_, address) ⇒
+          r ~~ address
+        case IPv6Host(_, address) ⇒
+          r ~~ '[' ~~ address ~~ ']'
+        case NamedHost(address) ⇒
+          encode(r, address, UTF8, `reg-name-char`)
       }
   }
   implicit object AuthorityRenderer extends Renderer[Authority] {
@@ -1226,7 +1264,8 @@ object UriRendering {
         r
     } else
       scheme match {
-        case "" | "mailto" ⇒ r
+        case "" | "mailto" ⇒
+          r
         case _ ⇒
           if (path.isEmpty || path.startsWithSlash)
             r ~~ '/' ~~ '/'
@@ -1240,8 +1279,10 @@ object UriRendering {
       charset: Charset,
       encodeFirstSegmentColons: Boolean = false): r.type =
     path match {
-      case Path.Empty ⇒ r
-      case Path.Slash(tail) ⇒ renderPath(r ~~ '/', tail, charset)
+      case Path.Empty ⇒
+        r
+      case Path.Slash(tail) ⇒
+        renderPath(r ~~ '/', tail, charset)
       case Path.Segment(head, tail) ⇒
         val keep =
           if (encodeFirstSegmentColons)
@@ -1260,7 +1301,8 @@ object UriRendering {
     @tailrec
     def append(q: Query): r.type =
       q match {
-        case Query.Empty ⇒ r
+        case Query.Empty ⇒
+          r
         case Query.Cons(key, value, tail) ⇒
           if (q ne query)
             r ~~ '&'

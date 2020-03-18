@@ -27,8 +27,10 @@ class ScalaMethodDescriptor(val fun: ScMethodLike)
           fun.containingClass.name
         else
           fun.name
-      case pc: ScPrimaryConstructor => pc.containingClass.name
-      case _                        => ""
+      case pc: ScPrimaryConstructor =>
+        pc.containingClass.name
+      case _ =>
+        ""
     }
 
   override def canChangeName: Boolean = !fun.isConstructor
@@ -56,8 +58,10 @@ class ScalaMethodDescriptor(val fun: ScMethodLike)
 
   def returnTypeText =
     fun match {
-      case f: ScFunction => f.returnType.getOrAny.presentableText
-      case _             => ""
+      case f: ScFunction =>
+        f.returnType.getOrAny.presentableText
+      case _ =>
+        ""
     }
 
   protected def parametersInner: Seq[Seq[ScalaParameterInfo]] =

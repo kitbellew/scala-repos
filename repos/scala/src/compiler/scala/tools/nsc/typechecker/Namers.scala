@@ -31,14 +31,18 @@ trait Namers extends MethodSynthesis {
   private class TypeTreeSubstituter(cond: Name => Boolean) extends Transformer {
     override def transform(tree: Tree): Tree =
       tree match {
-        case Ident(name) if cond(name) => TypeTree()
-        case _                         => super.transform(tree)
+        case Ident(name) if cond(name) =>
+          TypeTree()
+        case _ =>
+          super.transform(tree)
       }
     def apply(tree: Tree) = {
       val r = transform(tree)
       if (r exists {
-            case tt: TypeTree => tt.isEmpty
-            case _            => false
+            case tt: TypeTree =>
+              tt.isEmpty
+            case _ =>
+              false
           })
         TypeTree()
       else
@@ -48,9 +52,12 @@ trait Namers extends MethodSynthesis {
 
   private def isTemplateContext(ctx: Context): Boolean =
     ctx.tree match {
-      case Template(_, _, _) => true
-      case Import(_, _)      => isTemplateContext(ctx.outer)
-      case _                 => false
+      case Template(_, _, _) =>
+        true
+      case Import(_, _) =>
+        isTemplateContext(ctx.outer)
+      case _ =>
+        false
     }
 
   private class NormalNamer(context: Context) extends Namer(context)
@@ -75,8 +82,10 @@ trait Namers extends MethodSynthesis {
     def createNamer(tree: Tree): Namer = {
       val sym =
         tree match {
-          case ModuleDef(_, _, _) => tree.symbol.moduleClass
-          case _                  => tree.symbol
+          case ModuleDef(_, _, _) =>
+            tree.symbol.moduleClass
+          case _ =>
+            tree.symbol
         }
       def isConstrParam(vd: ValDef) = {
         (sym hasFlag PARAM | PRESUPER) &&
@@ -211,8 +220,10 @@ trait Namers extends MethodSynthesis {
         companionSymbolOf(sym, context) andAlso { companion =>
           val assignNoType =
             companion.rawInfo match {
-              case _: SymLoader => true
-              case tp           => tp.isComplete && (runId(sym.validTo) != currentRunId)
+              case _: SymLoader =>
+                true
+              case tp =>
+                tp.isComplete && (runId(sym.validTo) != currentRunId)
             }
           // pre-set linked symbol to NoType, in case it is not loaded together with this symbol.
           if (assignNoType)
@@ -311,13 +322,20 @@ trait Namers extends MethodSynthesis {
       def dispatch() = {
         var returnContext = this.context
         tree match {
-          case tree @ PackageDef(_, _)         => enterPackage(tree)
-          case tree @ ClassDef(_, _, _, _)     => enterClassDef(tree)
-          case tree @ ModuleDef(_, _, _)       => enterModuleDef(tree)
-          case tree @ ValDef(_, _, _, _)       => enterValDef(tree)
-          case tree @ DefDef(_, _, _, _, _, _) => enterDefDef(tree)
-          case tree @ TypeDef(_, _, _, _)      => enterTypeDef(tree)
-          case DocDef(_, defn)                 => enterSym(defn)
+          case tree @ PackageDef(_, _) =>
+            enterPackage(tree)
+          case tree @ ClassDef(_, _, _, _) =>
+            enterClassDef(tree)
+          case tree @ ModuleDef(_, _, _) =>
+            enterModuleDef(tree)
+          case tree @ ValDef(_, _, _, _) =>
+            enterValDef(tree)
+          case tree @ DefDef(_, _, _, _, _, _) =>
+            enterDefDef(tree)
+          case tree @ TypeDef(_, _, _, _) =>
+            enterTypeDef(tree)
+          case DocDef(_, defn) =>
+            enterSym(defn)
           case tree @ Import(_, _) =>
             assignSymbol(tree)
             returnContext = context.make(tree)
@@ -329,7 +347,8 @@ trait Namers extends MethodSynthesis {
         case NoSymbol =>
           try dispatch()
           catch typeErrorHandler(tree, this.context)
-        case sym => enterExistingSym(sym, tree)
+        case sym =>
+          enterExistingSym(sym, tree)
       }
     }
 
@@ -339,10 +358,14 @@ trait Namers extends MethodSynthesis {
       logAssignSymbol(
         tree,
         tree match {
-          case PackageDef(pid, _) => createPackageSymbol(tree.pos, pid)
-          case Import(_, _)       => createImportSymbol(tree)
-          case mdef: MemberDef    => createMemberSymbol(mdef, mdef.name, -1L)
-          case _                  => abort("Unexpected tree: " + tree)
+          case PackageDef(pid, _) =>
+            createPackageSymbol(tree.pos, pid)
+          case Import(_, _) =>
+            createImportSymbol(tree)
+          case mdef: MemberDef =>
+            createMemberSymbol(mdef, mdef.name, -1L)
+          case _ =>
+            abort("Unexpected tree: " + tree)
         }
       )
     def assignSymbol(tree: MemberDef, name: Name, mask: Long): Symbol =
@@ -368,8 +391,9 @@ trait Namers extends MethodSynthesis {
             ()
           case _ =>
             tree match {
-              case md: DefDef => log("[+symbol] " + sym.debugLocationString)
-              case _          =>
+              case md: DefDef =>
+                log("[+symbol] " + sym.debugLocationString)
+              case _ =>
             }
         }
       tree.symbol = sym
@@ -397,8 +421,10 @@ trait Namers extends MethodSynthesis {
           owner.newMethod(name.toTermName, pos, flags)
         case ClassDef(_, _, _, _) =>
           owner.newClassSymbol(name.toTypeName, pos, flags)
-        case ModuleDef(_, _, _) => owner.newModule(name.toTermName, pos, flags)
-        case PackageDef(pid, _) => createPackageSymbol(pos, pid)
+        case ModuleDef(_, _, _) =>
+          owner.newModule(name.toTermName, pos, flags)
+        case PackageDef(pid, _) =>
+          createPackageSymbol(pos, pid)
         case ValDef(_, _, _, _) =>
           if (isParameter)
             owner.newValueParameter(name.toTermName, pos, flags)
@@ -479,7 +505,8 @@ trait Namers extends MethodSynthesis {
       clazz match {
         case csym: ClassSymbol if csym.isTopLevel =>
           enterClassSymbol(tree, csym)
-        case _ => clazz
+        case _ =>
+          clazz
       }
     }
 
@@ -687,7 +714,8 @@ trait Namers extends MethodSynthesis {
       def noDuplicates(names: List[Name], check: DuplicatesErrorKinds.Value) {
         def loop(xs: List[Name]): Unit =
           xs match {
-            case Nil => ()
+            case Nil =>
+              ()
             case hd :: tl =>
               if (hd == nme.WILDCARD || !(tl contains hd))
                 loop(tl)
@@ -1019,7 +1047,8 @@ trait Namers extends MethodSynthesis {
         tree match {
           case ddef: DefDef if tree.symbol.isTermMacro =>
             defnTyper.computeMacroDefType(ddef, pt)
-          case _ => defnTyper.computeType(tree.rhs, pt)
+          case _ =>
+            defnTyper.computeType(tree.rhs, pt)
         }
 
       val defnTpe = widenIfNecessary(tree.symbol, rhsTpe, pt)
@@ -1283,8 +1312,10 @@ trait Namers extends MethodSynthesis {
             .cookJavaRawInfo() // #3404 xform java rawtypes into existentials
           var overriddenTp =
             site.memberType(overridden) match {
-              case PolyType(tparams, rt) => rt.substSym(tparams, tparamSkolems)
-              case mt                    => mt
+              case PolyType(tparams, rt) =>
+                rt.substSym(tparams, tparamSkolems)
+              case mt =>
+                mt
             }
           for (vparams <- vparamss) {
             var overriddenParams = overriddenTp.params
@@ -1307,9 +1338,11 @@ trait Namers extends MethodSynthesis {
             vparamss.flatten.map(_.symbol))
 
           overriddenTp match {
-            case NullaryMethodType(rtpe)  => overriddenTp = rtpe
-            case MethodType(List(), rtpe) => overriddenTp = rtpe
-            case _                        =>
+            case NullaryMethodType(rtpe) =>
+              overriddenTp = rtpe
+            case MethodType(List(), rtpe) =>
+              overriddenTp = rtpe
+            case _ =>
           }
 
           if (tpt.isEmpty) {
@@ -1429,9 +1462,12 @@ trait Namers extends MethodSynthesis {
       var baseParamss =
         (vparamss, overridden.tpe.paramss) match {
           // match empty and missing parameter list
-          case (Nil, ListOfNil) => Nil
-          case (ListOfNil, Nil) => ListOfNil
-          case (_, paramss)     => paramss
+          case (Nil, ListOfNil) =>
+            Nil
+          case (ListOfNil, Nil) =>
+            ListOfNil
+          case (_, paramss) =>
+            paramss
         }
       assert(
         !overrides || vparamss.length == baseParamss.length,
@@ -1548,7 +1584,8 @@ trait Namers extends MethodSynthesis {
                 // TODO: this is a very brittle approach; I sincerely hope that Denys's research into hygiene
                 //       will open the doors to a much better way of doing this kind of stuff
                 val tparamNames = defTparams map {
-                  case TypeDef(_, name, _, _) => name
+                  case TypeDef(_, name, _, _) =>
+                    name
                 }
                 val eraseAllMentionsOfTparams =
                   new TypeTreeSubstituter(tparamNames contains _)
@@ -1558,7 +1595,8 @@ trait Namers extends MethodSynthesis {
                     case AppliedTypeTree(_, List(arg))
                         if sym.hasFlag(BYNAMEPARAM) =>
                       arg
-                    case t => t
+                    case t =>
+                      t
                   })
               }
             val defRhs = rvparam.rhs
@@ -2005,7 +2043,8 @@ trait Namers extends MethodSynthesis {
           if (sym.owner == method && sym.isValueParameter && !okParams(sym))
             namer.NamerErrorGen.IllegalDependentMethTpeError(sym)(ctx)
 
-        case _ => mapOver(tp)
+        case _ =>
+          mapOver(tp)
       }
     def check(vparamss: List[List[Symbol]]) {
       for (vps <- vparamss) {

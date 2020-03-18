@@ -77,7 +77,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
 
     // shutdown memcached server
     testServers foreach {
-      case (s, _) => s.stop()
+      case (s, _) =>
+        s.stop()
     }
     testServers = List()
   }
@@ -266,7 +267,8 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
                 server.address,
                 Map[String, InetSocketAddress](),
                 shardId)))
-        case None => fail("Cannot start memcached. Skipping...")
+        case None =>
+          fail("Cannot start memcached. Skipping...")
       }
     }
   }

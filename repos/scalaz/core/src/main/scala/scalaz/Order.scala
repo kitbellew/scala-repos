@@ -108,8 +108,10 @@ object Order {
           val (a1, b1) = f(c1)
           val (a2, b2) = f(c2)
           fa.order(a1, a2) match {
-            case Ordering.EQ => fb.order(b1, b2)
-            case o           => o
+            case Ordering.EQ =>
+              fb.order(b1, b2)
+            case o =>
+              o
           }
         }
     }

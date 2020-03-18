@@ -112,8 +112,10 @@ private[streams] class EnumeratorSubscription[T, U >: T](
   override def isActive: Boolean = {
     // run immediately, don't need to wait for exclusive access
     state match {
-      case Requested(_, _)       => true
-      case Completed | Cancelled => false
+      case Requested(_, _) =>
+        true
+      case Completed | Cancelled =>
+        false
     }
   }
 
@@ -235,8 +237,10 @@ private[streams] class EnumeratorSubscription[T, U >: T](
           elementEnumerated(el)
         case Input.Empty =>
           emptyElement match {
-            case None     => emptyEnumerated()
-            case Some(el) => elementEnumerated(el)
+            case None =>
+              emptyEnumerated()
+            case Some(el) =>
+              elementEnumerated(el)
           }
         case Input.EOF =>
           eofEnumerated()

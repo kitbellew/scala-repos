@@ -46,16 +46,19 @@ object ScalaRenameUtil {
           case Some(result) =>
             val renamed = result.isRenamed
             renamed.nonEmpty
-          case None => false
+          case None =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   def isIndirectReference(ref: PsiReference, element: PsiElement): Boolean =
     ref match {
       case scRef: ScReferenceElement =>
         scRef.isIndirectReferenceTo(ref.resolve(), element)
-      case _ => false
+      case _ =>
+        false
     }
 
   def findReferences(element: PsiElement): util.ArrayList[PsiReference] = {
@@ -104,15 +107,18 @@ object ScalaRenameUtil {
             ref
         } else
           ref
-      case ref: PsiReference => ref
+      case ref: PsiReference =>
+        ref
     }
     result
   }
 
   def findSubstituteElement(elementToRename: PsiElement): PsiNamedElement = {
     elementToRename match {
-      case primConstr: ScPrimaryConstructor     => primConstr.containingClass
-      case fun: ScFunction if fun.isConstructor => fun.containingClass
+      case primConstr: ScPrimaryConstructor =>
+        primConstr.containingClass
+      case fun: ScFunction if fun.isConstructor =>
+        fun.containingClass
       case fun: ScFunction
           if Seq("apply", "unapply", "unapplySeq") contains fun.name =>
         fun.containingClass match {
@@ -120,10 +126,13 @@ object ScalaRenameUtil {
             ScalaPsiUtil.findInstanceBinding(newTempl).orNull
           case obj: ScObject if obj.isSyntheticObject =>
             obj.fakeCompanionClassOrCompanionClass
-          case clazz => clazz
+          case clazz =>
+            clazz
         }
-      case named: PsiNamedElement => named
-      case _                      => null
+      case named: PsiNamedElement =>
+        named
+      case _ =>
+        null
     }
   }
 
@@ -188,13 +197,16 @@ object ScalaRenameUtil {
     val encoded = encodeNames(UsagesWithName(newName, usages))
     val modified =
       namedElement match {
-        case _: ScObject => encoded.flatMap(modifyScObjectName)
+        case _: ScObject =>
+          encoded.flatMap(modifyScObjectName)
         case _: PsiTypedDefinitionWrapper | _: FakePsiMethod =>
           encoded.flatMap(modifySetterName)
         case fun: ScFunction if setterSuffix(fun.name) != "" =>
           encoded.flatMap(modifySetterName)
-        case variable: ScReferencePattern => encoded.flatMap(modifySetterName)
-        case _                            => encoded
+        case variable: ScReferencePattern =>
+          encoded.flatMap(modifySetterName)
+        case _ =>
+          encoded
       }
     modified.foreach {
       case UsagesWithName(name, usagez) if usagez.nonEmpty =>

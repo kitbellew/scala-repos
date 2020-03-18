@@ -110,8 +110,10 @@ object eigSym extends UFunc {
       extends Impl[DenseMatrix[Double], DenseEigSym] {
     def apply(X: DenseMatrix[Double]): DenseEigSym = {
       doEigSym(X, true) match {
-        case (ev, Some(rev)) => EigSym(ev, rev)
-        case _               => throw new RuntimeException("Shouldn't be here!")
+        case (ev, Some(rev)) =>
+          EigSym(ev, rev)
+        case _ =>
+          throw new RuntimeException("Shouldn't be here!")
       }
 
     }

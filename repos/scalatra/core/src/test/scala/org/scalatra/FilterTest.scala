@@ -11,8 +11,9 @@ class FilterTestServlet extends ScalatraServlet {
   before() {
     beforeCount += 1
     params.get("before") match {
-      case Some(x) => response.getWriter.write(x)
-      case None    =>
+      case Some(x) =>
+        response.getWriter.write(x)
+      case None =>
     }
   }
 

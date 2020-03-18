@@ -104,7 +104,8 @@ class ReliableKafkaStreamSuite
     val result = new mutable.HashMap[String, Long]()
     stream
       .map {
-        case (k, v) => v
+        case (k, v) =>
+          v
       }
       .foreachRDD { r =>
         val ret = r.collect()
@@ -138,7 +139,8 @@ class ReliableKafkaStreamSuite
 
     // Before started, verify all the group/topic/partition offsets are 0.
     topics.foreach {
-      case (t, _) => assert(getCommitOffset(groupId, t, 0) === None)
+      case (t, _) =>
+        assert(getCommitOffset(groupId, t, 0) === None)
     }
 
     // Consuming all the data sent to the broker which will potential commit the offsets internally.
@@ -154,7 +156,8 @@ class ReliableKafkaStreamSuite
     eventually(timeout(20000 milliseconds), interval(100 milliseconds)) {
       // Verify the offset for each group/topic to see whether they are equal to the expected one.
       topics.foreach {
-        case (t, _) => assert(getCommitOffset(groupId, t, 0) === Some(29L))
+        case (t, _) =>
+          assert(getCommitOffset(groupId, t, 0) === Some(29L))
       }
     }
   }

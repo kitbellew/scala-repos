@@ -78,15 +78,19 @@ trait ScReferenceElement
 
   def getCanonicalText: String = {
     resolve() match {
-      case clazz: ScObject if clazz.isStatic => clazz.qualifiedName
+      case clazz: ScObject if clazz.isStatic =>
+        clazz.qualifiedName
       case c: ScTypeDefinition =>
         if (c.containingClass == null)
           c.qualifiedName
         else
           c.name
-      case c: PsiClass        => c.qualifiedName
-      case n: PsiNamedElement => n.name
-      case _                  => refName
+      case c: PsiClass =>
+        c.qualifiedName
+      case n: PsiNamedElement =>
+        n.name
+      case _ =>
+        refName
     }
   }
 
@@ -118,7 +122,8 @@ trait ScReferenceElement
           if !PsiTreeUtil.isContextAncestor(param.owner, this, true) =>
         getParent match {
           case ScAssignStmt(left, _) if left == this =>
-          case _                                     => return false
+          case _ =>
+            return false
         }
       case _ =>
     }
@@ -145,12 +150,15 @@ trait ScReferenceElement
     if (ScEquivalenceUtil.smartEquivalence(resolved, element))
       return true
     resolved match {
-      case isLightScNamedElement(named) => return isReferenceTo(element, named)
-      case isWrapper(named)             => return isReferenceTo(element, named)
-      case _                            =>
+      case isLightScNamedElement(named) =>
+        return isReferenceTo(element, named)
+      case isWrapper(named) =>
+        return isReferenceTo(element, named)
+      case _ =>
     }
     element match {
-      case isWrapper(named) => return isReferenceTo(named, resolved)
+      case isWrapper(named) =>
+        return isReferenceTo(named, resolved)
       case td: ScTypeDefinition =>
         resolved match {
           case method: PsiMethod if method.isConstructor =>
@@ -178,16 +186,18 @@ trait ScReferenceElement
                   .asInstanceOf[ScClass]
                   .isCase && method.isSynthetic) {
               ScalaPsiUtil.getCompanionModule(td) match {
-                case Some(typeDef) => return isReferenceTo(typeDef)
-                case _             =>
+                case Some(typeDef) =>
+                  return isReferenceTo(typeDef)
+                case _ =>
               }
             }
             if (break)
               return true
           case obj: ScObject if obj.isSyntheticObject =>
             ScalaPsiUtil.getCompanionModule(td) match {
-              case Some(typeDef) if typeDef == obj => return true
-              case _                               =>
+              case Some(typeDef) if typeDef == obj =>
+                return true
+              case _ =>
             }
           case _ =>
         }
@@ -236,10 +246,13 @@ trait ScReferenceElement
         this.bind() match {
           case Some(r: ScalaResolveResult) =>
             r.parentElement match {
-              case Some(ta: ScTypeAliasDefinition) => ta.isExactAliasFor(cls)
-              case _                               => false
+              case Some(ta: ScTypeAliasDefinition) =>
+                ta.isExactAliasFor(cls)
+              case _ =>
+                false
             }
-          case None => false
+          case None =>
+            false
         }
       case _ =>
         // TODO indirect references via vals, e.g. `package object scala { val List = scala.collection.immutable.List }` ?
@@ -288,7 +301,8 @@ trait ScReferenceElement
         case r: ScalaResolveResult if r.importsUsed.isEmpty =>
           usedNames += r.name;
           true
-        case _ => false
+        case _ =>
+          false
       }
       if (!res)
         return false
@@ -379,7 +393,8 @@ trait ScReferenceElement
                     smartCheck
                   else
                     false
-                case _ => smartCheck
+                case _ =>
+                  smartCheck
               }
             }
           }
@@ -415,12 +430,16 @@ trait ScReferenceElement
                   .multiResolve(false)
                   .exists(rr =>
                     rr.getElement match {
-                      case p: ScPackage  => p.getQualifiedName == qualifiedName
-                      case p: PsiPackage => p.getQualifiedName == qualifiedName
-                      case _             => false
+                      case p: ScPackage =>
+                        p.getQualifiedName == qualifiedName
+                      case p: PsiPackage =>
+                        p.getQualifiedName == qualifiedName
+                      case _ =>
+                        false
                     })
               }
-            case _ => false
+            case _ =>
+              false
           }
           if (!imported)
             importHolder.addImportForPath(qualifiedName, ref = this)
@@ -436,7 +455,8 @@ trait ScReferenceElement
           ref.replace(
             ScalaPsiElementFactory
               .createExpressionFromText(refText, ref.getManager))
-        case _ => null
+        case _ =>
+          null
       }
     }
   }

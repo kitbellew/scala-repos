@@ -26,8 +26,10 @@ private[akka] final case class PruningState(
 
   def merge(that: PruningState): PruningState =
     (this.phase, that.phase) match {
-      case (PruningPerformed, _) ⇒ this
-      case (_, PruningPerformed) ⇒ that
+      case (PruningPerformed, _) ⇒
+        this
+      case (_, PruningPerformed) ⇒
+        that
       case (PruningInitialized(thisSeen), PruningInitialized(thatSeen)) ⇒
         if (this.owner == that.owner)
           copy(phase = PruningInitialized(thisSeen union thatSeen))
@@ -46,6 +48,7 @@ private[akka] final case class PruningState(
           this
         else
           copy(phase = PruningInitialized(seen + node))
-      case _ ⇒ this
+      case _ ⇒
+        this
     }
 }

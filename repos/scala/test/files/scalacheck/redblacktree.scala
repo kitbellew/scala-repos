@@ -88,8 +88,10 @@ package scala.collection.immutable.redblacktree {
 
     def areAllLeavesBlack[A](t: Tree[String, A]): Boolean =
       t match {
-        case null => isBlack(t)
-        case ne   => List(ne.left, ne.right) forall areAllLeavesBlack
+        case null =>
+          isBlack(t)
+        case ne =>
+          List(ne.left, ne.right) forall areAllLeavesBlack
       }
 
     def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean =
@@ -99,12 +101,14 @@ package scala.collection.immutable.redblacktree {
             isBlack(t) && areRedNodeChildrenBlack(t))
         case BlackTree(_, _, left, right) =>
           List(left, right) forall areRedNodeChildrenBlack
-        case null => true
+        case null =>
+          true
       }
 
     def blackNodesToLeaves[A](t: Tree[String, A]): List[Int] =
       t match {
-        case null => List(1)
+        case null =>
+          List(1)
         case BlackTree(_, _, left, right) =>
           List(left, right) flatMap blackNodesToLeaves map (_ + 1)
         case RedTree(_, _, left, right) =>
@@ -113,7 +117,8 @@ package scala.collection.immutable.redblacktree {
 
     def areBlackNodesToLeavesEqual[A](t: Tree[String, A]): Boolean =
       t match {
-        case null => true
+        case null =>
+          true
         case ne =>
           (
             blackNodesToLeaves(ne).distinct.size == 1
@@ -124,7 +129,8 @@ package scala.collection.immutable.redblacktree {
 
     def orderIsPreserved[A](t: Tree[String, A]): Boolean =
       iterator(t) zip iterator(t).drop(1) forall {
-        case (x, y) => x._1 < y._1
+        case (x, y) =>
+          x._1 < y._1
       }
 
     def heightIsBounded(t: Tree[_, _]): Boolean =
@@ -157,11 +163,14 @@ package scala.collection.immutable.redblacktree {
 
     def generateKey(tree: Tree[String, Int], parm: ModifyParm): String =
       nodeAt(tree, parm) match {
-        case Some((key, _)) => key.init.mkString + "MN"
+        case Some((key, _)) =>
+          key.init.mkString + "MN"
         case None =>
           nodeAt(tree, parm - 1) match {
-            case Some((key, _)) => key.init.mkString + "RN"
-            case None           => "N"
+            case Some((key, _)) =>
+              key.init.mkString + "RN"
+            case None =>
+              "N"
           }
       }
 
@@ -184,7 +193,8 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] =
       nodeAt(tree, parm) map {
-        case (key, _) => update(tree, key, newValue, true)
+        case (key, _) =>
+          update(tree, key, newValue, true)
       } getOrElse tree
 
     property("update modifies values") =
@@ -208,7 +218,8 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] =
       nodeAt(tree, parm) map {
-        case (key, _) => delete(tree, key)
+        case (key, _) =>
+          delete(tree, key)
       } getOrElse tree
 
     property("delete removes elements") =

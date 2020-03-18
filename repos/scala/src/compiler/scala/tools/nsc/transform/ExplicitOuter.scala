@@ -74,8 +74,10 @@ abstract class ExplicitOuter
   class RemoveBindingsTransformer(toRemove: Set[Symbol]) extends Transformer {
     override def transform(tree: Tree) =
       tree match {
-        case Bind(_, body) if toRemove(tree.symbol) => super.transform(body)
-        case _                                      => super.transform(tree)
+        case Bind(_, body) if toRemove(tree.symbol) =>
+          super.transform(body)
+        case _ =>
+          super.transform(tree)
       }
   }
 
@@ -270,8 +272,10 @@ abstract class ExplicitOuter
       */
     protected def outerValue: Tree =
       outerParam match {
-        case NoSymbol   => outerSelect(gen.mkAttributedThis(currentClass))
-        case outerParam => gen.mkAttributedIdent(outerParam)
+        case NoSymbol =>
+          outerSelect(gen.mkAttributedThis(currentClass))
+        case outerParam =>
+          gen.mkAttributedIdent(outerParam)
       }
 
     /** Select and apply outer accessor from 'base'
@@ -562,8 +566,10 @@ abstract class ExplicitOuter
                 case _ =>
                   gen.mkAttributedQualifier(
                     qual.tpe.prefix match {
-                      case NoPrefix => sym.owner.outerClass.thisType
-                      case x        => x
+                      case NoPrefix =>
+                        sym.owner.outerClass.thisType
+                      case x =>
+                        x
                     })
               })
           super.transform(treeCopy.Apply(tree, sel, outerVal :: args))

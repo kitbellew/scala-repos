@@ -52,7 +52,8 @@ private[json] object ScalaSigReader {
   private def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
     sig.symbols
       .collect {
-        case c: ClassSymbol if !c.isModule => c
+        case c: ClassSymbol if !c.isModule =>
+          c
       }
       .find(_.name == clazz.getSimpleName)
       .orElse {
@@ -62,7 +63,8 @@ private[json] object ScalaSigReader {
             sig.topLevelObjects.map { obj =>
               val t = obj.infoType.asInstanceOf[TypeRefType]
               t.symbol.children collect {
-                case c: ClassSymbol => c
+                case c: ClassSymbol =>
+                  c
               } find (_.symbolInfo.name == clazz.getSimpleName)
             }.head
           }
@@ -73,7 +75,8 @@ private[json] object ScalaSigReader {
       c: ClassSymbol,
       argNames: List[String]): Option[MethodSymbol] = {
     val ms = c.children collect {
-      case m: MethodSymbol if m.name == "<init>" => m
+      case m: MethodSymbol if m.name == "<init>" =>
+        m
     }
     ms.find(m => m.children.map(_.name) == argNames)
   }
@@ -81,7 +84,8 @@ private[json] object ScalaSigReader {
   private def findField(c: ClassSymbol, name: String): Option[MethodSymbol] =
     (
       c.children collect {
-        case m: MethodSymbol if m.name == name => m
+        case m: MethodSymbol if m.name == name =>
+          m
       }
     ).headOption
 
@@ -95,15 +99,19 @@ private[json] object ScalaSigReader {
           symbol
         case TypeRefType(_, _, TypeRefType(ThisType(_), symbol, _) :: xs) =>
           symbol
-        case TypeRefType(_, symbol, Nil) => symbol
+        case TypeRefType(_, symbol, Nil) =>
+          symbol
         case TypeRefType(_, _, args) if typeArgIndex >= args.length =>
           findPrimitive(args(0))
         case TypeRefType(_, _, args) =>
           args(typeArgIndex) match {
-            case ref @ TypeRefType(_, _, _) => findPrimitive(ref)
-            case x                          => Meta.fail("Unexpected type info " + x)
+            case ref @ TypeRefType(_, _, _) =>
+              findPrimitive(ref)
+            case x =>
+              Meta.fail("Unexpected type info " + x)
           }
-        case x => Meta.fail("Unexpected type info " + x)
+        case x =>
+          Meta.fail("Unexpected type info " + x)
       }
     toClass(
       findPrimitive(s.children(argIdx).asInstanceOf[SymbolInfoSymbol].infoType))
@@ -114,28 +122,39 @@ private[json] object ScalaSigReader {
       typeArgIdx: Int): Class[_] = {
     val t =
       s.infoType match {
-        case NullaryMethodType(TypeRefType(_, _, args)) => args(typeArgIdx)
+        case NullaryMethodType(TypeRefType(_, _, args)) =>
+          args(typeArgIdx)
       }
 
     @scala.annotation.tailrec
     def findPrimitive(t: Type): Symbol =
       t match {
-        case TypeRefType(ThisType(_), symbol, _) => symbol
-        case ref @ TypeRefType(_, _, _)          => findPrimitive(ref)
-        case x                                   => Meta.fail("Unexpected type info " + x)
+        case TypeRefType(ThisType(_), symbol, _) =>
+          symbol
+        case ref @ TypeRefType(_, _, _) =>
+          findPrimitive(ref)
+        case x =>
+          Meta.fail("Unexpected type info " + x)
       }
     toClass(findPrimitive(t))
   }
 
   private def toClass(s: Symbol) =
     s.path match {
-      case "scala.Short"   => classOf[Short]
-      case "scala.Int"     => classOf[Int]
-      case "scala.Long"    => classOf[Long]
-      case "scala.Boolean" => classOf[Boolean]
-      case "scala.Float"   => classOf[Float]
-      case "scala.Double"  => classOf[Double]
-      case _               => classOf[AnyRef]
+      case "scala.Short" =>
+        classOf[Short]
+      case "scala.Int" =>
+        classOf[Int]
+      case "scala.Long" =>
+        classOf[Long]
+      case "scala.Boolean" =>
+        classOf[Boolean]
+      case "scala.Float" =>
+        classOf[Float]
+      case "scala.Double" =>
+        classOf[Double]
+      case _ =>
+        classOf[AnyRef]
     }
 
   private def isPrimitive(s: Symbol) = toClass(s) != classOf[AnyRef]

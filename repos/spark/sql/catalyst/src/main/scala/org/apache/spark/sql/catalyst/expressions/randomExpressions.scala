@@ -68,7 +68,8 @@ case class Rand(seed: Long) extends RDG {
   def this(seed: Expression) =
     this(
       seed match {
-        case IntegerLiteral(s) => s
+        case IntegerLiteral(s) =>
+          s
         case _ =>
           throw new AnalysisException(
             "Input argument to rand must be an integer literal.")
@@ -98,7 +99,8 @@ case class Randn(seed: Long) extends RDG {
   def this(seed: Expression) =
     this(
       seed match {
-        case IntegerLiteral(s) => s
+        case IntegerLiteral(s) =>
+          s
         case _ =>
           throw new AnalysisException(
             "Input argument to randn must be an integer literal.")

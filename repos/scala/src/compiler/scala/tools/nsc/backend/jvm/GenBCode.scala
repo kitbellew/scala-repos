@@ -375,7 +375,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
       bTypes.initializeCoreBTypes()
       bTypes.javaDefinedClasses.clear()
       bTypes.javaDefinedClasses ++= currentRun.symSource collect {
-        case (sym, _) if sym.isJavaDefined => sym.javaBinaryName.toString
+        case (sym, _) if sym.isJavaDefined =>
+          sym.javaBinaryName.toString
       }
       Statistics.stopTimer(BackendStats.bcodeInitTimer, initStart)
 
@@ -488,8 +489,10 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
       def gen(tree: Tree) {
         tree match {
-          case EmptyTree            => ()
-          case PackageDef(_, stats) => stats foreach gen
+          case EmptyTree =>
+            ()
+          case PackageDef(_, stats) =>
+            stats foreach gen
           case cd: ClassDef =>
             q1 add Item1(arrivalPos, cd, cunit)
             arrivalPos += 1

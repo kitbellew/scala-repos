@@ -47,7 +47,8 @@ object Setup extends LilaController with TheftPrevention {
         env.forms friendFilled get("fen") flatMap { form =>
           val validFen = form("fen").value flatMap ValidFen(false)
           userId ?? UserRepo.named flatMap {
-            case None => fuccess(html.setup.friend(form, none, none, validFen))
+            case None =>
+              fuccess(html.setup.friend(form, none, none, validFen))
             case Some(user) =>
               Challenge.restriction(user) map { error =>
                 html.setup.friend(form, user.some, error, validFen)
@@ -88,9 +89,12 @@ object Setup extends LilaController with TheftPrevention {
                       mode = config.mode,
                       color = config.color.name,
                       challenger = (ctx.me, HTTPRequest sid req) match {
-                        case (Some(user), _) => Right(user)
-                        case (_, Some(sid))  => Left(sid)
-                        case _               => Left("no_sid")
+                        case (Some(user), _) =>
+                          Right(user)
+                        case (_, Some(sid)) =>
+                          Left(sid)
+                        case _ =>
+                          Left("no_sid")
                       },
                       destUser = destUser,
                       rematchOf = none
@@ -181,7 +185,8 @@ object Setup extends LilaController with TheftPrevention {
   def filterForm =
     Open { implicit ctx =>
       env.forms.filterFilled map {
-        case (form, filter) => html.setup.filter(form, filter)
+        case (form, filter) =>
+          html.setup.filter(form, filter)
       }
     }
 
@@ -202,8 +207,10 @@ object Setup extends LilaController with TheftPrevention {
   def validateFen =
     Open { implicit ctx =>
       get("fen") flatMap ValidFen(getBool("strict")) match {
-        case None    => BadRequest.fuccess
-        case Some(v) => Ok(html.game.miniBoard(v.fen, v.color.name)).fuccess
+        case None =>
+          BadRequest.fuccess
+        case Some(v) =>
+          Ok(html.game.miniBoard(v.fen, v.color.name)).fuccess
       }
     }
 

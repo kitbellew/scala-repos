@@ -47,7 +47,8 @@ abstract class DirectTest {
 
   private def newSources(codes: String*) =
     codes.toList.zipWithIndex map {
-      case (src, idx) => new BatchSourceFile(s"newSource${idx + 1}.scala", src)
+      case (src, idx) =>
+        new BatchSourceFile(s"newSource${idx + 1}.scala", src)
     }
 
   def withRun[T](global: Global)(f: global.Run => T): T = {

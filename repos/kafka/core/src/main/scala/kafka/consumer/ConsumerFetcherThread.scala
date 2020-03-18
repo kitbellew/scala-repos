@@ -98,9 +98,12 @@ class ConsumerFetcherThread(
   def handleOffsetOutOfRange(topicAndPartition: TopicAndPartition): Long = {
     val startTimestamp =
       config.autoOffsetReset match {
-        case OffsetRequest.SmallestTimeString => OffsetRequest.EarliestTime
-        case OffsetRequest.LargestTimeString  => OffsetRequest.LatestTime
-        case _                                => OffsetRequest.LatestTime
+        case OffsetRequest.SmallestTimeString =>
+          OffsetRequest.EarliestTime
+        case OffsetRequest.LargestTimeString =>
+          OffsetRequest.LatestTime
+        case _ =>
+          OffsetRequest.LatestTime
       }
     val newOffset = simpleConsumer.earliestOrLatestOffset(
       topicAndPartition,

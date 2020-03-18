@@ -30,7 +30,8 @@ object WhitespaceApi {
           failMore(f, index, cfg.logDepth, f.traceParsers, false)
         case Mutable.Success(value0, index0, traceParsers0, cut0) =>
           WL.parseRec(cfg, index0) match {
-            case f1: Mutable.Failure => failMore(f1, index, cfg.logDepth)
+            case f1: Mutable.Failure =>
+              failMore(f1, index, cfg.logDepth)
             case Mutable.Success(value1, index1, traceParsers1, cut1) =>
               p.parseRec(cfg, index1) match {
                 case f: Mutable.Failure =>

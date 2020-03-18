@@ -111,13 +111,15 @@ class ScalaInlineHandler extends InlineHandler {
             case v @ ScVariableDefinition.expr(e)
                 if v.declaredElements == Seq(element) =>
               e.getText
-            case _ => return null
+            case _ =>
+              return null
           }
         case funDef: ScFunctionDefinition if funDef.parameters.isEmpty =>
           funDef.body.orNull.getText
         case typeAlias: ScTypeAliasDefinition =>
           typeAlias.aliasedTypeElement.getText
-        case _ => return null
+        case _ =>
+          return null
       }
     new InlineHandler.Inliner {
       def inlineUsage(usage: UsageInfo, referenced: PsiElement) {
@@ -127,10 +129,12 @@ class ScalaInlineHandler extends InlineHandler {
             case Parent(call: ScMethodCall)
                 if call.argumentExpressions.isEmpty =>
               Some(call)
-            case e: ScExpression => Some(e)
+            case e: ScExpression =>
+              Some(e)
             case Parent(reference: ScTypeElement) =>
               Some(reference)
-            case _ => None
+            case _ =>
+              None
           }
         replacementOpt.foreach { replacement =>
           val newValue =
@@ -230,8 +234,10 @@ class ScalaInlineHandler extends InlineHandler {
       else if (!ApplicationManager.getApplication.isUnitTestMode) {
         val occurences =
           refs.size match {
-            case 1 => "(1 occurrence)"
-            case n => s"($n occurrences)"
+            case 1 =>
+              "(1 occurrence)"
+            case n =>
+              s"($n occurrences)"
           }
 
         val question =
@@ -259,13 +265,16 @@ class ScalaInlineHandler extends InlineHandler {
       typeAlias.aliasedTypeElement.depthFirst.forall {
         case t: ScTypeElement =>
           t.calcType match {
-            case part: ScTypeParameterType => false
+            case part: ScTypeParameterType =>
+              false
             case part: ScProjectionType
                 if !ScalaPsiUtil.hasStablePath(part.element) =>
               false
-            case _ => true
+            case _ =>
+              true
           }
-        case _ => true
+        case _ =>
+          true
       }
     }
 
@@ -283,7 +292,8 @@ class ScalaInlineHandler extends InlineHandler {
           typedDef match {
             case _: ScFunctionDeclaration | _: ScFunctionDefinition =>
               ScalaBundle.message("cannot.inline.function.with.parameters")
-            case _ => ScalaBundle.message("cannot.inline.value.functional.type")
+            case _ =>
+              ScalaBundle.message("cannot.inline.value.functional.type")
           }
         showErrorHint(message, "element")
       case named: ScNamedElement
@@ -319,7 +329,8 @@ class ScalaInlineHandler extends InlineHandler {
                 "local variable")
             else
               getSettings(parent.declaredElements.head, "Variable", "variable")
-          case _ => null
+          case _ =>
+            null
         }
       case funDef: ScFunctionDefinition
           if funDef.recursionType != RecursionType.NoRecursion =>
@@ -340,7 +351,8 @@ class ScalaInlineHandler extends InlineHandler {
           "Type Alias")
       case typeAlias: ScTypeAliasDefinition =>
         getSettings(typeAlias, "Type Alias", "type alias")
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -357,7 +369,8 @@ class ScalaInlineHandler extends InlineHandler {
               ref.getElement,
               true)
           }
-      case _ => true
+      case _ =>
+        true
     }
   }
 }

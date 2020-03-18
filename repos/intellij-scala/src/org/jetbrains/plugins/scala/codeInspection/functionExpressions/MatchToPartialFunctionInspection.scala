@@ -60,7 +60,8 @@ class MatchToPartialFunctionInspection
     (expr.getType(), expr.expectedType()) match {
       case (Success(tpe: ScType, _), Some(expType: ScType)) =>
         !expType.equiv(tpe)
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -71,8 +72,10 @@ class MatchToPartialFunctionInspection
     def leftBraceOffset(ms: ScMatchStmt): Option[Int] = {
       val leftBrace = ms.findFirstChildByType(ScalaTokenTypes.tLBRACE)
       leftBrace match {
-        case elem: PsiElement => Option(elem.getTextRange.getStartOffset)
-        case _                => None
+        case elem: PsiElement =>
+          Option(elem.getTextRange.getStartOffset)
+        case _ =>
+          None
       }
     }
     for (offset <- leftBraceOffset(ms)) {
@@ -95,9 +98,12 @@ class MatchToPartialFunctionInspection
     val call = PsiTreeUtil.getParentOfType(argExpr, classOf[MethodInvocation])
     val arg =
       argExpr match {
-        case _ childOf (x childOf (_: ScArgumentExprList)) => x
-        case _ childOf (x childOf (_: ScInfixExpr))        => x
-        case _                                             => argExpr
+        case _ childOf (x childOf (_: ScArgumentExprList)) =>
+          x
+        case _ childOf (x childOf (_: ScInfixExpr)) =>
+          x
+        case _ =>
+          argExpr
       }
     if (call == null || !call.argumentExpressions.contains(arg))
       return true
@@ -107,7 +113,8 @@ class MatchToPartialFunctionInspection
           (s"${qual.getText}.${r.refName}", r.resolve())
         case ScMethodCall(r: ScReferenceExpression, _) =>
           (r.getText, r.resolve())
-        case _ => return true
+        case _ =>
+          return true
       }
 
     val newCall = ScalaPsiElementFactory.createExpressionWithContextFromText(
@@ -117,7 +124,8 @@ class MatchToPartialFunctionInspection
     newCall match {
       case ScMethodCall(ref: ScReferenceExpression, _) =>
         ref.resolve() == oldResolve
-      case _ => true
+      case _ =>
+        true
     }
   }
 }
@@ -186,7 +194,8 @@ class MatchToPartialFunctionQuickFix(
           if refs.exists(ref =>
             PsiTreeUtil.isAncestor(clause, ref.getElement, false))
         } yield index
-      case _ => Nil
+      case _ =>
+        Nil
     }
   }
 
@@ -223,6 +232,7 @@ class MatchToPartialFunctionQuickFix(
           _: ScConstructorPattern | _: ScParenthesisedPattern |
           _: ScTuplePattern | _: ScStableReferenceElementPattern =>
         false
-      case _ => true
+      case _ =>
+        true
     }
 }

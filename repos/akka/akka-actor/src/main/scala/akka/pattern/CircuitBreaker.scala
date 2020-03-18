@@ -167,7 +167,8 @@ class CircuitBreaker(
       withCircuitBreaker(
         try Future.successful(body)
         catch {
-          case NonFatal(t) ⇒ Future.failed(t)
+          case NonFatal(t) ⇒
+            Future.failed(t)
         }),
       callTimeout)
 
@@ -343,7 +344,8 @@ class CircuitBreaker(
       def materialize[U](value: ⇒ Future[U]): Future[U] =
         try value
         catch {
-          case NonFatal(t) ⇒ Future.failed(t)
+          case NonFatal(t) ⇒
+            Future.failed(t)
         }
 
       if (callTimeout == Duration.Zero) {
@@ -353,8 +355,10 @@ class CircuitBreaker(
 
         implicit val ec = sameThreadExecutionContext
         p.future.onComplete {
-          case s: Success[_] ⇒ callSucceeds()
-          case _ ⇒ callFails()
+          case s: Success[_] ⇒
+            callSucceeds()
+          case _ ⇒
+            callFails()
         }
 
         val timeout =

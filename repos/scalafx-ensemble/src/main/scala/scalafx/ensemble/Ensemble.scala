@@ -67,8 +67,10 @@ object Ensemble extends JFXApp {
         (newItem.isLeaf, Option(newItem.getParent)) match {
           case (true, Some(parent)) =>
             parent.getValue.toLowerCase + " > " + newItem.getValue
-          case (false, Some(_)) => "dashBoard - " + newItem.getValue
-          case (_, _)           => "dashBoard"
+          case (false, Some(_)) =>
+            "dashBoard - " + newItem.getValue
+          case (_, _) =>
+            "dashBoard"
         }
       centerPane = PageDisplayer.choosePage(pageCode)
       splitPane.items.remove(1)

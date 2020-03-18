@@ -109,7 +109,8 @@ private[http] object WebSocket {
           case x: MessageDataPart ⇒
             inMessage = !x.last
             ctx.push(x)
-          case x ⇒ ctx.push(x)
+          case x ⇒
+            ctx.push(x)
         }
     }
 
@@ -120,7 +121,8 @@ private[http] object WebSocket {
       .mapConcat {
         // happens if we get a MessageEnd first which creates a new substream but which is then
         // filtered out by collect in `prepareMessages` below
-        case (Nil, _) ⇒ Nil
+        case (Nil, _) ⇒
+          Nil
         case (first +: Nil, remaining) ⇒
           (
             first match {
@@ -131,7 +133,8 @@ private[http] object WebSocket {
                 TextMessage(
                   (Source.single(first) ++ remaining)
                     .collect {
-                      case t: TextMessagePart if t.data.nonEmpty ⇒ t.data
+                      case t: TextMessagePart if t.data.nonEmpty ⇒
+                        t.data
                     })
               case BinaryMessagePart(data, true) ⇒
                 SubSource.kill(remaining)
@@ -140,7 +143,8 @@ private[http] object WebSocket {
                 BinaryMessage(
                   (Source.single(first) ++ remaining)
                     .collect {
-                      case t: BinaryMessagePart if t.data.nonEmpty ⇒ t.data
+                      case t: BinaryMessagePart if t.data.nonEmpty ⇒
+                        t.data
                     })
             }
           ) :: Nil
@@ -153,7 +157,8 @@ private[http] object WebSocket {
           _.isMessageEnd
         ) // FIXME using splitAfter from #16885 would simplify protocol a lot
         .collect {
-          case m: MessageDataPart ⇒ m
+          case m: MessageDataPart ⇒
+            m
         }
         .via(collectMessage)
         .concatSubstreams
@@ -214,8 +219,10 @@ private[http] object WebSocket {
               grab(in) match {
                 case b: BypassEvent with MessagePart ⇒
                   emit(bypass, b, () ⇒ emit(user, b, pullIn))
-                case b: BypassEvent ⇒ emit(bypass, b, pullIn)
-                case m: MessagePart ⇒ emit(user, m, pullIn)
+                case b: BypassEvent ⇒
+                  emit(bypass, b, pullIn)
+                case m: MessagePart ⇒
+                  emit(user, m, pullIn)
               }
             }
           }

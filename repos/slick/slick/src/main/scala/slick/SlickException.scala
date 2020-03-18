@@ -54,7 +54,8 @@ private[slick] object SlickTreeException {
               tp.findMarkedTop(detail)
           "\n" + tp.get(markedTop)
         } catch {
-          case t: Throwable => " <Error formatting detail: " + t + ">"
+          case t: Throwable =>
+            " <Error formatting detail: " + t + ">"
         }
       }
 }

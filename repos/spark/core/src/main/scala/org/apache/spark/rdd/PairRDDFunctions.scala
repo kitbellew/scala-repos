@@ -729,8 +729,10 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       partitioner: Partitioner): RDD[(K, (Option[V], Option[W]))] =
     self.withScope {
       this.cogroup(other, partitioner).flatMapValues {
-        case (vs, Seq()) => vs.iterator.map(v => (Some(v), None))
-        case (Seq(), ws) => ws.iterator.map(w => (None, Some(w)))
+        case (vs, Seq()) =>
+          vs.iterator.map(v => (Some(v), None))
+        case (Seq(), ws) =>
+          ws.iterator.map(w => (None, Some(w)))
         case (vs, ws) =>
           for (v <- vs.iterator;
                w <- ws.iterator)
@@ -914,7 +916,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
         self,
         (context, pid, iter) =>
           iter.map {
-            case (k, v) => (k, cleanF(v))
+            case (k, v) =>
+              (k, cleanF(v))
           },
         preservesPartitioning = true)
     }
@@ -1352,8 +1355,10 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
           val hadoopContext = new TaskAttemptContextImpl(config, attemptId)
           val format = outfmt.newInstance
           format match {
-            case c: Configurable => c.setConf(config)
-            case _               => ()
+            case c: Configurable =>
+              c.setConf(config)
+            case _ =>
+              ()
           }
           val committer = format.getOutputCommitter(hadoopContext)
           committer.setupTask(hadoopContext)

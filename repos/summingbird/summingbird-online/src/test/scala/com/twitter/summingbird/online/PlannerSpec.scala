@@ -100,7 +100,8 @@ class PlannerSpec extends WordSpec {
     val path = TopologyPlannerLaws.dumpGraph(tail)
 
     planned match {
-      case Success(graph) => assert(true == true)
+      case Success(graph) =>
+        assert(true == true)
       case Failure(error) =>
         val path = TopologyPlannerLaws.dumpGraph(tail)
         error.printStackTrace
@@ -155,7 +156,8 @@ class PlannerSpec extends WordSpec {
 
     val planned = Try(OnlinePlan(tail))
     planned match {
-      case Success(graph) => assert(true == true)
+      case Success(graph) =>
+        assert(true == true)
       case Failure(error) =>
         val path = TopologyPlannerLaws.dumpGraph(tail)
         error.printStackTrace
@@ -189,7 +191,8 @@ class PlannerSpec extends WordSpec {
 
     val planned = Try(OnlinePlan(tail))
     planned match {
-      case Success(graph) => assert(true == true)
+      case Success(graph) =>
+        assert(true == true)
       case Failure(error) =>
         val path = TopologyPlannerLaws.dumpGraph(tail)
         error.printStackTrace
@@ -208,7 +211,8 @@ class PlannerSpec extends WordSpec {
     val store2 = testStore
     val part2 = part1
       .mapValues {
-        case (optV, v) => v
+        case (optV, v) =>
+          v
       }
       .mapKeys(_ => 1)
       .name("Preexpanded")

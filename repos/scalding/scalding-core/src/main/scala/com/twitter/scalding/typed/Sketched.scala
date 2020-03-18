@@ -47,7 +47,8 @@ case class Sketched[K, V](
   lazy val sketch: TypedPipe[CMS[Bytes]] =
     pipe
       .map {
-        case (k, _) => cms.create(Bytes(serialization(k)))
+        case (k, _) =>
+          cms.create(Bytes(serialization(k)))
       }
       .groupAll
       .sum
@@ -123,7 +124,8 @@ case class SketchJoined[K: Ordering, V, V2, R](
       }
       .withReducers(numReducers)
       .map {
-        case ((r, k), v) => (k, v)
+        case ((r, k), v) =>
+          (k, v)
       }
   }
 
@@ -135,7 +137,8 @@ case class SketchJoined[K: Ordering, V, V2, R](
         new OrderedSerialization2(
           ordSer[Int],
           kos.asInstanceOf[OrderedSerialization[K]])
-      case _ => Ordering.Tuple2[Int, K]
+      case _ =>
+        Ordering.Tuple2[Int, K]
     }
   }
 

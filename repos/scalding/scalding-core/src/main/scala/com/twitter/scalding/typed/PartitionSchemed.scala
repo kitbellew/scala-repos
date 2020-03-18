@@ -102,6 +102,7 @@ trait PartitionSchemed[P, T]
           SinkMode.UPDATE)
           .asInstanceOf[Tap[_, _, _]]
       }
-      case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
+      case _ =>
+        TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
     }
 }

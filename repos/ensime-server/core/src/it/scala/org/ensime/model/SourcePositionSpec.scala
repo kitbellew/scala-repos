@@ -20,7 +20,8 @@ class SourcePositionSpec
     withEnsimeConfig { implicit config =>
       lookup(knownFile) match {
         case Some(LineSourcePosition(name, 0)) if name.isFile =>
-        case o                                                => fail(s"not resolved $o")
+        case o =>
+          fail(s"not resolved $o")
       }
     }
   }
@@ -29,7 +30,8 @@ class SourcePositionSpec
     withEnsimeConfig { implicit config =>
       lookup(knownFile, Some(100)) match {
         case Some(LineSourcePosition(name, 100)) if name.isFile =>
-        case o                                                  => fail(s"not resolved $o")
+        case o =>
+          fail(s"not resolved $o")
       }
     }
   }
@@ -38,7 +40,8 @@ class SourcePositionSpec
     withEnsimeConfig { implicit config =>
       lookup(knownJarEntry) match {
         case Some(LineSourcePosition(name, 0)) if name.isFile =>
-        case o                                                => fail(s"not resolved $o")
+        case o =>
+          fail(s"not resolved $o")
       }
     }
   }
@@ -47,7 +50,8 @@ class SourcePositionSpec
     withEnsimeConfig { implicit config =>
       lookup(knownJarEntry, Some(100)) match {
         case Some(LineSourcePosition(name, 100)) if name.isFile =>
-        case o                                                  => fail(s"not resolved $o")
+        case o =>
+          fail(s"not resolved $o")
       }
     }
   }

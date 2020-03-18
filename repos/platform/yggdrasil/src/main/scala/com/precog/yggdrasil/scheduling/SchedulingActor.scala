@@ -131,7 +131,8 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
       val now = new Date
 
       storage.listTasks onSuccess {
-        case tasks => self ! AddTasksToQueue(tasks)
+        case tasks =>
+          self ! AddTasksToQueue(tasks)
       }
     }
 
@@ -207,8 +208,10 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
             totalSize: Long,
             stream: StreamT[Future, Slice]): Future[Long] = {
           stream.uncons flatMap {
-            case Some((x, xs)) => consumeStream(totalSize + x.size, xs)
-            case None          => M.point(totalSize)
+            case Some((x, xs)) =>
+              consumeStream(totalSize + x.size, xs)
+            case None =>
+              M.point(totalSize)
           }
         }
 

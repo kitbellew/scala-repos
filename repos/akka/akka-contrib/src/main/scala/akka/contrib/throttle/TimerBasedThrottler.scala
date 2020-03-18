@@ -284,8 +284,10 @@ class TimerBasedThrottler(var rate: Rate) extends Actor with FSM[State, Data] {
   }
 
   onTransition {
-    case Idle -> Active ⇒ startTimer(rate)
-    case Active -> Idle ⇒ stopTimer()
+    case Idle -> Active ⇒
+      startTimer(rate)
+    case Active -> Idle ⇒
+      stopTimer()
   }
 
   initialize()

@@ -52,11 +52,14 @@ object FutureSequencer {
 
       case Done =>
         dequeue match {
-          case None       => context become idle
-          case Some(work) => processThenDone(work)
+          case None =>
+            context become idle
+          case Some(work) =>
+            processThenDone(work)
         }
 
-      case msg => queue enqueue msg
+      case msg =>
+        queue enqueue msg
     }
 
     def receive = idle
@@ -68,7 +71,8 @@ object FutureSequencer {
 
     private def processThenDone(work: Any) {
       work match {
-        case ReceiveTimeout => self ! PoisonPill
+        case ReceiveTimeout =>
+          self ! PoisonPill
         case FSequencer.Work(run, promise, timeoutOption) =>
           promise completeWith timeoutOption
             .orElse(executionTimeout)

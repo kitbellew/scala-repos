@@ -95,7 +95,8 @@ class DefaultApplicationLifecycle extends ApplicationLifecycle {
     hooks.foldLeft(Future.successful[Any](())) { (future, hook) =>
       future.flatMap { _ =>
         hook().recover {
-          case e => Logger.error("Error executing stop hook", e)
+          case e =>
+            Logger.error("Error executing stop hook", e)
         }
       }
     }

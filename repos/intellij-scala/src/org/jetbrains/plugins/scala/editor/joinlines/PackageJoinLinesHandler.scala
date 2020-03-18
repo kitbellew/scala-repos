@@ -27,7 +27,8 @@ class PackageJoinLinesHandler extends JoinRawLinesHandlerDelegate {
         p0.getPackageName
         document.replaceString(start, end + "package ".length(), ".")
         end
-      case _ => JoinLinesHandlerDelegate.CANNOT_JOIN
+      case _ =>
+        JoinLinesHandlerDelegate.CANNOT_JOIN
     }
   }
 

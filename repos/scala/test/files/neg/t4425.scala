@@ -3,7 +3,8 @@ object Foo {
     def unapply(x: Int)(y: Option[Int] = None) = None
   }
   42 match {
-    case _ X _ => ()
+    case _ X _ =>
+      ()
   }
 }
 
@@ -12,7 +13,8 @@ object Foo2 {
     def unapply(x: Int)(y: Int) = Some((2, 2))
   }
   42 match {
-    case _ X _ => ()
+    case _ X _ =>
+      ()
   }
 }
 
@@ -21,6 +23,7 @@ object Foo3 {
     def unapply(x: String)(y: String) = Some((2, 2))
   }
   "" match {
-    case _ X _ => ()
+    case _ X _ =>
+      ()
   }
 }

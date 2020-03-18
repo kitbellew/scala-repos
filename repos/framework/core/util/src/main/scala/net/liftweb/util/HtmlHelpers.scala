@@ -124,9 +124,12 @@ trait HtmlHelpers extends CssBindImplicits {
     */
   def findBox[T](nodes: Seq[Node])(f: Elem => Box[T]): Box[T] = {
     nodes.view.flatMap {
-      case Group(g) => findBox(g)(f)
-      case e: Elem  => f(e) or findBox(e.child)(f)
-      case _        => Empty
+      case Group(g) =>
+        findBox(g)(f)
+      case e: Elem =>
+        f(e) or findBox(e.child)(f)
+      case _ =>
+        Empty
     }.headOption
   }
 
@@ -137,9 +140,12 @@ trait HtmlHelpers extends CssBindImplicits {
     */
   def findOption[T](nodes: Seq[Node])(f: Elem => Option[T]): Option[T] = {
     nodes.view.flatMap {
-      case Group(g) => findOption(g)(f)
-      case e: Elem  => f(e) orElse findOption(e.child)(f)
-      case _        => None
+      case Group(g) =>
+        findOption(g)(f)
+      case e: Elem =>
+        f(e) orElse findOption(e.child)(f)
+      case _ =>
+        None
     }.headOption
   }
 
@@ -189,8 +195,10 @@ trait HtmlHelpers extends CssBindImplicits {
     */
   def removeAttribute(name: String, existingAttributes: MetaData): MetaData = {
     existingAttributes.filter {
-      case up: UnprefixedAttribute => up.key != name
-      case _                       => true
+      case up: UnprefixedAttribute =>
+        up.key != name
+      case _ =>
+        true
     }
   }
 
@@ -204,8 +212,10 @@ trait HtmlHelpers extends CssBindImplicits {
     */
   def addCssClass(cssClass: Box[String], elem: Elem): Elem = {
     cssClass match {
-      case Full(css) => addCssClass(css, elem)
-      case _         => elem
+      case Full(css) =>
+        addCssClass(css, elem)
+      case _ =>
+        elem
     }
   }
 
@@ -226,7 +236,8 @@ trait HtmlHelpers extends CssBindImplicits {
 
         elem.copy(attributes = attributesWithUpdatedClass(elem.attributes))
 
-      case _ => elem % new UnprefixedAttribute("class", cssClass, Null)
+      case _ =>
+        elem % new UnprefixedAttribute("class", cssClass, Null)
     }
   }
 
@@ -243,7 +254,8 @@ trait HtmlHelpers extends CssBindImplicits {
 
     def stripDuplicateId(node: Node): Node =
       node match {
-        case Group(ns) => Group(ns.map(stripDuplicateId))
+        case Group(ns) =>
+          Group(ns.map(stripDuplicateId))
         case element: Elem =>
           element.attribute("id") match {
             case Some(id) => {
@@ -260,10 +272,12 @@ trait HtmlHelpers extends CssBindImplicits {
               }
             }
 
-            case _ => element
+            case _ =>
+              element
           }
 
-        case other => other
+        case other =>
+          other
       }
 
     in.map(_.map(stripDuplicateId))
@@ -298,7 +312,8 @@ trait HtmlHelpers extends CssBindImplicits {
     var found = false
 
     ns.map {
-      case x if found => x
+      case x if found =>
+        x
       case element: Elem => {
         val meta = removeAttribute("id", element.attributes)
 
@@ -307,7 +322,8 @@ trait HtmlHelpers extends CssBindImplicits {
         element.copy(attributes = new UnprefixedAttribute("id", id, meta))
       }
 
-      case x => x
+      case x =>
+        x
     }
   }
 
@@ -328,7 +344,8 @@ trait HtmlHelpers extends CssBindImplicits {
           </i>
           </div>)
 
-      case _ => Empty
+      case _ =>
+        Empty
     }
   }
 
@@ -346,7 +363,8 @@ trait HtmlHelpers extends CssBindImplicits {
           value,
           rest)
 
-      case _ => new UnprefixedAttribute(key, value, rest)
+      case _ =>
+        new UnprefixedAttribute(key, value, rest)
     }
 
   /**
@@ -356,13 +374,17 @@ trait HtmlHelpers extends CssBindImplicits {
     */
   def pairsToMetaData(in: List[String]): MetaData =
     in match {
-      case Nil => Null
+      case Nil =>
+        Null
       case x :: xs => {
         val rest = pairsToMetaData(xs)
         x.charSplit('=').map(Helpers.urlDecode) match {
-          case Nil         => rest
-          case x :: Nil    => makeMetaData(x, "", rest)
-          case x :: y :: _ => makeMetaData(x, y, rest)
+          case Nil =>
+            rest
+          case x :: Nil =>
+            makeMetaData(x, "", rest)
+          case x :: y :: _ =>
+            makeMetaData(x, y, rest)
         }
       }
     }

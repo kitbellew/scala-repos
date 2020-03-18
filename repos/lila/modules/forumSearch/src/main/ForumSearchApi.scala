@@ -50,6 +50,7 @@ final class ForumSearchApi(client: ESClient, postApi: PostApi)
               }
           }
         }
-      case _ => funit
+      case _ =>
+        funit
     }
 }

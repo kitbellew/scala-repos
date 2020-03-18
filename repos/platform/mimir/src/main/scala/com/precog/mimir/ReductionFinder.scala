@@ -71,7 +71,8 @@ trait ReductionFinderModule[M[+_]]
       val reduces =
         node
           .foldDown[List[dag.Reduce]](true) {
-            case r: dag.Reduce => List(r)
+            case r: dag.Reduce =>
+            List(r)
         } distinct
 
       val info: List[ReduceInfo] = reduces map {

@@ -80,7 +80,8 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
       case x: Vector[_] =>
         this.length == x.length &&
           (valuesIterator sameElements x.valuesIterator)
-      case _ => false
+      case _ =>
+        false
     }
 
   def toDenseVector(implicit cm: ClassTag[V]) = {

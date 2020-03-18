@@ -353,7 +353,8 @@ class DateTest extends WordSpec {
           Nil
 
       testcases.foreach {
-        case (l, r) => assert(l === r)
+        case (l, r) =>
+          assert(l === r)
       }
     }
 

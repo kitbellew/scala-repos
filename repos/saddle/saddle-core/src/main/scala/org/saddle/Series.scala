@@ -512,8 +512,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def minKey(implicit num: NUM[T], ord: ORD[T]): Scalar[X] =
     array.argmin(values.toArray) match {
-      case -1   => NA
-      case _ @i => index.at(i)
+      case -1 =>
+        NA
+      case _ @i =>
+        index.at(i)
     }
 
   /**
@@ -521,8 +523,10 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     */
   def maxKey(implicit num: NUM[T], ord: ORD[T]): Scalar[X] =
     array.argmax(values.toArray) match {
-      case -1   => NA
-      case _ @i => index.at(i)
+      case -1 =>
+        NA
+      case _ @i =>
+        index.at(i)
     }
 
   /**
@@ -994,7 +998,8 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
         (this eq s) || (
           length == s.length
         ) && index == s.index && values == s.values
-      case _ => false
+      case _ =>
+        false
     }
 
   override def toString: String = stringify()

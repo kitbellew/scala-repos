@@ -18,7 +18,8 @@ final class DisposableEmailDomain(
       lila.mon.email.disposableDomain(matchers.size)
     } recover {
       case _: java.net.ConnectException => // ignore network errors
-      case e: Exception                 => onError(e)
+      case e: Exception =>
+        onError(e)
     }
   }
 
@@ -31,7 +32,8 @@ final class DisposableEmailDomain(
       }
       failed = false
     } catch {
-      case e: Exception => onError(e)
+      case e: Exception =>
+        onError(e)
     }
 
   private var failed = false

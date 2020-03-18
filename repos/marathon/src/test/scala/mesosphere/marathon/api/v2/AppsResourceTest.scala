@@ -554,8 +554,10 @@ class AppsResourceTest
     auth.authFn = (resource: Any) => {
       val id =
         resource match {
-          case app: AppDefinition => app.id.toString
-          case _                  => resource.asInstanceOf[Group].id.toString
+          case app: AppDefinition =>
+            app.id.toString
+          case _ =>
+            resource.asInstanceOf[Group].id.toString
         }
       id.startsWith("/visible")
     }

@@ -49,8 +49,10 @@ class LogDouble(val logValue: Double) {
 
   override def equals(o: Any) =
     o match {
-      case ld: LogDouble => logValue == ld.logValue
-      case _             => false
+      case ld: LogDouble =>
+        logValue == ld.logValue
+      case _ =>
+        false
     }
 
   override def hashCode = logValue.hashCode

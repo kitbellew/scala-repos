@@ -214,7 +214,8 @@ trait LineParsers extends InlineParsers {
     */
   def linkDefinitionStart: Parser[(LinkDefinitionStart, Option[String])] =
     linkDefinitionId ~ linkDefinitionUrl ~ opt(linkDefinitionTitle) ^^ {
-      case i ~ u ~ t => (new LinkDefinitionStart(i, u), t)
+      case i ~ u ~ t =>
+        (new LinkDefinitionStart(i, u), t)
     }
 
   //////////////////////////////////////////
@@ -252,7 +253,8 @@ trait LineParsers extends InlineParsers {
   /** Parses headers of the form: ### header ###
     */
   val atxHeader: Parser[AtxHeaderLine] = """#+""".r ~ rest ^^ {
-    case prefix ~ payload => new AtxHeaderLine(prefix, payload)
+    case prefix ~ payload =>
+      new AtxHeaderLine(prefix, payload)
   }
 
   /** Parses a horizontal rule.
@@ -266,7 +268,8 @@ trait LineParsers extends InlineParsers {
     * (i.e.: the start or continuation of a block quote.)
     */
   val blockquoteLine: Parser[BlockQuoteLine] = """ {0,3}\>( )?""".r ~ rest ^^ {
-    case prefix ~ payload => new BlockQuoteLine(prefix, payload)
+    case prefix ~ payload =>
+      new BlockQuoteLine(prefix, payload)
   }
 
   /** A line that starts an unordered list item.
@@ -274,7 +277,8 @@ trait LineParsers extends InlineParsers {
     */
   val uItemStartLine: Parser[UItemStartLine] =
     (""" {0,3}[\*\+-] [\t\v ]*""".r) ~ rest ^^ {
-      case prefix ~ payload => new UItemStartLine(prefix, payload)
+      case prefix ~ payload =>
+        new UItemStartLine(prefix, payload)
     }
 
   /** A line that starts an ordered list item.
@@ -282,7 +286,8 @@ trait LineParsers extends InlineParsers {
     */
   val oItemStartLine: Parser[OItemStartLine] =
     (""" {0,3}[0-9]+\. [\t\v ]*""".r) ~ rest ^^ {
-      case prefix ~ payload => new OItemStartLine(prefix, payload)
+      case prefix ~ payload =>
+        new OItemStartLine(prefix, payload)
     }
 
   /** Accepts an empty line. (A line that consists only of optional whitespace or the empty string.)
@@ -294,14 +299,16 @@ trait LineParsers extends InlineParsers {
   /** Matches a code example line: any line starting with four spaces or a tab.
     */
   val codeLine: Parser[CodeLine] = ("    " | "\t") ~ rest ^^ {
-    case prefix ~ payload => new CodeLine(prefix, payload)
+    case prefix ~ payload =>
+      new CodeLine(prefix, payload)
   }
 
   /**
     * A fenced code line. Can be the start or the end of a fenced code block
     */
   val fencedCodeLine: Parser[FencedCode] = """ {0,3}\`{3,}[\t\v ]*""".r ^^ {
-    case prefix => new FencedCode(prefix)
+    case prefix =>
+      new FencedCode(prefix)
   }
 
   /** Matches the start of a fenced code block with additional language token:

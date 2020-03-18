@@ -387,7 +387,8 @@ abstract class Duplicators extends Analyzer {
                 case CaseDef(Typed(_, tpt), EmptyTree, body) =>
                   // the typed pattern is not incompatible with the scrutinee type
                   scrutTpe matchesPattern fixType(tpt.tpe)
-                case _ => true
+                case _ =>
+                  true
               }
             // Without this, AnyRef specializations crash on patterns like
             //   case _: Boolean => ...

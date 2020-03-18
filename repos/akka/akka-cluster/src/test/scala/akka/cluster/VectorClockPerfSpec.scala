@@ -19,7 +19,8 @@ object VectorClockPerfSpec {
 
   def copyVectorClock(vc: VectorClock): VectorClock = {
     val versions = (TreeMap.empty[Node, Long] /: vc.versions) {
-      case (versions, (n, t)) ⇒ versions.updated(Node.fromHash(n), t)
+      case (versions, (n, t)) ⇒
+        versions.updated(Node.fromHash(n), t)
     }
     vc.copy(versions = versions)
   }

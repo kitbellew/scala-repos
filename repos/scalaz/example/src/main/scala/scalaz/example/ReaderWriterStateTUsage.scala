@@ -33,9 +33,12 @@ object Token {
     new Show[Token] {
       override def show(t: Token) =
         t match {
-          case A => Cord("A")
-          case B => Cord("B")
-          case C => Cord("C")
+          case A =>
+            Cord("A")
+          case B =>
+            Cord("B")
+          case C =>
+            Cord("C")
         }
     }
 }

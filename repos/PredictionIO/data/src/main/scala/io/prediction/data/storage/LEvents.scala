@@ -370,8 +370,10 @@ trait LEvents {
           timeout
         ))
     } catch {
-      case e: TimeoutException => Left(StorageError(s"${e}"))
-      case e: Exception        => Left(StorageError(s"${e}"))
+      case e: TimeoutException =>
+        Left(StorageError(s"${e}"))
+      case e: Exception =>
+        Left(StorageError(s"${e}"))
     }
   }
 

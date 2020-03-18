@@ -308,8 +308,10 @@ class LDA private (
   @Since("1.4.0")
   def setOptimizer(optimizerName: String): this.type = {
     this.ldaOptimizer = optimizerName.toLowerCase match {
-      case "em"     => new EMLDAOptimizer
-      case "online" => new OnlineLDAOptimizer
+      case "em" =>
+        new EMLDAOptimizer
+      case "online" =>
+        new OnlineLDAOptimizer
       case other =>
         throw new IllegalArgumentException(
           s"Only em, online are supported but got $other.")

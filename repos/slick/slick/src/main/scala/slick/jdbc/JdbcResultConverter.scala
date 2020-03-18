@@ -43,13 +43,17 @@ class OptionResultConverter[
   }
   def update(value: Option[T], pr: ResultSet) =
     value match {
-      case Some(v) => ti.updateValue(v, pr, idx)
-      case _       => ti.updateNull(pr, idx)
+      case Some(v) =>
+        ti.updateValue(v, pr, idx)
+      case _ =>
+        ti.updateNull(pr, idx)
     }
   def set(value: Option[T], pp: PreparedStatement) =
     value match {
-      case Some(v) => ti.setValue(v, pp, idx)
-      case _       => ti.setNull(pp, idx)
+      case Some(v) =>
+        ti.setValue(v, pp, idx)
+      case _ =>
+        ti.setNull(pp, idx)
     }
   override def getDumpInfo =
     super.getDumpInfo.copy(mainInfo = s"idx=$idx", attrInfo = ": " + ti)
@@ -92,7 +96,8 @@ class DefaultingResultConverter[
       mainInfo = s"idx=$idx, default=" + {
         try default()
         catch {
-          case e: Throwable => "[" + e.getClass.getName + "]"
+          case e: Throwable =>
+            "[" + e.getClass.getName + "]"
         }
       },
       attrInfo = ": " + ti)

@@ -200,7 +200,8 @@ private[thrift] class RawZipkinTracer(
             category = TraceCategory,
             message = transport.toBase64Line()))
       } catch {
-        case NonFatal(e) => errorReceiver.counter(e.getClass.getName).incr()
+        case NonFatal(e) =>
+          errorReceiver.counter(e.getClass.getName).incr()
       } finally {
         transport.reset()
         bufferPool.add(transport)
@@ -217,9 +218,12 @@ private[thrift] class RawZipkinTracer(
     client
       .log(createLogEntries(spans))
       .respond {
-        case Return(ResultCode.Ok)       => okCounter.incr()
-        case Return(ResultCode.TryLater) => tryLaterCounter.incr()
-        case Throw(e)                    => errorReceiver.counter(e.getClass.getName).incr()
+        case Return(ResultCode.Ok) =>
+          okCounter.incr()
+        case Return(ResultCode.TryLater) =>
+          tryLaterCounter.incr()
+        case Throw(e) =>
+          errorReceiver.counter(e.getClass.getName).incr()
       }
       .unit
   }
@@ -328,7 +332,8 @@ private[thrift] class RawZipkinTracer(
           key,
           ByteBuffer.wrap(value.getBytes),
           thrift.AnnotationType.STRING)
-      case tracing.Annotation.BinaryAnnotation(key: String, value) => // Throw error?
+      case tracing.Annotation
+            .BinaryAnnotation(key: String, value) => // Throw error?
       case tracing.Annotation.LocalAddr(ia: InetSocketAddress) =>
         setEndpoint(record, ia)
       case tracing.Annotation.ClientAddr(ia: InetSocketAddress) =>

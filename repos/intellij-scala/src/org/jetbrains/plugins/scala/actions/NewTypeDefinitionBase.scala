@@ -98,7 +98,8 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
         }
 
         false
-      case _ => false
+      case _ =>
+        false
     }
 
   protected def checkModule(module: Module): Boolean

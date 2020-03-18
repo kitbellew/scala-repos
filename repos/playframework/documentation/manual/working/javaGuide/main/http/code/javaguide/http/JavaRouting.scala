@@ -86,7 +86,8 @@ object JavaRouting extends Specification {
       implicit val mat = ActorMaterializer()(app.actorSystem)
       contentAsString(
         app.requestHandler.handlerForRequest(rh)._2 match {
-          case e: EssentialAction => e(rh).run()
+          case e: EssentialAction =>
+            e(rh).run()
         })
     }
   }

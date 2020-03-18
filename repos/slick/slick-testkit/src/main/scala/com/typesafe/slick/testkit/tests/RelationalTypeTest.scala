@@ -17,7 +17,8 @@ class RelationalTypeTest extends AsyncTest[RelationalTestDB] {
       }
       val tbl = TableQuery[Tbl]
       val data = values.zipWithIndex.map {
-        case (d, i) => (i + 1, d)
+        case (d, i) =>
+          (i + 1, d)
       }
       val q = tbl.sortBy(_.id)
       seq(

@@ -56,8 +56,10 @@ object Package {
     val entryMap = mapAsScalaMap(manifest.getEntries)
     for ((key, value) <- mergeManifest.getEntries) {
       entryMap.get(key) match {
-        case Some(attributes) => mergeAttributes(attributes, value)
-        case None             => entryMap put (key, value)
+        case Some(attributes) =>
+          mergeAttributes(attributes, value)
+        case None =>
+          entryMap put (key, value)
       }
     }
   }
@@ -75,8 +77,10 @@ object Package {
           mergeManifests(manifest, mergeManifest)
         case MainClass(mainClassName) =>
           main.put(Attributes.Name.MAIN_CLASS, mainClassName)
-        case ManifestAttributes(attributes @ _*) => main ++= attributes
-        case _                                   => log.warn("Ignored unknown package option " + option)
+        case ManifestAttributes(attributes @ _*) =>
+          main ++= attributes
+        case _ =>
+          log.warn("Ignored unknown package option " + option)
       }
     }
     setVersion(main)
@@ -150,7 +154,8 @@ object Package {
   def sourcesDebugString(sources: Seq[(File, String)]): String =
     "Input file mappings:\n\t" + (
       sources map {
-        case (f, s) => s + "\n\t  " + f
+        case (f, s) =>
+          s + "\n\t  " + f
       } mkString ("\n\t")
     )
 

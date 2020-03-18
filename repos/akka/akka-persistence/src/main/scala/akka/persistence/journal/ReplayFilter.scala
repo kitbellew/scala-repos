@@ -102,8 +102,10 @@ private[akka] class ReplayFilter(
             logIssue(errMsg)
             mode match {
               case RepairByDiscardOld ⇒ // discard
-              case Fail ⇒ throw new IllegalStateException(errMsg)
-              case Warn ⇒ buffer.add(r)
+              case Fail ⇒
+                throw new IllegalStateException(errMsg)
+              case Warn ⇒
+                buffer.add(r)
               case Disabled ⇒
                 throw new IllegalArgumentException("mode must not be Disabled")
             }
@@ -121,8 +123,10 @@ private[akka] class ReplayFilter(
           logIssue(errMsg)
           mode match {
             case RepairByDiscardOld ⇒ // discard
-            case Fail ⇒ throw new IllegalStateException(errMsg)
-            case Warn ⇒ buffer.add(r)
+            case Fail ⇒
+              throw new IllegalStateException(errMsg)
+            case Warn ⇒
+              buffer.add(r)
             case Disabled ⇒
               throw new IllegalArgumentException("mode must not be Disabled")
           }
@@ -147,8 +151,10 @@ private[akka] class ReplayFilter(
                   s"writer [${msg.persistent.writerUuid}] with persistenceId [${msg.persistent.persistenceId}]"
               logIssue(errMsg)
               mode match {
-                case RepairByDiscardOld ⇒ iter.remove() // discard
-                case Fail ⇒ throw new IllegalStateException(errMsg)
+                case RepairByDiscardOld ⇒
+                  iter.remove() // discard
+                case Fail ⇒
+                  throw new IllegalStateException(errMsg)
                 case Warn ⇒ // keep
                 case Disabled ⇒
                   throw new IllegalArgumentException(
@@ -162,7 +168,8 @@ private[akka] class ReplayFilter(
         }
 
       } catch {
-        case e: IllegalStateException if mode == Fail ⇒ fail(e)
+        case e: IllegalStateException if mode == Fail ⇒
+          fail(e)
       }
 
     case msg @ (_: RecoverySuccess | _: ReplayMessagesFailure) ⇒
@@ -182,8 +189,10 @@ private[akka] class ReplayFilter(
 
   def logIssue(errMsg: String): Unit =
     mode match {
-      case Warn | RepairByDiscardOld ⇒ log.warning(errMsg)
-      case Fail ⇒ log.error(errMsg)
+      case Warn | RepairByDiscardOld ⇒
+        log.warning(errMsg)
+      case Fail ⇒
+        log.error(errMsg)
       case Disabled ⇒
         throw new IllegalArgumentException("mode must not be Disabled")
     }

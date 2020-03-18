@@ -114,9 +114,12 @@ class JasmineTestReporter(
     val EvalPattern = """^(.+?) in eval.+\(eval\).+?\(line \d+\).*?$""".r
 
     message match {
-      case FilePattern(originalMessage) => originalMessage
-      case EvalPattern(originalMessage) => originalMessage
-      case message                      => message
+      case FilePattern(originalMessage) =>
+        originalMessage
+      case EvalPattern(originalMessage) =>
+        originalMessage
+      case message =>
+        message
     }
   }
 

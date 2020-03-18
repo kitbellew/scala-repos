@@ -47,7 +47,8 @@ object Video extends LilaController {
     Open { implicit ctx =>
       WithUserControl { control =>
         env.api.video.find(id) flatMap {
-          case None => fuccess(NotFound(html.video.notFound(control)))
+          case None =>
+            fuccess(NotFound(html.video.notFound(control)))
           case Some(video) =>
             env.api.video.similar(ctx.me, video, 9) zip
               ctx.userId.?? { userId =>

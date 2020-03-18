@@ -130,7 +130,8 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
             Box.!!(value.get).map(value => (false, Full(value))) openOr {
               (true, Empty)
             }
-          case _ => (false, Empty)
+          case _ =>
+            (false, Empty)
         }
       }
 

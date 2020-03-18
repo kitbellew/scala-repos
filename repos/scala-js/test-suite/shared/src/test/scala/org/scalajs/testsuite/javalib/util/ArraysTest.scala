@@ -528,7 +528,8 @@ class ArraysTest {
     def expectException(block: => Unit)(
         expected: PartialFunction[Throwable, Unit]): Unit = {
       val catchAll: PartialFunction[Throwable, Unit] = {
-        case e: Throwable => assertEquals("not thrown", e.getClass.getName)
+        case e: Throwable =>
+          assertEquals("not thrown", e.getClass.getName)
       }
 
       try {
@@ -950,8 +951,10 @@ class ArraysTest {
     class A(private val x: Int) {
       override def equals(that: Any): Boolean =
         that match {
-          case that: A => this.x == that.x
-          case _       => false
+          case that: A =>
+            this.x == that.x
+          case _ =>
+            false
         }
     }
     // scalastyle:on equals.hash.code

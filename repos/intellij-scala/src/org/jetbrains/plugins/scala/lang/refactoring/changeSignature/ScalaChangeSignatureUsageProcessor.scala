@@ -70,7 +70,8 @@ class ScalaChangeSignatureUsageProcessor
               val inFakeCompanion = clazz.fakeCompanionModule.toSeq
                 .flatMap(_.members)
               inExistingClasses ++ inFakeCompanion
-            case _ => Nil
+            case _ =>
+              Nil
           }
 
         val overriders =
@@ -78,8 +79,10 @@ class ScalaChangeSignatureUsageProcessor
             ScalaOverridingMemberSearcher.search(method).toSeq
         val methods =
           (method +: overriders ++: synthetics).map {
-            case isWrapper(m) => m
-            case other        => other
+            case isWrapper(m) =>
+              m
+            case other =>
+              other
           }.distinct
 
         if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged) {
@@ -124,7 +127,8 @@ class ScalaChangeSignatureUsageProcessor
           case _ =>
         }
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   override def processUsage(
@@ -163,8 +167,10 @@ class ScalaChangeSignatureUsageProcessor
     def addArgumentsToDefaultParamInJava(): Unit = {
       val newParams =
         changeInfo match {
-          case sc: ScalaChangeInfo => sc.newParams
-          case _                   => return
+          case sc: ScalaChangeInfo =>
+            sc.newParams
+          case _ =>
+            return
         }
 
       if (newParams.size <= 1)
@@ -287,10 +293,11 @@ class ScalaChangeSignatureUsageProcessor
     val process = { ref: PsiReference =>
       val refElem = ref.getElement
       refElem match {
-        case isAnonFunUsage(anonFunUsageInfo) => results += anonFunUsageInfo
-        case (
-              scRef: ScReferenceElement
-            ) childOf (_: ScImportSelector | _: ScImportExpr) =>
+        case isAnonFunUsage(anonFunUsageInfo) =>
+          results += anonFunUsageInfo
+        case (scRef: ScReferenceElement) childOf (
+              _: ScImportSelector | _: ScImportExpr
+            ) =>
           results += ImportUsageInfo(scRef)
         case (refExpr: ScReferenceExpression) childOf (mc: ScMethodCall) =>
           results += MethodCallUsageInfo(refExpr, fullCall(mc))
@@ -319,8 +326,10 @@ class ScalaChangeSignatureUsageProcessor
   @tailrec
   private def fullCall(mc: ScMethodCall): ScMethodCall = {
     mc.getParent match {
-      case p: ScMethodCall if !mc.isApplyOrUpdateCall => fullCall(p)
-      case _                                          => mc
+      case p: ScMethodCall if !mc.isApplyOrUpdateCall =>
+        fullCall(p)
+      case _ =>
+        mc
     }
   }
 

@@ -32,8 +32,10 @@ abstract class ScValueElementType[Value <: ScValue](debugName: String)
     val isDecl = psi.isInstanceOf[ScValueDeclaration]
     val typeText =
       psi.typeElement match {
-        case Some(te) => te.getText
-        case None     => ""
+        case Some(te) =>
+          te.getText
+        case None =>
+          ""
       }
     val bodyText =
       if (!isDecl)

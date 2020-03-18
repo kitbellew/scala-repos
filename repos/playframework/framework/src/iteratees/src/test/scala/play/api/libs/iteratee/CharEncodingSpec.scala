@@ -117,7 +117,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -131,7 +132,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -147,7 +149,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -161,7 +164,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -235,7 +239,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -249,7 +254,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -263,7 +269,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }
@@ -277,7 +284,8 @@ object CharEncodingSpec extends Specification {
           "success"
         }
         .recover {
-          case e => "failure"
+          case e =>
+            "failure"
         }
       Await.result(status, Duration.Inf) must be equalTo "failure"
     }

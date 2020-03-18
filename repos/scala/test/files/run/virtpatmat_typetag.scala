@@ -8,7 +8,8 @@ trait Extractors {
   }
   def apply(a: Any) =
     a match {
-      case ExtractT(x) => println(x + " is a " + implicitly[ClassTag[T]])
+      case ExtractT(x) =>
+        println(x + " is a " + implicitly[ClassTag[T]])
       case _ =>
         println(
           a + " is not a " + implicitly[ClassTag[T]] + "; it's a " + a.getClass)
@@ -18,7 +19,8 @@ trait Extractors {
 object Test extends App {
   def typeMatch[T: ClassTag](a: Any) =
     a match {
-      case x: T => println(x + " is a " + implicitly[ClassTag[T]])
+      case x: T =>
+        println(x + " is a " + implicitly[ClassTag[T]])
       case _ =>
         println(
           a + " is not a " + implicitly[ClassTag[T]] + "; it's a " + a.getClass)

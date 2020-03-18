@@ -40,8 +40,10 @@ class FeatureVector(val data: Array[Int]) extends NumericOps[FeatureVector] {
 
   override def equals(p1: Any): Boolean =
     p1 match {
-      case fv: FeatureVector => util.Arrays.equals(fv.data, data)
-      case _                 => false
+      case fv: FeatureVector =>
+        util.Arrays.equals(fv.data, data)
+      case _ =>
+        false
     }
 }
 

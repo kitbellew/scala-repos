@@ -89,7 +89,8 @@ package object testPackage extends Assertions {
           assert(file === "SparkContextInfoSuite.scala")
           line.toInt
         }
-        case _ => fail("Did not match expected call site format")
+        case _ =>
+          fail("Did not match expected call site format")
       }
 
     curCallSite match {
@@ -100,7 +101,8 @@ package object testPackage extends Assertions {
         assert(file === "SparkContextInfoSuite.scala")
         assert(line.toInt === rddCreationLine.toInt + 2)
       }
-      case _ => fail("Did not match expected call site format")
+      case _ =>
+        fail("Did not match expected call site format")
     }
   }
 }

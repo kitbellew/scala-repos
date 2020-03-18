@@ -1081,7 +1081,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
               (length64Bytes(5) & 0xff).toLong << 16 |
               (length64Bytes(6) & 0xff).toLong << 8 |
               (length64Bytes(7) & 0xff).toLong << 0
-          case x ⇒ x
+          case x ⇒
+            x
         }
       val mask =
         if (hasMask) {
@@ -1108,8 +1109,10 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       val rawData = expectNetworkData(length.toInt)
       val data =
         mask match {
-          case Some(m) ⇒ FrameEventParser.mask(rawData, m)._1
-          case None ⇒ rawData
+          case Some(m) ⇒
+            FrameEventParser.mask(rawData, m)._1
+          case None ⇒
+            rawData
         }
 
       val code = ((data(0) & 0xff) << 8) | ((data(1) & 0xff) << 0)

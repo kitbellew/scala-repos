@@ -418,7 +418,8 @@ private[spark] class TaskSchedulerImpl(
               ).format(state, tid))
         }
       } catch {
-        case e: Exception => logError("Exception in statusUpdate", e)
+        case e: Exception =>
+          logError("Exception in statusUpdate", e)
       }
     }
     // Update the DAGScheduler without holding a lock on this, since that can deadlock
@@ -495,7 +496,8 @@ private[spark] class TaskSchedulerImpl(
           try {
             manager.abort(message)
           } catch {
-            case e: Exception => logError("Exception in error callback", e)
+            case e: Exception =>
+              logError("Exception in error callback", e)
           }
         }
       } else {

@@ -63,10 +63,12 @@ object Resizer {
     (
       defaultResizerConfig.getBoolean("enabled"),
       metricsBasedResizerConfig.getBoolean("enabled")) match {
-      case (true, false) ⇒ Some(DefaultResizer(defaultResizerConfig))
+      case (true, false) ⇒
+        Some(DefaultResizer(defaultResizerConfig))
       case (false, true) ⇒
         Some(OptimalSizeExploringResizer(metricsBasedResizerConfig))
-      case (false, false) ⇒ None
+      case (false, false) ⇒
+        None
       case (true, true) ⇒
         throw new ResizerInitializationException(
           s"cannot enable both resizer and optimal-size-exploring-resizer",
@@ -223,17 +225,21 @@ case class DefaultResizer(
         a.underlying match {
           case cell: ActorCell ⇒
             pressureThreshold match {
-              case 1 ⇒ cell.mailbox.isScheduled && cell.mailbox.hasMessages
+              case 1 ⇒
+                cell.mailbox.isScheduled && cell.mailbox.hasMessages
               case i if i < 1 ⇒
                 cell.mailbox.isScheduled && cell.currentMessage != null
-              case threshold ⇒ cell.mailbox.numberOfMessages >= threshold
+              case threshold ⇒
+                cell.mailbox.numberOfMessages >= threshold
             }
           case cell ⇒
             pressureThreshold match {
-              case 1 ⇒ cell.hasMessages
+              case 1 ⇒
+                cell.hasMessages
               case i if i < 1 ⇒
                 true // unstarted cells are always busy, for example
-              case threshold ⇒ cell.numberOfMessages >= threshold
+              case threshold ⇒
+                cell.numberOfMessages >= threshold
             }
         }
       case x ⇒
@@ -371,7 +377,8 @@ private[akka] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
 
   val resizerCell =
     context match {
-      case x: ResizablePoolCell ⇒ x
+      case x: ResizablePoolCell ⇒
+        x
       case _ ⇒
         throw ActorInitializationException(
           "Resizable router actor can only be used when resizer is defined, not in " + context.getClass)

@@ -32,7 +32,8 @@ object ActorLifeCycleSpec {
       report("postStop")
     }
     def receive = {
-      case "status" ⇒ sender() ! message("OK")
+      case "status" ⇒
+        sender() ! message("OK")
     }
   }
 
@@ -176,14 +177,17 @@ class ActorLifeCycleSpec
                 context.become(beh(context), discardOld = false);
                 sender() ! "ok"
               }
-              case x ⇒ sender() ! 42
+              case x ⇒
+                sender() ! 42
             }
           }))
       a ! "hello"
       expectMsg(42)
       a ! Become(ctx ⇒ {
-        case "fail" ⇒ throw new RuntimeException("buh")
-        case x ⇒ ctx.sender() ! 43
+        case "fail" ⇒
+          throw new RuntimeException("buh")
+        case x ⇒
+          ctx.sender() ! 43
       })
       expectMsg("ok")
       a ! "hello"

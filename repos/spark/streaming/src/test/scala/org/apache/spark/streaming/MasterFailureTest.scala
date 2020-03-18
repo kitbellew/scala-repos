@@ -279,7 +279,8 @@ private[streaming] object MasterFailureTest extends Logging {
           isTimedOut = (timeRan + totalTimeRan > maxTimeToRun)
         }
       } catch {
-        case e: Exception => logError("Error running streaming context", e)
+        case e: Exception =>
+          logError("Error running streaming context", e)
       } finally {
         ssc.stop()
       }
@@ -394,8 +395,10 @@ private[streaming] class KillingThread(
       }
       logInfo("Killing thread finished normally")
     } catch {
-      case ie: InterruptedException => logInfo("Killing thread interrupted")
-      case e: Exception             => logWarning("Exception in killing thread", e)
+      case ie: InterruptedException =>
+        logInfo("Killing thread interrupted")
+      case e: Exception =>
+        logWarning("Exception in killing thread", e)
     }
 
   }
@@ -456,7 +459,8 @@ private[streaming] class FileGeneratingThread(
     } catch {
       case ie: InterruptedException =>
         logInfo("File generating thread interrupted")
-      case e: Exception => logWarning("File generating in killing thread", e)
+      case e: Exception =>
+        logWarning("File generating in killing thread", e)
     } finally {
       fs.close()
       Utils.deleteRecursively(localTestDir)

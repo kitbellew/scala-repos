@@ -190,12 +190,15 @@ class ConcurrentMemory(implicit
       planned0: HMap[ProdCons, PhysicalNode],
       that: Prod[Any]): (HMap[ProdCons, PhysicalNode], PhysicalNode[T]) =
     planned0.get(that) match {
-      case Some(s) => (planned0, s)
+      case Some(s) =>
+        (planned0, s)
       case None =>
         def maybeFanout[U]: (HMap[ProdCons, PhysicalNode], PhysicalNode[U]) =
           deps.dependantsAfterMerge(that) match {
-            case Nil           => (planned0, NullTarget)
-            case single :: Nil => toPhys[U](deps, planned0, single)
+            case Nil =>
+              (planned0, NullTarget)
+            case single :: Nil =>
+              toPhys[U](deps, planned0, single)
             case many =>
               val res =
                 many.scanLeft((planned0, None: Option[PhysicalNode[U]])) {
@@ -207,7 +210,8 @@ class ConcurrentMemory(implicit
                 res.last._1,
                 FanOut[U](
                   res.collect {
-                    case (_, Some(phys)) => phys
+                    case (_, Some(phys)) =>
+                      phys
                   }))
           }
 
@@ -295,7 +299,8 @@ class ConcurrentMemory(implicit
 
     val deps = Dependants(optimize(prod, ourRule))
     val heads = deps.nodes.collect {
-      case s @ Source(_) => s
+      case s @ Source(_) =>
+        s
     }
     heads
       .foldLeft(

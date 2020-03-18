@@ -111,12 +111,16 @@ final class JsonView(
               "submitMove" -> {
                 import Pref.SubmitMove._
                 pref.submitMove match {
-                  case _ if game.hasAi                                   => false
-                  case ALWAYS                                            => true
-                  case CORRESPONDENCE_UNLIMITED if game.isCorrespondence => true
+                  case _ if game.hasAi =>
+                    false
+                  case ALWAYS =>
+                    true
+                  case CORRESPONDENCE_UNLIMITED if game.isCorrespondence =>
+                    true
                   case CORRESPONDENCE_ONLY if game.hasCorrespondenceClock =>
                     true
-                  case _ => false
+                  case _ =>
+                    false
                 }
               },
               "confirmResign" -> (pref.confirmResign == Pref.ConfirmResign.YES)
@@ -333,7 +337,8 @@ final class JsonView(
   private def possibleMoves(pov: Pov) =
     (pov.game playableBy pov.player) option {
       pov.game.toChess.situation.destinations map {
-        case (from, dests) => from.key -> dests.mkString
+        case (from, dests) =>
+          from.key -> dests.mkString
       }
     }
 
@@ -346,11 +351,16 @@ final class JsonView(
 
   private def animationFactor(pref: Pref): Float =
     pref.animation match {
-      case 0 => 0
-      case 1 => 0.5f
-      case 2 => 1
-      case 3 => 2
-      case _ => 1
+      case 0 =>
+        0
+      case 1 =>
+        0.5f
+      case 2 =>
+        1
+      case 3 =>
+        2
+      case _ =>
+        1
     }
 
   private def animationDuration(pov: Pov, pref: Pref) =

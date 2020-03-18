@@ -51,7 +51,8 @@ abstract class TransitionSpec
   def memberStatus(address: Address): MemberStatus = {
     val statusOption =
       (clusterView.members union clusterView.unreachableMembers).collectFirst {
-        case m if m.address == address ⇒ m.status
+        case m if m.address == address ⇒
+          m.status
       }
     statusOption.getOrElse(Removed)
   }

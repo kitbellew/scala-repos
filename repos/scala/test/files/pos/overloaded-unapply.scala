@@ -7,6 +7,7 @@ trait Baz {
   }
 
   (null: Type) match {
-    case HoleType(holeTpe) => holeTpe
+    case HoleType(holeTpe) =>
+      holeTpe
   }
 }

@@ -20,7 +20,8 @@ object ViewExample extends App {
     }
 
     def receiveRecover: Receive = {
-      case _: String => count += 1
+      case _: String =>
+        count += 1
     }
   }
 

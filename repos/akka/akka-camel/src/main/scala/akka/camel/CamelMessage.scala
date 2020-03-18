@@ -143,7 +143,8 @@ class CamelMessage(
     */
   def resetStreamCache(): Unit =
     body match {
-      case stream: StreamCache ⇒ stream.reset
+      case stream: StreamCache ⇒
+        stream.reset
       case _ ⇒
     }
 
@@ -214,7 +215,8 @@ class CamelMessage(
         this.body == that.body &&
           this.headers == that.headers &&
           this.attachments == that.attachments
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   /**
@@ -227,9 +229,12 @@ class CamelMessage(
     */
   override def productElement(n: Int): Any =
     n match {
-      case 0 ⇒ body
-      case 1 ⇒ headers
-      case 2 ⇒ attachments
+      case 0 ⇒
+        body
+      case 1 ⇒
+        headers
+      case 2 ⇒
+        attachments
     }
 
   /**
@@ -243,8 +248,10 @@ class CamelMessage(
     */
   override def canEqual(that: Any): Boolean =
     that match {
-      case _: CamelMessage ⇒ true
-      case _ ⇒ false
+      case _: CamelMessage ⇒
+        true
+      case _ ⇒
+        false
     }
 }
 
@@ -290,8 +297,10 @@ object CamelMessage extends ((Any, Map[String, Any]) ⇒ CamelMessage) {
     */
   private[camel] def canonicalize(msg: Any) =
     msg match {
-      case mobj: CamelMessage ⇒ mobj
-      case body ⇒ CamelMessage(body, Map.empty[String, Any])
+      case mobj: CamelMessage ⇒
+        mobj
+      case body ⇒
+        CamelMessage(body, Map.empty[String, Any])
     }
 
   /**

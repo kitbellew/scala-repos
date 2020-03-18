@@ -5,7 +5,8 @@ object Test extends App {
     try {
       bar
     } catch {
-      case e: Throwable => println(e)
+      case e: Throwable =>
+        println(e)
     }
   }
 
@@ -14,7 +15,8 @@ object Test extends App {
     try {
       println("hi")
     } catch {
-      case e: Throwable => println("SHOULD NOT GET HERE")
+      case e: Throwable =>
+        println("SHOULD NOT GET HERE")
     } finally {
       println("In Finally")
       throw new RuntimeException("ouch")
@@ -84,7 +86,8 @@ object Test extends App {
         throw new Exception
       }
     } catch {
-      case e: Throwable => println(e)
+      case e: Throwable =>
+        println(e)
     }
   }
 
@@ -97,7 +100,8 @@ object Test extends App {
         try {
           ()
         } catch {
-          case _: Throwable => ()
+          case _: Throwable =>
+            ()
         }
         println("in finally 1")
       }
@@ -110,7 +114,8 @@ object Test extends App {
     try {
       m
     } catch {
-      case e: Throwable => println("COUGHT: " + e)
+      case e: Throwable =>
+        println("COUGHT: " + e)
     }
     println("-" * 40)
   }

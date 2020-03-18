@@ -33,8 +33,10 @@ class TestTransportSpec
       result._2 should not be null
 
       registry.logSnapshot.exists {
-        case ListenAttempt(address) ⇒ address == addressA
-        case _ ⇒ false
+        case ListenAttempt(address) ⇒
+          address == addressA
+        case _ ⇒
+          false
       } should ===(true)
     }
 
@@ -121,7 +123,8 @@ class TestTransportSpec
       registry.logSnapshot.exists {
         case WriteAttempt(sender, recipient, payload) ⇒
           sender == addressA && recipient == addressB && payload == akkaPDU
-        case _ ⇒ false
+        case _ ⇒
+          false
       } should ===(true)
     }
 
@@ -168,7 +171,8 @@ class TestTransportSpec
         case DisassociateAttempt(requester, remote)
             if requester == addressA && remote == addressB ⇒
           true
-        case _ ⇒ false
+        case _ ⇒
+          false
       } should ===(true)
     }
 

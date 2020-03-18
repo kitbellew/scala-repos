@@ -40,7 +40,8 @@ abstract class TypingTestWithPerformanceTestBase extends ScalaFixtureTestCase {
 
   protected def separateText(fileText: String): (String, Option[String]) = {
     fileText.indexOf("-----") match {
-      case -1 => (fileText, None)
+      case -1 =>
+        (fileText, None)
       case other =>
         val (before, after) = fileText.splitAt(other)
         (before, Some(after.dropWhile(c => c == '-' || c == '\n')))

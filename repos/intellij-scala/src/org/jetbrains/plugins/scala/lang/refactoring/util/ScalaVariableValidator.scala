@@ -58,7 +58,8 @@ object ScalaVariableValidator {
           occurrences.isEmpty,
           container,
           containerOne)
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -148,8 +149,10 @@ class ScalaVariableValidator(
       case ResolvesTo(elem @ ScalaPsiUtil.inNameContext(nameCtx)) =>
         val message =
           nameCtx match {
-            case p: ScClassParameter => messageForClassParameter(name)
-            case p: ScParameter      => messageForParameter(name)
+            case p: ScClassParameter =>
+              messageForClassParameter(name)
+            case p: ScParameter =>
+              messageForParameter(name)
             case m: ScMember if m.isLocal =>
               if (m.getTextOffset < context.getTextOffset)
                 messageForLocal(name)
@@ -157,14 +160,17 @@ class ScalaVariableValidator(
                 ""
             case _: ScCaseClause | _: ScGenerator | _: ScEnumerator =>
               messageForLocal(name)
-            case m: PsiMember => messageForMember(name)
-            case _            => ""
+            case m: PsiMember =>
+              messageForMember(name)
+            case _ =>
+              ""
           }
         if (message != "")
           Seq((elem, message))
         else
           Seq.empty
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 

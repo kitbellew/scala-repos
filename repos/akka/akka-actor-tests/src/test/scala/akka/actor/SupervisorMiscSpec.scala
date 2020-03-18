@@ -50,8 +50,10 @@ class SupervisorMiscSpec
               countDownLatch.countDown()
             }
             def receive = {
-              case "status" ⇒ this.sender() ! "OK"
-              case _ ⇒ this.context.stop(self)
+              case "status" ⇒
+                this.sender() ! "OK"
+              case _ ⇒
+                this.context.stop(self)
             }
           })
 
@@ -82,7 +84,8 @@ class SupervisorMiscSpec
           "actor2" -> actor2,
           "actor3" -> actor3,
           "actor4" -> actor4) map {
-          case (id, ref) ⇒ (id, ref ? "status")
+          case (id, ref) ⇒
+            (id, ref ? "status")
         } foreach {
           case (id, f) ⇒
             (id, Await.result(f, timeout.duration)) should ===((id, "OK"))
@@ -96,7 +99,8 @@ class SupervisorMiscSpec
           new Actor {
             context.actorOf(Props.empty, "bob")
             def receive = {
-              case x: Exception ⇒ throw x
+              case x: Exception ⇒
+                throw x
             }
             override def preStart(): Unit = testActor ! "preStart"
           }))
@@ -131,9 +135,11 @@ class SupervisorMiscSpec
                       "green"
                   testActor ! result
                 } catch {
-                  case NonFatal(e) ⇒ testActor ! e
+                  case NonFatal(e) ⇒
+                    testActor ! e
                 }
-              case "engage" ⇒ context.stop(kid)
+              case "engage" ⇒
+                context.stop(kid)
             }
           }))
       parent ! "engage"
@@ -152,7 +158,8 @@ class SupervisorMiscSpec
                   context.actorOf(Props.empty, "foo")
                   testActor ! "red"
                 } catch {
-                  case e: InvalidActorNameException ⇒ testActor ! "green"
+                  case e: InvalidActorNameException ⇒
+                    testActor ! "green"
                 }
             }
           }))
@@ -206,7 +213,8 @@ class SupervisorMiscSpec
                   SupervisorStrategy.Stop
               }
             def receive = {
-              case "doit" ⇒ context.actorOf(Props.empty, "child") ! Kill
+              case "doit" ⇒
+                context.actorOf(Props.empty, "child") ! Kill
             }
           }))
       EventFilter[ActorKilledException](occurrences = 1) intercept {

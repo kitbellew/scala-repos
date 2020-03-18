@@ -116,7 +116,8 @@ object Scalajsp {
       try {
         new ZipFile(jar)
       } catch {
-        case _: FileNotFoundException => fail(s"No such JAR: $jar")
+        case _: FileNotFoundException =>
+          fail(s"No such JAR: $jar")
       }
     try {
       val entry = jarFile.getEntry(name)

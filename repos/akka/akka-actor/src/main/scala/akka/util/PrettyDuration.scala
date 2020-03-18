@@ -49,9 +49,12 @@ object PrettyDuration {
             else
               "")
 
-        case Duration.MinusInf ⇒ s"-∞ (minus infinity)"
-        case Duration.Inf ⇒ s"∞ (infinity)"
-        case _ ⇒ "undefined"
+        case Duration.MinusInf ⇒
+          s"-∞ (minus infinity)"
+        case Duration.Inf ⇒
+          s"∞ (infinity)"
+        case _ ⇒
+          "undefined"
       }
     }
 
@@ -76,13 +79,20 @@ object PrettyDuration {
 
     def abbreviate(unit: TimeUnit): String =
       unit match {
-        case NANOSECONDS ⇒ "ns"
-        case MICROSECONDS ⇒ "μs"
-        case MILLISECONDS ⇒ "ms"
-        case SECONDS ⇒ "s"
-        case MINUTES ⇒ "min"
-        case HOURS ⇒ "h"
-        case DAYS ⇒ "d"
+        case NANOSECONDS ⇒
+          "ns"
+        case MICROSECONDS ⇒
+          "μs"
+        case MILLISECONDS ⇒
+          "ms"
+        case SECONDS ⇒
+          "s"
+        case MINUTES ⇒
+          "min"
+        case HOURS ⇒
+          "h"
+        case DAYS ⇒
+          "d"
       }
   }
 

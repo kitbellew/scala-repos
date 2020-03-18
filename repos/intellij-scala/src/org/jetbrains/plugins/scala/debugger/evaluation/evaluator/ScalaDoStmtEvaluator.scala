@@ -14,14 +14,18 @@ class ScalaDoStmtEvaluator(cond: Evaluator, expr: Evaluator) extends Evaluator {
     expr.evaluate(context)
     var condition: Boolean =
       cond.evaluate(context) match {
-        case b: BooleanValue => b.value()
-        case _               => throw EvaluationException("condition has wrong type")
+        case b: BooleanValue =>
+          b.value()
+        case _ =>
+          throw EvaluationException("condition has wrong type")
       }
     while (condition) {
       expr.evaluate(context)
       condition = cond.evaluate(context) match {
-        case b: BooleanValue => b.value()
-        case _               => throw EvaluationException("condition has wrong type")
+        case b: BooleanValue =>
+          b.value()
+        case _ =>
+          throw EvaluationException("condition has wrong type")
       }
     }
     context.getDebugProcess.getVirtualMachineProxy.mirrorOfVoid()

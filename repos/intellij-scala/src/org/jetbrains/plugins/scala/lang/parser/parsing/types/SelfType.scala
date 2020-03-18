@@ -96,7 +96,8 @@ object SelfType {
       case ScalaTokenTypes.kFOR_SOME =>
         ExistentialClause parse builder
         typeMarker.done(ScalaElementTypes.EXISTENTIAL_TYPE)
-      case _ => typeMarker.drop()
+      case _ =>
+        typeMarker.drop()
     }
     true
   }

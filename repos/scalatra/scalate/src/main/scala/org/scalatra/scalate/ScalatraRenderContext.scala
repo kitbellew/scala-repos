@@ -27,8 +27,10 @@ class ScalatraRenderContext(
 
   def flash: scala.collection.Map[String, Any] =
     kernel match {
-      case flashMapSupport: FlashMapSupport => flashMapSupport.flash(request)
-      case _                                => Map.empty
+      case flashMapSupport: FlashMapSupport =>
+        flashMapSupport.flash(request)
+      case _ =>
+        Map.empty
     }
 
   def session: HttpSession = kernel.session(request)
@@ -41,8 +43,10 @@ class ScalatraRenderContext(
 
   def format: String =
     kernel match {
-      case af: ApiFormats => af.format(request, response)
-      case _              => ""
+      case af: ApiFormats =>
+        af.format(request, response)
+      case _ =>
+        ""
     }
 
   @deprecated(
@@ -52,39 +56,49 @@ class ScalatraRenderContext(
 
   def fileMultiParams: FileMultiParams =
     kernel match {
-      case fu: FileUploadSupport => fu.fileMultiParams(request)
-      case _                     => new FileMultiParams()
+      case fu: FileUploadSupport =>
+        fu.fileMultiParams(request)
+      case _ =>
+        new FileMultiParams()
     }
 
   def fileParams: scala.collection.Map[String, FileItem] =
     kernel match {
-      case fu: FileUploadSupport => fu.fileParams(request)
-      case _                     => Map.empty
+      case fu: FileUploadSupport =>
+        fu.fileParams(request)
+      case _ =>
+        Map.empty
     }
 
   def csrfKey =
     kernel match {
-      case csrfTokenSupport: CsrfTokenSupport => csrfTokenSupport.csrfKey
-      case _                                  => ""
+      case csrfTokenSupport: CsrfTokenSupport =>
+        csrfTokenSupport.csrfKey
+      case _ =>
+        ""
     }
 
   def csrfToken =
     kernel match {
       case csrfTokenSupport: CsrfTokenSupport =>
         csrfTokenSupport.csrfToken(request)
-      case _ => ""
+      case _ =>
+        ""
     }
   def xsrfKey =
     kernel match {
-      case csrfTokenSupport: XsrfTokenSupport => csrfTokenSupport.xsrfKey
-      case _                                  => ""
+      case csrfTokenSupport: XsrfTokenSupport =>
+        csrfTokenSupport.xsrfKey
+      case _ =>
+        ""
     }
 
   def xsrfToken =
     kernel match {
       case csrfTokenSupport: XsrfTokenSupport =>
         csrfTokenSupport.xsrfToken(request)
-      case _ => ""
+      case _ =>
+        ""
     }
 
   /**

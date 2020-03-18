@@ -30,8 +30,10 @@ class ScPrefixExprImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitPrefixExpression(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitPrefixExpression(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

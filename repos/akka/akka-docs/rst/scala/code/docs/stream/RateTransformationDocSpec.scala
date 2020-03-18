@@ -47,8 +47,10 @@ class RateTransformationDocSpec extends AkkaSpec {
     val p = 0.01
     val sampleFlow = Flow[Double]
       .conflateWithSeed(Seq(_)) {
-        case (acc, elem) if Random.nextDouble < p => acc :+ elem
-        case (acc, _)                             => acc
+        case (acc, elem) if Random.nextDouble < p =>
+          acc :+ elem
+        case (acc, _) =>
+          acc
       }
       .mapConcat(identity)
     //#conflate-sample

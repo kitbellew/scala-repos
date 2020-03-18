@@ -42,8 +42,10 @@ abstract class ReplTest extends DirectTest {
         lines map {
           //case s @ welcome()        => inHead = true  ; s
           //case version(s) if inHead => inHead = false ; s
-          case welcome(s) => s
-          case s          => s
+          case welcome(s) =>
+            s
+          case s =>
+            s
         }
       } else {
         lines drop header.lines.size
@@ -93,8 +95,10 @@ abstract class SessionTest extends ReplTest {
       case pasted(null, null, prompted) =>
         def continued(m: Match): Option[String] =
           m match {
-            case margin(text) => Some(text)
-            case _            => None
+            case margin(text) =>
+              Some(text)
+            case _ =>
+              None
           }
         margin.replaceSomeIn(prompted, continued)
       case pasted(cmd, pasted, null) =>

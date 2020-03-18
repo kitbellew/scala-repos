@@ -24,10 +24,14 @@ trait InteractiveReader {
 
   def readYesOrNo(prompt: String, alt: => Boolean): Boolean =
     readOneKey(prompt) match {
-      case 'y' => true
-      case 'n' => false
-      case -1  => false // EOF
-      case _   => alt
+      case 'y' =>
+        true
+      case 'n' =>
+        false
+      case -1 =>
+        false // EOF
+      case _ =>
+        alt
     }
 
   protected def readOneLine(prompt: String): String

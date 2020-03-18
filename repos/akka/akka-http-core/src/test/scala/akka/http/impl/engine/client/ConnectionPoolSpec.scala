@@ -56,7 +56,8 @@ class ConnectionPoolSpec
       clientSocket.read(ByteBuffer.allocate(1))
       null
     } catch {
-      case NonFatal(e) ⇒ e.getMessage
+      case NonFatal(e) ⇒
+        e.getMessage
     }
   }
 
@@ -89,9 +90,12 @@ class ConnectionPoolSpec
       val r2 = responseOut.expectNext()
 
       Seq(r1, r2) foreach {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
-        case (Success(x), 43) ⇒ requestUri(x) should endWith("/b")
-        case x ⇒ fail(x.toString)
+        case (Success(x), 42) ⇒
+          requestUri(x) should endWith("/a")
+        case (Success(x), 43) ⇒
+          requestUri(x) should endWith("/b")
+        case x ⇒
+          fail(x.toString)
       }
       Seq(r1, r2).map(t ⇒ connNr(t._1.get)) should contain allOf (1, 2)
     }
@@ -109,7 +113,8 @@ class ConnectionPoolSpec
             ContentTypes.`text/plain(UTF-8)`,
             Source.fromPublisher(responseEntityPub))
           super.testServerHandler(connNr)(request) withEntity entity
-        case x ⇒ super.testServerHandler(connNr)(x)
+        case x ⇒
+          super.testServerHandler(connNr)(x)
       }
 
       requestIn.sendNext(HttpRequest(uri = "/a") -> 42)
@@ -164,7 +169,8 @@ class ConnectionPoolSpec
             case (Success(response), id) ⇒
               requestUri(response) should endWith(s"/r$id")
               id
-            case x ⇒ fail(x.toString)
+            case x ⇒
+              fail(x.toString)
           }
           .runFold(0)(_ + _)
 
@@ -195,7 +201,8 @@ class ConnectionPoolSpec
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
       responses mustContainLike {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
+        case (Success(x), 42) ⇒
+          requestUri(x) should endWith("/a")
       }
       responses mustContainLike {
         case (Failure(x), 43) ⇒
@@ -223,10 +230,12 @@ class ConnectionPoolSpec
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
       responses mustContainLike {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
+        case (Success(x), 42) ⇒
+          requestUri(x) should endWith("/a")
       }
       responses mustContainLike {
-        case (Success(x), 43) ⇒ requestUri(x) should endWith("/crash")
+        case (Success(x), 43) ⇒
+          requestUri(x) should endWith("/crash")
       }
     }
 
@@ -251,7 +260,8 @@ class ConnectionPoolSpec
       val responses = Seq(responseOut.expectNext(), responseOut.expectNext())
 
       responses mustContainLike {
-        case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
+        case (Success(x), 42) ⇒
+          requestUri(x) should endWith("/a")
       }
       responses mustContainLike {
         case (Failure(x), 43) ⇒
@@ -366,7 +376,8 @@ class ConnectionPoolSpec
           requestUri(x) shouldEqual s"http://$serverHostName:$serverPort/a"
         case (Success(x), 43) ⇒
           requestUri(x) shouldEqual s"http://$serverHostName2:$serverPort2/b"
-        case x ⇒ fail(x.toString)
+        case x ⇒
+          fail(x.toString)
       }
     }
   }
@@ -395,11 +406,13 @@ class ConnectionPoolSpec
       val rawBytesInjection = BidiFlow.fromFlows(
         Flow[SslTlsOutbound]
           .collect[ByteString] {
-            case SendBytes(x) ⇒ mapServerSideOutboundRawBytes(x)
+            case SendBytes(x) ⇒
+              mapServerSideOutboundRawBytes(x)
           }
           .transform(
             StreamUtils.recover {
-              case NoErrorComplete ⇒ ByteString.empty
+              case NoErrorComplete ⇒
+                ByteString.empty
             }),
         Flow[ByteString].map(SessionBytes(null, _))
       )

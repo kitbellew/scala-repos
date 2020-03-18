@@ -24,7 +24,8 @@ class SuppressByScalaCommentFix(key: HighlightDisplayKey)
               _: ScBlock | _: ScExtendsBlock | _: ScEarlyDefinitions
             ) =>
           bs
-        case null => null
+        case null =>
+          null
         case _ =>
           inner(PsiTreeUtil.getParentOfType(elem, classOf[ScBlockStatement]))
       }

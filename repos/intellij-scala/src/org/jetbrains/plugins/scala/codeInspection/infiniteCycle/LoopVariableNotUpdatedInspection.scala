@@ -42,11 +42,13 @@ class LoopVariableNotUpdatedInspection
     val Target = target
 
     scope.breadthFirst.exists {
-      case ScAssignStmt(left, _) => true
+      case ScAssignStmt(left, _) =>
+        true
       case e @ ScInfixExpr(ResolvesTo(Target), _, _)
           if e.isAssignmentOperator =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

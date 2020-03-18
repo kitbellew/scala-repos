@@ -89,8 +89,10 @@ abstract class Message extends HttpMessageProxy {
   /** Accept header */
   def accept: Seq[String] =
     Option(headers.get(Fields.Accept)) match {
-      case Some(s) => s.split(",").map(_.trim).filter(_.nonEmpty)
-      case None    => Seq()
+      case Some(s) =>
+        s.split(",").map(_.trim).filter(_.nonEmpty)
+      case None =>
+        Seq()
     }
 
   /** Set Accept header */
@@ -290,8 +292,10 @@ abstract class Message extends HttpMessageProxy {
     contentType.flatMap { contentType =>
       val beforeSemi =
         contentType.indexOf(";") match {
-          case -1 => contentType
-          case n  => contentType.substring(0, n)
+          case -1 =>
+            contentType
+          case n =>
+            contentType.substring(0, n)
         }
       val mediaType = beforeSemi.trim
       if (mediaType.nonEmpty)
@@ -394,7 +398,8 @@ abstract class Message extends HttpMessageProxy {
       try {
         Charset.forName(charset getOrElse "UTF-8")
       } catch {
-        case _: Throwable => Message.Utf8
+        case _: Throwable =>
+          Message.Utf8
       }
     getContent.toString(encoding)
   }

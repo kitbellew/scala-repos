@@ -92,7 +92,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
       }
     }
     val classifier: ResponseClassifier = {
-      case ReqRep(in: Int, Throw(_)) if in < 0 => ResponseClass.Success
+      case ReqRep(in: Int, Throw(_)) if in < 0 =>
+        ResponseClass.Success
       case ReqRep(_, Throw(ex)) if ex.getMessage.toInt == 10 =>
         ResponseClass.Success
     }
@@ -662,8 +663,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
           label) {
       override def isSuccess(reqRep: ReqRep): Boolean = {
         reqRep.response match {
-          case Throw(_)  => false
-          case Return(x) => x != 321
+          case Throw(_) =>
+            false
+          case Return(x) =>
+            x != 321
         }
       }
     }
@@ -733,23 +736,29 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(
       (
         p1 match {
-          case Param.Configured(x) => x()
-          case x                   => throw new MatchError(x)
+          case Param.Configured(x) =>
+            x()
+          case x =>
+            throw new MatchError(x)
         }
       ) == failureAccrualPolicy)
 
     assert(
       (
         p2 match {
-          case Param.Replaced(f) => f(null)
-          case x                 => throw new MatchError(x)
+          case Param.Replaced(f) =>
+            f(null)
+          case x =>
+            throw new MatchError(x)
         }
       ) == ServiceFactoryWrapper.identity)
 
     assert(
       p3 match {
-        case Disabled => true
-        case x        => throw new MatchError(x)
+        case Disabled =>
+          true
+        case x =>
+          throw new MatchError(x)
       })
 
     val ps1: Stack.Params = Stack.Params.empty + p1
@@ -757,8 +766,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(
       (
         ps1[Param] match {
-          case Param.Configured(x) => x()
-          case x                   => throw new MatchError(x)
+          case Param.Configured(x) =>
+            x()
+          case x =>
+            throw new MatchError(x)
         }
       ) == failureAccrualPolicy)
 
@@ -767,8 +778,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(
       (
         ps2[Param] match {
-          case Param.Configured(x) => x()
-          case x                   => throw new MatchError(x)
+          case Param.Configured(x) =>
+            x()
+          case x =>
+            throw new MatchError(x)
         }
       ) == failureAccrualPolicy)
 
@@ -776,8 +789,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(ps3.contains[Param])
     assert(
       ps3[Param] match {
-        case Disabled => true
-        case x        => throw new MatchError(x)
+        case Disabled =>
+          true
+        case x =>
+          throw new MatchError(x)
       })
   }
 

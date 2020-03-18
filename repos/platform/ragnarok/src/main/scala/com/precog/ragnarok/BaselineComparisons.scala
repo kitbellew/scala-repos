@@ -143,10 +143,12 @@ trait BaselineComparisons {
                     val path =
                       (
                         jpath collect {
-                          case JString(p) => p
+                          case JString(p) =>
+                            p
                         },
                         (obj \? "query") collect {
-                          case JString(query) => query
+                          case JString(query) =>
+                            query
                         })
                     val n = count.toInt
                     path -> Statistics(

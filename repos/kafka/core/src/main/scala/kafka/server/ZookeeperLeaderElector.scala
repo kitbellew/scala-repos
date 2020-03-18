@@ -57,8 +57,10 @@ class ZookeeperLeaderElector(
 
   private def getControllerID(): Int = {
     controllerContext.zkUtils.readDataMaybeNull(electionPath)._1 match {
-      case Some(controller) => KafkaController.parseControllerId(controller)
-      case None             => -1
+      case Some(controller) =>
+        KafkaController.parseControllerId(controller)
+      case None =>
+        -1
     }
   }
 

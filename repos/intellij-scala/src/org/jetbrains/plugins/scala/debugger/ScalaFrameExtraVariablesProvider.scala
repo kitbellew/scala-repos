@@ -127,8 +127,10 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
 
   private def canEvaluate(srr: ScalaResolveResult, place: PsiElement) = {
     srr.getElement match {
-      case _: ScWildcardPattern                 => false
-      case tp: ScTypedPattern if tp.name == "_" => false
+      case _: ScWildcardPattern =>
+        false
+      case tp: ScTypedPattern if tp.name == "_" =>
+        false
       case cp: ScClassParameter if !cp.isEffectiveVal =>
         def notInThisClass(elem: PsiElement) = {
           elem != null && !PsiTreeUtil.isAncestor(
@@ -143,9 +145,12 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
           PsiTreeUtil.getParentOfType(
             place,
             classOf[ScPatternDefinition]) match {
-            case null         => null
-            case LazyVal(lzy) => lzy
-            case _            => null
+            case null =>
+              null
+            case LazyVal(lzy) =>
+              lzy
+            case _ =>
+              null
           }
         notInThisClass(funDef) || notInThisClass(lazyVal)
       case named
@@ -155,7 +160,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         false //cannot evaluate catched exceptions in scala
       case inNameContext(LazyVal(_)) =>
         false //don't add lazy vals as they can be computed too early
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -168,7 +174,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         tryEvaluate(named.name, place, evaluationContext).isSuccess
       case named: PsiNamedElement if notUsedInCurrentClass(named, place) =>
         tryEvaluate(named.name, place, evaluationContext).isSuccess
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -194,7 +201,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         ScalaEvaluatorBuilder.build(codeFragment, sourcePosition.get) match {
           case _: ScalaCompilingExpressionEvaluator =>
             throw EvaluationException("Don't use compiling evaluator here")
-          case e => e
+          case e =>
+            e
         }
       }
       evaluator.evaluate(evaluationContext)
@@ -223,8 +231,9 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
           override def visitPatternDefinition(
               pat: ScPatternDefinition): Unit = {
             pat match {
-              case LazyVal(_) => placesToSearch += pat
-              case _          =>
+              case LazyVal(_) =>
+                placesToSearch += pat
+              case _ =>
             }
           }
         })
@@ -264,7 +273,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
         ScalaPsiUtil.nameContext(named) match {
           case nc @ (_: ScEnumerator | _: ScGenerator) =>
             Option(PsiTreeUtil.getParentOfType(nc, classOf[ScForStatement]))
-          case _ => None
+          case _ =>
+            None
         }
       forStmt.flatMap(_.enumerators).exists(_.isAncestorOf(named)) && forStmt
         .flatMap(_.body)
@@ -286,7 +296,8 @@ private class CollectingProcessor(element: PsiElement)
   val usedNames: Set[String] =
     if (containingBlock != null) {
       containingBlock.depthFirst.collect {
-        case ref: ScReferenceExpression if ref.qualifier.isEmpty => ref.refName
+        case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
+          ref.refName
       }.toSet
     } else
       Set.empty
@@ -304,8 +315,10 @@ private class CollectingProcessor(element: PsiElement)
     val candElem = candidate.getElement
     val candElemContext =
       ScalaPsiUtil.nameContext(candElem) match {
-        case cc: ScCaseClause => cc.pattern.getOrElse(cc)
-        case other            => other
+        case cc: ScCaseClause =>
+          cc.pattern.getOrElse(cc)
+        case other =>
+          other
       }
     def usedInContainingBlock = usedNames.contains(candElem.name)
     candElem.getContainingFile == containingFile && candElemContext.getTextRange.getEndOffset < startOffset && usedInContainingBlock

@@ -169,6 +169,7 @@ private[parser] trait LinkHeader {
           seenTitle,
           seenTitleS,
           seenType)
-      case Nil ⇒ result
+      case Nil ⇒
+        result
     }
 }

@@ -26,8 +26,10 @@ sealed trait ProjectSettings extends DslEntry {
 object ProjectSettings {
   def unapply(e: DslEntry): Option[Seq[Setting[_]]] =
     e match {
-      case e: ProjectSettings => Some(e.toSettings)
-      case _                  => None
+      case e: ProjectSettings =>
+        Some(e.toSettings)
+      case _ =>
+        None
     }
 }
 
@@ -40,8 +42,10 @@ sealed trait ProjectManipulation extends DslEntry {
 object ProjectManipulation {
   def unapply(e: DslEntry): Option[Project => Project] =
     e match {
-      case e: ProjectManipulation => Some(e.toFunction)
-      case _                      => None
+      case e: ProjectManipulation =>
+        Some(e.toFunction)
+      case _ =>
+        None
     }
 }
 

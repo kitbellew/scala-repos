@@ -122,8 +122,10 @@ trait Mirrors extends api.Mirrors {
       while (result.isAliasType)
         result = result.info.typeSymbol
       result match {
-        case x: ClassSymbol => x
-        case _              => MissingRequirementError.notFound("class " + fullname)
+        case x: ClassSymbol =>
+          x
+        case _ =>
+          MissingRequirementError.notFound("class " + fullname)
       }
     }
 
@@ -164,8 +166,10 @@ trait Mirrors extends api.Mirrors {
         sym: Symbol,
         allowPackages: Boolean): ModuleSymbol =
       sym match {
-        case x: ModuleSymbol if allowPackages || !x.hasPackageFlag => x
-        case _                                                     => MissingRequirementError.notFound("object " + fullname)
+        case x: ModuleSymbol if allowPackages || !x.hasPackageFlag =>
+          x
+        case _ =>
+          MissingRequirementError.notFound("object " + fullname)
       }
 
     def getModuleByName(fullname: Name): ModuleSymbol =
@@ -214,8 +218,10 @@ trait Mirrors extends api.Mirrors {
         sym: Symbol,
         allowModules: Boolean): ModuleSymbol =
       sym match {
-        case x: ModuleSymbol if allowModules || x.hasPackageFlag => x
-        case _                                                   => MissingRequirementError.notFound("package " + fullname)
+        case x: ModuleSymbol if allowModules || x.hasPackageFlag =>
+          x
+        case _ =>
+          MissingRequirementError.notFound("package " + fullname)
       }
 
     def getPackage(fullname: TermName): ModuleSymbol =
@@ -235,8 +241,10 @@ trait Mirrors extends api.Mirrors {
       getPackageObject(newTermName(fullname))
     def getPackageObject(fullname: TermName): ModuleSymbol =
       (getPackage(fullname).packageObject) match {
-        case x: ModuleSymbol => x
-        case _               => MissingRequirementError.notFound("package object " + fullname)
+        case x: ModuleSymbol =>
+          x
+        case _ =>
+          MissingRequirementError.notFound("package object " + fullname)
       }
 
     def getPackageObjectIfDefined(fullname: String): Symbol =
@@ -273,7 +281,8 @@ trait Mirrors extends api.Mirrors {
     final def wrapMissing(body: => Symbol): Symbol =
       try body
       catch {
-        case _: MissingRequirementError => NoSymbol
+        case _: MissingRequirementError =>
+          NoSymbol
       }
 
     /** getModule2/getClass2 aren't needed at present but may be again,

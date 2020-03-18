@@ -47,8 +47,10 @@ sealed abstract class Heap[A] {
   /**Meld the values from two heaps into one heap. O(1)*/
   def union(as: Heap[A]) =
     (this, as) match {
-      case (Empty(), q) => q
-      case (q, Empty()) => q
+      case (Empty(), q) =>
+        q
+      case (q, Empty()) =>
+        q
       case (
             Heap(s1, leq, t1 @ Node(Ranked(r1, x1), f1)),
             Heap(s2, _, t2 @ Node(Ranked(r2, x2), f2))) =>
@@ -75,7 +77,8 @@ sealed abstract class Heap[A] {
       Empty[A],
       (s, leq, t) =>
         t match {
-          case Node(_, Stream()) => Empty[A]
+          case Node(_, Stream()) =>
+            Empty[A]
           case Node(_, f0) => {
             val (Node(Ranked(r, x), cf), ts2) = getMin(leq, f0)
             val (zs, ts1, f1) = splitForest(r, Stream(), Stream(), cf)
@@ -326,23 +329,30 @@ object Heap extends HeapInstances {
     import Tree._
 
     def rightZ[A]: ForestZipper[A] => ForestZipper[A] = {
-      case (path, x #:: xs) => (x #:: path, xs)
+      case (path, x #:: xs) =>
+        (x #:: path, xs)
     }
 
     def adjustZ[A](f: Tree[Ranked[A]] => Tree[Ranked[A]])
         : ForestZipper[A] => ForestZipper[A] = {
-      case (path, x #:: xs) => (path, f(x) #:: xs)
-      case z                => z
+      case (path, x #:: xs) =>
+        (path, f(x) #:: xs)
+      case z =>
+        z
     }
 
     def rezip[A]: ForestZipper[A] => Forest[A] = {
-      case (Stream(), xs)   => xs
-      case (x #:: path, xs) => rezip((path, x #:: xs))
+      case (Stream(), xs) =>
+        xs
+      case (x #:: path, xs) =>
+        rezip((path, x #:: xs))
     }
 
     def rootZ[A]: ForestZipper[A] => A = {
-      case (_, x #:: _) => x.rootLabel.value
-      case _            => sys.error("Heap.rootZ: empty zipper")
+      case (_, x #:: _) =>
+        x.rootLabel.value
+      case _ =>
+        sys.error("Heap.rootZ: empty zipper")
     }
 
     def zipper[A](xs: Forest[A]): ForestZipper[A] = (Stream(), xs)
@@ -350,7 +360,8 @@ object Heap extends HeapInstances {
     def emptyZ[A]: ForestZipper[A] = (Stream(), Stream())
 
     def minZ[A](f: (A, A) => Boolean): Forest[A] => ForestZipper[A] = {
-      case Stream() => emptyZ
+      case Stream() =>
+        emptyZ
       case xs => {
         val z = zipper(xs)
         minZp(f)(z, z)
@@ -359,7 +370,8 @@ object Heap extends HeapInstances {
 
     def minZp[A](leq: (A, A) => Boolean)
         : (ForestZipper[A], ForestZipper[A]) => ForestZipper[A] = {
-      case (lo, (_, Stream())) => lo
+      case (lo, (_, Stream())) =>
+        lo
       case (lo, z) =>
         minZp(leq)(
           if (leq(rootZ(lo), rootZ(z)))
@@ -371,7 +383,8 @@ object Heap extends HeapInstances {
 
     def heapify[A](
         leq: (A, A) => Boolean): Tree[Ranked[A]] => Tree[Ranked[A]] = {
-      case n @ Node(_, Stream()) => n
+      case n @ Node(_, Stream()) =>
+        n
       case n @ Node(Ranked(r, a), as) => {
         val (left, Node(Ranked(rp, ap), asp) #:: right) = minZ(leq)(as)
         if (leq(a, ap))
@@ -425,14 +438,16 @@ object Heap extends HeapInstances {
             skewLink(f, t, t1, t2) #:: rest
           else
             (t #:: ts)
-        case _ => t #:: ts
+        case _ =>
+          t #:: ts
       }
 
     def getMin[A](
         f: (A, A) => Boolean,
         trees: Forest[A]): (Tree[Ranked[A]], Forest[A]) =
       trees match {
-        case Stream(t) => (t, Stream())
+        case Stream(t) =>
+          (t, Stream())
         case t #:: ts => {
           val (tp, tsp) = getMin(f, ts)
           if (f(t.rootLabel.value, tp.rootLabel.value))
@@ -446,8 +461,10 @@ object Heap extends HeapInstances {
         Forest[A],
         Forest[A],
         Forest[A]) = {
-      case (0, zs, ts, f)         => (zs, ts, f)
-      case (1, zs, ts, Stream(t)) => (zs, t #:: ts, Stream())
+      case (0, zs, ts, f) =>
+        (zs, ts, f)
+      case (1, zs, ts, Stream(t)) =>
+        (zs, t #:: ts, Stream())
       case (1, zs, ts, t1 #:: t2 #:: f) =>
         if (rank(t2) == 0)
           (t1 #:: zs, t2 #:: ts, f)
@@ -460,7 +477,8 @@ object Heap extends HeapInstances {
           splitForest(r - 1, t1 #:: zs, t2 #:: ts, cf)
         else
           splitForest(r - 1, zs, t1 #:: ts, t2 #:: cf)
-      case (_, _, _, _) => sys.error("Heap.splitForest: invalid arguments")
+      case (_, _, _, _) =>
+        sys.error("Heap.splitForest: invalid arguments")
     }
 
     def skewMeld[A](f: (A, A) => Boolean, ts: Forest[A], tsp: Forest[A]) =
@@ -469,7 +487,8 @@ object Heap extends HeapInstances {
     def ins[A](
         f: (A, A) => Boolean,
         t: Tree[Ranked[A]]): Forest[A] => Forest[A] = {
-      case Stream() => Stream(t)
+      case Stream() =>
+        Stream(t)
       case (tp #:: ts) =>
         if (rank(t) < rank(tp))
           t #:: tp #:: ts
@@ -478,20 +497,27 @@ object Heap extends HeapInstances {
     }
 
     def uniqify[A](f: (A, A) => Boolean): Forest[A] => Forest[A] = {
-      case Stream()   => Stream()
-      case (t #:: ts) => ins(f, t)(ts)
+      case Stream() =>
+        Stream()
+      case (t #:: ts) =>
+        ins(f, t)(ts)
     }
 
     def unionUniq[A](
         f: (A, A) => Boolean): (Forest[A], Forest[A]) => Forest[A] = {
-      case (Stream(), ts) => ts
-      case (ts, Stream()) => ts
+      case (Stream(), ts) =>
+        ts
+      case (ts, Stream()) =>
+        ts
       case (tts1 @ (t1 #:: ts1), tts2 @ (t2 #:: ts2)) =>
         import std.anyVal._
         Order[Int].order(rank(t1), rank(t2)) match {
-          case Ordering.LT => t1 #:: unionUniq(f)(ts1, tts2)
-          case Ordering.EQ => ins(f, link(f)(t1, t2))(unionUniq(f)(ts1, ts2))
-          case Ordering.GT => t2 #:: unionUniq(f)(tts1, ts2)
+          case Ordering.LT =>
+            t1 #:: unionUniq(f)(ts1, tts2)
+          case Ordering.EQ =>
+            ins(f, link(f)(t1, t2))(unionUniq(f)(ts1, ts2))
+          case Ordering.GT =>
+            t2 #:: unionUniq(f)(tts1, ts2)
         }
     }
   }

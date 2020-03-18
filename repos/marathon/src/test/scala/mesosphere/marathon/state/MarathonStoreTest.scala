@@ -200,8 +200,10 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
 
     def populate(key: String, value: Array[Byte]) = {
       state.load(key).futureValue match {
-        case Some(ent) => state.update(ent.withNewContent(value)).futureValue
-        case None      => state.create(key, value).futureValue
+        case Some(ent) =>
+          state.update(ent.withNewContent(value)).futureValue
+        case None =>
+          state.create(key, value).futureValue
       }
     }
 

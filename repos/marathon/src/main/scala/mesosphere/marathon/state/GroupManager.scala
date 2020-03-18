@@ -56,7 +56,8 @@ class GroupManager @Singleton @Inject() (
     groupRepo.listVersions(zkName).flatMap { versions =>
       Future.sequence(versions.map(groupRepo.group(zkName, _))).map {
         _.collect {
-          case Some(group) if group.group(id).isDefined => group.version
+          case Some(group) if group.group(id).isDefined =>
+            group.version
         }
       }
     }
@@ -190,7 +191,9 @@ class GroupManager @Singleton @Inject() (
         case Success(plan) =>
           log.info(s"Deployment acknowledged. Waiting to get processed:\n$plan")
           eventBus.publish(GroupChangeSuccess(gid, version.toString))
-        case Failure(ex: AccessDeniedException) => // If the request was not authorized, we should not publish an event
+        case Failure(
+              ex: AccessDeniedException
+            ) => // If the request was not authorized, we should not publish an event
         case Failure(ex) =>
           log.warn(s"Deployment failed for change: $version", ex)
           eventBus.publish(
@@ -212,7 +215,8 @@ class GroupManager @Singleton @Inject() (
         //it will only change, if the content changes.
         val downloads = mutable.Map(
           paths.toSeq.filterNot {
-            case (url, path) => storage.item(path).exists
+            case (url, path) =>
+              storage.item(path).exists
           }: _*)
         val actions = Seq.newBuilder[ResolveArtifacts]
         group.updateApps(group.version) { app =>
@@ -305,7 +309,8 @@ class GroupManager @Singleton @Inject() (
           pms <- d.portMappings
         } yield {
           val mappings = pms.zip(servicePorts).map {
-            case (pm, sp) => pm.copy(servicePort = sp)
+            case (pm, sp) =>
+              pm.copy(servicePort = sp)
           }
           c.copy(docker = Some(d.copy(portMappings = Some(mappings))))
         }
@@ -318,8 +323,9 @@ class GroupManager @Singleton @Inject() (
     }
 
     val dynamicApps: Set[AppDefinition] = to.transitiveApps.map {
-      case app: AppDefinition if app.hasDynamicPort => assignPorts(app)
-      case app: AppDefinition                       =>
+      case app: AppDefinition if app.hasDynamicPort =>
+        assignPorts(app)
+      case app: AppDefinition =>
         // Always set the ports to service ports, even if we do not have dynamic ports in our port mappings
         app.copy(portDefinitions = mergeServicePortsAndPortDefinitions(
           app.portDefinitions,

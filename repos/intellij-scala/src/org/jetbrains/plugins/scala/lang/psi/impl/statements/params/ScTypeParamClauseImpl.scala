@@ -57,8 +57,9 @@ class ScTypeParamClauseImpl private (
       var curr = getFirstChild
       while (curr != null) {
         curr match {
-          case param: ScTypeParam => buffer += param
-          case _                  =>
+          case param: ScTypeParam =>
+            buffer += param
+          case _ =>
         }
         curr = curr.getNextSibling
       }

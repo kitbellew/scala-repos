@@ -68,8 +68,10 @@ private[controllers] trait LilaController
       f: Context => Fu[Option[(Iteratee[A, _], Enumerator[A])]]) =
     WebSocket.tryAccept[A] { req =>
       reqToCtx(req) flatMap f map {
-        case None       => Left(NotFound(jsonError("socket resource not found")))
-        case Some(pair) => Right(pair)
+        case None =>
+          Left(NotFound(jsonError("socket resource not found")))
+        case Some(pair) =>
+          Right(pair)
       }
     }
 
@@ -78,8 +80,10 @@ private[controllers] trait LilaController
       name: String)(f: Context => Fu[Option[(Iteratee[A, _], Enumerator[A])]]) =
     rateLimitedSocket[A](consumer, name) { ctx =>
       f(ctx) map {
-        case None       => Left(NotFound(jsonError("socket resource not found")))
-        case Some(pair) => Right(pair)
+        case None =>
+          Left(NotFound(jsonError("socket resource not found")))
+        case Some(pair) =>
+          Right(pair)
       }
     }
 
@@ -352,8 +356,10 @@ private[controllers] trait LilaController
       ctx: Context): Fu[Result] =
     (
       lila.api.Mobile.Api.requestVersion(ctx.req) match {
-        case Some(1) => api(1) map (_ as JSON)
-        case _       => html
+        case Some(1) =>
+          api(1) map (_ as JSON)
+        case _ =>
+          html
       }
     ) map (_.withHeaders("Vary" -> "Accept"))
 
@@ -385,9 +391,11 @@ private[controllers] trait LilaController
           import makeTimeout.short
           (
             Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
-              case OnlineFriends(users) => users
+              case OnlineFriends(users) =>
+                users
             } recover {
-              case _ => Nil
+              case _ =>
+                Nil
             }
           ) zip
             Env.team.api.nbRequests(me.id) zip

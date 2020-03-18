@@ -17,7 +17,8 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
       user: User,
       data: DataForm.AttemptData): Fu[(Attempt, Option[Boolean])] =
     api.attempt.find(puzzle.id, user.id) flatMap {
-      case Some(a) => fuccess(a -> data.isWin.some)
+      case Some(a) =>
+        fuccess(a -> data.isWin.some)
       case None =>
         val userRating = user.perfs.puzzle.toRating
         val puzzleRating = puzzle.perf.toRating
@@ -78,14 +79,18 @@ private[puzzle] final class Finisher(api: PuzzleApi, puzzleColl: Coll) {
   private def updateRatings(u1: Rating, u2: Rating, result: Glicko.Result) {
     val results = new RatingPeriodResults()
     result match {
-      case Glicko.Result.Draw => results.addDraw(u1, u2)
-      case Glicko.Result.Win  => results.addResult(u1, u2)
-      case Glicko.Result.Loss => results.addResult(u2, u1)
+      case Glicko.Result.Draw =>
+        results.addDraw(u1, u2)
+      case Glicko.Result.Win =>
+        results.addResult(u1, u2)
+      case Glicko.Result.Loss =>
+        results.addResult(u2, u1)
     }
     try {
       system.updateRatings(results)
     } catch {
-      case e: Exception => logger.error("finisher", e)
+      case e: Exception =>
+        logger.error("finisher", e)
     }
   }
 }

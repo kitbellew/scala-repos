@@ -513,8 +513,10 @@ private class KinesisUtilsPythonHelper {
   def getInitialPositionInStream(
       initialPositionInStream: Int): InitialPositionInStream = {
     initialPositionInStream match {
-      case 0 => InitialPositionInStream.LATEST
-      case 1 => InitialPositionInStream.TRIM_HORIZON
+      case 0 =>
+        InitialPositionInStream.LATEST
+      case 1 =>
+        InitialPositionInStream.TRIM_HORIZON
       case _ =>
         throw new IllegalArgumentException(
           "Illegal InitialPositionInStream. Please use " +

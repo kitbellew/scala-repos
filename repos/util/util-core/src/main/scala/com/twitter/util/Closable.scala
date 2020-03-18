@@ -48,22 +48,28 @@ object Closable {
   /** Provide Java access to the [[com.twitter.util.Closable]] mixin. */
   def close(o: AnyRef): Future[Unit] =
     o match {
-      case c: Closable => c.close()
-      case _           => Future.Done
+      case c: Closable =>
+        c.close()
+      case _ =>
+        Future.Done
     }
 
   /** Provide Java access to the [[com.twitter.util.Closable]] mixin. */
   def close(o: AnyRef, deadline: Time): Future[Unit] =
     o match {
-      case c: Closable => c.close(deadline)
-      case _           => Future.Done
+      case c: Closable =>
+        c.close(deadline)
+      case _ =>
+        Future.Done
     }
 
   /** Provide Java access to the [[com.twitter.util.Closable]] mixin. */
   def close(o: AnyRef, after: Duration): Future[Unit] =
     o match {
-      case c: Closable => c.close(after)
-      case _           => Future.Done
+      case c: Closable =>
+        c.close(after)
+      case _ =>
+        Future.Done
     }
 
   /**
@@ -77,7 +83,8 @@ object Closable {
         for (f <- fs) {
           f.poll match {
             case Some(Return(_)) =>
-            case _               => return Future.join(fs)
+            case _ =>
+              return Future.join(fs)
           }
         }
 
@@ -96,12 +103,15 @@ object Closable {
           deadline: Time,
           closables: Seq[Closable]): Future[Unit] =
         closables match {
-          case Seq() => Future.Done
+          case Seq() =>
+            Future.Done
           case Seq(hd, tl @ _*) =>
             val f = hd.close(deadline)
             f.poll match {
-              case Some(Return.Unit) => closeSeq(deadline, tl)
-              case _                 => f before closeSeq(deadline, tl)
+              case Some(Return.Unit) =>
+                closeSeq(deadline, tl)
+              case _ =>
+                f before closeSeq(deadline, tl)
             }
         }
 

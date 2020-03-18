@@ -65,9 +65,12 @@ class ScalaDocParamEnterHandlerDelegate extends EnterHandlerDelegateAdapter {
     val startOffset = tagParent.getNameElement.getTextRange.getStartOffset
     val endOffset = probData.getTextRange.getStartOffset + (
       Option(nextProbData).map(_.getElementType) match {
-        case Some(ScalaDocTokenType.DOC_COMMENT_DATA)              => probData.getTextLength
-        case Some(ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS) => 1
-        case _                                                     => 0
+        case Some(ScalaDocTokenType.DOC_COMMENT_DATA) =>
+          probData.getTextLength
+        case Some(ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS) =>
+          1
+        case _ =>
+          0
       }
     )
 

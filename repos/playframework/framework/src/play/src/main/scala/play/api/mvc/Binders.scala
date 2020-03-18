@@ -215,8 +215,10 @@ object JavascriptLiteral {
     */
   private def toJsValue(value: Any): String = {
     value match {
-      case null => "null"
-      case _    => value.toString
+      case null =>
+        "null"
+      case _ =>
+        value.toString
     }
   }
 
@@ -225,8 +227,10 @@ object JavascriptLiteral {
     */
   private def toJsString(value: Any): String = {
     value match {
-      case null => "null"
-      case _    => "\"" + value.toString + "\""
+      case null =>
+        "null"
+      case _ =>
+        "\"" + value.toString + "\""
     }
   }
 
@@ -338,7 +342,8 @@ object QueryStringBindable {
         try {
           Right(parse(p))
         } catch {
-          case e: Exception => Left(error(key, e))
+          case e: Exception =>
+            Left(error(key, e))
         }
       }
     def unbind(key: String, value: A) = key + "=" + serialize(value)
@@ -446,12 +451,16 @@ object QueryStringBindable {
   implicit object bindableBoolean
       extends Parsing[Boolean](
         _.trim match {
-          case "true"  => true
-          case "false" => false
+          case "true" =>
+            true
+          case "false" =>
+            false
           case b =>
             b.toInt match {
-              case 1 => true
-              case 0 => false
+              case 1 =>
+                true
+              case 0 =>
+                false
             }
         },
         _.toString,
@@ -566,13 +575,17 @@ object QueryStringBindable {
         values: List[String],
         results: List[T]): Either[String, Seq[T]] = {
       values match {
-        case Nil => Right(results.reverse) // to preserve the original order
+        case Nil =>
+          Right(results.reverse) // to preserve the original order
         case head :: rest =>
           implicitly[QueryStringBindable[T]]
             .bind(key, Map(key -> Seq(head))) match {
-            case None                => collectResults(rest, results)
-            case Some(Right(result)) => collectResults(rest, result :: results)
-            case Some(Left(err))     => collectErrs(rest, err :: Nil)
+            case None =>
+              collectResults(rest, results)
+            case Some(Right(result)) =>
+              collectResults(rest, result :: results)
+            case Some(Left(err)) =>
+              collectErrs(rest, err :: Nil)
           }
       }
     }
@@ -582,19 +595,24 @@ object QueryStringBindable {
         values: List[String],
         errs: List[String]): Left[String, Seq[T]] = {
       values match {
-        case Nil => Left(errs.reverse.mkString("\n"))
+        case Nil =>
+          Left(errs.reverse.mkString("\n"))
         case head :: rest =>
           implicitly[QueryStringBindable[T]]
             .bind(key, Map(key -> Seq(head))) match {
-            case Some(Left(err))       => collectErrs(rest, err :: errs)
-            case Some(Right(_)) | None => collectErrs(rest, errs)
+            case Some(Left(err)) =>
+              collectErrs(rest, err :: errs)
+            case Some(Right(_)) | None =>
+              collectErrs(rest, errs)
           }
       }
     }
 
     params.get(key) match {
-      case None         => Some(Right(Nil))
-      case Some(values) => Some(collectResults(values.toList, Nil))
+      case None =>
+        Some(Right(Nil))
+      case Some(values) =>
+        Some(collectResults(values.toList, Nil))
     }
   }
 
@@ -629,7 +647,8 @@ object QueryStringBindable {
             None
           }
         } catch {
-          case e: Exception => Some(Left(e.getMessage))
+          case e: Exception =>
+            Some(Left(e.getMessage))
         }
       }
       def unbind(key: String, value: T) = {
@@ -657,7 +676,8 @@ object PathBindable {
       try {
         Right(parse(value))
       } catch {
-        case e: Exception => Left(error(key, e))
+        case e: Exception =>
+          Left(error(key, e))
       }
     }
     def unbind(key: String, value: A): String = serialize(value)
@@ -757,12 +777,16 @@ object PathBindable {
   implicit object bindableBoolean
       extends Parsing[Boolean](
         _.trim match {
-          case "true"  => true
-          case "false" => false
+          case "true" =>
+            true
+          case "false" =>
+            false
           case b =>
             b.toInt match {
-              case 1 => true
-              case 0 => false
+              case 1 =>
+                true
+              case 0 =>
+                false
             }
         },
         _.toString,
@@ -798,7 +822,8 @@ object PathBindable {
         try {
           Right(ct.runtimeClass.newInstance.asInstanceOf[T].bind(key, value))
         } catch {
-          case e: Exception => Left(e.getMessage)
+          case e: Exception =>
+            Left(e.getMessage)
         }
       }
       def unbind(key: String, value: T) = {

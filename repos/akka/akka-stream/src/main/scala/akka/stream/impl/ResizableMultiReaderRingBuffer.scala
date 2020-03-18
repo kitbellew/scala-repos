@@ -134,7 +134,8 @@ private[akka] class ResizableMultiReaderRingBuffer[T](
       remaining match {
         case head :: tail ⇒
           minCursor(tail, math.min(head.cursor - writeIx, result))
-        case _ ⇒ result
+        case _ ⇒
+          result
       }
     val newReadIx = writeIx + minCursor(cursors.cursors, 0)
     while (readIx != newReadIx) {

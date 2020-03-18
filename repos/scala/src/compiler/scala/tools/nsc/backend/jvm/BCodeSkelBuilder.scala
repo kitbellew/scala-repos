@@ -169,7 +169,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         case Some(
               EnclosingMethodEntry(className, methodName, methodDescriptor)) =>
           cnode.visitOuterClass(className, methodName, methodDescriptor)
-        case _ => ()
+        case _ =>
+          ()
       }
 
       val ssa = getAnnotPickle(thisName, claszSymbol)
@@ -505,7 +506,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     def lastInsn: asm.tree.AbstractInsnNode = mnode.instructions.getLast
     def currProgramPoint(): asm.Label = {
       lastInsn match {
-        case labnode: asm.tree.LabelNode => labnode.getLabel
+        case labnode: asm.tree.LabelNode =>
+          labnode.getLabel
         case _ =>
           val pp = new asm.Label
           mnode visitLabel pp
@@ -521,8 +523,10 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
     def isAtProgramPoint(lbl: asm.Label): Boolean = {
       (
         lastInsn match {
-          case labnode: asm.tree.LabelNode => (labnode.getLabel == lbl);
-          case _                           => false
+          case labnode: asm.tree.LabelNode =>
+            (labnode.getLabel == lbl);
+          case _ =>
+            false
         }
       )
     }
@@ -570,7 +574,8 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
 
     def gen(tree: Tree) {
       tree match {
-        case EmptyTree => ()
+        case EmptyTree =>
+          ()
 
         case _: ModuleDef =>
           abort(s"Modules should have been eliminated by refchecks: $tree")
@@ -578,11 +583,14 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
         case ValDef(mods, name, tpt, rhs) =>
           () // fields are added in `genPlainClass()`, via `addClassFields()`
 
-        case dd: DefDef => genDefDef(dd)
+        case dd: DefDef =>
+          genDefDef(dd)
 
-        case Template(_, _, body) => body foreach gen
+        case Template(_, _, body) =>
+          body foreach gen
 
-        case _ => abort(s"Illegal tree in gen: $tree")
+        case _ =>
+          abort(s"Illegal tree in gen: $tree")
       }
     }
 

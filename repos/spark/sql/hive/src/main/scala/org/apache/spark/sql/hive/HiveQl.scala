@@ -212,8 +212,10 @@ private[hive] class HiveQl(conf: ParserConf)
         HiveNativeCommand(sql)
       } else {
         nodeToPlan(ast) match {
-          case NativePlaceholder => HiveNativeCommand(sql)
-          case plan              => plan
+          case NativePlaceholder =>
+            HiveNativeCommand(sql)
+          case plan =>
+            plan
         }
       }
     }
@@ -239,7 +241,8 @@ private[hive] class HiveQl(conf: ParserConf)
             Token("TOK_TABNAME", tableNameParts) :: ifExists) =>
         val tableName = tableNameParts
           .map {
-            case Token(p, Nil) => p
+            case Token(p, Nil) =>
+              p
           }
           .mkString(".")
         DropTable(tableName, ifExists.nonEmpty)
@@ -263,7 +266,8 @@ private[hive] class HiveQl(conf: ParserConf)
         } else {
           val tableName = tableNameParts
             .map {
-              case Token(p, Nil) => p
+              case Token(p, Nil) =>
+                p
             }
             .mkString(".")
           AnalyzeTable(tableName)
@@ -295,7 +299,8 @@ private[hive] class HiveQl(conf: ParserConf)
           .getOrElse(NativePlaceholder)
 
       case view @ Token("TOK_CREATEVIEW", children) if children.collect {
-            case t @ Token("TOK_QUERY", _) => t
+            case t @ Token("TOK_QUERY", _) =>
+              t
           }.nonEmpty =>
         val Seq(
           Some(viewNameParts),
@@ -356,7 +361,8 @@ private[hive] class HiveQl(conf: ParserConf)
         }
 
       case Token("TOK_CREATETABLE", children) if children.collect {
-            case t @ Token("TOK_QUERY", _) => t
+            case t @ Token("TOK_QUERY", _) =>
+              t
           }.nonEmpty =>
         // Reference: https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL
         val (Some(tableNameParts) ::
@@ -473,7 +479,8 @@ private[hive] class HiveQl(conf: ParserConf)
               case Token("TOK_TABLEROWFORMATNULL", rowChild :: Nil) =>
                 val nullFormat = unescapeSQLString(rowChild.text)
               // TODO support the nullFormat
-              case _ => assert(false)
+              case _ =>
+                assert(false)
             }
             tableDesc = tableDesc.withNewStorage(serdeProperties =
               tableDesc.storage.serdeProperties ++ serdeParams.asScala)
@@ -683,7 +690,8 @@ private[hive] class HiveQl(conf: ParserConf)
           clause match {
             case Token("TOK_SERDEPROPS", propsClause) :: Nil =>
               val rowFormat = propsClause.map {
-                case Token(name, Token(value, Nil) :: Nil) => (name, value)
+                case Token(name, Token(value, Nil) :: Nil) =>
+                  (name, value)
               }
               (rowFormat, None, Nil, false)
 
@@ -770,7 +778,8 @@ private[hive] class HiveQl(conf: ParserConf)
             output,
             child,
             schema))
-      case _ => None
+      case _ =>
+        None
     }
 
   protected override def nodeToGenerator(node: ASTNode): Generator =
@@ -784,7 +793,8 @@ private[hive] class HiveQl(conf: ParserConf)
           functionName,
           new HiveFunctionWrapper(functionClassName),
           children.map(nodeToExpr))
-      case other => super.nodeToGenerator(node)
+      case other =>
+        super.nodeToGenerator(node)
     }
 
   // This is based the getColumns methods in
@@ -866,23 +876,36 @@ private[hive] class HiveQl(conf: ParserConf)
         s"${serdeConstants.DECIMAL_TYPE_NAME}($precisionAndScale)"
 
       // Simple data types.
-      case SparkSqlParser.TOK_BOOLEAN   => serdeConstants.BOOLEAN_TYPE_NAME
-      case SparkSqlParser.TOK_TINYINT   => serdeConstants.TINYINT_TYPE_NAME
-      case SparkSqlParser.TOK_SMALLINT  => serdeConstants.SMALLINT_TYPE_NAME
-      case SparkSqlParser.TOK_INT       => serdeConstants.INT_TYPE_NAME
-      case SparkSqlParser.TOK_BIGINT    => serdeConstants.BIGINT_TYPE_NAME
-      case SparkSqlParser.TOK_FLOAT     => serdeConstants.FLOAT_TYPE_NAME
-      case SparkSqlParser.TOK_DOUBLE    => serdeConstants.DOUBLE_TYPE_NAME
-      case SparkSqlParser.TOK_STRING    => serdeConstants.STRING_TYPE_NAME
-      case SparkSqlParser.TOK_BINARY    => serdeConstants.BINARY_TYPE_NAME
-      case SparkSqlParser.TOK_DATE      => serdeConstants.DATE_TYPE_NAME
-      case SparkSqlParser.TOK_TIMESTAMP => serdeConstants.TIMESTAMP_TYPE_NAME
+      case SparkSqlParser.TOK_BOOLEAN =>
+        serdeConstants.BOOLEAN_TYPE_NAME
+      case SparkSqlParser.TOK_TINYINT =>
+        serdeConstants.TINYINT_TYPE_NAME
+      case SparkSqlParser.TOK_SMALLINT =>
+        serdeConstants.SMALLINT_TYPE_NAME
+      case SparkSqlParser.TOK_INT =>
+        serdeConstants.INT_TYPE_NAME
+      case SparkSqlParser.TOK_BIGINT =>
+        serdeConstants.BIGINT_TYPE_NAME
+      case SparkSqlParser.TOK_FLOAT =>
+        serdeConstants.FLOAT_TYPE_NAME
+      case SparkSqlParser.TOK_DOUBLE =>
+        serdeConstants.DOUBLE_TYPE_NAME
+      case SparkSqlParser.TOK_STRING =>
+        serdeConstants.STRING_TYPE_NAME
+      case SparkSqlParser.TOK_BINARY =>
+        serdeConstants.BINARY_TYPE_NAME
+      case SparkSqlParser.TOK_DATE =>
+        serdeConstants.DATE_TYPE_NAME
+      case SparkSqlParser.TOK_TIMESTAMP =>
+        serdeConstants.TIMESTAMP_TYPE_NAME
       case SparkSqlParser.TOK_INTERVAL_YEAR_MONTH =>
         serdeConstants.INTERVAL_YEAR_MONTH_TYPE_NAME
       case SparkSqlParser.TOK_INTERVAL_DAY_TIME =>
         serdeConstants.INTERVAL_DAY_TIME_TYPE_NAME
-      case SparkSqlParser.TOK_DATETIME => serdeConstants.DATETIME_TYPE_NAME
-      case _                           => null
+      case SparkSqlParser.TOK_DATETIME =>
+        serdeConstants.DATETIME_TYPE_NAME
+      case _ =>
+        null
     }
 
 }

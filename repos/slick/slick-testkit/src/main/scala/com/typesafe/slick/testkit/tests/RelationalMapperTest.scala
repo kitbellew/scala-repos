@@ -63,17 +63,23 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
       { t =>
         t shouldNotBe null
         t match {
-          case EnumValue1 => 'A'
-          case EnumValue2 => 'B'
-          case _          => 'C'
+          case EnumValue1 =>
+            'A'
+          case EnumValue2 =>
+            'B'
+          case _ =>
+            'C'
         }
       },
       { c =>
         c shouldNotBe null
         c match {
-          case 'A' => EnumValue1
-          case 'B' => EnumValue2
-          case _   => EnumValue3
+          case 'A' =>
+            EnumValue1
+          case 'B' =>
+            EnumValue2
+          case _ =>
+            EnumValue3
         }
       }
     )

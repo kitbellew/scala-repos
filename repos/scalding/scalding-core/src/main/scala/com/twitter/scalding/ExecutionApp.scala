@@ -78,8 +78,10 @@ object ExecutionApp {
     // We can have something left in the last bucket, so extract it.
     val nonHadoop =
       finalLast match {
-        case Some(x) => tmpNonHadoop :+ x
-        case None    => tmpNonHadoop
+        case Some(x) =>
+          tmpNonHadoop :+ x
+        case None =>
+          tmpNonHadoop
       }
 
     // Throwaway hadoop config
@@ -122,7 +124,8 @@ trait ExecutionApp extends java.io.Serializable {
      * it in sync.
      */
     config.toMap.foreach {
-      case (k, v) => hconf.set(k, v)
+      case (k, v) =>
+        hconf.set(k, v)
     }
 
     (config, mode)
@@ -130,7 +133,8 @@ trait ExecutionApp extends java.io.Serializable {
 
   def main(args: Array[String]) {
     config(args) match {
-      case (conf, mode) => job.waitFor(conf, mode).get
+      case (conf, mode) =>
+        job.waitFor(conf, mode).get
     }
   }
 }

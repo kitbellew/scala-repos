@@ -37,7 +37,8 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
     val nameLookupTable = curLookupTable._2
     val preferredName = requestedName.getOrElse(defaultName(node))
     nodeLookupTable.get(node) match {
-      case Some(name) => (curLookupTable, name)
+      case Some(name) =>
+        (curLookupTable, name)
       case None => {
         nameLookupTable.get(preferredName) match {
           case Some(count) => {

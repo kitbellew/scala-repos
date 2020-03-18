@@ -82,10 +82,12 @@ class JavaFunctionUsagesSearcher
         if (!method.isValid)
           return None
         method match {
-          case f: ScFunction => Some(f)
+          case f: ScFunction =>
+            Some(f)
           case m: PsiMethod if !m.hasModifierProperty(PsiModifier.STATIC) =>
             Some(m)
-          case _ => None
+          case _ =>
+            None
         }
       }
     }

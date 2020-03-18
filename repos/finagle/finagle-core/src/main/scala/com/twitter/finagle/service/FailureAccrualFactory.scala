@@ -308,7 +308,8 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
       state match {
         case Alive | ProbeClosed =>
           failureAccrualPolicy.markDeadOnFailure() match {
-            case Some(duration)               => markDeadFor(duration)
+            case Some(duration) =>
+              markDeadFor(duration)
             case None if state == ProbeClosed =>
               // The probe request failed, but the policy tells us that we
               // should not mark dead. We probe again in an attempt to
@@ -327,8 +328,10 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
 
   protected def isSuccess(reqRep: ReqRep): Boolean =
     responseClassifier.applyOrElse(reqRep, ResponseClassifier.Default) match {
-      case ResponseClass.Successful(_) => true
-      case ResponseClass.Failed(_)     => false
+      case ResponseClass.Successful(_) =>
+        true
+      case ResponseClass.Failed(_) =>
+        false
     }
 
   protected def didSucceed(): Unit =
@@ -404,8 +407,9 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
                 probesCounter.incr()
                 svcFacSelf.synchronized {
                   state match {
-                    case ProbeOpen => state = ProbeClosed
-                    case _         =>
+                    case ProbeOpen =>
+                      state = ProbeClosed
+                    case _ =>
                   }
                 }
               case _ =>
@@ -430,8 +434,10 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
 
   override def status: Status =
     state match {
-      case Alive | ProbeOpen  => underlying.status
-      case Dead | ProbeClosed => Status.Busy
+      case Alive | ProbeOpen =>
+        underlying.status
+      case Dead | ProbeClosed =>
+        Status.Busy
     }
 
   protected[this] def getState: State = state

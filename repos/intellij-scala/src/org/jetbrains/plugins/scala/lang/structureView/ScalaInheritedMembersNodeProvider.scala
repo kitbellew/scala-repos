@@ -86,9 +86,11 @@ class ScalaInheritedMembersNodeProvider
 
           children
         } catch {
-          case e: IndexNotReadyException => new util.ArrayList[TreeElement]()
+          case e: IndexNotReadyException =>
+            new util.ArrayList[TreeElement]()
         }
-      case _ => new util.ArrayList[TreeElement]()
+      case _ =>
+        new util.ArrayList[TreeElement]()
     }
   }
 

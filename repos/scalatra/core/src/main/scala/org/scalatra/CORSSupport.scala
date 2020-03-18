@@ -292,7 +292,8 @@ trait CorsSupport extends Handler with Initializable {
             augmentSimpleRequest()
             super.handle(req, res)
           }
-          case _ ⇒ super.handle(req, res)
+          case _ ⇒
+            super.handle(req, res)
         }
       }
     } else {

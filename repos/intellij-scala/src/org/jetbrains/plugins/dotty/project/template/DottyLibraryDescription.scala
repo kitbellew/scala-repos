@@ -54,8 +54,10 @@ object DottyLibraryDescription extends ScalaLibraryDescription {
         true
       case Component(DottyArtifact.JLine, _, Some(Version(JLineVersion)), _) =>
         true
-      case Component(DottyArtifact.Interfaces, _, _, _) => true
-      case _                                            => false
+      case Component(DottyArtifact.Interfaces, _, _, _) =>
+        true
+      case _ =>
+        false
     } ++
       files.filter {
         case Component(
@@ -70,7 +72,8 @@ object DottyLibraryDescription extends ScalaLibraryDescription {
               Some(Version(ScalaVersion)),
               _) =>
           true
-        case _ => false
+        case _ =>
+          false
       } ++
       files.filter {
         case Component(
@@ -79,7 +82,8 @@ object DottyLibraryDescription extends ScalaLibraryDescription {
               Some(Version(PatchedCompilerVersion)),
               _) =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     val dottyInterfacesFile = CompileServerLauncher.dottyInterfacesJar

@@ -244,7 +244,8 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
             }
             data.inbox.process(Dispatcher.this)
           } catch {
-            case NonFatal(e) => logError(e.getMessage, e)
+            case NonFatal(e) =>
+              logError(e.getMessage, e)
           }
         }
       } catch {

@@ -32,7 +32,8 @@ object Page {
             title = title.replace("-", " "),
             body = body)
         }
-      case _ => none
+      case _ =>
+        none
     }
 
   import lila.db.JsTube

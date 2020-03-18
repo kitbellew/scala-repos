@@ -24,8 +24,10 @@ package bippy {
       echo("")
       echo("Urls exposed through the classloader:")
       getClass.getClassLoader match {
-        case x: HasClassPath => x.classPathURLs foreach (x => echo(x))
-        case _               => echo("None! Seems unlikely we'd get this far then.")
+        case x: HasClassPath =>
+          x.classPathURLs foreach (x => echo(x))
+        case _ =>
+          echo("None! Seems unlikely we'd get this far then.")
       }
     }
   }

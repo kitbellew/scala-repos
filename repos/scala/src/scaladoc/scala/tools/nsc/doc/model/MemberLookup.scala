@@ -19,7 +19,8 @@ trait MemberLookup extends base.MemberLookupBase {
 
   override def internalLink(sym: Symbol, site: Symbol): Option[LinkTo] =
     findTemplateMaybe(sym) match {
-      case Some(tpl) => Some(LinkToTpl(tpl))
+      case Some(tpl) =>
+        Some(LinkToTpl(tpl))
       case None =>
         findTemplateMaybe(site) flatMap { inTpl =>
           inTpl.members find (_.asInstanceOf[EntityImpl].sym == sym) map (
@@ -30,7 +31,8 @@ trait MemberLookup extends base.MemberLookupBase {
 
   override def chooseLink(links: List[LinkTo]): LinkTo = {
     val mbrs = links.collect {
-      case lm @ LinkToMember(mbr: MemberEntity, _) => (mbr, lm)
+      case lm @ LinkToMember(mbr: MemberEntity, _) =>
+        (mbr, lm)
     }
     if (mbrs.isEmpty)
       links.head
@@ -40,10 +42,12 @@ trait MemberLookup extends base.MemberLookupBase {
 
   override def toString(link: LinkTo) =
     link match {
-      case LinkToTpl(tpl: EntityImpl) => tpl.sym.toString
+      case LinkToTpl(tpl: EntityImpl) =>
+        tpl.sym.toString
       case LinkToMember(mbr: EntityImpl, inTpl: EntityImpl) =>
         mbr.sym.signatureString + " in " + inTpl.sym.toString
-      case _ => link.toString
+      case _ =>
+        link.toString
     }
 
   override def findExternalLink(

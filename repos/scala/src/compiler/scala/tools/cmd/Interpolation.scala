@@ -28,7 +28,8 @@ trait Interpolation {
     private def mark(key: String) = "@@" + key + "@@"
     def apply(template: String) =
       mapper.foldLeft(template) {
-        case (s, (key, f)) => s.replaceAll(mark(key), f())
+        case (s, (key, f)) =>
+          s.replaceAll(mark(key), f())
       }
   }
 }

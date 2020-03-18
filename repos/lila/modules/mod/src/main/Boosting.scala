@@ -79,10 +79,12 @@ final class BoostingApi(
                 newRecord,
                 result.winner,
                 result.loser)
-            case none => createBoostRecord(BoostingRecord(_id = id, games = 1))
+            case none =>
+              createBoostRecord(BoostingRecord(_id = id, games = 1))
           }
         }
-        case none => funit
+        case none =>
+          funit
       }
     } else {
       funit

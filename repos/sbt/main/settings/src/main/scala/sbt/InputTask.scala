@@ -18,7 +18,8 @@ final class InputTask[T] private (val parser: State => Parser[Task[T]]) {
   def fullInput(in: String): InputTask[T] =
     new InputTask[T](s =>
       Parser.parse(in, parser(s)) match {
-        case Right(v) => Parser.success(v)
+        case Right(v) =>
+          Parser.success(v)
         case Left(msg) =>
           val indented = msg.lines.map("   " + _).mkString("\n")
           Parser.failure(s"Invalid programmatic input:\n$indented")
@@ -37,7 +38,8 @@ object InputTask {
         (Def.stateKey zipWith i)((sTask, it) =>
           sTask map (s =>
             Parser.parse(in, it.parser(s)) match {
-              case Right(t) => Def.value(t)
+              case Right(t) =>
+                Def.value(t)
               case Left(msg) =>
                 val indented = msg.lines.map("   " + _).mkString("\n")
                 sys.error(s"Invalid programmatic input:\n$indented")

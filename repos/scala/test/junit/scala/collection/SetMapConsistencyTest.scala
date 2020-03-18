@@ -35,34 +35,47 @@ class SetMapConsistencyTest {
     def adders = 5
     def add(n: Int, a: A, v: Int) {
       n match {
-        case 0 => m += ((a, v))
-        case 1 => m(a) = v
-        case 2 => m.put(a, v)
-        case 3 => m = (m + ((a, v))).asInstanceOf[M]
-        case 4 => m = (m ++ List((a, v))).asInstanceOf[M]
-        case _ => oor("add", n)
+        case 0 =>
+          m += ((a, v))
+        case 1 =>
+          m(a) = v
+        case 2 =>
+          m.put(a, v)
+        case 3 =>
+          m = (m + ((a, v))).asInstanceOf[M]
+        case 4 =>
+          m = (m ++ List((a, v))).asInstanceOf[M]
+        case _ =>
+          oor("add", n)
       }
     }
     def subbers: Int = 3
     def sub(n: Int, a: A) {
       n match {
-        case 0 => m -= a
-        case 1 => m = (m - a).asInstanceOf[M]
-        case 2 => m = m.filter(_._1 != a).asInstanceOf[M]
-        case _ => oor("sub", n)
+        case 0 =>
+          m -= a
+        case 1 =>
+          m = (m - a).asInstanceOf[M]
+        case 2 =>
+          m = m.filter(_._1 != a).asInstanceOf[M]
+        case _ =>
+          oor("sub", n)
       }
     }
     def getters: Int = 3
     def get(n: Int, a: A) =
       n match {
-        case 0 => m.get(a).getOrElse(-1)
+        case 0 =>
+          m.get(a).getOrElse(-1)
         case 1 =>
           if (m contains a)
             m(a)
           else
             -1
-        case 2 => m.getOrElse(a, -1)
-        case _ => oor("get", n)
+        case 2 =>
+          m.getOrElse(a, -1)
+        case _ =>
+          oor("get", n)
       }
     def fiddlers: Int = 0
     def fiddle(n: Int) {
@@ -104,23 +117,30 @@ class SetMapConsistencyTest {
       override def getters: Int = 4
       override def get(n: Int, a: A) =
         n match {
-          case 0 => m.get(a).getOrElse(-1)
-          case 1 => m(a)
-          case 2 => m.getOrElse(a, -1)
+          case 0 =>
+            m.get(a).getOrElse(-1)
+          case 1 =>
+            m(a)
+          case 2 =>
+            m.getOrElse(a, -1)
           case 3 =>
             val x = arm.getOrNull(a);
             if (x == 0 && !(arm contains a))
               -1
             else
               x
-          case _ => oor("get", n)
+          case _ =>
+            oor("get", n)
         }
       override def fiddlers = 2
       override def fiddle(n: Int) {
         n match {
-          case 0 => m = arm.clone
-          case 1 => arm.repack
-          case _ => oor("fiddle", n)
+          case 0 =>
+            m = arm.clone
+          case 1 =>
+            arm.repack
+          case _ =>
+            oor("fiddle", n)
         }
       }
     }
@@ -135,23 +155,30 @@ class SetMapConsistencyTest {
       override def getters: Int = 4
       override def get(n: Int, a: Long) =
         n match {
-          case 0 => m.get(a).getOrElse(-1)
-          case 1 => m(a)
-          case 2 => m.getOrElse(a, -1)
+          case 0 =>
+            m.get(a).getOrElse(-1)
+          case 1 =>
+            m(a)
+          case 2 =>
+            m.getOrElse(a, -1)
           case 3 =>
             val x = lm.getOrNull(a);
             if (x == 0 && !(lm contains a))
               -1
             else
               x
-          case _ => oor("get", n)
+          case _ =>
+            oor("get", n)
         }
       override def fiddlers = 2
       override def fiddle(n: Int) {
         n match {
-          case 0 => m = lm.clone
-          case 1 => lm.repack
-          case _ => oor("fiddle", n)
+          case 0 =>
+            m = lm.clone
+          case 1 =>
+            lm.repack
+          case _ =>
+            oor("fiddle", n)
         }
       }
     }
@@ -173,30 +200,39 @@ class SetMapConsistencyTest {
     def adders = 2
     def add(n: Int, a: A, v: Int) {
       n match {
-        case 0 => m = (m + ((a, v))).asInstanceOf[M]
-        case 1 => m = (m ++ List((a, v))).asInstanceOf[M]
-        case _ => oor("add", n)
+        case 0 =>
+          m = (m + ((a, v))).asInstanceOf[M]
+        case 1 =>
+          m = (m ++ List((a, v))).asInstanceOf[M]
+        case _ =>
+          oor("add", n)
       }
     }
     def subbers: Int = 2
     def sub(n: Int, a: A) {
       n match {
-        case 0 => m = (m - a).asInstanceOf[M]
-        case 1 => m = m.filter(_._1 != a).asInstanceOf[M]
-        case _ => oor("sub", n)
+        case 0 =>
+          m = (m - a).asInstanceOf[M]
+        case 1 =>
+          m = m.filter(_._1 != a).asInstanceOf[M]
+        case _ =>
+          oor("sub", n)
       }
     }
     def getters: Int = 3
     def get(n: Int, a: A) =
       n match {
-        case 0 => m.get(a).getOrElse(-1)
+        case 0 =>
+          m.get(a).getOrElse(-1)
         case 1 =>
           if (m contains a)
             m(a)
           else
             -1
-        case 2 => m.getOrElse(a, -1)
-        case _ => oor("get", n)
+        case 2 =>
+          m.getOrElse(a, -1)
+        case _ =>
+          oor("get", n)
       }
     def fiddlers: Int = 0
     def fiddle(n: Int) {
@@ -241,21 +277,31 @@ class SetMapConsistencyTest {
     def adders = 5
     def add(n: Int, a: A, v: Int) {
       n match {
-        case 0 => m += a
-        case 1 => m(a) = true
-        case 2 => m add a
-        case 3 => m = (m + a).asInstanceOf[M]
-        case 4 => m = (m ++ List(a)).asInstanceOf[M]
-        case _ => oor("add", n)
+        case 0 =>
+          m += a
+        case 1 =>
+          m(a) = true
+        case 2 =>
+          m add a
+        case 3 =>
+          m = (m + a).asInstanceOf[M]
+        case 4 =>
+          m = (m ++ List(a)).asInstanceOf[M]
+        case _ =>
+          oor("add", n)
       }
     }
     def subbers: Int = 3
     def sub(n: Int, a: A) {
       n match {
-        case 0 => m -= a
-        case 1 => m = (m - a).asInstanceOf[M]
-        case 2 => m = m.filter(_ != a).asInstanceOf[M]
-        case _ => oor("sub", n)
+        case 0 =>
+          m -= a
+        case 1 =>
+          m = (m - a).asInstanceOf[M]
+        case 2 =>
+          m = m.filter(_ != a).asInstanceOf[M]
+        case _ =>
+          oor("sub", n)
       }
     }
     def getters: Int = 1
@@ -299,17 +345,23 @@ class SetMapConsistencyTest {
     def adders = 2
     def add(n: Int, a: A, v: Int) {
       n match {
-        case 0 => m = (m + a).asInstanceOf[M]
-        case 1 => m = (m ++ List(a)).asInstanceOf[M]
-        case _ => oor("add", n)
+        case 0 =>
+          m = (m + a).asInstanceOf[M]
+        case 1 =>
+          m = (m ++ List(a)).asInstanceOf[M]
+        case _ =>
+          oor("add", n)
       }
     }
     def subbers: Int = 2
     def sub(n: Int, a: A) {
       n match {
-        case 0 => m = (m - a).asInstanceOf[M]
-        case 1 => m = m.filter(_ != a).asInstanceOf[M]
-        case _ => oor("sub", n)
+        case 0 =>
+          m = (m - a).asInstanceOf[M]
+        case 1 =>
+          m = m.filter(_ != a).asInstanceOf[M]
+        case _ =>
+          oor("sub", n)
       }
     }
     def getters: Int = 1
@@ -366,9 +418,11 @@ class SetMapConsistencyTest {
                 case hx: ci.HashMap.HashTrieMap[_, _] =>
                   val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
                   Some((h.bitmap.toHexString, h.elems.mkString, h.size))
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
         throw new Exception(
           s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} because ${map1.keys
@@ -427,9 +481,11 @@ class SetMapConsistencyTest {
                     (
                       (h.bitmap.toHexString, h.elems.mkString, h.size),
                       (y.bitmap.toHexString, y.elems.mkString, y.size)))
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
         throw new Exception(
           s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} on get of ${keys(
@@ -558,11 +614,13 @@ class SetMapConsistencyTest {
     import cm.{LongMap, HashMap}
     var lm = LongMap.empty[Long]
     longKeys.zipWithIndex.foreach {
-      case (k, i) => lm(k) = i
+      case (k, i) =>
+        lm(k) = i
     }
     assert {
       lm.map {
-        case (k, v) => -k * k -> v.toString
+        case (k, v) =>
+          -k * k -> v.toString
       }.getClass == lm.getClass
     }
 
@@ -613,7 +671,8 @@ class SetMapConsistencyTest {
     import cm.{AnyRefMap, HashMap}
     var arm = AnyRefMap.empty[String, Int]
     stringKeys.zipWithIndex.foreach {
-      case (k, i) => arm(k) = i
+      case (k, i) =>
+        arm(k) = i
     }
 
     assert {
@@ -764,8 +823,10 @@ class SetMapConsistencyTest {
     }
     assert(
       f() match {
-        case Some((a, b)) if (a == null || b == null) => false
-        case _                                        => true
+        case Some((a, b)) if (a == null || b == null) =>
+          false
+        case _ =>
+          true
       })
   }
 

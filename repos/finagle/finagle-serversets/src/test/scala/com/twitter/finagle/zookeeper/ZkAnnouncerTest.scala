@@ -54,7 +54,8 @@ class ZkAnnouncerTest extends FunSuite with BeforeAndAfter {
       Var.sample(va) match {
         case Addr.Bound(sockaddrs, attrs) if attrs.isEmpty =>
           assert(sockaddrs == Set(addr))
-        case _ => fail()
+        case _ =>
+          fail()
       }
     }
   }

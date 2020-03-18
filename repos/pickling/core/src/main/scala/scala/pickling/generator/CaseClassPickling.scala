@@ -61,7 +61,8 @@ class CaseClassPickling(
               Seq(CallConstructor(fields.map(_.name), c)) ++
                 standAloneVars.map { field =>
                   field.setter match {
-                    case Some(mth) => SetField(field.methodName, mth)
+                    case Some(mth) =>
+                      SetField(field.methodName, mth)
                     case _ =>
                       sys.error(
                         s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
@@ -87,7 +88,8 @@ class CaseClassPickling(
                   case x: UnpickleBehavior =>
                     x.operations.toList.flatMap(reflectionErrorMessage)
                   // TODO - other instances we need to delegate?
-                  case _ => List()
+                  case _ =>
+                    List()
                 }
               val errors = (reflectionErrorMessage(
                 pickle) ++ reflectionErrorMessage(unpickle))
@@ -157,7 +159,8 @@ class CaseClassPickling(
             s"Encountered a case class (${tpe.className}) where we could not find all the constructor parameters.")
       }
     ) match {
-      case Some(success) => AlgorithmSucccess(success)
+      case Some(success) =>
+        AlgorithmSucccess(success)
       case None =>
         AlgorithmFailure("Could not find a valid case-class factory method.")
     }
@@ -201,7 +204,8 @@ class CaseClassPickling(
                         )
                       )
                     ) // TODO - This should be `allow runtime pickler lookup`.
-                  case x => x
+                  case x =>
+                    x
                 }
                 .asInstanceOf[PickleUnpickleImplementation]
             }
@@ -232,7 +236,8 @@ class CaseClassPickling(
                         )
                       )
                     ) // TODO - This should be `allow runtime pickler lookup`.
-                  case x => x
+                  case x =>
+                    x
                 }
                 .asInstanceOf[PickleUnpickleImplementation]
             }

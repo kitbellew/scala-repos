@@ -269,8 +269,10 @@ object NonlinearMinimizer {
       lambda: Double,
       usePQN: Boolean = false): FirstOrderMinimizer[BDV, DiffFunction[BDV]] = {
     constraint match {
-      case IDENTITY => project(ProjectIdentity())
-      case POSITIVE => project(ProjectPos())
+      case IDENTITY =>
+        project(ProjectIdentity())
+      case POSITIVE =>
+        project(ProjectPos())
       case BOX => {
         val lb = DenseVector.zeros[Double](ndim)
         val ub = DenseVector.ones[Double](ndim)
@@ -280,8 +282,10 @@ object NonlinearMinimizer {
         val aeq = DenseVector.ones[Double](ndim)
         project(ProjectHyperPlane(aeq, 1.0))
       }
-      case PROBABILITYSIMPLEX => project(ProjectProbabilitySimplex(lambda))
-      case SPARSE             => project(ProjectL1(lambda))
+      case PROBABILITYSIMPLEX =>
+        project(ProjectProbabilitySimplex(lambda))
+      case SPARSE =>
+        project(ProjectL1(lambda))
       case _ =>
         throw new IllegalArgumentException(
           "NonlinearMinimizer does not support the Projection Operator")
@@ -478,7 +482,8 @@ object NonlinearMinimizer {
     val owlqnLogisticObj = elasticNetLoss.calculate(owlqnLogisticResult.x)._1
     val s =
       owlqnLogisticResult.x.foldLeft(0.0) {
-        case (agg, entry) => agg + abs(entry)
+        case (agg, entry) =>
+          agg + abs(entry)
       }
 
     init := 0.0

@@ -104,8 +104,10 @@ class NameTreeTest extends FunSuite {
 
     def newTree(depth: Int): NameTree[Path] =
       rng.nextInt(3) match {
-        case _ if depth == 0 => newLeaf()
-        case 0               => newLeaf()
+        case _ if depth == 0 =>
+          newLeaf()
+        case 0 =>
+          newLeaf()
 
         case 1 =>
           val trees =

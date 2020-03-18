@@ -312,14 +312,16 @@ object Scoped {
           mktask {
             None
           };
-        case Some(t) => t map some.fn
+        case Some(t) =>
+          t map some.fn
       }
     def ??[T >: S](or: => T): Initialize[Task[T]] =
       Def.optional(scopedKey)(_ getOrElse mktask(or))
     def or[T >: S](i: Initialize[Task[T]]): Initialize[Task[T]] =
       (this.? zipWith i)((x, y) =>
         (x, y) map {
-          case (a, b) => a getOrElse b
+          case (a, b) =>
+            a getOrElse b
         })
   }
   final class RichInitializeTask[S](i: Initialize[Task[S]])

@@ -35,7 +35,8 @@ final class ModApi(
 
   def autoAdjust(username: String): Funit =
     logApi.wasUnengined(User.normalize(username)) flatMap {
-      case true => funit
+      case true =>
+        funit
       case false =>
         lila.mon.cheat.autoMark.count()
         setEngine("lichess", username, true)

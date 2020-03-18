@@ -34,13 +34,11 @@ abstract class Comment {
             tag.close match {
               case Some(t) =>
                 stack += t
-              case None =>
-                ;
+              case None => ;
             }
           }
         }
-        case _ =>
-          ;
+        case _ => ;
       }
     }
     scan(inline)

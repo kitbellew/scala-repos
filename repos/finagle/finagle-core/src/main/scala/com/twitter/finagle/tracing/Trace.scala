@@ -193,8 +193,10 @@ object Trace {
     */
   def letIdOption[R](traceIdOpt: Option[TraceId])(f: => R): R =
     traceIdOpt match {
-      case Some(traceId) => letId(traceId)(f)
-      case None          => f
+      case Some(traceId) =>
+        letId(traceId)(f)
+      case None =>
+        f
     }
 
   /**
@@ -230,8 +232,10 @@ object Trace {
       val newCtx = ctx.withTracer(tracer).withTerminal(terminal)
       val newId =
         id.sampled match {
-          case None    => id.copy(_sampled = tracer.sampleTrace(id))
-          case Some(_) => id
+          case None =>
+            id.copy(_sampled = tracer.sampleTrace(id))
+          case Some(_) =>
+            id
         }
       Contexts.local.let(traceCtx, newCtx) {
         Contexts.broadcast.let(idCtx, newId)(f)
@@ -281,8 +285,10 @@ object Trace {
   def isActivelyTracing: Boolean =
     tracingEnabled && (
       id match {
-        case TraceId(_, _, _, Some(false), flags) if !flags.isDebug => false
-        case TraceId(_, _, _, _, Flags(Flags.Debug))                => true
+        case TraceId(_, _, _, Some(false), flags) if !flags.isDebug =>
+          false
+        case TraceId(_, _, _, _, Flags(Flags.Debug)) =>
+          true
         case _ =>
           tracers.nonEmpty && (tracers.size > 1 || tracers.head != NullTracer)
       }

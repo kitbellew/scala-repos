@@ -59,7 +59,8 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
       buildUrl(request.path) map { url =>
         val req =
           request.method match {
-            case HttpMethod.GET => new GetRequest(url.toString)
+            case HttpMethod.GET =>
+              new GetRequest(url.toString)
             case HttpMethod.POST =>
               request.body map {
                 case Request.Body(contenType, body) =>

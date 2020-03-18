@@ -49,7 +49,8 @@ case class ShuffleExchange(
           s"(coordinator id: ${System.identityHashCode(coordinator)})"
         case Some(exchangeCoordinator) if !exchangeCoordinator.isEstimated =>
           s"(coordinator id: ${System.identityHashCode(coordinator)})"
-        case None => ""
+        case None =>
+          ""
       }
 
     val simpleNodeName = "Exchange"
@@ -245,7 +246,8 @@ object ShuffleExchange {
             override def numPartitions: Int = 1
             override def getPartition(key: Any): Int = 0
           }
-        case _ => sys.error(s"Exchange not implemented for $newPartitioning")
+        case _ =>
+          sys.error(s"Exchange not implemented for $newPartitioning")
         // TODO: Handle BroadcastPartitioning.
       }
     def getPartitionKeyExtractor(): InternalRow => Any =
@@ -264,8 +266,10 @@ object ShuffleExchange {
             h.partitionIdExpression :: Nil,
             outputAttributes)
           row => projection(row).getInt(0)
-        case RangePartitioning(_, _) | SinglePartition => identity
-        case _                                         => sys.error(s"Exchange not implemented for $newPartitioning")
+        case RangePartitioning(_, _) | SinglePartition =>
+          identity
+        case _ =>
+          sys.error(s"Exchange not implemented for $newPartitioning")
       }
     val rddWithPartitionIds: RDD[Product2[Int, InternalRow]] = {
       if (needToCopyObjectsBeforeShuffle(part, serializer)) {

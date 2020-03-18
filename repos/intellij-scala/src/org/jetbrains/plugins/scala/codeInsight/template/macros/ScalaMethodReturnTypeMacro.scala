@@ -22,8 +22,10 @@ class ScalaMethodReturnTypeMacro extends Macro {
         classOf[ScFunction]))
       .map(
         _.getType(TypingContext.empty).getOrAny match {
-          case ScFunctionType(rt, _) => rt
-          case t                     => t
+          case ScFunctionType(rt, _) =>
+            rt
+          case t =>
+            t
         })
       .map(new ScalaTypeResult(_))
       .orNull

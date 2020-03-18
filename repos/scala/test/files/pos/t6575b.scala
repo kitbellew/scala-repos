@@ -9,17 +9,20 @@ trait X {
 
 trait Y extends X {
   abstract override def foo = {
-    case i => super.foo(i) * 2
+    case i =>
+      super.foo(i) * 2
   }
 }
 trait Z extends X {
   abstract override def foo = {
-    case i => super.foo(i) + 3
+    case i =>
+      super.foo(i) + 3
   }
 }
 
 trait Comb extends Y with Z {
   abstract override def foo: Function1[Int, Int] = {
-    case i => super.foo(i) - 2
+    case i =>
+      super.foo(i) - 2
   }
 }

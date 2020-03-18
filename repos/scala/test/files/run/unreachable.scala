@@ -56,7 +56,8 @@ object Test extends App {
     try {
       return 0
     } catch {
-      case x: Throwable => return 1
+      case x: Throwable =>
+        return 1
     } finally {
       return 2
     }
@@ -67,7 +68,8 @@ object Test extends App {
     try {
       return 42
     } catch {
-      case x: Throwable => return 2
+      case x: Throwable =>
+        return 2
     }
     return 3
   }
@@ -76,7 +78,8 @@ object Test extends App {
     try {
       error("haha")
     } catch {
-      case x: Throwable => return 42
+      case x: Throwable =>
+        return 42
     }
     return 3
   }
@@ -85,7 +88,8 @@ object Test extends App {
     try {
       return 1
     } catch {
-      case x: Throwable => return 2
+      case x: Throwable =>
+        return 2
     } finally {
       return 42
     }
@@ -96,9 +100,12 @@ object Test extends App {
     return 42
     val x = nextInt % 2
     x match {
-      case 0  => return 0
-      case 1  => return 1
-      case -1 => return 2
+      case 0 =>
+        return 0
+      case 1 =>
+        return 1
+      case -1 =>
+        return 2
     }
     3
   }
@@ -106,9 +113,12 @@ object Test extends App {
   def unreachableAfterSwitch: Int = {
     val x = nextInt % 2
     x match {
-      case 0  => return 42
-      case 1  => return 41 + x
-      case -1 => return 43 + x
+      case 0 =>
+        return 42
+      case 1 =>
+        return 41 + x
+      case -1 =>
+        return 43 + x
     }
     2
   }

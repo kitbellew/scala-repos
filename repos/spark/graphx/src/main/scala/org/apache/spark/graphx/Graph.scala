@@ -482,8 +482,10 @@ object Graph {
       edgeStorageLevel,
       vertexStorageLevel)
     uniqueEdges match {
-      case Some(p) => graph.partitionBy(p).groupEdges((a, b) => a + b)
-      case None    => graph
+      case Some(p) =>
+        graph.partitionBy(p).groupEdges((a, b) => a + b)
+      case None =>
+        graph
     }
   }
 

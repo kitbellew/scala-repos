@@ -71,8 +71,10 @@ object MongoDB {
     */
   def getDb(name: ConnectionIdentifier): Option[DB] =
     dbs.get(name) match {
-      case null       => None
-      case (mngo, db) => Some(mngo.getDB(db))
+      case null =>
+        None
+      case (mngo, db) =>
+        Some(mngo.getDB(db))
     }
 
   /**
@@ -84,7 +86,8 @@ object MongoDB {
     getDb(name) match {
       case Some(mongo) if mongo != null =>
         Some(mongo.getCollection(collectionName))
-      case _ => None
+      case _ =>
+        None
     }
 
   /**
@@ -94,8 +97,10 @@ object MongoDB {
 
     val db =
       getDb(name) match {
-        case Some(mongo) => mongo
-        case _           => throw new MongoException("Mongo not found: " + name.toString)
+        case Some(mongo) =>
+          mongo
+        case _ =>
+          throw new MongoException("Mongo not found: " + name.toString)
       }
 
     f(db)
@@ -109,7 +114,8 @@ object MongoDB {
 
     val db =
       getDb(DefaultConnectionIdentifier) match {
-        case Some(mongo) => mongo
+        case Some(mongo) =>
+          mongo
         case _ =>
           throw new MongoException(
             "Mongo not found: " + DefaultConnectionIdentifier.toString)
@@ -126,7 +132,8 @@ object MongoDB {
       f: (DBCollection) => T): T = {
     val coll =
       getCollection(name, collectionName) match {
-        case Some(collection) => collection
+        case Some(collection) =>
+          collection
         case _ =>
           throw new MongoException(
             "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + name.toString)
@@ -141,7 +148,8 @@ object MongoDB {
   def useCollection[T](collectionName: String)(f: (DBCollection) => T): T = {
     val coll =
       getCollection(DefaultConnectionIdentifier, collectionName) match {
-        case Some(collection) => collection
+        case Some(collection) =>
+          collection
         case _ =>
           throw new MongoException(
             "Mongo not found: " + collectionName + ". ConnectionIdentifier: " + DefaultConnectionIdentifier.toString)
@@ -163,8 +171,10 @@ object MongoDB {
 
     val db =
       getDb(name) match {
-        case Some(mongo) => mongo
-        case _           => throw new MongoException("Mongo not found: " + name.toString)
+        case Some(mongo) =>
+          mongo
+        case _ =>
+          throw new MongoException("Mongo not found: " + name.toString)
       }
 
     // start the request
@@ -187,7 +197,8 @@ object MongoDB {
 
     val db =
       getDb(DefaultConnectionIdentifier) match {
-        case Some(mongo) => mongo
+        case Some(mongo) =>
+          mongo
         case _ =>
           throw new MongoException(
             "Mongo not found: " + DefaultConnectionIdentifier.toString)

@@ -44,8 +44,10 @@ class ScalaHighlightPrimaryConstructorExpressionsHandler(
     val varAndValDefsExprs = eb.members.flatMap {
       case p: ScPatternDefinition =>
         p.expr // we include lazy vals, perhaps they could be excluded.
-      case v: ScVariableDefinition => v.expr
-      case _                       => None
+      case v: ScVariableDefinition =>
+        v.expr
+      case _ =>
+        None
     }
     val constructorExprs =
       varAndValDefsExprs ++ eb.templateBody.toList.flatMap(_.exprs) ++ Seq(

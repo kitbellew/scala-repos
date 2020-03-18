@@ -113,7 +113,8 @@ trait ThriftTest {
         val thrift =
           clientIdOpt.foldLeft(
             Thrift.client.withProtocolFactory(protocolFactory)) {
-            case (thrift, clientId) => thrift.withClientId(clientId)
+            case (thrift, clientId) =>
+              thrift.withClientId(clientId)
           }
 
         thrift.newIface[Iface](Group(addr).named("thriftclient"))

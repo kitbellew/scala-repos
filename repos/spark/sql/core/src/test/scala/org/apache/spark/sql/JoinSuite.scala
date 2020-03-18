@@ -45,11 +45,16 @@ class JoinSuite extends QueryTest with SharedSQLContext {
     val df = sql(sqlString)
     val physical = df.queryExecution.sparkPlan
     val operators = physical.collect {
-      case j: BroadcastHashJoin       => j
-      case j: ShuffledHashJoin        => j
-      case j: CartesianProduct        => j
-      case j: BroadcastNestedLoopJoin => j
-      case j: SortMergeJoin           => j
+      case j: BroadcastHashJoin =>
+        j
+      case j: ShuffledHashJoin =>
+        j
+      case j: CartesianProduct =>
+        j
+      case j: BroadcastNestedLoopJoin =>
+        j
+      case j: SortMergeJoin =>
+        j
     }
 
     assert(operators.size === 1)
@@ -129,7 +134,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
           "SELECT * FROM testData full JOIN testData2 ON (key * a != key + a)",
           classOf[BroadcastNestedLoopJoin])
       ).foreach {
-        case (query, joinClass) => assertJoin(query, joinClass)
+        case (query, joinClass) =>
+          assertJoin(query, joinClass)
       }
     }
   }
@@ -154,7 +160,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         "SELECT * FROM testData join testData2 ON key = a where key = 2",
         classOf[BroadcastHashJoin])
     ).foreach {
-      case (query, joinClass) => assertJoin(query, joinClass)
+      case (query, joinClass) =>
+        assertJoin(query, joinClass)
     }
     sql("UNCACHE TABLE testData")
   }
@@ -174,7 +181,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         "SELECT * FROM testData right join testData2 ON key = a and key = 2",
         classOf[BroadcastHashJoin])
     ).foreach {
-      case (query, joinClass) => assertJoin(query, joinClass)
+      case (query, joinClass) =>
+        assertJoin(query, joinClass)
     }
     sql("UNCACHE TABLE testData")
   }
@@ -483,7 +491,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         (
           "SELECT * FROM testData LEFT SEMI JOIN testData2 ON key = a",
           classOf[BroadcastHashJoin])).foreach {
-        case (query, joinClass) => assertJoin(query, joinClass)
+        case (query, joinClass) =>
+          assertJoin(query, joinClass)
       }
     }
 
@@ -492,7 +501,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
         (
           "SELECT * FROM testData LEFT SEMI JOIN testData2 ON key = a",
           classOf[ShuffledHashJoin])).foreach {
-        case (query, joinClass) => assertJoin(query, joinClass)
+        case (query, joinClass) =>
+          assertJoin(query, joinClass)
       }
     }
 
@@ -564,7 +574,8 @@ class JoinSuite extends QueryTest with SharedSQLContext {
           "SELECT * FROM testData full JOIN testData2 WHERE (key * a != key + a)",
           classOf[BroadcastNestedLoopJoin])
       ).foreach {
-        case (query, joinClass) => assertJoin(query, joinClass)
+        case (query, joinClass) =>
+          assertJoin(query, joinClass)
       }
 
       checkAnswer(

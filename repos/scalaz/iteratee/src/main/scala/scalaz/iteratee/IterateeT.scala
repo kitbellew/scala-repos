@@ -193,7 +193,8 @@ sealed abstract class IterateeT[E, F[_], A] {
                           e
                         else
                           ee)
-                    case _ => cont(loop(xx, yy))
+                    case _ =>
+                      cont(loop(xx, yy))
                   }
               }
           },
@@ -314,8 +315,10 @@ trait IterateeTFunctions {
       b: => B,
       f: E => IterateeT[E, F, B]): IterateeT[E, F, B] = {
     head[E, F] flatMap {
-      case None    => done(b, eofInput)
-      case Some(a) => f(a)
+      case None =>
+        done(b, eofInput)
+      case Some(a) =>
+        f(a)
     }
   }
 
@@ -333,8 +336,10 @@ trait IterateeTFunctions {
       b: => B,
       f: E => IterateeT[E, F, B]): IterateeT[E, F, B] = {
     peek[E, F] flatMap {
-      case None    => done(b, eofInput)
-      case Some(a) => f(a)
+      case None =>
+        done(b, eofInput)
+      case Some(a) =>
+        f(a)
     }
   }
 

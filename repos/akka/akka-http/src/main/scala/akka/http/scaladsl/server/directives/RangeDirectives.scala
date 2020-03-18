@@ -61,7 +61,8 @@ trait RangeDirectives {
         range match {
           case ByteRange.Slice(start, end) ⇒
             new IndexRange(start, math.min(end + 1, entityLength))
-          case ByteRange.FromOffset(first) ⇒ new IndexRange(first, entityLength)
+          case ByteRange.FromOffset(first) ⇒
+            new IndexRange(first, entityLength)
           case ByteRange.Suffix(suffixLength) ⇒
             new IndexRange(
               math.max(0, entityLength - suffixLength),
@@ -90,7 +91,8 @@ trait RangeDirectives {
         val coalescedRanges = coalesceRanges(iRanges).sortBy(_.start)
         val source =
           coalescedRanges.size match {
-            case 0 ⇒ Source.empty
+            case 0 ⇒
+              Source.empty
             case 1 ⇒
               val range = coalescedRanges.head
               val flow = StreamUtils.sliceBytesTransformer(
@@ -141,14 +143,19 @@ trait RangeDirectives {
 
       def satisfiable(entityLength: Long)(range: ByteRange): Boolean =
         range match {
-          case ByteRange.Slice(firstPos, _) ⇒ firstPos < entityLength
-          case ByteRange.FromOffset(firstPos) ⇒ firstPos < entityLength
-          case ByteRange.Suffix(length) ⇒ length > 0
+          case ByteRange.Slice(firstPos, _) ⇒
+            firstPos < entityLength
+          case ByteRange.FromOffset(firstPos) ⇒
+            firstPos < entityLength
+          case ByteRange.Suffix(length) ⇒
+            length > 0
         }
       def universal(entity: HttpEntity): Option[UniversalEntity] =
         entity match {
-          case u: UniversalEntity ⇒ Some(u)
-          case _ ⇒ None
+          case u: UniversalEntity ⇒
+            Some(u)
+          case _ ⇒
+            None
         }
 
       def applyRanges(ranges: immutable.Seq[ByteRange]): Directive0 =

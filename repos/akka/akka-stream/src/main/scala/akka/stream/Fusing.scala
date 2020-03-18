@@ -51,8 +51,10 @@ object Fusing {
   object FusedGraph {
     def unapply[S <: Shape, M](g: Graph[S, M]): Option[(FusedModule, S)] =
       g.module match {
-        case f: FusedModule => Some((f, g.shape))
-        case _              => None
+        case f: FusedModule =>
+          Some((f, g.shape))
+        case _ =>
+          None
       }
   }
 

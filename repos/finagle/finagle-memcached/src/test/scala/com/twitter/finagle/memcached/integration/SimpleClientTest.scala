@@ -67,7 +67,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
     val result = Await
       .result(client.get(Seq("foo", "baz", "notthere")))
       .map {
-        case (key, Buf.Utf8(value)) => (key, value)
+        case (key, Buf.Utf8(value)) =>
+          (key, value)
       }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
@@ -178,7 +179,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
     try {
       Await.result(client.set("\t", Buf.Utf8("bar")))
     } catch {
-      case _: ClientError => fail("\t is allowed")
+      case _: ClientError =>
+        fail("\t is allowed")
     }
 
     intercept[ClientError] {

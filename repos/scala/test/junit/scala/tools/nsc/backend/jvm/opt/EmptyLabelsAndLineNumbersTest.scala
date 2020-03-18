@@ -111,8 +111,10 @@ class EmptyLabelsAndLineNumbersTest {
       ops(1, 1, 7, 7, 7, 10).filter(_._2).map(_._1))
     assertTrue(
       m.handlers match {
-        case List(ExceptionHandler(Label(4), Label(4), Label(4), _)) => true
-        case _                                                       => false
+        case List(ExceptionHandler(Label(4), Label(4), Label(4), _)) =>
+          true
+        case _ =>
+          false
       })
   }
 }

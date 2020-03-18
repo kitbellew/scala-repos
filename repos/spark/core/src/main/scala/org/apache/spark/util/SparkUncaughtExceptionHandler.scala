@@ -50,7 +50,8 @@ private[spark] object SparkUncaughtExceptionHandler
         }
       }
     } catch {
-      case oom: OutOfMemoryError => Runtime.getRuntime.halt(SparkExitCode.OOM)
+      case oom: OutOfMemoryError =>
+        Runtime.getRuntime.halt(SparkExitCode.OOM)
       case t: Throwable =>
         Runtime.getRuntime.halt(SparkExitCode.UNCAUGHT_EXCEPTION_TWICE)
     }

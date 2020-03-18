@@ -109,7 +109,8 @@ trait Codec[@spec(Boolean, Long, Double) A] {
     @tailrec
     def loop(s: Option[S], buffers: List[ByteBuffer]): List[ByteBuffer] =
       s match {
-        case None => buffers
+        case None =>
+          buffers
         case Some(s) =>
           val buf = acquire()
           loop(writeMore(s, buf), buf :: buffers)
@@ -253,7 +254,8 @@ object Codec {
           (codecA.writeMore(s, buf) map (s => Left((s, b)))) orElse (
             codecB.writeInit(b, buf) map (Right(_))
           )
-        case Right(s) => codecB.writeMore(s, buf) map (Right(_))
+        case Right(s) =>
+          codecB.writeMore(s, buf) map (Right(_))
       }
 
     def read(buf: ByteBuffer): C = to(codecA.read(buf), codecB.read(buf))
@@ -311,8 +313,10 @@ object Codec {
     }
     def read(src: ByteBuffer): Boolean =
       src.get() match {
-        case TRUE_VALUE  => true
-        case FALSE_VALUE => false
+        case TRUE_VALUE =>
+          true
+        case FALSE_VALUE =>
+          false
         case invalid =>
           sys.error(
             "Error reading boolean: expecting %d or %d, found %d" format (
@@ -501,7 +505,8 @@ object Codec {
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] =
       more match {
-        case Left(a) => writeInit(a, sink)
+        case Left(a) =>
+          writeInit(a, sink)
         case Right((source, encoder)) =>
           if ((encoder.encode(source, sink, true) == CoderResult.OVERFLOW) ||
               (encoder.flush(sink) == CoderResult.OVERFLOW)) {
@@ -588,10 +593,13 @@ object Codec {
       as match {
         case a :: as =>
           elemCodec.writeInit(a, sink) match {
-            case Some(s) => Some(Right((s, as)))
-            case None    => writeArray(as, sink)
+            case Some(s) =>
+              Some(Right((s, as)))
+            case None =>
+              writeArray(as, sink)
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     def writeInit(as: IndexedSeq[A], sink: ByteBuffer): Option[S] = {
@@ -605,7 +613,8 @@ object Codec {
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] =
       more match {
-        case Left(as) => writeInit(as, sink)
+        case Left(as) =>
+          writeInit(as, sink)
         case Right((s, as)) =>
           elemCodec.writeMore(s, sink) map (Right(_, as)) orElse writeArray(
             as.toList,
@@ -673,8 +682,10 @@ object Codec {
         sink: ByteBuffer): Option[S] =
       if (row < as.length) {
         elemCodec.writeInit(as(row), sink) match {
-          case Some(s) => Some(Right((s, as, row + 1)))
-          case None    => writeArray(as, row + 1, sink)
+          case Some(s) =>
+            Some(Right((s, as, row + 1)))
+          case None =>
+            writeArray(as, row + 1, sink)
         }
       } else
         None
@@ -690,7 +701,8 @@ object Codec {
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] =
       more match {
-        case Left(as) => writeInit(as, sink)
+        case Left(as) =>
+          writeInit(as, sink)
         case Right((s, as, row)) =>
           elemCodec.writeMore(s, sink) map (s =>
             Right((s, as, row))) orElse writeArray(as, row, sink)
@@ -866,10 +878,14 @@ object Codec {
         } else {
           val c = (l + r) / 2
           (get(offset), get(offset + 1)) match {
-            case (false, false) => offset + 2
-            case (false, true)  => read(c, r, offset + 2)
-            case (true, false)  => read(l, c, offset + 2)
-            case (true, true)   => read(c, r, read(l, c, offset + 2))
+            case (false, false) =>
+              offset + 2
+            case (false, true) =>
+              read(c, r, offset + 2)
+            case (true, false) =>
+              read(l, c, offset + 2)
+            case (true, true) =>
+              read(c, r, read(l, c, offset + 2))
           }
         }
       }
@@ -1028,10 +1044,14 @@ object Codec {
         } else {
           val c = (l + r) / 2
           (get(offset), get(offset + 1)) match {
-            case (false, false) => offset + 2
-            case (false, true)  => read(c, r, offset + 2)
-            case (true, false)  => read(l, c, offset + 2)
-            case (true, true)   => read(c, r, read(l, c, offset + 2))
+            case (false, false) =>
+              offset + 2
+            case (false, true) =>
+              read(c, r, offset + 2)
+            case (true, false) =>
+              read(l, c, offset + 2)
+            case (true, true) =>
+              read(c, r, read(l, c, offset + 2))
           }
         }
       }

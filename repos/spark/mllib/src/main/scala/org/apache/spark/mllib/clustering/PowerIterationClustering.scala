@@ -169,7 +169,8 @@ class PowerIterationClustering private[clustering] (
   @Since("1.3.0")
   def setInitializationMode(mode: String): this.type = {
     this.initMode = mode match {
-      case "random" | "degree" => mode
+      case "random" | "degree" =>
+        mode
       case _ =>
         throw new IllegalArgumentException(
           "Invalid initialization mode: " + mode)
@@ -194,8 +195,10 @@ class PowerIterationClustering private[clustering] (
     val w = normalize(graph)
     val w0 =
       initMode match {
-        case "random" => randomInit(w)
-        case "degree" => initDegreeVector(w)
+        case "random" =>
+          randomInit(w)
+        case "degree" =>
+          initDegreeVector(w)
       }
     pic(w0)
   }
@@ -218,8 +221,10 @@ class PowerIterationClustering private[clustering] (
     val w = normalize(similarities)
     val w0 =
       initMode match {
-        case "random" => randomInit(w)
-        case "degree" => initDegreeVector(w)
+        case "random" =>
+          randomInit(w)
+        case "degree" =>
+          initDegreeVector(w)
       }
     pic(w0)
   }

@@ -194,8 +194,10 @@ class FileMessageSet private[kafka] (
     val bytesTransferred =
       (
         destChannel match {
-          case tl: TransportLayer => tl.transferFrom(channel, position, count)
-          case dc                 => channel.transferTo(position, count, dc)
+          case tl: TransportLayer =>
+            tl.transferFrom(channel, position, count)
+          case dc =>
+            channel.transferTo(position, count, dc)
         }
       ).toInt
     trace(

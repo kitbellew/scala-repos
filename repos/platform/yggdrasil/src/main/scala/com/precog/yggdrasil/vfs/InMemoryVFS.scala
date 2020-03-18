@@ -159,7 +159,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
                 }
                 .groupBy(_._1)
                 .map {
-                  case (tpe, values) => (tpe, values.map(_._2).sum)
+                  case (tpe, values) =>
+                    (tpe, values.map(_._2).sum)
                 }
 
               PathStructure(types, columnRefs.map(_.selector))
@@ -256,7 +257,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] {
         data =
           (
             events groupBy {
-              case (offset, msg) => msg.path
+              case (offset, msg) =>
+                msg.path
             }
           ).foldLeft(data) {
             case (acc, (path, messages)) =>

@@ -121,7 +121,8 @@ private[prediction] case class EventOp(
       val unsetKeys: Set[String] = unsetProp
         .map(unset =>
           unset.fields.filter {
-            case (k, v) => (v >= set.fields(k).t)
+            case (k, v) =>
+              (v >= set.fields(k).t)
           }.keySet)
         .getOrElse(Set())
 
@@ -215,18 +216,22 @@ class PBatchView(
       .aggregateByKey[EventOp](EventOp())(
         // within same partition
         seqOp = {
-          case (u, v) => u ++ v
+          case (u, v) =>
+            u ++ v
         },
         // across partition
         combOp = {
-          case (accu, u) => accu ++ u
+          case (accu, u) =>
+            accu ++ u
         })
       .mapValues(_.toDataMap)
       .filter {
-        case (k, v) => v.isDefined
+        case (k, v) =>
+          v.isDefined
       }
       .map {
-        case (k, v) => (k, v.get)
+        case (k, v) =>
+          (k, v.get)
       }
   }
 

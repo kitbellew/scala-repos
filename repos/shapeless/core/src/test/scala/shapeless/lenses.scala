@@ -730,22 +730,28 @@ class OpticTests {
 
     val x2 =
       t2 match {
-        case llv(x2) => Some(x2)
-        case _       => None
+        case llv(x2) =>
+          Some(x2)
+        case _ =>
+          None
       }
     assertTypedEquals[Option[Int]](None, x2)
 
     val y2 =
       t2 match {
-        case lrv(y2) => Some(y2)
-        case _       => None
+        case lrv(y2) =>
+          Some(y2)
+        case _ =>
+          None
       }
     assertTypedEquals[Option[Int]](None, y2)
 
     val z2 =
       t2 match {
-        case rv(z2) => Some(z2)
-        case _      => None
+        case rv(z2) =>
+          Some(z2)
+        case _ =>
+          None
       }
     assertTypedEquals[Option[Int]](None, z2)
 

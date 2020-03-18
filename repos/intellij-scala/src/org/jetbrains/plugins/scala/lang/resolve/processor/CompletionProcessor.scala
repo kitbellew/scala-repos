@@ -31,8 +31,10 @@ object CompletionProcessor {
   def getQualifiedName(result: ScalaResolveResult): QualifiedName = {
     val name =
       result.isRenamed match {
-        case Some(str) => str
-        case None      => result.name
+        case Some(str) =>
+          str
+        case None =>
+          result.name
       }
     val isNamedParameter = result.isNamedParameter
 
@@ -79,9 +81,12 @@ class CompletionProcessor(
       element: PsiNamedElement,
       substitutor: => ScSubstitutor): Option[Signature] = {
     element match {
-      case method: PsiMethod => Some(new PhysicalSignature(method, substitutor))
-      case td: ScTypeAlias   => None
-      case td: PsiClass      => None
+      case method: PsiMethod =>
+        Some(new PhysicalSignature(method, substitutor))
+      case td: ScTypeAlias =>
+        None
+      case td: PsiClass =>
+        None
       case _ =>
         Some(new Signature(element.name, Seq.empty, 0, substitutor, element))
     }
@@ -92,8 +97,9 @@ class CompletionProcessor(
       return false
     val element = _element.asInstanceOf[PsiNamedElement]
     forName match {
-      case Some(name) if element.name != name => return true
-      case _                                  =>
+      case Some(name) if element.name != name =>
+        return true
+      case _ =>
     }
 
     lazy val substitutor: ScSubstitutor = Option(state.get(ScSubstitutor.key))

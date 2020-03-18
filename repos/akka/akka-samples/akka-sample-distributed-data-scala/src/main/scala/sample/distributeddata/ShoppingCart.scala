@@ -81,7 +81,8 @@ class ShoppingCart(userId: String) extends Actor {
           item.productId -> item.copy(quantity =
             existingQuantity + item.quantity)
         )
-      case None ⇒ data + (item.productId -> item)
+      case None ⇒
+        data + (item.productId -> item)
     }
 
   //#remove-item

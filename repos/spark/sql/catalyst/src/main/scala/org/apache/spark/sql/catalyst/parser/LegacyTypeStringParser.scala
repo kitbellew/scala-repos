@@ -44,12 +44,14 @@ object LegacyTypeStringParser extends RegexParsers {
 
   protected lazy val fixedDecimalType: Parser[DataType] =
     ("DecimalType(" ~> "[0-9]+".r) ~ ("," ~> "[0-9]+".r <~ ")") ^^ {
-      case precision ~ scale => DecimalType(precision.toInt, scale.toInt)
+      case precision ~ scale =>
+        DecimalType(precision.toInt, scale.toInt)
     }
 
   protected lazy val arrayType: Parser[DataType] =
     "ArrayType" ~> "(" ~> dataType ~ "," ~ boolVal <~ ")" ^^ {
-      case tpe ~ _ ~ containsNull => ArrayType(tpe, containsNull)
+      case tpe ~ _ ~ containsNull =>
+        ArrayType(tpe, containsNull)
     }
 
   protected lazy val mapType: Parser[DataType] =
@@ -72,7 +74,8 @@ object LegacyTypeStringParser extends RegexParsers {
 
   protected lazy val structType: Parser[DataType] =
     "StructType\\([A-zA-z]*\\(".r ~> repsep(structField, ",") <~ "))" ^^ {
-      case fields => StructType(fields)
+      case fields =>
+        StructType(fields)
     }
 
   protected lazy val dataType: Parser[DataType] =
@@ -86,7 +89,8 @@ object LegacyTypeStringParser extends RegexParsers {
     */
   def parse(asString: String): DataType =
     parseAll(dataType, asString) match {
-      case Success(result, _) => result
+      case Success(result, _) =>
+        result
       case failure: NoSuccess =>
         throw new IllegalArgumentException(
           s"Unsupported dataType: $asString, $failure")

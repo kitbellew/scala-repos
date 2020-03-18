@@ -17,7 +17,8 @@ object Formatter {
       value: String): Map[String, Object] =
     old + (
       keys match {
-        case Nil => (Eponymous -> value)
+        case Nil =>
+          (Eponymous -> value)
         case head +: tail => {
           head -> (
             old.get(head) match {
@@ -35,7 +36,8 @@ object Formatter {
                   throw Collision
                 else
                   makeMap(tail, value) + (Eponymous -> string)
-              case Some(_) => throw InvalidType
+              case Some(_) =>
+                throw InvalidType
             }
           )
         }
@@ -49,11 +51,15 @@ object Formatter {
       seq: Seq[String],
       value: String): Map[String, Object] =
     seq.foldRight[Either[Map[String, Object], String]](Right(value)) {
-      case (key, Right(string)) => Left(Map(key -> string))
-      case (key, Left(map))     => Left(Map(key -> map))
+      case (key, Right(string)) =>
+        Left(Map(key -> string))
+      case (key, Left(map)) =>
+        Left(Map(key -> map))
     } match {
-      case Right(string) => throw Empty
-      case Left(map)     => map
+      case Right(string) =>
+        throw Empty
+      case Left(map) =>
+        map
     }
 
   def asMap(registry: Registry): Map[String, Object] = {

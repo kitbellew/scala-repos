@@ -150,7 +150,8 @@ object GraphStageLogic {
     private val callback = getAsyncCallback(internalReceive)
     private def cell =
       materializer.supervisor match {
-        case ref: LocalActorRef ⇒ ref.underlying
+        case ref: LocalActorRef ⇒
+          ref.underlying
         case ref: RepointableActorRef if ref.isStarted ⇒
           ref.underlying.asInstanceOf[ActorCell]
         case unknown ⇒
@@ -167,7 +168,8 @@ object GraphStageLogic {
             m,
             functionRef.path
           )
-        case pair ⇒ callback.invoke(pair)
+        case pair ⇒
+          callback.invoke(pair)
       }
     }
 
@@ -189,7 +191,8 @@ object GraphStageLogic {
             functionRef.unwatch(ref)
             behaviour(pack)
           }
-        case _ ⇒ behaviour(pack)
+        case _ ⇒
+          behaviour(pack)
       }
     }
 
@@ -377,8 +380,10 @@ abstract class GraphStageLogic private[stream] (
 
   private def getNonEmittingHandler(out: Outlet[_]): OutHandler =
     getHandler(out) match {
-      case e: Emitting[_] ⇒ e.previous
-      case other ⇒ other
+      case e: Emitting[_] ⇒
+        e.previous
+      case other ⇒
+        other
     }
 
   /**
@@ -471,7 +476,8 @@ abstract class GraphStageLogic private[stream] (
             InReady | InFailed
           )) {
         interpreter.connectionSlots(connection) match {
-          case Failed(_, elem) ⇒ elem.asInstanceOf[AnyRef] ne Empty
+          case Failed(_, elem) ⇒
+            elem.asInstanceOf[AnyRef] ne Empty
           case _ ⇒
             false // This can only be Empty actually (if a cancel was concurrent with a failure)
         }
@@ -521,7 +527,8 @@ abstract class GraphStageLogic private[stream] (
     getHandler(out) match {
       case e: Emitting[_] ⇒
         e.addFollowUp(new EmittingCompletion(e.out, e.previous))
-      case _ ⇒ interpreter.complete(conn(out))
+      case _ ⇒
+        interpreter.complete(conn(out))
     }
 
   /**
@@ -543,7 +550,8 @@ abstract class GraphStageLogic private[stream] (
         handlers(i) match {
           case e: Emitting[_] ⇒
             e.addFollowUp(new EmittingCompletion(e.out, e.previous))
-          case _ ⇒ interpreter.complete(portToConn(i))
+          case _ ⇒
+            interpreter.complete(portToConn(i))
         }
       i += 1
     }
@@ -862,14 +870,17 @@ abstract class GraphStageLogic private[stream] (
     */
   final protected def abortEmitting(out: Outlet[_]): Unit =
     getHandler(out) match {
-      case e: Emitting[_] ⇒ setHandler(out, e.previous)
+      case e: Emitting[_] ⇒
+        setHandler(out, e.previous)
       case _ ⇒
     }
 
   private def setOrAddEmitting[T](out: Outlet[T], next: Emitting[T]): Unit =
     getHandler(out) match {
-      case e: Emitting[_] ⇒ e.asInstanceOf[Emitting[T]].addFollowUp(next)
-      case _ ⇒ setHandler(out, next)
+      case e: Emitting[_] ⇒
+        e.asInstanceOf[Emitting[T]].addFollowUp(next)
+      case _ ⇒
+        setHandler(out, next)
     }
 
   private abstract class Emitting[T](
@@ -886,7 +897,8 @@ abstract class GraphStageLogic private[stream] (
       andThen()
       if (followUps != null) {
         getHandler(out) match {
-          case e: Emitting[_] ⇒ e.as[T].addFollowUps(this)
+          case e: Emitting[_] ⇒
+            e.as[T].addFollowUps(this)
           case _ ⇒
             val next = dequeue()
             if (next.isInstanceOf[EmittingCompletion[_]])
@@ -1033,8 +1045,10 @@ abstract class GraphStageLogic private[stream] (
   private var _stageActor: StageActor = _
   final def stageActor: StageActor =
     _stageActor match {
-      case null ⇒ throw StageActorRefNotInitializedException()
-      case ref ⇒ ref
+      case null ⇒
+        throw StageActorRefNotInitializedException()
+      case ref ⇒
+        ref
     }
 
   /**
@@ -1310,7 +1324,8 @@ abstract class TimerGraphStageLogic(_shape: Shape)
     super.afterPostStop()
     if (keyToTimers ne null) {
       keyToTimers.foreach {
-        case (_, Timer(_, task)) ⇒ task.cancel()
+        case (_, Timer(_, task)) ⇒
+          task.cancel()
       }
       keyToTimers.clear()
     }
@@ -1493,7 +1508,8 @@ private[akka] trait CallbackWrapper[T] extends AsyncCallback[T] {
     locked {
       val list =
         (callbackState.getAndSet(Initialized(f)): @unchecked) match {
-          case NotInitialized(l) ⇒ l
+          case NotInitialized(l) ⇒
+            l
         }
       list.reverse.foreach(f)
     }
@@ -1501,7 +1517,8 @@ private[akka] trait CallbackWrapper[T] extends AsyncCallback[T] {
   override def invoke(arg: T): Unit =
     locked {
       callbackState.get() match {
-        case Initialized(cb) ⇒ cb(arg)
+        case Initialized(cb) ⇒
+          cb(arg)
         case list @ NotInitialized(l) ⇒
           callbackState.compareAndSet(list, NotInitialized(arg :: l))
         case Stopped(cb) ⇒

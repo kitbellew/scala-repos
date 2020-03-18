@@ -39,9 +39,11 @@ private class FutureInstance(implicit ec: ExecutionContext)
     def attemptComplete(t: Try[(A, Int)]): Unit = {
       val remaining = counter.decrementAndGet
       t match {
-        case TSuccess(_)         => result tryComplete t
-        case _ if remaining == 0 => result tryComplete t
-        case _                   =>
+        case TSuccess(_) =>
+          result tryComplete t
+        case _ if remaining == 0 =>
+          result tryComplete t
+        case _ =>
       }
     }
 
@@ -57,7 +59,8 @@ private class FutureInstance(implicit ec: ExecutionContext)
         (
           a,
           fs.collect {
-            case (fa, j) if j != i => fa
+            case (fa, j) if j != i =>
+              fa
           })
     }
   }
@@ -73,12 +76,14 @@ private class FutureInstance(implicit ec: ExecutionContext)
   // override for actual parallel execution
   override def ap[A, B](fa: => Future[A])(fab: => Future[A => B]) =
     fab zip fa map {
-      case (fa, a) => fa(a)
+      case (fa, a) =>
+        fa(a)
     }
 
   def attempt[A](f: Future[A]): Future[Throwable \/ A] =
     f.map(\/.right).recover {
-      case e => -\/(e)
+      case e =>
+        -\/(e)
     }
 
   def fail[A](e: Throwable): Future[A] = Future.failed(e)

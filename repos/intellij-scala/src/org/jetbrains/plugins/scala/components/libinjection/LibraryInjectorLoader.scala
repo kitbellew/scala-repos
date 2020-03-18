@@ -271,7 +271,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
     val checkedDescriptor =
       findMatchingPluginDescriptor(manifest) match {
-        case Some(descriptor) => verifyDescriptor(descriptor)
+        case Some(descriptor) =>
+          verifyDescriptor(descriptor)
         case None =>
           LOG.info(s"No extensions found for current IDEA version")
           None
@@ -354,8 +355,10 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       new InjectorServerConnector(m, sources, outDir, platformJars)
     try {
       connector.compile() match {
-        case Left(output)  => output.map(_._1)
-        case Right(errors) => throw EvaluationException(errors.mkString("\n"))
+        case Left(output) =>
+          output.map(_._1)
+        case Right(errors) =>
+          throw EvaluationException(errors.mkString("\n"))
       }
     } catch {
       case e: Exception =>

@@ -62,8 +62,10 @@ class KeepGoingStageSpec extends AkkaSpec {
 
           private def onCommand(cmd: PingCmd): Unit =
             cmd match {
-              case Register(probe) ⇒ listener = Some(probe)
-              case Ping ⇒ listener.foreach(_ ! Pong)
+              case Register(probe) ⇒
+                listener = Some(probe)
+              case Ping ⇒
+                listener.foreach(_ ! Pong)
               case CompleteStage ⇒
                 completeStage()
                 listener.foreach(_ ! EndOfEventHandler)

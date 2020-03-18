@@ -95,7 +95,8 @@ object ActorDSL extends dsl.Inbox with dsl.Creators {
             def receive = {
               case MkChild(props, name) ⇒
                 sender() ! context.actorOf(props, name)
-              case any ⇒ sender() ! any
+              case any ⇒
+                sender() ! any
             }
           }),
         "dsl")

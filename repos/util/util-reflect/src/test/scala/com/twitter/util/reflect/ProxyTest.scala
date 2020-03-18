@@ -279,7 +279,8 @@ class ProxyTest extends WordSpec {
               try {
                 f.apply(() => method.invoke(instance, args: _*))
               } catch {
-                case e: reflect.InvocationTargetException => throw e.getCause
+                case e: reflect.InvocationTargetException =>
+                  throw e.getCause
               }
             }
           })

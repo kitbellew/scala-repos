@@ -25,6 +25,7 @@ class ScalaStructureViewFactory extends PsiStructureViewFactory {
         } else {
           new ScalaStructureViewBuilder(sf)
         }
-      case _ => null
+      case _ =>
+        null
     }
 }

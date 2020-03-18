@@ -80,7 +80,8 @@ object Chart {
                         dataType = metric.dataType.name,
                         stack = none,
                         data = List(point.y))
-                    case Some(s) => s.copy(data = point.y :: s.data)
+                    case Some(s) =>
+                      s.copy(data = point.y :: s.data)
                   }
                 )
               case Insight.Stacked(points) =>
@@ -96,21 +97,24 @@ object Chart {
                             dataType = metric.dataType.name,
                             stack = metric.name.some,
                             data = List(point.y))
-                        case Some(s) => s.copy(data = point.y :: s.data)
+                        case Some(s) =>
+                          s.copy(data = point.y :: s.data)
                       }
                     )
                 }
             }
         }
         .map {
-          case (_, serie) => serie.copy(data = serie.data.reverse)
+          case (_, serie) =>
+            serie.copy(data = serie.data.reverse)
         }
         .toList
 
     def sortedSeries =
       answer.clusters.headOption.fold(series) {
         _.insight match {
-          case Insight.Single(_) => series
+          case Insight.Single(_) =>
+            series
           case Insight.Stacked(points) =>
             series.sortLike(points.map(_._1.name), _.name)
         }

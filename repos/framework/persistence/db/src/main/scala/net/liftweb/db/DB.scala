@@ -163,7 +163,8 @@ trait DB extends Loggable {
         threadStore.set(tinfo)
         tinfo
 
-      case v => v
+      case v =>
+        v
     }
   }
 
@@ -173,7 +174,8 @@ trait DB extends Loggable {
         _postCommitFuncs.set(Nil)
         Nil
 
-      case v => v
+      case v =>
+        v
     }
 
   private def postCommit_=(lst: List[() => Unit]): Unit =
@@ -437,8 +439,9 @@ trait DB extends Loggable {
 
   private def runLogger(logged: Statement, time: Long) =
     logged match {
-      case st: DBLog => logFuncs.foreach(_(st, time))
-      case _         => // NOP
+      case st: DBLog =>
+        logFuncs.foreach(_(st, time))
+      case _ => // NOP
     }
 
   def statement[T](db: SuperConnection)(f: (Statement) => T): T = {
@@ -477,27 +480,35 @@ trait DB extends Loggable {
       case ARRAY | BINARY | BLOB | DATALINK | DISTINCT | JAVA_OBJECT |
           LONGVARBINARY | NULL | OTHER | REF | STRUCT | VARBINARY =>
         rs.getObject(pos) match {
-          case null => null
-          case s    => s.toString
+          case null =>
+            null
+          case s =>
+            s.toString
         }
 
       case DECIMAL | NUMERIC =>
         rs.getBigDecimal(pos) match {
-          case null => null
-          case x    => x.toString
+          case null =>
+            null
+          case x =>
+            x.toString
         }
 
       case BIGINT | INTEGER | /* DECIMAL | NUMERIC | */ SMALLINT | TINYINT =>
         checkNull(rs, pos, rs.getLong(pos).toString)
 
-      case BIT | BOOLEAN => checkNull(rs, pos, rs.getBoolean(pos).toString)
+      case BIT | BOOLEAN =>
+        checkNull(rs, pos, rs.getBoolean(pos).toString)
 
-      case VARCHAR | CHAR | CLOB | LONGVARCHAR => rs.getString(pos)
+      case VARCHAR | CHAR | CLOB | LONGVARCHAR =>
+        rs.getString(pos)
 
       case DATE | TIME | TIMESTAMP =>
         rs.getTimestamp(pos) match {
-          case null => null
-          case x    => x.toString
+          case null =>
+            null
+          case x =>
+            x.toString
         }
 
       case DOUBLE | FLOAT | REAL =>
@@ -522,18 +533,23 @@ trait DB extends Loggable {
           LONGVARBINARY | NULL | OTHER | REF | STRUCT | VARBINARY =>
         rs.getObject(pos)
 
-      case DECIMAL | NUMERIC => rs.getBigDecimal(pos)
+      case DECIMAL | NUMERIC =>
+        rs.getBigDecimal(pos)
 
       case BIGINT | INTEGER | /* DECIMAL | NUMERIC | */ SMALLINT | TINYINT =>
         checkNull(rs, pos, rs.getLong(pos))
 
-      case BIT | BOOLEAN => checkNull(rs, pos, rs.getBoolean(pos))
+      case BIT | BOOLEAN =>
+        checkNull(rs, pos, rs.getBoolean(pos))
 
-      case VARCHAR | CHAR | CLOB | LONGVARCHAR => rs.getString(pos)
+      case VARCHAR | CHAR | CLOB | LONGVARCHAR =>
+        rs.getString(pos)
 
-      case DATE | TIME | TIMESTAMP => rs.getTimestamp(pos)
+      case DATE | TIME | TIMESTAMP =>
+        rs.getTimestamp(pos)
 
-      case DOUBLE | FLOAT | REAL => checkNull(rs, pos, rs.getDouble(pos))
+      case DOUBLE | FLOAT | REAL =>
+        checkNull(rs, pos, rs.getDouble(pos))
     }
   }
 
@@ -575,23 +591,35 @@ trait DB extends Loggable {
       ps: PreparedStatement,
       params: List[Any]): PreparedStatement = {
     params.zipWithIndex.foreach {
-      case (null, idx)      => ps.setNull(idx + 1, Types.VARCHAR)
-      case (i: Int, idx)    => ps.setInt(idx + 1, i)
-      case (l: Long, idx)   => ps.setLong(idx + 1, l)
-      case (d: Double, idx) => ps.setDouble(idx + 1, d)
-      case (f: Float, idx)  => ps.setFloat(idx + 1, f)
+      case (null, idx) =>
+        ps.setNull(idx + 1, Types.VARCHAR)
+      case (i: Int, idx) =>
+        ps.setInt(idx + 1, i)
+      case (l: Long, idx) =>
+        ps.setLong(idx + 1, l)
+      case (d: Double, idx) =>
+        ps.setDouble(idx + 1, d)
+      case (f: Float, idx) =>
+        ps.setFloat(idx + 1, f)
       // Allow the user to specify how they want the Date handled based on the input type
-      case (t: java.sql.Timestamp, idx) => ps.setTimestamp(idx + 1, t)
-      case (d: java.sql.Date, idx)      => ps.setDate(idx + 1, d)
-      case (t: java.sql.Time, idx)      => ps.setTime(idx + 1, t)
+      case (t: java.sql.Timestamp, idx) =>
+        ps.setTimestamp(idx + 1, t)
+      case (d: java.sql.Date, idx) =>
+        ps.setDate(idx + 1, d)
+      case (t: java.sql.Time, idx) =>
+        ps.setTime(idx + 1, t)
       /* java.util.Date has to go last, since the java.sql date/time classes subclass it. By default we
        * assume a Timestamp value */
       case (d: java.util.Date, idx) =>
         ps.setTimestamp(idx + 1, new java.sql.Timestamp(d.getTime))
-      case (b: Boolean, idx)               => ps.setBoolean(idx + 1, b)
-      case (s: String, idx)                => ps.setString(idx + 1, s)
-      case (bn: java.math.BigDecimal, idx) => ps.setBigDecimal(idx + 1, bn)
-      case (obj, idx)                      => ps.setObject(idx + 1, obj)
+      case (b: Boolean, idx) =>
+        ps.setBoolean(idx + 1, b)
+      case (s: String, idx) =>
+        ps.setString(idx + 1, s)
+      case (bn: java.math.BigDecimal, idx) =>
+        ps.setBigDecimal(idx + 1, bn)
+      case (obj, idx) =>
+        ps.setObject(idx + 1, obj)
     }
     ps
   }
@@ -1365,7 +1393,8 @@ trait ProtoDBVendor extends ConnectionManager {
                 tryo(x.close)
                 newConnection(name)
               } catch {
-                case e: Exception => newConnection(name)
+                case e: Exception =>
+                  newConnection(name)
               }
           }
       }

@@ -27,7 +27,8 @@ object FoldTrueAnd extends SimplificationType() {
           replace(expr)
             .withText(invocationText(qual, "forall", cond))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

@@ -305,8 +305,10 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
         command match {
           case Get(key) =>
             Future.value(Values(List(Value(Buf.Utf8("foo"), Buf.Utf8("bar")))))
-          case Set(_, _, _, _) => Future.value(Error(new Exception))
-          case x               => Future.exception(new MatchError(x))
+          case Set(_, _, _, _) =>
+            Future.value(Error(new Exception))
+          case x =>
+            Future.exception(new MatchError(x))
         }
     }
 

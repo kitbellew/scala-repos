@@ -59,8 +59,10 @@ object MethodCallExpression extends IntermediateNode {
       args: IntermediateNode): MethodCallExpression = {
     val identifier =
       methodName match {
-        case "this" => LiteralExpression(methodName)
-        case _      => LiteralExpression(escapeKeyword(methodName))
+        case "this" =>
+          LiteralExpression(methodName)
+        case _ =>
+          LiteralExpression(escapeKeyword(methodName))
       }
     MethodCallExpression(
       methodName,

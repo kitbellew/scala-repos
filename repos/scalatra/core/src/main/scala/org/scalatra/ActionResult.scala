@@ -9,8 +9,10 @@ private object ActionResultHelpers {
 
   def responseStatus(status: Int, reason: String): ResponseStatus = {
     reason match {
-      case "" | null => ResponseStatus(status)
-      case _         => new ResponseStatus(status, reason)
+      case "" | null =>
+        ResponseStatus(status)
+      case _ =>
+        new ResponseStatus(status, reason)
     }
   }
 

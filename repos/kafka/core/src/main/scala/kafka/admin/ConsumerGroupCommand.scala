@@ -76,7 +76,8 @@ object ConsumerGroupCommand {
         consumerGroupService.describe()
       else if (opts.options.has(opts.deleteOpt)) {
         consumerGroupService match {
-          case service: ZkConsumerGroupService => service.delete()
+          case service: ZkConsumerGroupService =>
+            service.delete()
           case _ =>
             throw new IllegalStateException(
               s"delete is not supported for $consumerGroupService")
@@ -116,7 +117,8 @@ object ConsumerGroupCommand {
         getOwner: TopicAndPartition => Option[String]): Unit = {
       topicPartitions
         .sortBy {
-          case topicPartition => topicPartition.partition
+          case topicPartition =>
+            topicPartition.partition
         }
         .foreach { topicPartition =>
           describePartition(
@@ -163,8 +165,9 @@ object ConsumerGroupCommand {
       getLogEndOffset(topic, partition) match {
         case LogEndOffsetResult.LogEndOffset(logEndOffset) =>
           print(Some(logEndOffset))
-        case LogEndOffsetResult.Unknown => print(None)
-        case LogEndOffsetResult.Ignore  =>
+        case LogEndOffsetResult.Unknown =>
+          print(None)
+        case LogEndOffsetResult.Ignore =>
       }
     }
 
@@ -256,7 +259,8 @@ object ConsumerGroupCommand {
         topic: String,
         partition: Int): LogEndOffsetResult = {
       zkUtils.getLeaderForPartition(topic, partition) match {
-        case Some(-1) => LogEndOffsetResult.Unknown
+        case Some(-1) =>
+          LogEndOffsetResult.Unknown
         case Some(brokerId) =>
           getZkConsumer(brokerId)
             .map { consumer =>

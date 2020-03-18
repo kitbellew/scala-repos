@@ -58,7 +58,8 @@ class SplitInfo(
         // other split specific checks (like start for FileSplit)
         this.underlyingSplit == that.underlyingSplit
       }
-      case _ => false
+      case _ =>
+        false
     }
 }
 

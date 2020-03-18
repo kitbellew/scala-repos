@@ -43,8 +43,10 @@ object BatcherLaws extends Properties("Batcher") {
       val ord = implicitly[Ordering[BatchID]]
       val ordT = implicitly[Ordering[Timestamp]]
       ord.compare(batcher.batchOf(d1), batcher.batchOf(d2)) match {
-        case 0 => true // can't say much
-        case x => ordT.compare(d1, d2) == x
+        case 0 =>
+          true // can't say much
+        case x =>
+          ordT.compare(d1, d2) == x
       }
     }
 

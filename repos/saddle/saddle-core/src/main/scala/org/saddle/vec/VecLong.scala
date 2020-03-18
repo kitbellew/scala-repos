@@ -159,6 +159,7 @@ class VecLong(values: Array[Long]) extends Vec[Long] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

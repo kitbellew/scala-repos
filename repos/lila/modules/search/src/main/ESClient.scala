@@ -53,7 +53,8 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
       s"store/bulk/${index.name}/${index.name}",
       JsObject(
         docs map {
-          case (Id(id), doc) => id -> JsString(Json.stringify(doc))
+          case (Id(id), doc) =>
+            id -> JsString(Json.stringify(doc))
         }))
 
   private[search] def HTTP[D: Writes, R](
@@ -61,8 +62,10 @@ final class ESClientHttp(endpoint: String, val index: Index, writeable: Boolean)
       data: D,
       read: String => R): Fu[R] =
     WS.url(s"$endpoint/$url").post(Json toJson data) flatMap {
-      case res if res.status == 200 => fuccess(read(res.body))
-      case res                      => fufail(s"$url ${res.status}")
+      case res if res.status == 200 =>
+        fuccess(read(res.body))
+      case res =>
+        fufail(s"$url ${res.status}")
     }
   private[search] def HTTP(url: String, data: JsObject): Funit =
     HTTP(url, data, _ => ())

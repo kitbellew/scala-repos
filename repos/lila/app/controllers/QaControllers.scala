@@ -38,7 +38,8 @@ trait QaController extends LilaController {
                   None,
               captcha = captcha))
         }
-      case _ => notFound
+      case _ =>
+        notFound
     }
 
   protected def renderN00b(implicit ctx: Context) =
@@ -85,9 +86,12 @@ trait QaController extends LilaController {
     api.question findById questionId zip (
       api.answer findById answerId
     ) flatMap {
-      case (Some(q), Some(a)) if (QaAuth canEdit a) => block(q)(a)
-      case (Some(q), Some(a))                       => fuccess(Unauthorized)
-      case _                                        => notFound
+      case (Some(q), Some(a)) if (QaAuth canEdit a) =>
+        block(q)(a)
+      case (Some(q), Some(a)) =>
+        fuccess(Unauthorized)
+      case _ =>
+        notFound
     }
 
   protected def fetchPopular = api.question popular 20

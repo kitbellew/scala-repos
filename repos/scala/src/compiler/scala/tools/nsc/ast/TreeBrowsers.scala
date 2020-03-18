@@ -319,8 +319,10 @@ abstract class TreeBrowsers {
       var buf = new StringWriter()
 
       t match {
-        case ProgramTree(_) => ()
-        case UnitTree(_)    => ()
+        case ProgramTree(_) =>
+          ()
+        case UnitTree(_) =>
+          ()
         case _ =>
           str.append("tree.id: ").append(t.id)
           str.append("\ntree.pos: ").append(t.pos)
@@ -380,14 +382,22 @@ abstract class TreeBrowsers {
         (
           t.productPrefix,
           t match {
-            case UnitTree(unit)                  => newTermName("" + unit)
-            case Super(_, mix)                   => newTermName("mix: " + mix)
-            case This(qual)                      => qual
-            case Select(_, selector)             => selector
-            case Ident(name)                     => name
-            case SelectFromTypeTree(_, selector) => selector
-            case x: DefTree                      => x.name
-            case _                               => EMPTY
+            case UnitTree(unit) =>
+              newTermName("" + unit)
+            case Super(_, mix) =>
+              newTermName("mix: " + mix)
+            case This(qual) =>
+              qual
+            case Select(_, selector) =>
+              selector
+            case Ident(name) =>
+              name
+            case SelectFromTypeTree(_, selector) =>
+              selector
+            case x: DefTree =>
+              x.name
+            case _ =>
+              EMPTY
           }))
 
     /** Return a list of children for the given tree node */
@@ -588,8 +598,10 @@ abstract class TreeBrowsers {
 
     def symsToDocument(syms: List[Symbol]): Document =
       syms match {
-        case Nil      => DocNil
-        case s :: Nil => Document.group(toDocument(s))
+        case Nil =>
+          DocNil
+        case s :: Nil =>
+          Document.group(toDocument(s))
         case _ =>
           Document.group(
             syms.tail.foldLeft(toDocument(syms.head) :: ", ")(
@@ -598,8 +610,10 @@ abstract class TreeBrowsers {
 
     def toDocument(ts: List[Type]): Document =
       ts match {
-        case Nil      => DocNil
-        case t :: Nil => Document.group(toDocument(t))
+        case Nil =>
+          DocNil
+        case t :: Nil =>
+          Document.group(toDocument(t))
         case _ =>
           Document.group(
             ts.tail.foldLeft(toDocument(ts.head) :: ", ")(
@@ -608,11 +622,16 @@ abstract class TreeBrowsers {
 
     def toDocument(t: Type): Document =
       t match {
-        case ErrorType    => "ErrorType()"
-        case WildcardType => "WildcardType()"
-        case NoType       => "NoType()"
-        case NoPrefix     => "NoPrefix()"
-        case ThisType(s)  => "ThisType(" + s.name + ")"
+        case ErrorType =>
+          "ErrorType()"
+        case WildcardType =>
+          "WildcardType()"
+        case NoType =>
+          "NoType()"
+        case NoPrefix =>
+          "NoPrefix()"
+        case ThisType(s) =>
+          "ThisType(" + s.name + ")"
 
         case SingleType(pre, sym) =>
           Document.group(

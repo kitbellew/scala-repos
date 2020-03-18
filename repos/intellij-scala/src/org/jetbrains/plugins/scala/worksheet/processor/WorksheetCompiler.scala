@@ -117,7 +117,8 @@ class WorksheetCompiler {
                       worksheetVirtual,
                       consumer)
               } catch {
-                case ex: IllegalArgumentException => onError(ex.getMessage)
+                case ex: IllegalArgumentException =>
+                  onError(ex.getMessage)
               }
             }
           },

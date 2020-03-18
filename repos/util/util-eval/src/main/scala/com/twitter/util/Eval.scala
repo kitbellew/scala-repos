@@ -303,8 +303,10 @@ class Eval(target: Option[File]) {
     val digest = MessageDigest.getInstance("SHA-1").digest(code.getBytes())
     val sha = new BigInteger(1, digest).toString(16)
     idOpt match {
-      case Some(id) => sha + "_" + jvmId
-      case _        => sha
+      case Some(id) =>
+        sha + "_" + jvmId
+      case _ =>
+        sha
     }
   }
 
@@ -320,8 +322,10 @@ class Eval(target: Option[File]) {
     val fileName = f.getName
     val baseName =
       fileName.lastIndexOf('.') match {
-        case -1  => fileName
-        case dot => fileName.substring(0, dot)
+        case -1 =>
+          fileName
+        case dot =>
+          fileName.substring(0, dot)
       }
     baseName.regexSub(Eval.classCleaner) { m =>
       "$%02x".format(m.group(0).charAt(0).toInt)
@@ -378,11 +382,14 @@ class Eval(target: Option[File]) {
               .filter(_.getProtocol == "file")
               .map(u => new File(u.toURI).getPath)
               .toList
-          case _ => Nil
+          case _ =>
+            Nil
         }
       cl.getParent match {
-        case null   => (cp :: acc).reverse
-        case parent => getClassPath(parent, cp :: acc)
+        case null =>
+          (cp :: acc).reverse
+        case parent =>
+          getClassPath(parent, cp :: acc)
       }
     }
 
@@ -490,8 +497,10 @@ class Eval(target: Option[File]) {
 
   lazy val compilerOutputDir =
     target match {
-      case Some(dir) => AbstractFile.getDirectory(dir)
-      case None      => new VirtualDirectory("(memory)", None)
+      case Some(dir) =>
+        AbstractFile.getDirectory(dir)
+      case None =>
+        new VirtualDirectory("(memory)", None)
     }
 
   class EvalSettings(targetDir: Option[File]) extends Settings {
@@ -529,16 +538,20 @@ class Eval(target: Option[File]) {
         severity.count += 1
         val severityName =
           severity match {
-            case ERROR   => "error: "
-            case WARNING => "warning: "
-            case _       => ""
+            case ERROR =>
+              "error: "
+            case WARNING =>
+              "warning: "
+            case _ =>
+              ""
           }
         // the line number is not always available
         val lineMessage =
           try {
             "line " + (pos.line - lineOffset)
           } catch {
-            case _: Throwable => ""
+            case _: Throwable =>
+              ""
           }
         messages += (severityName + lineMessage + ": " + message) ::
           (
@@ -614,7 +627,8 @@ class Eval(target: Option[File]) {
             cache(className) = cls
             Some(cls)
           } catch {
-            case e: ClassNotFoundException => None
+            case e: ClassNotFoundException =>
+              None
           }
         }
       }

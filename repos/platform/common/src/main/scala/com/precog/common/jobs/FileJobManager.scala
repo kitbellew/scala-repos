@@ -170,7 +170,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         }
       }
       cache.values.collect {
-        case FileJobState(job, _, _) if job.apiKey == apiKey => job
+        case FileJobState(job, _, _) if job.apiKey == apiKey =>
+          job
       }.toSeq
     }
 
@@ -311,8 +312,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         try {
           val mime =
             input.readUTF match {
-              case ""         => None
-              case mimestring => MimeTypes.parseMimeTypes(mimestring).headOption
+              case "" =>
+                None
+              case mimestring =>
+                MimeTypes.parseMimeTypes(mimestring).headOption
             }
 
           val length = input.readInt

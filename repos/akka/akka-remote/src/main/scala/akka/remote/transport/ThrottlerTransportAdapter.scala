@@ -59,8 +59,10 @@ object ThrottlerTransportAdapter {
     case object Send extends Direction {
       override def includes(other: Direction): Boolean =
         other match {
-          case Send ⇒ true
-          case _ ⇒ false
+          case Send ⇒
+            true
+          case _ ⇒
+            false
         }
 
       /**
@@ -73,8 +75,10 @@ object ThrottlerTransportAdapter {
     case object Receive extends Direction {
       override def includes(other: Direction): Boolean =
         other match {
-          case Receive ⇒ true
-          case _ ⇒ false
+          case Receive ⇒
+            true
+          case _ ⇒
+            false
         }
 
       /**
@@ -240,17 +244,21 @@ class ThrottlerTransportAdapter(
     cmd match {
       case s: SetThrottle ⇒
         manager ? s map {
-          case SetThrottleAck ⇒ true
+          case SetThrottleAck ⇒
+            true
         }
       case f: ForceDisassociate ⇒
         manager ? f map {
-          case ForceDisassociateAck ⇒ true
+          case ForceDisassociateAck ⇒
+            true
         }
       case f: ForceDisassociateExplicitly ⇒
         manager ? f map {
-          case ForceDisassociateAck ⇒ true
+          case ForceDisassociateAck ⇒
+            true
         }
-      case _ ⇒ wrappedTransport.managementCommand(cmd)
+      case _ ⇒
+        wrappedTransport.managementCommand(cmd)
     }
   }
 }
@@ -304,8 +312,10 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
     case AssociateUnderlying(remoteAddress, statusPromise) ⇒
       wrappedTransport.associate(remoteAddress) onComplete {
         // Slight modification of pipe, only success is sent, failure is propagated to a separate future
-        case Success(handle) ⇒ self ! AssociateResult(handle, statusPromise)
-        case Failure(e) ⇒ statusPromise.failure(e)
+        case Success(handle) ⇒
+          self ! AssociateResult(handle, statusPromise)
+        case Failure(e) ⇒
+          statusPromise.failure(e)
       }
     // Finished outbound association and got back the handle
     case AssociateResult(handle, statusPromise) ⇒
@@ -328,21 +338,25 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       Future
         .sequence(
           handleTable map {
-            case (`naked`, handle) ⇒ setMode(handle, mode, direction)
-            case _ ⇒ ok
+            case (`naked`, handle) ⇒
+              setMode(handle, mode, direction)
+            case _ ⇒
+              ok
           })
         .map(_ ⇒ SetThrottleAck) pipeTo sender()
     case ForceDisassociate(address) ⇒
       val naked = nakedAddress(address)
       handleTable foreach {
-        case (`naked`, handle) ⇒ handle.disassociate()
+        case (`naked`, handle) ⇒
+          handle.disassociate()
         case _ ⇒
       }
       sender() ! ForceDisassociateAck
     case ForceDisassociateExplicitly(address, reason) ⇒
       val naked = nakedAddress(address)
       handleTable foreach {
-        case (`naked`, handle) ⇒ handle.disassociateWithFailure(reason)
+        case (`naked`, handle) ⇒
+          handle.disassociateWithFailure(reason)
         case _ ⇒
       }
       sender() ! ForceDisassociateAck
@@ -358,14 +372,17 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
     throttlingModes.get(nakedAddress) match {
       case Some((mode, direction)) if direction.includes(Direction.Receive) ⇒
         mode
-      case _ ⇒ Unthrottled
+      case _ ⇒
+        Unthrottled
     }
   }
 
   private def getOutboundMode(nakedAddress: Address): ThrottleMode = {
     throttlingModes.get(nakedAddress) match {
-      case Some((mode, direction)) if direction.includes(Direction.Send) ⇒ mode
-      case _ ⇒ Unthrottled
+      case Some((mode, direction)) if direction.includes(Direction.Send) ⇒
+        mode
+      case _ ⇒
+        Unthrottled
     }
   }
 
@@ -373,8 +390,10 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       nakedAddress: Address,
       handle: ThrottlerHandle): Future[SetThrottleAck.type] = {
     throttlingModes.get(nakedAddress) match {
-      case Some((mode, direction)) ⇒ setMode(handle, mode, direction)
-      case None ⇒ setMode(handle, Unthrottled, Direction.Both)
+      case Some((mode, direction)) ⇒
+        setMode(handle, mode, direction)
+      case None ⇒
+        setMode(handle, Unthrottled, Direction.Both)
     }
   }
 
@@ -406,7 +425,8 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       target.tell(mode, ref)
       ref.result.future.transform(
         {
-          case Terminated(t) if t.path == target.path ⇒ SetThrottleAck
+          case Terminated(t) if t.path == target.path ⇒
+            SetThrottleAck
           case SetThrottleAck ⇒ {
             internalTarget.sendSystemMessage(Unwatch(target, ref));
             SetThrottleAck
@@ -523,7 +543,8 @@ private[transport] class ThrottledAssociation(
         case Some(origin) ⇒
           manager ! Checkin(origin, exposedHandle)
           goto(WaitMode)
-        case None ⇒ stay()
+        case None ⇒
+          stay()
       }
   }
 
@@ -619,13 +640,16 @@ private[transport] class ThrottledAssociation(
   private def peekOrigin(b: ByteString): Option[Address] = {
     try {
       AkkaPduProtobufCodec.decodePdu(b) match {
-        case Associate(info) ⇒ Some(info.origin)
-        case _ ⇒ None
+        case Associate(info) ⇒
+          Some(info.origin)
+        case _ ⇒
+          None
       }
     } catch {
       // This layer should not care about malformed packets. Also, this also useful for testing, because
       // arbitrary payload could be passed in
-      case NonFatal(e) ⇒ None
+      case NonFatal(e) ⇒
+        None
     }
   }
 
@@ -655,8 +679,10 @@ private[transport] class ThrottledAssociation(
   def scheduleDequeue(delay: FiniteDuration): Unit =
     inboundThrottleMode match {
       case Blackhole ⇒ // Do nothing
-      case _ if delay <= Duration.Zero ⇒ self ! Dequeue
-      case _ ⇒ setTimer(DequeueTimerName, Dequeue, delay, repeat = false)
+      case _ if delay <= Duration.Zero ⇒
+        self ! Dequeue
+      case _ ⇒
+        setTimer(DequeueTimerName, Dequeue, delay, repeat = false)
     }
 
 }
@@ -693,7 +719,8 @@ private[transport] final case class ThrottlerHandle(
     }
 
     outboundThrottleMode.get match {
-      case Blackhole ⇒ true
+      case Blackhole ⇒
+        true
       case bucket @ _ ⇒
         val success = tryConsume(outboundThrottleMode.get())
         if (success)

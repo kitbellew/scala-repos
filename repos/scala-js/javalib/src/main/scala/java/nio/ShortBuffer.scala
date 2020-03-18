@@ -80,8 +80,10 @@ abstract class ShortBuffer private[nio] (
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: ShortBuffer => compareTo(that) == 0
-      case _                 => false
+      case that: ShortBuffer =>
+        compareTo(that) == 0
+      case _ =>
+        false
     }
 
   @noinline

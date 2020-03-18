@@ -16,8 +16,10 @@ class PublicKeyAuthenticator extends PublickeyAuthenticator with SshKeyService {
     Database() withSession { implicit session =>
       getPublicKeys(username).exists { sshKey =>
         SshUtil.str2PublicKey(sshKey.publicKey) match {
-          case Some(publicKey) => key.equals(publicKey)
-          case _               => false
+          case Some(publicKey) =>
+            key.equals(publicKey)
+          case _ =>
+            false
         }
       }
     }

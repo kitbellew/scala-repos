@@ -46,7 +46,8 @@ private[akka] class GroupByProcessorImpl(
       val elem = primaryInputs.dequeueInputElement()
       tryKeyFor(elem) match {
         case Drop ⇒
-        case key ⇒ nextPhase(openSubstream(elem, key))
+        case key ⇒
+          nextPhase(openSubstream(elem, key))
       }
     }
 

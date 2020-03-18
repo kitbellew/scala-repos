@@ -57,7 +57,8 @@ class InplaceRenameHelper(parent: PsiElement) {
       primary match {
         case named: PsiNamedElement =>
           new MyLookupExpression(newName, names, named, parent, false, null)
-        case _ => new TextExpression(newName)
+        case _ =>
+          new TextExpression(newName)
       }
 
     builder.replaceElement(primary, newName, lookupExpr, true)

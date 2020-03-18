@@ -186,8 +186,10 @@ final class ListBuffer[A]
 
   override def ++=(xs: TraversableOnce[A]): this.type =
     xs match {
-      case x: AnyRef if x eq this => this ++= (this take size)
-      case _                      => super.++=(xs)
+      case x: AnyRef if x eq this =>
+        this ++= (this take size)
+      case _ =>
+        super.++=(xs)
 
     }
 
@@ -463,8 +465,10 @@ final class ListBuffer[A]
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: ListBuffer[_] => this.start equals that.start
-      case _                   => super.equals(that)
+      case that: ListBuffer[_] =>
+        this.start equals that.start
+      case _ =>
+        super.equals(that)
     }
 
   /** Returns a clone of this buffer.

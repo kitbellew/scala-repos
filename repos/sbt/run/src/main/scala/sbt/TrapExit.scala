@@ -41,8 +41,10 @@ object TrapExit {
     */
   def apply(execute: => Unit, log: Logger): Int =
     System.getSecurityManager match {
-      case m: TrapExit => m.runManaged(Logger.f0(execute), log)
-      case _           => runUnmanaged(execute, log)
+      case m: TrapExit =>
+        m.runManaged(Logger.f0(execute), log)
+      case _ =>
+        runUnmanaged(execute, log)
     }
 
   /**
@@ -51,7 +53,8 @@ object TrapExit {
     */
   def installManager(): SecurityManager =
     System.getSecurityManager match {
-      case m: TrapExit => m
+      case m: TrapExit =>
+        m
       case m =>
         System.setSecurityManager(new TrapExit(m));
         m
@@ -308,8 +311,10 @@ private final class TrapExit(delegateManager: SecurityManager)
       val group = t.getThreadGroup
       val previousHandler =
         t.getUncaughtExceptionHandler match {
-          case null | `group` | (_: LoggingExceptionHandler) => None
-          case x                                             => Some(x) // delegate to a custom handler only
+          case null | `group` | (_: LoggingExceptionHandler) =>
+            None
+          case x =>
+            Some(x) // delegate to a custom handler only
         }
       t.setUncaughtExceptionHandler(
         new LoggingExceptionHandler(log, previousHandler))
@@ -377,7 +382,8 @@ private final class TrapExit(delegateManager: SecurityManager)
             // not tail recursive because of synchronized
             threadsInGroups(threadGroups(group) ::: tail, group :: accum)
           }
-        case Nil => accum.flatMap(threads)
+        case Nil =>
+          accum.flatMap(threads)
       }
 
     // gets the immediate child ThreadGroups of `group`

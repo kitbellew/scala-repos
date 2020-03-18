@@ -21,14 +21,17 @@ object PersistentActorStashingSpec {
     var askedForDelete: Option[ActorRef] = None
 
     val updateState: Receive = {
-      case Evt(data) ⇒ events = data :: events
+      case Evt(data) ⇒
+        events = data :: events
       case d @ Some(ref: ActorRef) ⇒
         askedForDelete = d.asInstanceOf[Some[ActorRef]]
     }
 
     val commonBehavior: Receive = {
-      case "boom" ⇒ throw new TestException("boom")
-      case GetState ⇒ sender() ! events.reverse
+      case "boom" ⇒
+        throw new TestException("boom")
+      case GetState ⇒
+        sender() ! events.reverse
     }
 
     def unstashBehavior: Receive
@@ -44,8 +47,10 @@ object PersistentActorStashingSpec {
       case Cmd("a") if !stashed ⇒
         stash();
         stashed = true
-      case Cmd("a") ⇒ sender() ! "a"
-      case Cmd("b") ⇒ persist(Evt("b"))(evt ⇒ sender() ! evt.data)
+      case Cmd("a") ⇒
+        sender() ! "a"
+      case Cmd("b") ⇒
+        persist(Evt("b"))(evt ⇒ sender() ! evt.data)
     }
 
     def unstashBehavior: Receive = {
@@ -74,12 +79,15 @@ object PersistentActorStashingSpec {
           updateState(evt)
           context.become(processC)
         }
-      case Cmd("b-1") ⇒ persist(Evt("b-1"))(updateState)
-      case Cmd("b-2") ⇒ persist(Evt("b-2"))(updateState)
+      case Cmd("b-1") ⇒
+        persist(Evt("b-1"))(updateState)
+      case Cmd("b-2") ⇒
+        persist(Evt("b-2"))(updateState)
     }
 
     val processC: Receive = unstashBehavior orElse {
-      case other ⇒ stash()
+      case other ⇒
+        stash()
     }
 
     def unstashBehavior: Receive = {
@@ -118,7 +126,8 @@ object PersistentActorStashingSpec {
     }
 
     val otherCommandHandler: Receive = unstashBehavior orElse {
-      case other ⇒ stash()
+      case other ⇒
+        stash()
     }
 
     def unstashBehavior: Receive = {
@@ -148,11 +157,13 @@ object PersistentActorStashingSpec {
     var stashed = false
 
     val receiveCommand: Receive = commonBehavior orElse unstashBehavior orElse {
-      case Cmd("a") ⇒ persistAsync(Evt("a"))(updateState)
+      case Cmd("a") ⇒
+        persistAsync(Evt("a"))(updateState)
       case Cmd("b") if !stashed ⇒
         stash();
         stashed = true
-      case Cmd("b") ⇒ persistAsync(Evt("b"))(updateState)
+      case Cmd("b") ⇒
+        persistAsync(Evt("b"))(updateState)
     }
 
     override def unstashBehavior: Receive = {

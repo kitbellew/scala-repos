@@ -99,8 +99,10 @@ trait Reifiers {
         val freevars = holeMap.keysIterator.map(Ident(_)).toList
         val isVarPattern =
           tree match {
-            case Bind(name, Ident(nme.WILDCARD)) => true
-            case _                               => false
+            case Bind(name, Ident(nme.WILDCARD)) =>
+              true
+            case _ =>
+              false
           }
         val cases =
           if (isVarPattern) {
@@ -192,11 +194,14 @@ trait Reifiers {
 
     def reifyTreePlaceholder(tree: Tree): Tree =
       tree match {
-        case Placeholder(hole: ApplyHole) if hole.tpe <:< treeType => hole.tree
-        case Placeholder(Hole(tree, NoDot)) if isReifyingPatterns  => tree
+        case Placeholder(hole: ApplyHole) if hole.tpe <:< treeType =>
+          hole.tree
+        case Placeholder(Hole(tree, NoDot)) if isReifyingPatterns =>
+          tree
         case Placeholder(hole @ Hole(_, rank @ Dot())) =>
           c.abort(hole.pos, s"Can't $action with $rank here")
-        case TuplePlaceholder(args) => reifyTuple(args)
+        case TuplePlaceholder(args) =>
+          reifyTuple(args)
         // Due to greediness of syntactic applied we need to pre-emptively peek inside.
         // `rest` will always be non-empty due to the rule on top of this one.
         case SyntacticApplied(
@@ -206,18 +211,26 @@ trait Reifiers {
             nme.SyntacticApplied,
             reifyTreePlaceholder(Apply(id, first)),
             reify(rest))
-        case TupleTypePlaceholder(args) => reifyTupleType(args)
+        case TupleTypePlaceholder(args) =>
+          reifyTupleType(args)
         case FunctionTypePlaceholder(argtpes, restpe) =>
           reifyFunctionType(argtpes, restpe)
-        case CasePlaceholder(hole)        => hole.tree
-        case RefineStatPlaceholder(hole)  => reifyRefineStat(hole)
-        case EarlyDefPlaceholder(hole)    => reifyEarlyDef(hole)
-        case PackageStatPlaceholder(hole) => reifyPackageStat(hole)
-        case ParamPlaceholder(hole)       => hole.tree
+        case CasePlaceholder(hole) =>
+          hole.tree
+        case RefineStatPlaceholder(hole) =>
+          reifyRefineStat(hole)
+        case EarlyDefPlaceholder(hole) =>
+          reifyEarlyDef(hole)
+        case PackageStatPlaceholder(hole) =>
+          reifyPackageStat(hole)
+        case ParamPlaceholder(hole) =>
+          hole.tree
         // for enumerators are checked not during splicing but during
         // desugaring of the for loop in SyntacticFor & SyntacticForYield
-        case ForEnumPlaceholder(hole) => hole.tree
-        case _                        => EmptyTree
+        case ForEnumPlaceholder(hole) =>
+          hole.tree
+        case _ =>
+          EmptyTree
       }
 
     override def reifyTreeSyntactically(tree: Tree) =
@@ -393,7 +406,8 @@ trait Reifiers {
           if (!(hole.tpe <:< nameType))
             c.abort(hole.pos, s"$nameType expected but ${hole.tpe} found")
           hole.tree
-        case Placeholder(hole: UnapplyHole) => hole.treeNoUnlift
+        case Placeholder(hole: UnapplyHole) =>
+          hole.treeNoUnlift
         case FreshName(prefix) if prefix != nme.QUASIQUOTE_NAME_PREFIX =>
           def fresh() = c.freshName(TermName(nme.QUASIQUOTE_NAME_PREFIX))
           def introduceName() = {
@@ -424,24 +438,33 @@ trait Reifiers {
 
     def reifyTuple(args: List[Tree]) =
       args match {
-        case Nil                                      => reify(Literal(Constant(())))
-        case List(hole @ Placeholder(Hole(_, NoDot))) => reify(hole)
-        case List(Placeholder(_))                     => reifyBuildCall(nme.SyntacticTuple, args)
+        case Nil =>
+          reify(Literal(Constant(())))
+        case List(hole @ Placeholder(Hole(_, NoDot))) =>
+          reify(hole)
+        case List(Placeholder(_)) =>
+          reifyBuildCall(nme.SyntacticTuple, args)
         // in a case we only have one element tuple without
         // any rank annotations this means that this is
         // just an expression wrapped in parentheses
-        case List(other) => reify(other)
-        case _           => reifyBuildCall(nme.SyntacticTuple, args)
+        case List(other) =>
+          reify(other)
+        case _ =>
+          reifyBuildCall(nme.SyntacticTuple, args)
       }
 
     def reifyTupleType(args: List[Tree]) =
       args match {
-        case Nil                                      => reify(Select(Ident(nme.scala_), tpnme.Unit))
-        case List(hole @ Placeholder(Hole(_, NoDot))) => reify(hole)
+        case Nil =>
+          reify(Select(Ident(nme.scala_), tpnme.Unit))
+        case List(hole @ Placeholder(Hole(_, NoDot))) =>
+          reify(hole)
         case List(Placeholder(_)) =>
           reifyBuildCall(nme.SyntacticTupleType, args)
-        case List(other) => reify(other)
-        case _           => reifyBuildCall(nme.SyntacticTupleType, args)
+        case List(other) =>
+          reify(other)
+        case _ =>
+          reifyBuildCall(nme.SyntacticTupleType, args)
       }
 
     def reifyFunctionType(argtpes: List[Tree], restpe: Tree) =
@@ -449,8 +472,10 @@ trait Reifiers {
 
     def reifyConstructionCheck(name: TermName, hole: Hole) =
       hole match {
-        case _: UnapplyHole => hole.tree
-        case _: ApplyHole   => mirrorBuildCall(name, hole.tree)
+        case _: UnapplyHole =>
+          hole.tree
+        case _: ApplyHole =>
+          mirrorBuildCall(name, hole.tree)
       }
 
     def reifyRefineStat(hole: Hole) =
@@ -483,10 +508,12 @@ trait Reifiers {
       */
     def group[T](lst: List[T])(similar: (T, T) => Boolean) =
       lst.foldLeft[List[List[T]]](List()) {
-        case (Nil, el) => List(List(el))
+        case (Nil, el) =>
+          List(List(el))
         case (ll :+ (last @ (lastinit :+ lastel)), el) if similar(lastel, el) =>
           ll :+ (last :+ el)
-        case (ll, el) => ll :+ List(el)
+        case (ll, el) =>
+          ll :+ List(el)
       }
 
     /** Reifies list filling all the valid holeMap.
@@ -521,13 +548,20 @@ trait Reifiers {
         fallback: Any => Tree): Tree
 
     val fillListHole: PartialFunction[Any, Tree] = {
-      case Placeholder(Hole(tree, DotDot))             => tree
-      case CasePlaceholder(Hole(tree, DotDot))         => tree
-      case RefineStatPlaceholder(h @ Hole(_, DotDot))  => reifyRefineStat(h)
-      case EarlyDefPlaceholder(h @ Hole(_, DotDot))    => reifyEarlyDef(h)
-      case PackageStatPlaceholder(h @ Hole(_, DotDot)) => reifyPackageStat(h)
-      case ForEnumPlaceholder(Hole(tree, DotDot))      => tree
-      case ParamPlaceholder(Hole(tree, DotDot))        => tree
+      case Placeholder(Hole(tree, DotDot)) =>
+        tree
+      case CasePlaceholder(Hole(tree, DotDot)) =>
+        tree
+      case RefineStatPlaceholder(h @ Hole(_, DotDot)) =>
+        reifyRefineStat(h)
+      case EarlyDefPlaceholder(h @ Hole(_, DotDot)) =>
+        reifyEarlyDef(h)
+      case PackageStatPlaceholder(h @ Hole(_, DotDot)) =>
+        reifyPackageStat(h)
+      case ForEnumPlaceholder(Hole(tree, DotDot)) =>
+        tree
+      case ParamPlaceholder(Hole(tree, DotDot)) =>
+        tree
       case SyntacticPatDef(mods, pat, tpt, rhs) =>
         reifyBuildCall(nme.SyntacticPatDef, mods, pat, tpt, rhs)
       case SyntacticValDef(mods, p @ Placeholder(h: ApplyHole), tpt, rhs)
@@ -541,8 +575,10 @@ trait Reifiers {
     }
 
     val fillListOfListsHole: PartialFunction[Any, Tree] = {
-      case List(ParamPlaceholder(Hole(tree, DotDotDot))) => tree
-      case List(Placeholder(Hole(tree, DotDotDot)))      => tree
+      case List(ParamPlaceholder(Hole(tree, DotDotDot))) =>
+        tree
+      case List(Placeholder(Hole(tree, DotDotDot))) =>
+        tree
     }
 
     /** Reifies arbitrary list filling ..$x and ...$y holeMap when they are put
@@ -554,13 +590,15 @@ trait Reifiers {
 
     def reifyAnnotList(annots: List[Tree]): Tree =
       reifyHighRankList(annots) {
-        case AnnotPlaceholder(h @ Hole(_, DotDot)) => reifyAnnotation(h)
+        case AnnotPlaceholder(h @ Hole(_, DotDot)) =>
+          reifyAnnotation(h)
       } {
         case AnnotPlaceholder(h: ApplyHole) if h.tpe <:< treeType =>
           reifyAnnotation(h)
         case AnnotPlaceholder(h: UnapplyHole) if h.rank == NoDot =>
           reifyAnnotation(h)
-        case other => reify(other)
+        case other =>
+          reify(other)
       }
 
     // These are explicit flags except those that are used
@@ -608,8 +646,10 @@ trait Reifiers {
       else {
         def reifyGroup(group: List[Any]): Tree =
           group match {
-            case List(elem) if fill.isDefinedAt(elem) => fill(elem)
-            case elems                                => mkList(elems.map(fallback))
+            case List(elem) if fill.isDefinedAt(elem) =>
+              fill(elem)
+            case elems =>
+              mkList(elems.map(fallback))
           }
         val head :: tail =
           group(xs) { (a, b) =>
@@ -625,12 +665,15 @@ trait Reifiers {
         super.reifyModifiers(m)
       else {
         val (modsPlaceholders, annots) = m.annotations.partition {
-          case ModsPlaceholder(_) => true
-          case _                  => false
+          case ModsPlaceholder(_) =>
+            true
+          case _ =>
+            false
         }
         val (mods, flags) = modsPlaceholders
           .map {
-            case ModsPlaceholder(hole: ApplyHole) => hole
+            case ModsPlaceholder(hole: ApplyHole) =>
+              hole
           }
           .partition { hole =>
             if (hole.tpe <:< modsType)
@@ -709,8 +752,10 @@ trait Reifiers {
           prepended(init, fill(hole))
         case List(hole) :: last :: Nil if fill.isDefinedAt(hole) =>
           appended(last, fill(hole))
-        case List(hole) :: Nil if fill.isDefinedAt(hole) => fill(hole)
-        case _                                           => prepended(xs, collectionNil)
+        case List(hole) :: Nil if fill.isDefinedAt(hole) =>
+          fill(hole)
+        case _ =>
+          prepended(xs, collectionNil)
       }
     }
 
@@ -719,7 +764,8 @@ trait Reifiers {
         super.reifyModifiers(m)
       else {
         val mods = m.annotations.collect {
-          case ModsPlaceholder(hole: UnapplyHole) => hole
+          case ModsPlaceholder(hole: UnapplyHole) =>
+            hole
         }
         mods match {
           case hole :: Nil =>

@@ -36,7 +36,8 @@ private[tournament] final class CreatedOrganizer(
           tour.schedule match {
             case None =>
               PlayerRepo count tour.id foreach {
-                case 0 => api wipe tour
+                case 0 =>
+                  api wipe tour
                 case nb if tour.hasWaitedEnough =>
                   if (nb >= Tournament.minPlayers)
                     api start tour
@@ -44,8 +45,10 @@ private[tournament] final class CreatedOrganizer(
                     api wipe tour
                 case _ =>
               }
-            case Some(schedule) if tour.hasWaitedEnough => api start tour
-            case _                                      => ejectLeavers(tour)
+            case Some(schedule) if tour.hasWaitedEnough =>
+              api start tour
+            case _ =>
+              ejectLeavers(tour)
           }
         }
         val nbTours = tours.size

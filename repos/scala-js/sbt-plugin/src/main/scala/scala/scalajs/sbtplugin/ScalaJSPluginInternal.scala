@@ -245,8 +245,10 @@ object ScalaJSPluginInternal {
 
         val stagePart =
           stage match {
-            case Stage.FastOpt => "fastopt"
-            case Stage.FullOpt => "fullopt"
+            case Stage.FastOpt =>
+              "fastopt"
+            case Stage.FullOpt =>
+              "fullopt"
           }
 
         Tags.Tag(s"uses-scalajs-linker-$projectPart-$configPart-$stagePart")
@@ -271,8 +273,10 @@ object ScalaJSPluginInternal {
 
               val stageName =
                 stage match {
-                  case Stage.FastOpt => "Fast"
-                  case Stage.FullOpt => "Full"
+                  case Stage.FastOpt =>
+                    "Fast"
+                  case Stage.FullOpt =>
+                    "Full"
                 }
 
               log.info(s"$stageName optimizing $output")
@@ -512,7 +516,8 @@ object ScalaJSPluginInternal {
         val requiresDOM = jsDependencies.value.exists {
           case RuntimeDOMDep(configurations) =>
             configurations.forall(_ == config)
-          case _ => false
+          case _ =>
+            false
         }
 
         /* We make the assumption here, that scalaJSSemantics has not
@@ -643,7 +648,8 @@ object ScalaJSPluginInternal {
       scalaJSJavaSystemProperties ++= {
         val javaSysPropsPattern = "-D([^=]*)=(.*)".r
         javaOptions.value.map {
-          case javaSysPropsPattern(propName, propValue) => (propName, propValue)
+          case javaSysPropsPattern(propName, propValue) =>
+            (propName, propValue)
           case opt =>
             sys.error(
               "Scala.js javaOptions can only be \"-D<key>=<value>\"," +
@@ -803,7 +809,8 @@ object ScalaJSPluginInternal {
 
       val jsEnv =
         loadedJSEnv.value match {
-          case jsEnv: ComJSEnv => jsEnv
+          case jsEnv: ComJSEnv =>
+            jsEnv
 
           case jsEnv =>
             sys.error(s"You need a ComJSEnv to test (found ${jsEnv.name})")
@@ -839,7 +846,8 @@ object ScalaJSPluginInternal {
   val scalaJSDependenciesSettings = Seq(
     // add all the webjars your jsDependencies depend upon
     libraryDependencies ++= jsDependencies.value.collect {
-      case JarJSModuleID(module, _) => module
+      case JarJSModuleID(module, _) =>
+        module
     })
 
   val scalaJSDefaultBuildConfigs =

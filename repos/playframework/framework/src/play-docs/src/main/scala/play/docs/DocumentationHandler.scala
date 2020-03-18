@@ -88,7 +88,8 @@ class DocumentationHandler(
 
     request.path match {
 
-      case documentation() => Some(Redirect("/@documentation/Home"))
+      case documentation() =>
+        Some(Redirect("/@documentation/Home"))
       case apiDoc(page) =>
         Some(
           sendFileInline(apiRepo, "api/" + page)
@@ -111,7 +112,8 @@ class DocumentationHandler(
                 views.html.play20
                   .manual(page, Some(mainPage), Some(sidebar), locator))
           })
-      case _ => None
+      case _ =>
+        None
     }
   }
 

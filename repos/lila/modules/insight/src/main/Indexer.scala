@@ -28,14 +28,18 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
 
   def update(game: Game, userId: String, previous: Entry): Funit =
     PovToEntry(game, userId, previous.provisional) flatMap {
-      case Right(e) => storage update e.copy(number = previous.number)
-      case _        => funit
+      case Right(e) =>
+        storage update e.copy(number = previous.number)
+      case _ =>
+        funit
     }
 
   private def compute(user: User): Funit =
     storage.fetchLast(user.id) flatMap {
-      case None    => fromScratch(user)
-      case Some(e) => computeFrom(user, e.date plusSeconds 1, e.number + 1)
+      case None =>
+        fromScratch(user)
+      case Some(e) =>
+        computeFrom(user, e.date plusSeconds 1, e.number + 1)
     }
 
   private def fromScratch(user: User): Funit =
@@ -102,7 +106,8 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
         Iteratee.foldM[Seq[Seq[Entry]], Int](fromNumber) {
           case (number, xs) =>
             val entries = xs.flatten.sortBy(_.date).zipWithIndex.map {
-              case (e, i) => e.copy(number = number + i)
+              case (e, i) =>
+                e.copy(number = number + i)
             }
             val nextNumber = number + entries.size
             storage bulkInsert entries inject nextNumber

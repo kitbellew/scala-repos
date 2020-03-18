@@ -29,8 +29,10 @@ trait ScConstructor extends ScalaPsiElement {
 
   def typeArgList: Option[ScTypeArgs] =
     typeElement match {
-      case x: ScParameterizedTypeElement => Some(x.typeArgList)
-      case _                             => None
+      case x: ScParameterizedTypeElement =>
+        Some(x.typeArgList)
+      case _ =>
+        None
     }
 
   def args = findChild(classOf[ScArgumentExprList])
@@ -62,9 +64,12 @@ object ScConstructor {
   object byReference {
     def unapply(ref: ScReferenceElement): Option[ScConstructor] = {
       PsiTreeUtil.getParentOfType(ref, classOf[ScConstructor]) match {
-        case null                           => None
-        case c if c.reference.contains(ref) => Some(c)
-        case _                              => None
+        case null =>
+          None
+        case c if c.reference.contains(ref) =>
+          Some(c)
+        case _ =>
+          None
       }
     }
   }

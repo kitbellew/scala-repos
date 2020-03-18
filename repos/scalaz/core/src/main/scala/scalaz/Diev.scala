@@ -123,7 +123,8 @@ trait DievImplementation {
                       adjustedPosition + 1))
               }
             }
-            case _ => Between(None, None)
+            case _ =>
+              Between(None, None)
           }
         } else {
           val mid = min + ((max - min) / 2)
@@ -269,15 +270,18 @@ trait DievImplementation {
 
     def contains(value: A): Boolean =
       binarySearch(value) match {
-        case Coincidence(_) => true
-        case _              => false
+        case Coincidence(_) =>
+          true
+        case _ =>
+          false
       }
 
     def contains(interval: (A, A)): Boolean =
       binarySearch(interval._1) match {
         case Coincidence(position) if (intervals(position)._2 >= interval._2) =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     def map[B](f: A => B)(implicit EB: Enum[B]): Diev[B] =

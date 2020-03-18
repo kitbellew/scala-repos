@@ -106,9 +106,12 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
 
   implicit def direction2proto(dir: Direction): TCP.Direction =
     dir match {
-      case Direction.Send ⇒ TCP.Direction.Send
-      case Direction.Receive ⇒ TCP.Direction.Receive
-      case Direction.Both ⇒ TCP.Direction.Both
+      case Direction.Send ⇒
+        TCP.Direction.Send
+      case Direction.Receive ⇒
+        TCP.Direction.Receive
+      case Direction.Both ⇒
+        TCP.Direction.Both
     }
 
   def encode(ctx: ChannelHandlerContext, ch: Channel, msg: AnyRef): AnyRef =
@@ -170,7 +173,8 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
             w.setDone("")
         }
         w.build
-      case _ ⇒ throw new IllegalArgumentException("wrong message " + msg)
+      case _ ⇒
+        throw new IllegalArgumentException("wrong message " + msg)
     }
 }
 
@@ -181,9 +185,12 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
 
   implicit def direction2scala(dir: TCP.Direction): Direction =
     dir match {
-      case TCP.Direction.Send ⇒ Direction.Send
-      case TCP.Direction.Receive ⇒ Direction.Receive
-      case TCP.Direction.Both ⇒ Direction.Both
+      case TCP.Direction.Send ⇒
+        Direction.Send
+      case TCP.Direction.Receive ⇒
+        Direction.Receive
+      case TCP.Direction.Both ⇒
+        Direction.Both
     }
 
   def decode(ctx: ChannelHandlerContext, ch: Channel, msg: AnyRef): AnyRef =
@@ -195,9 +202,12 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
         } else if (w.hasBarrier) {
           val barrier = w.getBarrier
           barrier.getOp match {
-            case BarrierOp.Succeeded ⇒ BarrierResult(barrier.getName, true)
-            case BarrierOp.Failed ⇒ BarrierResult(barrier.getName, false)
-            case BarrierOp.Fail ⇒ FailBarrier(barrier.getName)
+            case BarrierOp.Succeeded ⇒
+              BarrierResult(barrier.getName, true)
+            case BarrierOp.Failed ⇒
+              BarrierResult(barrier.getName, false)
+            case BarrierOp.Fail ⇒
+              FailBarrier(barrier.getName)
             case BarrierOp.Enter ⇒
               EnterBarrier(
                 barrier.getName,
@@ -212,11 +222,16 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
           f.getFailure match {
             case FT.Throttle ⇒
               ThrottleMsg(f.getAddress, f.getDirection, f.getRateMBit)
-            case FT.Abort ⇒ DisconnectMsg(f.getAddress, true)
-            case FT.Disconnect ⇒ DisconnectMsg(f.getAddress, false)
-            case FT.Exit ⇒ TerminateMsg(Right(f.getExitValue))
-            case FT.Shutdown ⇒ TerminateMsg(Left(false))
-            case FT.ShutdownAbrupt ⇒ TerminateMsg(Left(true))
+            case FT.Abort ⇒
+              DisconnectMsg(f.getAddress, true)
+            case FT.Disconnect ⇒
+              DisconnectMsg(f.getAddress, false)
+            case FT.Exit ⇒
+              TerminateMsg(Right(f.getExitValue))
+            case FT.Shutdown ⇒
+              TerminateMsg(Left(false))
+            case FT.ShutdownAbrupt ⇒
+              TerminateMsg(Left(true))
           }
         } else if (w.hasAddr) {
           val a = w.getAddr
@@ -229,6 +244,7 @@ private[akka] class MsgDecoder extends OneToOneDecoder {
         } else {
           throw new IllegalArgumentException("unknown message " + msg)
         }
-      case _ ⇒ throw new IllegalArgumentException("wrong message " + msg)
+      case _ ⇒
+        throw new IllegalArgumentException("wrong message " + msg)
     }
 }

@@ -29,11 +29,13 @@ object STagP {
     builder.getTokenType match {
       case ScalaXmlTokenTypes.XML_NAME =>
         builder.advanceLexer()
-      case _ => builder error ErrMsg("xml.name.expected")
+      case _ =>
+        builder error ErrMsg("xml.name.expected")
     }
     builder.getTokenType match {
-      case XmlTokenType.XML_WHITE_SPACE => builder.advanceLexer()
-      case _                            =>
+      case XmlTokenType.XML_WHITE_SPACE =>
+        builder.advanceLexer()
+      case _ =>
     }
     builder.getTokenType match {
       case ScalaXmlTokenTypes.XML_TAG_END =>

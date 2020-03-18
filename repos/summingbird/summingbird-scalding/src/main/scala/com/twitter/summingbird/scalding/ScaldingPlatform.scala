@@ -83,16 +83,21 @@ object Scalding {
           case Intersection(lb, ub) =>
             val low =
               lb match {
-                case InclusiveLower(l) => l
-                case ExclusiveLower(l) => l.next
+                case InclusiveLower(l) =>
+                  l
+                case ExclusiveLower(l) =>
+                  l.next
               }
             val high =
               ub match {
-                case InclusiveUpper(u) => u
-                case ExclusiveUpper(u) => u.prev
+                case InclusiveUpper(u) =>
+                  u
+                case ExclusiveUpper(u) =>
+                  u.prev
               }
             Success(DateRange(low.toRichDate, high.toRichDate))
-          case _ => Failure(new RuntimeException("Unbounded interval!"))
+          case _ =>
+            Failure(new RuntimeException("Unbounded interval!"))
         }
     }
 
@@ -156,7 +161,8 @@ object Scalding {
           case (_, source) if STry(source.validateTaps(mode)).isSuccess =>
             // If we can validate, there is no need in doing any bisection
             Some(desired)
-          case _ => bisectingMinify(mode, desired)(factory)
+          case _ =>
+            bisectingMinify(mode, desired)(factory)
         }
       available
         .flatMap {
@@ -166,7 +172,8 @@ object Scalding {
         .getOrElse(
           Left(List("available: " + available + ", desired: " + desired)))
     } catch {
-      case NonFatal(e) => toTry(e)
+      case NonFatal(e) =>
+        toTry(e)
     }
 
   private def bisectingMinify(mode: Mode, desired: DateRange)(
@@ -312,7 +319,8 @@ object Scalding {
       in: FlowToPipe[T]): FlowToPipe[T] =
     in.map { pipe =>
       pipe.filter {
-        case (time, _) => range(time)
+        case (time, _) =>
+          range(time)
       }
     }
 
@@ -326,7 +334,8 @@ object Scalding {
 
   def merge[T](left: FlowToPipe[T], right: FlowToPipe[T]): FlowToPipe[T] =
     joinFP(left, right).map {
-      case (l, r) => (l ++ r)
+      case (l, r) =>
+        (l ++ r)
     }
 
   /**
@@ -335,7 +344,8 @@ object Scalding {
     */
   def also[L, R](ensure: FlowToPipe[L], result: FlowToPipe[R]): FlowToPipe[R] =
     joinFP(ensure, result).map {
-      case (_, r) => r
+      case (_, r) =>
+        r
     }
 
   /**
@@ -426,7 +436,8 @@ object Scalding {
         p
 
     built.get(producer) match {
-      case Some(pf) => (pf.asInstanceOf[PipeFactory[T]], built)
+      case Some(pf) =>
+        (pf.asInstanceOf[PipeFactory[T]], built)
       case None =>
         val (pf, m) =
           producer match {
@@ -631,7 +642,8 @@ object Scalding {
               val downStream = dependants.transitiveDependantsTillOutput(kfm)
               val maybeMerged =
                 downStream.collect {
-                  case t: TailProducer[_, _] => t
+                  case t: TailProducer[_, _] =>
+                    t
                 } match {
                   case List(sAny: Summer[_, _, _]) =>
                     val s = sAny.asInstanceOf[Summer[Scalding, Any, Any]]
@@ -648,7 +660,8 @@ object Scalding {
                       }
                     } else
                       fmp
-                  case _ => fmp
+                  case _ =>
+                    fmp
                 }
 
               // Map in two monads here, first state then reader
@@ -779,7 +792,8 @@ object Scalding {
     logger.info("topipe Planning on interval: {}", timeSpan)
     pf((timeSpan, mode)).right
       .map {
-        case (((ts, m), flowDefMutator)) => (ts, flowDefMutator((flowDef, m)))
+        case (((ts, m), flowDefMutator)) =>
+          (ts, flowDefMutator((flowDef, m)))
       }
   }
 
@@ -868,7 +882,8 @@ class Scalding(
         conf.getKryo match {
           case None =>
             new serialization.KryoHadoop(ScalaMapConfig(conf.toMap))
-          case Some(kryo) => kryo
+          case Some(kryo) =>
+            kryo
         }
 
       conf
@@ -891,7 +906,8 @@ class Scalding(
       .+("summingbird.submitted.timestamp" -> System.currentTimeMillis.toString)
 
     postConfig.toMap.foreach {
-      case (k, v) => hConf.set(k, v)
+      case (k, v) =>
+        hConf.set(k, v)
     }
     postConfig
   }
@@ -917,7 +933,8 @@ class Scalding(
               Right((ts, Some(mode.newFlowConnector(config).connect(flowDef))))
             }
           } catch {
-            case NonFatal(e) => toTry(e)
+            case NonFatal(e) =>
+              toTry(e)
           }
       }
   }
@@ -947,7 +964,8 @@ class Scalding(
         case HadoopTest(conf, _) =>
           buildConfig(conf)
 
-        case _ => Config.empty
+        case _ =>
+          Config.empty
       }
 
     val prepareState = state.begin
@@ -980,9 +998,11 @@ class Scalding(
                     throw new Exception("Flow did not complete.")
               }
             } catch {
-              case NonFatal(e) => runningState.fail(e)
+              case NonFatal(e) =>
+                runningState.fail(e)
             }
-          case Left(waitingState) => waitingState
+          case Left(waitingState) =>
+            waitingState
         }
     }
   }

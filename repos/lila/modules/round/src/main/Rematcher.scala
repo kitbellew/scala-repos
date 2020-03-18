@@ -35,7 +35,8 @@ private[round] final class Rematcher(
           .fold(
             game.next.fold(rematchJoin(pov))(rematchExists(pov)),
             rematchCreate(pov))
-      case _ => fuccess(Nil)
+      case _ =>
+        fuccess(Nil)
     }
 
   def no(pov: Pov): Fu[Events] =
@@ -54,7 +55,8 @@ private[round] final class Rematcher(
             g.updatePlayer(!color, _.removeRematchOffer)
           }
         } inject List(Event.ReloadOwner)
-      case _ => fuccess(Nil)
+      case _ =>
+        fuccess(Nil)
     }
 
   private def rematchExists(pov: Pov)(nextId: String): Fu[Events] =
@@ -97,7 +99,8 @@ private[round] final class Rematcher(
             situation.fold(Chess960.pieces)(_.situation.board.pieces)
         case FromPosition =>
           situation.fold(Standard.pieces)(_.situation.board.pieces)
-        case variant => variant.pieces
+        case variant =>
+          variant.pieces
       }
       users <- UserRepo byIds pov.game.userIds
     } yield Game.make(

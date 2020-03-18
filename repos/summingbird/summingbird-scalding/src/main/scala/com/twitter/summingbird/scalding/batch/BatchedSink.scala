@@ -92,8 +92,10 @@ trait BatchedSink[T] extends Sink[T] {
             _._1
           }
           .toList match {
-          case Nil  => None
-          case list => Some((list.min, list.max))
+          case Nil =>
+            None
+          case list =>
+            Some((list.min, list.max))
         }
 
       val newlyWritten = batchesToWrite.map {
@@ -114,7 +116,8 @@ trait BatchedSink[T] extends Sink[T] {
           _._2.isDefined
         }
         .collect {
-          case (batch, Some(flow)) => (batch, flow)
+          case (batch, Some(flow)) =>
+            (batch, flow)
         }
 
       def mergeExistingAndBuilt(
@@ -148,13 +151,15 @@ trait BatchedSink[T] extends Sink[T] {
       }
 
       newlyWritten match {
-        case None => mergeExistingAndBuilt(None)
+        case None =>
+          mergeExistingAndBuilt(None)
         case Some(Left(err)) =>
           if (existing.isEmpty)
             Left(err)
           else
             mergeExistingAndBuilt(None)
-        case Some(Right(built)) => mergeExistingAndBuilt(Some(built))
+        case Some(Right(built)) =>
+          mergeExistingAndBuilt(Some(built))
       }
     })
 }

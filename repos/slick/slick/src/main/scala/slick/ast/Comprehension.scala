@@ -59,7 +59,8 @@ final case class Comprehension(
       where = newWhere.headOption,
       groupBy = newGroupBy.headOption,
       orderBy = orderBy.zip(newOrderBy).map {
-        case ((_, o), n) => (n, o)
+        case ((_, o), n) =>
+          (n, o)
       },
       having = newHaving.headOption,
       distinct = newDistinct.headOption,
@@ -109,7 +110,8 @@ final case class Comprehension(
             orderBy
           else
             orderBy.zip(o2).map {
-              case ((_, o), n) => (n, o)
+              case ((_, o), n) =>
+                (n, o)
             },
         having = h2.orElse(having),
         distinct = distinct2.orElse(distinct),
@@ -128,7 +130,8 @@ final case class RowNumber(by: ConstArray[(Node, Ordering)] = ConstArray.empty)
   lazy val children = by.map(_._1)
   protected[this] def rebuild(ch: ConstArray[Node]) =
     copy(by = by.zip(ch).map {
-      case ((_, o), n) => (n, o)
+      case ((_, o), n) =>
+        (n, o)
     })
   override def childNames = by.zipWithIndex.map("by" + _._2).toSeq
   override def getDumpInfo = super.getDumpInfo.copy(mainInfo = "")

@@ -92,8 +92,10 @@ class Migration @Inject() (
 
   def initializeStore(): Future[Unit] =
     store match {
-      case manager: PersistentStoreManagement => manager.initialize()
-      case _: PersistentStore                 => Future.successful(())
+      case manager: PersistentStoreManagement =>
+        manager.initialize()
+      case _: PersistentStore =>
+        Future.successful(())
     }
 
   def migrate(): StorageVersion = {
@@ -110,7 +112,8 @@ class Migration @Inject() (
         version
       }
       .recover {
-        case ex: MigrationFailedException => throw ex
+        case ex: MigrationFailedException =>
+          throw ex
         case NonFatal(ex) =>
           throw new MigrationFailedException("MigrationFailed", ex)
       }
@@ -122,8 +125,10 @@ class Migration @Inject() (
 
   def currentStorageVersion: Future[StorageVersion] = {
     store.load(storageVersionName).map {
-      case Some(variable) => StorageVersion.parseFrom(variable.bytes.toArray)
-      case None           => StorageVersions.current
+      case Some(variable) =>
+        StorageVersion.parseFrom(variable.bytes.toArray)
+      case None =>
+        StorageVersions.current
     }
   }
 
@@ -132,8 +137,10 @@ class Migration @Inject() (
     store
       .load(storageVersionName)
       .flatMap {
-        case Some(entity) => store.update(entity.withNewContent(bytes))
-        case None         => store.create(storageVersionName, bytes)
+        case Some(entity) =>
+          store.update(entity.withNewContent(bytes))
+        case None =>
+          store.create(storageVersionName, bytes)
       }
       .map { _ =>
         StorageVersions.current
@@ -420,7 +427,8 @@ class MigrationTo0_16(
         sortedVersions.foldLeft(Future.successful(())) { (future, version) =>
           future.flatMap { _ =>
             groupRepository.group(id, version).flatMap {
-              case Some(group) => groupRepository.store(id, group).map(_ => ())
+              case Some(group) =>
+                groupRepository.store(id, group).map(_ => ())
               case None =>
                 Future.failed(
                   new MigrationFailedException(s"Group $id:$version not found"))
@@ -436,7 +444,8 @@ class MigrationTo0_16(
         sortedVersions.foldLeft(Future.successful(())) { (future, version) =>
           future.flatMap { _ =>
             appRepository.app(appId, version).flatMap {
-              case Some(app) => appRepository.store(app).map(_ => ())
+              case Some(app) =>
+                appRepository.store(app).map(_ => ())
               case None =>
                 Future.failed(
                   new MigrationFailedException(

@@ -315,7 +315,8 @@ class MasterActor(
           .asString
           .code
       code match {
-        case 200 => Unit
+        case 200 =>
+          Unit
         case 404 =>
           log.error(s"Another process is using $serverUrl. Unable to undeploy.")
         case _ =>
@@ -597,7 +598,8 @@ class ServerActor[Q, P](
                             genPrId
                           else
                             org
-                        case _ => genPrId
+                        case _ =>
+                          genPrId
                       }
 
                     // also save Query's prId as prId of this pio_pr predict events

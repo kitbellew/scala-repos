@@ -79,7 +79,8 @@ object Test extends ScaladocModelTest {
         case LinkToExternal(name, url) =>
           assert(expectedUrls contains url, url);
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     assert(

@@ -128,7 +128,8 @@ object ConcurrentSpec
         val slowIteratee = Iteratee.flatten(
           timeout(
             Cont[Long, List[Long]] {
-              case Input.El(e) => Done(List(e), Input.Empty)
+              case Input.El(e) =>
+                Done(List(e), Input.Empty)
               case in =>
                 throw new MatchError(
                   in
@@ -231,8 +232,10 @@ object ConcurrentSpec
             })(unicastEC)
 
         val future = enumerator |>>> Cont {
-          case Input.El(data) => Done(data)
-          case _              => Done("didn't get data")
+          case Input.El(data) =>
+            Done(data)
+          case _ =>
+            Done("didn't get data")
         }
 
         Await.result(future, Duration.Inf) must_== "foo"
@@ -255,8 +258,10 @@ object ConcurrentSpec
             })(unicastEC)
 
         enumerator |>> Cont {
-          case Input.El(data) => Error(data, Input.Empty)
-          case in             => Error("didn't get data", in)
+          case Input.El(data) =>
+            Error(data, Input.Empty)
+          case in =>
+            Error("didn't get data", in)
         }
 
         Await.result(error.future, Duration.Inf) must_== "foo"

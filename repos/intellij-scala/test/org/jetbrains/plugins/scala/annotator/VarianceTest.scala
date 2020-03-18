@@ -188,13 +188,19 @@ class VarianceTest extends SimpleTestCase {
     val parse: ScalaFile = (Header + code).parse
 
     parse.depthFirst.foreach {
-      case fun: ScFunction        => annotator.annotate(fun, mock)
-      case varr: ScVariable       => annotator.annotate(varr, mock)
-      case v: ScValue             => annotator.annotate(v, mock)
-      case tbo: ScTypeBoundsOwner => annotator.annotate(tbo, mock)
-      case call: ScMethodCall     => annotator.annotate(call, mock)
-      case td: ScTypeDefinition   => annotator.annotate(td, mock)
-      case _                      =>
+      case fun: ScFunction =>
+        annotator.annotate(fun, mock)
+      case varr: ScVariable =>
+        annotator.annotate(varr, mock)
+      case v: ScValue =>
+        annotator.annotate(v, mock)
+      case tbo: ScTypeBoundsOwner =>
+        annotator.annotate(tbo, mock)
+      case call: ScMethodCall =>
+        annotator.annotate(call, mock)
+      case td: ScTypeDefinition =>
+        annotator.annotate(td, mock)
+      case _ =>
     }
 
     mock.annotations.filter((p: Message) => !p.isInstanceOf[Info])

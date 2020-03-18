@@ -29,7 +29,8 @@ object RoutesFileParserSpec extends Specification {
     def parseError(line: String): Result = {
       val result = RoutesFileParser.parseContent(line, new File("routes"))
       result match {
-        case Left(errors) => ok
+        case Left(errors) =>
+          ok
         case Right(rules) =>
           ko("Routes compilation was successful, expected error")
       }

@@ -103,8 +103,10 @@ trait Reporting extends scala.reflect.internal.Reporting {
     def deprecationWarning(pos: Position, sym: Symbol): Unit = {
       val suffix =
         sym.deprecationMessage match {
-          case Some(msg) => ": " + msg
-          case _         => ""
+          case Some(msg) =>
+            ": " + msg
+          case _ =>
+            ""
         }
       deprecationWarning(
         pos,

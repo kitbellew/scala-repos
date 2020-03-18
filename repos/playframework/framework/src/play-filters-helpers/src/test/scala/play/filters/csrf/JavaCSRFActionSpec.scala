@@ -51,7 +51,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
             javaAction[MyUnauthorizedAction](
               "check",
               new MyUnauthorizedAction().check())
-          case _ => javaAction[MyAction]("check", myAction.check())
+          case _ =>
+            javaAction[MyAction]("check", myAction.check())
         } {
           handleResponse(
             await(makeRequest(ws.url("http://localhost:" + testServerPort))))
@@ -63,7 +64,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
           handleResponse: (WSResponse) => T) =
         withServer(configuration) {
-          case _ => javaAction[MyAction]("add", myAction.add())
+          case _ =>
+            javaAction[MyAction]("add", myAction.add())
         } {
           handleResponse(
             await(makeRequest(ws.url("http://localhost:" + testServerPort))))
@@ -75,7 +77,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
       def apply[T](makeRequest: (WSRequest) => Future[WSResponse])(
           handleResponse: (WSResponse) => T) =
         withServer(configuration) {
-          case _ => javaAction[MyAction]("withSession", myAction.withSession())
+          case _ =>
+            javaAction[MyAction]("withSession", myAction.withSession())
         } {
           import play.api.Play.current
           handleResponse(
@@ -98,7 +101,8 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     }
     "allow accessing the token from the http context" in withServer(
       Seq("play.http.filters" -> "play.filters.csrf.CsrfFilters")) {
-      case _ => javaAction[MyAction]("getToken", myAction.getToken())
+      case _ =>
+        javaAction[MyAction]("getToken", myAction.getToken())
     } {
       lazy val token = crypto.generateSignedToken
       import play.api.Play.current
@@ -121,8 +125,10 @@ object JavaCSRFActionSpec extends CSRFCommonSpecs {
     def getToken(): Result = {
       Results.ok(
         Option(CSRF.getToken(Controller.request()).orElse(null)) match {
-          case Some(CSRF.Token(_, value)) => value
-          case None                       => ""
+          case Some(CSRF.Token(_, value)) =>
+            value
+          case None =>
+            ""
         })
     }
     @RequireCSRFCheck

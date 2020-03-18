@@ -55,7 +55,8 @@ object BarChartDemo extends JFXApp {
       name,
       ObservableBuffer(
         series.map {
-          case (x, y) => XYChart.Data[String, Number](x, y)
+          case (x, y) =>
+            XYChart.Data[String, Number](x, y)
         }))
   }
 }

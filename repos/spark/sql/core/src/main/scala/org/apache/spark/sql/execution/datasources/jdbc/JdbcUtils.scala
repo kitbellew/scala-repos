@@ -58,7 +58,8 @@ object JdbcUtils extends Logging {
           case d: DriverWrapper
               if d.wrapped.getClass.getCanonicalName == driverClass =>
             d
-          case d if d.getClass.getCanonicalName == driverClass => d
+          case d if d.getClass.getCanonicalName == driverClass =>
+            d
         }
         .getOrElse {
           throw new IllegalStateException(
@@ -119,25 +120,35 @@ object JdbcUtils extends Logging {
     */
   def getCommonJDBCType(dt: DataType): Option[JdbcType] = {
     dt match {
-      case IntegerType => Option(JdbcType("INTEGER", java.sql.Types.INTEGER))
-      case LongType    => Option(JdbcType("BIGINT", java.sql.Types.BIGINT))
+      case IntegerType =>
+        Option(JdbcType("INTEGER", java.sql.Types.INTEGER))
+      case LongType =>
+        Option(JdbcType("BIGINT", java.sql.Types.BIGINT))
       case DoubleType =>
         Option(JdbcType("DOUBLE PRECISION", java.sql.Types.DOUBLE))
-      case FloatType   => Option(JdbcType("REAL", java.sql.Types.FLOAT))
-      case ShortType   => Option(JdbcType("INTEGER", java.sql.Types.SMALLINT))
-      case ByteType    => Option(JdbcType("BYTE", java.sql.Types.TINYINT))
-      case BooleanType => Option(JdbcType("BIT(1)", java.sql.Types.BIT))
-      case StringType  => Option(JdbcType("TEXT", java.sql.Types.CLOB))
-      case BinaryType  => Option(JdbcType("BLOB", java.sql.Types.BLOB))
+      case FloatType =>
+        Option(JdbcType("REAL", java.sql.Types.FLOAT))
+      case ShortType =>
+        Option(JdbcType("INTEGER", java.sql.Types.SMALLINT))
+      case ByteType =>
+        Option(JdbcType("BYTE", java.sql.Types.TINYINT))
+      case BooleanType =>
+        Option(JdbcType("BIT(1)", java.sql.Types.BIT))
+      case StringType =>
+        Option(JdbcType("TEXT", java.sql.Types.CLOB))
+      case BinaryType =>
+        Option(JdbcType("BLOB", java.sql.Types.BLOB))
       case TimestampType =>
         Option(JdbcType("TIMESTAMP", java.sql.Types.TIMESTAMP))
-      case DateType => Option(JdbcType("DATE", java.sql.Types.DATE))
+      case DateType =>
+        Option(JdbcType("DATE", java.sql.Types.DATE))
       case t: DecimalType =>
         Option(
           JdbcType(
             s"DECIMAL(${t.precision},${t.scale})",
             java.sql.Types.DECIMAL))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -202,14 +213,22 @@ object JdbcUtils extends Logging {
               stmt.setNull(i + 1, nullTypes(i))
             } else {
               rddSchema.fields(i).dataType match {
-                case IntegerType => stmt.setInt(i + 1, row.getInt(i))
-                case LongType    => stmt.setLong(i + 1, row.getLong(i))
-                case DoubleType  => stmt.setDouble(i + 1, row.getDouble(i))
-                case FloatType   => stmt.setFloat(i + 1, row.getFloat(i))
-                case ShortType   => stmt.setInt(i + 1, row.getShort(i))
-                case ByteType    => stmt.setInt(i + 1, row.getByte(i))
-                case BooleanType => stmt.setBoolean(i + 1, row.getBoolean(i))
-                case StringType  => stmt.setString(i + 1, row.getString(i))
+                case IntegerType =>
+                  stmt.setInt(i + 1, row.getInt(i))
+                case LongType =>
+                  stmt.setLong(i + 1, row.getLong(i))
+                case DoubleType =>
+                  stmt.setDouble(i + 1, row.getDouble(i))
+                case FloatType =>
+                  stmt.setFloat(i + 1, row.getFloat(i))
+                case ShortType =>
+                  stmt.setInt(i + 1, row.getShort(i))
+                case ByteType =>
+                  stmt.setInt(i + 1, row.getByte(i))
+                case BooleanType =>
+                  stmt.setBoolean(i + 1, row.getBoolean(i))
+                case StringType =>
+                  stmt.setString(i + 1, row.getString(i))
                 case BinaryType =>
                   stmt.setBytes(i + 1, row.getAs[Array[Byte]](i))
                 case TimestampType =>

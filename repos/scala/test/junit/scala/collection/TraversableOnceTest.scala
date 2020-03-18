@@ -19,8 +19,10 @@ class TraversableOnceTest {
         code
         false
       } catch {
-        case u: UnsupportedOperationException => true
-        case t: Throwable                     => false
+        case u: UnsupportedOperationException =>
+          true
+        case t: Throwable =>
+          false
       }
     assert(
       hasException({

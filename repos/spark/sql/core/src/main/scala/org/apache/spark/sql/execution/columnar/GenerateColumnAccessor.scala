@@ -86,23 +86,36 @@ object GenerateColumnAccessor
           val accessorName = ctx.freshName("accessor")
           val accessorCls =
             dt match {
-              case NullType               => classOf[NullColumnAccessor].getName
-              case BooleanType            => classOf[BooleanColumnAccessor].getName
-              case ByteType               => classOf[ByteColumnAccessor].getName
-              case ShortType              => classOf[ShortColumnAccessor].getName
-              case IntegerType | DateType => classOf[IntColumnAccessor].getName
+              case NullType =>
+                classOf[NullColumnAccessor].getName
+              case BooleanType =>
+                classOf[BooleanColumnAccessor].getName
+              case ByteType =>
+                classOf[ByteColumnAccessor].getName
+              case ShortType =>
+                classOf[ShortColumnAccessor].getName
+              case IntegerType | DateType =>
+                classOf[IntColumnAccessor].getName
               case LongType | TimestampType =>
                 classOf[LongColumnAccessor].getName
-              case FloatType  => classOf[FloatColumnAccessor].getName
-              case DoubleType => classOf[DoubleColumnAccessor].getName
-              case StringType => classOf[StringColumnAccessor].getName
-              case BinaryType => classOf[BinaryColumnAccessor].getName
+              case FloatType =>
+                classOf[FloatColumnAccessor].getName
+              case DoubleType =>
+                classOf[DoubleColumnAccessor].getName
+              case StringType =>
+                classOf[StringColumnAccessor].getName
+              case BinaryType =>
+                classOf[BinaryColumnAccessor].getName
               case dt: DecimalType if dt.precision <= Decimal.MAX_LONG_DIGITS =>
                 classOf[CompactDecimalColumnAccessor].getName
-              case dt: DecimalType    => classOf[DecimalColumnAccessor].getName
-              case struct: StructType => classOf[StructColumnAccessor].getName
-              case array: ArrayType   => classOf[ArrayColumnAccessor].getName
-              case t: MapType         => classOf[MapColumnAccessor].getName
+              case dt: DecimalType =>
+                classOf[DecimalColumnAccessor].getName
+              case struct: StructType =>
+                classOf[StructColumnAccessor].getName
+              case array: ArrayType =>
+                classOf[ArrayColumnAccessor].getName
+              case t: MapType =>
+                classOf[MapColumnAccessor].getName
             }
           ctx.addMutableState(
             accessorCls,
@@ -130,7 +143,8 @@ object GenerateColumnAccessor
               rowWriter.write($index, (Decimal) null, $p, $s);
             }
            """
-              case other => ""
+              case other =>
+                ""
             }
           (createCode, extract + patch)
       }.unzip

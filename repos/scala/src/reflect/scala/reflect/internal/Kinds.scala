@@ -77,7 +77,8 @@ trait Kinds {
           p.info match {
             case tb @ TypeBounds(_, _) if tb.isEmptyBounds =>
               " >: Nothing <: Any"
-            case tb => "" + tb
+            case tb =>
+              "" + tb
           }))
 
     private def varianceMessage(a: Symbol, p: Symbol) =
@@ -328,13 +329,20 @@ trait Kinds {
       }
       private def typeAlias(x: Int): String =
         x match {
-          case 0           => "A"
-          case 1           => "F"
-          case 2           => "X"
-          case 3           => "Y"
-          case 4           => "Z"
-          case n if n < 12 => ('O'.toInt - 5 + n).toChar.toString
-          case _           => "V"
+          case 0 =>
+            "A"
+          case 1 =>
+            "F"
+          case 2 =>
+            "X"
+          case 3 =>
+            "Y"
+          case 4 =>
+            "Z"
+          case n if n < 12 =>
+            ('O'.toInt - 5 + n).toChar.toString
+          case _ =>
+            "V"
         }
     }
     private[internal] sealed case class Text(value: String)
@@ -356,24 +364,30 @@ trait Kinds {
       }
       def countByOrder(o: Int): Int =
         tokens count {
-          case Head(`o`, _, _) => true
-          case t               => false
+          case Head(`o`, _, _) =>
+            true
+          case t =>
+            false
         }
       // Replace Head(o, Some(1), a) with Head(o, None, a) if countByOrder(o) <= 1, so F1[A] becomes F[A]
       def removeOnes: StringState = {
         val maxOrder =
           (
             tokens map {
-              case Head(o, _, _) => o
-              case _             => 0
+              case Head(o, _, _) =>
+                o
+              case _ =>
+                0
             }
           ).max
         StringState(
           (tokens /: (0 to maxOrder)) { (ts: Seq[ScalaNotation], o: Int) =>
             if (countByOrder(o) <= 1)
               ts map {
-                case Head(`o`, _, a) => Head(o, None, a)
-                case t               => t
+                case Head(`o`, _, a) =>
+                  Head(o, None, a)
+                case t =>
+                  t
               }
             else
               ts
@@ -383,8 +397,10 @@ trait Kinds {
       def removeAlias: StringState = {
         StringState(
           tokens map {
-            case Head(o, n, Some(_)) => Head(o, n, None)
-            case t                   => t
+            case Head(o, n, Some(_)) =>
+              Head(o, n, None)
+            case t =>
+              t
           })
       }
     }

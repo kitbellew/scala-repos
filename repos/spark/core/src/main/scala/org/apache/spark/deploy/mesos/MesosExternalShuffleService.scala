@@ -87,7 +87,8 @@ private[mesos] class MesosExternalShuffleBlockHandler(
               s"Received ShuffleServiceHeartbeat from an unknown app (remote " +
                 s"address $address, appId '$appId').")
         }
-      case _ => super.handleMessage(message, client, callback)
+      case _ =>
+        super.handleMessage(message, client, callback)
     }
   }
 

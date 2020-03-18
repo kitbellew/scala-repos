@@ -124,7 +124,8 @@ class SbtRunner(
               .getOrElse(Left(new ImportCancelledException))
         }
       } catch {
-        case e: Exception => Left(e)
+        case e: Exception =>
+          Left(e)
       }
     }
   }
@@ -194,8 +195,10 @@ object SbtRunner {
 
   private def compare(v1: String, v2: String): Int =
     numbersOf(v1).zip(numbersOf(v2)).foldLeft(0) {
-      case (acc, (i1, i2)) if acc == 0 => i1.compareTo(i2)
-      case (acc, _)                    => acc
+      case (acc, (i1, i2)) if acc == 0 =>
+        i1.compareTo(i2)
+      case (acc, _) =>
+        acc
     }
 
   private[structure] def detectSbtVersion(
@@ -244,8 +247,10 @@ object SbtRunner {
 
     def findProperty(line: String): Option[(String, String)] = {
       line match {
-        case Property(name, value) => Some((name, value.trim))
-        case _                     => None
+        case Property(name, value) =>
+          Some((name, value.trim))
+        case _ =>
+          None
       }
     }
 

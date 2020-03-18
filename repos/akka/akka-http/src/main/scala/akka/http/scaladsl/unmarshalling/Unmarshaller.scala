@@ -38,7 +38,8 @@ trait Unmarshaller[-A, B] {
   def withDefaultValue[BB >: B](defaultValue: BB): Unmarshaller[A, BB] =
     recover(_ ⇒
       _ ⇒ {
-        case Unmarshaller.NoContentException ⇒ defaultValue
+        case Unmarshaller.NoContentException ⇒
+          defaultValue
       })
 }
 
@@ -145,8 +146,10 @@ object Unmarshaller
     */
   def bestUnmarshallingCharsetFor(entity: HttpEntity): HttpCharset =
     entity.contentType match {
-      case x: ContentType.NonBinary ⇒ x.charset
-      case _ ⇒ HttpCharsets.`UTF-8`
+      case x: ContentType.NonBinary ⇒
+        x.charset
+      case _ ⇒
+        HttpCharsets.`UTF-8`
     }
 
   /**

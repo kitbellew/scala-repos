@@ -108,7 +108,8 @@ case class RuleTrace(
             named
           else
             rec(tail, Nil)
-        case Nil ⇒ named
+        case Nil ⇒
+          named
       }
     val newPrefix = rec(prefix, Nil)
     if (newPrefix ne prefix)
@@ -141,8 +142,10 @@ object RuleTrace {
       val tracesTail = traces.tail
       def hasElem(ix: Int, elem: NonTerminal): RuleTrace ⇒ Boolean =
         _.prefix.drop(ix) match {
-          case `elem` :: _ ⇒ true
-          case _ ⇒ false
+          case `elem` :: _ ⇒
+            true
+          case _ ⇒
+            false
         }
       @tailrec
       def rec(current: List[NonTerminal], namedIx: Int, ix: Int): Int =

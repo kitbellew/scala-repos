@@ -39,14 +39,16 @@ final class PNCounterMap private[akka] (
   /** Scala API */
   def entries: Map[String, BigInt] =
     underlying.entries.map {
-      case (k, c) ⇒ k -> c.value
+      case (k, c) ⇒
+        k -> c.value
     }
 
   /** Java API */
   def getEntries: java.util.Map[String, BigInteger] = {
     import scala.collection.JavaConverters._
     underlying.entries.map {
-      case (k, c) ⇒ k -> c.value.bigInteger
+      case (k, c) ⇒
+        k -> c.value.bigInteger
     }.asJava
   }
 
@@ -157,8 +159,10 @@ final class PNCounterMap private[akka] (
 
   override def equals(o: Any): Boolean =
     o match {
-      case other: PNCounterMap ⇒ underlying == other.underlying
-      case _ ⇒ false
+      case other: PNCounterMap ⇒
+        underlying == other.underlying
+      case _ ⇒
+        false
     }
 
   override def hashCode: Int = underlying.hashCode

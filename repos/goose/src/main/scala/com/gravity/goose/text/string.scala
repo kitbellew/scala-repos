@@ -40,7 +40,8 @@ object string {
     try {
       Some(input.toInt)
     } catch {
-      case _: Exception => None
+      case _: Exception =>
+        None
     }
   }
 }

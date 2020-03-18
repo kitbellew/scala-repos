@@ -69,7 +69,8 @@ private[tournament] final class TournamentApi(
     Sequencing(oldTour.id)(TournamentRepo.startedById) { tour =>
       cached ranking tour flatMap { ranking =>
         tour.system.pairingSystem.createPairings(tour, users, ranking).flatMap {
-          case Nil => funit
+          case Nil =>
+            funit
           case pairings if nowMillis - startAt > 1000 =>
             pairingLogger.warn(
               s"Give up making http://lichess.org/tournament/${tour.id} ${pairings.size} pairings in ${nowMillis - startAt}ms")
@@ -111,8 +112,10 @@ private[tournament] final class TournamentApi(
         curOption.filter(_.pairing.playing) match {
           case Some(current) if bestCandidate.bestRank < current.bestRank =>
             switch
-          case Some(_) => funit
-          case _       => switch
+          case Some(_) =>
+            funit
+          case _ =>
+            switch
         }
       }
     }
@@ -151,7 +154,8 @@ private[tournament] final class TournamentApi(
   def finish(oldTour: Tournament) {
     Sequencing(oldTour.id)(TournamentRepo.startedById) { tour =>
       PairingRepo count tour.id flatMap {
-        case 0 => wipe(tour)
+        case 0 =>
+          wipe(tour)
         case _ =>
           for {
             _ <- TournamentRepo.setStatus(tour.id, Status.Finished)
@@ -185,7 +189,8 @@ private[tournament] final class TournamentApi(
             trophyApi.award(rp.player.userId, _.MarathonTopTen)
           case rp if rp.rank <= 50 =>
             trophyApi.award(rp.player.userId, _.MarathonTopFifty)
-          case rp => trophyApi.award(rp.player.userId, _.MarathonTopHundred)
+          case rp =>
+            trophyApi.award(rp.player.userId, _.MarathonTopHundred)
         }.sequenceFu.void
       }
     }
@@ -231,7 +236,8 @@ private[tournament] final class TournamentApi(
       case tour if tour.isStarted =>
         PlayerRepo.withdraw(tour.id, userId) >>- socketReload(
           tour.id) >>- publish()
-      case _ => funit
+      case _ =>
+        funit
     }
   }
 
@@ -260,7 +266,8 @@ private[tournament] final class TournamentApi(
                   }
                 }
               }
-            case _ => funit
+            case _ =>
+              funit
           }
         }
       }
@@ -399,7 +406,8 @@ private[tournament] final class TournamentApi(
       fetch: String => Fu[Option[Tournament]])(run: Tournament => Funit) {
     sequence(tourId) {
       fetch(tourId) flatMap {
-        case Some(t) => run(t)
+        case Some(t) =>
+          run(t)
         case None =>
           fufail(s"Can't run sequenced operation on missing tournament $tourId")
       }
@@ -423,7 +431,8 @@ private[tournament] final class TournamentApi(
             }
             TournamentRepo.promotable foreach { tours =>
               renderer ? TournamentTable(tours) map {
-                case view: play.twirl.api.Html => ReloadTournaments(view.body)
+                case view: play.twirl.api.Html =>
+                  ReloadTournaments(view.body)
               } pipeToSelection lobby
             }
           })))

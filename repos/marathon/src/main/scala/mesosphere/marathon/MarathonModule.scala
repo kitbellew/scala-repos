@@ -129,8 +129,10 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
   @Singleton
   def provideMesosLeaderInfo(): MesosLeaderInfo = {
     conf.mesosLeaderUiUrl.get match {
-      case someUrl @ Some(_) => ConstMesosLeaderInfo(someUrl)
-      case None              => new MutableMesosLeaderInfo
+      case someUrl @ Some(_) =>
+        ConstMesosLeaderInfo(someUrl)
+      case None =>
+        new MutableMesosLeaderInfo
     }
   }
 
@@ -151,7 +153,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       : Seq[LeadershipCallback] = {
     Seq(app, group, deployment, frameworkId, taskFailure, task, subscribers)
       .collect {
-        case l: LeadershipCallback => l
+        case l: LeadershipCallback =>
+          l
       }
   }
 
@@ -201,9 +204,12 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       new MesosStateStore(state, conf.zkTimeoutDuration)
     }
     conf.internalStoreBackend.get match {
-      case Some("zk")       => directZK()
-      case Some("mesos_zk") => mesosZK()
-      case Some("mem")      => new InMemoryStore()
+      case Some("zk") =>
+        directZK()
+      case Some("mesos_zk") =>
+        mesosZK()
+      case Some("mem") =>
+        new InMemoryStore()
       case backend: Option[String] =>
         throw new IllegalArgumentException(
           s"Storage backend $backend not known!")
@@ -231,7 +237,8 @@ class MarathonModule(conf: MarathonConf, http: HttpConf, zk: ZooKeeperClient)
       taskFailureRepository: TaskFailureRepository): ActorRef = {
     val supervision =
       OneForOneStrategy() {
-        case NonFatal(_) => Restart
+        case NonFatal(_) =>
+          Restart
       }
 
     import scala.concurrent.ExecutionContext.Implicits.global

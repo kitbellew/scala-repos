@@ -35,7 +35,8 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
 
   def toBinary(obj: AnyRef): Array[Byte] =
     obj match {
-      case sel: ActorSelectionMessage ⇒ serializeSelection(sel)
+      case sel: ActorSelectionMessage ⇒
+        serializeSelection(sel)
       case _ ⇒
         throw new IllegalArgumentException(
           s"Cannot serialize object of type [${obj.getClass.getName}]")
@@ -102,9 +103,12 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
     val elements: immutable.Iterable[SelectionPathElement] =
       selectionEnvelope.getPatternList.asScala.map { x ⇒
         x.getType match {
-          case CHILD_NAME ⇒ SelectChildName(x.getMatcher)
-          case CHILD_PATTERN ⇒ SelectChildPattern(x.getMatcher)
-          case PARENT ⇒ SelectParent
+          case CHILD_NAME ⇒
+            SelectChildName(x.getMatcher)
+          case CHILD_PATTERN ⇒
+            SelectChildPattern(x.getMatcher)
+          case PARENT ⇒
+            SelectParent
         }
 
       }(collection.breakOut)

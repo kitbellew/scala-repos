@@ -52,8 +52,10 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
    */
   private def idValue(inst: BaseRecord): Any =
     inst.id match {
-      case f: MandatoryTypedField[_] => f.value
-      case x                         => x
+      case f: MandatoryTypedField[_] =>
+        f.value
+      case x =>
+        x
     }
 
   /*
@@ -90,8 +92,10 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   def find(qry: DBObject): Box[BaseRecord] = {
     useColl(coll =>
       coll.findOne(qry) match {
-        case null => Empty
-        case dbo  => Full(fromDBObject(dbo))
+        case null =>
+          Empty
+        case dbo =>
+          Full(fromDBObject(dbo))
       })
   }
 
@@ -391,8 +395,10 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
         val fieldsToUnset: List[String] = otherFields
           .filter(pair =>
             pair._2 match {
-              case Empty => true
-              case _     => false
+              case Empty =>
+                true
+              case _ =>
+                false
             })
           .map(_._1)
 

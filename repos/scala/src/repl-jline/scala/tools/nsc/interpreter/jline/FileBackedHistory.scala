@@ -59,7 +59,8 @@ trait FileBackedHistory extends JLineHistory with PersistentHistory {
         case _: Exception =>
           try historyFile.lines("ISO-8859-1").toIndexedSeq
           catch {
-            case _: Exception => Vector()
+            case _: Exception =>
+              Vector()
           }
       }
     }

@@ -170,8 +170,10 @@ object BackoffSupervisor {
       maxBackoff
     else
       maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd match {
-        case f: FiniteDuration ⇒ f
-        case _ ⇒ maxBackoff
+        case f: FiniteDuration ⇒
+          f
+        case _ ⇒
+          maxBackoff
       }
   }
 }
@@ -209,7 +211,8 @@ final class BackoffSupervisor(
 
             strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective)
         }
-      case s ⇒ s
+      case s ⇒
+        s
     }
 
   // for binary compatibility with 2.4.1
@@ -290,8 +293,10 @@ private[akka] trait HandleBackoff {
 
     case Reset ⇒
       reset match {
-        case ManualReset ⇒ restartCount = 0
-        case msg ⇒ unhandled(msg)
+        case ManualReset ⇒
+          restartCount = 0
+        case msg ⇒
+          unhandled(msg)
       }
 
     case ResetRestartCount(current) ⇒
@@ -310,8 +315,10 @@ private[akka] trait HandleBackoff {
 
     case msg ⇒
       child match {
-        case Some(c) ⇒ c.forward(msg)
-        case None ⇒ context.system.deadLetters.forward(msg)
+        case Some(c) ⇒
+          c.forward(msg)
+        case None ⇒
+          context.system.deadLetters.forward(msg)
       }
   }
 }

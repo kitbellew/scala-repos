@@ -60,8 +60,10 @@ trait JoinOptimizerSpecs[M[+_]]
   def testEval(graph: DepGraph)(test: Set[SEvent] => Result): Result = {
     (
       consumeEval(graph, defaultEvaluationContext) match {
-        case Success(results) => test(results)
-        case Failure(error)   => throw error
+        case Success(results) =>
+          test(results)
+        case Failure(error) =>
+          throw error
       }
     )
   }

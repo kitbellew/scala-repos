@@ -53,7 +53,8 @@ trait HandleCommentService {
 
         val commentId =
           (content, action) match {
-            case (None, None) => None
+            case (None, None) =>
+              None
             case (None, Some(action)) =>
               Some(
                 createComment(
@@ -111,10 +112,14 @@ trait HandleCommentService {
           case Some(act) =>
             val webHookAction =
               act match {
-                case "open"   => "opened"
-                case "reopen" => "reopened"
-                case "close"  => "closed"
-                case _        => act
+                case "open" =>
+                  "opened"
+                case "reopen" =>
+                  "reopened"
+                case "close" =>
+                  "closed"
+                case _ =>
+                  act
               }
             if (issue.isPullRequest) {
               callPullRequestWebHook(

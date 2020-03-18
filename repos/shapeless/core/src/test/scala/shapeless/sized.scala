@@ -150,7 +150,8 @@ class SizedTests {
           typed[Int](b)
           (a - b, a + b)
         }
-        case _ => (9, 10)
+        case _ =>
+          (9, 10)
       }
     typed[(Int, Int)](p)
     assertEquals((-1, 3), p)

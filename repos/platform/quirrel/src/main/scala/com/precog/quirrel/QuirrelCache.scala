@@ -52,9 +52,12 @@ trait QuirrelCache extends AST {
       pos: Int) {
     def value: String =
       tpe match {
-        case "p" => canonicalizePath(rawValue)
-        case "s" => canonicalizeStr(rawValue)
-        case _   => rawValue
+        case "p" =>
+          canonicalizePath(rawValue)
+        case "s" =>
+          canonicalizeStr(rawValue)
+        case _ =>
+          rawValue
       }
   }
 
@@ -226,16 +229,20 @@ trait QuirrelCache extends AST {
 
       // These are the kinds of literals we are interested in
       // (those whose values vary).
-      case b: BoolLit => b :: Nil
-      case n: NumLit  => n :: Nil
-      case s: StrLit  => s :: Nil
+      case b: BoolLit =>
+        b :: Nil
+      case n: NumLit =>
+        n :: Nil
+      case s: StrLit =>
+        s :: Nil
 
       // Let#children does not return all the children, so we will
       // handle it specially.
       case Let(_, _, _, c1, c2) =>
         findHoles(c1) ++ findHoles(c2)
 
-      case node => node.children.flatMap(findHoles)
+      case node =>
+        node.children.flatMap(findHoles)
     }
 
   def buildBindingIndex(expr: Expr): Map[Int, Int] = {

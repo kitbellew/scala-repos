@@ -54,7 +54,8 @@ private[spark] class WorkerWatcher(
       System.exit(-1)
 
   override def receive: PartialFunction[Any, Unit] = {
-    case e => logWarning(s"Received unexpected message: $e")
+    case e =>
+      logWarning(s"Received unexpected message: $e")
   }
 
   override def onConnected(remoteAddress: RpcAddress): Unit = {

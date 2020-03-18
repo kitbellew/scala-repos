@@ -16,7 +16,8 @@ object Service {
         try {
           service(request)
         } catch {
-          case NonFatal(e) => Future.exception(e)
+          case NonFatal(e) =>
+            Future.exception(e)
         }
       }
     }

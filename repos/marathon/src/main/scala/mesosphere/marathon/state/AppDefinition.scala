@@ -85,7 +85,8 @@ case class AppDefinition(
 
   def persistentVolumes: Iterable[PersistentVolume] = {
     container.fold(Seq.empty[Volume])(_.volumes).collect {
-      case vol: PersistentVolume => vol
+      case vol: PersistentVolume =>
+        vol
     }
   }
 
@@ -368,7 +369,8 @@ case class AppDefinition(
     obj match {
       case that: AppDefinition =>
         (that eq this) || (that.id == id && that.version == version)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -580,7 +582,8 @@ object AppDefinition {
       hc =>
         hc.protocol == Protocol.COMMAND || (
           hc.portIndex match {
-            case Some(idx) => hostPortsIndices contains idx
+            case Some(idx) =>
+              hostPortsIndices contains idx
             case None =>
               hostPortsIndices.length == 1 && hostPortsIndices.head == 0
           }
@@ -624,7 +627,8 @@ object AppDefinition {
         from.transitiveApps.find(_.id == app.id) match {
           case (Some(last)) if last.isResident || app.isResident =>
             residentUpdateIsValid(last)(app)
-          case _ => Success
+          case _ =>
+            Success
         }
       }
     }

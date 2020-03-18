@@ -120,7 +120,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
                 .asInstanceOf[ResultConverter[MemoryResultConverterDomain, _]]
                 .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
             b.result()
-          case n => super.run(n)
+          case n =>
+            super.run(n)
         }
     }
 

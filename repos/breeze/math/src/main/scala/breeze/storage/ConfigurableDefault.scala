@@ -44,7 +44,8 @@ trait ConfigurableDefault[@specialized V] extends Serializable {
         Arrays.fill(arr.asInstanceOf[Array[Byte]], v.asInstanceOf[Byte])
       case x: Array[_] =>
         Arrays.fill(arr.asInstanceOf[Array[AnyRef]], v.asInstanceOf[AnyRef])
-      case _ => throw new RuntimeException("shouldn't be here!")
+      case _ =>
+        throw new RuntimeException("shouldn't be here!")
     }
 
   def makeArray(size: Int)(implicit zero: Zero[V], man: ClassTag[V]) = {

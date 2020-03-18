@@ -5,14 +5,16 @@ class Test {
   // at scala.tools.nsc.typechecker.SuperAccessors$SuperAccTransformer.transform(SuperAccessors.scala:291)
   val a: (Map[Int, Int] => (Any => Any)) = { m =>
     {
-      case _ => m - 1
+      case _ =>
+        m - 1
     }
   }
 
   // patmat-crash.scala:9: error: erroneous or inaccessible type
   val b: (Int => (Any => Any)) = { m =>
     {
-      case _ => m
+      case _ =>
+        m
     }
   }
 
@@ -24,7 +26,8 @@ class Test {
   // at scala.tools.nsc.typechecker.SuperAccessors$SuperAccTransformer.needsProtectedAccessor(SuperAccessors.scala:457)
   val c: (Int => (Any => Any)) = { m =>
     {
-      case _ => m.toInt
+      case _ =>
+        m.toInt
     }
   }
 }

@@ -66,34 +66,42 @@ class ScUnderscoreSectionImpl(node: ASTNode)
             fun()
           case Some(ScalaResolveResult(b: ScBindingPattern, _)) =>
             b.nameContext match {
-              case _: ScValue | _: ScVariable if b.isClassMember    => fun()
-              case v: ScValue if v.hasModifierPropertyScala("lazy") => fun()
-              case _                                                => ref.getNonValueType(TypingContext.empty)
+              case _: ScValue | _: ScVariable if b.isClassMember =>
+                fun()
+              case v: ScValue if v.hasModifierPropertyScala("lazy") =>
+                fun()
+              case _ =>
+                ref.getNonValueType(TypingContext.empty)
             }
           case Some(ScalaResolveResult(p: ScParameter, _))
               if p.isCallByNameParameter =>
             fun()
-          case _ => ref.getNonValueType(TypingContext.empty)
+          case _ =>
+            ref.getNonValueType(TypingContext.empty)
         }
-      case Some(expr) => expr.getNonValueType(TypingContext.empty)
+      case Some(expr) =>
+        expr.getNonValueType(TypingContext.empty)
       case None =>
         getContext match {
           case typed: ScTypedStmt =>
             overExpr match {
               case Some(`typed`) =>
                 typed.typeElement match {
-                  case Some(te) => return te.getType(TypingContext.empty)
+                  case Some(te) =>
+                    return te.getType(TypingContext.empty)
                   case _ =>
                     return Failure(
                       "Typed statement is not complete for underscore section",
                       Some(this))
                 }
-              case _ => return typed.getType(TypingContext.empty)
+              case _ =>
+                return typed.getType(TypingContext.empty)
             }
           case _ =>
         }
         overExpr match {
-          case None => Failure("No type inferred", None)
+          case None =>
+            Failure("No type inferred", None)
           case Some(expr: ScExpression) =>
             val unders = ScUnderScoreSectionUtil.underscores(expr)
             var startOffset =
@@ -148,13 +156,17 @@ class ScUnderscoreSectionImpl(node: ASTNode)
             }
             if (result == null || result == None) {
               expectedType(fromUnderscore = false) match {
-                case Some(tp: ScType) => result = Some(tp)
-                case _                => result = None
+                case Some(tp: ScType) =>
+                  result = Some(tp)
+                case _ =>
+                  result = None
               }
             }
             result match {
-              case None    => Failure("No type inferred", None)
-              case Some(t) => Success(t, None)
+              case None =>
+                Failure("No type inferred", None)
+              case Some(t) =>
+                Success(t, None)
             }
         }
     }
@@ -168,7 +180,8 @@ class ScUnderscoreSectionImpl(node: ASTNode)
     visitor match {
       case visitor: ScalaElementVisitor =>
         visitor.visitUnderscoreExpression(this)
-      case _ => super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

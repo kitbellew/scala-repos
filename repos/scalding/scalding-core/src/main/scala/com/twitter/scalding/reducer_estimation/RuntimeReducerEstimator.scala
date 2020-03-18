@@ -22,8 +22,10 @@ object RuntimeReducerEstimator {
   def getRuntimeEstimationScheme(conf: JobConf): RuntimeEstimationScheme = {
     val default = "median"
     conf.get(EstimationScheme, default) match {
-      case "mean"   => MeanEstimationScheme
-      case "median" => MedianEstimationScheme
+      case "mean" =>
+        MeanEstimationScheme
+      case "median" =>
+        MedianEstimationScheme
       case _ =>
         throw new Exception(
           s"""Value of $EstimationScheme must be "mean", "median", or not specified.""")
@@ -150,7 +152,8 @@ trait InputScaledRuntimeReducerEstimator extends HistoryReducerEstimator {
         history.map(_.hdfsBytesRead)
       }
       .collect {
-        case (Some(time), bytes) => time / bytes
+        case (Some(time), bytes) =>
+          time / bytes
       }
 
     // time-to-byte ratio, averaged over all the steps

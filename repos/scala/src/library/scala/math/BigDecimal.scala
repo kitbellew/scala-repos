@@ -475,7 +475,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     */
   override def equals(that: Any): Boolean =
     that match {
-      case that: BigDecimal => this equals that
+      case that: BigDecimal =>
+        this equals that
       case that: BigInt =>
         that.bitLength > (precision - scale - 2) * BigDecimal.deci2binary &&
           this.toBigIntExact.exists(that equals _)
@@ -489,7 +490,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
           val f = toFloat
           !f.isInfinity && f == that && equals(decimal(f.toDouble))
         }
-      case _ => isValidLong && unifiedPrimitiveEquals(that)
+      case _ =>
+        isValidLong && unifiedPrimitiveEquals(that)
     }
   override def isValidByte = noArithmeticException(toByteExact)
   override def isValidShort = noArithmeticException(toShortExact)
@@ -563,7 +565,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
       body;
       true
     } catch {
-      case _: ArithmeticException => false
+      case _: ArithmeticException =>
+        false
     }
   }
 
@@ -604,7 +607,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     */
   def /%(that: BigDecimal): (BigDecimal, BigDecimal) =
     this.bigDecimal.divideAndRemainder(that.bigDecimal) match {
-      case Array(q, r) => (new BigDecimal(q, mc), new BigDecimal(r, mc))
+      case Array(q, r) =>
+        (new BigDecimal(q, mc), new BigDecimal(r, mc))
     }
 
   /** Divide to Integral value.
@@ -616,16 +620,20 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     */
   def min(that: BigDecimal): BigDecimal =
     (this compare that) match {
-      case x if x <= 0 => this
-      case _           => that
+      case x if x <= 0 =>
+        this
+      case _ =>
+        that
     }
 
   /** Returns the maximum of this and that, or this if the two are equal
     */
   def max(that: BigDecimal): BigDecimal =
     (this compare that) match {
-      case x if x >= 0 => this
-      case _           => that
+      case x if x >= 0 =>
+        this
+      case _ =>
+        that
     }
 
   /** Remainder after dividing this by that.
@@ -832,7 +840,8 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     if (isWhole()) {
       try Some(new BigInt(this.bigDecimal.toBigIntegerExact()))
       catch {
-        case _: ArithmeticException => None
+        case _: ArithmeticException =>
+          None
       }
     } else
       None

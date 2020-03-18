@@ -32,9 +32,12 @@ sealed trait FullyQualifiedName {
 case class PackageName(path: List[String]) extends FullyQualifiedName {
   def contains(o: FullyQualifiedName) =
     o match {
-      case PackageName(pn)  => pn.startsWith(path)
-      case ClassName(p, _)  => contains(p)
-      case MemberName(c, _) => contains(c)
+      case PackageName(pn) =>
+        pn.startsWith(path)
+      case ClassName(p, _) =>
+        contains(p)
+      case MemberName(c, _) =>
+        contains(c)
     }
   def fqnString = path.mkString(".")
   def parent = PackageName(path.init)
@@ -47,8 +50,10 @@ case class ClassName(pack: PackageName, name: String)
     o match {
       case ClassName(op, on) if pack == op && on.startsWith(name) =>
         (on == name) || on.startsWith(name + "$")
-      case MemberName(cn, _) => contains(cn)
-      case _                 => false
+      case MemberName(cn, _) =>
+        contains(cn)
+      case _ =>
+        false
     }
 
   def fqnString =
@@ -89,8 +94,10 @@ object ClassName {
   // strips array reification
   def fromDescriptor(desc: String): ClassName =
     DescriptorParser.parseType(desc) match {
-      case c: ClassName       => c
-      case a: ArrayDescriptor => a.reifier
+      case c: ClassName =>
+        c
+      case a: ArrayDescriptor =>
+        a.reifier
     }
 
   // internal name is effectively the FQN with / instead of dots
@@ -121,8 +128,10 @@ sealed trait DescriptorType {
 case class ArrayDescriptor(fqn: DescriptorType) extends DescriptorType {
   def reifier: ClassName =
     fqn match {
-      case c: ClassName       => c
-      case a: ArrayDescriptor => a.reifier
+      case c: ClassName =>
+        c
+      case a: ArrayDescriptor =>
+        a.reifier
     }
   def internalString = "[" + fqn.internalString
 }

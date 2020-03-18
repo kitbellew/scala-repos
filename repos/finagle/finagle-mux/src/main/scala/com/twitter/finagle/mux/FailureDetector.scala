@@ -109,7 +109,8 @@ object FailureDetector {
       ping: () => Future[Unit],
       statsReceiver: StatsReceiver): FailureDetector = {
     config match {
-      case NullConfig => NullFailureDetector
+      case NullConfig =>
+        NullFailureDetector
 
       case cfg: ThresholdConfig =>
         new ThresholdFailureDetector(

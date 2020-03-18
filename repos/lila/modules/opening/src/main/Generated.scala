@@ -12,7 +12,8 @@ private[opening] case class Generated(
 
   def toOpening: Try[Opening.ID => Opening] =
     (chess.format.Forsyth <<< fen) match {
-      case None => Failure(new Exception(s"Can't parse fen $fen"))
+      case None =>
+        Failure(new Exception(s"Can't parse fen $fen"))
       case Some(parsed) =>
         val color = parsed.situation.color
         moves
@@ -23,15 +24,20 @@ private[opening] case class Generated(
                   parsed.situation,
                   first :: move.line.split(' ').toList)
                 cp <- parseIntOption(move.cp) match {
-                  case None     => Failure(new Exception(s"Invalid cp ${move.cp}"))
-                  case Some(cp) => Success(cp)
+                  case None =>
+                    Failure(new Exception(s"Invalid cp ${move.cp}"))
+                  case Some(cp) =>
+                    Success(cp)
                 }
               } yield Move(first = first, cp = cp, line = pgn)
           }
           .foldLeft(Try(List[Move]())) {
-            case (Success(acc), Success(l)) => Success(l :: acc)
-            case (err: Failure[_], _)       => err
-            case (_, Failure(err))          => Failure(err)
+            case (Success(acc), Success(l)) =>
+              Success(l :: acc)
+            case (err: Failure[_], _) =>
+              err
+            case (_, Failure(err)) =>
+              Failure(err)
           }
           .map { realMoves =>
             Opening.make(fen = fen, color = color, moves = realMoves)

@@ -131,7 +131,8 @@ class LocalKafkaEventStore(
             }
           }
 
-        case Nil => right(messages)
+        case Nil =>
+          right(messages)
       }
     }
 

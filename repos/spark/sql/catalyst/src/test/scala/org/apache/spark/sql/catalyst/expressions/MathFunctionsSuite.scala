@@ -142,7 +142,8 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     val actual =
       try evaluate(expression, inputRow)
       catch {
-        case e: Exception => fail(s"Exception evaluating $expression", e)
+        case e: Exception =>
+          fail(s"Exception evaluating $expression", e)
       }
     if (!actual.asInstanceOf[Double].isNaN) {
       fail(

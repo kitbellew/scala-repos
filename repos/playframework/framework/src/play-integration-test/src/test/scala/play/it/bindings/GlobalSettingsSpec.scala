@@ -48,7 +48,8 @@ trait GlobalSettingsSpec
               Action { request =>
                 Ok(request.headers.get("X-Foo").getOrElse("null"))
               }
-            case p"/java" => JAction(app, JavaAction)
+            case p"/java" =>
+              JAction(app, JavaAction)
           }))
       .build()
     running(TestServer(port, app)) {

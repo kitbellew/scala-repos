@@ -12,7 +12,8 @@ class Serving extends LServing[Query, PredictedResult] {
         val preparedItems =
           result.itemScores
             .sortBy {
-              case ItemScore(item, score, year) ⇒ year
+              case ItemScore(item, score, year) ⇒
+                year
             }(Ordering.Option[Int].reverse)
         new PredictedResult(preparedItems)
       }

@@ -96,8 +96,10 @@ class Main {
     val classFile = ClassFileParser.parse(byteCode)
 
     ScalaSigParser.parse(classFile) match {
-      case Some(scalaSig) => parseScalaSignature(scalaSig, isPackageObject)
-      case None           => ""
+      case Some(scalaSig) =>
+        parseScalaSignature(scalaSig, isPackageObject)
+      case None =>
+        ""
     }
   }
 
@@ -109,8 +111,9 @@ class Main {
     // find the classfile
     val encName =
       classname match {
-        case "scala.AnyRef" => "java.lang.Object"
-        case _              =>
+        case "scala.AnyRef" =>
+          "java.lang.Object"
+        case _ =>
           // we have to encode every fragment of a name separately, otherwise the NameTransformer
           // will encode using unicode escaping dot separators as well
           // we can afford allocations because this is not a performance critical code

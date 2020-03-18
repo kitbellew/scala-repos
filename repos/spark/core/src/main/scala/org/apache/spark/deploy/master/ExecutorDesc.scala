@@ -42,7 +42,8 @@ private[master] class ExecutorDesc(
           worker.id == info.worker.id &&
           cores == info.cores &&
           memory == info.memory
-      case _ => false
+      case _ =>
+        false
     }
   }
 

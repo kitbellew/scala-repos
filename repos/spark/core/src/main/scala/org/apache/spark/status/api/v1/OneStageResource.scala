@@ -171,7 +171,8 @@ object OneStageResource {
     val extractor: (TaskData => Long) =
       td =>
         taskSorting match {
-          case ID => td.taskId
+          case ID =>
+            td.taskId
           case INCREASING_RUNTIME =>
             td.taskMetrics
               .map {

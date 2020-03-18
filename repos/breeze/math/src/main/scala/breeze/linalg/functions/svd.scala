@@ -85,13 +85,17 @@ object svd extends UFunc {
     val S = DenseVector.zeros[Double](m min n)
     val U =
       mode match {
-        case CompleteSVD => DenseMatrix.zeros[Double](m, m)
-        case ReducedSVD  => DenseMatrix.zeros[Double](m, m min n)
+        case CompleteSVD =>
+          DenseMatrix.zeros[Double](m, m)
+        case ReducedSVD =>
+          DenseMatrix.zeros[Double](m, m min n)
       }
     val Vt =
       mode match {
-        case CompleteSVD => DenseMatrix.zeros[Double](n, n)
-        case ReducedSVD  => DenseMatrix.zeros[Double](m min n, n)
+        case CompleteSVD =>
+          DenseMatrix.zeros[Double](n, n)
+        case ReducedSVD =>
+          DenseMatrix.zeros[Double](m min n, n)
       }
     val iwork = new Array[Int](8 * (m min n))
     val workSize = (3
@@ -107,8 +111,10 @@ object svd extends UFunc {
 
     val LDVT =
       mode match {
-        case CompleteSVD => scala.math.max(1, n)
-        case ReducedSVD  => m min n
+        case CompleteSVD =>
+          scala.math.max(1, n)
+        case ReducedSVD =>
+          m min n
       }
 
     lapack.dgesdd(
@@ -150,13 +156,17 @@ object svd extends UFunc {
     val S = DenseVector.zeros[Float](m min n)
     val U =
       mode.JOBZ match {
-        case "A" => DenseMatrix.zeros[Float](m, m)
-        case "S" => DenseMatrix.zeros[Float](m, m min n)
+        case "A" =>
+          DenseMatrix.zeros[Float](m, m)
+        case "S" =>
+          DenseMatrix.zeros[Float](m, m min n)
       }
     val Vt =
       mode.JOBZ match {
-        case "A" => DenseMatrix.zeros[Float](n, n)
-        case "S" => DenseMatrix.zeros[Float](m min n, n)
+        case "A" =>
+          DenseMatrix.zeros[Float](n, n)
+        case "S" =>
+          DenseMatrix.zeros[Float](m min n, n)
       }
     val iwork = new Array[Int](8 * (m min n))
     val workSize = (3
@@ -172,8 +182,10 @@ object svd extends UFunc {
 
     val LDVT =
       mode.JOBZ match {
-        case "A" => scala.math.max(1, n)
-        case "S" => m min n
+        case "A" =>
+          scala.math.max(1, n)
+        case "S" =>
+          m min n
       }
 
     lapack.sgesdd(
@@ -401,7 +413,8 @@ object svd extends UFunc {
           DenseVector(sp.map(u => 1 / u).toArray))
 
         val va = mp.map {
-          case (ek, ev) => ev
+          case (ek, ev) =>
+            ev
         }
         val uOutput = DenseMatrix(va.map(r => r.toArray).toSeq: _*).t
         val vtOutput = siMatrix * DenseMatrix(

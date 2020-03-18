@@ -400,7 +400,8 @@ trait RestHelper extends LiftRules.DispatchPF {
                       Empty,
                       500))
 
-              case e: EmptyBox => emptyToResp(e)
+              case e: EmptyBox =>
+                emptyToResp(e)
             }
           }
       })
@@ -453,12 +454,15 @@ trait RestHelper extends LiftRules.DispatchPF {
     */
   protected implicit lazy val convertJsonXmlAble
       : PartialFunction[(JsonXmlSelect, JsonXmlAble, Req), LiftResponse] = {
-    case (JsonSelect, obj, _) => Extraction.decompose(obj)
+    case (JsonSelect, obj, _) =>
+      Extraction.decompose(obj)
 
     case (XmlSelect, obj, _) =>
       Xml.toXml(Extraction.decompose(obj)).toList match {
-        case x :: _ => x
-        case _      => Text("")
+        case x :: _ =>
+          x
+        case _ =>
+          Text("")
       }
   }
 
@@ -489,8 +493,10 @@ trait RestHelper extends LiftRules.DispatchPF {
       Extraction.decompose(obj)
     case (XmlSelect, AutoJsonXmlAble(obj), _) =>
       Xml.toXml(Extraction.decompose(obj)).toList match {
-        case x :: _ => x
-        case _      => Text("")
+        case x :: _ =>
+          x
+        case _ =>
+          Text("")
       }
   }
 
@@ -636,8 +642,10 @@ trait RestHelper extends LiftRules.DispatchPF {
   protected implicit def boxToResp[T](in: Box[T])(implicit
       c: T => LiftResponse): () => Box[LiftResponse] =
     in match {
-      case Full(v)     => () => Full(c(v))
-      case e: EmptyBox => () => emptyToResp(e)
+      case Full(v) =>
+        () => Full(c(v))
+      case e: EmptyBox =>
+        () => emptyToResp(e)
     }
 
   protected def emptyToResp(eb: EmptyBox): Box[LiftResponse] =
@@ -657,7 +665,8 @@ trait RestHelper extends LiftRules.DispatchPF {
       case Failure(msg, _, _) =>
         Full(NotFoundResponse(msg))
 
-      case _ => Empty
+      case _ =>
+        Empty
     }
 
   /**
@@ -667,8 +676,10 @@ trait RestHelper extends LiftRules.DispatchPF {
   protected implicit def optionToResp[T](in: Option[T])(implicit
       c: T => LiftResponse): () => Box[LiftResponse] =
     in match {
-      case Some(v) => () => Full(c(v))
-      case _       => () => Empty
+      case Some(v) =>
+        () => Full(c(v))
+      case _ =>
+        () => Empty
     }
 
   /**
@@ -696,8 +707,10 @@ trait RestHelper extends LiftRules.DispatchPF {
         case Failure(msg, _, _) =>
           Full(NotFoundResponse(msg))
 
-        case Full(v) => Full(c(v))
-        case _       => Empty
+        case Full(v) =>
+          Full(c(v))
+        case _ =>
+          Empty
       }
     }
 
@@ -709,8 +722,10 @@ trait RestHelper extends LiftRules.DispatchPF {
       c: T => LiftResponse): () => Box[LiftResponse] =
     () =>
       in() match {
-        case Some(v) => Full(c(v))
-        case _       => Empty
+        case Some(v) =>
+          Full(c(v))
+        case _ =>
+          Empty
       }
 
   /**
@@ -778,10 +793,12 @@ trait RestHelper extends LiftRules.DispatchPF {
         toMerge match {
           case JObject(otherFields) =>
             JObject(otherFields.foldLeft(fields)(replace(_, _)))
-          case _ => original
+          case _ =>
+            original
         }
 
-      case _ => original // can't merge
+      case _ =>
+        original // can't merge
     }
   }
 }

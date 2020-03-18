@@ -66,8 +66,10 @@ abstract class ScalaStructureViewElement(
   override def equals(o: Any): Boolean = {
     val clazz =
       o match {
-        case obj: Object => obj.getClass
-        case _           => return false
+        case obj: Object =>
+          obj.getClass
+        case _ =>
+          return false
       }
     if (o == null || getClass != clazz)
       return false

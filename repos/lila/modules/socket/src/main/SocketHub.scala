@@ -23,11 +23,14 @@ final class SocketHub extends Actor {
 
   def receive = {
 
-    case Open(socket) => sockets += socket
+    case Open(socket) =>
+      sockets += socket
 
-    case Close(socket) => sockets -= socket
+    case Close(socket) =>
+      sockets -= socket
 
-    case msg => sockets foreach (_ ! msg)
+    case msg =>
+      sockets foreach (_ ! msg)
   }
 }
 

@@ -127,8 +127,10 @@ object ParserSettings extends SettingsCompanion[ParserSettings] {
 
     def apply(mode: String): CookieParsingMode =
       mode.toRootLowerCase match {
-        case "rfc6265" ⇒ RFC6265
-        case "raw" ⇒ Raw
+        case "rfc6265" ⇒
+          RFC6265
+        case "raw" ⇒
+          Raw
       }
   }
 
@@ -141,9 +143,12 @@ object ParserSettings extends SettingsCompanion[ParserSettings] {
 
     def apply(string: String): ErrorLoggingVerbosity =
       string.toRootLowerCase match {
-        case "off" ⇒ Off
-        case "simple" ⇒ Simple
-        case "full" ⇒ Full
+        case "off" ⇒
+          Off
+        case "simple" ⇒
+          Simple
+        case "full" ⇒
+          Full
         case x ⇒
           throw new IllegalArgumentException(
             s"[$x] is not a legal `error-logging-verbosity` setting")

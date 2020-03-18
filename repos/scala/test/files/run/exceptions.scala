@@ -7,8 +7,10 @@
 abstract class IntMap[A] {
   def lookup(key: Int): A =
     this match {
-      case Empty() => sys.error("KO")
-      case _       => sys.error("ok")
+      case Empty() =>
+        sys.error("KO")
+      case _ =>
+        sys.error("ok")
     }
 }
 
@@ -44,7 +46,8 @@ object exceptions {
       try {
         map.lookup(key)
       } catch {
-        case e: Throwable => e.getMessage()
+        case e: Throwable =>
+          e.getMessage()
       }
     check("lookup(" + key + ")", value, "KO");
   }

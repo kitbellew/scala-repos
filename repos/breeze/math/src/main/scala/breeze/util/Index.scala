@@ -80,7 +80,8 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
     other match {
       case that: Index[_] if this.size == that.size =>
         this sameElements that
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -250,7 +251,8 @@ object Index {
   import scala.reflect.OptManifest
   def apply[T: OptManifest](): MutableIndex[T] =
     implicitly[OptManifest[T]] match {
-      case _ => new HashIndex[T];
+      case _ =>
+        new HashIndex[T];
     }
 
   /** Constructs an Index from some iterator. */
@@ -297,8 +299,10 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
     extends Index[Either[L, R]] {
   def apply(t: Either[L, R]) =
     t match {
-      case Left(l)  => left(l)
-      case Right(r) => right(r) + rightOffset
+      case Left(l) =>
+        left(l)
+      case Right(r) =>
+        right(r) + rightOffset
     }
 
   /**
@@ -318,9 +322,11 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
 
   def pairs =
     left.pairs.map {
-      case (l, i) => Left(l) -> i
+      case (l, i) =>
+        Left(l) -> i
     } ++ right.pairs.map {
-      case (r, i) => Right(r) -> (i + left.size)
+      case (r, i) =>
+        Right(r) -> (i + left.size)
     }
 
   def iterator =
@@ -341,8 +347,10 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
 class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
   def apply(t: Option[T]) =
     t match {
-      case Some(l) => inner(l)
-      case None    => inner.size
+      case Some(l) =>
+        inner(l)
+      case None =>
+        inner.size
     }
 
   def unapply(i: Int) = {
@@ -365,7 +373,8 @@ class OptionIndex[T](inner: Index[T]) extends Index[Option[T]] {
 
   def pairs =
     inner.pairs.map {
-      case (l, i) => Some(l) -> i
+      case (l, i) =>
+        Some(l) -> i
     } ++ Iterator(None -> inner.size)
 
   def iterator =

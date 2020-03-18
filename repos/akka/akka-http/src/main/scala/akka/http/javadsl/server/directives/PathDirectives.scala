@@ -201,8 +201,10 @@ abstract class PathDirectives extends MiscDirectives {
       matchers: Seq[AnyRef]): immutable.Seq[PathMatcher[_]] = {
     def parse(matcher: AnyRef): PathMatcher[_] =
       matcher match {
-        case p: PathMatcher[_] ⇒ p
-        case name: String ⇒ PathMatchers.segment(name)
+        case p: PathMatcher[_] ⇒
+          p
+        case name: String ⇒
+          PathMatchers.segment(name)
         case x ⇒
           throw new IllegalArgumentException(
             s"Matcher of class ${x.getClass} is unsupported for PathDirectives")

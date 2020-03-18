@@ -39,6 +39,7 @@ class HoconCommentJoinLinesHandler extends JoinLinesHandlerDelegate {
           } getOrElse CANNOT_JOIN
         } else
           CANNOT_JOIN
-      case _ => CANNOT_JOIN
+      case _ =>
+        CANNOT_JOIN
     }
 }

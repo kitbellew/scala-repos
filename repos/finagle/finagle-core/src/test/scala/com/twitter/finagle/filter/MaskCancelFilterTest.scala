@@ -23,7 +23,8 @@ class MaskCancelFilterTest extends FunSuite with MockitoSugar {
         @volatile
         var interrupted: Option[Throwable] = None
         setInterruptHandler {
-          case exc => interrupted = Some(exc)
+          case exc =>
+            interrupted = Some(exc)
         }
       }
     when(service(1)).thenReturn(p)

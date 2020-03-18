@@ -29,7 +29,8 @@ object Test {
       try {
         "ok: " + o.getClass.getName
       } catch {
-        case e => "FAIL: " + e + "\n" + e.getStackTrace.mkString("\n  ")
+        case e =>
+          "FAIL: " + e + "\n" + e.getStackTrace.mkString("\n  ")
       })
 
   def main(args: Array[String]) {

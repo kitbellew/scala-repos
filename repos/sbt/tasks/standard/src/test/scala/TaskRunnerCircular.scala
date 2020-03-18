@@ -43,7 +43,8 @@ object TaskRunnerCircularTest extends Properties("TaskRunner Circular") {
       tryRun(top, true, workers);
       false
     } catch {
-      case i: Incomplete => cyclic(i)
+      case i: Incomplete =>
+        cyclic(i)
     }
   }
   def cyclic(i: Incomplete) =

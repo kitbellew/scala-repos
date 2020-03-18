@@ -95,7 +95,8 @@ object ValidationTest extends SpecLite {
     (
       List("1", "2", "3") map (
         _.parseInt.leftMap(_.toString) excepting {
-          case i if i < 0 => errmsg(i)
+          case i if i < 0 =>
+            errmsg(i)
         }
       )
     ) must_=== (List(1.success[String], 2.success[String], 3.success[String]))
@@ -103,7 +104,8 @@ object ValidationTest extends SpecLite {
     (
       List("1", "-2", "3") map (
         _.parseInt.leftMap(_.toString) excepting {
-          case i if i < 0 => errmsg(i)
+          case i if i < 0 =>
+            errmsg(i)
         }
       )
     ) must_=== (
@@ -116,7 +118,8 @@ object ValidationTest extends SpecLite {
     (
       List("1", "2", "3") map (
         _.parseInt.leftMap(_.toString) excepting {
-          case i if i < 0 => errmsgA(i)
+          case i if i < 0 =>
+            errmsgA(i)
         }
       )
     ) must_=== (List(1.success[Any], 2.success[Any], 3.success[Any]))
@@ -124,7 +127,8 @@ object ValidationTest extends SpecLite {
     (
       List("1", "-2", "3") map (
         _.parseInt.leftMap(_.toString) excepting {
-          case i if i < 0 => errmsgA(i)
+          case i if i < 0 =>
+            errmsgA(i)
         }
       )
     ) must_=== (List(1.success[Any], errmsgA(-2).failure[Int], 3.success[Any]))

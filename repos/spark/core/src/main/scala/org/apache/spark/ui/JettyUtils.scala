@@ -274,7 +274,8 @@ private[spark] object JettyUtils extends Logging {
             DispatcherType.INCLUDE,
             DispatcherType.REQUEST)
           handlers.foreach {
-            case (handler) => handler.addFilter(holder, "/*", enumDispatcher)
+            case (handler) =>
+              handler.addFilter(holder, "/*", enumDispatcher)
           }
         }
     }

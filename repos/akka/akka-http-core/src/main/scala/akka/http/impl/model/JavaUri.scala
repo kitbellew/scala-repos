@@ -29,9 +29,12 @@ case class JavaUri(uri: sm.Uri) extends jm.Uri {
     import sm.Uri.Path._
     def gatherSegments(path: sm.Uri.Path): List[String] =
       path match {
-        case Empty ⇒ Nil
-        case Segment(head, tail) ⇒ head :: gatherSegments(tail)
-        case Slash(tail) ⇒ gatherSegments(tail)
+        case Empty ⇒
+          Nil
+        case Segment(head, tail) ⇒
+          head :: gatherSegments(tail)
+        case Slash(tail) ⇒
+          gatherSegments(tail)
       }
     import collection.JavaConverters._
     gatherSegments(uri.path).asJava

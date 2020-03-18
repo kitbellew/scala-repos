@@ -56,14 +56,16 @@ sealed abstract class IO[A] {
   def map[B](f: A => B): IO[B] =
     io(rw =>
       apply(rw) map {
-        case (nw, a) => (nw, f(a))
+        case (nw, a) =>
+          (nw, f(a))
       })
 
   /** Continues this action with the given action. */
   def flatMap[B](f: A => IO[B]): IO[B] =
     io(rw =>
       apply(rw) flatMap {
-        case (nw, a) => f(a)(nw)
+        case (nw, a) =>
+          f(a)(nw)
       })
 
   /** Lift this action to a given IO-like monad. */
@@ -75,7 +77,8 @@ sealed abstract class IO[A] {
       try {
         Free.pure(this(rw).run)
       } catch {
-        case e: Throwable => handler(e)(rw)
+        case e: Throwable =>
+          handler(e)(rw)
       })
 
   /**
@@ -85,8 +88,10 @@ sealed abstract class IO[A] {
   def catchSome[B](p: Throwable => Option[B], handler: B => IO[A]): IO[A] =
     except(e =>
       p(e) match {
-        case Some(z) => handler(z)
-        case None    => throw e
+        case Some(z) =>
+          handler(z)
+        case None =>
+          throw e
       })
 
   /**

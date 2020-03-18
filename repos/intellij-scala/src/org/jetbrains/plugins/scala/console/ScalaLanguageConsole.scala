@@ -106,10 +106,13 @@ class ScalaLanguageConsole(project: Project, title: String)
         addValue(f.name, f.getTextRange, replaceWithPlaceholder = false)
       case o: ScObject =>
         addValue(o.name, o.getTextRange, replaceWithPlaceholder = false)
-      case c: ScClass     => addType(c.name, c.nameId.getTextRange)
-      case c: ScTrait     => addType(c.name, c.nameId.getTextRange)
-      case t: ScTypeAlias => addType(t.name, t.nameId.getTextRange)
-      case _              => //do nothing
+      case c: ScClass =>
+        addType(c.name, c.nameId.getTextRange)
+      case c: ScTrait =>
+        addType(c.name, c.nameId.getTextRange)
+      case t: ScTypeAlias =>
+        addType(t.name, t.nameId.getTextRange)
+      case _ => //do nothing
     }
     scalaFile = ScalaPsiElementFactory.createScalaFileFromText(
       textBuffer.toString() + ";\n1",

@@ -415,8 +415,10 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
   /** INTERNAL API */
   private[akka] override def versionAt(node: UniqueAddress): Long =
     versions.get(node) match {
-      case Some(v) ⇒ v
-      case None ⇒ Timestamp.Zero
+      case Some(v) ⇒
+        v
+      case None ⇒
+        Timestamp.Zero
     }
 
   /** INTERNAL API */
@@ -464,7 +466,8 @@ final case class ManyVersionVector(versions: TreeMap[UniqueAddress, Long])
   override def toString: String =
     versions
       .map {
-        case ((n, v)) ⇒ n + " -> " + v
+        case ((n, v)) ⇒
+          n + " -> " + v
       }
       .mkString("VersionVector(", ", ", ")")
 }

@@ -37,7 +37,8 @@ object Test {
       println(prop.value);
       assert(false, "should not get here")
     } catch {
-      case _: Exception => ()
+      case _: Exception =>
+        ()
     }
   }
   def double() = {

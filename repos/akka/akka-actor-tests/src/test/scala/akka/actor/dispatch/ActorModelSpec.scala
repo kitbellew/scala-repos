@@ -189,8 +189,10 @@ object ActorModelSpec {
     def getStats(actorRef: ActorRef) = {
       val is = new InterceptorStats
       stats.putIfAbsent(actorRef, is) match {
-        case null ⇒ is
-        case other ⇒ other
+        case null ⇒
+          is
+        case other ⇒
+          other
       }
     }
 
@@ -351,8 +353,10 @@ abstract class ActorModelSpec(config: String)
   def awaitStarted(ref: ActorRef): Unit = {
     awaitCond(
       ref match {
-        case r: RepointableRef ⇒ r.isStarted
-        case _ ⇒ true
+        case r: RepointableRef ⇒
+          r.isStarted
+        case _ ⇒
+          true
       },
       1 second,
       10 millis)
@@ -525,7 +529,8 @@ abstract class ActorModelSpec(config: String)
                   for (_ ← 1 to num)(
                     context.watch(context.actorOf(props))
                   ) ! cachedMessage
-                case Terminated(child) ⇒ stopLatch.countDown()
+                case Terminated(child) ⇒
+                  stopLatch.countDown()
               }
             }).withDispatcher("boss"))
         try {

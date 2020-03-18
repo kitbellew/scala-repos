@@ -484,7 +484,8 @@ trait RepositoryService {
     (
       loginAccount match {
         // for Administrators
-        case Some(x) if (x.isAdmin) => Repositories
+        case Some(x) if (x.isAdmin) =>
+          Repositories
         // for Normal Users
         case Some(x) if (!x.isAdmin) =>
           Repositories filter { t =>
@@ -498,7 +499,8 @@ trait RepositoryService {
             )
           }
         // for Guests
-        case None => Repositories filter (_.isPrivate === false.bind)
+        case None =>
+          Repositories filter (_.isPrivate === false.bind)
       }
     ).filter { t =>
         repositoryUserName.map { userName =>
@@ -530,7 +532,8 @@ trait RepositoryService {
       s: Session): Seq[String] =
     if (getAccountByUserName(userName).exists(_.isGroupAccount)) {
       getGroupMembers(userName).collect {
-        case x if (x.isManager) => x.userName
+        case x if (x.isManager) =>
+          x.userName
       }
     } else {
       Seq(userName)
@@ -633,12 +636,15 @@ trait RepositoryService {
       repository: String,
       loginAccount: Option[Account])(implicit s: Session): Boolean = {
     loginAccount match {
-      case Some(a) if (a.isAdmin)           => true
-      case Some(a) if (a.userName == owner) => true
+      case Some(a) if (a.isAdmin) =>
+        true
+      case Some(a) if (a.userName == owner) =>
+        true
       case Some(a)
           if (getCollaborators(owner, repository).contains(a.userName)) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 

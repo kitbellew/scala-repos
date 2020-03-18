@@ -50,7 +50,8 @@ class ZKStore(
         Some(ZKEntity(node, ZKData(data.bytes), Some(data.stat.getVersion)))
       }
       .recover {
-        case ex: NoNodeException => None
+        case ex: NoNodeException =>
+          None
       }
       .recover(exceptionTransform(s"Could not load key $key"))
   }
@@ -100,7 +101,8 @@ class ZKStore(
         node.delete(d.stat.getVersion).asScala.map(_ => true)
       }
       .recover {
-        case ex: NoNodeException => false
+        case ex: NoNodeException =>
+          false
       }
       .recover(exceptionTransform(s"Can not delete entity $key"))
   }
@@ -121,7 +123,8 @@ class ZKStore(
 
   private[this] def zkEntity(entity: PersistentEntity): ZKEntity = {
     entity match {
-      case zk: ZKEntity => zk
+      case zk: ZKEntity =>
+        zk
       case _ =>
         throw new IllegalArgumentException(
           s"Can not handle this kind of entity: ${entity.getClass}")
@@ -135,7 +138,8 @@ class ZKStore(
         .asScala
         .map(_ => true)
         .recover {
-          case ex: NoNodeException => false
+          case ex: NoNodeException =>
+            false
         }
         .recover(exceptionTransform("Can not query for exists"))
 
@@ -144,14 +148,17 @@ class ZKStore(
         .create()
         .asScala
         .recover {
-          case ex: NodeExistsException => node
+          case ex: NodeExistsException =>
+            node
         }
         .recover(exceptionTransform("Can not create"))
 
     def createPath(node: ZNode): Future[ZNode] = {
       nodeExists(node).flatMap {
-        case true  => Future.successful(node)
-        case false => createPath(node.parent).flatMap(_ => createNode(node))
+        case true =>
+          Future.successful(node)
+        case false =>
+          createPath(node.parent).flatMap(_ => createNode(node))
       }
     }
     createPath(path)

@@ -145,8 +145,10 @@ class ObservableSetSpec[T]
     val addedValues = Buffer.empty[Int]
     set onChange { (sourceSet, change) =>
       change match {
-        case Add(value) => addedValues += value
-        case _          => fail("Unexpected change: " + change)
+        case Add(value) =>
+          addedValues += value
+        case _ =>
+          fail("Unexpected change: " + change)
       }
     }
 
@@ -176,8 +178,10 @@ class ObservableSetSpec[T]
     val removedValues = Buffer.empty[Int]
     set onChange { (sourceSet, change) =>
       change match {
-        case Remove(value) => removedValues += value
-        case _             => fail("Unexpected change: " + change)
+        case Remove(value) =>
+          removedValues += value
+        case _ =>
+          fail("Unexpected change: " + change)
       }
     }
 
@@ -221,8 +225,10 @@ class ObservableSetSpec[T]
     val removedValues = Buffer.empty[Int]
     set onChange { (sourceSet, change) =>
       change match {
-        case Add(value)    => addedValues += value
-        case Remove(value) => removedValues += value
+        case Add(value) =>
+          addedValues += value
+        case Remove(value) =>
+          removedValues += value
       }
     }
 

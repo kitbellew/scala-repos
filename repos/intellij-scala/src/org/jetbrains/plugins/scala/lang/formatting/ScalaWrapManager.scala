@@ -66,7 +66,8 @@ object ScalaWrapManager {
               false)
           } else
             Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
-        case _ => Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
+        case _ =>
+          Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
       }
     }
 
@@ -126,8 +127,10 @@ object ScalaWrapManager {
             return Wrap.createWrap(settings.METHOD_ANNOTATION_WRAP, false)
           case _: ScVariable | _: ScValue | _: ScTypeAlias if {
                 annot.getParent.getParent match {
-                  case _: ScEarlyDefinitions | _: ScTemplateBody => true;
-                  case _                                         => false
+                  case _: ScEarlyDefinitions | _: ScTemplateBody =>
+                    true;
+                  case _ =>
+                    false
                 }
               } =>
             return Wrap.createWrap(settings.FIELD_ANNOTATION_WRAP, false)
@@ -172,7 +175,8 @@ object ScalaWrapManager {
             suggestedWrap
           else
             null
-        case _ => null //hasn't to be
+        case _ =>
+          null //hasn't to be
       }
     }
 
@@ -219,9 +223,12 @@ object ScalaWrapManager {
           return null
       case patt: ScPatternArgumentList =>
         childPsi match {
-          case _: ScPattern     => return suggestedWrap
-          case _: ScSequenceArg => return suggestedWrap
-          case _                => return null
+          case _: ScPattern =>
+            return suggestedWrap
+          case _: ScSequenceArg =>
+            return suggestedWrap
+          case _ =>
+            return null
         }
       case params: ScParameterClause =>
         if (childPsi.isInstanceOf[ScParameter])
@@ -246,12 +253,14 @@ object ScalaWrapManager {
           classOf[ScExtendsBlock])
         val first: PsiElement =
           e.earlyDefinitions match {
-            case Some(z) => z
+            case Some(z) =>
+              z
             case _ =>
               e.templateParents match {
                 case Some(tp) if tp.typeElements.nonEmpty =>
                   tp.typeElements.head
-                case _ => null
+                case _ =>
+                  null
               }
           }
         if (first == null)
@@ -267,7 +276,8 @@ object ScalaWrapManager {
           e.templateParents match {
             case Some(tp) if tp.typeElements.contains(childPsi) =>
               return suggestedWrap
-            case _ => return null
+            case _ =>
+              return null
           }
         }
       case _ =>

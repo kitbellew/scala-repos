@@ -123,9 +123,12 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
           n.members.foldLeft((false, false)) {
             case ((seenMergeProducer, inError), producer) =>
               producer match {
-                case MergedProducer(_, _) => (true, inError)
-                case NamedProducer(_, _)  => (seenMergeProducer, inError)
-                case _                    => (seenMergeProducer, (inError || seenMergeProducer))
+                case MergedProducer(_, _) =>
+                  (true, inError)
+                case NamedProducer(_, _) =>
+                  (seenMergeProducer, inError)
+                case _ =>
+                  (seenMergeProducer, (inError || seenMergeProducer))
               }
           }
         if (inError)
@@ -160,8 +163,10 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       dag.nodes.forall { n =>
         val success =
           n match {
-            case _: SourceNode[_] => true
-            case _                => dag.dependenciesOf(n).size > 0
+            case _: SourceNode[_] =>
+              true
+            case _ =>
+              dag.dependenciesOf(n).size > 0
           }
         if (!success)
           dumpGraph(dag)
@@ -177,7 +182,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
           n match {
             case _: SourceNode[_] =>
               dag.dependenciesOf(n).size == 0 && dag.dependantsOf(n).size > 0
-            case _ => true
+            case _ =>
+              true
           }
         if (!success)
           dumpGraph(dag)
@@ -195,7 +201,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
               dag.dependenciesOf(n).size > 0 && dag.dependenciesOf(n).forall {
                 otherN => otherN.isInstanceOf[FlatMapNode[_]]
               }
-            case _ => true
+            case _ =>
+              true
           }
         if (!success)
           dumpGraph(dag)
@@ -212,7 +219,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
               n.members.forall { p =>
                 !p.isInstanceOf[FlatMappedProducer[_, _, _]]
               }
-            case _ => true
+            case _ =>
+              true
           }
         if (!success)
           dumpGraph(dag)
@@ -242,8 +250,10 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
         Producer
           .entireGraphOf(tail)
           .collect {
-            case NamedProducer(_, _) => 0
-            case _                   => 1
+            case NamedProducer(_, _) =>
+              0
+            case _ =>
+              1
           }
           .sum
       }

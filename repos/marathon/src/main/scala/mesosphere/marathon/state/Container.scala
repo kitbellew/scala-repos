@@ -101,7 +101,8 @@ object Container {
             validate(c)(validMesosContainer)
           case Mesos.ContainerInfo.Type.DOCKER =>
             validate(c)(validDockerContainer)
-          case _ => Failure(Set(RuleViolation(c.`type`, "unknown", None)))
+          case _ =>
+            Failure(Set(RuleViolation(c.`type`, "unknown", None)))
         }
     } and validGeneralContainer
   }

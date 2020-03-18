@@ -22,13 +22,16 @@ class TryTests extends MinimalScalaTest {
     "recoverWith" in {
       val myException = new MyException
       Success(1) recoverWith {
-        case _ => Success(2)
+        case _ =>
+          Success(2)
       } mustEqual Success(1)
       Failure(e) recoverWith {
-        case _ => Success(2)
+        case _ =>
+          Success(2)
       } mustEqual Success(2)
       Failure(e) recoverWith {
-        case _ => Failure(e)
+        case _ =>
+          Failure(e)
       } mustEqual Failure(e)
     }
 

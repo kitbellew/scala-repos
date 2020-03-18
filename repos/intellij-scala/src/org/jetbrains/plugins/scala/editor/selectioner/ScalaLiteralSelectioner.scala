@@ -23,7 +23,8 @@ class ScalaLiteralSelectioner extends ExtendWordSelectionHandlerBase {
           children(0).getElementType == ScalaTokenTypes.tSTRING ||
           children(0).getElementType == ScalaTokenTypes.tMULTILINE_STRING
         )
-      case _ => false
+      case _ =>
+        false
     }
 
   override def select(

@@ -40,9 +40,12 @@ class ScalaMethodFilter(
   }
   private val funName =
     function match {
-      case c: ScMethodLike if c.isConstructor => "<init>"
-      case fun: ScFunction                    => ScalaNamesUtil.toJavaName(fun.name)
-      case _                                  => unknownName
+      case c: ScMethodLike if c.isConstructor =>
+        "<init>"
+      case fun: ScFunction =>
+        ScalaNamesUtil.toJavaName(fun.name)
+      case _ =>
+        unknownName
     }
 
   override def locationMatches(

@@ -78,11 +78,16 @@ object string {
     def quoteC(): String = {
       regexSub(QUOTE_RE) { m =>
         m.matched.charAt(0) match {
-          case '\r' => "\\r"
-          case '\n' => "\\n"
-          case '\t' => "\\t"
-          case '"'  => "\\\""
-          case '\\' => "\\\\"
+          case '\r' =>
+            "\\r"
+          case '\n' =>
+            "\\n"
+          case '\t' =>
+            "\\t"
+          case '"' =>
+            "\\\""
+          case '\\' =>
+            "\\\\"
           case c =>
             if (c <= 255) {
               "\\x%02x".format(c.asInstanceOf[Int])
@@ -123,10 +128,14 @@ object string {
                   .valueOf(m.group(1).substring(1), 16)
                   .asInstanceOf[Int]
                   .toChar)
-            case 'r' => '\r'
-            case 'n' => '\n'
-            case 't' => '\t'
-            case x   => x
+            case 'r' =>
+              '\r'
+            case 'n' =>
+              '\n'
+            case 't' =>
+              '\t'
+            case x =>
+              x
           }
         ch.toString
       }

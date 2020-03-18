@@ -67,51 +67,68 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 
   def setFromAny(in: Any): Box[MyType] = {
     in match {
-      case dbo: DBObject => setFromDBObject(dbo)
+      case dbo: DBObject =>
+        setFromDBObject(dbo)
       case list @ c :: xs if mf.runtimeClass.isInstance(c) =>
         setBox(Full(list.asInstanceOf[MyType]))
       case Some(list @ c :: xs) if mf.runtimeClass.isInstance(c) =>
         setBox(Full(list.asInstanceOf[MyType]))
       case Full(list @ c :: xs) if mf.runtimeClass.isInstance(c) =>
         setBox(Full(list.asInstanceOf[MyType]))
-      case s: String           => setFromString(s)
-      case Some(s: String)     => setFromString(s)
-      case Full(s: String)     => setFromString(s)
-      case null | None | Empty => setBox(defaultValueBox)
-      case f: Failure          => setBox(f)
-      case o                   => setFromString(o.toString)
+      case s: String =>
+        setFromString(s)
+      case Some(s: String) =>
+        setFromString(s)
+      case Full(s: String) =>
+        setFromString(s)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case f: Failure =>
+        setBox(f)
+      case o =>
+        setFromString(o.toString)
     }
   }
 
   def setFromJValue(jvalue: JValue): Box[MyType] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
       case JArray(array) =>
         setBox(
           Full(
             (
               array
                 .map {
-                  case JsonObjectId(objectId) => objectId
-                  case JsonRegex(regex)       => regex
-                  case JsonUUID(uuid)         => uuid
+                  case JsonObjectId(objectId) =>
+                    objectId
+                  case JsonRegex(regex) =>
+                    regex
+                  case JsonUUID(uuid) =>
+                    uuid
                   case JsonDateTime(dt)
                       if (mf.toString == "org.joda.time.DateTime") =>
                     dt
-                  case JsonDate(date) => date
-                  case other          => other.values
+                  case JsonDate(date) =>
+                    date
+                  case other =>
+                    other.values
                 }
               )
               .asInstanceOf[MyType]))
-      case other => setBox(FieldHelpers.expectedA("JArray", other))
+      case other =>
+        setBox(FieldHelpers.expectedA("JArray", other))
     }
 
   // parse String into a JObject
   def setFromString(in: String): Box[List[ListType]] =
     tryo(JsonParser.parse(in)) match {
-      case Full(jv: JValue) => setFromJValue(jv)
-      case f: Failure       => setBox(f)
-      case other            => setBox(Failure("Error parsing String into a JValue: " + in))
+      case Full(jv: JValue) =>
+        setFromJValue(jv)
+      case f: Failure =>
+        setBox(f)
+      case other =>
+        setBox(Failure("Error parsing String into a JValue: " + in))
     }
 
   /** Options for select list **/
@@ -125,8 +142,10 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 
     SHtml.hidden(() => set(Nil)) ++ (
       uniqueFieldId match {
-        case Full(id) => (elem0 % ("id" -> id))
-        case _        => elem0
+        case Full(id) =>
+          (elem0 % ("id" -> id))
+        case _ =>
+          elem0
       }
     )
   }
@@ -141,12 +160,14 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
     JArray(
       value.map(li =>
         li.asInstanceOf[AnyRef] match {
-          case x if primitive_?(x.getClass) => primitive2jvalue(x)
+          case x if primitive_?(x.getClass) =>
+            primitive2jvalue(x)
           case x if mongotype_?(x.getClass) =>
             mongotype2jvalue(x)(owner.meta.formats)
           case x if datetype_?(x.getClass) =>
             datetype2jvalue(x)(owner.meta.formats)
-          case _ => JNothing
+          case _ =>
+            JNothing
         }))
 
   /*
@@ -158,10 +179,14 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
     value.foreach {
       case f =>
         f.asInstanceOf[AnyRef] match {
-          case x if primitive_?(x.getClass) => dbl.add(x)
-          case x if mongotype_?(x.getClass) => dbl.add(x)
-          case x if datetype_?(x.getClass)  => dbl.add(datetype2dbovalue(x))
-          case o                            => dbl.add(o.toString)
+          case x if primitive_?(x.getClass) =>
+            dbl.add(x)
+          case x if mongotype_?(x.getClass) =>
+            dbl.add(x)
+          case x if datetype_?(x.getClass) =>
+            dbl.add(datetype2dbovalue(x))
+          case o =>
+            dbl.add(o.toString)
         }
     }
     dbl
@@ -206,13 +231,15 @@ class MongoJsonObjectListField[OwnerType <: BsonRecord[
 
   override def setFromJValue(jvalue: JValue) =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
       case JArray(arr) =>
         setBox(
           Full(
             arr.map(jv => {
               valueMeta.create(jv.asInstanceOf[JObject])(owner.meta.formats)
             })))
-      case other => setBox(FieldHelpers.expectedA("JArray", other))
+      case other =>
+        setBox(FieldHelpers.expectedA("JArray", other))
     }
 }

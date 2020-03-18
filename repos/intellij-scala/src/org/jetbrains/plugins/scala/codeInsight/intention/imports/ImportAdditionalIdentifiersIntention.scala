@@ -29,8 +29,9 @@ class ImportAdditionalIdentifiersIntention
     if (!element.isValid)
       return
     check(project, editor, element) match {
-      case Some(x) => x()
-      case None    =>
+      case Some(x) =>
+        x()
+      case None =>
     }
   }
 
@@ -48,7 +49,8 @@ class ImportAdditionalIdentifiersIntention
         val prev = element.getContainingFile.findElementAt(
           element.getPrevSibling.getTextRange.getEndOffset - 1)
         check(project, editor, prev)
-      case null => None
+      case null =>
+        None
       case ChildOf(id: ScStableCodeReferenceElement) if id.nameId == element =>
         id.getParent match {
           case imp: ScImportExpr
@@ -72,9 +74,11 @@ class ImportAdditionalIdentifiersIntention
               }
             }
             Some(doIt)
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

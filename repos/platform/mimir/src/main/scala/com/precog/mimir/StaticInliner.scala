@@ -48,7 +48,8 @@ trait StdLibStaticInlinerModule[M[+_]]
         {
           case graph @ Operate(op, child) => {
             recurse(child) match {
-              case child2 @ Const(CUndefined) => Const(CUndefined)(child2.loc)
+              case child2 @ Const(CUndefined) =>
+                Const(CUndefined)(child2.loc)
 
               case child2 @ Const(value) => {
                 op match {
@@ -77,7 +78,8 @@ trait StdLibStaticInlinerModule[M[+_]]
                 }
               }
 
-              case child2 => Operate(op, child2)(graph.loc)
+              case child2 =>
+                Operate(op, child2)(graph.loc)
             }
           }
 
@@ -87,9 +89,12 @@ trait StdLibStaticInlinerModule[M[+_]]
             val right2 = recurse(right)
 
             pred2 match {
-              case Const(CBoolean(true))  => left2
-              case Const(CBoolean(false)) => right2
-              case Const(_)               => Undefined(graph.loc)
+              case Const(CBoolean(true)) =>
+                left2
+              case Const(CBoolean(false)) =>
+                right2
+              case Const(_) =>
+                Undefined(graph.loc)
               case _ =>
                 Cond(pred2, left2, leftJoin, right2, rightJoin)(graph.loc)
             }
@@ -216,7 +221,8 @@ trait StdLibStaticInlinerModule[M[+_]]
                     Some(Const(result getOrElse CUndefined)(graph.loc))
                   }
 
-                  case _ => None
+                  case _ =>
+                    None
                 }
               } yield result
 
@@ -233,7 +239,8 @@ trait StdLibStaticInlinerModule[M[+_]]
                   Some(Const(CUndefined)(graph.loc))
                 case (Const(CUndefined), _) =>
                   Some(Const(CUndefined)(graph.loc))
-                case _ => None
+                case _ =>
+                  None
               }
 
             back getOrElse Filter(sort, left2, right2)(graph.loc)
@@ -249,10 +256,12 @@ trait StdLibStaticInlinerModule[M[+_]]
                   Some(Const(CUndefined)(graph.loc))
                 case (Const(CUndefined), _) =>
                   Some(Const(CUndefined)(graph.loc))
-                case (_, right2 @ Const(CTrue)) => Some(left2)
+                case (_, right2 @ Const(CTrue)) =>
+                  Some(left2)
                 case (_, right2 @ Const(_)) =>
                   Some(Const(CUndefined)(graph.loc))
-                case _ => None
+                case _ =>
+                  None
               }
 
             back getOrElse Filter(sort, left2, right2)(graph.loc)

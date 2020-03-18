@@ -200,9 +200,12 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
 
   private[feature] def expand(v: Vector, degree: Int): Vector = {
     v match {
-      case dv: DenseVector  => expand(dv, degree)
-      case sv: SparseVector => expand(sv, degree)
-      case _                => throw new IllegalArgumentException
+      case dv: DenseVector =>
+        expand(dv, degree)
+      case sv: SparseVector =>
+        expand(sv, degree)
+      case _ =>
+        throw new IllegalArgumentException
     }
   }
 

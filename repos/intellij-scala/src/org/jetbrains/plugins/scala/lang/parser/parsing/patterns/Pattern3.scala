@@ -103,8 +103,10 @@ object Pattern3 {
   //Associations of operator
   private def associate(id: String): Int = {
     id.charAt(id.length - 1) match {
-      case ':' => -1 // right
-      case _   => +1 // left
+      case ':' =>
+        -1 // right
+      case _ =>
+        +1 // left
     }
   }
 }

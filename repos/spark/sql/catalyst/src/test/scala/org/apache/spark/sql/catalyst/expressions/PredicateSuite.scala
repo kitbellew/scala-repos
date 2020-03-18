@@ -185,9 +185,12 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
         Seq.fill(10) {
           val value = dataGen.apply()
           value match {
-            case d: Double if d.isNaN => 0.0d
-            case f: Float if f.isNaN  => 0.0f
-            case _                    => value
+            case d: Double if d.isNaN =>
+              0.0d
+            case f: Float if f.isNaN =>
+              0.0f
+            case _ =>
+              value
           }
         }
       val input = inputData.map(Literal.create(_, t))
@@ -238,9 +241,12 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
         Seq.fill(10) {
           val value = dataGen.apply()
           value match {
-            case d: Double if d.isNaN => 0.0d
-            case f: Float if f.isNaN  => 0.0f
-            case _                    => value
+            case d: Double if d.isNaN =>
+              0.0d
+            case f: Float if f.isNaN =>
+              0.0f
+            case _ =>
+              value
           }
         }
       val input = inputData.map(Literal(_))

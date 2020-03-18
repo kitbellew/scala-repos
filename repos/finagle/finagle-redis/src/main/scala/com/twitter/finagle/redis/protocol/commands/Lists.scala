@@ -89,7 +89,8 @@ object LPush {
         LPush(
           ChannelBuffers.wrappedBuffer(head),
           tail map ChannelBuffers.wrappedBuffer)
-      case _ => throw ClientError("Invalid use of LPush")
+      case _ =>
+        throw ClientError("Invalid use of LPush")
     }
 }
 
@@ -190,7 +191,8 @@ object RPush {
         RPush(
           ChannelBuffers.wrappedBuffer(head),
           tail map ChannelBuffers.wrappedBuffer)
-      case _ => throw ClientError("Invalid use of RPush")
+      case _ =>
+        throw ClientError("Invalid use of RPush")
     }
 }
 

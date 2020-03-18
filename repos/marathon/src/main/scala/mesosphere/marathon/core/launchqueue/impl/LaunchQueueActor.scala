@@ -102,10 +102,12 @@ private[impl] class LaunchQueueActor(
           suspendedLaunchersMessages += actorRef -> deferredMessages
           suspendedLauncherPathIds += appId
           actorRef ! AppTaskLauncherActor.Stop
-        case None => sender() ! (())
+        case None =>
+          sender() ! (())
       }
 
-    case ConfirmPurge => sender() ! (())
+    case ConfirmPurge =>
+      sender() ! (())
 
     case Terminated(actorRef) =>
       launcherRefs.get(actorRef) match {
@@ -167,7 +169,8 @@ private[impl] class LaunchQueueActor(
           val eventualCount: Future[QueuedTaskInfo] = (actorRef ? update)
             .mapTo[QueuedTaskInfo]
           eventualCount.map(Some(_)).pipeTo(sender())
-        case None => sender() ! None
+        case None =>
+          sender() ! None
       }
   }
 
@@ -188,7 +191,8 @@ private[impl] class LaunchQueueActor(
           val eventualCount: Future[QueuedTaskInfo] =
             (actorRef ? AppTaskLauncherActor.GetCount).mapTo[QueuedTaskInfo]
           eventualCount.map(Some(_)).pipeTo(sender())
-        case None => sender() ! None
+        case None =>
+          sender() ! None
       }
 
     case Add(app, count) =>
@@ -231,6 +235,7 @@ private[impl] class LaunchQueueActor(
         // We periodically check if scaling is needed, so we should recover. TODO: Speedup
         // Just restarting an AppTaskLauncherActor will potentially lead to starting too many tasks.
         Stop
-      case m: Any => SupervisorStrategy.defaultDecider(m)
+      case m: Any =>
+        SupervisorStrategy.defaultDecider(m)
     }
 }

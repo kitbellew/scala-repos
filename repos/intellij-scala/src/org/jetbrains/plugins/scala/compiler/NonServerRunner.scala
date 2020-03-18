@@ -50,7 +50,8 @@ class NonServerRunner(
       }
 
     CompileServerLauncher.compilerJars.foreach {
-      case p => assert(p.exists(), p.getPath)
+      case p =>
+        assert(p.exists(), p.getPath)
     }
 
     scala.compiler.findJdkByName(sdk.getName) match {
@@ -157,7 +158,8 @@ class NonServerRunner(
                 text.clear()
               case '\n' if text.nonEmpty && text.startsWith("Listening") =>
                 text.clear()
-              case c => text.append(c)
+              case c =>
+                text.append(c)
             }
           }
         }

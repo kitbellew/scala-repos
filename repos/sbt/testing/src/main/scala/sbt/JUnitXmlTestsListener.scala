@@ -25,7 +25,8 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   val hostname =
     try InetAddress.getLocalHost.getHostName
     catch {
-      case x: IOException => "localhost"
+      case x: IOException =>
+        "localhost"
     }
 
   /**The dir in which we put all result files. Is equal to the given dir + "/test-reports"*/
@@ -98,8 +99,10 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
               name
             } name={
               e.selector match {
-                case selector: TestSelector => selector.testName.split('.').last
-                case _                      => "(It is not a test)"
+                case selector: TestSelector =>
+                  selector.testName.split('.').last
+                case _ =>
+                  "(It is not a test)"
               }
             } time={
               (e.duration() / 1000.0).toString
@@ -140,8 +143,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
                   <failure message={
                     "No Exception or message provided"
                   }/>
-                case TStatus.Skipped => <skipped/>
-                case _               => {}
+                case TStatus.Skipped =>
+                  <skipped/>
+                case _ => {}
               }
             }
                                                </testcase>

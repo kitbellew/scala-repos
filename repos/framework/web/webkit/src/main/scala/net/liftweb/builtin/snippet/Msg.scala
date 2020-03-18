@@ -63,7 +63,8 @@ import JsCmds._
   */
 object Msg extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case _ => render
+    case _ =>
+      render
   }
 
   /**
@@ -87,7 +88,8 @@ object Msg extends DispatchSnippet {
           renderIdMsgs(id)
         }</span> ++ effects(id)
       }
-      case _ => NodeSeq.Empty
+      case _ =>
+        NodeSeq.Empty
     }
   }
 
@@ -107,7 +109,8 @@ object Msg extends DispatchSnippet {
     ).flatMap {
       case (msg, style) =>
         msg.toList match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case msgList =>
             style match {
               case Some(s) =>
@@ -115,14 +118,16 @@ object Msg extends DispatchSnippet {
                   <span>{
                     t
                   }</span> % ("class" -> s))
-              case _ => msgList flatMap (n => n)
+              case _ =>
+                msgList flatMap (n => n)
             }
         }
     }
 
     // Join multiple messages together with a comma
     msgs match {
-      case Nil => Text("")
+      case Nil =>
+        Text("")
       case spans =>
         spans.reduceLeft { (output, span) =>
           output ++ Text(", ") ++ span

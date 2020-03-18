@@ -44,7 +44,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
   def awaitingDaemon(
       client: ActorRef,
       pending: Seq[SbtRequest] = Seq.empty): Receive = {
-    case Terminated(`client`) => shutdownWithClient(client)
+    case Terminated(`client`) =>
+      shutdownWithClient(client)
     case SbtClientProxy.DaemonSet =>
       if (logEvents) {
         val events = context.actorOf(SbtEvents.props(log), "sbt-server-events")
@@ -54,7 +55,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
       context become active(client)
     case request: SbtRequest =>
       context become awaitingDaemon(client, pending :+ request)
-    case Shutdown => shutdownWithClient(client)
+    case Shutdown =>
+      shutdownWithClient(client)
   }
 
   def connecting(pending: Seq[SbtRequest] = Seq.empty): Receive = {
@@ -68,11 +70,13 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
         fail(new Exception(error), pending)
     case request: SbtRequest =>
       context become connecting(pending :+ request)
-    case Shutdown => shutdown()
+    case Shutdown =>
+      shutdown()
   }
 
   def active(client: ActorRef): Receive = {
-    case Terminated(`client`) => shutdownWithClient(client)
+    case Terminated(`client`) =>
+      shutdownWithClient(client)
     case Execute(input) =>
       client ! SbtClientProxy.RequestExecution.ByCommandOrTask(
         input,
@@ -83,22 +87,26 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
       val task = context
         .child(name) getOrElse context.actorOf(SbtTask.props(key, client), name)
       task ! request
-    case Shutdown => shutdownWithClient(client)
+    case Shutdown =>
+      shutdownWithClient(client)
   }
 
   def fail(error: Throwable, requests: Seq[SbtRequest]): Unit = {
     requests foreach { request =>
       request match {
-        case Request(_, sendTo) => sendTo ! Failed(error)
-        case _                  => // ignore
+        case Request(_, sendTo) =>
+          sendTo ! Failed(error)
+        case _ => // ignore
       }
     }
     context become broken(error)
   }
 
   def broken(error: Throwable): Receive = {
-    case request: Request => request.sendTo ! Failed(error)
-    case Shutdown         => shutdown()
+    case request: Request =>
+      request.sendTo ! Failed(error)
+    case Shutdown =>
+      shutdown()
   }
 
   def shutdownWithClient(client: ActorRef): Unit = {
@@ -193,6 +201,7 @@ class SbtTask(name: String, client: ActorRef) extends Actor {
   }
 
   def broken(error: Throwable): Receive = {
-    case request: Request => request.sendTo ! Failed(error)
+    case request: Request =>
+      request.sendTo ! Failed(error)
   }
 }

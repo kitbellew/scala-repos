@@ -6,6 +6,7 @@ object A {
     def m(a: Any): Int = 0
   }
   (new C).m({
-      case (x, y) => x
+      case (x, y) =>
+        x
     }: Any => Any)
 }

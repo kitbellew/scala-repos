@@ -80,7 +80,8 @@ object V1CookedBlockFormat extends CookedBlockFormat with Chunker {
       (id.blockid, (id.cpath, id.ctype))
     },
     {
-      case (blockid, (cpath, ctype)) => SegmentId(blockid, cpath, ctype)
+      case (blockid, (cpath, ctype)) =>
+        SegmentId(blockid, cpath, ctype)
     })
 
   val SegmentsCodec = Codec.ArrayCodec({

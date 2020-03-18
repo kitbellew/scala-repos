@@ -111,7 +111,8 @@ object TLSPlacebo {
     scaladsl.GraphDSL.create() { implicit b ⇒
       val top = b.add(
         scaladsl.Flow[SslTlsOutbound].collect {
-          case SendBytes(bytes) ⇒ bytes
+          case SendBytes(bytes) ⇒
+            bytes
         })
       val bottom = b.add(
         scaladsl.Flow[ByteString].map(SessionBytes(dummySession, _)))
@@ -153,7 +154,8 @@ trait ScalaSessionAPI {
   def peerCertificates: List[Certificate] =
     try Option(session.getPeerCertificates).map(_.toList).getOrElse(Nil)
     catch {
-      case e: SSLPeerUnverifiedException ⇒ Nil
+      case e: SSLPeerUnverifiedException ⇒
+        Nil
     }
 
   /**
@@ -163,7 +165,8 @@ trait ScalaSessionAPI {
   def peerPrincipal: Option[Principal] =
     try Option(session.getPeerPrincipal)
     catch {
-      case e: SSLPeerUnverifiedException ⇒ None
+      case e: SSLPeerUnverifiedException ⇒
+        None
     }
 }
 

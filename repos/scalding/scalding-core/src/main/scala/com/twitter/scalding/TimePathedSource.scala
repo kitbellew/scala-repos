@@ -62,7 +62,8 @@ object TimePathedSource {
     TimePathedSource.stepSize(pattern, tz) match {
       case Some(duration) =>
         allPathsWithDuration(pattern, duration, dateRange, tz)
-      case None => sys.error(s"No suitable step size for pattern: $pattern")
+      case None =>
+        sys.error(s"No suitable step size for pattern: $pattern")
     }
   }
 
@@ -103,7 +104,8 @@ abstract class TimeSeqPathedSource(
     defaultDurationFor(pattern) match {
       case Some(duration) =>
         TimePathedSource.allPathsWithDuration(pattern, duration, dateRange, tz)
-      case None => sys.error(s"No suitable step size for pattern: $pattern")
+      case None =>
+        sys.error(s"No suitable step size for pattern: $pattern")
     }
 
   /** These are all the paths we will read for this data completely enumerated */

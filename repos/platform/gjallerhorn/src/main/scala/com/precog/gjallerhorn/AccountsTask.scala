@@ -40,7 +40,8 @@ class AccountsTask(settings: Settings)
       val json = getjson((accounts / "") << body)
 
       (json \ "accountId") must beLike {
-        case JString(_) => ok
+        case JString(_) =>
+          ok
       }
     }
 
@@ -62,7 +63,8 @@ class AccountsTask(settings: Settings)
 
       val json = getjson((accounts / accountId).as(user, pass))
       (json \ "accountCreationDate") must beLike {
-        case JString(DateTimePattern()) => ok
+        case JString(DateTimePattern()) =>
+          ok
       }
       (json \ "email") must_== JString(user)
       (json \ "accountId") must_== JString(accountId)

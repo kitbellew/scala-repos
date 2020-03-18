@@ -51,8 +51,10 @@ trait TimeoutDirectives {
       ctx.request.header[`Timeout-Access`] match {
         case Some(t) ⇒
           handler match {
-            case Some(h) ⇒ t.timeoutAccess.update(timeout, h)
-            case _ ⇒ t.timeoutAccess.updateTimeout(timeout)
+            case Some(h) ⇒
+              t.timeoutAccess.update(timeout, h)
+            case _ ⇒
+              t.timeoutAccess.updateTimeout(timeout)
           }
         case _ ⇒
           ctx.log.warning(
@@ -72,7 +74,8 @@ trait TimeoutDirectives {
       handler: HttpRequest ⇒ HttpResponse): Directive0 =
     Directive { inner ⇒ ctx ⇒
       ctx.request.header[`Timeout-Access`] match {
-        case Some(t) ⇒ t.timeoutAccess.updateHandler(handler)
+        case Some(t) ⇒
+          t.timeoutAccess.updateHandler(handler)
         case _ ⇒
           ctx.log.warning(
             "withRequestTimeoutResponse was used in route however no request-timeout is set!")

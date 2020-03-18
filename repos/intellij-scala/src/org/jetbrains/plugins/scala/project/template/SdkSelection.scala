@@ -31,7 +31,8 @@ trait SdkSelection {
       case Left(message) =>
         Messages.showErrorDialog(parentComponent, message)
         None
-      case Right(sdk) => Some(sdk)
+      case Right(sdk) =>
+        Some(sdk)
     }
   }
 

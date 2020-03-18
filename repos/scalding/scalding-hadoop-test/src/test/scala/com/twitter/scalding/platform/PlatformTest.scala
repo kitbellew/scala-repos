@@ -313,7 +313,8 @@ class TypedPipeHashJoinWithCoGroupJob(args: Args) extends Job(args) {
   val coGroupTypedPipe = TypedPipe
     .from[(Int, Int, Int)](coGroupPipe, Fields.ALL)
   val coGroupTuplePipe = coGroupTypedPipe.map {
-    case (a, b, c) => (a, (b, c))
+    case (a, b, c) =>
+      (a, (b, c))
   }
   x.hashJoin(coGroupTuplePipe)
     .withDescription("hashJoin")
@@ -468,7 +469,8 @@ class CheckForFlowProcessInTypedJob(args: Args) extends Job(args) {
       }
 
       valuesIter.map({
-        case (a, b) => s"$a:$b"
+        case (a, b) =>
+          s"$a:$b"
       })
     })
     .toTypedPipe
@@ -481,7 +483,8 @@ object PlatformTest {
       case h: HadoopMode =>
         val config = h.jobConf
         config.setBoolean(Config.HashJoinAutoForceRight, autoForce)
-      case _ => Unit
+      case _ =>
+        Unit
     }
   }
 }

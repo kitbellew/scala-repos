@@ -36,9 +36,12 @@ object MBestRowIdentifierColumn {
         r.<<,
         r.skip.<<,
         r.nextShort match {
-          case DatabaseMetaData.bestRowNotPseudo => Some(false)
-          case DatabaseMetaData.bestRowPseudo    => Some(true)
-          case _                                 => None
+          case DatabaseMetaData.bestRowNotPseudo =>
+            Some(false)
+          case DatabaseMetaData.bestRowPseudo =>
+            Some(true)
+          case _ =>
+            None
         }
       )
     }
@@ -52,9 +55,12 @@ object MBestRowIdentifierColumn {
     final case object Session extends Scope(DatabaseMetaData.bestRowSession)
     private[MBestRowIdentifierColumn] def apply(value: Short) =
       value match {
-        case DatabaseMetaData.bestRowTemporary   => Temporary
-        case DatabaseMetaData.bestRowTransaction => Transaction
-        case DatabaseMetaData.bestRowSession     => Session
+        case DatabaseMetaData.bestRowTemporary =>
+          Temporary
+        case DatabaseMetaData.bestRowTransaction =>
+          Transaction
+        case DatabaseMetaData.bestRowSession =>
+          Session
       }
   }
 }

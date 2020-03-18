@@ -104,8 +104,10 @@ final class BtreeClientIntegrationSuite
     println("Getting value for key " + key)
     val getResult = Await.result(client.get(StringToChannelBuffer(key)))
     getResult match {
-      case Some(n) => println("Got result: " + new String(n.array))
-      case None    => println("Didn't get the value!")
+      case Some(n) =>
+        println("Got result: " + new String(n.array))
+      case None =>
+        println("Didn't get the value!")
     }
   }
 

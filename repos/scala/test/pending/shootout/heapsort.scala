@@ -72,7 +72,8 @@ object heapsort {
       try {
         Integer.parseInt(s(0));
       } catch {
-        case _ => 1
+        case _ =>
+          1
       }
     if (i > 0)
       i;

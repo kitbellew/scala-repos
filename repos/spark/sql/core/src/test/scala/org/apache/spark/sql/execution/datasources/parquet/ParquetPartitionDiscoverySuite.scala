@@ -739,7 +739,8 @@ class ParquetPartitionDiscoverySuite
       StringType)
 
     val partitionColumns = partitionColumnTypes.zipWithIndex.map {
-      case (t, index) => StructField(s"p_$index", t)
+      case (t, index) =>
+        StructField(s"p_$index", t)
     }
 
     val schema = StructType(partitionColumns :+ StructField(s"i", StringType))

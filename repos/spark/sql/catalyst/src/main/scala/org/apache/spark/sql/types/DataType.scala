@@ -124,18 +124,22 @@ object DataType {
   private def nameToType(name: String): DataType = {
     val FIXED_DECIMAL = """decimal\(\s*(\d+)\s*,\s*(\-?\d+)\s*\)""".r
     name match {
-      case "decimal" => DecimalType.USER_DEFAULT
+      case "decimal" =>
+        DecimalType.USER_DEFAULT
       case FIXED_DECIMAL(precision, scale) =>
         DecimalType(precision.toInt, scale.toInt)
-      case other => nonDecimalNameToType(other)
+      case other =>
+        nonDecimalNameToType(other)
     }
   }
 
   private object JSortedObject {
     def unapplySeq(value: JValue): Option[List[(String, JValue)]] =
       value match {
-        case JObject(seq) => Some(seq.toList.sortBy(_._1))
-        case _            => None
+        case JObject(seq) =>
+          Some(seq.toList.sortBy(_._1))
+        case _ =>
+          None
       }
   }
 
@@ -240,7 +244,8 @@ object DataType {
                 l.dataType,
                 r.dataType)
           }
-      case (l, r) => l == r
+      case (l, r) =>
+        l == r
     }
   }
 
@@ -281,7 +286,8 @@ object DataType {
                   toField.dataType)
           }
 
-      case (fromDataType, toDataType) => fromDataType == toDataType
+      case (fromDataType, toDataType) =>
+        fromDataType == toDataType
     }
   }
 }

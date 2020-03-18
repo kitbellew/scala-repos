@@ -105,7 +105,8 @@ final class IntervalSeq[T] private (
           Arrays.equals(
             values.asInstanceOf[Array[AnyRef]],
             rhs.values.asInstanceOf[Array[AnyRef]])
-      case _ => false
+      case _ =>
+        false
     }
 
   def edges: Iterable[T] = values
@@ -115,32 +116,46 @@ final class IntervalSeq[T] private (
   def isContiguous: Boolean =
     if (belowAll) {
       kinds match {
-        case Array()     => true
-        case Array(kind) => kind != K01
-        case _           => false
+        case Array() =>
+          true
+        case Array(kind) =>
+          kind != K01
+        case _ =>
+          false
       }
     } else {
       kinds match {
-        case Array()     => true
-        case Array(_)    => true
-        case Array(a, b) => a != K10 && b != K01
-        case _           => false
+        case Array() =>
+          true
+        case Array(_) =>
+          true
+        case Array(a, b) =>
+          a != K10 && b != K01
+        case _ =>
+          false
       }
     }
 
   private[this] def lowerBound(i: Int) =
     (kinds(i): @switch) match {
-      case K01 => Open(values(i))
-      case K11 => Closed(values(i))
-      case K10 => Closed(values(i))
-      case _   => wrong
+      case K01 =>
+        Open(values(i))
+      case K11 =>
+        Closed(values(i))
+      case K10 =>
+        Closed(values(i))
+      case _ =>
+        wrong
     }
 
   private[this] def upperBound(i: Int) =
     (kinds(i): @switch) match {
-      case K10 => Closed(values(i))
-      case K00 => Open(values(i))
-      case _   => wrong
+      case K10 =>
+        Closed(values(i))
+      case K00 =>
+        Open(values(i))
+      case _ =>
+        wrong
     }
 
   def hull: Interval[T] = {
@@ -192,7 +207,8 @@ final class IntervalSeq[T] private (
         case (K01, None) =>
           Some(Open(vi))
         // $COVERAGE-OFF$
-        case _ => wrong
+        case _ =>
+          wrong
         // $COVERAGE-ON$
       }
     }
@@ -249,17 +265,28 @@ object IntervalSeq {
 
   implicit def apply[T: Order](interval: Interval[T]): IntervalSeq[T] =
     interval.fold {
-      case (Closed(a), Closed(b)) if a == b => point(a)
-      case (Unbound(), Open(x))             => below(x)
-      case (Unbound(), Closed(x))           => atOrBelow(x)
-      case (Open(x), Unbound())             => above(x)
-      case (Closed(x), Unbound())           => atOrAbove(x)
-      case (Closed(a), Closed(b))           => fromTo(a, K11, b, K10)
-      case (Closed(a), Open(b))             => fromTo(a, K11, b, K00)
-      case (Open(a), Closed(b))             => fromTo(a, K01, b, K10)
-      case (Open(a), Open(b))               => fromTo(a, K01, b, K00)
-      case (Unbound(), Unbound())           => all[T]
-      case (EmptyBound(), EmptyBound())     => empty[T]
+      case (Closed(a), Closed(b)) if a == b =>
+        point(a)
+      case (Unbound(), Open(x)) =>
+        below(x)
+      case (Unbound(), Closed(x)) =>
+        atOrBelow(x)
+      case (Open(x), Unbound()) =>
+        above(x)
+      case (Closed(x), Unbound()) =>
+        atOrAbove(x)
+      case (Closed(a), Closed(b)) =>
+        fromTo(a, K11, b, K10)
+      case (Closed(a), Open(b)) =>
+        fromTo(a, K11, b, K00)
+      case (Open(a), Closed(b)) =>
+        fromTo(a, K01, b, K10)
+      case (Open(a), Open(b)) =>
+        fromTo(a, K01, b, K00)
+      case (Unbound(), Unbound()) =>
+        all[T]
+      case (EmptyBound(), EmptyBound()) =>
+        empty[T]
     }
 
   def apply(text: String): IntervalSeq[Rational] = {
@@ -660,7 +687,8 @@ object IntervalSeq {
             case K01 =>
               result = null
               lower = Open(value)
-            case _ => wrong
+            case _ =>
+              wrong
           }
         else
           (kind: @switch) match {
@@ -676,7 +704,8 @@ object IntervalSeq {
               val upper = Closed(value)
               result = Interval.fromBounds[T](lower, upper)
               lower = null
-            case _ => wrong
+            case _ =>
+              wrong
           }
       } else if (lower ne null) {
         result = Interval.fromBounds(lower, Unbound())

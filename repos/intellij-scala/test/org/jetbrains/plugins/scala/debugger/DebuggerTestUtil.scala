@@ -94,9 +94,11 @@ object DebuggerTestUtil {
           sys.props.get("java.home") match {
             case Some(path) if isJDK(new File(path).getParentFile) =>
               Some(path)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
     val versionStrings = Seq(s"1.$versionMajor", s"-$versionMajor")
@@ -116,8 +118,10 @@ object DebuggerTestUtil {
       }
       for ((path, ver) <- fullSearchPaths) {
         inJvm(path, ver) match {
-          case x @ Some(p) => return x
-          case _           => None
+          case x @ Some(p) =>
+            return x
+          case _ =>
+            None
         }
       }
       None

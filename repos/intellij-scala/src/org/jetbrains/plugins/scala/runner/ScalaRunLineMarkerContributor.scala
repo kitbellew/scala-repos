@@ -29,7 +29,8 @@ class ScalaRunLineMarkerContributor extends RunLineMarkerContributor {
               element,
               firstTemplateDefOnly = true) != null =>
           createInfo(0)
-        case _ => null
+        case _ =>
+          null
       }
     else
       null

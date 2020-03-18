@@ -88,7 +88,8 @@ object Boilerplate {
     val synTypes = (0 until arity) map (n => (n + 'A').toChar)
     val synVals = (0 until arity) map (n => (n + 'a').toChar)
     val synTypedVals = (synVals zip synTypes) map {
-      case (v, t) => v + ":" + t
+      case (v, t) =>
+        v + ":" + t
     }
 
     val `A..N` = synTypes.mkString(", ")
@@ -420,7 +421,8 @@ object Boilerplate {
       val implicitArgs =
         (synTypes map (a => s"cast${a}:Typeable[${a}]")) mkString ", "
       val enumerators = synTypes.zipWithIndex map {
-        case (a, idx) => s"_ <- p._${idx + 1}.cast[${a}]"
+        case (a, idx) =>
+          s"_ <- p._${idx + 1}.cast[${a}]"
       } mkString "; "
       val castVals =
         (synTypes map (a => s"$${cast${a}.describe}")) mkString ", "

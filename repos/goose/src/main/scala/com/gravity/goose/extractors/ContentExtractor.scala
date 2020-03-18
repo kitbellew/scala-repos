@@ -310,7 +310,8 @@ trait ContentExtractor {
         trace(logPrefix + "Text - " + text)
       }
     } catch {
-      case e: NullPointerException => warn("printTraceLog: " + e.toString)
+      case e: NullPointerException =>
+        warn("printTraceLog: " + e.toString)
     }
   }
 
@@ -401,8 +402,10 @@ trait ContentExtractor {
     */
   private def getScore(node: Element): Int = {
     getGravityScoreFromNode(node) match {
-      case Some(score) => score
-      case None        => 0
+      case Some(score) =>
+        score
+      case None =>
+        0
     }
   }
 
@@ -413,7 +416,8 @@ trait ContentExtractor {
         return None
       Some(Integer.parseInt(grvScoreString))
     } catch {
-      case e: Exception => None
+      case e: Exception =>
+        None
     }
   }
 

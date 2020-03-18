@@ -32,8 +32,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     */
   def serverProtocol: HttpVersion =
     r.getProtocol match {
-      case "HTTP/1.1" => Http11
-      case "HTTP/1.0" => Http10
+      case "HTTP/1.1" =>
+        Http11
+      case "HTTP/1.0" =>
+        Http10
     }
 
   def uri: URI = new URI(r.getRequestURL.toString)
@@ -43,8 +45,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     */
   def urlScheme: Scheme =
     r.getScheme match {
-      case "http"  => Http
-      case "https" => Https
+      case "http" =>
+        Http
+      case "https" =>
+        Https
     }
 
   /**
@@ -158,8 +162,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     */
   def contentLength: Option[Long] =
     r.getContentLength match {
-      case -1     => None
-      case length => Some(length)
+      case -1 =>
+        None
+      case length =>
+        Some(length)
     }
 
   /**
@@ -193,8 +199,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
     */
   def referrer: Option[String] =
     r.getHeader("Referer") match {
-      case s: String => Some(s)
-      case null      => None
+      case s: String =>
+        Some(s)
+      case null =>
+        None
     }
 
   @deprecated("Use referrer", "2.0.0")
@@ -223,7 +231,8 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
         try {
           Source.fromInputStream(r.getInputStream, enc).mkString
         } catch {
-          case e: java.io.IOException => ""
+          case e: java.io.IOException =>
+            ""
         }
       update(cachedBodyKey, body)
       body

@@ -32,8 +32,10 @@ object BufChannelBufferFactory {
     */
   def apply(endianness: ByteOrder): ChannelBufferFactory =
     endianness match {
-      case ByteOrder.BIG_ENDIAN    => beFactory
-      case ByteOrder.LITTLE_ENDIAN => leFactory
+      case ByteOrder.BIG_ENDIAN =>
+        beFactory
+      case ByteOrder.LITTLE_ENDIAN =>
+        leFactory
     }
 }
 

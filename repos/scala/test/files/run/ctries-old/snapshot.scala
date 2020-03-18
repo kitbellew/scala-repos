@@ -69,15 +69,17 @@ object SnapshotSpec extends Spec {
         override def run() =
           try check()
           catch {
-            case ex: Exception => e = ex
+            case ex: Exception =>
+              e = ex
           }
 
         def check() {
           val initial = mutable.Map[Wrap, Int]()
           for (i <- 0 until sz)
             trie.get(new Wrap(i)) match {
-              case Some(i) => initial.put(new Wrap(i), i)
-              case None    => // do nothing
+              case Some(i) =>
+                initial.put(new Wrap(i), i)
+              case None => // do nothing
             }
 
           for (k <- 0 until N) {
@@ -114,8 +116,9 @@ object SnapshotSpec extends Spec {
         for (k <- 0 until rep) {
           for (i <- 0 until sz)
             trie.putIfAbsent(new Wrap(i), i) match {
-              case Some(_) => trie.remove(new Wrap(i))
-              case None    => // do nothing
+              case Some(_) =>
+                trie.remove(new Wrap(i))
+              case None => // do nothing
             }
         }
       }
@@ -205,15 +208,17 @@ object SnapshotSpec extends Spec {
         override def run() =
           try check()
           catch {
-            case ex: Exception => e = ex
+            case ex: Exception =>
+              e = ex
           }
 
         def check() {
           val initial = mutable.Map[Wrap, Int]()
           for (i <- 0 until sz)
             trie.get(new Wrap(i)) match {
-              case Some(i) => initial.put(new Wrap(i), i)
-              case None    => // do nothing
+              case Some(i) =>
+                initial.put(new Wrap(i), i)
+              case None => // do nothing
             }
 
           for (k <- 0 until N) {

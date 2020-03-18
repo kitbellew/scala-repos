@@ -30,9 +30,12 @@ object Status {
   class ClosedException extends Exception("Status was Closed; expected Open")
 
   implicit val StatusOrdering: Ordering[Status] = Ordering.by({
-    case Open   => 3
-    case Busy   => 2
-    case Closed => 1
+    case Open =>
+      3
+    case Busy =>
+      2
+    case Closed =>
+      1
   })
 
   /**
@@ -89,8 +92,10 @@ object Status {
   def whenOpen(get: => Status): Future[Unit] = {
     def go(n: Int): Future[Unit] =
       get match {
-        case Open   => Future.Done
-        case Closed => Future.exception(new ClosedException)
+        case Open =>
+          Future.Done
+        case Closed =>
+          Future.exception(new ClosedException)
         case Busy =>
           Future.sleep((1 << n).milliseconds) before go(math.min(n + 1, 10))
       }

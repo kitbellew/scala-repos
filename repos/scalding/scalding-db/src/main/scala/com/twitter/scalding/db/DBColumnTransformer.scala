@@ -71,7 +71,8 @@ object DBColumnTransformer {
       t.copy(sizeOpt = Some(6))
     case t @ DBColumnDefinition(VARCHAR, _, _, None, _, _) =>
       t.copy(sizeOpt = Some(255))
-    case t => t
+    case t =>
+      t
   }
 
   def mutateColumns(

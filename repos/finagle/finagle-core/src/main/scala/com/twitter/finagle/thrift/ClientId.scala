@@ -29,14 +29,18 @@ object ClientId {
       "com.twitter.finagle.thrift.ClientIdContext") {
       def marshal(clientId: Option[ClientId]): Buf =
         clientId match {
-          case None                 => Buf.Empty
-          case Some(ClientId(name)) => Buf.Utf8(name)
+          case None =>
+            Buf.Empty
+          case Some(ClientId(name)) =>
+            Buf.Utf8(name)
         }
 
       def tryUnmarshal(buf: Buf) =
         buf match {
-          case buf if buf.isEmpty => Return.None
-          case Buf.Utf8(name)     => Return(Some(ClientId(name)))
+          case buf if buf.isEmpty =>
+            Return.None
+          case Buf.Utf8(name) =>
+            Return(Some(ClientId(name)))
           case invalid =>
             Throw(new IllegalArgumentException("client id not a utf8 string"))
         }
@@ -52,8 +56,10 @@ object ClientId {
 
   private[finagle] def let[R](clientId: Option[ClientId])(f: => R): R = {
     clientId match {
-      case Some(id) => Contexts.broadcast.let(clientIdCtx, Some(id))(f)
-      case None     => Contexts.broadcast.letClear(clientIdCtx)(f)
+      case Some(id) =>
+        Contexts.broadcast.let(clientIdCtx, Some(id))(f)
+      case None =>
+        Contexts.broadcast.letClear(clientIdCtx)(f)
     }
   }
 }

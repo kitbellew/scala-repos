@@ -89,7 +89,8 @@ object ParquetSchemaProvider {
     def expandMethod(outerTpe: Type): List[Tree] = {
       outerTpe.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .map { accessorMethod =>
           val fieldName = accessorMethod.name.toTermName.toString

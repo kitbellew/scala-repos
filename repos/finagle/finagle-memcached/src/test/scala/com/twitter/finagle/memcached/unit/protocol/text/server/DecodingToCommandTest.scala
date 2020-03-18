@@ -78,8 +78,10 @@ class DecodingToCommandTest extends FunSuite {
       assert(command.getClass == classOf[Stats])
       val stats = command.asInstanceOf[Stats]
       stats.args.headOption match {
-        case None               => assert(arg == None)
-        case Some(Buf.Utf8(cb)) => assert(cb == arg.get)
+        case None =>
+          assert(arg == None)
+        case Some(Buf.Utf8(cb)) =>
+          assert(cb == arg.get)
       }
     }
   }

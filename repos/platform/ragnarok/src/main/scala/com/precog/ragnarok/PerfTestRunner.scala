@@ -48,7 +48,8 @@ trait PerfTestRunner[M[+_], T] {
 
   private def fill[A](run: RunResult[A]): RunResult[A] =
     run match {
-      case n @ Tree.Node((_: RunQuery, _, _), _) => n
+      case n @ Tree.Node((_: RunQuery, _, _), _) =>
+        n
       case Tree.Node((test, a, _), children) =>
         val kids = children map (fill(_))
         val t =

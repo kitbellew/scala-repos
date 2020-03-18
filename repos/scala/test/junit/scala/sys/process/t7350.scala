@@ -87,7 +87,8 @@ class PipedProcessTest {
       m.setAccessible(true)
       try m.invoke(this, source, sink).asInstanceOf[Option[Int]]
       catch {
-        case err: InvocationTargetException => throw err.getTargetException
+        case err: InvocationTargetException =>
+          throw err.getTargetException
       }
     }
   }
@@ -224,7 +225,8 @@ class PipeSourceSinkTest {
       f;
       false
     } catch {
-      case _: IOException => true
+      case _: IOException =>
+        true
     }
   }
 

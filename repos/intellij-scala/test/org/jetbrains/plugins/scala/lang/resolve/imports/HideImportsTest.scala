@@ -21,7 +21,8 @@ class HideImportsTest extends ScalaResolveTestCase {
         assert(res.isInstanceOf[ScalaResolveResult])
         val srr = res.asInstanceOf[ScalaResolveResult]
         Assert.assertEquals("caPitalize", srr.element.name)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 }

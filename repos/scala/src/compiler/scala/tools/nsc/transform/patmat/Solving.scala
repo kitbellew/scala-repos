@@ -52,7 +52,8 @@ trait Solving extends Logic {
     class SymbolMapping(symbols: Set[Sym]) {
       val variableForSymbol: Map[Sym, Int] = {
         symbols.zipWithIndex.map {
-          case (sym, i) => sym -> (i + 1)
+          case (sym, i) =>
+            sym -> (i + 1)
         }.toMap
       }
 
@@ -223,7 +224,8 @@ trait Solving extends Logic {
           */
         def atMostOne(ops: List[Sym]) {
           (ops: @unchecked) match {
-            case hd :: Nil  => convertSym(hd)
+            case hd :: Nil =>
+              convertSym(hd)
             case x1 :: tail =>
               // sequential counter: 3n-4 clauses
               // pairwise encoding: n*(n-1)/2 clauses
@@ -277,9 +279,12 @@ trait Solving extends Logic {
       object ToLiteral {
         def unapply(f: Prop): Option[Lit] =
           f match {
-            case Not(ToLiteral(lit)) => Some(-lit)
-            case sym: Sym            => Some(symbolMapping.lit(sym))
-            case _                   => None
+            case Not(ToLiteral(lit)) =>
+              Some(-lit)
+            case sym: Sym =>
+              Some(symbolMapping.lit(sym))
+            case _ =>
+              None
           }
       }
 
@@ -295,11 +300,14 @@ trait Solving extends Logic {
                     None
                 }
               cl.map(Array(_))
-            case True => Some(Array()) // empty, no clauses needed
+            case True =>
+              Some(Array()) // empty, no clauses needed
             case False =>
               Some(Array(clause())) // empty clause can't be satisfied
-            case ToLiteral(lit) => Some(Array(clause(lit)))
-            case _              => None
+            case ToLiteral(lit) =>
+              Some(Array(clause(lit)))
+            case _ =>
+              None
           }
       }
 
@@ -320,7 +328,8 @@ trait Solving extends Logic {
                     None
                 }
               clauses.map(c => Solvable(c.toArray, symbolMapping))
-            case _ => None
+            case _ =>
+              None
           }
       }
     }
@@ -341,8 +350,10 @@ trait Solving extends Logic {
             } else {
               ops.exists(doesFormulaExceedSize)
             }
-          case Not(a) => doesFormulaExceedSize(a)
-          case _      => false
+          case Not(a) =>
+            doesFormulaExceedSize(a)
+          case _ =>
+            false
         }
       }
 
@@ -484,7 +495,8 @@ trait Solving extends Logic {
       val simplified = new ArrayBuffer[Clause](clauses.size)
       clauses foreach {
         case trivial if trivial contains unitLit => // drop
-        case clause                              => simplified += clause - negated
+        case clause =>
+          simplified += clause - negated
       }
       simplified.toArray
     }

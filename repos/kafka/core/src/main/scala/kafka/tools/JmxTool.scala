@@ -120,7 +120,8 @@ object JmxTool extends Logging {
 
     val numExpectedAttributes: Map[ObjectName, Int] =
       attributesWhitelistExists match {
-        case true => queries.map((_, attributesWhitelist.get.size)).toMap
+        case true =>
+          queries.map((_, attributesWhitelist.get.size)).toMap
         case false =>
           names.map { (name: ObjectName) =>
             val mbean = mbsc.getMBeanInfo(name)
@@ -142,8 +143,10 @@ object JmxTool extends Logging {
       val start = System.currentTimeMillis
       val attributes = queryAttributes(mbsc, names, attributesWhitelist)
       attributes("time") = dateFormat match {
-        case Some(dFormat) => dFormat.format(new Date)
-        case None          => System.currentTimeMillis().toString
+        case Some(dFormat) =>
+          dFormat.format(new Date)
+        case None =>
+          System.currentTimeMillis().toString
       }
       if (attributes.keySet.size == numExpectedAttributes.map(_._2).sum + 1)
         println(keys.map(attributes(_)).mkString(","))
@@ -167,7 +170,8 @@ object JmxTool extends Logging {
           case Some(allowedAttributes) =>
             if (allowedAttributes.contains(attr.getName))
               attributes(name + ":" + attr.getName) = attr.getValue
-          case None => attributes(name + ":" + attr.getName) = attr.getValue
+          case None =>
+            attributes(name + ":" + attr.getName) = attr.getValue
         }
       }
     }

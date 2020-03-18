@@ -252,11 +252,14 @@ object EnsimeBuild extends Build {
         MergeStrategy.filterDistinctLines
       case "META-INF/netbeans/translate.names" =>
         MergeStrategy.filterDistinctLines
-      case "META-INF/namedservices.index" => MergeStrategy.filterDistinctLines
-      case "META-INF/generated-layer.xml" => MergeStrategy.rename
+      case "META-INF/namedservices.index" =>
+        MergeStrategy.filterDistinctLines
+      case "META-INF/generated-layer.xml" =>
+        MergeStrategy.rename
       case PathList("org", "apache", "commons", "vfs2", xs @ _*) =>
         MergeStrategy.first // assumes our classpath is setup correctly
-      case other => MergeStrategy.defaultMergeStrategy(other)
+      case other =>
+        MergeStrategy.defaultMergeStrategy(other)
     },
     assemblyExcludedJars in assembly <<= (fullClasspath in assembly).map {
       everything =>

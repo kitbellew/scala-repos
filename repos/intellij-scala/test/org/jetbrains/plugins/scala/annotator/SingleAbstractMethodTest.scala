@@ -614,8 +614,9 @@ class SingleAbstractMethodTest
       @Language("Scala") scalaCode: String,
       javaCode: Option[String] = None): List[Message] = {
     javaCode match {
-      case Some(s) => configureFromFileTextAdapter("dummy.java", s)
-      case _       =>
+      case Some(s) =>
+        configureFromFileTextAdapter("dummy.java", s)
+      case _ =>
     }
 
     val annotator = new ScalaAnnotator() {}
@@ -626,8 +627,10 @@ class SingleAbstractMethodTest
     parse.depthFirst.foreach(annotator.annotate(_, mock))
 
     mock.errorAnnotations.filter {
-      case Error(_, null) => false
-      case _              => true
+      case Error(_, null) =>
+        false
+      case _ =>
+        true
     }
   }
 

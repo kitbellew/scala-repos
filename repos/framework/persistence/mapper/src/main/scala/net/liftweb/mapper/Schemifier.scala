@@ -277,7 +277,8 @@ object Schemifier extends Loggable {
               case s if s.toLowerCase == table._dbTableNameLC.toLowerCase =>
                 actualTableNames(table._dbTableNameLC) = s;
                 true
-              case _ => hasTable(rs)
+              case _ =>
+                hasTable(rs)
             }
 
         hasTable(rs)
@@ -462,13 +463,16 @@ object Schemifier extends Loggable {
     q.foreach {
       case (name, col, pos) =>
         byName.get(name) match {
-          case Some(li) => byName(name) = col :: li
-          case _        => byName(name) = List(col)
+          case Some(li) =>
+            byName(name) = col :: li
+          case _ =>
+            byName(name) = List(col)
         }
     }
     val indexedFields: List[List[String]] =
       byName.map {
-        case (name, value) => value.sortWith(_ < _)
+        case (name, value) =>
+          value.sortWith(_ < _)
       }.toList
     //rs.close
 
@@ -540,8 +544,10 @@ object Schemifier extends Loggable {
         table.mappedFields
           .flatMap { f =>
             f match {
-              case f: BaseMappedField with BaseForeignKey => List(f);
-              case _                                      => Nil
+              case f: BaseMappedField with BaseForeignKey =>
+                List(f);
+              case _ =>
+                Nil
             }
           }
           .toList

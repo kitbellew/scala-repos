@@ -12,9 +12,13 @@ trait AnalysisHelper {
 
   def nagName(nag: Nag)(implicit ctx: Context) =
     nag match {
-      case Nag.Blunder    => trans.blunders()
-      case Nag.Mistake    => trans.mistakes()
-      case Nag.Inaccuracy => trans.inaccuracies()
-      case nag            => nag.toString
+      case Nag.Blunder =>
+        trans.blunders()
+      case Nag.Mistake =>
+        trans.mistakes()
+      case Nag.Inaccuracy =>
+        trans.inaccuracies()
+      case nag =>
+        nag.toString
     }
 }

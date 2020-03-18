@@ -69,9 +69,12 @@ trait ScPrimaryConstructor
         parameterList)
     val clausesWithInitialEmpty =
       parameterList.clauses match {
-        case Seq()                            => Seq(emptyParameterList)
-        case Seq(clause) if clause.isImplicit => Seq(emptyParameterList, clause)
-        case clauses                          => clauses
+        case Seq() =>
+          Seq(emptyParameterList)
+        case Seq(clause) if clause.isImplicit =>
+          Seq(emptyParameterList, clause)
+        case clauses =>
+          clauses
       }
     clausesWithInitialEmpty ++ syntheticParamClause
   }
@@ -146,8 +149,10 @@ trait ScPrimaryConstructor
              if ScalaPsiUtil.memberNamesEquals(param.name, name))
           return Some(param)
         None
-      case i if i < 0                                 => None
-      case i if i >= effectiveParameterClauses.length => None
+      case i if i < 0 =>
+        None
+      case i if i >= effectiveParameterClauses.length =>
+        None
       case i =>
         val clause: ScParameterClause = effectiveParameterClauses.apply(i)
         for (param <- clause.parameters
@@ -182,8 +187,10 @@ object ScPrimaryConstructor {
   object ofClass {
     def unapply(pc: ScPrimaryConstructor): Option[ScClass] = {
       pc.containingClass match {
-        case c: ScClass => Some(c)
-        case _          => None
+        case c: ScClass =>
+          Some(c)
+        case _ =>
+          None
       }
     }
   }

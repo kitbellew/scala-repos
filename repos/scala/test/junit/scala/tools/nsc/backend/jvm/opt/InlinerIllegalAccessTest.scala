@@ -97,7 +97,8 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
     check(
       eClass,
       {
-        case Some(ti: TypeInsnNode) if Set("a/C", "[La/C;")(ti.desc) => ()
+        case Some(ti: TypeInsnNode) if Set("a/C", "[La/C;")(ti.desc) =>
+          ()
         // MatchError otherwise
       })
   }
@@ -209,7 +210,8 @@ class InlinerIllegalAccessTest extends ClearAfterClass {
 
     val cOrDOwner =
       (_: Option[AbstractInsnNode] @unchecked) match {
-        case Some(mi: MethodInsnNode) if Set("a/C", "a/D")(mi.owner) => ()
+        case Some(mi: MethodInsnNode) if Set("a/C", "a/D")(mi.owner) =>
+          ()
         // MatchError otherwise
       }
 

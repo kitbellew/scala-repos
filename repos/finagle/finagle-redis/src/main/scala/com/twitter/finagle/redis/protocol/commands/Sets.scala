@@ -78,7 +78,8 @@ object SRem {
         SRem(
           ChannelBuffers.wrappedBuffer(head),
           tail map ChannelBuffers.wrappedBuffer)
-      case _ => throw ClientError("Invalid use of SRem")
+      case _ =>
+        throw ClientError("Invalid use of SRem")
     }
 }
 

@@ -84,7 +84,8 @@ trait DocFinding {
     s match {
       case DocFqn("scala", ScalaPrim(datatype)) =>
         DocFqn("", datatype.toLowerCase)
-      case DocFqn("scala", ScalaAny(datatype)) => DocFqn("java.lang", "Object")
+      case DocFqn("scala", ScalaAny(datatype)) =>
+        DocFqn("java.lang", "Object")
       case DocFqn("scala", "Array") =>
         tpe.typeArgs.headOption
           .map { tpe =>
@@ -92,7 +93,8 @@ trait DocFinding {
             fqn.copy(typeName = fqn.typeName + "[]")
           }
           .getOrElse(s)
-      case _ => s
+      case _ =>
+        s
     }
   }
 

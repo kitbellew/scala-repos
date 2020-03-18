@@ -59,7 +59,8 @@ object LoggingAutoConfigurer {
       // Try to configure log4j only if we find the SLF4J Log4j bindings
       findClass("Log4jLoggerAdapter", List("org.slf4j.impl")) map { _ =>
         findTheFile("log4j.xml", "log4j.props") match {
-          case Full(url) => _root_.net.liftweb.common.Log4j.withFile(url)()
+          case Full(url) =>
+            _root_.net.liftweb.common.Log4j.withFile(url)()
           case _ =>
             _root_.net.liftweb.common.Log4j.withConfig(Log4j.defaultProps)()
         }

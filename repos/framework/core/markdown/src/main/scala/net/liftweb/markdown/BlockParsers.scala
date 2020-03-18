@@ -213,7 +213,8 @@ trait BlockParsers extends Parsers {
       innerBlocks match {
         case (p: Paragraph) :: Nil if (!paragraph_?) =>
           p.addResultPlain(level + 1, out)
-        case _ => innerBlocks.foreach(block => block.addResult(level + 1, out))
+        case _ =>
+          innerBlocks.foreach(block => block.addResult(level + 1, out))
       }
       out.append(indent(level)).append(deco.decorateItemClose)
     }
@@ -337,7 +338,8 @@ trait BlockParsers extends Parsers {
 
   def atxHeader: Parser[Header] =
     line(classOf[AtxHeaderLine]) ~ lookup ^^ {
-      case l ~ lu => new Header(l.trimHashes, l.headerLevel, lu)
+      case l ~ lu =>
+        new Header(l.trimHashes, l.headerLevel, lu)
     }
 
   def setExtHeader: Parser[Header] =
@@ -368,7 +370,8 @@ trait BlockParsers extends Parsers {
         new CodeBlock(
           l :: pairs
             .map({
-              case (a ~ b) => a ++ List(b)
+              case (a ~ b) =>
+                a ++ List(b)
             })
             .flatten)
     }
@@ -387,7 +390,8 @@ trait BlockParsers extends Parsers {
       opt(line(classOf[FencedCode])) ^^ {
       case (start: ExtendedFencedCode) ~ lines ~ _ =>
         new FencedCodeBlock(start.languageFormat, lines)
-      case _ ~ lines ~ _ => new FencedCodeBlock("", lines)
+      case _ ~ lines ~ _ =>
+        new FencedCodeBlock("", lines)
     }
 
   //line(classOf[FencedCodeStart]) ~
@@ -401,7 +405,8 @@ trait BlockParsers extends Parsers {
     */
   def paragraph: Parser[Paragraph] =
     lookup ~ (line(classOf[OtherLine]) +) ^^ {
-      case lu ~ ls => new Paragraph(ls, lu)
+      case lu ~ ls =>
+        new Paragraph(ls, lu)
     }
 
   /**
@@ -412,7 +417,8 @@ trait BlockParsers extends Parsers {
     line(classOf[BlockQuoteLine]) ~ (
       (line(classOf[BlockQuoteLine]) | line(classOf[OtherLine])) *
     ) ~ (optEmptyLines) ^^ {
-      case l ~ ls ~ e => (l :: ls ++ e)
+      case l ~ ls ~ e =>
+        (l :: ls ++ e)
     }
 
   /**
@@ -422,7 +428,8 @@ trait BlockParsers extends Parsers {
     */
   def blockquote: Parser[Blockquote] =
     lookup ~ (blockquoteFragment +) ^^ {
-      case lu ~ fs => new Blockquote(fs.flatten, lu)
+      case lu ~ fs =>
+        new Blockquote(fs.flatten, lu)
     }
 
   /**
@@ -438,7 +445,8 @@ trait BlockParsers extends Parsers {
     */
   def itemContinuation: Parser[List[MarkdownLine]] =
     optEmptyLines ~ line(classOf[CodeLine]) ~ itemLines ^^ {
-      case e ~ c ~ cs => e ++ (c :: cs)
+      case e ~ c ~ cs =>
+        e ++ (c :: cs)
     }
 
   /**parses an item in an unsorted list
@@ -447,7 +455,8 @@ trait BlockParsers extends Parsers {
     lookup ~ line(classOf[UItemStartLine]) ~ itemLines ~ (
       itemContinuation *
     ) ~ optEmptyLines ^^ {
-      case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
+      case lu ~ s ~ ls ~ cs ~ e =>
+        new ListItem(s :: ls ++ cs.flatten ++ e, lu)
     }
 
   /**parses an item in a sorted list
@@ -456,7 +465,8 @@ trait BlockParsers extends Parsers {
     lookup ~ line(classOf[OItemStartLine]) ~ itemLines ~ (
       itemContinuation *
     ) ~ optEmptyLines ^^ {
-      case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
+      case lu ~ s ~ ls ~ cs ~ e =>
+        new ListItem(s :: ls ++ cs.flatten ++ e, lu)
     }
 
   /** parses an unordered list
@@ -492,17 +502,27 @@ trait BlockParsers extends Parsers {
         Failure("End of Input.", in)
       } else {
         in.first match {
-          case l: AtxHeaderLine => atxHeader(in)
-          case l: RulerLine     => ruler(in)
+          case l: AtxHeaderLine =>
+            atxHeader(in)
+          case l: RulerLine =>
+            ruler(in)
           //setext headers have been processed before we are called, so this is safe
-          case l: SetExtHeaderLine   => ruler(in)
-          case l: CodeLine           => codeBlock(in)
-          case l: ExtendedFencedCode => fencedCodeBlock(in)
-          case l: FencedCode         => fencedCodeBlock(in)
-          case l: BlockQuoteLine     => blockquote(in)
-          case l: OItemStartLine     => oList(in)
-          case l: UItemStartLine     => uList(in)
-          case _                     => paragraph(in)
+          case l: SetExtHeaderLine =>
+            ruler(in)
+          case l: CodeLine =>
+            codeBlock(in)
+          case l: ExtendedFencedCode =>
+            fencedCodeBlock(in)
+          case l: FencedCode =>
+            fencedCodeBlock(in)
+          case l: BlockQuoteLine =>
+            blockquote(in)
+          case l: OItemStartLine =>
+            oList(in)
+          case l: UItemStartLine =>
+            uList(in)
+          case _ =>
+            paragraph(in)
         }
       }
     }
@@ -522,7 +542,8 @@ trait BlockParsers extends Parsers {
     */
   def apply[T](p: Parser[T], in: MarkdownLineReader): T = {
     phrase(p)(in) match {
-      case Success(t, _) => t
+      case Success(t, _) =>
+        t
       case e: NoSuccess =>
         throw new IllegalArgumentException("Could not parse '" + in + "': " + e)
     }

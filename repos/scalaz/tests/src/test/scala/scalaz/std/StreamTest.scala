@@ -58,12 +58,16 @@ object StreamTest extends SpecLite {
     def intersperse[A](as: Stream[A], a: A): Stream[A] = {
       def loop(rest: Stream[A]): Stream[A] =
         rest match {
-          case Stream.Empty => Stream.empty
-          case h #:: t      => a #:: h #:: loop(t)
+          case Stream.Empty =>
+            Stream.empty
+          case h #:: t =>
+            a #:: h #:: loop(t)
         }
       as match {
-        case Stream.Empty => Stream.empty
-        case h #:: t      => h #:: loop(t)
+        case Stream.Empty =>
+          Stream.empty
+        case h #:: t =>
+          h #:: loop(t)
       }
     }
     (a: Stream[Int], b: Int) => (a.intersperse(b) must_=== (intersperse(a, b)))

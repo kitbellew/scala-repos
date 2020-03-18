@@ -45,14 +45,16 @@ object Test extends Properties("TreeSet") {
           it.next;
         true
       } catch {
-        case _ => false
+        case _ =>
+          false
       }
     }
 
   property("sorted") = forAll { (subject: TreeSet[Int]) =>
     (subject.size >= 3) ==> {
       subject.zip(subject.tail).forall {
-        case (x, y) => x < y
+        case (x, y) =>
+          x < y
       }
     }
   }

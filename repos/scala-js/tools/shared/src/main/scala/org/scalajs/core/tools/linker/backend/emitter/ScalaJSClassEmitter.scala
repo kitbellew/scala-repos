@@ -149,9 +149,12 @@ private[scalajs] final class ScalaJSClassEmitter(
       case OutputMode.ECMAScript6 =>
         val allDefs =
           allDefsBlock match {
-            case js.Block(allDefs) => allDefs
-            case js.Skip()         => Nil
-            case oneDef            => List(oneDef)
+            case js.Block(allDefs) =>
+              allDefs
+            case js.Skip() =>
+              Nil
+            case oneDef =>
+              List(oneDef)
           }
         genES6Class(tree, allDefs)
     }
@@ -311,7 +314,8 @@ private[scalajs] final class ScalaJSClassEmitter(
       implicit val pos = field.pos
       val selectField =
         (name: @unchecked) match {
-          case name: Ident => Select(This()(tpe), name)(ftpe)
+          case name: Ident =>
+            Select(This()(tpe), name)(ftpe)
         }
       desugarTree(
         this,
@@ -510,8 +514,10 @@ private[scalajs] final class ScalaJSClassEmitter(
     val proto = encodeClassVar(className).prototype
     val select =
       name match {
-        case name: js.Ident         => js.DotSelect(proto, name)
-        case name: js.StringLiteral => genBracketSelect(proto, name)
+        case name: js.Ident =>
+          js.DotSelect(proto, name)
+        case name: js.StringLiteral =>
+          genBracketSelect(proto, name)
       }
     js.Assign(select, value)
   }
@@ -524,8 +530,10 @@ private[scalajs] final class ScalaJSClassEmitter(
 
   def genPropertyName(name: PropertyName): js.PropertyName =
     name match {
-      case ident: Ident         => transformIdent(ident)
-      case StringLiteral(value) => js.StringLiteral(value)(name.pos)
+      case ident: Ident =>
+        transformIdent(ident)
+      case StringLiteral(value) =>
+        js.StringLiteral(value)(name.pos)
     }
 
   private[tools] def needInstanceTests(tree: LinkedClass): Boolean = {

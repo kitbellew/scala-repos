@@ -82,10 +82,12 @@ trait TreeFactory {
                 case Select(qualifier, name) =>
                   qualifier match {
                     case New(_) =>
-                    case _      => makeLink(tree)
+                    case _ =>
+                      makeLink(tree)
                   }
                   traverse(qualifier)
-                case Ident(_) => makeLink(tree)
+                case Ident(_) =>
+                  makeLink(tree)
                 case _ =>
                   super.traverse(tree)
               }

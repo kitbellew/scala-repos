@@ -87,7 +87,8 @@ abstract class ClusterDeathWatchSpec
                 case ActorIdentity(`path3`, Some(ref)) ⇒
                   context.watch(ref)
                   watchEstablished.countDown
-                case Terminated(actor) ⇒ testActor ! actor.path
+                case Terminated(actor) ⇒
+                  testActor ! actor.path
               }
             }).withDeploy(Deploy.local),
           name = "observer1"
@@ -163,7 +164,8 @@ abstract class ClusterDeathWatchSpec
             new Actor {
               context.watch(context.actorFor(path))
               def receive = {
-                case t: Terminated ⇒ testActor ! t.actor.path
+                case t: Terminated ⇒
+                  testActor ! t.actor.path
               }
             }).withDeploy(Deploy.local),
           name = "observer3")

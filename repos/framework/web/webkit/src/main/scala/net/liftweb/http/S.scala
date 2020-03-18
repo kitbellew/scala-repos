@@ -1070,12 +1070,18 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             case null =>
               LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
               Empty
-            case s: String   => Full(LiftRules.localizeStringToXml(s))
-            case g: Group    => Full(g)
-            case e: Elem     => Full(e)
-            case n: Node     => Full(n)
-            case ns: NodeSeq => Full(ns)
-            case x           => Full(Text(x.toString))
+            case s: String =>
+              Full(LiftRules.localizeStringToXml(s))
+            case g: Group =>
+              Full(g)
+            case e: Elem =>
+              Full(e)
+            case n: Node =>
+              Full(n)
+            case ns: NodeSeq =>
+              Full(ns)
+            case x =>
+              Full(Text(x.toString))
           }).flatMap(s => s))
       .find(e => true)
 
@@ -1156,7 +1162,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                   .map(List(_)) openOr Nil)))
         _resBundle.value
       }
-      case Full(bundles) => bundles
+      case Full(bundles) =>
+        bundles
       case _ =>
         throw new IllegalStateException(
           "Attempted to use resource bundles outside of an initialized S scope. " +
@@ -1232,8 +1239,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
         locale,
         ?(str),
         params.flatMap {
-          case s: AnyRef => List(s)
-          case _         => Nil
+          case s: AnyRef =>
+            List(s)
+          case _ =>
+            Nil
         }.toArray: _*)
 
   private def ?!(str: String, resBundle: List[ResourceBundle]): String =
@@ -1241,10 +1250,14 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       .flatMap(r =>
         tryo(
           r.getObject(str) match {
-            case s: String   => Full(s)
-            case n: Node     => Full(n.text)
-            case ns: NodeSeq => Full(ns.text)
-            case _           => Empty
+            case s: String =>
+              Full(s)
+            case n: Node =>
+              Full(n.text)
+            case ns: NodeSeq =>
+              Full(ns.text)
+            case _ =>
+              Empty
           }).flatMap(s => s))
       .find(s => true) getOrElse {
       LiftRules.localizationLookupFailureNotice.foreach(_(str, locale));
@@ -1487,7 +1500,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             "of a stateful session")
       }
 
-      case Full(_) => f
+      case Full(_) =>
+        f
 
       case _ => {
         val fakeSess = LiftRules.statelessSession.vend.apply(request)
@@ -1548,8 +1562,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def addSnippetForClass(cls: String, inst: DispatchSnippet): Unit = {
     if (!_statefulSnip.is.contains(cls)) {
       inst match {
-        case si: StatefulSnippet => si.addName(cls) // addresses
-        case _                   =>
+        case si: StatefulSnippet =>
+          si.addName(cls) // addresses
+        case _ =>
       }
       _statefulSnip.set(_statefulSnip.is.updated(cls, inst))
     }
@@ -1561,8 +1576,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def overrideSnippetForClass(cls: String, inst: DispatchSnippet): Unit = {
     inst match {
-      case si: StatefulSnippet => si.addName(cls) // addresses
-      case _                   =>
+      case si: StatefulSnippet =>
+        si.addName(cls) // addresses
+      case _ =>
     }
     _statefulSnip.set(_statefulSnip.is.updated(cls, inst))
   }
@@ -1588,8 +1604,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def doAround[B](ar: List[LoanWrapper])(f: => B): B =
     ar match {
-      case Nil     => f
-      case x :: xs => x(doAround(xs)(f))
+      case Nil =>
+        f
+      case x :: xs =>
+        x(doAround(xs)(f))
     }
 
   /**
@@ -1709,7 +1727,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       .map(rh =>
         rh.headers.iterator.toList :::
           in.filter {
-            case (n, v) => !rh.headers.contains(n)
+            case (n, v) =>
+              !rh.headers.contains(n)
           })
       .openOr(Nil)
   }
@@ -1813,8 +1832,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def statefulRequest_? : Boolean =
     session match {
-      case Full(s) => s.stateful_?
-      case _       => false
+      case Full(s) =>
+        s.stateful_?
+      case _ =>
+        false
     }
 
   private def _nest2InnerInit[B](f: () => B): B = {
@@ -1986,8 +2007,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def attrs: List[(Either[String, (String, String)], String)] =
     _attrs.value match {
-      case null            => Nil
-      case (current, full) => full
+      case null =>
+        Nil
+      case (current, full) =>
+        full
     }
 
   /**
@@ -2009,13 +2032,16 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       start: Map[String, String]): Map[String, String] =
     attrs.reverse
       .flatMap {
-        case (Right((pre, name)), value) if pre == prefix => List((name, value))
+        case (Right((pre, name)), value) if pre == prefix =>
+          List((name, value))
         case (Left(name), value) if name.startsWith(prefix + ":") =>
           List(name.substring(prefix.length + 1) -> value)
-        case _ => Nil
+        case _ =>
+          Nil
       }
       .foldRight(start) {
-        case ((name, value), at) => at + (name -> value)
+        case ((name, value), at) =>
+          at + (name -> value)
       }
 
   /**
@@ -2081,7 +2107,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def mapToAttrs(in: Map[String, String]): MetaData =
     in.foldLeft[MetaData](Null) {
-      case (md, (name, value)) => new UnprefixedAttribute(name, value, md)
+      case (md, (name, value)) =>
+        new UnprefixedAttribute(name, value, md)
     }
 
   /**
@@ -2095,9 +2122,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def attrsFlattenToMap: Map[String, String] =
     Map.empty ++ attrs.flatMap {
-      case (Left(key), value)            => List((key, value))
-      case (Right((prefix, key)), value) => List((prefix + ":" + key, value))
-      case _                             => Nil
+      case (Left(key), value) =>
+        List((key, value))
+      case (Right((prefix, key)), value) =>
+        List((prefix + ":" + key, value))
+      case _ =>
+        Nil
     }
 
   /**
@@ -2139,7 +2169,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
         new UnprefixedAttribute(name, value, md)
       case (md, (Right((prefix, name)), value)) if (predicate(name)) =>
         new PrefixedAttribute(prefix, name, value, md)
-      case _ => Null
+      case _ =>
+        Null
     }
   }
 
@@ -2256,16 +2287,20 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     protected def findAttr(key: String): Option[Info] =
       attrs
         .find {
-          case (Left(v), _) if v == key => true
-          case _                        => false
+          case (Left(v), _) if v == key =>
+            true
+          case _ =>
+            false
         }
         .map(_._2)
 
     protected def findAttr(prefix: String, key: String): Option[Info] =
       attrs
         .find {
-          case (Right((p, n)), _) if (p == prefix && n == key) => true
-          case _                                               => false
+          case (Right((p, n)), _) if (p == prefix && n == key) =>
+            true
+          case _ =>
+            false
         }
         .map(_._2)
 
@@ -2307,7 +2342,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       S.session match {
         case Full(session) =>
           session.processSurroundAndInclude("Eager Eval", ns)
-        case _ => ns
+        case _ =>
+          ns
       }
     }
 
@@ -2346,8 +2382,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def currentAttrs: MetaData =
     _attrs.value match {
-      case null            => Null
-      case (current, full) => current
+      case null =>
+        Null
+      case (current, full) =>
+        current
     }
 
   /**
@@ -2358,8 +2396,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def withAttrs[T](attrs: MetaData)(f: => T): T = {
     val currentStack = _attrs.value._2
     val newFrame = attrs.toList.map {
-      case pa: PrefixedAttribute => (Right(pa.pre, pa.key), pa.value.text)
-      case m                     => (Left(m.key), m.value.text)
+      case pa: PrefixedAttribute =>
+        (Right(pa.pre, pa.key), pa.value.text)
+      case m =>
+        (Left(m.key), m.value.text)
     }
 
     _attrs.doWith((attrs, newFrame ::: currentStack))(f)
@@ -2454,8 +2494,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def getSessionAttribute(what: String): Box[String] =
     containerSession.flatMap(
       _.attribute(what) match {
-        case s: String => Full(s)
-        case _         => Empty
+        case s: String =>
+          Full(s)
+        case _ =>
+          Empty
       })
 
   /**
@@ -2551,7 +2593,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def testFunctionMap[T](f: => T): T =
     session match {
-      case Full(s) if s.stateful_? => f
+      case Full(s) if s.stateful_? =>
+        f
       case _ =>
         throw new StateInStatelessException(
           "Accessing function map information outside of a stateful session")
@@ -2710,8 +2753,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def updateFunctionMap(name: String, value: AFuncHolder) {
     __functionMap.box match {
-      case Full(old) => __functionMap.set(old + ((name, value)))
-      case _         =>
+      case Full(old) =>
+        __functionMap.set(old + ((name, value)))
+      case _ =>
     }
   }
 
@@ -2844,9 +2888,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def notLiftOrScala(in: StackTraceElement): Boolean =
     in.getClassName match {
-      case s if s.startsWith("net.liftweb") => false
-      case s if s.startsWith("scala")       => false
-      case _                                => true
+      case s if s.startsWith("net.liftweb") =>
+        false
+      case s if s.startsWith("scala") =>
+        false
+      case _ =>
+        true
     }
 
   def disableTestFuncNames_? : Boolean = _disableTestFuncNames.box openOr false
@@ -2885,8 +2932,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /** Standard func-name logic. This is the default routine. */
   def generateFuncName: String =
     _formGroup.is match {
-      case Full(x) => Helpers.nextFuncName(x.toLong * 100000L)
-      case _       => Helpers.nextFuncName
+      case Full(x) =>
+        Helpers.nextFuncName(x.toLong * 100000L)
+      case _ =>
+        Helpers.nextFuncName
     }
 
   def formGroup[T](group: Int)(f: => T): T = {
@@ -3002,8 +3051,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def synchronizeForSession[T](f: => T): T = {
     session match {
-      case Full(s) => s.synchronized(f)
-      case _       => f
+      case Full(s) =>
+        s.synchronized(f)
+      case _ =>
+        f
     }
   }
 
@@ -3024,8 +3075,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def contextFuncBuilder(f: S.AFuncHolder): S.AFuncHolder =
     S.session match {
-      case Full(s) => s.contextFuncBuilder(f)
-      case _       => f
+      case Full(s) =>
+        s.contextFuncBuilder(f)
+      case _ =>
+        f
     }
 
   def render(xhtml: NodeSeq, httpRequest: HTTPRequest): NodeSeq = {
@@ -3278,7 +3331,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def noIdMessages(f: => List[(NodeSeq, Box[String])]): List[NodeSeq] = {
     f.collect {
-      case (message, Empty) => message
+      case (message, Empty) =>
+        message
     }
   }
 

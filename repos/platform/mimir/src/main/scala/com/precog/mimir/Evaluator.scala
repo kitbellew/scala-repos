@@ -308,7 +308,8 @@ trait EvaluatorModule[M[+_]]
             for {
               _ <- monadState.gets(identity)
               liftedTrans = TransSpec.deepMap(spec) {
-                case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
+                case Leaf(_) =>
+                  DerefObjectStatic(Leaf(Source), paths.Value)
               }
             } yield GroupKeySpecSource(CPathField(id.toString), liftedTrans)
 
@@ -322,7 +323,8 @@ trait EvaluatorModule[M[+_]]
               }
 
               liftedTrans = TransSpec.deepMap(spec) {
-                case Leaf(_) => DerefObjectStatic(Leaf(Source), paths.Value)
+                case Leaf(_) =>
+                  DerefObjectStatic(Leaf(Source), paths.Value)
               }
             } yield GroupKeySpecSource(
               CPathField("extra" + extraId),
@@ -358,7 +360,8 @@ trait EvaluatorModule[M[+_]]
                 } yield pending
               }
 
-              case _ => f(graph)
+              case _ =>
+                f(graph)
             }
 
           assumptionCheck(graph) flatMap {
@@ -430,12 +433,14 @@ trait EvaluatorModule[M[+_]]
                                   case IdentityOrder(rIds)
                                       if graph.uniqueIdentities =>
                                     rIds
-                                  case _ => Vector.empty
+                                  case _ =>
+                                    Vector.empty
                                 }
                               IdentityOrder(
                                 ids ++ rIds.map(_ + left.identities.length))
 
-                            case otherSort => otherSort
+                            case otherSort =>
+                              otherSort
                           }
 
                         case CrossRight =>
@@ -446,12 +451,14 @@ trait EvaluatorModule[M[+_]]
                                   case IdentityOrder(lIds)
                                       if graph.uniqueIdentities =>
                                     lIds
-                                  case _ => Vector.empty
+                                  case _ =>
+                                    Vector.empty
                                 }
                               IdentityOrder(
                                 ids.map(_ + left.identities.length) ++ lIds)
 
-                            case valueOrder => valueOrder
+                            case valueOrder =>
+                              valueOrder
                           }
 
                         case CrossLeftRight => // Not actually hit yet. Soon!
@@ -459,7 +466,8 @@ trait EvaluatorModule[M[+_]]
                             case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
                               IdentityOrder(
                                 lIds ++ rIds.map(_ + left.identities.length))
-                            case (otherSort, _) => otherSort
+                            case (otherSort, _) =>
+                              otherSort
                           }
 
                         case CrossRightLeft => // Not actually hit yet. Soon!
@@ -467,7 +475,8 @@ trait EvaluatorModule[M[+_]]
                             case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
                               IdentityOrder(
                                 rIds.map(_ + left.identities.length) ++ lIds)
-                            case (otherSort, _) => otherSort
+                            case (otherSort, _) =>
+                              otherSort
                           }
                       }
 
@@ -493,8 +502,10 @@ trait EvaluatorModule[M[+_]]
 
           def joinSortToJoinKey(sort: JoinSort): JoinKey =
             sort match {
-              case IdentitySort  => IdentityJoin(idMatch.sharedIndices)
-              case ValueSort(id) => ValueJoin(id)
+              case IdentitySort =>
+                IdentityJoin(idMatch.sharedIndices)
+              case ValueSort(id) =>
+                ValueJoin(id)
             }
 
           def identityJoinSpec(ids: Vector[Int]): TransSpec1 = {
@@ -533,10 +544,13 @@ trait EvaluatorModule[M[+_]]
             (joinKey, sort) match {
               case (IdentityJoin(keys), IdentityOrder(ids)) =>
                 ids.zipWithIndex take keys.length forall {
-                  case (i, j) => i == j
+                  case (i, j) =>
+                    i == j
                 }
-              case (ValueJoin(id0), ValueOrder(id1)) => id0 == id1
-              case _                                 => false
+              case (ValueJoin(id0), ValueOrder(id1)) =>
+                id0 == id1
+              case _ =>
+                false
             }
 
           def join0(
@@ -549,8 +563,10 @@ trait EvaluatorModule[M[+_]]
 
             def adjustTableOrder(order: TableOrder)(f: Int => Int) =
               order match {
-                case IdentityOrder(ids) => IdentityOrder(ids map f)
-                case valueOrder         => valueOrder
+                case IdentityOrder(ids) =>
+                  IdentityOrder(ids map f)
+                case valueOrder =>
+                  valueOrder
               }
 
             val leftSort =
@@ -586,13 +602,18 @@ trait EvaluatorModule[M[+_]]
               case (joinOrder, result) =>
                 val sort =
                   (joinKey, joinOrder) match {
-                    case (ValueJoin(id), KeyOrder)  => ValueOrder(id)
-                    case (ValueJoin(_), LeftOrder)  => leftSort
-                    case (ValueJoin(_), RightOrder) => rightSort
+                    case (ValueJoin(id), KeyOrder) =>
+                      ValueOrder(id)
+                    case (ValueJoin(_), LeftOrder) =>
+                      leftSort
+                    case (ValueJoin(_), RightOrder) =>
+                      rightSort
                     case (IdentityJoin(ids), KeyOrder) =>
                       IdentityOrder(Vector.range(0, ids.size))
-                    case (IdentityJoin(ids), LeftOrder)  => leftSort
-                    case (IdentityJoin(ids), RightOrder) => rightSort
+                    case (IdentityJoin(ids), LeftOrder) =>
+                      leftSort
+                    case (IdentityJoin(ids), RightOrder) =>
+                      rightSort
                   }
 
                 PendingTable(result, graph, TransSpec1.Id, sort)
@@ -653,8 +674,10 @@ trait EvaluatorModule[M[+_]]
               } yield {
                 val sort =
                   pendingTableData.sort match {
-                    case ValueOrder(_) => IdentityOrder.empty
-                    case identityOrder => identityOrder
+                    case ValueOrder(_) =>
+                      IdentityOrder.empty
+                    case identityOrder =>
+                      identityOrder
                   }
                 PendingTable(result, graph, TransSpec1.Id, sort)
               }
@@ -686,26 +709,39 @@ trait EvaluatorModule[M[+_]]
             case Const(value) =>
               val table =
                 value match {
-                  case CString(str) => Table.constString(Set(str))
+                  case CString(str) =>
+                    Table.constString(Set(str))
 
-                  case CLong(ln)  => Table.constLong(Set(ln))
-                  case CDouble(d) => Table.constDouble(Set(d))
-                  case CNum(n)    => Table.constDecimal(Set(n))
+                  case CLong(ln) =>
+                    Table.constLong(Set(ln))
+                  case CDouble(d) =>
+                    Table.constDouble(Set(d))
+                  case CNum(n) =>
+                    Table.constDecimal(Set(n))
 
-                  case CBoolean(b) => Table.constBoolean(Set(b))
+                  case CBoolean(b) =>
+                    Table.constBoolean(Set(b))
 
-                  case CNull => Table.constNull
+                  case CNull =>
+                    Table.constNull
 
-                  case CDate(d) => Table.constDate(Set(d))
+                  case CDate(d) =>
+                    Table.constDate(Set(d))
 
-                  case RObject.empty => Table.constEmptyObject
-                  case RArray.empty  => Table.constEmptyArray
-                  case CEmptyObject  => Table.constEmptyObject
-                  case CEmptyArray   => Table.constEmptyArray
+                  case RObject.empty =>
+                    Table.constEmptyObject
+                  case RArray.empty =>
+                    Table.constEmptyArray
+                  case CEmptyObject =>
+                    Table.constEmptyObject
+                  case CEmptyArray =>
+                    Table.constEmptyArray
 
-                  case CUndefined => Table.empty
+                  case CUndefined =>
+                    Table.empty
 
-                  case rv => Table.fromRValues(Stream(rv))
+                  case rv =>
+                    Table.fromRValues(Stream(rv))
                 }
 
               val spec = buildConstantWrapSpec(Leaf(Source))
@@ -888,14 +924,18 @@ trait EvaluatorModule[M[+_]]
                           liftToValues(ptRight.trans))
                         def sort(policy: IdentityPolicy): TableOrder =
                           policy match {
-                            case IdentityPolicy.Retain.Left  => ptLeft.sort
-                            case IdentityPolicy.Retain.Right => ptRight.sort
+                            case IdentityPolicy.Retain.Left =>
+                              ptLeft.sort
+                            case IdentityPolicy.Retain.Right =>
+                              ptRight.sort
                             case IdentityPolicy.Retain.Merge =>
                               IdentityOrder.empty
-                            case IdentityPolicy.Retain.Cross => ptLeft.sort
+                            case IdentityPolicy.Retain.Cross =>
+                              ptLeft.sort
                             case IdentityPolicy.Synthesize =>
                               IdentityOrder.single
-                            case IdentityPolicy.Strip => IdentityOrder.empty
+                            case IdentityPolicy.Strip =>
+                              IdentityOrder.empty
                             case IdentityPolicy.Product(leftPolicy, _) =>
                               sort(leftPolicy)
                           }
@@ -949,7 +989,8 @@ trait EvaluatorModule[M[+_]]
               */
             case m @ MegaReduce(reds, parent) =>
               val firstCoalesce = reds.map {
-                case (_, reductions) => coalesce(reductions.map((_, None)))
+                case (_, reductions) =>
+                  coalesce(reductions.map((_, None)))
               }
 
               def makeJArray(idx: Int)(tpe: JType): JType =
@@ -1312,7 +1353,8 @@ trait EvaluatorModule[M[+_]]
         reductions.toList.foldLeft(graph) {
           case (graph, (from, Some(result))) if optimize =>
             inlineNodeValue(graph, from, result)
-          case (graph, _) => graph
+          case (graph, _) =>
+            graph
         })
 
     /**
@@ -1331,7 +1373,8 @@ trait EvaluatorModule[M[+_]]
         }
 
       replacements.foldLeft(graph) {
-        case (graph, (from, to)) => replaceNode(graph, from, to)
+        case (graph, (from, to)) =>
+          replaceNode(graph, from, to)
       }
     }
 
@@ -1341,7 +1384,8 @@ trait EvaluatorModule[M[+_]]
         to: DepGraph) = {
       graph mapDown { recurse =>
         {
-          case `from` => to
+          case `from` =>
+            to
         }
       }
     }
@@ -1360,10 +1404,13 @@ trait EvaluatorModule[M[+_]]
           case IntersectBucketSpec(left, right) =>
             listParents(left) ++ listParents(right)
 
-          case dag.Group(_, target, forest) => listParents(forest) + target
+          case dag.Group(_, target, forest) =>
+            listParents(forest) + target
 
-          case dag.UnfixedSolution(_, solution) => Set(solution)
-          case dag.Extra(expr)                  => Set(expr)
+          case dag.UnfixedSolution(_, solution) =>
+            Set(solution)
+          case dag.Extra(expr) =>
+            Set(expr)
         }
       if (queue.isEmpty) {
         acc
@@ -1373,51 +1420,68 @@ trait EvaluatorModule[M[+_]]
         val (queue3, addend) = {
           val queue3 =
             graph match {
-              case _: dag.SplitParam => queue2
-              case _: dag.SplitGroup => queue2
-              case _: dag.Root       => queue2
+              case _: dag.SplitParam =>
+                queue2
+              case _: dag.SplitGroup =>
+                queue2
+              case _: dag.Root =>
+                queue2
 
-              case dag.New(parent) => queue2 enqueue parent
+              case dag.New(parent) =>
+                queue2 enqueue parent
 
-              case dag.Morph1(_, parent) => queue2 enqueue parent
+              case dag.Morph1(_, parent) =>
+                queue2 enqueue parent
               case dag.Morph2(_, left, right) =>
                 queue2 enqueue left enqueue right
 
-              case dag.Distinct(parent) => queue2 enqueue parent
+              case dag.Distinct(parent) =>
+                queue2 enqueue parent
 
-              case dag.AbsoluteLoad(parent, _) => queue2 enqueue parent
-              case dag.RelativeLoad(parent, _) => queue2 enqueue parent
+              case dag.AbsoluteLoad(parent, _) =>
+                queue2 enqueue parent
+              case dag.RelativeLoad(parent, _) =>
+                queue2 enqueue parent
 
-              case dag.Operate(_, parent) => queue2 enqueue parent
+              case dag.Operate(_, parent) =>
+                queue2 enqueue parent
 
-              case dag.Reduce(_, parent)     => queue2 enqueue parent
-              case dag.MegaReduce(_, parent) => queue2 enqueue parent
+              case dag.Reduce(_, parent) =>
+                queue2 enqueue parent
+              case dag.MegaReduce(_, parent) =>
+                queue2 enqueue parent
 
               case dag.Split(specs, child, _) =>
                 queue2 enqueue child enqueue listParents(specs)
 
-              case dag.Assert(pred, child) => queue2 enqueue pred enqueue child
+              case dag.Assert(pred, child) =>
+                queue2 enqueue pred enqueue child
               case dag.Cond(pred, left, _, right, _) =>
                 queue2 enqueue pred enqueue left enqueue right
 
               case dag.Observe(data, samples) =>
                 queue2 enqueue data enqueue samples
 
-              case dag.IUI(_, left, right) => queue2 enqueue left enqueue right
-              case dag.Diff(left, right)   => queue2 enqueue left enqueue right
+              case dag.IUI(_, left, right) =>
+                queue2 enqueue left enqueue right
+              case dag.Diff(left, right) =>
+                queue2 enqueue left enqueue right
 
               case dag.Join(_, _, left, right) =>
                 queue2 enqueue left enqueue right
               case dag.Filter(_, left, right) =>
                 queue2 enqueue left enqueue right
 
-              case dag.AddSortKey(parent, _, _, _) => queue2 enqueue parent
+              case dag.AddSortKey(parent, _, _, _) =>
+                queue2 enqueue parent
 
-              case dag.Memoize(parent, _) => queue2 enqueue parent
+              case dag.Memoize(parent, _) =>
+                queue2 enqueue parent
             }
 
           val addend = Some(graph) collect {
-            case fp: StagingPoint => fp
+            case fp: StagingPoint =>
+              fp
           }
 
           (queue3, addend)
@@ -1437,8 +1501,10 @@ trait EvaluatorModule[M[+_]]
         graph: DepGraph): Boolean = {
       val referencedSplits =
         graph.foldDown(false) {
-          case s: dag.SplitParam => Set(s.parentId)
-          case s: dag.SplitGroup => Set(s.parentId)
+          case s: dag.SplitParam =>
+            Set(s.parentId)
+          case s: dag.SplitGroup =>
+            Set(s.parentId)
         }
 
       val currentIsReferenced = parentSplits.headOption
@@ -1506,37 +1572,56 @@ trait EvaluatorModule[M[+_]]
 
     private def enumerateParents(node: DepGraph): Set[DepGraph] =
       node match {
-        case _: SplitParam | _: SplitGroup | _: Root => Set()
+        case _: SplitParam | _: SplitGroup | _: Root =>
+          Set()
 
-        case dag.New(parent) => Set(parent)
+        case dag.New(parent) =>
+          Set(parent)
 
-        case dag.Morph1(_, parent)      => Set(parent)
-        case dag.Morph2(_, left, right) => Set(left, right)
+        case dag.Morph1(_, parent) =>
+          Set(parent)
+        case dag.Morph2(_, left, right) =>
+          Set(left, right)
 
-        case dag.Assert(pred, child)           => Set(pred, child)
-        case dag.Cond(pred, left, _, right, _) => Set(pred, left, right)
+        case dag.Assert(pred, child) =>
+          Set(pred, child)
+        case dag.Cond(pred, left, _, right, _) =>
+          Set(pred, left, right)
 
-        case dag.Distinct(parent) => Set(parent)
+        case dag.Distinct(parent) =>
+          Set(parent)
 
-        case dag.AbsoluteLoad(parent, _) => Set(parent)
-        case dag.RelativeLoad(parent, _) => Set(parent)
+        case dag.AbsoluteLoad(parent, _) =>
+          Set(parent)
+        case dag.RelativeLoad(parent, _) =>
+          Set(parent)
 
-        case Operate(_, parent) => Set(parent)
+        case Operate(_, parent) =>
+          Set(parent)
 
-        case dag.Reduce(_, parent) => Set(parent)
-        case MegaReduce(_, parent) => Set(parent)
+        case dag.Reduce(_, parent) =>
+          Set(parent)
+        case MegaReduce(_, parent) =>
+          Set(parent)
 
-        case dag.Split(spec, _, _) => enumerateSpecParents(spec).toSet
+        case dag.Split(spec, _, _) =>
+          enumerateSpecParents(spec).toSet
 
-        case IUI(_, left, right) => Set(left, right)
-        case Diff(left, right)   => Set(left, right)
+        case IUI(_, left, right) =>
+          Set(left, right)
+        case Diff(left, right) =>
+          Set(left, right)
 
-        case Join(_, _, left, right)        => Set(left, right)
-        case dag.Filter(_, target, boolean) => Set(target, boolean)
+        case Join(_, _, left, right) =>
+          Set(left, right)
+        case dag.Filter(_, target, boolean) =>
+          Set(target, boolean)
 
-        case AddSortKey(parent, _, _, _) => Set(parent)
+        case AddSortKey(parent, _, _, _) =>
+          Set(parent)
 
-        case Memoize(parent, _) => Set(parent)
+        case Memoize(parent, _) =>
+          Set(parent)
       }
 
     private def enumerateSpecParents(spec: BucketSpec): Set[DepGraph] =
@@ -1546,10 +1631,13 @@ trait EvaluatorModule[M[+_]]
         case IntersectBucketSpec(left, right) =>
           enumerateSpecParents(left) ++ enumerateSpecParents(right)
 
-        case dag.Group(_, target, child) => enumerateSpecParents(child) + target
+        case dag.Group(_, target, child) =>
+          enumerateSpecParents(child) + target
 
-        case UnfixedSolution(_, target) => Set(target)
-        case dag.Extra(target)          => Set(target)
+        case UnfixedSolution(_, target) =>
+          Set(target)
+        case dag.Extra(target) =>
+          Set(target)
       }
 
     private def findCommonIds(left: BucketSpec, right: BucketSpec): Set[Int] =
@@ -1563,10 +1651,13 @@ trait EvaluatorModule[M[+_]]
         case IntersectBucketSpec(left, right) =>
           enumerateSolutionIds(left) ++ enumerateSolutionIds(right)
 
-        case dag.Group(_, _, forest) => enumerateSolutionIds(forest)
+        case dag.Group(_, _, forest) =>
+          enumerateSolutionIds(forest)
 
-        case UnfixedSolution(id, _) => Set(id)
-        case dag.Extra(_)           => Set()
+        case UnfixedSolution(id, _) =>
+          Set(id)
+        case dag.Extra(_) =>
+          Set()
       }
 
     private def buildKeySpec(commonIds: Set[Int]): TransSpec1 = {
@@ -1588,7 +1679,8 @@ trait EvaluatorModule[M[+_]]
           disjunctiveEquals(b, left) || disjunctiveEquals(b, right)
         case (a, CoproductIds(left, right)) =>
           disjunctiveEquals(a, left) || disjunctiveEquals(a, right)
-        case (a, b) => a == b
+        case (a, b) =>
+          a == b
       }
 
     private def areJoinable(left: DepGraph, right: DepGraph): Boolean =
@@ -1604,22 +1696,32 @@ trait EvaluatorModule[M[+_]]
         case dag.Group(_, target, subForest) =>
           enumerateGraphs(subForest) + target
 
-        case UnfixedSolution(_, graph) => Set(graph)
-        case dag.Extra(graph)          => Set(graph)
+        case UnfixedSolution(_, graph) =>
+          Set(graph)
+        case dag.Extra(graph) =>
+          Set(graph)
       }
 
     private def svalueToCValue(sv: SValue) =
       sv match {
-        case STrue        => CBoolean(true)
-        case SFalse       => CBoolean(false)
-        case SString(str) => CString(str)
-        case SDecimal(d)  => CNum(d)
+        case STrue =>
+          CBoolean(true)
+        case SFalse =>
+          CBoolean(false)
+        case SString(str) =>
+          CString(str)
+        case SDecimal(d) =>
+          CNum(d)
         // case SLong(l) => CLong(l)
         // case SDouble(d) => CDouble(d)
-        case SNull                       => CNull
-        case SObject(obj) if obj.isEmpty => CEmptyObject
-        case SArray(Vector())            => CEmptyArray
-        case _                           => sys.error("die a horrible death: " + sv)
+        case SNull =>
+          CNull
+        case SObject(obj) if obj.isEmpty =>
+          CEmptyObject
+        case SArray(Vector()) =>
+          CEmptyArray
+        case _ =>
+          sys.error("die a horrible death: " + sv)
       }
 
     private def simpleJoin(left: Table, right: Table)(
@@ -1644,12 +1746,16 @@ trait EvaluatorModule[M[+_]]
         policy match {
           case Product(leftPolicy, rightPolicy) =>
             rec(leftPolicy) ++ rec(rightPolicy)
-          case Synthesize => IdentityOrder.single.ids
-          case Strip      => IdentityOrder.empty.ids
+          case Synthesize =>
+            IdentityOrder.single.ids
+          case Strip =>
+            IdentityOrder.empty.ids
           case (_: Retain) =>
             order match {
-              case IdentityOrder(ids) => ids
-              case _                  => IdentityOrder.empty.ids
+              case IdentityOrder(ids) =>
+                ids
+              case _ =>
+                IdentityOrder.empty.ids
             }
         }
       IdentityOrder(rec(policy))

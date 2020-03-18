@@ -38,8 +38,10 @@ trait StringRegexExpression extends ImplicitCastInputTypes {
   // try cache the pattern for Literal
   private lazy val cache: Pattern =
     right match {
-      case x @ Literal(value: String, StringType) => compile(value)
-      case _                                      => null
+      case x @ Literal(value: String, StringType) =>
+        compile(value)
+      case _ =>
+        null
     }
 
   protected def compile(str: String): Pattern =

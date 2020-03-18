@@ -373,7 +373,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 case Right(response) ⇒
                   compactEntity(response.entity).fast.map(x ⇒
                     Right(response.withEntity(x)))
-                case Left(error) ⇒ FastFuture.successful(Left(error))
+                case Left(error) ⇒
+                  FastFuture.successful(Left(error))
               }
           }.map(strictEqualify)
       }
@@ -433,7 +434,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         case x: HttpEntity.Chunked ⇒
           compactEntityChunks(x.chunks).fast.map(compacted ⇒
             x.copy(chunks = compacted))
-        case _ ⇒ entity.toStrict(250.millis)
+        case _ ⇒
+          entity.toStrict(250.millis)
       }
 
     private def compactEntityChunks(data: Source[ChunkStreamPart, Any])
@@ -445,7 +447,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         .map(source(_: _*))
         .fast
         .recover {
-          case _: NoSuchElementException ⇒ source()
+          case _: NoSuchElementException ⇒
+            source()
         }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")

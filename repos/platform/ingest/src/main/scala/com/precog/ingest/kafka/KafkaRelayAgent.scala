@@ -360,6 +360,7 @@ final class KafkaRelayAgent(
         else
           permissionsFinder.inferWriteAuthorities(apiKey, path, Some(timestamp))
 
-      case _ => Promise.successful(None)
+      case _ =>
+        Promise.successful(None)
     }
 }

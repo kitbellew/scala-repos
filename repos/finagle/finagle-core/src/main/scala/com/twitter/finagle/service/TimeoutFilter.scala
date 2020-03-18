@@ -121,7 +121,8 @@ class TimeoutFilter[Req, Rep](
       Deadline.current match {
         case Some(current) =>
           Deadline.combined(timeoutDeadline, current)
-        case None => timeoutDeadline
+        case None =>
+          timeoutDeadline
       }
 
     Contexts.broadcast.let(Deadline, deadline) {

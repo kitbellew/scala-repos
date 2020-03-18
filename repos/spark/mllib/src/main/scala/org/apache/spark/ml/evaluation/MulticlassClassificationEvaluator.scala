@@ -97,11 +97,16 @@ class MulticlassClassificationEvaluator @Since("1.5.0") (
     val metrics = new MulticlassMetrics(predictionAndLabels)
     val metric =
       $(metricName) match {
-        case "f1"                => metrics.weightedFMeasure
-        case "precision"         => metrics.precision
-        case "recall"            => metrics.recall
-        case "weightedPrecision" => metrics.weightedPrecision
-        case "weightedRecall"    => metrics.weightedRecall
+        case "f1" =>
+          metrics.weightedFMeasure
+        case "precision" =>
+          metrics.precision
+        case "recall" =>
+          metrics.recall
+        case "weightedPrecision" =>
+          metrics.weightedPrecision
+        case "weightedRecall" =>
+          metrics.weightedRecall
       }
     metric
   }
@@ -109,11 +114,16 @@ class MulticlassClassificationEvaluator @Since("1.5.0") (
   @Since("1.5.0")
   override def isLargerBetter: Boolean =
     $(metricName) match {
-      case "f1"                => true
-      case "precision"         => true
-      case "recall"            => true
-      case "weightedPrecision" => true
-      case "weightedRecall"    => true
+      case "f1" =>
+        true
+      case "precision" =>
+        true
+      case "recall" =>
+        true
+      case "weightedPrecision" =>
+        true
+      case "weightedRecall" =>
+        true
     }
 
   @Since("1.5.0")

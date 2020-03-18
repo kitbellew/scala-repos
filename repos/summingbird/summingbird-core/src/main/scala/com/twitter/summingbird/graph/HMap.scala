@@ -29,9 +29,12 @@ sealed abstract class HMap[K[_], V[_]] {
 
   override def equals(that: Any): Boolean =
     that match {
-      case null          => false
-      case h: HMap[_, _] => map.equals(h.map)
-      case _             => false
+      case null =>
+        false
+      case h: HMap[_, _] =>
+        map.equals(h.map)
+      case _ =>
+        false
     }
   override def hashCode = map.hashCode
 
@@ -119,7 +122,8 @@ class HCache[K[_], V[_]]() {
 
   def getOrElseUpdate[T](k: K[T], v: => V[T]): V[T] =
     hmap.get(k) match {
-      case Some(exists) => exists
+      case Some(exists) =>
+        exists
       case None =>
         val res = v
         hmap = hmap + (k -> res)

@@ -242,7 +242,8 @@ case class FetchResponse(
     * Partitions the data into a map of maps (one for each topic).
     */
   lazy val dataGroupedByTopic = data.groupBy {
-    case (topicAndPartition, fetchData) => topicAndPartition.topic
+    case (topicAndPartition, fetchData) =>
+      topicAndPartition.topic
   }
   val headerSizeInBytes = FetchResponse.headerSize(requestVersion)
   lazy val sizeInBytes = FetchResponse.responseSize(
@@ -277,7 +278,8 @@ case class FetchResponse(
       partition: Int): FetchResponsePartitionData = {
     val topicAndPartition = TopicAndPartition(topic, partition)
     data.get(topicAndPartition) match {
-      case Some(partitionData) => partitionData
+      case Some(partitionData) =>
+        partitionData
       case _ =>
         throw new IllegalArgumentException(
           "No partition %s in fetch response %s"

@@ -16,7 +16,8 @@ object Pref extends LilaController {
   def form(categSlug: String) =
     Auth { implicit ctx => me =>
       lila.pref.PrefCateg(categSlug) match {
-        case None => notFound
+        case None =>
+          notFound
         case Some(categ) =>
           Ok(html.account.pref(me, forms prefOf ctx.pref, categ)).fuccess
       }

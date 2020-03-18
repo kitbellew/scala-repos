@@ -119,11 +119,16 @@ abstract class BaseDescription extends Description {
 
   private def toJavaSyntax(ch: Char): String = {
     ch match {
-      case '"'  => "\\\""
-      case '\n' => "\\n"
-      case '\r' => "\\r"
-      case '\t' => "\\t"
-      case _    => ch.toString
+      case '"' =>
+        "\\\""
+      case '\n' =>
+        "\\n"
+      case '\r' =>
+        "\\r"
+      case '\t' =>
+        "\\t"
+      case _ =>
+        ch.toString
     }
   }
 }

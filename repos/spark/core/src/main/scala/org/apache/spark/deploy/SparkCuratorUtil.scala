@@ -53,7 +53,8 @@ private[spark] object SparkCuratorUtil extends Logging {
       } catch {
         case nodeExist: KeeperException.NodeExistsException =>
         // do nothing, ignore node existing exception.
-        case e: Exception => throw e
+        case e: Exception =>
+          throw e
       }
     }
   }

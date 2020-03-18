@@ -241,7 +241,8 @@ class SQLContext private[sql] (
     // After we have populated SQLConf, we call setConf to populate other confs in the subclass
     // (e.g. hiveconf in HiveContext).
     properties.asScala.foreach {
-      case (key, value) => setConf(key, value)
+      case (key, value) =>
+        setConf(key, value)
     }
   }
 
@@ -884,7 +885,8 @@ class SQLContext private[sql] (
     sessionState.catalog
       .getTables(None)
       .map {
-        case (tableName, _) => tableName
+        case (tableName, _) =>
+          tableName
       }
       .toArray
   }
@@ -899,7 +901,8 @@ class SQLContext private[sql] (
     sessionState.catalog
       .getTables(Some(databaseName))
       .map {
-        case (tableName, _) => tableName
+        case (tableName, _) =>
+          tableName
       }
       .toArray
   }
@@ -1083,7 +1086,8 @@ object SQLContext {
       new GenericInternalRow(
         methodsToConverts
           .map {
-            case (e, convert) => convert(e.invoke(element))
+            case (e, convert) =>
+              convert(e.invoke(element))
           }
           .toArray[Any]): InternalRow
     }

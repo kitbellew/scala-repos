@@ -108,8 +108,9 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       return
 
     sFile.depthFirst.foreach {
-      case x: ScDeclaredElementsHolder => processDeclaredElementHolder(x, state)
-      case _                           =>
+      case x: ScDeclaredElementsHolder =>
+        processDeclaredElementHolder(x, state)
+      case _ =>
     }
 
     highlightInfos ++= annotations.map(HighlightInfo.fromAnnotation)
@@ -139,7 +140,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       x: ScDeclaredElementsHolder,
       state: UnusedPassState) {
     x.getContext match {
-      case _: ScPackageLike | _: ScalaFile | _: ScEarlyDefinitions => // ignore, too expensive to check for references.
+      case _: ScPackageLike | _: ScalaFile |
+          _: ScEarlyDefinitions => // ignore, too expensive to check for references.
       case _: ScTemplateBody =>
         x match {
           case mem: ScMember
@@ -161,13 +163,17 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       state: UnusedPassState) {
     val isSpecialDef =
       declElementHolder match {
-        case x: PsiMethod => ScFunction.isSpecial(x.name)
-        case _            => false
+        case x: PsiMethod =>
+          ScFunction.isSpecial(x.name)
+        case _ =>
+          false
       }
     val isImplicit =
       declElementHolder match {
-        case x: ScMember => x.hasModifierProperty("implicit")
-        case _           => false
+        case x: ScMember =>
+          x.hasModifierProperty("implicit")
+        case _ =>
+          false
       }
     if (!isSpecialDef && !isImplicit) {
       checkUnusedAndVarCouldBeVal(declElementHolder, state)
@@ -310,8 +316,10 @@ class VarToValFix(varDef: ScVariableDefinition, name: Option[String])
     extends IntentionAction {
   def getText: String = {
     name match {
-      case Some(n) => "Convert var '%s' to val".format(n)
-      case None    => "Convert var to val"
+      case Some(n) =>
+        "Convert var '%s' to val".format(n)
+      case None =>
+        "Convert var to val"
     }
   }
 

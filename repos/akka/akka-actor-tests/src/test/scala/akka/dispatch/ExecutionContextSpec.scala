@@ -184,7 +184,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         Props(
           new Actor {
             def receive = {
-              case msg ⇒ a forward msg
+              case msg ⇒
+                a forward msg
             }
           }))
       val p = TestProbe()

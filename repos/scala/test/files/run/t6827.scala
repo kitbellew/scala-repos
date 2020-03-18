@@ -9,7 +9,8 @@ object Test extends App {
         it.copyToArray(arr, start, len)
         "ok"
       } catch {
-        case e: Exception => e.toString
+        case e: Exception =>
+          e.toString
       }
     println("%s: %s" format (label, status))
   }

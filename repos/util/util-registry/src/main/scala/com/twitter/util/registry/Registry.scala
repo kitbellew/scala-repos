@@ -109,8 +109,10 @@ object GlobalRegistry {
     */
   def get: Registry =
     localRegistry() match {
-      case None        => registry
-      case Some(local) => local
+      case None =>
+        registry
+      case Some(local) =>
+        local
     }
 
   /**

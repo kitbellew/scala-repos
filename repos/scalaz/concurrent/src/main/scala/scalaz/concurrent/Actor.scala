@@ -52,7 +52,8 @@ final case class Actor[A](
   private def act(n: Node[A], i: Int = 1024): Unit = {
     try handler(n.a)
     catch {
-      case ex: Throwable => onError(ex)
+      case ex: Throwable =>
+        onError(ex)
     }
     val n2 = n.get
     if (n2 eq null)

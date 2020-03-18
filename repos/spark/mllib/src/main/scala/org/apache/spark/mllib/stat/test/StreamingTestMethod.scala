@@ -157,7 +157,8 @@ private[stat] object StreamingTestMethod {
 
   def getTestMethodFromName(method: String): StreamingTestMethod =
     TEST_NAME_TO_OBJECT.get(method) match {
-      case Some(test) => test
+      case Some(test) =>
+        test
       case None =>
         throw new IllegalArgumentException(
           "Unrecognized method name. Supported streaming test methods: "

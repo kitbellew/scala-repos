@@ -72,6 +72,7 @@ trait Publisher[Evt] {
     obj match {
       case that: Publisher[_] =>
         filters == that.filters && suspended == that.suspended
-      case _ => false
+      case _ =>
+        false
     }
 }

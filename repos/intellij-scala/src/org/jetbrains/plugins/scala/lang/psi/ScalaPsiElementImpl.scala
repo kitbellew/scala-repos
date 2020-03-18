@@ -23,8 +23,10 @@ abstract class ScalaPsiElementImpl(node: ASTNode)
     with ScalaPsiElement {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -35,29 +37,37 @@ abstract class ScalaPsiElementImpl(node: ASTNode)
 
   override def getContext: PsiElement = {
     context match {
-      case null => super.getContext
-      case _    => context
+      case null =>
+        super.getContext
+      case _ =>
+        context
     }
   }
 
   override def getStartOffsetInParent: Int = {
     child match {
-      case null => super.getStartOffsetInParent
-      case _    => child.getStartOffsetInParent
+      case null =>
+        super.getStartOffsetInParent
+      case _ =>
+        child.getStartOffsetInParent
     }
   }
 
   override def getPrevSibling: PsiElement = {
     child match {
-      case null => super.getPrevSibling
-      case _    => child.getPrevSibling
+      case null =>
+        super.getPrevSibling
+      case _ =>
+        child.getPrevSibling
     }
   }
 
   override def getNextSibling: PsiElement = {
     child match {
-      case null => super.getNextSibling
-      case _    => child.getNextSibling
+      case null =>
+        super.getNextSibling
+      case _ =>
+        child.getNextSibling
     }
   }
 
@@ -95,7 +105,8 @@ abstract class ScalaPsiElementImpl(node: ASTNode)
       case x: LazyParseablePsiElement =>
         CheckUtil.checkWritable(this)
         x.deleteChildInternal(getNode)
-      case _ => super.delete()
+      case _ =>
+        super.delete()
     }
   }
 }
@@ -108,36 +119,46 @@ abstract class ScalaStubBasedElementImpl[T <: PsiElement](
     with ScalaPsiElement {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
   override def getContext: PsiElement = {
     context match {
-      case null => super.getContext
-      case _    => context
+      case null =>
+        super.getContext
+      case _ =>
+        context
     }
   }
 
   override def getStartOffsetInParent: Int = {
     child match {
-      case null => super.getStartOffsetInParent
-      case _    => child.getStartOffsetInParent
+      case null =>
+        super.getStartOffsetInParent
+      case _ =>
+        child.getStartOffsetInParent
     }
   }
 
   override def getPrevSibling: PsiElement = {
     child match {
-      case null => super.getPrevSibling
-      case _    => ScalaPsiUtil.getPrevStubOrPsiElement(child)
+      case null =>
+        super.getPrevSibling
+      case _ =>
+        ScalaPsiUtil.getPrevStubOrPsiElement(child)
     }
   }
 
   override def getNextSibling: PsiElement = {
     child match {
-      case null => super.getNextSibling
-      case _    => ScalaPsiUtil.getNextStubOrPsiElement(child)
+      case null =>
+        super.getNextSibling
+      case _ =>
+        ScalaPsiUtil.getNextStubOrPsiElement(child)
     }
   }
 
@@ -181,7 +202,8 @@ abstract class ScalaStubBasedElementImpl[T <: PsiElement](
       case x: LazyParseablePsiElement =>
         CheckUtil.checkWritable(this)
         x.deleteChildInternal(getNode)
-      case _ => super.delete()
+      case _ =>
+        super.delete()
     }
   }
 }

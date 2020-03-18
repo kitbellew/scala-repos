@@ -12,7 +12,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScDesignatorType, ScType}
 object FormattedStringFormatter extends StringFormatter {
   def format(parts: Seq[StringPart]) = {
     val bindings = parts.collect {
-      case Text(s) => (StringUtil.escapeStringCharacters(s), None)
+      case Text(s) =>
+        (StringUtil.escapeStringCharacters(s), None)
       case injection @ Injection(expression, specifier) =>
         if (injection.isLiteral && specifier.isEmpty)
           if (injection.value == "%")
@@ -35,7 +36,8 @@ object FormattedStringFormatter extends StringFormatter {
     val (strings, arguments) = bindings.unzip
     val formatString = strings.mkString
     val argumentString = arguments.collect {
-      case Some(it) => it
+      case Some(it) =>
+        it
     }
     format(formatString, argumentString.mkString(", "))
   }
@@ -46,18 +48,28 @@ object FormattedStringFormatter extends StringFormatter {
 
   private def letterFor(aType: ScType): Char =
     aType match {
-      case types.Boolean                                     => 'b'
-      case types.Char                                        => 'c'
-      case types.Byte | types.Short | types.Int | types.Long => 'd'
-      case types.Float | types.Double                        => 'f'
+      case types.Boolean =>
+        'b'
+      case types.Char =>
+        'c'
+      case types.Byte | types.Short | types.Int | types.Long =>
+        'd'
+      case types.Float | types.Double =>
+        'f'
       case ScDesignatorType(element) =>
         element.name match {
-          case "String"            => 's'
-          case "BigInt"            => 'd'
-          case "BigDecimal"        => 'f'
-          case "Calendar" | "Date" => 't'
-          case _                   => 's'
+          case "String" =>
+            's'
+          case "BigInt" =>
+            'd'
+          case "BigDecimal" =>
+            'f'
+          case "Calendar" | "Date" =>
+            't'
+          case _ =>
+            's'
         }
-      case _ => 's'
+      case _ =>
+        's'
     }
 }

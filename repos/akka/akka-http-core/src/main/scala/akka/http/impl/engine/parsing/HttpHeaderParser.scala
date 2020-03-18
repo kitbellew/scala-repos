@@ -140,7 +140,8 @@ private[engine] final class HttpHeaderParser private (
       case 0 ⇒ // leaf node (or intermediate ValueBranch pointer)
         val valueIx = (node >>> 8) - 1
         values(valueIx) match {
-          case branch: ValueBranch ⇒ parseHeaderValue(input, cursor, branch)()
+          case branch: ValueBranch ⇒
+            parseHeaderValue(input, cursor, branch)()
           case valueParser: HeaderValueParser ⇒
             startValueBranch(valueIx, valueParser) // no header yet of this type
           case EmptyHeader ⇒
@@ -231,7 +232,8 @@ private[engine] final class HttpHeaderParser private (
       parseHeaderValue(input, valueStart, branch)(cursor + 1, nodeIx + 1)
     else
       node >>> 8 match {
-        case 0 ⇒ parseAndInsertHeader()
+        case 0 ⇒
+          parseAndInsertHeader()
         case msb ⇒
           node & 0xFF match {
             case 0 ⇒ // leaf node
@@ -240,7 +242,8 @@ private[engine] final class HttpHeaderParser private (
             case nodeChar ⇒ // branching node
               val signum = math.signum(char - nodeChar)
               branchData(rowIx(msb) + 1 + signum) match {
-                case 0 ⇒ parseAndInsertHeader() // header doesn't exist yet
+                case 0 ⇒
+                  parseAndInsertHeader() // header doesn't exist yet
                 case subNodeIx ⇒ // descend into branch and advance on char matches (otherwise descend but don't advance)
                   parseHeaderValue(input, valueStart, branch)(
                     cursor + 1 - math.abs(signum),
@@ -423,13 +426,16 @@ private[engine] final class HttpHeaderParser private (
       }
       def branchLines(dataIx: Int, p1: String, p2: String, p3: String) =
         branchData(dataIx) match {
-          case 0 ⇒ Seq.empty
-          case subNodeIx ⇒ recurseAndPrefixLines(subNodeIx, p1, p2, p3)._1
+          case 0 ⇒
+            Seq.empty
+          case subNodeIx ⇒
+            recurseAndPrefixLines(subNodeIx, p1, p2, p3)._1
         }
       val node = nodes(nodeIx)
       val char = escape((node & 0xFF).toChar)
       node >>> 8 match {
-        case 0 ⇒ recurseAndPrefixLines(nodeIx + 1, "  ", char + "-", "  ")
+        case 0 ⇒
+          recurseAndPrefixLines(nodeIx + 1, "  ", char + "-", "  ")
         case msb ⇒
           node & 0xFF match {
             case 0 ⇒
@@ -443,8 +449,10 @@ private[engine] final class HttpHeaderParser private (
                     pad)
                 case vp: HeaderValueParser ⇒
                   Seq(" (" :: vp.headerName :: ")" :: Nil) -> 0
-                case value: RawHeader ⇒ Seq(" *" :: value.toString :: Nil) -> 0
-                case value ⇒ Seq(" " :: value.toString :: Nil) -> 0
+                case value: RawHeader ⇒
+                  Seq(" *" :: value.toString :: Nil) -> 0
+                case value ⇒
+                  Seq(" " :: value.toString :: Nil) -> 0
               }
             case nodeChar ⇒
               val rix = rowIx(msb)
@@ -491,12 +499,14 @@ private[engine] final class HttpHeaderParser private (
     def build(nodeIx: Int = 0): Map[String, Int] = {
       val node = nodes(nodeIx)
       node >>> 8 match {
-        case 0 ⇒ build(nodeIx + 1)
+        case 0 ⇒
+          build(nodeIx + 1)
         case msb if (node & 0xFF) == 0 ⇒
           values(msb - 1) match {
             case ValueBranch(_, parser, _, count) ⇒
               Map(parser.headerName -> count)
-            case _ ⇒ Map.empty
+            case _ ⇒
+              Map.empty
           }
         case msb ⇒
           def branch(ix: Int): Map[String, Int] =
@@ -525,7 +535,8 @@ private[engine] final class HttpHeaderParser private (
       )
     s"nodes: ${nodes take nodeCount map char mkString ", "}\n" +
       s"branchData: ${branchData take branchDataCount grouped 3 map {
-        case Array(a, b, c) ⇒ s"$a/$b/$c"
+        case Array(a, b, c) ⇒
+          s"$a/$b/$c"
       } mkString ", "}\n" +
       s"values: ${values take valueCount mkString ", "}"
   }
@@ -677,7 +688,8 @@ private[http] object HttpHeaderParser {
       val trimmedHeaderValue = headerValue.trim
       val header =
         HeaderParser.parseFull(headerName, trimmedHeaderValue, settings) match {
-          case Right(h) ⇒ h
+          case Right(h) ⇒
+            h
           case Left(error) ⇒
             onIllegalHeader(
               error.withSummaryPrepended(s"Illegal '$headerName' header"))
@@ -714,10 +726,12 @@ private[http] object HttpHeaderParser {
       limit: Int)(ix: Int): Int =
     if (ix < limit)
       byteChar(input, ix) match {
-        case ':' ⇒ ix
+        case ':' ⇒
+          ix
         case c if tchar(c) ⇒
           scanHeaderNameAndReturnIndexOfColon(input, start, limit)(ix + 1)
-        case c ⇒ fail(s"Illegal character '${escape(c)}' in header name")
+        case c ⇒
+          fail(s"Illegal character '${escape(c)}' in header name")
       }
     else
       fail(
@@ -773,7 +787,8 @@ private[http] object HttpHeaderParser {
                     sb.append(c).append(byteChar(input, ix + 1))
                   else
                     null
-                case cc ⇒ appended2(cc)
+                case cc ⇒
+                  appended2(cc)
               }
             } else if ((c & 0xF0) == 0xE0) { // 3-byte UTF-8 sequence?
               hhp.byteBuffer.put(c.toByte)
@@ -788,7 +803,8 @@ private[http] object HttpHeaderParser {
                       .append(byteChar(input, ix + 2))
                   else
                     null
-                case cc ⇒ appended2(cc)
+                case cc ⇒
+                  appended2(cc)
               }
             } else if ((c & 0xF8) == 0xF0) { // 4-byte UTF-8 sequence?
               hhp.byteBuffer.put(c.toByte)
@@ -805,7 +821,8 @@ private[http] object HttpHeaderParser {
                       .append(byteChar(input, ix + 3))
                   else
                     null
-                case cc ⇒ appended2(cc)
+                case cc ⇒
+                  appended2(cc)
               }
             } else
               fail(s"Illegal character '${escape(c)}' in header value")

@@ -29,16 +29,20 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
 
   private[this] val localAddress: InetSocketAddress =
     trans.localAddress match {
-      case ia: InetSocketAddress => ia
-      case _                     => new InetSocketAddress(0)
+      case ia: InetSocketAddress =>
+        ia
+      case _ =>
+        new InetSocketAddress(0)
     }
 
   // satisfy pending requests on transport close
   trans.onClose.respond { res =>
     val exc =
       res match {
-        case Return(exc) => exc
-        case Throw(exc)  => exc
+        case Return(exc) =>
+          exc
+        case Throw(exc) =>
+          exc
       }
 
     semaphore.fail(exc)
@@ -104,7 +108,8 @@ object GenSerialClientDispatcher {
   val StatsScope: String = "dispatcher"
 
   val wrapWriteException: PartialFunction[Throwable, Future[Nothing]] = {
-    case exc: Throwable => Future.exception(WriteException(exc))
+    case exc: Throwable =>
+      Future.exception(WriteException(exc))
   }
 }
 

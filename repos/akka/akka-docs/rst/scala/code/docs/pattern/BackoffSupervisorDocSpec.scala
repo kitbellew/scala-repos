@@ -94,8 +94,10 @@ class BackoffSupervisorDocSpec {
         ) // the child must send BackoffSupervisor.Reset to its parent
         .withSupervisorStrategy(
           OneForOneStrategy() {
-            case _: MyException ⇒ SupervisorStrategy.Restart
-            case _ ⇒ SupervisorStrategy.Escalate
+            case _: MyException ⇒
+              SupervisorStrategy.Restart
+            case _ ⇒
+              SupervisorStrategy.Escalate
           }))
     //#backoff-custom-fail
 

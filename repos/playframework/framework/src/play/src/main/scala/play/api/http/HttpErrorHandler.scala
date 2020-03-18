@@ -98,10 +98,12 @@ private[play] class GlobalSettingsHttpErrorHandler @Inject() (
       statusCode: Int,
       message: String) = {
     statusCode match {
-      case BAD_REQUEST => global.get.onBadRequest(request, message)
+      case BAD_REQUEST =>
+        global.get.onBadRequest(request, message)
       case FORBIDDEN =>
         Future.successful(Forbidden(views.html.defaultpages.unauthorized()))
-      case NOT_FOUND => global.get.onHandlerNotFound(request)
+      case NOT_FOUND =>
+        global.get.onHandlerNotFound(request)
       case clientError if statusCode >= 400 && statusCode < 500 =>
         Future.successful(
           Results.Status(clientError)(
@@ -168,9 +170,12 @@ class DefaultHttpErrorHandler(
       statusCode: Int,
       message: String): Future[Result] =
     statusCode match {
-      case BAD_REQUEST => onBadRequest(request, message)
-      case FORBIDDEN   => onForbidden(request, message)
-      case NOT_FOUND   => onNotFound(request, message)
+      case BAD_REQUEST =>
+        onBadRequest(request, message)
+      case FORBIDDEN =>
+        onForbidden(request, message)
+      case NOT_FOUND =>
+        onNotFound(request, message)
       case clientError if statusCode >= 400 && statusCode < 500 =>
         onOtherClientError(request, statusCode, message)
       case nonClientError =>
@@ -264,8 +269,10 @@ class DefaultHttpErrorHandler(
       logServerError(request, usefulException)
 
       environment.mode match {
-        case Mode.Prod => onProdServerError(request, usefulException)
-        case _         => onDevServerError(request, usefulException)
+        case Mode.Prod =>
+          onProdServerError(request, usefulException)
+        case _ =>
+          onDevServerError(request, usefulException)
       }
     } catch {
       case NonFatal(e) =>
@@ -341,7 +348,8 @@ object HttpErrorHandlerExceptions {
       isProd: Boolean,
       throwable: Throwable): UsefulException =
     throwable match {
-      case useful: UsefulException => useful
+      case useful: UsefulException =>
+        useful
       case e: ExecutionException =>
         throwableToUsefulException(sourceMapper, isProd, e.getCause)
       case prodException if isProd =>

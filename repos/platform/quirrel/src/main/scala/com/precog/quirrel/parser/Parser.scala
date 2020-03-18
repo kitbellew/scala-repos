@@ -41,10 +41,12 @@ trait Parser extends RegexParsers with Filters with AST {
   def parse(input: LineStream): Set[Expr] = {
     val results = expr(input)
     val successes = results collect {
-      case Success(tree, _) => tree
+      case Success(tree, _) =>
+        tree
     }
     val failures = results collect {
-      case f: Failure => f
+      case f: Failure =>
+        f
     }
 
     if (successes.isEmpty)
@@ -365,7 +367,8 @@ trait Parser extends RegexParsers with Filters with AST {
           case n if n.getClass == classOf[Deref] =>
             n.children.head.getClass != classOf[ArrayDef]
 
-          case _ => true
+          case _ =>
+            true
         }
     }
 
@@ -379,7 +382,8 @@ trait Parser extends RegexParsers with Filters with AST {
             !n.asInstanceOf[Relate].from.isInstanceOf[Relate] &&
               !n.asInstanceOf[Relate].to.isInstanceOf[Relate]
 
-          case _ => true
+          case _ =>
+            true
         }
     }
 
@@ -403,16 +407,25 @@ trait Parser extends RegexParsers with Filters with AST {
   private[quirrel] def canonicalizeStr(str: String): String = {
     val (back, _) =
       str.foldLeft(("", false)) {
-        case ((acc, false), '\\') => (acc, true)
-        case ((acc, false), c)    => (acc + c, false)
+        case ((acc, false), '\\') =>
+          (acc, true)
+        case ((acc, false), c) =>
+          (acc + c, false)
 
-        case ((acc, true), 'n')  => (acc + '\n', false)
-        case ((acc, true), 'r')  => (acc + '\r', false)
-        case ((acc, true), 'f')  => (acc + '\f', false)
-        case ((acc, true), 't')  => (acc + '\t', false)
-        case ((acc, true), '0')  => (acc + '\0', false)
-        case ((acc, true), '\\') => (acc + '\\', false)
-        case ((acc, true), c)    => (acc + c, false)
+        case ((acc, true), 'n') =>
+          (acc + '\n', false)
+        case ((acc, true), 'r') =>
+          (acc + '\r', false)
+        case ((acc, true), 'f') =>
+          (acc + '\f', false)
+        case ((acc, true), 't') =>
+          (acc + '\t', false)
+        case ((acc, true), '0') =>
+          (acc + '\0', false)
+        case ((acc, true), '\\') =>
+          (acc + '\\', false)
+        case ((acc, true), c) =>
+          (acc + c, false)
       }
 
     back.substring(1, back.length - 1)
@@ -428,8 +441,10 @@ trait Parser extends RegexParsers with Filters with AST {
   private def canonicalizePropertyName(str: String): String = {
     val (back, _) =
       str.substring(1, str.length - 1).foldLeft(("", false)) {
-        case ((acc, false), '\\') => (acc, true)
-        case ((acc, _), c)        => (acc + c, false)
+        case ((acc, false), '\\') =>
+          (acc, true)
+        case ((acc, _), c) =>
+          (acc + c, false)
       }
 
     back
@@ -510,7 +525,8 @@ trait Parser extends RegexParsers with Filters with AST {
         }
 
       val pairs = expectedCounts.toList.sortWith {
-        case ((_, a), (_, b)) => a > b
+        case ((_, a), (_, b)) =>
+          a > b
       }
 
       val expectation = pairs.headOption flatMap {
@@ -518,7 +534,8 @@ trait Parser extends RegexParsers with Filters with AST {
           val (possibilities, _) =
             (
               pairs takeWhile {
-                case (_, c) => headCount == c
+                case (_, c) =>
+                  headCount == c
               }
             ).unzip
 

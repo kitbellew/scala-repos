@@ -386,11 +386,16 @@ class BufTest
   test("Buf num matching") {
     val hasMatch =
       Buf.Empty match {
-        case Buf.U32BE(_, _) => true
-        case Buf.U64BE(_, _) => true
-        case Buf.U32LE(_, _) => true
-        case Buf.U64LE(_, _) => true
-        case _               => false
+        case Buf.U32BE(_, _) =>
+          true
+        case Buf.U64BE(_, _) =>
+          true
+        case Buf.U32LE(_, _) =>
+          true
+        case Buf.U64LE(_, _) =>
+          true
+        case _ =>
+          false
       }
     assert(!hasMatch)
 
@@ -436,7 +441,8 @@ class BufTest
     val b = 'x'.toByte
     val bigBuf =
       (1 to size).foldLeft(Buf.Empty) {
-        case (buf, _) => buf concat Buf.ByteArray.Owned(Array[Byte](b))
+        case (buf, _) =>
+          buf concat Buf.ByteArray.Owned(Array[Byte](b))
       }
 
     val expected =

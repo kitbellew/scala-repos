@@ -338,7 +338,8 @@ package scalaguide.forms.scalaforms {
           UserData.unapply) verifying (
           "Failed form constraints!", fields =>
             fields match {
-              case userData => validate(userData.name, userData.age).isDefined
+              case userData =>
+                validate(userData.name, userData.age).isDefined
             }
         ))
       //#userForm-constraints-ad-hoc

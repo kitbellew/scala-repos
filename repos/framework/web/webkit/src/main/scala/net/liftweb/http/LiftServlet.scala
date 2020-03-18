@@ -82,7 +82,8 @@ class LiftServlet extends Loggable {
       logger.debug("Destroyed Lift handler.")
       // super.destroy
     } catch {
-      case e: Exception => logger.error("Destruction failure", e)
+      case e: Exception =>
+        logger.error("Destruction failure", e)
     }
   }
 
@@ -95,8 +96,10 @@ class LiftServlet extends Loggable {
 
   private def wrapState[T](req: Req, session: Box[LiftSession])(f: => T): T = {
     session match {
-      case Full(ses) => S.init(Box !! req, ses)(f)
-      case _         => CurrentReq.doWith(req)(f)
+      case Full(ses) =>
+        S.init(Box !! req, ses)(f)
+      case _ =>
+        CurrentReq.doWith(req)(f)
     }
   }
 
@@ -146,7 +149,8 @@ class LiftServlet extends Loggable {
         case Full(answer) =>
           sendResponse(answer, resp, req);
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -180,19 +184,23 @@ class LiftServlet extends Loggable {
       }
 
       req.request.resumeInfo match {
-        case None           => doIt
-        case r if r eq null => doIt
+        case None =>
+          doIt
+        case r if r eq null =>
+          doIt
         case Some((or: Req, r: LiftResponse)) if (req.path == or.path) =>
           sendResponse(r, resp, req);
           true
-        case _ => doIt
+        case _ =>
+          doIt
       }
     } catch {
       case rest.ContinuationException(theReq, sesBox, func) =>
         handleGenericContinuation(theReq, resp, sesBox, func);
         true // we have to return true to hold onto the request
 
-      case e if e.getClass.getName.endsWith("RetryRequest") => throw e
+      case e if e.getClass.getName.endsWith("RetryRequest") =>
+        throw e
       case e: Throwable =>
         logger.info(
           "Request for " + req.request.uri + " failed " + e.getMessage,
@@ -203,12 +211,18 @@ class LiftServlet extends Loggable {
 
   private def flatten(in: List[Any]): List[Any] =
     in match {
-      case Nil                      => Nil
-      case Some(x: AnyRef) :: xs    => x :: flatten(xs)
-      case Full(x: AnyRef) :: xs    => x :: flatten(xs)
-      case (lst: Iterable[_]) :: xs => lst.toList ::: flatten(xs)
-      case (x: AnyRef) :: xs        => x :: flatten(xs)
-      case x :: xs                  => flatten(xs)
+      case Nil =>
+        Nil
+      case Some(x: AnyRef) :: xs =>
+        x :: flatten(xs)
+      case Full(x: AnyRef) :: xs =>
+        x :: flatten(xs)
+      case (lst: Iterable[_]) :: xs =>
+        lst.toList ::: flatten(xs)
+      case (x: AnyRef) :: xs =>
+        x :: flatten(xs)
+      case x :: xs =>
+        flatten(xs)
     }
 
   private def authPassed_?(req: Req): Boolean = {
@@ -223,10 +237,13 @@ class LiftServlet extends Loggable {
       _ match {
         case Full(r) =>
           LiftRules.authentication.verified_?(req) match {
-            case true => checkRoles(r, userRoles.get)
-            case _    => false
+            case true =>
+              checkRoles(r, userRoles.get)
+            case _ =>
+              false
           }
-        case _ => LiftRules.authentication.verified_?(req)
+        case _ =>
+          LiftRules.authentication.verified_?(req)
       }) openOr true
   }
 
@@ -236,8 +253,10 @@ class LiftServlet extends Loggable {
     synchronized {
       val next =
         recent.get(id) match {
-          case Full(x) => x + 1
-          case _       => 1
+          case Full(x) =>
+            x + 1
+          case _ =>
+            1
         }
 
       recent(id) = next
@@ -295,10 +314,13 @@ class LiftServlet extends Loggable {
         _ match {
           case Full(r) =>
             LiftRules.authentication.verified_?(req) match {
-              case true => checkRoles(r, userRoles.get)
-              case _    => false
+              case true =>
+                checkRoles(r, userRoles.get)
+              case _ =>
+                false
             }
-          case _ => LiftRules.authentication.verified_?(req)
+          case _ =>
+            LiftRules.authentication.verified_?(req)
         }) openOr true
     }
 
@@ -398,16 +420,20 @@ class LiftServlet extends Loggable {
                     Full(
                       LiftRules.convertResponse(
                         (a, Nil, S.responseCookies, req)))
-                  case r => r
+                  case r =>
+                    r
                 })
             tmpStatelessHolder.isDefined
           }) {
         val f = tmpStatelessHolder.openOrThrowException(
           "This is a full box here, checked on previous line")
         f match {
-          case Full(v)                       => Full(v)
-          case Empty                         => LiftRules.notFoundOrIgnore(req, Empty)
-          case f: net.liftweb.common.Failure => Full(req.createNotFound(f))
+          case Full(v) =>
+            Full(v)
+          case Empty =>
+            LiftRules.notFoundOrIgnore(req, Empty)
+          case f: net.liftweb.common.Failure =>
+            Full(req.createNotFound(f))
         }
       } else {
         Empty
@@ -474,8 +500,10 @@ class LiftServlet extends Loggable {
     def stepThroughPipeline(steps: Seq[ProcessingStep]): Box[LiftResponse] = {
       //Seems broken but last step always hits
       steps.head.process(req) match {
-        case Empty => stepThroughPipeline(steps.tail)
-        case a @ _ => a
+        case Empty =>
+          stepThroughPipeline(steps.tail)
+        case a @ _ =>
+          a
       }
     }
 
@@ -484,7 +512,8 @@ class LiftServlet extends Loggable {
       try {
         stepThroughPipeline(processingPipeline)
       } catch {
-        case foc: LiftFlowOfControlException => throw foc
+        case foc: LiftFlowOfControlException =>
+          throw foc
         case e: Exception if !e.getClass.getName.endsWith("RetryRequest") =>
           S.runExceptionHandlers(req, e)
       }
@@ -582,7 +611,8 @@ class LiftServlet extends Loggable {
           LiftSession.onEndServicing.foreach(_(liftSession, req, ret._2))
           ret
 
-        case _ => (false, Empty)
+        case _ =>
+          (false, Empty)
       }
 
     val wp = req.path.wholePath
@@ -604,8 +634,10 @@ class LiftServlet extends Loggable {
         respToFunc(dispatch._2)
       } else if (comet_?) {
         handleComet(req, liftSession, originalRequest) match {
-          case Left(x)  => respToFunc(x)
-          case Right(x) => x
+          case Left(x) =>
+            respToFunc(x)
+          case Right(x) =>
+            x
         }
       } else if (ajax_?) {
         respToFunc(handleAjax(liftSession, req))
@@ -665,7 +697,8 @@ class LiftServlet extends Loggable {
         RenderVersion.doWith(renderVersion)(f(Full(versionInfo)))
       case LiftPath :: "ajax" :: renderVersion :: _ =>
         RenderVersion.doWith(renderVersion)(f(Empty))
-      case _ => f(Empty)
+      case _ =>
+        f(Empty)
     }
   }
 
@@ -699,34 +732,46 @@ class LiftServlet extends Loggable {
               })
 
             val what2 = what.flatMap {
-              case js: JsCmd       => List(js)
-              case jv: JValue      => List(jv)
-              case n: NodeSeq      => List(n)
-              case js: JsCommands  => List(js)
-              case r: LiftResponse => List(r)
-              case s               => Nil
+              case js: JsCmd =>
+                List(js)
+              case jv: JValue =>
+                List(jv)
+              case n: NodeSeq =>
+                List(n)
+              case js: JsCommands =>
+                List(js)
+              case r: LiftResponse =>
+                List(r)
+              case s =>
+                Nil
             }
 
             val ret: LiftResponse =
               what2 match {
-                case (json: JsObj) :: Nil => JsonResponse(json)
-                case (jv: JValue) :: Nil  => JsonResponse(jv)
+                case (json: JsObj) :: Nil =>
+                  JsonResponse(json)
+                case (jv: JValue) :: Nil =>
+                  JsonResponse(jv)
                 case (js: JsCmd) :: xs => {
                   (
                     JsCommands(S.noticesToJsCmd :: Nil) &
                       (
                         js :: (
                           xs.collect {
-                            case js: JsCmd => js
+                            case js: JsCmd =>
+                              js
                           }
                         ).reverse
                       )
                   ).toResponse
                 }
 
-                case (n: Node) :: _         => XmlResponse(n)
-                case (ns: NodeSeq) :: _     => XmlResponse(Group(ns))
-                case (r: LiftResponse) :: _ => r
+                case (n: Node) :: _ =>
+                  XmlResponse(n)
+                case (ns: NodeSeq) :: _ =>
+                  XmlResponse(Group(ns))
+                case (r: LiftResponse) :: _ =>
+                  r
                 case _ =>
                   JsCommands(S.noticesToJsCmd :: JsCmds.Noop :: Nil).toResponse
               }
@@ -746,8 +791,10 @@ class LiftServlet extends Loggable {
           }
       }
     } catch {
-      case foc: LiftFlowOfControlException => throw foc
-      case e: Exception                    => S.runExceptionHandlers(requestState, e)
+      case foc: LiftFlowOfControlException =>
+        throw foc
+      case e: Exception =>
+        S.runExceptionHandlers(requestState, e)
     }
   }
 
@@ -900,7 +947,8 @@ class LiftServlet extends Loggable {
         val sendItToMe: AnswerRender => Unit = ah => this ! ah
 
         actors.foreach {
-          case (act, when) => act ! Listen(when, ListenerId(seqId), sendItToMe)
+          case (act, when) =>
+            act ! Listen(when, ListenerId(seqId), sendItToMe)
         }
 
       case ar: AnswerRender =>
@@ -911,7 +959,8 @@ class LiftServlet extends Loggable {
         done = true
         session.exitComet(this)
         actors.foreach {
-          case (act, _) => tryo(act ! Unlisten(ListenerId(seqId)))
+          case (act, _) =>
+            tryo(act ! Unlisten(ListenerId(seqId)))
         }
         onBreakout(answers)
 
@@ -1035,8 +1084,10 @@ class LiftServlet extends Loggable {
 
   private def extractRenderVersion(in: List[String]): Box[String] =
     in match {
-      case _ :: _ :: _ :: rv :: _ => Full(rv)
-      case _                      => Empty
+      case _ :: _ :: _ :: rv :: _ =>
+        Full(rv)
+      case _ =>
+        Empty
     }
 
   private def handleNonContinuationComet(
@@ -1080,8 +1131,10 @@ class LiftServlet extends Loggable {
         response.headers + "\n" +
         (
           response match {
-            case InMemoryResponse(data, _, _, _) => new String(data, "UTF-8")
-            case _                               => "data"
+            case InMemoryResponse(data, _, _, _) =>
+              new String(data, "UTF-8")
+            case _ =>
+              "data"
           }
         )
 
@@ -1118,7 +1171,8 @@ class LiftServlet extends Loggable {
                     yield rwf(updated)
                 ) openOr uri
               ))
-          case _ => v
+          case _ =>
+            v
         })
 
     def pairFromRequest(req: Req): (Box[Req], Box[String]) = {
@@ -1178,17 +1232,20 @@ class LiftServlet extends Loggable {
     // send the response
     response.addHeaders(
       header.map {
-        case (name, value) => HTTPParam(name, value)
+        case (name, value) =>
+          HTTPParam(name, value)
       })
     response.addHeaders(
       LiftRules.supplementalHeaders.vend.map {
-        case (name, value) => HTTPParam(name, value)
+        case (name, value) =>
+          HTTPParam(name, value)
       })
 
     liftResp match {
       case ResponseWithReason(_, reason) =>
         response setStatusWithReason (resp.code, reason)
-      case _ => response setStatus resp.code
+      case _ =>
+        response setStatus resp.code
     }
 
     try {
@@ -1206,15 +1263,19 @@ class LiftServlet extends Loggable {
             val ba = new Array[Byte](8192)
             val os = response.outputStream
             stream match {
-              case jio: java.io.InputStream => len = jio.read(ba)
-              case stream                   => len = stream.read(ba)
+              case jio: java.io.InputStream =>
+                len = jio.read(ba)
+              case stream =>
+                len = stream.read(ba)
             }
             while (len >= 0) {
               if (len > 0)
                 os.write(ba, 0, len)
               stream match {
-                case jio: java.io.InputStream => len = jio.read(ba)
-                case stream                   => len = stream.read(ba)
+                case jio: java.io.InputStream =>
+                  len = jio.read(ba)
+                case stream =>
+                  len = stream.read(ba)
               }
             }
             response.outputStream.flush()
@@ -1241,11 +1302,14 @@ private class SessionIdCalc(req: Req) {
   private val LiftPath = LiftRules.liftContextRelativePath
   lazy val id: Box[String] =
     req.request.sessionId match {
-      case Full(id) => Full(id)
+      case Full(id) =>
+        Full(id)
       case _ =>
         req.path.wholePath match {
-          case LiftPath :: "comet" :: _ :: id :: _ :: _ => Full(id)
-          case _                                        => Empty
+          case LiftPath :: "comet" :: _ :: id :: _ :: _ =>
+            Full(id)
+          case _ =>
+            Empty
         }
     }
 }

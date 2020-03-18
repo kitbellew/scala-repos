@@ -50,14 +50,16 @@ class ScalaMacroEvaluator(project: Project)
 
   def isMacro(n: PsiNamedElement): Option[ScFunction] = {
     n match {
-      case f: ScMacroDefinition => Some(f)
+      case f: ScMacroDefinition =>
+        Some(f)
       //todo: fix decompiler to avoid this check:
       case f: ScFunction
           if f
             .hasAnnotation("scala.reflect.macros.internal.macroImpl")
             .isDefined =>
         Some(f)
-      case _ => None
+      case _ =>
+        None
     }
   }
 

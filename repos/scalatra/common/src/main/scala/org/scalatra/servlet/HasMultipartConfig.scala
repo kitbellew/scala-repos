@@ -25,7 +25,8 @@ trait HasMultipartConfig extends Initializable {
             map (_.asInstanceOf[MultipartConfig])
         )
       } catch {
-        case _: NullPointerException => Some(DefaultMultipartConfig)
+        case _: NullPointerException =>
+          Some(DefaultMultipartConfig)
       }
 
     }

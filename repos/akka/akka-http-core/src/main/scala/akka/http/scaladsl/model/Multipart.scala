@@ -155,7 +155,8 @@ object Multipart {
       */
     def contentDispositionHeader: Option[`Content-Disposition`] =
       headers.collectFirst {
-        case x: `Content-Disposition` ⇒ x
+        case x: `Content-Disposition` ⇒
+          x
       }
 
     /**
@@ -164,8 +165,10 @@ object Multipart {
       */
     def dispositionParams: Map[String, String] =
       contentDispositionHeader match {
-        case Some(`Content-Disposition`(_, params)) ⇒ params
-        case None ⇒ Map.empty
+        case Some(`Content-Disposition`(_, params)) ⇒
+          params
+        case None ⇒
+          Map.empty
       }
 
     /**
@@ -341,7 +344,8 @@ object Multipart {
       private[BodyPart] def tryCreateByteRangesBodyPart[T](
           f: (ContentRange, RangeUnit, immutable.Seq[HttpHeader]) ⇒ T): Try[T] =
         headers.collectFirst {
-          case x: `Content-Range` ⇒ x
+          case x: `Content-Range` ⇒
+            x
         } match {
           case Some(`Content-Range`(unit, range)) ⇒
             Success(f(range, unit, headers.filterNot(_ is "content-range")))
@@ -435,7 +439,8 @@ object Multipart {
         fields: Map[String, HttpEntity.Strict]): Multipart.FormData.Strict =
       Multipart.FormData.Strict {
         fields.map {
-          case (name, entity) ⇒ Multipart.FormData.BodyPart.Strict(name, entity)
+          case (name, entity) ⇒
+            Multipart.FormData.BodyPart.Strict(name, entity)
         }(collection.breakOut)
       }
 

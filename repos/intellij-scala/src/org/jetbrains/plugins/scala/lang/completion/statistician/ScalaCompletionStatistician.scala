@@ -33,7 +33,8 @@ class ScalaCompletionStatistician extends CompletionStatistician {
           case withImplicit: ScModifierListOwner
               if withImplicit.hasModifierPropertyScala("implicit") =>
             StatisticsInfo.EMPTY
-          case _ => helper(s.element, location)
+          case _ =>
+            helper(s.element, location)
         }
       // return empty statistic when using  scala completion but ScalaLookupItem didn't use.
       // otherwise will be computed java statistic that may lead to ClassCastError
@@ -68,7 +69,8 @@ class ScalaCompletionStatistician extends CompletionStatistician {
               StatisticsInfo.EMPTY
             }
         }
-      case _ => StatisticsInfo.EMPTY
+      case _ =>
+        StatisticsInfo.EMPTY
     }
   }
 }

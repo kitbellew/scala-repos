@@ -243,13 +243,15 @@ object ByteString {
         that
       else
         that match {
-          case b: ByteString1C ⇒ ByteStrings(this, b.toByteString1)
+          case b: ByteString1C ⇒
+            ByteStrings(this, b.toByteString1)
           case b: ByteString1 ⇒
             if ((bytes eq b.bytes) && (startIndex + length == b.startIndex))
               new ByteString1(bytes, startIndex, length + b.length)
             else
               ByteStrings(this, b)
-          case bs: ByteStrings ⇒ ByteStrings(this, bs)
+          case bs: ByteStrings ⇒
+            ByteStrings(this, bs)
         }
     }
 
@@ -265,26 +267,38 @@ object ByteString {
 
     def apply(b1: ByteString1, b2: ByteString1): ByteString =
       compare(b1, b2) match {
-        case 3 ⇒ new ByteStrings(Vector(b1, b2), b1.length + b2.length)
-        case 2 ⇒ b2
-        case 1 ⇒ b1
-        case 0 ⇒ ByteString.empty
+        case 3 ⇒
+          new ByteStrings(Vector(b1, b2), b1.length + b2.length)
+        case 2 ⇒
+          b2
+        case 1 ⇒
+          b1
+        case 0 ⇒
+          ByteString.empty
       }
 
     def apply(b: ByteString1, bs: ByteStrings): ByteString =
       compare(b, bs) match {
-        case 3 ⇒ new ByteStrings(b +: bs.bytestrings, bs.length + b.length)
-        case 2 ⇒ bs
-        case 1 ⇒ b
-        case 0 ⇒ ByteString.empty
+        case 3 ⇒
+          new ByteStrings(b +: bs.bytestrings, bs.length + b.length)
+        case 2 ⇒
+          bs
+        case 1 ⇒
+          b
+        case 0 ⇒
+          ByteString.empty
       }
 
     def apply(bs: ByteStrings, b: ByteString1): ByteString =
       compare(bs, b) match {
-        case 3 ⇒ new ByteStrings(bs.bytestrings :+ b, bs.length + b.length)
-        case 2 ⇒ b
-        case 1 ⇒ bs
-        case 0 ⇒ ByteString.empty
+        case 3 ⇒
+          new ByteStrings(bs.bytestrings :+ b, bs.length + b.length)
+        case 2 ⇒
+          b
+        case 1 ⇒
+          bs
+        case 0 ⇒
+          ByteString.empty
       }
 
     def apply(bs1: ByteStrings, bs2: ByteStrings): ByteString =
@@ -293,9 +307,12 @@ object ByteString {
           new ByteStrings(
             bs1.bytestrings ++ bs2.bytestrings,
             bs1.length + bs2.length)
-        case 2 ⇒ bs2
-        case 1 ⇒ bs1
-        case 0 ⇒ ByteString.empty
+        case 2 ⇒
+          bs2
+        case 1 ⇒
+          bs1
+        case 0 ⇒
+          ByteString.empty
       }
 
     // 0: both empty, 1: 2nd empty, 2: 1st empty, 3: neither empty
@@ -366,9 +383,12 @@ object ByteString {
         that
       else
         that match {
-          case b: ByteString1C ⇒ ByteStrings(this, b.toByteString1)
-          case b: ByteString1 ⇒ ByteStrings(this, b)
-          case bs: ByteStrings ⇒ ByteStrings(this, bs)
+          case b: ByteString1C ⇒
+            ByteStrings(this, b.toByteString1)
+          case b: ByteString1 ⇒
+            ByteStrings(this, b)
+          case bs: ByteStrings ⇒
+            ByteStrings(this, bs)
         }
     }
 

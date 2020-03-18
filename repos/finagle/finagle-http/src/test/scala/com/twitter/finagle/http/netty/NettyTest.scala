@@ -32,8 +32,10 @@ class NettyTest extends FunSuite {
         ChannelBuffers.EMPTY_BUFFER.writeInt(23)
         false
       } catch {
-        case _: IndexOutOfBoundsException => true
-        case _: Throwable                 => false
+        case _: IndexOutOfBoundsException =>
+          true
+        case _: Throwable =>
+          false
       }
     }
   }

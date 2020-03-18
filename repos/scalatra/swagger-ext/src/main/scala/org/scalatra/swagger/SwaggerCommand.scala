@@ -139,7 +139,8 @@ trait SwaggerCommandSupport {
   private[this] def parametersFromCommand[T <: CommandType](cmd: => T)(implicit
       mf: Manifest[T]): List[Parameter] = {
     SwaggerCommandSupport.parametersFromCommand(cmd) match {
-      case (parameters, None) => parameters
+      case (parameters, None) =>
+        parameters
       case (parameters, Some(model)) =>
         _models += model.id -> model
         parameters

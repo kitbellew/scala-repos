@@ -268,7 +268,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
             internalEvent match {
               case Failed(_, elem) ⇒
                 lastEvent += OnNext(DownstreamPortProbe.this, elem)
-              case elem ⇒ lastEvent += OnNext(DownstreamPortProbe.this, elem)
+              case elem ⇒
+                lastEvent += OnNext(DownstreamPortProbe.this, elem)
             }
           }
 

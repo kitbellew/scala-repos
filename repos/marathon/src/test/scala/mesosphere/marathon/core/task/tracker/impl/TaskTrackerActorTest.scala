@@ -225,7 +225,8 @@ class TaskTrackerActorTest
       Props(
         new Actor {
           override def receive: Receive = {
-            case msg: Any => spyProbe.ref.forward(msg)
+            case msg: Any =>
+              spyProbe.ref.forward(msg)
           }
         })
 

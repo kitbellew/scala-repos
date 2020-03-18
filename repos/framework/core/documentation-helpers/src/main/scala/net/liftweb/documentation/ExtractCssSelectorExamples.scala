@@ -56,7 +56,8 @@ object ExtractCssSelectorExamples extends App {
           case codeElement: Elem if codeElement.label == "code" =>
             part = Some(partBuilder(codeElement.text))
             codeElement
-          case other => other
+          case other =>
+            other
         }
       }
 
@@ -102,7 +103,8 @@ object ExtractCssSelectorExamples extends App {
                   exampleLabel = titleElement.text
 
                   titleElement
-                case other => other
+                case other =>
+                  other
               }
             }
           val partExtractor =
@@ -116,7 +118,8 @@ object ExtractCssSelectorExamples extends App {
                     Some(extractPart(ExampleFunction(_)) _)
                   case outputBlock: Elem if hasClass_?(outputBlock, "output") =>
                     Some(extractPart(ExampleOutput(_)) _)
-                  case _ => None
+                  case _ =>
+                    None
                 }
 
               for {
@@ -226,8 +229,10 @@ object ExtractCssSelectorExamples extends App {
           }
         }
 
-      case Failure(message, _, _) => Console.err.println(message)
-      case _                      => Console.err.println("Unknown error.")
+      case Failure(message, _, _) =>
+        Console.err.println(message)
+      case _ =>
+        Console.err.println("Unknown error.")
     }
   }
 }

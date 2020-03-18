@@ -6,7 +6,8 @@ class A {
       yield y
   def f3(x: Either[Int, (String, Int)]) =
     x.right map {
-      case (y1, y2) => (y1, y2)
+      case (y1, y2) =>
+        (y1, y2)
     }
   // Last one fails.
   def f4(x: Either[Int, (String, Int)]) =

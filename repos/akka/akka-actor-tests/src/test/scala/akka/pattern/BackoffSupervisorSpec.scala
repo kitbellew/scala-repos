@@ -19,8 +19,10 @@ object BackoffSupervisorSpec {
 
   class Child(probe: ActorRef) extends Actor {
     def receive = {
-      case "boom" ⇒ throw new TestException
-      case msg ⇒ probe ! msg
+      case "boom" ⇒
+        throw new TestException
+      case msg ⇒
+        probe ! msg
     }
   }
 
@@ -30,7 +32,8 @@ object BackoffSupervisorSpec {
 
   class ManualChild(probe: ActorRef) extends Actor {
     def receive = {
-      case "boom" ⇒ throw new TestException
+      case "boom" ⇒
+        throw new TestException
       case msg ⇒
         probe ! msg
         context.parent ! BackoffSupervisor.Reset
@@ -88,11 +91,13 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
       filterException[TestException] {
         val stoppingStrategy =
           OneForOneStrategy() {
-            case _: TestException ⇒ SupervisorStrategy.Stop
+            case _: TestException ⇒
+              SupervisorStrategy.Stop
           }
         val restartingStrategy =
           OneForOneStrategy() {
-            case _: TestException ⇒ SupervisorStrategy.Restart
+            case _: TestException ⇒
+              SupervisorStrategy.Restart
           }
 
         assertCustomStrategy(
@@ -162,11 +167,13 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender {
 
         val stoppingStrategy =
           OneForOneStrategy() {
-            case _: TestException ⇒ SupervisorStrategy.Stop
+            case _: TestException ⇒
+              SupervisorStrategy.Stop
           }
         val restartingStrategy =
           OneForOneStrategy() {
-            case _: TestException ⇒ SupervisorStrategy.Restart
+            case _: TestException ⇒
+              SupervisorStrategy.Restart
           }
 
         assertManualReset(

@@ -11,8 +11,10 @@ class LocalBenchmark extends StdBenchAnnotations {
   def let: String =
     local.let("hi") {
       local() match {
-        case Some(v) => v
-        case None    => "bye"
+        case Some(v) =>
+          v
+        case None =>
+          "bye"
       }
     }
 

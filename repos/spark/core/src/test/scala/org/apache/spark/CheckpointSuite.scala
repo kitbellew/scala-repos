@@ -472,7 +472,8 @@ class CheckpointSuite
       (rdd: RDD[(Int, Array[Iterable[Int]])]) =>
         rdd
           .map {
-            case (p, a) => (p, a.toSeq)
+            case (p, a) =>
+              (p, a.toSeq)
           }
           .collect(): Any
 

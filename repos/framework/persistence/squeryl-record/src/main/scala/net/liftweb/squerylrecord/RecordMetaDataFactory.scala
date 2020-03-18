@@ -41,7 +41,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
   private def findMetaField(clasz: Class[Rec], name: String): BaseField = {
     def fieldFrom(mr: MetaRecord[Rec]): BaseField =
       mr.asInstanceOf[Record[Rec]].fieldByName(name) match {
-        case Full(f: BaseField) => f
+        case Full(f: BaseField) =>
+          f
         case Full(_) =>
           org.squeryl.internals.Utils.throwError(
             "field " + name + " in Record metadata for " + clasz + " is not a TypedField")
@@ -51,7 +52,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
       }
 
     metaRecordsByClass get clasz match {
-      case Some(mr) => fieldFrom(mr)
+      case Some(mr) =>
+        fieldFrom(mr)
       case None =>
         try {
           val rec = clasz.newInstance.asInstanceOf[Record[Rec]]
@@ -101,20 +103,34 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
     val fieldsValueType =
       metaField match {
-        case (f: SquerylRecordField)    => f.classOfPersistentField
-        case (_: BooleanTypedField)     => classOf[Boolean]
-        case (_: DateTimeTypedField)    => classOf[Timestamp]
-        case (_: DoubleTypedField)      => classOf[Double]
-        case (_: IntTypedField)         => classOf[java.lang.Integer]
-        case (_: LongTypedField)        => classOf[java.lang.Long]
-        case (_: DecimalTypedField)     => classOf[BigDecimal]
-        case (_: TimeZoneTypedField)    => classOf[String]
-        case (_: StringTypedField)      => classOf[String]
-        case (_: PasswordTypedField)    => classOf[String]
-        case (_: BinaryTypedField)      => classOf[Array[Byte]]
-        case (_: LocaleTypedField)      => classOf[String]
-        case (_: EnumTypedField[_])     => classOf[Int]
-        case (_: EnumNameTypedField[_]) => classOf[String]
+        case (f: SquerylRecordField) =>
+          f.classOfPersistentField
+        case (_: BooleanTypedField) =>
+          classOf[Boolean]
+        case (_: DateTimeTypedField) =>
+          classOf[Timestamp]
+        case (_: DoubleTypedField) =>
+          classOf[Double]
+        case (_: IntTypedField) =>
+          classOf[java.lang.Integer]
+        case (_: LongTypedField) =>
+          classOf[java.lang.Long]
+        case (_: DecimalTypedField) =>
+          classOf[BigDecimal]
+        case (_: TimeZoneTypedField) =>
+          classOf[String]
+        case (_: StringTypedField) =>
+          classOf[String]
+        case (_: PasswordTypedField) =>
+          classOf[String]
+        case (_: BinaryTypedField) =>
+          classOf[Array[Byte]]
+        case (_: LocaleTypedField) =>
+          classOf[String]
+        case (_: EnumTypedField[_]) =>
+          classOf[Int]
+        case (_: EnumNameTypedField[_]) =>
+          classOf[String]
         case _ =>
           org.squeryl.internals.Utils.throwError(
             "Unsupported field type. Consider implementing " +
@@ -156,7 +172,8 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
               else
                 None
             }
-            case _ => None
+            case _ =>
+              None
           }
         fieldLength getOrElse super.length
       }
@@ -164,17 +181,20 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
       override def scale = {
         val fieldScale =
           metaField match {
-            case decimalField: DecimalField[_] => Some(decimalField.scale)
+            case decimalField: DecimalField[_] =>
+              Some(decimalField.scale)
             case decimalField: OptionalDecimalField[_] =>
               Some(decimalField.scale)
-            case _ => None
+            case _ =>
+              None
           }
         fieldScale getOrElse super.scale
       }
 
       private def fieldFor(o: AnyRef) =
         getter.get.invoke(o) match {
-          case tf: TypedField[_] => tf
+          case tf: TypedField[_] =>
+            tf
           case other =>
             org.squeryl.internals.Utils.throwError(
               "Field's used with Squeryl must inherit from net.liftweb.record.TypedField : " + other)
@@ -206,19 +226,26 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         fieldFor(o) match {
           case enumField: EnumTypedField[_] =>
             enumField.valueBox match {
-              case Full(enum: Enumeration#Value) => enum.id: java.lang.Integer
-              case _                             => null
+              case Full(enum: Enumeration#Value) =>
+                enum.id: java.lang.Integer
+              case _ =>
+                null
             }
           case enumNameField: EnumNameTypedField[_] =>
             enumNameField.valueBox match {
-              case Full(enum: Enumeration#Value) => enum.toString
-              case _                             => null
+              case Full(enum: Enumeration#Value) =>
+                enum.toString
+              case _ =>
+                null
             }
           case other =>
             other.valueBox match {
-              case Full(c: Calendar)   => new Timestamp(c.getTime.getTime)
-              case Full(other: AnyRef) => other
-              case _                   => null
+              case Full(c: Calendar) =>
+                new Timestamp(c.getTime.getTime)
+              case Full(other: AnyRef) =>
+                other
+              case _ =>
+                null
             }
         }
     }

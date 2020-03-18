@@ -912,7 +912,8 @@ class SubFlow[-In, +Out, +Mat](
     javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new SubFlow(
       delegate.prefixAndTail(n).map {
-        case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
+        case (taken, tail) ⇒
+          akka.japi.Pair(taken.asJava, tail.asJava)
       })
 
   /**

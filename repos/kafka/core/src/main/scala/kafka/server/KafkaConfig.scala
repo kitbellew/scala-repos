@@ -1545,7 +1545,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val maxConnectionsPerIpOverrides: Map[String, Int] = getMap(
     KafkaConfig.MaxConnectionsPerIpOverridesProp,
     getString(KafkaConfig.MaxConnectionsPerIpOverridesProp)).map {
-    case (k, v) => (k, v.toInt)
+    case (k, v) =>
+      (k, v.toInt)
   }
   val connectionsMaxIdleMs = getLong(KafkaConfig.ConnectionsMaxIdleMsProp)
 
@@ -1740,7 +1741,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     val millis: java.lang.Long = Option(
       getLong(KafkaConfig.LogRetentionTimeMillisProp)).getOrElse(
       Option(getInt(KafkaConfig.LogRetentionTimeMinutesProp)) match {
-        case Some(mins) => millisInMinute * mins
+        case Some(mins) =>
+          millisInMinute * mins
         case None =>
           getInt(KafkaConfig.LogRetentionTimeHoursProp) * millisInHour
       })

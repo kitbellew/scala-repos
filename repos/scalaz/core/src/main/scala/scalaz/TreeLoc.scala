@@ -25,43 +25,54 @@ final case class TreeLoc[A](
     parents match {
       case (pls, v, prs) #:: ps =>
         Some(loc(Node(v, combChildren(lefts, tree, rights)), pls, prs, ps))
-      case Stream.Empty => None
+      case Stream.Empty =>
+        None
     }
 
   /** Select the root node of the tree. */
   @tailrec
   def root: TreeLoc[A] =
     parent match {
-      case Some(z) => z.root
-      case None    => this
+      case Some(z) =>
+        z.root
+      case None =>
+        this
     }
 
   /** Select the left sibling of the current node. */
   def left: Option[TreeLoc[A]] =
     lefts match {
-      case t #:: ts     => Some(loc(t, ts, tree #:: rights, parents))
-      case Stream.Empty => None
+      case t #:: ts =>
+        Some(loc(t, ts, tree #:: rights, parents))
+      case Stream.Empty =>
+        None
     }
 
   /** Select the right sibling of the current node. */
   def right: Option[TreeLoc[A]] =
     rights match {
-      case t #:: ts     => Some(loc(t, tree #:: lefts, ts, parents))
-      case Stream.Empty => None
+      case t #:: ts =>
+        Some(loc(t, tree #:: lefts, ts, parents))
+      case Stream.Empty =>
+        None
     }
 
   /** Select the leftmost child of the current node. */
   def firstChild: Option[TreeLoc[A]] =
     tree.subForest match {
-      case t #:: ts     => Some(loc(t, Stream.Empty, ts, downParents))
-      case Stream.Empty => None
+      case t #:: ts =>
+        Some(loc(t, Stream.Empty, ts, downParents))
+      case Stream.Empty =>
+        None
     }
 
   /** Select the rightmost child of the current node. */
   def lastChild: Option[TreeLoc[A]] =
     tree.subForest.reverse match {
-      case t #:: ts     => Some(loc(t, ts, Stream.Empty, downParents))
-      case Stream.Empty => None
+      case t #:: ts =>
+        Some(loc(t, ts, Stream.Empty, downParents))
+      case Stream.Empty =>
+        None
     }
 
   /** Select the nth child of the current node. */
@@ -83,7 +94,8 @@ final case class TreeLoc[A](
             Some((acc, x, xs))
           else
             split(Stream.cons(x, acc), xs)
-        case _ => None
+        case _ =>
+          None
       }
     for (ltr <- split(Stream.Empty, tree.subForest))
       yield loc(ltr._2, ltr._1, ltr._3, downParents)
@@ -157,10 +169,12 @@ final case class TreeLoc[A](
   /** Delete the current node and all its children. */
   def delete: Option[TreeLoc[A]] =
     rights match {
-      case Stream.cons(t, ts) => Some(loc(t, lefts, ts, parents))
+      case Stream.cons(t, ts) =>
+        Some(loc(t, lefts, ts, parents))
       case _ =>
         lefts match {
-          case Stream.cons(t, ts) => Some(loc(t, ts, rights, parents))
+          case Stream.cons(t, ts) =>
+            Some(loc(t, ts, rights, parents))
           case _ =>
             for (loc1 <- parent)
               yield loc1.modifyTree((t: Tree[A]) =>
@@ -181,7 +195,8 @@ final case class TreeLoc[A](
       lefts map ff,
       rights map ff,
       parents.map {
-        case (l, t, r) => (l map ff, f(t), r map ff)
+        case (l, t, r) =>
+          (l map ff, f(t), r map ff)
       })
   }
 
@@ -229,10 +244,12 @@ final case class TreeLoc[A](
       xs: Stream[A],
       n: Int): Option[(Stream[A], Stream[A])] =
     (acc, xs, n) match {
-      case (acc, xs, 0) => Some((acc, xs))
+      case (acc, xs, 0) =>
+        Some((acc, xs))
       case (acc, Stream.cons(x, xs), n) =>
         splitChildren(Stream.cons(x, acc), xs, n - 1)
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -504,8 +521,10 @@ object TreeLoc extends TreeLocInstances {
 
   def fromForest[A](ts: TreeForest[A]): Option[TreeLoc[A]] =
     ts match {
-      case (Stream.cons(t, ts)) => Some(loc(t, Stream.Empty, ts, Stream.Empty))
-      case _                    => None
+      case (Stream.cons(t, ts)) =>
+        Some(loc(t, Stream.Empty, ts, Stream.Empty))
+      case _ =>
+        None
     }
 }
 

@@ -20,7 +20,8 @@ object SealedClassInheritance extends AnnotatorPart[ScTemplateDefinition] {
       typeAware: Boolean) {
     definition.containingScalaFile match {
       case Some(a) if !a.isCompiled =>
-      case _                        => return
+      case _ =>
+        return
     }
     val newInstance = definition.isInstanceOf[ScNewTemplateDefinition]
     val hasBody = definition.extendsBlock.templateBody.isDefined

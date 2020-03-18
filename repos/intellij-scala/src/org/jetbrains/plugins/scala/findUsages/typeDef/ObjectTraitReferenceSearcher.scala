@@ -30,14 +30,19 @@ class ObjectTraitReferenceSearcher
 
     val toProcess = inReadAction {
       element match {
-        case _ if !element.isValid => None
-        case o: ScObject           => Some((o, o.name))
+        case _ if !element.isValid =>
+          None
+        case o: ScObject =>
+          Some((o, o.name))
         case wrapper: PsiClassWrapper =>
           wrapper.definition match {
-            case _: ScObject | _: ScTrait => Some((wrapper, wrapper.getName))
-            case _                        => None
+            case _: ScObject | _: ScTrait =>
+              Some((wrapper, wrapper.getName))
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
     toProcess.foreach {

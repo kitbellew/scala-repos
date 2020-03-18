@@ -325,7 +325,8 @@ trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val tpe = BinaryOperationType(JBooleanT, JBooleanT, JBooleanT)
         def f2(ctx: MorphContext): F2 =
           CF2P("builtin::infix::bool") {
-            case (c1: BoolColumn, c2: BoolColumn) => new BoolFrom.BB(c1, c2, f)
+            case (c1: BoolColumn, c2: BoolColumn) =>
+              new BoolFrom.BB(c1, c2, f)
           }
       }
 
@@ -342,7 +343,8 @@ trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           def f2(ctx: MorphContext): F2 =
             CF2P("builtin::infix:concatString") {
-              case (c1: StrColumn, c2: StrColumn) => build(c1, c2)
+              case (c1: StrColumn, c2: StrColumn) =>
+                build(c1, c2)
               case (c1: DateColumn, c2: StrColumn) =>
                 build(dateToStrCol(c1), c2)
               case (c1: StrColumn, c2: DateColumn) =>

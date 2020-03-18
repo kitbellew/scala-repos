@@ -57,15 +57,24 @@ case class Pref(
 
   def get(name: String): Option[String] =
     name match {
-      case "bg"         => transp.fold("transp", dark.fold("dark", "light")).some
-      case "bgImg"      => bgImg
-      case "theme"      => theme.some
-      case "pieceSet"   => pieceSet.some
-      case "theme3d"    => theme3d.some
-      case "pieceSet3d" => pieceSet3d.some
-      case "is3d"       => is3d.toString.some
-      case "soundSet"   => soundSet.some
-      case _            => none
+      case "bg" =>
+        transp.fold("transp", dark.fold("dark", "light")).some
+      case "bgImg" =>
+        bgImg
+      case "theme" =>
+        theme.some
+      case "pieceSet" =>
+        pieceSet.some
+      case "theme3d" =>
+        theme3d.some
+      case "pieceSet3d" =>
+        pieceSet3d.some
+      case "is3d" =>
+        is3d.toString.some
+      case "soundSet" =>
+        soundSet.some
+      case _ =>
+        none
     }
   def set(name: String, value: String): Option[Pref] =
     name match {
@@ -76,7 +85,8 @@ case class Pref(
           Pref.bgs get value map { b =>
             copy(dark = b, transp = false)
           }
-      case "bgImg" => copy(bgImg = value.some).some
+      case "bgImg" =>
+        copy(bgImg = value.some).some
       case "theme" =>
         Theme.allByName get value map { t =>
           copy(theme = t.name)
@@ -93,21 +103,28 @@ case class Pref(
         PieceSet3d.allByName get value map { p =>
           copy(pieceSet3d = p.name)
         }
-      case "is3d" => copy(is3d = value == "true").some
+      case "is3d" =>
+        copy(is3d = value == "true").some
       case "soundSet" =>
         SoundSet.allByKey get value map { s =>
           copy(soundSet = s.name)
         }
-      case _ => none
+      case _ =>
+        none
     }
 
   def animationFactor =
     animation match {
-      case Animation.NONE   => 0
-      case Animation.FAST   => 0.5f
-      case Animation.NORMAL => 1
-      case Animation.SLOW   => 2
-      case _                => 1
+      case Animation.NONE =>
+        0
+      case Animation.FAST =>
+        0.5f
+      case Animation.NORMAL =>
+        1
+      case Animation.SLOW =>
+        2
+      case _ =>
+        1
     }
 
   def isBlindfold = blindfold == Pref.Blindfold.YES
@@ -278,17 +295,20 @@ object Pref {
         follow: Boolean,
         fromCheat: Boolean): Option[String] =
       pref match {
-        case NEVER => "{{user}} doesn't accept challenges.".some
+        case NEVER =>
+          "{{user}} doesn't accept challenges.".some
         case _ if fromCheat && !follow =>
           "{{user}} only accepts challenges from friends.".some
-        case RATING if from.perfs.bestRating > to.perfs.bestRating => none
+        case RATING if from.perfs.bestRating > to.perfs.bestRating =>
+          none
         case RATING
             if math.abs(
               from.perfs.bestRating - to.perfs.bestRating) > ratingThreshold =>
           s"{{user}} only accepts challenges if rating is ± $ratingThreshold.".some
         case FRIEND if !follow =>
           "{{user}} only accepts challenges from friends.".some
-        case _ => none
+        case _ =>
+          none
       }
   }
 

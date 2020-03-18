@@ -124,7 +124,8 @@ abstract class Delambdafy
             val Template(parents, self, body) = super.transform(tree)
             Template(parents, self, body ++ boxingBridgeMethods)
           } finally boxingBridgeMethods.clear()
-        case _ => super.transform(tree)
+        case _ =>
+          super.transform(tree)
       }
 
     // this entry point is aimed at the statements in the compilation unit.
@@ -275,7 +276,8 @@ abstract class Delambdafy
             methSym.newSyntheticValueParam(tp, vparam.name)
           }
         params zip paramSyms foreach {
-          case (valdef, sym) => valdef.symbol = sym
+          case (valdef, sym) =>
+            valdef.symbol = sym
         }
         params foreach (_.symbol.owner = methSym)
 
@@ -497,7 +499,8 @@ abstract class Delambdafy
           tp match {
             case ErasedValueType(valueClazz, _) =>
               TypeRef(NoPrefix, valueClazz, Nil)
-            case _ => tp
+            case _ =>
+              tp
           }
         // We don't need to deeply map `boxedValueClassType` over the infos as `ErasedValueType`
         // will only appear directly as a parameter type in a method signature, as shown
@@ -707,7 +710,8 @@ abstract class Delambdafy
           gen mkAttributedSelect (
             gen mkAttributedThis newClass, captureProxies(tree.symbol)
           )
-        case _ => super.transform(tree)
+        case _ =>
+          super.transform(tree)
       }
   }
 

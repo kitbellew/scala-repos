@@ -169,7 +169,8 @@ class GradientBoostedTreesModel @Since("1.2.0") (
       algo match {
         case Classification =>
           data.map(x => new LabeledPoint((x.label * 2) - 1, x.features))
-        case _ => data
+        case _ =>
+          data
       }
 
     val numIterations = trees.length

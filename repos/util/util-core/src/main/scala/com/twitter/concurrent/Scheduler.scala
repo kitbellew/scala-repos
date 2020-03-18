@@ -329,7 +329,8 @@ class BridgedThreadPoolScheduler(
           }
         })
       catch {
-        case _: RejectedExecutionException => local.submit(r)
+        case _: RejectedExecutionException =>
+          local.submit(r)
       }
   }
 

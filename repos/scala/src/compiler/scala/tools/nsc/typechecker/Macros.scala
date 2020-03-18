@@ -141,21 +141,30 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
   object MacroImplBinding {
     def pickleAtom(obj: Any): Tree =
       obj match {
-        case list: List[_]  => Apply(Ident(ListModule), list map pickleAtom)
-        case s: String      => Literal(Constant(s))
-        case d: Double      => Literal(Constant(d))
-        case b: Boolean     => Literal(Constant(b))
-        case f: Fingerprint => Literal(Constant(f.value))
+        case list: List[_] =>
+          Apply(Ident(ListModule), list map pickleAtom)
+        case s: String =>
+          Literal(Constant(s))
+        case d: Double =>
+          Literal(Constant(d))
+        case b: Boolean =>
+          Literal(Constant(b))
+        case f: Fingerprint =>
+          Literal(Constant(f.value))
       }
 
     def unpickleAtom(tree: Tree): Any =
       tree match {
         case Apply(list @ Ident(_), args) if list.symbol == ListModule =>
           args map unpickleAtom
-        case Literal(Constant(s: String))  => s
-        case Literal(Constant(d: Double))  => d
-        case Literal(Constant(b: Boolean)) => b
-        case Literal(Constant(i: Int))     => Fingerprint(i)
+        case Literal(Constant(s: String)) =>
+          s
+        case Literal(Constant(d: Double)) =>
+          d
+        case Literal(Constant(b: Boolean)) =>
+          b
+        case Literal(Constant(i: Int)) =>
+          Fingerprint(i)
       }
 
     def pickle(macroImplRef: Tree): Tree = {
@@ -192,9 +201,12 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           tpe.dealiasWiden match {
             case TypeRef(_, RepeatedParamClass, underlying :: Nil) =>
               fingerprint(underlying)
-            case ExprClassOf(_) => LiftedTyped
-            case TreeType()     => LiftedUntyped
-            case _              => Other
+            case ExprClassOf(_) =>
+              LiftedTyped
+            case TreeType() =>
+              LiftedUntyped
+            case _ =>
+              Other
           }
 
         val transformed = transformTypeTagEvidenceParams(
@@ -224,7 +236,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       val wrapped = Apply(
         nucleus,
         payload map {
-          case (k, v) => Assign(pickleAtom(k), pickleAtom(v))
+          case (k, v) =>
+            Assign(pickleAtom(k), pickleAtom(v))
         })
       val pickle = gen.mkTypeApply(wrapped, targs map (_.duplicate))
 
@@ -238,8 +251,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           tree match {
             case Literal(const @ Constant(x)) if tree.tpe == null =>
               tree setType ConstantType(const)
-            case _ if tree.tpe == null => tree setType NoType
-            case _                     => ;
+            case _ if tree.tpe == null =>
+              tree setType NoType
+            case _ => ;
           }
           super.transform(tree)
         }
@@ -249,13 +263,16 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     def unpickle(pickle: Tree): MacroImplBinding = {
       val (wrapped, targs) =
         pickle match {
-          case TypeApply(wrapped, targs) => (wrapped, targs)
-          case wrapped                   => (wrapped, Nil)
+          case TypeApply(wrapped, targs) =>
+            (wrapped, targs)
+          case wrapped =>
+            (wrapped, Nil)
         }
       val Apply(_, pickledPayload) = wrapped
       val payload =
         pickledPayload.map {
-          case Assign(k, v) => (unpickleAtom(k), unpickleAtom(v))
+          case Assign(k, v) =>
+            (unpickleAtom(k), unpickleAtom(v))
         }.toMap
 
       // TODO: refactor error handling: fail always throws a TypeError,
@@ -483,8 +500,10 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     val treeInfo.Applied(core, targs, argss) = expandee
     val prefix =
       core match {
-        case Select(qual, _) => qual;
-        case _               => EmptyTree
+        case Select(qual, _) =>
+          qual;
+        case _ =>
+          EmptyTree
       }
     val context = expandee.attachments
       .get[MacroRuntimeAttachment]
@@ -547,7 +566,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                       context.Expr[Nothing](duplicatedArg)(
                         TypeTag.Nothing
                       ) // TODO: SI-5752
-                    case LiftedUntyped => duplicatedArg
+                    case LiftedUntyped =>
+                      duplicatedArg
                     case _ =>
                       abort(
                         s"unexpected fingerprint $fingerprint in $binding with paramss being $paramss " +
@@ -582,7 +602,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           // whereas V won't be resolved by asSeenFrom and need to be loaded directly from `expandee` which needs to contain a TypeApply node
           // also, macro implementation reference may contain a regular type as a type argument, then we pass it verbatim
           val tags = signature.flatten collect {
-            case f if f.isTag => f.paramPos
+            case f if f.isTag =>
+              f.paramPos
           } map (paramPos => {
             val targ = binding.targs(paramPos).tpe.typeSymbol
             val tpe =
@@ -749,10 +770,14 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                     expandee.setType(expanded1.tpe)
                   } else
                     expanded1
-                case Fallback(fallback) => onFallback(fallback)
-                case Delayed(delayed)   => onDelayed(delayed)
-                case Skipped(skipped)   => onSkipped(skipped)
-                case Failure(failure)   => onFailure(failure)
+                case Fallback(fallback) =>
+                  onFallback(fallback)
+                case Delayed(delayed) =>
+                  onDelayed(delayed)
+                case Skipped(skipped) =>
+                  onSkipped(skipped)
+                case Failure(failure) =>
+                  onFailure(failure)
               }
             } catch {
               case typer.TyperErrorGen.MacroExpansionException =>
@@ -788,7 +813,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         // approximation is necessary for whitebox macros to guide type inference
         // read more in the comments for onDelayed below
         val undetparams = tp collect {
-          case tp if tp.typeSymbol.isTypeParameter => tp.typeSymbol
+          case tp if tp.typeSymbol.isTypeParameter =>
+            tp.typeSymbol
         }
         deriveTypeWithWildcards(undetparams)(tp)
       }
@@ -1010,7 +1036,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
               validateResultingTree(expanded.tree)
             case expanded: Tree if expandee.symbol.isTermMacro =>
               validateResultingTree(expanded)
-            case _ => MacroExpansionHasInvalidTypeError(expandee, expanded)
+            case _ =>
+              MacroExpansionHasInvalidTypeError(expandee, expanded)
           }
         } catch {
           case ex: Throwable =>
@@ -1018,10 +1045,14 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
               popMacroContext() // weirdly we started popping on an empty stack when refactoring fatalWarnings logic
             val realex = ReflectionUtils.unwrapThrowable(ex)
             realex match {
-              case ex: AbortMacroException => MacroGeneratedAbort(expandee, ex)
-              case ex: ControlThrowable    => throw ex
-              case ex: TypeError           => MacroGeneratedTypeError(expandee, ex)
-              case _                       => MacroGeneratedException(expandee, realex)
+              case ex: AbortMacroException =>
+                MacroGeneratedAbort(expandee, ex)
+              case ex: ControlThrowable =>
+                throw ex
+              case ex: TypeError =>
+                MacroGeneratedTypeError(expandee, ex)
+              case _ =>
+                MacroGeneratedException(expandee, realex)
             }
         } finally {
           expandee.removeAttachment[MacroRuntimeAttachment]
@@ -1043,7 +1074,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       tree match {
         case Select(qual, name) =>
           Select(qual, name) setPos tree.pos setSymbol fallbackSym
-        case Apply(fn, args) => Apply(mkFallbackTree(fn), args) setPos tree.pos
+        case Apply(fn, args) =>
+          Apply(mkFallbackTree(fn), args) setPos tree.pos
         case TypeApply(fn, args) =>
           TypeApply(mkFallbackTree(fn), args) setPos tree.pos
       }
@@ -1159,10 +1191,14 @@ class Fingerprint private[Fingerprint] (val value: Int) extends AnyVal {
   def isTag = value >= 0
   override def toString =
     this match {
-      case Other         => "Other"
-      case LiftedTyped   => "Expr"
-      case LiftedUntyped => "Tree"
-      case _             => s"Tag($value)"
+      case Other =>
+        "Other"
+      case LiftedTyped =>
+        "Expr"
+      case LiftedUntyped =>
+        "Tree"
+      case _ =>
+        s"Tag($value)"
     }
 }
 

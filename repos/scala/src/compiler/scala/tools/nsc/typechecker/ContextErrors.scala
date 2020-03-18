@@ -185,8 +185,10 @@ trait ContextErrors {
          else
            s"parameter $paramName:")
       paramTp.typeSymbolDirect match {
-        case ImplicitNotFoundMsg(msg) => msg.format(paramName, paramTp)
-        case _                        => s"could not find implicit value for $evOrParam $paramTp"
+        case ImplicitNotFoundMsg(msg) =>
+          msg.format(paramName, paramTp)
+        case _ =>
+          s"could not find implicit value for $evOrParam $paramTp"
       }
     }
     issueNormalTypeError(tree, errMsg)
@@ -221,8 +223,10 @@ trait ContextErrors {
         def callee = {
           def unwrap(t: Tree): Tree =
             t match {
-              case Apply(app: Apply, _) => unwrap(app)
-              case _                    => t
+              case Apply(app: Apply, _) =>
+                unwrap(app)
+              case _ =>
+                t
             }
           unwrap(tree)
         }
@@ -437,7 +441,8 @@ trait ContextErrors {
             val companion = {
               if (name.isTermName && owner.isPackageClass) {
                 target.member(name.toTypeName) match {
-                  case NoSymbol => ""
+                  case NoSymbol =>
+                    ""
                   case sym =>
                     "\nNote: %s exists, but it has no companion object.".format(
                       sym)
@@ -557,9 +562,11 @@ trait ContextErrors {
                     sm"""|
                        |Note: The expected type requires a one-argument function accepting a $funArity-Tuple.
                        |      Consider a pattern matching anonymous function, `{ case $example =>  ... }`"""
-                  case _ => ""
+                  case _ =>
+                    ""
                 }
-              case _ => ""
+              case _ =>
+                ""
             }
           issueNormalTypeError(vparam, what + addendum)
         }
@@ -845,7 +852,8 @@ trait ContextErrors {
           directUnapplyMember(tree.symbol.info) match {
             case sym if hasMultipleNonImplicitParamLists(sym) =>
               s"\nNote: ${sym.defString} exists in ${tree.symbol}, but it cannot be used as an extractor due to its second non-implicit parameter list"
-            case _ => ""
+            case _ =>
+              ""
           }
         issueNormalTypeError(tree, baseMessage + addendum)
         setError(tree)
@@ -961,8 +969,10 @@ trait ContextErrors {
         )
         val addendum =
           addendums.flatten match {
-            case Nil => ""
-            case xs  => xs.mkString("\n  ", "\n  ", "")
+            case Nil =>
+              ""
+            case xs =>
+              xs.mkString("\n  ", "\n  ", "")
           }
 
         issueSymbolTypeError(sym0, sym1 + " is defined twice" + addendum)
@@ -1752,10 +1762,12 @@ trait ContextErrors {
 
         def treeTypeArgs(annotatedTree: Tree): List[String] =
           annotatedTree match {
-            case TypeApply(_, args) => args.map(_.toString)
+            case TypeApply(_, args) =>
+              args.map(_.toString)
             case Block(_, Function(_, treeInfo.Applied(_, targs, _))) =>
               targs.map(_.toString) // eta expansion, see neg/t9527b.scala
-            case _ => Nil
+            case _ =>
+              Nil
           }
 
         context.issueAmbiguousError(
@@ -1766,7 +1778,8 @@ trait ContextErrors {
                 msg.format(treeTypeArgs(tree1))
               case (_, ImplicitAmbiguousMsg(msg)) =>
                 msg.format(treeTypeArgs(tree2))
-              case (_, _) if isView => viewMsg
+              case (_, _) if isView =>
+                viewMsg
               case (_, _) =>
                 s"ambiguous implicit values:\n${coreMsg}match expected type $pt"
             }
@@ -1829,7 +1842,8 @@ trait ContextErrors {
         otherName match {
           case Some(oName) =>
             "\nNote that '" + oName + "' is not a parameter name of the invoked method."
-          case None => ""
+          case None =>
+            ""
         }
       issueNormalTypeError(
         arg,

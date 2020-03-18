@@ -170,12 +170,15 @@ case class HScan(
       count match {
         case Some(count) =>
           bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))
-        case None => bufs
+        case None =>
+          bufs
       }
     val withPattern =
       pattern match {
-        case Some(pattern) => withCount ++ Seq(Pattern.PATTERN_CB, pattern)
-        case None          => withCount
+        case Some(pattern) =>
+          withCount ++ Seq(Pattern.PATTERN_CB, pattern)
+        case None =>
+          withCount
       }
     RedisCodec.toUnifiedFormat(withPattern)
   }
@@ -194,7 +197,8 @@ object HScan {
           NumberFormat.toLong(BytesToString(cursor)))
       case key :: cursor :: tail =>
         parseArgs(key, NumberFormat.toLong(BytesToString(cursor)), tail)
-      case _ => throw ClientError("Unexpected args to hscan command")
+      case _ =>
+        throw ClientError("Unexpected args to hscan command")
     }
   }
 

@@ -52,8 +52,10 @@ private[sbt] object ForkTests {
     std.TaskExtra.task {
       val server = new ServerSocket(0)
       val testListeners = opts.testListeners flatMap {
-        case tl: TestsListener => Some(tl)
-        case _                 => None
+        case tl: TestsListener =>
+          Some(tl)
+        case _ =>
+          None
       }
 
       object Acceptor extends Runnable {
@@ -147,9 +149,12 @@ private[sbt] object ForkTests {
   private[this] def forkFingerprint(
       f: Fingerprint): Fingerprint with Serializable =
     f match {
-      case s: SubclassFingerprint  => new ForkMain.SubclassFingerscan(s)
-      case a: AnnotatedFingerprint => new ForkMain.AnnotatedFingerscan(a)
-      case _                       => sys.error("Unknown fingerprint type: " + f.getClass)
+      case s: SubclassFingerprint =>
+        new ForkMain.SubclassFingerscan(s)
+      case a: AnnotatedFingerprint =>
+        new ForkMain.AnnotatedFingerscan(a)
+      case _ =>
+        sys.error("Unknown fingerprint type: " + f.getClass)
     }
 }
 private final class React(

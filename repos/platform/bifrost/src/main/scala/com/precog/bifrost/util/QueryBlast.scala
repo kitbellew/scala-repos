@@ -82,8 +82,10 @@ object QueryBlast extends AkkaDefaults {
     notifyLock.synchronized {
       errors += 1
       stats.get(index) match {
-        case Some(stats) => stats.errors += 1
-        case None        => stats = stats + (index -> new Stats(0, 1, 0, 0, 0))
+        case Some(stats) =>
+          stats.errors += 1
+        case None =>
+          stats = stats + (index -> new Stats(0, 1, 0, 0, 0))
       }
     }
   }

@@ -25,7 +25,8 @@ class RecipeManualTrigger extends RecipeSpec {
           elements ~> zip.in0
           triggerSource ~> zip.in1
           zip.out ~> Flow[(Message, Trigger)].map {
-            case (msg, trigger) => msg
+            case (msg, trigger) =>
+              msg
           } ~> sink
           ClosedShape
         })

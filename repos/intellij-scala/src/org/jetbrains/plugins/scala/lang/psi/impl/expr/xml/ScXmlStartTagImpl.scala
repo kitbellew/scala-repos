@@ -21,8 +21,10 @@ class ScXmlStartTagImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case scVisitor: ScalaElementVisitor => scVisitor.visitXmlStartTag(this)
-      case _                              => super.accept(visitor)
+      case scVisitor: ScalaElementVisitor =>
+        scVisitor.visitXmlStartTag(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

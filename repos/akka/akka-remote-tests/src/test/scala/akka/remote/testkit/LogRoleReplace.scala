@@ -134,7 +134,8 @@ class LogRoleReplace {
         replacements += (jvm -> role)
         replacements += ((host + ":" + port) -> role)
         false
-      case _ ⇒ true
+      case _ ⇒
+        true
     }
   }
 

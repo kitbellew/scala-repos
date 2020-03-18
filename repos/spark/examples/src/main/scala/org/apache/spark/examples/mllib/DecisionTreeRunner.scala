@@ -125,8 +125,10 @@ object DecisionTreeRunner {
           .text(
             s"checkpoint directory where intermediate node Id caches will be stored, " +
               s"default: ${defaultParams.checkpointDir match {
-                case Some(strVal) => strVal
-                case None         => "None"
+                case Some(strVal) =>
+                  strVal
+                case None =>
+                  "None"
               }}")
           .action((x, c) => c.copy(checkpointDir = Some(x)))
         opt[Int]("checkpointInterval")
@@ -195,8 +197,10 @@ object DecisionTreeRunner {
     // Load training data and cache it.
     val origExamples =
       dataFormat match {
-        case "dense"  => MLUtils.loadLabeledPoints(sc, input).cache()
-        case "libsvm" => MLUtils.loadLibSVMFile(sc, input).cache()
+        case "dense" =>
+          MLUtils.loadLabeledPoints(sc, input).cache()
+        case "libsvm" =>
+          MLUtils.loadLibSVMFile(sc, input).cache()
       }
     // For classification, re-index classes if needed.
     val (examples, classIndexMap, numClasses) =
@@ -246,8 +250,10 @@ object DecisionTreeRunner {
         val numFeatures = examples.take(1)(0).features.size
         val origTestExamples =
           dataFormat match {
-            case "dense"  => MLUtils.loadLabeledPoints(sc, testInput)
-            case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
+            case "dense" =>
+              MLUtils.loadLabeledPoints(sc, testInput)
+            case "libsvm" =>
+              MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
           }
         algo match {
           case Classification => {
@@ -299,9 +305,12 @@ object DecisionTreeRunner {
 
     val impurityCalculator =
       params.impurity match {
-        case Gini     => impurity.Gini
-        case Entropy  => impurity.Entropy
-        case Variance => impurity.Variance
+        case Gini =>
+          impurity.Gini
+        case Entropy =>
+          impurity.Entropy
+        case Variance =>
+          impurity.Variance
       }
 
     params.checkpointDir.foreach(sc.setCheckpointDir)

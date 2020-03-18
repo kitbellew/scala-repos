@@ -225,8 +225,10 @@ trait EvaluatorSpecs[M[+_]]
       scriptPath = scriptPath)
     (
       consumeEval(graph, ctx, optimize) match {
-        case Success(results) => test(results)
-        case Failure(error)   => throw error
+        case Success(results) =>
+          test(results)
+        case Failure(error) =>
+          throw error
       }
     ) /* and
     (consumeEval(testAPIKey, graph, ctx, path, false) match {
@@ -247,7 +249,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.isEmpty => d.toInt
+          case (ids, SDecimal(d)) if ids.isEmpty =>
+            d.toInt
         }
 
         result2 must contain(42)
@@ -263,7 +266,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SString(str)) if ids.isEmpty => str
+            case (ids, SString(str)) if ids.isEmpty =>
+              str
           }
 
           result2 must contain("daniel")
@@ -277,7 +281,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.isEmpty => d.toInt
+            case (ids, SDecimal(d)) if ids.isEmpty =>
+              d.toInt
           }
 
           result2 must contain(42)
@@ -292,7 +297,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SBoolean(b)) if ids.isEmpty => b
+            case (ids, SBoolean(b)) if ids.isEmpty =>
+              b
           }
 
           result2 must contain(true)
@@ -307,7 +313,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SBoolean(b)) if ids.isEmpty => b
+            case (ids, SBoolean(b)) if ids.isEmpty =>
+              b
           }
 
           result2 must contain(false)
@@ -332,7 +339,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SObject(obj)) if ids.isEmpty => obj
+            case (ids, SObject(obj)) if ids.isEmpty =>
+              obj
           }
 
           result2 must contain(Map())
@@ -347,7 +355,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.isEmpty => arr
+            case (ids, SArray(arr)) if ids.isEmpty =>
+              arr
           }
 
           result2 must contain(Vector())
@@ -363,7 +372,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -378,7 +388,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -393,7 +404,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -408,7 +420,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -426,7 +439,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(84, 24, 154, 2, 26)
@@ -446,7 +460,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(84, 24, 154, 2, 26)
@@ -465,7 +480,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(30)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 2 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 2 =>
+            d.toInt
         }
 
         result2 must contain(
@@ -486,7 +502,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(-42, -12, -77, -1, -13)
@@ -504,7 +521,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -520,7 +538,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SString(s)) if ids.size == 1 => s
+          case (ids, SString(s)) if ids.size == 1 =>
+            s
         }
 
         result2 must contain("foo")
@@ -543,7 +562,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(259)
@@ -571,7 +591,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(259)
@@ -601,7 +622,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SArray(arr)) if ids.size == 0 => arr
+          case (ids, SArray(arr)) if ids.size == 0 =>
+            arr
         }
 
         result2 must contain(
@@ -639,7 +661,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(138 + 104)
@@ -671,7 +694,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(237 + 22 + (237.0 / 22))
@@ -708,7 +732,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(1 - (104 + 138))
@@ -742,7 +767,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(30 - (104 + 138))
@@ -773,7 +799,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d
         }
 
         result2 must contain(29 - (231 + 138))
@@ -810,7 +837,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(num)) if ids.size == 0 => num
+          case (ids, SDecimal(num)) if ids.size == 0 =>
+            num
         }
 
         result2 must contain(22 - (104 + 231))
@@ -841,7 +869,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(500)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 2 => ids
+            case (ids, SDecimal(d)) if ids.size == 2 =>
+              ids
           }
 
           result2 must haveSize(500)
@@ -873,7 +902,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(218, 147, 118, 172, 224)
@@ -905,7 +935,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(218, 147, 118, 172, 224)
@@ -928,7 +959,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(47, 17, 82, 6, 18)
@@ -949,7 +981,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(37, 7, 72, -4, 8)
@@ -970,7 +1003,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(210, 60, 385, 5, 65)
@@ -991,7 +1025,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toDouble
           }
 
           result2 must contain(8.4, 2.4, 15.4, 0.2, 2.6)
@@ -1009,7 +1044,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 0 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 0 =>
+              d.toDouble
           }
 
           result2 must contain(3)
@@ -1029,7 +1065,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 0 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 0 =>
+              d.toDouble
           }
 
           result2 must contain(-3)
@@ -1049,7 +1086,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 0 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 0 =>
+              d.toDouble
           }
 
           result2 must contain(1)
@@ -1069,7 +1107,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 0 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 0 =>
+              d.toDouble
           }
 
           result2 must contain(-1)
@@ -1087,7 +1126,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 0 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 0 =>
+              d.toDouble
           }
 
           result2 must contain(1331)
@@ -1110,7 +1150,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(47, 17, 82, 6, 18)
@@ -1131,7 +1172,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(37, 7, 72, -4, 8)
@@ -1152,7 +1194,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(210, 60, 385, 5, 65)
@@ -1173,7 +1216,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toDouble
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toDouble
           }
 
           result2 must contain(8.4, 2.4, 15.4, 0.2, 2.6)
@@ -1206,7 +1250,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.isEmpty => d.toInt
+          case (ids, SDecimal(d)) if ids.isEmpty =>
+            d.toInt
         }
 
         result2 must contain(100)
@@ -1229,7 +1274,8 @@ trait EvaluatorSpecs[M[+_]]
 
       testEval(input) { resultE =>
         val result = resultE collect {
-          case (ids, SDecimal(d)) => d
+          case (ids, SDecimal(d)) =>
+            d
         }
 
         result must contain(100)
@@ -1253,7 +1299,8 @@ trait EvaluatorSpecs[M[+_]]
 
       testEval(input) { resultE =>
         val result = resultE collect {
-          case (ids, SDecimal(d)) => d
+          case (ids, SDecimal(d)) =>
+            d
         }
 
         result must contain(100)
@@ -1279,7 +1326,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(100)
 
         val result2 = result collect {
-          case (ids, SBoolean(d)) if ids.size == 1 => d
+          case (ids, SBoolean(d)) if ids.size == 1 =>
+            d
         }
 
         result2 must contain(true).only
@@ -1302,7 +1350,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.isEmpty => d.toInt
+          case (ids, SDecimal(d)) if ids.isEmpty =>
+            d.toInt
         }
 
         result2 must contain(100)
@@ -1324,7 +1373,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(43, 13, 78, 2, 14)
@@ -1345,7 +1395,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(43, 13, 78, 2, 14)
@@ -1366,7 +1417,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(45, 15, 80, 4, 16)
@@ -1387,7 +1439,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(45, 15, 80, 4, 16)
@@ -1409,10 +1462,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optObj = result find {
-          case (ids, SObject(_)) if ids.isEmpty => true
-          case _                                => false
+          case (ids, SObject(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SObject(obj)) => obj
+          case (_, SObject(obj)) =>
+            obj
         }
 
         optObj must beSome
@@ -1420,7 +1476,8 @@ trait EvaluatorSpecs[M[+_]]
 
         obj must haveKey("answer")
         obj("answer") must beLike {
-          case SDecimal(d) => d mustEqual 42
+          case SDecimal(d) =>
+            d mustEqual 42
         }
       }
     }
@@ -1443,10 +1500,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optObj = result find {
-          case (ids, SObject(_)) if ids.isEmpty => true
-          case _                                => false
+          case (ids, SObject(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SObject(obj)) => obj
+          case (_, SObject(obj)) =>
+            obj
         }
 
         optObj must beSome
@@ -1498,10 +1558,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optArr = result find {
-          case (ids, SArray(_)) if ids.isEmpty => true
-          case _                               => false
+          case (ids, SArray(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SArray(arr)) => arr
+          case (_, SArray(arr)) =>
+            arr
         }
 
         optArr must beSome
@@ -1509,7 +1572,8 @@ trait EvaluatorSpecs[M[+_]]
 
         arr must haveSize(1)
         arr.head must beLike {
-          case SDecimal(d) => d mustEqual 42
+          case SDecimal(d) =>
+            d mustEqual 42
         }
       }
     }
@@ -1523,10 +1587,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optArr = result find {
-          case (ids, SArray(_)) if ids.isEmpty => true
-          case _                               => false
+          case (ids, SArray(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SArray(arr)) => arr
+          case (_, SArray(arr)) =>
+            arr
         }
 
         optArr must beSome
@@ -1560,10 +1627,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optObj = result find {
-          case (ids, SObject(_)) if ids.isEmpty => true
-          case _                                => false
+          case (ids, SObject(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SObject(obj)) => obj
+          case (_, SObject(obj)) =>
+            obj
         }
 
         optObj must beSome
@@ -1571,12 +1641,14 @@ trait EvaluatorSpecs[M[+_]]
 
         obj must haveKey("answer")
         obj("answer") must beLike {
-          case SDecimal(d) => d mustEqual 42
+          case SDecimal(d) =>
+            d mustEqual 42
         }
 
         obj must haveKey("question")
         obj("question") must beLike {
-          case SString(str) => str mustEqual "What is six times seven?"
+          case SString(str) =>
+            str mustEqual "What is six times seven?"
         }
       }
     }
@@ -1595,10 +1667,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optArr = result find {
-          case (ids, SArray(_)) if ids.isEmpty => true
-          case _                               => false
+          case (ids, SArray(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SArray(arr)) => arr
+          case (_, SArray(arr)) =>
+            arr
         }
 
         optArr must beSome
@@ -1632,10 +1707,13 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val optArr = result find {
-          case (ids, SArray(_)) if ids.isEmpty => true
-          case _                               => false
+          case (ids, SArray(_)) if ids.isEmpty =>
+            true
+          case _ =>
+            false
         } collect {
-          case (_, SArray(arr)) => arr
+          case (_, SArray(arr)) =>
+            arr
         }
 
         optArr must beSome
@@ -1676,10 +1754,13 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val optArr = result find {
-            case (ids, SArray(_)) if ids.isEmpty => true
-            case _                               => false
+            case (ids, SArray(_)) if ids.isEmpty =>
+              true
+            case _ =>
+              false
           } collect {
-            case (_, SArray(arr)) => arr
+            case (_, SArray(arr)) =>
+              arr
           }
 
           optArr must beSome
@@ -1719,10 +1800,13 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val optArr = result find {
-            case (ids, SArray(_)) if ids.isEmpty => true
-            case _                               => false
+            case (ids, SArray(_)) if ids.isEmpty =>
+              true
+            case _ =>
+              false
           } collect {
-            case (_, SArray(arr)) => arr
+            case (_, SArray(arr)) =>
+              arr
           }
 
           optArr must beSome
@@ -1753,7 +1837,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -1774,8 +1859,10 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
-          case (ids, SNull) if ids.size == 1       => SNull
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
+          case (ids, SNull) if ids.size == 1 =>
+            SNull
         }
 
         result2 must contain(42, 12, 1, 13, SNull)
@@ -1796,10 +1883,14 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1  => d.toInt
-          case (ids, SString(str)) if ids.size == 1 => str
-          case (ids, SBoolean(b)) if ids.size == 1  => b
-          case (ids, SNull) if ids.size == 1        => SNull
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
+          case (ids, SString(str)) if ids.size == 1 =>
+            str
+          case (ids, SBoolean(b)) if ids.size == 1 =>
+            b
+          case (ids, SNull) if ids.size == 1 =>
+            SNull
         }
 
         result2 must contain(42, true, "daniel", 1, SNull)
@@ -1815,7 +1906,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SArray(arr)) if ids.size == 1 => arr
+          case (ids, SArray(arr)) if ids.size == 1 =>
+            arr
         }
 
         result2 must contain(
@@ -1841,7 +1933,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SArray(arr)) if ids.size == 0 => arr
+          case (ids, SArray(arr)) if ids.size == 0 =>
+            arr
         }
 
         result2 must contain(Vector(SArray(Vector(SDecimal(145), SDecimal(5)))))
@@ -1869,7 +1962,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 0 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 0 =>
+            d.toInt
         }
 
         result2 must contain(145)
@@ -1890,7 +1984,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -1911,7 +2006,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -1932,10 +2028,14 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1  => d.toInt
-          case (ids, SString(str)) if ids.size == 1 => str
-          case (ids, SBoolean(b)) if ids.size == 1  => b
-          case (ids, SNull) if ids.size == 1        => SNull
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
+          case (ids, SString(str)) if ids.size == 1 =>
+            str
+          case (ids, SBoolean(b)) if ids.size == 1 =>
+            b
+          case (ids, SNull) if ids.size == 1 =>
+            SNull
         }
 
         result2 must contain(42, true, "daniel", 1, SNull)
@@ -1960,7 +2060,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(36, 12, 115, -165)
@@ -1985,7 +2086,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(4)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toDouble
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toDouble
         }
 
         result2 must contain(7, -2.026315789473684, 0.006024096385542169, 13)
@@ -2010,7 +2112,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(4)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toDouble
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toDouble
         }
 
         result2 must contain(7, -2.026315789473684, 0.006024096385542169, 13)
@@ -2152,12 +2255,14 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(10)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toDouble
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toDouble
         }
         result2 must contain(42, 12, 77, 1, 13, 14, -1, 0)
 
         val result3 = result collect {
-          case (ids, _) => ids
+          case (ids, _) =>
+            ids
         }
         result3 must haveSize(10)
       }
@@ -2176,7 +2281,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(10)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toDouble
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toDouble
         }
 
         result2 must contain(42, 12, 77, 1, 13, 14, -1, 0)
@@ -2255,7 +2361,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(3)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(6, 12, 24)
@@ -2278,7 +2385,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(1, 12)
@@ -2299,7 +2407,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(1, 12)
@@ -2322,7 +2431,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(12, 1, 13)
@@ -2344,7 +2454,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 77)
@@ -2367,7 +2478,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 77, 13)
@@ -2389,7 +2501,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(13)
@@ -2410,7 +2523,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(5)
 
           val result2 = result collect {
-            case (ids, SBoolean(d)) if ids.size == 1 => d
+            case (ids, SBoolean(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(true, false)
@@ -2431,7 +2545,8 @@ trait EvaluatorSpecs[M[+_]]
 
         testEval(input) { result =>
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 12, 77, 1)
@@ -2459,7 +2574,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 12, 1)
@@ -2486,7 +2602,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 12, 1)
@@ -2514,7 +2631,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(77, 13)
@@ -2539,7 +2657,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(4)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 12, 77, 1)
@@ -2563,7 +2682,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(1, 12)
@@ -2586,7 +2706,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(12, 1, 13)
@@ -2608,7 +2729,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(12, 1, 13)
@@ -2630,7 +2752,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 77)
@@ -2653,7 +2776,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(42, 77, 13)
@@ -2675,7 +2799,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SBoolean(d)) if ids.size == 1 => d
+            case (ids, SBoolean(d)) if ids.size == 1 =>
+              d
           }
 
           result2 must contain(true)
@@ -2697,7 +2822,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(13)
@@ -2720,7 +2846,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1 => arr
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
           }
 
           result2 must contain(Vector())
@@ -2743,7 +2870,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SObject(obj)) if ids.size == 1 => obj
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
           }
 
           result2 must contain(Map())
@@ -2780,7 +2908,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1 => arr
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
           }
 
           result2 must contain(Vector(SDecimal(9), SDecimal(10), SDecimal(11)))
@@ -2816,7 +2945,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(1)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1 => arr
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
           }
 
           result2 must contain(Vector(SDecimal(9), SDecimal(10), SDecimal(11)))
@@ -2868,8 +2998,10 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(10)
 
           val result2 = result.groupBy {
-            case (ids, SBoolean(d)) if ids.size == 1 => Some(d)
-            case _                                   => None
+            case (ids, SBoolean(d)) if ids.size == 1 =>
+              Some(d)
+            case _ =>
+              None
           }
 
           result2.keySet must contain(Some(true), Some(false))
@@ -2892,8 +3024,10 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(10)
 
           val result2 = result.groupBy {
-            case (ids, SBoolean(d)) if ids.size == 1 => Some(d)
-            case _                                   => None
+            case (ids, SBoolean(d)) if ids.size == 1 =>
+              Some(d)
+            case _ =>
+              None
           }
 
           result2.keySet must contain(Some(true), Some(false))
@@ -2918,11 +3052,16 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(9)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1  => d.toInt
-            case (ids, SBoolean(b)) if ids.size == 1  => b
-            case (ids, SString(str)) if ids.size == 1 => str
-            case (ids, SObject(obj)) if ids.size == 1 => obj
-            case (ids, SArray(arr)) if ids.size == 1  => arr
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
+            case (ids, SBoolean(b)) if ids.size == 1 =>
+              b
+            case (ids, SString(str)) if ids.size == 1 =>
+              str
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
           }
 
           result2 must contain(
@@ -2954,8 +3093,10 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1  => arr
-            case (ids, SObject(obj)) if ids.size == 1 => obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
           }
 
           result2 must contain(
@@ -2981,8 +3122,10 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1  => arr
-            case (ids, SObject(obj)) if ids.size == 1 => obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
           }
 
           result2 must contain(
@@ -3017,8 +3160,10 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1  => arr
-            case (ids, SObject(obj)) if ids.size == 1 => obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
           }
 
           result2 must contain(
@@ -3052,8 +3197,10 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(3)
 
           val result2 = result collect {
-            case (ids, SArray(arr)) if ids.size == 1  => arr
-            case (ids, SObject(obj)) if ids.size == 1 => obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
           }
 
           result2 must contain(
@@ -3085,11 +3232,16 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(8)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1  => d.toInt
-            case (ids, SBoolean(b)) if ids.size == 1  => b
-            case (ids, SString(str)) if ids.size == 1 => str
-            case (ids, SObject(obj)) if ids.size == 1 => obj
-            case (ids, SArray(arr)) if ids.size == 1  => arr
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
+            case (ids, SBoolean(b)) if ids.size == 1 =>
+              b
+            case (ids, SString(str)) if ids.size == 1 =>
+              str
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
           }
 
           result2 must contain(
@@ -3125,7 +3277,8 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(2)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
           }
 
           result2 must contain(77, 13)
@@ -3150,11 +3303,16 @@ trait EvaluatorSpecs[M[+_]]
           result must haveSize(9)
 
           val result2 = result collect {
-            case (ids, SDecimal(d)) if ids.size == 1  => d.toInt
-            case (ids, SBoolean(b)) if ids.size == 1  => b
-            case (ids, SString(str)) if ids.size == 1 => str
-            case (ids, SObject(obj)) if ids.size == 1 => obj
-            case (ids, SArray(arr)) if ids.size == 1  => arr
+            case (ids, SDecimal(d)) if ids.size == 1 =>
+              d.toInt
+            case (ids, SBoolean(b)) if ids.size == 1 =>
+              b
+            case (ids, SString(str)) if ids.size == 1 =>
+              str
+            case (ids, SObject(obj)) if ids.size == 1 =>
+              obj
+            case (ids, SArray(arr)) if ids.size == 1 =>
+              arr
           }
 
           result2 must contain(
@@ -3192,7 +3350,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(25)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 2 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 2 =>
+            d.toInt
         }
 
         result2 must haveSize(23)
@@ -3242,7 +3401,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(25)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 2 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 2 =>
+            d.toInt
         }
 
         result2 must haveSize(20)
@@ -3289,7 +3449,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(4)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(55, 13, 119, 25)
@@ -3458,9 +3619,11 @@ trait EvaluatorSpecs[M[+_]]
         {
           testEval(input1) { result1 =>
             result0.map({
-              case (ids, v) => (ids.toSeq, v)
+              case (ids, v) =>
+                (ids.toSeq, v)
             }) must_== result1.map({
-              case (ids, v) => (ids.toSeq, v)
+              case (ids, v) =>
+                (ids.toSeq, v)
             })
           }
         }
@@ -3489,9 +3652,11 @@ trait EvaluatorSpecs[M[+_]]
         {
           testEval(input1) { result1 =>
             result0.map({
-              case (ids, v) => (ids.toSeq, v)
+              case (ids, v) =>
+                (ids.toSeq, v)
             }) must_== result1.map({
-              case (ids, v) => (ids.toSeq, v)
+              case (ids, v) =>
+                (ids.toSeq, v)
             })
           }
         }
@@ -3578,17 +3743,21 @@ trait EvaluatorSpecs[M[+_]]
                   "matthew",
                   "jason")
               }
-              case SNull => ok
+              case SNull =>
+                ok
             }
 
             val user =
               (obj("user"): @unchecked) match {
-                case SString(user) => user
-                case SNull         => SNull
+                case SString(user) =>
+                  user
+                case SNull =>
+                  SNull
               }
 
             obj("num") must beLike {
-              case SDecimal(d) => d mustEqual Expected(user)
+              case SDecimal(d) =>
+                d mustEqual Expected(user)
             }
         }
       }
@@ -3674,17 +3843,21 @@ trait EvaluatorSpecs[M[+_]]
                   "matthew",
                   "jason")
               }
-              case SNull => ok
+              case SNull =>
+                ok
             }
 
             val user =
               (obj("user"): @unchecked) match {
-                case SString(user) => user
-                case SNull         => SNull
+                case SString(user) =>
+                  user
+                case SNull =>
+                  SNull
               }
 
             obj("num") must beLike {
-              case SDecimal(d) => d mustEqual Expected(user)
+              case SDecimal(d) =>
+                d mustEqual Expected(user)
             }
         }
       }
@@ -3718,7 +3891,8 @@ trait EvaluatorSpecs[M[+_]]
 
             obj("t") mustEqual SDecimal(42)
 
-          case _ => failure("Result has wrong shape")
+          case _ =>
+            failure("Result has wrong shape")
         }
       }
     }
@@ -3766,7 +3940,8 @@ trait EvaluatorSpecs[M[+_]]
 
       testEval(input) { result =>
         result must haveAllElementsLike {
-          case (ids, SObject(fields)) => fields must haveKey("a")
+          case (ids, SObject(fields)) =>
+            fields must haveKey("a")
         }
       }
     }
@@ -3881,12 +4056,14 @@ trait EvaluatorSpecs[M[+_]]
           case (ids, SObject(obj)) if ids.size == 1 => {
             obj must haveKey("user")
             obj("user") must beLike {
-              case SString("daniel") => ok
+              case SString("daniel") =>
+                ok
             }
 
             obj must haveKey("num")
             obj("num") must beLike {
-              case SDecimal(d) => d mustEqual 9
+              case SDecimal(d) =>
+                d mustEqual 9
             }
           }
         }
@@ -3958,7 +4135,8 @@ trait EvaluatorSpecs[M[+_]]
         resultsE must haveSize(10)
 
         val results = resultsE collect {
-          case (ids, sv) if ids.length == 1 => sv
+          case (ids, sv) if ids.length == 1 =>
+            sv
         }
 
         results must contain(
@@ -4076,7 +4254,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(5)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
         }
 
         result2 must contain(42, 12, 77, 1, 13)
@@ -4094,11 +4273,16 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(10)
 
         val result2 = result collect {
-          case (ids, SDecimal(d)) if ids.size == 1 => d.toInt
-          case (ids, SBoolean(b)) if ids.size == 1 => b
-          case (ids, SString(s)) if ids.size == 1  => s
-          case (ids, SArray(a)) if ids.size == 1   => a
-          case (ids, SObject(o)) if ids.size == 1  => o
+          case (ids, SDecimal(d)) if ids.size == 1 =>
+            d.toInt
+          case (ids, SBoolean(b)) if ids.size == 1 =>
+            b
+          case (ids, SString(s)) if ids.size == 1 =>
+            s
+          case (ids, SArray(a)) if ids.size == 1 =>
+            a
+          case (ids, SObject(o)) if ids.size == 1 =>
+            o
         }
 
         result2 must contain(
@@ -4133,7 +4317,8 @@ trait EvaluatorSpecs[M[+_]]
           .Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
             line)) { expected =>
         val decimalValues = expected.toList collect {
-          case (_, SDecimal(d)) => d
+          case (_, SDecimal(d)) =>
+            d
         }
 
         val cross =
@@ -4145,14 +4330,16 @@ trait EvaluatorSpecs[M[+_]]
           }
 
         val expectedResult = cross collect {
-          case (x, y) if x == y => x + y
+          case (x, y) if x == y =>
+            x + y
         }
 
         testEval(input) { result =>
           result must haveSize(expectedResult.size)
 
           val decis = result.toList collect {
-            case (_, SDecimal(d)) => d
+            case (_, SDecimal(d)) =>
+              d
           }
           decis.sorted mustEqual expectedResult.sorted
 
@@ -4195,7 +4382,8 @@ trait EvaluatorSpecs[M[+_]]
         result must haveSize(106)
 
         val result2 = result collect {
-          case (ids, SBoolean(b)) if ids.size == 2 => b
+          case (ids, SBoolean(b)) if ids.size == 2 =>
+            b
         }
 
         result2 must contain(true)
@@ -4224,7 +4412,8 @@ trait EvaluatorSpecs[M[+_]]
           .Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
             line)) { expected =>
         val decimalValues = expected.toList collect {
-          case (_, SDecimal(d)) => d
+          case (_, SDecimal(d)) =>
+            d
         }
 
         val cross =
@@ -4236,14 +4425,16 @@ trait EvaluatorSpecs[M[+_]]
           }
 
         val expectedResult = cross collect {
-          case (x, y) if x > 500 && x == y => x
+          case (x, y) if x > 500 && x == y =>
+            x
         }
 
         testEval(input) { result =>
           result must haveSize(expectedResult.size)
 
           val decis = result.toList collect {
-            case (_, SDecimal(d)) => d
+            case (_, SDecimal(d)) =>
+              d
           }
           decis.sorted mustEqual expectedResult.sorted
 
@@ -4358,7 +4549,8 @@ trait EvaluatorSpecs[M[+_]]
         resultsE must haveSize(1)
 
         val results = resultsE collect {
-          case (ids, sv) if ids.length == 1 => sv
+          case (ids, sv) if ids.length == 1 =>
+            sv
         }
 
         results.head mustEqual SDecimal(1)
@@ -4387,7 +4579,8 @@ trait EvaluatorSpecs[M[+_]]
         resultsE must haveSize(1)
 
         val results = resultsE collect {
-          case (ids, sv) if ids.length == 1 => sv
+          case (ids, sv) if ids.length == 1 =>
+            sv
         }
 
         results.head mustEqual SDecimal(1)
@@ -4417,7 +4610,8 @@ trait EvaluatorSpecs[M[+_]]
         resultsE must haveSize(1)
 
         val results = resultsE collect {
-          case (ids, sv) if ids.length == 1 => sv
+          case (ids, sv) if ids.length == 1 =>
+            sv
         }
 
         results.head mustEqual SDecimal(1)

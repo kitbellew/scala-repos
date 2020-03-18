@@ -43,7 +43,8 @@ object StatKey {
   // This is implicit to allow Stat("c", "g") to work.
   implicit def fromCounterGroup(counterGroup: (String, String)): StatKey =
     counterGroup match {
-      case (c, g) => StatKey(c, g)
+      case (c, g) =>
+        StatKey(c, g)
     }
   // Create a Stat in the ScaldingGroup
   implicit def fromCounterDefaultGroup(counter: String): StatKey =
@@ -54,8 +55,10 @@ object StatKey {
 private[scalding] object CounterImpl {
   def apply(fp: FlowProcess[_], statKey: StatKey): CounterImpl =
     fp match {
-      case hFP: HadoopFlowProcess => HadoopFlowPCounterImpl(hFP, statKey)
-      case _                      => GenericFlowPCounterImpl(fp, statKey)
+      case hFP: HadoopFlowProcess =>
+        HadoopFlowPCounterImpl(hFP, statKey)
+      case _ =>
+        GenericFlowPCounterImpl(fp, statKey)
     }
 }
 

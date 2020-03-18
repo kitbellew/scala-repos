@@ -57,7 +57,8 @@ private[netty3] class ChannelConnector[In, Out](
     val ch =
       try newChannel()
       catch {
-        case NonFatal(exc) => return Future.exception(exc)
+        case NonFatal(exc) =>
+          return Future.exception(exc)
       }
 
     // Transport is now bound to the channel; this is done prior to
@@ -87,8 +88,10 @@ private[netty3] class ChannelConnector[In, Out](
             failedConnectLatencyStat.add(latency)
             promise.setException(
               f.getCause match {
-                case e: UnresolvedAddressException => e
-                case e                             => WriteException(e)
+                case e: UnresolvedAddressException =>
+                  e
+                case e =>
+                  WriteException(e)
               })
           }
         }
@@ -171,7 +174,8 @@ object Netty3Transporter {
       params[Transport.Verbose] match {
         case Transport.Verbose(true) =>
           Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
-        case _ => None
+        case _ =>
+          None
       }
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
@@ -196,7 +200,8 @@ object Netty3Transporter {
       newChannel = cf.newChannel(_),
       newTransport = (ch: Channel) => Transport.cast[In, Out](newTransport(ch)),
       tlsConfig = tls map {
-        case engine => Netty3TransporterTLSConfig(engine, tlsHostname)
+        case engine =>
+          Netty3TransporterTLSConfig(engine, tlsHostname)
       },
       httpProxy = httpProxy,
       httpProxyCredentials = httpProxyCredentials,
@@ -407,7 +412,8 @@ case class Netty3Transporter[In, Out](
             socksUsernameAndPassword match {
               case (Some((username, password))) =>
                 UsernamePassAuthenticationSetting(username, password)
-              case _ => Unauthenticated
+              case _ =>
+                Unauthenticated
             }
           SocksConnectHandler.addHandler(
             proxyAddr,

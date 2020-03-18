@@ -129,10 +129,14 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
     var peerClosed = false
 
     {
-      case Received(data)         => buffer(data)
-      case WritingResumed         => writeFirst()
-      case PeerClosed             => peerClosed = true
-      case Ack(ack) if ack < nack => acknowledge(ack)
+      case Received(data) =>
+        buffer(data)
+      case WritingResumed =>
+        writeFirst()
+      case PeerClosed =>
+        peerClosed = true
+      case Ack(ack) if ack < nack =>
+        acknowledge(ack)
       case Ack(ack) =>
         acknowledge(ack)
         if (storage.nonEmpty) {
@@ -169,7 +173,8 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
             writeAll()
             context.unbecome()
 
-          case ack: Int => acknowledge(ack)
+          case ack: Int =>
+            acknowledge(ack)
 
         },
         discardOld = false)
@@ -266,13 +271,17 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
 
       context.become(
         {
-          case Received(data) => buffer(data)
-          case Ack            => acknowledge()
-          case PeerClosed     => closing = true
+          case Received(data) =>
+            buffer(data)
+          case Ack =>
+            acknowledge()
+          case PeerClosed =>
+            closing = true
         },
         discardOld = false)
 
-    case PeerClosed => context stop self
+    case PeerClosed =>
+      context stop self
   }
 
   //#storage-omitted

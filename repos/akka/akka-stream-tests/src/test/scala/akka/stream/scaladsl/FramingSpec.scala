@@ -179,8 +179,10 @@ class FramingSpec extends AkkaSpec {
       val header = {
         val h = (new ByteStringBuilder).putInt(payload.size)(byteOrder).result()
         byteOrder match {
-          case ByteOrder.LITTLE_ENDIAN ⇒ h.take(fieldLength)
-          case ByteOrder.BIG_ENDIAN ⇒ h.drop(4 - fieldLength)
+          case ByteOrder.LITTLE_ENDIAN ⇒
+            h.take(fieldLength)
+          case ByteOrder.BIG_ENDIAN ⇒
+            h.drop(4 - fieldLength)
         }
       }
 

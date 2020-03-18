@@ -18,7 +18,8 @@ trait GenericMarshallers extends LowPriorityToResponseMarshallerImplicits {
       empty: EmptyValue[B]): Marshaller[Option[A], B] =
     Marshaller { implicit ec ⇒
       {
-        case Some(value) ⇒ m(value)
+        case Some(value) ⇒
+          m(value)
         case None ⇒
           FastFuture.successful(
             Marshalling.Opaque(() ⇒ empty.emptyValue) :: Nil)
@@ -30,8 +31,10 @@ trait GenericMarshallers extends LowPriorityToResponseMarshallerImplicits {
       m2: Marshaller[A2, B]): Marshaller[Either[A1, A2], B] =
     Marshaller { implicit ec ⇒
       {
-        case Left(a1) ⇒ m1(a1)
-        case Right(a2) ⇒ m2(a2)
+        case Left(a1) ⇒
+          m1(a1)
+        case Right(a2) ⇒
+          m2(a2)
       }
     }
 
@@ -43,8 +46,10 @@ trait GenericMarshallers extends LowPriorityToResponseMarshallerImplicits {
       m: Marshaller[A, B]): Marshaller[Try[A], B] =
     Marshaller { implicit ec ⇒
       {
-        case Success(value) ⇒ m(value)
-        case Failure(error) ⇒ FastFuture.failed(error)
+        case Success(value) ⇒
+          m(value)
+        case Failure(error) ⇒
+          FastFuture.failed(error)
       }
     }
 }

@@ -89,7 +89,8 @@ class BlockingChannel(
             ))
 
         } catch {
-          case e: Throwable => disconnect()
+          case e: Throwable =>
+            disconnect()
         }
       }
     }

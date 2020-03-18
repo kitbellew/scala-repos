@@ -128,7 +128,8 @@ object RelativeActorPath extends PathUtils {
       else
         Some(split(uri.getRawPath, uri.getRawFragment))
     } catch {
-      case _: URISyntaxException ⇒ None
+      case _: URISyntaxException ⇒
+        None
     }
   }
 }
@@ -140,7 +141,8 @@ object AddressFromURIString {
   def unapply(addr: String): Option[Address] =
     try unapply(new URI(addr))
     catch {
-      case _: URISyntaxException ⇒ None
+      case _: URISyntaxException ⇒
+        None
     }
 
   def unapply(uri: URI): Option[Address] =
@@ -171,8 +173,10 @@ object AddressFromURIString {
     */
   def apply(addr: String): Address =
     addr match {
-      case AddressFromURIString(address) ⇒ address
-      case _ ⇒ throw new MalformedURLException(addr)
+      case AddressFromURIString(address) ⇒
+        address
+      case _ ⇒
+        throw new MalformedURLException(addr)
     }
 
   /**
@@ -189,13 +193,15 @@ object ActorPathExtractor extends PathUtils {
     try {
       val uri = new URI(addr)
       uri.getRawPath match {
-        case null ⇒ None
+        case null ⇒
+          None
         case path ⇒
           AddressFromURIString
             .unapply(uri)
             .map((_, split(path, uri.getRawFragment).drop(1)))
       }
     } catch {
-      case _: URISyntaxException ⇒ None
+      case _: URISyntaxException ⇒
+        None
     }
 }

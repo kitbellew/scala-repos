@@ -178,16 +178,26 @@ object Infos {
 
     def addMethodCalled(receiverTpe: Type, method: String): this.type = {
       receiverTpe match {
-        case ClassType(cls)  => addMethodCalled(cls, method)
-        case AnyType         => addMethodCalled(ObjectClass, method)
-        case UndefType       => addMethodCalled(BoxedUnitClass, method)
-        case BooleanType     => addMethodCalled(BoxedBooleanClass, method)
-        case IntType         => addMethodCalled(BoxedIntegerClass, method)
-        case LongType        => addMethodCalled(BoxedLongClass, method)
-        case FloatType       => addMethodCalled(BoxedFloatClass, method)
-        case DoubleType      => addMethodCalled(BoxedDoubleClass, method)
-        case StringType      => addMethodCalled(StringClass, method)
-        case ArrayType(_, _) => addMethodCalled(PseudoArrayClass, method)
+        case ClassType(cls) =>
+          addMethodCalled(cls, method)
+        case AnyType =>
+          addMethodCalled(ObjectClass, method)
+        case UndefType =>
+          addMethodCalled(BoxedUnitClass, method)
+        case BooleanType =>
+          addMethodCalled(BoxedBooleanClass, method)
+        case IntType =>
+          addMethodCalled(BoxedIntegerClass, method)
+        case LongType =>
+          addMethodCalled(BoxedLongClass, method)
+        case FloatType =>
+          addMethodCalled(BoxedFloatClass, method)
+        case DoubleType =>
+          addMethodCalled(BoxedDoubleClass, method)
+        case StringType =>
+          addMethodCalled(StringClass, method)
+        case ArrayType(_, _) =>
+          addMethodCalled(PseudoArrayClass, method)
 
         case NullType | NothingType =>
         // Nothing to do
@@ -246,8 +256,10 @@ object Infos {
 
     private def baseNameOf(tpe: ReferenceType): String =
       tpe match {
-        case ClassType(name)    => name
-        case ArrayType(base, _) => base
+        case ClassType(name) =>
+          name
+        case ArrayType(base, _) =>
+          base
       }
 
     def result(): MethodInfo = {

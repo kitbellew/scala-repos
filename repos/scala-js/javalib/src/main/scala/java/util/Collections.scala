@@ -57,8 +57,10 @@ object Collections {
   def sort[T](list: List[T], c: Comparator[_ >: T]): Unit = {
     val sortedList = list.sorted(c)
     list match {
-      case list: RandomAccess => copyImpl(sortedList.iterator, list)
-      case _                  => copyImpl(sortedList.iterator, list.listIterator)
+      case list: RandomAccess =>
+        copyImpl(sortedList.iterator, list)
+      case _ =>
+        copyImpl(sortedList.iterator, list.listIterator)
     }
   }
 
@@ -142,8 +144,10 @@ object Collections {
     val scalaRnd = scala.util.Random.javaRandomToRandom(rnd)
     val shuffledList = scalaRnd.shuffle(list.toSeq)
     list match {
-      case list: RandomAccess => copyImpl(shuffledList.iterator, list)
-      case _                  => copyImpl(shuffledList.iterator, list.listIterator)
+      case list: RandomAccess =>
+        copyImpl(shuffledList.iterator, list)
+      case _ =>
+        copyImpl(shuffledList.iterator, list.listIterator)
     }
   }
 
@@ -184,10 +188,14 @@ object Collections {
 
   def copy[T](dest: List[_ >: T], src: List[_ <: T]): Unit = {
     (dest, src) match {
-      case (dest: RandomAccess, src: RandomAccess) => copyImpl(src, dest)
-      case (dest: RandomAccess, _)                 => copyImpl(src.iterator, dest)
-      case (_, src: RandomAccess)                  => copyImpl(src, dest.listIterator)
-      case (_, _)                                  => copyImpl(src.iterator, dest.listIterator)
+      case (dest: RandomAccess, src: RandomAccess) =>
+        copyImpl(src, dest)
+      case (dest: RandomAccess, _) =>
+        copyImpl(src.iterator, dest)
+      case (_, src: RandomAccess) =>
+        copyImpl(src, dest.listIterator)
+      case (_, _) =>
+        copyImpl(src.iterator, dest.listIterator)
     }
   }
 
@@ -294,10 +302,12 @@ object Collections {
       }
 
       list match {
-        case _: RandomAccess => exchangeRotation()
+        case _: RandomAccess =>
+          exchangeRotation()
         case _ if listSize < 16 =>
           exchangeRotation() // TODO benchmark and set proper limit
-        case _ => splitReverseRotation()
+        case _ =>
+          splitReverseRotation()
       }
     }
   }
@@ -409,8 +419,10 @@ object Collections {
       override protected val inner: List[T] = list
     }
     list match {
-      case _: RandomAccess => new BasicSynchronizedList with RandomAccess
-      case _               => new BasicSynchronizedList
+      case _: RandomAccess =>
+        new BasicSynchronizedList with RandomAccess
+      case _ =>
+        new BasicSynchronizedList
     }
   }
 
@@ -437,8 +449,10 @@ object Collections {
 
   def checkedList[E](list: List[E], typ: Class[E]): List[E] = {
     list match {
-      case _: RandomAccess => new CheckedList[E](list, typ) with RandomAccess
-      case _               => new CheckedList[E](list, typ)
+      case _: RandomAccess =>
+        new CheckedList[E](list, typ) with RandomAccess
+      case _ =>
+        new CheckedList[E](list, typ)
     }
   }
 

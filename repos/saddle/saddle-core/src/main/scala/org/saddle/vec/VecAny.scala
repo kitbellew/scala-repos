@@ -162,6 +162,7 @@ class VecAny[T: ST](values: Array[T]) extends Vec[T] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

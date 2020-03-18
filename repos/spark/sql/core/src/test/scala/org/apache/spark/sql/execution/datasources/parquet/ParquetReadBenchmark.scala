@@ -63,8 +63,10 @@ object ParquetReadBenchmark {
     try f
     finally {
       keys.zip(currentValues).foreach {
-        case (key, Some(value)) => sqlContext.conf.setConfString(key, value)
-        case (key, None)        => sqlContext.conf.unsetConf(key)
+        case (key, Some(value)) =>
+          sqlContext.conf.setConfString(key, value)
+        case (key, None) =>
+          sqlContext.conf.unsetConf(key)
       }
     }
   }

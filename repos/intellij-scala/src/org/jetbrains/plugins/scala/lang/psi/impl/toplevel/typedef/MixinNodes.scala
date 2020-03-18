@@ -208,8 +208,10 @@ abstract class MixinNodes {
           nodes.find { n =>
             !isAbstract(n.info)
           } match {
-            case None           => nodes.toList(0)
-            case Some(concrete) => concrete
+            case None =>
+              nodes.toList(0)
+            case Some(concrete) =>
+              concrete
           }
         primarySupers += ((key, primarySuper))
         thisMap.get(key) match {
@@ -229,8 +231,10 @@ abstract class MixinNodes {
   class AllNodes(publics: NodesMap, privates: NodesSeq) {
     def get(s: T): Option[Node] = {
       publics.get(s) match {
-        case res: Some[Node] => res
-        case _               => privates.get(s)
+        case res: Some[Node] =>
+          res
+        case _ =>
+          privates.get(s)
       }
     }
 
@@ -271,8 +275,10 @@ abstract class MixinNodes {
 
     def fastPhysicalSignatureGet(key: T): Option[Node] = {
       publics.fastPhysicalSignatureGet(key) match {
-        case res: Some[Node] => res
-        case _               => privates.get(key)
+        case res: Some[Node] =>
+          res
+        case _ =>
+          privates.get(key)
       }
     }
 
@@ -296,8 +302,10 @@ abstract class MixinNodes {
     def fastPhysicalSignatureGet(key: T): Option[Node] = {
       val list = map.getOrElse(computeHashCode(key), List.empty)
       list match {
-        case Nil      => None
-        case x :: Nil => Some(x._2)
+        case Nil =>
+          None
+        case x :: Nil =>
+          Some(x._2)
         case e =>
           val iterator = e.iterator
           while (iterator.hasNext) {
@@ -345,7 +353,8 @@ abstract class MixinNodes {
                   return Some(e.value)
                 else
                   return None
-              case _ => return None
+              case _ =>
+                return None
             }
           }
           while (e != null) {
@@ -358,7 +367,8 @@ abstract class MixinNodes {
             e = e.next
           }
           fastGet(key)
-        case _ => fastGet(key)
+        case _ =>
+          fastGet(key)
       }
     }
   }
@@ -388,9 +398,12 @@ abstract class MixinNodes {
         case _ =>
           val clazz =
             tp match {
-              case ScDesignatorType(clazz: PsiClass)       => clazz
-              case ScProjectionType(_, clazz: PsiClass, _) => clazz
-              case _                                       => null
+              case ScDesignatorType(clazz: PsiClass) =>
+                clazz
+              case ScProjectionType(_, clazz: PsiClass, _) =>
+                clazz
+              case _ =>
+                null
             }
           if (clazz == null)
             (Seq.empty, ScSubstitutor.empty, ScSubstitutor.empty)
@@ -500,7 +513,8 @@ abstract class MixinNodes {
                   new ScSubstitutor(proj).followed(p.actualSubst)
                 case ScParameterizedType(p @ ScProjectionType(proj, _, _), _) =>
                   new ScSubstitutor(proj).followed(p.actualSubst)
-                case _ => ScSubstitutor.empty
+                case _ =>
+                  ScSubstitutor.empty
               }
             val newSubst = combine(s, subst, superClass)
               .followed(thisTypeSubst)
@@ -527,7 +541,8 @@ abstract class MixinNodes {
                       base = false)
                   case _ => //do nothing
                 }
-              case _ => processJava(superClass, newSubst, newMap, place)
+              case _ =>
+                processJava(superClass, newSubst, newMap, place)
             }
             superTypesBuff += newMap
           }
@@ -537,7 +552,8 @@ abstract class MixinNodes {
         superType.isAliasType match {
           case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
             lower.getOrElse(superType)
-          case _ => superType
+          case _ =>
+            superType
         }
       ) match {
         case c: ScCompoundType =>
@@ -565,12 +581,14 @@ abstract class MixinNodes {
         var aliasesMap = res.aliasesMap
         for (alias <- td.aliases) {
           derived.aliasesMap.get(alias.name) match {
-            case Some(t) => aliasesMap = aliasesMap + ((alias.name, t))
-            case None    =>
+            case Some(t) =>
+              aliasesMap = aliasesMap + ((alias.name, t))
+            case None =>
           }
         }
         res = new ScSubstitutor(res.tvMap, aliasesMap, None)
-      case _ => ()
+      case _ =>
+        ()
     }
     res
   }
@@ -616,12 +634,14 @@ object MixinNodes {
         clazz match {
           case td: ScTypeDefinition =>
             td.getType(TypingContext.empty).getOrElse(default)
-          case _ => default
+          case _ =>
+            default
         }
       }
       val supers: Seq[ScType] = {
         clazz match {
-          case td: ScTemplateDefinition => td.superTypes
+          case td: ScTemplateDefinition =>
+            td.superTypes
           case clazz: PsiClass =>
             clazz.getSuperTypes.map {
               case ctp: PsiClassType =>
@@ -630,7 +650,8 @@ object MixinNodes {
                   ScDesignatorType(cl)
                 else
                   ScType.create(ctp, clazz.getProject)
-              case ctp => ScType.create(ctp, clazz.getProject)
+              case ctp =>
+                ScType.create(ctp, clazz.getProject)
             }.toSeq
         }
       }
@@ -663,9 +684,12 @@ object MixinNodes {
       new mutable.HashSet //to add here qualified names of classes
     def classString(clazz: PsiClass): String = {
       clazz match {
-        case obj: ScObject => "Object: " + obj.qualifiedName
-        case tra: ScTrait  => "Trait: " + tra.qualifiedName
-        case _             => "Class: " + clazz.qualifiedName
+        case obj: ScObject =>
+          "Object: " + obj.qualifiedName
+        case tra: ScTrait =>
+          "Trait: " + tra.qualifiedName
+        case _ =>
+          "Class: " + clazz.qualifiedName
       }
     }
     def add(tp: ScType) {
@@ -681,7 +705,8 @@ object MixinNodes {
               case Some(newClazz)
                   if ScEquivalenceUtil.areClassesEquivalent(newClazz, clazz) =>
                 true
-              case _ => false
+              case _ =>
+                false
             }
           })
           if (i != -1) {
@@ -694,11 +719,13 @@ object MixinNodes {
             tp.isAliasType match {
               case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
                 lower.getOrElse(tp)
-              case _ => tp
+              case _ =>
+                tp
             }
           ) match {
-            case c: ScCompoundType => c +=: buffer
-            case _                 =>
+            case c: ScCompoundType =>
+              c +=: buffer
+            case _ =>
           }
       }
     }
@@ -709,12 +736,16 @@ object MixinNodes {
       @tailrec
       def updateTp(tp: ScType): ScType = {
         tp.isAliasType match {
-          case Some(AliasType(_, _, Success(upper, _))) => updateTp(upper)
+          case Some(AliasType(_, _, Success(upper, _))) =>
+            updateTp(upper)
           case _ =>
             tp match {
-              case ex: ScExistentialType    => ex.skolem
-              case tpt: ScTypeParameterType => tpt.upper.v
-              case _                        => tp
+              case ex: ScExistentialType =>
+                ex.skolem
+              case tpt: ScTypeParameterType =>
+                tpt.upper.v
+              case _ =>
+                tp
             }
         }
       }
@@ -732,7 +763,8 @@ object MixinNodes {
             tp.isAliasType match {
               case Some(AliasType(td: ScTypeAliasDefinition, lower, _)) =>
                 lower.getOrElse(tp)
-              case _ => tp
+              case _ =>
+                tp
             }
           ) match {
             case c: ScCompoundType =>

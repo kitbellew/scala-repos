@@ -70,8 +70,10 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
     def countMethodCall(call: ScMethodCall): Int = {
       call.getInvokedExpr match {
-        case call: ScMethodCall => 1 + countMethodCall(call)
-        case _                  => 1
+        case call: ScMethodCall =>
+          1 + countMethodCall(call)
+        case _ =>
+          1
       }
     }
 
@@ -126,7 +128,8 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
                   Option(
                     PsiTreeUtil
                       .getParentOfType(expr, classOf[ScTemplateDefinition]))
-                case _ => None
+                case _ =>
+                  None
               }
 
             var flag = false

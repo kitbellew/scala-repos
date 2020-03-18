@@ -66,7 +66,8 @@ class StringConcatTest extends ClearAfterClass {
 
     def invokeNameDesc(m: String): List[String] =
       getSingleMethod(c, m).instructions collect {
-        case Invoke(_, _, name, desc, _) => name + desc
+        case Invoke(_, _, name, desc, _) =>
+          name + desc
       }
     assertEquals(
       invokeNameDesc("t1"),

@@ -70,8 +70,10 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def complete(value: Box[T]): Unit = {
     value match {
-      case Full(v)     => satisfy(v)
-      case x: EmptyBox => fail(x)
+      case Full(v) =>
+        satisfy(v)
+      case x: EmptyBox =>
+        fail(x)
     }
   }
 
@@ -125,9 +127,11 @@ class LAFuture[T](val scheduler: LAScheduler) {
           Box.tryo(f(v)) match {
             case Full(successfullyComputedFuture) =>
               successfullyComputedFuture.onComplete(v2 => ret.complete(v2))
-            case e: EmptyBox => ret.complete(e)
+            case e: EmptyBox =>
+              ret.complete(e)
           }
-        case e: EmptyBox => ret.complete(e)
+        case e: EmptyBox =>
+          ret.complete(e)
       })
     ret
   }
@@ -161,7 +165,8 @@ class LAFuture[T](val scheduler: LAScheduler) {
           else
             Empty
         } catch {
-          case _: InterruptedException => Empty
+          case _: InterruptedException =>
+            Empty
         }
       }
     }
@@ -297,7 +302,8 @@ object LAFuture {
       try {
         ret.satisfy(f())
       } catch {
-        case e: Exception => ret.fail(e)
+        case e: Exception =>
+          ret.fail(e)
       }
     })
     ret

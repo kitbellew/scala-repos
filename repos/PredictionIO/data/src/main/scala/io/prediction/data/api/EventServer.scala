@@ -128,11 +128,14 @@ class EventServiceActor(
                       new String(base64Decoder.decodeBuffer(value)).trim
                         .split(":")(0)
                     accessKeysClient.get(appAccessKey) match {
-                      case Some(k) ⇒ Right(AuthData(k.appid, None, k.events))
-                      case None ⇒ FailedAuth
+                      case Some(k) ⇒
+                        Right(AuthData(k.appid, None, k.events))
+                      case None ⇒
+                        FailedAuth
                     }
 
-                  case _ ⇒ FailedAuth
+                  case _ ⇒
+                    FailedAuth
                 }
               }
               .getOrElse(MissedAuth)
@@ -663,9 +666,12 @@ class EventServerActor(
     case StartServer(host, portNum) => {
       IO(Http) ! Http.Bind(child, interface = host, port = portNum)
     }
-    case m: Http.Bound         => log.info("Bound received. EventServer is ready.")
-    case m: Http.CommandFailed => log.error("Command failed.")
-    case _                     => log.error("Unknown message.")
+    case m: Http.Bound =>
+      log.info("Bound received. EventServer is ready.")
+    case m: Http.CommandFailed =>
+      log.error("Command failed.")
+    case _ =>
+      log.error("Unknown message.")
   }
 }
 

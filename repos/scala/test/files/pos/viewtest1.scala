@@ -30,7 +30,8 @@ abstract class Tree[+a <% Ordered[a]] {
     }
   def elements: List[a] =
     this match {
-      case Empty => List()
+      case Empty =>
+        List()
       case Node(elem, l, r) =>
         l.elements ::: List(elem) ::: r.elements
     }

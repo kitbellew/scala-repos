@@ -12,8 +12,10 @@ trait MapInstances extends algebra.std.MapInstances {
           lhs.forall {
             case (k, v1) =>
               rhs.get(k) match {
-                case Some(v2) => v1 === v2
-                case None     => false
+                case Some(v2) =>
+                  v1 === v2
+                case None =>
+                  false
               }
           }
         (lhs eq rhs) || (lhs.size == rhs.size && checkKeys)
@@ -43,7 +45,8 @@ trait MapInstances extends algebra.std.MapInstances {
         val gbb =
           fa.foldLeft(gba) { (buf, a) =>
             G.map2(buf, f(a._2))({
-              case (x, y) => x + (a._1 -> y)
+              case (x, y) =>
+                x + (a._1 -> y)
             })
           }
         G.map(gbb)(_.toMap)
@@ -51,18 +54,21 @@ trait MapInstances extends algebra.std.MapInstances {
 
       override def map[A, B](fa: Map[K, A])(f: A => B): Map[K, B] =
         fa.map {
-          case (k, a) => (k, f(a))
+          case (k, a) =>
+            (k, f(a))
         }
 
       override def map2[A, B, Z](fa: Map[K, A], fb: Map[K, B])(
           f: (A, B) => Z): Map[K, Z] =
         fa.flatMap {
-          case (k, a) => fb.get(k).map(b => (k, f(a, b)))
+          case (k, a) =>
+            fb.get(k).map(b => (k, f(a, b)))
         }
 
       override def ap[A, B](ff: Map[K, A => B])(fa: Map[K, A]): Map[K, B] =
         fa.flatMap {
-          case (k, a) => ff.get(k).map(f => (k, f(a)))
+          case (k, a) =>
+            ff.get(k).map(f => (k, f(a)))
         }
 
       override def ap2[A, B, Z](
@@ -77,12 +83,14 @@ trait MapInstances extends algebra.std.MapInstances {
 
       def flatMap[A, B](fa: Map[K, A])(f: (A) => Map[K, B]): Map[K, B] =
         fa.flatMap {
-          case (k, a) => f(a).get(k).map((k, _))
+          case (k, a) =>
+            f(a).get(k).map((k, _))
         }
 
       def foldLeft[A, B](fa: Map[K, A], b: B)(f: (B, A) => B): B =
         fa.foldLeft(b) {
-          case (x, (k, a)) => f(x, a)
+          case (x, (k, a)) =>
+            f(x, a)
         }
 
       def foldRight[A, B](fa: Map[K, A], lb: Eval[B])(

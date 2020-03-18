@@ -71,11 +71,14 @@ private[hive] class SparkSQLCLIService(
       sessionHandle: SessionHandle,
       getInfoType: GetInfoType): GetInfoValue = {
     getInfoType match {
-      case GetInfoType.CLI_SERVER_NAME => new GetInfoValue("Spark SQL")
-      case GetInfoType.CLI_DBMS_NAME   => new GetInfoValue("Spark SQL")
+      case GetInfoType.CLI_SERVER_NAME =>
+        new GetInfoValue("Spark SQL")
+      case GetInfoType.CLI_DBMS_NAME =>
+        new GetInfoValue("Spark SQL")
       case GetInfoType.CLI_DBMS_VER =>
         new GetInfoValue(hiveContext.sparkContext.version)
-      case _ => super.getInfo(sessionHandle, getInfoType)
+      case _ =>
+        super.getInfo(sessionHandle, getInfoType)
     }
   }
 }

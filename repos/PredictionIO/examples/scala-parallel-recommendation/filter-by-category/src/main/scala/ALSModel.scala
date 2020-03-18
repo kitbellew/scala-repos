@@ -30,7 +30,8 @@ class ALSModel(
       categoryItems: Array[Set[Int]]) = {
     val filteredProductFeatures = productFeatures
       .filter {
-        case (id, _) => categoryItems.exists(_.contains(id))
+        case (id, _) =>
+          categoryItems.exists(_.contains(id))
       }
     recommend(userFeatures.lookup(user).head, filteredProductFeatures, num)
       .map(t => Rating(user, t._1, t._2))

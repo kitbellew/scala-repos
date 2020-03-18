@@ -50,12 +50,14 @@ final class ShutupApi(
       textType: TextType,
       toUserId: Option[String] = None): Funit =
     UserRepo isTroll userId flatMap {
-      case true => funit
+      case true =>
+        funit
       case false =>
         toUserId ?? {
           follows(userId, _)
         } flatMap {
-          case true => funit
+          case true =>
+            funit
           case false =>
             val analysed = Analyser(text)
             val pushPublicLine =
@@ -75,8 +77,10 @@ final class ShutupApi(
                 fetchNewObject = true,
                 upsert = true)
               .map(_.value) map2 UserRecordBSONHandler.read flatMap {
-              case None             => fufail(s"can't find user record for $userId")
-              case Some(userRecord) => legiferate(userRecord)
+              case None =>
+                fufail(s"can't find user record for $userId")
+              case Some(userRecord) =>
+                legiferate(userRecord)
             } logFailure lila.log("shutup")
         }
     }

@@ -41,10 +41,12 @@ trait Helpers {
 
     override def transform(tree: Tree): Tree =
       tree match {
-        case Ident(SimplifiedName(name)) => Ident(name)
+        case Ident(SimplifiedName(name)) =>
+          Ident(name)
         case ValDef(mods, SimplifiedName(name), tpt, rhs) =>
           ValDef(mods, name, transform(tpt), transform(rhs))
-        case Bind(SimplifiedName(name), rhs) => Bind(name, rhs)
+        case Bind(SimplifiedName(name), rhs) =>
+          Bind(name, rhs)
         case _ =>
           super.transform(tree)
       }
@@ -59,14 +61,16 @@ trait Helpers {
   implicit class TestSimilarListTree(lst: List[Tree]) {
     def ≈(other: List[Tree]) =
       (lst.length == other.length) && lst.zip(other).forall {
-        case (t1, t2) => t1 ≈ t2
+        case (t1, t2) =>
+          t1 ≈ t2
       }
   }
 
   implicit class TestSimilarListListTree(lst: List[List[Tree]]) {
     def ≈(other: List[List[Tree]]) =
       (lst.length == other.length) && lst.zip(other).forall {
-        case (l1, l2) => l1 ≈ l2
+        case (l1, l2) =>
+          l1 ≈ l2
       }
   }
 

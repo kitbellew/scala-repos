@@ -39,8 +39,10 @@ private[round] final class History(
       Some(Nil)
     else
       events.takeWhile(_.version > v).reverse.some filter {
-        case first :: rest => first.version == v + 1
-        case _             => true
+        case first :: rest =>
+          first.version == v + 1
+        case _ =>
+          true
       }
   }
 
@@ -48,7 +50,8 @@ private[round] final class History(
     waitForLoadedEvents
     val vevs =
       xs.foldLeft(List.empty[VersionedEvent] -> getVersion) {
-          case ((vevs, v), e) => (VersionedEvent(e, v + 1) :: vevs, v + 1)
+          case ((vevs, v), e) =>
+            (VersionedEvent(e, v + 1) :: vevs, v + 1)
         }
         ._1
     events = (vevs ::: events) take History.size

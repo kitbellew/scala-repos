@@ -57,8 +57,10 @@ trait MutableStringConfig {
   def get(key: String) = {
     assert(config != null)
     config.get(key) match {
-      case Some(s) => s.toString
-      case None    => null
+      case Some(s) =>
+        s.toString
+      case None =>
+        null
     }
   }
 
@@ -91,7 +93,8 @@ case class WrappingConfig(
 
   def get(key: String) = {
     updates.get(key) match {
-      case s @ Some(_) => s
+      case s @ Some(_) =>
+        s
       case None =>
         if (removes.contains(key))
           None

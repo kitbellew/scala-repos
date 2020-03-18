@@ -99,7 +99,8 @@ object Previous {
   private def read[T](stream: InputStream, format: Format[T]): Option[T] =
     try Some(format.reads(stream))
     catch {
-      case e: Exception => None
+      case e: Exception =>
+        None
     }
 
   private def write[T](
@@ -108,7 +109,8 @@ object Previous {
       value: T): Unit =
     try format.writes(stream, value)
     catch {
-      case e: Exception => ()
+      case e: Exception =>
+        ()
     }
 
   /** Public as a macro implementation detail.  Do not call directly. */

@@ -49,7 +49,8 @@ trait TypedActorFactory {
     */
   def stop(proxy: AnyRef): Boolean =
     getActorRefFor(proxy) match {
-      case null ⇒ false
+      case null ⇒
+        false
       case ref ⇒
         ref.asInstanceOf[InternalActorRef].stop;
         true
@@ -61,7 +62,8 @@ trait TypedActorFactory {
     */
   def poisonPill(proxy: AnyRef): Boolean =
     getActorRefFor(proxy) match {
-      case null ⇒ false
+      case null ⇒
+        false
       case ref ⇒
         ref ! PoisonPill;
         true
@@ -167,12 +169,16 @@ object TypedActor
     def apply(instance: AnyRef): AnyRef =
       try {
         parameters match {
-          case null ⇒ method.invoke(instance)
-          case args if args.length == 0 ⇒ method.invoke(instance)
-          case args ⇒ method.invoke(instance, args: _*)
+          case null ⇒
+            method.invoke(instance)
+          case args if args.length == 0 ⇒
+            method.invoke(instance)
+          case args ⇒
+            method.invoke(instance, args: _*)
         }
       } catch {
-        case i: InvocationTargetException ⇒ throw i.getTargetException
+        case i: InvocationTargetException ⇒
+          throw i.getTargetException
       }
 
     @throws(classOf[ObjectStreamException])
@@ -242,8 +248,10 @@ object TypedActor
       MethodCall(
         ownerType.getDeclaredMethod(methodName, parameterTypes: _*),
         serializedParameters match {
-          case null ⇒ null
-          case a if a.length == 0 ⇒ Array[AnyRef]()
+          case null ⇒
+            null
+          case a if a.length == 0 ⇒
+            Array[AnyRef]()
           case a ⇒
             val deserializedParameters: Array[AnyRef] = Array.ofDim[AnyRef](
               a.length
@@ -291,7 +299,8 @@ object TypedActor
       case null ⇒
         throw new IllegalStateException(
           "Calling TypedActor.self outside of a TypedActor implementation method!")
-      case some ⇒ some
+      case some ⇒
+        some
     }
 
   /**
@@ -302,7 +311,8 @@ object TypedActor
       case null ⇒
         throw new IllegalStateException(
           "Calling TypedActor.context outside of a TypedActor implementation method!")
-      case some ⇒ some
+      case some ⇒
+        some
     }
 
   /**
@@ -333,15 +343,19 @@ object TypedActor
 
     override def supervisorStrategy: SupervisorStrategy =
       me match {
-        case l: Supervisor ⇒ l.supervisorStrategy
-        case _ ⇒ super.supervisorStrategy
+        case l: Supervisor ⇒
+          l.supervisorStrategy
+        case _ ⇒
+          super.supervisorStrategy
       }
 
     override def preStart(): Unit =
       withContext {
         me match {
-          case l: PreStart ⇒ l.preStart()
-          case _ ⇒ super.preStart()
+          case l: PreStart ⇒
+            l.preStart()
+          case _ ⇒
+            super.preStart()
         }
       }
 
@@ -349,8 +363,10 @@ object TypedActor
       try {
         withContext {
           me match {
-            case l: PostStop ⇒ l.postStop()
-            case _ ⇒ super.postStop()
+            case l: PostStop ⇒
+              l.postStop()
+            case _ ⇒
+              super.postStop()
           }
         }
       } finally {
@@ -365,7 +381,8 @@ object TypedActor
     override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       withContext {
         me match {
-          case l: PreRestart ⇒ l.preRestart(reason, message)
+          case l: PreRestart ⇒
+            l.preRestart(reason, message)
           case _ ⇒
             context.children foreach context.stop //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
         }
@@ -374,8 +391,10 @@ object TypedActor
     override def postRestart(reason: Throwable): Unit =
       withContext {
         me match {
-          case l: PostRestart ⇒ l.postRestart(reason)
-          case _ ⇒ super.postRestart(reason)
+          case l: PostRestart ⇒
+            l.postRestart(reason)
+          case _ ⇒
+            super.postRestart(reason)
         }
       }
 
@@ -401,12 +420,17 @@ object TypedActor
                 case f: Future[_] if m.returnsFuture ⇒
                   implicit val dispatcher = context.dispatcher
                   f onComplete {
-                    case Success(null) ⇒ s ! NullResponse
-                    case Success(result) ⇒ s ! result
-                    case Failure(f) ⇒ s ! Status.Failure(f)
+                    case Success(null) ⇒
+                      s ! NullResponse
+                    case Success(result) ⇒
+                      s ! result
+                    case Failure(f) ⇒
+                      s ! Status.Failure(f)
                   }
-                case null ⇒ s ! NullResponse
-                case result ⇒ s ! result
+                case null ⇒
+                  s ! NullResponse
+                case result ⇒
+                  s ! result
               }
             } catch {
               case NonFatal(e) ⇒
@@ -513,13 +537,15 @@ object TypedActor
     @throws(classOf[Throwable])
     def invoke(proxy: AnyRef, method: Method, args: Array[AnyRef]): AnyRef =
       method.getName match {
-        case "toString" ⇒ actor.toString
+        case "toString" ⇒
+          actor.toString
         case "equals" ⇒
           (
             args.length == 1 && (proxy eq args(0)) || actor == extension
               .getActorRefFor(args(0))
           ).asInstanceOf[AnyRef] //Force boxing of the boolean
-        case "hashCode" ⇒ actor.hashCode.asInstanceOf[AnyRef]
+        case "hashCode" ⇒
+          actor.hashCode.asInstanceOf[AnyRef]
         case _ ⇒
           implicit val dispatcher = extension.system.dispatcher
           import akka.pattern.ask
@@ -529,8 +555,10 @@ object TypedActor
               null //Null return value
             case m if m.returnsFuture ⇒
               ask(actor, m)(timeout) map {
-                case NullResponse ⇒ null
-                case other ⇒ other
+                case NullResponse ⇒
+                  null
+                case other ⇒
+                  other
               }
             case m if m.returnsJOption || m.returnsOption ⇒
               val f = ask(actor, m)(timeout)
@@ -538,7 +566,8 @@ object TypedActor
                 try {
                   Await.ready(f, timeout.duration).value
                 } catch {
-                  case _: TimeoutException ⇒ None
+                  case _: TimeoutException ⇒
+                    None
                 }
               ) match {
                 case None | Some(Success(NullResponse)) | Some(
@@ -552,8 +581,10 @@ object TypedActor
               }
             case m ⇒
               Await.result(ask(actor, m)(timeout), timeout.duration) match {
-                case NullResponse ⇒ null
-                case other ⇒ other.asInstanceOf[AnyRef]
+                case NullResponse ⇒
+                  null
+                case other ⇒
+                  other.asInstanceOf[AnyRef]
               }
           }
       }
@@ -574,7 +605,8 @@ object TypedActor
         case null ⇒
           throw new IllegalStateException(
             "SerializedTypedActorInvocationHandler.readResolve requires that JavaSerializer.currentSystem.value is set to a non-null value")
-        case some ⇒ toTypedActorInvocationHandler(some)
+        case some ⇒
+          toTypedActorInvocationHandler(some)
       }
 
     def toTypedActorInvocationHandler(
@@ -811,8 +843,10 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     */
   def getActorRefFor(proxy: AnyRef): ActorRef =
     invocationHandlerFor(proxy) match {
-      case null ⇒ null
-      case handler ⇒ handler.actor
+      case null ⇒
+        null
+      case handler ⇒
+        handler.actor
     }
 
   /**
@@ -835,7 +869,8 @@ class TypedActorExtension(val system: ExtendedActorSystem)
       .newProxyInstance(
         (
           props.loader orElse props.interfaces.collectFirst {
-            case any ⇒ any.getClassLoader
+            case any ⇒
+              any.getClassLoader
           }
         ).orNull, //If we have no loader, we arbitrarily take the loader of the first interface
         props.interfaces.toArray,
@@ -864,12 +899,16 @@ class TypedActorExtension(val system: ExtendedActorSystem)
     if ((typedActor ne null) && classOf[Proxy].isAssignableFrom(
           typedActor.getClass) && Proxy.isProxyClass(typedActor.getClass))
       typedActor match {
-        case null ⇒ null
+        case null ⇒
+          null
         case other ⇒
           Proxy.getInvocationHandler(other) match {
-            case null ⇒ null
-            case handler: TypedActorInvocationHandler ⇒ handler
-            case _ ⇒ null
+            case null ⇒
+              null
+            case handler: TypedActorInvocationHandler ⇒
+              handler
+            case _ ⇒
+              null
           }
       }
     else

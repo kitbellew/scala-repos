@@ -177,8 +177,10 @@ class SliceSpec extends Specification with ArbitrarySlice with ScalaCheck {
 
       check { fullSlices: List[Slice] =>
         val slices = fullSlices collect {
-          case slice if Random.nextBoolean => slice
-          case _                           => emptySlice
+          case slice if Random.nextBoolean =>
+            slice
+          case _ =>
+            emptySlice
         }
         val slice = Slice.concat(slices)
         toCValues(slice) must_== fakeConcat(slices)

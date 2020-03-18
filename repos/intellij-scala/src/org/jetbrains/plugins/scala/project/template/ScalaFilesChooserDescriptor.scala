@@ -31,8 +31,9 @@ abstract class AbstractFilesChooserDescriptor(
     val components = Component.discoverIn(allFiles)
 
     sdkDescriptor.from(components) match {
-      case Left(message) => throw new ValidationException(message)
-      case Right(sdk)    => // OK
+      case Left(message) =>
+        throw new ValidationException(message)
+      case Right(sdk) => // OK
     }
   }
 }

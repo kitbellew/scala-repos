@@ -104,8 +104,10 @@ trait HomogeneousArrayColumn[@spec(Boolean, Long, Double) A]
     @tailrec
     def loop(a: CValueType[_]): CValueType[_] =
       a match {
-        case CArrayType(elemType) => loop(elemType)
-        case vType                => vType
+        case CArrayType(elemType) =>
+          loop(elemType)
+        case vType =>
+          vType
       }
 
     loop(tpe)
@@ -421,17 +423,28 @@ object Column {
   @inline
   def const(cv: CValue): Column =
     cv match {
-      case CBoolean(v)                         => const(v)
-      case CLong(v)                            => const(v)
-      case CDouble(v)                          => const(v)
-      case CNum(v)                             => const(v)
-      case CString(v)                          => const(v)
-      case CDate(v)                            => const(v)
-      case CArray(v, t @ CArrayType(elemType)) => const(v)(elemType)
-      case CEmptyObject                        => new InfiniteColumn with EmptyObjectColumn
-      case CEmptyArray                         => new InfiniteColumn with EmptyArrayColumn
-      case CNull                               => new InfiniteColumn with NullColumn
-      case CUndefined                          => UndefinedColumn.raw
+      case CBoolean(v) =>
+        const(v)
+      case CLong(v) =>
+        const(v)
+      case CDouble(v) =>
+        const(v)
+      case CNum(v) =>
+        const(v)
+      case CString(v) =>
+        const(v)
+      case CDate(v) =>
+        const(v)
+      case CArray(v, t @ CArrayType(elemType)) =>
+        const(v)(elemType)
+      case CEmptyObject =>
+        new InfiniteColumn with EmptyObjectColumn
+      case CEmptyArray =>
+        new InfiniteColumn with EmptyArrayColumn
+      case CNull =>
+        new InfiniteColumn with NullColumn
+      case CUndefined =>
+        UndefinedColumn.raw
     }
 
   @inline
@@ -562,7 +575,8 @@ object Column {
           def apply(row: Int): Array[Array[a]] =
             Array(col(row))(col.tpe.manifest)
         }
-      case _ => sys.error("Cannot lift non-value column.")
+      case _ =>
+        sys.error("Cannot lift non-value column.")
     }
 
   object unionRightSemigroup extends Semigroup[Column] {

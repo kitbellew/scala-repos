@@ -134,7 +134,8 @@ object JFXApp {
       if (!filled) {
         arguments.foreach(arg =>
           keyValue.findFirstMatchIn(arg) match {
-            case None => unnamedArguments += arg
+            case None =>
+              unnamedArguments += arg
             case Some(matcher) =>
               namedArguments(matcher.group(1)) = matcher.group(2)
           })

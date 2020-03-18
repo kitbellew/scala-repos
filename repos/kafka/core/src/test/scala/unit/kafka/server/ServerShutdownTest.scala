@@ -204,7 +204,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
       server.shutdown()
       assertTrue(true)
     } catch {
-      case ex: Throwable => fail()
+      case ex: Throwable =>
+        fail()
     }
   }
 }

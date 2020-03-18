@@ -56,25 +56,35 @@ object ArrayUtil {
           offset,
           offset + length,
           v.asInstanceOf[AnyRef])
-      case _ => throw new RuntimeException("shouldn't be here!")
+      case _ =>
+        throw new RuntimeException("shouldn't be here!")
     }
   }
 
   def copyOf[V](a: Array[V], length: Int): Array[V] = {
     a match {
-      case x: Array[Double]  => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Int]     => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Float]   => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Long]    => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Short]   => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Char]    => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Byte]    => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
-      case x: Array[Boolean] => Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Double] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Int] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Float] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Long] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Short] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Char] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Byte] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
+      case x: Array[Boolean] =>
+        Arrays.copyOf(x, length).asInstanceOf[Array[V]]
       case x: Array[_] =>
         Arrays
           .copyOf(x.asInstanceOf[Array[AnyRef]], length)
           .asInstanceOf[Array[V]]
-      case _ => throw new RuntimeException("shouldn't be here!")
+      case _ =>
+        throw new RuntimeException("shouldn't be here!")
     }
   }
 
@@ -100,26 +110,35 @@ object ArrayUtil {
         Arrays
           .copyOfRange(x.asInstanceOf[Array[AnyRef]], from, to)
           .asInstanceOf[Array[V]]
-      case _ => throw new RuntimeException("shouldn't be here!")
+      case _ =>
+        throw new RuntimeException("shouldn't be here!")
     }
   }
 
   def newArrayLike[V](a: Array[V], length: Int): Array[V] = {
     a match {
-      case x: Array[Double] => new Array[Double](length).asInstanceOf[Array[V]]
-      case x: Array[Int]    => new Array[Int](length).asInstanceOf[Array[V]]
-      case x: Array[Float]  => new Array[Float](length).asInstanceOf[Array[V]]
-      case x: Array[Long]   => new Array[Long](length).asInstanceOf[Array[V]]
-      case x: Array[Short]  => new Array[Short](length).asInstanceOf[Array[V]]
-      case x: Array[Char]   => new Array[Char](length).asInstanceOf[Array[V]]
-      case x: Array[Byte]   => new Array[Byte](length).asInstanceOf[Array[V]]
+      case x: Array[Double] =>
+        new Array[Double](length).asInstanceOf[Array[V]]
+      case x: Array[Int] =>
+        new Array[Int](length).asInstanceOf[Array[V]]
+      case x: Array[Float] =>
+        new Array[Float](length).asInstanceOf[Array[V]]
+      case x: Array[Long] =>
+        new Array[Long](length).asInstanceOf[Array[V]]
+      case x: Array[Short] =>
+        new Array[Short](length).asInstanceOf[Array[V]]
+      case x: Array[Char] =>
+        new Array[Char](length).asInstanceOf[Array[V]]
+      case x: Array[Byte] =>
+        new Array[Byte](length).asInstanceOf[Array[V]]
       case x: Array[Boolean] =>
         new Array[Boolean](length).asInstanceOf[Array[V]]
       case x: Array[_] =>
         implicit val man = ClassTag[V](
           x.getClass.getComponentType.asInstanceOf[Class[V]])
         new Array[V](length)
-      case _ => throw new RuntimeException("shouldn't be here!")
+      case _ =>
+        throw new RuntimeException("shouldn't be here!")
     }
   }
 
@@ -215,7 +234,8 @@ object ArrayUtil {
           Arrays.equals(
             a.asInstanceOf[Array[AnyRef]],
             b.asInstanceOf[Array[AnyRef]])
-        case _ => throw new RuntimeException("shouldn't be here!")
+        case _ =>
+          throw new RuntimeException("shouldn't be here!")
       }
     }
 
@@ -355,7 +375,8 @@ object ArrayUtil {
             i += 1
           }
           true
-        case _ => throw new RuntimeException("shouldn't be here!")
+        case _ =>
+          throw new RuntimeException("shouldn't be here!")
       }
     }
 
@@ -411,7 +432,8 @@ object ArrayUtil {
         zeroSkippingHashCodeImpl_Char(x, offset, stride, length)
       case x: Array[Boolean] =>
         zeroSkippingHashCodeImpl_Boolean(x, offset, stride, length)
-      case _ => zeroSkippingHashCodeImplSlow(data, offset, stride, length)
+      case _ =>
+        zeroSkippingHashCodeImplSlow(data, offset, stride, length)
     }
 
   }

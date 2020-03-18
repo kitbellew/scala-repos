@@ -99,9 +99,11 @@ abstract class JDBCSource extends Source with ColumnDefiner with JdbcDriver {
   override def createTap(readOrWrite: AccessMode)(implicit
       mode: Mode): Tap[_, _, _] =
     mode match {
-      case Hdfs(_, _) => createJDBCTap.asInstanceOf[Tap[_, _, _]]
+      case Hdfs(_, _) =>
+        createJDBCTap.asInstanceOf[Tap[_, _, _]]
       // TODO: support Local mode here, and better testing.
-      case _ => TestTapFactory(this, fields).createTap(readOrWrite)
+      case _ =>
+        TestTapFactory(this, fields).createTap(readOrWrite)
     }
 
   // Generate SQL statement to create the DB table if not existing.

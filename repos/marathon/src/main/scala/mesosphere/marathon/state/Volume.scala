@@ -83,7 +83,8 @@ object Volume {
         volume match {
           case pv: PersistentVolume =>
             validate(pv)(PersistentVolume.validPersistentVolume)
-          case dv: DockerVolume => validate(dv)(DockerVolume.validDockerVolume)
+          case dv: DockerVolume =>
+            validate(dv)(DockerVolume.validDockerVolume)
         }
     }
 }

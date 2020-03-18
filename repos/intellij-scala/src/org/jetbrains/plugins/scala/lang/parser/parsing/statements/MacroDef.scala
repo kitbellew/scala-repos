@@ -18,7 +18,8 @@ object MacroDef {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val marker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kDEF => builder.advanceLexer()
+      case ScalaTokenTypes.kDEF =>
+        builder.advanceLexer()
       case _ =>
         marker.drop()
         return false

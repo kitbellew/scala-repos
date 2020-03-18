@@ -41,14 +41,22 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val nameId =
       usage match {
-        case ScalaNamedElementUsageInfo(scUsage) => scUsage.namedElement.nameId
-        case MethodCallUsageInfo(ref, _)         => ref.nameId
-        case RefExpressionUsage(r)               => r.nameId
-        case InfixExprUsageInfo(i)               => i.operation.nameId
-        case PostfixExprUsageInfo(p)             => p.operation.nameId
-        case AnonFunUsageInfo(_, ref)            => ref.nameId
-        case ImportUsageInfo(ref)                => ref.nameId
-        case _                                   => null
+        case ScalaNamedElementUsageInfo(scUsage) =>
+          scUsage.namedElement.nameId
+        case MethodCallUsageInfo(ref, _) =>
+          ref.nameId
+        case RefExpressionUsage(r) =>
+          r.nameId
+        case InfixExprUsageInfo(i) =>
+          i.operation.nameId
+        case PostfixExprUsageInfo(p) =>
+          p.operation.nameId
+        case AnonFunUsageInfo(_, ref) =>
+          ref.nameId
+        case ImportUsageInfo(ref) =>
+          ref.nameId
+        case _ =>
+          null
       }
 
     nameId match {
@@ -65,8 +73,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       usage: ScalaNamedElementUsageInfo): Unit = {
     val visibility =
       change match {
-        case j: JavaChangeInfo => j.getNewVisibility
-        case _                 => return
+        case j: JavaChangeInfo =>
+          j.getNewVisibility
+        case _ =>
+          return
       }
     val member =
       ScalaPsiUtil.nameContext(usage.namedElement) match {
@@ -74,8 +84,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           cl.constructor.getOrElse(
             return
           )
-        case m: ScModifierListOwner => m
-        case _                      => return
+        case m: ScModifierListOwner =>
+          m
+        case _ =>
+          return
       }
 
     ScalaPsiUtil.changeVisibility(member, visibility)
@@ -90,8 +102,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val substType: ScType =
       UsageUtil.returnType(change, usage) match {
-        case Some(result) => result
-        case None         => return
+        case Some(result) =>
+          result
+        case None =>
+          return
       }
     val newTypeElem = ScalaPsiElementFactory.createTypeElementFromText(
       substType.canonicalText,
@@ -99,13 +113,16 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val oldTypeElem =
       element match {
-        case fun: ScFunction => fun.returnTypeElement
+        case fun: ScFunction =>
+          fun.returnTypeElement
         case ScalaPsiUtil.inNameContext(pd: ScPatternDefinition) =>
           pd.typeElement
         case ScalaPsiUtil.inNameContext(vd: ScVariableDefinition) =>
           vd.typeElement
-        case cp: ScClassParameter => cp.typeElement
-        case _                    => None
+        case cp: ScClassParameter =>
+          cp.typeElement
+        case _ =>
+          None
       }
     oldTypeElem match {
       case Some(te) =>
@@ -114,11 +131,16 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       case None =>
         val (context, anchor) =
           ScalaPsiUtil.nameContext(element) match {
-            case f: ScFunction           => (f, f.paramClauses)
-            case p: ScPatternDefinition  => (p, p.pList)
-            case v: ScVariableDefinition => (v, v.pList)
-            case cp: ScClassParameter    => (cp.getParent, cp)
-            case ctx                     => (ctx, ctx.getLastChild)
+            case f: ScFunction =>
+              (f, f.paramClauses)
+            case p: ScPatternDefinition =>
+              (p, p.pList)
+            case v: ScVariableDefinition =>
+              (v, v.pList)
+            case cp: ScClassParameter =>
+              (cp.getParent, cp)
+            case ctx =>
+              (ctx, ctx.getLastChild)
           }
         AddOnlyStrategy.withoutEditor.addTypeAnnotation(
           substType,
@@ -140,13 +162,17 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       return
     val jChange =
       change match {
-        case j: JavaChangeInfo => j
-        case _                 => return
+        case j: JavaChangeInfo =>
+          j
+        case _ =>
+          return
       }
     val paramTypes =
       usage.expr.getType() match {
-        case Success(ScFunctionType(_, pTypes), _) => pTypes
-        case _                                     => Seq.empty
+        case Success(ScFunctionType(_, pTypes), _) =>
+          pTypes
+        case _ =>
+          Seq.empty
       }
     val (names, exprText) =
       usage.expr match {
@@ -161,7 +187,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
                 param.name
               else
                 param.nameInCode match {
-                  case Some(n) => n
+                  case Some(n) =>
+                    n
                   case None =>
                     NameSuggester.suggestNamesByType(param.paramType)(0)
                 }
@@ -216,14 +243,16 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val keywordToChange =
       named match {
-        case _: ScFunction | _: ScClass => None
+        case _: ScFunction | _: ScClass =>
+          None
         case ScalaPsiUtil.inNameContext(pd: ScPatternDefinition)
             if pd.isSimple =>
           Some(pd.valKeyword)
         case ScalaPsiUtil.inNameContext(vd: ScVariableDefinition)
             if vd.isSimple =>
           Some(vd.varKeyword)
-        case _ => return
+        case _ =>
+          return
       }
     keywordToChange.foreach { kw =>
       val defKeyword =
@@ -252,8 +281,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       }
     val result =
       usage.paramClauses match {
-        case Some(p) => p.replace(newClauses)
-        case None    => nameId.getParent.addAfter(newClauses, nameId)
+        case Some(p) =>
+          p.replace(newClauses)
+        case None =>
+          nameId.getParent.addAfter(newClauses, nameId)
       }
     TypeAdjuster.markToAdjust(result)
   }
@@ -262,12 +293,17 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       change: ChangeInfo,
       usage: UsageInfo): Unit = {
     usage match {
-      case c: ConstructorUsageInfo => handleConstructorUsageArguments(change, c)
-      case m: MethodCallUsageInfo  => handleMethodCallUsagesArguments(change, m)
-      case r: RefExpressionUsage   => handleRefUsageArguments(change, r)
-      case i: InfixExprUsageInfo   => handleInfixUsage(change, i)
-      case p: PostfixExprUsageInfo => handlePostfixUsage(change, p)
-      case _                       =>
+      case c: ConstructorUsageInfo =>
+        handleConstructorUsageArguments(change, c)
+      case m: MethodCallUsageInfo =>
+        handleMethodCallUsagesArguments(change, m)
+      case r: RefExpressionUsage =>
+        handleRefUsageArguments(change, r)
+      case i: InfixExprUsageInfo =>
+        handleInfixUsage(change, i)
+      case p: PostfixExprUsageInfo =>
+        handlePostfixUsage(change, p)
+      case _ =>
     }
   }
 
@@ -297,9 +333,12 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     } else {
       val argText =
         arguments(change, usage).headOption match {
-          case Some(Seq(text)) if text.trim.isEmpty => "()"
-          case Some(Seq(text))                      => text
-          case _                                    => "()"
+          case Some(Seq(text)) if text.trim.isEmpty =>
+            "()"
+          case Some(Seq(text)) =>
+            text
+          case _ =>
+            "()"
         }
       val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
         argText,
@@ -373,9 +412,12 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       return Seq.empty
     val isAddDefault =
       change match {
-        case c: ScalaChangeInfo => c.isAddDefaultArgs
-        case c: JavaChangeInfo  => c.isGenerateDelegate
-        case _                  => true
+        case c: ScalaChangeInfo =>
+          c.isAddDefaultArgs
+        case c: JavaChangeInfo =>
+          c.isGenerateDelegate
+        case _ =>
+          true
       }
     val manager = change.getMethod.getManager
     val oldArgsInfo = methodUsage.argsInfo
@@ -397,7 +439,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
             buffer += text
             if (text.contains("=") && idx > buffer.size - 1)
               needNamed = true
-          case None => needNamed = true
+          case None =>
+            needNamed = true
         }
       }
       buffer.toSeq
@@ -408,7 +451,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       param match {
         case s: ScalaParameterInfo if s.isRepeatedParameter =>
         case j: JavaParameterInfo if j.isVarargType         =>
-        case _                                              => return Seq.empty
+        case _ =>
+          return Seq.empty
       }
       val oldIndex = param.getOldIndex
       change match {
@@ -422,9 +466,12 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           } else {
             val (argExprs, wasNamed) =
               oldArgsInfo.byOldParameterIndex.get(oldIndex) match {
-                case Some(Seq(ScAssignStmt(_, Some(expr)))) => (Seq(expr), true)
-                case Some(seq)                              => (seq, false)
-                case _                                      => return Seq.empty
+                case Some(Seq(ScAssignStmt(_, Some(expr)))) =>
+                  (Seq(expr), true)
+                case Some(seq) =>
+                  (seq, false)
+                case _ =>
+                  return Seq.empty
               }
             if (jChangeInfo.isArrayToVarargs) {
               argExprs match {
@@ -447,7 +494,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
             } else
               argExprs.map(_.getText)
           }
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     }
 
@@ -456,8 +504,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val clauses =
       change match {
-        case sc: ScalaChangeInfo => sc.newParams.filter(_.nonEmpty)
-        case _                   => Seq(change.getNewParameters.toSeq)
+        case sc: ScalaChangeInfo =>
+          sc.newParams.filter(_.nonEmpty)
+        case _ =>
+          Seq(change.getNewParameters.toSeq)
       }
 
     clauses.map(toArgs)
@@ -493,11 +543,14 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           ""
       } else {
         argsInfo.byOldParameterIndex.get(oldIdx) match {
-          case None                      => return None
-          case Some(seq) if seq.size > 1 => return None
+          case None =>
+            return None
+          case Some(seq) if seq.size > 1 =>
+            return None
           case Some(Seq(assignStmt: ScAssignStmt)) =>
             return Some(assignStmt.getText)
-          case Some(Seq(expr)) => expr.getText
+          case Some(Seq(expr)) =>
+            expr.getText
         }
       }
     val argText =
@@ -564,9 +617,11 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           (scType, javaType) match {
             case (JavaArrayType(tpe), _: PsiEllipsisType) =>
               tpe.canonicalText + "*"
-            case _ => scType.canonicalText
+            case _ =>
+              scType.canonicalText
           }
-        case info => info.getTypeText
+        case info =>
+          info.getTypeText
       }
     }
     def scalaDefaultValue(paramInfo: ParameterInfo): Option[String] = {
@@ -580,10 +635,13 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
             None
           case sc: ScalaChangeInfo if sc.isAddDefaultArgs =>
             paramInfo.getDefaultValue match {
-              case "" | null => Some(" ")
-              case s         => Some(s)
+              case "" | null =>
+                Some(" ")
+              case s =>
+                Some(s)
             }
-          case _ => None
+          case _ =>
+            None
         }
     }
     def newParamName(p: ParameterInfo) = {
@@ -596,7 +654,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
             oldNameOfCurrent
           else
             p.getName
-        case _ => p.getName
+        case _ =>
+          p.getName
       }
     }
 
@@ -609,8 +668,10 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       val default = scalaDefaultValue(p).fold("")(" = " + _)
       val keywordsAndAnnots =
         p match {
-          case spi: ScalaParameterInfo => spi.keywordsAndAnnotations
-          case _                       => ""
+          case spi: ScalaParameterInfo =>
+            spi.keywordsAndAnnotations
+          case _ =>
+            ""
         }
       keywordsAndAnnots + typedName + default
     }
@@ -627,15 +688,20 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
   private def hasSeveralClauses(change: ChangeInfo): Boolean = {
     change match {
-      case sc: ScalaChangeInfo => sc.newParams.size > 1
-      case _                   => false
+      case sc: ScalaChangeInfo =>
+        sc.newParams.size > 1
+      case _ =>
+        false
     }
   }
 
   private def isRepeated(p: ParameterInfo) =
     p match {
-      case p: ScalaParameterInfo => p.isRepeatedParameter
-      case p: JavaParameterInfo  => p.isVarargType
-      case _                     => false
+      case p: ScalaParameterInfo =>
+        p.isRepeatedParameter
+      case p: JavaParameterInfo =>
+        p.isVarargType
+      case _ =>
+        false
     }
 }

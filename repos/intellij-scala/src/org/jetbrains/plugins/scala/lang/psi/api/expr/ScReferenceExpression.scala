@@ -24,8 +24,10 @@ trait ScReferenceExpression
 
   def qualifier: Option[ScExpression] =
     getFirstChild match {
-      case e: ScExpression => Some(e)
-      case _               => None
+      case e: ScExpression =>
+        Some(e)
+      case _ =>
+        None
     }
 
   protected var resolveFunction: () => Array[ResolveResult] = null
@@ -45,13 +47,18 @@ trait ScReferenceExpression
     */
   def smartQualifier: Option[ScExpression] = {
     qualifier match {
-      case Some(qual) => Some(qual)
+      case Some(qual) =>
+        Some(qual)
       case _ =>
         getParent match {
-          case p: ScPrefixExpr if p.operation == this  => Some(p.operand)
-          case p: ScPostfixExpr if p.operation == this => Some(p.getBaseExpr)
-          case p: ScInfixExpr if p.operation == this   => Some(p.getBaseExpr)
-          case _                                       => None
+          case p: ScPrefixExpr if p.operation == this =>
+            Some(p.operand)
+          case p: ScPostfixExpr if p.operation == this =>
+            Some(p.getBaseExpr)
+          case p: ScInfixExpr if p.operation == this =>
+            Some(p.getBaseExpr)
+          case _ =>
+            None
         }
     }
   }

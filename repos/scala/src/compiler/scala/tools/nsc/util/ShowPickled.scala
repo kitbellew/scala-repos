@@ -29,7 +29,8 @@ object ShowPickled extends Names {
         case TYPEsym | ALIASsym | CLASSsym | MODULEsym | VALsym | EXTref |
             EXTMODCLASSref =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     def readName =
       if (isName)
@@ -60,7 +61,8 @@ object ShowPickled extends Names {
 
   def makeEntryList(buf: PickleBuffer, index: Array[Int]) = {
     val entries = buf.toIndexedSeq.zipWithIndex map {
-      case ((tag, data), num) => PickleBufferEntry(num, index(num), tag, data)
+      case ((tag, data), num) =>
+        PickleBufferEntry(num, index(num), tag, data)
     }
 
     PickleBufferEntryList(entries)
@@ -68,52 +70,97 @@ object ShowPickled extends Names {
 
   def tag2string(tag: Int): String =
     tag match {
-      case TERMname          => "TERMname"
-      case TYPEname          => "TYPEname"
-      case NONEsym           => "NONEsym"
-      case TYPEsym           => "TYPEsym"
-      case ALIASsym          => "ALIASsym"
-      case CLASSsym          => "CLASSsym"
-      case MODULEsym         => "MODULEsym"
-      case VALsym            => "VALsym"
-      case EXTref            => "EXTref"
-      case EXTMODCLASSref    => "EXTMODCLASSref"
-      case NOtpe             => "NOtpe"
-      case NOPREFIXtpe       => "NOPREFIXtpe"
-      case THIStpe           => "THIStpe"
-      case SINGLEtpe         => "SINGLEtpe"
-      case CONSTANTtpe       => "CONSTANTtpe"
-      case TYPEREFtpe        => "TYPEREFtpe"
-      case TYPEBOUNDStpe     => "TYPEBOUNDStpe"
-      case REFINEDtpe        => "REFINEDtpe"
-      case CLASSINFOtpe      => "CLASSINFOtpe"
-      case METHODtpe         => "METHODtpe"
-      case POLYtpe           => "POLYtpe"
-      case IMPLICITMETHODtpe => "METHODtpe" // IMPLICITMETHODtpe no longer used.
-      case SUPERtpe          => "SUPERtpe"
-      case LITERALunit       => "LITERALunit"
-      case LITERALboolean    => "LITERALboolean"
-      case LITERALbyte       => "LITERALbyte"
-      case LITERALshort      => "LITERALshort"
-      case LITERALchar       => "LITERALchar"
-      case LITERALint        => "LITERALint"
-      case LITERALlong       => "LITERALlong"
-      case LITERALfloat      => "LITERALfloat"
-      case LITERALdouble     => "LITERALdouble"
-      case LITERALstring     => "LITERALstring"
-      case LITERALnull       => "LITERALnull"
-      case LITERALclass      => "LITERALclass"
-      case LITERALenum       => "LITERALenum"
-      case SYMANNOT          => "SYMANNOT"
-      case CHILDREN          => "CHILDREN"
-      case ANNOTATEDtpe      => "ANNOTATEDtpe"
-      case ANNOTINFO         => "ANNOTINFO"
-      case ANNOTARGARRAY     => "ANNOTARGARRAY"
-      case EXISTENTIALtpe    => "EXISTENTIALtpe"
-      case TREE              => "TREE"
-      case MODIFIERS         => "MODIFIERS"
+      case TERMname =>
+        "TERMname"
+      case TYPEname =>
+        "TYPEname"
+      case NONEsym =>
+        "NONEsym"
+      case TYPEsym =>
+        "TYPEsym"
+      case ALIASsym =>
+        "ALIASsym"
+      case CLASSsym =>
+        "CLASSsym"
+      case MODULEsym =>
+        "MODULEsym"
+      case VALsym =>
+        "VALsym"
+      case EXTref =>
+        "EXTref"
+      case EXTMODCLASSref =>
+        "EXTMODCLASSref"
+      case NOtpe =>
+        "NOtpe"
+      case NOPREFIXtpe =>
+        "NOPREFIXtpe"
+      case THIStpe =>
+        "THIStpe"
+      case SINGLEtpe =>
+        "SINGLEtpe"
+      case CONSTANTtpe =>
+        "CONSTANTtpe"
+      case TYPEREFtpe =>
+        "TYPEREFtpe"
+      case TYPEBOUNDStpe =>
+        "TYPEBOUNDStpe"
+      case REFINEDtpe =>
+        "REFINEDtpe"
+      case CLASSINFOtpe =>
+        "CLASSINFOtpe"
+      case METHODtpe =>
+        "METHODtpe"
+      case POLYtpe =>
+        "POLYtpe"
+      case IMPLICITMETHODtpe =>
+        "METHODtpe" // IMPLICITMETHODtpe no longer used.
+      case SUPERtpe =>
+        "SUPERtpe"
+      case LITERALunit =>
+        "LITERALunit"
+      case LITERALboolean =>
+        "LITERALboolean"
+      case LITERALbyte =>
+        "LITERALbyte"
+      case LITERALshort =>
+        "LITERALshort"
+      case LITERALchar =>
+        "LITERALchar"
+      case LITERALint =>
+        "LITERALint"
+      case LITERALlong =>
+        "LITERALlong"
+      case LITERALfloat =>
+        "LITERALfloat"
+      case LITERALdouble =>
+        "LITERALdouble"
+      case LITERALstring =>
+        "LITERALstring"
+      case LITERALnull =>
+        "LITERALnull"
+      case LITERALclass =>
+        "LITERALclass"
+      case LITERALenum =>
+        "LITERALenum"
+      case SYMANNOT =>
+        "SYMANNOT"
+      case CHILDREN =>
+        "CHILDREN"
+      case ANNOTATEDtpe =>
+        "ANNOTATEDtpe"
+      case ANNOTINFO =>
+        "ANNOTINFO"
+      case ANNOTARGARRAY =>
+        "ANNOTARGARRAY"
+      case EXISTENTIALtpe =>
+        "EXISTENTIALtpe"
+      case TREE =>
+        "TREE"
+      case MODIFIERS =>
+        "MODIFIERS"
 
-      case _ => "***BAD TAG***(" + tag + ")"
+      case _ =>
+        "***BAD TAG***(" + tag + ")"
     }
 
   /** Extremely regrettably, essentially copied from PickleBuffer.
@@ -170,8 +217,10 @@ object ShowPickled extends Names {
         val flagString = {
           val arg1 = Flags.pickledToRawFlags(pflags)
           accessBoundary match {
-            case Some(pw) => Flags.flagsToString(arg1, pw)
-            case _        => Flags.flagsToString(arg1)
+            case Some(pw) =>
+              Flags.flagsToString(arg1, pw)
+            case _ =>
+              Flags.flagsToString(arg1)
           }
         }
 
@@ -313,7 +362,8 @@ object ShowPickled extends Names {
   def fromBytes(data: => Array[Byte]): Option[PickleBuffer] =
     try Some(new PickleBuffer(data, 0, data.length))
     catch {
-      case _: Exception => None
+      case _: Exception =>
+        None
     }
 
   def show(what: String, pickle: PickleBuffer) = {
@@ -327,8 +377,10 @@ object ShowPickled extends Names {
   def main(args: Array[String]) {
     args foreach { arg =>
       fromFile(arg) match {
-        case Some(pb) => show(arg + ":", pb)
-        case _        => Console.println("Cannot read " + arg)
+        case Some(pb) =>
+          show(arg + ":", pb)
+        case _ =>
+          Console.println("Cannot read " + arg)
       }
     }
   }

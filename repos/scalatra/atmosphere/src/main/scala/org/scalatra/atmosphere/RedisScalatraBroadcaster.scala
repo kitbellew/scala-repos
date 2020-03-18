@@ -64,7 +64,8 @@ final class RedisScalatraBroadcaster()(implicit
             embeddedMsg))
       }
     } catch {
-      case t: Throwable => logger.error("failed to push message: " + message, t)
+      case t: Throwable =>
+        logger.error("failed to push message: " + message, t)
     }
   }
 }

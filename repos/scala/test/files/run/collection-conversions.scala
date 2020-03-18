@@ -12,8 +12,10 @@ object Test {
     print("  :" + msg + ": ")
     val isArray =
       obj match {
-        case x: Array[Int] => true
-        case _             => false
+        case x: Array[Int] =>
+          true
+        case _ =>
+          false
       }
     val expectedEquals =
       if (isArray)

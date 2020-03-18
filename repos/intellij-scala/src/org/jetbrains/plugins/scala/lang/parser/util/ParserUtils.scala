@@ -85,7 +85,8 @@ object ParserUtils extends ParserUtilsBase {
             id.charAt(0) != '=' || id == "="
           ) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   //Defines priority
@@ -94,16 +95,26 @@ object ParserUtils extends ParserUtilsBase {
       return 10
     }
     id.charAt(0) match {
-      case '~' | '#' | '@' | '?' | '\\' => 0 //todo: other special characters?
-      case '*' | '/' | '%'              => 1
-      case '+' | '-'                    => 2
-      case ':'                          => 3
-      case '=' | '!'                    => 4
-      case '<' | '>'                    => 5
-      case '&'                          => 6
-      case '^'                          => 7
-      case '|'                          => 8
-      case _                            => 9
+      case '~' | '#' | '@' | '?' | '\\' =>
+        0 //todo: other special characters?
+      case '*' | '/' | '%' =>
+        1
+      case '+' | '-' =>
+        2
+      case ':' =>
+        3
+      case '=' | '!' =>
+        4
+      case '<' | '>' =>
+        5
+      case '&' =>
+        6
+      case '^' =>
+        7
+      case '|' =>
+        8
+      case _ =>
+        9
     }
   }
 
@@ -135,9 +146,11 @@ object ParserUtils extends ParserUtilsBase {
         builder.advanceLexer()
         while (balance != 0 && !builder.eof) {
           builder.getTokenType match {
-            case ScalaTokenTypes.tRBRACE => balance -= 1
-            case ScalaTokenTypes.tLBRACE => balance += 1
-            case _                       =>
+            case ScalaTokenTypes.tRBRACE =>
+              balance -= 1
+            case ScalaTokenTypes.tLBRACE =>
+              balance += 1
+            case _ =>
           }
           builder.advanceLexer()
         }
@@ -160,35 +173,61 @@ object ParserUtils extends ParserUtilsBase {
       element: IElementType,
       builder: ScalaPsiBuilder): Boolean = {
     element match {
-      case ScalaTokenTypes.kCATCH        => false
-      case ScalaTokenTypes.kELSE         => false
-      case ScalaTokenTypes.kEXTENDS      => false
-      case ScalaTokenTypes.kFINALLY      => false
-      case ScalaTokenTypes.kMATCH        => false
-      case ScalaTokenTypes.kWITH         => false
-      case ScalaTokenTypes.kYIELD        => false
-      case ScalaTokenTypes.tCOMMA        => false
-      case ScalaTokenTypes.tDOT          => false
-      case ScalaTokenTypes.tSEMICOLON    => false
-      case ScalaTokenTypes.tCOLON        => false
-      case ScalaTokenTypes.tASSIGN       => false
-      case ScalaTokenTypes.tFUNTYPE      => false
-      case ScalaTokenTypes.tCHOOSE       => false
-      case ScalaTokenTypes.tUPPER_BOUND  => false
-      case ScalaTokenTypes.tLOWER_BOUND  => false
-      case ScalaTokenTypes.tVIEW         => false
-      case ScalaTokenTypes.tINNER_CLASS  => false
-      case ScalaTokenTypes.tLSQBRACKET   => false
-      case ScalaTokenTypes.tRSQBRACKET   => false
-      case ScalaTokenTypes.tRPARENTHESIS => false
-      case ScalaTokenTypes.tRBRACE       => false
+      case ScalaTokenTypes.kCATCH =>
+        false
+      case ScalaTokenTypes.kELSE =>
+        false
+      case ScalaTokenTypes.kEXTENDS =>
+        false
+      case ScalaTokenTypes.kFINALLY =>
+        false
+      case ScalaTokenTypes.kMATCH =>
+        false
+      case ScalaTokenTypes.kWITH =>
+        false
+      case ScalaTokenTypes.kYIELD =>
+        false
+      case ScalaTokenTypes.tCOMMA =>
+        false
+      case ScalaTokenTypes.tDOT =>
+        false
+      case ScalaTokenTypes.tSEMICOLON =>
+        false
+      case ScalaTokenTypes.tCOLON =>
+        false
+      case ScalaTokenTypes.tASSIGN =>
+        false
+      case ScalaTokenTypes.tFUNTYPE =>
+        false
+      case ScalaTokenTypes.tCHOOSE =>
+        false
+      case ScalaTokenTypes.tUPPER_BOUND =>
+        false
+      case ScalaTokenTypes.tLOWER_BOUND =>
+        false
+      case ScalaTokenTypes.tVIEW =>
+        false
+      case ScalaTokenTypes.tINNER_CLASS =>
+        false
+      case ScalaTokenTypes.tLSQBRACKET =>
+        false
+      case ScalaTokenTypes.tRSQBRACKET =>
+        false
+      case ScalaTokenTypes.tRPARENTHESIS =>
+        false
+      case ScalaTokenTypes.tRBRACE =>
+        false
       case ScalaTokenTypes.kCASE =>
         caseLookAheadFunction(builder) match {
-          case ScalaTokenTypes.kOBJECT => true
-          case ScalaTokenTypes.kCLASS  => true
-          case _                       => false
+          case ScalaTokenTypes.kOBJECT =>
+            true
+          case ScalaTokenTypes.kCLASS =>
+            true
+          case _ =>
+            false
         }
-      case _ => true
+      case _ =>
+        true
     }
   }
 }

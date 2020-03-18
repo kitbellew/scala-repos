@@ -516,7 +516,8 @@ object Test {
           sys.error("calibration failure");
         n = 2 * n;
       } catch {
-        case exception: compat.Platform.StackOverflowError => stop = true
+        case exception: compat.Platform.StackOverflowError =>
+          stop = true
       }
     }
     4 * n

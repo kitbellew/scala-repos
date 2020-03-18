@@ -28,8 +28,10 @@ object Result {
     new (Result ~> Id) {
       def apply[T](r: Result[T]): T =
         r match {
-          case Value(v) => v
-          case Inc(i)   => throw i
+          case Value(v) =>
+            v
+          case Inc(i) =>
+            throw i
         }
     }
   def tryValues[S](r: Seq[Result[Unit]], v: Result[S]): S = {
@@ -38,7 +40,9 @@ object Result {
   }
   implicit def fromEither[T](e: Either[Incomplete, T]): Result[T] =
     e match {
-      case Left(i)  => Inc(i)
-      case Right(v) => Value(v)
+      case Left(i) =>
+        Inc(i)
+      case Right(v) =>
+        Value(v)
     }
 }

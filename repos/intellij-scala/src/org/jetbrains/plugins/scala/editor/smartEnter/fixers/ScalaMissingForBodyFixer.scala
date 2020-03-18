@@ -30,7 +30,8 @@ class ScalaMissingForBodyFixer extends ScalaFixer {
       case None =>
         val (eltToInsertAfter, text) =
           forStatement.getRightParenthesis match {
-            case None => (forStatement, ") {}")
+            case None =>
+              (forStatement, ") {}")
             case Some(parenth) =>
               moveToEnd(editor, parenth)
               (parenth, " {}")
@@ -38,7 +39,8 @@ class ScalaMissingForBodyFixer extends ScalaFixer {
 
         doc.insertString(eltToInsertAfter.getTextRange.getEndOffset, text)
         WithEnter(text.length - 1)
-      case Some(_) => NoOperation
+      case Some(_) =>
+        NoOperation
     }
   }
 }

@@ -24,7 +24,8 @@ object FilterSize extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "count", cond))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

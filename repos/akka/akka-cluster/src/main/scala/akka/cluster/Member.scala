@@ -25,8 +25,10 @@ class Member private[cluster] (
   override def hashCode = uniqueAddress.##
   override def equals(other: Any) =
     other match {
-      case m: Member ⇒ uniqueAddress == m.uniqueAddress
-      case _ ⇒ false
+      case m: Member ⇒
+        uniqueAddress == m.uniqueAddress
+      case _ ⇒
+        false
     }
   override def toString = s"Member(address = ${address}, status = ${status})"
 
@@ -113,16 +115,26 @@ object Member {
   private[cluster] val leaderStatusOrdering: Ordering[Member] = Ordering
     .fromLessThan[Member] { (a, b) ⇒
       (a.status, b.status) match {
-        case (as, bs) if as == bs ⇒ ordering.compare(a, b) <= 0
-        case (Down, _) ⇒ false
-        case (_, Down) ⇒ true
-        case (Exiting, _) ⇒ false
-        case (_, Exiting) ⇒ true
-        case (Joining, _) ⇒ false
-        case (_, Joining) ⇒ true
-        case (WeaklyUp, _) ⇒ false
-        case (_, WeaklyUp) ⇒ true
-        case _ ⇒ ordering.compare(a, b) <= 0
+        case (as, bs) if as == bs ⇒
+          ordering.compare(a, b) <= 0
+        case (Down, _) ⇒
+          false
+        case (_, Down) ⇒
+          true
+        case (Exiting, _) ⇒
+          false
+        case (_, Exiting) ⇒
+          true
+        case (Joining, _) ⇒
+          false
+        case (_, Joining) ⇒
+          true
+        case (WeaklyUp, _) ⇒
+          false
+        case (_, WeaklyUp) ⇒
+          true
+        case _ ⇒
+          ordering.compare(a, b) <= 0
       }
     }
 
@@ -173,19 +185,32 @@ object Member {
         m2
     else
       (m1.status, m2.status) match {
-        case (Removed, _) ⇒ m1
-        case (_, Removed) ⇒ m2
-        case (Down, _) ⇒ m1
-        case (_, Down) ⇒ m2
-        case (Exiting, _) ⇒ m1
-        case (_, Exiting) ⇒ m2
-        case (Leaving, _) ⇒ m1
-        case (_, Leaving) ⇒ m2
-        case (Joining, _) ⇒ m2
-        case (_, Joining) ⇒ m1
-        case (WeaklyUp, _) ⇒ m2
-        case (_, WeaklyUp) ⇒ m1
-        case (Up, Up) ⇒ m1
+        case (Removed, _) ⇒
+          m1
+        case (_, Removed) ⇒
+          m2
+        case (Down, _) ⇒
+          m1
+        case (_, Down) ⇒
+          m2
+        case (Exiting, _) ⇒
+          m1
+        case (_, Exiting) ⇒
+          m2
+        case (Leaving, _) ⇒
+          m1
+        case (_, Leaving) ⇒
+          m2
+        case (Joining, _) ⇒
+          m2
+        case (_, Joining) ⇒
+          m1
+        case (WeaklyUp, _) ⇒
+          m2
+        case (_, WeaklyUp) ⇒
+          m1
+        case (Up, Up) ⇒
+          m1
       }
   }
 

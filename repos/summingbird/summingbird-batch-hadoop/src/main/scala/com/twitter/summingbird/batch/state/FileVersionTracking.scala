@@ -64,7 +64,8 @@ private[summingbird] case class FileVersionTracking(
         v
       }
       .collect {
-        case Success(s) => s
+        case Success(s) =>
+          s
       }
       .sorted
       .reverse

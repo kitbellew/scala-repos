@@ -56,8 +56,10 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
 
     def handleLoan(lst: List[LoanWrapper]): T =
       lst match {
-        case Nil     => f
-        case x :: xs => x(handleLoan(xs))
+        case Nil =>
+          f
+        case x :: xs =>
+          x(handleLoan(xs))
       }
 
     handleLoan(wrappers)
@@ -90,7 +92,8 @@ trait ServletFilterProvider extends Filter with HTTPProvider {
                   service(httpRequest, httpResponse) {
                     chain.doFilter(req, res)
                   })
-              case _ => chain.doFilter(req, res)
+              case _ =>
+                chain.doFilter(req, res)
             }
           )
         )

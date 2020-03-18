@@ -34,7 +34,8 @@ class ConvertToTypedPatternIntention extends PsiElementBaseIntentionAction {
               Parent(_: ScConstructorPattern))) =>
         true
 
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -54,11 +55,14 @@ class ConvertToTypedPatternIntention extends PsiElementBaseIntentionAction {
                   val tpe = ScType.designator(cls)
                   val names = NameSuggester.suggestNamesByType(tpe)
                   names.head
-                case _ => "value"
+                case _ =>
+                  "value"
               }
-            case _ => "value"
+            case _ =>
+              "value"
           }
-        case _ => "value"
+        case _ =>
+          "value"
       }
     // TODO replace references to the constructor pattern params with "value.param"
     val newPattern = ScalaPsiElementFactory.createPatternFromText(

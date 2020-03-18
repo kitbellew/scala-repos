@@ -119,7 +119,8 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
           val removed = json remove typePredicate(x)
           val Diff(c, a, d) = json diff removed
           val elemsLeft = removed filter {
-            case _ => true
+            case _ =>
+              true
           }
           c == JNothing && a == JNothing && elemsLeft.forall(_.getClass != x)
         }
@@ -132,10 +133,13 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
         jv match {
           case JObject(fl) =>
             fl match {
-              case field :: xs => findOnePath(field.value, l)
-              case Nil         => l
+              case field :: xs =>
+                findOnePath(field.value, l)
+              case Nil =>
+                l
             }
-          case _ => l
+          case _ =>
+            l
         }
 
       val path = findOnePath(x, Nil).reverse
@@ -143,18 +147,23 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
 
       def replaced(path: List[String], in: JValue): Boolean = {
         path match {
-          case Nil => x == in
+          case Nil =>
+            x == in
 
           case name :: Nil =>
             (in \ name) match {
-              case `replacement` => true
-              case _             => false
+              case `replacement` =>
+                true
+              case _ =>
+                false
             }
 
           case name :: xs =>
             (in \ name) match {
-              case JNothing => false
-              case value    => replaced(xs, value)
+              case JNothing =>
+                false
+              case value =>
+                replaced(xs, value)
             }
         }
       }
@@ -229,14 +238,18 @@ object JsonAstSpec extends Specification with JValueGen with ScalaCheck {
 
   private def reorderFields(json: JValue) =
     json map {
-      case JObject(xs) => JObject(xs.reverse)
-      case x           => x
+      case JObject(xs) =>
+        JObject(xs.reverse)
+      case x =>
+        x
     }
 
   private def typePredicate(clazz: Class[_])(json: JValue) =
     json match {
-      case x if x.getClass == clazz => true
-      case _                        => false
+      case x if x.getClass == clazz =>
+        true
+      case _ =>
+        false
     }
 
   implicit def arbJValue: Arbitrary[JValue] = Arbitrary(genJValue)

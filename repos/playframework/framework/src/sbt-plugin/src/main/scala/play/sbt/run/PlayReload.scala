@@ -64,7 +64,8 @@ object PlayReload {
       .allExceptions(incomplete)
       .headOption
       .map {
-        case e: PlayException => e
+        case e: PlayException =>
+          e
         case e: xsbti.CompileFailed =>
           getProblems(incomplete, streams)
             .find(_.severity == xsbti.Severity.Error)
@@ -73,7 +74,8 @@ object PlayReload {
               UnexpectedException(
                 Some("The compilation failed without reporting any problem!"),
                 Some(e)))
-        case e: Exception => UnexpectedException(unexpected = Some(e))
+        case e: Exception =>
+          UnexpectedException(unexpected = Some(e))
       }
       .getOrElse {
         UnexpectedException(
@@ -83,8 +85,10 @@ object PlayReload {
 
   def getScopedKey(incomplete: Incomplete): Option[ScopedKey[_]] =
     incomplete.node flatMap {
-      case key: ScopedKey[_] => Option(key)
-      case task: Task[_]     => task.info.attributes get taskDefinitionKey
+      case key: ScopedKey[_] =>
+        Option(key)
+      case task: Task[_] =>
+        task.info.attributes get taskDefinitionKey
     }
 
   def getProblems(
@@ -163,8 +167,10 @@ object PlayReload {
 
   def problems(es: Seq[Throwable]): Seq[xsbti.Problem] = {
     es flatMap {
-      case cf: xsbti.CompileFailed => cf.problems
-      case _                       => Nil
+      case cf: xsbti.CompileFailed =>
+        cf.problems
+      case _ =>
+        Nil
     }
   }
 

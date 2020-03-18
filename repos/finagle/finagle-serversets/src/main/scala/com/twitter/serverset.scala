@@ -14,8 +14,10 @@ private[twitter] trait BaseServersetNamer extends Namer {
   /** Resolve a resolver string to a Var[Addr]. */
   protected[this] def resolve(spec: String): Var[Addr] =
     Resolver.eval(spec) match {
-      case Name.Bound(addr) => addr
-      case _                => Var.value(Addr.Neg)
+      case Name.Bound(addr) =>
+        addr
+      case _ =>
+        Var.value(Addr.Neg)
     }
 
   protected[this] def resolveServerset(hosts: String, path: String) =
@@ -40,13 +42,18 @@ private[twitter] trait BaseServersetNamer extends Namer {
         // it resolves negatively.
         Activity(
           name.addr map {
-            case Addr.Bound(_, _) => Activity.Ok(NameTree.Leaf(name))
-            case Addr.Neg         => Activity.Ok(NameTree.Neg)
-            case Addr.Pending     => Activity.Pending
-            case Addr.Failed(exc) => Activity.Failed(exc)
+            case Addr.Bound(_, _) =>
+              Activity.Ok(NameTree.Leaf(name))
+            case Addr.Neg =>
+              Activity.Ok(NameTree.Neg)
+            case Addr.Pending =>
+              Activity.Pending
+            case Addr.Failed(exc) =>
+              Activity.Failed(exc)
           })
 
-      case None => Activity.value(NameTree.Neg)
+      case None =>
+        Activity.value(NameTree.Neg)
     }
 }
 
@@ -91,7 +98,8 @@ class serverset extends BaseServersetNamer {
         val id = idPrefix ++ path
         Some(Name.Bound(addr, id))
 
-      case _ => None
+      case _ =>
+        None
     }
 
 }

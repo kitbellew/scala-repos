@@ -38,7 +38,8 @@ object Credentials {
 
     def auth =
       key ~ ":" ~ value ^^ {
-        case k ~ ":" ~ v => (k, v)
+        case k ~ ":" ~ v =>
+          (k, v)
       }
     def content: Parser[Map[String, String]] =
       rep(auth) ^^ { auths =>
@@ -47,9 +48,12 @@ object Credentials {
 
     def apply(in: String): Map[String, String] = {
       parseAll(content, in) match {
-        case Success(result, _) => result
-        case x: Failure         => throw new IOException(x.toString)
-        case x: Error           => throw new IOException(x.toString)
+        case Success(result, _) =>
+          result
+        case x: Failure =>
+          throw new IOException(x.toString)
+        case x: Error =>
+          throw new IOException(x.toString)
       }
     }
   }

@@ -173,8 +173,10 @@ class SparkIMain(
   private[repl] def settings = currentSettings
   private def mostRecentLine =
     prevRequestList match {
-      case Nil      => ""
-      case req :: _ => req.originalLine
+      case Nil =>
+        ""
+      case req :: _ =>
+        req.originalLine
     }
   // Run the code body with the given boolean settings flipped to true.
   private def withoutWarnings[T](body: => T): T =
@@ -384,7 +386,8 @@ class SparkIMain(
   private def logAndDiscard[T](
       label: String,
       alt: => T): PartialFunction[Throwable, T] = {
-    case t: ControlThrowable => throw t
+    case t: ControlThrowable =>
+      throw t
     case t: Throwable =>
       logDebug(label + ": " + unwrap(t))
       logDebug(stackTraceString(unwrap(t)))
@@ -571,7 +574,8 @@ class SparkIMain(
   private def makeClassLoader(): AbstractFileClassLoader =
     new TranslatingClassLoader(
       parentClassLoader match {
-        case null => ScalaClassLoader fromURLs compilerClasspath
+        case null =>
+          ScalaClassLoader fromURLs compilerClasspath
         case p =>
           _runtimeClassLoader =
             new URLClassLoader(compilerClasspath, p) with ExposeAddUrl
@@ -647,7 +651,8 @@ class SparkIMain(
         case x: MemberDefHandler
             if x.definesValue && !isInternalTermName(x.name) =>
           return Some(x.member)
-        case _ => ()
+        case _ =>
+          ()
       }
     }
     None
@@ -695,7 +700,8 @@ class SparkIMain(
       newSym <- req.definedSymbols get name
       oldSym <- oldReq.definedSymbols get name.companionName
       if Seq(oldSym, newSym).permutations exists {
-        case Seq(s1, s2) => s1.isClass && s2.isModule
+        case Seq(s1, s2) =>
+          s1.isClass && s2.isModule
       }
     } {
       afterTyper(
@@ -725,8 +731,10 @@ class SparkIMain(
   private def isParseable(line: String): Boolean = {
     beSilentDuring {
       try parse(line) match {
-        case Some(xs) => xs.nonEmpty // parses as-is
-        case None     => true // incomplete
+        case Some(xs) =>
+          xs.nonEmpty // parses as-is
+        case None =>
+          true // incomplete
       } catch {
         case x: Exception => // crashed the compiler
           replwarn("Exception in isParseable(\"" + line + "\"): " + x)
@@ -779,15 +787,18 @@ class SparkIMain(
     showCodeIfDebugging(line) // as we're about to lose our // show
     line.lines map (s =>
       s indexOf "//" match {
-        case -1  => s
-        case idx => s take idx
+        case -1 =>
+          s
+        case idx =>
+          s take idx
       }) mkString "\n"
   }
 
   private def safePos(t: Tree, alt: Int): Int =
     try t.pos.startOrPoint
     catch {
-      case _: UnsupportedOperationException => alt
+      case _: UnsupportedOperationException =>
+        alt
     }
 
   // Given an expression like 10 * 10 * 10 we receive the parent tree positioned
@@ -806,9 +817,12 @@ class SparkIMain(
     val content = indentCode(line)
     val trees =
       parse(content) match {
-        case None        => return Left(IR.Incomplete)
-        case Some(Nil)   => return Left(IR.Error) // parse error or empty input
-        case Some(trees) => trees
+        case None =>
+          return Left(IR.Incomplete)
+        case Some(Nil) =>
+          return Left(IR.Error) // parse error or empty input
+        case Some(trees) =>
+          trees
       }
     logDebug(
       trees map (t => {
@@ -818,7 +832,8 @@ class SparkIMain(
         // (it was conflicting with the new reflection API),
         // so I had to rewrite this a bit
         val subs = t collect {
-          case sub => sub
+          case sub =>
+            sub
         }
         subs map (t0 =>
           "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
@@ -875,15 +890,18 @@ class SparkIMain(
                 " content" -> content,
                 "     was" -> l2,
                 "combined" -> combined) map {
-                case (label, s) => label + ": '" + s + "'"
+                case (label, s) =>
+                  label + ": '" + s + "'"
               } mkString "\n")
             combined
           })
         // Rewriting    "foo ; bar ; 123"
         // to           "foo ; bar ; val resXX = 123"
         requestFromLine(rewrittenLine, synthetic) match {
-          case Right(req) => return Right(req withOriginalLine line)
-          case x          => return x
+          case Right(req) =>
+            return Right(req withOriginalLine line)
+          case x =>
+            return x
         }
       case _ =>
     }
@@ -893,8 +911,10 @@ class SparkIMain(
   // normalize non-public types so we don't see protected aliases like Self
   private def normalizeNonPublic(tp: Type) =
     tp match {
-      case TypeRef(_, sym, _) if sym.isAliasType && !sym.isPublic => tp.dealias
-      case _                                                      => tp
+      case TypeRef(_, sym, _) if sym.isAliasType && !sym.isPublic =>
+        tp.dealias
+      case _ =>
+        tp
     }
 
   /**
@@ -958,8 +978,9 @@ class SparkIMain(
       IR.Error
     else
       requestFromLine(line, synthetic) match {
-        case Left(result) => result
-        case Right(req)   =>
+        case Left(result) =>
+          result
+        case Right(req) =>
           // null indicates a disallowed statement type; otherwise compile and
           // fail if false (implying e.g. a type error)
           if (req == null || !req.compile)
@@ -1189,7 +1210,8 @@ class SparkIMain(
     def callEither(name: String, args: Any*): Either[Throwable, AnyRef] =
       try Right(call(name, args: _*))
       catch {
-        case ex: Throwable => Left(ex)
+        case ex: Throwable =>
+          Left(ex)
       }
 
     def callOpt(name: String, args: Any*): Option[AnyRef] =
@@ -1212,7 +1234,8 @@ class SparkIMain(
       // scalastyle:off classforname
       try Class.forName(path, true, classLoader)
       catch {
-        case ex: Throwable => evalError(path, unwrap(ex))
+        case ex: Throwable =>
+          evalError(path, unwrap(ex))
       }
       // scalastyle:on classforname
     }
@@ -1223,7 +1246,8 @@ class SparkIMain(
         case Left(ex) =>
           evalCaught = Some(ex);
           None
-        case Right(result) => Some(result)
+        case Right(result) =>
+          Some(result)
       }
 
     def compile(source: String): Boolean =
@@ -1240,8 +1264,10 @@ class SparkIMain(
         newTypeName(readPath)
       ) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
-        case (sym, "")   => sym
-        case (sym, name) => afterTyper(termMember(sym, name))
+        case (sym, "") =>
+          sym
+        case (sym, name) =>
+          afterTyper(termMember(sym, name))
       }
     }
 
@@ -1251,7 +1277,8 @@ class SparkIMain(
     private def updateRecentWarnings(run: Run) {
       def loop(xs: List[(Position, String)]): List[(Position, String)] =
         xs match {
-          case Nil => Nil
+          case Nil =>
+            Nil
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
@@ -1274,7 +1301,8 @@ class SparkIMain(
     }
     private def evalMethod(name: String) =
       evalClass.getMethods filter (_.getName == name) match {
-        case Array(method) => method
+        case Array(method) =>
+          method
         case xs =>
           sys.error(
             "Internal error: eval object " + evalClass + ", " + xs
@@ -1312,7 +1340,8 @@ class SparkIMain(
       trees map (memberHandlers chooseHandler _)
     def defHandlers =
       handlers collect {
-        case x: MemberDefHandler => x
+        case x: MemberDefHandler =>
+          x
       }
 
     /** all (public) names defined by these statements */
@@ -1331,8 +1360,10 @@ class SparkIMain(
     def definedTermSymbol(name: String) = definedSymbols(newTermName(name))
 
     val definedClasses = handlers.exists {
-      case _: ClassHandler => true
-      case _               => false
+      case _: ClassHandler =>
+        true
+      case _ =>
+        false
     }
 
     /** Code to import bound names from previous lines - accessPath is code to
@@ -1423,7 +1454,8 @@ class SparkIMain(
           handlers.last.definesTerm match {
             case Some(vname) if typeOf contains vname =>
               "lazy val %s = %s".format(lineRep.resultName, fullPath(vname))
-            case _ => ""
+            case _ =>
+              ""
           }
 
       // first line evaluates object to make sure constructor is run
@@ -1520,7 +1552,8 @@ class SparkIMain(
       try {
         ("" + (lineRep call sessionNames.print), true)
       } catch {
-        case ex: Throwable => (lineRep.bindError(ex), false)
+        case ex: Throwable =>
+          (lineRep.bindError(ex), false)
       }
     }
 
@@ -1541,10 +1574,14 @@ class SparkIMain(
     else
       "" + (
         mostRecentlyHandledTree.get match {
-          case x: ValOrDefDef         => x.name
-          case Assign(Ident(name), _) => name
-          case ModuleDef(_, name, _)  => name
-          case _                      => naming.mostRecentVar
+          case x: ValOrDefDef =>
+            x.name
+          case Assign(Ident(name), _) =>
+            name
+          case ModuleDef(_, name, _) =>
+            name
+          case _ =>
+            naming.mostRecentVar
         }
       )
 
@@ -1620,7 +1657,8 @@ class SparkIMain(
   @DeveloperApi
   def typeOfTerm(id: String): Type =
     newTermName(id) match {
-      case nme.ROOTPKG => RootClass.tpe
+      case nme.ROOTPKG =>
+        RootClass.tpe
       case name =>
         requestForName(name).fold(NoType: Type)(_ compilerTypeOf name)
     }
@@ -1695,8 +1733,10 @@ class SparkIMain(
     afterTyper {
       normalizeNonPublic {
         owner.info.nonPrivateDecl(member).tpe match {
-          case NullaryMethodType(tp) => tp
-          case tp                    => tp
+          case NullaryMethodType(tp) =>
+            tp
+          case tp =>
+            tp
         }
       }
     }
@@ -1742,11 +1782,13 @@ class SparkIMain(
 
   protected def onlyTerms(xs: List[Name]) =
     xs collect {
-      case x: TermName => x
+      case x: TermName =>
+        x
     }
   protected def onlyTypes(xs: List[Name]) =
     xs collect {
-      case x: TypeName => x
+      case x: TypeName =>
+        x
     }
 
   /**
@@ -1826,7 +1868,8 @@ class SparkIMain(
   @DeveloperApi
   def classSymbols =
     allDefSymbols collect {
-      case x: ClassSymbol => x
+      case x: ClassSymbol =>
+        x
     }
 
   /**
@@ -1837,7 +1880,8 @@ class SparkIMain(
   @DeveloperApi
   def methodSymbols =
     allDefSymbols collect {
-      case x: MethodSymbol => x
+      case x: MethodSymbol =>
+        x
     }
 
   /** the previous requests this interpreter has processed */
@@ -1850,7 +1894,8 @@ class SparkIMain(
   private def allHandlers = prevRequestList flatMap (_.handlers)
   private def allDefHandlers =
     allHandlers collect {
-      case x: MemberDefHandler => x
+      case x: MemberDefHandler =>
+        x
     }
   private def allDefSymbols =
     allDefHandlers map (_.symbol) filter (_ ne NoSymbol)
@@ -1869,7 +1914,8 @@ class SparkIMain(
   // NOTE: Exposed to repl package since used by SparkILoop and SparkImports
   private[repl] def importHandlers =
     allHandlers collect {
-      case x: ImportHandler => x
+      case x: ImportHandler =>
+        x
     }
 
   /**
@@ -2067,7 +2113,8 @@ class SparkISettings(intp: SparkIMain) extends Logging {
 
   private def allSettingsString =
     allSettings.toList sortBy (_._1) map {
-      case (k, v) => "  " + k + " = " + v + "\n"
+      case (k, v) =>
+        "  " + k + " = " + v + "\n"
     } mkString
 
   override def toString = """

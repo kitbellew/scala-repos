@@ -22,7 +22,8 @@ object TreeTest extends SpecLite {
     val a = F.indexed(xs)
     Equal[Tree[Byte]].equal(a.map(_._2), xs) must_=== true
     F.toList(a) must_=== F.toList(xs).zipWithIndex.map {
-      case (a, b) => (b, a)
+      case (a, b) =>
+        (b, a)
     }
   }
 

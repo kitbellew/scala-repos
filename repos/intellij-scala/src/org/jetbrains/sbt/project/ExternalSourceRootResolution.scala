@@ -134,7 +134,8 @@ trait ExternalSourceRootResolution {
         ExternalSystemSourceType.SOURCE
       case (Root.Scope.Compile, Root.Kind.Resources) =>
         ExternalSystemSourceType.RESOURCE
-      case (Root.Scope.Test, Root.Kind.Sources) => ExternalSystemSourceType.TEST
+      case (Root.Scope.Test, Root.Kind.Sources) =>
+        ExternalSystemSourceType.TEST
       case (Root.Scope.Test, Root.Kind.Resources) =>
         ExternalSystemSourceType.TEST_RESOURCE
     }

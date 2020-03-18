@@ -23,7 +23,8 @@ object ExistsEquals extends SimplificationType {
     expr match {
       case qual `.exists`(`x == `(e)) if canBeReplacedWithContains(qual, e) =>
         Some(replace(expr).withText(invocationText(qual, "contains", e)))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -39,7 +40,8 @@ object ExistsEquals extends SimplificationType {
         ref.resolve() != null &&
           a.expectedType(fromUnderscore = false)
             .exists(a.getType().getOrNothing.conforms(_))
-      case _ => false
+      case _ =>
+        false
     }
 
   }
@@ -51,7 +53,8 @@ object ForallNotEquals extends SimplificationType {
       case qual `.forall`(`x != `(e))
           if ExistsEquals.canBeReplacedWithContains(qual, e) =>
         Some(replace(expr).withText("!" + invocationText(qual, "contains", e)))
-      case _ => None
+      case _ =>
+        None
     }
   }
 

@@ -59,7 +59,8 @@ sealed abstract class Tree[A] {
 
     def drawSubTrees(s: Stream[Tree[A]]): Trampoline[Vector[StringBuilder]] =
       s match {
-        case ts if ts.isEmpty => done(Vector.empty[StringBuilder])
+        case ts if ts.isEmpty =>
+          done(Vector.empty[StringBuilder])
         case t #:: ts if ts.isEmpty =>
           suspend(t.draw).map(subtree =>
             new StringBuilder("|") +: shift(stem, "   ", subtree))
@@ -141,14 +142,16 @@ sealed abstract class Tree[A] {
     val G = Apply[G]
     import Stream._
     subForest match {
-      case Empty => G.map(f(rootLabel))(Leaf(_))
+      case Empty =>
+        G.map(f(rootLabel))(Leaf(_))
       case x #:: xs =>
         G.apply2(
           f(rootLabel),
           NonEmptyList
             .nel(x, IList.fromFoldable(xs))
             .traverse1(_.traverse1(f))) {
-          case (h, t) => Node(h, t.list.toStream)
+          case (h, t) =>
+            Node(h, t.list.toStream)
         }
     }
   }
@@ -177,14 +180,16 @@ sealed abstract class TreeInstances {
       override def foldMapRight1[A, B](fa: Tree[A])(z: A => B)(
           f: (A, => B) => B) =
         (fa.flatten.reverse: @unchecked) match {
-          case h #:: t => t.foldLeft(z(h))((b, a) => f(a, b))
+          case h #:: t =>
+            t.foldLeft(z(h))((b, a) => f(a, b))
         }
       override def foldLeft[A, B](fa: Tree[A], z: B)(f: (B, A) => B): B =
         fa.flatten.foldLeft(z)(f)
       override def foldMapLeft1[A, B](fa: Tree[A])(z: A => B)(
           f: (B, A) => B): B =
         fa.flatten match {
-          case h #:: t => t.foldLeft(z(h))(f)
+          case h #:: t =>
+            t.foldLeft(z(h))(f)
         }
       override def foldMap[A, B](fa: Tree[A])(f: A => B)(implicit
           F: Monoid[B]): B = fa foldMap f
@@ -201,7 +206,8 @@ sealed abstract class TreeInstances {
                 stb map { b ⇒
                   f(\&/.That(b))
                 }
-              case \&/(sta, stb) ⇒ align(sta, stb)
+              case \&/(sta, stb) ⇒
+                align(sta, stb)
             })(ta.subForest, tb.subForest)
           )
         align _
@@ -228,7 +234,8 @@ sealed abstract class TreeInstances {
         A.order(x.rootLabel, y.rootLabel) match {
           case Ordering.EQ =>
             Order[Stream[Tree[A]]].order(x.subForest, y.subForest)
-          case x => x
+          case x =>
+            x
         }
     }
 
@@ -283,7 +290,8 @@ object Tree extends TreeInstances {
 
   def unfoldTree[A, B](v: A)(f: A => (B, () => Stream[A])): Tree[B] =
     f(v) match {
-      case (a, bs) => Node(a, unfoldForest(bs.apply())(f))
+      case (a, bs) =>
+        Node(a, unfoldForest(bs.apply())(f))
     }
 }
 

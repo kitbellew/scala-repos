@@ -10,8 +10,10 @@ object Test extends JavapTest {
     val r = """public class \S*Betty""".r.unanchored
     def filtered =
       res filter {
-        case r(_*) => true;
-        case _     => false
+        case r(_*) =>
+          true;
+        case _ =>
+          false
       }
     1 == filtered.size
   }

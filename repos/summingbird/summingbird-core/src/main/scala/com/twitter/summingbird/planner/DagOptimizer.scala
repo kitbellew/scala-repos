@@ -183,27 +183,40 @@ trait DagOptimizer[P <: Platform[P]] {
     def cast[K, V](tup: (M, L[(K, V)])): (M, L[T]) = tup.asInstanceOf[(M, L[T])]
 
     hm.get(prod) match {
-      case Some(lit) => (hm, lit)
+      case Some(lit) =>
+        (hm, lit)
       case None =>
         prod match {
-          case s @ Source(_) => source(s)
+          case s @ Source(_) =>
+            source(s)
           case a: AlsoTailProducer[_, _, _] =>
             alsoTail(a.asInstanceOf[AlsoTailProducer[P, _, T]])
-          case a @ AlsoProducer(_, _)   => also(a)
-          case m @ MergedProducer(l, r) => merge(m)
+          case a @ AlsoProducer(_, _) =>
+            also(a)
+          case m @ MergedProducer(l, r) =>
+            merge(m)
           case n: TPNamedProducer[_, _] =>
             namedTP(n.asInstanceOf[TPNamedProducer[P, T]])
-          case n @ NamedProducer(producer, name)       => named(n)
-          case w @ WrittenProducer(producer, sink)     => writer(w)
-          case fm @ FlatMappedProducer(producer, fn)   => flm(fm)
-          case om @ OptionMappedProducer(producer, fn) => optm(om)
+          case n @ NamedProducer(producer, name) =>
+            named(n)
+          case w @ WrittenProducer(producer, sink) =>
+            writer(w)
+          case fm @ FlatMappedProducer(producer, fn) =>
+            flm(fm)
+          case om @ OptionMappedProducer(producer, fn) =>
+            optm(om)
           // These casts can't fail due to the pattern match,
           // but I can't convince scala of this without the cast.
-          case ik @ IdentityKeyedProducer(producer)       => cast(ikp(ik))
-          case kf @ KeyFlatMappedProducer(producer, fn)   => cast(kfm(kf))
-          case vf @ ValueFlatMappedProducer(producer, fn) => cast(vfm(vf))
-          case j @ LeftJoinedProducer(producer, srv)      => cast(joined(j))
-          case s @ Summer(producer, store, sg)            => cast(summer(s))
+          case ik @ IdentityKeyedProducer(producer) =>
+            cast(ikp(ik))
+          case kf @ KeyFlatMappedProducer(producer, fn) =>
+            cast(kfm(kf))
+          case vf @ ValueFlatMappedProducer(producer, fn) =>
+            cast(vfm(vf))
+          case j @ LeftJoinedProducer(producer, srv) =>
+            cast(joined(j))
+          case s @ Summer(producer, store, sg) =>
+            cast(summer(s))
         }
     }
   }
@@ -244,7 +257,8 @@ trait DagOptimizer[P <: Platform[P]] {
     */
   object RemoveNames extends PartialRule[Prod] {
     def applyWhere[T](on: ExpressionDag[Prod]) = {
-      case NamedProducer(p, _) => p
+      case NamedProducer(p, _) =>
+        p
     }
   }
 
@@ -255,7 +269,8 @@ trait DagOptimizer[P <: Platform[P]] {
   object RemoveIdentityKeyed extends PartialRule[Prod] {
     def applyWhere[T](on: ExpressionDag[Prod]) = {
       // scala can't see that (K, V) <: T
-      case IdentityKeyedProducer(p) => p.asInstanceOf[Prod[T]]
+      case IdentityKeyedProducer(p) =>
+        p.asInstanceOf[Prod[T]]
     }
   }
 
@@ -288,7 +303,8 @@ trait DagOptimizer[P <: Platform[P]] {
   object OptionToFlatMap extends PartialRule[Prod] {
     def applyWhere[T](on: ExpressionDag[Prod]) = {
       //Can't fuse flatMaps when on fanout
-      case OptionMappedProducer(in, fn) => in.flatMap(OptionToFlat(fn))
+      case OptionMappedProducer(in, fn) =>
+        in.flatMap(OptionToFlat(fn))
     }
   }
 
@@ -304,7 +320,8 @@ trait DagOptimizer[P <: Platform[P]] {
         def cast[K, V](p: Prod[(K, V)]): Prod[T] = p.asInstanceOf[Prod[T]]
         cast(
           in.flatMap {
-            case (k, v) => fn(k).map((_, v))
+            case (k, v) =>
+              fn(k).map((_, v))
           })
     }
   }
@@ -320,7 +337,8 @@ trait DagOptimizer[P <: Platform[P]] {
         def cast[K, V](p: Prod[(K, V)]): Prod[T] = p.asInstanceOf[Prod[T]]
         cast(
           in.flatMap {
-            case (k, v) => fn(v).map((k, _))
+            case (k, v) =>
+              fn(v).map((k, _))
           })
     }
   }
@@ -403,11 +421,14 @@ trait DagOptimizer[P <: Platform[P]] {
                     // can't see this
                     val typedTail = rightTail.asInstanceOf[TailProducer[P, T]]
                     Some(new AlsoTailProducer(tail, typedTail))
-                  case nonTail => Some(AlsoProducer(tail, nonTail))
+                  case nonTail =>
+                    Some(AlsoProducer(tail, nonTail))
                 }
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
     }
   }

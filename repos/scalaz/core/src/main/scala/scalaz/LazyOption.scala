@@ -9,8 +9,10 @@ sealed abstract class LazyOption[+A] extends Product with Serializable {
 
   def fold[X](some: (=> A) => X, none: => X): X =
     this match {
-      case LazySome(z) => some(z())
-      case LazyNone    => none
+      case LazySome(z) =>
+        some(z())
+      case LazyNone =>
+        none
     }
 
   def ?[X](some: => X, none: => X): X = fold(_ => some, none)
@@ -120,8 +122,10 @@ sealed abstract class LazyOptionInstances {
           f: LazyOption[A] => B): LazyOption[B] = map(cojoin(fa))(f)
       override def cojoin[A](a: LazyOption[A]) =
         a match {
-          case LazyNone        => LazyNone
-          case o @ LazySome(_) => LazySome(() => o)
+          case LazyNone =>
+            LazyNone
+          case o @ LazySome(_) =>
+            LazySome(() => o)
         }
       def traverseImpl[G[_]: Applicative, A, B](fa: LazyOption[A])(
           f: A => G[B]): G[LazyOption[B]] = fa traverse (a => f(a))
@@ -138,8 +142,10 @@ sealed abstract class LazyOptionInstances {
       def cozip[A, B](a: LazyOption[A \/ B]) =
         a.fold(
           {
-            case -\/(a) => -\/(lazySome(a))
-            case \/-(b) => \/-(lazySome(b))
+            case -\/(a) =>
+              -\/(lazySome(a))
+            case \/-(b) =>
+              \/-(lazySome(b))
           },
           -\/(lazyNone))
       def zip[A, B](a: => LazyOption[A], b: => LazyOption[B]) = a zip b
@@ -158,11 +164,14 @@ sealed abstract class LazyOptionInstances {
       @scala.annotation.tailrec
       def tailrecM[A, B](f: A => LazyOption[A \/ B])(a: A): LazyOption[B] =
         f(a) match {
-          case LazyNone => LazyNone
+          case LazyNone =>
+            LazyNone
           case LazySome(t) =>
             t() match {
-              case \/-(b)  => lazySome(b)
-              case -\/(a0) => tailrecM(f)(a0)
+              case \/-(b) =>
+                lazySome(b)
+              case -\/(a0) =>
+                tailrecM(f)(a0)
             }
         }
     }
@@ -180,9 +189,12 @@ sealed abstract class LazyOptionInstances {
         (a, b) match {
           case (LazySome(a1), LazySome(b1)) =>
             LazySome(() => Semigroup[A].append(a1(), b1()))
-          case (LazySome(_), LazyNone)      => a
-          case (LazyNone, b1 @ LazySome(_)) => b1
-          case (LazyNone, LazyNone)         => LazyNone
+          case (LazySome(_), LazyNone) =>
+            a
+          case (LazyNone, b1 @ LazySome(_)) =>
+            b1
+          case (LazyNone, LazyNone) =>
+            LazyNone
         }
     }
 
@@ -201,8 +213,10 @@ object LazyOption extends LazyOptionInstances {
 
   def fromOption[A](oa: Option[A]): LazyOption[A] =
     oa match {
-      case Some(x) => lazySome(x)
-      case None    => lazyNone[A]
+      case Some(x) =>
+        lazySome(x)
+      case None =>
+        lazyNone[A]
     }
 
   /**

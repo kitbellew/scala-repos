@@ -25,7 +25,8 @@ class Foo {
 
   def testPatternMatch(s: Setting[_]) {
     s.key match {
-      case ScopedKey1(scalaHome.key | scalaVersion.key) => ()
+      case ScopedKey1(scalaHome.key | scalaVersion.key) =>
+        ()
     }
   }
 }
@@ -41,6 +42,7 @@ class Test2 {
 
   def convertCyclic(c: AnyCyclic): String =
     (c.caller, c.target) match {
-      case (caller: Task[_], target: Task[_]) => "bazinga!"
+      case (caller: Task[_], target: Task[_]) =>
+        "bazinga!"
     }
 }

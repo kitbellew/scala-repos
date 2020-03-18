@@ -163,9 +163,12 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
           field.asInstanceOf[ScalaNamedMember].name
         case methMember: ScMethodMember =>
           methMember.sign.method match {
-            case m: PsiMethod if m.isAccessor       => m.getName
-            case f: ScFunction if f.isEmptyParen    => f.name + "()"
-            case f: ScFunction if f.isParameterless => f.name
+            case m: PsiMethod if m.isAccessor =>
+              m.getName
+            case f: ScFunction if f.isEmptyParen =>
+              f.name + "()"
+            case f: ScFunction if f.isParameterless =>
+              f.name
           }
       }
     delegateText
@@ -234,13 +237,15 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
             None
           case meth: PsiMethod =>
             Some(new PhysicalSignature(meth, srr.substitutor))
-          case _ => None
+          case _ =>
+            None
         }
       }
     }
 
     candidates.toSeq.collect {
-      case isSuitable(sign) => new ScMethodMember(sign, isOverride = false)
+      case isSuitable(sign) =>
+        new ScMethodMember(sign, isOverride = false)
     }
   }
 
@@ -308,8 +313,10 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       member: ClassMember,
       clazz: ScTemplateDefinition): Boolean =
     member match {
-      case ta: ScAliasMember                                     => false
-      case typed: ScalaTypedMember if typed.scType == types.Unit => false
+      case ta: ScAliasMember =>
+        false
+      case typed: ScalaTypedMember if typed.scType == types.Unit =>
+        false
       case method: ScMethodMember =>
         method.getElement match {
           case m: PsiMethod if {
@@ -327,7 +334,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
               m,
               clazz,
               forCompletion = false)
-          case _ => false
+          case _ =>
+            false
         }
       case v @ (_: ScValueMember | _: ScVariableMember | _: JavaFieldMember)
           if ResolveUtils.isAccessible(
@@ -335,7 +343,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
             clazz,
             forCompletion = false) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   private def classAtOffset(offset: Int, file: PsiFile) = {
@@ -356,7 +365,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       return Seq.empty
 
     closestClass +: closestClass.parentsInFile.toSeq.collect {
-      case td: ScTemplateDefinition => td
+      case td: ScTemplateDefinition =>
+        td
     }
   }
 

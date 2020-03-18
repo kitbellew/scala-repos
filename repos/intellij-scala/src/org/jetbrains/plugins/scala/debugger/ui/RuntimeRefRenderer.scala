@@ -121,7 +121,8 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       case obj: ObjectReference =>
         val field = obj.referenceType().fieldByName("elem")
         obj.getValue(field)
-      case _ => throw new Exception("Should not unwrap non reference value")
+      case _ =>
+        throw new Exception("Should not unwrap non reference value")
     }
   }
 

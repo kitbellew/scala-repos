@@ -116,14 +116,16 @@ class JdbcRDD[T: ClassTag](
             rs.close()
           }
         } catch {
-          case e: Exception => logWarning("Exception closing resultset", e)
+          case e: Exception =>
+            logWarning("Exception closing resultset", e)
         }
         try {
           if (null != stmt) {
             stmt.close()
           }
         } catch {
-          case e: Exception => logWarning("Exception closing statement", e)
+          case e: Exception =>
+            logWarning("Exception closing statement", e)
         }
         try {
           if (null != conn) {
@@ -131,7 +133,8 @@ class JdbcRDD[T: ClassTag](
           }
           logInfo("closed connection")
         } catch {
-          case e: Exception => logWarning("Exception closing connection", e)
+          case e: Exception =>
+            logWarning("Exception closing connection", e)
         }
       }
     }

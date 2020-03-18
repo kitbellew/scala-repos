@@ -274,7 +274,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
           j += 1
         }
         sv
-      case View.Prefer => flatten(View.Require)
+      case View.Prefer =>
+        flatten(View.Require)
     }
   }
 
@@ -498,7 +499,8 @@ object CSCMatrix
         fn.zeros(
           from.size - from.activeSize,
           from.iterator.collect {
-            case (k, v) if v != zero => k
+            case (k, v) if v != zero =>
+              k
           },
           zero)
         // TODO: I can use visitArray if I want to be clever

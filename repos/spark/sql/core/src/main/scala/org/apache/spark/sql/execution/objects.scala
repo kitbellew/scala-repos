@@ -50,7 +50,8 @@ trait ObjectOperator extends SparkPlan {
       }
     val inputType =
       serializer.head.collect {
-        case b: BoundReference => b.dataType
+        case b: BoundReference =>
+          b.dataType
       }.head
     val outputRow = new SpecificMutableRow(inputType :: Nil)
     (o: Any) => {

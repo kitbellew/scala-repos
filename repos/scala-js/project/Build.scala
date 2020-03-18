@@ -94,8 +94,10 @@ object Build extends sbt.Build {
         val thisProjectID = projectID.value
         val previousCrossVersion =
           thisProjectID.crossVersion match {
-            case ScalaJSCrossVersion.binary => previousBinaryCrossVersion
-            case crossVersion               => crossVersion
+            case ScalaJSCrossVersion.binary =>
+              previousBinaryCrossVersion
+            case crossVersion =>
+              crossVersion
           }
         /* Filter out e:info.apiURL as it expects 0.6.7-SNAPSHOT, whereas the
          * artifact we're looking for has 0.6.6 (for example).
@@ -285,9 +287,12 @@ object Build extends sbt.Build {
     // The pattern matcher used to exceed its analysis budget before 2.11.5
     scalacOptions ++= {
       scalaVersion.value.split('.') match {
-        case Array("2", "10", _)                                      => Nil
-        case Array("2", "11", x) if x.takeWhile(_.isDigit).toInt <= 4 => Nil
-        case _                                                        => Seq("-Xfatal-warnings")
+        case Array("2", "10", _) =>
+          Nil
+        case Array("2", "11", x) if x.takeWhile(_.isDigit).toInt <= 4 =>
+          Nil
+        case _ =>
+          Seq("-Xfatal-warnings")
       }
     },
     scalacOptions in (Compile, doc) := {
@@ -416,9 +421,12 @@ object Build extends sbt.Build {
       javaVersion in Global := {
         val v = System.getProperty("java.version")
         v.substring(0, 3) match {
-          case "1.8" => 8
-          case "1.7" => 7
-          case "1.6" => 6
+          case "1.8" =>
+            8
+          case "1.7" =>
+            7
+          case "1.6" =>
+            6
 
           case _ =>
             sLog.value.warn(s"Unknown JDK version $v. Assuming max compat.")
@@ -1119,8 +1127,10 @@ object Build extends sbt.Build {
 
         val sems =
           stage match {
-            case FastOptStage => (scalaJSSemantics in (Test, fastOptJS)).value
-            case FullOptStage => (scalaJSSemantics in (Test, fullOptJS)).value
+            case FastOptStage =>
+              (scalaJSSemantics in (Test, fastOptJS)).value
+            case FullOptStage =>
+              (scalaJSSemantics in (Test, fullOptJS)).value
           }
 
         val semTags = (
@@ -1147,8 +1157,10 @@ object Build extends sbt.Build {
 
         val stageTag =
           stage match {
-            case FastOptStage => "fastopt-stage"
-            case FullOptStage => "fullopt-stage"
+            case FastOptStage =>
+              "fastopt-stage"
+            case FullOptStage =>
+              "fullopt-stage"
           }
 
         envTags ++ (semTags :+ stageTag)

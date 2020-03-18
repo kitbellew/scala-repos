@@ -82,8 +82,10 @@ final class ParTrieMap[K, V] private[collection] (
     val in = ctrie.readRoot()
     val r = in.gcasRead(ctrie)
     r match {
-      case tn: TNode[_, _] => tn.cachedSize(ctrie)
-      case ln: LNode[_, _] => ln.cachedSize(ctrie)
+      case tn: TNode[_, _] =>
+        tn.cachedSize(ctrie)
+      case ln: LNode[_, _] =>
+        ln.cachedSize(ctrie)
       case cn: CNode[_, _] =>
         tasksupport.executeAndWaitResult(new Size(0, cn.array.length, cn.array))
         cn.cachedSize(ctrie)
@@ -104,8 +106,10 @@ final class ParTrieMap[K, V] private[collection] (
       val until = offset + howmany
       while (i < until) {
         array(i) match {
-          case sn: SNode[_, _] => sz += 1
-          case in: INode[K, V] => sz += in.cachedSize(ctrie)
+          case sn: SNode[_, _] =>
+            sz += 1
+          case in: INode[K, V] =>
+            sz += in.cachedSize(ctrie)
         }
         i += 1
       }

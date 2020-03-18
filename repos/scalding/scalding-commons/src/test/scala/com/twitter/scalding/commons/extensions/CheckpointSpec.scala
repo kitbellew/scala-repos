@@ -71,7 +71,8 @@ class TypedCheckpointJob(args: Args) extends Job(args) {
         .groupBy(_._2)
         .join(in1.groupBy(_._2))
         .mapValues {
-          case (l, r) => ((l._1, r._1), (l._3 * r._3).toDouble)
+          case (l, r) =>
+            ((l._1, r._1), (l._3 * r._3).toDouble)
         }
         .values
         .group

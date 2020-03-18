@@ -88,7 +88,8 @@ class FilterTest extends FunSuite {
     val spied = spy(new PassThruFilter)
     val svc = Filter
       .choose[Int, Int] {
-        case req if req > 0 => spied
+        case req if req > 0 =>
+          spied
       }
       .andThen(constSvc)
 

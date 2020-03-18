@@ -100,8 +100,10 @@ class RuntimeTypesTest {
     assumeTrue(hasCompliantAsInstanceOfs)
     val msg =
       Try("a".asInstanceOf[Null]) match {
-        case Failure(thr: ClassCastException) => thr.getMessage
-        case _                                => "not failed"
+        case Failure(thr: ClassCastException) =>
+          thr.getMessage
+        case _ =>
+          "not failed"
       }
     assertEquals("a is not an instance of scala.runtime.Null$", msg)
   }

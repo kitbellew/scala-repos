@@ -36,9 +36,12 @@ object MTypeInfo {
         r.<<,
         r.<<,
         r.nextInt match {
-          case DatabaseMetaData.columnNoNulls  => Some(false)
-          case DatabaseMetaData.columnNullable => Some(true)
-          case _                               => None
+          case DatabaseMetaData.columnNoNulls =>
+            Some(false)
+          case DatabaseMetaData.columnNullable =>
+            Some(true)
+          case _ =>
+            None
         },
         r.<<,
         r.<<,

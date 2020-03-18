@@ -87,7 +87,8 @@ object GenerateMIMAIgnore {
 
       } catch {
         // scalastyle:off println
-        case _: Throwable => println("Error instrumenting class:" + className)
+        case _: Throwable =>
+          println("Error instrumenting class:" + className)
         // scalastyle:on println
       }
     }

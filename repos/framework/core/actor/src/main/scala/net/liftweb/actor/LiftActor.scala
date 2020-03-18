@@ -72,7 +72,8 @@ object LAScheduler extends LAScheduler with Loggable {
           blockingQueueSize match {
             case Full(x) =>
               new ArrayBlockingQueue(x)
-            case _ => new LinkedBlockingQueue
+            case _ =>
+              new LinkedBlockingQueue
           })
 
       def execute(f: () => Unit): Unit =
@@ -82,7 +83,8 @@ object LAScheduler extends LAScheduler with Loggable {
               try {
                 f()
               } catch {
-                case e: Exception => logger.error("Lift Actor Scheduler", e)
+                case e: Exception =>
+                  logger.error("Lift Actor Scheduler", e)
               }
             }
           })
@@ -174,9 +176,12 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
       start: MailboxItem,
       f: MailboxItem => Boolean): Box[MailboxItem] =
     start match {
-      case x: SpecialMailbox => Empty
-      case x if f(x)         => Full(x)
-      case x                 => findMailboxItem(x.next, f)
+      case x: SpecialMailbox =>
+        Empty
+      case x if f(x) =>
+        Full(x)
+      case x =>
+        findMailboxItem(x.next, f)
     }
 
   /**
@@ -253,8 +258,10 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
     */
   protected def around[R](f: => R): R =
     aroundLoans match {
-      case Nil => f
-      case xs  => CommonLoanWrapper(xs)(f)
+      case Nil =>
+        f
+      case xs =>
+        CommonLoanWrapper(xs)(f)
     }
   private def proc2(ignoreProcessing: Boolean) {
     var clearProcessing = true
@@ -371,7 +378,8 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
   protected def highPriorityReceive: Box[PartialFunction[T, Unit]] = Empty
 
   protected def exceptionHandler: PartialFunction[Throwable, Unit] = {
-    case e => ActorLogger.error("Actor threw an exception", e)
+    case e =>
+      ActorLogger.error("Actor threw an exception", e)
   }
 }
 
@@ -436,7 +444,8 @@ trait LiftActor
       forwardTo: TypedActor[Any, Any]) {
     if (null ne responseFuture) {
       forwardTo match {
-        case la: LiftActor => la ! MsgWithResp(msg, responseFuture)
+        case la: LiftActor =>
+          la ! MsgWithResp(msg, responseFuture)
         case other =>
           reply(other !? msg)
       }
@@ -516,8 +525,10 @@ trait LiftActor
 
   override protected def testTranslate(f: Any => Boolean)(v: Any) =
     v match {
-      case MsgWithResp(msg, _) => f(msg)
-      case v                   => f(v)
+      case MsgWithResp(msg, _) =>
+        f(msg)
+      case v =>
+        f(v)
     }
 
   override protected def execTranslate(f: Any => Unit)(v: Any) =
@@ -529,7 +540,8 @@ trait LiftActor
         } finally {
           responseFuture = null
         }
-      case v => f(v)
+      case v =>
+        f(v)
     }
 
   /**
@@ -563,7 +575,8 @@ object LiftActorJ {
     synchronized {
       val clz = what.getClass
       methods.get(clz) match {
-        case Some(pf) => pf.vend(what)
+        case Some(pf) =>
+          pf.vend(what)
         case _ => {
           val pf = buildPF(clz)
           methods += clz -> pf
@@ -574,8 +587,10 @@ object LiftActorJ {
 
   private def getBaseClasses(clz: Class[_]): List[Class[_]] =
     clz match {
-      case null => Nil
-      case clz  => clz :: getBaseClasses(clz.getSuperclass)
+      case null =>
+        Nil
+      case clz =>
+        clz :: getBaseClasses(clz.getSuperclass)
     }
 
   private def receiver(in: Method): Boolean = {
@@ -600,7 +615,8 @@ object LiftActorJ {
 private final class DispatchVendor(map: Map[Class[_], Method]) {
   private val baseMap: Map[Class[_], Option[Method]] = Map(
     map.map {
-      case (k, v) => (k, Some(v))
+      case (k, v) =>
+        (k, Some(v))
     }.toList: _*)
 
   def vend(actor: LiftActorJ): PartialFunction[Any, Unit] =
@@ -613,13 +629,15 @@ private final class DispatchVendor(map: Map[Class[_], Method]) {
       def isDefinedAt(v: Any): Boolean = {
         val clz = v.asInstanceOf[Object].getClass
         theMap.get(clz) match {
-          case Some(Some(_)) => true
+          case Some(Some(_)) =>
+            true
           case None => {
             val answer = findClass(clz)
             theMap += clz -> answer
             answer.isDefined
           }
-          case _ => false
+          case _ =>
+            false
         }
       }
 
@@ -628,7 +646,8 @@ private final class DispatchVendor(map: Map[Class[_], Method]) {
         val meth = theMap(o.getClass).get
         meth.invoke(actor, o) match {
           case null =>
-          case x    => actor.internalReply(x)
+          case x =>
+            actor.internalReply(x)
         }
       }
     }

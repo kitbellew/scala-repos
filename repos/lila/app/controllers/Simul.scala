@@ -141,9 +141,11 @@ object Simul extends LilaController {
   private def AsHost(simulId: Sim.ID)(f: Sim => Result)(implicit
       ctx: Context): Fu[Result] =
     env.repo.find(simulId) flatMap {
-      case None => notFound
+      case None =>
+        notFound
       case Some(simul) if ctx.userId.exists(simul.hostId ==) =>
         fuccess(f(simul))
-      case _ => fuccess(Unauthorized)
+      case _ =>
+        fuccess(Unauthorized)
     }
 }

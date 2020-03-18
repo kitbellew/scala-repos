@@ -103,7 +103,8 @@ abstract class ConvergenceSpec(multiNodeConfig: ConvergenceMultiNodeConfig)
 
       def memberStatus(address: Address): Option[MemberStatus] =
         clusterView.members.collectFirst {
-          case m if m.address == address ⇒ m.status
+          case m if m.address == address ⇒
+            m.status
         }
 
       enterBarrier("after-join")

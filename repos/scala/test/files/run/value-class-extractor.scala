@@ -26,16 +26,22 @@ object SomeProduct {
 object Test {
   def prod(x: SomeProduct): Int =
     x match {
-      case SomeProduct(x, y, z) => x.length + y + z.length
-      case _                    => -1
+      case SomeProduct(x, y, z) =>
+        x.length + y + z.length
+      case _ =>
+        -1
     }
 
   def f(x: Char): NonNullChar =
     x match {
-      case 'a' => new NonNullChar('a')
-      case 'b' => new NonNullChar('b')
-      case 'c' => new NonNullChar('c')
-      case _   => NonNullChar.None
+      case 'a' =>
+        new NonNullChar('a')
+      case 'b' =>
+        new NonNullChar('b')
+      case 'c' =>
+        new NonNullChar('c')
+      case _ =>
+        NonNullChar.None
     }
   // public char f(char);
   //        0: iload_1
@@ -56,10 +62,14 @@ object Test {
   //       49: ireturn
   def g(x: Char): Option[Char] =
     x match {
-      case 'a' => Some('a')
-      case 'b' => Some('b')
-      case 'c' => Some('c')
-      case _   => None
+      case 'a' =>
+        Some('a')
+      case 'b' =>
+        Some('b')
+      case 'c' =>
+        Some('c')
+      case _ =>
+        None
     }
   // public scala.Option<java.lang.Object> g(char);
   //        0: iload_1

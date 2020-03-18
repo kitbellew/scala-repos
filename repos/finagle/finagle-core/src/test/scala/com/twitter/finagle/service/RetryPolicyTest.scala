@@ -19,17 +19,21 @@ class RetryPolicyTest extends FunSpec {
       policy: RetryPolicy[Try[Nothing]],
       exceptions: Stream[Exception]): Stream[Duration] =
     exceptions match {
-      case Stream.Empty => Stream.empty
+      case Stream.Empty =>
+        Stream.empty
       case e #:: tail =>
         policy(Throw(e)) match {
-          case None                => Stream.empty
-          case Some((backoff, p2)) => backoff #:: getBackoffs(p2, tail)
+          case None =>
+            Stream.empty
+          case Some((backoff, p2)) =>
+            backoff #:: getBackoffs(p2, tail)
         }
     }
 
   describe("RetryPolicy") {
     val NoExceptions: PartialFunction[Try[Nothing], Boolean] = {
-      case _ => false
+      case _ =>
+        false
     }
     val timeoutExc =
       new TimeoutException {
@@ -77,7 +81,8 @@ class RetryPolicyTest extends FunSpec {
 
       retryable.foreach {
         case RetryPolicy.RetryableWriteException(_) =>
-        case _                                      => fail("should match RetryableWriteException")
+        case _ =>
+          fail("should match RetryableWriteException")
       }
 
       nonRetryable.foreach {
@@ -91,12 +96,15 @@ class RetryPolicyTest extends FunSpec {
   case class IException(i: Int) extends Exception
 
   val iExceptionsOnly: PartialFunction[Try[Nothing], Boolean] = {
-    case Throw(IException(_)) => true
+    case Throw(IException(_)) =>
+      true
   }
 
   val iGreaterThan1: Try[Nothing] => Boolean = {
-    case Throw(IException(i)) if i > 1 => true
-    case _                             => false
+    case Throw(IException(i)) if i > 1 =>
+      true
+    case _ =>
+      false
   }
 
   describe("RetryPolicy.filter/filterEach") {

@@ -36,8 +36,9 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
     if (element == null || !element.isValid)
       return
     check(project, editor, element) match {
-      case Some(x) => x()
-      case None    =>
+      case Some(x) =>
+        x()
+      case None =>
     }
   }
 
@@ -87,7 +88,8 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
                 // TODO clean up excess newlines.
               }
               return Some(action)
-            case _ => None
+            case _ =>
+              None
           }
         case finallyBlock: ScFinallyBlock =>
           finallyBlock.expression.filter(isAncestorOfElement)
@@ -120,7 +122,8 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
             case _ =>
               None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     // Everything other than case clauses is treated uniformly.
@@ -139,9 +142,11 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
                 Some((blk, x, comments))
               else
                 None
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     // Create the action to unwrap that block.

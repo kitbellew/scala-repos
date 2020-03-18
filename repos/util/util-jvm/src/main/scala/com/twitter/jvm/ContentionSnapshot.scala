@@ -21,8 +21,10 @@ class ContentionSnapshot {
   private[this] object Blocked {
     def unapply(t: ThreadInfo): Option[ThreadInfo] = {
       t.getThreadState match {
-        case BLOCKED | WAITING | TIMED_WAITING => Some(t)
-        case _                                 => None
+        case BLOCKED | WAITING | TIMED_WAITING =>
+          Some(t)
+        case _ =>
+          None
       }
     }
   }
@@ -34,7 +36,8 @@ class ContentionSnapshot {
       .getThreadInfo(bean.getAllThreadIds, true, true)
       .filter(_ != null)
       .collect {
-        case Blocked(info) => info
+        case Blocked(info) =>
+          info
       }
 
     val ownerIds = blocked map (_.getLockOwnerId) filter (_ != -1)

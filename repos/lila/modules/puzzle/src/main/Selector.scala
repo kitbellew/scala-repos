@@ -24,9 +24,12 @@ private[puzzle] final class Selector(
 
   private def difficultyDecay(difficulty: Int) =
     difficulty match {
-      case 1 => -200
-      case 3 => +200
-      case _ => 0
+      case 1 =>
+        -200
+      case 3 =>
+        +200
+      case _ =>
+        0
     }
 
   private val toleranceMax = 1000
@@ -42,7 +45,8 @@ private[puzzle] final class Selector(
           .find(popularSelector(isMate) ++ mateSelector(isMate))
           .options(QueryOpts(skipN = Random nextInt anonSkipMax))
           .one[Puzzle]
-      case Some(user) if user.perfs.puzzle.nb > maxAttempts => fuccess(none)
+      case Some(user) if user.perfs.puzzle.nb > maxAttempts =>
+        fuccess(none)
       case Some(user) =>
         val rating = user.perfs.puzzle.intRating min 2300 max 900
         val step = toleranceStepFor(rating)
@@ -54,9 +58,12 @@ private[puzzle] final class Selector(
 
   private def toleranceStepFor(rating: Int) =
     math.abs(1500 - rating) match {
-      case d if d >= 500 => 300
-      case d if d >= 300 => 250
-      case d             => 200
+      case d if d >= 500 =>
+        300
+      case d if d >= 300 =>
+        250
+      case d =>
+        200
     }
 
   private def tryRange(
@@ -78,6 +85,7 @@ private[puzzle] final class Selector(
       .one[Puzzle] flatMap {
       case None if (tolerance + step) <= toleranceMax =>
         tryRange(rating, tolerance + step, step, decay, ids, isMate)
-      case res => fuccess(res)
+      case res =>
+        fuccess(res)
     }
 }

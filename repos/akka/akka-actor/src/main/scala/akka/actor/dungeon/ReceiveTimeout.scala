@@ -40,7 +40,8 @@ private[akka] trait ReceiveTimeout {
             system.scheduler.scheduleOnce(f, self, akka.actor.ReceiveTimeout)(
               this.dispatcher)
           receiveTimeoutData = (f, task)
-        case _ ⇒ cancelReceiveTimeout()
+        case _ ⇒
+          cancelReceiveTimeout()
       }
     else
       cancelReceiveTimeout()

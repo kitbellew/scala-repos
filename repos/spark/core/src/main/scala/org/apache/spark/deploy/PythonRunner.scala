@@ -121,9 +121,12 @@ object PythonRunner {
     val uri = Try(new URI(path)).getOrElse(new File(path).toURI)
     var formattedPath =
       uri.getScheme match {
-        case null             => path
-        case "file" | "local" => uri.getPath
-        case _                => null
+        case null =>
+          path
+        case "file" | "local" =>
+          uri.getPath
+        case _ =>
+          null
       }
 
     // Guard against malformed paths potentially throwing NPE

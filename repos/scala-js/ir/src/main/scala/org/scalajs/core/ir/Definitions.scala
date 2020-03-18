@@ -142,7 +142,8 @@ object Definitions {
 
   private val decompressedClasses: Map[String, String] =
     compressedClasses map {
-      case (a, b) => (b, a)
+      case (a, b) =>
+        (b, a)
     }
 
   private val compressedPrefixes = Seq(
@@ -160,7 +161,8 @@ object Definitions {
 
   private val decompressedPrefixes: Seq[(String, String)] =
     compressedPrefixes map {
-      case (a, b) => (b, a)
+      case (a, b) =>
+        (b, a)
     }
 
   /** Decodes a method name into its full signature.

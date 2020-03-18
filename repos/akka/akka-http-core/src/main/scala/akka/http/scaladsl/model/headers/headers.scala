@@ -33,8 +33,10 @@ sealed abstract class ModeledCompanion[T: ClassTag] extends Renderable {
     */
   def parseFromValueString(value: String): Either[List[ErrorInfo], T] =
     HttpHeader.parse(name, value) match {
-      case HttpHeader.ParsingResult.Ok(header: T, Nil) ⇒ Right(header)
-      case res ⇒ Left(res.errors)
+      case HttpHeader.ParsingResult.Ok(header: T, Nil) ⇒
+        Right(header)
+      case res ⇒
+        Left(res.errors)
     }
 }
 
@@ -85,7 +87,8 @@ abstract class ModeledCustomHeaderCompanion[H <: ModeledCustomHeader[H]] {
 
   def apply(value: String): H =
     parse(value) match {
-      case Success(parsed) ⇒ parsed
+      case Success(parsed) ⇒
+        parsed
       case Failure(ex) ⇒
         throw new IllegalArgumentException(
           s"Unable to construct custom header by parsing: '$value'",
@@ -104,7 +107,8 @@ abstract class ModeledCustomHeaderCompanion[H <: ModeledCustomHeader[H]] {
           Some(h.value)
         else
           None
-      case _ ⇒ None
+      case _ ⇒
+        None
     }
 
 }
@@ -462,7 +466,8 @@ final case class `Content-Disposition`(
   def renderValue[R <: Rendering](r: R): r.type = {
     r ~~ dispositionType
     params foreach {
-      case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v
+      case (k, v) ⇒
+        r ~~ "; " ~~ k ~~ '=' ~~# v
     }
     r
   }
@@ -670,8 +675,10 @@ final case class `If-Range`(entityTagOrDateTime: Either[EntityTag, DateTime])
     extends RequestHeader {
   def renderValue[R <: Rendering](r: R): r.type =
     entityTagOrDateTime match {
-      case Left(tag) ⇒ r ~~ tag
-      case Right(dateTime) ⇒ dateTime.renderRfc1123DateTimeString(r)
+      case Left(tag) ⇒
+        r ~~ tag
+      case Right(dateTime) ⇒
+        dateTime.renderRfc1123DateTimeString(r)
     }
   protected def companion = `If-Range`
 }
@@ -1083,8 +1090,10 @@ final case class `Transfer-Encoding`(encodings: immutable.Seq[TransferEncoding])
   def withChunkedPeeled: Option[`Transfer-Encoding`] =
     if (isChunked) {
       encodings.init match {
-        case Nil ⇒ None
-        case remaining ⇒ Some(`Transfer-Encoding`(remaining))
+        case Nil ⇒
+          None
+        case remaining ⇒
+          Some(`Transfer-Encoding`(remaining))
       }
     } else
       Some(this)

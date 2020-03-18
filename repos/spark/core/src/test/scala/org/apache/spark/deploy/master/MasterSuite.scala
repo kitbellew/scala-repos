@@ -557,7 +557,8 @@ class MasterSuite
         override def receive: PartialFunction[Any, Unit] = {
           case KillExecutor(_, appId, execId) =>
             killedExecutors.add(appId, execId)
-          case KillDriver(driverId) => killedDrivers.add(driverId)
+          case KillDriver(driverId) =>
+            killedDrivers.add(driverId)
         }
       }
     )

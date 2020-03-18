@@ -141,9 +141,12 @@ case class BroadcastHashJoin(
       input: Seq[ExprCode],
       row: String): String = {
     joinType match {
-      case Inner                  => codegenInner(ctx, input)
-      case LeftOuter | RightOuter => codegenOuter(ctx, input)
-      case LeftSemi               => codegenSemi(ctx, input)
+      case Inner =>
+        codegenInner(ctx, input)
+      case LeftOuter | RightOuter =>
+        codegenOuter(ctx, input)
+      case LeftSemi =>
+        codegenSemi(ctx, input)
       case x =>
         throw new IllegalArgumentException(
           s"BroadcastHashJoin should not take $x as the JoinType")
@@ -260,8 +263,10 @@ case class BroadcastHashJoin(
 
     val resultVars =
       buildSide match {
-        case BuildLeft  => buildVars ++ input
-        case BuildRight => input ++ buildVars
+        case BuildLeft =>
+          buildVars ++ input
+        case BuildRight =>
+          input ++ buildVars
       }
     if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
       s"""
@@ -338,8 +343,10 @@ case class BroadcastHashJoin(
 
     val resultVars =
       buildSide match {
-        case BuildLeft  => buildVars ++ input
-        case BuildRight => input ++ buildVars
+        case BuildLeft =>
+          buildVars ++ input
+        case BuildRight =>
+          input ++ buildVars
       }
     if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
       s"""

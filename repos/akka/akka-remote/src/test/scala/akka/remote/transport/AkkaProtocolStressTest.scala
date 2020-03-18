@@ -50,7 +50,8 @@ object AkkaProtocolStressTest {
     var losses = 0
 
     def receive = {
-      case "start" ⇒ self ! "sendNext"
+      case "start" ⇒
+        self ! "sendNext"
       case "sendNext" ⇒
         if (nextSeq < limit) {
           remote ! nextSeq
@@ -102,7 +103,8 @@ class AkkaProtocolStressTest
     Props(
       new Actor {
         def receive = {
-          case seq: Int ⇒ sender() ! seq
+          case seq: Int ⇒
+            sender() ! seq
         }
       }),
     "echo")

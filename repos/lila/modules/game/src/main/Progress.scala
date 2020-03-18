@@ -7,7 +7,8 @@ case class Progress(origin: Game, game: Game, events: List[Event] = Nil) {
 
   def flatMap(f: Game => Progress) =
     f(game) match {
-      case Progress(_, g2, e2) => copy(game = g2, events = events ::: e2)
+      case Progress(_, g2, e2) =>
+        copy(game = g2, events = events ::: e2)
     }
 
   def >>(next: => Progress): Progress = flatMap(_ => next)

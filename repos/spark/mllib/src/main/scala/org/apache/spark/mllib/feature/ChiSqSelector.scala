@@ -174,7 +174,8 @@ object ChiSqSelectorModel extends Loader[ChiSqSelectorModel] {
 
       val features = dataArray.rdd
         .map {
-          case Row(feature: Int) => (feature)
+          case Row(feature: Int) =>
+            (feature)
         }
         .collect()
 
@@ -208,11 +209,13 @@ class ChiSqSelector @Since("1.3.0") (@Since("1.3.0") val numTopFeatures: Int)
         .chiSqTest(data)
         .zipWithIndex
         .sortBy {
-          case (res, _) => -res.statistic
+          case (res, _) =>
+            -res.statistic
         }
         .take(numTopFeatures)
         .map {
-          case (_, indices) => indices
+          case (_, indices) =>
+            indices
         }
         .sorted
     new ChiSqSelectorModel(indices)

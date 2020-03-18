@@ -487,7 +487,8 @@ object PolySparse {
           es(i) = e;
           cs(i) = c;
           inflate(ts0, i + 1, es, cs)
-        case Nil => new PolySparse(es, cs)
+        case Nil =>
+          new PolySparse(es, cs)
       }
 
     @tailrec

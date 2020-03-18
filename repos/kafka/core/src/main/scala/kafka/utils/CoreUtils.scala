@@ -72,7 +72,8 @@ object CoreUtils extends Logging {
     try {
       action
     } catch {
-      case e: Throwable => log(e.getMessage(), e)
+      case e: Throwable =>
+        log(e.getMessage(), e)
     }
   }
 
@@ -177,7 +178,8 @@ object CoreUtils extends Logging {
       case -1 =>
         throw new EOFException(
           "Received -1 when reading from channel, socket has likely been closed.")
-      case n: Int => n
+      case n: Int =>
+        n
     }
   }
 
@@ -275,14 +277,22 @@ object CoreUtils extends Logging {
   //JSON strings need to be escaped based on ECMA-404 standard http://json.org
   def JSONEscapeString(s: String): String = {
     s.map {
-      case '"'  => "\\\""
-      case '\\' => "\\\\"
-      case '/'  => "\\/"
-      case '\b' => "\\b"
-      case '\f' => "\\f"
-      case '\n' => "\\n"
-      case '\r' => "\\r"
-      case '\t' => "\\t"
+      case '"' =>
+        "\\\""
+      case '\\' =>
+        "\\\\"
+      case '/' =>
+        "\\/"
+      case '\b' =>
+        "\\b"
+      case '\f' =>
+        "\\f"
+      case '\n' =>
+        "\\n"
+      case '\r' =>
+        "\\r"
+      case '\t' =>
+        "\\t"
       /* We'll unicode escape any control characters. These include:
        * 0x0 -> 0x1f  : ASCII Control (C0 Control Codes)
        * 0x7f         : ASCII DELETE
@@ -296,7 +306,8 @@ object CoreUtils extends Logging {
             (c >= '\u0000' && c <= '\u001f') || (c >= '\u007f' && c <= '\u009f')
           ) =>
         "\\u%04x".format(c: Int)
-      case c => c
+      case c =>
+        c
     }.mkString
   }
 
@@ -306,10 +317,12 @@ object CoreUtils extends Logging {
   def duplicates[T](s: Traversable[T]): Iterable[T] = {
     s.groupBy(identity)
       .map {
-        case (k, l) => (k, l.size)
+        case (k, l) =>
+          (k, l.size)
       }
       .filter {
-        case (k, l) => (l > 1)
+        case (k, l) =>
+          (l > 1)
       }
       .keys
   }

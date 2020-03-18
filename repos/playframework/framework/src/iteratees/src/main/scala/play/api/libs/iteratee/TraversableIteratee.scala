@@ -27,11 +27,14 @@ object Traversable {
           : Iteratee[E, Option[A]] = {
 
         def step: K[E, Option[A]] = {
-          case Input.Empty => Cont(step)
-          case Input.EOF   => Done(None, Input.EOF)
+          case Input.Empty =>
+            Cont(step)
+          case Input.EOF =>
+            Done(None, Input.EOF)
           case Input.El(xs) if !xs.isEmpty =>
             Done(Some(xs.head), Input.El(xs.tail))
-          case Input.El(empty) => Cont(step)
+          case Input.El(empty) =>
+            Cont(step)
         }
         Cont(step)
       }
@@ -52,18 +55,22 @@ object Traversable {
                   e.splitAt(leftToTake.toInt) match {
                     case (all, x) if x.isEmpty =>
                       Cont(step(k(Input.El(all)), leftToTake - all.size))
-                    case (x, left) if x.isEmpty => Done(inner, Input.El(left))
+                    case (x, left) if x.isEmpty =>
+                      Done(inner, Input.El(left))
                     case (toPush, left) =>
                       Done(k(Input.El(toPush)), Input.El(left))
                   }
                 case Step.Cont(k) =>
                   Cont(step(k(Input.El(e)), leftToTake - e.size))
-                case _ => Done(inner, in)
+                case _ =>
+                  Done(inner, in)
               }
 
-            case Input.EOF => Done(inner, Input.EOF)
+            case Input.EOF =>
+              Done(inner, Input.EOF)
 
-            case Input.Empty => Cont(step(inner, leftToTake))
+            case Input.Empty =>
+              Cont(step(inner, leftToTake))
           }
 
         }
@@ -91,19 +98,24 @@ object Traversable {
                     case Step.Error(_, _) =>
                       Cont(step(inner, (leftToTake - all.size)))
                   }
-                case (x, left) if x.isEmpty => Done(inner, Input.El(left))
+                case (x, left) if x.isEmpty =>
+                  Done(inner, Input.El(left))
                 case (toPush, left) =>
                   Done(
                     inner.pureFlatFold {
-                      case Step.Cont(k) => k(Input.El(toPush));
-                      case _            => inner
+                      case Step.Cont(k) =>
+                        k(Input.El(toPush));
+                      case _ =>
+                        inner
                     },
                     Input.El(left))
               }
 
-            case Input.EOF => Done(inner, Input.EOF)
+            case Input.EOF =>
+              Done(inner, Input.EOF)
 
-            case Input.Empty => Cont(step(inner, leftToTake))
+            case Input.Empty =>
+              Cont(step(inner, leftToTake))
           }
 
         }
@@ -150,7 +162,8 @@ object Traversable {
             def continue[A](k: K[M, A]) = Cont(step(k))
           } &> k(Input.Empty)
 
-        case Input.EOF => Done(Cont(k), Input.EOF)
+        case Input.EOF =>
+          Done(Cont(k), Input.EOF)
 
       }
 
@@ -170,7 +183,8 @@ object Traversable {
             case in @ Input.El(e) =>
               val left = leftToDrop - e.size
               left match {
-                case i if i > 0 => Cont(step(it, left))
+                case i if i > 0 =>
+                  Cont(step(it, left))
                 case i =>
                   val toPass =
                     if (i < 0)
@@ -178,13 +192,17 @@ object Traversable {
                     else
                       Input.Empty
                   it.pureFlatFold {
-                    case Step.Cont(k) => Enumeratee.passAlong.applyOn(k(toPass))
-                    case _            => Done(it, toPass)
+                    case Step.Cont(k) =>
+                      Enumeratee.passAlong.applyOn(k(toPass))
+                    case _ =>
+                      Done(it, toPass)
                   }
               }
-            case Input.Empty => Cont(step(it, leftToDrop))
+            case Input.Empty =>
+              Cont(step(it, leftToDrop))
 
-            case Input.EOF => Done(it, Input.EOF)
+            case Input.EOF =>
+              Done(it, Input.EOF)
           }
         }
 

@@ -118,8 +118,10 @@ trait LoggingBus extends ActorEventBus {
     try {
       val defaultLoggers =
         system.settings.Loggers match {
-          case Nil ⇒ classOf[DefaultLogger].getName :: Nil
-          case loggers ⇒ loggers
+          case Nil ⇒
+            classOf[DefaultLogger].getName :: Nil
+          case loggers ⇒
+            loggers
         }
       val myloggers =
         for {
@@ -129,7 +131,8 @@ trait LoggingBus extends ActorEventBus {
           system.dynamicAccess
             .getClassFor[Actor](loggerName)
             .map({
-              case actorClass ⇒ addLogger(system, actorClass, level, logName)
+              case actorClass ⇒
+                addLogger(system, actorClass, level, logName)
             })
             .recover({
               case e ⇒
@@ -199,7 +202,8 @@ trait LoggingBus extends ActorEventBus {
       // this is very necessary, else you get infinite loop with DeadLetter
       unsubscribe(logger)
       logger match {
-        case ref: InternalActorRef ⇒ ref.stop()
+        case ref: InternalActorRef ⇒
+          ref.stop()
         case _ ⇒
       }
     }
@@ -341,7 +345,8 @@ object LogSource {
             system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
         } catch {
           // it can fail if the ActorSystem (remoting) is not completely started yet
-          case NonFatal(_) ⇒ a.path.toString
+          case NonFatal(_) ⇒
+            a.path.toString
         }
     }
 
@@ -381,11 +386,16 @@ object LogSource {
     */
   def fromAnyRef(o: AnyRef): (String, Class[_]) =
     o match {
-      case c: Class[_] ⇒ apply(c)
-      case a: Actor ⇒ apply(a)
-      case a: ActorRef ⇒ apply(a)
-      case s: String ⇒ apply(s)
-      case x ⇒ (Logging.simpleName(x), x.getClass)
+      case c: Class[_] ⇒
+        apply(c)
+      case a: Actor ⇒
+        apply(a)
+      case a: ActorRef ⇒
+        apply(a)
+      case s: String ⇒
+        apply(s)
+      case x ⇒
+        (Logging.simpleName(x), x.getClass)
     }
 
   /**
@@ -395,11 +405,16 @@ object LogSource {
     */
   def fromAnyRef(o: AnyRef, system: ActorSystem): (String, Class[_]) =
     o match {
-      case c: Class[_] ⇒ apply(c)
-      case a: Actor ⇒ apply(a)
-      case a: ActorRef ⇒ apply(a)
-      case s: String ⇒ apply(s)
-      case x ⇒ (Logging.simpleName(x) + "(" + system + ")", x.getClass)
+      case c: Class[_] ⇒
+        apply(c)
+      case a: Actor ⇒
+        apply(a)
+      case a: ActorRef ⇒
+        apply(a)
+      case s: String ⇒
+        apply(s)
+      case x ⇒
+        (Logging.simpleName(x) + "(" + system + ")", x.getClass)
     }
 }
 
@@ -509,12 +524,18 @@ object Logging {
     */
   def levelFor(s: String): Option[LogLevel] =
     s.toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ Some(OffLevel)
-      case "error" ⇒ Some(ErrorLevel)
-      case "warning" ⇒ Some(WarningLevel)
-      case "info" ⇒ Some(InfoLevel)
-      case "debug" ⇒ Some(DebugLevel)
-      case unknown ⇒ None
+      case "off" ⇒
+        Some(OffLevel)
+      case "error" ⇒
+        Some(ErrorLevel)
+      case "warning" ⇒
+        Some(WarningLevel)
+      case "info" ⇒
+        Some(InfoLevel)
+      case "debug" ⇒
+        Some(DebugLevel)
+      case unknown ⇒
+        None
     }
 
   /**
@@ -539,10 +560,14 @@ object Logging {
     */
   def classFor(level: LogLevel): Class[_ <: LogEvent] =
     level match {
-      case ErrorLevel ⇒ classOf[Error]
-      case WarningLevel ⇒ classOf[Warning]
-      case InfoLevel ⇒ classOf[Info]
-      case DebugLevel ⇒ classOf[Debug]
+      case ErrorLevel ⇒
+        classOf[Error]
+      case WarningLevel ⇒
+        classOf[Warning]
+      case InfoLevel ⇒
+        classOf[Info]
+      case DebugLevel ⇒
+        classOf[Debug]
     }
 
   // these type ascriptions/casts are necessary to avoid CCEs during construction while retaining correct type
@@ -883,10 +908,14 @@ object Logging {
 
     def print(event: Any): Unit =
       event match {
-        case e: Error ⇒ error(e)
-        case e: Warning ⇒ warning(e)
-        case e: Info ⇒ info(e)
-        case e: Debug ⇒ debug(e)
+        case e: Error ⇒
+          error(e)
+        case e: Warning ⇒
+          warning(e)
+        case e: Info ⇒
+          info(e)
+        case e: Debug ⇒
+          debug(e)
         case e ⇒
           warning(
             Warning(
@@ -983,8 +1012,10 @@ object Logging {
       with StdOutLogger
       with RequiresMessageQueue[LoggerMessageQueueSemantics] {
     override def receive: Receive = {
-      case InitializeLogger(_) ⇒ sender() ! LoggerInitialized
-      case event: LogEvent ⇒ print(event)
+      case InitializeLogger(_) ⇒
+        sender() ! LoggerInitialized
+      case event: LogEvent ⇒
+        print(event)
     }
   }
 
@@ -993,8 +1024,10 @@ object Logging {
     */
   def stackTraceFor(e: Throwable): String =
     e match {
-      case null | Error.NoCause ⇒ ""
-      case _: NoStackTrace ⇒ " (" + e.getClass.getName + ")"
+      case null | Error.NoCause ⇒
+        ""
+      case _: NoStackTrace ⇒
+        " (" + e.getClass.getName + ")"
       case other ⇒
         val sw = new java.io.StringWriter
         val pw = new java.io.PrintWriter(sw)
@@ -1372,10 +1405,14 @@ trait LoggingAdapter {
     */
   final def isEnabled(level: Logging.LogLevel): Boolean =
     level match {
-      case Logging.ErrorLevel ⇒ isErrorEnabled
-      case Logging.WarningLevel ⇒ isWarningEnabled
-      case Logging.InfoLevel ⇒ isInfoEnabled
-      case Logging.DebugLevel ⇒ isDebugEnabled
+      case Logging.ErrorLevel ⇒
+        isErrorEnabled
+      case Logging.WarningLevel ⇒
+        isWarningEnabled
+      case Logging.InfoLevel ⇒
+        isInfoEnabled
+      case Logging.DebugLevel ⇒
+        isDebugEnabled
     }
 
   final def notifyLog(level: Logging.LogLevel, message: String): Unit =
@@ -1398,8 +1435,10 @@ trait LoggingAdapter {
     arg match {
       case a: Array[_] if !a.getClass.getComponentType.isPrimitive ⇒
         format(t, a: _*)
-      case a: Array[_] ⇒ format(t, (a map (_.asInstanceOf[AnyRef]): _*))
-      case x ⇒ format(t, x)
+      case a: Array[_] ⇒
+        format(t, (a map (_.asInstanceOf[AnyRef]): _*))
+      case x ⇒
+        format(t, x)
     }
 
   def format(t: String, arg: Any*): String = {

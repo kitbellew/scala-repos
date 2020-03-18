@@ -131,7 +131,8 @@ private class ClientEndpoint(
       masterEndpoint
         .ask[T](message)
         .onComplete {
-          case Success(v) => self.send(v)
+          case Success(v) =>
+            self.send(v)
           case Failure(e) =>
             logWarning(s"Error sending messages to master $masterEndpoint", e)
         }(forwardMessageExecutionContext)

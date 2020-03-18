@@ -70,10 +70,14 @@ private[akka] case class ActorMaterializerImpl(
     import ActorAttributes._
     opAttr.attributeList.foldLeft(settings) { (s, attr) ⇒
       attr match {
-        case InputBuffer(initial, max) ⇒ s.withInputBuffer(initial, max)
-        case Dispatcher(dispatcher) ⇒ s.withDispatcher(dispatcher)
-        case SupervisionStrategy(decider) ⇒ s.withSupervisionStrategy(decider)
-        case _ ⇒ s
+        case InputBuffer(initial, max) ⇒
+          s.withInputBuffer(initial, max)
+        case Dispatcher(dispatcher) ⇒
+          s.withDispatcher(dispatcher)
+        case SupervisionStrategy(decider) ⇒
+          s.withSupervisionStrategy(decider)
+        case _ ⇒
+          s
       }
     }
   }
@@ -248,7 +252,8 @@ private[akka] case class ActorMaterializerImpl(
             effectiveSettings: ActorMaterializerSettings)
             : (Processor[Any, Any], Any) =
           op match {
-            case DirectProcessor(processorFactory, _) ⇒ processorFactory()
+            case DirectProcessor(processorFactory, _) ⇒
+              processorFactory()
             case _ ⇒
               val (opprops, mat) = ActorProcessorFactory.props(
                 ActorMaterializerImpl.this,
@@ -268,8 +273,10 @@ private[akka] case class ActorMaterializerImpl(
   override lazy val executionContext: ExecutionContextExecutor = dispatchers
     .lookup(
       settings.dispatcher match {
-        case Deploy.NoDispatcherGiven ⇒ Dispatchers.DefaultDispatcherId
-        case other ⇒ other
+        case Deploy.NoDispatcherGiven ⇒
+          Dispatchers.DefaultDispatcherId
+        case other ⇒
+          other
       })
 
   override def actorOf(
@@ -408,7 +415,8 @@ private[akka] class StreamSupervisor(
     case Materialize(props, name) ⇒
       val impl = context.actorOf(props, name)
       sender() ! impl
-    case GetChildren ⇒ sender() ! Children(context.children.toSet)
+    case GetChildren ⇒
+      sender() ! Children(context.children.toSet)
     case StopChildren ⇒
       context.children.foreach(context.stop)
       sender() ! StoppedChildren

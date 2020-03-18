@@ -60,8 +60,10 @@ private[expr] object ExpectedTypes {
       withResolvedFunction = true,
       fromUnderscore = fromUnderscore)
     types.length match {
-      case 1 => Some(types(0))
-      case _ => None
+      case 1 =>
+        Some(types(0))
+      case _ =>
+        None
     }
   }
 
@@ -69,8 +71,10 @@ private[expr] object ExpectedTypes {
       : Option[(ScType, Option[ScTypeElement])] = {
     val types = expr.expectedTypesEx(fromUnderscore)
     types.length match {
-      case 1 => Some(types(0))
-      case _ => None
+      case 1 =>
+        Some(types(0))
+      case _ =>
+        None
     }
   }
 
@@ -90,13 +94,17 @@ private[expr] object ExpectedTypes {
           Array[(ScType, Option[ScTypeElement])]((retType, None))
         case ScPartialFunctionType(retType, _) =>
           Array[(ScType, Option[ScTypeElement])]((retType, None))
-        case ScAbstractType(_, _, upper) => fromFunction(upper, tp._2)
+        case ScAbstractType(_, _, upper) =>
+          fromFunction(upper, tp._2)
         case samType if ScalaPsiUtil.isSAMEnabled(expr) =>
           ScalaPsiUtil.toSAMType(samType, expr.getResolveScope) match {
-            case Some(methodType) => fromFunction(methodType, tp._2)
-            case _                => Array[(ScType, Option[ScTypeElement])]()
+            case Some(methodType) =>
+              fromFunction(methodType, tp._2)
+            case _ =>
+              Array[(ScType, Option[ScTypeElement])]()
           }
-        case _ => Array[(ScType, Option[ScTypeElement])]()
+        case _ =>
+          Array[(ScType, Option[ScTypeElement])]()
       }
     }
 
@@ -110,20 +118,23 @@ private[expr] object ExpectedTypes {
             r.isDynamic && r.name == ResolvableReferenceExpression
               .APPLY_DYNAMIC_NAMED
           (tp, isNamedDynamic)
-        case (_, tp) => (tp, false)
+        case (_, tp) =>
+          (tp, false)
       }
     }
 
     val result: Array[(ScType, Option[ScTypeElement])] =
       expr.getContext match {
-        case p: ScParenthesisedExpr => p.expectedTypesEx(fromUnderscore = false)
+        case p: ScParenthesisedExpr =>
+          p.expectedTypesEx(fromUnderscore = false)
         //see SLS[6.11]
         case b: ScBlockExpr =>
           b.lastExpr match {
             case Some(e)
                 if b.needCheckExpectedType && e == expr.getSameElementInContext =>
               b.expectedTypesEx(fromUnderscore = true)
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         //see SLS[6.16]
         case cond: ScIfStmt
@@ -139,21 +150,26 @@ private[expr] object ExpectedTypes {
               tb.getContext
                 .asInstanceOf[ScTryStmt]
                 .expectedTypesEx(fromUnderscore = true)
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         case wh: ScWhileStmt
             if wh.condition.getOrElse(
               null: ScExpression) == expr.getSameElementInContext =>
           Array((types.Boolean, None))
-        case wh: ScWhileStmt => Array((types.Unit, None))
+        case wh: ScWhileStmt =>
+          Array((types.Unit, None))
         case d: ScDoStmt
             if d.condition.getOrElse(
               null: ScExpression) == expr.getSameElementInContext =>
           Array((types.Boolean, None))
-        case d: ScDoStmt        => Array((types.Unit, None))
-        case fb: ScFinallyBlock => Array((types.Unit, None))
-        case cb: ScCatchBlock   => Array.empty
-        case te: ScThrowStmt    =>
+        case d: ScDoStmt =>
+          Array((types.Unit, None))
+        case fb: ScFinallyBlock =>
+          Array((types.Unit, None))
+        case cb: ScCatchBlock =>
+          Array.empty
+        case te: ScThrowStmt =>
           // Not in the SLS, but in the implementation.
           val throwableClass = ScalaPsiManager
             .instance(te.getProject)
@@ -165,7 +181,8 @@ private[expr] object ExpectedTypes {
         //see SLS[8.4]
         case c: ScCaseClause =>
           c.getContext.getContext match {
-            case m: ScMatchStmt => m.expectedTypesEx(fromUnderscore = true)
+            case m: ScMatchStmt =>
+              m.expectedTypesEx(fromUnderscore = true)
             case b: ScBlockExpr if b.isInCatchBlock =>
               b.getContext.getContext
                 .asInstanceOf[ScTryStmt]
@@ -173,7 +190,8 @@ private[expr] object ExpectedTypes {
             case b: ScBlockExpr if b.isAnonymousFunction =>
               b.expectedTypesEx(fromUnderscore = true)
                 .flatMap(tp => fromFunction(tp))
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         //see SLS[6.23]
         case f: ScFunctionExpr =>
@@ -186,7 +204,8 @@ private[expr] object ExpectedTypes {
           t.typeElement match {
             case Some(te) =>
               Array((te.getType(TypingContext.empty).getOrAny, Some(te)))
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         //SLS[6.15]
         case a: ScAssignStmt
@@ -235,7 +254,8 @@ private[expr] object ExpectedTypes {
                         case Some(call) =>
                           call.args.exprs.head
                             .expectedTypesEx(fromUnderscore = fromUnderscore)
-                        case None => Array.empty
+                        case None =>
+                          Array.empty
                       }
                     case p: ScParameter =>
                       //for named parameters
@@ -252,19 +272,24 @@ private[expr] object ExpectedTypes {
                               f.getProject,
                               expr.getResolveScope)),
                           None))
-                    case _ => Array.empty
+                    case _ =>
+                      Array.empty
                   }
-                case _ => Array.empty
+                case _ =>
+                  Array.empty
               }
-            case ref: ScReferenceExpression => expectedExprTypes(a)
+            case ref: ScReferenceExpression =>
+              expectedExprTypes(a)
             case call: ScMethodCall =>
               a.mirrorMethodCall match {
                 case Some(mirrorCall) =>
                   mirrorCall.args.exprs.last
                     .expectedTypesEx(fromUnderscore = fromUnderscore)
-                case _ => Array.empty
+                case _ =>
+                  Array.empty
               }
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         //method application
         case tuple: ScTuple if tuple.isCall =>
@@ -329,7 +354,8 @@ private[expr] object ExpectedTypes {
             expr match {
               case p: ScParenthesisedExpr =>
                 p.expr.getOrElse(return Array.empty)
-              case _ => expr
+              case _ =>
+                expr
             }
           val op = infix.operation
           var tps =
@@ -359,28 +385,34 @@ private[expr] object ExpectedTypes {
           v.typeElement match {
             case Some(te) =>
               Array((v.getType(TypingContext.empty).getOrAny, Some(te)))
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         case v @ ScVariableDefinition.expr(expr)
             if expr == expr.getSameElementInContext =>
           v.typeElement match {
             case Some(te) =>
               Array((v.getType(TypingContext.empty).getOrAny, Some(te)))
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         //SLS[4.6]
         case v: ScFunctionDefinition
             if (
               v.body match {
-                case None    => false
-                case Some(b) => b == expr.getSameElementInContext
+                case None =>
+                  false
+                case Some(b) =>
+                  b == expr.getSameElementInContext
               }
             ) =>
           v.returnTypeElement match {
             case Some(te) =>
               v.returnType.toOption.map(x => (x, Some(te))).toArray
-            case None if !v.hasAssign => Array((types.Unit, None))
-            case _                    => v.getInheritedReturnType.map((_, None)).toArray
+            case None if !v.hasAssign =>
+              Array((types.Unit, None))
+            case _ =>
+              v.getInheritedReturnType.map((_, None)).toArray
           }
         //default parameters
         case param: ScParameter =>
@@ -390,7 +422,8 @@ private[expr] object ExpectedTypes {
                 (
                   param.getType(TypingContext.empty).getOrAny,
                   param.typeElement))
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
         case ret: ScReturnStmt =>
           val fun: ScFunction = PsiTreeUtil.getContextOfType(
@@ -402,10 +435,13 @@ private[expr] object ExpectedTypes {
           fun.returnTypeElement match {
             case Some(rte: ScTypeElement) =>
               fun.returnType match {
-                case Success(rt: ScType, _) => Array((rt, Some(rte)))
-                case _                      => Array.empty
+                case Success(rt: ScType, _) =>
+                  Array((rt, Some(rte)))
+                case _ =>
+                  Array.empty
               }
-            case None => Array.empty
+            case None =>
+              Array.empty
           }
         case args: ScArgumentExprList =>
           val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
@@ -445,8 +481,10 @@ private[expr] object ExpectedTypes {
               }
             val callOption =
               args.getParent match {
-                case call: MethodInvocation => Some(call)
-                case _                      => None
+                case call: MethodInvocation =>
+                  Some(call)
+                case _ =>
+                  None
               }
             callOption.foreach(call =>
               tps = tps.map {
@@ -495,9 +533,11 @@ private[expr] object ExpectedTypes {
           b.lastExpr match {
             case Some(e) if expr.getSameElementInContext == e =>
               b.expectedTypesEx(fromUnderscore = true)
-            case _ => Array.empty
+            case _ =>
+              Array.empty
           }
-        case _ => Array.empty
+        case _ =>
+          Array.empty
       }
 
     @tailrec
@@ -505,10 +545,13 @@ private[expr] object ExpectedTypes {
       expr match {
         case p: ScParenthesisedExpr =>
           p.expr match {
-            case Some(e) => checkIsUnderscore(e)
-            case _       => false
+            case Some(e) =>
+              checkIsUnderscore(e)
+            case _ =>
+              false
           }
-        case _ => ScUnderScoreSectionUtil.underscores(expr).nonEmpty
+        case _ =>
+          ScUnderScoreSectionUtil.underscores(expr).nonEmpty
       }
     }
 
@@ -516,8 +559,9 @@ private[expr] object ExpectedTypes {
       val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
       for (tp <- result) {
         tp._1 match {
-          case ScFunctionType(rt: ScType, _) => res += ((rt, None))
-          case _                             =>
+          case ScFunctionType(rt: ScType, _) =>
+            res += ((rt, None))
+          case _ =>
         }
       }
       res.toArray
@@ -555,9 +599,11 @@ private[expr] object ExpectedTypes {
                     te.map {
                       case t: ScTupleTypeElement if t.components.length == 2 =>
                         t.components(1)
-                      case t => t
+                      case t =>
+                        t
                     }))
-              case _ => res += p
+              case _ =>
+                res += p
             }
           } else {
             val lE = assign.getLExpression
@@ -570,9 +616,11 @@ private[expr] object ExpectedTypes {
                       (
                         param.paramType,
                         param.paramInCode.flatMap(_.typeElement)))
-                  case _ => res += p
+                  case _ =>
+                    res += p
                 }
-              case _ => res += p
+              case _ =>
+                res += p
             }
           }
         case typedStmt: ScTypedStmt
@@ -587,7 +635,8 @@ private[expr] object ExpectedTypes {
               Seq(params.last.paramType))
             res += ((tp, None))
           }
-        case _ => res += p
+        case _ =>
+          res += p
       }
     }
     tp match {
@@ -643,7 +692,8 @@ private[expr] object ExpectedTypes {
                   case ScTypePolymorphicType(internal, params) =>
                     update(
                       ScTypePolymorphicType(internal, params ++ typeParams))
-                  case tp => update(ScTypePolymorphicType(tp, typeParams))
+                  case tp =>
+                    update(ScTypePolymorphicType(tp, typeParams))
                 },
                 Some(expr)
               )

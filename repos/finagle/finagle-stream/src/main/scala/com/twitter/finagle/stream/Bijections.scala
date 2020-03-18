@@ -35,8 +35,10 @@ private[stream] object Bijections {
     new From[StreamRequest.Method, HttpMethod] {
       def apply(method: StreamRequest.Method) =
         method match {
-          case StreamRequest.Method.Custom(name) => HttpMethod.valueOf(name)
-          case _                                 => HttpMethod.valueOf(method.toString.toUpperCase)
+          case StreamRequest.Method.Custom(name) =>
+            HttpMethod.valueOf(name)
+          case _ =>
+            HttpMethod.valueOf(method.toString.toUpperCase)
         }
     }
 

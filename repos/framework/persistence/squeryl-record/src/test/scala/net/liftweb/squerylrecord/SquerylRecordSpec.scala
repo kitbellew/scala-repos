@@ -513,7 +513,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
           p2.get(i) must_== p(i)
         }
       }
-      case None => e2.photo.get must beNone
+      case None =>
+        e2.photo.get must beNone
     }
   }
 

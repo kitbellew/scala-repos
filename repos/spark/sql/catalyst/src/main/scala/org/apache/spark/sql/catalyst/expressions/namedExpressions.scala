@@ -91,8 +91,10 @@ trait NamedExpression extends Expression {
   protected def typeSuffix =
     if (resolved) {
       dataType match {
-        case LongType => "L"
-        case _        => ""
+        case LongType =>
+          "L"
+        case _ =>
+          ""
       }
     } else {
       ""
@@ -154,8 +156,10 @@ case class Alias(child: Expression, name: String)(
   override def metadata: Metadata = {
     explicitMetadata.getOrElse {
       child match {
-        case named: NamedExpression => named.metadata
-        case _                      => Metadata.empty
+        case named: NamedExpression =>
+          named.metadata
+        case _ =>
+          Metadata.empty
       }
     }
   }
@@ -188,7 +192,8 @@ case class Alias(child: Expression, name: String)(
       case a: Alias =>
         name == a.name && exprId == a.exprId && child == a.child && qualifiers == a.qualifiers &&
           explicitMetadata == a.explicitMetadata
-      case _ => false
+      case _ =>
+        false
     }
 
   override def sql: String = {
@@ -236,13 +241,16 @@ case class AttributeReference(
       case ar: AttributeReference =>
         name == ar.name && dataType == ar.dataType && nullable == ar.nullable &&
           metadata == ar.metadata && exprId == ar.exprId && qualifiers == ar.qualifiers
-      case _ => false
+      case _ =>
+        false
     }
 
   override def semanticEquals(other: Expression): Boolean =
     other match {
-      case ar: AttributeReference => sameRef(ar)
-      case _                      => false
+      case ar: AttributeReference =>
+        sameRef(ar)
+      case _ =>
+        false
     }
 
   override def semanticHash(): Int = {
@@ -350,9 +358,12 @@ case class PrettyAttribute(name: String, dataType: DataType = NullType)
     this(
       attribute.name,
       attribute match {
-        case a: AttributeReference => a.dataType
-        case a: PrettyAttribute    => a.dataType
-        case _                     => NullType
+        case a: AttributeReference =>
+          a.dataType
+        case a: PrettyAttribute =>
+          a.dataType
+        case _ =>
+          NullType
       })
 
   override def toString: String = name

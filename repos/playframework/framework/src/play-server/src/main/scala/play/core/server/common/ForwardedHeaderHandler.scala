@@ -184,14 +184,16 @@ private[server] object ForwardedHeaderHandler {
           val protoHeaders = h(headers, "X-Forwarded-Proto")
           if (forHeaders.length == protoHeaders.length) {
             forHeaders.zip(protoHeaders).map {
-              case (f, p) => ForwardedEntry(Some(f), Some(p))
+              case (f, p) =>
+                ForwardedEntry(Some(f), Some(p))
             }
           } else {
             // If the lengths vary, then discard the protoHeaders because we can't tell which
             // proto matches which header. The connections will all appear to be insecure by
             // default.
             forHeaders.map {
-              case f => ForwardedEntry(Some(f), None)
+              case f =>
+                ForwardedEntry(Some(f), None)
             }
           }
       }
@@ -241,8 +243,10 @@ private[server] object ForwardedHeaderHandler {
 
       val version =
         config.get[String]("version") match {
-          case "x-forwarded" => Xforwarded
-          case "rfc7239"     => Rfc7239
+          case "x-forwarded" =>
+            Xforwarded
+          case "rfc7239" =>
+            Rfc7239
           case _ =>
             throw config.reportError(
               "version",

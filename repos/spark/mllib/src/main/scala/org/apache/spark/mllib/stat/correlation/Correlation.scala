@@ -45,7 +45,8 @@ private[stat] trait Correlation {
       x: RDD[Double],
       y: RDD[Double]): Double = {
     val mat: RDD[Vector] = x.zip(y).map {
-      case (xi, yi) => new DenseVector(Array(xi, yi))
+      case (xi, yi) =>
+        new DenseVector(Array(xi, yi))
     }
     computeCorrelationMatrix(mat)(0, 1)
   }

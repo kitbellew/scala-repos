@@ -350,8 +350,10 @@ object DependencyHelpers {
     // 2.12.0-M1
     // 2.12.0-RC1
     // 2.12.0
-    case version @ ScalaVersion() => version
+    case version @ ScalaVersion() =>
+      version
     // transforms 2.12.0-custom-version to 2.12.0
-    case version => version.takeWhile(_ != '-')
+    case version =>
+      version.takeWhile(_ != '-')
   }
 }

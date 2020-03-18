@@ -32,13 +32,16 @@ object FutureSpec {
   def ready[T](awaitable: Awaitable[T], atMost: Duration): awaitable.type =
     try Await.ready(awaitable, atMost)
     catch {
-      case t: TimeoutException ⇒ throw t
-      case e if NonFatal(e) ⇒ awaitable //swallow
+      case t: TimeoutException ⇒
+        throw t
+      case e if NonFatal(e) ⇒
+        awaitable //swallow
     }
 
   class TestActor extends Actor {
     def receive = {
-      case "Hello" ⇒ sender() ! "World"
+      case "Hello" ⇒
+        sender() ! "World"
       case "Failure" ⇒
         sender() ! Status.Failure(
           new RuntimeException("Expected exception; to test fault-tolerance"))
@@ -51,7 +54,8 @@ object FutureSpec {
       case "Hello" ⇒
         FutureSpec.ready(await, TestLatch.DefaultTimeout);
         sender() ! "World"
-      case "NoReply" ⇒ FutureSpec.ready(await, TestLatch.DefaultTimeout)
+      case "NoReply" ⇒
+        FutureSpec.ready(await, TestLatch.DefaultTimeout)
       case "Failure" ⇒
         FutureSpec.ready(await, TestLatch.DefaultTimeout)
         sender() ! Status.Failure(
@@ -237,13 +241,15 @@ class FutureSpec
                 val expected = (wrap(future) /: actions)(_ /: _)
                 (
                   (wrap(result), expected) match {
-                    case (Success(a), Success(b)) ⇒ a == b
+                    case (Success(a), Success(b)) ⇒
+                      a == b
                     case (Failure(a), Failure(b)) if a.toString == b.toString ⇒
                       true
                     case (Failure(a), Failure(b))
                         if a.getStackTrace.isEmpty || b.getStackTrace.isEmpty ⇒
                       a.getClass.toString == b.getClass.toString
-                    case _ ⇒ false
+                    case _ ⇒
+                      false
                   }
                 ) :| result.value.get.toString + " is expected to be " + expected.toString
               },
@@ -286,11 +292,13 @@ class FutureSpec
             Props(
               new Actor {
                 def receive = {
-                  case s: String ⇒ sender() ! s.toUpperCase
+                  case s: String ⇒
+                    sender() ! s.toUpperCase
                 }
               }))
           val future = actor1 ? "Hello" flatMap {
-            case s: String ⇒ actor2 ? s
+            case s: String ⇒
+              actor2 ? s
           }
           FutureSpec.ready(future, timeout.duration)
           test(future, "WORLD")
@@ -312,7 +320,8 @@ class FutureSpec
                   }
                 }))
             val future = actor1 ? "Hello" flatMap {
-              case s: String ⇒ actor2 ? s
+              case s: String ⇒
+                actor2 ? s
             }
             FutureSpec.ready(future, timeout.duration)
             test(future, "/ by zero")
@@ -329,11 +338,13 @@ class FutureSpec
               Props(
                 new Actor {
                   def receive = {
-                    case s: String ⇒ sender() ! s.toUpperCase
+                    case s: String ⇒
+                      sender() ! s.toUpperCase
                   }
                 }))
             val future = actor1 ? "Hello" flatMap {
-              case i: Int ⇒ actor2 ? i
+              case i: Int ⇒
+                actor2 ? i
             }
             FutureSpec.ready(future, timeout.duration)
             test(future, "World (of class java.lang.String)")
@@ -352,8 +363,10 @@ class FutureSpec
             Props(
               new Actor {
                 def receive = {
-                  case s: String ⇒ sender() ! s.length
-                  case i: Int ⇒ sender() ! (i * 2).toString
+                  case s: String ⇒
+                    sender() ! s.length
+                  case i: Int ⇒
+                    sender() ! (i * 2).toString
                 }
               }))
 
@@ -388,8 +401,10 @@ class FutureSpec
             Props(
               new Actor {
                 def receive = {
-                  case Req(s: String) ⇒ sender() ! Res(s.length)
-                  case Req(i: Int) ⇒ sender() ! Res((i * 2).toString)
+                  case Req(s: String) ⇒
+                    sender() ! Res(s.length)
+                  case Req(i: Int) ⇒
+                    sender() ! Res((i * 2).toString)
                 }
               }))
 
@@ -422,32 +437,39 @@ class FutureSpec
           val future3 = future2 map (_.toString)
 
           val future4 = future1 recover {
-            case e: ArithmeticException ⇒ 0
+            case e: ArithmeticException ⇒
+              0
           } map (_.toString)
 
           val future5 = future2 recover {
-            case e: ArithmeticException ⇒ 0
+            case e: ArithmeticException ⇒
+              0
           } map (_.toString)
 
           val future6 = future2 recover {
-            case e: MatchError ⇒ 0
+            case e: MatchError ⇒
+              0
           } map (_.toString)
 
           val future7 = future3 recover {
-            case e: ArithmeticException ⇒ "You got ERROR"
+            case e: ArithmeticException ⇒
+              "You got ERROR"
           }
 
           val actor = system.actorOf(Props[TestActor])
 
           val future8 = actor ? "Failure"
           val future9 = actor ? "Failure" recover {
-            case e: RuntimeException ⇒ "FAIL!"
+            case e: RuntimeException ⇒
+              "FAIL!"
           }
           val future10 = actor ? "Hello" recover {
-            case e: RuntimeException ⇒ "FAIL!"
+            case e: RuntimeException ⇒
+              "FAIL!"
           }
           val future11 = actor ? "Failure" recover {
-            case _ ⇒ "Oops!"
+            case _ ⇒
+              "Oops!"
           }
 
           Await.result(future1, timeout.duration) should ===(5)
@@ -482,21 +504,24 @@ class FutureSpec
         intercept[IllegalStateException] {
           Await.result(
             Promise.failed[String](o).future recoverWith {
-              case _ if false == true ⇒ yay
+              case _ if false == true ⇒
+                yay
             },
             timeout.duration)
         } should ===(o)
 
         Await.result(
           Promise.failed[String](o).future recoverWith {
-            case _ ⇒ yay
+            case _ ⇒
+              yay
           },
           timeout.duration) should ===("yay!")
 
         intercept[IllegalStateException] {
           Await.result(
             Promise.failed[String](o).future recoverWith {
-              case _ ⇒ Promise.failed[String](r).future
+              case _ ⇒
+                Promise.failed[String](r).future
             },
             timeout.duration)
         } should ===(r)
@@ -510,11 +535,14 @@ class FutureSpec
               q.add(1);
               3
             } andThen {
-              case _ ⇒ q.add(2)
+              case _ ⇒
+                q.add(2)
             } andThen {
-              case Success(0) ⇒ q.add(Int.MaxValue)
+              case Success(0) ⇒
+                q.add(Int.MaxValue)
             } andThen {
-              case _ ⇒ q.add(3);
+              case _ ⇒
+                q.add(3);
             },
             timeout.duration) should ===(3)
           q.poll() should ===(1)
@@ -605,7 +633,8 @@ class FutureSpec
               Future(
                 throw new IllegalArgumentException(
                   "shouldFoldResultsWithException: expected"))
-            case i ⇒ Future(i)
+            case i ⇒
+              Future(i)
           }
           intercept[Throwable] {
             Await.result(Future.fold(futures)(0)(_ + _), remainingOrDefault)
@@ -619,8 +648,10 @@ class FutureSpec
           val fs = (0 to 1000) map (i ⇒ Future(i))
           val f =
             Future.fold(fs)(ArrayBuffer.empty[AnyRef]) {
-              case (l, i) if i % 2 == 0 ⇒ l += i.asInstanceOf[AnyRef]
-              case (l, _) ⇒ l
+              case (l, i) if i % 2 == 0 ⇒
+                l += i.asInstanceOf[AnyRef]
+              case (l, _) ⇒
+                l
             }
           val result = Await.result(f.mapTo[ArrayBuffer[Int]], 10000 millis).sum
 
@@ -652,7 +683,8 @@ class FutureSpec
               Future(
                 throw new IllegalArgumentException(
                   "shouldReduceResultsWithException: expected"))
-            case i ⇒ Future(i)
+            case i ⇒
+              Future(i)
           }
           intercept[Throwable] {
             Await.result(Future.reduce(futures)(_ + _), remainingOrDefault)
@@ -674,7 +706,8 @@ class FutureSpec
         val latch = new TestLatch
         val actor = system.actorOf(Props[TestActor])
         actor ? "Hello" onSuccess {
-          case "World" ⇒ latch.open()
+          case "World" ⇒
+            latch.open()
         }
         FutureSpec.ready(latch, 5 seconds)
         system.stop(actor)
@@ -727,14 +760,16 @@ class FutureSpec
           }
           f2 foreach (_ ⇒ throw new ThrowableTest("dispatcher foreach"))
           f2 onSuccess {
-            case _ ⇒ throw new ThrowableTest("dispatcher receive")
+            case _ ⇒
+              throw new ThrowableTest("dispatcher receive")
           }
           val f3 = f2 map (s ⇒ s.toUpperCase)
           latch.open()
           assert(Await.result(f2, timeout.duration) === "success")
           f2 foreach (_ ⇒ throw new ThrowableTest("current thread foreach"))
           f2 onSuccess {
-            case _ ⇒ throw new ThrowableTest("current thread receive")
+            case _ ⇒
+              throw new ThrowableTest("current thread receive")
           }
           assert(Await.result(f3, timeout.duration) === "SUCCESS")
         }
@@ -951,7 +986,8 @@ class FutureSpec
       f((future, result) ⇒
         Await.result(
           future.recover({
-            case _ ⇒ "pigdog"
+            case _ ⇒
+              "pigdog"
           }),
           timeout.duration) should ===(result))
     }
@@ -959,7 +995,8 @@ class FutureSpec
       f { (future, result) ⇒
         val p = Promise[Any]()
         future.onSuccess {
-          case x ⇒ p.success(x)
+          case x ⇒
+            p.success(x)
         }
         Await.result(p.future, timeout.duration) should ===(result)
       }
@@ -980,7 +1017,8 @@ class FutureSpec
           future
             .mapTo[Boolean]
             .recover({
-              case _: ClassCastException ⇒ false
+              case _: ClassCastException ⇒
+                false
             }),
           timeout.duration) should ===(false))
     }
@@ -1064,7 +1102,8 @@ class FutureSpec
       f((future, message) ⇒
         Await.result(
           future.recover({
-            case e if e.getMessage == message ⇒ "pigdog"
+            case e if e.getMessage == message ⇒
+              "pigdog"
           }),
           timeout.duration) should ===("pigdog"))
     }
@@ -1078,7 +1117,8 @@ class FutureSpec
       f { (future, message) ⇒
         val p = Promise[Any]()
         future.onFailure {
-          case _ ⇒ p.success(message)
+          case _ ⇒
+            p.success(message)
         }
         Await.result(p.future, timeout.duration) should ===(message)
       }

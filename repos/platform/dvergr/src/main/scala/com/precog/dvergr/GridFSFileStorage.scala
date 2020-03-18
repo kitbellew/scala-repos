@@ -47,13 +47,16 @@ object GridFSFileStorage {
     val servers = config[List[String]]("servers").toList map {
       case ServerAndPortPattern(host, port) =>
         new ServerAddress(host.trim(), port.trim().toInt)
-      case server => new ServerAddress(server, ServerAddress.defaultPort())
+      case server =>
+        new ServerAddress(server, ServerAddress.defaultPort())
     }
 
     val mongo =
       servers match {
-        case x :: Nil => new com.mongodb.Mongo(x)
-        case x :: xs  => new com.mongodb.Mongo(servers.asJava)
+        case x :: Nil =>
+          new com.mongodb.Mongo(x)
+        case x :: xs =>
+          new com.mongodb.Mongo(servers.asJava)
         case Nil =>
           sys.error(
             """MongoServers are not configured. Configure the value 'servers'. Format is '["host1:port1", "host2:port2", ...]'""")

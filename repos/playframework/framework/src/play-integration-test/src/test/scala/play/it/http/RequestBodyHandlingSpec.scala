@@ -36,7 +36,8 @@ trait RequestBodyHandlingSpec
           port,
           GuiceApplicationBuilder()
             .routes {
-              case _ => action
+              case _ =>
+                action
             }
             .build())) {
         block(port)

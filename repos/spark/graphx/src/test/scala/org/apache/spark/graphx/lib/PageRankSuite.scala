@@ -68,7 +68,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
           (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
       }
       .map {
-        case (id, error) => error
+        case (id, error) =>
+          error
       }
       .sum()
   }
@@ -96,7 +97,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
             0
         }
         .map {
-          case (vid, test) => test
+          case (vid, test) =>
+            test
         }
         .sum()
       assert(notMatching === 0)
@@ -145,7 +147,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
               0
           }
           .map {
-            case (vid, test) => test
+            case (vid, test) =>
+              test
           }
           .sum
       assert(notMatching === 0)
@@ -207,7 +210,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val chain1 = (0 until 9).map(x => (x, x + 1))
       val rawEdges = sc.parallelize(chain1, 1).map {
-        case (s, d) => (s.toLong, d.toLong)
+        case (s, d) =>
+          (s.toLong, d.toLong)
       }
       val chain = Graph.fromEdgeTuples(rawEdges, 1.0).cache()
       val resetProb = 0.15
@@ -226,7 +230,8 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val chain1 = (0 until 9).map(x => (x, x + 1))
       val rawEdges = sc.parallelize(chain1, 1).map {
-        case (s, d) => (s.toLong, d.toLong)
+        case (s, d) =>
+          (s.toLong, d.toLong)
       }
       val chain = Graph.fromEdgeTuples(rawEdges, 1.0).cache()
       val resetProb = 0.15

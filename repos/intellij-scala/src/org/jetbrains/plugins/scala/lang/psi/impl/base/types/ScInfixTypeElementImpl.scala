@@ -27,8 +27,10 @@ class ScInfixTypeElementImpl(node: ASTNode)
 
   def rOp =
     findChildrenByClass(classOf[ScTypeElement]) match {
-      case Array(_, r) => Some(r)
-      case _           => None
+      case Array(_, r) =>
+        Some(r)
+      case _ =>
+        None
     }
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
@@ -40,15 +42,19 @@ class ScInfixTypeElementImpl(node: ASTNode)
       getContext,
       this)
     newTypeElement match {
-      case p: ScParameterizedTypeElement => Some(p)
-      case _                             => None
+      case p: ScParameterizedTypeElement =>
+        Some(p)
+      case _ =>
+        None
     }
   }
 
   protected def innerType(ctx: TypingContext): TypeResult[ScType] = {
     desugarizedInfixType match {
-      case Some(p) => p.getType(ctx)
-      case _       => Failure("Cannot desugarize infix type", Some(this))
+      case Some(p) =>
+        p.getType(ctx)
+      case _ =>
+        Failure("Cannot desugarize infix type", Some(this))
     }
   }
 
@@ -58,8 +64,10 @@ class ScInfixTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitInfixTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitInfixTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

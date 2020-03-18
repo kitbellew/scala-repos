@@ -250,8 +250,10 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
 
   override def equals(o: Any): Boolean = {
     o match {
-      case v: MatrixUDT => true
-      case _            => false
+      case v: MatrixUDT =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -318,8 +320,10 @@ class DenseMatrix @Since("1.3.0") (
 
   override def equals(o: Any): Boolean =
     o match {
-      case m: Matrix => toBreeze == m.toBreeze
-      case _         => false
+      case m: Matrix =>
+        toBreeze == m.toBreeze
+      case _ =>
+        false
     }
 
   override def hashCode: Int = {
@@ -646,8 +650,10 @@ class SparseMatrix @Since("1.3.0") (
 
   override def equals(o: Any): Boolean =
     o match {
-      case m: Matrix => toBreeze == m.toBreeze
-      case _         => false
+      case m: Matrix =>
+        toBreeze == m.toBreeze
+      case _ =>
+        false
     }
 
   private[mllib] def toBreeze: BM[Double] = {
@@ -1196,8 +1202,9 @@ object Matrices {
         "The number of rows of the matrices in this sequence, " +
           "don't match!")
       mat match {
-        case sparse: SparseMatrix => hasSparse = true
-        case dense: DenseMatrix   => // empty on purpose
+        case sparse: SparseMatrix =>
+          hasSparse = true
+        case dense: DenseMatrix => // empty on purpose
         case _ =>
           throw new IllegalArgumentException(
             "Unsupported matrix format. Expected " +
@@ -1259,8 +1266,9 @@ object Matrices {
         "The number of rows of the matrices in this sequence, " +
           "don't match!")
       mat match {
-        case sparse: SparseMatrix => hasSparse = true
-        case dense: DenseMatrix   => // empty on purpose
+        case sparse: SparseMatrix =>
+          hasSparse = true
+        case dense: DenseMatrix => // empty on purpose
         case _ =>
           throw new IllegalArgumentException(
             "Unsupported matrix format. Expected " +

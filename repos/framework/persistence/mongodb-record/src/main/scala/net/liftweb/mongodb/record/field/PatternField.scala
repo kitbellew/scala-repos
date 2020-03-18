@@ -37,41 +37,58 @@ class PatternField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def setFromAny(in: Any): Box[Pattern] =
     in match {
-      case p: Pattern          => setBox(Full(p))
-      case Some(p: Pattern)    => setBox(Full(p))
-      case Full(p: Pattern)    => setBox(Full(p))
-      case (p: Pattern) :: _   => setBox(Full(p))
-      case s: String           => setFromString(s)
-      case Some(s: String)     => setFromString(s)
-      case Full(s: String)     => setFromString(s)
-      case null | None | Empty => setBox(defaultValueBox)
-      case f: Failure          => setBox(f)
-      case o                   => setFromString(o.toString)
+      case p: Pattern =>
+        setBox(Full(p))
+      case Some(p: Pattern) =>
+        setBox(Full(p))
+      case Full(p: Pattern) =>
+        setBox(Full(p))
+      case (p: Pattern) :: _ =>
+        setBox(Full(p))
+      case s: String =>
+        setFromString(s)
+      case Some(s: String) =>
+        setFromString(s)
+      case Full(s: String) =>
+        setFromString(s)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case f: Failure =>
+        setBox(f)
+      case o =>
+        setFromString(o.toString)
     }
 
   def setFromJValue(jvalue: JValue): Box[Pattern] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
       case JObject(
             JField("$regex", JString(s)) :: JField("$flags", JInt(f)) :: Nil) =>
         setBox(Full(Pattern.compile(s, f.intValue)))
-      case other => setBox(FieldHelpers.expectedA("JObject", other))
+      case other =>
+        setBox(FieldHelpers.expectedA("JObject", other))
     }
 
   // parse String into a JObject
   def setFromString(in: String): Box[Pattern] =
     tryo(JsonParser.parse(in)) match {
-      case Full(jv: JValue) => setFromJValue(jv)
-      case f: Failure       => setBox(f)
-      case other            => setBox(Failure("Error parsing String into a JValue: " + in))
+      case Full(jv: JValue) =>
+        setFromJValue(jv)
+      case f: Failure =>
+        setBox(f)
+      case other =>
+        setBox(Failure("Error parsing String into a JValue: " + in))
     }
 
   def toForm: Box[NodeSeq] = Empty
 
   def asJs =
     asJValue match {
-      case JNothing => JsNull
-      case jv       => Str(compactRender(jv))
+      case JNothing =>
+        JsNull
+      case jv =>
+        Str(compactRender(jv))
     }
 
   def asJValue: JValue =

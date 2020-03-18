@@ -14,8 +14,10 @@ object future extends FutureInstances0
 object Await {
   def result[A](f: Future[A], atMost: FiniteDuration): A =
     f.value match {
-      case Some(v) => v.get
-      case None    => throw new IllegalStateException()
+      case Some(v) =>
+        v.get
+      case None =>
+        throw new IllegalStateException()
     }
 }
 
@@ -31,7 +33,8 @@ private[std] sealed trait FutureInstances0 extends FutureInstances1 {
       def compare(x: Future[A], y: Future[A]): Int =
         Await.result(
           (x zip y).map {
-            case (x, y) => x compare y
+            case (x, y) =>
+              x compare y
           },
           atMost)
     }
@@ -44,7 +47,8 @@ private[std] sealed trait FutureInstances1 extends FutureInstances2 {
       def partialCompare(x: Future[A], y: Future[A]): Double =
         Await.result(
           (x zip y).map {
-            case (x, y) => x partialCompare y
+            case (x, y) =>
+              x partialCompare y
           },
           atMost)
     }
@@ -57,7 +61,8 @@ private[std] sealed trait FutureInstances2 {
       def eqv(x: Future[A], y: Future[A]): Boolean =
         Await.result(
           (x zip y).map {
-            case (x, y) => x === y
+            case (x, y) =>
+              x === y
           },
           atMost)
     }

@@ -90,8 +90,10 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
 
   def getInstance(inst: String): Properties = {
     propertyCategories.get(inst) match {
-      case Some(s) => s
-      case None    => propertyCategories.getOrElse(DEFAULT_PREFIX, new Properties)
+      case Some(s) =>
+        s
+      case None =>
+        propertyCategories.getOrElse(DEFAULT_PREFIX, new Properties)
     }
   }
 
@@ -103,7 +105,8 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
     var is: InputStream = null
     try {
       is = path match {
-        case Some(f) => new FileInputStream(f)
+        case Some(f) =>
+          new FileInputStream(f)
         case None =>
           Utils.getSparkClassLoader.getResourceAsStream(
             DEFAULT_METRICS_CONF_FILENAME)

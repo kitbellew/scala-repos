@@ -92,13 +92,17 @@ trait OracleProfile extends JdbcProfile {
       new ColumnBuilder(tableBuilder, meta) {
         override def tpe =
           meta.sqlType match {
-            case 101 => "Double"
-            case _   => super.tpe
+            case 101 =>
+              "Double"
+            case _ =>
+              super.tpe
           }
         override def rawDefault =
           super.rawDefault.map(_.stripSuffix(" ")).map {
-            case "null" => "NULL"
-            case v      => v
+            case "null" =>
+              "NULL"
+            case v =>
+              v
           }
       }
   }
@@ -156,13 +160,20 @@ trait OracleProfile extends JdbcProfile {
             s"VARCHAR2(${l.length})"
           else
             s"CHAR(${l.length})")
-      case java.sql.Types.INTEGER  => "NUMBER(10)"
-      case java.sql.Types.BIGINT   => "NUMBER(19)"
-      case java.sql.Types.SMALLINT => "NUMBER(5)"
-      case java.sql.Types.TINYINT  => "NUMBER(3)"
-      case java.sql.Types.DOUBLE   => "BINARY_DOUBLE"
-      case java.sql.Types.FLOAT    => "BINARY_FLOAT"
-      case _                       => super.defaultSqlTypeName(tmd, sym)
+      case java.sql.Types.INTEGER =>
+        "NUMBER(10)"
+      case java.sql.Types.BIGINT =>
+        "NUMBER(19)"
+      case java.sql.Types.SMALLINT =>
+        "NUMBER(5)"
+      case java.sql.Types.TINYINT =>
+        "NUMBER(3)"
+      case java.sql.Types.DOUBLE =>
+        "BINARY_DOUBLE"
+      case java.sql.Types.FLOAT =>
+        "BINARY_FLOAT"
+      case _ =>
+        super.defaultSqlTypeName(tmd, sym)
     }
 
   override val scalarFrom = Some("sys.dual")
@@ -179,25 +190,30 @@ trait OracleProfile extends JdbcProfile {
 
     override def expr(c: Node, skipParens: Boolean = false): Unit =
       c match {
-        case RowNumber(_) => b"rownum"
+        case RowNumber(_) =>
+          b"rownum"
         case Library.NextValue(SequenceNode(name)) =>
           b += quoteIdentifier(name) += ".nextval"
         case Library.CurrentValue(SequenceNode(name)) =>
           b += quoteIdentifier(name) += ".currval"
-        case Library.Database()   => b += "ORA_DATABASE_NAME"
-        case Library.Repeat(s, n) => b"RPAD($s, LENGTH($s)*$n, $s)"
+        case Library.Database() =>
+          b += "ORA_DATABASE_NAME"
+        case Library.Repeat(s, n) =>
+          b"RPAD($s, LENGTH($s)*$n, $s)"
         case Library.==(left: ProductNode, right: ProductNode) => //TODO
           b"\("
           val cols = (left.children zip right.children).force
           b.sep(cols, " and ") {
-            case (l, r) => expr(Library.==.typed[Boolean](l, r))
+            case (l, r) =>
+              expr(Library.==.typed[Boolean](l, r))
           }
           b"\)"
         case Library.==(l, r)
             if (l.nodeType != UnassignedType) && jdbcTypeFor(
               l.nodeType).sqlType == Types.BLOB =>
           b"\(dbms_lob.compare($l, $r) = 0\)"
-        case _ => super.expr(c, skipParens)
+        case _ =>
+          super.expr(c, skipParens)
       }
   }
 
@@ -229,9 +245,11 @@ trait OracleProfile extends JdbcProfile {
         fk.targetTable.tableName)
       sb append ')'
       fk.onDelete match {
-        case ForeignKeyAction.Cascade => sb append " on delete cascade"
-        case ForeignKeyAction.SetNull => sb append " on delete set null"
-        case _                        => // do nothing
+        case ForeignKeyAction.Cascade =>
+          sb append " on delete cascade"
+        case ForeignKeyAction.SetNull =>
+          sb append " on delete set null"
+        case _ => // do nothing
       }
       if (fk.onUpdate == ForeignKeyAction.Cascade)
         sb append " initially deferred"
@@ -283,8 +301,10 @@ trait OracleProfile extends JdbcProfile {
       o match {
         case OracleProfile.ColumnOption.AutoIncSequenceName(s) =>
           sequenceName = s
-        case OracleProfile.ColumnOption.AutoIncTriggerName(s) => triggerName = s
-        case _                                                => super.handleColumnOption(o)
+        case OracleProfile.ColumnOption.AutoIncTriggerName(s) =>
+          triggerName = s
+        case _ =>
+          super.handleColumnOption(o)
       }
 
     def createSequenceAndTrigger(t: Table[_]): Iterable[String] =

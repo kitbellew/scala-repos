@@ -92,8 +92,10 @@ trait CollectionsTestBase {
     if (it.hasNext) {
       it.next()
       expectedException match {
-        case Some(exClass) => expectThrows(exClass, action(it))
-        case None          => action(it)
+        case Some(exClass) =>
+          expectThrows(exClass, action(it))
+        case None =>
+          action(it)
       }
     }
   }

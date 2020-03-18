@@ -66,7 +66,8 @@ class InputFormatInfo(
         this.inputFormatClazz == that.inputFormatClazz &&
         this.path == that.path
       }
-      case _ => false
+      case _ =>
+        false
     }
 
   private def validate() {

@@ -77,7 +77,8 @@ abstract class RouteTest extends AllDirectives {
         RoutingSettings(system)))
 
     result.awaitResult(awaitDuration) match {
-      case RouteResult.Complete(response) ⇒ createTestResponse(response)
+      case RouteResult.Complete(response) ⇒
+        createTestResponse(response)
       case RouteResult.Rejected(ex) ⇒
         throw new AssertionError("got unexpected rejection: " + ex)
     }

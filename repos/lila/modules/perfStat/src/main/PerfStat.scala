@@ -144,8 +144,10 @@ case class Count(
       opAvg = pov.opponent.stableRating.fold(opAvg)(opAvg.agg),
       seconds = seconds + (
         pov.game.durationSeconds match {
-          case s if s > 3 * 60 * 60 => 0
-          case s                    => s
+          case s if s > 3 * 60 * 60 =>
+            0
+          case s =>
+            s
         }
       ),
       disconnects = disconnects + {

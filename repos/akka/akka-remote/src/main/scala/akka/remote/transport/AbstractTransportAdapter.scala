@@ -45,7 +45,8 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
 
   def getAdapterProvider(name: String): TransportAdapterProvider =
     adaptersTable.get(name) match {
-      case Some(provider) ⇒ provider
+      case Some(provider) ⇒
+        provider
       case None ⇒
         throw new IllegalArgumentException(
           s"There is no registered transport adapter provider with name: [${name}]")
@@ -131,10 +132,14 @@ abstract class AbstractTransportAdapter(
   private[akka] def boundAddress: Address =
     wrappedTransport match {
       // Need to do like this in the backport of #15007 to 2.3.x for binary compatibility reasons
-      case t: AbstractTransportAdapter ⇒ t.boundAddress
-      case t: netty.NettyTransport ⇒ t.boundAddress
-      case t: TestTransport ⇒ t.boundAddress
-      case _ ⇒ null
+      case t: AbstractTransportAdapter ⇒
+        t.boundAddress
+      case t: netty.NettyTransport ⇒
+        t.boundAddress
+      case t: TestTransport ⇒
+        t.boundAddress
+      case _ ⇒
+        null
     }
 
   override def associate(remoteAddress: Address): Future[AssociationHandle] = {
@@ -276,7 +281,8 @@ abstract class ActorTransportAdapterManager
      * queue. The difference is that these messages will not survive a restart -- which is not needed here.
      * These messages will be processed in the ready state.
      */
-    case otherEvent ⇒ delayedEvents = delayedEvents enqueue otherEvent
+    case otherEvent ⇒
+      delayedEvents = delayedEvents enqueue otherEvent
 
   }
 

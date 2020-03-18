@@ -213,7 +213,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
         iter
       }
       .reduceByKey {
-        case (x, y) => x + y
+        case (x, y) =>
+          x + y
       }
       .mapPartitions { iter =>
         TaskContext.get().taskMetrics().getAccum(TEST_ACCUM) += 10
@@ -343,7 +344,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       sc.cleaner match {
         case Some(cleaner: SaveAccumContextCleaner) =>
           cleaner.accumsRegisteredForCleanup
-        case _ => Seq.empty[Long]
+        case _ =>
+          Seq.empty[Long]
       }
     // Make sure the same set of accumulators is registered for cleanup
     assert(accumsRegistered.size === internalAccums.size * 2)

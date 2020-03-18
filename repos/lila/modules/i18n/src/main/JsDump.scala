@@ -92,7 +92,8 @@ private[i18n] final class JsDump(path: String, pool: I18nPool, keys: I18nKeys) {
     val code = pool.names.toList
       .sortBy(_._1)
       .map {
-        case (code, name) => s"""["$code","$name"]"""
+        case (code, name) =>
+          s"""["$code","$name"]"""
       }
       .mkString("[", ",", "]")
     val file = new File("%s/refs.json".format(pathFile.getCanonicalPath))

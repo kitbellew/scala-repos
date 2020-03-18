@@ -41,7 +41,8 @@ object RemoteNodeRestartDeathWatchMultiJvmSpec extends MultiNodeConfig {
       case "shutdown" ⇒
         sender() ! "shutdown-ack"
         context.system.terminate()
-      case msg ⇒ sender() ! msg
+      case msg ⇒
+        sender() ! msg
     }
   }
 

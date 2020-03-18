@@ -180,9 +180,12 @@ private[ui] object RDDOperationGraph extends Logging {
         val fromThisGraph = nodes.contains(e.fromId)
         val toThisGraph = nodes.contains(e.toId)
         (fromThisGraph, toThisGraph) match {
-          case (true, true)  => internalEdges += e
-          case (true, false) => outgoingEdges += e
-          case (false, true) => incomingEdges += e
+          case (true, true) =>
+            internalEdges += e
+          case (true, false) =>
+            outgoingEdges += e
+          case (false, true) =>
+            incomingEdges += e
           // should never happen
           case _ =>
             logWarning(s"Found an orphan edge in stage ${stage.stageId}: $e")

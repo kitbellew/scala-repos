@@ -112,7 +112,8 @@ class ScalaPatternParameterInfoHandler
               sign.method match {
                 case function: ScFunction =>
                   ScPattern.isOneArgCaseClassMethod(function)
-                case _ => false
+                case _ =>
+                  false
               }
             val params =
               ScPattern
@@ -131,8 +132,10 @@ class ScalaPatternParameterInfoHandler
                       buffer.append(ScType.presentableText(param))
                       val isSeq = methodName == "unapplySeq" && (
                         ScType.extractClass(param) match {
-                          case Some(clazz) => clazz.qualifiedName == "scala.Seq"
-                          case _           => false
+                          case Some(clazz) =>
+                            clazz.qualifiedName == "scala.Seq"
+                          case _ =>
+                            false
                         }
                       )
                       if (isSeq) {
@@ -201,10 +204,13 @@ class ScalaPatternParameterInfoHandler
             Option(fun.containingClass) match {
               case Some(x: ScObject) =>
                 ScalaPsiUtil.getCompanionModule(x) match {
-                  case Some(x: ScClass) => Some(x)
-                  case _                => None
+                  case Some(x: ScClass) =>
+                    Some(x)
+                  case _ =>
+                    None
                 }
-              case _ => None
+              case _ =>
+                None
             }
 
           companionClass match {
@@ -216,21 +222,27 @@ class ScalaPatternParameterInfoHandler
                   } else {
                     param.name + ": " + paramTypeText // SCL-3006
                   }
-                case None => paramTypeText
+                case None =>
+                  paramTypeText
               }
-            case None => paramTypeText
+            case None =>
+              paramTypeText
           }
         case fun: ScFunction =>
           // Look for a corresponding apply method beside the unapply method.
           // TODO also check types correspond, allowing for overloading
           val applyParam: Option[PsiParameter] =
             ScalaPsiUtil.getApplyMethods(fun.containingClass) match {
-              case Seq(sig) => sig.method.getParameterList.getParameters.lift(o)
-              case _        => None
+              case Seq(sig) =>
+                sig.method.getParameterList.getParameters.lift(o)
+              case _ =>
+                None
             }
           applyParam match {
-            case Some(param) => param.getName + ": " + paramTypeText
-            case None        => paramTypeText
+            case Some(param) =>
+              param.getName + ": " + paramTypeText
+            case None =>
+              paramTypeText
           }
         case _ =>
           paramTypeText
@@ -321,11 +333,13 @@ class ScalaPatternParameterInfoHandler
                                   undefSubst.getSubstitutor match {
                                     case Some(newSubst) =>
                                       newSubst.followed(substitutor)
-                                    case _ => substitutor
+                                    case _ =>
+                                      substitutor
                                   }
                                 } else
                                   substitutor
-                              case _ => substitutor
+                              case _ =>
+                                substitutor
                             }
                           }
                         }

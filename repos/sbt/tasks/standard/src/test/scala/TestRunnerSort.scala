@@ -44,7 +44,8 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
         val pivot = a(0)
         val (lt, gte) = a.view.drop(1).partition(_ < pivot)
         Test.t2(sort(lt), sort(gte)) map {
-          case (l, g) => l ++ List(pivot) ++ g
+          case (l, g) =>
+            l ++ List(pivot) ++ g
         }
       }
     }

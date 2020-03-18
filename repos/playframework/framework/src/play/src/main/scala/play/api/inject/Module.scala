@@ -127,7 +127,8 @@ object Modules {
               DefaultModuleName,
               () => defaultModuleClass))
         } catch {
-          case e: ClassNotFoundException => None
+          case e: ClassNotFoundException =>
+            None
         }
 
     moduleClassNames.map { className =>
@@ -154,8 +155,10 @@ object Modules {
             val argTypes = args.map(_.getClass)
             Some(moduleClass.getConstructor(argTypes: _*))
           } catch {
-            case _: NoSuchMethodException => None
-            case _: SecurityException     => None
+            case _: NoSuchMethodException =>
+              None
+            case _: SecurityException =>
+              None
           }
         ctor.map(_.newInstance(args: _*))
       }
@@ -174,9 +177,12 @@ object Modules {
           "Module [" + className + "] cannot be instantiated.")
       }
     } catch {
-      case e: PlayException       => throw e
-      case e: VirtualMachineError => throw e
-      case e: ThreadDeath         => throw e
+      case e: PlayException =>
+        throw e
+      case e: VirtualMachineError =>
+        throw e
+      case e: ThreadDeath =>
+        throw e
       case e: Throwable =>
         throw new PlayException(
           "Cannot load module",

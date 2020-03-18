@@ -136,7 +136,8 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
           y.offset,
           y.stride,
           y.length)
-      case _ => super.equals(p1)
+      case _ =>
+        super.equals(p1)
     }
 
   // TODO: this is only consistent if the hashcode of inactive elements is 0!!!
@@ -298,11 +299,16 @@ object DenseVector
       values: Array[V]): DenseVector[V] = {
     // ensure we get specialized implementations even from non-specialized calls
     (values: AnyRef) match {
-      case v: Array[Double] => new DenseVector(v).asInstanceOf[DenseVector[V]]
-      case v: Array[Float]  => new DenseVector(v).asInstanceOf[DenseVector[V]]
-      case v: Array[Int]    => new DenseVector(v).asInstanceOf[DenseVector[V]]
-      case v: Array[Long]   => new DenseVector(v).asInstanceOf[DenseVector[V]]
-      case _                => new DenseVector(values)
+      case v: Array[Double] =>
+        new DenseVector(v).asInstanceOf[DenseVector[V]]
+      case v: Array[Float] =>
+        new DenseVector(v).asInstanceOf[DenseVector[V]]
+      case v: Array[Int] =>
+        new DenseVector(v).asInstanceOf[DenseVector[V]]
+      case v: Array[Long] =>
+        new DenseVector(v).asInstanceOf[DenseVector[V]]
+      case _ =>
+        new DenseVector(values)
     }
   }
 
@@ -949,14 +955,22 @@ object DenseVector
     @throws(classOf[ObjectStreamException])
     def readResolve(): Object = {
       data match { //switch to make specialized happy
-        case x: Array[Int]    => new DenseVector(x, offset, stride, length)
-        case x: Array[Long]   => new DenseVector(x, offset, stride, length)
-        case x: Array[Double] => new DenseVector(x, offset, stride, length)
-        case x: Array[Float]  => new DenseVector(x, offset, stride, length)
-        case x: Array[Short]  => new DenseVector(x, offset, stride, length)
-        case x: Array[Byte]   => new DenseVector(x, offset, stride, length)
-        case x: Array[Char]   => new DenseVector(x, offset, stride, length)
-        case x: Array[_]      => new DenseVector(x, offset, stride, length)
+        case x: Array[Int] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[Long] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[Double] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[Float] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[Short] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[Byte] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[Char] =>
+          new DenseVector(x, offset, stride, length)
+        case x: Array[_] =>
+          new DenseVector(x, offset, stride, length)
       }
 
     }

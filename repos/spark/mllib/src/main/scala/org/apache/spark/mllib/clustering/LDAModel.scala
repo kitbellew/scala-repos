@@ -276,7 +276,8 @@ class LocalLDAModel private[spark] (
   def logPerplexity(documents: RDD[(Long, Vector)]): Double = {
     val corpusTokenCount = documents
       .map {
-        case (_, termCounts) => termCounts.toArray.sum
+        case (_, termCounts) =>
+          termCounts.toArray.sum
       }
       .sum()
     -logLikelihood(documents) / corpusTokenCount
@@ -673,7 +674,8 @@ class DistributedLDAModel private[clustering] (
         }
         .reduce { (q1, q2) =>
           q1.zip(q2).foreach {
-            case (a, b) => a ++= b
+            case (a, b) =>
+              a ++= b
           }
           q1
         }
@@ -714,7 +716,8 @@ class DistributedLDAModel private[clustering] (
         }
         .treeReduce { (q1, q2) =>
           q1.zip(q2).foreach {
-            case (a, b) => a ++= b
+            case (a, b) =>
+              a ++= b
           }
           q1
         }
@@ -1036,7 +1039,8 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
       val globalTopicTotals: LDA.TopicCounts =
         dataFrame.first().getAs[Vector](0).toBreeze.toDenseVector
       val vertices: RDD[(VertexId, LDA.TopicCounts)] = vertexDataFrame.rdd.map {
-        case Row(ind: Long, vec: Vector) => (ind, vec.toBreeze.toDenseVector)
+        case Row(ind: Long, vec: Vector) =>
+          (ind, vec.toBreeze.toDenseVector)
       }
 
       val edges: RDD[Edge[LDA.TokenCount]] = edgeDataFrame.rdd.map {

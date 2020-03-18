@@ -51,7 +51,8 @@ class ScalaCompilerConfiguration(project: Project)
     settings.initFrom(options)
 
     customProfiles.find(_.getSettings.getState == settings.getState) match {
-      case Some(profile) => profile.addModuleName(module.getName)
+      case Some(profile) =>
+        profile.addModuleName(module.getName)
       case None =>
         val profileNames =
           customProfiles.iterator

@@ -45,7 +45,8 @@ object QaComment extends QaController {
                       .show(q.id, q.slug) + "#comment-" + comment.id)
                 }
             )
-          case _ => notFound
+          case _ =>
+            notFound
         }
       }
     }

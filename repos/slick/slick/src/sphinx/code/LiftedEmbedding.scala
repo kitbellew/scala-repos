@@ -221,7 +221,8 @@ object LiftedEmbedding extends App {
             coffee.name === _
           ) // not a condition as `criteriaRoast` evaluates to `None`
         ).collect({
-            case Some(criteria) => criteria
+            case Some(criteria) =>
+              criteria
           })
           .reduceLeftOption(_ || _)
           .getOrElse(true: Rep[Boolean])
@@ -609,16 +610,20 @@ object LiftedEmbedding extends App {
       // Use it for returning data from a query
       val q2 = as
         .map {
-          case a => Pair(a.id, (a.s ++ a.s))
+          case a =>
+            Pair(a.id, (a.s ++ a.s))
         }
         .filter {
-          case Pair(id, _) => id =!= 1
+          case Pair(id, _) =>
+            id =!= 1
         }
         .sortBy {
-          case Pair(_, ss) => ss
+          case Pair(_, ss) =>
+            ss
         }
         .map {
-          case Pair(id, ss) => Pair(id, Pair(42, ss))
+          case Pair(id, ss) =>
+            Pair(id, Pair(42, ss))
         }
       // returns: Vector(Pair(3,Pair(42,"bb")), Pair(2,Pair(42,"cc")))
       //#recordtype2
@@ -652,13 +657,16 @@ object LiftedEmbedding extends App {
 
       val q3 = bs
         .map {
-          case b => LiftedB(b.id, (b.s ++ b.s))
+          case b =>
+            LiftedB(b.id, (b.s ++ b.s))
         }
         .filter {
-          case LiftedB(id, _) => id =!= 1
+          case LiftedB(id, _) =>
+            id =!= 1
         }
         .sortBy {
-          case LiftedB(_, ss) => ss
+          case LiftedB(_, ss) =>
+            ss
         }
 
       // returns: Vector(B(3,"bb"), B(2,"cc"))
@@ -696,13 +704,16 @@ object LiftedEmbedding extends App {
 
       val q4 = cs
         .map {
-          case c => LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s)))
+          case c =>
+            LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s)))
         }
         .filter {
-          case LiftedC(_, LiftedB(id, _)) => id =!= 1
+          case LiftedC(_, LiftedB(id, _)) =>
+            id =!= 1
         }
         .sortBy {
-          case LiftedC(Pair(_, p2), LiftedB(_, ss)) => ss ++ p2
+          case LiftedC(Pair(_, p2), LiftedB(_, ss)) =>
+            ss ++ p2
         }
 
       // returns: Vector(C(Pair(9,"z"),B(3,"bb")), C(Pair(8,"y"),B(2,"cc")))

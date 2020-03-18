@@ -195,7 +195,8 @@ object SslConnectHandler {
         Try {
           checker.`match`(hostname, x509)
         }.isReturn
-      case _ => false
+      case _ =>
+        false
     }
 
     if (isValid)

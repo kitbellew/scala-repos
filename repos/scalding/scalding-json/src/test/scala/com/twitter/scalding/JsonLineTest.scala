@@ -43,7 +43,8 @@ class JsonLineJob(args: Args) extends Job(args) {
   try {
     Tsv("input0", ('query, 'queryStats)).read.write(JsonLine("output0"))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -52,7 +53,8 @@ class JsonLineRestrictedFieldsJob(args: Args) extends Job(args) {
     Tsv("input0", ('query, 'queryStats)).read
       .write(JsonLine("output0", Tuple1('query)))
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 
@@ -63,7 +65,8 @@ class JsonLineInputJob(args: Args) extends Job(args) {
       .write(Tsv("output0"))
 
   } catch {
-    case e: Exception => e.printStackTrace
+    case e: Exception =>
+      e.printStackTrace
   }
 }
 
@@ -74,7 +77,8 @@ class JsonLineInputJobSkipEmptyLines(args: Args) extends Job(args) {
       .write(Tsv("output0"))
 
   } catch {
-    case e: Exception => e.printStackTrace
+    case e: Exception =>
+      e.printStackTrace
   }
 }
 
@@ -86,7 +90,8 @@ class JsonLineNestedInputJob(args: Args) extends Job(args) {
       .write(Tsv("output0"))
 
   } catch {
-    case e: Exception => e.printStackTrace
+    case e: Exception =>
+      e.printStackTrace
   }
 }
 

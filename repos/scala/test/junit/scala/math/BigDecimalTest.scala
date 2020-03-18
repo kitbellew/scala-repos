@@ -71,14 +71,16 @@ class BigDecimalTest {
         a;
         false
       } catch {
-        case iae: IllegalArgumentException => true
+        case iae: IllegalArgumentException =>
+          true
       }
     def isNPE[A](a: => A) =
       try {
         a;
         false
       } catch {
-        case npe: NullPointerException => true
+        case npe: NullPointerException =>
+          true
       }
     assert(
       isIAE(new BigDecimal(null: BD, new MC(2))) &&

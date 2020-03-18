@@ -207,10 +207,14 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] {
     }
 
     delta match {
-      case Duration.Top             => Top
-      case Duration.Bottom          => Bottom
-      case Duration.Undefined       => Undefined
-      case Duration.Nanoseconds(ns) => addNanos(inNanoseconds, ns)
+      case Duration.Top =>
+        Top
+      case Duration.Bottom =>
+        Bottom
+      case Duration.Undefined =>
+        Undefined
+      case Duration.Nanoseconds(ns) =>
+        addNanos(inNanoseconds, ns)
     }
   }
 
@@ -244,7 +248,8 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] {
     */
   def floor(increment: Duration): This =
     (this, increment) match {
-      case (Nanoseconds(0), Duration.Nanoseconds(0)) => Undefined
+      case (Nanoseconds(0), Duration.Nanoseconds(0)) =>
+        Undefined
       case (Nanoseconds(num), Duration.Nanoseconds(0)) =>
         if (num < 0)
           Bottom
@@ -252,8 +257,10 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] {
           Top
       case (Nanoseconds(num), Duration.Nanoseconds(denom)) =>
         fromNanoseconds((num / denom) * denom)
-      case (self, Duration.Nanoseconds(_)) => self
-      case (_, _)                          => Undefined
+      case (self, Duration.Nanoseconds(_)) =>
+        self
+      case (_, _) =>
+        Undefined
     }
 
   def max(that: This): This =
@@ -351,20 +358,26 @@ object Time extends TimeLikeOps[Time] {
 
       override def equals(other: Any) =
         other match {
-          case t: Time => t eq this
-          case _       => false
+          case t: Time =>
+            t eq this
+          case _ =>
+            false
         }
 
       override def +(delta: Duration) =
         delta match {
-          case Duration.Bottom | Duration.Undefined => Undefined
-          case _                                    => this // Top or finite.
+          case Duration.Bottom | Duration.Undefined =>
+            Undefined
+          case _ =>
+            this // Top or finite.
         }
 
       override def diff(that: Time) =
         that match {
-          case Top | Undefined => Duration.Undefined
-          case other           => Duration.Top
+          case Top | Undefined =>
+            Duration.Undefined
+          case other =>
+            Duration.Top
         }
 
       override def isFinite = false
@@ -389,20 +402,26 @@ object Time extends TimeLikeOps[Time] {
 
       override def equals(other: Any) =
         other match {
-          case t: Time => t eq this
-          case _       => false
+          case t: Time =>
+            t eq this
+          case _ =>
+            false
         }
 
       override def +(delta: Duration) =
         delta match {
-          case Duration.Top | Duration.Undefined => Undefined
-          case _                                 => this
+          case Duration.Top | Duration.Undefined =>
+            Undefined
+          case _ =>
+            this
         }
 
       override def diff(that: Time) =
         that match {
-          case Bottom | Undefined => Duration.Undefined
-          case other              => Duration.Bottom
+          case Bottom | Undefined =>
+            Duration.Undefined
+          case other =>
+            Duration.Bottom
         }
 
       override def isFinite = false
@@ -416,8 +435,10 @@ object Time extends TimeLikeOps[Time] {
 
       override def equals(other: Any) =
         other match {
-          case t: Time => t eq this
-          case _       => false
+          case t: Time =>
+            t eq this
+          case _ =>
+            false
         }
 
       override def compare(that: Time) =
@@ -663,10 +684,14 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     }
 
     that match {
-      case Undefined => Duration.Undefined
-      case Top       => Duration.Bottom
-      case Bottom    => Duration.Top
-      case _         => subNanos(this.inNanoseconds, that.inNanoseconds)
+      case Undefined =>
+        Duration.Undefined
+      case Top =>
+        Duration.Bottom
+      case Bottom =>
+        Duration.Top
+      case _ =>
+        subNanos(this.inNanoseconds, that.inNanoseconds)
     }
   }
 

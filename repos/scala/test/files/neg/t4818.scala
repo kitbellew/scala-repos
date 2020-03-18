@@ -3,7 +3,8 @@ object Test {
 
   def f(x: Any) =
     x match {
-      case Fn(f) => f(5)
+      case Fn(f) =>
+        f(5)
     }
 
   Fn((x: String) => x)

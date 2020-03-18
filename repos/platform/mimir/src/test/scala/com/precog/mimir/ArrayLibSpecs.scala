@@ -43,8 +43,10 @@ trait ArrayLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -61,7 +63,8 @@ trait ArrayLibSpecs[M[+_]]
       result must haveSize(25)
 
       val values = result collect {
-        case (ids, SDecimal(d)) if ids.length == 2 => d
+        case (ids, SDecimal(d)) if ids.length == 2 =>
+          d
       }
 
       values mustEqual Set(
@@ -81,7 +84,8 @@ trait ArrayLibSpecs[M[+_]]
       result must haveSize(26)
 
       val values = result collect {
-        case (ids, jv) if ids.length == 2 => jv
+        case (ids, jv) if ids.length == 2 =>
+          jv
       }
 
       values mustEqual Set(
@@ -146,14 +150,16 @@ trait ArrayLibSpecs[M[+_]]
       result must haveSize(26)
 
       val values = result collect {
-        case (ids, jv) if ids.length == 2 => jv
+        case (ids, jv) if ids.length == 2 =>
+          jv
       }
       values must haveAllElementsLike {
         case SObject(obj) =>
           obj.keySet mustEqual Set("arr", "val")
           val SArray(elems) = obj("arr")
           elems must contain(obj("val"))
-        case _ => ko
+        case _ =>
+          ko
       }
     }
 

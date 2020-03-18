@@ -66,8 +66,10 @@ object Name {
 
     def idStr: String =
       id match {
-        case path: com.twitter.finagle.Path => path.show
-        case _                              => id.toString
+        case path: com.twitter.finagle.Path =>
+          path.show
+        case _ =>
+          id.toString
       }
   }
 
@@ -93,11 +95,14 @@ object Name {
     new Showable[Name] {
       def show(name: Name) =
         name match {
-          case Path(path) => path.show
+          case Path(path) =>
+            path.show
           case bound @ Bound(_) =>
             bound.id match {
-              case id: com.twitter.finagle.Path => id.show
-              case id                           => id.toString
+              case id: com.twitter.finagle.Path =>
+                id.show
+              case id =>
+                id.toString
             }
         }
     }
@@ -124,7 +129,8 @@ object Name {
     */
   def fromGroup(g: Group[SocketAddress]): Name.Bound =
     g match {
-      case NameGroup(name) => name
+      case NameGroup(name) =>
+        name
       case group =>
         Name.Bound(
           {
@@ -134,7 +140,8 @@ object Name {
             var first = true
 
             group.set map {
-              case newSet if first && newSet.isEmpty => Addr.Pending
+              case newSet if first && newSet.isEmpty =>
+                Addr.Pending
               case newSet =>
                 first = false
                 newSet.foldLeft[Addr](Addr.Bound()) {
@@ -144,7 +151,8 @@ object Name {
                     Addr.Failed(
                       new IllegalArgumentException(
                         s"Unsupported SocketAddress of type '${sa.getClass.getName}': $sa"))
-                  case (addr, _) => addr
+                  case (addr, _) =>
+                    addr
                 }
             }
           },
@@ -174,28 +182,37 @@ object Name {
     else {
       val va = Var.collect(names map (_.addr)) map {
         case addrs if addrs.exists({
-              case Addr.Bound(_, _) => true;
-              case _                => false
+              case Addr.Bound(_, _) =>
+                true;
+              case _ =>
+                false
             }) =>
           val endpointAddrs =
             addrs.flatMap {
-              case Addr.Bound(as, _) => as
-              case _                 => Set.empty[Address]
+              case Addr.Bound(as, _) =>
+                as
+              case _ =>
+                Set.empty[Address]
             }.toSet
           Addr.Bound(endpointAddrs, Addr.Metadata.empty)
 
-        case addrs if addrs.forall(_ == Addr.Neg) => Addr.Neg
+        case addrs if addrs.forall(_ == Addr.Neg) =>
+          Addr.Neg
         case addrs if addrs.forall({
-              case Addr.Failed(_) => true;
-              case _              => false
+              case Addr.Failed(_) =>
+                true;
+              case _ =>
+                false
             }) =>
           Addr.Failed(new Exception)
 
-        case _ => Addr.Pending
+        case _ =>
+          Addr.Pending
       }
 
       val id = names map {
-        case bound @ Name.Bound(_) => bound.id
+        case bound @ Name.Bound(_) =>
+          bound.id
       }
       Name.Bound(va, id)
     }

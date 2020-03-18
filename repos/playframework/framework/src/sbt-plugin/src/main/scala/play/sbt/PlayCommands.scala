@@ -89,7 +89,8 @@ object PlayCommands {
           .getMethod("main", classOf[Array[String]])
           .invoke(null, Array.empty[String])
       } catch {
-        case e: Exception => e.printStackTrace
+        case e: Exception =>
+          e.printStackTrace
       }
       state
     }
@@ -116,8 +117,10 @@ object PlayCommands {
           .sorted
           .foldLeft(List.empty[Path]) { (result, next) =>
             result.headOption match {
-              case Some(previous) if next.startsWith(previous) => result
-              case _                                           => next :: result
+              case Some(previous) if next.startsWith(previous) =>
+                result
+              case _ =>
+                next :: result
             }
           }
 

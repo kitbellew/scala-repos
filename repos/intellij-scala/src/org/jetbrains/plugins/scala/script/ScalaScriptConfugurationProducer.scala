@@ -51,7 +51,8 @@ class ScalaScriptConfugurationProducer extends {
       location: Location[_ <: PsiElement]): RunnerAndConfigurationSettings = {
     val file = location.getPsiElement.getContainingFile
     file match {
-      case null => null
+      case null =>
+        null
       case scalaFile: ScalaFile
           if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile => {
         val settings = RunManager
@@ -68,7 +69,8 @@ class ScalaScriptConfugurationProducer extends {
         conf.setScriptPath(scalaFile.getVirtualFile.getPath)
         settings
       }
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -82,7 +84,8 @@ class ScalaScriptConfugurationProducer extends {
           return false
         conf.getScriptPath.trim == file.getVirtualFile.getPath.trim
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

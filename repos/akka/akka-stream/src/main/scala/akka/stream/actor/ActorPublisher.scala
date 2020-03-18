@@ -241,7 +241,8 @@ trait ActorPublisher[T] extends Actor {
         if (subscriber ne null) // otherwise onComplete will be called when the subscription arrives
           try tryOnComplete(subscriber)
           finally context.stop(self)
-      case _ ⇒ onComplete()
+      case _ ⇒
+        onComplete()
     }
 
   /**
@@ -279,7 +280,8 @@ trait ActorPublisher[T] extends Actor {
         if (subscriber ne null) // otherwise onError will be called when the subscription arrives
           try tryOnError(subscriber, cause)
           finally context.stop(self)
-      case _ ⇒ onError(cause)
+      case _ ⇒
+        onError(cause)
     }
 
   /**

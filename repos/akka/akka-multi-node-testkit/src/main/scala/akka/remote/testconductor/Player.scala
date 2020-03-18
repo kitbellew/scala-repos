@@ -49,7 +49,8 @@ trait Player {
       case _ if system.whenTerminated.isCompleted ⇒
         throw new IllegalStateException(
           "TestConductor unavailable because system is terminated; you need to startNewSystem() before this point")
-      case x ⇒ x
+      case x ⇒
+        x
     }
 
   /**
@@ -249,9 +250,12 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
       channel.write(msg)
       val token =
         msg match {
-          case EnterBarrier(barrier, timeout) ⇒ Some(barrier -> sender())
-          case GetAddress(node) ⇒ Some(node.name -> sender())
-          case _ ⇒ None
+          case EnterBarrier(barrier, timeout) ⇒
+            Some(barrier -> sender())
+          case GetAddress(node) ⇒
+            Some(node.name -> sender())
+          case _ ⇒
+            None
         }
       stay using d.copy(runningOp = token)
     case Event(ToServer(op), Data(channel, Some((token, _)))) ⇒
@@ -278,8 +282,10 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
           stay using d.copy(runningOp = None)
         case AddressReply(node, addr) ⇒
           runningOp match {
-            case Some((_, requester)) ⇒ requester ! addr
-            case None ⇒ log.warning("did not expect {}", op)
+            case Some((_, requester)) ⇒
+              requester ! addr
+            case None ⇒
+              log.warning("did not expect {}", op)
           }
           stay using d.copy(runningOp = None)
         case t: ThrottleMsg ⇒
@@ -302,7 +308,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
             .managementCommand(SetThrottle(t.target, t.direction, mode))
 
           cmdFuture onSuccess {
-            case true ⇒ self ! ToServer(Done)
+            case true ⇒
+              self ! ToServer(Done)
             case _ ⇒
               throw new RuntimeException(
                 "Throttle was requested from the TestConductor, but no transport " +
@@ -321,7 +328,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
         case TerminateMsg(Right(exitValue)) ⇒
           System.exit(exitValue)
           stay // needed because Java doesn’t have Nothing
-        case _: Done ⇒ stay //FIXME what should happen?
+        case _: Done ⇒
+          stay //FIXME what should happen?
       }
   }
 
@@ -391,7 +399,8 @@ private[akka] class PlayerHandler(
       case c: ConnectException if reconnects > 0 ⇒
         reconnects -= 1
         scheduler.scheduleOnce(nextAttempt.timeLeft)(reconnect())
-      case e ⇒ fsm ! ConnectionFailure(e.getMessage)
+      case e ⇒
+        fsm ! ConnectionFailure(e.getMessage)
     }
   }
 

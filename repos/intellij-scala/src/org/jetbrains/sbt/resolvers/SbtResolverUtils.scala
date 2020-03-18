@@ -19,7 +19,8 @@ object SbtResolverUtils {
         if (moduleManager == null)
           return Seq.empty
         moduleManager.getModules.toSeq.flatMap(SbtModule.getResolversFrom)
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
 
   def joinGroupArtifact(group: String, artifact: String) =

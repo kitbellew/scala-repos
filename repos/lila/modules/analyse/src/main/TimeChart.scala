@@ -56,6 +56,7 @@ final class TimeChart(game: Game, moves: List[String]) {
 
   private val moveTimes = game.moveTimesInSeconds
   private val indexedMoveTimes = game.moveTimesInSeconds.zipWithIndex map {
-    case (mt, i) => (mt, i + game.startedAtTurn)
+    case (mt, i) =>
+      (mt, i + game.startedAtTurn)
   }
 }

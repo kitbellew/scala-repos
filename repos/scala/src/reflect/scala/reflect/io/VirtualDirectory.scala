@@ -21,8 +21,10 @@ class VirtualDirectory(
     extends AbstractFile {
   def path: String =
     maybeContainer match {
-      case None         => name
-      case Some(parent) => parent.path + '/' + name
+      case None =>
+        name
+      case Some(parent) =>
+        parent.path + '/' + name
     }
 
   def absolute = this

@@ -17,7 +17,8 @@ object Test {
       (Long.MinValue to Long.MaxValue).sum;
       false
     } catch {
-      case _: IllegalArgumentException => true
+      case _: IllegalArgumentException =>
+        true
     })
     assert(caught)
     // #7432
@@ -25,14 +26,16 @@ object Test {
       (10 until 10).min;
       false
     } catch {
-      case _: NoSuchElementException => true
+      case _: NoSuchElementException =>
+        true
     })
     assert(noElemAtMin)
     val noElemAtMax = (try {
       (10 until 10).max;
       false
     } catch {
-      case _: NoSuchElementException => true
+      case _: NoSuchElementException =>
+        true
     })
     assert(noElemAtMax)
   }

@@ -20,7 +20,8 @@ object Export extends LilaController {
         OptionFuResult(GameRepo game id) { game =>
           (
             game.pgnImport.ifTrue(~get("as") == "imported") match {
-              case Some(i) => fuccess(i.pgn)
+              case Some(i) =>
+                fuccess(i.pgn)
               case None =>
                 for {
                   initialFen <- GameRepo initialFen game

@@ -227,6 +227,7 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
 
         withProjections :: Nil
 
-      case _ => Nil
+      case _ =>
+        Nil
     }
 }

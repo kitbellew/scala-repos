@@ -38,7 +38,8 @@ trait MethodOverride extends Handler with ServletApiImplicits {
             override def getMethod(): String =
               methodOverride(req) getOrElse req.getMethod
           }
-        case _ => req
+        case _ =>
+          req
       }
     super.handle(req2, res)
   }

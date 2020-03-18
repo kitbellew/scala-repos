@@ -31,14 +31,19 @@ class ScInfixExprImpl(node: ASTNode)
       Seq(lOp)
     else
       rOp match {
-        case tuple: ScTuple => tuple.exprs
+        case tuple: ScTuple =>
+          tuple.exprs
         case t: ScParenthesisedExpr =>
           t.expr match {
-            case Some(expr) => Seq(expr)
-            case None       => Seq(t)
+            case Some(expr) =>
+              Seq(expr)
+            case None =>
+              Seq(t)
           }
-        case unit: ScUnitExpr => Seq.empty
-        case expr             => Seq(expr)
+        case unit: ScUnitExpr =>
+          Seq.empty
+        case expr =>
+          Seq(expr)
       }
   }
 
@@ -53,7 +58,8 @@ class ScInfixExprImpl(node: ASTNode)
         val newExpr = ScalaPsiElementFactory
           .createExpressionWithContextFromText(exprText, getContext, this)
         newExpr.getType(TypingContext.empty)
-      case _ => super.innerType(ctx)
+      case _ =>
+        super.innerType(ctx)
     }
   }
 
@@ -63,8 +69,10 @@ class ScInfixExprImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitInfixExpression(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitInfixExpression(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

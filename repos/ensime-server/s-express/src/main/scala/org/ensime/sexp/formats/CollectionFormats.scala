@@ -63,9 +63,12 @@ trait CollectionFormats {
 
       def read(v: Sexp): T[E] =
         v match {
-          case SexpNil       => cbf().result()
-          case SexpList(els) => els.map(_.convertTo[E])(breakOut)
-          case x             => deserializationError(x)
+          case SexpNil =>
+            cbf().result()
+          case SexpList(els) =>
+            els.map(_.convertTo[E])(breakOut)
+          case x =>
+            deserializationError(x)
         }
     }
 
@@ -84,19 +87,23 @@ trait CollectionFormats {
       def write(m: M[K, V]) =
         SexpList(
           m.map {
-            case (k, v) => SexpList(k.toSexp, v.toSexp)
+            case (k, v) =>
+              SexpList(k.toSexp, v.toSexp)
           }(breakOut): List[Sexp])
 
       def read(v: Sexp): M[K, V] =
         v match {
-          case SexpNil => cbf().result()
+          case SexpNil =>
+            cbf().result()
           case SexpList(els) =>
             els.map {
               case SexpList(sk :: sv :: Nil) =>
                 (sk.convertTo[K], sv.convertTo[V])
-              case x => deserializationError(x)
+              case x =>
+                deserializationError(x)
             }(breakOut)
-          case x => deserializationError(x)
+          case x =>
+            deserializationError(x)
         }
     }
 
@@ -146,11 +153,13 @@ trait CollectionFormats {
     // NOTE: returns immutable BitSet
     def read(m: Sexp): im.BitSet =
       m match {
-        case SexpNil => im.BitSet()
+        case SexpNil =>
+          im.BitSet()
         case SexpString(CalcEval(radix, num)) =>
           val bigInt = BigInt(num, radix.toInt)
           BigIntConvertor.toBitSet(bigInt)
-        case x => deserializationError(x)
+        case x =>
+          deserializationError(x)
       }
   }
 
@@ -176,9 +185,11 @@ trait CollectionFormats {
           (data(start), data(end), data(step)) match {
             case (SexpNumber(s), SexpNumber(e), SexpNumber(st)) =>
               Range(s.toInt, e.toInt, st.toInt)
-            case _ => deserializationError(s)
+            case _ =>
+              deserializationError(s)
           }
-        case _ => deserializationError(s)
+        case _ =>
+          deserializationError(s)
       }
   }
 
@@ -208,9 +219,11 @@ trait CollectionFormats {
                   st.convertTo[E])
               case (s, e, st, incl) =>
                 im.NumericRange(s.convertTo[E], e.convertTo[E], st.convertTo[E])
-              case _ => deserializationError(s)
+              case _ =>
+                deserializationError(s)
             }
-          case _ => deserializationError(s)
+          case _ =>
+            deserializationError(s)
         }
     }
 

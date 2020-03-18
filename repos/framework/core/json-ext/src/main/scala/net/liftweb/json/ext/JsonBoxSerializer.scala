@@ -33,7 +33,8 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
       format: Formats): PartialFunction[(TypeInfo, JValue), Box[_]] = {
     case (TypeInfo(BoxClass, ptype), json) =>
       json match {
-        case JNull | JNothing => Empty
+        case JNull | JNothing =>
+          Empty
         case JObject(
               JField("box_failure", JString("Failure")) ::
               JField("msg", JString(msg)) ::
@@ -73,8 +74,10 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
   }
 
   def serialize(implicit format: Formats): PartialFunction[Any, JValue] = {
-    case Full(x) => decompose(x)
-    case Empty   => JNull
+    case Full(x) =>
+      decompose(x)
+    case Empty =>
+      JNull
     case ParamFailure(msg, exception, chain, param) =>
       JObject(
         JField("box_failure", JString("ParamFailure")) ::
@@ -102,14 +105,18 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
 
   private def serializeException(exception: Box[Throwable]) =
     exception match {
-      case Full(x) => JString(javaSerialize(x))
-      case _       => JNull
+      case Full(x) =>
+        JString(javaSerialize(x))
+      case _ =>
+        JNull
     }
 
   private def deserializeException(json: JValue) =
     json match {
-      case JString(s) => Full(javaDeserialize(s).asInstanceOf[Throwable])
-      case _          => Empty
+      case JString(s) =>
+        Full(javaDeserialize(s).asInstanceOf[Throwable])
+      case _ =>
+        Empty
     }
 
   private def javaSerialize(obj: AnyRef): String = {

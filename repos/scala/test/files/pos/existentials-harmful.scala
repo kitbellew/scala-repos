@@ -31,7 +31,8 @@ object ExistentialsConsideredHarmful {
 
   // Use pattern match to avoid opening the existential twice
   aBox match {
-    case TransportBox(animal, tools) => tools.shave(animal)
+    case TransportBox(animal, tools) =>
+      tools.shave(animal)
   }
 
   abstract class BoxCarrier[R <: Animal](box: TransportBox[R]) {

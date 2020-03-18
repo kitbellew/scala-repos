@@ -99,17 +99,23 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
 
   def add()(implicit mode: Mode): CachedFile =
     mode match {
-      case Hdfs(_, conf)        => addHdfs(conf)
-      case HadoopTest(conf, _)  => addHdfs(conf)
-      case (Local(_) | Test(_)) => addLocal()
-      case _                    => throw new RuntimeException("unhandled mode: %s".format(mode))
+      case Hdfs(_, conf) =>
+        addHdfs(conf)
+      case HadoopTest(conf, _) =>
+        addHdfs(conf)
+      case (Local(_) | Test(_)) =>
+        addLocal()
+      case _ =>
+        throw new RuntimeException("unhandled mode: %s".format(mode))
     }
 
   private[this] def addLocal(): CachedFile = {
     val path =
       source match {
-        case Left(strPath) => strPath
-        case Right(uri)    => uri.getPath
+        case Left(strPath) =>
+          strPath
+        case Right(uri) =>
+          uri.getPath
       }
 
     LocallyCachedFile(path)
@@ -133,8 +139,10 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
 
     val sourceUri =
       source match {
-        case Left(strPath) => makeQualifiedStr(strPath, conf)
-        case Right(uri)    => makeQualifiedURI(uri, conf)
+        case Left(strPath) =>
+          makeQualifiedStr(strPath, conf)
+        case Right(uri) =>
+          makeQualifiedURI(uri, conf)
       }
 
     HDistributedCache.addCacheFile(symlinkedUriFor(sourceUri), conf)

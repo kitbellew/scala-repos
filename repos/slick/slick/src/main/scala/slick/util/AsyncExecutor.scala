@@ -40,14 +40,18 @@ object AsyncExecutor extends Logging {
             "Cannot initialize ExecutionContext; AsyncExecutor already shut down")
         val queue =
           queueSize match {
-            case 0  => new SynchronousQueue[Runnable]
-            case -1 => new LinkedBlockingQueue[Runnable]
+            case 0 =>
+              new SynchronousQueue[Runnable]
+            case -1 =>
+              new LinkedBlockingQueue[Runnable]
             case n =>
               new ManagedArrayBlockingQueue[Runnable](n * 2) {
                 def accept(r: Runnable, size: Int) =
                   r match {
-                    case pr: PrioritizedRunnable if pr.highPriority => true
-                    case _                                          => size < n
+                    case pr: PrioritizedRunnable if pr.highPriority =>
+                      true
+                    case _ =>
+                      size < n
                   }
               }
           }

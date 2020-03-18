@@ -44,8 +44,10 @@ case class Info(section: ChannelBuffer) extends Command {
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
       section match {
-        case ChannelBuffers.EMPTY_BUFFER => Seq(CommandBytes.INFO)
-        case _                           => Seq(CommandBytes.INFO, section)
+        case ChannelBuffers.EMPTY_BUFFER =>
+          Seq(CommandBytes.INFO)
+        case _ =>
+          Seq(CommandBytes.INFO, section)
       })
 }
 

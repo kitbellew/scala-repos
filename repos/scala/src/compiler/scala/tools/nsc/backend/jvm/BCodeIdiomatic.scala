@@ -30,7 +30,8 @@ abstract class BCodeIdiomatic extends SubComponent {
 
   val classfileVersion: Int =
     settings.target.value match {
-      case "jvm-1.8" => asm.Opcodes.V1_8
+      case "jvm-1.8" =>
+        asm.Opcodes.V1_8
     }
 
   val majorVersion: Int = (classfileVersion & 0xFF)
@@ -151,24 +152,30 @@ abstract class BCodeIdiomatic extends SubComponent {
       import scalaPrimitives.{AND, OR, XOR}
 
       ((op, kind): @unchecked) match {
-        case (AND, LONG) => emit(Opcodes.LAND)
-        case (AND, INT)  => emit(Opcodes.IAND)
+        case (AND, LONG) =>
+          emit(Opcodes.LAND)
+        case (AND, INT) =>
+          emit(Opcodes.IAND)
         case (AND, _) =>
           emit(Opcodes.IAND)
           if (kind != BOOL) {
             emitT2T(INT, kind)
           }
 
-        case (OR, LONG) => emit(Opcodes.LOR)
-        case (OR, INT)  => emit(Opcodes.IOR)
+        case (OR, LONG) =>
+          emit(Opcodes.LOR)
+        case (OR, INT) =>
+          emit(Opcodes.IOR)
         case (OR, _) =>
           emit(Opcodes.IOR)
           if (kind != BOOL) {
             emitT2T(INT, kind)
           }
 
-        case (XOR, LONG) => emit(Opcodes.LXOR)
-        case (XOR, INT)  => emit(Opcodes.IXOR)
+        case (XOR, LONG) =>
+          emit(Opcodes.LXOR)
+        case (XOR, INT) =>
+          emit(Opcodes.IXOR)
         case (XOR, _) =>
           emit(Opcodes.IXOR)
           if (kind != BOOL) {
@@ -186,20 +193,26 @@ abstract class BCodeIdiomatic extends SubComponent {
       import scalaPrimitives.{LSL, ASR, LSR}
 
       ((op, kind): @unchecked) match {
-        case (LSL, LONG) => emit(Opcodes.LSHL)
-        case (LSL, INT)  => emit(Opcodes.ISHL)
+        case (LSL, LONG) =>
+          emit(Opcodes.LSHL)
+        case (LSL, INT) =>
+          emit(Opcodes.ISHL)
         case (LSL, _) =>
           emit(Opcodes.ISHL)
           emitT2T(INT, kind)
 
-        case (ASR, LONG) => emit(Opcodes.LSHR)
-        case (ASR, INT)  => emit(Opcodes.ISHR)
+        case (ASR, LONG) =>
+          emit(Opcodes.LSHR)
+        case (ASR, INT) =>
+          emit(Opcodes.ISHR)
         case (ASR, _) =>
           emit(Opcodes.ISHR)
           emitT2T(INT, kind)
 
-        case (LSR, LONG) => emit(Opcodes.LUSHR)
-        case (LSR, INT)  => emit(Opcodes.IUSHR)
+        case (LSR, LONG) =>
+          emit(Opcodes.LUSHR)
+        case (LSR, INT) =>
+          emit(Opcodes.IUSHR)
         case (LSR, _) =>
           emit(Opcodes.IUSHR)
           emitT2T(INT, kind)
@@ -226,17 +239,21 @@ abstract class BCodeIdiomatic extends SubComponent {
     def genConcat(elemType: BType, pos: Position): Unit = {
       val paramType =
         elemType match {
-          case ct: ClassBType if ct.isSubtypeOf(StringRef).get => StringRef
+          case ct: ClassBType if ct.isSubtypeOf(StringRef).get =>
+            StringRef
           case ct: ClassBType if ct.isSubtypeOf(jlStringBufferRef).get =>
             jlStringBufferRef
           case ct: ClassBType if ct.isSubtypeOf(jlCharSequenceRef).get =>
             jlCharSequenceRef
           // Don't match for `ArrayBType(CHAR)`, even though StringBuilder has such an overload:
           // `"a" + Array('b')` should NOT be "ab", but "a[C@...".
-          case _: RefBType => ObjectRef
+          case _: RefBType =>
+            ObjectRef
           // jlStringBuilder does not have overloads for byte and short, but we can just use the int version
-          case BYTE | SHORT       => INT
-          case pt: PrimitiveBType => pt
+          case BYTE | SHORT =>
+            INT
+          case pt: PrimitiveBType =>
+            pt
         }
       val bt = MethodBType(List(paramType), jlStringBuilderRef)
       invokevirtual(JavaStringBuilderClassName, "append", bt.descriptor, pos)
@@ -270,13 +287,20 @@ abstract class BCodeIdiomatic extends SubComponent {
       def pickOne(opcs: Array[Int]) { // TODO index on to.sort
         val chosen =
           (to: @unchecked) match {
-            case BYTE   => opcs(0)
-            case SHORT  => opcs(1)
-            case CHAR   => opcs(2)
-            case INT    => opcs(3)
-            case LONG   => opcs(4)
-            case FLOAT  => opcs(5)
-            case DOUBLE => opcs(6)
+            case BYTE =>
+              opcs(0)
+            case SHORT =>
+              opcs(1)
+            case CHAR =>
+              opcs(2)
+            case INT =>
+              opcs(3)
+            case LONG =>
+              opcs(4)
+            case FLOAT =>
+              opcs(5)
+            case DOUBLE =>
+              opcs(6)
           }
         if (chosen != -1) {
           emit(chosen)
@@ -294,16 +318,22 @@ abstract class BCodeIdiomatic extends SubComponent {
 
         // using `asm.Type.SHORT` instead of `BType.SHORT` because otherwise "warning: could not emit switch for @switch annotated match"
 
-        case BYTE  => pickOne(JCodeMethodN.fromByteT2T)
-        case SHORT => pickOne(JCodeMethodN.fromShortT2T)
-        case CHAR  => pickOne(JCodeMethodN.fromCharT2T)
-        case INT   => pickOne(JCodeMethodN.fromIntT2T)
+        case BYTE =>
+          pickOne(JCodeMethodN.fromByteT2T)
+        case SHORT =>
+          pickOne(JCodeMethodN.fromShortT2T)
+        case CHAR =>
+          pickOne(JCodeMethodN.fromCharT2T)
+        case INT =>
+          pickOne(JCodeMethodN.fromIntT2T)
 
         case FLOAT =>
           import asm.Opcodes.{F2L, F2D, F2I}
           to match {
-            case LONG   => emit(F2L)
-            case DOUBLE => emit(F2D)
+            case LONG =>
+              emit(F2L)
+            case DOUBLE =>
+              emit(F2D)
             case _ =>
               emit(F2I);
               emitT2T(INT, to)
@@ -312,8 +342,10 @@ abstract class BCodeIdiomatic extends SubComponent {
         case LONG =>
           import asm.Opcodes.{L2F, L2D, L2I}
           to match {
-            case FLOAT  => emit(L2F)
-            case DOUBLE => emit(L2D)
+            case FLOAT =>
+              emit(L2F)
+            case DOUBLE =>
+              emit(L2D)
             case _ =>
               emit(L2I);
               emitT2T(INT, to)
@@ -322,8 +354,10 @@ abstract class BCodeIdiomatic extends SubComponent {
         case DOUBLE =>
           import asm.Opcodes.{D2L, D2F, D2I}
           to match {
-            case FLOAT => emit(D2F)
-            case LONG  => emit(D2L)
+            case FLOAT =>
+              emit(D2F)
+            case LONG =>
+              emit(D2L)
             case _ =>
               emit(D2I);
               emitT2T(INT, to)
@@ -393,14 +427,22 @@ abstract class BCodeIdiomatic extends SubComponent {
           val rand = {
             // using `asm.Type.SHORT` instead of `BType.SHORT` because otherwise "warning: could not emit switch for @switch annotated match"
             (elem: @unchecked) match {
-              case BOOL   => Opcodes.T_BOOLEAN
-              case BYTE   => Opcodes.T_BYTE
-              case SHORT  => Opcodes.T_SHORT
-              case CHAR   => Opcodes.T_CHAR
-              case INT    => Opcodes.T_INT
-              case LONG   => Opcodes.T_LONG
-              case FLOAT  => Opcodes.T_FLOAT
-              case DOUBLE => Opcodes.T_DOUBLE
+              case BOOL =>
+                Opcodes.T_BOOLEAN
+              case BYTE =>
+                Opcodes.T_BYTE
+              case SHORT =>
+                Opcodes.T_SHORT
+              case CHAR =>
+                Opcodes.T_CHAR
+              case INT =>
+                Opcodes.T_INT
+              case LONG =>
+                Opcodes.T_LONG
+              case FLOAT =>
+                Opcodes.T_FLOAT
+              case DOUBLE =>
+                Opcodes.T_DOUBLE
             }
           }
           jmethod.visitIntInsn(Opcodes.NEWARRAY, rand)
@@ -633,16 +675,23 @@ abstract class BCodeIdiomatic extends SubComponent {
           opcs(0)
         } else if (tk.isIntSizedType) {
           (tk: @unchecked) match {
-            case BOOL | BYTE => opcs(1)
-            case SHORT       => opcs(2)
-            case CHAR        => opcs(3)
-            case INT         => opcs(4)
+            case BOOL | BYTE =>
+              opcs(1)
+            case SHORT =>
+              opcs(2)
+            case CHAR =>
+              opcs(3)
+            case INT =>
+              opcs(4)
           }
         } else {
           (tk: @unchecked) match {
-            case LONG   => opcs(5)
-            case FLOAT  => opcs(6)
-            case DOUBLE => opcs(7)
+            case LONG =>
+              opcs(5)
+            case FLOAT =>
+              opcs(6)
+            case DOUBLE =>
+              opcs(7)
           }
         }
       }
@@ -656,10 +705,14 @@ abstract class BCodeIdiomatic extends SubComponent {
       val opc = {
         // using `asm.Type.SHORT` instead of `BType.SHORT` because otherwise "warning: could not emit switch for @switch annotated match"
         tk match {
-          case LONG   => opcs(1)
-          case FLOAT  => opcs(2)
-          case DOUBLE => opcs(3)
-          case _      => opcs(0)
+          case LONG =>
+            opcs(1)
+          case FLOAT =>
+            opcs(2)
+          case DOUBLE =>
+            opcs(3)
+          case _ =>
+            opcs(0)
         }
       }
       emit(opc)
@@ -779,13 +832,20 @@ abstract class BCodeIdiomatic extends SubComponent {
   final def coercionFrom(code: Int): BType = {
     import scalaPrimitives._
     (code: @switch) match {
-      case B2B | B2C | B2S | B2I | B2L | B2F | B2D => BYTE
-      case S2B | S2S | S2C | S2I | S2L | S2F | S2D => SHORT
-      case C2B | C2S | C2C | C2I | C2L | C2F | C2D => CHAR
-      case I2B | I2S | I2C | I2I | I2L | I2F | I2D => INT
-      case L2B | L2S | L2C | L2I | L2L | L2F | L2D => LONG
-      case F2B | F2S | F2C | F2I | F2L | F2F | F2D => FLOAT
-      case D2B | D2S | D2C | D2I | D2L | D2F | D2D => DOUBLE
+      case B2B | B2C | B2S | B2I | B2L | B2F | B2D =>
+        BYTE
+      case S2B | S2S | S2C | S2I | S2L | S2F | S2D =>
+        SHORT
+      case C2B | C2S | C2C | C2I | C2L | C2F | C2D =>
+        CHAR
+      case I2B | I2S | I2C | I2I | I2L | I2F | I2D =>
+        INT
+      case L2B | L2S | L2C | L2I | L2L | L2F | L2D =>
+        LONG
+      case F2B | F2S | F2C | F2I | F2L | F2F | F2D =>
+        FLOAT
+      case D2B | D2S | D2C | D2I | D2L | D2F | D2D =>
+        DOUBLE
     }
   }
 
@@ -796,13 +856,20 @@ abstract class BCodeIdiomatic extends SubComponent {
   final def coercionTo(code: Int): BType = {
     import scalaPrimitives._
     (code: @switch) match {
-      case B2B | C2B | S2B | I2B | L2B | F2B | D2B => BYTE
-      case B2C | C2C | S2C | I2C | L2C | F2C | D2C => CHAR
-      case B2S | C2S | S2S | I2S | L2S | F2S | D2S => SHORT
-      case B2I | C2I | S2I | I2I | L2I | F2I | D2I => INT
-      case B2L | C2L | S2L | I2L | L2L | F2L | D2L => LONG
-      case B2F | C2F | S2F | I2F | L2F | F2F | D2F => FLOAT
-      case B2D | C2D | S2D | I2D | L2D | F2D | D2D => DOUBLE
+      case B2B | C2B | S2B | I2B | L2B | F2B | D2B =>
+        BYTE
+      case B2C | C2C | S2C | I2C | L2C | F2C | D2C =>
+        CHAR
+      case B2S | C2S | S2S | I2S | L2S | F2S | D2S =>
+        SHORT
+      case B2I | C2I | S2I | I2I | L2I | F2I | D2I =>
+        INT
+      case B2L | C2L | S2L | I2L | L2L | F2L | D2L =>
+        LONG
+      case B2F | C2F | S2F | I2F | L2F | F2F | D2F =>
+        FLOAT
+      case B2D | C2D | S2D | I2D | L2D | F2D | D2D =>
+        DOUBLE
     }
   }
 
@@ -827,8 +894,10 @@ abstract class BCodeIdiomatic extends SubComponent {
       super.traverse(tree)
       // acc contains all LabelDefs found under (but not at) `tree`
       tree match {
-        case lblDf: LabelDef => acc ::= lblDf
-        case _               => ()
+        case lblDf: LabelDef =>
+          acc ::= lblDf
+        case _ =>
+          ()
       }
       if (acc.isEmpty) {
         acc = saved

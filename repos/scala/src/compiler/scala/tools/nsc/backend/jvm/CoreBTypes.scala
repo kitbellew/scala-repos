@@ -194,8 +194,10 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   def singleParamOfClass(cls: Symbol) =
     (s: Symbol) =>
       s.paramss match {
-        case List(List(param)) => param.info.typeSymbol == cls
-        case _                 => false
+        case List(List(param)) =>
+          param.info.typeSymbol == cls
+        case _ =>
+          false
       }
 
   // java/lang/Boolean -> MethodNameAndType(valueOf,(Z)Ljava/lang/Boolean;)
@@ -291,7 +293,8 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     ) // the `transformInfo` method of specialization adds specialized subclasses to the `specializedClass` map
     specializeTypes.specializedClass
       .collect({
-        case ((`cls`, _), specCls) => specCls
+        case ((`cls`, _), specCls) =>
+          specCls
       })
       .toList
   }
@@ -360,8 +363,10 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
   lazy val String_valueOf: Symbol = {
     getMember(StringModule, nme.valueOf) filter (sym =>
       sym.info.paramTypes match {
-        case List(pt) => pt.typeSymbol == ObjectClass
-        case _        => false
+        case List(pt) =>
+          pt.typeSymbol == ObjectClass
+        case _ =>
+          false
       })
   }
 

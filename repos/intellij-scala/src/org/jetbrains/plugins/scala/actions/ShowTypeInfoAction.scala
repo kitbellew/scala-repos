@@ -93,7 +93,8 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
               tpeText
             else
               types.mkString("\n")
-          case _ => "Could not find type for selection"
+          case _ =>
+            "Could not find type for selection"
         }
       }
       val hint = hintForPattern orElse hintForExpression
@@ -118,7 +119,8 @@ object ShowTypeInfoAction {
       offset: Int): Option[String] = {
     val typeInfoFromRef =
       file.findReferenceAt(offset) match {
-        case ResolvedWithSubst(e, subst) => typeTextOf(e, subst)
+        case ResolvedWithSubst(e, subst) =>
+          typeTextOf(e, subst)
         case _ =>
           val element = file.findElementAt(offset)
           if (element == null)
@@ -126,8 +128,10 @@ object ShowTypeInfoAction {
           if (element.getNode.getElementType != ScalaTokenTypes.tIDENTIFIER)
             return None
           element match {
-            case Parent(p) => typeTextOf(p, ScSubstitutor.empty)
-            case _         => None
+            case Parent(p) =>
+              typeTextOf(p, ScSubstitutor.empty)
+            case _ =>
+              None
           }
       }
     val pattern = PsiTreeUtil.findElementOfClassAtOffset(
@@ -140,8 +144,10 @@ object ShowTypeInfoAction {
 
   def typeInfoFromPattern(p: ScBindingPattern): Option[String] = {
     p match {
-      case null => None
-      case _    => typeTextOf(p, ScSubstitutor.empty)
+      case null =>
+        None
+      case _ =>
+        typeTextOf(p, ScSubstitutor.empty)
     }
   }
 

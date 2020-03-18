@@ -17,7 +17,8 @@ object JavaErrorHandling extends PlaySpecification with WsTestClient {
     GuiceApplicationBuilder()
       .configure("play.http.errorHandler" -> ct.runtimeClass.getName)
       .routes {
-        case (_, "/error") => Action(_ => throw new RuntimeException("foo"))
+        case (_, "/error") =>
+          Action(_ => throw new RuntimeException("foo"))
       }
       .build()
   }

@@ -661,7 +661,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
               case Right(request) ⇒
                 compactEntity(request.entity).fast.map(x ⇒
                   Right(request.withEntity(x)))
-              case Left(error) ⇒ FastFuture.successful(Left(error))
+              case Left(error) ⇒
+                FastFuture.successful(Left(error))
             }
           }
         }
@@ -682,13 +683,15 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         case x: Chunked ⇒
           compactEntityChunks(x.chunks).fast.map(compacted ⇒
             x.copy(chunks = source(compacted: _*)))
-        case _ ⇒ entity.toStrict(awaitAtMost)
+        case _ ⇒
+          entity.toStrict(awaitAtMost)
       }
 
     private def compactEntityChunks(
         data: Source[ChunkStreamPart, Any]): Future[Seq[ChunkStreamPart]] =
       data.limit(100000).runWith(Sink.seq).fast.recover {
-        case _: NoSuchElementException ⇒ Nil
+        case _: NoSuchElementException ⇒
+          Nil
       }
 
     def prep(response: String) = response.stripMarginWithNewline("\r\n")

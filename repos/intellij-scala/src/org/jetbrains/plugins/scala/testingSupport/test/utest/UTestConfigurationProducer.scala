@@ -64,7 +64,8 @@ with AbstractTestConfigurationProducer {
           if configuration.getTestKind == TestKind.TEST_NAME =>
         testClassPath == configuration.getTestClassPath && testClassName != null &&
           testClassName == configuration.getTestName
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -79,8 +80,10 @@ with AbstractTestConfigurationProducer {
           .isInstanceOf[PsiDirectory]) {
       val name =
         element match {
-          case p: PsiPackage   => p.getName
-          case d: PsiDirectory => d.getName
+          case p: PsiPackage =>
+            p.getName
+          case d: PsiDirectory =>
+            d.getName
         }
       return Some(
         (
@@ -153,7 +156,8 @@ with AbstractTestConfigurationProducer {
               val index =
                 tuple.exprs.zipWithIndex
                   .find {
-                    case (expr, _) => expr == testSuite
+                    case (expr, _) =>
+                      expr == testSuite
                   }
                   .map(_._2)
                   .get
@@ -164,9 +168,11 @@ with AbstractTestConfigurationProducer {
                 None
             } else
               None
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -186,22 +192,28 @@ with AbstractTestConfigurationProducer {
                   case call: ScMethodCall
                       if TestNodeProvider.isUTestApplyCall(call) =>
                     buildPathFromTestExpr(call).map(_ + "\\" + testScopeName)
-                  case _ => None
+                  case _ =>
+                    None
                 }
               case upperInfix: ScInfixExpr =>
                 buildPathFromTestExpr(upperInfix).map(_ + "\\" + testScopeName)
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
   private def getTestName(literal: ScLiteral) =
     literal.getValue match {
-      case symbol: Symbol => symbol.name
-      case other          => other.toString
+      case symbol: Symbol =>
+        symbol.name
+      case other =>
+        other.toString
     }
 
   private def buildPathFromTestExpr(expr: ScExpression): Option[String] =
@@ -256,7 +268,8 @@ with AbstractTestConfigurationProducer {
         case methodCall: ScMethodCall =>
           //test location is a test method definition
           getTestSuiteName(methodCall)
-        case _ => None
+        case _ =>
+          None
       }
       .getOrElse(
         //it is also possible that element is on left-hand of test suite definition

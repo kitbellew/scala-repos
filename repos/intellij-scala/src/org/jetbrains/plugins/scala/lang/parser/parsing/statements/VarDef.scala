@@ -47,7 +47,8 @@ object VarDef {
         } else {
           ParserUtils.eatElement(builder, ScalaTokenTypes.tASSIGN)
           builder.getTokenType match {
-            case ScalaTokenTypes.tUNDER => builder.advanceLexer
+            case ScalaTokenTypes.tUNDER =>
+              builder.advanceLexer
             //Ate _
             case _ => {
               valDefMarker.rollbackTo

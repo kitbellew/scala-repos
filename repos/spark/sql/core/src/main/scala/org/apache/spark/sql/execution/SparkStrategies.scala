@@ -72,7 +72,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
                 planLater(child)) :: Nil
             case logical.Limit(IntegerLiteral(limit), child) =>
               execution.CollectLimit(limit, planLater(child)) :: Nil
-            case other => planLater(other) :: Nil
+            case other =>
+              planLater(other) :: Nil
           }
         case logical
               .Limit(IntegerLiteral(limit), logical.Sort(order, true, child)) =>
@@ -89,7 +90,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             order,
             Some(projectList),
             planLater(child)) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -129,7 +131,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               planLater(left),
               planLater(right)))
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -369,7 +372,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
 
         // --- Cases where this strategy does not apply ---------------------------------------------
 
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -388,7 +392,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           val aggregateExpressions =
             resultExpressions.flatMap { expr =>
               expr.collect {
-                case agg: AggregateExpression => agg
+                case agg: AggregateExpression =>
+                  agg
               }
             }.distinct
           // For those distinct aggregate expressions, we create a map from the
@@ -416,7 +421,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           }
 
           val namedGroupingExpressions = groupingExpressions.map {
-            case ne: NamedExpression => ne -> ne
+            case ne: NamedExpression =>
+              ne -> ne
             // If the expression is not a NamedExpressions, we add an alias.
             // So, when we generate the result of the operator, the Aggregate Operator
             // can directly get the Seq of attributes representing the grouping expressions.
@@ -490,7 +496,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
 
           aggregateOperator
 
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -519,7 +526,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             joins.BuildRight,
             j.joinType,
             condition) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -534,7 +542,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             condition,
             execution.joins
               .CartesianProduct(planLater(left), planLater(right))) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -555,7 +564,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             buildSide,
             joinType,
             condition) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -574,7 +584,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               Expression
             ]], // All filters still need to be evaluated.
             InMemoryColumnarTableScan(_, filters, mem)) :: Nil
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -584,7 +595,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
 
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
-        case r: RunnableCommand => ExecutedCommand(r) :: Nil
+        case r: RunnableCommand =>
+          ExecutedCommand(r) :: Nil
 
         case logical.Distinct(child) =>
           throw new IllegalStateException(
@@ -696,8 +708,10 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           python.BatchPythonEvaluation(udf, e.output, planLater(child)) :: Nil
         case LogicalRDD(output, rdd) =>
           PhysicalRDD(output, rdd, "ExistingRDD") :: Nil
-        case BroadcastHint(child) => planLater(child) :: Nil
-        case _                    => Nil
+        case BroadcastHint(child) =>
+          planLater(child) :: Nil
+        case _ =>
+          Nil
       }
   }
 
@@ -752,7 +766,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         case logical.DescribeFunction(function, extended) =>
           ExecutedCommand(DescribeFunction(function, extended)) :: Nil
 
-        case _ => Nil
+        case _ =>
+          Nil
       }
   }
 }

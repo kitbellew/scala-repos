@@ -18,7 +18,8 @@ object GetOrElseNull extends SimplificationType {
     expr match {
       case qual `.getOrElse`(literal("null")) =>
         Some(replace(expr).withText(invocationText(qual, "orNull")))
-      case _ => None
+      case _ =>
+        None
     }
   }
 

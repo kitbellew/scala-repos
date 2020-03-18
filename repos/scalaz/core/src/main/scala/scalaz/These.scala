@@ -6,86 +6,122 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
 
   def isThis: Boolean =
     this match {
-      case This(_)    => true
-      case That(_)    => false
-      case Both(_, _) => false
+      case This(_) =>
+        true
+      case That(_) =>
+        false
+      case Both(_, _) =>
+        false
     }
 
   def isThat: Boolean =
     this match {
-      case This(_)    => false
-      case That(_)    => true
-      case Both(_, _) => false
+      case This(_) =>
+        false
+      case That(_) =>
+        true
+      case Both(_, _) =>
+        false
     }
 
   def isBoth: Boolean =
     this match {
-      case This(_)    => false
-      case That(_)    => false
-      case Both(_, _) => true
+      case This(_) =>
+        false
+      case That(_) =>
+        false
+      case Both(_, _) =>
+        true
     }
 
   def a: Option[A] =
     this match {
-      case This(a)    => Some(a)
-      case That(_)    => None
-      case Both(a, _) => Some(a)
+      case This(a) =>
+        Some(a)
+      case That(_) =>
+        None
+      case Both(a, _) =>
+        Some(a)
     }
 
   def b: Option[B] =
     this match {
-      case This(_)    => None
-      case That(b)    => Some(b)
-      case Both(_, b) => Some(b)
+      case This(_) =>
+        None
+      case That(b) =>
+        Some(b)
+      case Both(_, b) =>
+        Some(b)
     }
 
   def onlyThis: Option[A] =
     this match {
-      case This(a)    => Some(a)
-      case That(_)    => None
-      case Both(_, _) => None
+      case This(a) =>
+        Some(a)
+      case That(_) =>
+        None
+      case Both(_, _) =>
+        None
     }
 
   def onlyThat: Option[B] =
     this match {
-      case This(_)    => None
-      case That(b)    => Some(b)
-      case Both(_, _) => None
+      case This(_) =>
+        None
+      case That(b) =>
+        Some(b)
+      case Both(_, _) =>
+        None
     }
 
   def onlyThisOrThat: Option[A \/ B] =
     this match {
-      case This(a)    => Some(-\/(a))
-      case That(b)    => Some(\/-(b))
-      case Both(_, _) => None
+      case This(a) =>
+        Some(-\/(a))
+      case That(b) =>
+        Some(\/-(b))
+      case Both(_, _) =>
+        None
     }
 
   def onlyBoth: Option[(A, B)] =
     this match {
-      case This(_)    => None
-      case That(_)    => None
-      case Both(a, b) => Some(a, b)
+      case This(_) =>
+        None
+      case That(_) =>
+        None
+      case Both(a, b) =>
+        Some(a, b)
     }
 
   def pad: (Option[A], Option[B]) =
     this match {
-      case This(a)    => (Some(a), None)
-      case That(b)    => (None, Some(b))
-      case Both(a, b) => (Some(a), Some(b))
+      case This(a) =>
+        (Some(a), None)
+      case That(b) =>
+        (None, Some(b))
+      case Both(a, b) =>
+        (Some(a), Some(b))
     }
 
   def fold[X](s: A => X, t: B => X, q: (A, B) => X): X =
     this match {
-      case This(a)    => s(a)
-      case That(b)    => t(b)
-      case Both(a, b) => q(a, b)
+      case This(a) =>
+        s(a)
+      case That(b) =>
+        t(b)
+      case Both(a, b) =>
+        q(a, b)
     }
 
   def swap: (B \&/ A) =
     this match {
-      case This(a)    => That(a)
-      case That(b)    => This(b)
-      case Both(a, b) => Both(b, a)
+      case This(a) =>
+        That(a)
+      case That(b) =>
+        This(b)
+      case Both(a, b) =>
+        Both(b, a)
     }
 
   def unary_~ : (B \&/ A) = swap
@@ -98,23 +134,34 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
       SA: Semigroup[AA],
       SB: Semigroup[BB]): (AA \&/ BB) =
     (this, that) match {
-      case (This(a1), This(a2))    => This(SA.append(a1, a2))
-      case (This(a1), Both(a2, b)) => Both(SA.append(a1, a2), b)
-      case (This(a), That(b))      => Both(a, b)
-      case (Both(a1, b), This(a2)) => Both(SA.append(a1, a2), b)
+      case (This(a1), This(a2)) =>
+        This(SA.append(a1, a2))
+      case (This(a1), Both(a2, b)) =>
+        Both(SA.append(a1, a2), b)
+      case (This(a), That(b)) =>
+        Both(a, b)
+      case (Both(a1, b), This(a2)) =>
+        Both(SA.append(a1, a2), b)
       case (Both(a1, b1), Both(a2, b2)) =>
         Both(SA.append(a1, a2), SB.append(b1, b2))
-      case (Both(a, b1), That(b2)) => Both(a, SB.append(b1, b2))
-      case (That(b), This(a))      => Both(a, b)
-      case (That(b1), Both(a, b2)) => Both(a, SB.append(b1, b2))
-      case (That(b1), That(b2))    => That(SB.append(b1, b2))
+      case (Both(a, b1), That(b2)) =>
+        Both(a, SB.append(b1, b2))
+      case (That(b), This(a)) =>
+        Both(a, b)
+      case (That(b1), Both(a, b2)) =>
+        Both(a, SB.append(b1, b2))
+      case (That(b1), That(b2)) =>
+        That(SB.append(b1, b2))
     }
 
   def bimap[C, D](f: A => C, g: B => D): (C \&/ D) =
     this match {
-      case This(a)    => This(f(a))
-      case That(b)    => That(g(b))
-      case Both(a, b) => Both(f(a), g(b))
+      case This(a) =>
+        This(f(a))
+      case That(b) =>
+        That(g(b))
+      case Both(a, b) =>
+        Both(f(a), g(b))
     }
 
   def leftMap[C](f: A => C): (C \&/ B) = bimap(f, identity)
@@ -127,7 +174,8 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
         Functor[F].map(g(b))(That(_))
       case Both(a, b) =>
         Apply[F].apply2(f(a), g(b)) {
-          case (c, d) => Both(c, d): C \&/ D
+          case (c, d) =>
+            Both(c, d): C \&/ D
         }
     }
 
@@ -171,21 +219,28 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
 
   def foldRight[Z](z: => Z)(f: (B, => Z) => Z): Z =
     b match {
-      case None     => z
-      case Some(bb) => f(bb, z)
+      case None =>
+        z
+      case Some(bb) =>
+        f(bb, z)
     }
 
   def foldMap[C](f: B => C)(implicit M: Monoid[C]): C =
     b match {
-      case None     => M.zero
-      case Some(bb) => f(bb)
+      case None =>
+        M.zero
+      case Some(bb) =>
+        f(bb)
     }
 
   def bifoldRight[Z](z: => Z)(f: (A, => Z) => Z)(g: (B, => Z) => Z): Z =
     this match {
-      case This(a)    => f(a, z)
-      case That(b)    => g(b, z)
-      case Both(a, b) => f(a, g(b, z))
+      case This(a) =>
+        f(a, z)
+      case That(b) =>
+        g(b, z)
+      case Both(a, b) =>
+        f(a, g(b, z))
     }
 
   def bifoldMap[M](f: A => M)(g: B => M)(implicit M: Semigroup[M]): M =
@@ -317,17 +372,25 @@ object \&/ extends TheseInstances {
       L: Semigroup[L]): L \&/ B = {
     def go(l0: L)(a0: A): L \&/ (A \/ B) =
       f(a0) match {
-        case This(l1)    => \&/.This(L.append(l0, l1))
-        case That(e)     => \&/.Both(l0, e)
-        case Both(l1, e) => \&/.Both(L.append(l0, l1), e)
+        case This(l1) =>
+          \&/.This(L.append(l0, l1))
+        case That(e) =>
+          \&/.Both(l0, e)
+        case Both(l1, e) =>
+          \&/.Both(L.append(l0, l1), e)
       }
 
     f(a) match {
-      case t @ This(l)      => t
-      case That(-\/(a0))    => tailrecM(f)(a0)
-      case That(\/-(b))     => \&/.That(b)
-      case Both(l, -\/(a0)) => tailrecM(go(l))(a0)
-      case Both(l, \/-(b))  => \&/.Both(l, b)
+      case t @ This(l) =>
+        t
+      case That(-\/(a0)) =>
+        tailrecM(f)(a0)
+      case That(\/-(b)) =>
+        \&/.That(b)
+      case Both(l, -\/(a0)) =>
+        tailrecM(go(l))(a0)
+      case Both(l, \/-(b)) =>
+        \&/.Both(l, b)
     }
   }
 }
@@ -391,8 +454,10 @@ sealed abstract class TheseInstances0 extends TheseInstances1 {
             y match {
               case \&/.Both(a2, b2) =>
                 A.order(a1, a2) match {
-                  case Ordering.EQ => B.order(b1, b2)
-                  case o           => o
+                  case Ordering.EQ =>
+                    B.order(b1, b2)
+                  case o =>
+                    o
                 }
               case \&/.This(_) =>
                 Ordering.LT

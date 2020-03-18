@@ -32,8 +32,10 @@ object Runner extends Logging {
       .split(',')
       .flatMap(p =>
         p.split('=') match {
-          case Array(k, v) => List(k -> v)
-          case _           => Nil
+          case Array(k, v) =>
+            List(k -> v)
+          case _ =>
+            Nil
         })
       .toMap
 
@@ -45,7 +47,8 @@ object Runner extends Logging {
       arguments(argumentIndex) // just to make it error out if index is -1
       Some(arguments(argumentIndex + 1))
     } catch {
-      case e: IndexOutOfBoundsException => None
+      case e: IndexOutOfBoundsException =>
+        None
     }
   }
 
@@ -61,7 +64,8 @@ object Runner extends Logging {
         info(s"Copying $localFile to ${dest.toString}")
         fs.copyFromLocalFile(new Path(localFilePath), dest)
         dest.toUri.toString
-      case _ => localFile.toURI.toString
+      case _ =>
+        localFile.toURI.toString
     }
   }
 
@@ -69,7 +73,8 @@ object Runner extends Logging {
     (fs, uri) match {
       case (Some(f), Some(u)) =>
         f.close()
-      case _ => Unit
+      case _ =>
+        Unit
     }
   }
 
@@ -82,7 +87,8 @@ object Runner extends Logging {
         try {
           new File(new URI(arg))
         } catch {
-          case e: Throwable => new File(arg)
+          case e: Throwable =>
+            new File(arg)
         }
       if (f.exists()) {
         handleScratchFile(fileSystem, uri, f)
@@ -111,7 +117,8 @@ object Runner extends Logging {
         error(
           "Using cluster deploy mode with Spark standalone cluster is not supported")
         return 1
-      case _ => Unit
+      case _ =>
+        Unit
     }
 
     // Initialize HDFS API for scratch URI

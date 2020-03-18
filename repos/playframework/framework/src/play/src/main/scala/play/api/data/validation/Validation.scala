@@ -115,9 +115,12 @@ trait Constraints {
       ordering: scala.math.Ordering[T]): Constraint[T] =
     Constraint[T]("constraint.min", minValue) { o =>
       (ordering.compare(o, minValue).signum, strict) match {
-        case (1, _) | (0, false) => Valid
-        case (_, false)          => Invalid(ValidationError("error.min", minValue))
-        case (_, true)           => Invalid(ValidationError("error.min.strict", minValue))
+        case (1, _) | (0, false) =>
+          Valid
+        case (_, false) =>
+          Invalid(ValidationError("error.min", minValue))
+        case (_, true) =>
+          Invalid(ValidationError("error.min.strict", minValue))
       }
     }
 
@@ -131,9 +134,12 @@ trait Constraints {
       ordering: scala.math.Ordering[T]): Constraint[T] =
     Constraint[T]("constraint.max", maxValue) { o =>
       (ordering.compare(o, maxValue).signum, strict) match {
-        case (-1, _) | (0, false) => Valid
-        case (_, false)           => Invalid(ValidationError("error.max", maxValue))
-        case (_, true)            => Invalid(ValidationError("error.max.strict", maxValue))
+        case (-1, _) | (0, false) =>
+          Valid
+        case (_, false) =>
+          Invalid(ValidationError("error.max", maxValue))
+        case (_, true) =>
+          Invalid(ValidationError("error.max.strict", maxValue))
       }
     }
 
@@ -255,13 +261,16 @@ object ParameterValidator {
       _.map { param =>
         constraints.flatMap {
           _(param) match {
-            case i: Invalid => Some(i)
-            case _          => None
+            case i: Invalid =>
+              Some(i)
+            case _ =>
+              None
           }
         }
       }
     }.flatten match {
-      case Nil => Valid
+      case Nil =>
+        Valid
       case invalids =>
         invalids.reduceLeft { (a, b) =>
           a ++ b

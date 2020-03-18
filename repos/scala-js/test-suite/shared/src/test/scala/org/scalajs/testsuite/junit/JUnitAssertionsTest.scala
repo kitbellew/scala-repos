@@ -27,7 +27,8 @@ class JUnitAssertionsTest {
           throw new AssertionError(msg).initCause(assErr)
         }
 
-      case Failure(ex) => throw ex // Unexpected exception, let bubble up.
+      case Failure(ex) =>
+        throw ex // Unexpected exception, let bubble up.
     }
   }
 
@@ -512,7 +513,8 @@ class JUnitAssertionsTest {
           if ex.getMessage == "Assertion should not have failed." =>
       // As expected
 
-      case Failure(ex) => throw ex
+      case Failure(ex) =>
+        throw ex
     }
 
     Try(testIfAsserts(throw new AssertionError, ShallNotPass)) match {
@@ -524,7 +526,8 @@ class JUnitAssertionsTest {
         fail(
           "testIfAsserts should have succeed with <throw new AssertionError>")
 
-      case Failure(ex) => throw ex
+      case Failure(ex) =>
+        throw ex
     }
 
     val except = new Exception

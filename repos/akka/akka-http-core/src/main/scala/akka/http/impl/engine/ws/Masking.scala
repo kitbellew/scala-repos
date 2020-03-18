@@ -32,8 +32,10 @@ private[http] object Masking {
         .transform(() ⇒
           new Masking(maskRandom())) // new random per materialization
         .map {
-          case f: FrameEvent ⇒ f
-          case FrameError(ex) ⇒ throw ex
+          case f: FrameEvent ⇒
+            f
+          case FrameError(ex) ⇒
+            throw ex
         }
     else
       Flow[FrameEvent]
@@ -56,8 +58,10 @@ private[http] object Masking {
   private class Unmasking extends Masker {
     def extractMask(header: FrameHeader): Int =
       header.mask match {
-        case Some(mask) ⇒ mask
-        case None ⇒ throw new ProtocolException("Frame wasn't masked")
+        case Some(mask) ⇒
+          mask
+        case None ⇒
+          throw new ProtocolException("Frame wasn't masked")
       }
     def setNewMask(header: FrameHeader, mask: Int): FrameHeader =
       header.copy(mask = None)

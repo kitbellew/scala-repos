@@ -76,9 +76,11 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
   def receive = init
 
   def init: Receive = {
-    case _: Request ⇒ receiveInitialRequest()
+    case _: Request ⇒
+      receiveInitialRequest()
     case Continue ⇒ // skip, wait for first Request
-    case Cancel ⇒ context.stop(self)
+    case Cancel ⇒
+      context.stop(self)
   }
 
   def receiveInitialRequest(): Unit

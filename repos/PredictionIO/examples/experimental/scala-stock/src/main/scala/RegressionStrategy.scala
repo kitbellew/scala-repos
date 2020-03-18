@@ -55,7 +55,8 @@ class RegressionStrategy(params: RegressionStrategyParams)
   private def calcIndicator(
       logPrice: Series[DateTime, Double]): Seq[Series[DateTime, Double]] = {
     params.indicators.map {
-      case (name, indicator) => indicator.getTraining(logPrice)
+      case (name, indicator) =>
+        indicator.getTraining(logPrice)
     }
   }
 
@@ -63,7 +64,8 @@ class RegressionStrategy(params: RegressionStrategyParams)
   private def getMaxPeriod(): Int = {
     // create an array of periods
     val periods = params.indicators.map {
-      case (name, indicator) => indicator.getMinWindowSize()
+      case (name, indicator) =>
+        indicator.getMinWindowSize()
     }
     periods.max
   }

@@ -14,7 +14,8 @@ object Test {
       f();
       assert(false, "should have thrown exception")
     } catch {
-      case _: ArrayIndexOutOfBoundsException => ()
+      case _: ArrayIndexOutOfBoundsException =>
+        ()
     }
   }
 }

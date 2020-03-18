@@ -252,7 +252,8 @@ private[spark] object Utils extends Logging {
           dir = null
         }
       } catch {
-        case e: SecurityException => dir = null;
+        case e: SecurityException =>
+          dir = null;
       }
     }
 
@@ -571,7 +572,8 @@ private[spark] object Utils extends Logging {
         return false
       }
       subfiles1.sortBy(_.getName).zip(subfiles2.sortBy(_.getName)).forall {
-        case (f1, f2) => filesEqualRecursive(f1, f2)
+        case (f1, f2) =>
+          filesEqualRecursive(f1, f2)
       }
     } else if (file1.isFile && file2.isFile) {
       GFiles.equal(file1, file2)
@@ -1004,7 +1006,8 @@ private[spark] object Utils extends Logging {
               deleteRecursively(child)
             } catch {
               // In case of multiple exceptions, only last one will be thrown
-              case ioe: IOException => savedIOException = ioe
+              case ioe: IOException =>
+                savedIOException = ioe
             }
           }
           if (savedIOException != null) {
@@ -1257,8 +1260,10 @@ private[spark] object Utils extends Logging {
     try {
       block
     } catch {
-      case e: ControlThrowable => throw e
-      case t: Throwable        => SparkUncaughtExceptionHandler.uncaughtException(t)
+      case e: ControlThrowable =>
+        throw e
+      case t: Throwable =>
+        SparkUncaughtExceptionHandler.uncaughtException(t)
     }
   }
 
@@ -1274,7 +1279,8 @@ private[spark] object Utils extends Logging {
     try {
       block
     } catch {
-      case e: ControlThrowable => throw e
+      case e: ControlThrowable =>
+        throw e
       case t: Throwable =>
         val currentThreadName = Thread.currentThread().getName
         if (sc != null) {
@@ -1302,8 +1308,10 @@ private[spark] object Utils extends Logging {
     try {
       block
     } catch {
-      case e: IOException => throw e
-      case NonFatal(t)    => throw new IOException(t)
+      case e: IOException =>
+        throw e
+      case NonFatal(t) =>
+        throw new IOException(t)
     }
   }
 
@@ -1317,8 +1325,10 @@ private[spark] object Utils extends Logging {
     try {
       block
     } catch {
-      case e: IOException => throw e
-      case NonFatal(t)    => throw new IOException(t)
+      case e: IOException =>
+        throw e
+      case NonFatal(t) =>
+        throw new IOException(t)
     }
   }
 
@@ -1803,8 +1813,10 @@ private[spark] object Utils extends Logging {
   /** Return an option that translates JNothing to None */
   def jsonOption(json: JValue): Option[JValue] = {
     json match {
-      case JNothing      => None
-      case value: JValue => Some(value)
+      case JNothing =>
+        None
+      case value: JValue =>
+        Some(value)
     }
   }
 
@@ -2026,9 +2038,12 @@ private[spark] object Utils extends Logging {
       paths.split(",").filter { p =>
         val uri = resolveURI(p)
         Option(uri.getScheme).getOrElse("file") match {
-          case windowsDrive(d) if windows => false
-          case "local" | "file"           => false
-          case _                          => true
+          case windowsDrive(d) if windows =>
+            false
+          case "local" | "file" =>
+            false
+          case _ =>
+            true
         }
       }
     }
@@ -2142,10 +2157,12 @@ private[spark] object Utils extends Logging {
       filterKey: (String => Boolean) = _ => true): Seq[String] = {
     conf.getAll
       .filter {
-        case (k, _) => filterKey(k)
+        case (k, _) =>
+          filterKey(k)
       }
       .map {
-        case (k, v) => s"-D$k=$v"
+        case (k, v) =>
+          s"-D$k=$v"
       }
   }
 
@@ -2237,8 +2254,10 @@ private[spark] object Utils extends Logging {
         isBindCollision(e.getCause)
       case e: MultiException =>
         e.getThrowables.asScala.exists(isBindCollision)
-      case e: Exception => isBindCollision(e.getCause)
-      case _            => false
+      case e: Exception =>
+        isBindCollision(e.getCause)
+      case _ =>
+        false
     }
   }
 
@@ -2276,7 +2295,8 @@ private[spark] object Utils extends Logging {
         sm.sslSocketFactory.foreach(https.setSSLSocketFactory)
         sm.hostnameVerifier.foreach(https.setHostnameVerifier)
         https
-      case connection => connection
+      case connection =>
+        connection
     }
   }
 

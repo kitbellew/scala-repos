@@ -121,7 +121,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
                           "(" + param.getText + ")",
                           param.getManager))
                     clause.asInstanceOf[ScParameterClause].parameters.head
-                  case _ => param
+                  case _ =>
+                    param
                 }
               addTypeAnnotation(paramExpectedType, param1.getParent, param1)
             }
@@ -172,8 +173,10 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
 
     def isSealed(c: PsiClass) =
       c match {
-        case _: ScClass | _: ScTrait => c.hasModifierPropertyScala("sealed")
-        case _                       => false
+        case _: ScClass | _: ScTrait =>
+          c.hasModifierPropertyScala("sealed")
+        case _ =>
+          false
       }
 
     val tps: Seq[ScTypeElement] =
@@ -184,7 +187,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
             "_root_.scala.Serializable",
             "_root_.java.lang.Object")
           comps.map(_.canonicalText).filterNot(uselessTypes.contains) match {
-            case Seq(base) => Seq(typeElemfromText(base))
+            case Seq(base) =>
+              Seq(typeElemfromText(base))
             case types =>
               (Seq(types.mkString(" with ")) ++ types).flatMap { t =>
                 Seq(typeElemfromText(t))
@@ -227,7 +231,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
                 .map(_.canonicalText)
                 .filter(t => goodTypes.exists(t.startsWith))
               (tp.canonicalText +: baseTypes).map(typeElemfromText)
-            case _ => Seq(typeElemFromType(tp))
+            case _ =>
+              Seq(typeElemFromType(tp))
           }
       }
     val added = addActualType(tps.head)
@@ -236,7 +241,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
         val texts = tps.flatMap(_.getType().toOption).map(ScTypeText)
         val expr = new ChooseTypeTextExpression(texts)
         IntentionUtil.startTemplate(added, context, expr, e)
-      case _ => ScalaPsiUtil.adjustTypes(added)
+      case _ =>
+        ScalaPsiUtil.adjustTypes(added)
     }
   }
 

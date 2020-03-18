@@ -40,7 +40,8 @@ object Implicits {
               split(remained, result :+ (x :: matched))(condition)
           }
         }
-        case Nil => result
+        case Nil =>
+          result
       }
   }
 
@@ -53,8 +54,10 @@ object Implicits {
         sb.append(value.substring(i, m.start))
         i = m.end
         replace(m) match {
-          case Some(s) => sb.append(s)
-          case None    => sb.append(m.matched)
+          case Some(s) =>
+            sb.append(s)
+          case None =>
+            sb.append(m.matched)
         }
       }
       if (i < value.length) {
@@ -79,7 +82,8 @@ object Implicits {
             path.substring(13 /* "/api/v3/repos".length */ )
           case path if path.startsWith("api/v3/orgs/") =>
             path.substring(12 /* "/api/v3/orgs".length */ )
-          case path => path
+          case path =>
+            path
         }
       ).split("/")
 

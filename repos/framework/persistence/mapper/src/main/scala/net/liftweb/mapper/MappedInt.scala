@@ -132,19 +132,32 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
 
   override def setFromAny(in: Any): ENUM#Value = {
     in match {
-      case JsonAST.JInt(bi)                => this.set(fromInt(bi.intValue))
-      case n: Int                          => this.set(fromInt(n))
-      case n: Long                         => this.set(fromInt(n.toInt))
-      case n: Number                       => this.set(fromInt(n.intValue))
-      case (n: Number) :: _                => this.set(fromInt(n.intValue))
-      case Some(n: Number)                 => this.set(fromInt(n.intValue))
-      case Full(n: Number)                 => this.set(fromInt(n.intValue))
-      case None | Empty | Failure(_, _, _) => this.set(defaultValue)
-      case (s: String) :: _                => this.set(fromInt(Helpers.toInt(s)))
-      case vs: ENUM#Value                  => this.set(vs)
-      case null                            => this.set(defaultValue)
-      case s: String                       => this.set(fromInt(Helpers.toInt(s)))
-      case o                               => this.set(fromInt(Helpers.toInt(o)))
+      case JsonAST.JInt(bi) =>
+        this.set(fromInt(bi.intValue))
+      case n: Int =>
+        this.set(fromInt(n))
+      case n: Long =>
+        this.set(fromInt(n.toInt))
+      case n: Number =>
+        this.set(fromInt(n.intValue))
+      case (n: Number) :: _ =>
+        this.set(fromInt(n.intValue))
+      case Some(n: Number) =>
+        this.set(fromInt(n.intValue))
+      case Full(n: Number) =>
+        this.set(fromInt(n.intValue))
+      case None | Empty | Failure(_, _, _) =>
+        this.set(defaultValue)
+      case (s: String) :: _ =>
+        this.set(fromInt(Helpers.toInt(s)))
+      case vs: ENUM#Value =>
+        this.set(vs)
+      case null =>
+        this.set(defaultValue)
+      case s: String =>
+        this.set(fromInt(Helpers.toInt(s)))
+      case o =>
+        this.set(fromInt(Helpers.toInt(o)))
     }
   }
 
@@ -228,7 +241,8 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
         inst,
         accessor,
         {
-          case f: MappedEnum[T, ENUM] => f.st(defaultValue)
+          case f: MappedEnum[T, ENUM] =>
+            f.st(defaultValue)
         })
 
   /**
@@ -300,7 +314,8 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
           in
       Full(Integer.parseInt(what))
     } catch {
-      case _: Exception => Empty
+      case _: Exception =>
+        Empty
     }
   }
 
@@ -326,7 +341,8 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
     try {
       convertKey(in.toString)
     } catch {
-      case _: Exception => Empty
+      case _: Exception =>
+        Empty
     }
   }
 
@@ -432,17 +448,28 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
 
   override def setFromAny(in: Any): Int = {
     in match {
-      case n: Int                          => this.set(n)
-      case JsonAST.JInt(bigint)            => this.set(bigint.intValue)
-      case n: Number                       => this.set(n.intValue)
-      case (n: Number) :: _                => this.set(n.intValue)
-      case Some(n: Number)                 => this.set(n.intValue)
-      case Full(n: Number)                 => this.set(n.intValue)
-      case None | Empty | Failure(_, _, _) => this.set(0)
-      case (s: String) :: _                => this.set(toInt(s))
-      case null                            => this.set(0)
-      case s: String                       => this.set(toInt(s))
-      case o                               => this.set(toInt(o))
+      case n: Int =>
+        this.set(n)
+      case JsonAST.JInt(bigint) =>
+        this.set(bigint.intValue)
+      case n: Number =>
+        this.set(n.intValue)
+      case (n: Number) :: _ =>
+        this.set(n.intValue)
+      case Some(n: Number) =>
+        this.set(n.intValue)
+      case Full(n: Number) =>
+        this.set(n.intValue)
+      case None | Empty | Failure(_, _, _) =>
+        this.set(0)
+      case (s: String) :: _ =>
+        this.set(toInt(s))
+      case null =>
+        this.set(0)
+      case s: String =>
+        this.set(toInt(s))
+      case o =>
+        this.set(toInt(o))
     }
   }
 
@@ -462,7 +489,8 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedInt[T] => f.st(toInt(v))
+          case f: MappedInt[T] =>
+            f.st(toInt(v))
         })
 
   def buildSetLongValue(
@@ -489,7 +517,8 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedInt[T] => f.st(toInt(v))
+          case f: MappedInt[T] =>
+            f.st(toInt(v))
         })
 
   def buildSetDateValue(
@@ -500,7 +529,8 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedInt[T] => f.st(toInt(v))
+          case f: MappedInt[T] =>
+            f.st(toInt(v))
         })
 
   def buildSetBooleanValue(

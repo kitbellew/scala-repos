@@ -103,8 +103,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     */
   def doRewriteTraitCallsite(callsite: Callsite) =
     callsite.callee match {
-      case Right(callee) => callee.safeToRewrite
-      case _             => false
+      case Right(callee) =>
+        callee.safeToRewrite
+      case _ =>
+        false
     }
 
   /**
@@ -143,8 +145,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val selfParamTypeV: Either[OptimizerWarning, ClassBType] =
       calleeDeclarationClass.info.map(
         _.inlineInfo.traitImplClassSelfType match {
-          case Some(internalName) => classBTypeFromParsedClassfile(internalName)
-          case None               => calleeDeclarationClass
+          case Some(internalName) =>
+            classBTypeFromParsedClassfile(internalName)
+          case None =>
+            calleeDeclarationClass
         })
 
     def implClassMethodV(
@@ -389,7 +393,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     */
   def inline(request: InlineRequest): List[CannotInlineWarning] =
     canInlineBody(request.callsite) match {
-      case Some(w) => List(w)
+      case Some(w) =>
+        List(w)
       case None =>
         inlineCallsite(request.callsite)
         val postRequests = request.post.flatMap(
@@ -448,9 +453,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // local vars in the callee are shifted by the number of locals at the callsite
     val localVarShift = callsiteMethod.maxLocals
     clonedInstructions.iterator.asScala foreach {
-      case varInstruction: VarInsnNode => varInstruction.`var` += localVarShift
-      case iinc: IincInsnNode          => iinc.`var` += localVarShift
-      case _                           => ()
+      case varInstruction: VarInsnNode =>
+        varInstruction.`var` += localVarShift
+      case iinc: IincInsnNode =>
+        iinc.`var` += localVarShift
+      case _ =>
+        ()
     }
 
     // add a STORE instruction for each expected argument, including for THIS instance if any
@@ -503,11 +511,16 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     def returnValueStore(returnInstruction: AbstractInsnNode) = {
       val opc =
         returnInstruction.getOpcode match {
-          case IRETURN => ISTORE
-          case LRETURN => LSTORE
-          case FRETURN => FSTORE
-          case DRETURN => DSTORE
-          case ARETURN => ASTORE
+          case IRETURN =>
+            ISTORE
+          case LRETURN =>
+            LSTORE
+          case FRETURN =>
+            FSTORE
+          case DRETURN =>
+            DSTORE
+          case ARETURN =>
+            ASTORE
         }
       new VarInsnNode(opc, returnValueIndex)
     }
@@ -608,7 +621,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     def mapArgInfo(argInfo: (Int, ArgInfo)): Option[(Int, ArgInfo)] =
       argInfo match {
-        case lit @ (_, FunctionLiteral) => Some(lit)
+        case lit @ (_, FunctionLiteral) =>
+          Some(lit)
         case (argIndex, ForwardedParam(paramIndex)) =>
           callsite.argInfos.get(paramIndex).map((argIndex, _))
       }
@@ -738,8 +752,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       val expectedArgs =
         asm.Type.getArgumentTypes(callsiteInstruction.desc).length + (
           callsiteInstruction.getOpcode match {
-            case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE => 1
-            case INVOKESTATIC                                    => 0
+            case INVOKEVIRTUAL | INVOKESPECIAL | INVOKEINTERFACE =>
+              1
+            case INVOKESTATIC =>
+              0
             case INVOKEDYNAMIC =>
               assertionError(
                 s"Unexpected opcode, cannot inline ${textify(callsiteInstruction)}")
@@ -802,8 +818,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       // TODO: A2 requires "same run-time package", which seems to be package + classloader (JMVS 5.3.). is the below ok?
       case c: ClassBType =>
         c.isPublic.map(_ || c.packageInternalName == from.packageInternalName)
-      case a: ArrayBType     => classIsAccessible(a.elementType, from)
-      case _: PrimitiveBType => Right(true)
+      case a: ArrayBType =>
+        classIsAccessible(a.elementType, from)
+      case _: PrimitiveBType =>
+        Right(true)
     }
 
   /**
@@ -881,8 +899,10 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     }
 
     classIsAccessible(memberDeclClass, from) match { // B0
-      case Right(true) => memberIsAccessibleImpl
-      case r           => r
+      case Right(true) =>
+        memberIsAccessibleImpl
+      case r =>
+        r
     }
   }
 
@@ -1060,7 +1080,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
             res
           }
 
-        case _: InvokeDynamicInsnNode => Left(UnknownInvokeDynamicInstruction)
+        case _: InvokeDynamicInsnNode =>
+          Left(UnknownInvokeDynamicInstruction)
 
         case ci: LdcInsnNode =>
           ci.cst match {
@@ -1069,10 +1090,12 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 bTypeForDescriptorOrInternalNameFromClassfile(
                   t.getInternalName),
                 destinationClass)
-            case _ => Right(true)
+            case _ =>
+              Right(true)
           }
 
-        case _ => Right(true)
+        case _ =>
+          Right(true)
       }
 
     val it = instructions.iterator.asScala
@@ -1087,7 +1110,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
             Some((i, Some(warning))) // checking isLegal for i failed
           case Right(false) =>
             Some((i, None)) // an illegal instruction was found
-          case _ => find
+          case _ =>
+            find
         }
       }
     }

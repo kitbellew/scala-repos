@@ -165,7 +165,8 @@ object FirstExample extends App {
         db.run(q3.result)
           .map(
             _.foreach {
-              case (s1, s2) => println("  " + s1 + " supplied by " + s2)
+              case (s1, s2) =>
+                println("  " + s1 + " supplied by " + s2)
             })
 
       }

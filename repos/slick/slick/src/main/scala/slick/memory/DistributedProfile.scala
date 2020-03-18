@@ -132,7 +132,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
               .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Any]]
               .read(v.asInstanceOf[QueryInterpreter.ProductValue]))
           b.result()
-        case n => super.run(n)
+        case n =>
+          super.run(n)
       }
 
     def wrapScalaValue(value: Any, tpe: Type): Any =
@@ -147,7 +148,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
           val b = v.companion.newBuilder[Any]
           v.foreach(v => b += wrapScalaValue(v, elType))
           b.result()
-        case _ => value
+        case _ =>
+          value
       }
   }
 
@@ -233,7 +235,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
             symO.foreach(sym => local = local + (sym, r))
             r
           }
-        case n => n.mapChildren(ch => f(ch, scope))
+        case n =>
+          n.mapChildren(ch => f(ch, scope))
       }
 
     case class Scope(m: Map[TermSymbol, (Node, Scope)]) {

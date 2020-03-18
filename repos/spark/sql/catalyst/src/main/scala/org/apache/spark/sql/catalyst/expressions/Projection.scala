@@ -35,8 +35,9 @@ class InterpretedProjection(expressions: Seq[Expression]) extends Projection {
 
   expressions.foreach(
     _.foreach {
-      case n: Nondeterministic => n.setInitialValues()
-      case _                   =>
+      case n: Nondeterministic =>
+        n.setInitialValues()
+      case _ =>
     })
 
   // null check is required for when Kryo invokes the no-arg constructor.
@@ -74,8 +75,9 @@ case class InterpretedMutableProjection(expressions: Seq[Expression])
 
   expressions.foreach(
     _.foreach {
-      case n: Nondeterministic => n.setInitialValues()
-      case _                   =>
+      case n: Nondeterministic =>
+        n.setInitialValues()
+      case _ =>
     })
 
   private[this] val exprArray = expressions.toArray
@@ -132,8 +134,10 @@ object UnsafeProjection {
   def create(exprs: Seq[Expression]): UnsafeProjection = {
     val unsafeExprs = exprs.map(
       _ transform {
-        case CreateStruct(children)      => CreateStructUnsafe(children)
-        case CreateNamedStruct(children) => CreateNamedStructUnsafe(children)
+        case CreateStruct(children) =>
+          CreateStructUnsafe(children)
+        case CreateNamedStruct(children) =>
+          CreateNamedStructUnsafe(children)
       })
     GenerateUnsafeProjection.generate(unsafeExprs)
   }
@@ -162,8 +166,10 @@ object UnsafeProjection {
       .map(BindReferences.bindReference(_, inputSchema))
       .map(
         _ transform {
-          case CreateStruct(children)      => CreateStructUnsafe(children)
-          case CreateNamedStruct(children) => CreateNamedStructUnsafe(children)
+          case CreateStruct(children) =>
+            CreateStructUnsafe(children)
+          case CreateNamedStruct(children) =>
+            CreateNamedStructUnsafe(children)
         })
     GenerateUnsafeProjection.generate(e, subexpressionEliminationEnabled)
   }

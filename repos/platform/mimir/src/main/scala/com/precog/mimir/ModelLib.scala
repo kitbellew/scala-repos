@@ -62,7 +62,8 @@ trait ModelLibModule[M[+_]] {
           val keyCols = cols filter {
             case (ColumnRef(CPath(paths.Key, CPathIndex(_), _ @_*), _), _) =>
               true
-            case _ => false
+            case _ =>
+              false
           }
 
           val shift = keyCols.size
@@ -103,8 +104,10 @@ trait ModelLibModule[M[+_]] {
                   } yield (ColumnRef(CPath(rest: _*), ctype) -> col)
                 build(acc + (idx -> (acc.getOrElse(idx, Nil) ++ cols)), tail)
 
-              case _ :: tail => build(acc, tail)
-              case Nil       => acc
+              case _ :: tail =>
+                build(acc, tail)
+              case Nil =>
+                acc
             }
 
           val keys = build(Map.empty, schema.columnRefs.toList).toList
@@ -150,7 +153,8 @@ trait ModelLibModule[M[+_]] {
 
           val resPaths =
             res map {
-              case (ColumnRef(cpath, _), _) => cpath
+              case (ColumnRef(cpath, _), _) =>
+                cpath
             } toSet
 
           if (resPaths == featurePaths)
@@ -161,7 +165,8 @@ trait ModelLibModule[M[+_]] {
 
         def defined(cols: Map[ColumnRef, Column], range: Range): BitSet = {
           val columns = cols map {
-            case (_, col) => col
+            case (_, col) =>
+              col
           }
 
           BitSetUtil.filteredRange(range) { i =>
@@ -193,7 +198,8 @@ trait ModelLibModule[M[+_]] {
           val cpaths =
             includedModel
               .map {
-                case (ColumnRef(cpath, _), _) => cpath
+                case (ColumnRef(cpath, _), _) =>
+                  cpath
               }
               .toSeq sorted
           val modelDoubles = cpaths map {
@@ -202,7 +208,8 @@ trait ModelLibModule[M[+_]] {
 
           val includedCols =
             includedModel.collect {
-              case (ColumnRef(cpath, _), col: DoubleColumn) => (cpath, col)
+              case (ColumnRef(cpath, _), col: DoubleColumn) =>
+                (cpath, col)
             }.toMap
 
           val resultArray =
@@ -247,8 +254,10 @@ trait ModelLibModule[M[+_]] {
 
             if (res.length == 1)
               res.head match {
-                case (col: DoubleColumn) => Some(col)
-                case _                   => sys.error("Expected DoubleColumn.")
+                case (col: DoubleColumn) =>
+                  Some(col)
+                case _ =>
+                  sys.error("Expected DoubleColumn.")
               }
             else if (res.length == 0) {
               None
@@ -400,7 +409,8 @@ trait ModelLibModule[M[+_]] {
                   case (_, cols) =>
                     val definedCols = cols map {
                       _ filter {
-                        case (_, col) => col.isDefinedAt(i)
+                        case (_, col) =>
+                          col.isDefinedAt(i)
                       }
                     }
                     definedCols.exists(_.isEmpty)
@@ -466,7 +476,8 @@ trait ModelLibModule[M[+_]] {
                       case (CPath(CPathIndex(i), CPathIndex(j)), value)
                           if (i < size) && (j < size) =>
                         acc(i)(j) = value
-                      case _ => sys.error("Incorrect CPath structure found.")
+                      case _ =>
+                        sys.error("Incorrect CPath structure found.")
                     }
 
                     Model(field, fts, cnst, rse, acc, dof)
@@ -555,7 +566,8 @@ trait ModelLibModule[M[+_]] {
                   case (_, cols) =>
                     val definedCols = cols map {
                       _ filter {
-                        case (_, col) => col.isDefinedAt(i)
+                        case (_, col) =>
+                          col.isDefinedAt(i)
                       }
                     }
                     definedCols.exists(_.isEmpty)

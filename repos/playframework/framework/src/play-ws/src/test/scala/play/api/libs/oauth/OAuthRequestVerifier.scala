@@ -86,7 +86,8 @@ object OAuthRequestVerifier {
         // Verify the signature
         val collectedParams = oauthParams.filterNot(
           _._1 == "oauth_signature") ++ request.queryString.toSeq.flatMap {
-          case (key, values) => values.map(value => key -> value)
+          case (key, values) =>
+            values.map(value => key -> value)
         }
         // If the body is form URL encoded, must include body parameters
         val collectedParamsWithBody =
@@ -98,10 +99,12 @@ object OAuthRequestVerifier {
                 .parse(body.utf8String)
                 .toSeq
                 .flatMap {
-                  case (key, values) => values.map(value => key -> value)
+                  case (key, values) =>
+                    values.map(value => key -> value)
                 }
               collectedParams ++ form
-            case _ => collectedParams
+            case _ =>
+              collectedParams
           }
         oauthSignature must beSome.like {
           case signature =>
@@ -128,11 +131,13 @@ object OAuthRequestVerifier {
     // Params must be percent encoded before they are sorted
     val parameterString = params
       .map {
-        case (key, value) => percentEncode(key) -> percentEncode(value)
+        case (key, value) =>
+          percentEncode(key) -> percentEncode(value)
       }
       .sorted
       .map {
-        case (key, value) => s"$key=$value"
+        case (key, value) =>
+          s"$key=$value"
       }
       .mkString("&")
 

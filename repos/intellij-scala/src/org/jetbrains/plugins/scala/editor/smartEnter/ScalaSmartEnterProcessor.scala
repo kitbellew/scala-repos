@@ -111,8 +111,9 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
     parent match {
       case block: ScBlockExpr if block.exprs.headOption contains atCaret =>
         atCaret = block
-      case forStmt: ScForStatement => atCaret = forStmt
-      case _                       =>
+      case forStmt: ScForStatement =>
+        atCaret = forStmt
+      case _ =>
     }
 
     super.reformat(atCaret)
@@ -149,8 +150,10 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
   private def collectAllAtCaret(caret: PsiElement): Iterable[PsiElement] = {
     def doNotVisit(e: PsiElement) =
       e match {
-        case _: PsiClass | _: PsiStatement | _: PsiMethod => true
-        case _                                            => false
+        case _: PsiClass | _: PsiStatement | _: PsiMethod =>
+          true
+        case _ =>
+          false
       }
 
     val buffer = scala.collection.mutable
@@ -203,7 +206,8 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       case _: ScPatternDefinition | _: ScIfStmt | _: ScWhileStmt |
           _: ScForStatement | _: ScCatchBlock | _: ScMethodCall =>
         statementAtCaret
-      case _ => null
+      case _ =>
+        null
     }
   }
 

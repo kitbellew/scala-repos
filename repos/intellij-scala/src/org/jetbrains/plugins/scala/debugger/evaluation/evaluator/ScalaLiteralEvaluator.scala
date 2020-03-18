@@ -17,7 +17,8 @@ class ScalaLiteralEvaluator(value: AnyRef, tp: ScType) extends Evaluator {
       return null
     val vm = context.getDebugProcess.getVirtualMachineProxy
     value match {
-      case s: String => vm.mirrorOf(s)
+      case s: String =>
+        vm.mirrorOf(s)
       case b: java.lang.Boolean =>
         DebuggerUtil.createValue(vm, tp, b.booleanValue())
       case c: java.lang.Character =>
@@ -28,7 +29,8 @@ class ScalaLiteralEvaluator(value: AnyRef, tp: ScType) extends Evaluator {
         DebuggerUtil.createValue(vm, tp, d.doubleValue())
       case n: java.lang.Number =>
         DebuggerUtil.createValue(vm, tp, n.longValue())
-      case _ => throw EvaluationException("unknown type of literal")
+      case _ =>
+        throw EvaluationException("unknown type of literal")
     }
   }
 

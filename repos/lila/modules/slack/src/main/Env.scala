@@ -33,10 +33,14 @@ final class Env(
           system.lilaBus.subscribe(self, 'donation, 'deploy, 'slack)
         }
         def receive = {
-          case d: DonationEvent            => api donation d
-          case Deploy(RemindDeployPre, _)  => api.deployPre
-          case Deploy(RemindDeployPost, _) => api.deployPost
-          case e: Event                    => api publishEvent e
+          case d: DonationEvent =>
+            api donation d
+          case Deploy(RemindDeployPre, _) =>
+            api.deployPre
+          case Deploy(RemindDeployPost, _) =>
+            api.deployPost
+          case e: Event =>
+            api publishEvent e
         }
       }))
 }

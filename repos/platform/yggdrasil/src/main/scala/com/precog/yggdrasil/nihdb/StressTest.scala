@@ -177,7 +177,8 @@ class StressTest {
               .getBlockAfter(key, None)
               .map(
                 _.map {
-                  case BlockProjectionData(_, maxKey, _) => ((), Some(maxKey))
+                  case BlockProjectionData(_, maxKey, _) =>
+                    ((), Some(maxKey))
                 })
           }
         stream.length

@@ -85,13 +85,20 @@ object Lexer {
 
   private def addToStr(buf: StringBuilder, ch: Char) {
     ch match {
-      case '"'  => buf ++= "\\\""
-      case '\b' => buf ++= "\\b"
-      case '\f' => buf ++= "\\f"
-      case '\n' => buf ++= "\\n"
-      case '\r' => buf ++= "\\r"
-      case '\t' => buf ++= "\\t"
-      case '\\' => buf ++= "\\\\"
+      case '"' =>
+        buf ++= "\\\""
+      case '\b' =>
+        buf ++= "\\b"
+      case '\f' =>
+        buf ++= "\\f"
+      case '\n' =>
+        buf ++= "\\n"
+      case '\r' =>
+        buf ++= "\\r"
+      case '\t' =>
+        buf ++= "\\t"
+      case '\\' =>
+        buf ++= "\\\\"
       case _ =>
         if (' ' <= ch && ch < 128)
           buf += ch
@@ -236,10 +243,12 @@ class Lexer(rd: Reader) {
         case 'n' =>
           putAcceptString("null");
           token = NullLit
-        case '"' => getString()
+        case '"' =>
+          getString()
         case '-' | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
           getNumber()
-        case _ => error("unrecognized start of token: '" + ch + "'")
+        case _ =>
+          error("unrecognized start of token: '" + ch + "'")
       }
     //println("["+token+"]")
   }
@@ -266,20 +275,30 @@ class Lexer(rd: Reader) {
       if (ch == '\\') {
         nextChar()
         ch match {
-          case '\'' => sb += '\''
-          case '"'  => sb += '"'
-          case '\\' => sb += '\\'
-          case '/'  => sb += '/'
-          case 'b'  => sb += '\b'
-          case 'f'  => sb += '\f'
-          case 'n'  => sb += '\n'
-          case 'r'  => sb += '\r'
-          case 't'  => sb += '\t'
+          case '\'' =>
+            sb += '\''
+          case '"' =>
+            sb += '"'
+          case '\\' =>
+            sb += '\\'
+          case '/' =>
+            sb += '/'
+          case 'b' =>
+            sb += '\b'
+          case 'f' =>
+            sb += '\f'
+          case 'n' =>
+            sb += '\n'
+          case 'r' =>
+            sb += '\r'
+          case 't' =>
+            sb += '\t'
           case 'u' =>
             sb += (
               udigit() << 12 | udigit() << 8 | udigit() << 4 | udigit()
             ).toChar
-          case _ => error("illegal escape character: '" + ch + "'")
+          case _ =>
+            error("illegal escape character: '" + ch + "'")
         }
         nextChar()
       } else {
@@ -349,8 +368,10 @@ class Lexer(rd: Reader) {
     */
   def accept(ch: Char) {
     token match {
-      case Delim(`ch`) => nextToken()
-      case _           => accept(Delim(ch))
+      case Delim(`ch`) =>
+        nextToken()
+      case _ =>
+        accept(Delim(ch))
     }
   }
 

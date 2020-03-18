@@ -17,7 +17,8 @@ class RichClass[T](val clazz: Class[T]) {
   def isScalaAnonymous =
     (try clazz.isAnonymousClass || (clazz.getName contains "$anon$")
     catch {
-      case _: java.lang.InternalError => false
+      case _: java.lang.InternalError =>
+        false
     } // good ol' "Malformed class name"
     )
 
@@ -31,8 +32,10 @@ class RichClass[T](val clazz: Class[T]) {
   def supers: List[JClass] = {
     def loop(x: JClass): List[JClass] =
       x.getSuperclass match {
-        case null => List(x)
-        case sc   => x :: (x.getInterfaces.toList flatMap loop) ++ loop(sc)
+        case null =>
+          List(x)
+        case sc =>
+          x :: (x.getInterfaces.toList flatMap loop) ++ loop(sc)
       }
     loop(clazz).distinct
   }

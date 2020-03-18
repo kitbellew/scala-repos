@@ -140,15 +140,18 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
         result0 <- executor
           .execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
           .valueOr(err => sys.error(err.toString)) mapValue {
-          case (w, s) => (w, (w: Option[(JobId, AtomicInteger)], s))
+          case (w, s) =>
+            (w, (w: Option[(JobId, AtomicInteger)], s))
         }
       } yield {
         val (Some((jobId, ticks)), result) = result0
 
         def count(n: Int, cs0: StreamT[Future, CharBuffer]): Future[Int] =
           cs0.uncons flatMap {
-            case Some((_, cs)) => count(n + 1, cs)
-            case None          => Future(n)
+            case Some((_, cs)) =>
+              count(n + 1, cs)
+            case None =>
+              Future(n)
           }
 
         (jobId, ticks, count(0, dropStreamToFuture(result)))
@@ -188,7 +191,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           job <- jobManager.findJob(jobId)
         } yield job
       ).copoint must beLike {
-        case Some(Job(_, _, _, _, _, Started(_, NotStarted))) => ok
+        case Some(Job(_, _, _, _, _, Started(_, NotStarted))) =>
+          ok
       }
     }
 
@@ -199,7 +203,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           job <- waitForJobCompletion(jobId)
         } yield job
       ).copoint must beLike {
-        case Job(_, _, _, _, _, Finished(_, _)) => ok
+        case Job(_, _, _, _, _, Finished(_, _)) =>
+          ok
       }
     }
 
@@ -237,7 +242,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
         } yield job
 
       job.copoint must beLike {
-        case Some(Job(_, _, _, _, _, Aborted(_, _, Cancelled(_, _, _)))) => ok
+        case Some(Job(_, _, _, _, _, Aborted(_, _, Cancelled(_, _, _)))) =>
+          ok
       }
     }
 
@@ -268,7 +274,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
           job <- jobManager.findJob(jobId)
         } yield job
       ).copoint must beLike {
-        case Some(Job(_, _, _, _, _, Expired(_, _))) => ok
+        case Some(Job(_, _, _, _, _, Expired(_, _))) =>
+          ok
       }
     }
 

@@ -76,7 +76,8 @@ abstract class RetryPolicy[-A]
         None
       else {
         this(e).map {
-          case (backoff, p2) => (backoff, p2.filterEach(pred))
+          case (backoff, p2) =>
+            (backoff, p2.filterEach(pred))
         }
       }
     }
@@ -98,7 +99,8 @@ abstract class RetryPolicy[-A]
         None
       else {
         this(e).map {
-          case (backoff, p2) => (backoff, p2.limit(triesRemaining - 1))
+          case (backoff, p2) =>
+            (backoff, p2.limit(triesRemaining - 1))
         }
       }
     }
@@ -166,10 +168,14 @@ object RetryPolicy extends JavaSingleton {
       thr match {
         // We don't retry interruptions by default since they
         // indicate that the request was discarded.
-        case f: Failure if f.isFlagged(Failure.Interrupted) => None
-        case f: Failure if f.isFlagged(Failure.Restartable) => Some(f.show)
-        case WriteException(exc)                            => Some(exc)
-        case _                                              => None
+        case f: Failure if f.isFlagged(Failure.Interrupted) =>
+          None
+        case f: Failure if f.isFlagged(Failure.Restartable) =>
+          Some(f.show)
+        case WriteException(exc) =>
+          Some(exc)
+        case _ =>
+          None
       }
   }
 
@@ -179,19 +185,25 @@ object RetryPolicy extends JavaSingleton {
     * See [[com.twitter.finagle.WriteException]].
     */
   val WriteExceptionsOnly: PartialFunction[Try[Nothing], Boolean] = {
-    case Throw(RetryableWriteException(_)) => true
+    case Throw(RetryableWriteException(_)) =>
+      true
   }
 
   val TimeoutAndWriteExceptionsOnly: PartialFunction[Try[Nothing], Boolean] =
     WriteExceptionsOnly.orElse {
-      case Throw(Failure(Some(_: TimeoutException)))     => true
-      case Throw(Failure(Some(_: UtilTimeoutException))) => true
-      case Throw(_: TimeoutException)                    => true
-      case Throw(_: UtilTimeoutException)                => true
+      case Throw(Failure(Some(_: TimeoutException))) =>
+        true
+      case Throw(Failure(Some(_: UtilTimeoutException))) =>
+        true
+      case Throw(_: TimeoutException) =>
+        true
+      case Throw(_: UtilTimeoutException) =>
+        true
     }
 
   val ChannelClosedExceptionsOnly: PartialFunction[Try[Nothing], Boolean] = {
-    case Throw(_: ChannelClosedException) => true
+    case Throw(_: ChannelClosedException) =>
+      true
   }
 
   val Never: RetryPolicy[Try[Nothing]] =
@@ -213,9 +225,11 @@ object RetryPolicy extends JavaSingleton {
             policy(t.asInstanceOf[Throw[Nothing]]) match {
               case Some((howlong, nextPolicy)) =>
                 Some((howlong, convertExceptionPolicy(nextPolicy)))
-              case None => None
+              case None =>
+                None
             }
-          case (_, Return(_)) => None
+          case (_, Return(_)) =>
+            None
         }
     }
 
@@ -332,7 +346,8 @@ object RetryPolicy extends JavaSingleton {
           p
         else {
           p(e) match {
-            case None => p
+            case None =>
+              p
             case Some((backoff, p2)) =>
               backoffOpt = Some(backoff)
               p2
@@ -341,8 +356,10 @@ object RetryPolicy extends JavaSingleton {
       }
 
       backoffOpt match {
-        case None          => None
-        case Some(backoff) => Some((backoff, combine(policies2: _*)))
+        case None =>
+          None
+        case Some(backoff) =>
+          Some((backoff, combine(policies2: _*)))
       }
     }
 }

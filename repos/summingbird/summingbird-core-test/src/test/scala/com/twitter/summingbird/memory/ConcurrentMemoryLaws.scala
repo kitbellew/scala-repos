@@ -47,8 +47,10 @@ class ConcurrentMemoryLaws extends WordSpec {
   def empty[T](b: BlockingQueue[T]): List[T] = {
     def go(items: List[T]): List[T] =
       b.poll() match {
-        case null => items.reverse
-        case x    => go(x :: items)
+        case null =>
+          items.reverse
+        case x =>
+          go(x :: items)
       }
     go(Nil)
   }
@@ -254,8 +256,10 @@ class ConcurrentMemoryLaws extends WordSpec {
         }
         .sumByKey(store)
         .map {
-          case (_, (None, currentEvent))      => currentEvent
-          case (_, (Some(old), currentEvent)) => old + currentEvent
+          case (_, (None, currentEvent)) =>
+            currentEvent
+          case (_, (Some(old), currentEvent)) =>
+            old + currentEvent
         }
 
       val write1 = summed.write(sink)

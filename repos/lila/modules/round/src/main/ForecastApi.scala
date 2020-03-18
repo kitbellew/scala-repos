@@ -39,9 +39,12 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
 
   def save(pov: Pov, steps: Forecast.Steps): Funit =
     firstStep(steps) match {
-      case None                                         => coll.remove(BSONDocument("_id" -> pov.fullId)).void
-      case Some(step) if pov.game.turns == step.ply - 1 => saveSteps(pov, steps)
-      case _                                            => fufail(Forecast.OutOfSync)
+      case None =>
+        coll.remove(BSONDocument("_id" -> pov.fullId)).void
+      case Some(step) if pov.game.turns == step.ply - 1 =>
+        saveSteps(pov, steps)
+      case _ =>
+        fufail(Forecast.OutOfSync)
     }
 
   def playAndSave(pov: Pov, uciMove: String, steps: Forecast.Steps): Funit =
@@ -65,7 +68,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     pov.forecastable ?? coll
       .find(BSONDocument("_id" -> pov.fullId))
       .one[Forecast] flatMap {
-      case None => fuccess(none)
+      case None =>
+        fuccess(none)
       case Some(fc) =>
         if (firstStep(fc.steps).exists(_.ply != pov.game.turns + 1))
           clearPov(pov) inject none
@@ -77,7 +81,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
     pov.game.forecastable ?? coll
       .find(BSONDocument("_id" -> pov.fullId))
       .one[Forecast] flatMap {
-      case None => fuccess(none)
+      case None =>
+        fuccess(none)
       case Some(fc) =>
         if (firstStep(fc.steps).exists(_.ply != pov.game.turns))
           clearPov(pov) inject none
@@ -88,7 +93,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
   def nextMove(g: Game, last: chess.Move): Fu[Option[Uci.Move]] =
     g.forecastable ?? {
       loadForPlay(Pov player g) flatMap {
-        case None => fuccess(none)
+        case None =>
+          fuccess(none)
         case Some(fc) =>
           fc(g, last) match {
             case Some((newFc, uciMove)) if newFc.steps.nonEmpty =>
@@ -97,7 +103,8 @@ final class ForecastApi(coll: Coll, roundMap: akka.actor.ActorSelection) {
                 newFc) inject uciMove.some
             case Some((newFc, uciMove)) =>
               clearPov(Pov player g) inject uciMove.some
-            case _ => clearPov(Pov player g) inject none
+            case _ =>
+              clearPov(Pov player g) inject none
           }
       }
     }

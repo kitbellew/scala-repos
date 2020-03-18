@@ -29,9 +29,12 @@ object MVersionColumn {
         r.<<,
         r.<<,
         r.nextInt match {
-          case DatabaseMetaData.versionColumnPseudo    => Some(true)
-          case DatabaseMetaData.versionColumnNotPseudo => Some(false)
-          case _                                       => None
+          case DatabaseMetaData.versionColumnPseudo =>
+            Some(true)
+          case DatabaseMetaData.versionColumnNotPseudo =>
+            Some(false)
+          case _ =>
+            None
         }
       )
     }

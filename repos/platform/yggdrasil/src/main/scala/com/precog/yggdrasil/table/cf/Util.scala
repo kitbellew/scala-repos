@@ -253,7 +253,8 @@ object util {
           val nullColumns = copyCastArray[NullColumn](columns)
           Some(new NConcatColumn(offsets, nullColumns) with NullColumn)
 
-        case _ => None
+        case _ =>
+          None
       }
     }
   }
@@ -261,7 +262,8 @@ object util {
   //it would be nice to generalize these to `CoerceTo[A]`
   def CoerceToDouble =
     CF1P("builtin:ct:coerceToDouble") {
-      case (c: DoubleColumn) => c
+      case (c: DoubleColumn) =>
+        c
 
       case (c: LongColumn) =>
         new Map1Column(c) with DoubleColumn {
@@ -276,7 +278,8 @@ object util {
 
   def CoerceToDate =
     CF1P("builtin:ct:coerceToDate") {
-      case (c: DateColumn) => c
+      case (c: DateColumn) =>
+        c
 
       case (c: StrColumn) =>
         new DateColumn {
@@ -413,9 +416,12 @@ object util {
           def apply(row: Int) = c(row - by)
         }
 
-      case c: EmptyArrayColumn  => new ShiftColumn(by, c) with EmptyArrayColumn
-      case c: EmptyObjectColumn => new ShiftColumn(by, c) with EmptyObjectColumn
-      case c: NullColumn        => new ShiftColumn(by, c) with NullColumn
+      case c: EmptyArrayColumn =>
+        new ShiftColumn(by, c) with EmptyArrayColumn
+      case c: EmptyObjectColumn =>
+        new ShiftColumn(by, c) with EmptyObjectColumn
+      case c: NullColumn =>
+        new ShiftColumn(by, c) with NullColumn
     }
 
   def Sparsen(idx: Array[Int], toSize: Int) =
@@ -458,18 +464,26 @@ object util {
         new SparsenColumn(c, idx, toSize) with EmptyArrayColumn
       case c: EmptyObjectColumn =>
         new SparsenColumn(c, idx, toSize) with EmptyObjectColumn
-      case c: NullColumn => new SparsenColumn(c, idx, toSize) with NullColumn
+      case c: NullColumn =>
+        new SparsenColumn(c, idx, toSize) with NullColumn
     }
 
   val Empty =
     CF1P("builtin::ct::empty") {
-      case c: BoolColumn   => new EmptyColumn[BoolColumn] with BoolColumn
-      case c: LongColumn   => new EmptyColumn[LongColumn] with LongColumn
-      case c: DoubleColumn => new EmptyColumn[DoubleColumn] with DoubleColumn
-      case c: NumColumn    => new EmptyColumn[NumColumn] with NumColumn
-      case c: StrColumn    => new EmptyColumn[StrColumn] with StrColumn
-      case c: DateColumn   => new EmptyColumn[DateColumn] with DateColumn
-      case c: PeriodColumn => new EmptyColumn[PeriodColumn] with PeriodColumn
+      case c: BoolColumn =>
+        new EmptyColumn[BoolColumn] with BoolColumn
+      case c: LongColumn =>
+        new EmptyColumn[LongColumn] with LongColumn
+      case c: DoubleColumn =>
+        new EmptyColumn[DoubleColumn] with DoubleColumn
+      case c: NumColumn =>
+        new EmptyColumn[NumColumn] with NumColumn
+      case c: StrColumn =>
+        new EmptyColumn[StrColumn] with StrColumn
+      case c: DateColumn =>
+        new EmptyColumn[DateColumn] with DateColumn
+      case c: PeriodColumn =>
+        new EmptyColumn[PeriodColumn] with PeriodColumn
       case c: HomogeneousArrayColumn[a] =>
         new EmptyColumn[HomogeneousArrayColumn[a]]
           with HomogeneousArrayColumn[a] {
@@ -479,7 +493,8 @@ object util {
         new EmptyColumn[EmptyArrayColumn] with EmptyArrayColumn
       case c: EmptyObjectColumn =>
         new EmptyColumn[EmptyObjectColumn] with EmptyObjectColumn
-      case c: NullColumn => new EmptyColumn[NullColumn] with NullColumn
+      case c: NullColumn =>
+        new EmptyColumn[NullColumn] with NullColumn
     }
 
   def Remap(f: Int => Int) =
@@ -517,9 +532,12 @@ object util {
           val tpe = c.tpe
           def apply(row: Int) = c(f(row))
         }
-      case c: EmptyArrayColumn  => new RemapColumn(c, f) with EmptyArrayColumn
-      case c: EmptyObjectColumn => new RemapColumn(c, f) with EmptyObjectColumn
-      case c: NullColumn        => new RemapColumn(c, f) with NullColumn
+      case c: EmptyArrayColumn =>
+        new RemapColumn(c, f) with EmptyArrayColumn
+      case c: EmptyObjectColumn =>
+        new RemapColumn(c, f) with EmptyObjectColumn
+      case c: NullColumn =>
+        new RemapColumn(c, f) with NullColumn
     }
 
   def RemapFilter(filter: Int => Boolean, offset: Int) =
@@ -605,7 +623,8 @@ object util {
         new RemapIndicesColumn(c, indices) with EmptyArrayColumn
       case c: EmptyObjectColumn =>
         new RemapIndicesColumn(c, indices) with EmptyObjectColumn
-      case c: NullColumn => new RemapIndicesColumn(c, indices) with NullColumn
+      case c: NullColumn =>
+        new RemapIndicesColumn(c, indices) with NullColumn
     }
 
   def filter(from: Int, to: Int, definedAt: BitSet) =
@@ -789,7 +808,8 @@ object util {
             new EmptyArrayColumn {
               def isDefinedAt(row: Int) = c.isDefinedAt(row)
             }
-          case CUndefined => UndefinedColumn(c)
+          case CUndefined =>
+            UndefinedColumn(c)
         })
     }
 

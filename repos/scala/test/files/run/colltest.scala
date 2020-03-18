@@ -8,30 +8,40 @@ class TestSet(s0: Set[Int], s1: Set[Int]) {
   def test(s: Set[Int], n: Int): Any = {
     val v = n >> 3
     n & 7 match {
-      case 0 | 1 | 2 => s contains v
-      case 3         => s += v
-      case 4         => s -= v
+      case 0 | 1 | 2 =>
+        s contains v
+      case 3 =>
+        s += v
+      case 4 =>
+        s -= v
       case 5 =>
         if (s.size > Threshold)
           s -= v
         else
           s += v
-      case 6 => s += v
-      case 7 => s.size
+      case 6 =>
+        s += v
+      case 7 =>
+        s.size
     }
   }
   def explain(n: Int, s: Set[Int]): String =
     n & 7 match {
-      case 0 | 1 | 2 => "contains"
-      case 3         => "add"
-      case 4         => "remove"
+      case 0 | 1 | 2 =>
+        "contains"
+      case 3 =>
+        "add"
+      case 4 =>
+        "remove"
       case 5 =>
         if (s.size > Threshold)
           "remove"
         else
           "add"
-      case 6 => "add"
-      case 7 => "size"
+      case 6 =>
+        "add"
+      case 7 =>
+        "size"
     }
   def checkSubSet(pre: String, s0: Set[Int], s1: Set[Int]) {
     for (e <- s0.iterator)

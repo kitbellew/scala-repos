@@ -52,8 +52,10 @@ object Extraction {
       val types = allTypes(mf)
       extract0(json, types.head, types.tail).asInstanceOf[A]
     } catch {
-      case e: MappingException => throw e
-      case e: Exception        => throw new MappingException("unknown error", e)
+      case e: MappingException =>
+        throw e
+      case e: Exception =>
+        throw new MappingException("unknown error", e)
     }
   }
 
@@ -65,7 +67,8 @@ object Extraction {
     try {
       Some(extract(json)(formats, mf))
     } catch {
-      case _: MappingException => None
+      case _: MappingException =>
+        None
     }
 
   /** Decompose a case class into JSON.
@@ -85,8 +88,10 @@ object Extraction {
 
     def mkObject(clazz: Class[_], fields: List[JField]) =
       formats.typeHints.containsHint_?(clazz) match {
-        case true  => prependTypeHint(clazz, JObject(fields))
-        case false => JObject(fields)
+        case true =>
+          prependTypeHint(clazz, JObject(fields))
+        case false =>
+          JObject(fields)
       }
 
     val serializer = formats.typeHints.serialize
@@ -95,17 +100,22 @@ object Extraction {
       formats.customSerializer(formats)(a)
     } else if (!serializer.isDefinedAt(a)) {
       any match {
-        case null                         => JNull
-        case x: JValue                    => x
-        case x if primitive_?(x.getClass) => primitive2jvalue(x)(formats)
+        case null =>
+          JNull
+        case x: JValue =>
+          x
+        case x if primitive_?(x.getClass) =>
+          primitive2jvalue(x)(formats)
         case x: Map[_, _] =>
           JObject(
             (
               x map {
-                case (k: String, v) => JField(k, decompose(v))
+                case (k: String, v) =>
+                  JField(k, decompose(v))
               }
             ).toList)
-        case x: Iterable[_] => JArray(x.toList map decompose)
+        case x: Iterable[_] =>
+          JArray(x.toList map decompose)
         case x if (x.getClass.isArray) =>
           JArray(x.asInstanceOf[Array[_]].toList map decompose)
         case x: Option[_] =>
@@ -116,7 +126,8 @@ object Extraction {
         case x =>
           val fields = getDeclaredFields(x.getClass)
           val constructorArgs = primaryConstructorArgs(x.getClass).map {
-            case (name, _) => (name, fields.get(name))
+            case (name, _) =>
+              (name, fields.get(name))
           }
           constructorArgs.collect {
             case (name, Some(f)) =>
@@ -134,7 +145,8 @@ object Extraction {
                         (n, fieldVal) -> Some(n, fieldVal))
                       s((n, fieldVal))
                         .map {
-                          case (name, value) => JField(name, decompose(value))
+                          case (name, value) =>
+                            JField(name, decompose(value))
                         }
                         .getOrElse(JField(n, JNothing))
                   }
@@ -155,11 +167,16 @@ object Extraction {
 
     def flatten0(path: String, json: JValue): Map[String, String] = {
       json match {
-        case JNothing | JNull => Map()
-        case JString(s)       => Map(path -> ("\"" + JsonAST.quote(s) + "\""))
-        case JDouble(num)     => Map(path -> num.toString)
-        case JInt(num)        => Map(path -> num.toString)
-        case JBool(value)     => Map(path -> value.toString)
+        case JNothing | JNull =>
+          Map()
+        case JString(s) =>
+          Map(path -> ("\"" + JsonAST.quote(s) + "\""))
+        case JDouble(num) =>
+          Map(path -> num.toString)
+        case JInt(num) =>
+          Map(path -> num.toString)
+        case JBool(value) =>
+          Map(path -> value.toString)
         case JObject(obj) =>
           obj.foldLeft(Map[String, String]()) {
             case (map, JField(name, value)) =>
@@ -167,7 +184,8 @@ object Extraction {
           }
         case JArray(arr) =>
           arr.length match {
-            case 0 => Map(path -> "[]")
+            case 0 =>
+              Map(path -> "[]")
             case _ =>
               arr
                 .foldLeft((Map[String, String](), 0)) { (tuple, value) =>
@@ -190,11 +208,16 @@ object Extraction {
 
     def extractValue(value: String): JValue =
       value.toLowerCase match {
-        case ""      => JNothing
-        case "null"  => JNull
-        case "true"  => JBool(true)
-        case "false" => JBool(false)
-        case "[]"    => JArray(Nil)
+        case "" =>
+          JNothing
+        case "null" =>
+          JNull
+        case "true" =>
+          JBool(true)
+        case "false" =>
+          JBool(false)
+        case "[]" =>
+          JArray(Nil)
         case x @ _ =>
           if (value.charAt(0).isDigit) {
             if (value.indexOf('.') == -1)
@@ -222,10 +245,14 @@ object Extraction {
     val uniquePaths = map.keys
       .foldLeft[Set[String]](Set()) { (set, key) =>
         key match {
-          case ArrayProp(p, f, i) => set + p
-          case OtherProp(p, f)    => set + p
-          case ArrayElem(p, i)    => set + p
-          case x @ _              => set + x
+          case ArrayProp(p, f, i) =>
+            set + p
+          case OtherProp(p, f) =>
+            set + p
+          case ArrayElem(p, i) =>
+            set + p
+          case x @ _ =>
+            set + x
         }
       }
       .toList
@@ -236,10 +263,12 @@ object Extraction {
         key match {
           case ArrayProp(p, f, i) =>
             JObject(List(JField(f, unflatten(submap(key)))))
-          case ArrayElem(p, i) => JArray(List(unflatten(submap(key))))
+          case ArrayElem(p, i) =>
+            JArray(List(unflatten(submap(key))))
           case OtherProp(p, f) =>
             JObject(List(JField(f, unflatten(submap(key)))))
-          case "" => extractValue(map(key))
+          case "" =>
+            extractValue(map(key))
         })
     }
   }
@@ -273,8 +302,10 @@ object Extraction {
         else {
           val argNames =
             json match {
-              case JObject(fs) => fs.map(_.name)
-              case x           => Nil
+              case JObject(fs) =>
+                fs.map(_.name)
+              case x =>
+                Nil
             }
           constructor
             .bestMatching(argNames)
@@ -335,7 +366,8 @@ object Extraction {
               }
             }
             a
-          case _ => a
+          case _ =>
+            a
         }
 
       def instantiate = {
@@ -388,10 +420,12 @@ object Extraction {
         custom(constructor.targetType, json)
       } else {
         json match {
-          case JNull => null
+          case JNull =>
+            null
           case JObject(TypeHint(t, fs)) =>
             mkWithTypeHint(t, fs, constructor.targetType)
-          case _ => instantiate
+          case _ =>
+            instantiate
         }
       }
     }
@@ -421,8 +455,10 @@ object Extraction {
         constructor: Array[_] => Any) = {
       val array: Array[_] =
         root match {
-          case JArray(arr)      => arr.map(build(_, m)).toArray
-          case JNothing | JNull => Array[AnyRef]()
+          case JArray(arr) =>
+            arr.map(build(_, m)).toArray
+          case JNothing | JNull =>
+            Array[AnyRef]()
           case x =>
             fail(
               "Expected collection but got " + x + " for root " + root + " and mapping " + m)
@@ -433,17 +469,23 @@ object Extraction {
 
     def newOption(root: JValue, m: Mapping) = {
       root match {
-        case JNothing | JNull => None
-        case x                => Option(build(x, m))
+        case JNothing | JNull =>
+          None
+        case x =>
+          Option(build(x, m))
       }
     }
 
     def build(root: JValue, mapping: Mapping): Any =
       mapping match {
-        case Value(targetType)      => convert(root, targetType, formats)
-        case c: Constructor         => newInstance(c, root)
-        case Cycle(targetType)      => build(root, mappingOf(targetType))
-        case Arg(path, m, optional) => mkValue(root, m, path, optional)
+        case Value(targetType) =>
+          convert(root, targetType, formats)
+        case c: Constructor =>
+          newInstance(c, root)
+        case Cycle(targetType) =>
+          build(root, mappingOf(targetType))
+        case Arg(path, m, optional) =>
+          mkValue(root, m, path, optional)
         case Col(targetType, m) =>
           val custom = formats.customDeserializer(formats)
           val c = targetType.clazz
@@ -465,7 +507,8 @@ object Extraction {
           root match {
             case JObject(xs) =>
               Map(xs.map(x => (x.name, build(x.value, m))): _*)
-            case x => fail("Expected object but got " + x)
+            case x =>
+              fail("Expected object but got " + x)
           }
       }
 
@@ -483,9 +526,12 @@ object Extraction {
 
     def mkList(root: JValue, m: Mapping) =
       root match {
-        case JArray(arr)      => arr.map(build(_, m))
-        case JNothing | JNull => Nil
-        case x                => fail("Expected array but got " + x)
+        case JArray(arr) =>
+          arr.map(build(_, m))
+        case JNothing | JNull =>
+          Nil
+        case x =>
+          fail("Expected array but got " + x)
       }
 
     def mkValue(
@@ -521,39 +567,56 @@ object Extraction {
       targetType: Class[_],
       formats: Formats): Any =
     json match {
-      case JInt(x) if (targetType == classOf[Int]) => x.intValue
+      case JInt(x) if (targetType == classOf[Int]) =>
+        x.intValue
       case JInt(x) if (targetType == classOf[JavaInteger]) =>
         new JavaInteger(x.intValue)
-      case JInt(x) if (targetType == classOf[BigInt]) => x
-      case JInt(x) if (targetType == classOf[Long])   => x.longValue
+      case JInt(x) if (targetType == classOf[BigInt]) =>
+        x
+      case JInt(x) if (targetType == classOf[Long]) =>
+        x.longValue
       case JInt(x) if (targetType == classOf[JavaLong]) =>
         new JavaLong(x.longValue)
-      case JInt(x) if (targetType == classOf[Double]) => x.doubleValue
+      case JInt(x) if (targetType == classOf[Double]) =>
+        x.doubleValue
       case JInt(x) if (targetType == classOf[JavaDouble]) =>
         new JavaDouble(x.doubleValue)
-      case JInt(x) if (targetType == classOf[Float]) => x.floatValue
+      case JInt(x) if (targetType == classOf[Float]) =>
+        x.floatValue
       case JInt(x) if (targetType == classOf[JavaFloat]) =>
         new JavaFloat(x.floatValue)
-      case JInt(x) if (targetType == classOf[Short]) => x.shortValue
+      case JInt(x) if (targetType == classOf[Short]) =>
+        x.shortValue
       case JInt(x) if (targetType == classOf[JavaShort]) =>
         new JavaShort(x.shortValue)
-      case JInt(x) if (targetType == classOf[Byte]) => x.byteValue
+      case JInt(x) if (targetType == classOf[Byte]) =>
+        x.byteValue
       case JInt(x) if (targetType == classOf[JavaByte]) =>
         new JavaByte(x.byteValue)
-      case JInt(x) if (targetType == classOf[String])    => x.toString
-      case JInt(x) if (targetType == classOf[Number])    => x.longValue
-      case JDouble(x) if (targetType == classOf[Double]) => x
+      case JInt(x) if (targetType == classOf[String]) =>
+        x.toString
+      case JInt(x) if (targetType == classOf[Number]) =>
+        x.longValue
+      case JDouble(x) if (targetType == classOf[Double]) =>
+        x
       case JDouble(x) if (targetType == classOf[JavaDouble]) =>
         new JavaDouble(x)
-      case JDouble(x) if (targetType == classOf[Float]) => x.floatValue
+      case JDouble(x) if (targetType == classOf[Float]) =>
+        x.floatValue
       case JDouble(x) if (targetType == classOf[JavaFloat]) =>
         new JavaFloat(x.floatValue)
-      case JDouble(x) if (targetType == classOf[String]) => x.toString
-      case JDouble(x) if (targetType == classOf[Int])    => x.intValue
-      case JDouble(x) if (targetType == classOf[Long])   => x.longValue
-      case JDouble(x) if (targetType == classOf[Number]) => x
-      case JString(s) if (targetType == classOf[String]) => s
-      case JString(s) if (targetType == classOf[Symbol]) => Symbol(s)
+      case JDouble(x) if (targetType == classOf[String]) =>
+        x.toString
+      case JDouble(x) if (targetType == classOf[Int]) =>
+        x.intValue
+      case JDouble(x) if (targetType == classOf[Long]) =>
+        x.longValue
+      case JDouble(x) if (targetType == classOf[Number]) =>
+        x
+      case JString(s) if (targetType == classOf[String]) =>
+        s
+      case JString(s) if (targetType == classOf[Symbol]) =>
+        Symbol(s)
       case JString(s) if (targetType == classOf[Date]) =>
         formats.dateFormat.parse(s).getOrElse(fail("Invalid date '" + s + "'"))
       case JString(s) if (targetType == classOf[Timestamp]) =>
@@ -562,13 +625,18 @@ object Extraction {
             .parse(s)
             .getOrElse(fail("Invalid date '" + s + "'"))
             .getTime)
-      case JBool(x) if (targetType == classOf[Boolean]) => x
+      case JBool(x) if (targetType == classOf[Boolean]) =>
+        x
       case JBool(x) if (targetType == classOf[JavaBoolean]) =>
         new JavaBoolean(x)
-      case j: JValue if (targetType == classOf[JValue])   => j
-      case j: JObject if (targetType == classOf[JObject]) => j
-      case j: JArray if (targetType == classOf[JArray])   => j
-      case JNull                                          => null
+      case j: JValue if (targetType == classOf[JValue]) =>
+        j
+      case j: JObject if (targetType == classOf[JObject]) =>
+        j
+      case j: JArray if (targetType == classOf[JArray]) =>
+        j
+      case JNull =>
+        null
       case JNothing =>
         fail(
           "Did not find value which can be converted into " + targetType.getName)

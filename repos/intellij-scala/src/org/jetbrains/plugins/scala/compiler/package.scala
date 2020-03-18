@@ -35,7 +35,8 @@ package object compiler {
                 JDK(executable, tools),
                 "SDK tools not found: " + tools)
             }
-          case _ => Left("Not a Java SDK: " + sdkName)
+          case _ =>
+            Left("Not a Java SDK: " + sdkName)
         }
       }
     }

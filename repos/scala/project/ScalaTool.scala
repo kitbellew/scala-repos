@@ -42,7 +42,8 @@ case class ScalaTool(
       (
         "@properties@" -> (
           properties map {
-            case (k, v) => s"""-D$k="$v""""
+            case (k, v) =>
+              s"""-D$k="$v""""
           } mkString " "
         )
       ),
@@ -62,8 +63,10 @@ case class ScalaTool(
       outDir: File): File = {
     val forWindows =
       platform match {
-        case "windows" => true
-        case _         => false
+        case "windows" =>
+          true
+        case _ =>
+          false
       }
     val templatePath = s"scala/tools/ant/templates/tool-$platform.tmpl"
     val suffix =

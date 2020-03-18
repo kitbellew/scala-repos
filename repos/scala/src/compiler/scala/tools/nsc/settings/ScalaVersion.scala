@@ -23,8 +23,10 @@ case object NoScalaVersion extends ScalaVersion {
 
   def compare(that: ScalaVersion): Int =
     that match {
-      case NoScalaVersion => 0
-      case _              => 1
+      case NoScalaVersion =>
+        0
+      case _ =>
+        1
     }
 }
 
@@ -61,8 +63,10 @@ case class SpecificScalaVersion(
           1
         else
           build compare thatBuild
-      case AnyScalaVersion => 1
-      case NoScalaVersion  => -1
+      case AnyScalaVersion =>
+        1
+      case NoScalaVersion =>
+        -1
     }
 }
 
@@ -74,8 +78,10 @@ case object AnyScalaVersion extends ScalaVersion {
 
   def compare(that: ScalaVersion): Int =
     that match {
-      case AnyScalaVersion => 0
-      case _               => -1
+      case AnyScalaVersion =>
+        0
+      case _ =>
+        -1
     }
 }
 
@@ -100,22 +106,31 @@ object ScalaVersion {
 
     def toInt(s: String) =
       s match {
-        case null | "" => 0
-        case _         => s.toInt
+        case null | "" =>
+          0
+        case _ =>
+          s.toInt
       }
 
     def toBuild(s: String) =
       s match {
-        case null | "FINAL" => Final
-        case rcpat(i)       => RC(toInt(i))
-        case mspat(i)       => Milestone(toInt(i))
-        case _ /* | "" */   => Development(s)
+        case null | "FINAL" =>
+          Final
+        case rcpat(i) =>
+          RC(toInt(i))
+        case mspat(i) =>
+          Milestone(toInt(i))
+        case _ /* | "" */ =>
+          Development(s)
       }
 
     versionString match {
-      case "none" => NoScalaVersion
-      case ""     => NoScalaVersion
-      case "any"  => AnyScalaVersion
+      case "none" =>
+        NoScalaVersion
+      case "" =>
+        NoScalaVersion
+      case "any" =>
+        AnyScalaVersion
       case vpat(majorS, minorS, revS, buildS) =>
         SpecificScalaVersion(
           toInt(majorS),
@@ -165,10 +180,12 @@ case class Development(id: String) extends ScalaBuild {
       // sorting two development builds based on id is reasonably valid for two versions created with the same schema
       // otherwise it's not correct, but since it's impossible to put a total ordering on development build versions
       // this is a pragmatic compromise
-      case Development(thatId) => id compare thatId
+      case Development(thatId) =>
+        id compare thatId
       // assume a development build is newer than anything else, that's not really true, but good luck
       // mapping development build versions to other build types
-      case _ => 1
+      case _ =>
+        1
     }
 }
 
@@ -180,10 +197,13 @@ case object Final extends ScalaBuild {
 
   def compare(that: ScalaBuild) =
     that match {
-      case Final => 0
+      case Final =>
+        0
       // a final is newer than anything other than a development build or another final
-      case Development(_) => -1
-      case _              => 1
+      case Development(_) =>
+        -1
+      case _ =>
+        1
     }
 }
 
@@ -196,10 +216,13 @@ case class RC(n: Int) extends ScalaBuild {
   def compare(that: ScalaBuild) =
     that match {
       // compare two rcs based on their RC numbers
-      case RC(thatN) => n - thatN
+      case RC(thatN) =>
+        n - thatN
       // an rc is older than anything other than a milestone or another rc
-      case Milestone(_) => 1
-      case _            => -1
+      case Milestone(_) =>
+        1
+      case _ =>
+        -1
     }
 }
 
@@ -212,9 +235,11 @@ case class Milestone(n: Int) extends ScalaBuild {
   def compare(that: ScalaBuild) =
     that match {
       // compare two milestones based on their milestone numbers
-      case Milestone(thatN) => n - thatN
+      case Milestone(thatN) =>
+        n - thatN
       // a milestone is older than anything other than another milestone
-      case _ => -1
+      case _ =>
+        -1
 
     }
 }

@@ -72,16 +72,22 @@ class HoconLexer extends LexerBase {
 
   def onContents(state: State) =
     state match {
-      case Initial | SubStarting => Value
-      case SubStarted            => Substitution
-      case _                     => state
+      case Initial | SubStarting =>
+        Value
+      case SubStarted =>
+        Substitution
+      case _ =>
+        state
     }
 
   def onDollar(state: State) =
     state match {
-      case Initial | Value => SubStarting
-      case SubStarted      => Substitution
-      case _               => state
+      case Initial | Value =>
+        SubStarting
+      case SubStarted =>
+        Substitution
+      case _ =>
+        state
     }
 
   def isAnyOf(states: State*): State => Boolean = states.contains
@@ -149,10 +155,14 @@ class HoconLexer extends LexerBase {
         def drain(offset: Int, escaping: Boolean): Int =
           if (offset < seq.length) {
             seq.charAt(offset) match {
-              case '\n'              => offset
-              case '\"' if !escaping => offset + 1
-              case '\\' if !escaping => drain(offset + 1, escaping = true)
-              case _                 => drain(offset + 1, escaping = false)
+              case '\n' =>
+                offset
+              case '\"' if !escaping =>
+                offset + 1
+              case '\\' if !escaping =>
+                drain(offset + 1, escaping = true)
+              case _ =>
+                drain(offset + 1, escaping = false)
             }
           } else
             offset
@@ -214,10 +224,14 @@ class HoconLexer extends LexerBase {
 
     def newState(state: State, newLine: Boolean) =
       state match {
-        case _ if newLine => Initial
-        case SubStarting  => Value
-        case SubStarted   => Substitution
-        case _            => state
+        case _ if newLine =>
+          Initial
+        case SubStarting =>
+          Value
+        case SubStarted =>
+          Substitution
+        case _ =>
+          state
       }
   }
 

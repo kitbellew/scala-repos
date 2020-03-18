@@ -126,7 +126,8 @@ class EngineInstanceSerializer
             fields.foldLeft(seed) {
               case (i, field) =>
                 field match {
-                  case JField("id", JString(id)) => i.copy(id = id)
+                  case JField("id", JString(id)) =>
+                    i.copy(id = id)
                   case JField("status", JString(status)) =>
                     i.copy(status = status)
                   case JField("startTime", JString(startTime)) =>
@@ -141,7 +142,8 @@ class EngineInstanceSerializer
                     i.copy(engineVariant = engineVariant)
                   case JField("engineFactory", JString(engineFactory)) =>
                     i.copy(engineFactory = engineFactory)
-                  case JField("batch", JString(batch)) => i.copy(batch = batch)
+                  case JField("batch", JString(batch)) =>
+                    i.copy(batch = batch)
                   case JField("env", env) =>
                     i.copy(env = Extraction.extract[Map[String, String]](env))
                   case JField("sparkConf", sparkConf) =>
@@ -155,7 +157,8 @@ class EngineInstanceSerializer
                     i.copy(algorithmsParams = algorithmsParams)
                   case JField("servingParams", JString(servingParams)) =>
                     i.copy(servingParams = servingParams)
-                  case _ => i
+                  case _ =>
+                    i
                 }
             }
         },

@@ -7,9 +7,12 @@ object Test extends ScriptTest {
   override def show() = {
     import util._
     Try(super.show()) match {
-      case Failure(ExceptionLine(7)) => ()
-      case Failure(e)                => e.printStackTrace()
-      case Success(_)                => Console println "Expected error"
+      case Failure(ExceptionLine(7)) =>
+        ()
+      case Failure(e) =>
+        e.printStackTrace()
+      case Success(_) =>
+        Console println "Expected error"
     }
   }
 }

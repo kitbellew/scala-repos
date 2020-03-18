@@ -6,7 +6,8 @@ class SCL4695 {
 
   def receive =
     first orElse /*start*/ {
-      case "baz" => Some("baz")
+      case "baz" =>
+        Some("baz")
     } /*end*/
 }
 //PartialFunction[Any, Unit]

@@ -274,8 +274,10 @@ class LogSegment(
       baseOffset
     } else {
       ms.messageSet.lastOption match {
-        case None       => baseOffset
-        case Some(last) => last.nextOffset
+        case None =>
+          baseOffset
+        case Some(last) =>
+          last.nextOffset
       }
     }
   }
@@ -304,13 +306,15 @@ class LogSegment(
     try log.renameTo(
       new File(CoreUtils.replaceSuffix(log.file.getPath, oldSuffix, newSuffix)))
     catch {
-      case e: IOException => throw kafkaStorageException("log", e)
+      case e: IOException =>
+        throw kafkaStorageException("log", e)
     }
     try index.renameTo(
       new File(
         CoreUtils.replaceSuffix(index.file.getPath, oldSuffix, newSuffix)))
     catch {
-      case e: IOException => throw kafkaStorageException("index", e)
+      case e: IOException =>
+        throw kafkaStorageException("index", e)
     }
   }
 

@@ -52,8 +52,10 @@ private[netty] class NettyStreamManager(rpcEnv: NettyRpcEnv)
     val Array(ftype, fname) = streamId.stripPrefix("/").split("/", 2)
     val file =
       ftype match {
-        case "files" => files.get(fname)
-        case "jars"  => jars.get(fname)
+        case "files" =>
+          files.get(fname)
+        case "jars" =>
+          jars.get(fname)
         case other =>
           val dir = dirs.get(ftype)
           require(dir != null, s"Invalid stream URI: $ftype not found.")

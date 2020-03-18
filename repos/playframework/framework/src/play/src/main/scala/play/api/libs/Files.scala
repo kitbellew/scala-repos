@@ -107,7 +107,8 @@ object Files {
         else
           JFiles.move(file.toPath, to.toPath)
       } catch {
-        case ex: FileAlreadyExistsException => to
+        case ex: FileAlreadyExistsException =>
+          to
       }
 
       to

@@ -30,8 +30,9 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
       var element = elem.getParent
       while (element != null && res) {
         element match {
-          case o: ScObject if o.isPackageObject => res = false
-          case _                                =>
+          case o: ScObject if o.isPackageObject =>
+            res = false
+          case _ =>
         }
         element = element.getParent
       }
@@ -59,8 +60,9 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
       clazz match {
         case o: ScObject if isOkForJava(o) =>
           o.fakeCompanionClass match {
-            case Some(clz) => add(clz)
-            case _         =>
+            case Some(clz) =>
+              add(clz)
+            case _ =>
           }
         case _ =>
       }
@@ -76,8 +78,9 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
         clazz match {
           case c: ScTypeDefinition if isOkForJava(c) =>
             c.fakeCompanionModule match {
-              case Some(o) => add(o)
-              case _       =>
+              case Some(o) =>
+                add(o)
+              case _ =>
             }
           case _ =>
         }
@@ -94,8 +97,9 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
           case c: ScTrait if isOkForJava(c) =>
             add(c.fakeCompanionClass)
             c.fakeCompanionModule match {
-              case Some(o) => add(o)
-              case _       =>
+              case Some(o) =>
+                add(o)
+              case _ =>
             }
           case _ =>
         }

@@ -61,7 +61,8 @@ object Reloader {
   def extractSystemProperties(
       javaOptions: Seq[String]): Seq[(String, String)] = {
     javaOptions.collect {
-      case SystemProperty(key, value) => key -> value
+      case SystemProperty(key, value) =>
+        key -> value
     }
   }
 
@@ -93,9 +94,12 @@ object Reloader {
         portValue: Option[String],
         defaultValue: Option[Int] = None): Option[Int] = {
       portValue match {
-        case None             => defaultValue
-        case Some("disabled") => None
-        case Some(s)          => Some(parsePort(s))
+        case None =>
+          defaultValue
+        case Some("disabled") =>
+          None
+        case Some(s) =>
+          Some(parsePort(s))
       }
     }
 
@@ -193,7 +197,8 @@ object Reloader {
 
     // Set Java properties
     (properties ++ systemProperties).foreach {
-      case (key, value) => System.setProperty(key, value)
+      case (key, value) =>
+        System.setProperty(key, value)
     }
 
     println()
@@ -354,7 +359,8 @@ object Reloader {
 
           // Remove Java properties
           properties.foreach {
-            case (key, _) => System.clearProperty(key)
+            case (key, _) =>
+              System.clearProperty(key)
           }
         }
       }

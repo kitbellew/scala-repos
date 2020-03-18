@@ -6,7 +6,8 @@ object Test extends App {
 
   def g: Boolean = {
     val xs = Nil collect {
-      case _ => return false
+      case _ =>
+        return false
     }
     true
   }

@@ -138,8 +138,10 @@ trait IntroduceExpressions {
                 ScalaApplicationSettings.getInstance().INTRODUCE_VARIABLE_IS_VAR
               val forceInferType =
                 expr match {
-                  case _: ScFunctionExpr => Some(true)
-                  case _                 => None
+                  case _: ScFunctionExpr =>
+                    Some(true)
+                  case _ =>
+                    None
                 }
               val needExplicitType = forceInferType.getOrElse(
                 ScalaApplicationSettings
@@ -177,7 +179,8 @@ trait IntroduceExpressions {
                           holder.declaredElements.headOption.orNull
                         case enum: ScEnumerator =>
                           enum.pattern.bindings.headOption.orNull
-                        case _ => null
+                        case _ =>
+                          null
                       }
                     if (namedElement != null && namedElement.isValid) {
                       editor.getCaretModel.moveToOffset(
@@ -263,8 +266,10 @@ trait IntroduceExpressions {
         firstOccurenceOffset: Int): Option[ScForStatement] = {
       val result =
         prev match {
-          case forSt: ScForStatement if forSt.body.orNull == parExpr => None
-          case forSt: ScForStatement                                 => Some(forSt)
+          case forSt: ScForStatement if forSt.body.orNull == parExpr =>
+            None
+          case forSt: ScForStatement =>
+            Some(forSt)
           case _: ScEnumerator | _: ScGenerator =>
             Option(prev.getParent.getParent.asInstanceOf[ScForStatement])
           case guard: ScGuard if guard.getParent.isInstanceOf[ScEnumerators] =>
@@ -275,7 +280,8 @@ trait IntroduceExpressions {
                 Some(
                   forSt
                 ) //there are occurrences both in body and in enumerators
-              case _ => None
+              case _ =>
+                None
             }
         }
       for {
@@ -326,10 +332,13 @@ trait IntroduceExpressions {
                 elem,
                 classOf[ScClassParents]) != null =>
             PsiTreeUtil.getParentOfType(elem, classOf[ScExtendsBlock]) match {
-              case _ childOf (_: ScNewTemplateDefinition) => None
-              case extBl                                  => Some(extBl)
+              case _ childOf (_: ScNewTemplateDefinition) =>
+                None
+              case extBl =>
+                Some(extBl)
             }
-          case _ => None
+          case _ =>
+            None
         }
       }
     }
@@ -361,7 +370,8 @@ trait IntroduceExpressions {
           case null | _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
               _: PsiFile =>
             false
-          case _ => true
+          case _ =>
+            true
         }
       oneLineSelected && !insideExpression
     }
@@ -409,7 +419,8 @@ trait IntroduceExpressions {
           case _ childOf ((block: ScBlock) childOf (infix: ScInfixExpr))
               if isFunExpr && block.statements.size == 1 =>
             Seq(infix)
-          case expr => Seq(expr)
+          case expr =>
+            Seq(expr)
         }
       else
         replacedOccurences.toSeq.map(
@@ -529,8 +540,10 @@ trait IntroduceExpressions {
         commonParent,
         nextParent,
         firstRange.getStartOffset) match {
-        case Some(forStmt) => createEnumeratorIn(forStmt)
-        case _             => createVariableDefinition()
+        case Some(forStmt) =>
+          createEnumeratorIn(forStmt)
+        case _ =>
+          createVariableDefinition()
       }
 
     addPrivateIfNotLocal(createdDeclaration)

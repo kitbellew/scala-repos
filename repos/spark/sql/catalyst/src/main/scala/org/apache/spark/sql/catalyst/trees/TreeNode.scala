@@ -100,7 +100,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     */
   def find(f: BaseType => Boolean): Option[BaseType] =
     f(this) match {
-      case true => Some(this)
+      case true =>
+        Some(this)
       case false =>
         children.foldLeft(None: Option[BaseType]) { (l, r) =>
           l.orElse(r.find(f))
@@ -185,8 +186,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
             changed = true
             newChild
           }
-        case nonChild: AnyRef => nonChild
-        case null             => null
+        case nonChild: AnyRef =>
+          nonChild
+        case null =>
+          null
       }.toArray
     if (changed)
       makeCopy(newArgs)
@@ -219,8 +222,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
                 changed = true
                 newChild
               }
-            case nonChild: AnyRef => nonChild
-            case null             => null
+            case nonChild: AnyRef =>
+              nonChild
+            case null =>
+              null
           }
         case m: Map[_, _] =>
           m.mapValues {
@@ -233,8 +238,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
                   changed = true
                   newChild
                 }
-              case nonChild: AnyRef => nonChild
-              case null             => null
+              case nonChild: AnyRef =>
+                nonChild
+              case null =>
+                null
             }
             .view
             .force // `mapValues` is lazy and we need to force it to materialize
@@ -247,8 +254,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
             changed = true
             newChild
           }
-        case nonChild: AnyRef => nonChild
-        case null             => null
+        case nonChild: AnyRef =>
+          nonChild
+        case null =>
+          null
       }.toArray
 
     if (changed)
@@ -350,11 +359,13 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
                 } else {
                   arg
                 }
-              case other => other
+              case other =>
+                other
             }
             .view
             .force // `mapValues` is lazy and we need to force it to materialize
-        case d: DataType => d // Avoid unpacking Structs
+        case d: DataType =>
+          d // Avoid unpacking Structs
         case args: Traversable[_] =>
           args.map {
             case arg: TreeNode[_] if containsChild(arg) =>
@@ -376,10 +387,13 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
               } else {
                 tuple
               }
-            case other => other
+            case other =>
+              other
           }
-        case nonChild: AnyRef => nonChild
-        case null             => null
+        case nonChild: AnyRef =>
+          nonChild
+        case null =>
+          null
       }.toArray
     if (changed)
       makeCopy(newArgs)
@@ -444,12 +458,18 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   def argString: String =
     productIterator
       .flatMap {
-        case tn: TreeNode[_] if containsChild(tn)                     => Nil
-        case tn: TreeNode[_]                                          => s"${tn.simpleString}" :: Nil
-        case seq: Seq[BaseType] if seq.toSet.subsetOf(children.toSet) => Nil
-        case seq: Seq[_]                                              => seq.mkString("[", ",", "]") :: Nil
-        case set: Set[_]                                              => set.mkString("{", ",", "}") :: Nil
-        case other                                                    => other :: Nil
+        case tn: TreeNode[_] if containsChild(tn) =>
+          Nil
+        case tn: TreeNode[_] =>
+          s"${tn.simpleString}" :: Nil
+        case seq: Seq[BaseType] if seq.toSet.subsetOf(children.toSet) =>
+          Nil
+        case seq: Seq[_] =>
+          seq.mkString("[", ",", "]") :: Nil
+        case set: Set[_] =>
+          set.mkString("{", ",", "}") :: Nil
+        case other =>
+          other :: Nil
       }
       .mkString(", ")
 
@@ -471,7 +491,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       .split("\n")
       .zipWithIndex
       .map {
-        case (line, i) => f"$i%02d $line"
+        case (line, i) =>
+          f"$i%02d $line"
       }
       .mkString("\n")
 
@@ -607,9 +628,12 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     */
   def asCode: String = {
     val args = productIterator.map {
-      case tn: TreeNode[_] => tn.asCode
-      case s: String       => "\"" + s + "\""
-      case other           => other.toString
+      case tn: TreeNode[_] =>
+        tn.asCode
+      case s: String =>
+        "\"" + s + "\""
+      case other =>
+        other.toString
     }
     s"$nodeName(${args.mkString(",")})"
   }
@@ -656,40 +680,59 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
             value
               .map(v => JInt(children.indexOf(v.asInstanceOf[TreeNode[_]])))
               .toList)
-        case (name, value) => name -> parseToJson(value)
+        case (name, value) =>
+          name -> parseToJson(value)
       }
       .toList
   }
 
   private def parseToJson(obj: Any): JValue =
     obj match {
-      case b: Boolean   => JBool(b)
-      case b: Byte      => JInt(b.toInt)
-      case s: Short     => JInt(s.toInt)
-      case i: Int       => JInt(i)
-      case l: Long      => JInt(l)
-      case f: Float     => JDouble(f)
-      case d: Double    => JDouble(d)
-      case b: BigInt    => JInt(b)
-      case null         => JNull
-      case s: String    => JString(s)
-      case u: UUID      => JString(u.toString)
-      case dt: DataType => dt.jsonValue
-      case m: Metadata  => m.jsonValue
+      case b: Boolean =>
+        JBool(b)
+      case b: Byte =>
+        JInt(b.toInt)
+      case s: Short =>
+        JInt(s.toInt)
+      case i: Int =>
+        JInt(i)
+      case l: Long =>
+        JInt(l)
+      case f: Float =>
+        JDouble(f)
+      case d: Double =>
+        JDouble(d)
+      case b: BigInt =>
+        JInt(b)
+      case null =>
+        JNull
+      case s: String =>
+        JString(s)
+      case u: UUID =>
+        JString(u.toString)
+      case dt: DataType =>
+        dt.jsonValue
+      case m: Metadata =>
+        m.jsonValue
       case s: StorageLevel =>
         ("useDisk" -> s.useDisk) ~ ("useMemory" -> s.useMemory) ~ (
           "useOffHeap" -> s.useOffHeap
         ) ~
           ("deserialized" -> s.deserialized) ~ ("replication" -> s.replication)
-      case n: TreeNode[_] => n.jsonValue
-      case o: Option[_]   => o.map(parseToJson)
-      case t: Seq[_]      => JArray(t.map(parseToJson).toList)
+      case n: TreeNode[_] =>
+        n.jsonValue
+      case o: Option[_] =>
+        o.map(parseToJson)
+      case t: Seq[_] =>
+        JArray(t.map(parseToJson).toList)
       case m: Map[_, _] =>
         val fields = m.toList.map {
-          case (k: String, v) => (k, parseToJson(v))
+          case (k: String, v) =>
+            (k, parseToJson(v))
         }
         JObject(fields)
-      case r: RDD[_] => JNothing
+      case r: RDD[_] =>
+        JNothing
       // if it's a scala object, we can simply keep the full class path.
       // TODO: currently if the class name ends with "$", we think it's a scala object, there is
       // probably a better way to check it.
@@ -704,13 +747,16 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           ("product-class" -> JString(p.getClass.getName)) :: fieldNames
             .zip(fieldValues)
             .map {
-              case (name, value) => name -> parseToJson(value)
+              case (name, value) =>
+                name -> parseToJson(value)
             }
             .toList
         } catch {
-          case _: RuntimeException => null
+          case _: RuntimeException =>
+            null
         }
-      case _ => JNull
+      case _ =>
+        JNull
     }
 }
 
@@ -756,7 +802,8 @@ object TreeNode {
           expectedTypes.length == fields.length && expectedTypes
             .zip(fields.map(_._2))
             .forall {
-              case (cls, tpe) => cls == getClassFromType(tpe)
+              case (cls, tpe) =>
+                cls == getClassFromType(tpe)
             }
         }
         if (maybeCtor.isEmpty) {
@@ -809,12 +856,14 @@ object TreeNode {
 
         case t if t <:< localTypeOf[java.lang.Boolean] =>
           value.asInstanceOf[JBool].value: java.lang.Boolean
-        case t if t <:< localTypeOf[BigInt] => value.asInstanceOf[JInt].num
+        case t if t <:< localTypeOf[BigInt] =>
+          value.asInstanceOf[JInt].num
         case t if t <:< localTypeOf[java.lang.String] =>
           value.asInstanceOf[JString].s
         case t if t <:< localTypeOf[UUID] =>
           UUID.fromString(value.asInstanceOf[JString].s)
-        case t if t <:< localTypeOf[DataType] => DataType.parseDataType(value)
+        case t if t <:< localTypeOf[DataType] =>
+          DataType.parseDataType(value)
         case t if t <:< localTypeOf[Metadata] =>
           Metadata.fromJObject(value.asInstanceOf[JObject])
         case t if t <:< localTypeOf[StorageLevel] =>
@@ -831,8 +880,10 @@ object TreeNode {
             replication.toInt)
         case t if t <:< localTypeOf[TreeNode[_]] =>
           value match {
-            case JInt(i)     => children(i.toInt)
-            case arr: JArray => reconstruct(arr, sc)
+            case JInt(i) =>
+              children(i.toInt)
+            case arr: JArray =>
+              reconstruct(arr, sc)
             case _ =>
               throw new RuntimeException(
                 s"$value is not a valid json value for tree node.")
@@ -896,13 +947,17 @@ object TreeNode {
 
   private def isScalaObject(jValue: JValue): Boolean =
     (jValue \ "object") match {
-      case JString(str) if str.endsWith("$") => true
-      case _                                 => false
+      case JString(str) if str.endsWith("$") =>
+        true
+      case _ =>
+        false
     }
 
   private def isScalaProduct(jValue: JValue): Boolean =
     (jValue \ "product-class") match {
-      case _: JString => true
-      case _          => false
+      case _: JString =>
+        true
+      case _ =>
+        false
     }
 }

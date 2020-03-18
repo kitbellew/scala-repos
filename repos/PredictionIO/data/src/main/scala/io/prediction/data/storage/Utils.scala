@@ -27,7 +27,8 @@ private[prediction] object Utils {
       attributes: Map[String, T],
       prefix: String = "ca_"): Map[String, T] = {
     attributes map {
-      case (k, v) => (prefix + k, v)
+      case (k, v) =>
+        (prefix + k, v)
     }
   }
 
@@ -36,7 +37,8 @@ private[prediction] object Utils {
       attributes: Map[String, T],
       prefix: String = "ca_"): Map[String, T] = {
     attributes map {
-      case (k, v) => (k.stripPrefix(prefix), v)
+      case (k, v) =>
+        (k.stripPrefix(prefix), v)
     }
   }
 

@@ -30,8 +30,10 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
 
   def prodToString(producer: AbstractInsnNode) =
     producer match {
-      case p: InitialProducer => p.toString
-      case p                  => textify(p)
+      case p: InitialProducer =>
+        p.toString
+      case p =>
+        textify(p)
     }
 
   def testSingleInsn(

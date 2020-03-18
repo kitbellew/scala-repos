@@ -57,7 +57,8 @@ object Searching {
       coll match {
         case _: IndexedSeqLike[A, Repr] =>
           binarySearch(elem, 0, coll.length)(ord)
-        case _ => linearSearch(coll.view, elem, 0)(ord)
+        case _ =>
+          linearSearch(coll.view, elem, 0)(ord)
       }
 
     /** Search within an interval in the sorted sequence for a specific element. If the
@@ -83,8 +84,10 @@ object Searching {
     final def search[B >: A](elem: B, from: Int, to: Int)(implicit
         ord: Ordering[B]): SearchResult =
       coll match {
-        case _: IndexedSeqLike[A, Repr] => binarySearch(elem, from, to)(ord)
-        case _                          => linearSearch(coll.view(from, to), elem, from)(ord)
+        case _: IndexedSeqLike[A, Repr] =>
+          binarySearch(elem, from, to)(ord)
+        case _ =>
+          linearSearch(coll.view(from, to), elem, from)(ord)
       }
 
     @tailrec
@@ -95,9 +98,12 @@ object Searching {
       else {
         val idx = from + (to - from - 1) / 2
         math.signum(ord.compare(elem, coll(idx))) match {
-          case -1 => binarySearch(elem, from, idx)(ord)
-          case 1  => binarySearch(elem, idx + 1, to)(ord)
-          case _  => Found(idx)
+          case -1 =>
+            binarySearch(elem, from, idx)(ord)
+          case 1 =>
+            binarySearch(elem, idx + 1, to)(ord)
+          case _ =>
+            Found(idx)
         }
       }
     }

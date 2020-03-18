@@ -55,7 +55,8 @@ object VCardParser extends Parsers {
         !c.isControl && c != ';'
       }) <~ multiLineSep
   ).* ^^ {
-    case l => l.mkString
+    case l =>
+      l.mkString
   }
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')) *
   lazy val key = elem(
@@ -63,33 +64,40 @@ object VCardParser extends Parsers {
     { c =>
       c.isLetterOrDigit || c == '-' || c == '_'
     }).+ ^^ {
-    case list => list.mkString
+    case list =>
+      list.mkString
   }
   lazy val props =
     (
       (
         ((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
-          case a ~ b => (a, b)
+          case a ~ b =>
+            (a, b)
         }
       ) | (
         (elem(';') ~> key) ^^ {
-          case a => (a, "")
+          case a =>
+            (a, "")
         }
       )
     ) *
   lazy val left = (key ~ props) ^^ {
-    case k ~ l => VCardKey(k, l)
+    case k ~ l =>
+      VCardKey(k, l)
   }
   lazy val expr =
     (
       ((spaces ~> left ~! elem(':')) ~ repsep(value, ';')) ^^ {
-        case a ~ _ ~ b => VCardEntry(a, b)
+        case a ~ _ ~ b =>
+          VCardEntry(a, b)
       }
     ) +
 
   def parse(in: String): Either[List[VCardEntry], String] =
     expr(in) match {
-      case Success(v, r) => Left(v)
-      case err @ _       => Right(err toString)
+      case Success(v, r) =>
+        Left(v)
+      case err @ _ =>
+        Right(err toString)
     }
 }

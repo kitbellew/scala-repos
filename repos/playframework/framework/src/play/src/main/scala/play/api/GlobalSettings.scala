@@ -92,7 +92,8 @@ trait GlobalSettings {
     val (routedRequest, handler) = onRouteRequest(request) map {
       case handler: RequestTaggingHandler =>
         (handler.tagRequest(request), handler)
-      case otherHandler => (request, otherHandler)
+      case otherHandler =>
+        (request, otherHandler)
     } getOrElse {
 
       // We automatically permit HEAD requests against any GETs without the need to
@@ -104,9 +105,11 @@ trait GlobalSettings {
               action match {
                 case handler: RequestTaggingHandler =>
                   (handler.tagRequest(request), action)
-                case _ => (request, action)
+                case _ =>
+                  (request, action)
               }
-            case None => (request, notFoundHandler)
+            case None =>
+              (request, notFoundHandler)
           }
         case _ =>
           (request, notFoundHandler)
@@ -130,8 +133,10 @@ trait GlobalSettings {
       val inContext = context.isEmpty || request.path == context || request.path
         .startsWith(context + "/")
       next(request) match {
-        case action: EssentialAction if inContext => doFilter(action)
-        case handler                              => handler
+        case action: EssentialAction if inContext =>
+          doFilter(action)
+        case handler =>
+          handler
       }
   }
 
@@ -226,8 +231,10 @@ object GlobalSettings {
             .newInstance()
             .asInstanceOf[play.GlobalSettings])
       } catch {
-        case e: InstantiationException => None
-        case e: ClassNotFoundException => None
+        case e: InstantiationException =>
+          None
+        case e: ClassNotFoundException =>
+          None
       }
 
     def scalaGlobal: GlobalSettings =
@@ -252,9 +259,12 @@ object GlobalSettings {
     try {
       javaGlobal.map(new j.JavaGlobalSettingsAdapter(_)).getOrElse(scalaGlobal)
     } catch {
-      case e: PlayException       => throw e
-      case e: ThreadDeath         => throw e
-      case e: VirtualMachineError => throw e
+      case e: PlayException =>
+        throw e
+      case e: ThreadDeath =>
+        throw e
+      case e: VirtualMachineError =>
+        throw e
       case e: Throwable =>
         throw new PlayException(
           "Cannot init the Global object",

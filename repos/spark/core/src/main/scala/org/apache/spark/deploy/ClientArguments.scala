@@ -134,7 +134,8 @@ private[deploy] object ClientArguments {
       uri.getScheme != null && uri.getPath != null && uri.getPath.endsWith(
         ".jar")
     } catch {
-      case _: URISyntaxException => false
+      case _: URISyntaxException =>
+        false
     }
   }
 }

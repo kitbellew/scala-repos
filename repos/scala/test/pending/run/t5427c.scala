@@ -7,7 +7,9 @@ object Test extends App {
   val tpe = getType(foo)
   val bar = tpe.nonPrivateMember(TermName("bar"))
   bar match {
-    case NoSymbol => println("no public member")
-    case _        => println("i'm screwed")
+    case NoSymbol =>
+      println("no public member")
+    case _ =>
+      println("i'm screwed")
   }
 }

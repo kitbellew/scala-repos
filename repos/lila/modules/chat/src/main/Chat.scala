@@ -30,8 +30,10 @@ case class MixedChat(id: ChatId, lines: List[Line]) extends Chat[Line] {
       .fold(
         this,
         copy(lines = lines filter {
-          case l: UserLine   => !l.troll
-          case l: PlayerLine => true
+          case l: UserLine =>
+            !l.troll
+          case l: PlayerLine =>
+            true
         }))
 }
 

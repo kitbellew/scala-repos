@@ -69,8 +69,10 @@ class SegmentIOAuthSpec extends Specification {
 
       override def get(k: String): Option[AccessKey] =
         k match {
-          case "abc" ⇒ Some(AccessKey(k, appId, Seq.empty))
-          case _ ⇒ None
+          case "abc" ⇒
+            Some(AccessKey(k, appId, Seq.empty))
+          case _ ⇒
+            None
         }
     }
 

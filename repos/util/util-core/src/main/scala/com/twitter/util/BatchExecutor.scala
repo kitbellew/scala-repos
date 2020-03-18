@@ -81,13 +81,16 @@ private[util] class BatchExecutor[In, Out](
           tooLow)
         0.0f
 
-      case p => p
+      case p =>
+        p
     }
 
   def newBufThreshold =
     math.round(currentBufPercentile * sizeThreshold) match {
-      case tooLow if tooLow < 1 => 1
-      case size                 => math.min(size, sizeThreshold)
+      case tooLow if tooLow < 1 =>
+        1
+      case size =>
+        math.min(size, sizeThreshold)
     }
 
   def apply(t: In): Future[Out] = enqueue(t)
@@ -155,18 +158,21 @@ private[util] class BatchExecutor[In, Out](
             p.setException(new CancellationException)
             false
 
-          case scala.None => true
+          case scala.None =>
+            true
         }
     }
 
     val ins = uncancelled map {
-      case (in, _) => in
+      case (in, _) =>
+        in
     }
     // N.B. intentionally not linking cancellation of these promises to the execution of the batch
     // because it seems that in most cases you would be canceling mostly uncanceled work for an
     // outlier.
     val promises = uncancelled map {
-      case (_, promise) => promise
+      case (_, promise) =>
+        promise
     }
 
     f(ins) respond {

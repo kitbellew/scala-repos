@@ -34,8 +34,10 @@ final class Env(
         import lila.game.actorApi.{InsertGame, FinishGame}
         context.system.lilaBus.subscribe(self, 'finishGame)
         def receive = {
-          case FinishGame(game, _, _) => self ! InsertGame(game)
-          case InsertGame(game)       => api store game
+          case FinishGame(game, _, _) =>
+            self ! InsertGame(game)
+          case InsertGame(game) =>
+            api store game
         }
       }),
     name = ActorName

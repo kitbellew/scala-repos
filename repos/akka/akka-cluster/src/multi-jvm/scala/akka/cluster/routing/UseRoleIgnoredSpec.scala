@@ -72,10 +72,12 @@ abstract class UseRoleIgnoredSpec
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
     (
       receiveWhile(5 seconds, messages = expectedReplies) {
-        case Reply(`routeeType`, ref) ⇒ fullAddress(ref)
+        case Reply(`routeeType`, ref) ⇒
+          fullAddress(ref)
       }
     ).foldLeft(zero) {
-      case (replyMap, address) ⇒ replyMap + (address -> (replyMap(address) + 1))
+      case (replyMap, address) ⇒
+        replyMap + (address -> (replyMap(address) + 1))
     }
   }
 
@@ -84,8 +86,10 @@ abstract class UseRoleIgnoredSpec
     */
   private def fullAddress(actorRef: ActorRef): Address =
     actorRef.path.address match {
-      case Address(_, _, None, None) ⇒ cluster.selfAddress
-      case a ⇒ a
+      case Address(_, _, None, None) ⇒
+        cluster.selfAddress
+      case a ⇒
+        a
     }
 
   def currentRoutees(router: ActorRef) =

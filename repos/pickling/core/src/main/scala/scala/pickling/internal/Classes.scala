@@ -13,8 +13,10 @@ private[pickling] object Classes {
     } else {
       val clazz =
         typeString match {
-          case "scala.Double" => classOf[Double]
-          case _              => Class.forName(typeString)
+          case "scala.Double" =>
+            classOf[Double]
+          case _ =>
+            Class.forName(typeString)
         }
       ClassTag(clazz)
     }

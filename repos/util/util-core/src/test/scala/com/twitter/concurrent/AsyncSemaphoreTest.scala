@@ -284,7 +284,8 @@ class AsyncSemaphoreTest extends FunSpec {
 
       val results = Seq(r2.poll, r3.poll, r4.poll, r5.poll)
       val msgs = results.collect {
-        case Some(Throw(e)) => e.getMessage
+        case Some(Throw(e)) =>
+          e.getMessage
       }
       assert(msgs.forall(_ == "woop"))
     }

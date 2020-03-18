@@ -34,7 +34,8 @@ object BalancingSpec {
         TestLatch(0)(context.system))))
 
     def receive = {
-      case msg ⇒ pool.forward(msg)
+      case msg ⇒
+        pool.forward(msg)
     }
   }
 }

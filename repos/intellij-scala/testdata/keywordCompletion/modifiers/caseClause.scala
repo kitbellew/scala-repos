@@ -1,6 +1,7 @@
 class A {
   1 match {
-    case t => /*caret*/
+    case t =>
+    /*caret*/
   }
 }
 /*

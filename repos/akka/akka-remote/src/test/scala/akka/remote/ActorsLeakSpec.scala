@@ -52,9 +52,11 @@ object ActorsLeakSpec {
                 Nil
               case n: ChildrenContainer.NormalChildrenContainer ⇒
                 cell.childrenRefs.children.toList
-              case x ⇒ Nil
+              case x ⇒
+                Nil
             }
-          case _ ⇒ Nil
+          case _ ⇒
+            Nil
         }
 
       node :: children.flatMap(recurse)
@@ -65,7 +67,8 @@ object ActorsLeakSpec {
 
   class StoppableActor extends Actor {
     override def receive = {
-      case "stop" ⇒ context.stop(self)
+      case "stop" ⇒
+        context.stop(self)
     }
   }
 

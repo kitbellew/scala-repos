@@ -169,7 +169,8 @@ private[sql] class CacheManager extends Logging {
     writeLock {
       cachedData.foreach {
         case data if data.plan.collect {
-              case p if p.sameResult(plan) => p
+              case p if p.sameResult(plan) =>
+                p
             }.nonEmpty =>
           data.cachedRepresentation.recache()
         case _ =>

@@ -30,7 +30,8 @@ object SimpleApp {
       sys.env.get("SPARK_AUDIT_MASTER") match {
         case Some(master) =>
           new SparkConf().setAppName("Simple Spark App").setMaster(master)
-        case None => new SparkConf().setAppName("Simple Spark App")
+        case None =>
+          new SparkConf().setAppName("Simple Spark App")
       }
     val logFile = "input.txt"
     val sc = new SparkContext(conf)

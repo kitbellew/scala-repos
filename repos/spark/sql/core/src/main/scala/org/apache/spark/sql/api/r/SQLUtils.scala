@@ -55,19 +55,32 @@ private[r] object SQLUtils {
 
   def getSQLDataType(dataType: String): DataType = {
     dataType match {
-      case "byte"      => org.apache.spark.sql.types.ByteType
-      case "integer"   => org.apache.spark.sql.types.IntegerType
-      case "float"     => org.apache.spark.sql.types.FloatType
-      case "double"    => org.apache.spark.sql.types.DoubleType
-      case "numeric"   => org.apache.spark.sql.types.DoubleType
-      case "character" => org.apache.spark.sql.types.StringType
-      case "string"    => org.apache.spark.sql.types.StringType
-      case "binary"    => org.apache.spark.sql.types.BinaryType
-      case "raw"       => org.apache.spark.sql.types.BinaryType
-      case "logical"   => org.apache.spark.sql.types.BooleanType
-      case "boolean"   => org.apache.spark.sql.types.BooleanType
-      case "timestamp" => org.apache.spark.sql.types.TimestampType
-      case "date"      => org.apache.spark.sql.types.DateType
+      case "byte" =>
+        org.apache.spark.sql.types.ByteType
+      case "integer" =>
+        org.apache.spark.sql.types.IntegerType
+      case "float" =>
+        org.apache.spark.sql.types.FloatType
+      case "double" =>
+        org.apache.spark.sql.types.DoubleType
+      case "numeric" =>
+        org.apache.spark.sql.types.DoubleType
+      case "character" =>
+        org.apache.spark.sql.types.StringType
+      case "string" =>
+        org.apache.spark.sql.types.StringType
+      case "binary" =>
+        org.apache.spark.sql.types.BinaryType
+      case "raw" =>
+        org.apache.spark.sql.types.BinaryType
+      case "logical" =>
+        org.apache.spark.sql.types.BooleanType
+      case "boolean" =>
+        org.apache.spark.sql.types.BooleanType
+      case "timestamp" =>
+        org.apache.spark.sql.types.TimestampType
+      case "date" =>
+        org.apache.spark.sql.types.DateType
       case r"\Aarray<(.+)${elemType}>\Z" =>
         org.apache.spark.sql.types.ArrayType(getSQLDataType(elemType))
       case r"\Amap<(.+)${keyType},(.+)${valueType}>\Z" =>
@@ -92,7 +105,8 @@ private[r] object SQLUtils {
           }
         }
         createStructType(structFields)
-      case _ => throw new IllegalArgumentException(s"Invaid type $dataType")
+      case _ =>
+        throw new IllegalArgumentException(s"Invaid type $dataType")
     }
   }
 
@@ -121,7 +135,8 @@ private[r] object SQLUtils {
     data match {
       case d: java.lang.Double if dataType == FloatType =>
         new java.lang.Float(d)
-      case _ => data
+      case _ =>
+        data
     }
   }
 
@@ -161,10 +176,14 @@ private[r] object SQLUtils {
 
   def saveMode(mode: String): SaveMode = {
     mode match {
-      case "append"    => SaveMode.Append
-      case "overwrite" => SaveMode.Overwrite
-      case "error"     => SaveMode.ErrorIfExists
-      case "ignore"    => SaveMode.Ignore
+      case "append" =>
+        SaveMode.Append
+      case "overwrite" =>
+        SaveMode.Overwrite
+      case "error" =>
+        SaveMode.ErrorIfExists
+      case "ignore" =>
+        SaveMode.Ignore
     }
   }
 
@@ -189,7 +208,8 @@ private[r] object SQLUtils {
         // Read StructType for DataFrame
         val fields = SerDe.readList(dis).asInstanceOf[Array[Object]]
         Row.fromSeq(fields)
-      case _ => null
+      case _ =>
+        null
     }
   }
 

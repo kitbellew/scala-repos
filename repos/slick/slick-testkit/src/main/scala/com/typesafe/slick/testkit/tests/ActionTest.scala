@@ -166,7 +166,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <- db.run(
         q1.result.head.zipWith(q1.result.head)({
-          case (a, b) => a + b
+          case (a, b) =>
+            a + b
         }))
       _ = result shouldBe 2
     } yield ()
@@ -187,13 +188,15 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
       q1 = ts.sortBy(_.a).map(_.a).take(1)
       result <- db.run(
         q1.result.headOption.collect {
-          case Some(a) => a
+          case Some(a) =>
+            a
         })
       _ = result shouldBe 1
       _ = result shouldFail { _ =>
         val future = db.run(
           q1.result.headOption.collect {
-            case None => ()
+            case None =>
+              ()
           })
         import scala.concurrent.duration.Duration
         import scala.concurrent.Await

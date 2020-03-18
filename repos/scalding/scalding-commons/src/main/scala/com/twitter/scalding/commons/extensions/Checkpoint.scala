@@ -176,8 +176,10 @@ object Checkpoint {
       checkpointName: String)(implicit args: Args, mode: Mode): String = {
     val defaultFormat =
       mode match {
-        case Hdfs(_, _) | HadoopTest(_, _) => "sequencefile"
-        case _                             => "tsv"
+        case Hdfs(_, _) | HadoopTest(_, _) =>
+          "sequencefile"
+        case _ =>
+          "tsv"
       }
     CheckpointArg(checkpointName, "format").value
       .getOrElse(defaultFormat)
@@ -188,9 +190,12 @@ object Checkpoint {
   private def getSource(format: String, filename: String)(implicit
       mode: Mode): Source = {
     format match {
-      case "sequencefile" => SequenceFile(filename)
-      case "tsv"          => Tsv(filename)
-      case _              => sys.error("Invalid value for --checkpoint.format: " + format)
+      case "sequencefile" =>
+        SequenceFile(filename)
+      case "tsv" =>
+        Tsv(filename)
+      case _ =>
+        sys.error("Invalid value for --checkpoint.format: " + format)
     }
   }
 

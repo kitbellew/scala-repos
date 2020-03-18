@@ -40,8 +40,10 @@ class ScReferencePatternImpl private (
     with ContributedReferenceHost {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -63,8 +65,10 @@ class ScReferencePatternImpl private (
 
   override def getType(ctx: TypingContext) = {
     expectedType match {
-      case Some(x) => Success(x, Some(this))
-      case _       => Failure("Cannot define expected type", Some(this))
+      case Some(x) =>
+        Success(x, Some(this))
+      case _ =>
+        Failure("Cannot define expected type", Some(this))
     }
   }
 
@@ -84,12 +88,14 @@ class ScReferencePatternImpl private (
           navElem match {
             case holder: ScDeclaredElementsHolder =>
               holder.declaredElements.find(_.name == name).getOrElse(navElem)
-            case x => x
+            case x =>
+              x
           }
         } else
           super.getNavigationElement
       }
-      case _ => super.getNavigationElement
+      case _ =>
+        super.getNavigationElement
     }
 
   override def processDeclarations(

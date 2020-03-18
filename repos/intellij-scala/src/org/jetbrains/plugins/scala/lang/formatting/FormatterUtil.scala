@@ -23,12 +23,16 @@ object FormatterUtil {
           case parent =>
             calcAbsolutePosition(node) - calcAbsolutePosition(
               parent.getNode) match {
-              case i if i >= 0 => i + calcIndent(parent.getNode)
-              case _           => calcIndent(parent.getNode)
+              case i if i >= 0 =>
+                i + calcIndent(parent.getNode)
+              case _ =>
+                calcIndent(parent.getNode)
             }
         }
-      case _: ScalaFile => 0
-      case _            => calcIndent(node.getTreeParent)
+      case _: ScalaFile =>
+        0
+      case _ =>
+        calcIndent(node.getTreeParent)
     }
   }
   def calcAbsolutePosition(node: ASTNode): Int = {

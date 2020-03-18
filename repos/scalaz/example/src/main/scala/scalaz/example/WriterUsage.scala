@@ -50,7 +50,8 @@ object WriterUsage extends App {
 
   // with mapValue you can map over both sides
   val mValue: Logger[Option[Address]] = sherlockHolmes.mapValue {
-    case (log, p) => (log :+ "Extracting address", p.address)
+    case (log, p) =>
+      (log :+ "Extracting address", p.address)
   }
   mValue.written.map(println)
 

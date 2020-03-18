@@ -139,7 +139,8 @@ class BoundedBlockingQueue[E <: AnyRef](
     lock.lock()
     try {
       backing.poll() match {
-        case null => null.asInstanceOf[E]
+        case null =>
+          null.asInstanceOf[E]
         case e =>
           notFull.signal()
           e
@@ -229,7 +230,8 @@ class BoundedBlockingQueue[E <: AnyRef](
         var e: E = null.asInstanceOf[E]
         while (n < maxElements) {
           backing.poll() match {
-            case null => return n
+            case null =>
+              return n
             case e =>
               c add e
               n += 1

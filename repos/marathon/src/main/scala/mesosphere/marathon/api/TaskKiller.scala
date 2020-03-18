@@ -41,7 +41,8 @@ class TaskKiller @Inject() (
           service.killTasks(appId, toKill)
 
         Future.successful(toKill)
-      case None => Future.failed(UnknownAppException(appId))
+      case None =>
+        Future.failed(UnknownAppException(appId))
     }
   }
 

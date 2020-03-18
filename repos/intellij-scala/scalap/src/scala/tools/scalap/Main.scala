@@ -120,8 +120,10 @@ object Main {
       // No entries in ScalaSig attribute implies that the signature is stored in the annotation
       case Some(ScalaSig(_, _, entries)) if entries.length == 0 =>
         unpickleFromAnnotation(classFile, isPackageObject)
-      case Some(scalaSig) => parseScalaSignature(scalaSig, isPackageObject)
-      case None           => ""
+      case Some(scalaSig) =>
+        parseScalaSignature(scalaSig, isPackageObject)
+      case None =>
+        ""
     }
   }
 
@@ -130,7 +132,8 @@ object Main {
       isPackageObject: Boolean): String = {
     import classFile._
     classFile.annotation(SCALA_SIG_ANNOTATION) match {
-      case None => ""
+      case None =>
+        ""
       case Some(Annotation(_, elements)) =>
         val bytesElem =
           elements
@@ -138,7 +141,8 @@ object Main {
             .get
         val bytes = ((
           bytesElem.elementValue match {
-            case ConstValueIndex(index) => constantWrapped(index)
+            case ConstValueIndex(index) =>
+              constantWrapped(index)
           }
         ).asInstanceOf[StringBytesPair].bytes)
         val length = ByteCodecs.decode(bytes)

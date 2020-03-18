@@ -178,7 +178,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     } else {
       val action: PartialFunction[Try[Any], Unit] =
         if (exchange.isOutCapable) {
-          case Success(failure: FailureResult) ⇒ exchange.setFailure(failure)
+          case Success(failure: FailureResult) ⇒
+            exchange.setFailure(failure)
           case Success(msg) ⇒
             exchange.setResponse(CamelMessage.canonicalize(msg))
           case Failure(e: TimeoutException) ⇒
@@ -192,8 +193,10 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
             exchange.setFailure(FailureResult(throwable))
         }
         else {
-          case Success(Ack) ⇒ () /* no response message to set */
-          case Success(failure: FailureResult) ⇒ exchange.setFailure(failure)
+          case Success(Ack) ⇒
+            () /* no response message to set */
+          case Success(failure: FailureResult) ⇒
+            exchange.setFailure(failure)
           case Success(msg) ⇒
             exchange.setFailure(
               FailureResult(
@@ -217,7 +220,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
         try actorFor(endpoint.path)
           .ask(messageFor(exchange))(Timeout(endpoint.replyTimeout))
         catch {
-          case NonFatal(e) ⇒ Future.failed(e)
+          case NonFatal(e) ⇒
+            Future.failed(e)
         }
       implicit val ec =
         camel.system.dispatcher // FIXME which ExecutionContext should be used here?
@@ -237,7 +241,8 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     try {
       actorFor(endpoint.path) ! message
     } catch {
-      case NonFatal(e) ⇒ exchange.setFailure(new FailureResult(e))
+      case NonFatal(e) ⇒
+        exchange.setFailure(new FailureResult(e))
     }
 
   private[this] def actorFor(path: ActorEndpointPath): ActorRef =

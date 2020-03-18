@@ -425,7 +425,8 @@ private[spark] class MesosClusterScheduler(
     // Pass all spark properties to executor.
     val executorOpts = desc.schedulerProperties
       .map {
-        case (k, v) => s"-D$k=$v"
+        case (k, v) =>
+          s"-D$k=$v"
       }
       .mkString(" ")
     envBuilder.addVariables(

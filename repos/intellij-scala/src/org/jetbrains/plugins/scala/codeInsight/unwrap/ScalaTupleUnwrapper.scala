@@ -36,7 +36,8 @@ class ScalaTupleUnwrapper extends ScalaUnwrapper with ShortTextDescription {
     e match {
       case (expr: ScExpression) childOf (tuple: ScTuple) =>
         ifTupled(expr, tuple)
-      case _ => ifNot
+      case _ =>
+        ifNot
     }
   }
 }

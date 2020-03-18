@@ -333,7 +333,8 @@ object FormSpec extends Specification {
       .bind(Map("value" -> "some value"))
       .errors
       .headOption must beSome.like {
-      case error => error.message must equalTo("some.error")
+      case error =>
+        error.message must equalTo("some.error")
     }
   }
 

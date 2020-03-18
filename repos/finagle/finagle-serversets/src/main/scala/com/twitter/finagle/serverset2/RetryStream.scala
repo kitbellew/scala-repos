@@ -25,7 +25,8 @@ class RetryStream(underlying: Stream[Duration]) {
         case nextValue #:: rest =>
           currentStream = rest
           nextValue
-        case _ => 10.seconds
+        case _ =>
+          10.seconds
       }
     }
 

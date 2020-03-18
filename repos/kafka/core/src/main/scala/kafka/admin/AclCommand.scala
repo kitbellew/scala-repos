@@ -150,7 +150,8 @@ object AclCommand {
 
     if (opts.options.has(opts.consumerOpt))
       resourceToAcls ++= getConsumerResourceToAcls(opts).map {
-        case (k, v) => k -> (v ++ resourceToAcls.getOrElse(k, Set.empty[Acl]))
+        case (k, v) =>
+          k -> (v ++ resourceToAcls.getOrElse(k, Set.empty[Acl]))
       }
 
     validateOperation(opts, resourceToAcls)

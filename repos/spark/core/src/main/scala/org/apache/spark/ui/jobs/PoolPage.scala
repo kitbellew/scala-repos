@@ -42,8 +42,10 @@ private[ui] class PoolPage(parent: StagesTab) extends WebUIPage("pool") {
       val poolToActiveStages = listener.poolToActiveStages
       val activeStages =
         poolToActiveStages.get(poolName) match {
-          case Some(s) => s.values.toSeq
-          case None    => Seq[StageInfo]()
+          case Some(s) =>
+            s.values.toSeq
+          case None =>
+            Seq[StageInfo]()
         }
       val activeStagesTable =
         new StageTableBase(

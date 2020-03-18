@@ -278,12 +278,18 @@ trait JSEncoding extends SubComponent {
 
   private def internalName(kind: TypeKind): String =
     kind match {
-      case VOID                => "V"
-      case kind: ValueTypeKind => kind.primitiveCharCode.toString()
-      case NOTHING             => ir.Definitions.RuntimeNothingClass
-      case NULL                => ir.Definitions.RuntimeNullClass
-      case REFERENCE(cls)      => encodeClassFullName(cls)
-      case ARRAY(elem)         => "A" + internalName(elem)
+      case VOID =>
+        "V"
+      case kind: ValueTypeKind =>
+        kind.primitiveCharCode.toString()
+      case NOTHING =>
+        ir.Definitions.RuntimeNothingClass
+      case NULL =>
+        ir.Definitions.RuntimeNullClass
+      case REFERENCE(cls) =>
+        encodeClassFullName(cls)
+      case ARRAY(elem) =>
+        "A" + internalName(elem)
     }
 
   /** mangles names that are illegal in JavaScript by prepending a $

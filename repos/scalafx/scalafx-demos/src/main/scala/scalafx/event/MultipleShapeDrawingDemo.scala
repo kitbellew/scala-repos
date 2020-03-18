@@ -162,15 +162,21 @@ object MultipleShapeDrawingDemo extends JFXApp {
               .id()
             val selectedHandler =
               handlerId match {
-                case "rectangle" => Some(RectangleInteractor.handler)
-                case "ellipse"   => Some(EllipseInteractor.handler)
-                case "line"      => Some(LineInteractor.handler)
-                case _           => None
+                case "rectangle" =>
+                  Some(RectangleInteractor.handler)
+                case "ellipse" =>
+                  Some(EllipseInteractor.handler)
+                case "line" =>
+                  Some(LineInteractor.handler)
+                case _ =>
+                  None
               }
             // Selected corresponding handler
             mouseHandlerSubscription = selectedHandler match {
-              case Some(h) => Some(drawingPane.handleEvent(MouseEvent.Any)(h))
-              case None    => None
+              case Some(h) =>
+                Some(drawingPane.handleEvent(MouseEvent.Any)(h))
+              case None =>
+                None
             }
           }
 
@@ -213,9 +219,11 @@ object MultipleShapeDrawingDemo extends JFXApp {
     override def handler: MouseEvent => Unit = { me: MouseEvent =>
       {
         me.eventType match {
-          case MouseEvent.MousePressed => start = new Point2D(me.x, me.y)
-          case MouseEvent.MouseDragged => end = new Point2D(me.x, me.y)
-          case _                       => {}
+          case MouseEvent.MousePressed =>
+            start = new Point2D(me.x, me.y)
+          case MouseEvent.MouseDragged =>
+            end = new Point2D(me.x, me.y)
+          case _ => {}
         }
       }
     }

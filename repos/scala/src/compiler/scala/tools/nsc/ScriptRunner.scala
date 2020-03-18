@@ -49,8 +49,10 @@ class ScriptRunner extends HasCompileSocket {
   /** Pick a main object name from the specified settings */
   def scriptMain(settings: Settings) =
     settings.script.value match {
-      case "" => defaultScriptMain
-      case x  => x
+      case "" =>
+        defaultScriptMain
+      case x =>
+        x
     }
 
   /** Choose a jar filename to hold the compiled version of a script. */
@@ -76,8 +78,10 @@ class ScriptRunner extends HasCompileSocket {
       coreCompArgs ++ List("-Xscript", scriptMain(settings), scriptFile)
 
     CompileSocket getOrCreateSocket "" match {
-      case Some(sock) => compileOnServer(sock, compArgs)
-      case _          => false
+      case Some(sock) =>
+        compileOnServer(sock, compArgs)
+      case _ =>
+        false
     }
   }
 
@@ -155,7 +159,8 @@ class ScriptRunner extends HasCompileSocket {
               } else {
                 try io.Jar.create(jarFile, compiledPath, mainClass)
                 catch {
-                  case _: Exception => jarFile.delete()
+                  case _: Exception =>
+                    jarFile.delete()
                 }
 
                 if (jarOK) {
@@ -166,7 +171,8 @@ class ScriptRunner extends HasCompileSocket {
                 else
                   handler(compiledPath.path)
               }
-            case _ => false
+            case _ =>
+              false
           }
         }
 
@@ -194,7 +200,8 @@ class ScriptRunner extends HasCompileSocket {
       case Left(ex) =>
         ex.printStackTrace();
         false
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -224,7 +231,8 @@ class ScriptRunner extends HasCompileSocket {
       scriptArgs: List[String]): Either[Throwable, Boolean] = {
     try Right(runScript(settings, scriptFile, scriptArgs))
     catch {
-      case e: Throwable => Left(unwrap(e))
+      case e: Throwable =>
+        Left(unwrap(e))
     }
   }
 

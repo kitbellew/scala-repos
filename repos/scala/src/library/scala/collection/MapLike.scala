@@ -125,8 +125,10 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     */
   def getOrElse[B1 >: B](key: A, default: => B1): B1 =
     get(key) match {
-      case Some(v) => v
-      case None    => default
+      case Some(v) =>
+        v
+      case None =>
+        default
     }
 
   /** Retrieves the value which is associated with the given key. This
@@ -140,8 +142,10 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     */
   def apply(key: A): B =
     get(key) match {
-      case None        => default(key)
-      case Some(value) => value
+      case None =>
+        default(key)
+      case Some(value) =>
+        value
     }
 
   /** Tests whether this map contains a binding for a key.
@@ -394,7 +398,8 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
       end: String): StringBuilder =
     this.iterator
       .map {
-        case (k, v) => k + " -> " + v
+        case (k, v) =>
+          k + " -> " + v
       }
       .addString(b, start, sep, end)
 

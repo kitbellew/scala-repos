@@ -80,10 +80,12 @@ trait SchemasSpec[M[+_]]
     )
     val data =
       Stream.tabulate(30) {
-        case i if i % 3 == 0 => JParser.parseUnsafe("""{ "a": [], "b": "2" }""")
+        case i if i % 3 == 0 =>
+          JParser.parseUnsafe("""{ "a": [], "b": "2" }""")
         case i if i % 3 == 1 =>
           JParser.parseUnsafe("""{ "a": null, "b": "2" }""")
-        case _ => JParser.parseUnsafe("""{ "a": [ 1, 2 ], "b": [ "2", {} ] }""")
+        case _ =>
+          JParser.parseUnsafe("""{ "a": [ 1, 2 ], "b": [ "2", {} ] }""")
       }
     val table = fromSample(SampleData(data), Some(10))
     table.schemas.copoint must_== expected
@@ -104,7 +106,8 @@ trait SchemasSpec[M[+_]]
           JObject(List(JField("a", JNum(1)), JField("b", JUndefined)))
         case i if i % 4 == 2 =>
           JObject(List(JField("a", JUndefined), JField("b", JNum(i))))
-        case _ => JObject(Map.empty)
+        case _ =>
+          JObject(Map.empty)
       }
 
     val table = fromSample(SampleData(data), Some(10))

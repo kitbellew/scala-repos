@@ -39,7 +39,8 @@ class PatternAnnotatorTest
     val mock = new AnnotatorHolderMock
     val annotator = new PatternAnnotator {}
     val patterns = getFileAdapter.depthFirst.collect {
-      case p: ScPattern => p
+      case p: ScPattern =>
+        p
     }
     patterns.foreach(p =>
       annotator.annotatePattern(p, mock, highlightErrors = true))
@@ -52,8 +53,10 @@ class PatternAnnotatorTest
 
   private def collectWarnings(text: String): List[Message] =
     collectAnnotatorMessages(text).filter {
-      case _: Warning => true
-      case _          => false
+      case _: Warning =>
+        true
+      case _ =>
+        false
     }
 
   private def checkWarning(
@@ -71,8 +74,10 @@ class PatternAnnotatorTest
 
   private def collectErrors(text: String): List[Message] =
     collectAnnotatorMessages(text).filter {
-      case error: Error => true
-      case _            => false
+      case error: Error =>
+        true
+      case _ =>
+        false
     }
 
   private def checkError(

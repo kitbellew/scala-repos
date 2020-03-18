@@ -21,8 +21,10 @@ class ReferenceQueue[+T <: AnyRef] {
   protected def Wrapper(
       jref: java.lang.ref.Reference[_]): Option[Reference[T]] =
     jref match {
-      case null => None
-      case ref  => Some(ref.asInstanceOf[ReferenceWithWrapper[T]].wrapper)
+      case null =>
+        None
+      case ref =>
+        Some(ref.asInstanceOf[ReferenceWithWrapper[T]].wrapper)
     }
 
   def poll: Option[Reference[T]] = Wrapper(underlying.poll)

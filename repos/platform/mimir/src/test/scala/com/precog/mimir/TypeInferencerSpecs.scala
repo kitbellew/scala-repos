@@ -70,7 +70,8 @@ trait TypeInferencerSpecs[M[+_]]
                (path, ctpes) <- flattenAux(jtpe))
             yield (JPathField(field) \ path, ctpes)
 
-        case JUnionT(left, right) => flattenAux(left) ++ flattenAux(right)
+        case JUnionT(left, right) =>
+          flattenAux(left) ++ flattenAux(right)
 
         case u @ (JArrayUnfixedT | JObjectUnfixedT) =>
           Set((JPath.Identity, None))
@@ -89,7 +90,8 @@ trait TypeInferencerSpecs[M[+_]]
           left: Map[JPath, Set[CType]],
           right: Map[JPath, Set[CType]]): Map[JPath, Set[CType]] = {
         left ++ right.map {
-          case (path, ctpes) => path -> (ctpes ++ left.getOrElse(path, Set()))
+          case (path, ctpes) =>
+            path -> (ctpes ++ left.getOrElse(path, Set()))
         }
       }
       left ++ right.map {
@@ -118,18 +120,23 @@ trait TypeInferencerSpecs[M[+_]]
       }
 
     graph match {
-      case _: Root => Map()
+      case _: Root =>
+        Map()
 
-      case New(parent) => extractLoads(parent)
+      case New(parent) =>
+        extractLoads(parent)
 
       case AbsoluteLoad(Const(CString(path)), jtpe) =>
         Map(path -> flattenType(jtpe))
 
-      case Operate(_, parent) => extractLoads(parent)
+      case Operate(_, parent) =>
+        extractLoads(parent)
 
-      case Reduce(_, parent) => extractLoads(parent)
+      case Reduce(_, parent) =>
+        extractLoads(parent)
 
-      case Morph1(_, parent) => extractLoads(parent)
+      case Morph1(_, parent) =>
+        extractLoads(parent)
 
       case Morph2(_, left, right) =>
         merge(extractLoads(left), extractLoads(right))
@@ -140,16 +147,20 @@ trait TypeInferencerSpecs[M[+_]]
       case Filter(_, target, boolean) =>
         merge(extractLoads(target), extractLoads(boolean))
 
-      case AddSortKey(parent, _, _, _) => extractLoads(parent)
+      case AddSortKey(parent, _, _, _) =>
+        extractLoads(parent)
 
-      case Memoize(parent, _) => extractLoads(parent)
+      case Memoize(parent, _) =>
+        extractLoads(parent)
 
-      case Distinct(parent) => extractLoads(parent)
+      case Distinct(parent) =>
+        extractLoads(parent)
 
       case Split(spec, child, _) =>
         merge(extractSpecLoads(spec), extractLoads(child))
 
-      case _: SplitGroup | _: SplitParam => Map()
+      case _: SplitGroup | _: SplitParam =>
+        Map()
     }
   }
 

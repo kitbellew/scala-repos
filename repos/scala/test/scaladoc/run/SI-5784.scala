@@ -27,10 +27,12 @@ object Test extends ScaladocModelTest {
         .length + " == 5")
     assert(
       Base.members.collect {
-        case d: DocTemplateEntity => d
+        case d: DocTemplateEntity =>
+          d
       }.length == 4,
       Base.members.collect {
-        case d: DocTemplateEntity => d
+        case d: DocTemplateEntity =>
+          d
       }.length == 4)
     testDiagram(Base, Base.contentDiagram, 2, 1)
 
@@ -58,10 +60,12 @@ object Test extends ScaladocModelTest {
     ) // FooApi and override type T
     assert(
       Api.members.collect {
-        case d: DocTemplateEntity => d
+        case d: DocTemplateEntity =>
+          d
       }.length == 5,
       Api.members.collect {
-        case d: DocTemplateEntity => d
+        case d: DocTemplateEntity =>
+          d
       }.length == 5)
     testDiagram(Api, Api.contentDiagram, 3, 2)
 

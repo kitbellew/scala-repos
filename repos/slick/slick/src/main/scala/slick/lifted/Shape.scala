@@ -181,7 +181,8 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
 
   def pack(value: Mixed) = {
     val elems = shapes.iterator.zip(getIterator(value)).map {
-      case (p, f) => p.pack(f.asInstanceOf[p.Mixed])
+      case (p, f) =>
+        p.pack(f.asInstanceOf[p.Mixed])
     }
     buildValue(elems.toIndexedSeq).asInstanceOf[Packed]
   }
@@ -213,7 +214,8 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
         shapes.iterator
           .zip(getIterator(value))
           .map {
-            case (p, f) => p.toNode(f.asInstanceOf[p.Mixed])
+            case (p, f) =>
+              p.toNode(f.asInstanceOf[p.Mixed])
           }
           .toIterable))
 }
@@ -408,7 +410,8 @@ object ShapedValue {
       rSym.companion match {
         case NoSymbol =>
           q"${rSym.name.toTermName}" // This can happen for case classes defined inside of methods
-        case s => q"$s"
+        case s =>
+          q"$s"
       }
     val fields =
       rTag.tpe.decls.collect {
@@ -436,7 +439,8 @@ object ShapedValue {
         val cons =
           fields.foldRight[Tree](
             q"_root_.slick.collection.heterogeneous.HNil") {
-            case ((n, _, _), z) => q"v.$n :: $z"
+            case ((n, _, _), z) =>
+              q"v.$n :: $z"
           }
         (
           q"({ case $pat => new $rTag(..${fields.map(
@@ -457,16 +461,20 @@ object ShapedValue {
         .map(_._2)
         .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
     val fpChildren = fields.map {
-      case (_, t, n) => q"val $n = next[$t]"
+      case (_, t, n) =>
+        q"val $n = next[$t]"
     }
     val fpReadChildren = fields.map {
-      case (_, _, n) => q"$n.read(r)"
+      case (_, _, n) =>
+        q"$n.read(r)"
     }
     val fpSetChildren = fields.map {
-      case (fn, _, n) => q"$n.set(value.$fn, pp)"
+      case (fn, _, n) =>
+        q"$n.set(value.$fn, pp)"
     }
     val fpUpdateChildren = fields.map {
-      case (fn, _, n) => q"$n.update(value.$fn, pr)"
+      case (fn, _, n) =>
+        q"$n.update(value.$fn, pr)"
     }
 
     q"""

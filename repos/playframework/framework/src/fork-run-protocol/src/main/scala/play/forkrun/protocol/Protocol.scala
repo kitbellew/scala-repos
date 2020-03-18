@@ -36,17 +36,23 @@ object ForkConfig {
 
   def identifyWatchService(watchService: FileWatchService): WatchService =
     watchService match {
-      case _: DefaultFileWatchService => DefaultWatchService
-      case _: JDK7FileWatchService    => JDK7WatchService
-      case _: JNotifyFileWatchService => JNotifyWatchService
+      case _: DefaultFileWatchService =>
+        DefaultWatchService
+      case _: JDK7FileWatchService =>
+        JDK7WatchService
+      case _: JNotifyFileWatchService =>
+        JNotifyWatchService
       case sbt: PollingFileWatchService =>
         PollingWatchService(sbt.pollDelayMillis)
       case optional: OptionalFileWatchServiceDelegate =>
         optional.watchService match {
-          case Success(service) => identifyWatchService(service)
-          case Failure(_)       => DefaultWatchService
+          case Success(service) =>
+            identifyWatchService(service)
+          case Failure(_) =>
+            DefaultWatchService
         }
-      case _ => DefaultWatchService
+      case _ =>
+        DefaultWatchService
     }
 }
 

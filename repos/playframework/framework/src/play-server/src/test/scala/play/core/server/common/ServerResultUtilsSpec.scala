@@ -28,7 +28,8 @@ object ServerResultUtilsSpec extends Specification with IterateeSpecification {
     val headers =
       new Headers(
         cookie.map {
-          case (name, value) => "Cookie" -> s"$name=$value"
+          case (name, value) =>
+            "Cookie" -> s"$name=$value"
         }.toSeq)
   }
 
@@ -74,10 +75,12 @@ object ServerResultUtilsSpec extends Specification with IterateeSpecification {
         cookies: Seq[Cookie] =>
           cookies.length must_== 2
           cookies.find(_.name == "PLAY_FLASH") must beSome.like {
-            case cookie => cookie.value must_== ""
+            case cookie =>
+              cookie.value must_== ""
           }
           cookies.find(_.name == "cookie") must beSome.like {
-            case cookie => cookie.value must_== "value"
+            case cookie =>
+              cookie.value must_== "value"
           }
       }
     }

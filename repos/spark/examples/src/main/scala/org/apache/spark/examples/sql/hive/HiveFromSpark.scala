@@ -65,7 +65,8 @@ object HiveFromSpark {
 
     println("Result of RDD.map:")
     val rddAsStrings = rddFromSql.rdd.map {
-      case Row(key: Int, value: String) => s"Key: $key, Value: $value"
+      case Row(key: Int, value: String) =>
+        s"Key: $key, Value: $value"
     }
 
     // You can also register RDDs as temporary tables within a HiveContext.

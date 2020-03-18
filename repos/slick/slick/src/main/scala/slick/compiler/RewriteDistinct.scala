@@ -43,7 +43,8 @@ class RewriteDistinct extends Phase {
     val refFields =
       sel1
         .collect[TermSymbol] {
-          case Select(Ref(s), f) if s == s1 => f
+          case Select(Ref(s), f) if s == s1 =>
+            f
         }
         .toSet
     logger.debug("Referenced fields: " + refFields.mkString(", "))
@@ -52,7 +53,8 @@ class RewriteDistinct extends Phase {
     val onFieldPos =
       onNodes.iterator.zipWithIndex
         .collect[(TermSymbol, Int)] {
-          case (Select(Ref(s), f), idx) if s == dist1.generator => (f, idx)
+          case (Select(Ref(s), f), idx) if s == dist1.generator =>
+            (f, idx)
         }
         .toMap
     logger.debug(
@@ -64,7 +66,8 @@ class RewriteDistinct extends Phase {
       val onLookup =
         onDefs.iterator
           .collect[(TermSymbol, AnonSymbol)] {
-            case (a, Select(Ref(s), f)) if s == dist1.generator => (f, a)
+            case (a, Select(Ref(s), f)) if s == dist1.generator =>
+              (f, a)
           }
           .toMap
       val inner = Bind(
@@ -72,7 +75,8 @@ class RewriteDistinct extends Phase {
         Distinct(new AnonSymbol, dist1.from, ProductNode(ConstArray.empty)),
         Pure(StructNode(onDefs)))
       val sel2 = sel1.replace {
-        case Select(Ref(s), f) if s == s1 => Select(Ref(s), onLookup(f))
+        case Select(Ref(s), f) if s == s1 =>
+          Select(Ref(s), onLookup(f))
       }
       val ret = Subquery(inner, Subquery.AboveDistinct)
       logger.debug(

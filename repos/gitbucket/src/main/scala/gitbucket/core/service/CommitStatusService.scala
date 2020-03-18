@@ -93,7 +93,8 @@ trait CommitStatusService {
     byCommitStatues(userName, repositoryName, sha)
       .innerJoin(Accounts)
       .filter {
-        case (t, a) => t.creator === a.userName
+        case (t, a) =>
+          t.creator === a.userName
       }
       .list
 

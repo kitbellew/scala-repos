@@ -82,7 +82,8 @@ class IntParallelHashSetCheck(val tasksupport: TaskSupport)
       //     println("Invariants broken:\n" + invs.mkString("\n"))
       //     false
       //   }
-      case _ => true
+      case _ =>
+        true
     }
 
 }

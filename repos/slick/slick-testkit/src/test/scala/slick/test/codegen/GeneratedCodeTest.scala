@@ -205,8 +205,10 @@ object GeneratedCodeTest {
   def tableName(node: Node): String = {
     import slick.ast._
     node match {
-      case TableExpansion(_, tableNode, _) => tableName(tableNode)
-      case t: TableNode                    => t.tableName
+      case TableExpansion(_, tableNode, _) =>
+        tableName(tableNode)
+      case t: TableNode =>
+        t.tableName
     }
   }
 

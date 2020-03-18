@@ -21,7 +21,8 @@ private[controllers] trait TheftPrevention {
   protected def isTheft(pov: Pov)(implicit ctx: Context) =
     pov.game.isPgnImport || pov.player.isAi || {
       (pov.player.userId, ctx.userId) match {
-        case (Some(playerId), None) => true
+        case (Some(playerId), None) =>
+          true
         case (Some(playerId), Some(userId)) =>
           playerId != userId && !(ctx.me ?? Granter.superAdmin)
         case (None, _) =>

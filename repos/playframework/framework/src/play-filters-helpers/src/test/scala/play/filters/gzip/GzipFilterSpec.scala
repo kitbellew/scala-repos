@@ -170,7 +170,8 @@ object GzipFilterSpec extends PlaySpecification with DataTables {
         .overrides(
           bind[Router].to(
             Router.from {
-              case _ => Action(result)
+              case _ =>
+                Action(result)
             }),
           bind[HttpFilters].to[Filters])
         .build

@@ -46,7 +46,8 @@ trait ObjectOperator extends LogicalPlan {
   def outputObject: NamedExpression =
     Alias(
       serializer.head.collect {
-        case b: BoundReference => b
+        case b: BoundReference =>
+          b
       }.head,
       "obj")()
 
@@ -65,8 +66,10 @@ trait ObjectOperator extends LogicalPlan {
   def withNewSerializer(newSerializer: Seq[NamedExpression]): LogicalPlan =
     makeCopy {
       productIterator.map {
-        case c if c == serializer => newSerializer
-        case other: AnyRef        => other
+        case c if c == serializer =>
+          newSerializer
+        case other: AnyRef =>
+          other
       }.toArray
     }
 }

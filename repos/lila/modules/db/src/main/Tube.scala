@@ -21,7 +21,8 @@ case class BsTube[Doc](handler: BSONHandler[BSONDocument, Doc])
 
   def read(bson: BSONDocument): Option[Doc] =
     handler readTry bson match {
-      case Success(doc) => Some(doc)
+      case Success(doc) =>
+        Some(doc)
       case Failure(err) =>
         logger.error(
           s"[tube] Cannot read ${lila.db.BSON.debug(bson)}\n$err\n",
@@ -53,7 +54,8 @@ case class JsTube[Doc](
   def read(bson: BSONDocument): Option[Doc] = {
     val js = JsObjectReader read bson
     fromMongo(js) match {
-      case JsSuccess(v, _) => Some(v)
+      case JsSuccess(v, _) =>
+        Some(v)
       case e =>
         logger.error("[tube] Cannot read %s\n%s".format(js, e))
         None
@@ -64,7 +66,8 @@ case class JsTube[Doc](
 
   def write(doc: Doc): JsResult[JsObject] =
     writes(doc) match {
-      case obj: JsObject => JsSuccess(obj)
+      case obj: JsObject =>
+        JsSuccess(obj)
       case something =>
         logger.error(s"[tube] Cannot write $doc\ngot $something")
         JsError()
@@ -118,7 +121,8 @@ object JsTube {
               case err: JsError =>
                 throw LilaException(
                   "[tube] Cannot transform %s\n%s".format(origin, err))
-              case JsSuccess(js, _) => js
+              case JsSuccess(js, _) =>
+                js
             }
           })
     }

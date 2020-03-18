@@ -222,7 +222,8 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       statCache: Map[URI, FileStatus]): FileStatus = {
     val stat =
       statCache.get(uri) match {
-        case Some(existstat) => existstat
+        case Some(existstat) =>
+          existstat
         case None =>
           val newStat = fs.getFileStatus(new Path(uri))
           statCache.put(uri, newStat)

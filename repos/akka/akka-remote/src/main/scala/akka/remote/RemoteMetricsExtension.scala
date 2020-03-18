@@ -73,9 +73,12 @@ private[akka] class RemoteMetricsOn(system: ExtendedActorSystem)
     if (payloadBytes >= logFrameSizeExceeding) {
       val clazz =
         msg match {
-          case x: ActorSelectionMessage ⇒ x.msg.getClass
-          case x: RouterEnvelope ⇒ x.message.getClass
-          case _ ⇒ msg.getClass
+          case x: ActorSelectionMessage ⇒
+            x.msg.getClass
+          case x: RouterEnvelope ⇒
+            x.message.getClass
+          case _ ⇒
+            msg.getClass
         }
 
       // 10% threshold until next log

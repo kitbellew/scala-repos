@@ -40,7 +40,8 @@ private[cacheresolver] object CacheNodeMetadata {
     metadata.get(key) match {
       case some @ Some(metadata: CacheNodeMetadata) =>
         some.asInstanceOf[Option[CacheNodeMetadata]]
-      case _ => None
+      case _ =>
+        None
     }
 
   /**

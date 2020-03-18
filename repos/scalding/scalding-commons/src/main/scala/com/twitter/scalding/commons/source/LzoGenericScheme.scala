@@ -85,7 +85,8 @@ private[source] class ConfigBinaryConverterProvider[M](
     val data = conf.get(confKey)
     require(data != null, s"$confKey is not set in configuration")
     cached match {
-      case Some((d, conv)) if d == data => conv
+      case Some((d, conv)) if d == data =>
+        conv
       case _ =>
         val extern = ExternalizerSerializer.inj.invert(data).get
         val conv = extern.get.asInstanceOf[BinaryConverter[M]]

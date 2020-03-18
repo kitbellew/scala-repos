@@ -91,7 +91,8 @@ class PolyTests {
         st: Case.Aux[T, Int],
         su: Case.Aux[U, Int]) =
       at[(T, U)] {
-        case (t, u) => size(t) + size(u)
+        case (t, u) =>
+          size(t) + size(u)
       }
   }
 
@@ -309,7 +310,8 @@ class PolyTests {
   def testRotateLeft {
     object isd extends Poly3 {
       implicit val default = at[Int, String, Double] {
-        case (i, s, d) => s"i: $i, s: $s, d: $d"
+        case (i, s, d) =>
+          s"i: $i, s: $s, d: $d"
       }
     }
 
@@ -328,7 +330,8 @@ class PolyTests {
 
     object isdc extends Poly4 {
       implicit val default = at[Int, String, Double, Char] {
-        case (i, s, d, c) => s"i: $i, s: $s, d: $d, c: $c"
+        case (i, s, d, c) =>
+          s"i: $i, s: $s, d: $d, c: $c"
       }
     }
 
@@ -350,7 +353,8 @@ class PolyTests {
   def testRotateRight {
     object isd extends Poly3 {
       implicit val default = at[Int, String, Double] {
-        case (i, s, d) => s"i: $i, s: $s, d: $d"
+        case (i, s, d) =>
+          s"i: $i, s: $s, d: $d"
       }
     }
 
@@ -369,7 +373,8 @@ class PolyTests {
 
     object isdc extends Poly4 {
       implicit val default = at[Int, String, Double, Char] {
-        case (i, s, d, c) => s"i: $i, s: $s, d: $d, c: $c"
+        case (i, s, d, c) =>
+          s"i: $i, s: $s, d: $d, c: $c"
       }
     }
 

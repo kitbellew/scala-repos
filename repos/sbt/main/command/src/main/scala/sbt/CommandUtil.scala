@@ -30,7 +30,8 @@ object CommandUtil {
     try {
       state.configuration.provider.scalaProvider.launcher.bootDirectory
     } catch {
-      case e: NoSuchMethodError => new File(".").getAbsoluteFile
+      case e: NoSuchMethodError =>
+        new File(".").getAbsoluteFile
     }
 
   def aligned(
@@ -42,7 +43,8 @@ object CommandUtil {
     else {
       val width = in.map(_._1.length).max
       in.map {
-        case (a, b) => (pre + fill(a, width) + sep + b)
+        case (a, b) =>
+          (pre + fill(a, width) + sep + b)
       }
     }
   def fill(s: String, size: Int) = s + " " * math.max(size - s.length, 0)
@@ -53,18 +55,21 @@ object CommandUtil {
       case None =>
         s.log.error(ifMissing);
         s.fail
-      case Some(nav) => f(nav)
+      case Some(nav) =>
+        f(nav)
     }
 
   def singleArgument(exampleStrings: Set[String]): Parser[String] = {
     val arg = (NotSpaceClass ~ any.*) map {
-      case (ns, s) => (ns +: s).mkString
+      case (ns, s) =>
+        (ns +: s).mkString
     }
     token(Space) ~> token(arg examples exampleStrings)
   }
   def detail(selected: String, detailMap: Map[String, String]): String =
     detailMap.get(selected) match {
-      case Some(exactDetail) => exactDetail
+      case Some(exactDetail) =>
+        exactDetail
       case None =>
         try {
           val details = searchHelp(selected, detailMap)
@@ -96,7 +101,8 @@ object CommandUtil {
   }
   def layoutDetails(details: Map[String, String]): String =
     details.map {
-      case (k, v) => k + "\n\n  " + v
+      case (k, v) =>
+        k + "\n\n  " + v
     } mkString ("\n", "\n\n", "\n")
 
   final val HelpPatternFlags = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE

@@ -97,8 +97,10 @@ private[spark] object SerializationDebugger extends Logging {
         visited += o
         o match {
           // Primitive value, string, and primitive arrays are always serializable
-          case _ if o.getClass.isPrimitive => List.empty
-          case _: String                   => List.empty
+          case _ if o.getClass.isPrimitive =>
+            List.empty
+          case _: String =>
+            List.empty
           case _
               if o.getClass.isArray && o.getClass.getComponentType.isPrimitive =>
             List.empty

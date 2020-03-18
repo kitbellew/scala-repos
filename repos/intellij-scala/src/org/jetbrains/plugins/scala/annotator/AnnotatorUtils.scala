@@ -63,8 +63,10 @@ private[annotator] object AnnotatorUtils {
       if (!actual.conforms(expected)) {
         val expr =
           expression match {
-            case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
-            case _              => expression
+            case b: ScBlockExpr =>
+              b.getRBrace.map(_.getPsi).getOrElse(b)
+            case _ =>
+              expression
           }
         val (actualText, expText) = ScTypePresentation
           .different(actual, expected)

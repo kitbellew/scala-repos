@@ -141,8 +141,10 @@ private[finagle] class MultiCategorizingExceptionStatsHandler(
 
     val labels: Seq[Seq[String]] =
       mkSource(t) match {
-        case Some(service) => flagLabels :+ Seq(SourcedFailures, service)
-        case None          => flagLabels
+        case Some(service) =>
+          flagLabels :+ Seq(SourcedFailures, service)
+        case None =>
+          flagLabels
       }
 
     val paths: Seq[Seq[String]] = statPaths(t, labels, rollup)

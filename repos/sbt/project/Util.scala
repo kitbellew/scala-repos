@@ -14,8 +14,10 @@ object Util {
     Seq(
       crossPaths := (
         scalaBinaryVersion.value match {
-          case "2.11" => true
-          case _      => false
+          case "2.11" =>
+            true
+          case _ =>
+            false
         }
       ))
 
@@ -36,16 +38,20 @@ object Util {
           "-language:existentials")
     },
     scalacOptions <++= scalaVersion map CrossVersion.partialVersion map {
-      case Some((2, 10)) => Seq("-deprecation", "-Xlint")
-      case _             => Seq()
+      case Some((2, 10)) =>
+        Seq("-deprecation", "-Xlint")
+      case _ =>
+        Seq()
     }
   )
 
   def projectComponent =
     projectID <<= (projectID, componentID) { (pid, cid) =>
       cid match {
-        case Some(id) => pid extra ("e:component" -> id);
-        case None     => pid
+        case Some(id) =>
+          pid extra ("e:component" -> id);
+        case None =>
+          pid
       }
     }
 
@@ -131,7 +137,8 @@ object Util {
             scope,
             cleanedNodes.isEmpty,
             cleanedNodes: _*).theSeq
-        case other => other
+        case other =>
+          other
       }
     cleanNodes(pomNode.theSeq)(0)
   }

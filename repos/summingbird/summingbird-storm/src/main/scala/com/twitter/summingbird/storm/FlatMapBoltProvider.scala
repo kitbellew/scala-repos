@@ -113,7 +113,8 @@ case class FlatMapBoltProvider(
     type ExecutorValue = CMap[(K, BatchID), InnerValue]
     val summerProducer = summer.members
       .collect {
-        case s: Summer[_, _, _] => s
+        case s: Summer[_, _, _] =>
+          s
       }
       .head
       .asInstanceOf[Summer[Storm, K, V]]
@@ -190,7 +191,8 @@ case class FlatMapBoltProvider(
       stormDag
         .dependantsOf(node)
         .collect {
-          case s: SummerNode[Storm] => s
+          case s: SummerNode[Storm] =>
+            s
         }
         .headOption
     summerOpt match {

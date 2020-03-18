@@ -22,7 +22,8 @@ final class Debouncer[A: Manifest](length: FiniteDuration, function: A => Unit)
 
   def delay: Receive = {
 
-    case a: A => delayed = a.some
+    case a: A =>
+      delayed = a.some
 
     case DelayEnd =>
       context become ready

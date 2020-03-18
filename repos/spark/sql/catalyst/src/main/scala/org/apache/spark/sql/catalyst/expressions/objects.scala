@@ -135,7 +135,8 @@ case class Invoke(
           .getOrElse(sys.error(s"Couldn't find $functionName on $cls"))
           .getReturnType
           .getName
-      case _ => ""
+      case _ =>
+        ""
     }
 
   lazy val unboxer =
@@ -154,7 +155,8 @@ case class Invoke(
         (s: String) => s"((java.lang.Double)$s).doubleValue()"
       case (BooleanType, "java.lang.Object") =>
         (s: String) => s"((java.lang.Boolean)$s).booleanValue()"
-      case _ => identity[String] _
+      case _ =>
+        identity[String] _
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -403,20 +405,34 @@ case class MapObjects private (
       case NullType =>
         val nullTypeClassName = NullType.getClass.getName + ".MODULE$"
         (i: String) => s".get($i, $nullTypeClassName)"
-      case IntegerType             => (i: String) => s".getInt($i)"
-      case LongType                => (i: String) => s".getLong($i)"
-      case FloatType               => (i: String) => s".getFloat($i)"
-      case DoubleType              => (i: String) => s".getDouble($i)"
-      case ByteType                => (i: String) => s".getByte($i)"
-      case ShortType               => (i: String) => s".getShort($i)"
-      case BooleanType             => (i: String) => s".getBoolean($i)"
-      case StringType              => (i: String) => s".getUTF8String($i)"
-      case s: StructType           => (i: String) => s".getStruct($i, ${s.size})"
-      case a: ArrayType            => (i: String) => s".getArray($i)"
-      case _: MapType              => (i: String) => s".getMap($i)"
-      case udt: UserDefinedType[_] => itemAccessorMethod(udt.sqlType)
-      case DecimalType.Fixed(p, s) => (i: String) => s".getDecimal($i, $p, $s)"
-      case DateType                => (i: String) => s".getInt($i)"
+      case IntegerType =>
+        (i: String) => s".getInt($i)"
+      case LongType =>
+        (i: String) => s".getLong($i)"
+      case FloatType =>
+        (i: String) => s".getFloat($i)"
+      case DoubleType =>
+        (i: String) => s".getDouble($i)"
+      case ByteType =>
+        (i: String) => s".getByte($i)"
+      case ShortType =>
+        (i: String) => s".getShort($i)"
+      case BooleanType =>
+        (i: String) => s".getBoolean($i)"
+      case StringType =>
+        (i: String) => s".getUTF8String($i)"
+      case s: StructType =>
+        (i: String) => s".getStruct($i, ${s.size})"
+      case a: ArrayType =>
+        (i: String) => s".getArray($i)"
+      case _: MapType =>
+        (i: String) => s".getMap($i)"
+      case udt: UserDefinedType[_] =>
+        itemAccessorMethod(udt.sqlType)
+      case DecimalType.Fixed(p, s) =>
+        (i: String) => s".getDecimal($i, $p, $s)"
+      case DateType =>
+        (i: String) => s".getInt($i)"
     }
 
   private lazy val (lengthFunction, itemAccessor, primitiveElement) =
@@ -431,11 +447,16 @@ case class MapObjects private (
       case ArrayType(t, _) =>
         val (sqlType, primitiveElement) =
           t match {
-            case m: MapType              => (m, false)
-            case s: StructType           => (s, false)
-            case s: StringType           => (s, false)
-            case udt: UserDefinedType[_] => (udt.sqlType, false)
-            case o                       => (o, true)
+            case m: MapType =>
+              (m, false)
+            case s: StructType =>
+              (s, false)
+            case s: StringType =>
+              (s, false)
+            case udt: UserDefinedType[_] =>
+              (udt.sqlType, false)
+            case o =>
+              (o, true)
           }
         (".numElements()", itemAccessorMethod(sqlType), primitiveElement)
     }

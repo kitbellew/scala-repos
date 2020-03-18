@@ -22,8 +22,10 @@ object CacheDirective {
       with ValueRenderable {
     def render[R <: Rendering](r: R): r.type =
       content match {
-        case Some(s) ⇒ r ~~ name ~~ '=' ~~# s
-        case None ⇒ r ~~ name
+        case Some(s) ⇒
+          r ~~ name ~~ '=' ~~# s
+        case None ⇒
+          r ~~ name
       }
   }
 
@@ -73,8 +75,10 @@ object CacheDirectives {
       with ValueRenderable {
     def render[R <: Rendering](r: R): r.type =
       deltaSeconds match {
-        case Some(s) ⇒ r ~~ productPrefix ~~ '=' ~~ s
-        case None ⇒ r ~~ productPrefix
+        case Some(s) ⇒
+          r ~~ productPrefix ~~ '=' ~~ s
+        case None ⇒
+          r ~~ productPrefix
       }
   }
 

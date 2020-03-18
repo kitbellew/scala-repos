@@ -81,8 +81,10 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       new BServiceImpl {
         override def show_me_your_dtab(): Future[String] = {
           ClientId.current.map(_.name) match {
-            case Some(name) => Future.value(name)
-            case _          => Future.exception(missingClientIdEx)
+            case Some(name) =>
+              Future.value(name)
+            case _ =>
+              Future.exception(missingClientIdEx)
           }
         }
       }
@@ -273,7 +275,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
             // Skip spurious GC messages
             case Record(_, _, Annotation.Message(msg), _) =>
               !msg.startsWith("Gc")
-            case _ => true
+            case _ =>
+              true
           }
           .toSeq
 
@@ -281,51 +284,62 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       // These are set twice - by client and server
       assert(
         traces.collect {
-          case Record(_, _, Annotation.BinaryAnnotation(k, v), _) => ()
+          case Record(_, _, Annotation.BinaryAnnotation(k, v), _) =>
+            ()
         }.size == 3)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.Rpc("multiply"), _) => ()
+          case Record(_, _, Annotation.Rpc("multiply"), _) =>
+            ()
         }.size == 2)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ServerAddr(_), _) => ()
+          case Record(_, _, Annotation.ServerAddr(_), _) =>
+            ()
         }.size == 2)
       // With Stack, we get an extra ClientAddr because of the
       // TTwitter upgrade request (ThriftTracing.CanTraceMethodName)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ClientAddr(_), _) => ()
+          case Record(_, _, Annotation.ClientAddr(_), _) =>
+            ()
         }.size >= 2)
       // LocalAddr is set on the server side only.
       assert(
         traces.collect {
-          case Record(_, _, Annotation.LocalAddr(_), _) => ()
+          case Record(_, _, Annotation.LocalAddr(_), _) =>
+            ()
         }.size == 1)
       // These are set by one side only.
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ServiceName("thriftclient"), _) => ()
+          case Record(_, _, Annotation.ServiceName("thriftclient"), _) =>
+            ()
         }.size == 1)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ServiceName("thriftserver"), _) => ()
+          case Record(_, _, Annotation.ServiceName("thriftserver"), _) =>
+            ()
         }.size == 1)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ClientSend(), _) => ()
+          case Record(_, _, Annotation.ClientSend(), _) =>
+            ()
         }.size == 1)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ServerRecv(), _) => ()
+          case Record(_, _, Annotation.ServerRecv(), _) =>
+            ()
         }.size == 1)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ServerSend(), _) => ()
+          case Record(_, _, Annotation.ServerSend(), _) =>
+            ()
         }.size == 1)
       assert(
         traces.collect {
-          case Record(_, _, Annotation.ClientRecv(), _) => ()
+          case Record(_, _, Annotation.ClientRecv(), _) =>
+            ()
         }.size == 1)
 
       assert(
@@ -428,7 +442,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       ResponseClass.Success
     case ReqRep(_, Throw(_: InvalidQueryException)) =>
       ResponseClass.NonRetryableFailure
-    case ReqRep(_, Return(s: String)) => ResponseClass.NonRetryableFailure
+    case ReqRep(_, Return(s: String)) =>
+      ResponseClass.NonRetryableFailure
   }
 
   private def serverForClassifier(): ListeningServer = {
@@ -620,8 +635,10 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       new BServiceImpl {
         override def someway(): Future[Void] = {
           ClientId.current.map(_.name) match {
-            case Some(name) => Future.exception(presentClientIdEx)
-            case _          => Future.Void
+            case Some(name) =>
+              Future.exception(presentClientIdEx)
+            case _ =>
+              Future.Void
           }
         }
       }

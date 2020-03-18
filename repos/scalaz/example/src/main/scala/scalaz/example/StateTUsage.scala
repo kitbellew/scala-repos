@@ -104,10 +104,14 @@ object LaunchburyInterpreter extends App {
       else
         n
     e match {
-      case Lambda(z, e2) => Lambda(subName(z), subExpr(e2))
-      case Apply(e2, z)  => Apply(subExpr(e2), subName(z))
-      case Var(z)        => Var(subName(z))
-      case Let(bs, e2)   => Let(bs.map(subName _ *** subExpr), subExpr(e2))
+      case Lambda(z, e2) =>
+        Lambda(subName(z), subExpr(e2))
+      case Apply(e2, z) =>
+        Apply(subExpr(e2), subName(z))
+      case Var(z) =>
+        Var(subName(z))
+      case Let(bs, e2) =>
+        Let(bs.map(subName _ *** subExpr), subExpr(e2))
     }
   }
 
@@ -128,8 +132,10 @@ object LaunchburyInterpreter extends App {
           y <- getFreshVar
           e3 <- freshen(sub(HashMap(x -> y))(e2))
         } yield Lambda(y, e3)
-      case Apply(e2, x) => freshen(e2) >>= (e3 => pure(Apply(e3, x)))
-      case Var(_)       => pure(e)
+      case Apply(e2, x) =>
+        freshen(e2) >>= (e3 => pure(Apply(e3, x)))
+      case Var(_) =>
+        pure(e)
       case Let(bs, e2) =>
         for {
           fs <- getFreshVar.replicateM(bs.size)
@@ -144,7 +150,8 @@ object LaunchburyInterpreter extends App {
           e3 <- freshen(subs(e2))
           freshendBs <- bs2
             .traverseS {
-              case (x, e) => freshen(subs(e)).map((x, _))
+              case (x, e) =>
+                freshen(subs(e)).map((x, _))
             }
             .map(_.toMap)
         } yield Let(freshendBs, e3)
@@ -164,8 +171,10 @@ object LaunchburyInterpreter extends App {
         pure(e) // as defined above, a Lambda is already in whnf
       case Apply(e2, x) =>
         reduce(e2) >>= {
-          case Lambda(y, e3) => reduce(sub(HashMap(y -> x))(e3))
-          case _             => sys.error("Ill-typed lambda term")
+          case Lambda(y, e3) =>
+            reduce(sub(HashMap(y -> x))(e3))
+          case _ =>
+            sys.error("Ill-typed lambda term")
         }
       case Var(x) =>
         for {

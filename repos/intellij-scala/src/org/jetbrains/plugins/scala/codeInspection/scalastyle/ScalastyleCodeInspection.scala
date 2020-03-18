@@ -49,7 +49,8 @@ object ScalastyleCodeInspection {
 
       val currentStamp = scalastyleXml.getModificationStamp
       cache.get(scalastyleXml) match {
-        case Some((`currentStamp`, config)) => Option(config)
+        case Some((`currentStamp`, config)) =>
+          Option(config)
         case _ =>
           val fromFile = cache.put(scalastyleXml, read())
           fromFile.map(_._2)
@@ -102,7 +103,8 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
             case Some(col) =>
               val offset = document.getLineStartOffset(correctLine) + col
               sameLine && e.getTextRange.contains(offset)
-            case None => sameLine
+            case None =>
+              sameLine
           }
         }
 
@@ -119,10 +121,14 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
 
         def levelToProblemType(level: Level): ProblemHighlightType =
           level.name match {
-            case Level.Info    => ProblemHighlightType.INFORMATION
-            case Level.Error   => ProblemHighlightType.GENERIC_ERROR
-            case Level.Warning => ProblemHighlightType.WEAK_WARNING
-            case _             => ProblemHighlightType.GENERIC_ERROR
+            case Level.Info =>
+              ProblemHighlightType.INFORMATION
+            case Level.Error =>
+              ProblemHighlightType.GENERIC_ERROR
+            case Level.Warning =>
+              ProblemHighlightType.WEAK_WARNING
+            case _ =>
+              ProblemHighlightType.GENERIC_ERROR
           }
 
         result.flatMap {
@@ -148,7 +154,8 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
                   false)
               }
 
-          case _ => None
+          case _ =>
+            None
         }
 
       }

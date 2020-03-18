@@ -27,13 +27,19 @@ class ScalaClassesCompletionWeigher extends CompletionWeigher {
     ScalaLookupItem.original(element) match {
       case s: ScalaLookupItem =>
         s.element match {
-          case o: ScObject         => 1
-          case s: ScTypeDefinition => 3
-          case ta: ScTypeAlias     => 2
-          case c: PsiClass         => 0
-          case _                   => null
+          case o: ScObject =>
+            1
+          case s: ScTypeDefinition =>
+            3
+          case ta: ScTypeAlias =>
+            2
+          case c: PsiClass =>
+            0
+          case _ =>
+            null
         }
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

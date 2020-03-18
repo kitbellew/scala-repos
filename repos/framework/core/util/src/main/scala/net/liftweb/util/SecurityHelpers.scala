@@ -109,10 +109,14 @@ trait SecurityHelpers {
     * timing attacks */
   def secureEquals(s1: String, s2: String): Boolean =
     (s1, s2) match {
-      case (null, null) => true
-      case (null, _)    => false
-      case (_, null)    => false
-      case (a, b)       => secureEquals(a.getBytes("UTF-8"), b.getBytes("UTF-8"))
+      case (null, null) =>
+        true
+      case (null, _) =>
+        false
+      case (_, null) =>
+        false
+      case (a, b) =>
+        secureEquals(a.getBytes("UTF-8"), b.getBytes("UTF-8"))
     }
 
   /** Compare two byte arrays in a way that does not vary if the arrays
@@ -120,9 +124,12 @@ trait SecurityHelpers {
     * timing attacks */
   def secureEquals(s1: Array[Byte], s2: Array[Byte]): Boolean =
     (s1, s2) match {
-      case (null, null) => true
-      case (null, _)    => false
-      case (_, null)    => false
+      case (null, null) =>
+        true
+      case (null, _) =>
+        false
+      case (_, null) =>
+        false
       case (a, b) => {
         val la = a.length
         val lb = b.length
@@ -166,23 +173,40 @@ trait SecurityHelpers {
 
     def byteOf(in: Char): Int =
       in match {
-        case '0'       => 0
-        case '1'       => 1
-        case '2'       => 2
-        case '3'       => 3
-        case '4'       => 4
-        case '5'       => 5
-        case '6'       => 6
-        case '7'       => 7
-        case '8'       => 8
-        case '9'       => 9
-        case 'a' | 'A' => 10
-        case 'b' | 'B' => 11
-        case 'c' | 'C' => 12
-        case 'd' | 'D' => 13
-        case 'e' | 'E' => 14
-        case 'f' | 'F' => 15
-        case _         => 0
+        case '0' =>
+          0
+        case '1' =>
+          1
+        case '2' =>
+          2
+        case '3' =>
+          3
+        case '4' =>
+          4
+        case '5' =>
+          5
+        case '6' =>
+          6
+        case '7' =>
+          7
+        case '8' =>
+          8
+        case '9' =>
+          9
+        case 'a' | 'A' =>
+          10
+        case 'b' | 'B' =>
+          11
+        case 'c' | 'C' =>
+          12
+        case 'd' | 'D' =>
+          13
+        case 'e' | 'E' =>
+          14
+        case 'f' | 'F' =>
+          15
+        case _ =>
+          0
       }
 
     while (pos < max) {

@@ -53,7 +53,8 @@ object BijectionsTest {
     } yield {
       val res = Response(version, Status(code))
       headers.foreach {
-        case (k, v) => res.headerMap.add(k, v)
+        case (k, v) =>
+          res.headerMap.add(k, v)
       }
       res.contentString = body
       (res, body)
@@ -70,7 +71,8 @@ object BijectionsTest {
 
       val req = Request.apply(version, method, uri, BufReader(Buf.Utf8(body)))
       headers.foreach {
-        case (k, v) => req.headers.add(k, v)
+        case (k, v) =>
+          req.headers.add(k, v)
       }
       req.setChunked(false)
       req.contentString = body
@@ -101,7 +103,8 @@ object BijectionsTest {
     } yield {
       val headers = new DefaultHttpHeaders()
       kvHeaders.foreach {
-        case (k, v) => headers.add(k, v)
+        case (k, v) =>
+          headers.add(k, v)
       }
       val req =
         new DefaultFullHttpRequest(
@@ -124,7 +127,8 @@ object BijectionsTest {
     } yield {
       val headers = new DefaultHttpHeaders
       kvHeaders.foreach {
-        case (k, v) => headers.add(k, v)
+        case (k, v) =>
+          headers.add(k, v)
       }
       val req =
         new DefaultFullHttpResponse(

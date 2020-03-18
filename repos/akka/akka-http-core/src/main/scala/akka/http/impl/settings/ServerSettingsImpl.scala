@@ -86,7 +86,8 @@ object ServerSettingsImpl
       SocketOptionSettings.fromSubConfig(root, c.getConfig("socket-options")),
       defaultHostHeader =
         HttpHeader.parse("Host", c getString "default-host-header") match {
-          case HttpHeader.ParsingResult.Ok(x: Host, Nil) ⇒ x
+          case HttpHeader.ParsingResult.Ok(x: Host, Nil) ⇒
+            x
           case result ⇒
             val info = result.errors.head
               .withSummary("Configured `default-host-header` is illegal")

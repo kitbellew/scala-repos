@@ -44,7 +44,8 @@ class Broadcaster extends Actor with ActorLogging {
           sender() tell (message, originalSender)
       }
 
-    case Unregister => subscribers -= sender()
+    case Unregister =>
+      subscribers -= sender()
     case Persist(message) =>
       persistant += ((sender(), message))
       send(message)

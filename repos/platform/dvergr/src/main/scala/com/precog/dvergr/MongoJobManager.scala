@@ -220,7 +220,8 @@ final class MongoJobManager(
       distinct("channel").from(settings.messages).where("jobId" === jobId)
     } map (
       _.collect {
-        case JString(channel) => channel
+        case JString(channel) =>
+          channel
       }.toList
     )
   }

@@ -32,12 +32,14 @@ object DateTimeJson4sSupport {
 
   /** Serialize DateTime to JValue */
   def serializeToJValue: PartialFunction[Any, JValue] = {
-    case d: DateTime => JString(DataUtils.dateTimeToString(d))
+    case d: DateTime =>
+      JString(DataUtils.dateTimeToString(d))
   }
 
   /** Deserialize JValue to DateTime */
   def deserializeFromJValue: PartialFunction[JValue, DateTime] = {
-    case jv: JValue => DataUtils.stringToDateTime(jv.extract[String])
+    case jv: JValue =>
+      DataUtils.stringToDateTime(jv.extract[String])
   }
 
   /** Custom JSON4S serializer for Joda-Time */

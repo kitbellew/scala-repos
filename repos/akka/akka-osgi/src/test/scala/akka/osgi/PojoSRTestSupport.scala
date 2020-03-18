@@ -104,7 +104,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
               (step min deadline.timeLeft max Duration.Zero).toMillis)
             poll(step, deadline)
           }
-        case some ⇒ some.asInstanceOf[ServiceReference[T]]
+        case some ⇒
+          some.asInstanceOf[ServiceReference[T]]
       }
 
     poll(wait, Deadline.now + MaxWaitDuration)

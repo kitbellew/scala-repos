@@ -88,7 +88,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
     val cliConf = new HiveConf(classOf[SessionState])
     // Override the location of the metastore since this is only used for local execution.
     HiveContext.newTemporaryConfiguration(useInMemoryDerby = false).foreach {
-      case (key, value) => cliConf.set(key, value)
+      case (key, value) =>
+        cliConf.set(key, value)
     }
     val sessionState = new CliSessionState(cliConf)
 
@@ -98,7 +99,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
       sessionState.info = new PrintStream(System.err, true, "UTF-8")
       sessionState.err = new PrintStream(System.err, true, "UTF-8")
     } catch {
-      case e: UnsupportedEncodingException => System.exit(3)
+      case e: UnsupportedEncodingException =>
+        System.exit(3)
     }
 
     if (!oproc.process_stage2(sessionState)) {
@@ -155,7 +157,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
       sessionState.info = new PrintStream(System.err, true, "UTF-8")
       sessionState.err = new PrintStream(System.err, true, "UTF-8")
     } catch {
-      case e: UnsupportedEncodingException => System.exit(3)
+      case e: UnsupportedEncodingException =>
+        System.exit(3)
     }
 
     if (sessionState.database != null) {
@@ -351,7 +354,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
             rc.getException() match {
               case e: AnalysisException =>
                 err.println(s"""Error in query: ${e.getMessage}""")
-              case _ => err.println(rc.getErrorMessage())
+              case _ =>
+                err.println(rc.getErrorMessage())
             }
             driver.close()
             return ret

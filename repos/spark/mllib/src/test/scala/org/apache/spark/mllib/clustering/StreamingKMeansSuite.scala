@@ -203,7 +203,8 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
       initCenters match {
         case null =>
           Array.fill(k)(Vectors.dense(Array.fill(d)(rand.nextGaussian())))
-        case _ => initCenters
+        case _ =>
+          initCenters
       }
     val data = (0 until numBatches).map { i =>
       (0 until numPoints).map { idx =>

@@ -75,7 +75,8 @@ trait ManyToMany extends BaseKeyedMapper {
 
     def otherFK[A](join: O)(f: MappedForeignKey[K2, O, T2] => A): A =
       otherField.actualField(join) match {
-        case mfk: MappedForeignKey[K2, O, T2] => f(mfk)
+        case mfk: MappedForeignKey[K2, O, T2] =>
+          f(mfk)
       }
 
     protected def children: List[T2] = joins.flatMap(otherFK(_)(_.obj))
@@ -124,7 +125,8 @@ trait ManyToMany extends BaseKeyedMapper {
           val o = otherField.actualField(join)
           o.set(o.defaultValue)
           thisField.actualField(join) match {
-            case mfk => mfk set mfk.defaultValue
+            case mfk =>
+              mfk set mfk.defaultValue
           }
           Some(join)
         case None =>

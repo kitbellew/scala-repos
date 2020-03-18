@@ -29,7 +29,8 @@ class HoconErrorHighlightingAnnotator extends Annotator {
             result
           }
           .takeWhile {
-            case (tokenType, _) => tokenType != null
+            case (tokenType, _) =>
+              tokenType != null
           } foreach {
           case (
                 StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN,

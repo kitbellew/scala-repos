@@ -38,8 +38,9 @@ object ControlFlowUtil {
 
     while (mainSeq.nonEmpty) {
       mainSeq.headOption match {
-        case Some(h) => inner(Seq(h), new mutable.HashSet[Instruction])
-        case None    =>
+        case Some(h) =>
+          inner(Seq(h), new mutable.HashSet[Instruction])
+        case None =>
       }
     }
     buffer

@@ -27,8 +27,10 @@ class ScNamingPatternImpl(node: ASTNode)
     with ScNamingPattern {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -42,8 +44,10 @@ class ScNamingPatternImpl(node: ASTNode)
   override def getType(ctx: TypingContext): TypeResult[ScType] = {
     if (getLastChild.isInstanceOf[ScSeqWildcard]) {
       return expectedType match {
-        case Some(x) => Success(x, Some(this))
-        case _       => Failure("No expected type for wildcard naming", Some(this))
+        case Some(x) =>
+          Success(x, Some(this))
+        case _ =>
+          Failure("No expected type for wildcard naming", Some(this))
       }
     }
     if (named == null)
@@ -52,7 +56,8 @@ class ScNamingPatternImpl(node: ASTNode)
       expectedType match {
         case Some(expectedType) =>
           named.getType(TypingContext.empty).map(Bounds.glb(expectedType, _))
-        case _ => named.getType(ctx)
+        case _ =>
+          named.getType(ctx)
       }
     }
   }

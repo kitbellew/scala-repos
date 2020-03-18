@@ -36,8 +36,10 @@ final class SeekApi(
 
   private val cache = AsyncCache[CacheKey, List[Seek]](
     f = {
-      case ForAnon => allCursor.collect[List](maxPerPage)
-      case ForUser => allCursor.collect[List]()
+      case ForAnon =>
+        allCursor.collect[List](maxPerPage)
+      case ForUser =>
+        allCursor.collect[List]()
     },
     timeToLive = 3.seconds)
 
@@ -59,7 +61,8 @@ final class SeekApi(
   private def noDupsFor(user: LobbyUser, seeks: List[Seek]) =
     seeks
       .foldLeft(List[Seek]() -> Set[String]()) {
-        case ((res, h), seek) if seek.user.id == user.id => (seek :: res, h)
+        case ((res, h), seek) if seek.user.id == user.id =>
+          (seek :: res, h)
         case ((res, h), seek) =>
           val seekH = List(
             seek.variant,
@@ -80,7 +83,8 @@ final class SeekApi(
 
   def insert(seek: Seek) =
     coll.insert(seek) >> findByUser(seek.user.id).flatMap {
-      case seeks if seeks.size <= maxPerUser => funit
+      case seeks if seeks.size <= maxPerUser =>
+        funit
       case seeks =>
         seeks.drop(maxPerUser).map(remove).sequenceFu
     } >> cache.clear

@@ -41,7 +41,8 @@ object WaitTestSupport {
         throw new AssertionError(
           s"Waiting for $description took longer than $maxWait. Give up.")
       fn match {
-        case Some(t) => t
+        case Some(t) =>
+          t
         case None =>
           Thread.sleep(100);
           next()

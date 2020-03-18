@@ -54,8 +54,10 @@ object WorksheetDiffSplitters {
 
     override def getEditor(side: FragmentSide) =
       side match {
-        case FragmentSide.SIDE1 => left.get()
-        case FragmentSide.SIDE2 => right.get()
+        case FragmentSide.SIDE1 =>
+          left.get()
+        case FragmentSide.SIDE2 =>
+          right.get()
       }
 
     override def getLineBlocks: LineBlocks = lineBlocks

@@ -61,7 +61,8 @@ trait Calculate {
                   tree.symbol,
                   (
                     tree.productIterator.toList collect {
-                      case tt: TypeTree => tt
+                      case tt: TypeTree =>
+                        tt
                     }
                   ).headOption.getOrElse(TypeTree(tree.tpe))))
             registerLocalSymbol(tree.symbol, currMetalevel)

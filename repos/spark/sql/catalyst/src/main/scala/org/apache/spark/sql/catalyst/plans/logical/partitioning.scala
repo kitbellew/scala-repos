@@ -48,7 +48,8 @@ case class RepartitionByExpression(
     numPartitions: Option[Int] = None)
     extends RedistributeData {
   numPartitions match {
-    case Some(n) => require(n > 0, "numPartitions must be greater than 0.")
-    case None    => // Ok
+    case Some(n) =>
+      require(n > 0, "numPartitions must be greater than 0.")
+    case None => // Ok
   }
 }

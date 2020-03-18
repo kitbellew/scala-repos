@@ -74,28 +74,45 @@ object JavaTypeInference {
       case c: Class[_] if c.isAnnotationPresent(classOf[SQLUserDefinedType]) =>
         (c.getAnnotation(classOf[SQLUserDefinedType]).udt().newInstance(), true)
 
-      case c: Class[_] if c == classOf[java.lang.String] => (StringType, true)
-      case c: Class[_] if c == classOf[Array[Byte]]      => (BinaryType, true)
+      case c: Class[_] if c == classOf[java.lang.String] =>
+        (StringType, true)
+      case c: Class[_] if c == classOf[Array[Byte]] =>
+        (BinaryType, true)
 
-      case c: Class[_] if c == java.lang.Short.TYPE   => (ShortType, false)
-      case c: Class[_] if c == java.lang.Integer.TYPE => (IntegerType, false)
-      case c: Class[_] if c == java.lang.Long.TYPE    => (LongType, false)
-      case c: Class[_] if c == java.lang.Double.TYPE  => (DoubleType, false)
-      case c: Class[_] if c == java.lang.Byte.TYPE    => (ByteType, false)
-      case c: Class[_] if c == java.lang.Float.TYPE   => (FloatType, false)
-      case c: Class[_] if c == java.lang.Boolean.TYPE => (BooleanType, false)
+      case c: Class[_] if c == java.lang.Short.TYPE =>
+        (ShortType, false)
+      case c: Class[_] if c == java.lang.Integer.TYPE =>
+        (IntegerType, false)
+      case c: Class[_] if c == java.lang.Long.TYPE =>
+        (LongType, false)
+      case c: Class[_] if c == java.lang.Double.TYPE =>
+        (DoubleType, false)
+      case c: Class[_] if c == java.lang.Byte.TYPE =>
+        (ByteType, false)
+      case c: Class[_] if c == java.lang.Float.TYPE =>
+        (FloatType, false)
+      case c: Class[_] if c == java.lang.Boolean.TYPE =>
+        (BooleanType, false)
 
-      case c: Class[_] if c == classOf[java.lang.Short]   => (ShortType, true)
-      case c: Class[_] if c == classOf[java.lang.Integer] => (IntegerType, true)
-      case c: Class[_] if c == classOf[java.lang.Long]    => (LongType, true)
-      case c: Class[_] if c == classOf[java.lang.Double]  => (DoubleType, true)
-      case c: Class[_] if c == classOf[java.lang.Byte]    => (ByteType, true)
-      case c: Class[_] if c == classOf[java.lang.Float]   => (FloatType, true)
-      case c: Class[_] if c == classOf[java.lang.Boolean] => (BooleanType, true)
+      case c: Class[_] if c == classOf[java.lang.Short] =>
+        (ShortType, true)
+      case c: Class[_] if c == classOf[java.lang.Integer] =>
+        (IntegerType, true)
+      case c: Class[_] if c == classOf[java.lang.Long] =>
+        (LongType, true)
+      case c: Class[_] if c == classOf[java.lang.Double] =>
+        (DoubleType, true)
+      case c: Class[_] if c == classOf[java.lang.Byte] =>
+        (ByteType, true)
+      case c: Class[_] if c == classOf[java.lang.Float] =>
+        (FloatType, true)
+      case c: Class[_] if c == classOf[java.lang.Boolean] =>
+        (BooleanType, true)
 
       case c: Class[_] if c == classOf[java.math.BigDecimal] =>
         (DecimalType.SYSTEM_DEFAULT, true)
-      case c: Class[_] if c == classOf[java.sql.Date] => (DateType, true)
+      case c: Class[_] if c == classOf[java.sql.Date] =>
+        (DateType, true)
       case c: Class[_] if c == classOf[java.sql.Timestamp] =>
         (TimestampType, true)
 
@@ -161,15 +178,24 @@ object JavaTypeInference {
     */
   private def inferExternalType(cls: Class[_]): DataType =
     cls match {
-      case c if c == java.lang.Boolean.TYPE => BooleanType
-      case c if c == java.lang.Byte.TYPE    => ByteType
-      case c if c == java.lang.Short.TYPE   => ShortType
-      case c if c == java.lang.Integer.TYPE => IntegerType
-      case c if c == java.lang.Long.TYPE    => LongType
-      case c if c == java.lang.Float.TYPE   => FloatType
-      case c if c == java.lang.Double.TYPE  => DoubleType
-      case c if c == classOf[Array[Byte]]   => BinaryType
-      case _                                => ObjectType(cls)
+      case c if c == java.lang.Boolean.TYPE =>
+        BooleanType
+      case c if c == java.lang.Byte.TYPE =>
+        ByteType
+      case c if c == java.lang.Short.TYPE =>
+        ShortType
+      case c if c == java.lang.Integer.TYPE =>
+        IntegerType
+      case c if c == java.lang.Long.TYPE =>
+        LongType
+      case c if c == java.lang.Float.TYPE =>
+        FloatType
+      case c if c == java.lang.Double.TYPE =>
+        DoubleType
+      case c if c == classOf[Array[Byte]] =>
+        BinaryType
+      case _ =>
+        ObjectType(cls)
     }
 
   /**
@@ -197,7 +223,8 @@ object JavaTypeInference {
       path.getOrElse(BoundReference(0, inferDataType(typeToken)._1, true))
 
     typeToken.getRawType match {
-      case c if !inferExternalType(c).isInstanceOf[ObjectType] => getPath
+      case c if !inferExternalType(c).isInstanceOf[ObjectType] =>
+        getPath
 
       case c if c == classOf[java.lang.Short] =>
         NewInstance(c, getPath :: Nil, ObjectType(c))
@@ -243,14 +270,22 @@ object JavaTypeInference {
         val elementType = c.getComponentType
         val primitiveMethod =
           elementType match {
-            case c if c == java.lang.Boolean.TYPE => Some("toBooleanArray")
-            case c if c == java.lang.Byte.TYPE    => Some("toByteArray")
-            case c if c == java.lang.Short.TYPE   => Some("toShortArray")
-            case c if c == java.lang.Integer.TYPE => Some("toIntArray")
-            case c if c == java.lang.Long.TYPE    => Some("toLongArray")
-            case c if c == java.lang.Float.TYPE   => Some("toFloatArray")
-            case c if c == java.lang.Double.TYPE  => Some("toDoubleArray")
-            case _                                => None
+            case c if c == java.lang.Boolean.TYPE =>
+              Some("toBooleanArray")
+            case c if c == java.lang.Byte.TYPE =>
+              Some("toByteArray")
+            case c if c == java.lang.Short.TYPE =>
+              Some("toShortArray")
+            case c if c == java.lang.Integer.TYPE =>
+              Some("toIntArray")
+            case c if c == java.lang.Long.TYPE =>
+              Some("toLongArray")
+            case c if c == java.lang.Float.TYPE =>
+              Some("toFloatArray")
+            case c if c == java.lang.Double.TYPE =>
+              Some("toDoubleArray")
+            case _ =>
+              None
           }
 
         primitiveMethod

@@ -5,13 +5,17 @@ object Test {
 
     assert(
       PlusZero match {
-        case MinusZero => false;
-        case _         => true
+        case MinusZero =>
+          false;
+        case _ =>
+          true
       })
     assert(
       MinusZero match {
-        case PlusZero => false;
-        case _        => true
+        case PlusZero =>
+          false;
+        case _ =>
+          true
       })
     assert((MinusZero: scala.Float) == (PlusZero: scala.Float))
     assert(!(MinusZero equals PlusZero))

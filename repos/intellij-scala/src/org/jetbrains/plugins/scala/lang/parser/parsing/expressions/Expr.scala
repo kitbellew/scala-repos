@@ -55,12 +55,14 @@ object Expr {
               exprMarker.done(ScalaElementTypes.FUNCTION_EXPR)
               return true
             }
-            case _ => exprMarker.rollbackTo()
+            case _ =>
+              exprMarker.rollbackTo()
           }
         } else {
           exprMarker.drop()
         }
-      case _ => exprMarker.drop()
+      case _ =>
+        exprMarker.drop()
     }
     Expr1.parse(builder)
   }

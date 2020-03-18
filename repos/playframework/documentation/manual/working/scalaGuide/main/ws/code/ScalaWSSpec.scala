@@ -68,14 +68,16 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
   def withSimpleServer[T](block: WSClient => T): T =
     withServer {
-      case _ => Action(Ok)
+      case _ =>
+        Action(Ok)
     }(block)
 
   def withServer[T](routes: (String, String) => Handler)(
       block: WSClient => T): T = {
     val app = GuiceApplicationBuilder()
       .routes({
-        case (method, path) => routes(method, path)
+        case (method, path) =>
+          routes(method, path)
       })
       .build()
     running(TestServer(testServerPort, app))(
@@ -213,7 +215,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "post with JSON body" in withServer {
-        case ("POST", "/") => Action(BodyParsers.parse.json)(r => Ok(r.body))
+        case ("POST", "/") =>
+          Action(BodyParsers.parse.json)(r => Ok(r.body))
       } { ws =>
         // #scalaws-post-json
         import play.api.libs.json._
@@ -225,7 +228,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "post with XML data" in withServer {
-        case ("POST", "/") => Action(BodyParsers.parse.xml)(r => Ok(r.body))
+        case ("POST", "/") =>
+          Action(BodyParsers.parse.xml)(r => Ok(r.body))
       } { ws =>
         // #scalaws-post-xml
         val data = <person>
@@ -300,7 +304,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "handle as stream" in withServer {
-        case ("GET", "/") => Action(Ok.chunked(largeSource))
+        case ("GET", "/") =>
+          Action(Ok.chunked(largeSource))
       } { ws =>
         //#stream-count-bytes
         // Make the request
@@ -319,7 +324,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "stream to a file" in withServer {
-        case ("GET", "/") => Action(Ok.chunked(largeSource))
+        case ("GET", "/") =>
+          Action(Ok.chunked(largeSource))
       } { ws =>
         val file = File.createTempFile("stream-to-file-", ".txt")
         try {
@@ -359,7 +365,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "stream to a result" in withServer {
-        case ("GET", "/") => Action(Ok.chunked(largeSource))
+        case ("GET", "/") =>
+          Action(Ok.chunked(largeSource))
       } { ws =>
         //#stream-to-result
         def downloadFile =
@@ -404,7 +411,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "stream when request is a PUT" in withServer {
-        case ("PUT", "/") => Action(Ok.chunked(largeSource))
+        case ("PUT", "/") =>
+          Action(Ok.chunked(largeSource))
       } { ws =>
         //#stream-put
         val futureResponse: Future[StreamedResponse] = ws
@@ -425,7 +433,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
       }
 
       "stream request body" in withServer {
-        case ("PUT", "/") => Action(Ok(""))
+        case ("PUT", "/") =>
+          Action(Ok(""))
       } { ws =>
         def largeImageFromDB: Source[ByteString, _] = largeSource
         //#scalaws-stream-request

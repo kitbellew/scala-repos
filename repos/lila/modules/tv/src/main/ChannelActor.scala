@@ -20,9 +20,11 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
 
   def receive = {
 
-    case GetGameId => sender ! oneId
+    case GetGameId =>
+      sender ! oneId
 
-    case GetGameIds(max) => sender ! manyIds.take(max)
+    case GetGameIds(max) =>
+      sender ! manyIds.take(max)
 
     case SetGame(game) =>
       context.parent ! TvActor.Selected(channel, game, oneId)
@@ -35,7 +37,8 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
             wayBetter(game, candidates) orElse rematch(game) foreach elect
           case Some(game) =>
             rematch(game) orElse feature(candidates) foreach elect
-          case _ => feature(candidates) foreach elect
+          case _ =>
+            feature(candidates) foreach elect
         }
         manyIds = candidates
           .sortBy { g =>
@@ -53,8 +56,10 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
 
   def wayBetter(game: Game, candidates: List[Game]) =
     feature(candidates) map {
-      case Some(next) if isWayBetter(game, next) => next.some
-      case _                                     => none
+      case Some(next) if isWayBetter(game, next) =>
+        next.some
+      case _ =>
+        none
     }
 
   def isWayBetter(g1: Game, g2: Game) =
@@ -73,7 +78,8 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
     math.round {
       (
         heuristics map {
-          case (fn, coefficient) => heuristicBox(fn(game)) * coefficient
+          case (fn, coefficient) =>
+            heuristicBox(fn(game)) * coefficient
         }
       ).sum * 1000
     }

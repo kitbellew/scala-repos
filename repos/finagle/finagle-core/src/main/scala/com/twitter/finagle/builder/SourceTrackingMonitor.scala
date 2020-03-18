@@ -16,9 +16,12 @@ class SourceTrackingMonitor(logger: Logger, which: String) extends Monitor {
     // we don't want these noisy IOExceptions leaking into the logs.
     val level =
       exc match {
-        case _: IOException => Level.FINE
-        case f: HasLogLevel => f.logLevel
-        case _              => Level.SEVERE
+        case _: IOException =>
+          Level.FINE
+        case f: HasLogLevel =>
+          f.logLevel
+        case _ =>
+          Level.SEVERE
       }
     val unrolled = unrollCauses(exc)
     val msg =
@@ -35,14 +38,18 @@ class SourceTrackingMonitor(logger: Logger, which: String) extends Monitor {
       exc: Throwable,
       res: Seq[String] = Nil): Seq[String] =
     exc match {
-      case null => res.reverse
+      case null =>
+        res.reverse
       case se: SourcedException =>
         unrollCauses(se.getCause, se.serviceName +: res)
       case fail: Failure =>
         fail.getSource(Failure.Source.Service) match {
-          case Some(name) => unrollCauses(fail.getCause, name.toString +: res)
-          case _          => unrollCauses(fail.getCause, res)
+          case Some(name) =>
+            unrollCauses(fail.getCause, name.toString +: res)
+          case _ =>
+            unrollCauses(fail.getCause, res)
         }
-      case _ => unrollCauses(exc.getCause, res)
+      case _ =>
+        unrollCauses(exc.getCause, res)
     }
 }

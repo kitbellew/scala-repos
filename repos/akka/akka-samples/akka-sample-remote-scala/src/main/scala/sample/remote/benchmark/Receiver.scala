@@ -16,8 +16,10 @@ class Receiver extends Actor {
   import Sender._
 
   def receive = {
-    case m: Echo  => sender() ! m
-    case Shutdown => context.system.terminate()
-    case _        =>
+    case m: Echo =>
+      sender() ! m
+    case Shutdown =>
+      context.system.terminate()
+    case _ =>
   }
 }

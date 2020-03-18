@@ -52,8 +52,10 @@ object DataFlow {
   private class ReactiveEventBasedThread[A <: AnyRef, T <: AnyRef](body: A => T)
       extends Actor {
     def receive = {
-      case Exit    => self.stop()
-      case message => self.reply(body(message.asInstanceOf[A]))
+      case Exit =>
+        self.stop()
+      case message =>
+        self.reply(body(message.asInstanceOf[A]))
     }
   }
 
@@ -85,7 +87,8 @@ object DataFlow {
           } else
             throw new DataFlowVariableException(
               "Attempt to change data flow variable (from [" + dataFlow.value.get + "] to [" + v + "])")
-        case Exit => self.stop()
+        case Exit =>
+          self.stop()
       }
     }
 
@@ -95,11 +98,15 @@ object DataFlow {
       def receive = {
         case Get =>
           dataFlow.value.get match {
-            case Some(value) => self reply value
-            case None        => readerFuture = self.senderFuture
+            case Some(value) =>
+              self reply value
+            case None =>
+              readerFuture = self.senderFuture
           }
-        case Set(v: T) => readerFuture.map(_ completeWithResult v)
-        case Exit      => self.stop()
+        case Set(v: T) =>
+          readerFuture.map(_ completeWithResult v)
+        case Exit =>
+          self.stop()
       }
     }
 

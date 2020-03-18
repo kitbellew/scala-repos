@@ -112,8 +112,10 @@ class BalancingDispatcher(
             && i.hasNext
             && (
               executorService.executor match {
-                case lm: LoadMetrics ⇒ lm.atFullThrottle == false
-                case other ⇒ true
+                case lm: LoadMetrics ⇒
+                  lm.atFullThrottle == false
+                case other ⇒
+                  true
               }
             )
             && !registerForExecution(i.next.mailbox, false, false))

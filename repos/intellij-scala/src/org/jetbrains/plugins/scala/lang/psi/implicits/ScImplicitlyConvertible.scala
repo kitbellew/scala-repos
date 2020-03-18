@@ -77,8 +77,10 @@ class ScImplicitlyConvertible(
         expr.getTypeWithoutImplicits(fromUnderscore = fromUnder).toOption.map {
           case tp =>
             ScType.extractDesignatorSingletonType(tp) match {
-              case Some(res) => res
-              case _         => tp
+              case Some(res) =>
+                res
+              case _ =>
+                tp
             }
         }
       })
@@ -165,7 +167,8 @@ class ScImplicitlyConvertible(
             ScTupleType(Seq(typez) ++ args)(
               place.getProject,
               place.getResolveScope)
-          case None => typez
+          case None =>
+            typez
         }
       for (obj <- ScalaPsiUtil.collectImplicitObjects(
              expandedType,
@@ -271,7 +274,9 @@ class ScImplicitlyConvertible(
             place))
         return
       p match {
-        case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
+        case (
+              _: ScTemplateBody | _: ScExtendsBlock
+            ) => //template body and inherited members are at the same level
         case _ =>
           if (!processor.changedLevel)
             return
@@ -327,8 +332,10 @@ class ScImplicitlyConvertible(
                 new ScTypeParameterType(tp, ScSubstitutor.empty),
                 1)))
       } flatMap {
-        case p: ScParameterizedType => Some(p)
-        case _                      => None
+        case p: ScParameterizedType =>
+          Some(p)
+        case _ =>
+          None
       }
 
       def firstArgType = funType.map(_.typeArgs.head)
@@ -354,7 +361,8 @@ class ScImplicitlyConvertible(
                 (
                   innerSubst.subst(firstArgType.getOrElse(return default)),
                   innerSubst.subst(secondArgType.getOrElse(return default)))
-              case _ => (types.Nothing, types.Nothing)
+              case _ =>
+                (types.Nothing, types.Nothing)
             }
           case b: ScBindingPattern =>
             Conformance
@@ -367,7 +375,8 @@ class ScImplicitlyConvertible(
                 (
                   innerSubst.subst(firstArgType.getOrElse(return default)),
                   innerSubst.subst(secondArgType.getOrElse(return default)))
-              case _ => (types.Nothing, types.Nothing)
+              case _ =>
+                (types.Nothing, types.Nothing)
             }
           case param: ScParameter =>
             // View Bounds and Context Bounds are processed as parameters.
@@ -381,7 +390,8 @@ class ScImplicitlyConvertible(
                 (
                   innerSubst.subst(firstArgType.getOrElse(return default)),
                   innerSubst.subst(secondArgType.getOrElse(return default)))
-              case _ => (types.Nothing, types.Nothing)
+              case _ =>
+                (types.Nothing, types.Nothing)
             }
           case obj: ScObject =>
             Conformance
@@ -394,14 +404,16 @@ class ScImplicitlyConvertible(
                 (
                   innerSubst.subst(firstArgType.getOrElse(return default)),
                   innerSubst.subst(secondArgType.getOrElse(return default)))
-              case _ => (types.Nothing, types.Nothing)
+              case _ =>
+                (types.Nothing, types.Nothing)
             }
         }
       val newSubst =
         r.element match {
           case f: ScFunction =>
             ScalaPsiUtil.inferMethodTypesArgs(f, r.substitutor)
-          case _ => ScSubstitutor.empty
+          case _ =>
+            ScSubstitutor.empty
         }
       if (!typez.weakConforms(newSubst.subst(tp))) {
         ScalaPsiUtil.debug(s"Implicit $r doesn't conform to $typez", LOG)
@@ -422,12 +434,14 @@ class ScImplicitlyConvertible(
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (
                           tpt.name, tpt.getId
                         )) match {
-                        case None => (true, tpt)
+                        case None =>
+                          (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true
                           (true, tpt)
                       }
-                    case tp: ScType => (hasRecursiveTypeParameters, tp)
+                    case tp: ScType =>
+                      (hasRecursiveTypeParameters, tp)
                   }
                   hasRecursiveTypeParameters
                 }
@@ -484,12 +498,14 @@ class ScImplicitlyConvertible(
                       var res = false
                       f.returnType.foreach(
                         _.recursiveUpdate {
-                          case rtTp if res => (true, rtTp)
+                          case rtTp if res =>
+                            (true, rtTp)
                           case ScDesignatorType(p: ScParameter)
                               if implicitClauseParameters.contains(p) =>
                             res = true
                             (true, tp)
-                          case tp: ScType => (false, tp)
+                          case tp: ScType =>
+                            (false, tp)
                         })
                       res
                     }
@@ -601,7 +617,8 @@ class ScImplicitlyConvertible(
             cl.typeParameters.map(tp =>
               new ScUndefinedType(
                 new ScTypeParameterType(tp, ScSubstitutor.empty))))
-        case _ => null
+        case _ =>
+          null
       }
     }
 
@@ -612,8 +629,10 @@ class ScImplicitlyConvertible(
         state.get(BaseProcessor.FROM_TYPE_KEY).toOption
       lazy val subst: ScSubstitutor =
         fromType match {
-          case Some(tp) => getSubst(state).followUpdateThisType(tp)
-          case _        => getSubst(state)
+          case Some(tp) =>
+            getSubst(state).followUpdateThisType(tp)
+          case _ =>
+            getSubst(state)
         }
 
       element match {
@@ -645,8 +664,10 @@ class ScImplicitlyConvertible(
                           if typeParameters.contains(name) =>
                         hasTypeParametersInType = true
                         (true, tp)
-                      case tp: ScType if hasTypeParametersInType => (true, tp)
-                      case tp: ScType                            => (false, tp)
+                      case tp: ScType if hasTypeParametersInType =>
+                        (true, tp)
+                      case tp: ScType =>
+                        (false, tp)
                     }
                     if (hasTypeParametersInType)
                       return true //looks like it's not working in compiler 2.10, so it's faster to avoid it
@@ -677,7 +698,8 @@ class ScImplicitlyConvertible(
                   if (funType == null || !tp.conforms(funType))
                     return true
                   addResult(new ScalaResolveResult(b, subst, getImports(state)))
-                case _ => return true
+                case _ =>
+                  return true
               }
             case param: ScParameter if param.isImplicitParameter =>
               param match {
@@ -786,11 +808,13 @@ object ScImplicitlyConvertible {
                       stub.getChildrenStubs.asScala.map(_.getPsi).toArray
                     else
                       stubPsi.getChildren
-                  case _ => commonContext.getChildren
+                  case _ =>
+                    commonContext.getChildren
                 }
               children.find(elem => elem == funElem || elem == conElem) match {
-                case Some(elem) if elem == conElem => return false
-                case _                             =>
+                case Some(elem) if elem == conElem =>
+                  return false
+                case _ =>
               }
             case _ =>
           }
@@ -821,7 +845,8 @@ object ScImplicitlyConvertible {
       element.getParent match {
         case tb: ScTemplateBody =>
           Some(PsiTreeUtil.getParentOfType(tb, classOf[PsiClass]))
-        case _ => None
+        case _ =>
+          None
       }
     }
 

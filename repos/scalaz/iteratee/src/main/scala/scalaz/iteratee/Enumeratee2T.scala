@@ -36,7 +36,8 @@ trait Enumeratee2TFunctions {
                 contf(elInput(Middle3((j, k))))
               case k :: ks if order(j, k) == EQ =>
                 contf(elInput(Middle3((j, k)))) >>== (advance(j, ks, _))
-              case _ => contf(elInput(Left3(j)))
+              case _ =>
+                contf(elInput(Left3(j)))
             }
           }
         }
@@ -79,7 +80,8 @@ trait Enumeratee2TFunctions {
                           right :: Nil)
                     } yield a
 
-                  case _ => done[J, IterateeM, StepM[A]](s, eofInput)
+                  case _ =>
+                    done[J, IterateeM, StepM[A]](s, eofInput)
                 }
               } yield a
             },
@@ -164,7 +166,8 @@ trait Enumeratee2TFunctions {
                         contf(elInput(left)) >>== (step(_).value))
                     } yield a
 
-                  case _ => done[E, IterateeM, StepM[A]](s, eofInput)
+                  case _ =>
+                    done[E, IterateeM, StepM[A]](s, eofInput)
                 }
               } yield a
             },
@@ -198,9 +201,12 @@ trait Enumeratee2TFunctions {
             cont = contf =>
               scont { in: Input[Either3[J, (J, K), K]] =>
                 val nextInput = in map {
-                  case Left3(j)        => j
-                  case Middle3((j, k)) => m.append(j, f(k))
-                  case Right3(k)       => m.zero
+                  case Left3(j) =>
+                    j
+                  case Middle3((j, k)) =>
+                    m.append(j, f(k))
+                  case Right3(k) =>
+                    m.zero
                 }
 
                 contf(nextInput) >>== (s => cstep(s).pointI)

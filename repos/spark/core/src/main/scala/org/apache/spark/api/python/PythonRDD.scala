@@ -168,7 +168,8 @@ private[spark] class PythonRunner(
                 val obj = new Array[Byte](length)
                 stream.readFully(obj)
                 obj
-              case 0                          => Array.empty[Byte]
+              case 0 =>
+                Array.empty[Byte]
               case SpecialLengths.TIMING_DATA =>
                 // Timing data from worker
                 val bootTime = stream.readLong()
@@ -391,8 +392,10 @@ private class PairwiseRDD(prev: RDD[Array[Byte]])
       split: Partition,
       context: TaskContext): Iterator[(Long, Array[Byte])] =
     prev.iterator(split, context).grouped(2).map {
-      case Seq(a, b) => (Utils.deserializeLongValue(a), b)
-      case x         => throw new SparkException("PairwiseRDD: unexpected value: " + x)
+      case Seq(a, b) =>
+        (Utils.deserializeLongValue(a), b)
+      case x =>
+        throw new SparkException("PairwiseRDD: unexpected value: " + x)
     }
   val asJavaPairRDD: JavaPairRDD[Long, Array[Byte]] = JavaPairRDD.fromRDD(this)
 }

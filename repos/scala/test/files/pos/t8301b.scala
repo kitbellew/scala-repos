@@ -15,12 +15,14 @@ object Test extends App {
   locally {
 
     ??? match {
-      case Test.ScalaName => ???
+      case Test.ScalaName =>
+        ???
     }
     import Test.ScalaName._
 
     ??? match {
-      case ScalaName => ???
+      case ScalaName =>
+        ???
     }
     import ScalaName._
 
@@ -29,7 +31,8 @@ object Test extends App {
     // is not stable because its type, Test.u.TermName, is volatile.
     val SN = ScalaName
     ??? match {
-      case SN => ???
+      case SN =>
+        ???
     }
     import SN._
   }

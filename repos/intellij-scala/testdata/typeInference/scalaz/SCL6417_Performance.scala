@@ -16,7 +16,8 @@ class SCL6417_Performance {
         /*start*/
         t._12 /*end*/
         print(t)
-      case Failure(errors) => println(errors.toString)
+      case Failure(errors) =>
+        println(errors.toString)
     }
   }
 
@@ -27,13 +28,16 @@ class SCL6417_Performance {
           Failure("Errror!").toValidationNel
         else
           Success(p)
-      case None => Success(0)
+      case None =>
+        Success(0)
     }
 
   def validateOptionalY(y: Option[Int]): ValidationNel[String, Int] =
     y match {
-      case Some(yy) => Success(yy)
-      case None     => Failure("Required!").toValidationNel
+      case Some(yy) =>
+        Success(yy)
+      case None =>
+        Failure("Required!").toValidationNel
     }
 
 }

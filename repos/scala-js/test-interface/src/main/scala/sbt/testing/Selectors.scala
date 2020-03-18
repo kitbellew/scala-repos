@@ -51,8 +51,10 @@ final class TestSelector(_testName: String) extends Selector with Serializable {
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: TestSelector => this.testName == that.testName
-      case _                  => false
+      case that: TestSelector =>
+        this.testName == that.testName
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = testName.hashCode()
@@ -78,8 +80,10 @@ final class NestedSuiteSelector(_suiteId: String)
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: NestedSuiteSelector => this.suiteId == that.suiteId
-      case _                         => false
+      case that: NestedSuiteSelector =>
+        this.suiteId == that.suiteId
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = suiteId.hashCode()
@@ -116,7 +120,8 @@ final class NestedTestSelector(_suiteId: String, _testName: String)
     that match {
       case that: NestedTestSelector =>
         this.suiteId == that.suiteId && this.testName == that.testName
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {
@@ -157,7 +162,8 @@ final class TestWildcardSelector(_testWildcard: String)
     that match {
       case that: TestWildcardSelector =>
         this.testWildcard == that.testWildcard
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = testWildcard.hashCode()

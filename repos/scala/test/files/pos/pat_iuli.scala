@@ -15,8 +15,10 @@ trait Blox {
 
     def bar =
       foo match {
-        case SWITCH(i)  => i
-        case EmptyInstr => 0
+        case SWITCH(i) =>
+          i
+        case EmptyInstr =>
+          0
       }
   }
 }

@@ -50,26 +50,39 @@ object Chameneos {
       colour match {
         case RED ⇒
           otherColour match {
-            case RED ⇒ RED
-            case YELLOW ⇒ BLUE
-            case BLUE ⇒ YELLOW
-            case FADED ⇒ FADED
+            case RED ⇒
+              RED
+            case YELLOW ⇒
+              BLUE
+            case BLUE ⇒
+              YELLOW
+            case FADED ⇒
+              FADED
           }
         case YELLOW ⇒
           otherColour match {
-            case RED ⇒ BLUE
-            case YELLOW ⇒ YELLOW
-            case BLUE ⇒ RED
-            case FADED ⇒ FADED
+            case RED ⇒
+              BLUE
+            case YELLOW ⇒
+              YELLOW
+            case BLUE ⇒
+              RED
+            case FADED ⇒
+              FADED
           }
         case BLUE ⇒
           otherColour match {
-            case RED ⇒ YELLOW
-            case YELLOW ⇒ RED
-            case BLUE ⇒ BLUE
-            case FADED ⇒ FADED
+            case RED ⇒
+              YELLOW
+            case YELLOW ⇒
+              RED
+            case BLUE ⇒
+              BLUE
+            case FADED ⇒
+              FADED
           }
-        case FADED ⇒ FADED
+        case FADED ⇒
+          FADED
       }
 
     override def toString = cid + "(" + colour + ")"
@@ -101,7 +114,8 @@ object Chameneos {
               n -= 1
               chameneo ! msg
               waitingChameneo = None
-            case None ⇒ waitingChameneo = Some(sender())
+            case None ⇒
+              waitingChameneo = Some(sender())
           }
         } else {
           waitingChameneo.foreach(_ ! Exit)

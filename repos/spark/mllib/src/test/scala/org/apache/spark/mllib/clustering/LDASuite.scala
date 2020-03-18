@@ -259,7 +259,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           Array(1, 1, 1)
         ) // tiger, cat, dog
       ).zipWithIndex.map {
-        case (wordCounts, docId) => (docId.toLong, wordCounts)
+        case (wordCounts, docId) =>
+          (docId.toLong, wordCounts)
       }
     val corpus = sc.parallelize(docs, 2)
 
@@ -335,12 +336,14 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val docsSingleWord = sc.parallelize(
       Array(Vectors.sparse(6, Array(0), Array(1))).zipWithIndex
         .map {
-          case (wordCounts, docId) => (docId.toLong, wordCounts)
+          case (wordCounts, docId) =>
+            (docId.toLong, wordCounts)
         })
     val docsRepeatedWord = sc.parallelize(
       Array(Vectors.sparse(6, Array(0), Array(5))).zipWithIndex
         .map {
-          case (wordCounts, docId) => (docId.toLong, wordCounts)
+          case (wordCounts, docId) =>
+            (docId.toLong, wordCounts)
         })
 
     /* Verify results using gensim:
@@ -500,7 +503,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     topics.foreach { topic =>
       assert(
         topic.forall {
-          case (_, p) => p ~= 0.167 absTol 0.05
+          case (_, p) =>
+            p ~= 0.167 absTol 0.05
         })
     }
   }
@@ -611,13 +615,15 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           .collect())
       val edge = graph.edges
         .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
+          case Edge(sid: Long, did: Long, nos: Double) =>
+            (sid, did, nos)
         }
         .sortBy(x => (x._1, x._2))
         .collect()
       val sameEdge = sameGraph.edges
         .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
+          case Edge(sid: Long, did: Long, nos: Double) =>
+            (sid, did, nos)
         }
         .sortBy(x => (x._1, x._2))
         .collect()
@@ -703,7 +709,8 @@ private[clustering] object LDASuite {
       Vectors.dense(0, 3, 1, 9, 8),
       Vectors.dense(1, 1, 4, 2, 6)
     ).zipWithIndex.map {
-      case (wordCounts, docId) => (docId.toLong, wordCounts)
+      case (wordCounts, docId) =>
+        (docId.toLong, wordCounts)
     }
   assert(
     tinyCorpus.forall(_._2.size == tinyVocabSize)
@@ -711,7 +718,8 @@ private[clustering] object LDASuite {
 
   def getNonEmptyDoc(corpus: Array[(Long, Vector)]): Array[(Long, Vector)] =
     corpus.filter {
-      case (_, wc: Vector) => Vectors.norm(wc, p = 1.0) != 0.0
+      case (_, wc: Vector) =>
+        Vectors.norm(wc, p = 1.0) != 0.0
     }
 
   def toyData: Array[(Long, Vector)] =
@@ -723,7 +731,8 @@ private[clustering] object LDASuite {
       Vectors.sparse(6, Array(3, 5), Array(1, 1)),
       Vectors.sparse(6, Array(4, 5), Array(1, 1))
     ).zipWithIndex.map {
-      case (wordCounts, docId) => (docId.toLong, wordCounts)
+      case (wordCounts, docId) =>
+        (docId.toLong, wordCounts)
     }
 
   /** Used in the Java Test Suite */

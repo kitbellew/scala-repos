@@ -53,7 +53,8 @@ object ClusterSingletonManagerChaosSpec extends MultiNodeConfig {
     testActor ! EchoStarted
 
     def receive = {
-      case _ ⇒ sender() ! self
+      case _ ⇒
+        sender() ! self
     }
   }
 }
@@ -120,7 +121,8 @@ class ClusterSingletonManagerChaosSpec
       memberProbe
         .receiveN(nodes.size, 15.seconds)
         .collect {
-          case MemberUp(m) ⇒ m.address
+          case MemberUp(m) ⇒
+            m.address
         }
         .toSet should ===(nodes.map(node(_).address).toSet)
     }

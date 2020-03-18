@@ -60,6 +60,7 @@ class KeepDotsMetricKeyGenerator(config: Config)
           s.replace(": ", "-")
             .replace(" ", "_")
             .replace("/", ".")
-      case _ => super.createNormalizer(strategy)
+      case _ =>
+        super.createNormalizer(strategy)
     }
 }

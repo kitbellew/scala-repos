@@ -61,7 +61,8 @@ class SliceMatrix[
           vb.add(c * rows + r, v)
         }
         vb.toVector
-      case View.Prefer => flatten(View.Copy)
+      case View.Prefer =>
+        flatten(View.Copy)
     }
   }
 }
@@ -138,7 +139,8 @@ object SliceMatrix {
           from: SliceMatrix[K1, K2, V],
           fn: KeyValuePairsVisitor[(Int, Int), V]): Unit = {
         from.iterator foreach {
-          case (k, v) => fn.visit(k, v)
+          case (k, v) =>
+            fn.visit(k, v)
         }
 
       }

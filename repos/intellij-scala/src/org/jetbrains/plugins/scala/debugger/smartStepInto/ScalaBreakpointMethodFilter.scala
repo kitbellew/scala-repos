@@ -32,8 +32,10 @@ class ScalaBreakpointMethodFilter(
     extends BreakpointStepMethodFilter {
 
   private val expectedSignature = psiMethod.map {
-    case f: ScMethodLike => DebuggerUtil.getFunctionJVMSignature(f)
-    case m               => JVMNameUtil.getJVMSignature(m)
+    case f: ScMethodLike =>
+      DebuggerUtil.getFunctionJVMSignature(f)
+    case m =>
+      JVMNameUtil.getJVMSignature(m)
   }
 
   override def locationMatches(
@@ -42,8 +44,10 @@ class ScalaBreakpointMethodFilter(
     def signatureMatches(method: Method): Boolean = {
       val expSign =
         expectedSignature match {
-          case None          => return true
-          case Some(jvmSign) => jvmSign.getName(process)
+          case None =>
+            return true
+          case Some(jvmSign) =>
+            jvmSign.getName(process)
         }
       if (expSign == method.signature)
         return true
@@ -86,12 +90,16 @@ object ScalaBreakpointMethodFilter {
       elem: PsiElement,
       exprLines: Range[Integer]): Option[ScalaBreakpointMethodFilter] =
     elem match {
-      case null => None
+      case null =>
+        None
       case funDef: ScFunctionDefinition =>
         funDef.body match {
-          case Some(b: ScBlock)      => from(Some(funDef), b.statements, exprLines)
-          case Some(e: ScExpression) => from(Some(funDef), Seq(e), exprLines)
-          case _                     => None
+          case Some(b: ScBlock) =>
+            from(Some(funDef), b.statements, exprLines)
+          case Some(e: ScExpression) =>
+            from(Some(funDef), Seq(e), exprLines)
+          case _ =>
+            None
         }
       case pc: ScPrimaryConstructor =>
         val statements = stmtsForTemplate(pc.containingClass)
@@ -100,9 +108,11 @@ object ScalaBreakpointMethodFilter {
         fake.navElement match {
           case newTp: ScNewTemplateDefinition =>
             from(Some(fake), newTp +: stmtsForTemplate(newTp), exprLines)
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 
   def from(

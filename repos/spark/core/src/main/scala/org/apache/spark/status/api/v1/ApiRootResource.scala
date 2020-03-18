@@ -234,7 +234,8 @@ private[spark] trait UIRoot {
     getSparkUI(appKey) match {
       case Some(ui) =>
         f(ui)
-      case None => throw new NotFoundException("no such app: " + appId)
+      case None =>
+        throw new NotFoundException("no such app: " + appId)
     }
   }
   def securityManager: SecurityManager

@@ -49,7 +49,8 @@ class ScValueDeclarationImpl private (
         Failure(
           ScalaBundle.message("no.type.element.found", getText),
           Some(this))
-      case Some(te) => te.getType(ctx)
+      case Some(te) =>
+        te.getType(ctx)
     }
 
   def typeElement: Option[ScTypeElement] = {
@@ -78,8 +79,10 @@ class ScValueDeclarationImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitValueDeclaration(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitValueDeclaration(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

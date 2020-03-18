@@ -7,21 +7,25 @@ object Test {
   }
   def f1[T](x: Foo[T]) =
     x match {
-      case Foo(y) => y
+      case Foo(y) =>
+        y
     }
   def f2[M[_], T](x: M[T]) =
     x match {
-      case Foo(y) => y
+      case Foo(y) =>
+        y
     }
 
   case class Bar[T](x: T)
   def f3[T](x: Bar[T]) =
     x match {
-      case Bar(y) => y
+      case Bar(y) =>
+        y
     }
   def f4[M[_], T](x: M[T]) =
     x match {
-      case Bar(y) => y
+      case Bar(y) =>
+        y
     }
 }
 //

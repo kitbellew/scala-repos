@@ -23,7 +23,8 @@ trait FutureTimeoutSupport {
     if (duration.isFinite() && duration.length < 1) {
       try value
       catch {
-        case NonFatal(t) ⇒ Future.failed(t)
+        case NonFatal(t) ⇒
+          Future.failed(t)
       }
     } else {
       val p = Promise[T]()
@@ -31,7 +32,8 @@ trait FutureTimeoutSupport {
         p completeWith {
           try value
           catch {
-            case NonFatal(t) ⇒ Future.failed(t)
+            case NonFatal(t) ⇒
+              Future.failed(t)
           }
         }
       }
@@ -48,7 +50,8 @@ trait FutureTimeoutSupport {
     if (duration.isFinite() && duration.length < 1) {
       try value
       catch {
-        case NonFatal(t) ⇒ Futures.failedCompletionStage(t)
+        case NonFatal(t) ⇒
+          Futures.failedCompletionStage(t)
       }
     } else {
       val p = new CompletableFuture[T]
@@ -65,7 +68,8 @@ trait FutureTimeoutSupport {
               }
             })
         } catch {
-          case NonFatal(ex) ⇒ p.completeExceptionally(ex)
+          case NonFatal(ex) ⇒
+            p.completeExceptionally(ex)
         }
       }
       p

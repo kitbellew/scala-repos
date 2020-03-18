@@ -81,8 +81,10 @@ class ScalaBlock(
           .contains(scope.getNode.getElementType) &&
         (
           scope.getParent match {
-            case _: ScTryBlock | _: ScForStatement | _: ScPackaging => true
-            case _                                                  => false
+            case _: ScTryBlock | _: ScForStatement | _: ScPackaging =>
+              true
+            case _ =>
+              false
           }
         )
     parent match {
@@ -102,7 +104,8 @@ class ScalaBlock(
               Indent.getNormalIndent
           new ChildAttributes(indent, null)
         }
-      case c: ScCaseClauses => new ChildAttributes(Indent.getNormalIndent, null)
+      case c: ScCaseClauses =>
+        new ChildAttributes(Indent.getNormalIndent, null)
       case l: ScLiteral
           if l.isMultiLineString && scalaSettings.MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings.MULTILINE_STRING_NONE =>
         new ChildAttributes(Indent.getSpaceIndent(3, true), null)
@@ -173,9 +176,12 @@ class ScalaBlock(
             else
               Indent.getNormalIndent,
             null)
-      case _: ScXmlElement => new ChildAttributes(Indent.getNormalIndent, null)
-      case _: ScalaFile    => new ChildAttributes(Indent.getNoneIndent, null)
-      case _: ScCaseClause => new ChildAttributes(Indent.getNormalIndent, null)
+      case _: ScXmlElement =>
+        new ChildAttributes(Indent.getNormalIndent, null)
+      case _: ScalaFile =>
+        new ChildAttributes(Indent.getNoneIndent, null)
+      case _: ScCaseClause =>
+        new ChildAttributes(Indent.getNormalIndent, null)
       case _: ScExpression | _: ScPattern | _: ScParameters =>
         new ChildAttributes(
           Indent.getContinuationWithoutFirstIndent,
@@ -212,7 +218,8 @@ class ScalaBlock(
         ) //by default suppose there will be simple expr
       case _: ScArgumentExprList =>
         new ChildAttributes(Indent.getNormalIndent, this.getAlignment)
-      case _ => new ChildAttributes(Indent.getNoneIndent, null)
+      case _ =>
+        new ChildAttributes(Indent.getNoneIndent, null)
     }
   }
 
@@ -300,15 +307,19 @@ class SubBlocksContext(
   private def getLastNode: Option[ASTNode] =
     childrenAdditionalContexts
       .map {
-        case (_, context) => context.getLastNode
+        case (_, context) =>
+          context.getLastNode
       }
       .filter(_.isDefined)
       .map(_.get) ++
       additionalNodes ++ childrenAdditionalContexts.map {
-      case (child, _) => child
+      case (child, _) =>
+        child
     } match {
-      case empty if empty.isEmpty => None
-      case nonEmpty               => Some(nonEmpty.maxBy(_.getTextRange.getEndOffset))
+      case empty if empty.isEmpty =>
+        None
+      case nonEmpty =>
+        Some(nonEmpty.maxBy(_.getTextRange.getEndOffset))
     }
 }
 

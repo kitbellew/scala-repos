@@ -112,27 +112,32 @@ class SortingTest {
     assertTrue(
       "Quicksort should produce canonical ordering",
       (qxs zip zs).forall {
-        case (a, b) => a.i == b.i
+        case (a, b) =>
+          a.i == b.i
       })
     assertTrue(
       "Reverse quicksort should produce canonical ordering",
       (pxs.reverse zip zs).forall {
-        case (a, b) => a.i == b.i
+        case (a, b) =>
+          a.i == b.i
       })
     assertTrue(
       "Stable sort should produce exact ordering",
       (sxs zip zs).forall {
-        case (a, b) => a == b
+        case (a, b) =>
+          a == b
       })
     assertTrue(
       "Reverse stable sort should produce canonical ordering",
       (rxs.reverse zip zs).forall {
-        case (a, b) => a.i == b.i
+        case (a, b) =>
+          a.i == b.i
       })
     assertTrue(
       "Proxy sort and direct sort should produce exactly the same thing",
       (sxs zip sys.map(i => xs(i))).forall {
-        case (a, b) => a == b
+        case (a, b) =>
+          a == b
       })
   }
 

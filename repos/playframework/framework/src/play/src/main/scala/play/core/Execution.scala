@@ -15,8 +15,10 @@ private[play] object Execution {
   def internalContext: ExecutionContextExecutor = {
     val appOrNull: Application = Play._currentApp
     appOrNull match {
-      case null             => common
-      case app: Application => app.actorSystem.dispatcher
+      case null =>
+        common
+      case app: Application =>
+        app.actorSystem.dispatcher
     }
   }
 

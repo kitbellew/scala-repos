@@ -44,7 +44,8 @@ class SparkPlanInfo(
     other match {
       case o: SparkPlanInfo =>
         nodeName == o.nodeName && simpleString == o.simpleString && children == o.children
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -53,8 +54,10 @@ private[sql] object SparkPlanInfo {
   def fromSparkPlan(plan: SparkPlan): SparkPlanInfo = {
     val children =
       plan match {
-        case ReusedExchange(_, child) => child :: Nil
-        case _                        => plan.children ++ plan.subqueries
+        case ReusedExchange(_, child) =>
+          child :: Nil
+        case _ =>
+          plan.children ++ plan.subqueries
       }
     val metrics = plan.metrics.toSeq.map {
       case (key, metric) =>

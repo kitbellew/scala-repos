@@ -16,6 +16,7 @@ class Test2 {
   def works(backing: Mapped[A[_]]): Iterable[A[_]] =
     backing.map(x =>
       x match {
-        case Holder(k: A[kt]) => (k: A[kt])
+        case Holder(k: A[kt]) =>
+          (k: A[kt])
       })
 }

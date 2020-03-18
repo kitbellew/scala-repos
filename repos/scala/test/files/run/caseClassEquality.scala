@@ -8,8 +8,10 @@ object Test {
     override def canEqual(other: Any) = other.isInstanceOf[C3]
     override def equals(other: Any) =
       other match {
-        case ob: C3 => x == ob.x
-        case _      => false
+        case ob: C3 =>
+          x == ob.x
+        case _ =>
+          false
       }
   }
 

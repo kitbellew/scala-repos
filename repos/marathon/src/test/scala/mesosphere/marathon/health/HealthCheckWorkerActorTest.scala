@@ -56,7 +56,8 @@ class HealthCheckWorkerActorTest
     }
 
     expectMsgPF(1.seconds) {
-      case Healthy(taskId, _, _) => ()
+      case Healthy(taskId, _, _) =>
+        ()
     }
   }
 
@@ -90,7 +91,8 @@ class HealthCheckWorkerActorTest
     }
 
     expectMsgPF(1.seconds) {
-      case _: HealthResult => ()
+      case _: HealthResult =>
+        ()
     }
 
     watch(ref)

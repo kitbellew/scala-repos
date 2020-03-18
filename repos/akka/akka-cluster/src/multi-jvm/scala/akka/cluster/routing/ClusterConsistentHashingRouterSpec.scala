@@ -28,7 +28,8 @@ object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {
 
   class Echo extends Actor {
     def receive = {
-      case _ ⇒ sender() ! self
+      case _ ⇒
+        sender() ! self
     }
   }
 
@@ -82,8 +83,10 @@ abstract class ClusterConsistentHashingRouterSpec
     */
   private def fullAddress(actorRef: ActorRef): Address =
     actorRef.path.address match {
-      case Address(_, _, None, None) ⇒ cluster.selfAddress
-      case a ⇒ a
+      case Address(_, _, None, None) ⇒
+        cluster.selfAddress
+      case a ⇒
+        a
     }
 
   "A cluster router with a consistent hashing pool" must {
@@ -100,7 +103,8 @@ abstract class ClusterConsistentHashingRouterSpec
         }
         val routees = currentRoutees(router1)
         routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
         }.toSet should ===(Set(address(first), address(second)))
       }
       enterBarrier("after-2")
@@ -127,7 +131,8 @@ abstract class ClusterConsistentHashingRouterSpec
         }
         val routees = currentRoutees(router1)
         routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
         }.toSet should ===(roles.map(address).toSet)
       }
 
@@ -153,7 +158,8 @@ abstract class ClusterConsistentHashingRouterSpec
         }
         val routees = currentRoutees(router2)
         routees.map {
-          case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+          case ActorRefRoutee(ref) ⇒
+            fullAddress(ref)
         }.toSet should ===(roles.map(address).toSet)
       }
 
@@ -163,7 +169,8 @@ abstract class ClusterConsistentHashingRouterSpec
     "handle combination of configured router and programatically defined hashMapping" taggedAs LongRunningTest in {
       runOn(first) {
         def hashMapping: ConsistentHashMapping = {
-          case s: String ⇒ s
+          case s: String ⇒
+            s
         }
 
         val router3 = system.actorOf(
@@ -180,7 +187,8 @@ abstract class ClusterConsistentHashingRouterSpec
     "handle combination of configured router and programatically defined hashMapping and ClusterRouterConfig" taggedAs LongRunningTest in {
       runOn(first) {
         def hashMapping: ConsistentHashMapping = {
-          case s: String ⇒ s
+          case s: String ⇒
+            s
         }
 
         val router4 = system.actorOf(
@@ -210,7 +218,8 @@ abstract class ClusterConsistentHashingRouterSpec
       }
       val routees = currentRoutees(router)
       routees.map {
-        case ActorRefRoutee(ref) ⇒ fullAddress(ref)
+        case ActorRefRoutee(ref) ⇒
+          fullAddress(ref)
       }.toSet should ===(roles.map(address).toSet)
 
       router ! "a"

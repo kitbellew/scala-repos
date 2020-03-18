@@ -76,15 +76,18 @@ object SuggestNamesUtil {
     val element = file.findElementAt(offset)
     val typez: ScType =
       p match {
-        case x if x.length == 0 => return Array[String]("x") //todo:
+        case x if x.length == 0 =>
+          return Array[String]("x") //todo:
         case x if x(0) == "option" || x(0) == "foreach" =>
           try {
             val items = (new ScalaVariableOfTypeMacro)
               .calculateLookupItems(
                 Array[String](
                   x(0) match {
-                    case "option"  => "scala.Option"
-                    case "foreach" => "foreach"
+                    case "option" =>
+                      "scala.Option"
+                    case "foreach" =>
+                      "foreach"
                   }),
                 context,
                 showOne = true)
@@ -99,17 +102,21 @@ object SuggestNamesUtil {
                 typed.getType(TypingContext.empty) match {
                   case Success(ScParameterizedType(_, typeArgs), _) =>
                     typeArgs.head
-                  case Success(JavaArrayType(arg), _) => arg
-                  case _                              => return Array[String]("x")
+                  case Success(JavaArrayType(arg), _) =>
+                    arg
+                  case _ =>
+                    return Array[String]("x")
                 }
-              case _ => return Array[String]("x")
+              case _ =>
+                return Array[String]("x")
             }
           } catch {
             case e: Exception =>
               e.printStackTrace()
               return Array[String]("x")
           }
-        case _ => return Array[String]("x")
+        case _ =>
+          return Array[String]("x")
       }
     NameSuggester.suggestNamesByType(typez)
   }

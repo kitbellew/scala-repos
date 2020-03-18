@@ -545,17 +545,28 @@ object Serializers {
 
     def writeType(tpe: Type): Unit = {
       tpe match {
-        case AnyType     => buffer.write(TagAnyType)
-        case NothingType => buffer.write(TagNothingType)
-        case UndefType   => buffer.write(TagUndefType)
-        case BooleanType => buffer.write(TagBooleanType)
-        case IntType     => buffer.write(TagIntType)
-        case LongType    => buffer.write(TagLongType)
-        case FloatType   => buffer.write(TagFloatType)
-        case DoubleType  => buffer.write(TagDoubleType)
-        case StringType  => buffer.write(TagStringType)
-        case NullType    => buffer.write(TagNullType)
-        case NoType      => buffer.write(TagNoType)
+        case AnyType =>
+          buffer.write(TagAnyType)
+        case NothingType =>
+          buffer.write(TagNothingType)
+        case UndefType =>
+          buffer.write(TagUndefType)
+        case BooleanType =>
+          buffer.write(TagBooleanType)
+        case IntType =>
+          buffer.write(TagIntType)
+        case LongType =>
+          buffer.write(TagLongType)
+        case FloatType =>
+          buffer.write(TagFloatType)
+        case DoubleType =>
+          buffer.write(TagDoubleType)
+        case StringType =>
+          buffer.write(TagStringType)
+        case NullType =>
+          buffer.write(TagNullType)
+        case NoType =>
+          buffer.write(TagNoType)
 
         case tpe: ClassType =>
           buffer.write(TagClassType)
@@ -681,7 +692,8 @@ object Serializers {
       val tag = readByte()
       val result =
         (tag: @switch) match {
-          case TagEmptyTree => EmptyTree
+          case TagEmptyTree =>
+            EmptyTree
 
           case TagVarDef =>
             VarDef(readIdent(), readType(), readBoolean(), readTree())
@@ -696,18 +708,28 @@ object Serializers {
                 else
                   readBoolean())
 
-          case TagSkip    => Skip()
-          case TagBlock   => Block(readTrees())
-          case TagLabeled => Labeled(readIdent(), readType(), readTree())
-          case TagAssign  => Assign(readTree(), readTree())
-          case TagReturn  => Return(readTree(), readOptIdent())
-          case TagIf      => If(readTree(), readTree(), readTree())(readType())
-          case TagWhile   => While(readTree(), readTree(), readOptIdent())
-          case TagDoWhile => DoWhile(readTree(), readTree(), readOptIdent())
+          case TagSkip =>
+            Skip()
+          case TagBlock =>
+            Block(readTrees())
+          case TagLabeled =>
+            Labeled(readIdent(), readType(), readTree())
+          case TagAssign =>
+            Assign(readTree(), readTree())
+          case TagReturn =>
+            Return(readTree(), readOptIdent())
+          case TagIf =>
+            If(readTree(), readTree(), readTree())(readType())
+          case TagWhile =>
+            While(readTree(), readTree(), readOptIdent())
+          case TagDoWhile =>
+            DoWhile(readTree(), readTree(), readOptIdent())
           case TagTry =>
             Try(readTree(), readIdent(), readTree(), readTree())(readType())
-          case TagThrow    => Throw(readTree())
-          case TagContinue => Continue(readOptIdent())
+          case TagThrow =>
+            Throw(readTree())
+          case TagContinue =>
+            Continue(readOptIdent())
           case TagMatch =>
             Match(
               readTree(),
@@ -715,12 +737,17 @@ object Serializers {
                 (readTrees().map(_.asInstanceOf[Literal]), readTree())
               },
               readTree())(readType())
-          case TagDebugger => Debugger()
+          case TagDebugger =>
+            Debugger()
 
-          case TagNew         => New(readClassType(), readIdent(), readTrees())
-          case TagLoadModule  => LoadModule(readClassType())
-          case TagStoreModule => StoreModule(readClassType(), readTree())
-          case TagSelect      => Select(readTree(), readIdent())(readType())
+          case TagNew =>
+            New(readClassType(), readIdent(), readTrees())
+          case TagLoadModule =>
+            LoadModule(readClassType())
+          case TagStoreModule =>
+            StoreModule(readClassType(), readTree())
+          case TagSelect =>
+            Select(readTree(), readIdent())(readType())
           case TagApply =>
             Apply(readTree(), readIdent(), readTrees())(readType())
           case TagApplyStatically =>
@@ -737,25 +764,39 @@ object Serializers {
               result1
           case TagApplyStatic =>
             ApplyStatic(readClassType(), readIdent(), readTrees())(readType())
-          case TagUnaryOp     => UnaryOp(readByte(), readTree())
-          case TagBinaryOp    => BinaryOp(readByte(), readTree(), readTree())
-          case TagNewArray    => NewArray(readArrayType(), readTrees())
-          case TagArrayValue  => ArrayValue(readArrayType(), readTrees())
-          case TagArrayLength => ArrayLength(readTree())
-          case TagArraySelect => ArraySelect(readTree(), readTree())(readType())
+          case TagUnaryOp =>
+            UnaryOp(readByte(), readTree())
+          case TagBinaryOp =>
+            BinaryOp(readByte(), readTree(), readTree())
+          case TagNewArray =>
+            NewArray(readArrayType(), readTrees())
+          case TagArrayValue =>
+            ArrayValue(readArrayType(), readTrees())
+          case TagArrayLength =>
+            ArrayLength(readTree())
+          case TagArraySelect =>
+            ArraySelect(readTree(), readTree())(readType())
           case TagRecordValue =>
             RecordValue(readType().asInstanceOf[RecordType], readTrees())
-          case TagIsInstanceOf => IsInstanceOf(readTree(), readReferenceType())
-          case TagAsInstanceOf => AsInstanceOf(readTree(), readReferenceType())
-          case TagUnbox        => Unbox(readTree(), readByte().toChar)
-          case TagGetClass     => GetClass(readTree())
+          case TagIsInstanceOf =>
+            IsInstanceOf(readTree(), readReferenceType())
+          case TagAsInstanceOf =>
+            AsInstanceOf(readTree(), readReferenceType())
+          case TagUnbox =>
+            Unbox(readTree(), readByte().toChar)
+          case TagGetClass =>
+            GetClass(readTree())
           case TagCallHelper =>
             CallHelper(readString(), readTrees())(readType())
 
-          case TagJSNew           => JSNew(readTree(), readTrees())
-          case TagJSDotSelect     => JSDotSelect(readTree(), readIdent())
-          case TagJSBracketSelect => JSBracketSelect(readTree(), readTree())
-          case TagJSFunctionApply => JSFunctionApply(readTree(), readTrees())
+          case TagJSNew =>
+            JSNew(readTree(), readTrees())
+          case TagJSDotSelect =>
+            JSDotSelect(readTree(), readIdent())
+          case TagJSBracketSelect =>
+            JSBracketSelect(readTree(), readTree())
+          case TagJSFunctionApply =>
+            JSFunctionApply(readTree(), readTrees())
           case TagJSDotMethodApply =>
             JSDotMethodApply(readTree(), readIdent(), readTrees())
           case TagJSBracketMethodApply =>
@@ -768,18 +809,27 @@ object Serializers {
               readTree(),
               readTree(),
               readTrees())
-          case TagJSSuperConstructorCall => JSSuperConstructorCall(readTrees())
-          case TagLoadJSConstructor      => LoadJSConstructor(readClassType())
-          case TagLoadJSModule           => LoadJSModule(readClassType())
-          case TagJSSpread               => JSSpread(readTree())
-          case TagJSDelete               => JSDelete(readTree())
-          case TagJSUnaryOp              => JSUnaryOp(readInt(), readTree())
-          case TagJSBinaryOp             => JSBinaryOp(readInt(), readTree(), readTree())
-          case TagJSArrayConstr          => JSArrayConstr(readTrees())
+          case TagJSSuperConstructorCall =>
+            JSSuperConstructorCall(readTrees())
+          case TagLoadJSConstructor =>
+            LoadJSConstructor(readClassType())
+          case TagLoadJSModule =>
+            LoadJSModule(readClassType())
+          case TagJSSpread =>
+            JSSpread(readTree())
+          case TagJSDelete =>
+            JSDelete(readTree())
+          case TagJSUnaryOp =>
+            JSUnaryOp(readInt(), readTree())
+          case TagJSBinaryOp =>
+            JSBinaryOp(readInt(), readTree(), readTree())
+          case TagJSArrayConstr =>
+            JSArrayConstr(readTrees())
           case TagJSObjectConstr =>
             JSObjectConstr(
               List.fill(readInt())((readPropertyName(), readTree())))
-          case TagJSLinkingInfo => JSLinkingInfo()
+          case TagJSLinkingInfo =>
+            JSLinkingInfo()
 
           case TagJSEnvInfo =>
             if (useHacks066)
@@ -787,17 +837,27 @@ object Serializers {
             else
               throw new MatchError(tag)
 
-          case TagUndefined      => Undefined()
-          case TagNull           => Null()
-          case TagBooleanLiteral => BooleanLiteral(readBoolean())
-          case TagIntLiteral     => IntLiteral(readInt())
-          case TagLongLiteral    => LongLiteral(readLong())
-          case TagFloatLiteral   => FloatLiteral(readFloat())
-          case TagDoubleLiteral  => DoubleLiteral(readDouble())
-          case TagStringLiteral  => StringLiteral(readString())
-          case TagClassOf        => ClassOf(readReferenceType())
+          case TagUndefined =>
+            Undefined()
+          case TagNull =>
+            Null()
+          case TagBooleanLiteral =>
+            BooleanLiteral(readBoolean())
+          case TagIntLiteral =>
+            IntLiteral(readInt())
+          case TagLongLiteral =>
+            LongLiteral(readLong())
+          case TagFloatLiteral =>
+            FloatLiteral(readFloat())
+          case TagDoubleLiteral =>
+            DoubleLiteral(readDouble())
+          case TagStringLiteral =>
+            StringLiteral(readString())
+          case TagClassOf =>
+            ClassOf(readReferenceType())
 
-          case TagUndefinedParam => UndefinedParam()(readType())
+          case TagUndefinedParam =>
+            UndefinedParam()(readType())
 
           case TagVarRef =>
             val result = VarRef(readIdent())(readType())
@@ -805,7 +865,8 @@ object Serializers {
               foundArguments = true
             result
 
-          case TagThis => This()(readType())
+          case TagThis =>
+            This()(readType())
           case TagClosure =>
             Closure(readParamDefs(), readParamDefs(), readTree(), readTrees())
 
@@ -930,20 +991,33 @@ object Serializers {
     def readType(): Type = {
       val tag = input.readByte()
       (tag: @switch) match {
-        case TagAnyType     => AnyType
-        case TagNothingType => NothingType
-        case TagUndefType   => UndefType
-        case TagBooleanType => BooleanType
-        case TagIntType     => IntType
-        case TagLongType    => LongType
-        case TagFloatType   => FloatType
-        case TagDoubleType  => DoubleType
-        case TagStringType  => StringType
-        case TagNullType    => NullType
-        case TagNoType      => NoType
+        case TagAnyType =>
+          AnyType
+        case TagNothingType =>
+          NothingType
+        case TagUndefType =>
+          UndefType
+        case TagBooleanType =>
+          BooleanType
+        case TagIntType =>
+          IntType
+        case TagLongType =>
+          LongType
+        case TagFloatType =>
+          FloatType
+        case TagDoubleType =>
+          DoubleType
+        case TagStringType =>
+          StringType
+        case TagNullType =>
+          NullType
+        case TagNoType =>
+          NoType
 
-        case TagClassType => readClassType()
-        case TagArrayType => readArrayType()
+        case TagClassType =>
+          readClassType()
+        case TagArrayType =>
+          readArrayType()
 
         case TagRecordType =>
           RecordType(

@@ -181,7 +181,8 @@ class Settings {
           this.targetBf == cs.targetBf &&
           this.optimiseBf == cs.optimiseBf &&
           this.extraParamsBf == cs.extraParamsBf
-      case _ => false
+      case _ =>
+        false
     }
 
   override lazy val hashCode: Int =

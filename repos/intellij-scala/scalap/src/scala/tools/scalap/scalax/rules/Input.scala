@@ -69,6 +69,7 @@ class View[A, B](
     transform(input) match {
       case Success(context, b) =>
         Success(new View(transform, context, index + 1), b)
-      case _ => Failure
+      case _ =>
+        Failure
     }
 }

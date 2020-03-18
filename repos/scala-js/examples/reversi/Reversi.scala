@@ -275,9 +275,12 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     allSquares.foldLeft((0, 0)) {
       case ((white, black), square) =>
         square.owner match {
-          case White    => (white + 1, black)
-          case Black    => (white, black + 1)
-          case NoPlayer => (white, black)
+          case White =>
+            (white + 1, black)
+          case Black =>
+            (white, black + 1)
+          case NoPlayer =>
+            (white, black)
         }
     }
   }

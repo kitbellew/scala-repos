@@ -135,8 +135,10 @@ class MarathonScheduler @Inject() (
     // For now the frameworkId is removed based on the error message.
     val removeFrameworkId =
       message match {
-        case "Framework has been removed" => true
-        case _: String                    => false
+        case "Framework has been removed" =>
+          true
+        case _: String =>
+          false
       }
     suicide(removeFrameworkId)
   }
@@ -161,7 +163,8 @@ class MarathonScheduler @Inject() (
     // Asynchronously call sys.exit() to avoid deadlock due to the JVM shutdown hooks
     // scalastyle:off magic.number
     Future(sys.exit(9)).onFailure {
-      case NonFatal(t) => log.error("Exception while committing suicide", t)
+      case NonFatal(t) =>
+        log.error("Exception while committing suicide", t)
     }
     // scalastyle:on
   }

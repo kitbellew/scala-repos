@@ -70,7 +70,8 @@ trait ProducerSupport extends Actor with CamelSupport {
           Vector.empty
         }
       }
-    case res: MessageResult ⇒ routeResponse(res.message)
+    case res: MessageResult ⇒
+      routeResponse(res.message)
     case res: FailureResult ⇒
       val e = new AkkaCamelException(res.cause, res.headers)
       routeResponse(Failure(e))
@@ -78,8 +79,10 @@ trait ProducerSupport extends Actor with CamelSupport {
 
     case msg ⇒
       producerChild match {
-        case Some(child) ⇒ child forward transformOutgoingMessage(msg)
-        case None ⇒ messages :+= ((sender(), msg))
+        case Some(child) ⇒
+          child forward transformOutgoingMessage(msg)
+        case None ⇒
+          messages :+= ((sender(), msg))
       }
   }
 

@@ -245,12 +245,18 @@ object V1SegmentFormat extends SegmentFormat {
       case CPeriod =>
         Codec.LongCodec
           .as[Period](_.toStandardDuration.getMillis, new Period(_))
-      case CBoolean => Codec.BooleanCodec
-      case CString  => Codec.Utf8Codec
-      case CLong    => Codec.PackedLongCodec
-      case CDouble  => Codec.DoubleCodec
-      case CNum     => Codec.BigDecimalCodec
-      case CDate    => Codec.DateCodec
+      case CBoolean =>
+        Codec.BooleanCodec
+      case CString =>
+        Codec.Utf8Codec
+      case CLong =>
+        Codec.PackedLongCodec
+      case CDouble =>
+        Codec.DoubleCodec
+      case CNum =>
+        Codec.BigDecimalCodec
+      case CDate =>
+        Codec.DateCodec
       case CArrayType(elemType) =>
         Codec.ArrayCodec(getCodecFor(elemType))(elemType.manifest)
     }

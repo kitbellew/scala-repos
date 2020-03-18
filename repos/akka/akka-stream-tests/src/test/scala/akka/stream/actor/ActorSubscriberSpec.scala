@@ -26,16 +26,22 @@ object ActorSubscriberSpec {
     override val requestStrategy = ZeroRequestStrategy
 
     def receive = {
-      case next @ OnNext(elem) ⇒ probe ! next
-      case OnComplete ⇒ probe ! OnComplete
-      case err @ OnError(cause) ⇒ probe ! err
-      case "ready" ⇒ request(elements = 2)
-      case "boom" ⇒ throw new RuntimeException("boom") with NoStackTrace
+      case next @ OnNext(elem) ⇒
+        probe ! next
+      case OnComplete ⇒
+        probe ! OnComplete
+      case err @ OnError(cause) ⇒
+        probe ! err
+      case "ready" ⇒
+        request(elements = 2)
+      case "boom" ⇒
+        throw new RuntimeException("boom") with NoStackTrace
       case "requestAndCancel" ⇒ {
         request(1);
         cancel()
       }
-      case "cancel" ⇒ cancel()
+      case "cancel" ⇒
+        cancel()
     }
   }
 
@@ -65,8 +71,10 @@ object ActorSubscriberSpec {
     override val requestStrategy = strat
 
     def receive = {
-      case next @ OnNext(elem) ⇒ probe ! next
-      case OnComplete ⇒ probe ! OnComplete
+      case next @ OnNext(elem) ⇒
+        probe ! next
+      case OnComplete ⇒
+        probe ! OnComplete
     }
   }
 

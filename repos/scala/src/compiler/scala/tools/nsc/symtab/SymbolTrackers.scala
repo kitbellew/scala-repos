@@ -58,7 +58,8 @@ trait SymbolTrackers {
     def apply(unit: CompilationUnit) =
       new SymbolTracker(() =>
         symbolSnapshot(unit) filterNot {
-          case (k, _) => dropSymbol(k)
+          case (k, _) =>
+            dropSymbol(k)
         })
   }
 
@@ -97,8 +98,10 @@ trait SymbolTrackers {
       def apply(sym: Symbol): Node = new Node(sym, Nil)
       def apply(syms: Set[Symbol]): Node =
         nodes(syms) match {
-          case List(x) => x
-          case xs      => new Node(NoSymbol, xs)
+          case List(x) =>
+            x
+          case xs =>
+            new Node(NoSymbol, xs)
         }
     }
     class Node(val root: Symbol, val children: List[Hierarchy])
@@ -121,8 +124,10 @@ trait SymbolTrackers {
 
       def changedOwnerString =
         changed.owners get root match {
-          case Some(prev) => " [Owner was " + prev + ", now " + root.owner + "]"
-          case _          => ""
+          case Some(prev) =>
+            " [Owner was " + prev + ", now " + root.owner + "]"
+          case _ =>
+            ""
         }
       def flagSummaryString =
         changed.flags get root match {
@@ -231,7 +236,8 @@ trait SymbolTrackers {
       }
       def removedString =
         (removed: List[Symbol]).zipWithIndex map {
-          case (t, i) => "(%2s) ".format(i + 1) + detailString(t)
+          case (t, i) =>
+            "(%2s) ".format(i + 1) + detailString(t)
         } mkString "\n"
 
       "" + hierarchy + (

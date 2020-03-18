@@ -37,7 +37,8 @@ private[sbt] object TestStatus {
     val properties = new Properties
     IO.load(properties, f)
     properties map {
-      case (k, v) => (k, v.toLong)
+      case (k, v) =>
+        (k, v.toLong)
     }
   }
   def write(map: Map[String, Long], label: String, f: File): Unit = {

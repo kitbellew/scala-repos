@@ -60,7 +60,8 @@ private[finagle] object Bufs {
       */
     def toLong: Long =
       buffer match {
-        case Buf.Utf8(s) => s.toLong
+        case Buf.Utf8(s) =>
+          s.toLong
       }
 
     /**
@@ -68,7 +69,8 @@ private[finagle] object Bufs {
       */
     def toInt: Int =
       buffer match {
-        case Buf.Utf8(s) => s.toInt
+        case Buf.Utf8(s) =>
+          s.toInt
       }
 
     /**

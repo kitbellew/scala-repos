@@ -71,8 +71,10 @@ class ParHashSet[T] private[immutable] (private[this] val trie: HashSet[T])
       oldc: Option[Combiner[S, That]],
       newc: Combiner[S, That]) =
     oldc match {
-      case Some(old) => old
-      case None      => newc
+      case Some(old) =>
+        old
+      case None =>
+        newc
     }
 
   class ParHashSetIterator(var triter: Iterator[T], val sz: Int)

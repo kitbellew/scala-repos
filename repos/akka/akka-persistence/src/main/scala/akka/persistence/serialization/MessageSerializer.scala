@@ -52,11 +52,14 @@ class MessageSerializer(val system: ExtendedActorSystem)
     */
   def toBinary(o: AnyRef): Array[Byte] =
     o match {
-      case p: PersistentRepr ⇒ persistentMessageBuilder(p).build().toByteArray
-      case a: AtomicWrite ⇒ atomicWriteBuilder(a).build().toByteArray
+      case p: PersistentRepr ⇒
+        persistentMessageBuilder(p).build().toByteArray
+      case a: AtomicWrite ⇒
+        atomicWriteBuilder(a).build().toByteArray
       case a: AtLeastOnceDeliverySnapshot ⇒
         atLeastOnceDeliverySnapshotBuilder(a).build.toByteArray
-      case s: StateChangeEvent ⇒ stateChangeBuilder(s).build.toByteArray
+      case s: StateChangeEvent ⇒
+        stateChangeBuilder(s).build.toByteArray
       case _ ⇒
         throw new IllegalArgumentException(
           s"Can't serialize object of type ${o.getClass}")
@@ -68,14 +71,16 @@ class MessageSerializer(val system: ExtendedActorSystem)
     */
   def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): Message =
     manifest match {
-      case None ⇒ persistent(mf.PersistentMessage.parseFrom(bytes))
+      case None ⇒
+        persistent(mf.PersistentMessage.parseFrom(bytes))
       case Some(c) ⇒
         c match {
           case PersistentImplClass ⇒
             persistent(mf.PersistentMessage.parseFrom(bytes))
           case PersistentReprClass ⇒
             persistent(mf.PersistentMessage.parseFrom(bytes))
-          case AtomicWriteClass ⇒ atomicWrite(mf.AtomicWrite.parseFrom(bytes))
+          case AtomicWriteClass ⇒
+            atomicWrite(mf.AtomicWrite.parseFrom(bytes))
           case AtLeastOnceDeliverySnapshotClass ⇒
             atLeastOnceDeliverySnapshot(
               mf.AtLeastOnceDeliverySnapshot.parseFrom(bytes))
@@ -112,8 +117,10 @@ class MessageSerializer(val system: ExtendedActorSystem)
     val builder = mf.PersistentStateChangeEvent.newBuilder
       .setStateIdentifier(stateChange.stateIdentifier)
     stateChange.timeout match {
-      case None ⇒ builder
-      case Some(timeout) ⇒ builder.setTimeout(timeout.toString())
+      case None ⇒
+        builder
+      case Some(timeout) ⇒
+        builder.setTimeout(timeout.toString())
     }
   }
 
@@ -204,7 +211,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
         Serialization.currentTransportInformation.withValue(ti) {
           payloadBuilder()
         }
-      case None ⇒ payloadBuilder()
+      case None ⇒
+        payloadBuilder()
     }
   }
 

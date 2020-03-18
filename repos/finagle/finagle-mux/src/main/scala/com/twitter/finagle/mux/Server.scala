@@ -278,8 +278,10 @@ private[twitter] class ServerDispatcher(
 
       case _: Message.Tping =>
         service(m).respond {
-          case Return(rep) => write(rep)
-          case Throw(exc)  => write(Message.Rerr(m.tag, exc.toString))
+          case Return(rep) =>
+            write(rep)
+          case Throw(exc) =>
+            write(Message.Rerr(m.tag, exc.toString))
         }
 
       case Message.Tdiscarded(tag, why) =>
@@ -310,7 +312,8 @@ private[twitter] class ServerDispatcher(
     Trace.letTracer(tracer) {
       Contexts.local.let(RemoteInfo.Upstream.AddressCtx, trans.remoteAddress) {
         trans.peerCertificate match {
-          case None => loop()
+          case None =>
+            loop()
           case Some(cert) =>
             Contexts.local.let(Transport.peerCertCtx, cert) {
               loop()
@@ -323,8 +326,10 @@ private[twitter] class ServerDispatcher(
   trans.onClose respond { res =>
     val exc =
       res match {
-        case Return(exc) => exc
-        case Throw(exc)  => exc
+        case Return(exc) =>
+          exc
+        case Throw(exc) =>
+          exc
       }
     val cancelledExc = new CancelledRequestException(exc)
     for (tag <- tracker.tags;
@@ -345,7 +350,8 @@ private[twitter] class ServerDispatcher(
   @tailrec
   private[this] def hangup(deadline: Time): Future[Unit] =
     state.get match {
-      case State.Closed => Future.Done
+      case State.Closed =>
+        Future.Done
       case s @ (State.Draining | State.Open) =>
         if (!state.compareAndSet(s, State.Closed))
           hangup(deadline)
@@ -465,9 +471,12 @@ private[finagle] object Processor
       req: Message,
       service: Service[Request, Response]): Future[Message] =
     req match {
-      case d: Message.Tdispatch => dispatch(d, service)
-      case r: Message.Treq      => dispatch(r, service)
-      case Message.Tping(tag)   => Future.value(Message.Rping(tag))
+      case d: Message.Tdispatch =>
+        dispatch(d, service)
+      case r: Message.Treq =>
+        dispatch(r, service)
+      case Message.Tping(tag) =>
+        Future.value(Message.Rping(tag))
       case m =>
         Future.exception(
           new IllegalArgumentException(s"Cannot process message $m"))

@@ -67,8 +67,10 @@ private class DeploymentActor(
         currentStepNr)
 
       performStep(step) onComplete {
-        case Success(_) => self ! NextStep
-        case Failure(t) => self ! Fail(t)
+        case Success(_) =>
+          self ! NextStep
+        case Failure(t) =>
+          self ! Fail(t)
       }
 
     case NextStep =>
@@ -96,18 +98,24 @@ private class DeploymentActor(
           action.app
         ) // ensure health check actors are in place before tasks are launched
         action match {
-          case StartApplication(app, scaleTo) => startApp(app, scaleTo)
+          case StartApplication(app, scaleTo) =>
+            startApp(app, scaleTo)
           case ScaleApplication(app, scaleTo, toKill) =>
             scaleApp(app, scaleTo, toKill)
-          case RestartApplication(app)     => restartApp(app)
-          case StopApplication(app)        => stopApp(app.copy(instances = 0))
-          case ResolveArtifacts(app, urls) => resolveArtifacts(app, urls)
+          case RestartApplication(app) =>
+            restartApp(app)
+          case StopApplication(app) =>
+            stopApp(app.copy(instances = 0))
+          case ResolveArtifacts(app, urls) =>
+            resolveArtifacts(app, urls)
         }
       }
 
       Future.sequence(futures).map(_ => ()) andThen {
-        case Success(_) => eventBus.publish(DeploymentStepSuccess(plan, step))
-        case Failure(_) => eventBus.publish(DeploymentStepFailure(plan, step))
+        case Success(_) =>
+          eventBus.publish(DeploymentStepSuccess(plan, step))
+        case Failure(_) =>
+          eventBus.publish(DeploymentStepFailure(plan, step))
       }
     }
   }
@@ -184,7 +192,8 @@ private class DeploymentActor(
     context.actorOf(
       Props(classOf[AppStopActor], driver, taskTracker, eventBus, app, promise))
     promise.future.andThen {
-      case Success(_) => scheduler.stopApp(driver, app)
+      case Success(_) =>
+        scheduler.stopApp(driver, app)
     }
   }
 

@@ -13,7 +13,8 @@ trait Counter2Ops {
       def apply(t: Counter2[K1, K2, V]): Counter2[K1, K2, V] = {
         Counter2(
           t.iterator.map {
-            case ((k1, k2), v) => (k1, k2, v)
+            case ((k1, k2), v) =>
+              (k1, k2, v)
           })
       }
     }

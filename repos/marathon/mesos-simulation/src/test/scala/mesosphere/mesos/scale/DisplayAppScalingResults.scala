@@ -54,7 +54,8 @@ object DisplayAppScalingResults {
         .as[JsObject]
         .value
         .map {
-          case (name, value) => name -> value.as[JsObject]
+          case (name, value) =>
+            name -> value.as[JsObject]
         }
         .toMap
     }

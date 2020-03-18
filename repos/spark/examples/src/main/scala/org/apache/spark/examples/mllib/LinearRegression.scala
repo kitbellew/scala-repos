@@ -115,9 +115,12 @@ object LinearRegression {
 
     val updater =
       params.regType match {
-        case NONE => new SimpleUpdater()
-        case L1   => new L1Updater()
-        case L2   => new SquaredL2Updater()
+        case NONE =>
+          new SimpleUpdater()
+        case L1 =>
+          new L1Updater()
+        case L2 =>
+          new SquaredL2Updater()
       }
 
     val algorithm = new LinearRegressionWithSGD()

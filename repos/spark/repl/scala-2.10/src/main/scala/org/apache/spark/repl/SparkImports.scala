@@ -64,11 +64,13 @@ private[repl] trait SparkImports {
   def importedSymbols = languageSymbols ++ sessionImportedSymbols
   def importedTermSymbols =
     importedSymbols collect {
-      case x: TermSymbol => x
+      case x: TermSymbol =>
+        x
     }
   def importedTypeSymbols =
     importedSymbols collect {
-      case x: TypeSymbol => x
+      case x: TypeSymbol =>
+        x
     }
   def implicitSymbols = importedSymbols filter (_.isImplicit)
 
@@ -87,7 +89,8 @@ private[repl] trait SparkImports {
   }
   def implicitSymbolsBySource: List[(Symbol, List[Symbol])] = {
     importedSymbolsBySource map {
-      case (k, vs) => (k, vs filter (_.isImplicit))
+      case (k, vs) =>
+        (k, vs filter (_.isImplicit))
     } filterNot (_._2.isEmpty)
   }
 
@@ -148,13 +151,17 @@ private[repl] trait SparkImports {
              * needed.*/
             case h: ImportHandler if definedClass && !fallback =>
               h.importedNames.exists(x => wanted.contains(x))
-            case _: ImportHandler => true
-            case x                => x.definesImplicit || (x.definedNames exists wanted)
+            case _: ImportHandler =>
+              true
+            case x =>
+              x.definesImplicit || (x.definedNames exists wanted)
           }
 
         reqs match {
-          case Nil                                    => Nil
-          case rh :: rest if !keepHandler(rh.handler) => select(rest, wanted)
+          case Nil =>
+            Nil
+          case rh :: rest if !keepHandler(rh.handler) =>
+            select(rest, wanted)
           case rh :: rest =>
             import rh.handler._
             val newWanted =
@@ -166,7 +173,8 @@ private[repl] trait SparkImports {
       /** Flatten the handlers out and pair each with the original request */
       select(
         allReqAndHandlers reverseMap {
-          case (r, h) => ReqAndHandler(r, h)
+          case (r, h) =>
+            ReqAndHandler(r, h)
         },
         wanted).reverse
     }

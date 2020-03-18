@@ -25,7 +25,8 @@ object ApiCombinedCommitStatus {
       sha = sha,
       total_count = statuses.size,
       statuses = statuses.map {
-        case (s, a) => ApiCommitStatus(s, ApiUser(a))
+        case (s, a) =>
+          ApiCommitStatus(s, ApiUser(a))
       },
       repository = repository
     )

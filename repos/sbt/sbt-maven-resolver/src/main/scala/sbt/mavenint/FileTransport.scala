@@ -50,7 +50,9 @@ class FileTransport(repository: RemoteRepository) extends AbstractTransporter {
   override def classify(err: Throwable): Int =
     err match {
       // TODO - Have we caught enough exceptions here?
-      case _: NotFoundException => Transporter.ERROR_NOT_FOUND
-      case _                    => Transporter.ERROR_OTHER
+      case _: NotFoundException =>
+        Transporter.ERROR_NOT_FOUND
+      case _ =>
+        Transporter.ERROR_OTHER
     }
 }

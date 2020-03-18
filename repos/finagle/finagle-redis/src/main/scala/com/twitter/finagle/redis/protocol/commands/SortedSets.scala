@@ -145,13 +145,17 @@ case class ZRangeByScore(
     def command = Seq(key, min.toChannelBuffer, max.toChannelBuffer)
     val scores: Seq[ChannelBuffer] =
       withScores match {
-        case Some(WithScores) => Seq(WithScores.toChannelBuffer)
-        case None             => Nil
+        case Some(WithScores) =>
+          Seq(WithScores.toChannelBuffer)
+        case None =>
+          Nil
       }
     val limits: Seq[ChannelBuffer] =
       limit match {
-        case Some(limit) => limit.toChannelBuffers
-        case None        => Nil
+        case Some(limit) =>
+          limit.toChannelBuffers
+        case None =>
+          Nil
       }
     (command ++ scores ++ limits)
   }
@@ -275,13 +279,17 @@ case class ZRevRangeByScore(
     def command = Seq(key, max.toChannelBuffer, min.toChannelBuffer)
     val scores: Seq[ChannelBuffer] =
       withScores match {
-        case Some(WithScores) => Seq(WithScores.toChannelBuffer)
-        case None             => Nil
+        case Some(WithScores) =>
+          Seq(WithScores.toChannelBuffer)
+        case None =>
+          Nil
       }
     val limits: Seq[ChannelBuffer] =
       limit match {
-        case Some(limit) => limit.toChannelBuffers
-        case None        => Nil
+        case Some(limit) =>
+          limit.toChannelBuffers
+        case None =>
+          Nil
       }
     (command ++ scores ++ limits)
   }
@@ -375,8 +383,10 @@ case class ZInterval(value: String) {
   import ZInterval._
   private val representation =
     value.toLowerCase match {
-      case N_INF => N_INF
-      case P_INF => P_INF
+      case N_INF =>
+        N_INF
+      case P_INF =>
+        P_INF
       case double =>
         double.head match {
           case EXCLUSIVE =>
@@ -490,12 +500,14 @@ abstract class ZStore extends KeysCommand {
   def toChannelBuffer = {
     var args = Seq(destination, StringToChannelBuffer(numkeys.toString)) ++ keys
     weights match {
-      case Some(wlist) => args = args ++ wlist.toChannelBuffers
-      case None        =>
+      case Some(wlist) =>
+        args = args ++ wlist.toChannelBuffers
+      case None =>
     }
     aggregate match {
-      case Some(agg) => args = args ++ agg.toChannelBuffers
-      case None      =>
+      case Some(agg) =>
+        args = args ++ agg.toChannelBuffers
+      case None =>
     }
     RedisCodec.toUnifiedFormat(commandBytes +: args)
   }
@@ -574,8 +586,10 @@ trait ZStoreCompanion {
       args != null && !args.isEmpty,
       "Args list must not be empty")
     args.head.toUpperCase match {
-      case Weights.WEIGHTS     => args.splitAt(numkeys + 1)
-      case Aggregate.AGGREGATE => args.splitAt(2)
+      case Weights.WEIGHTS =>
+        args.splitAt(numkeys + 1)
+      case Aggregate.AGGREGATE =>
+        args.splitAt(2)
       case s =>
         throw ClientError(
           "AGGREGATE or WEIGHTS argument expected, found %s".format(s))
@@ -591,11 +605,14 @@ trait ZStoreCompanion {
               case None =>
                 throw ClientError(
                   "Have additional arguments but unable to process")
-              case w => w
+              case w =>
+                w
             }
-          case false => None
+          case false =>
+            None
         }
-      case w => w
+      case w =>
+        w
     }
 
   protected def findAggregate(args0: Seq[String], args1: Seq[String]) =
@@ -607,11 +624,14 @@ trait ZStoreCompanion {
               case None =>
                 throw ClientError(
                   "Have additional arguments but unable to process")
-              case agg => agg
+              case agg =>
+                agg
             }
-          case false => None
+          case false =>
+            None
         }
-      case agg => agg
+      case agg =>
+        agg
     }
 }
 
@@ -751,29 +771,39 @@ trait ZScoredRangeCompanion {
     convertScore(arg0) match {
       case None =>
         convertScore(arg1) match {
-          case None => throw ClientError("No WITHSCORES found but one expected")
-          case s    => s
+          case None =>
+            throw ClientError("No WITHSCORES found but one expected")
+          case s =>
+            s
         }
-      case s => s
+      case s =>
+        s
     }
   protected def convertScore(arg: ScoreOrLimit) =
     arg match {
-      case Left(_) => Some(WithScores)
-      case _       => None
+      case Left(_) =>
+        Some(WithScores)
+      case _ =>
+        None
     }
   protected def findLimit(arg0: ScoreOrLimit, arg1: ScoreOrLimit) =
     convertLimit(arg0) match {
       case None =>
         convertLimit(arg1) match {
-          case None => throw ClientError("No LIMIT found but one expected")
-          case s    => s
+          case None =>
+            throw ClientError("No LIMIT found but one expected")
+          case s =>
+            s
         }
-      case s => s
+      case s =>
+        s
     }
   protected def convertLimit(arg: ScoreOrLimit) =
     arg match {
-      case Right(limit) => Some(limit)
-      case _            => None
+      case Right(limit) =>
+        Some(limit)
+      case _ =>
+        None
     }
 }
 
@@ -791,8 +821,10 @@ abstract class ZRangeCmd extends StrictKeyCommand {
         StringToChannelBuffer(stop.toString))
     val scored =
       withScores match {
-        case Some(WithScores) => commands :+ WithScores.toChannelBuffer
-        case None             => commands
+        case Some(WithScores) =>
+          commands :+ WithScores.toChannelBuffer
+        case None =>
+          commands
       }
     scored
   }
@@ -822,7 +854,8 @@ trait ZRangeCmdCompanion {
           case _ =>
             throw ClientError("Expected 4 arguments with 4th as WITHSCORES")
         }
-      case _ => throw ClientError("Expected 3 or 4 arguments for command")
+      case _ =>
+        throw ClientError("Expected 3 or 4 arguments for command")
     }
   }
 
@@ -832,8 +865,10 @@ trait ZRangeCmdCompanion {
       stop: Long,
       scored: CommandArgument) =
     scored match {
-      case WithScores => get(key, start, stop, Some(scored))
-      case _          => throw ClientError("Only WithScores is supported")
+      case WithScores =>
+        get(key, start, stop, Some(scored))
+      case _ =>
+        throw ClientError("Only WithScores is supported")
     }
 
   protected def safeInt(i: String) =

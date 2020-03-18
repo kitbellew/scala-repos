@@ -64,6 +64,7 @@ trait RuntimePicklerRegistryHelper extends PicklerRegistry {
         .getOrElse(AnyUnpickler)
         .asInstanceOf[Unpickler[Any]]
       new Tuple2RTKnownTagUnpickler(lhs, rhs)
-    case tpe => new Tuple2RTPickler()
+    case tpe =>
+      new Tuple2RTPickler()
   }
 }

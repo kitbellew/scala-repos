@@ -83,8 +83,10 @@ object TreeOrderedBuf {
 
       val fnBodyOpt =
         t.length(q"$element") match {
-          case _: NoLengthCalculationAvailable[_]  => None
-          case const: ConstantLengthCalculation[_] => None
+          case _: NoLengthCalculationAvailable[_] =>
+            None
+          case const: ConstantLengthCalculation[_] =>
+            None
           case f: FastLengthCalculation[_] =>
             Some(
               q"""
@@ -135,15 +137,18 @@ object TreeOrderedBuf {
       """)
 
       t.length(q"$element") match {
-        case _: NoLengthCalculationAvailable[_] => (q"""
+        case _: NoLengthCalculationAvailable[_] =>
+          (q"""
           override def staticSize: Option[Int] = None""", q"""
           override def dynamicSize($element: $typeName): Option[Int] = None""")
         case const: ConstantLengthCalculation[_] =>
           (q"""
           override val staticSize: Option[Int] = Some(${const.toInt})""", q"""
           override def dynamicSize($element: $typeName): Option[Int] = staticSize""")
-        case f: FastLengthCalculation[_]  => callDynamic
-        case m: MaybeLengthCalculation[_] => callDynamic
+        case f: FastLengthCalculation[_] =>
+          callDynamic
+        case m: MaybeLengthCalculation[_] =>
+          callDynamic
       }
     }
 
@@ -208,21 +213,26 @@ object TreeOrderedBuf {
               }
             }
         """
-        case _ => q"noLengthWrite($element, $outerbaos)"
+        case _ =>
+          q"noLengthWrite($element, $outerbaos)"
       }
     }
 
     def readLength(inputStream: TermName) = {
       t.length(q"e") match {
-        case const: ConstantLengthCalculation[_] => q"${const.toInt}"
-        case _                                   => q"$inputStream.readPosVarInt"
+        case const: ConstantLengthCalculation[_] =>
+          q"${const.toInt}"
+        case _ =>
+          q"$inputStream.readPosVarInt"
       }
     }
 
     def discardLength(inputStream: TermName) = {
       t.length(q"e") match {
-        case const: ConstantLengthCalculation[_] => q"()"
-        case _                                   => q"$inputStream.readPosVarInt"
+        case const: ConstantLengthCalculation[_] =>
+          q"()"
+        case _ =>
+          q"$inputStream.readPosVarInt"
       }
     }
 

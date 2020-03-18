@@ -54,8 +54,10 @@ private case class LibraryReference(level: Level, name: String) {
 
   def libraryStorageFileIn(context: ConversionContext): Option[File] = {
     context.getStorageScheme match {
-      case StorageScheme.DIRECTORY_BASED => directoryBasedLibraryFileIn(context)
-      case StorageScheme.DEFAULT         => Some(context.getProjectFile)
+      case StorageScheme.DIRECTORY_BASED =>
+        directoryBasedLibraryFileIn(context)
+      case StorageScheme.DEFAULT =>
+        Some(context.getProjectFile)
     }
   }
 
@@ -77,8 +79,10 @@ private case class LibraryReference(level: Level, name: String) {
 
   def deleteIn(context: ConversionContext) {
     context.getStorageScheme match {
-      case StorageScheme.DIRECTORY_BASED => deleteDirectoryBasedLibrary(context)
-      case StorageScheme.DEFAULT         => deleteProjectBasedLibrary(context)
+      case StorageScheme.DIRECTORY_BASED =>
+        deleteDirectoryBasedLibrary(context)
+      case StorageScheme.DEFAULT =>
+        deleteProjectBasedLibrary(context)
     }
   }
 

@@ -26,7 +26,8 @@ trait HyperLogLogs {
       key: ChannelBuffer,
       elements: List[ChannelBuffer]): Future[JBoolean] =
     doRequest(PFAdd(key, elements)) {
-      case IntegerReply(n) => Future.value(n == 1)
+      case IntegerReply(n) =>
+        Future.value(n == 1)
     }
 
   /**
@@ -37,7 +38,8 @@ trait HyperLogLogs {
     */
   def pfCount(keys: Seq[ChannelBuffer]): Future[JLong] =
     doRequest(PFCount(keys)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -50,7 +52,8 @@ trait HyperLogLogs {
       destKey: ChannelBuffer,
       srcKeys: Seq[ChannelBuffer]): Future[Unit] =
     doRequest(PFMerge(destKey, srcKeys)) {
-      case StatusReply(_) => Future.Unit
+      case StatusReply(_) =>
+        Future.Unit
     }
 
 }

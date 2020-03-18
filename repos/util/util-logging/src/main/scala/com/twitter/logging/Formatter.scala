@@ -139,8 +139,10 @@ class Formatter(
         x.name
       case x: javalog.Level =>
         Logger.levels.get(x.intValue) match {
-          case None        => "%03d".format(x.intValue)
-          case Some(level) => level.name
+          case None =>
+            "%03d".format(x.intValue)
+          case Some(level) =>
+            level.name
         }
     }
   }
@@ -186,17 +188,22 @@ class Formatter(
     */
   def formatText(record: javalog.LogRecord): String = {
     record match {
-      case null => ""
+      case null =>
+        ""
       case r: LogRecord => {
         r.getParameters match {
-          case null       => r.getMessage
-          case formatArgs => String.format(r.getMessage, formatArgs: _*)
+          case null =>
+            r.getMessage
+          case formatArgs =>
+            String.format(r.getMessage, formatArgs: _*)
         }
       }
       case r: javalog.LogRecord => {
         r.getParameters match {
-          case null       => r.getMessage
-          case formatArgs => MessageFormat.format(r.getMessage, formatArgs: _*)
+          case null =>
+            r.getMessage
+          case formatArgs =>
+            MessageFormat.format(r.getMessage, formatArgs: _*)
         }
       }
     }
@@ -219,8 +226,10 @@ class Formatter(
     */
   def formatName(record: javalog.LogRecord): String = {
     record.getLoggerName match {
-      case null => "(root)"
-      case ""   => "(root)"
+      case null =>
+        "(root)"
+      case "" =>
+        "(root)"
       case n => {
         val nameSegments = n.split("\\.")
         if (nameSegments.length >= 2) {

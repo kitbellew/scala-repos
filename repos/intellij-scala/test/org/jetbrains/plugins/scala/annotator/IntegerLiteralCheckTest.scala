@@ -111,8 +111,9 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
     val parse: ScalaFile = (Header + code).parse
 
     parse.depthFirst.foreach {
-      case literal: ScLiteral => annotator.annotate(literal, mock)
-      case _                  =>
+      case literal: ScLiteral =>
+        annotator.annotate(literal, mock)
+      case _ =>
     }
 
     mock.annotations.filter((p: Message) => !p.isInstanceOf[Info])

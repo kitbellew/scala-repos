@@ -25,9 +25,12 @@ case class PathId(path: List[String], absolute: Boolean = true)
 
   def parent: PathId =
     path match {
-      case Nil          => this
-      case head :: Nil  => PathId(Nil, absolute)
-      case head :: rest => PathId(path.reverse.tail.reverse, absolute)
+      case Nil =>
+        this
+      case head :: Nil =>
+        PathId(Nil, absolute)
+      case head :: rest =>
+        PathId(path.reverse.tail.reverse, absolute)
     }
 
   def allParents: List[PathId] =
@@ -66,7 +69,8 @@ case class PathId(path: List[String], absolute: Boolean = true)
       "Base path is not absolute, canonical path can not be computed!")
     def in(remaining: List[String], result: List[String] = Nil): List[String] =
       remaining match {
-        case head :: tail if head == "." => in(tail, result)
+        case head :: tail if head == "." =>
+          in(tail, result)
         case head :: tail if head == ".." =>
           in(
             tail,
@@ -74,8 +78,10 @@ case class PathId(path: List[String], absolute: Boolean = true)
               result.tail
             else
               Nil)
-        case head :: tail => in(tail, head :: result)
-        case Nil          => result.reverse
+        case head :: tail =>
+          in(tail, head :: result)
+        case Nil =>
+          result.reverse
       }
     if (absolute)
       PathId(in(path))
@@ -95,7 +101,8 @@ case class PathId(path: List[String], absolute: Boolean = true)
     if (path.size < definition.path.size)
       return false
     path.zip(definition.path).forall {
-      case (left, right) => left == right
+      case (left, right) =>
+        left == right
     }
   }
 

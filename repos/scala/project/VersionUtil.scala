@@ -112,7 +112,8 @@ object VersionUtil {
               s"$base-$sha-SNAPSHOT",
               s"$base.v$date-$sha",
               false)
-          case "" => (s"$base", s"$base", s"$base.v$date-VFINAL-$sha", true)
+          case "" =>
+            (s"$base", s"$base", s"$base.v$date-VFINAL-$sha", true)
           case suffix =>
             (
               s"$base-$suffix",
@@ -145,7 +146,8 @@ object VersionUtil {
   private def writeProps(m: Map[String, String], propFile: File): File = {
     val props = new Properties
     m.foreach {
-      case (k, v) => props.put(k, v)
+      case (k, v) =>
+        props.put(k, v)
     }
     // unfortunately, this will write properties in arbitrary order
     // this makes it harder to test for stability of generated artifacts

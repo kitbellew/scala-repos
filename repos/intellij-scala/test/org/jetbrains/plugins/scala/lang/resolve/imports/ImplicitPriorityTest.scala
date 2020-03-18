@@ -17,7 +17,8 @@ class ImplicitPriorityTest extends ScalaResolveTestCase {
       case r: PsiPolyVariantReference =>
         val results = r.multiResolve(false)
         assert(results.length == 1, results.mkString(","))
-      case x => throw new Exception("Wrong reference!" + x)
+      case x =>
+        throw new Exception("Wrong reference!" + x)
     }
   }
 
@@ -26,7 +27,8 @@ class ImplicitPriorityTest extends ScalaResolveTestCase {
       case r: PsiPolyVariantReference =>
         val results = r.multiResolve(false)
         assert(results.length == 1, results.mkString(","))
-      case x => throw new Exception("Wrong reference!" + x)
+      case x =>
+        throw new Exception("Wrong reference!" + x)
     }
   }
 
@@ -35,7 +37,8 @@ class ImplicitPriorityTest extends ScalaResolveTestCase {
       case r: PsiPolyVariantReference =>
         val results = r.multiResolve(false)
         assert(results.length == 1, results.mkString(","))
-      case x => throw new Exception("Wrong reference!" + x)
+      case x =>
+        throw new Exception("Wrong reference!" + x)
     }
   }
 }

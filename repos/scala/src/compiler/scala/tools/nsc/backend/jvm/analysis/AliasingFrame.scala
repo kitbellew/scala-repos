@@ -574,8 +574,10 @@ class AliasSet(var set: Object /*SmallBitSet | Array[Long]*/, var size: Int) {
   override def clone(): AliasSet = {
     val resSet =
       this.set match {
-        case s: SmallBitSet    => new SmallBitSet(s.a, s.b, s.c, s.d)
-        case bits: Array[Long] => bits.clone()
+        case s: SmallBitSet =>
+          new SmallBitSet(s.a, s.b, s.c, s.d)
+        case bits: Array[Long] =>
+          bits.clone()
       }
     new AliasSet(resSet, this.size)
   }
@@ -691,7 +693,8 @@ object AliasSet {
         b = s.b;
         c = s.c;
         d = s.d
-      case bits: Array[Long] => xs = bits
+      case bits: Array[Long] =>
+        xs = bits
     }
 
     setB.set match {
@@ -700,7 +703,8 @@ object AliasSet {
         notB = s.b;
         notC = s.c;
         notD = s.d
-      case bits: Array[Long] => notXs = bits
+      case bits: Array[Long] =>
+        notXs = bits
     }
 
     // for each value that exists both in this AND (&) the other bit, `thisAndOther` is set to true.
@@ -720,10 +724,14 @@ object AliasSet {
         else
           abcdNext = x
         (num: @switch) match {
-          case 1 => a = -1
-          case 2 => b = -1
-          case 3 => c = -1
-          case 4 => d = -1
+          case 1 =>
+            a = -1
+          case 2 =>
+            b = -1
+          case 3 =>
+            c = -1
+          case 4 =>
+            d = -1
         }
         !otherHasA
       }

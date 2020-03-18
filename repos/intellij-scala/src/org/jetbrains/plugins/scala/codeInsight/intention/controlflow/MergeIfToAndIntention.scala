@@ -67,7 +67,8 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
           return false
         true
 
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -83,8 +84,10 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
     val outerCondition = ifStmt.condition.get.getText
     val innerIfStmt =
       ifStmt.thenBranch.get match {
-        case c: ScBlockExpr => c.exprs(0).asInstanceOf[ScIfStmt]
-        case c: ScIfStmt    => c
+        case c: ScBlockExpr =>
+          c.exprs(0).asInstanceOf[ScIfStmt]
+        case c: ScIfStmt =>
+          c
       }
     val innerThenBranch = innerIfStmt.thenBranch.get
     val innerCondition = innerIfStmt.condition.get.getText

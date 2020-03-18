@@ -32,7 +32,8 @@ object FilterIsEmptyCheck extends SimplificationType {
         val start = Math.min(s, qual.end)
         val end = Math.max(e, expr.end)
         Some(replace(expr).withText(notExistsText).highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -49,7 +50,8 @@ object FilterNonEmptyCheck extends SimplificationType {
         val start = Math.min(s, qual.end)
         val end = Math.max(e, expr.end)
         Some(replace(expr).withText(existsText).highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -64,7 +66,8 @@ object FilterNotIsEmptyCheck extends SimplificationType {
         val end = Math.max(e, expr.end)
         val forallText = invocationText(qual, "forall", pred)
         Some(replace(expr).withText(forallText).highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -83,6 +86,7 @@ object FilterNotNonEmptyCheck extends SimplificationType {
           "forall",
           pred)
         Some(replace(expr).withText(notForallText).highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
 }

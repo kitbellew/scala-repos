@@ -85,7 +85,8 @@ object SampleData extends CValueGenerators {
                 try {
                   Some(toRecord(ids, assemble(jv)))
                 } catch {
-                  case _: RuntimeException => None
+                  case _: RuntimeException =>
+                    None
                 }
             },
             Some((idCount, jschema))

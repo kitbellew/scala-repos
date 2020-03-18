@@ -100,8 +100,10 @@ object Pickler {
       */
     def map[U](f: T => U): Unpickled[U] =
       this match {
-        case UnpickleSuccess(x) => UnpickleSuccess(f(x))
-        case f: UnpickleFailure => f
+        case UnpickleSuccess(x) =>
+          UnpickleSuccess(f(x))
+        case f: UnpickleFailure =>
+          f
       }
 
     /** Transforms success values to successes or failures using given function,
@@ -110,8 +112,10 @@ object Pickler {
       */
     def flatMap[U](f: T => Unpickled[U]): Unpickled[U] =
       this match {
-        case UnpickleSuccess(x) => f(x)
-        case f: UnpickleFailure => f
+        case UnpickleSuccess(x) =>
+          f(x)
+        case f: UnpickleFailure =>
+          f
       }
 
     /** Tries alternate expression if current result is a failure
@@ -119,8 +123,10 @@ object Pickler {
       */
     def orElse[U >: T](alt: => Unpickled[U]): Unpickled[U] =
       this match {
-        case UnpickleSuccess(x) => this
-        case f: UnpickleFailure => alt
+        case UnpickleSuccess(x) =>
+          this
+        case f: UnpickleFailure =>
+          alt
       }
 
     /** Transforms failures into thrown `MalformedInput` exceptions.
@@ -128,7 +134,8 @@ object Pickler {
       */
     def requireSuccess: UnpickleSuccess[T] =
       this match {
-        case s @ UnpickleSuccess(x) => s
+        case s @ UnpickleSuccess(x) =>
+          s
         case f: UnpickleFailure =>
           throw new MalformedInput(
             f.rd,
@@ -343,7 +350,8 @@ object Pickler {
   /** A pickler for values of type `Long`, represented as integer literals */
   implicit val longPickler: Pickler[Long] =
     tokenPickler("integer literal") {
-      case IntLit(s) => s.toLong
+      case IntLit(s) =>
+        s.toLong
     }
 
   /** A pickler for values of type `Int`, represented as integer literals */
@@ -357,7 +365,8 @@ object Pickler {
   /** A conditional pickler for the boolean value `true` */
   private val truePickler =
     tokenPickler("boolean literal") {
-      case TrueLit => true
+      case TrueLit =>
+        true
     } cond {
       _ == true
     }
@@ -365,7 +374,8 @@ object Pickler {
   /** A conditional pickler for the boolean value `false` */
   private val falsePickler =
     tokenPickler("boolean literal") {
-      case FalseLit => false
+      case FalseLit =>
+        false
     } cond {
       _ == false
     }
@@ -391,9 +401,12 @@ object Pickler {
             quoted(x))
       def unpickle(rd: Lexer) =
         rd.token match {
-          case StringLit(s) => nextSuccess(rd, s)
-          case NullLit      => nextSuccess(rd, null)
-          case _            => errorExpected(rd, "string literal")
+          case StringLit(s) =>
+            nextSuccess(rd, s)
+          case NullLit =>
+            nextSuccess(rd, null)
+          case _ =>
+            errorExpected(rd, "string literal")
         }
     }
 
@@ -401,9 +414,11 @@ object Pickler {
   implicit def tuple2Pickler[T1: Pickler, T2: Pickler]: Pickler[(T1, T2)] =
     (pkl[T1] ~ pkl[T2])
       .wrapped {
-        case x1 ~ x2 => (x1, x2)
+        case x1 ~ x2 =>
+          (x1, x2)
       } {
-        case (x1, x2) => x1 ~ x2
+        case (x1, x2) =>
+          x1 ~ x2
       }
       .labelled("tuple2")
 
@@ -414,9 +429,11 @@ object Pickler {
       p3: Pickler[T3]): Pickler[(T1, T2, T3)] =
     (p1 ~ p2 ~ p3)
       .wrapped {
-        case x1 ~ x2 ~ x3 => (x1, x2, x3)
+        case x1 ~ x2 ~ x3 =>
+          (x1, x2, x3)
       } {
-        case (x1, x2, x3) => x1 ~ x2 ~ x3
+        case (x1, x2, x3) =>
+          x1 ~ x2 ~ x3
       }
       .labelled("tuple3")
 

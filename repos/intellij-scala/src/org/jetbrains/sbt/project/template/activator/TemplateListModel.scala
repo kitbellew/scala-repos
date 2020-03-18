@@ -33,7 +33,8 @@ class TemplateListModel(
     val a1 = items.sortBy(a => a._2.title)
     (
       a1.map {
-        case (a, b) => FullTemplateData(a, b)
+        case (a, b) =>
+          FullTemplateData(a, b)
       },
       a1.toMap)
   }

@@ -74,7 +74,8 @@ class FutureTest
             Future.times(3) {
               val promise = new Promise[Unit]
               promise.setInterruptHandler {
-                case _ => ninterrupt += 1
+                case _ =>
+                  ninterrupt += 1
               }
               queue add promise
               promise
@@ -859,8 +860,10 @@ class FutureTest
           jf.cancel(true)
           assert(
             f.handled match {
-              case Some(e: java.util.concurrent.CancellationException) => true
-              case _                                                   => false
+              case Some(e: java.util.concurrent.CancellationException) =>
+                true
+              case _ =>
+                false
             })
         }
       }
@@ -895,7 +898,8 @@ class FutureTest
                 try {
                   inner.update(Return(1))
                 } catch {
-                  case e: Throwable => assert(true == false)
+                  case e: Throwable =>
+                    assert(true == false)
                 }
               }
               inner
@@ -999,22 +1003,28 @@ class FutureTest
 
         "values" in {
           const.value(1).transform {
-            case Return(v) => const.value(v + 1)
-            case Throw(t)  => const.value(0)
+            case Return(v) =>
+              const.value(v + 1)
+            case Throw(t) =>
+              const.value(0)
           } mustProduce (Return(2))
         }
 
         "exceptions" in {
           const.exception(e).transform {
-            case Return(_) => const.value(1)
-            case Throw(t)  => const.value(0)
+            case Return(_) =>
+              const.value(1)
+            case Throw(t) =>
+              const.value(0)
           } mustProduce (Return(0))
         }
 
         "exceptions thrown during transformation" in {
           const.value(1).transform {
-            case Return(v) => const.value(throw e)
-            case Throw(t)  => const.value(0)
+            case Return(v) =>
+              const.value(throw e)
+            case Throw(t) =>
+              const.value(0)
           } mustProduce (Throw(e))
         }
 
@@ -1027,7 +1037,8 @@ class FutureTest
                 }
                 fn()
                 Future.value(ret())
-              case Throw(t) => const.value(0)
+              case Throw(t) =>
+                const.value(0)
             }
             assert(f.poll.isDefined)
             val e = intercept[FutureNonLocalReturnControl] {
@@ -1052,8 +1063,10 @@ class FutureTest
 
           val actual = intercept[FatalException] {
             const.value(1).transform {
-              case Return(v) => const.value(throw e)
-              case Throw(t)  => const.value(0)
+              case Return(v) =>
+                const.value(throw e)
+              case Throw(t) =>
+                const.value(0)
             }
           }
           assert(actual == e)
@@ -1068,7 +1081,8 @@ class FutureTest
           val actual = intercept[FatalException] {
             Monitor.using(m) {
               const.value(1) transform {
-                case _ => throw exc
+                case _ =>
+                  throw exc
               }
             }
           }
@@ -1166,7 +1180,8 @@ class FutureTest
                 val f3 = new Promise[Unit]
                 var didInterrupt = false
                 f3.setInterruptHandler {
-                  case `exc` => didInterrupt = true
+                  case `exc` =>
+                    didInterrupt = true
                 }
                 val f = seqop(f1, () => seqop(f2, () => f3))
                 f.raise(exc)
@@ -1255,13 +1270,15 @@ class FutureTest
           f.raise(new Exception)
           f1.handled match {
             case Some(_) =>
-            case None    => assert(false == true)
+            case None =>
+              assert(false == true)
           }
           assert(f2.handled == None)
           f1() = Return(f2)
           f2.handled match {
             case Some(_) =>
-            case None    => assert(false == true)
+            case None =>
+              assert(false == true)
           }
         }
       }
@@ -1271,7 +1288,8 @@ class FutureTest
 
         "successes" which {
           val f = Future(1) rescue {
-            case e => Future(2)
+            case e =>
+              Future(2)
           }
 
           "apply" in {
@@ -1285,7 +1303,8 @@ class FutureTest
 
         "failures" which {
           val g = Future[Int](throw e) rescue {
-            case e => Future(2)
+            case e =>
+              Future(2)
           }
 
           "apply" in {
@@ -1313,27 +1332,31 @@ class FutureTest
           "before the antecedent Future completes, propagates back to the antecedent" in {
             val f1, f2 = new HandledPromise[Int]
             val f = f1 rescue {
-              case _ => f2
+              case _ =>
+                f2
             }
             assert(f1.handled == None)
             assert(f2.handled == None)
             f.raise(new Exception)
             f1.handled match {
               case Some(_) =>
-              case None    => assert(false == true)
+              case None =>
+                assert(false == true)
             }
             assert(f2.handled == None)
             f1() = Throw(new Exception)
             f2.handled match {
               case Some(_) =>
-              case None    => assert(false == true)
+              case None =>
+                assert(false == true)
             }
           }
 
           "after the antecedent Future completes, does not propagate back to the antecedent" in {
             val f1, f2 = new HandledPromise[Int]
             val f = f1 rescue {
-              case _ => f2
+              case _ =>
+                f2
             }
             assert(f1.handled == None)
             assert(f2.handled == None)
@@ -1342,7 +1365,8 @@ class FutureTest
             assert(f1.handled == None)
             f2.handled match {
               case Some(_) =>
-              case None    => assert(false == true)
+              case None =>
+                assert(false == true)
             }
           }
         }
@@ -1362,8 +1386,10 @@ class FutureTest
           var wasCalledWith: Option[Int] = None
           val f = Future(1)
           f respond {
-            case Return(i) => wasCalledWith = Some(i)
-            case Throw(e)  => fail(e.toString)
+            case Return(i) =>
+              wasCalledWith = Some(i)
+            case Throw(e) =>
+              fail(e.toString)
           }
           assert(wasCalledWith == Some(1))
         }
@@ -1555,7 +1581,8 @@ class FutureTest
           f.raise(new Exception)
           p.handled match {
             case Some(_) =>
-            case None    => assert(false == true)
+            case None =>
+              assert(false == true)
           }
         }
       }
@@ -1570,7 +1597,8 @@ class FutureTest
           timer.stop()
           p.handled match {
             case Some(_) =>
-            case None    => assert(false == true)
+            case None =>
+              assert(false == true)
           }
         }
 
@@ -1585,7 +1613,8 @@ class FutureTest
           timer.stop()
           p.handled match {
             case Some(_) =>
-            case None    => assert(false == true)
+            case None =>
+              assert(false == true)
           }
           assert(p.handled == Some(skyFall))
         }
@@ -1635,7 +1664,8 @@ class FutureTest
           f.raise(new Exception)
           p.handled match {
             case Some(_) =>
-            case None    => assert(false == true)
+            case None =>
+              assert(false == true)
           }
         }
       }
@@ -1651,10 +1681,12 @@ class FutureTest
         "do conditional interruption" in {
           val p = new HandledPromise[Unit]
           val f1 = p.mask {
-            case _: TimeoutException => true
+            case _: TimeoutException =>
+              true
           }
           val f2 = p.mask {
-            case _: TimeoutException => true
+            case _: TimeoutException =>
+              true
           }
           f1.raise(new TimeoutException("bang!"))
           assert(p.handled == None)
@@ -1808,14 +1840,16 @@ class FutureTest
       Monitor.using(monitor) {
         val counter = new AtomicInteger()
         nonfatal.onFailure {
-          case NonFatal(_) => counter.incrementAndGet()
+          case NonFatal(_) =>
+            counter.incrementAndGet()
         }
         assert(counter.get() == 1)
         assert(monitor.handled == null)
 
         // this will throw a MatchError and propagated to the monitor
         fatal.onFailure {
-          case NonFatal(_) => counter.incrementAndGet()
+          case NonFatal(_) =>
+            counter.incrementAndGet()
         }
         assert(counter.get() == 1)
         assert(monitor.handled.getClass == classOf[MatchError])
@@ -2021,8 +2055,10 @@ class FutureTest
       var next: Future[Int] = Future.value(10)
       val done =
         Future.each(next) {
-          case 0 => next = Future.exception(exc)
-          case n => next = Future.value(n - 1)
+          case 0 =>
+            next = Future.exception(exc)
+          case n =>
+            next = Future.value(n - 1)
         }
 
       assert(done.poll == Some(Throw(exc)))
@@ -2054,8 +2090,9 @@ class FutureTest
         })
       val done =
         Future.each(next()) {
-          case 10 => throw exc
-          case _  =>
+          case 10 =>
+            throw exc
+          case _ =>
         }
 
       assert(done.poll == Some(Throw(exc)))

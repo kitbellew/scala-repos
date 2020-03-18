@@ -38,7 +38,8 @@ abstract class AbstractDecodingToCommand[C <: AnyRef] extends OneToOneDecoder {
 
   def decode(ctx: ChannelHandlerContext, ch: Channel, m: AnyRef) =
     m match {
-      case Tokens(tokens) => parseNonStorageCommand(tokens)
+      case Tokens(tokens) =>
+        parseNonStorageCommand(tokens)
       case TokensWithData(tokens, data, _ /*ignore CAS*/ ) =>
         parseStorageCommand(tokens, data)
     }
@@ -49,10 +50,12 @@ abstract class AbstractDecodingToCommand[C <: AnyRef] extends OneToOneDecoder {
   protected def validateStorageCommand(tokens: Seq[Buf], data: Buf) = {
     val expiry =
       tokens(2).toInt match {
-        case 0 => 0.seconds.afterEpoch
+        case 0 =>
+          0.seconds.afterEpoch
         case unixtime if unixtime > RealtimeMaxdelta =>
           Time.fromSeconds(unixtime)
-        case delta => delta.seconds.fromNow
+        case delta =>
+          delta.seconds.fromNow
       }
     (tokens(0), tokens(1).toInt, expiry, data)
   }
@@ -94,12 +97,18 @@ class DecodingToCommand extends AbstractDecodingToCommand[Command] {
     val commandName = tokens.head
     val args = tokens.tail
     commandName match {
-      case SET     => tupled(Set)(validateStorageCommand(args, data))
-      case ADD     => tupled(Add)(validateStorageCommand(args, data))
-      case REPLACE => tupled(Replace)(validateStorageCommand(args, data))
-      case APPEND  => tupled(Append)(validateStorageCommand(args, data))
-      case PREPEND => tupled(Prepend)(validateStorageCommand(args, data))
-      case _       => throw new NonexistentCommand(Buf.slowHexString(commandName))
+      case SET =>
+        tupled(Set)(validateStorageCommand(args, data))
+      case ADD =>
+        tupled(Add)(validateStorageCommand(args, data))
+      case REPLACE =>
+        tupled(Replace)(validateStorageCommand(args, data))
+      case APPEND =>
+        tupled(Append)(validateStorageCommand(args, data))
+      case PREPEND =>
+        tupled(Prepend)(validateStorageCommand(args, data))
+      case _ =>
+        throw new NonexistentCommand(Buf.slowHexString(commandName))
     }
   }
 
@@ -108,14 +117,22 @@ class DecodingToCommand extends AbstractDecodingToCommand[Command] {
     val commandName = tokens.head
     val args = tokens.tail
     commandName match {
-      case GET    => Get(args)
-      case GETS   => Gets(args)
-      case DELETE => Delete(validateDeleteCommand(args))
-      case INCR   => tupled(Incr)(validateArithmeticCommand(args))
-      case DECR   => tupled(Decr)(validateArithmeticCommand(args))
-      case QUIT   => Quit()
-      case STATS  => Stats(args)
-      case _      => throw new NonexistentCommand(Buf.slowHexString(commandName))
+      case GET =>
+        Get(args)
+      case GETS =>
+        Gets(args)
+      case DELETE =>
+        Delete(validateDeleteCommand(args))
+      case INCR =>
+        tupled(Incr)(validateArithmeticCommand(args))
+      case DECR =>
+        tupled(Decr)(validateArithmeticCommand(args))
+      case QUIT =>
+        Quit()
+      case STATS =>
+        Stats(args)
+      case _ =>
+        throw new NonexistentCommand(Buf.slowHexString(commandName))
     }
   }
 }

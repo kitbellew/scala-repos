@@ -24,28 +24,38 @@ import java.lang.reflect.{
 class JMethodOrConstructor(val member: jMember with jAnnotatedElement) {
   def isVarArgs: Boolean =
     member match {
-      case m: jMethod         => m.isVarArgs
-      case m: jConstructor[_] => m.isVarArgs
+      case m: jMethod =>
+        m.isVarArgs
+      case m: jConstructor[_] =>
+        m.isVarArgs
     }
   def typeParams: Array[_ <: jTypeVariable[_]] =
     member match {
-      case m: jMethod         => m.getTypeParameters
-      case m: jConstructor[_] => m.getTypeParameters
+      case m: jMethod =>
+        m.getTypeParameters
+      case m: jConstructor[_] =>
+        m.getTypeParameters
     }
   def paramTypes: Array[jType] =
     member match {
-      case m: jMethod         => m.getGenericParameterTypes
-      case m: jConstructor[_] => m.getGenericParameterTypes
+      case m: jMethod =>
+        m.getGenericParameterTypes
+      case m: jConstructor[_] =>
+        m.getGenericParameterTypes
     }
   def paramAnnotations: Array[Array[jAnnotation]] =
     member match {
-      case m: jMethod         => m.getParameterAnnotations
-      case m: jConstructor[_] => m.getParameterAnnotations
+      case m: jMethod =>
+        m.getParameterAnnotations
+      case m: jConstructor[_] =>
+        m.getParameterAnnotations
     }
   def resultType: jType =
     member match {
-      case m: jMethod         => m.getGenericReturnType
-      case m: jConstructor[_] => classOf[Unit]
+      case m: jMethod =>
+        m.getGenericReturnType
+      case m: jConstructor[_] =>
+        classOf[Unit]
     }
 }
 

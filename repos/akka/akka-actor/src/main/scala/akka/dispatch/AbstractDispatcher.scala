@@ -40,9 +40,12 @@ final case class TaskInvocation(
     extends Batchable {
   final override def isBatchable: Boolean =
     runnable match {
-      case b: Batchable ⇒ b.isBatchable
-      case _: scala.concurrent.OnCompleteRunnable ⇒ true
-      case _ ⇒ false
+      case b: Batchable ⇒
+        b.isBatchable
+      case _: scala.concurrent.OnCompleteRunnable ⇒
+        true
+      case _ ⇒
+        false
     }
 
   def run(): Unit =
@@ -94,12 +97,15 @@ private[akka] object MessageDispatcher {
           a match {
             case r: ActorRefWithCell ⇒
               " " + r.underlying.numberOfMessages + " messages"
-            case _ ⇒ " " + a.getClass
+            case _ ⇒
+              " " + a.getClass
           }
         val parent =
           a match {
-            case i: InternalActorRef ⇒ ", parent: " + i.getParent
-            case _ ⇒ ""
+            case i: InternalActorRef ⇒
+              ", parent: " + i.getParent
+            case _ ⇒
+              ""
           }
         println(" -> " + a + status + messages + parent)
       }
@@ -197,7 +203,8 @@ abstract class MessageDispatcher(
 
   override def reportFailure(t: Throwable): Unit =
     t match {
-      case e: LogEventException ⇒ eventStream.publish(e.event)
+      case e: LogEventException ⇒
+        eventStream.publish(e.event)
       case _ ⇒
         eventStream.publish(Error(t, getClass.getName, getClass, t.getMessage))
     }
@@ -229,7 +236,8 @@ abstract class MessageDispatcher(
           MessageDispatcher.this.reportFailure(t)
       })
     catch {
-      case _: IllegalStateException ⇒ shutdown()
+      case _: IllegalStateException ⇒
+        shutdown()
     }
   }
 
@@ -432,7 +440,8 @@ abstract class MessageDispatcherConfigurator(
           config.getConfig("default-executor"),
           prerequisites,
           configurator(config.getString("default-executor.fallback")))
-      case other ⇒ configurator(other)
+      case other ⇒
+        configurator(other)
     }
   }
 }
@@ -459,14 +468,16 @@ class ThreadPoolExecutorConfigurator(
               case "array" ⇒
                 ThreadPoolConfig
                   .arrayBlockingQueue(size, false) //TODO config fairness?
-              case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
+              case "" | "linked" ⇒
+                ThreadPoolConfig.linkedBlockingQueue(size)
               case x ⇒
                 throw new IllegalArgumentException(
                   "[%s] is not a valid task-queue-type [array|linked]!" format x)
             } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒
               q.setQueueFactory(qf)
             }
-          case _ ⇒ None
+          case _ ⇒
+            None
         })
 
     if (config.getString("fixed-pool-size") == "off")
@@ -550,7 +561,8 @@ object ForkJoinExecutorConfigurator {
           val t = Thread.currentThread
           t.getUncaughtExceptionHandler match {
             case null ⇒
-            case some ⇒ some.uncaughtException(t, anything)
+            case some ⇒
+              some.uncaughtException(t, anything)
           }
           throw anything
       }
@@ -565,7 +577,8 @@ class ForkJoinExecutorConfigurator(
 
   def validate(t: ThreadFactory): ForkJoinPool.ForkJoinWorkerThreadFactory =
     t match {
-      case correct: ForkJoinPool.ForkJoinWorkerThreadFactory ⇒ correct
+      case correct: ForkJoinPool.ForkJoinWorkerThreadFactory ⇒
+        correct
       case x ⇒
         throw new IllegalStateException(
           "The prerequisites for the ForkJoinExecutorConfigurator is a ForkJoinPool.ForkJoinWorkerThreadFactory!")
@@ -595,13 +608,16 @@ class ForkJoinExecutorConfigurator(
         case m: MonitorableThreadFactory ⇒
           // add the dispatcher id to the thread names
           m.withName(m.name + "-" + id)
-        case other ⇒ other
+        case other ⇒
+          other
       }
 
     val asyncMode =
       config.getString("task-peeking-mode") match {
-        case "FIFO" ⇒ true
-        case "LIFO" ⇒ false
+        case "FIFO" ⇒
+          true
+        case "LIFO" ⇒
+          false
         case unsupported ⇒
           throw new IllegalArgumentException(
             "Cannot instantiate ForkJoinExecutorServiceFactory. " +
@@ -647,7 +663,8 @@ class DefaultExecutorServiceConfigurator(
           def execute(command: Runnable): Unit = ec.execute(command)
           def isShutdown: Boolean = false
         }
-      case None ⇒ fallback
+      case None ⇒
+        fallback
     }
 
   def createExecutorServiceFactory(

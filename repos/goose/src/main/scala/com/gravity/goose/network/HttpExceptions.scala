@@ -41,13 +41,18 @@ class UnhandledStatusCodeException(url: String, statusCode: Int)
 object HttpStatusValidator {
   def validate(url: String, statusCode: Int): Either[Exception, String] =
     statusCode match {
-      case 200 => Right("OK")
-      case 400 => Left(new BadRequestException(url))
-      case 404 => Left(new NotFoundException(url))
+      case 200 =>
+        Right("OK")
+      case 400 =>
+        Left(new BadRequestException(url))
+      case 404 =>
+        Left(new NotFoundException(url))
       case auth if (auth > 400 && auth < 500) =>
         Left(new NotAuthorizedException(url, auth))
-      case error if (error > 499) => Left(new ServerErrorException(url, error))
-      case unk                    => Left(new UnhandledStatusCodeException(url, statusCode))
+      case error if (error > 499) =>
+        Left(new ServerErrorException(url, error))
+      case unk =>
+        Left(new UnhandledStatusCodeException(url, statusCode))
     }
 }
 

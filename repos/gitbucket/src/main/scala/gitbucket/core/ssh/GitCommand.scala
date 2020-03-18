@@ -103,7 +103,8 @@ abstract class DefaultGitCommand(val owner: String, val repoName: String)
           repositoryInfo.owner,
           repositoryInfo.name,
           Some(account))
-      case None => false
+      case None =>
+        false
     }
 
 }
@@ -217,7 +218,8 @@ class GitCommandFactory(baseUrl: String) extends CommandFactory {
         new DefaultGitUploadPack(owner, repoName)
       case DefaultCommandRegex("receive", owner, repoName) =>
         new DefaultGitReceivePack(owner, repoName, baseUrl)
-      case _ => new UnknownCommand(command)
+      case _ =>
+        new UnknownCommand(command)
     }
   }
 

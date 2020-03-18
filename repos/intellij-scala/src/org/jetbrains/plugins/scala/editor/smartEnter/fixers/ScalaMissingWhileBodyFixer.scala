@@ -28,7 +28,8 @@ class ScalaMissingWhileBodyFixer extends ScalaFixer {
     val body = whileStatement.body.orNull
 
     whileStatement.body match {
-      case Some(_: ScBlockExpr) => NoOperation
+      case Some(_: ScBlockExpr) =>
+        NoOperation
       case Some(_)
           if startLine(doc, body) == startLine(
             doc,

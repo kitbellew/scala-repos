@@ -68,8 +68,9 @@ object ScalaElementPresentation {
 
     if (fast) {
       function.returnTypeElement match {
-        case Some(rt) => presentableText.append(": ").append(rt.getText)
-        case _        => //do nothing
+        case Some(rt) =>
+          presentableText.append(": ").append(rt.getText)
+        case _ => //do nothing
       }
     } else {
       presentableText.append(": ")
@@ -77,7 +78,8 @@ object ScalaElementPresentation {
         val typez = subst.subst(function.returnType.getOrAny)
         presentableText.append(ScType.presentableText(typez))
       } catch {
-        case e: IndexNotReadyException => presentableText.append("NoTypeInfo")
+        case e: IndexNotReadyException =>
+          presentableText.append("NoTypeInfo")
       }
     }
 
@@ -97,15 +99,21 @@ object ScalaElementPresentation {
       elem match {
         case typed: TypingContextOwner =>
           ": " + typed.getType().getOrAny.presentableText
-        case _ => ""
+        case _ =>
+          ""
       }
     val keyword =
       ScalaPsiUtil.nameContext(elem) match {
-        case _: ScVariable                          => ScalaKeyword.VAR
-        case _: ScValue                             => ScalaKeyword.VAL
-        case param: ScClassParameter if param.isVar => ScalaKeyword.VAR
-        case param: ScClassParameter if param.isVal => ScalaKeyword.VAL
-        case _                                      => ""
+        case _: ScVariable =>
+          ScalaKeyword.VAR
+        case _: ScValue =>
+          ScalaKeyword.VAL
+        case param: ScClassParameter if param.isVar =>
+          ScalaKeyword.VAR
+        case param: ScClassParameter if param.isVal =>
+          ScalaKeyword.VAL
+        case _ =>
+          ""
       }
     s"$keyword ${elem.name}$typeText"
   }

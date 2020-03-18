@@ -60,7 +60,8 @@ class StorageListener(storageStatusListener: StorageStatusListener)
       updatedBlocks: Seq[(BlockId, BlockStatus)]): Unit = {
     val rddIdsToUpdate =
       updatedBlocks.flatMap {
-        case (bid, _) => bid.asRDDId.map(_.rddId)
+        case (bid, _) =>
+          bid.asRDDId.map(_.rddId)
       }.toSet
     val rddInfosToUpdate = _rddInfoMap.values.toSeq.filter { s =>
       rddIdsToUpdate.contains(s.id)

@@ -23,11 +23,16 @@ class TestActor(probe: ActorRef) extends Actor {
   probe ! "STARTED"
 
   def receive = {
-    case "DIE" ⇒ context.stop(self)
-    case "THROW" ⇒ throw new TestActor.NormalException
-    case "THROW_STOPPING_EXCEPTION" ⇒ throw new TestActor.StoppingException
-    case ("TO_PARENT", msg) ⇒ context.parent ! msg
-    case other ⇒ probe ! other
+    case "DIE" ⇒
+      context.stop(self)
+    case "THROW" ⇒
+      throw new TestActor.NormalException
+    case "THROW_STOPPING_EXCEPTION" ⇒
+      throw new TestActor.StoppingException
+    case ("TO_PARENT", msg) ⇒
+      context.parent ! msg
+    case other ⇒
+      probe ! other
   }
 }
 
@@ -39,7 +44,8 @@ class TestParentActor(probe: ActorRef, supervisorProps: Props) extends Actor {
   val supervisor = context.actorOf(supervisorProps)
 
   def receive = {
-    case other ⇒ probe.forward(other)
+    case other ⇒
+      probe.forward(other)
   }
 }
 
@@ -55,7 +61,8 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
         0.0)
       .withSupervisorStrategy(
         OneForOneStrategy() {
-          case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
+          case _: TestActor.StoppingException ⇒
+            SupervisorStrategy.Stop
         })
     BackoffSupervisor.props(options)
   }
@@ -151,7 +158,8 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec with ImplicitSender {
           0.0)
         .withSupervisorStrategy(
           OneForOneStrategy(loggingEnabled = false) {
-            case _: TestActor.StoppingException ⇒ SupervisorStrategy.Stop
+            case _: TestActor.StoppingException ⇒
+              SupervisorStrategy.Stop
           })
       val supervisor = system.actorOf(BackoffSupervisor.props(options))
 

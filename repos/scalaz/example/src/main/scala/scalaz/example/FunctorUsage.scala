@@ -98,8 +98,10 @@ object FunctorUsage extends App {
     Task.delay {
       val (count, db) =
         database.foldRight(0 → List.empty[(String, Int)]) {
-          case ((k, _), (d, r)) if f(k) => (d + 1, r)
-          case (i, (d, r))              => (d, i :: r)
+          case ((k, _), (d, r)) if f(k) =>
+            (d + 1, r)
+          case (i, (d, r)) =>
+            (d, i :: r)
         }
       database = db.toMap
       count

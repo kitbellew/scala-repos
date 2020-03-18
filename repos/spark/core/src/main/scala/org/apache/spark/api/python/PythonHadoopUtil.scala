@@ -52,7 +52,8 @@ private[python] object Converter extends Logging {
           logInfo(s"Loaded converter: $cc")
           c
         } match {
-          case Success(c) => c
+          case Success(c) =>
+            c
           case Failure(err) =>
             logError(s"Failed to load converter: $cc")
             throw err
@@ -78,17 +79,24 @@ private[python] class WritableToJavaConverter(
     */
   private def convertWritable(writable: Writable): Any = {
     writable match {
-      case iw: IntWritable     => iw.get()
-      case dw: DoubleWritable  => dw.get()
-      case lw: LongWritable    => lw.get()
-      case fw: FloatWritable   => fw.get()
-      case t: Text             => t.toString
-      case bw: BooleanWritable => bw.get()
+      case iw: IntWritable =>
+        iw.get()
+      case dw: DoubleWritable =>
+        dw.get()
+      case lw: LongWritable =>
+        lw.get()
+      case fw: FloatWritable =>
+        fw.get()
+      case t: Text =>
+        t.toString
+      case bw: BooleanWritable =>
+        bw.get()
       case byw: BytesWritable =>
         val bytes = new Array[Byte](byw.getLength)
         System.arraycopy(byw.getBytes(), 0, bytes, 0, byw.getLength)
         bytes
-      case n: NullWritable   => null
+      case n: NullWritable =>
+        null
       case aw: ArrayWritable =>
         // Due to erasure, all arrays appear as Object[] and they get pickled to Python tuples.
         // Since we can't determine element types for empty arrays, we will not attempt to
@@ -98,11 +106,14 @@ private[python] class WritableToJavaConverter(
       case mw: MapWritable =>
         val map = new java.util.HashMap[Any, Any]()
         mw.asScala.foreach {
-          case (k, v) => map.put(convertWritable(k), convertWritable(v))
+          case (k, v) =>
+            map.put(convertWritable(k), convertWritable(v))
         }
         map
-      case w: Writable => WritableUtils.clone(w, conf.value.value)
-      case other       => other
+      case w: Writable =>
+        WritableUtils.clone(w, conf.value.value)
+      case other =>
+        other
     }
   }
 
@@ -131,14 +142,22 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
     */
   private def convertToWritable(obj: Any): Writable = {
     obj match {
-      case i: java.lang.Integer => new IntWritable(i)
-      case d: java.lang.Double  => new DoubleWritable(d)
-      case l: java.lang.Long    => new LongWritable(l)
-      case f: java.lang.Float   => new FloatWritable(f)
-      case s: java.lang.String  => new Text(s)
-      case b: java.lang.Boolean => new BooleanWritable(b)
-      case aob: Array[Byte]     => new BytesWritable(aob)
-      case null                 => NullWritable.get()
+      case i: java.lang.Integer =>
+        new IntWritable(i)
+      case d: java.lang.Double =>
+        new DoubleWritable(d)
+      case l: java.lang.Long =>
+        new LongWritable(l)
+      case f: java.lang.Float =>
+        new FloatWritable(f)
+      case s: java.lang.String =>
+        new Text(s)
+      case b: java.lang.Boolean =>
+        new BooleanWritable(b)
+      case aob: Array[Byte] =>
+        new BytesWritable(aob)
+      case null =>
+        NullWritable.get()
       case map: java.util.Map[_, _] =>
         val mapWritable = new MapWritable()
         map.asScala.foreach {
@@ -159,8 +178,10 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
 
   override def convert(obj: Any): Writable =
     obj match {
-      case writable: Writable => writable
-      case other              => convertToWritable(other)
+      case writable: Writable =>
+        writable
+      case other =>
+        convertToWritable(other)
     }
 }
 
@@ -173,7 +194,8 @@ private[python] object PythonHadoopUtil {
   def mapToConf(map: java.util.Map[String, String]): Configuration = {
     val conf = new Configuration()
     map.asScala.foreach {
-      case (k, v) => conf.set(k, v)
+      case (k, v) =>
+        conf.set(k, v)
     }
     conf
   }
@@ -197,7 +219,8 @@ private[python] object PythonHadoopUtil {
       keyConverter: Converter[Any, Any],
       valueConverter: Converter[Any, Any]): RDD[(Any, Any)] = {
     rdd.map {
-      case (k, v) => (keyConverter.convert(k), valueConverter.convert(v))
+      case (k, v) =>
+        (keyConverter.convert(k), valueConverter.convert(v))
     }
   }
 

@@ -19,7 +19,8 @@ class HStringJavaClassReferenceProvider extends JavaClassReferenceProvider {
         settings.classReferencesOnUnquotedStrings
       case (StringValue | KeyPart, QuotedString) =>
         settings.classReferencesOnQuotedStrings
-      case _ => false
+      case _ =>
+        false
     }
   }
 

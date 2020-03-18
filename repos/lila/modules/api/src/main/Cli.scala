@@ -34,7 +34,8 @@ private[api] final class Cli(bus: lila.common.Bus, renderer: ActorSelection)
 
   private def remindDeploy(event: RemindDeploy): Fu[String] = {
     renderer ? event foreach {
-      case html: Html => bus.publish(Deploy(event, html.body), 'deploy)
+      case html: Html =>
+        bus.publish(Deploy(event, html.body), 'deploy)
     }
     fuccess("Deploy in progress")
   }
@@ -42,7 +43,8 @@ private[api] final class Cli(bus: lila.common.Bus, renderer: ActorSelection)
   private def run(args: List[String]): Fu[String] = {
     (processors lift args) | fufail("Unknown command: " + args.mkString(" "))
   } recover {
-    case e: Exception => "ERROR " + e
+    case e: Exception =>
+      "ERROR " + e
   }
 
   private def processors =

@@ -97,7 +97,8 @@ class ActivatorProjectBuilder
         //todo Looks like template name can't be set without some hack (activator itself can't do it)
 
         createStub(info.id, contentPath)
-      case _ => error("Can't download template")
+      case _ =>
+        error("Can't download template")
     }
 
     modifiableRootModel.inheritSdk()

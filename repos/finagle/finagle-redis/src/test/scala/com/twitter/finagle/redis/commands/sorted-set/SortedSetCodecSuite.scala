@@ -55,7 +55,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
               case ZMember(2.71828, value) =>
                 assert(BytesToString(value.array) == "e")
             }
-          case _ => fail("Expected two elements in list")
+          case _ =>
+            fail("Expected two elements in list")
         }
     }
   }
@@ -172,12 +173,15 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       : PartialFunction[Command, Unit] =
     cmd match {
       case "ZINTERSTORE" => {
-        case ZInterStore(k, n, keys, w, a) => f(keys, w, a)
+        case ZInterStore(k, n, keys, w, a) =>
+          f(keys, w, a)
       }
       case "ZUNIONSTORE" => {
-        case ZUnionStore(k, n, keys, w, a) => f(keys, w, a)
+        case ZUnionStore(k, n, keys, w, a) =>
+          f(keys, w, a)
       }
-      case _ => throw new Exception("Unhandled type")
+      case _ =>
+        throw new Exception("Unhandled type")
     }
 
   test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys") {
@@ -277,10 +281,12 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       scored: Option[CommandArgument]): PartialFunction[Command, Unit] = {
     cmd match {
       case "ZRANGE" => {
-        case ZRange(k, start, stop, scored) => ()
+        case ZRange(k, start, stop, scored) =>
+          ()
       }
       case "ZREVRANGE" => {
-        case ZRevRange(k, start, stop, scored) => ()
+        case ZRevRange(k, start, stop, scored) =>
+          ()
       }
     }
   }
@@ -309,7 +315,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     val zrange = ZRange.get(ChannelBuffers.wrappedBuffer(key), 0, 1, None)
     val keyBack =
       zrange match {
-        case ZRange(key, start, stop, withScores) => key
+        case ZRange(key, start, stop, withScores) =>
+          key
       }
     val bytesBack = keyBack.toByteBuffer.array
     assert(key.toSeq == bytesBack.toSeq)
@@ -360,10 +367,12 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       : PartialFunction[Command, Unit] =
     cmd match {
       case "ZRANGEBYSCORE" => {
-        case ZRangeByScore(k, min, max, s, l) => f(s, l)
+        case ZRangeByScore(k, min, max, s, l) =>
+          f(s, l)
       }
       case "ZREVRANGEBYSCORE" => {
-        case ZRevRangeByScore(k, min, max, s, l) => f(s, l)
+        case ZRevRangeByScore(k, min, max, s, l) =>
+          f(s, l)
       }
     }
 
@@ -467,10 +476,12 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       f: ChannelBuffer => Unit): PartialFunction[Command, Unit] =
     cmd match {
       case "ZRANK" => {
-        case ZRank(k, m) => f(m)
+        case ZRank(k, m) =>
+          f(m)
       }
       case "ZREVRANK" => {
-        case ZRevRank(k, m) => f(m)
+        case ZRevRank(k, m) =>
+          f(m)
       }
     }
 

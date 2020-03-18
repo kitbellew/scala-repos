@@ -49,13 +49,17 @@ object PomTest extends Build {
 
           val actualScope =
             (dep \\ "scope") match {
-              case Seq() => None;
-              case x     => Some(x.text)
+              case Seq() =>
+                None;
+              case x =>
+                Some(x.text)
             }
           val actualClassifier =
             (dep \\ "classifier") match {
-              case Seq() => None;
-              case x     => Some(x.text)
+              case Seq() =>
+                None;
+              case x =>
+                Some(x.text)
             }
           assert(
             actualScope == scope,

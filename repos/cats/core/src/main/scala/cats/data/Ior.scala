@@ -23,9 +23,12 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
 
   final def fold[C](fa: A => C, fb: B => C, fab: (A, B) => C): C =
     this match {
-      case Ior.Left(a)    => fa(a)
-      case Ior.Right(b)   => fb(b)
-      case Ior.Both(a, b) => fab(a, b)
+      case Ior.Left(a) =>
+        fa(a)
+      case Ior.Right(b) =>
+        fb(b)
+      case Ior.Both(a, b) =>
+        fab(a, b)
     }
 
   final def isLeft: Boolean = fold(_ => true, _ => false, (_, _) => false)
@@ -81,13 +84,18 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
   final def flatMap[AA >: A, D](f: B => AA Ior D)(implicit
       AA: Semigroup[AA]): AA Ior D =
     this match {
-      case l @ Ior.Left(_) => l
-      case Ior.Right(b)    => f(b)
+      case l @ Ior.Left(_) =>
+        l
+      case Ior.Right(b) =>
+        f(b)
       case Ior.Both(a1, b) =>
         f(b) match {
-          case Ior.Left(a2)    => Ior.Left(AA.combine(a1, a2))
-          case Ior.Right(b)    => Ior.Both(a1, b)
-          case Ior.Both(a2, d) => Ior.Both(AA.combine(a1, a2), d)
+          case Ior.Left(a2) =>
+            Ior.Left(AA.combine(a1, a2))
+          case Ior.Right(b) =>
+            Ior.Both(a1, b)
+          case Ior.Both(a2, d) =>
+            Ior.Both(AA.combine(a1, a2), d)
         }
     }
 
@@ -99,9 +107,12 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
   final def traverse[F[_], AA >: A, D](g: B => F[D])(implicit
       F: Applicative[F]): F[AA Ior D] =
     this match {
-      case Ior.Left(a)    => F.pure(Ior.left(a))
-      case Ior.Right(b)   => F.map(g(b))(Ior.right)
-      case Ior.Both(a, b) => F.map(g(b))(d => Ior.both(a, d))
+      case Ior.Left(a) =>
+        F.pure(Ior.left(a))
+      case Ior.Right(b) =>
+        F.map(g(b))(Ior.right)
+      case Ior.Both(a, b) =>
+        F.map(g(b))(d => Ior.both(a, d))
     }
 
   final def foldLeft[C](c: C)(f: (C, B) => C): C =
@@ -120,20 +131,28 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
     this match {
       case Ior.Left(a1) =>
         that match {
-          case Ior.Left(a2)     => Ior.Left(AA.combine(a1, a2))
-          case Ior.Right(b2)    => Ior.Both(a1, b2)
-          case Ior.Both(a2, b2) => Ior.Both(AA.combine(a1, a2), b2)
+          case Ior.Left(a2) =>
+            Ior.Left(AA.combine(a1, a2))
+          case Ior.Right(b2) =>
+            Ior.Both(a1, b2)
+          case Ior.Both(a2, b2) =>
+            Ior.Both(AA.combine(a1, a2), b2)
         }
       case Ior.Right(b1) =>
         that match {
-          case Ior.Left(a2)     => Ior.Both(a2, b1)
-          case Ior.Right(b2)    => Ior.Right(BB.combine(b1, b2))
-          case Ior.Both(a2, b2) => Ior.Both(a2, BB.combine(b1, b2))
+          case Ior.Left(a2) =>
+            Ior.Both(a2, b1)
+          case Ior.Right(b2) =>
+            Ior.Right(BB.combine(b1, b2))
+          case Ior.Both(a2, b2) =>
+            Ior.Both(a2, BB.combine(b1, b2))
         }
       case Ior.Both(a1, b1) =>
         that match {
-          case Ior.Left(a2)  => Ior.Both(AA.combine(a1, a2), b1)
-          case Ior.Right(b2) => Ior.Both(a1, BB.combine(b1, b2))
+          case Ior.Left(a2) =>
+            Ior.Both(AA.combine(a1, a2), b1)
+          case Ior.Right(b2) =>
+            Ior.Both(a1, BB.combine(b1, b2))
           case Ior.Both(a2, b2) =>
             Ior.Both(AA.combine(a1, a2), BB.combine(b1, b2))
         }
@@ -224,13 +243,17 @@ sealed trait IorFunctions {
     oa match {
       case Some(a) =>
         ob match {
-          case Some(b) => Some(Ior.Both(a, b))
-          case None    => Some(Ior.Left(a))
+          case Some(b) =>
+            Some(Ior.Both(a, b))
+          case None =>
+            Some(Ior.Left(a))
         }
       case None =>
         ob match {
-          case Some(b) => Some(Ior.Right(b))
-          case None    => None
+          case Some(b) =>
+            Some(Ior.Right(b))
+          case None =>
+            None
         }
     }
 }

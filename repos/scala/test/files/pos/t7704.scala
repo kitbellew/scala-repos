@@ -12,7 +12,9 @@ class BoolAttr extends Attr {
 object Main {
   def f(x: Attr) =
     x match {
-      case v: StrAttr  => new v.Val
-      case v: BoolAttr => new v.Val
+      case v: StrAttr =>
+        new v.Val
+      case v: BoolAttr =>
+        new v.Val
     }
 }

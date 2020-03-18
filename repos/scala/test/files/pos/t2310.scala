@@ -22,8 +22,10 @@ object consistencyError {
    */
   def crash[A](lefts: Stream[A], rights: Stream[A]) =
     (lefts, rights) match {
-      case (Stream.Empty, Stream.Empty) => None
-      case (l #:: ls, rs)               => None
+      case (Stream.Empty, Stream.Empty) =>
+        None
+      case (l #:: ls, rs) =>
+        None
     }
 
   // These work

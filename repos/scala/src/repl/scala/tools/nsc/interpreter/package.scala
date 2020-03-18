@@ -162,8 +162,10 @@ package object interpreter extends ReplConfig with ReplStrings {
         }
       def typeOfTerm: Option[TypeSymbol] =
         replInfo(symbolOfLine(expr)).typeSymbol match {
-          case sym: TypeSymbol => Some(sym)
-          case _               => None
+          case sym: TypeSymbol =>
+            Some(sym)
+          case _ =>
+            None
         }
       (
         typeFromTypeString orElse typeFromNameTreatedAsTerm orElse typeFromFullName orElse typeOfTerm
@@ -179,9 +181,12 @@ package object interpreter extends ReplConfig with ReplStrings {
     def echoKind(tpe: Type, kind: Kind, verbose: Boolean) {
       def typeString(tpe: Type): String = {
         tpe match {
-          case TypeRef(_, sym, _) => typeString(sym.info)
-          case RefinedType(_, _)  => tpe.toString
-          case _                  => tpe.typeSymbol.fullName
+          case TypeRef(_, sym, _) =>
+            typeString(sym.info)
+          case RefinedType(_, _) =>
+            tpe.toString
+          case _ =>
+            tpe.typeSymbol.fullName
         }
       }
       printAfterTyper(typeString(tpe) + "'s kind is " + kind.scalaNotation)

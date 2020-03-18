@@ -97,12 +97,15 @@ object UnnecessaryParenthesesUtil {
     parenthesized match {
       case ScParenthesisedExpr(inner) if ignoreClarifying =>
         (parenthesized.getParent, inner) match {
-          case (_: ScSugarCallExpr, _: ScSugarCallExpr) => false
-          case _                                        => canBeStripped(parenthesized, ignoreClarifying = false)
+          case (_: ScSugarCallExpr, _: ScSugarCallExpr) =>
+            false
+          case _ =>
+            canBeStripped(parenthesized, ignoreClarifying = false)
         }
       case ScParenthesisedExpr(inner) =>
         !ScalaPsiUtil.needParentheses(parenthesized, inner)
-      case _ => false
+      case _ =>
+        false
     }
 
   }
@@ -113,6 +116,7 @@ object UnnecessaryParenthesesUtil {
       case parenthesized @ ScParenthesisedExpr(inner)
           if canBeStripped(parenthesized, ignoreClarifying) =>
         getTextOfStripped(inner, ignoreClarifying)
-      case _ => expr.getText
+      case _ =>
+        expr.getText
     }
 }

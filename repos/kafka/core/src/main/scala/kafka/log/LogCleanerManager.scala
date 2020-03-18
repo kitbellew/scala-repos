@@ -222,7 +222,8 @@ private[log] class LogCleanerManager(
       topicAndPartition: TopicAndPartition,
       expectedState: LogCleaningState): Boolean = {
     inProgress.get(topicAndPartition) match {
-      case None => false
+      case None =>
+        false
       case Some(state) =>
         if (state == expectedState)
           true

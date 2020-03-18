@@ -37,7 +37,8 @@ trait ScalaFixer {
 
     while (s != null) {
       s match {
-        case error: PsiErrorElement => return error.getTextRange.getEndOffset
+        case error: PsiErrorElement =>
+          return error.getTextRange.getEndOffset
         case wsn: PsiWhiteSpace if wsn.textContains('\n') =>
           return wsn.getTextRange.getStartOffset
         case _ =>

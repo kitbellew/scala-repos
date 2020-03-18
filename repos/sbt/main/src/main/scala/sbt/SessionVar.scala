@@ -65,7 +65,8 @@ object SessionVar {
       try {
         Some(Operations.read(s.readBinary(key, DefaultDataID)))
       } catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     }
 
@@ -77,7 +78,8 @@ object SessionVar {
       state: State,
       setIfUnset: Boolean = true)(implicit f: Format[T]): (State, Option[T]) =
     get(key, state) match {
-      case s: Some[T] => (state, s)
+      case s: Some[T] =>
+        (state, s)
       case None =>
         read(key, state)(f) match {
           case s @ Some(t) =>
@@ -87,7 +89,8 @@ object SessionVar {
               else
                 set(key, state, t)
             (newState, s)
-          case None => (state, None)
+          case None =>
+            (state, None)
         }
     }
 }

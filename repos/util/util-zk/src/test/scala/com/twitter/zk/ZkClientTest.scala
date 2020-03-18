@@ -291,7 +291,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       try {
         znode.asInstanceOf[ZNode]
       } catch {
-        case _: ClassCastException => fail("not ZNode")
+        case _: ClassCastException =>
+          fail("not ZNode")
       }
       assert(znode.path == path)
     }
@@ -381,7 +382,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         try {
           transformed.asInstanceOf[ZkClient]
         } catch {
-          case _: ClassCastException => fail("not ZNode")
+          case _: ClassCastException =>
+            fail("not ZNode")
         }
 
         assert(transformed.acl == acl)
@@ -392,7 +394,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         try {
           transformed.asInstanceOf[ZkClient]
         } catch {
-          case _: ClassCastException => fail("not ZNode")
+          case _: ClassCastException =>
+            fail("not ZNode")
         }
         assert(transformed.mode == mode)
       }
@@ -402,12 +405,15 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         try {
           transformed.asInstanceOf[ZkClient]
         } catch {
-          case _: ClassCastException => fail("not ZNode")
+          case _: ClassCastException =>
+            fail("not ZNode")
         }
         assert(
           transformed.retryPolicy match {
-            case RetryPolicy.Basic(r) => r == retries
-            case _                    => false
+            case RetryPolicy.Basic(r) =>
+              r == retries
+            case _ =>
+              false
           })
       }
 
@@ -416,7 +422,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         try {
           transformed.asInstanceOf[ZkClient]
         } catch {
-          case _: ClassCastException => fail("not ZNode")
+          case _: ClassCastException =>
+            fail("not ZNode")
         }
         assert(transformed.retryPolicy == retryPolicy)
       }
@@ -429,7 +436,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         try {
           transformed.asInstanceOf[ZkClient]
         } catch {
-          case _: ClassCastException => fail("not ZNode")
+          case _: ClassCastException =>
+            fail("not ZNode")
         }
         assert(transformed.acl == acl)
         assert(transformed.mode == mode)
@@ -458,7 +466,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         create(path, data)(Future(path))
         assert(
           Await.result(zkClient(path).create(data)) match {
-            case ZNode(p) => p == path
+            case ZNode(p) =>
+              p == path
           })
       }
 
@@ -539,7 +548,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         delete(path, version)(Future.Done)
         assert(
           Await.result(zkClient(path).delete(version)) match {
-            case ZNode(p) => p == path
+            case ZNode(p) =>
+              p == path
           })
       }
 
@@ -596,8 +606,10 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               r onSuccess { exists =>
                 assert(exists == result)
                 update onSuccess {
-                  case e @ NodeEvent.Deleted(name) => assert(e == event)
-                  case e                           => fail("Incorrect event: %s".format(e))
+                  case e @ NodeEvent.Deleted(name) =>
+                    assert(e == event)
+                  case e =>
+                    fail("Incorrect event: %s".format(e))
                 }
               }
           })
@@ -733,7 +745,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
                   f onSuccess {
                     case NodeEvent.ChildrenChanged(name) =>
                       assert(name == znode.path)
-                    case e => fail("Incorrect event: %s".format(e))
+                    case e =>
+                      fail("Incorrect event: %s".format(e))
                   }
               }
           })
@@ -810,14 +823,18 @@ class ZkClientTest extends WordSpec with MockitoSugar {
               case ZNode.Watch(Return(z), u) => {
                 assert(z == result)
                 u onSuccess {
-                  case NodeEvent.DataChanged(name) => assert(name == znode.path)
-                  case e                           => fail("Incorrect event: %s".format(e))
+                  case NodeEvent.DataChanged(name) =>
+                    assert(name == znode.path)
+                  case e =>
+                    fail("Incorrect event: %s".format(e))
                 }
               }
-              case _ => fail("unexpected return value")
+              case _ =>
+                fail("unexpected return value")
             })
         } catch {
-          case e: Throwable => fail("unexpected error: %s".format(e))
+          case e: Throwable =>
+            fail("unexpected error: %s".format(e))
         }
       }
 

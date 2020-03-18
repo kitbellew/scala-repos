@@ -35,9 +35,11 @@ object Test extends App {
   def testGris() {
     val pipp = NotWorkingTab.b
     pipp match {
-      case NotWorkingTab.a => ???
+      case NotWorkingTab.a =>
+        ???
       case NotWorkingTab.b =>
-      case _               => ???
+      case _ =>
+        ???
     }
   }
 
@@ -45,8 +47,10 @@ object Test extends App {
     val stuff = WorkingTab.a
     stuff match {
       case WorkingTab.a =>
-      case WorkingTab.b => ???
-      case _            => ???
+      case WorkingTab.b =>
+        ???
+      case _ =>
+        ???
     }
   }
 }

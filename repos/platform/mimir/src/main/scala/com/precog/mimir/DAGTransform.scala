@@ -60,9 +60,11 @@ trait DAGTransform extends DAG {
     def transformAux(graph: DepGraph): DepGraph = {
       def inner(graph: DepGraph): DepGraph =
         graph match {
-          case r: Root => f(r)
+          case r: Root =>
+            f(r)
 
-          case graph @ New(parent) => f(New(transformAux(parent))(graph.loc))
+          case graph @ New(parent) =>
+            f(New(transformAux(parent))(graph.loc))
 
           case graph @ AbsoluteLoad(parent, jtpe) =>
             f(AbsoluteLoad(transformAux(parent), jtpe)(graph.loc))

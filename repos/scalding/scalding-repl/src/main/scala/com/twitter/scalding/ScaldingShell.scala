@@ -89,15 +89,19 @@ trait BaseScaldingShell extends MainGenericRunner {
     replState.mode = mode
     replState.customConfig = replState.customConfig ++ (
       mode match {
-        case _: HadoopMode => cfg
-        case _             => Config.empty
+        case _: HadoopMode =>
+          cfg
+        case _ =>
+          Config.empty
       }
     )
 
     // if in Hdfs mode, store the mode to enable switching between Local and Hdfs
     mode match {
-      case m @ Hdfs(_, _) => replState.storedHdfsMode = Some(m)
-      case _              => ()
+      case m @ Hdfs(_, _) =>
+        replState.storedHdfsMode = Some(m)
+      case _ =>
+        ()
     }
 
     replState.printModeBanner()

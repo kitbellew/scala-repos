@@ -42,8 +42,10 @@ trait RandomLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -98,7 +100,8 @@ trait RandomLibSpecs[M[+_]]
       0.7976605648079012)
 
     val actual = result collect {
-      case (ids, SDecimal(d)) if ids.size == 1 => d
+      case (ids, SDecimal(d)) if ids.size == 1 =>
+        d
     }
 
     actual mustEqual expected
@@ -137,7 +140,8 @@ trait RandomLibSpecs[M[+_]]
 
         obj.keys mustEqual (Set("rand", "data"))
         obj("rand") must beLike {
-          case SDecimal(d) => expected must contain(d)
+          case SDecimal(d) =>
+            expected must contain(d)
         }
     }
   }

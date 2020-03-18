@@ -21,19 +21,25 @@ private[app] final class Router(
 
     case Abs(route) =>
       self ? route map {
-        case route: String => baseUrl + route
+        case route: String =>
+          baseUrl + route
       } pipeTo sender
 
     case Nolang(route) =>
       self ? route map {
-        case route: String => noLangBaseUrl + route
+        case route: String =>
+          noLangBaseUrl + route
       } pipeTo sender
 
-    case TeamShow(id) => sender ! R.Team.show(id).url
-    case Pgn(gameId)  => sender ! R.Export.pgn(gameId).url
-    case Puzzle(id)   => sender ! R.Puzzle.show(id).url
+    case TeamShow(id) =>
+      sender ! R.Team.show(id).url
+    case Pgn(gameId) =>
+      sender ! R.Export.pgn(gameId).url
+    case Puzzle(id) =>
+      sender ! R.Puzzle.show(id).url
 
-    case msg => sender ! Status.Failure(new Exception(s"No route for $msg"))
+    case msg =>
+      sender ! Status.Failure(new Exception(s"No route for $msg"))
   }
 
   private lazy val noLangBaseUrl = protocol + I18nDomain(domain).commonDomain

@@ -186,7 +186,8 @@ trait BinOpFrame {
     def apply(f1: Frame[X, Y, A], f2: Frame[X, Y, B]) = {
       val (l, r) = f1.align(f2, OuterJoin, OuterJoin)
       val result = l.values.zip(r.values) map {
-        case (v1, v2) => opv(v1, v2)
+        case (v1, v2) =>
+          opv(v1, v2)
       }
       Frame(result, l.rowIx, l.colIx)
     }

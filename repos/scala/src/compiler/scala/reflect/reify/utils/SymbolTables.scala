@@ -23,25 +23,31 @@ trait SymbolTables {
 
     def symName(sym: Symbol): TermName =
       symtab.get(sym) match {
-        case Some(FreeDef(_, name, _, _, _)) => name
-        case Some(SymDef(_, name, _, _))     => name
-        case None                            => nme.EMPTY
+        case Some(FreeDef(_, name, _, _, _)) =>
+          name
+        case Some(SymDef(_, name, _, _)) =>
+          name
+        case None =>
+          nme.EMPTY
       }
 
     def symAliases(sym: Symbol): List[TermName] =
       symName(sym) match {
-        case name if name.isEmpty => Nil
+        case name if name.isEmpty =>
+          Nil
         case _ =>
           (aliases.distinct groupBy (_._1) mapValues (_ map (_._2)))(sym)
       }
 
     def symBinding(sym: Symbol): Tree =
       symtab.get(sym) match {
-        case Some(FreeDef(_, _, binding, _, _)) => binding
+        case Some(FreeDef(_, _, binding, _, _)) =>
+          binding
         case Some(SymDef(_, _, _, _)) =>
           throw new UnsupportedOperationException(
             s"${symtab(sym)} is a symdef, hence it doesn't have a binding")
-        case None => EmptyTree
+        case None =>
+          EmptyTree
       }
 
     def symRef(sym: Symbol): Tree =
@@ -50,7 +56,8 @@ trait SymbolTables {
           Ident(name) updateAttachment binding
         case Some(SymDef(_, name, _, _)) =>
           Ident(name) updateAttachment ReifyBindingAttachment(Ident(sym))
-        case None => EmptyTree
+        case None =>
+          EmptyTree
       }
 
     def +(sym: Symbol, name: TermName, reification: Tree): SymbolTable =
@@ -85,8 +92,10 @@ trait SymbolTables {
       assert(sym != NoSymbol, showRaw(symDef))
       val name =
         symDef match {
-          case FreeDef(_, name, _, _, _) => name
-          case SymDef(_, name, _, _)     => name
+          case FreeDef(_, name, _, _, _) =>
+            name
+          case SymDef(_, name, _, _) =>
+            name
         }
       val newSymtab =
         if (!(symtab contains sym))
@@ -128,7 +137,8 @@ trait SymbolTables {
       var newSymtab = symtab
       val newAliases = aliases filter (_._2 != name)
       newSymtab = newSymtab filter {
-        case ((sym, _)) => newAliases exists (_._1 == sym)
+        case ((sym, _)) =>
+          newAliases exists (_._1 == sym)
       }
       newSymtab = newSymtab map {
         case ((sym, tree)) =>
@@ -187,7 +197,8 @@ trait SymbolTables {
         (
           entry.attachments.get[ReifyBindingAttachment],
           entry.attachments.get[ReifyAliasAttachment]) match {
-          case (Some(ReifyBindingAttachment(_)), _) => result += entry
+          case (Some(ReifyBindingAttachment(_)), _) =>
+            result += entry
           case (_, Some(ReifyAliasAttachment(sym, alias))) =>
             result =
               new SymbolTable(result.symtab, result.aliases :+ ((sym, alias)))

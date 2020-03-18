@@ -127,8 +127,10 @@ class ReceiverSpec extends TypedSpec {
       setup("getOneLater") { (int, ext, inbox) ⇒
         int.run(GetOne(1.second)(inbox.ref))
         int.getAllEffects() match {
-          case ReceiveTimeoutSet(d) :: Nil ⇒ d > Duration.Zero should be(true)
-          case other ⇒ fail(s"$other was not List(ReceiveTimeoutSet(_))")
+          case ReceiveTimeoutSet(d) :: Nil ⇒
+            d > Duration.Zero should be(true)
+          case other ⇒
+            fail(s"$other was not List(ReceiveTimeoutSet(_))")
         }
         inbox.hasMessages should be(false)
         ext.run(Msg(1))
@@ -155,7 +157,8 @@ class ReceiverSpec extends TypedSpec {
         int.run(GetOne(1.nano)(inbox.ref))
         int.getAllEffects() match {
           case ReceiveTimeoutSet(d) :: Nil ⇒ // okay
-          case other ⇒ fail(s"$other was not List(ReceiveTimeoutSet(_))")
+          case other ⇒
+            fail(s"$other was not List(ReceiveTimeoutSet(_))")
         }
         inbox.hasMessages should be(false)
         // currently this all takes >1ns, but who knows what the future brings
@@ -164,7 +167,8 @@ class ReceiverSpec extends TypedSpec {
         int.getAllEffects() match {
           case ReceiveTimeoutSet(d) :: Nil ⇒
             d should be theSameInstanceAs (Duration.Undefined)
-          case other ⇒ fail(s"$other was not List(ReceiveTimeoutSet(_))")
+          case other ⇒
+            fail(s"$other was not List(ReceiveTimeoutSet(_))")
         }
         inbox.receiveAll() should be(GetOneResult(int.self, None) :: Nil)
       }
@@ -223,7 +227,8 @@ class ReceiverSpec extends TypedSpec {
         int.run(GetAll(1.second)(inbox.ref))
         val msg =
           int.getAllEffects() match {
-            case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
+            case (s: Scheduled[_]) :: Nil ⇒
+              assertScheduled(s, int.self)
           }
         int.run(msg)
         inbox.receiveAll() should be(
@@ -239,7 +244,8 @@ class ReceiverSpec extends TypedSpec {
         int.run(GetAll(1.second)(inbox.ref))
         val msg =
           int.getAllEffects() match {
-            case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
+            case (s: Scheduled[_]) :: Nil ⇒
+              assertScheduled(s, int.self)
           }
         inbox.hasMessages should be(false)
         ext.run(Msg(3))
@@ -254,7 +260,8 @@ class ReceiverSpec extends TypedSpec {
         int.run(GetAll(1.second)(inbox.ref))
         val msg =
           int.getAllEffects() match {
-            case (s: Scheduled[_]) :: Nil ⇒ assertScheduled(s, int.self)
+            case (s: Scheduled[_]) :: Nil ⇒
+              assertScheduled(s, int.self)
           }
         ext.run(Msg(1))
         ext.run(Msg(2))
@@ -270,7 +277,8 @@ class ReceiverSpec extends TypedSpec {
         int.run(GetOne(1.second)(inbox.ref))
         int.getAllEffects() match {
           case ReceiveTimeoutSet(d) :: Nil ⇒ // okay
-          case other ⇒ fail(s"$other was not List(ReceiveTimeoutSet(_))")
+          case other ⇒
+            fail(s"$other was not List(ReceiveTimeoutSet(_))")
         }
         inbox.hasMessages should be(false)
         int.run(GetAll(Duration.Zero)(inbox.ref))
@@ -283,7 +291,8 @@ class ReceiverSpec extends TypedSpec {
         int.run(GetOne(1.second)(inbox.ref))
         int.getAllEffects() match {
           case ReceiveTimeoutSet(d) :: Nil ⇒ // okay
-          case other ⇒ fail(s"$other was not List(ReceiveTimeoutSet(_))")
+          case other ⇒
+            fail(s"$other was not List(ReceiveTimeoutSet(_))")
         }
         inbox.hasMessages should be(false)
         int.run(GetAll(1.nano)(inbox.ref))

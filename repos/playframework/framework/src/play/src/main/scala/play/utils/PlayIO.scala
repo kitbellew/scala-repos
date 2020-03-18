@@ -76,7 +76,8 @@ private[play] object PlayIO {
         closeable.close()
       }
     } catch {
-      case e: IOException => logger.warn("Error closing stream", e)
+      case e: IOException =>
+        logger.warn("Error closing stream", e)
     }
   }
 }

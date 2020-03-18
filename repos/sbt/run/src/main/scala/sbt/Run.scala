@@ -57,7 +57,8 @@ class ForkRun(config: ForkOptions) extends ScalaRun {
     val exitCode =
       try process.exitValue()
       catch {
-        case e: InterruptedException => cancel()
+        case e: InterruptedException =>
+          cancel()
       }
     processExitCode(exitCode, "runner")
   }
@@ -85,7 +86,8 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
       try {
         run0(mainClass, classpath, options, log)
       } catch {
-        case e: java.lang.reflect.InvocationTargetException => throw e.getCause
+        case e: java.lang.reflect.InvocationTargetException =>
+          throw e.getCause
       }
     def directExecute() =
       try {

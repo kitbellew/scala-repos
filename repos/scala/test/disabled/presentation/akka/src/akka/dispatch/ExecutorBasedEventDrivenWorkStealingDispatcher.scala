@@ -108,7 +108,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
   private[akka] override def register(actorRef: ActorRef) = {
     //Verify actor type conformity
     actorType match {
-      case None => actorType = Some(actorRef.actor.getClass)
+      case None =>
+        actorType = Some(actorRef.actor.getClass)
       case Some(aType) =>
         if (aType != actorRef.actor.getClass)
           throw new IllegalActorStateException(
@@ -172,8 +173,10 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       donorMbox,
       actors,
       (System.currentTimeMillis % actors.size).asInstanceOf[Int]) match {
-      case null      => false
-      case recipient => donate(donorMbox.dequeue, recipient)
+      case null =>
+        false
+      case recipient =>
+        donate(donorMbox.dequeue, recipient)
     }
   }
 
@@ -191,8 +194,10 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
         donorMbox,
         actors,
         System.identityHashCode(message) % actors.size) match {
-        case null      => false
-        case recipient => donate(message, recipient)
+        case null =>
+          false
+        case recipient =>
+          donate(message, recipient)
       }
     } finally {
       donationInProgress.value = false

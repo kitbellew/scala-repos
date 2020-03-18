@@ -54,7 +54,8 @@ object HttpBinApplication {
             case m: play.api.mvc.AnyContentAsMultipartFormData @unchecked =>
               Json.obj(
                 "form" -> m.mdf.dataParts.map {
-                  case (k, v) => k -> JsString(v.mkString)
+                  case (k, v) =>
+                    k -> JsString(v.mkString)
                 },
                 "file" -> JsString(
                   m.mdf
@@ -198,7 +199,8 @@ object HttpBinApplication {
       Action { request =>
         Redirect("/cookies").withCookies(
           request.queryString.mapValues(_.head).toSeq.map {
-            case (k, v) => Cookie(k, v)
+            case (k, v) =>
+              Cookie(k, v)
           }: _*)
       }
   }
@@ -225,8 +227,10 @@ object HttpBinApplication {
                 new String(
                   org.apache.commons.codec.binary.Base64.decodeBase64(
                     encoded.getBytes)).split(":").toList match {
-                  case u :: p :: Nil if u == username && password == p => true
-                  case _                                               => false
+                  case u :: p :: Nil if u == username && password == p =>
+                    true
+                  case _ =>
+                    false
                 }
               }
               .map(_ => Ok(Json.obj("authenticated" -> true)))

@@ -39,12 +39,14 @@ trait JdbcInvokerComponent {
 
     protected[this] def findCompiledStatement(n: Node): CompiledStatement =
       n match {
-        case c: CompiledStatement => c
+        case c: CompiledStatement =>
+          c
         case ParameterSwitch(cases, default) =>
           findCompiledStatement(
             cases
               .find {
-                case (f, n) => f(param)
+                case (f, n) =>
+                  f(param)
               }
               .map(_._2)
               .getOrElse(default))

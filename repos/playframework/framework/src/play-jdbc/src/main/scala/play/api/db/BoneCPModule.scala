@@ -61,11 +61,16 @@ class BoneConnectionPool @Inject() (environment: Environment)
     val isolation = config
       .getDeprecated[Option[String]]("bonecp.isolation", "isolation")
       .map {
-        case "NONE"             => Connection.TRANSACTION_NONE
-        case "READ_COMMITTED"   => Connection.TRANSACTION_READ_COMMITTED
-        case "READ_UNCOMMITTED" => Connection.TRANSACTION_READ_UNCOMMITTED
-        case "REPEATABLE_READ"  => Connection.TRANSACTION_REPEATABLE_READ
-        case "SERIALIZABLE"     => Connection.TRANSACTION_SERIALIZABLE
+        case "NONE" =>
+          Connection.TRANSACTION_NONE
+        case "READ_COMMITTED" =>
+          Connection.TRANSACTION_READ_COMMITTED
+        case "READ_UNCOMMITTED" =>
+          Connection.TRANSACTION_READ_UNCOMMITTED
+        case "REPEATABLE_READ" =>
+          Connection.TRANSACTION_REPEATABLE_READ
+        case "SERIALIZABLE" =>
+          Connection.TRANSACTION_SERIALIZABLE
         case unknown =>
           throw config.reportError(
             "bonecp.isolation",
@@ -217,8 +222,10 @@ class BoneConnectionPool @Inject() (environment: Environment)
     */
   def close(ds: DataSource): Unit =
     ds match {
-      case bcp: BoneCPDataSource => bcp.close()
-      case _                     => sys.error("Unable to close data source: not a BoneCPDataSource")
+      case bcp: BoneCPDataSource =>
+        bcp.close()
+      case _ =>
+        sys.error("Unable to close data source: not a BoneCPDataSource")
     }
 
 }

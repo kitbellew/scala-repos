@@ -65,8 +65,10 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     DB.use(connectionIdentifier) { _ =>
       if (oneToManyFields.forall {
             (_: MappedOneToManyBase[_ <: Mapper[_]]) match {
-              case f: Cascade[_] => f.delete_!
-              case _             => true
+              case f: Cascade[_] =>
+                f.delete_!
+              case _ =>
+                true
             }
           })
         super.delete_!

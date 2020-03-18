@@ -31,8 +31,10 @@ class ClusterTest extends FunSuite {
     var set = seq.toSet
     changes foreach { spool =>
       spool foreach {
-        case Cluster.Add(elem) => set += elem
-        case Cluster.Rem(elem) => set -= elem
+        case Cluster.Add(elem) =>
+          set += elem
+        case Cluster.Rem(elem) =>
+          set -= elem
       }
     }
     assert(set.size == N)

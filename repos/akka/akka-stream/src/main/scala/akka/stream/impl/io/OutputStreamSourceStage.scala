@@ -59,8 +59,10 @@ final private[stream] class OutputStreamSourceStage(
 
         private val downstreamCallback: AsyncCallback[Try[ByteString]] =
           getAsyncCallback {
-            case Success(elem) ⇒ onPush(elem)
-            case Failure(ex) ⇒ failStage(ex)
+            case Success(elem) ⇒
+              onPush(elem)
+            case Failure(ex) ⇒
+              failStage(ex)
           }
 
         private val upstreamCallback
@@ -101,7 +103,8 @@ final private[stream] class OutputStreamSourceStage(
                   p.complete(Success(()))
                   close = None
                   true
-                case None ⇒ false
+                case None ⇒
+                  false
               }
           }
 
@@ -172,7 +175,8 @@ private[akka] class OutputStreamAdapter(
       try {
         dataQueue.put(data)
       } catch {
-        case NonFatal(ex) ⇒ throw new IOException(ex)
+        case NonFatal(ex) ⇒
+          throw new IOException(ex)
       }
       if (downstreamStatus.get() == Canceled) {
         isPublisherAlive = false
@@ -193,8 +197,10 @@ private[akka] class OutputStreamAdapter(
           throw publisherClosedException
         }
       } catch {
-        case e: IOException ⇒ throw e
-        case NonFatal(e) ⇒ throw new IOException(e)
+        case e: IOException ⇒
+          throw e
+        case NonFatal(e) ⇒
+          throw new IOException(e)
       })
 
   @scala.throws(classOf[IOException])

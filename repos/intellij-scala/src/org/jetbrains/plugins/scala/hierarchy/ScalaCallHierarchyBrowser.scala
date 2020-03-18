@@ -73,7 +73,8 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
     descriptor match {
       case nodeDescriptor: CallHierarchyNodeDescriptor =>
         nodeDescriptor.getEnclosingElement
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -82,7 +83,8 @@ final class ScalaCallHierarchyBrowser(project: Project, method: PsiMethod)
     descriptor match {
       case nodeDescriptor: CallHierarchyNodeDescriptor =>
         nodeDescriptor.getTargetElement
-      case _ => null
+      case _ =>
+        null
     }
   }
 

@@ -133,7 +133,8 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
           Some(store.rootPath)
         case initstore: store.InitialBatchedStore[_, _] =>
           getStatePath(initstore.proxy)
-        case _ => None
+        case _ =>
+          None
       }
     // VersionedState needs this
     implicit val batcher = scaldingBuilder.batcher

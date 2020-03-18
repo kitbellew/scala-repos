@@ -17,6 +17,7 @@ class UnapplyMethodSearcher extends ApplyUnapplyMethodSearcherBase {
       case (sref: ScStableCodeReferenceElement, x: ScConstructorPattern) =>
         Some(sref)
       // TODO check every other ScConstructorPattern known to man?
-      case _ => None
+      case _ =>
+        None
     }
 }

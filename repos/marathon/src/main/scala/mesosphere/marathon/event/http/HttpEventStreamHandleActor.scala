@@ -51,11 +51,13 @@ class HttpEventStreamHandleActor(
     handleWorkDone orElse {
       case event: MarathonEvent if outstanding.size >= maxOutStanding =>
         dropEvent(event)
-      case event: MarathonEvent => outstanding = event :: outstanding
+      case event: MarathonEvent =>
+        outstanding = event :: outstanding
     }
 
   def handleWorkDone: Receive = {
-    case WorkDone => sendAllMessages()
+    case WorkDone =>
+      sendAllMessages()
     case Status.Failure(ex) =>
       handleException(ex)
       sendAllMessages()

@@ -46,11 +46,13 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     val requestHandler: HttpRequest ⇒ HttpResponse = {
       case req @ HttpRequest(GET, Uri.Path("/greeter"), _, _, _) ⇒
         req.header[UpgradeToWebSocket] match {
-          case Some(upgrade) ⇒ upgrade.handleMessages(greeterWebSocketService)
+          case Some(upgrade) ⇒
+            upgrade.handleMessages(greeterWebSocketService)
           case None ⇒
             HttpResponse(400, entity = "Not a valid websocket request!")
         }
-      case _: HttpRequest ⇒ HttpResponse(404, entity = "Unknown resource!")
+      case _: HttpRequest ⇒
+        HttpResponse(404, entity = "Unknown resource!")
     }
     //#websocket-request-handling
 

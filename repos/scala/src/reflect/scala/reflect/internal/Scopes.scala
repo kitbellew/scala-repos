@@ -307,7 +307,8 @@ trait Scopes extends api.Scopes {
 
     def lookupUnshadowedEntries(name: Name): Iterator[ScopeEntry] = {
       lookupEntry(name) match {
-        case null => Iterator.empty
+        case null =>
+          Iterator.empty
         case e =>
           lookupAllEntries(name) filter (e1 =>
             (e eq e1) || (e.depth == e1.depth && e.sym != e1.sym))
@@ -367,7 +368,8 @@ trait Scopes extends api.Scopes {
         @tailrec
         def entryContainsSym(e: ScopeEntry): Boolean =
           e match {
-            case null => false
+            case null =>
+              false
             case _ =>
               val comparableInfo = sym.info.substThis(sym.owner, e.sym.owner)
               (e.sym.info =:= comparableInfo) || entryContainsSym(

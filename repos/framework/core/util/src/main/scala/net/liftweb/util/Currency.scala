@@ -48,7 +48,8 @@ class Currency(val amount: Long, val symbol: String, val decimals: Int) {
     other match {
       case c: Currency =>
         c.amount == amount && c.symbol == symbol && c.decimals == decimals
-      case _ => false
+      case _ =>
+        false
     }
 
   /**
@@ -91,6 +92,7 @@ object Currency {
         for (av <- asLong(a);
              dv <- asInt(d))
           yield new Currency(av, urlDecode(cur), dv)
-      case _ => Empty
+      case _ =>
+        Empty
     }
 }

@@ -70,8 +70,10 @@ abstract class ImplicitsTestBase
       .sorted
       .mkString("Seq(", ",\n    ", ")") + ",\n" + (
       implicitConversions._2 match {
-        case None                        => "None"
-        case Some(elem: PsiNamedElement) => "Some(" + elem.name + ")"
+        case None =>
+          "None"
+        case Some(elem: PsiNamedElement) =>
+          "Some(" + elem.name + ")"
         case _ =>
           assert(assertion = false, message = "elem is not PsiNamedElement")
       }
@@ -80,7 +82,8 @@ abstract class ImplicitsTestBase
     val text = lastPsi.getText
     val output =
       lastPsi.getNode.getElementType match {
-        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tLINE_COMMENT =>
+          text.substring(2).trim
         case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
           text.substring(2, text.length - 2).trim
         case _ =>

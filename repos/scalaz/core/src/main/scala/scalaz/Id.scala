@@ -94,8 +94,10 @@ trait IdInstances {
       @tailrec
       def tailrecM[A, B](f: A => A \/ B)(a: A): B =
         f(a) match {
-          case -\/(a0) => tailrecM(f)(a0)
-          case \/-(b)  => b
+          case -\/(a0) =>
+            tailrecM(f)(a0)
+          case \/-(b) =>
+            b
         }
     }
 }

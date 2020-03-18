@@ -11,27 +11,33 @@ object AlignTest extends SpecLite {
     val xys = F.pad(xs, ys)
     xys.foreach(
       _.mustMatch {
-        case (None, None) => false;
-        case _            => true
+        case (None, None) =>
+          false;
+        case _ =>
+          true
       })
     val max = xs.size max ys.size
     val min = xs.size min ys.size
     xys.length must_=== (max)
     xys.takeWhile {
-      case (x, y) => x.isDefined && y.isDefined
+      case (x, y) =>
+        x.isDefined && y.isDefined
     }.size must_=== (min)
     val dropped: List[(Option[Int], Option[Int])] = xys.dropWhile {
-      case (x, y) => x.isDefined && y.isDefined
+      case (x, y) =>
+        x.isDefined && y.isDefined
     }
     if (xs.size > ys.size)
       dropped.foreach(
         _ mustMatch {
-          case (Some(_), None) => true
+          case (Some(_), None) =>
+            true
         })
     else
       dropped.foreach(
         _ mustMatch {
-          case (None, Some(_)) => true
+          case (None, Some(_)) =>
+            true
         })
   }
 
@@ -40,7 +46,8 @@ object AlignTest extends SpecLite {
     xys.size must_=== (xs.size max ys.size)
     xys must_=== (
       xs.zipAll(ys, 0, 0).map {
-        case (x, y) => x + y
+        case (x, y) =>
+          x + y
       }
     )
   }
@@ -65,7 +72,8 @@ object AlignTest extends SpecLite {
     xys.dropWhile(_.isEmpty).size must_=== ((xs.size - ys.size) max 0)
     xys.dropWhile(_.isEmpty) foreach (
       _ mustMatch {
-        case Some(_) => true
+        case Some(_) =>
+          true
       }
     )
   }
@@ -76,7 +84,8 @@ object AlignTest extends SpecLite {
     xys.dropWhile(_.isEmpty).size must_=== ((ys.size - xs.size) max 0)
     xys.dropWhile(_.isEmpty) foreach (
       _ mustMatch {
-        case Some(_) => true
+        case Some(_) =>
+          true
       }
     )
   }

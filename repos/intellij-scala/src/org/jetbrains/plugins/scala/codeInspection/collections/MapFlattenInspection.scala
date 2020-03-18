@@ -22,7 +22,8 @@ object MapFlatten extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "flatMap", f))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

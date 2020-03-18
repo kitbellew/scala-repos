@@ -314,11 +314,14 @@ final case class OldHtmlProperties(userAgent: Box[String])
           Full(enc.trim + "\n" + dt.trim + "\n")
         }
 
-      case (Full(dt), _) if dt.length > 0 => Full(dt.trim + "\n")
+      case (Full(dt), _) if dt.length > 0 =>
+        Full(dt.trim + "\n")
 
-      case (_, Full(enc)) if enc.length > 0 => Full(enc.trim + "\n")
+      case (_, Full(enc)) if enc.length > 0 =>
+        Full(enc.trim + "\n")
 
-      case _ => Empty
+      case _ =>
+        Empty
     }
 
   val html5FormsSupport: Boolean = {

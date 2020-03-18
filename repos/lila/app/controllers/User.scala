@@ -118,7 +118,8 @@ object User extends LilaController {
                 userShow(u, filterOption, page)
               else
                 userGames(u, filterOption, page) map {
-                  case (filterName, pag) => html.user.games(u, pag, filterName)
+                  case (filterName, pag) =>
+                    html.user.games(u, pag, filterName)
                 }
             }.map {
                 status(_)

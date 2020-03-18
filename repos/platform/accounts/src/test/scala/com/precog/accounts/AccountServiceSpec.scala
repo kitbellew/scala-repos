@@ -223,7 +223,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
       createAccount("test0001@email.com", "12345").copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
           jvalue \ "accountId" must beLike {
-            case JString(id) => ok
+            case JString(id) =>
+              ok
           }
       }
     }
@@ -242,7 +243,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
         } yield errorMessage
 
       msgFuture.copoint must beLike {
-        case JString(msg) => msg must startWith("An account already exists")
+        case JString(msg) =>
+          msg must startWith("An account already exists")
       }
     }
 
@@ -348,7 +350,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
         getAccount(accountId, user, pass).map {
           case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
             jvalue \ "apiKey"
-          case badResponse => failure("Invalid response: " + badResponse)
+          case badResponse =>
+            failure("Invalid response: " + badResponse)
         }.copoint
 
       val subkey =
@@ -359,7 +362,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
       getAccountByAPIKey(subkey.apiKey, rootUser, rootPass).map {
         case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
           jvalue \ "accountId"
-        case badResponse => failure("Invalid response: " + badResponse)
+        case badResponse =>
+          failure("Invalid response: " + badResponse)
       }.copoint mustEqual JString(accountId)
     }
 
@@ -428,7 +432,8 @@ class AccountServiceSpec extends TestAccountService with Tags {
 
     "not find a non-existent account by email address" in {
       getAccountByEmail("nobodyhome@precog.com").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(Nil)), _) => ok
+        case HttpResponse(HttpStatus(OK, _), _, Some(JArray(Nil)), _) =>
+          ok
       }
     }
   }

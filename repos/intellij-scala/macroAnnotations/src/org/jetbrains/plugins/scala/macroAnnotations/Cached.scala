@@ -38,22 +38,28 @@ object Cached {
       @tailrec
       def modCountParam(modCount: c.universe.Tree): ModCount.Value =
         modCount match {
-          case q"modificationCount = $v" => modCountParam(v)
-          case q"ModCount.$v"            => ModCount.withName(v.toString)
-          case q"$v"                     => ModCount.withName(v.toString)
+          case q"modificationCount = $v" =>
+            modCountParam(v)
+          case q"ModCount.$v" =>
+            ModCount.withName(v.toString)
+          case q"$v" =>
+            ModCount.withName(v.toString)
         }
 
       c.prefix.tree match {
         case q"new Cached(..$params)" if params.length == 3 =>
           val synch: Boolean =
             params.head match {
-              case q"synchronized = $v" => c.eval[Boolean](c.Expr(v))
-              case q"$v"                => c.eval[Boolean](c.Expr(v))
+              case q"synchronized = $v" =>
+                c.eval[Boolean](c.Expr(v))
+              case q"$v" =>
+                c.eval[Boolean](c.Expr(v))
             }
           val modCount: ModCount.Value = modCountParam(params(1))
           val psiElement = params(2)
           (synch, modCount, psiElement)
-        case _ => abort("Wrong parameters")
+        case _ =>
+          abort("Wrong parameters")
       }
     }
 
@@ -192,7 +198,8 @@ object Cached {
           """
         CachedMacroUtil.println(res)
         c.Expr(res)
-      case _ => abort("You can only annotate one function!")
+      case _ =>
+        abort("You can only annotate one function!")
     }
   }
 }

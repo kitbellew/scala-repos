@@ -17,7 +17,8 @@ trait UserHelper {
     Html {
       val span =
         progress match {
-          case 0 => ""
+          case 0 =>
+            ""
           case p if p > 0 =>
             s"""<span class="positive" data-icon="N">$p</span>"""
           case p if p < 0 =>
@@ -127,15 +128,19 @@ trait UserHelper {
 
   def showBestPerf(u: User)(implicit ctx: Context): Option[Html] =
     u.perfs.bestPerf map {
-      case (pt, perf) => showPerfRating(pt, perf, klass = "hint--bottom")
+      case (pt, perf) =>
+        showPerfRating(pt, perf, klass = "hint--bottom")
     }
 
   def showRatingDiff(diff: Int) =
     Html {
       diff match {
-        case 0          => """<span class="rp null">±0</span>"""
-        case d if d > 0 => s"""<span class="rp up">+$d</span>"""
-        case d          => s"""<span class="rp down">$d</span>"""
+        case 0 =>
+          """<span class="rp null">±0</span>"""
+        case d if d > 0 =>
+          s"""<span class="rp up">+$d</span>"""
+        case d =>
+          s"""<span class="rp down">$d</span>"""
       }
     }
 
@@ -222,7 +227,8 @@ trait UserHelper {
 
   private def titleTag(title: Option[String]) =
     title match {
-      case None => ""
+      case None =>
+        ""
       case Some(t) =>
         s"""<span class="title" title="${User titleName t}">$t</span>&nbsp;"""
     }
@@ -385,12 +391,15 @@ trait UserHelper {
       withPerfRating: Option[PerfType],
       withBestRating: Boolean) =
     withPerfRating match {
-      case Some(perfType) => renderRating(user.perfs(perfType))
+      case Some(perfType) =>
+        renderRating(user.perfs(perfType))
       case _ if withBestRating =>
         user.perfs.bestPerf ?? {
-          case (_, perf) => renderRating(perf)
+          case (_, perf) =>
+            renderRating(perf)
         }
-      case _ => ""
+      case _ =>
+        ""
     }
 
   private def userHref(username: String, params: String = "") =
@@ -421,13 +430,20 @@ trait UserHelper {
             info.user.count.game + " " + trans.gamesPlayed()
           case GameFilter.Me =>
             ctx.me ?? (me => trans.nbGamesWithYou.str(info.nbWithMe))
-          case GameFilter.Rated    => info.nbRated + " " + trans.rated()
-          case GameFilter.Win      => trans.nbWins(info.user.count.win)
-          case GameFilter.Loss     => trans.nbLosses(info.user.count.loss)
-          case GameFilter.Draw     => trans.nbDraws(info.user.count.draw)
-          case GameFilter.Playing  => info.nbPlaying + " playing"
-          case GameFilter.Bookmark => trans.nbBookmarks(info.nbBookmark)
-          case GameFilter.Imported => trans.nbImportedGames(info.nbImported)
+          case GameFilter.Rated =>
+            info.nbRated + " " + trans.rated()
+          case GameFilter.Win =>
+            trans.nbWins(info.user.count.win)
+          case GameFilter.Loss =>
+            trans.nbLosses(info.user.count.loss)
+          case GameFilter.Draw =>
+            trans.nbDraws(info.user.count.draw)
+          case GameFilter.Playing =>
+            info.nbPlaying + " playing"
+          case GameFilter.Bookmark =>
+            trans.nbBookmarks(info.nbBookmark)
+          case GameFilter.Imported =>
+            trans.nbImportedGames(info.nbImported)
           case GameFilter.Search =>
             Html(trans.advancedSearch.str().replaceFirst(" ", "\n"))
         }
@@ -439,7 +455,8 @@ trait UserHelper {
     val createdAt =
       org.joda.time.format.DateTimeFormat forStyle "M-" print user.createdAt
     val currentRating = user.perfs.bestPerf ?? {
-      case (pt, perf) => s" Current ${pt.name} rating: ${perf.intRating}."
+      case (pt, perf) =>
+        s" Current ${pt.name} rating: ${perf.intRating}."
     }
     s"$name played $nbGames games since $createdAt.$currentRating"
   }

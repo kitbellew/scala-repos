@@ -32,7 +32,8 @@ object CORSFilterSpec extends CORSCommonSpec {
               Action { req =>
                 throw sys.error("error")
               }
-            case _ => Action(Results.Ok)
+            case _ =>
+              Action(Results.Ok)
           }),
         bind[HttpFilters].to[Filters]))(_ => block)
   }
@@ -79,7 +80,8 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
               Action { req =>
                 throw sys.error("error")
               }
-            case _ => CSRFCheck(Action(Results.Ok))
+            case _ =>
+              CSRFCheck(Action(Results.Ok))
           }),
         bind[HttpFilters].to(filters)))(block)
   }

@@ -104,14 +104,16 @@ trait CacheConditionDirectives {
                 step3()
               else
                 complete412()
-            case None ⇒ step2()
+            case None ⇒
+              step2()
           }
         def step2(): Route =
           header[`If-Unmodified-Since`] match {
             case Some(`If-Unmodified-Since`(ius))
                 if lastModified.isDefined && !unmodified(ius) ⇒
               complete412()
-            case _ ⇒ step3()
+            case _ ⇒
+              step3()
           }
         def step3(): Route =
           header[`If-None-Match`] match {
@@ -122,7 +124,8 @@ trait CacheConditionDirectives {
                 complete304()
               else
                 complete412()
-            case None ⇒ step4()
+            case None ⇒
+              step4()
           }
         def step4(): Route =
           if (isGetOrHead) {
@@ -130,7 +133,8 @@ trait CacheConditionDirectives {
               case Some(`If-Modified-Since`(ims))
                   if lastModified.isDefined && unmodified(ims) ⇒
                 complete304()
-              case _ ⇒ step5()
+              case _ ⇒
+                step5()
             }
           } else
             step5()
@@ -146,7 +150,8 @@ trait CacheConditionDirectives {
               case Some(`If-Range`(Right(ims)))
                   if lastModified.isDefined && !unmodified(ims) ⇒
                 innerRouteWithRangeHeaderFilteredOut
-              case _ ⇒ step6()
+              case _ ⇒
+                step6()
             }
           else
             step6()

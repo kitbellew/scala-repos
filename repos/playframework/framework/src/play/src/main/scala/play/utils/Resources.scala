@@ -16,10 +16,14 @@ object Resources {
 
   def isDirectory(classLoader: ClassLoader, url: URL) =
     url.getProtocol match {
-      case "file"   => new File(url.toURI).isDirectory
-      case "jar"    => isZipResourceDirectory(url)
-      case "zip"    => isZipResourceDirectory(url)
-      case "bundle" => isBundleResourceDirectory(classLoader, url)
+      case "file" =>
+        new File(url.toURI).isDirectory
+      case "jar" =>
+        isZipResourceDirectory(url)
+      case "zip" =>
+        isZipResourceDirectory(url)
+      case "bundle" =>
+        isBundleResourceDirectory(classLoader, url)
       case _ =>
         throw new IllegalArgumentException(
           s"Cannot check isDirectory for a URL with protocol='${url.getProtocol}'")
@@ -33,7 +37,8 @@ object Resources {
     */
   def isUrlConnectionADirectory(urlConnection: URLConnection) =
     urlConnection match {
-      case file: FileURLConnection => new File(file.getURL.toURI).isDirectory
+      case file: FileURLConnection =>
+        new File(file.getURL.toURI).isDirectory
       case jar: JarURLConnection =>
         if (jar.getJarEntry.isDirectory) {
           true
@@ -47,7 +52,8 @@ object Resources {
             false
           }
         }
-      case other => false
+      case other =>
+        false
     }
 
   /**

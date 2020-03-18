@@ -42,7 +42,8 @@ class CaseFilter extends ElementFilter {
             return true
           else
             return false
-        case _: ScMatchStmt => return true
+        case _: ScMatchStmt =>
+          return true
         case _: ScalaFile | _: ScPackaging =>
           var node = leaf.getPrevSibling
           if (node.isInstanceOf[PsiWhiteSpace])
@@ -51,11 +52,14 @@ class CaseFilter extends ElementFilter {
             case x: PsiErrorElement => {
               val s = ErrMsg("wrong.top.statment.declaration")
               x.getErrorDescription match {
-                case `s` => return true
-                case _   => return false
+                case `s` =>
+                  return true
+                case _ =>
+                  return false
               }
             }
-            case _ => return true
+            case _ =>
+              return true
           }
         case _ =>
       }
@@ -74,7 +78,8 @@ class CaseFilter extends ElementFilter {
         case _: ScBlockExpr | _: ScTemplateBody =>
           parent match {
             case _: ScReferenceExpression =>
-            case _                        => return false
+            case _ =>
+              return false
           }
           if (leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
               leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF)

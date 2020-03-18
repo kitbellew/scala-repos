@@ -34,9 +34,12 @@ private[sql] class CSVOptions(
   private def getChar(paramName: String, default: Char): Char = {
     val paramValue = parameters.get(paramName)
     paramValue match {
-      case None                             => default
-      case Some(value) if value.length == 0 => '\u0000'
-      case Some(value) if value.length == 1 => value.charAt(0)
+      case None =>
+        default
+      case Some(value) if value.length == 0 =>
+        '\u0000'
+      case Some(value) if value.length == 1 =>
+        value.charAt(0)
       case _ =>
         throw new RuntimeException(
           s"$paramName cannot be more than one character")
@@ -46,7 +49,8 @@ private[sql] class CSVOptions(
   private def getInt(paramName: String, default: Int): Int = {
     val paramValue = parameters.get(paramName)
     paramValue match {
-      case None => default
+      case None =>
+        default
       case Some(value) =>
         try {
           value.toInt

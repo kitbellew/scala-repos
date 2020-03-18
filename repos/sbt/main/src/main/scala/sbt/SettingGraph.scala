@@ -31,8 +31,10 @@ object SettingGraph {
       }
       val depends =
         cMap.get(scoped) match {
-          case Some(c) => c.dependencies.toSet;
-          case None    => Set.empty
+          case Some(c) =>
+            c.dependencies.toSet;
+          case None =>
+            Set.empty
         }
       // val related = cMap.keys.filter(k => k.key == key && k.scope != scope)
       // val reverse = reverseDependencies(cMap, scoped)
@@ -65,7 +67,8 @@ case class SettingGraph(
           IO.relativize(basedir, f) getOrElse {
             f.toString
           }
-        case x => x.toString
+        case x =>
+          x.toString
       } getOrElse {
         d.typeName
       }
@@ -110,8 +113,10 @@ object Graph {
         s.slice(0, at) +
           (
             s(at).toString match {
-              case " " => "|"
-              case x   => x
+              case " " =>
+                "|"
+              case x =>
+                x
             }
           ) +
           s.slice(at + 1, s.length)

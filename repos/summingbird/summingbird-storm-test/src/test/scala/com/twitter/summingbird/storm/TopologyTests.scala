@@ -117,7 +117,8 @@ class TopologyTests extends WordSpec {
 
     // Tail will have 1 -, distance from there should be onwards
     val TDistMap = bolts.map {
-      case (k, v) => (k.split("-").size - 1, v)
+      case (k, v) =>
+        (k.split("-").size - 1, v)
     }
 
     assert(TDistMap(1).get_common.get_parallelism_hint == 50)
@@ -144,7 +145,8 @@ class TopologyTests extends WordSpec {
 
     // Tail will have 1 -, distance from there should be onwards
     val TDistMap = bolts.map {
-      case (k, v) => (k.split("-").size - 1, v)
+      case (k, v) =>
+        (k.split("-").size - 1, v)
     }
 
     assert(TDistMap(1).get_common.get_parallelism_hint == 50)
@@ -170,7 +172,8 @@ class TopologyTests extends WordSpec {
 
     // Tail will have 1 -, distance from there should be onwards
     val TDistMap = bolts.map {
-      case (k, v) => (k.split("-").size - 1, v)
+      case (k, v) =>
+        (k.split("-").size - 1, v)
     }
 
     assert(TDistMap(1).get_common.get_parallelism_hint == 50)
@@ -221,7 +224,8 @@ class TopologyTests extends WordSpec {
 
     // Tail will have 1 -, distance from there should be onwards
     val TDistMap = bolts.map {
-      case (k, v) => (k.split("-").size - 1, v)
+      case (k, v) =>
+        (k.split("-").size - 1, v)
     }
 
     assert(TDistMap(0).get_common.get_parallelism_hint == 5)

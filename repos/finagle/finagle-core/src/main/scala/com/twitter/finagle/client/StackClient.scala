@@ -527,7 +527,8 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
             case com.twitter.finagle.exp.Address
                   .ServiceFactory(sf: ServiceFactory[Req, Rep], _) =>
               sf
-            case Address.Failed(e) => new FailingFactory[Req, Rep](e)
+            case Address.Failed(e) =>
+              new FailingFactory[Req, Rep](e)
             case Address.Inet(ia, _) =>
               val endpointClient = copy1(params = prms)
               val transporter = endpointClient.newTransporter()
@@ -553,9 +554,12 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
     // a client. The most recently set `label0` takes precedence.
     val clientLabel =
       (label0, label1) match {
-        case ("", "") => Showable.show(dest)
-        case ("", l1) => l1
-        case (l0, l1) => l0
+        case ("", "") =>
+          Showable.show(dest)
+        case ("", l1) =>
+          l1
+        case (l0, l1) =>
+          l0
       }
 
     val clientStack = stack ++ (endpointer +: nilStack)

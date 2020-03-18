@@ -46,7 +46,8 @@ trait RunOnApplicationThread extends SuiteMixin {
           try {
             outcome = superWith(test)
           } catch {
-            case e: Exception => testException = e
+            case e: Exception =>
+              testException = e
           } finally {
             appThreadLatch.countDown()
           }

@@ -74,7 +74,8 @@ trait FileUploadSupport extends ServletBase {
       req.contentType match {
         case Some(contentType) =>
           contentType.startsWith(FileUploadBase.MULTIPART)
-        case _ => false
+        case _ =>
+          false
       }
     )
   }
@@ -195,7 +196,8 @@ trait FileUploadSupport extends ServletBase {
       override def iterator =
         (
           fileMultiParams map {
-            case (k, v) => (k, v.head)
+            case (k, v) =>
+              (k, v.head)
           }
         ).iterator
       override def -(key: String) = Map() ++ this - key

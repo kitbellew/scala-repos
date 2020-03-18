@@ -65,15 +65,24 @@ class JavaWriter(classfile: Classfile, writer: Writer)
 
   def sigToType(str: String, i: Int): (String, Int) =
     str.charAt(i) match {
-      case 'B' => ("scala.Byte", i + 1)
-      case 'C' => ("scala.Char", i + 1)
-      case 'D' => ("scala.Double", i + 1)
-      case 'F' => ("scala.Float", i + 1)
-      case 'I' => ("scala.Int", i + 1)
-      case 'J' => ("scala.Long", i + 1)
-      case 'S' => ("scala.Short", i + 1)
-      case 'V' => ("scala.Unit", i + 1)
-      case 'Z' => ("scala.Boolean", i + 1)
+      case 'B' =>
+        ("scala.Byte", i + 1)
+      case 'C' =>
+        ("scala.Char", i + 1)
+      case 'D' =>
+        ("scala.Double", i + 1)
+      case 'F' =>
+        ("scala.Float", i + 1)
+      case 'I' =>
+        ("scala.Int", i + 1)
+      case 'J' =>
+        ("scala.Long", i + 1)
+      case 'S' =>
+        ("scala.Short", i + 1)
+      case 'V' =>
+        ("scala.Unit", i + 1)
+      case 'Z' =>
+        ("scala.Boolean", i + 1)
       case 'L' =>
         val j = str.indexOf(';', i)
         (nameToClass(str.substring(i + 1, j)), j + 1)
@@ -106,10 +115,14 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     import cf.pool._
 
     cf.pool(n) match {
-      case UTF8(str)      => str
-      case StringConst(m) => getName(m)
-      case ClassRef(m)    => getName(m)
-      case _              => "<error>"
+      case UTF8(str) =>
+        str
+      case StringConst(m) =>
+        getName(m)
+      case ClassRef(m) =>
+        getName(m)
+      case _ =>
+        "<error>"
     }
   }
 
@@ -150,7 +163,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       print(getType(tpe) + ";").newline
     }
     attribs find {
-      case cf.Attribute(name, _) => getName(name) == "Exceptions"
+      case cf.Attribute(name, _) =>
+        getName(name) == "Exceptions"
     } match {
       case Some(cf.Attribute(_, data)) =>
         val n = ((data(0) & 0xff) << 8) + (data(1) & 0xff)
@@ -187,7 +201,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       println("package " + pck + ";")
     print(flagsToStr(true, cf.flags))
     cf.attribs find {
-      case cf.Attribute(name, _) => getName(name) == "JacoMeta"
+      case cf.Attribute(name, _) =>
+        getName(name) == "JacoMeta"
     } match {
       case None =>
         printClassHeader;
@@ -196,7 +211,8 @@ class JavaWriter(classfile: Classfile, writer: Writer)
           new MetaParser(
             getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim())
         mp.parse match {
-          case None => printClassHeader;
+          case None =>
+            printClassHeader;
           case Some(str) =>
             if (isInterface(cf.flags))
               print("trait " + getSimpleClassName(cf.classname) + str)

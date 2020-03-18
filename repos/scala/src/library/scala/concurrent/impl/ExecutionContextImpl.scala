@@ -59,7 +59,8 @@ private[concurrent] object ExecutionContextImpl {
     @tailrec
     private final def reserveThread(): Boolean =
       currentNumberOfThreads.get() match {
-        case `maxThreads` | Int.`MaxValue` => false
+        case `maxThreads` | Int.`MaxValue` =>
+          false
         case other =>
           currentNumberOfThreads.compareAndSet(
             other,
@@ -69,7 +70,8 @@ private[concurrent] object ExecutionContextImpl {
     @tailrec
     private final def deregisterThread(): Boolean =
       currentNumberOfThreads.get() match {
-        case 0 => false
+        case 0 =>
+          false
         case other =>
           currentNumberOfThreads.compareAndSet(
             other,
@@ -140,14 +142,16 @@ private[concurrent] object ExecutionContextImpl {
       (
         try System.getProperty(name, default)
         catch {
-          case e: SecurityException => default
+          case e: SecurityException =>
+            default
         }
       ) match {
         case s if s.charAt(0) == 'x' =>
           (
             Runtime.getRuntime.availableProcessors * s.substring(1).toDouble
           ).ceil.toInt
-        case other => other.toInt
+        case other =>
+          other.toInt
       }
 
     def range(floor: Int, desired: Int, ceiling: Int) =
@@ -189,12 +193,16 @@ private[concurrent] object ExecutionContextImpl {
       override def execute(runnable: Runnable): Unit = {
         val fjt: ForkJoinTask[_] =
           runnable match {
-            case t: ForkJoinTask[_] => t
-            case r                  => new ExecutionContextImpl.AdaptedForkJoinTask(r)
+            case t: ForkJoinTask[_] =>
+              t
+            case r =>
+              new ExecutionContextImpl.AdaptedForkJoinTask(r)
           }
         Thread.currentThread match {
-          case fjw: ForkJoinWorkerThread if fjw.getPool eq this => fjt.fork()
-          case _                                                => super.execute(fjt)
+          case fjw: ForkJoinWorkerThread if fjw.getPool eq this =>
+            fjt.fork()
+          case _ =>
+            super.execute(fjt)
         }
       }
     }
@@ -213,7 +221,8 @@ private[concurrent] object ExecutionContextImpl {
           val t = Thread.currentThread
           t.getUncaughtExceptionHandler match {
             case null =>
-            case some => some.uncaughtException(t, anything)
+            case some =>
+              some.uncaughtException(t, anything)
           }
           throw anything
       }

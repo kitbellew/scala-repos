@@ -35,7 +35,8 @@ object TransferEncodings {
     def render[R <: Rendering](r: R): r.type = {
       r ~~ name
       params foreach {
-        case (k, v) ⇒ r ~~ "; " ~~ k ~~ '=' ~~# v
+        case (k, v) ⇒
+          r ~~ "; " ~~ k ~~ '=' ~~# v
       }
       r
     }

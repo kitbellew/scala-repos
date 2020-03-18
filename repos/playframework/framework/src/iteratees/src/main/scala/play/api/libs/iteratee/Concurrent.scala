@@ -119,16 +119,21 @@ object Concurrent {
       val ready = interested.map {
         case (it, p) =>
           it.fold {
-              case Step.Done(a, e) => Future.successful(Left(Done(a, e)))
+              case Step.Done(a, e) =>
+                Future.successful(Left(Done(a, e)))
               case Step.Cont(k) => {
                 val next = k(in)
                 next.pureFold {
-                  case Step.Done(a, e)    => Left(Done(a, e))
-                  case Step.Cont(k)       => Right((Cont(k), p))
-                  case Step.Error(msg, e) => Left(Error(msg, e))
+                  case Step.Done(a, e) =>
+                    Left(Done(a, e))
+                  case Step.Cont(k) =>
+                    Right((Cont(k), p))
+                  case Step.Error(msg, e) =>
+                    Left(Error(msg, e))
                 }(dec)
               }
-              case Step.Error(msg, e) => Future.successful(Left(Error(msg, e)))
+              case Step.Error(msg, e) =>
+                Future.successful(Left(Error(msg, e)))
             }(dec)
             .map {
               case Left(s) =>
@@ -151,7 +156,8 @@ object Concurrent {
             val downToZero = atomic { implicit txn =>
               iteratees.transform(
                 commitReady.collect {
-                  case Some(s) => s
+                  case Some(s) =>
+                    s
                 } ++ _)
               (interested.length > 0 && iteratees().length <= 0)
             }
@@ -182,12 +188,15 @@ object Concurrent {
                       (result: Promise[Iteratee[E, A]])
                         .asInstanceOf[Promise[Iteratee[E, _]]])))
                 None
-              case Some(notWaiting) => Some(notWaiting)
+              case Some(notWaiting) =>
+                Some(notWaiting)
             }
           }
           finished.foreach {
-            case Success(_) => result.success(it)
-            case Failure(e) => result.failure(e)
+            case Success(_) =>
+              result.success(it)
+            case Failure(e) =>
+              result.failure(e)
           }
           result.future
         }
@@ -212,13 +221,17 @@ object Concurrent {
 
             val next =
               current.pureFold {
-                case Step.Done(a, e)    => Done(a, e)
-                case Step.Cont(k)       => k(chunk)
-                case Step.Error(msg, e) => Error(msg, e)
+                case Step.Done(a, e) =>
+                  Done(a, e)
+                case Step.Cont(k) =>
+                  k(chunk)
+                case Step.Error(msg, e) =>
+                  Error(msg, e)
               }(dec)
 
             next.onComplete {
-              case Success(it) => itPromise.success(it)
+              case Success(it) =>
+                itPromise.success(it)
               case Failure(e) => {
                 val its = atomic { implicit txn =>
                   redeemed() = Some(Failure(e))
@@ -226,7 +239,8 @@ object Concurrent {
                 }
                 itPromise.failure(e)
                 its.foreach {
-                  case (it, p) => p.success(it)
+                  case (it, p) =>
+                    p.success(it)
                 }
               }
             }(dec)
@@ -243,12 +257,14 @@ object Concurrent {
                   iteratees.swap(List())
                 }
                 its.foreach {
-                  case (it, p) => p.failure(e)
+                  case (it, p) =>
+                    p.failure(e)
                 }
               }(dec)
 
             current.fold {
-              case _ => endEveryone()
+              case _ =>
+                endEveryone()
             }(dec)
           }
 
@@ -263,11 +279,13 @@ object Concurrent {
                   iteratees.swap(List())
                 }
                 its.foreach {
-                  case (it, p) => p.success(it)
+                  case (it, p) =>
+                    p.success(it)
                 }
               }(dec)
             current.fold {
-              case _ => endEveryone()
+              case _ =>
+                endEveryone()
             }(dec)
           }
 
@@ -288,7 +306,8 @@ object Concurrent {
 
       def applyOn[A](inner: Iteratee[E, A]): Iteratee[E, Iteratee[E, A]] = {
         def step(it: Iteratee[E, A]): K[E, Iteratee[E, A]] = {
-          case Input.EOF => Done(it, Input.EOF)
+          case Input.EOF =>
+            Done(it, Input.EOF)
 
           case other =>
             Iteratee.flatten(
@@ -299,9 +318,12 @@ object Concurrent {
                     timeout,
                     unit) :: Nil)(dec)
                 .map {
-                  case Left(Step.Cont(k)) => Cont(step(k(other)))
-                  case Left(done)         => Done(done.it, other)
-                  case Right(_)           => Error("iteratee is taking too long", other)
+                  case Left(Step.Cont(k)) =>
+                    Cont(step(k(other)))
+                  case Left(done) =>
+                    Done(done.it, other)
+                  case Right(_) =>
+                    Error("iteratee is taking too long", other)
                 }(dec))
         }
         Cont(step(inner))
@@ -360,11 +382,14 @@ object Concurrent {
         def step: K[E, Iteratee[E, A]] = {
           case Input.EOF =>
             state.single.getAndTransform {
-              case Queueing(q, l) => Queueing(q.enqueue(Input.EOF), l)
+              case Queueing(q, l) =>
+                Queueing(q.enqueue(Input.EOF), l)
 
-              case Waiting(p) => Queueing(Queue(), 0)
+              case Waiting(p) =>
+                Queueing(Queue(), 0)
 
-              case d @ DoneIt(it) => d
+              case d @ DoneIt(it) =>
+                d
 
             } match {
               case Waiting(p) =>
@@ -380,21 +405,26 @@ object Concurrent {
                   case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
                     Queueing(q.enqueue(other), l + chunkLength)
 
-                  case Queueing(q, l) => Queueing(Queue(Input.EOF), l)
+                  case Queueing(q, l) =>
+                    Queueing(Queue(Input.EOF), l)
 
-                  case Waiting(p) => Queueing(Queue(), 0)
+                  case Waiting(p) =>
+                    Queueing(Queue(), 0)
 
-                  case d @ DoneIt(it) => d
+                  case d @ DoneIt(it) =>
+                    d
 
                 }
                 s match {
                   case Waiting(p) =>
                     p.success(other)
                     Cont(step)
-                  case DoneIt(it) => it
+                  case DoneIt(it) =>
+                    it
                   case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
                     Cont(step)
-                  case Queueing(_, _) => Error("buffer overflow", other)
+                  case Queueing(_, _) =>
+                    Error("buffer overflow", other)
 
                 }
               }(dec))
@@ -413,7 +443,8 @@ object Concurrent {
                   state() = Waiting(p)
                   p.future
                 }
-              case _ => throw new Exception("can't get here")
+              case _ =>
+                throw new Exception("can't get here")
             }
           }
           Iteratee.flatten(
@@ -476,7 +507,8 @@ object Concurrent {
                     Seq(
                       inner
                         .pureFold[Iteratee[E, Iteratee[E, A]]] {
-                          case Step.Done(a, e) => Done(Done(a, e), Input.Empty)
+                          case Step.Done(a, e) =>
+                            Done(Done(a, e), Input.Empty)
                           case Step.Cont(k) =>
                             Cont { in =>
                               val next = k(in)
@@ -538,7 +570,8 @@ object Concurrent {
           Iteratee[E, A]]()
         val iteratee: Ref[Future[Option[Input[E] => Iteratee[E, A]]]] = Ref(
           it.pureFold {
-            case Step.Cont(k) => Some(k);
+            case Step.Cont(k) =>
+              Some(k);
             case other =>
               promise.success(other.it);
               None
@@ -560,7 +593,8 @@ object Concurrent {
                       maybeK.foreach { k =>
                         promise.success(k(Input.EOF))
                       }
-                    case Failure(e) => promise.failure(e)
+                    case Failure(e) =>
+                      promise.failure(e)
                   }(dec)
               }
 
@@ -571,7 +605,8 @@ object Concurrent {
                   .onComplete {
                     case Success(maybeK) =>
                       maybeK.foreach(_ => promise.failure(e))
-                    case Failure(e) => promise.failure(e)
+                    case Failure(e) =>
+                      promise.failure(e)
                   }(dec)
               }
 
@@ -591,7 +626,8 @@ object Concurrent {
                 iteratee.single
                   .swap(eventuallyNext.future)
                   .onComplete {
-                    case Success(None) => eventuallyNext.success(None)
+                    case Success(None) =>
+                      eventuallyNext.success(None)
                     case Success(Some(k)) =>
                       val n = {
                         val next = k(item)
@@ -730,8 +766,10 @@ object Concurrent {
                     Future.successful(())
                 }(dec)
                 .andThen {
-                  case Success(a) => a
-                  case Failure(e) => p.failure(e)
+                  case Success(a) =>
+                    a
+                  case Failure(e) =>
+                    p.failure(e)
                 }(dec)
           }
           .fold(Future.successful(())) { (s, p) =>
@@ -786,12 +824,14 @@ object Concurrent {
                 v match {
                   case Failure(e) =>
                     its.foreach {
-                      case (_, p) => p.failure(e)
+                      case (_, p) =>
+                        p.failure(e)
                     }
 
                   case Success(_) =>
                     its.foreach {
-                      case (it, p) => p.success(it)
+                      case (it, p) =>
+                        p.success(it)
                     }
                 }
               }(dec)
@@ -806,12 +846,15 @@ object Concurrent {
                         (result: Promise[Iteratee[E, A]])
                           .asInstanceOf[Promise[Iteratee[E, _]]])))
                   None
-                case Some(notWaiting) => Some(notWaiting)
+                case Some(notWaiting) =>
+                  Some(notWaiting)
               }
             }
             finished.foreach {
-              case Success(_) => result.success(it)
-              case Failure(e) => result.failure(e)
+              case Success(_) =>
+                result.success(it)
+              case Failure(e) =>
+                result.failure(e)
               case _ =>
                 throw new RuntimeException(
                   "should be either Redeemed or Thrown")
@@ -905,7 +948,8 @@ object Concurrent {
                   a.foreach(aa => result.success(Done(aa, e)))
                   Done(a, e)
                 }
-                case Step.Cont(k) => Cont(step(ref))
+                case Step.Cont(k) =>
+                  Cont(step(ref))
                 case Step.Error(msg, e) => {
                   result.success(Error(msg, e))
                   Error(msg, e)
@@ -975,10 +1019,12 @@ object Concurrent {
                     case Step.Cont(k) => {
                       folder(Step.Cont(k.andThen(wrap)))
                     }
-                    case err => folder(err)
+                    case err =>
+                      folder(err)
                   }(ec)
                 toReturn.onFailure {
-                  case e => doneIteratee.failure(e)
+                  case e =>
+                    doneIteratee.failure(e)
                 }(dec)
                 toReturn
               }
@@ -1012,7 +1058,8 @@ object Concurrent {
         consumeRemaining
       }(dec)
     ).onFailure {
-      case e => result.tryFailure(e)
+      case e =>
+        result.tryFailure(e)
     }(dec)
 
     result.future

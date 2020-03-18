@@ -120,7 +120,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
         token must not be empty
         val rspToken = getToken(response)
         rspToken must beSome.like {
-          case s => compareTokens(token, s)
+          case s =>
+            compareTokens(token, s)
         }
       }
     }
@@ -176,7 +177,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
           response.status must_== FORBIDDEN
           response.cookies.find(
             _.name.exists(_ == Session.COOKIE_NAME)) must beSome.like {
-            case cookie => cookie.value must beNone
+            case cookie =>
+              cookie.value must beNone
           }
         }
       }

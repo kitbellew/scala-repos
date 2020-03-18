@@ -38,7 +38,8 @@ sealed abstract class StrictForm {
   def fields: immutable.Seq[(String, StrictForm.Field)]
   def field(name: String): Option[StrictForm.Field] =
     fields collectFirst {
-      case (`name`, field) ⇒ field
+      case (`name`, field) ⇒
+        field
     }
 }
 
@@ -56,15 +57,18 @@ object StrictForm {
         um: FieldUnmarshaller[T]): FromStrictFormFieldUnmarshaller[T] =
       Unmarshaller.withMaterializer(implicit ec ⇒
         implicit mat ⇒ {
-          case FromString(value) ⇒ um.unmarshalString(value)
-          case FromPart(value) ⇒ um.unmarshalPart(value)
+          case FromString(value) ⇒
+            um.unmarshalString(value)
+          case FromPart(value) ⇒
+            um.unmarshalPart(value)
         })
 
     def unmarshallerFromFSU[T](
         fsu: FromStringUnmarshaller[T]): FromStrictFormFieldUnmarshaller[T] =
       Unmarshaller.withMaterializer(implicit ec ⇒
         implicit mat ⇒ {
-          case FromString(value) ⇒ fsu(value)
+          case FromString(value) ⇒
+            fsu(value)
           case FromPart(value) ⇒
             val charsetName =
               value.entity.contentType
@@ -142,7 +146,8 @@ object StrictForm {
             new StrictForm {
               val fields =
                 formData.fields.map {
-                  case (name, value) ⇒ name -> Field.FromString(value)
+                  case (name, value) ⇒
+                    name -> Field.FromString(value)
                 }(collection.breakOut)
             }
           }
@@ -185,7 +190,8 @@ object StrictForm {
         case Field.FromString(_) ⇒
           throw Unmarshaller.UnsupportedContentTypeException(
             MediaTypes.`application/x-www-form-urlencoded`)
-        case Field.FromPart(part) ⇒ FileData(part.filename, part.entity)
+        case Field.FromPart(part) ⇒
+          FileData(part.filename, part.entity)
       }
   }
 }

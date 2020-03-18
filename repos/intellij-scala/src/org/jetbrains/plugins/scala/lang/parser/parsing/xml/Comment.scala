@@ -19,7 +19,8 @@ object Comment {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val commentMarker = builder.mark
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_COMMENT_START => builder.advanceLexer()
+      case ScalaXmlTokenTypes.XML_COMMENT_START =>
+        builder.advanceLexer()
       case _ =>
         commentMarker.drop()
         return false
@@ -30,8 +31,10 @@ object Comment {
       builder.advanceLexer()
     }
     builder.getTokenType match {
-      case ScalaXmlTokenTypes.XML_COMMENT_END => builder.advanceLexer()
-      case _                                  => builder error ErrMsg("xml.comment.end.expected")
+      case ScalaXmlTokenTypes.XML_COMMENT_END =>
+        builder.advanceLexer()
+      case _ =>
+        builder error ErrMsg("xml.comment.end.expected")
     }
     commentMarker.done(ScalaElementTypes.XML_COMMENT)
     true

@@ -40,7 +40,8 @@ trait Versions {
     loadVersionsFrom(
       entity.url,
       {
-        case releaseVersionLine(number) => number
+        case releaseVersionLine(number) =>
+          number
       })
       .getOrElse(entity.hardcodedVersions)
       .map(Version(_))

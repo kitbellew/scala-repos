@@ -92,7 +92,8 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
   def apply(f: Int => Message): Future[Message] = {
     val p = new Promise[Message]
     messages.map(p) match {
-      case None => FutureExhaustedTagsException
+      case None =>
+        FutureExhaustedTagsException
       case Some(tag) =>
         val msg = f(tag)
         trans.write(msg).transform {
@@ -164,8 +165,10 @@ private class ReqRepFilter
       case Return(Message.RreqNack(_)) | Return(Message.RdispatchNack(_, _)) =>
         FutureNackedException
 
-      case t @ Throw(_) => Future.const(t.cast[Response])
-      case Return(m)    => Future.exception(Failure(s"unexpected response: $m"))
+      case t @ Throw(_) =>
+        Future.const(t.cast[Response])
+      case Return(m) =>
+        Future.exception(Failure(s"unexpected response: $m"))
     }
 
   def apply(
@@ -181,7 +184,8 @@ private class ReqRepFilter
 
         case CanDispatch.Yes | CanDispatch.Unknown => { tag: Int =>
           val contexts = Contexts.broadcast.marshal().map {
-            case (k, v) => (BufChannelBuffer(k), BufChannelBuffer(v))
+            case (k, v) =>
+              (BufChannelBuffer(k), BufChannelBuffer(v))
           }
           Message.Tdispatch(
             tag,
@@ -206,7 +210,8 @@ private class ReqRepFilter
           canDispatch = CanDispatch.Yes
           reply(r)
 
-        case t @ Throw(_) => reply(t)
+        case t @ Throw(_) =>
+          reply(t)
       }
   }
 }

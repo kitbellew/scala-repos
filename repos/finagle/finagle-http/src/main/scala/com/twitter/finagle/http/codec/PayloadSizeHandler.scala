@@ -27,7 +27,8 @@ private[http] class PayloadSizeHandler(maxRequestPayloadSize: Int)
         writeF.addListener(ChannelFutureListener.CLOSE)
 
       // todo: should we enforce the payload limit on responses?
-      case _ => super.messageReceived(ctx, m)
+      case _ =>
+        super.messageReceived(ctx, m)
     }
 }
 

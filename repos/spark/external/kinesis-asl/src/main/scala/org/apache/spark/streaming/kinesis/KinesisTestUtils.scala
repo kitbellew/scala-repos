@@ -235,7 +235,8 @@ private[kinesis] object KinesisTestUtils {
     Try {
       new DefaultAWSCredentialsProviderChain().getCredentials()
     } match {
-      case Success(cred) => cred
+      case Success(cred) =>
+        cred
       case Failure(e) =>
         throw new Exception(s"""
              |Kinesis tests enabled using environment variable $envVarNameForEnablingTests

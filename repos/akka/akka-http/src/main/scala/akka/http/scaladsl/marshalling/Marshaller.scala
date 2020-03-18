@@ -109,7 +109,8 @@ object Marshaller
       def apply(value: A)(implicit ec: ExecutionContext) =
         try f(ec)(value)
         catch {
-          case NonFatal(e) ⇒ FastFuture.failed(e)
+          case NonFatal(e) ⇒
+            FastFuture.failed(e)
         }
     }
 

@@ -26,10 +26,13 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       case infixExpr: ScInfixExpr =>
         //TODO should rOp really be parsed as Tuple (not as argument list)?
         infixExpr.rOp match {
-          case t: ScTuple => t.exprs
-          case op         => Seq(op)
+          case t: ScTuple =>
+            t.exprs
+          case op =>
+            Seq(op)
         }
-      case methodCall: ScMethodCall => methodCall.argumentExpressions
+      case methodCall: ScMethodCall =>
+        methodCall.argumentExpressions
     }
   }
 
@@ -37,7 +40,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       ref: ResolvableReferenceExpression,
       e: ScExpression): ContextInfo = {
     e.getContext match {
-      case generic: ScGenericCall => getContextInfo(ref, generic)
+      case generic: ScGenericCall =>
+        getContextInfo(ref, generic)
       case call: ScMethodCall if !call.isUpdateCall =>
         ContextInfo(
           Some(call.argumentExpressions),
@@ -57,24 +61,31 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
             Some(Seq(inf.lOp))
           else
             inf.rOp match {
-              case tuple: ScTuple   => Some(tuple.exprs) // See SCL-2001
-              case unit: ScUnitExpr => Some(Nil) // See SCL-3485
+              case tuple: ScTuple =>
+                Some(tuple.exprs) // See SCL-2001
+              case unit: ScUnitExpr =>
+                Some(Nil) // See SCL-3485
               case e: ScParenthesisedExpr =>
                 e.expr match {
-                  case Some(expr) => Some(Seq(expr))
-                  case _          => Some(Nil)
+                  case Some(expr) =>
+                    Some(Seq(expr))
+                  case _ =>
+                    Some(Nil)
                 }
-              case rOp => Some(Seq(rOp))
+              case rOp =>
+                Some(Seq(rOp))
             },
           () => None,
           isUnderscore = false
         )
-      case parents: ScParenthesisedExpr => getContextInfo(ref, parents)
+      case parents: ScParenthesisedExpr =>
+        getContextInfo(ref, parents)
       case postf: ScPostfixExpr if ref == postf.operation =>
         getContextInfo(ref, postf)
       case pref: ScPrefixExpr if ref == pref.operation =>
         getContextInfo(ref, pref)
-      case _ => ContextInfo(None, () => e.expectedType(), isUnderscore = false)
+      case _ =>
+        ContextInfo(None, () => e.expectedType(), isUnderscore = false)
     }
   }
 
@@ -83,21 +94,31 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       e: ScExpression,
       incomplete: Boolean): scala.collection.Set[ResolveTargets.Value] = {
     e.getContext match {
-      case gen: ScGenericCall                             => kinds(ref, gen, incomplete)
-      case parents: ScParenthesisedExpr                   => kinds(ref, parents, incomplete)
-      case _: ScMethodCall | _: ScUnderscoreSection       => StdKinds.methodRef
-      case inf: ScInfixExpr if ref == inf.operation       => StdKinds.methodRef
-      case postf: ScPostfixExpr if ref == postf.operation => StdKinds.methodRef
-      case pref: ScPrefixExpr if ref == pref.operation    => StdKinds.methodRef
-      case _                                              => ref.getKinds(incomplete)
+      case gen: ScGenericCall =>
+        kinds(ref, gen, incomplete)
+      case parents: ScParenthesisedExpr =>
+        kinds(ref, parents, incomplete)
+      case _: ScMethodCall | _: ScUnderscoreSection =>
+        StdKinds.methodRef
+      case inf: ScInfixExpr if ref == inf.operation =>
+        StdKinds.methodRef
+      case postf: ScPostfixExpr if ref == postf.operation =>
+        StdKinds.methodRef
+      case pref: ScPrefixExpr if ref == pref.operation =>
+        StdKinds.methodRef
+      case _ =>
+        ref.getKinds(incomplete)
     }
   }
 
   private def getTypeArgs(e: ScExpression): Seq[ScTypeElement] = {
     e.getContext match {
-      case generic: ScGenericCall       => generic.arguments
-      case parents: ScParenthesisedExpr => getTypeArgs(parents)
-      case _                            => Seq.empty
+      case generic: ScGenericCall =>
+        generic.arguments
+      case parents: ScParenthesisedExpr =>
+        getTypeArgs(parents)
+      case _ =>
+        Seq.empty
     }
   }
 

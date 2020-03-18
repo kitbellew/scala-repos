@@ -14,7 +14,8 @@ import scala.concurrent.ExecutionContext
 object AtmosphereClient {
   def lookupAll(): Seq[ScalatraBroadcaster] = {
     BroadcasterFactory.getDefault.lookupAll().asScala.toSeq collect {
-      case b: ScalatraBroadcaster => b
+      case b: ScalatraBroadcaster =>
+        b
     }
   }
 

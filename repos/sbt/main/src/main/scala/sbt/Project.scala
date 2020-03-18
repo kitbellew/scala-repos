@@ -98,7 +98,8 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
     o match {
       case p: ProjectDefinition[_] =>
         p.getClass == this.getClass && p.id == id && p.base == base
-      case _ => false
+      case _ =>
+        false
     }
   override def toString = {
     val agg = ifNonEmpty("aggregate", aggregate)
@@ -546,8 +547,10 @@ object Project extends ProjectExtra {
       ref: Reference,
       structure: BuildStructure): Option[ResolvedProject] =
     ref match {
-      case pr: ProjectRef => getProject(pr, structure);
-      case _              => None
+      case pr: ProjectRef =>
+        getProject(pr, structure);
+      case _ =>
+        None
     }
   def getProject(
       ref: ProjectRef,
@@ -622,8 +625,10 @@ object Project extends ProjectExtra {
       vopt: Option[T],
       attributes: AttributeMap): AttributeMap =
     vopt match {
-      case Some(v) => attributes.put(key, v);
-      case None    => attributes.remove(key)
+      case Some(v) =>
+        attributes.put(key, v);
+      case None =>
+        attributes.remove(key)
     }
   @deprecated("Use Def.make", "0.13.0")
   def makeSettings(
@@ -714,8 +719,10 @@ object Project extends ProjectExtra {
     }
     val description =
       key.description match {
-        case Some(desc) => "Description:\n\t" + desc + "\n";
-        case None       => ""
+        case Some(desc) =>
+          "Description:\n\t" + desc + "\n";
+        case None =>
+          ""
       }
 
     val definingScope = structure.data.definingScope(scope, key)
@@ -723,12 +730,15 @@ object Project extends ProjectExtra {
       definingScope match {
         case Some(sc) =>
           "Provided by:\n\t" + Scope.display(sc, key.label) + "\n"
-        case None => ""
+        case None =>
+          ""
       }
     val definingScoped =
       definingScope match {
-        case Some(sc) => ScopedKey(sc, key);
-        case None     => scoped
+        case Some(sc) =>
+          ScopedKey(sc, key);
+        case None =>
+          scoped
       }
     val comp =
       Def.compiled(structure.settings, actual)(
@@ -755,8 +765,10 @@ object Project extends ProjectExtra {
 
     val depends =
       cMap.get(scoped) match {
-        case Some(c) => c.dependencies.toSet;
-        case None    => Set.empty
+        case Some(c) =>
+          c.dependencies.toSet;
+        case None =>
+          Set.empty
       }
     val derivedDepends: Set[ScopedKey[_]] =
       derivedDependencies(definingScoped).toSet
@@ -938,13 +950,16 @@ object Project extends ProjectExtra {
         projectReturn(s) match {
           case current :: returnTo :: rest =>
             (setProjectReturn(s, returnTo :: rest), returnTo)
-          case _ => sys.error("Not currently in a plugin definition")
+          case _ =>
+            sys.error("Not currently in a plugin definition")
         }
       case Current =>
         val base = s.configuration.baseDirectory
         projectReturn(s) match {
-          case Nil     => (setProjectReturn(s, base :: Nil), base);
-          case x :: xs => (s, x)
+          case Nil =>
+            (setProjectReturn(s, base :: Nil), base);
+          case x :: xs =>
+            (s, x)
         }
       case Plugins =>
         val (newBase, oldStack) =

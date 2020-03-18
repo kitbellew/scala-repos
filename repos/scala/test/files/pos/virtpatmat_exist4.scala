@@ -34,7 +34,8 @@ object Test2 {
 
   def tvarString(bounds: List[AnyRef]) = {
     bounds collect {
-      case x: JClass => x
+      case x: JClass =>
+        x
     }
   }
 }

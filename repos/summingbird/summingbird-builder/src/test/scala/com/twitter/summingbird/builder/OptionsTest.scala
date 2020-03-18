@@ -49,7 +49,8 @@ class TestJob1(env: Env) extends AbstractJob(env) {
           new InitialBatchedStore(BatchID(12L), null)))
       .set(BMonoidIsCommutative(true))
   } catch {
-    case t: Throwable => t.printStackTrace
+    case t: Throwable =>
+      t.printStackTrace
   }
 }
 
@@ -73,7 +74,8 @@ class OptionsTest extends WordSpec {
     val opts = scalding.build.platform.options
     val dependants = Dependants(scalding.build.toRun)
     val summers = dependants.nodes.collect {
-      case s: Summer[_, _, _] => s
+      case s: Summer[_, _, _] =>
+        s
     }
 
     assert(summers.size == 1)

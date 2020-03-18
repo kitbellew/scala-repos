@@ -295,7 +295,8 @@ class ProjectedQuasiNewtonTest
 
     val s =
       octaveL1.foldLeft(0.0) {
-        case (agg, entry) => agg + abs(entry)
+        case (agg, entry) =>
+          agg + abs(entry)
       }
     val projection = Projection(ProjectL1(s))
     val pqnResult = new ProjectedQuasiNewton(projection = projection.project)

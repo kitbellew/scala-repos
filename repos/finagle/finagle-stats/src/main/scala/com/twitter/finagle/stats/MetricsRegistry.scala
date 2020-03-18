@@ -37,8 +37,10 @@ private[twitter] trait MetricsRegistry extends StatsRegistry {
         val newValue = entry.getValue().doubleValue
         val newMetric =
           metrics.get(key) match {
-            case Some(prev) => cumulative(newValue - prev.value, newValue)
-            case None       => cumulative(newValue, newValue)
+            case Some(prev) =>
+              cumulative(newValue - prev.value, newValue)
+            case None =>
+              cumulative(newValue, newValue)
           }
         metrics.put(key, newMetric)
       }

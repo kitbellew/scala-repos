@@ -198,8 +198,10 @@ object BuiltinCommands {
       val e = Project.extract(s)
       val version =
         e.getOpt(Keys.version) match {
-          case None    => "";
-          case Some(v) => " " + v
+          case None =>
+            "";
+          case Some(v) =>
+            " " + v
         }
       val current = "The current project is " + Reference.display(
         e.currentRef) + version + "\n"
@@ -237,9 +239,12 @@ object BuiltinCommands {
           si) + " at " + home.getAbsolutePath
       case (_, Some(home), None) =>
         "a local Scala build at " + home.getAbsolutePath
-      case (sv, None, Some(si))   => "Scala " + selectScalaVersion(sv, si)
-      case (Some(sv), None, None) => "Scala " + sv
-      case (None, None, None)     => ""
+      case (sv, None, Some(si)) =>
+        "Scala " + selectScalaVersion(sv, si)
+      case (Some(sv), None, None) =>
+        "Scala " + sv
+      case (None, None, None) =>
+        ""
     }
   }
   def aboutString(s: State): String = {
@@ -254,14 +259,17 @@ object BuiltinCommands {
       sv: Option[String],
       si: ScalaInstance): String =
     sv match {
-      case Some(si.version) => si.version;
-      case _                => si.actualVersion
+      case Some(si.version) =>
+        si.version;
+      case _ =>
+        si.actualVersion
     }
   private[this] def quiet[T](t: => T): Option[T] =
     try {
       Some(t)
     } catch {
-      case e: Exception => None
+      case e: Exception =>
+        None
     }
 
   def settingsCommand =
@@ -334,7 +342,8 @@ object BuiltinCommands {
         }
       }
       .collect {
-        case Some(s) => s
+        case Some(s) =>
+          s
       }
       .distinct
   }
@@ -361,7 +370,8 @@ object BuiltinCommands {
       arg: Option[String]): String = {
     val commandAndDescription = taskDetail(filter(allTaskAndSettingKeys(s)))
     arg match {
-      case Some(selected) => detail(selected, commandAndDescription.toMap)
+      case Some(selected) =>
+        detail(selected, commandAndDescription.toMap)
       case None =>
         aligned("  ", "   ", commandAndDescription) mkString ("\n", "\n", "")
     }
@@ -558,7 +568,8 @@ object BuiltinCommands {
         s))
   def last =
     Command(LastCommand, lastBrief, lastDetailed)(aggregatedKeyValueParser) {
-      case (s, Some(sks)) => lastImpl(s, sks, None)
+      case (s, Some(sks)) =>
+        lastImpl(s, sks, None)
       case (s, None) =>
         for (logFile <- lastLogFile(s))
           yield Output.last(logFile, printLast(s))
@@ -664,7 +675,8 @@ object BuiltinCommands {
       ProjectsCommand,
       (ProjectsCommand, projectsBrief),
       projectsDetailed)(s => projectsParser(s).?) {
-      case (s, Some(modifyBuilds)) => transformExtraBuilds(s, modifyBuilds)
+      case (s, Some(modifyBuilds)) =>
+        transformExtraBuilds(s, modifyBuilds)
       case (s, None) =>
         showProjects(s);
         s

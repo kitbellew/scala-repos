@@ -54,26 +54,39 @@ trait GameHelper {
     import chess.Status._
     val result =
       (game.winner, game.loser, game.status) match {
-        case (Some(w), _, Mate) => s"${playerText(w)} won by checkmate"
+        case (Some(w), _, Mate) =>
+          s"${playerText(w)} won by checkmate"
         case (_, Some(l), Resign | Timeout | Cheat | NoStart) =>
           s"${playerText(l)} resigned"
-        case (_, Some(l), Outoftime)                  => s"${playerText(l)} forfeits by time"
-        case (Some(w), _, UnknownFinish)              => s"${playerText(w)} won"
-        case (_, _, Draw | Stalemate | UnknownFinish) => "Game is a draw"
-        case (_, _, Aborted)                          => "Game has been aborted"
+        case (_, Some(l), Outoftime) =>
+          s"${playerText(l)} forfeits by time"
+        case (Some(w), _, UnknownFinish) =>
+          s"${playerText(w)} won"
+        case (_, _, Draw | Stalemate | UnknownFinish) =>
+          "Game is a draw"
+        case (_, _, Aborted) =>
+          "Game has been aborted"
         case (_, _, VariantEnd) =>
           game.variant match {
-            case chess.variant.KingOfTheHill => "King in the center"
-            case chess.variant.ThreeCheck    => "Three checks"
-            case chess.variant.Antichess     => "Lose all your pieces to win"
+            case chess.variant.KingOfTheHill =>
+              "King in the center"
+            case chess.variant.ThreeCheck =>
+              "Three checks"
+            case chess.variant.Antichess =>
+              "Lose all your pieces to win"
             case chess.variant.Atomic =>
               "Explode or mate your opponent's king to win"
-            case chess.variant.Horde       => "Destroy the horde to win"
-            case chess.variant.RacingKings => "Race to the eighth rank to win"
-            case chess.variant.Crazyhouse  => "Drop captured pieces on the board"
-            case _                         => "Variant ending"
+            case chess.variant.Horde =>
+              "Destroy the horde to win"
+            case chess.variant.RacingKings =>
+              "Race to the eighth rank to win"
+            case chess.variant.Crazyhouse =>
+              "Drop captured pieces on the board"
+            case _ =>
+              "Variant ending"
           }
-        case _ => "Game is still being played"
+        case _ =>
+          "Game is still being played"
       }
     val moves = s"${game.toChess.fullMoveNumber} moves"
     s"$p1 plays $p2 in a $mode $speedAndClock game of $variant. $result after $moves. Click to replay, analyse, and discuss the game!"
@@ -81,16 +94,22 @@ trait GameHelper {
 
   def variantName(variant: chess.variant.Variant)(implicit ctx: UserContext) =
     variant match {
-      case chess.variant.Standard     => trans.standard.str()
-      case chess.variant.FromPosition => trans.fromPosition.str()
-      case v                          => v.name
+      case chess.variant.Standard =>
+        trans.standard.str()
+      case chess.variant.FromPosition =>
+        trans.fromPosition.str()
+      case v =>
+        v.name
     }
 
   def variantNameNoCtx(variant: chess.variant.Variant) =
     variant match {
-      case chess.variant.Standard     => trans.standard.en()
-      case chess.variant.FromPosition => trans.fromPosition.en()
-      case v                          => v.name
+      case chess.variant.Standard =>
+        trans.standard.en()
+      case chess.variant.FromPosition =>
+        trans.fromPosition.en()
+      case v =>
+        v.name
     }
 
   def shortClockName(clock: Option[Clock])(implicit ctx: UserContext): Html =
@@ -100,14 +119,18 @@ trait GameHelper {
 
   def modeName(mode: Mode)(implicit ctx: UserContext): String =
     mode match {
-      case Mode.Casual => trans.casual.str()
-      case Mode.Rated  => trans.rated.str()
+      case Mode.Casual =>
+        trans.casual.str()
+      case Mode.Rated =>
+        trans.rated.str()
     }
 
   def modeNameNoCtx(mode: Mode): String =
     mode match {
-      case Mode.Casual => trans.casual.en()
-      case Mode.Rated  => trans.rated.en()
+      case Mode.Casual =>
+        trans.casual.en()
+      case Mode.Rated =>
+        trans.rated.en()
     }
 
   def playerUsername(
@@ -186,37 +209,54 @@ trait GameHelper {
 
   def gameEndStatus(game: Game)(implicit ctx: UserContext): Html =
     game.status match {
-      case S.Aborted => trans.gameAborted()
-      case S.Mate    => trans.checkmate()
+      case S.Aborted =>
+        trans.gameAborted()
+      case S.Mate =>
+        trans.checkmate()
       case S.Resign =>
         game.loser match {
-          case Some(p) if p.color.white => trans.whiteResigned()
-          case _                        => trans.blackResigned()
+          case Some(p) if p.color.white =>
+            trans.whiteResigned()
+          case _ =>
+            trans.blackResigned()
         }
-      case S.UnknownFinish => trans.finished()
-      case S.Stalemate     => trans.stalemate()
+      case S.UnknownFinish =>
+        trans.finished()
+      case S.Stalemate =>
+        trans.stalemate()
       case S.Timeout =>
         game.loser match {
-          case Some(p) if p.color.white => trans.whiteLeftTheGame()
-          case Some(_)                  => trans.blackLeftTheGame()
-          case None                     => trans.draw()
+          case Some(p) if p.color.white =>
+            trans.whiteLeftTheGame()
+          case Some(_) =>
+            trans.blackLeftTheGame()
+          case None =>
+            trans.draw()
         }
-      case S.Draw      => trans.draw()
-      case S.Outoftime => trans.timeOut()
+      case S.Draw =>
+        trans.draw()
+      case S.Outoftime =>
+        trans.timeOut()
       case S.NoStart =>
         Html {
           val color = game.loser.fold(Color.white)(_.color).name.capitalize
           s"$color didn't move"
         }
-      case S.Cheat => Html("Cheat detected")
+      case S.Cheat =>
+        Html("Cheat detected")
       case S.VariantEnd =>
         game.variant match {
-          case chess.variant.KingOfTheHill => trans.kingInTheCenter()
-          case chess.variant.ThreeCheck    => trans.threeChecks()
-          case chess.variant.RacingKings   => trans.raceFinished()
-          case _                           => trans.variantEnding()
+          case chess.variant.KingOfTheHill =>
+            trans.kingInTheCenter()
+          case chess.variant.ThreeCheck =>
+            trans.threeChecks()
+          case chess.variant.RacingKings =>
+            trans.raceFinished()
+          case _ =>
+            trans.variantEnding()
         }
-      case _ => Html("")
+      case _ =>
+        Html("")
     }
 
   private def gameTitle(game: Game, color: Color): String = {
@@ -238,9 +278,12 @@ trait GameHelper {
     val res =
       if (finished)
         result match {
-          case Some(true)  => "1-0"
-          case Some(false) => "0-1"
-          case None        => "½-½"
+          case Some(true) =>
+            "1-0"
+          case Some(false) =>
+            "0-1"
+          case None =>
+            "½-½"
         }
       else
         "*"
@@ -250,9 +293,12 @@ trait GameHelper {
   def gameResult(game: Game) =
     if (game.finished)
       game.winnerColor match {
-        case Some(chess.White) => "1-0"
-        case Some(chess.Black) => "0-1"
-        case None              => "½-½"
+        case Some(chess.White) =>
+          "1-0"
+        case Some(chess.Black) =>
+          "0-1"
+        case None =>
+          "½-½"
       }
     else
       "*"

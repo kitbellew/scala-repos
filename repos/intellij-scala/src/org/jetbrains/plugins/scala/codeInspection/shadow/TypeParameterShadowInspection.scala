@@ -16,7 +16,8 @@ class TypeParameterShadowInspection
       "Suspicious shadowing by a Type Parameter") {
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
-    case refPat: ScTypeParam => check(refPat, holder)
+    case refPat: ScTypeParam =>
+      check(refPat, holder)
   }
 
   private def isShadowing(

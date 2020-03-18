@@ -69,7 +69,8 @@ object SortPrefixUtils {
           PrefixComparators.DOUBLE
         else
           PrefixComparators.DOUBLE_DESC
-      case _ => NoOpPrefixComparator
+      case _ =>
+        NoOpPrefixComparator
     }
   }
 

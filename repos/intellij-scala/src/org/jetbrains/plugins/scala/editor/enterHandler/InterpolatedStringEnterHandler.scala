@@ -38,8 +38,10 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
 
     def isMLString(element: PsiElement) =
       element match {
-        case lit: ScLiteral => lit.isMultiLineString
-        case _              => false
+        case lit: ScLiteral =>
+          lit.isMultiLineString
+        case _ =>
+          false
       }
 
     Option(element) foreach (a =>

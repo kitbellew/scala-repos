@@ -126,12 +126,15 @@ private[spark] object SubmitRestProtocolMessage {
         case JObject(fields) =>
           fields
             .collectFirst {
-              case ("action", v) => v
+              case ("action", v) =>
+                v
             }
             .collect {
-              case JString(s) => s
+              case JString(s) =>
+                s
             }
-        case _ => None
+        case _ =>
+          None
       }
     value.getOrElse {
       throw new SubmitRestMissingFieldException(

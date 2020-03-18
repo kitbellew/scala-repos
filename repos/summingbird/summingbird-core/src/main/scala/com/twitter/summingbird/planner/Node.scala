@@ -39,7 +39,8 @@ sealed trait Node[P <: Platform[P]] {
   def collapseNamedNodes(sanitize: String => String): String = {
     val membersCombined = members.reverse
       .collect {
-        case NamedProducer(_, n) => sanitize(n)
+        case NamedProducer(_, n) =>
+          sanitize(n)
       }
       .mkString(",")
     if (membersCombined.size > 0)
@@ -214,7 +215,8 @@ object Dag {
 
     require(
       registry.collect {
-        case n @ SourceNode(_) => n
+        case n @ SourceNode(_) =>
+          n
       }.size > 0,
       "Valid registries should have at least one source node")
 
@@ -278,7 +280,8 @@ object Dag {
             taken)
           val useName =
             nodeToName.get(n) match {
-              case None => name
+              case None =>
+                name
               case Some(otherName) =>
                 if (otherName.split("-").size > name.split("-").size)
                   name

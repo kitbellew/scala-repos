@@ -84,7 +84,8 @@ class LeaderProxyFilter @Inject() (
     queryStringOpt match {
       case Some(queryString) =>
         new URL(s"$scheme://$leaderData$requestURI?$queryString")
-      case None => new URL(s"$scheme://$leaderData$requestURI")
+      case None =>
+        new URL(s"$scheme://$leaderData$requestURI")
     }
   }
 

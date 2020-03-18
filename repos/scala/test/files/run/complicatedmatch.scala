@@ -15,14 +15,22 @@ object Test extends App {
 
   def foo(x: Int, y: String): Int =
     (x, y) match {
-      case (Even(i), "bar")          => 1
-      case (1 | 2 | 3, "foo")        => 42;
-      case (x, y) if y.length < x    => 11;
-      case (1 | 2 | 3, Bar())        => 7;
-      case (1 | 2 | 3, "bar")        => 8
-      case (Even(Even(3)), Bar())    => 13;
-      case (Even(Even(3)), LongWord) => 13;
-      case _                         => 0;
+      case (Even(i), "bar") =>
+        1
+      case (1 | 2 | 3, "foo") =>
+        42;
+      case (x, y) if y.length < x =>
+        11;
+      case (1 | 2 | 3, Bar()) =>
+        7;
+      case (1 | 2 | 3, "bar") =>
+        8
+      case (Even(Even(3)), Bar()) =>
+        13;
+      case (Even(Even(3)), LongWord) =>
+        13;
+      case _ =>
+        0;
     }
 
   List(
@@ -32,6 +40,7 @@ object Test extends App {
     7 -> "flob",
     3 -> "bar",
     12 -> LongWord).foreach({
-    case (x, y) => println(foo(x, y))
+    case (x, y) =>
+      println(foo(x, y))
   });
 }

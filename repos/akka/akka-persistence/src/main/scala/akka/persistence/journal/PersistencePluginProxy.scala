@@ -86,8 +86,10 @@ final class PersistencePluginProxy(config: Config)
   private val pluginId = self.path.name
   private val pluginType: PluginType =
     pluginId match {
-      case "akka.persistence.journal.proxy" ⇒ Journal
-      case "akka.persistence.snapshot-store.proxy" ⇒ SnapshotStore
+      case "akka.persistence.journal.proxy" ⇒
+        Journal
+      case "akka.persistence.snapshot-store.proxy" ⇒
+        SnapshotStore
       case other ⇒
         throw new IllegalArgumentException("Unknown plugin type: " + other)
     }

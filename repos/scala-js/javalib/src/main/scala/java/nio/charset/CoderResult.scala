@@ -31,10 +31,14 @@ class CoderResult private (kind: Int, _length: Int) {
 
   def throwException(): Unit =
     (kind: @switch) match {
-      case Overflow   => throw new BufferOverflowException
-      case Underflow  => throw new BufferUnderflowException
-      case Malformed  => throw new MalformedInputException(_length)
-      case Unmappable => throw new UnmappableCharacterException(_length)
+      case Overflow =>
+        throw new BufferOverflowException
+      case Underflow =>
+        throw new BufferUnderflowException
+      case Malformed =>
+        throw new MalformedInputException(_length)
+      case Unmappable =>
+        throw new UnmappableCharacterException(_length)
     }
 }
 
@@ -64,11 +68,16 @@ object CoderResult {
   @inline
   def malformedForLength(length: Int): CoderResult =
     (length: @switch) match {
-      case 1 => Malformed1
-      case 2 => Malformed2
-      case 3 => Malformed3
-      case 4 => Malformed4
-      case _ => malformedForLengthImpl(length)
+      case 1 =>
+        Malformed1
+      case 2 =>
+        Malformed2
+      case 3 =>
+        Malformed3
+      case 4 =>
+        Malformed4
+      case _ =>
+        malformedForLengthImpl(length)
     }
 
   private def malformedForLengthImpl(length: Int): CoderResult =
@@ -77,11 +86,16 @@ object CoderResult {
   @inline
   def unmappableForLength(length: Int): CoderResult =
     (length: @switch) match {
-      case 1 => Unmappable1
-      case 2 => Unmappable2
-      case 3 => Unmappable3
-      case 4 => Unmappable4
-      case _ => unmappableForLengthImpl(length)
+      case 1 =>
+        Unmappable1
+      case 2 =>
+        Unmappable2
+      case 3 =>
+        Unmappable3
+      case 4 =>
+        Unmappable4
+      case _ =>
+        unmappableForLengthImpl(length)
     }
 
   private def unmappableForLengthImpl(length: Int): CoderResult =

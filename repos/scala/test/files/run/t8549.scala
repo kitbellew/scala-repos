@@ -38,7 +38,8 @@ object Test extends App {
             if (newContent != content)
               println(s"- $content\n+ $newContent\n")
             newContent
-          case (content, _) => content
+          case (content, _) =>
+            content
         }
         .mkString("\n")
     }

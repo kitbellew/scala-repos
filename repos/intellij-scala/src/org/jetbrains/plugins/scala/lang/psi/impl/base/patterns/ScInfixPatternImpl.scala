@@ -24,8 +24,10 @@ class ScInfixPatternImpl(node: ASTNode)
     with ScInfixPattern {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -33,8 +35,10 @@ class ScInfixPatternImpl(node: ASTNode)
 
   override def getType(ctx: TypingContext) = {
     expectedType match {
-      case Some(x) => Success(x, Some(this))
-      case _       => Failure("cannot define expected type", Some(this))
+      case Some(x) =>
+        Success(x, Some(this))
+      case _ =>
+        Failure("cannot define expected type", Some(this))
     }
   }
 }

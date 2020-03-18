@@ -174,8 +174,10 @@ case class BaseBolt[I, O](
     curResults.foreach {
       case (tups, res) =>
         res match {
-          case Success(outs) => finish(tups, outs)
-          case Failure(t)    => fail(tups, t)
+          case Success(outs) =>
+            finish(tups, outs)
+          case Failure(t) =>
+            fail(tups, t)
         }
     }
   }

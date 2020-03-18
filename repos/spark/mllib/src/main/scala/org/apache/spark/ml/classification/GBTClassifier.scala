@@ -155,8 +155,9 @@ final class GBTClassifier @Since("1.4.0") (
   /** (private[ml]) Convert new loss to old loss. */
   override private[ml] def getOldLossType: OldLoss = {
     getLossType match {
-      case "logistic" => OldLogLoss
-      case _          =>
+      case "logistic" =>
+        OldLogLoss
+      case _ =>
         // Should never happen because of check in setter method.
         throw new RuntimeException(
           s"GBTClassifier was given bad loss type: $getLossType")
@@ -168,7 +169,8 @@ final class GBTClassifier @Since("1.4.0") (
       .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val numClasses: Int =
       MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
-        case Some(n: Int) => n
+        case Some(n: Int) =>
+          n
         case None =>
           throw new IllegalArgumentException(
             "GBTClassifier was given input" +

@@ -266,7 +266,8 @@ private[spark] class EventLoggingListener(
     try {
       fileSystem.setTimes(target, System.currentTimeMillis(), -1)
     } catch {
-      case e: Exception => logDebug(s"failed to set time of $target", e)
+      case e: Exception =>
+        logDebug(s"failed to set time of $target", e)
     }
   }
 

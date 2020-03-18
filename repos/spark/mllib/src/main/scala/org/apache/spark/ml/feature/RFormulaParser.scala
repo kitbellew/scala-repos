@@ -53,8 +53,10 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
           case Dot =>
             // e.g. "- .", which removes all first-order terms
             includedTerms = includedTerms.filter {
-              case Seq(t) => !dotTerms.contains(t)
-              case _      => true
+              case Seq(t) =>
+                !dotTerms.contains(t)
+              case _ =>
+                true
             }
           case _: Deletion =>
             throw new RuntimeException("Deletion terms cannot be nested")
@@ -119,8 +121,10 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
     schema.fields
       .filter(
         _.dataType match {
-          case _: NumericType | StringType | BooleanType | _: VectorUDT => true
-          case _                                                        => false
+          case _: NumericType | StringType | BooleanType | _: VectorUDT =>
+            true
+          case _ =>
+            false
         })
       .map(_.name)
       .filter(_ != label.value)
@@ -170,16 +174,19 @@ private[ml] case class Deletion(term: Term) extends Term
 private[ml] object RFormulaParser extends RegexParsers {
   private val intercept: Parser[Intercept] =
     "([01])".r ^^ {
-      case a => Intercept(a == "1")
+      case a =>
+        Intercept(a == "1")
     }
 
   private val columnRef: Parser[ColumnRef] =
     "([a-zA-Z]|\\.[a-zA-Z_])[a-zA-Z0-9._]*".r ^^ {
-      case a => ColumnRef(a)
+      case a =>
+        ColumnRef(a)
     }
 
   private val dot: Parser[InteractableTerm] = "\\.".r ^^ {
-    case _ => Dot
+    case _ =>
+      Dot
   }
 
   private val interaction: Parser[List[InteractableTerm]] = rep1sep(
@@ -188,26 +195,31 @@ private[ml] object RFormulaParser extends RegexParsers {
 
   private val term: Parser[Term] = intercept |
     interaction ^^ {
-      case terms => ColumnInteraction(terms)
+      case terms =>
+        ColumnInteraction(terms)
     } | dot | columnRef
 
   private val terms: Parser[List[Term]] =
     (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
       case op ~ list =>
         list.foldLeft(List(op)) {
-          case (left, "+" ~ right) => left ++ Seq(right)
-          case (left, "-" ~ right) => left ++ Seq(Deletion(right))
+          case (left, "+" ~ right) =>
+            left ++ Seq(right)
+          case (left, "-" ~ right) =>
+            left ++ Seq(Deletion(right))
         }
     }
 
   private val formula: Parser[ParsedRFormula] =
     (columnRef ~ "~" ~ terms) ^^ {
-      case r ~ "~" ~ t => ParsedRFormula(r, t)
+      case r ~ "~" ~ t =>
+        ParsedRFormula(r, t)
     }
 
   def parse(value: String): ParsedRFormula =
     parseAll(formula, value) match {
-      case Success(result, _) => result
+      case Success(result, _) =>
+        result
       case failure: NoSuccess =>
         throw new IllegalArgumentException("Could not parse formula: " + value)
     }

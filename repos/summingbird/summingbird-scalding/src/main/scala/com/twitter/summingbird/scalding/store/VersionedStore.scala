@@ -60,9 +60,11 @@ object VersionedStore {
       rootPath,
       versionsToKeep,
       batcher)({
-      case (batchID, (k, v)) => (k, (batchID.next, v))
+      case (batchID, (k, v)) =>
+        (k, (batchID.next, v))
     })({
-      case (k, (_, v)) => (k, v)
+      case (k, (_, v)) =>
+        (k, v)
     }) {
       override def select(b: List[BatchID]) = List(b.last)
       override def pruning = prunedSpace

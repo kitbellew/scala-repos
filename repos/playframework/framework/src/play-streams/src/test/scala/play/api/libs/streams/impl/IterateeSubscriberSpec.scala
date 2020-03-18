@@ -133,7 +133,8 @@ class IterateeSubscriberSpec extends Specification {
 
       testEnv.contStep()
       testEnv.next must beLike {
-        case Result(Success(Step.Cont(_))) => ok
+        case Result(Success(Step.Cont(_))) =>
+          ok
       }
       testEnv.isEmptyAfterDelay() must beTrue
     }

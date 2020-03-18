@@ -6,6 +6,7 @@ object Test extends App {
       def a = ()
     }
   b.a match {
-    case _ => ()
+    case _ =>
+      ()
   }
 }

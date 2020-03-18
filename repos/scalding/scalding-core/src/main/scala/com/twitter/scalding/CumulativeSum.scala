@@ -42,14 +42,16 @@ object CumulativeSum {
         ordK: Ordering[K]): SortedGrouped[K, (U, V)] = {
       pipe.group
         .sortBy {
-          case (u, _) => u
+          case (u, _) =>
+            u
         }
         .scanLeft(Nil: List[(U, V)]) {
           case (acc, (u, v)) =>
             acc match {
               case List((previousU, previousSum)) =>
                 List((u, sg.plus(previousSum, v)))
-              case _ => List((u, v))
+              case _ =>
+                List((u, v))
             }
         }
         .flattenValues
@@ -70,15 +72,18 @@ object CumulativeSum {
 
       val sumPerS = pipe
         .map {
-          case (k, (u, v)) => (k, partition(u)) -> v
+          case (k, (u, v)) =>
+            (k, partition(u)) -> v
         }
         .sumByKey
         .map {
-          case ((k, s), v) => (k, (s, v))
+          case ((k, s), v) =>
+            (k, (s, v))
         }
         .group
         .sortBy {
-          case (s, v) => s
+          case (s, v) =>
+            s
         }
         .scanLeft(None: Option[(Option[V], V, S)]) {
           case (acc, (s, v)) =>
@@ -86,7 +91,8 @@ object CumulativeSum {
               case Some((previousPreviousSum, previousSum, previousS)) => {
                 Some((Some(previousSum), sg.plus(v, previousSum), s))
               }
-              case _ => Some((None, v, s))
+              case _ =>
+                Some((None, v, s))
             }
         }
         .flatMap {
@@ -106,14 +112,16 @@ object CumulativeSum {
 
       summands.group
         .sortBy {
-          case (u, _) => u
+          case (u, _) =>
+            u
         }
         .scanLeft(None: Option[(Option[U], V)]) {
           case (acc, (maybeU, v)) =>
             acc match {
               case Some((_, previousSum)) =>
                 Some((maybeU, sg.plus(v, previousSum)))
-              case _ => Some((maybeU, v))
+              case _ =>
+                Some((maybeU, v))
             }
         }
         .flatMap {

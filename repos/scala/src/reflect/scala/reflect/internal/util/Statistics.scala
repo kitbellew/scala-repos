@@ -182,8 +182,10 @@ object Statistics {
         0
     override def equals(that: Any): Boolean =
       that match {
-        case that: Counter => (this compare that) == 0
-        case _             => false
+        case that: Counter =>
+          (this compare that) == 0
+        case _ =>
+          false
       }
     override def hashCode = value
     override def toString = value.toString
@@ -253,8 +255,10 @@ object Statistics {
         0
     override def equals(that: Any): Boolean =
       that match {
-        case that: StackableTimer => (this compare that) == 0
-        case _                    => false
+        case that: StackableTimer =>
+          (this compare that) == 0
+        case _ =>
+          false
       }
     override def hashCode = specificNanos.##
     override def toString =

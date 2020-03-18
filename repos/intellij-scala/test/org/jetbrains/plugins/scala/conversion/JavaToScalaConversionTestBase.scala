@@ -73,7 +73,8 @@ abstract class JavaToScalaConversionTestBase
     val text = lastPsi.getText
     val output =
       lastPsi.getNode.getElementType match {
-        case JavaTokenType.END_OF_LINE_COMMENT => text.substring(2).trim
+        case JavaTokenType.END_OF_LINE_COMMENT =>
+          text.substring(2).trim
         case JavaTokenType.C_STYLE_COMMENT =>
           text.substring(2, text.length - 2).trim
         case _ =>

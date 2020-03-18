@@ -38,17 +38,22 @@ object FileUtils {
 
   def exists(f: SourceFileInfo) =
     f match {
-      case SourceFileInfo(f, _, _) if f.exists()       => true
-      case SourceFileInfo(_, Some(c), _)               => true
-      case SourceFileInfo(_, _, Some(f)) if f.exists() => true
-      case _                                           => false
+      case SourceFileInfo(f, _, _) if f.exists() =>
+        true
+      case SourceFileInfo(_, Some(c), _) =>
+        true
+      case SourceFileInfo(_, _, Some(f)) if f.exists() =>
+        true
+      case _ =>
+        false
     }
 
   // prefer file.readString()
   def readFile(f: File, cs: Charset): Either[IOException, String] =
     try Right(f.readString()(cs))
     catch {
-      case e: IOException => Left(e)
+      case e: IOException =>
+        Left(e)
     }
 
   def writeChanges(
@@ -56,11 +61,13 @@ object FileUtils {
       cs: Charset): Either[Exception, List[File]] = {
     val editsByFile = changes
       .collect {
-        case ed: TextEdit => ed
+        case ed: TextEdit =>
+          ed
       }
       .groupBy(_.file)
     val newFiles = changes.collect {
-      case ed: NewFile => ed
+      case ed: NewFile =>
+        ed
     }
     try {
       val rewriteList = newFiles.map { ed =>
@@ -74,12 +81,14 @@ object FileUtils {
                   fileChanges.toList,
                   contents)
                 (file, newContents)
-              case Left(e) => throw e
+              case Left(e) =>
+                throw e
             }
         }
 
       val deleteFiles = changes.collect {
-        case ed: DeleteFile => ed
+        case ed: DeleteFile =>
+          ed
       }
       for (ed <- deleteFiles) {
         ed.file.delete()
@@ -93,7 +102,8 @@ object FileUtils {
           file
         })
     } catch {
-      case e: Exception => Left(e)
+      case e: Exception =>
+        Left(e)
     }
   }
 
@@ -103,7 +113,8 @@ object FileUtils {
     //TODO: add support for NewFile and DeleteFile
     val editsByFile = changes
       .collect {
-        case ed: TextEdit => ed
+        case ed: TextEdit =>
+          ed
       }
       .groupBy(_.file)
     try {
@@ -117,7 +128,8 @@ object FileUtils {
                   contents,
                   file,
                   file)
-              case Left(e) => throw e
+              case Left(e) =>
+                throw e
             }
         }
         .mkString("\n")
@@ -128,7 +140,8 @@ object FileUtils {
         diffFile
       })
     } catch {
-      case e: Exception => Left(e)
+      case e: Exception =>
+        Left(e)
     }
   }
 

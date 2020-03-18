@@ -157,7 +157,8 @@ class DefaultHttpRequestHandler(
     val (routedRequest, handler) = routeRequest(request) map {
       case handler: RequestTaggingHandler =>
         (handler.tagRequest(request), handler)
-      case otherHandler => (request, otherHandler)
+      case otherHandler =>
+        (request, otherHandler)
     } getOrElse {
 
       // We automatically permit HEAD requests against any GETs without the need to
@@ -169,9 +170,11 @@ class DefaultHttpRequestHandler(
               action match {
                 case handler: RequestTaggingHandler =>
                   (handler.tagRequest(request), action)
-                case _ => (request, action)
+                case _ =>
+                  (request, action)
               }
-            case None => (request, notFoundHandler)
+            case None =>
+              (request, notFoundHandler)
           }
         case _ =>
           (request, notFoundHandler)
@@ -190,7 +193,8 @@ class DefaultHttpRequestHandler(
       next(request) match {
         case action: EssentialAction if inContext(request.path) =>
           filterAction(action)
-        case handler => handler
+        case handler =>
+          handler
       }
   }
 
@@ -261,7 +265,8 @@ class JavaCompatibleHttpRequestHandler @Inject() (
     super.routeRequest(request) match {
       case Some(javaHandler: JavaHandler) =>
         Some(javaHandler.withComponents(components))
-      case other => other
+      case other =>
+        other
     }
   }
 }

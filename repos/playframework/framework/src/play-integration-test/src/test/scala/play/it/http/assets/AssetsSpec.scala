@@ -32,7 +32,8 @@ trait AssetsSpec
 
     def withServer[T](block: WSClient => T): T = {
       Server.withRouter(ServerConfig(mode = Mode.Prod, port = Some(0))) {
-        case req => Assets.versioned("/testassets", req.path)
+        case req =>
+          Assets.versioned("/testassets", req.path)
       } { implicit port =>
         implicit val materializer = Play.current.materializer
         withClient(block)
@@ -238,7 +239,8 @@ trait AssetsSpec
       }
       "if the directory is a jar entry" in {
         Server.withRouter() {
-          case req => Assets.versioned("/scala", req.path)
+          case req =>
+            Assets.versioned("/scala", req.path)
         } { implicit port =>
           implicit val materializer = Play.current.materializer
           withClient { client =>

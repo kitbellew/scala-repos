@@ -21,7 +21,8 @@ class ClassfileDepickler(file: FileObject) {
       ScalaSigParser.parse(classFile)
     } catch {
       // ClassFileParser fails to parse some JDK class files
-      case e: Exception => None
+      case e: Exception =>
+        None
     } finally in.close()
   }
 
@@ -29,10 +30,13 @@ class ClassfileDepickler(file: FileObject) {
     scalasig match {
       case Some(sig: ScalaSig) =>
         sig.symbols.flatMap {
-          case s: AliasSymbol => Some(RawType(symbolName(s), access(s)))
-          case _              => None
+          case s: AliasSymbol =>
+            Some(RawType(symbolName(s), access(s)))
+          case _ =>
+            None
         }
-      case None => Nil
+      case None =>
+        Nil
     }
   }
 
@@ -47,9 +51,12 @@ class ClassfileDepickler(file: FileObject) {
 
   private def symbolName(a: Symbol): String = {
     a.parent match {
-      case Some(s: SymbolInfoSymbol) => symbolName(s) + "$" + a.name
-      case Some(s: Symbol)           => s.toString + "." + a.name
-      case None                      => a.name
+      case Some(s: SymbolInfoSymbol) =>
+        symbolName(s) + "$" + a.name
+      case Some(s: Symbol) =>
+        s.toString + "." + a.name
+      case None =>
+        a.name
     }
   }
 }

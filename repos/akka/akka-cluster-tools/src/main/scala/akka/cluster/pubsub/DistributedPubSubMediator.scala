@@ -44,12 +44,15 @@ object DistributedPubSubSettings {
     new DistributedPubSubSettings(
       role = roleOption(config.getString("role")),
       routingLogic = config.getString("routing-logic") match {
-        case "random" ⇒ RandomRoutingLogic()
-        case "round-robin" ⇒ RoundRobinRoutingLogic()
+        case "random" ⇒
+          RandomRoutingLogic()
+        case "round-robin" ⇒
+          RoundRobinRoutingLogic()
         case "consistent-hashing" ⇒
           throw new IllegalArgumentException(
             s"'consistent-hashing' routing logic can't be used by the pub-sub mediator")
-        case "broadcast" ⇒ BroadcastRoutingLogic()
+        case "broadcast" ⇒
+          BroadcastRoutingLogic()
         case other ⇒
           throw new IllegalArgumentException(
             s"Unknown 'routing-logic': [$other]")
@@ -401,8 +404,10 @@ object DistributedPubSubMediator {
           val encGroup = encName(group)
           bufferOr(mkKey(self.path / encGroup), msg, sender()) {
             context.child(encGroup) match {
-              case Some(g) ⇒ g forward msg
-              case None ⇒ newGroupActor(encGroup) forward msg
+              case Some(g) ⇒
+                g forward msg
+              case None ⇒
+                newGroupActor(encGroup) forward msg
             }
           }
           pruneDeadline = None
@@ -410,7 +415,8 @@ object DistributedPubSubMediator {
           val encGroup = encName(group)
           bufferOr(mkKey(self.path / encGroup), msg, sender()) {
             context.child(encGroup) match {
-              case Some(g) ⇒ g forward msg
+              case Some(g) ⇒
+                g forward msg
               case None ⇒ // no such group here
             }
           }
@@ -460,8 +466,10 @@ object DistributedPubSubMediator {
       * user message.
       */
     def wrapIfNeeded: Any ⇒ Any = {
-      case msg: RouterEnvelope ⇒ MediatorRouterEnvelope(msg)
-      case msg: Any ⇒ msg
+      case msg: RouterEnvelope ⇒
+        MediatorRouterEnvelope(msg)
+      case msg: Any ⇒
+        msg
     }
   }
 }
@@ -663,8 +671,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
       bufferOr(mkKey(self.path / encTopic), msg, sender()) {
         context.child(encTopic) match {
-          case Some(t) ⇒ t forward msg
-          case None ⇒ newTopicActor(encTopic) forward msg
+          case Some(t) ⇒
+            t forward msg
+          case None ⇒
+            newTopicActor(encTopic) forward msg
         }
       }
 
@@ -691,7 +701,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       val encTopic = encName(topic)
       bufferOr(mkKey(self.path / encTopic), msg, sender()) {
         context.child(encTopic) match {
-          case Some(t) ⇒ t forward msg
+          case Some(t) ⇒
+            t forward msg
           case None ⇒ // no such topic here
         }
       }
@@ -727,9 +738,11 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         }
       }
 
-    case GossipTick ⇒ gossip()
+    case GossipTick ⇒
+      gossip()
 
-    case Prune ⇒ prune()
+    case Prune ⇒
+      prune()
 
     case Terminated(a) ⇒
       val key = mkKey(a)
@@ -770,7 +783,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         registry.map {
           case (owner, bucket) ⇒
             bucket.content.count {
-              case (_, valueHolder) ⇒ valueHolder.ref.isDefined
+              case (_, valueHolder) ⇒
+                valueHolder.ref.isDefined
             }
         }.sum
       sender() ! count
@@ -842,14 +856,16 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   def myVersions: Map[Address, Long] =
     registry.map {
-      case (owner, bucket) ⇒ (owner -> bucket.version)
+      case (owner, bucket) ⇒
+        (owner -> bucket.version)
     }
 
   def collectDelta(
       otherVersions: Map[Address, Long]): immutable.Iterable[Bucket] = {
     // missing entries are represented by version 0
     val filledOtherVersions = myVersions.map {
-      case (k, _) ⇒ k -> 0L
+      case (k, _) ⇒
+        k -> 0L
     } ++ otherVersions
     var count = 0
     filledOtherVersions.collect {
@@ -857,7 +873,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
           if registry(owner).version > v && count < maxDeltaElements ⇒
         val bucket = registry(owner)
         val deltaContent = bucket.content.filter {
-          case (_, value) ⇒ value.version > v
+          case (_, value) ⇒
+            value.version > v
         }
         count += deltaContent.size
         if (count <= maxDeltaElements)
@@ -876,7 +893,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   def otherHasNewerVersions(otherVersions: Map[Address, Long]): Boolean =
     otherVersions.exists {
-      case (owner, v) ⇒ v > registry(owner).version
+      case (owner, v) ⇒
+        v > registry(owner).version
     }
 
   /**
@@ -958,8 +976,10 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
       val dispatcher =
         system.settings.config
           .getString("akka.cluster.pub-sub.use-dispatcher") match {
-          case "" ⇒ Dispatchers.DefaultDispatcherId
-          case id ⇒ id
+          case "" ⇒
+            Dispatchers.DefaultDispatcherId
+          case id ⇒
+            id
         }
       system.systemActorOf(
         DistributedPubSubMediator.props(settings).withDispatcher(dispatcher),

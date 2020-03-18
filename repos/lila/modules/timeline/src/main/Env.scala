@@ -39,11 +39,14 @@ final class Env(
 
   def status(channel: String)(userId: String): Fu[Option[Boolean]] =
     unsubApi.get(channel, userId) flatMap {
-      case true => fuccess(Some(true)) // unsubed
+      case true =>
+        fuccess(Some(true)) // unsubed
       case false =>
         entryRepo.channelUserIdRecentExists(channel, userId) map {
-          case true  => Some(false) // subed
-          case false => None // not applicable
+          case true =>
+            Some(false) // subed
+          case false =>
+            None // not applicable
         }
     }
 

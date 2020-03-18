@@ -21,7 +21,8 @@ private[launchqueue] class RateLimiter(clock: Clock) {
 
   def cleanUpOverdueDelays(): Unit = {
     taskLaunchDelays = taskLaunchDelays.filter {
-      case (_, delay) => delay.deadline > clock.now()
+      case (_, delay) =>
+        delay.deadline > clock.now()
     }
   }
 
@@ -32,8 +33,10 @@ private[launchqueue] class RateLimiter(clock: Clock) {
 
   def addDelay(app: AppDefinition): Timestamp = {
     setNewDelay(app, "Increasing delay") {
-      case Some(delay) => Some(delay.increased(clock, app))
-      case None        => Some(Delay(clock, app))
+      case Some(delay) =>
+        Some(delay.increased(clock, app))
+      case None =>
+        Some(Delay(clock, app))
     }
   }
 

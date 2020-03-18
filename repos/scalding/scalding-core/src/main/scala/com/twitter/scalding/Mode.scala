@@ -63,8 +63,10 @@ object Mode {
   /** Get a Mode if this Args was the result of a putMode */
   def getMode(args: Args): Option[Mode] =
     args match {
-      case withMode: ArgsWithMode => Some(withMode.mode)
-      case _                      => None
+      case withMode: ArgsWithMode =>
+        Some(withMode.mode)
+      case _ =>
+        None
     }
 
   val CascadingFlowConnectorClassKey = "cascading.flow.connector.class"
@@ -143,7 +145,8 @@ trait HadoopMode extends Mode {
 
     val finalMap =
       conf.getCascadingAppJar match {
-        case Some(Success(cls)) => asMap + (jarKey -> cls)
+        case Some(Success(cls)) =>
+          asMap + (jarKey -> cls)
         case Some(Failure(err)) =>
           // This may or may not cause the job to fail at submission, let's punt till then
           LoggerFactory
@@ -154,7 +157,8 @@ trait HadoopMode extends Mode {
               err)
           // Just delete the key and see if it fails when cascading tries to submit
           asMap - jarKey
-        case None => asMap
+        case None =>
+          asMap
       }
 
     val flowConnectorClass = jobConf.get(
@@ -180,7 +184,8 @@ trait HadoopMode extends Mode {
     val conf = new JobConf(true) // initialize the default config
     // copy over Config
     config.toMap.foreach {
-      case (k, v) => conf.set(k, v)
+      case (k, v) =>
+        conf.set(k, v)
     }
 
     val flowProcessClass = jobConf.get(
@@ -214,7 +219,8 @@ trait CascadingLocal extends Mode {
     val ltap = tap.asInstanceOf[Tap[Properties, _, _]]
     val props = new java.util.Properties
     config.toMap.foreach {
-      case (k, v) => props.setProperty(k, v)
+      case (k, v) =>
+        props.setProperty(k, v)
     }
     val fp = new LocalFlowProcess(props)
     ltap.retrieveSourceFields(fp)

@@ -13,8 +13,10 @@ class MyTransportFactory extends TransporterFactory {
       session: RepositorySystemSession,
       repository: RemoteRepository): Transporter =
     repository.getProtocol match {
-      case "http" | "https" => new HttpTransport(repository)
-      case "file"           => new FileTransport(repository)
+      case "http" | "https" =>
+        new HttpTransport(repository)
+      case "file" =>
+        new FileTransport(repository)
       case other =>
         throw new IllegalArgumentException(
           s"Unsupported transport protocol: $other")

@@ -31,8 +31,11 @@ class HoconFoldingBuilder extends FoldingBuilder {
 
   def getPlaceholderText(node: ASTNode) =
     node.getElementType match {
-      case Object          => "{...}"
-      case Array           => "[...]"
-      case MultilineString => "\"\"\"...\"\"\""
+      case Object =>
+        "{...}"
+      case Array =>
+        "[...]"
+      case MultilineString =>
+        "\"\"\"...\"\"\""
     }
 }

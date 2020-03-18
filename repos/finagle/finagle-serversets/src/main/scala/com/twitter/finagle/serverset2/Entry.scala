@@ -48,7 +48,8 @@ case class Endpoint(
           this.shard == that.shard &&
           this.status == that.status &&
           this.memberId == that.memberId
-      case _ => super.equals(that)
+      case _ =>
+        super.equals(that)
     }
 }
 
@@ -96,18 +97,21 @@ object Endpoint {
     m match {
       case ep: java.util.Map[_, _] =>
         val p = Option(ep.get("port")) collect {
-          case port: java.lang.Integer => port
+          case port: java.lang.Integer =>
+            port
         }
 
         val h = Option(ep.get("host")) collect {
-          case host: String => host
+          case host: String =>
+            host
         }
 
         for (h <- h;
              p <- p)
           yield (h, p.toInt)
 
-      case _ => None
+      case _ =>
+        None
     }
 
   def parseJson(json: String): Seq[Endpoint] = {
@@ -136,10 +140,12 @@ object Endpoint {
       namesByHostPort(hostport) += null
     for {
       map <- d("additionalEndpoints") collect {
-        case m: java.util.Map[_, _] => m
+        case m: java.util.Map[_, _] =>
+          m
       }
       key <- map.keySet().asScala collect {
-        case k: String => k
+        case k: String =>
+          k
       }
       if key.isInstanceOf[String]
       hostport <- parseEndpoint(map.get(key))

@@ -183,15 +183,18 @@ object VecTime {
   def concat(arr: IndexedSeq[Vec[DateTime]]): VecTime = {
     val vecs = arr.map {
       _ match {
-        case vt: VecTime => vt
-        case v           => VecTime(v.toArray)
+        case vt: VecTime =>
+          vt
+        case v =>
+          VecTime(v.toArray)
       }
     }
 
     // calculate offset for each subsequent vec of bytes
     val sz =
       vecs.foldLeft(0) {
-        case (o, v) => o + v.length
+        case (o, v) =>
+          o + v.length
       }
 
     val databuf = Array.ofDim[Long](sz)

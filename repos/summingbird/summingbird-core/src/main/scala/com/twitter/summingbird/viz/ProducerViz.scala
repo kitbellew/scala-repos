@@ -30,13 +30,15 @@ case class ProducerViz[P <: Platform[P]](tail: Producer[P, _]) {
   def getName(node: Producer[P, _]): String = {
     val preferredName =
       node match {
-        case NamedProducer(parent, name) => "NamedProducer(%s)".format(name)
+        case NamedProducer(parent, name) =>
+          "NamedProducer(%s)".format(name)
         case _ =>
           node.getClass.getName.replaceFirst("com.twitter.summingbird.", "")
       }
 
     nodeLookupTable.get(node) match {
-      case Some(name) => name
+      case Some(name) =>
+        name
       case None =>
         nameLookupTable.get(preferredName) match {
           case Some(count) => {

@@ -28,17 +28,21 @@ class ScalaWithForYieldSurrounder extends ScalaExpressionSurrounder {
       withForNode.getPsi match {
         case x: ScParenthesisedExpr =>
           x.expr match {
-            case Some(y) => y
-            case _       => return x.getTextRange
+            case Some(y) =>
+              y
+            case _ =>
+              return x.getTextRange
           }
-        case x => x
+        case x =>
+          x
       }
 
     val forStmt = element.asInstanceOf[ScForStatement]
 
     val enums =
       (forStmt.enumerators: @unchecked) match {
-        case Some(x) => x.getNode
+        case Some(x) =>
+          x.getNode
       }
 
     val offset = enums.getTextRange.getStartOffset

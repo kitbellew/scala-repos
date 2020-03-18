@@ -367,7 +367,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         }
       }
     } catch {
-      case ct: ControlThrowable => throw ct
+      case ct: ControlThrowable =>
+        throw ct
       case t: Throwable =>
         error("Exception when starting mirror maker.", t)
     }
@@ -715,7 +716,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     override def commit() {
       consumer.commitSync(
         offsets.map {
-          case (tp, offset) => (tp, new OffsetAndMetadata(offset, ""))
+          case (tp, offset) =>
+            (tp, new OffsetAndMetadata(offset, ""))
         })
       offsets.clear()
     }

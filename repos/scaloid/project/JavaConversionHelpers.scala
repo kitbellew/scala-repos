@@ -12,8 +12,10 @@ trait JavaConversionHelpers {
 
   def getSuperclass(cls: Class[_]): Option[Class[_]] =
     cls.getSuperclass match {
-      case c: Class[_] => Some(c)
-      case _           => cls.getInterfaces.headOption
+      case c: Class[_] =>
+        Some(c)
+      case _ =>
+        cls.getInterfaces.headOption
     }
 
   def isPublic(m: Member): Boolean = Modifier.isPublic(m.getModifiers)
@@ -32,7 +34,8 @@ trait JavaConversionHelpers {
           c,
           withName(m.getName),
           withParameters(m.getParameterTypes: _*)).nonEmpty
-      case None => false
+      case None =>
+        false
     }
   def isDeprecated(e: AnnotatedElement) =
     e.isAnnotationPresent(classOf[java.lang.Deprecated])
@@ -64,7 +67,8 @@ trait JavaConversionHelpers {
         ScalaType("_")
       else
         tpe match {
-          case null => throw new Error("Property cannot be null")
+          case null =>
+            throw new Error("Property cannot be null")
           case ga: GenericArrayType =>
             ScalaType(
               "Array",
@@ -91,8 +95,10 @@ trait JavaConversionHelpers {
             } else if (c.isPrimitive) {
               ScalaType(
                 c.getName match {
-                  case "void" => "Unit"
-                  case n      => n.capitalize
+                  case "void" =>
+                    "Unit"
+                  case n =>
+                    n.capitalize
                 })
             } else if (c == classOf[java.lang.Object]) {
               ScalaType("Any")
@@ -141,7 +147,8 @@ trait JavaConversionHelpers {
           step(ga.getGenericComponentType) + arrayNotation
         case p: ParameterizedType =>
           p.toString.replace("$", ".")
-        case _: WildcardType => "?"
+        case _: WildcardType =>
+          "?"
         case c: Class[_] =>
           if (c.isArray) {
             step(c.getComponentType) + arrayNotation

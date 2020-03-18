@@ -53,8 +53,10 @@ private[persistence] trait AsyncWriteProxy
         case InitTimeout ⇒
           isInitTimedOut = true
           unstashAll() // will trigger appropriate failures
-        case _ if isInitTimedOut ⇒ super.aroundReceive(receive, msg)
-        case _ ⇒ stash()
+        case _ if isInitTimedOut ⇒
+          super.aroundReceive(receive, msg)
+        case _ ⇒
+          stash()
       }
 
   implicit def timeout: Timeout
@@ -64,7 +66,8 @@ private[persistence] trait AsyncWriteProxy
     store match {
       case Some(s) ⇒
         (s ? WriteMessages(messages)).mapTo[immutable.Seq[Try[Unit]]]
-      case None ⇒ storeNotInitialized
+      case None ⇒
+        storeNotInitialized
     }
 
   def asyncDeleteMessagesTo(
@@ -73,7 +76,8 @@ private[persistence] trait AsyncWriteProxy
     store match {
       case Some(s) ⇒
         (s ? DeleteMessagesTo(persistenceId, toSequenceNr)).mapTo[Unit]
-      case None ⇒ storeNotInitialized
+      case None ⇒
+        storeNotInitialized
     }
 
   def asyncReplayMessages(
@@ -94,7 +98,8 @@ private[persistence] trait AsyncWriteProxy
           ReplayMessages(persistenceId, fromSequenceNr, toSequenceNr, max),
           mediator)
         replayCompletionPromise.future
-      case None ⇒ storeNotInitialized
+      case None ⇒
+        storeNotInitialized
     }
 
   def asyncReadHighestSequenceNr(
@@ -109,9 +114,11 @@ private[persistence] trait AsyncWriteProxy
             toSequenceNr = 0L,
             max = 0L)
         ).map {
-          case ReplaySuccess(highest) ⇒ highest
+          case ReplaySuccess(highest) ⇒
+            highest
         }
-      case None ⇒ storeNotInitialized
+      case None ⇒
+        storeNotInitialized
     }
 
 }
@@ -165,7 +172,8 @@ private class ReplayMediator(
   context.setReceiveTimeout(replayTimeout)
 
   def receive = {
-    case p: PersistentRepr ⇒ replayCallback(p)
+    case p: PersistentRepr ⇒
+      replayCallback(p)
     case _: ReplaySuccess ⇒
       replayCompletionPromise.success(())
       context.stop(self)

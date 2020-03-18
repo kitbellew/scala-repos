@@ -22,6 +22,7 @@ object ReverseTakeReverse extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "takeRight", n))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
 }

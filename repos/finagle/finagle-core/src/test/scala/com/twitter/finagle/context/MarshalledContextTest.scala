@@ -15,8 +15,10 @@ class MarshalledContextTest extends FunSuite with AssertionsForJUnit {
       def marshal(value: String) = Buf.Utf8(value)
       def tryUnmarshal(buf: Buf) =
         buf match {
-          case Buf.Utf8(value) => Return(value)
-          case _               => Throw(new IllegalArgumentException)
+          case Buf.Utf8(value) =>
+            Return(value)
+          case _ =>
+            Throw(new IllegalArgumentException)
         }
     }
 
@@ -25,8 +27,10 @@ class MarshalledContextTest extends FunSuite with AssertionsForJUnit {
       def marshal(value: Int) = Buf.U32BE(value)
       def tryUnmarshal(buf: Buf) =
         buf match {
-          case Buf.U32BE(value, Buf.Empty) => Return(value)
-          case _                           => Throw(new IllegalArgumentException)
+          case Buf.U32BE(value, Buf.Empty) =>
+            Return(value)
+          case _ =>
+            Throw(new IllegalArgumentException)
         }
     }
 

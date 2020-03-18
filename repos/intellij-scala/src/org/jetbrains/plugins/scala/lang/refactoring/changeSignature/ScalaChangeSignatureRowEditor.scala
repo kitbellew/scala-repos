@@ -112,10 +112,14 @@ class ScalaChangeSignatureRowEditor(
     new JBTableRow {
       def getValueAt(column: Int): AnyRef = {
         column match {
-          case 0 => myNameEditor.getText.trim
-          case 1 => myTypeEditor.getText.trim
-          case 2 => myDefaultValueEditor.getText.trim
-          case _ => null
+          case 0 =>
+            myNameEditor.getText.trim
+          case 1 =>
+            myTypeEditor.getText.trim
+          case 2 =>
+            myDefaultValueEditor.getText.trim
+          case _ =>
+            null
         }
       }
     }

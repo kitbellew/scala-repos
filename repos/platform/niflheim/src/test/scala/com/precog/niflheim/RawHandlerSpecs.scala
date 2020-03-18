@@ -36,7 +36,8 @@ abstract class cleanup(f: File) extends After {
     try {
       f.delete()
     } catch {
-      case _: Exception => ()
+      case _: Exception =>
+        ()
     }
   }
 }

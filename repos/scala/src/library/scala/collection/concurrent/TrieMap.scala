@@ -312,8 +312,10 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 None
               else
                 null
-            case INode.KEY_PRESENT => None
-            case otherv            => None
+            case INode.KEY_PRESENT =>
+              None
+            case otherv =>
+              None
           }
       case sn: TNode[K, V] =>
         clean(parent, ct, lev - 5)
@@ -337,7 +339,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                   None
                 else
                   null
-              case optv => optv
+              case optv =>
+                optv
             }
           case INode.KEY_PRESENT =>
             ln.get(k) match {
@@ -346,7 +349,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                   Some(v0)
                 else
                   null
-              case None => None
+              case None =>
+                None
             }
           case otherv =>
             ln.get(k) match {
@@ -355,7 +359,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                   Some(otherv.asInstanceOf[V])
                 else
                   null
-              case _ => None
+              case _ =>
+                None
             }
         }
     }
@@ -530,7 +535,8 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 optv
               else
                 null
-            case _ => None
+            case _ =>
+              None
           }
     }
   }
@@ -538,8 +544,9 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
   private def clean(nd: INode[K, V], ct: TrieMap[K, V], lev: Int) {
     val m = nd.GCAS_READ(ct)
     m match {
-      case cn: CNode[K, V] => nd.GCAS(cn, cn.toCompressed(ct, lev, gen), ct)
-      case _               =>
+      case cn: CNode[K, V] =>
+        nd.GCAS(cn, cn.toCompressed(ct, lev, gen), ct)
+      case _ =>
     }
   }
 
@@ -555,11 +562,16 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
     "%sINode -> %s".format(
       "  " * lev,
       mainnode match {
-        case null            => "<null>"
-        case tn: TNode[_, _] => "TNode(%s, %s, %d, !)".format(tn.k, tn.v, tn.hc)
-        case cn: CNode[_, _] => cn.string(lev)
-        case ln: LNode[_, _] => ln.string(lev)
-        case x               => "<elem: %s>".format(x)
+        case null =>
+          "<null>"
+        case tn: TNode[_, _] =>
+          "TNode(%s, %s, %d, !)".format(tn.k, tn.v, tn.hc)
+        case cn: CNode[_, _] =>
+          cn.string(lev)
+        case ln: LNode[_, _] =>
+          ln.string(lev)
+        case x =>
+          "<elem: %s>".format(x)
       }
     )
 
@@ -681,8 +693,10 @@ private[collection] final class CNode[K, V](
     while (i < array.length) {
       val pos = (i + offset) % array.length
       array(pos) match {
-        case sn: SNode[_, _] => sz += 1
-        case in: INode[K, V] => sz += in.cachedSize(ct)
+        case sn: SNode[_, _] =>
+          sz += 1
+        case in: INode[K, V] =>
+          sz += in.cachedSize(ct)
       }
       i += 1
     }
@@ -726,8 +740,10 @@ private[collection] final class CNode[K, V](
     val narr = new Array[BasicNode](len)
     while (i < len) {
       arr(i) match {
-        case in: INode[K, V] => narr(i) = in.copyToGen(ngen, ct)
-        case bn: BasicNode   => narr(i) = bn
+        case in: INode[K, V] =>
+          narr(i) = in.copyToGen(ngen, ct)
+        case bn: BasicNode =>
+          narr(i) = bn
       }
       i += 1
     }
@@ -736,15 +752,19 @@ private[collection] final class CNode[K, V](
 
   private def resurrect(inode: INode[K, V], inodemain: AnyRef): BasicNode =
     inodemain match {
-      case tn: TNode[_, _] => tn.copyUntombed
-      case _               => inode
+      case tn: TNode[_, _] =>
+        tn.copyUntombed
+      case _ =>
+        inode
     }
 
   def toContracted(lev: Int): MainNode[K, V] =
     if (array.length == 1 && lev > 0)
       array(0) match {
-        case sn: SNode[K, V] => sn.copyTombed
-        case _               => this
+        case sn: SNode[K, V] =>
+          sn.copyTombed
+        case _ =>
+          this
       }
     else
       this
@@ -782,19 +802,25 @@ private[collection] final class CNode[K, V](
   /* quiescently consistent - don't call concurrently to anything involving a GCAS!! */
   private def collectElems: Seq[(K, V)] =
     array flatMap {
-      case sn: SNode[K, V] => Some(sn.kvPair)
+      case sn: SNode[K, V] =>
+        Some(sn.kvPair)
       case in: INode[K, V] =>
         in.mainnode match {
-          case tn: TNode[K, V] => Some(tn.kvPair)
-          case ln: LNode[K, V] => ln.listmap.toList
-          case cn: CNode[K, V] => cn.collectElems
+          case tn: TNode[K, V] =>
+            Some(tn.kvPair)
+          case ln: LNode[K, V] =>
+            ln.listmap.toList
+          case cn: CNode[K, V] =>
+            cn.collectElems
         }
     }
 
   private def collectLocalElems: Seq[String] =
     array flatMap {
-      case sn: SNode[K, V] => Some(sn.kvPair._2.toString)
-      case in: INode[K, V] => Some(in.toString.drop(14) + "(" + in.gen + ")")
+      case sn: SNode[K, V] =>
+        Some(sn.kvPair._2.toString)
+      case in: INode[K, V] =>
+        Some(in.toString.drop(14) + "(" + in.gen + ")")
     }
 
   override def toString = {
@@ -935,8 +961,10 @@ final class TrieMap[K, V] private (
   def RDCSS_READ_ROOT(abort: Boolean = false): INode[K, V] = {
     val r = /*READ*/ root
     r match {
-      case in: INode[K, V]              => in
-      case desc: RDCSS_Descriptor[K, V] => RDCSS_Complete(abort)
+      case in: INode[K, V] =>
+        in
+      case desc: RDCSS_Descriptor[K, V] =>
+        RDCSS_Complete(abort)
     }
   }
 
@@ -944,7 +972,8 @@ final class TrieMap[K, V] private (
   private def RDCSS_Complete(abort: Boolean): INode[K, V] = {
     val v = /*READ*/ root
     v match {
-      case in: INode[K, V] => in
+      case in: INode[K, V] =>
+        in
       case desc: RDCSS_Descriptor[K, V] =>
         val RDCSS_Descriptor(ov, exp, nv) = desc
         if (abort) {
@@ -1180,8 +1209,10 @@ final class TrieMap[K, V] private (
       } else {
         val hc = computeHash(k)
         insertifhc(k, hc, v, INode.KEY_ABSENT) match {
-          case Some(oldv) => oldv
-          case None       => v
+          case Some(oldv) =>
+            oldv
+          case None =>
+            v
         }
       }
     }

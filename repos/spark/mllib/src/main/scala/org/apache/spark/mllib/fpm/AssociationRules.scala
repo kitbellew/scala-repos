@@ -72,7 +72,8 @@ class AssociationRules private[fpm] (private var minConfidence: Double)
         items.partition(_ == item) match {
           case (consequent, antecedent) if !antecedent.isEmpty =>
             Some((antecedent.toSeq, (consequent.toSeq, itemset.freq)))
-          case _ => None
+          case _ =>
+            None
         }
       }
     }

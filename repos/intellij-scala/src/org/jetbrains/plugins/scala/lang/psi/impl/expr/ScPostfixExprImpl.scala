@@ -32,8 +32,10 @@ class ScPostfixExprImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitPostfixExpression(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitPostfixExpression(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

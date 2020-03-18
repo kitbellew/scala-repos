@@ -33,7 +33,8 @@ object StripMarginParser extends StringParser {
           case Text(s) =>
             val stripped = s.stripMargin(marginChar)
             Text(stripped).withEscapedPercent(element.getManager)
-          case part => List(part)
+          case part =>
+            List(part)
         }
       case Both(lit: ScLiteral, WithStrippedMargin(_, marginChar)) =>
         Text(lit.getValue.toString.stripMargin(marginChar))
@@ -63,7 +64,8 @@ object WithStrippedMargin {
           if lit.isMultiLineString && ref.refName == STRIP_MARGIN &&
             argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
         Some(mc, argLit.getValue.asInstanceOf[Char])
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -78,14 +80,17 @@ object IsStripMargin {
           if lit.isMultiLineString && ref.refName == STRIP_MARGIN =>
         val marginChar =
           args match {
-            case Nil => '|'
+            case Nil =>
+              '|'
             case Seq(argLit: ScLiteral)
                 if argLit.getFirstChild.getNode.getElementType == ScalaTokenTypes.tCHAR =>
               argLit.getValue.asInstanceOf[Char]
-            case _ => '|'
+            case _ =>
+              '|'
           }
         Some(lit, marginChar)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

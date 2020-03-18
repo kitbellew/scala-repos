@@ -313,7 +313,8 @@ trait ColumnarTableLibModule[M[+_]]
             rec(xs, impl)
           }
 
-          case Nil => acc
+          case Nil =>
+            acc
         }
       }
 

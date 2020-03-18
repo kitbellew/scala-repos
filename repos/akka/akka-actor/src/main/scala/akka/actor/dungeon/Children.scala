@@ -36,8 +36,10 @@ private[akka] trait Children {
   final def child(name: String): Option[ActorRef] = Option(getChild(name))
   final def getChild(name: String): ActorRef =
     childrenRefs.getByName(name) match {
-      case Some(s: ChildRestartStats) ⇒ s.child
-      case _ ⇒ null
+      case Some(s: ChildRestartStats) ⇒
+        s.child
+      case _ ⇒
+        null
     }
 
   def actorOf(props: Props): ActorRef =
@@ -173,8 +175,10 @@ private[akka] trait Children {
       }
 
       if (actor match {
-            case r: RepointableRef ⇒ r.isStarted
-            case _ ⇒ true
+            case r: RepointableRef ⇒
+              r.isStarted
+            case _ ⇒
+              true
           })
         shallDie(actor)
     }
@@ -219,7 +223,8 @@ private[akka] trait Children {
           Some(crs)
         else
           initChild(ref)
-      case None ⇒ None
+      case None ⇒
+        None
     }
   }
 
@@ -231,7 +236,8 @@ private[akka] trait Children {
         swapChildrenRefs(
           c,
           c.copy(reason = reason)) || setChildrenTerminationReason(reason)
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
   }
 
@@ -251,8 +257,10 @@ private[akka] trait Children {
 
   protected def waitingForChildrenOrNull =
     childrenRefs match {
-      case TerminatingChildrenContainer(_, _, w: WaitingForChildren) ⇒ w
-      case _ ⇒ null
+      case TerminatingChildrenContainer(_, _, w: WaitingForChildren) ⇒
+        w
+      case _ ⇒
+        null
     }
 
   protected def suspendChildren(exceptFor: Set[ActorRef] = Set.empty): Unit =
@@ -289,7 +297,8 @@ private[akka] trait Children {
       getChildByName(name) match {
         case Some(crs: ChildRestartStats) ⇒
           crs.child.asInstanceOf[InternalActorRef]
-        case _ ⇒ getFunctionRefOrNobody(name)
+        case _ ⇒
+          getFunctionRefOrNobody(name)
       }
     } else {
       val (childName, uid) = ActorCell.splitNameAndUid(name)
@@ -297,7 +306,8 @@ private[akka] trait Children {
         case Some(crs: ChildRestartStats)
             if uid == ActorCell.undefinedUid || uid == crs.uid ⇒
           crs.child.asInstanceOf[InternalActorRef]
-        case _ ⇒ getFunctionRefOrNobody(childName, uid)
+        case _ ⇒
+          getFunctionRefOrNobody(childName, uid)
       }
     }
 
@@ -316,8 +326,10 @@ private[akka] trait Children {
     childrenRefs match { // The match must be performed BEFORE the removeChild
       case TerminatingChildrenContainer(_, _, reason) ⇒
         removeChild(child) match {
-          case _: TerminatingChildrenContainer ⇒ None
-          case _ ⇒ Some(reason)
+          case _: TerminatingChildrenContainer ⇒
+            None
+          case _ ⇒
+            Some(reason)
         }
       case _ ⇒
         removeChild(child)

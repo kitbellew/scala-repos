@@ -55,12 +55,18 @@ final class JUnitFramework extends Framework {
     var runListener: String = null
     for (str <- args) {
       str match {
-        case "-q" => quiet = true
-        case "-v" => verbose = true
-        case "-n" => noColor = true
-        case "-s" => decodeScalaNames = true
-        case "-a" => logAssert = true
-        case "-c" => logExceptionClass = false
+        case "-q" =>
+          quiet = true
+        case "-v" =>
+          verbose = true
+        case "-n" =>
+          noColor = true
+        case "-s" =>
+          decodeScalaNames = true
+        case "-a" =>
+          logAssert = true
+        case "-c" =>
+          logExceptionClass = false
 
         case s if s.startsWith("-tests=") =>
           throw new UnsupportedOperationException("-tests")
@@ -91,13 +97,19 @@ final class JUnitFramework extends Framework {
     }
     for (s <- args) {
       s match {
-        case "+q" => quiet = false
-        case "+v" => verbose = false
-        case "+n" => noColor = false
-        case "+s" => decodeScalaNames = false
-        case "+a" => logAssert = false
-        case "+c" => logExceptionClass = false
-        case _    =>
+        case "+q" =>
+          quiet = false
+        case "+v" =>
+          verbose = false
+        case "+n" =>
+          noColor = false
+        case "+s" =>
+          decodeScalaNames = false
+        case "+a" =>
+          logAssert = false
+        case "+c" =>
+          logExceptionClass = false
+        case _ =>
       }
     }
     new RunSettings(

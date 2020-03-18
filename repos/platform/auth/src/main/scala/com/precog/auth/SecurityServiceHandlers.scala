@@ -202,7 +202,8 @@ class SecurityServiceHandlers(
             findAPIKey(apiKey, None) map {
               case Some(v1.APIKeyDetails(_, _, _, grantDetails, _)) =>
                 ok(Some(grantDetails))
-              case None => notFound("The specified API key does not exist")
+              case None =>
+                notFound("The specified API key does not exist")
             }
           } getOrElse {
             Promise successful badRequest("Missing API key from request URL.")

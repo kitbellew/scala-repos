@@ -105,11 +105,14 @@ class Dispatchers(
             throw new ConfigurationException(s"Dispatcher [$id] not configured")
 
         dispatcherConfigurators.putIfAbsent(id, newConfigurator) match {
-          case null ⇒ newConfigurator
-          case existing ⇒ existing
+          case null ⇒
+            newConfigurator
+          case existing ⇒
+            existing
         }
 
-      case existing ⇒ existing
+      case existing ⇒
+        existing
     }
   }
 
@@ -185,7 +188,8 @@ class Dispatchers(
         "Missing dispatcher 'id' property in config: " + cfg.root.render)
 
     cfg.getString("type") match {
-      case "Dispatcher" ⇒ new DispatcherConfigurator(cfg, prerequisites)
+      case "Dispatcher" ⇒
+        new DispatcherConfigurator(cfg, prerequisites)
       case "BalancingDispatcher" ⇒
         // FIXME remove this case in 2.4
         throw new IllegalArgumentException(
@@ -323,7 +327,8 @@ class PinnedDispatcherConfigurator(
 
   private val threadPoolConfig: ThreadPoolConfig =
     configureExecutor() match {
-      case e: ThreadPoolExecutorConfigurator ⇒ e.threadPoolConfig
+      case e: ThreadPoolExecutorConfigurator ⇒
+        e.threadPoolConfig
       case other ⇒
         prerequisites.eventStream.publish(
           Warning(

@@ -79,15 +79,24 @@ trait TypeKinds extends SubComponent {
 
     val primitiveCharCode: Char =
       typeSymbol match {
-        case BooleanClass => 'Z'
-        case CharClass    => 'C'
-        case ByteClass    => 'B'
-        case ShortClass   => 'S'
-        case IntClass     => 'I'
-        case LongClass    => 'J'
-        case FloatClass   => 'F'
-        case DoubleClass  => 'D'
-        case x            => abort("Unknown primitive type: " + x.fullName)
+        case BooleanClass =>
+          'Z'
+        case CharClass =>
+          'C'
+        case ByteClass =>
+          'B'
+        case ShortClass =>
+          'S'
+        case IntClass =>
+          'I'
+        case LongClass =>
+          'J'
+        case FloatClass =>
+          'F'
+        case DoubleClass =>
+          'D'
+        case x =>
+          abort("Unknown primitive type: " + x.fullName)
       }
   }
 
@@ -150,8 +159,10 @@ trait TypeKinds extends SubComponent {
 
     def dimensions: Int =
       elem match {
-        case a: ARRAY => a.dimensions + 1
-        case _        => 1
+        case a: ARRAY =>
+          a.dimensions + 1
+        case _ =>
+          1
       }
 
     override def toIRType: Types.ArrayType = toReferenceType
@@ -163,8 +174,10 @@ trait TypeKinds extends SubComponent {
     /** The ultimate element type of this array. */
     def elementKind: TypeKindButArray =
       elem match {
-        case a: ARRAY            => a.elementKind
-        case k: TypeKindButArray => k
+        case a: ARRAY =>
+          a.elementKind
+        case k: TypeKindButArray =>
+          k
       }
   }
 
@@ -184,14 +197,20 @@ trait TypeKinds extends SubComponent {
     */
   def toTypeKind(t: Type): TypeKind =
     t.normalize match {
-      case ThisType(ArrayClass)  => ObjectReference
-      case ThisType(sym)         => newReference(sym)
-      case SingleType(_, sym)    => primitiveOrRefType(sym)
-      case ConstantType(_)       => toTypeKind(t.underlying)
-      case TypeRef(_, sym, args) => primitiveOrClassType(sym, args)
+      case ThisType(ArrayClass) =>
+        ObjectReference
+      case ThisType(sym) =>
+        newReference(sym)
+      case SingleType(_, sym) =>
+        primitiveOrRefType(sym)
+      case ConstantType(_) =>
+        toTypeKind(t.underlying)
+      case TypeRef(_, sym, args) =>
+        primitiveOrClassType(sym, args)
       case ClassInfoType(_, _, ArrayClass) =>
         abort("ClassInfoType to ArrayClass!")
-      case ClassInfoType(_, _, sym) => primitiveOrRefType(sym)
+      case ClassInfoType(_, _, sym) =>
+        primitiveOrRefType(sym)
 
       // !!! Iulian says types which make no sense after erasure should not reach here,
       // which includes the ExistentialType, AnnotatedType, RefinedType.  I don't know
@@ -200,14 +219,16 @@ trait TypeKinds extends SubComponent {
       // !!! Removed in JavaScript backend because I do not know what to do with lub
       //case ExistentialType(_, t)           => toTypeKind(t)
       // Apparently, this case does occur (see pos/CustomGlobal.scala)
-      case t: AnnotatedType => toTypeKind(t.underlying)
+      case t: AnnotatedType =>
+        toTypeKind(t.underlying)
       //case RefinedType(parents, _)         => parents map toTypeKind reduceLeft lub
 
       /* This case is not in scalac. We need it for the test
        * run/valueclasses-classtag-existential. I have no idea how icode does
        * not fail this test: we do everything the same as icode up to here.
        */
-      case tpe: ErasedValueType => newReference(tpe.valueClazz)
+      case tpe: ErasedValueType =>
+        newReference(tpe.valueClazz)
 
       // For sure WildcardTypes shouldn't reach here either, but when
       // debugging such situations this may come in handy.
@@ -226,8 +247,10 @@ trait TypeKinds extends SubComponent {
     */
   private def arrayOrClassType(sym: Symbol, targs: List[Type]) =
     sym match {
-      case ArrayClass       => ARRAY(toTypeKind(targs.head))
-      case _ if sym.isClass => newReference(sym)
+      case ArrayClass =>
+        ARRAY(toTypeKind(targs.head))
+      case _ if sym.isClass =>
+        newReference(sym)
       case _ =>
         assert(sym.isType, sym) // it must be compiling Array[a]
         ObjectReference
@@ -239,9 +262,11 @@ trait TypeKinds extends SubComponent {
     */
   private def newReference(sym: Symbol): TypeKind =
     sym match {
-      case NothingClass => NOTHING
-      case NullClass    => NULL
-      case _            =>
+      case NothingClass =>
+        NOTHING
+      case NullClass =>
+        NULL
+      case _ =>
         // Can't call .toInterface (at this phase) or we trip an assertion.
         // See PackratParser#grow for a method which fails with an apparent mismatch
         // between "object PackratParsers$class" and "trait PackratParsers"

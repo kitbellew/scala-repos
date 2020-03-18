@@ -22,8 +22,10 @@ class ScalatraTestServlet extends ScalatraServlet {
 
   post("/post/test") {
     params.get("posted_value") match {
-      case None    => "posted_value is null"
-      case Some(s) => s
+      case None =>
+        "posted_value is null"
+      case Some(s) =>
+        s
     }
   }
 

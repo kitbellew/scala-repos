@@ -192,7 +192,8 @@ class MockHttpServletRequest(
     if (method == "GET" && !parameters.isEmpty) {
       parameters
         .map {
-          case (k, v) => k + "=" + v
+          case (k, v) =>
+            k + "=" + v
         }
         .mkString("&")
     } else {
@@ -446,7 +447,8 @@ class MockHttpServletRequest(
 
     newMap
       .map {
-        case (k, v) => (k, v.toArray)
+        case (k, v) =>
+          (k, v.toArray)
       }
       .asInstanceOf[Map[String, Array[String]]]
 //    asMap(newMap.map{case (k,v) => (k,v.toArray)}.asInstanceOf[Map[Object,Object]])
@@ -519,8 +521,10 @@ class MockHttpServletRequest(
 
   def getHeader(h: String): String =
     headers.get(h) match {
-      case Some(v :: _) => v
-      case _            => null
+      case Some(v :: _) =>
+        v
+      case _ =>
+        null
     }
 
   def getHeaderNames(): JEnum[String] = headers.keys.iterator

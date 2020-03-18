@@ -28,7 +28,8 @@ private[http] class RespondToExpectContinue
         // continue receiving chunks after this.
         request.headers.remove(HttpHeaders.Names.EXPECT)
 
-      case _ => ()
+      case _ =>
+        ()
     }
 
     super.messageReceived(ctx, e)

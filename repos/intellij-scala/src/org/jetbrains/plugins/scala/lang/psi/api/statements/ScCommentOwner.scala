@@ -13,14 +13,17 @@ trait ScCommentOwner {
 
   def simpleComment: Option[PsiComment] = {
     self.children.collectFirst {
-      case c: PsiComment if !c.isInstanceOf[ScDocComment] => c
+      case c: PsiComment if !c.isInstanceOf[ScDocComment] =>
+        c
     }
   }
 
   private def scDocComment: Option[ScDocComment] =
     self match {
-      case dco: ScDocCommentOwner => dco.docComment
-      case _                      => None
+      case dco: ScDocCommentOwner =>
+        dco.docComment
+      case _ =>
+        None
     }
 
   def allComments: Seq[PsiComment] = scDocComment.toSeq ++ simpleComment

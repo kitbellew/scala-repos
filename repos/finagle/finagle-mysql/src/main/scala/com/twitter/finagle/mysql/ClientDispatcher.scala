@@ -48,8 +48,9 @@ private[mysql] class PrepareCache(svc: Service[Request, Result], max: Int = 20)
             notification: RemovalNotification[Request, Future[Result]])
             : Unit = {
           notification.getValue() onSuccess {
-            case r: PrepareOK => svc(CloseRequest(r.id))
-            case _            => // nop
+            case r: PrepareOK =>
+              svc(CloseRequest(r.id))
+            case _ => // nop
           }
         }
       }
@@ -68,8 +69,10 @@ private[mysql] class PrepareCache(svc: Service[Request, Result], max: Int = 20)
     */
   override def apply(req: Request): Future[Result] =
     req match {
-      case _: PrepareRequest => fn(req)
-      case _                 => super.apply(req)
+      case _: PrepareRequest =>
+        fn(req)
+      case _ =>
+        super.apply(req)
     }
 }
 
@@ -79,7 +82,8 @@ object ClientDispatcher {
   private val emptyTx = (Nil, EOF(0: Short, 0: Short))
   private val wrapWriteException
       : PartialFunction[Throwable, Future[Nothing]] = {
-    case exc: Throwable => Future.exception(WriteException(exc))
+    case exc: Throwable =>
+      Future.exception(WriteException(exc))
   }
 
   /**
@@ -104,7 +108,8 @@ object ClientDispatcher {
   private def const[T](result: Try[T]): Future[T] =
     Future.const(
       result rescue {
-        case exc => Throw(LostSyncException(exc))
+        case exc =>
+          Throw(LostSyncException(exc))
       })
 }
 
@@ -129,8 +134,9 @@ class ClientDispatcher(
       // a LostSyncException represents a fatal state between
       // the client / server. The error is unrecoverable
       // so we close the service.
-      case e @ LostSyncException(_) => close()
-      case _                        =>
+      case e @ LostSyncException(_) =>
+        close()
+      case _ =>
     }
 
   /**
@@ -280,8 +286,10 @@ class ClientDispatcher(
                 val Error(code, state, msg) = err
                 Future.exception(ServerError(code, state, msg))
               }
-            case Some(_) => aux(numRead + 1, packet :: xs)
-            case None    => Future.exception(lostSyncExc)
+            case Some(_) =>
+              aux(numRead + 1, packet :: xs)
+            case None =>
+              Future.exception(lostSyncExc)
           }
         }
     }

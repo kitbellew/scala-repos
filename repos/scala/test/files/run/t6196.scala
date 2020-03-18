@@ -44,8 +44,10 @@ object Test extends App {
       override def equals(that: Any) = {
         equalsCount += 1
         that match {
-          case HashCounter(value) => this.value == value
-          case _                  => false
+          case HashCounter(value) =>
+            this.value == value
+          case _ =>
+            false
         }
       }
     }

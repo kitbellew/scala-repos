@@ -47,12 +47,15 @@ object QuirrelCacheSpecs
           expr match {
             // special-case Let because its children
             // doesn't return all the sub-exprs
-            case Let(_, _, _, c1, c2) => c1 :: c2 :: Nil
-            case e                    => e.children
+            case Let(_, _, _, c1, c2) =>
+              c1 :: c2 :: Nil
+            case e =>
+              e.children
           }
 
         cs.iterator map loop collectFirst {
-          case Some(a) => a
+          case Some(a) =>
+            a
         }
       }
     }
@@ -76,19 +79,23 @@ object QuirrelCacheSpecs
 
       val a =
         findNode(root) {
-          case NumLit(loc, _) => (loc.lineNum, loc.colNum)
+          case NumLit(loc, _) =>
+            (loc.lineNum, loc.colNum)
         }
       val b =
         findNode(root) {
-          case StrLit(loc, "asdf") => (loc.lineNum, loc.colNum)
+          case StrLit(loc, "asdf") =>
+            (loc.lineNum, loc.colNum)
         }
       val c =
         findNode(root) {
-          case BoolLit(loc, _) => (loc.lineNum, loc.colNum)
+          case BoolLit(loc, _) =>
+            (loc.lineNum, loc.colNum)
         }
       val d =
         findNode(root) {
-          case StrLit(loc, "/abc") => (loc.lineNum, loc.colNum)
+          case StrLit(loc, "/abc") =>
+            (loc.lineNum, loc.colNum)
         }
 
       a must_== Some((1, 6))

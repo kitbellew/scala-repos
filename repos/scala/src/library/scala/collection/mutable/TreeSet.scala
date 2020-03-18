@@ -138,9 +138,12 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(implicit
       */
     private[this] def pickLowerBound(newFrom: Option[A]): Option[A] =
       (from, newFrom) match {
-        case (Some(fr), Some(newFr)) => Some(ordering.max(fr, newFr))
-        case (None, _)               => newFrom
-        case _                       => from
+        case (Some(fr), Some(newFr)) =>
+          Some(ordering.max(fr, newFr))
+        case (None, _) =>
+          newFrom
+        case _ =>
+          from
       }
 
     /**
@@ -148,9 +151,12 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(implicit
       */
     private[this] def pickUpperBound(newUntil: Option[A]): Option[A] =
       (until, newUntil) match {
-        case (Some(unt), Some(newUnt)) => Some(ordering.min(unt, newUnt))
-        case (None, _)                 => newUntil
-        case _                         => until
+        case (Some(unt), Some(newUnt)) =>
+          Some(ordering.min(unt, newUnt))
+        case (None, _) =>
+          newUntil
+        case _ =>
+          until
       }
 
     /**
@@ -185,8 +191,10 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(implicit
         else
           RB.minKey(tree)
       (elem, until) match {
-        case (Some(e), Some(unt)) if ordering.compare(e, unt) >= 0 => None
-        case _                                                     => elem
+        case (Some(e), Some(unt)) if ordering.compare(e, unt) >= 0 =>
+          None
+        case _ =>
+          elem
       }
     }
 
@@ -198,8 +206,10 @@ sealed class TreeSet[A] private (tree: RB.Tree[A, Null])(implicit
         else
           RB.maxKey(tree)
       (elem, from) match {
-        case (Some(e), Some(fr)) if ordering.compare(e, fr) < 0 => None
-        case _                                                  => elem
+        case (Some(e), Some(fr)) if ordering.compare(e, fr) < 0 =>
+          None
+        case _ =>
+          elem
       }
     }
 

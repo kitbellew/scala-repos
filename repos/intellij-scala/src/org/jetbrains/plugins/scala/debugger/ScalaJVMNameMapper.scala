@@ -23,10 +23,14 @@ class ScalaJVMNameMapper extends NameMapper {
       new Computable[String] {
         def compute: String = {
           clazz match {
-            case obj: ScObject                  => obj.qualifiedName + "$"
-            case tr: ScTrait                    => tr.qualifiedName
-            case templDef: ScTemplateDefinition => templDef.qualifiedName
-            case psiClass                       => null
+            case obj: ScObject =>
+              obj.qualifiedName + "$"
+            case tr: ScTrait =>
+              tr.qualifiedName
+            case templDef: ScTemplateDefinition =>
+              templDef.qualifiedName
+            case psiClass =>
+              null
           }
         }
       })

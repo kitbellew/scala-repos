@@ -365,7 +365,8 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
           try {
             Logger.get("").getHandlers()(0).asInstanceOf[ThrottledHandler]
           } catch {
-            case _: ClassCastException => fail("not a ThrottledHandler")
+            case _: ClassCastException =>
+              fail("not a ThrottledHandler")
           }
           try {
             Logger
@@ -375,18 +376,21 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
               .handler
               .asInstanceOf[FileHandler]
           } catch {
-            case _: ClassCastException => fail("not a FileHandler")
+            case _: ClassCastException =>
+              fail("not a FileHandler")
           }
           assert(Logger.get("w3c").getHandlers().size == 0)
           try {
             Logger.get("stats").getHandlers()(0).asInstanceOf[ScribeHandler]
           } catch {
-            case _: ClassCastException => fail("not a ScribeHandler")
+            case _: ClassCastException =>
+              fail("not a ScribeHandler")
           }
           try {
             Logger.get("bad_jobs").getHandlers()(0).asInstanceOf[FileHandler]
           } catch {
-            case _: ClassCastException => fail("not a FileHandler")
+            case _: ClassCastException =>
+              fail("not a FileHandler")
           }
 
         }

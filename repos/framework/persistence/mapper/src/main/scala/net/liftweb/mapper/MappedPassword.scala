@@ -118,7 +118,8 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
         invalidPw = true;
         invalidMsg = S.?("password.must.be.set");
         password.set("*")
-      case MappedPassword.blankPw => return "*"
+      case MappedPassword.blankPw =>
+        return "*"
       case _ if (value.length > 4) =>
         invalidPw = false;
         val bcrypted = BCrypt.hashpw(

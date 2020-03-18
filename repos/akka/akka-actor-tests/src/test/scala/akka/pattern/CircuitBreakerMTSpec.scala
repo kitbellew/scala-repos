@@ -28,8 +28,10 @@ class CircuitBreakerMTSpec extends AkkaSpec {
         Await.result(
           breaker.withCircuitBreaker(
             Future(throw new RuntimeException("FAIL"))) recover {
-            case _: CircuitBreakerOpenException ⇒ true
-            case _ ⇒ false
+            case _: CircuitBreakerOpenException ⇒
+              true
+            case _ ⇒
+              false
           },
           remainingOrDefault)
 

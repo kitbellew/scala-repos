@@ -161,7 +161,8 @@ object LDAExample {
 
     val optimizer =
       params.algorithm.toLowerCase match {
-        case "em" => new EMLDAOptimizer
+        case "em" =>
+          new EMLDAOptimizer
         // add (1.0 / actualCorpusSize) to MiniBatchFraction be more robust on tiny datasets.
         case "online" =>
           new OnlineLDAOptimizer()
@@ -201,7 +202,8 @@ object LDAExample {
     val topics = topicIndices.map {
       case (terms, termWeights) =>
         terms.zip(termWeights).map {
-          case (term, weight) => (vocabArray(term.toInt), weight)
+          case (term, weight) =>
+            (vocabArray(term.toInt), weight)
         }
     }
     println(s"${params.k} topics:")
@@ -264,7 +266,8 @@ object LDAExample {
       .select("features")
       .rdd
       .map {
-        case Row(features: Vector) => features
+        case Row(features: Vector) =>
+          features
       }
       .zipWithIndex()
       .map(_.swap)

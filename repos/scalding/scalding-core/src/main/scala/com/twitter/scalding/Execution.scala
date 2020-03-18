@@ -70,7 +70,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
     */
   def liftToTry: Execution[Try[T]] =
     map(e => Success(e)).recoverWith {
-      case throwable => Execution.from(Failure(throwable))
+      case throwable =>
+        Execution.from(Failure(throwable))
     }
 
   /**
@@ -79,7 +80,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
     */
   def filter(pred: T => Boolean): Execution[T] =
     flatMap {
-      case good if pred(good) => Execution.from(good)
+      case good if pred(good) =>
+        Execution.from(good)
       case failed =>
         Execution.from(sys.error("Filter failed on: " + failed.toString))
     }
@@ -286,7 +288,8 @@ object Execution {
   implicit def semigroup[T: Semigroup]: Semigroup[Execution[T]] =
     Semigroup.from[Execution[T]] { (a, b) =>
       a.zip(b).map {
-        case (ta, tb) => Semigroup.plus(ta, tb)
+        case (ta, tb) =>
+          Semigroup.plus(ta, tb)
       }
     }
 
@@ -299,7 +302,8 @@ object Execution {
   implicit def monoid[T: Monoid]: Monoid[Execution[T]] =
     Monoid.from(Execution.from(Monoid.zero[T])) { (a, b) =>
       a.zip(b).map {
-        case (ta, tb) => Monoid.plus(ta, tb)
+        case (ta, tb) =>
+          Monoid.plus(ta, tb)
       }
     }
 
@@ -358,7 +362,8 @@ object Execution {
             @annotation.tailrec
             def go(): Unit =
               messageQueue.take match {
-                case Stop => ()
+                case Stop =>
+                  ()
                 case RunFlowDef(conf, mode, fd, promise) =>
                   try {
                     promise.completeWith(
@@ -469,7 +474,8 @@ object Execution {
         prev
           .runStats(conf, mode, cache)
           .map {
-            case (s, stats) => (fn(s), stats)
+            case (s, stats) =>
+              (fn(s), stats)
           })
   }
   private case class GetCounters[T](prev: Execution[T])
@@ -480,7 +486,8 @@ object Execution {
         conf,
         this,
         prev.runStats(conf, mode, cache).map {
-          case tc @ (t, c) => (tc, c)
+          case tc @ (t, c) =>
+            (tc, c)
         })
   }
   private case class ResetCounters[T](prev: Execution[T]) extends Execution[T] {
@@ -490,7 +497,8 @@ object Execution {
         conf,
         this,
         prev.runStats(conf, mode, cache).map {
-          case (t, _) => (t, ExecutionCounters.empty)
+          case (t, _) =>
+            (t, ExecutionCounters.empty)
         })
   }
 
@@ -578,7 +586,8 @@ object Execution {
       cec: ConcurrentExecutionContext): Future[List[T]] = {
     t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
         failFastZip(f, i).map {
-          case (tail, h) => h :: tail
+          case (tail, h) =>
+            h :: tail
         }
       }
       .map(_.reverse)
@@ -597,7 +606,8 @@ object Execution {
         if (!middleState.tryFailure(err)) {
           // the right has already succeeded
           middleState.future.foreach {
-            case Right((_, pt)) => pt.complete(f)
+            case Right((_, pt)) =>
+              pt.complete(f)
             case Left((t1, _)) => // This should never happen
               sys.error(
                 s"Logic error: tried to set Failure($err) but Left($t1) already set")
@@ -609,7 +619,8 @@ object Execution {
         if (!middleState.trySuccess(Left((t, pu)))) {
           // we can't set, so the other promise beat us here.
           middleState.future.foreach {
-            case Right((_, pt)) => pt.success(t)
+            case Right((_, pt)) =>
+              pt.success(t)
             case Left((t1, _)) => // This should never happen
               sys.error(
                 s"Logic error: tried to set Left($t) but Left($t1) already set")
@@ -621,7 +632,8 @@ object Execution {
         if (!middleState.tryFailure(err)) {
           // we can't set, so the other promise beat us here.
           middleState.future.foreach {
-            case Left((_, pu)) => pu.complete(f)
+            case Left((_, pu)) =>
+              pu.complete(f)
             case Right((u1, _)) => // This should never happen
               sys.error(
                 s"Logic error: tried to set Failure($err) but Right($u1) already set")
@@ -633,7 +645,8 @@ object Execution {
         if (!middleState.trySuccess(Right((u, pt)))) {
           // we can't set, so the other promise beat us here.
           middleState.future.foreach {
-            case Left((_, pu)) => pu.success(u)
+            case Left((_, pu)) =>
+              pu.success(u)
             case Right((u1, _)) => // This should never happen
               sys.error(
                 s"Logic error: tried to set Right($u) but Right($u1) already set")
@@ -642,8 +655,10 @@ object Execution {
     }
 
     middleState.future.flatMap {
-      case Left((t, pu))  => pu.future.map((t, _))
-      case Right((u, pt)) => pt.future.map((_, u))
+      case Left((t, pu)) =>
+        pu.future.map((t, _))
+      case Right((u, pt)) =>
+        pt.future.map((_, u))
     }
   }
 
@@ -658,7 +673,8 @@ object Execution {
           val f2 = two.runStats(conf, mode, cache)
           failFastZip(f1, f2)
             .map {
-              case ((s, ss), (t, st)) => ((s, t), Monoid.plus(ss, st))
+              case ((s, ss), (t, st)) =>
+                ((s, t), Monoid.plus(ss, st))
             }
         }
       )
@@ -772,7 +788,8 @@ object Execution {
         case (a, Right(c)) :: tail =>
           val (l, r) = unwrapListEither(tail)
           (l, (a, c) :: r)
-        case Nil => (Nil, Nil)
+        case Nil =>
+          (Nil, Nil)
       }
 
     // We look up to see if any of our ToWrite elements have already been ran
@@ -794,7 +811,8 @@ object Execution {
 
           val otherResult = failFastSequence(someoneElseDoesOperation.map(_._2))
           otherResult.value match {
-            case Some(Failure(e)) => Future.failed(e)
+            case Some(Failure(e)) =>
+              Future.failed(e)
             case _ => // Either successful or not completed yet
               val localFlowDefCountersFuture: Future[ExecutionCounters] =
                 weDoOperation match {
@@ -837,7 +855,8 @@ object Execution {
             (fn(conf, mode), otherFn(conf, mode))
           }
           WriteExecution(head, h :: t ::: tail, newFn)
-        case o => Zipped(this, that)
+        case o =>
+          Zipped(this, that)
       }
 
   }
@@ -853,8 +872,10 @@ object Execution {
 
   private def toFuture[R](t: Try[R]): Future[R] =
     t match {
-      case Success(s)   => Future.successful(s)
-      case Failure(err) => Future.failed(err)
+      case Success(s) =>
+        Future.successful(s)
+      case Failure(err) =>
+        Future.failed(err)
     }
 
   /**
@@ -1014,7 +1035,8 @@ object Execution {
       bx: Execution[B],
       cx: Execution[C]): Execution[(A, B, C)] =
     ax.zip(bx).zip(cx).map {
-      case ((a, b), c) => (a, b, c)
+      case ((a, b), c) =>
+        (a, b, c)
     }
 
   /**
@@ -1026,7 +1048,8 @@ object Execution {
       cx: Execution[C],
       dx: Execution[D]): Execution[(A, B, C, D)] =
     ax.zip(bx).zip(cx).zip(dx).map {
-      case (((a, b), c), d) => (a, b, c, d)
+      case (((a, b), c), d) =>
+        (a, b, c, d)
     }
 
   /**
@@ -1039,7 +1062,8 @@ object Execution {
       dx: Execution[D],
       ex: Execution[E]): Execution[(A, B, C, D, E)] =
     ax.zip(bx).zip(cx).zip(dx).zip(ex).map {
-      case ((((a, b), c), d), e) => (a, b, c, d, e)
+      case ((((a, b), c), d), e) =>
+        (a, b, c, d, e)
     }
 
   /*
@@ -1057,12 +1081,14 @@ object Execution {
         xs: List[Execution[T]],
         acc: Execution[List[T]]): Execution[List[T]] =
       xs match {
-        case Nil => acc
+        case Nil =>
+          acc
         case h :: tail =>
           go(
             tail,
             h.zip(acc).map {
-              case (y, ys) => y :: ys
+              case (y, ys) =>
+                y :: ys
             })
       }
     // This pushes all of them onto a list, and then reverse to keep order
@@ -1089,12 +1115,14 @@ object Execution {
         .fromFuture(_ => sem.acquire())
         .flatMap(p => e.liftToTry.map((_, p)))
         .onComplete {
-          case Success((_, p)) => p.release()
+          case Success((_, p)) =>
+            p.release()
           case Failure(ex) =>
             throw ex // should never happen or there is a logic bug
         }
         .flatMap {
-          case (ex, _) => fromTry(ex)
+          case (ex, _) =>
+            fromTry(ex)
         }
     }
 

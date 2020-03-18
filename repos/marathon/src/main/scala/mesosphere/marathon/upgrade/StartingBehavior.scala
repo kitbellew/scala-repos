@@ -151,6 +151,7 @@ private object StartErrorState {
     state match {
       case "TASK_ERROR" | "TASK_FAILED" | "TASK_KILLED" | "TASK_LOST" =>
         Some(state)
-      case _ => None
+      case _ =>
+        None
     }
 }

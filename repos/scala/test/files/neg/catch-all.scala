@@ -75,7 +75,8 @@ object CatchAll {
   }
 
   "okay" match {
-    case _ => ""
+    case _ =>
+      ""
   }
 }
 

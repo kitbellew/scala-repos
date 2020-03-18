@@ -217,8 +217,10 @@ private[spark] abstract class MemoryManager(
     val safetyFactor = 16
     val maxTungstenMemory: Long =
       tungstenMemoryMode match {
-        case MemoryMode.ON_HEAP  => onHeapExecutionMemoryPool.poolSize
-        case MemoryMode.OFF_HEAP => offHeapExecutionMemoryPool.poolSize
+        case MemoryMode.ON_HEAP =>
+          onHeapExecutionMemoryPool.poolSize
+        case MemoryMode.OFF_HEAP =>
+          offHeapExecutionMemoryPool.poolSize
       }
     val size = ByteArrayMethods.nextPowerOf2(
       maxTungstenMemory / cores / safetyFactor)
@@ -231,8 +233,10 @@ private[spark] abstract class MemoryManager(
     */
   private[memory] final val tungstenMemoryAllocator: MemoryAllocator = {
     tungstenMemoryMode match {
-      case MemoryMode.ON_HEAP  => MemoryAllocator.HEAP
-      case MemoryMode.OFF_HEAP => MemoryAllocator.UNSAFE
+      case MemoryMode.ON_HEAP =>
+        MemoryAllocator.HEAP
+      case MemoryMode.OFF_HEAP =>
+        MemoryAllocator.UNSAFE
     }
   }
 }

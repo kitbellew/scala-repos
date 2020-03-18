@@ -52,7 +52,8 @@ object ReflectiveAccess {
       }
     val remoteSupportClass =
       getClassFor[RemoteSupport](TRANSPORT) match {
-        case Right(value) => Some(value)
+        case Right(value) =>
+          Some(value)
         case Left(exception) =>
           EventHandler.debug(this, exception.toString)
           None
@@ -64,7 +65,8 @@ object ReflectiveAccess {
           remoteClass,
           Array[Class[_]](),
           Array[AnyRef]()) match {
-          case Right(value) => value
+          case Right(value) =>
+            value
           case Left(exception) =>
             val e =
               new ModuleNotAvailableException(
@@ -101,7 +103,8 @@ object ReflectiveAccess {
 
     val typedActorObjectInstance: Option[TypedActorObject] =
       getObjectFor[TypedActorObject]("akka.actor.TypedActor$") match {
-        case Right(value) => Some(value)
+        case Right(value) =>
+          Some(value)
         case Left(exception) =>
           EventHandler.debug(this, exception.toString)
           None
@@ -136,7 +139,8 @@ object ReflectiveAccess {
 
     val clusterObjectInstance: Option[AnyRef] =
       getObjectFor[AnyRef]("akka.cloud.cluster.Cluster$") match {
-        case Right(value) => Some(value)
+        case Right(value) =>
+          Some(value)
         case Left(exception) =>
           EventHandler.debug(this, exception.toString)
           None
@@ -144,7 +148,8 @@ object ReflectiveAccess {
 
     val serializerClass: Option[Class[_]] =
       getClassFor("akka.serialization.Serializer") match {
-        case Right(value) => Some(value)
+        case Right(value) =>
+          Some(value)
         case Left(exception) =>
           EventHandler.debug(this, exception.toString)
           None
@@ -171,7 +176,8 @@ object ReflectiveAccess {
       ctor.setAccessible(true)
       Right(ctor.newInstance(args: _*).asInstanceOf[T])
     } catch {
-      case e: Exception => Left(e)
+      case e: Exception =>
+        Left(e)
     }
 
   def createInstance[T](
@@ -232,7 +238,8 @@ object ReflectiveAccess {
         try {
           Right(classloader.loadClass(fqn).asInstanceOf[Class[T]])
         } catch {
-          case c: ClassNotFoundException => Left(c)
+          case c: ClassNotFoundException =>
+            Left(c)
         }
 
       if (first.isRight)
@@ -246,7 +253,8 @@ object ReflectiveAccess {
                 .loadClass(fqn)
                 .asInstanceOf[Class[T]])
           } catch {
-            case c: ClassNotFoundException => Left(c)
+            case c: ClassNotFoundException =>
+              Left(c)
           }
 
         if (second.isRight)
@@ -259,7 +267,8 @@ object ReflectiveAccess {
               else
                 Left(null) //Horrid
             } catch {
-              case c: ClassNotFoundException => Left(c)
+              case c: ClassNotFoundException =>
+                Left(c)
             }
 
           if (third.isRight)
@@ -270,12 +279,14 @@ object ReflectiveAccess {
                 Class.forName(fqn).asInstanceOf[Class[T]]
               ) // Last option is Class.forName
             } catch {
-              case c: ClassNotFoundException => Left(c)
+              case c: ClassNotFoundException =>
+                Left(c)
             }
           }
         }
       }
     } catch {
-      case e: Exception => Left(e)
+      case e: Exception =>
+        Left(e)
     }
 }

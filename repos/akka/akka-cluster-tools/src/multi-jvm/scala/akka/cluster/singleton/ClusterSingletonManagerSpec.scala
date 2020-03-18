@@ -82,7 +82,8 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
         log.info("UnexpectedUnregistration: [{}]", sender().path)
         sender() ! UnexpectedUnregistration
         context stop self
-      case Reset ⇒ sender() ! ResetOk
+      case Reset ⇒
+        sender() ! ResetOk
       case msg ⇒ // no consumer, drop
     }
 
@@ -108,7 +109,8 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
       case Reset ⇒
         context.become(idle)
         sender() ! ResetOk
-      case msg ⇒ consumer ! msg
+      case msg ⇒
+        consumer ! msg
     }
   }
 
@@ -221,7 +223,8 @@ class ClusterSingletonManagerSpec
       memberProbe
         .receiveN(nodes.size, 15.seconds)
         .collect {
-          case MemberUp(m) ⇒ m.address
+          case MemberUp(m) ⇒
+            m.address
         }
         .toSet should ===(nodes.map(node(_).address).toSet)
     }

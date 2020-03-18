@@ -62,8 +62,10 @@ object RelativeImportInspection {
   @tailrec
   def qual(st: ScStableCodeReferenceElement): ScStableCodeReferenceElement =
     st.qualifier match {
-      case Some(q) => qual(q)
-      case _       => st
+      case Some(q) =>
+        qual(q)
+      case _ =>
+        st
     }
 }
 
@@ -97,8 +99,10 @@ private class MakeFullQualifiedImportFix(
       qual(newRef).resolve() match {
         case p: PsiPackage if p.getQualifiedName.contains(".") =>
           "_root_." + fqn
-        case p: PsiPackage => fqn
-        case _             => "_root_." + fqn
+        case p: PsiPackage =>
+          fqn
+        case _ =>
+          "_root_." + fqn
       }
     ref.replace(
       ScalaPsiElementFactory.createReferenceFromText(newFqn, ref.getManager))

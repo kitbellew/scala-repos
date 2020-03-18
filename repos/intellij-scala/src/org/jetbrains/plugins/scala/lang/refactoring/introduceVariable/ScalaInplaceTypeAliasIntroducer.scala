@@ -101,7 +101,8 @@ class ScalaInplaceTypeAliasIntroducer(
       case typeAliasDefinition: ScTypeAliasDefinition =>
         checkEquals(typeAliasDefinition) && handler
           .isInstanceOf[ScalaIntroduceVariableHandler]
-      case _ => false
+      case _ =>
+        false
     }
   }
 

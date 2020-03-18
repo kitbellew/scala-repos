@@ -79,7 +79,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     // Canonicalizer will remove all naming information, we should add it back by adding an extra
     // Project and alias the outputs.
     val aliasedOutput = canonicalizedPlan.output.zip(outputNames).map {
-      case (attr, name) => Alias(attr.withQualifiers(Nil), name)()
+      case (attr, name) =>
+        Alias(attr.withQualifiers(Nil), name)()
     }
     val finalPlan = Project(
       aliasedOutput,
@@ -92,7 +93,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         case e: NonSQLExpression =>
           throw new UnsupportedOperationException(
             s"Expression $e doesn't have a SQL representation")
-        case e => e
+        case e =>
+          e
       }
 
       val generatedSQL = toSQL(replaced)
@@ -146,8 +148,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       case Filter(condition, child) =>
         val whereOrHaving =
           child match {
-            case _: Aggregate => "HAVING"
-            case _            => "WHERE"
+            case _: Aggregate =>
+              "HAVING"
+            case _ =>
+              "WHERE"
           }
         build(toSQL(child), whereOrHaving, condition.sql)
 
@@ -165,7 +169,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       case p: Except =>
         build("(" + toSQL(p.left), ") EXCEPT (", toSQL(p.right) + ")")
 
-      case p: SubqueryAlias => build("(" + toSQL(p.child) + ")", "AS", p.alias)
+      case p: SubqueryAlias =>
+        build("(" + toSQL(p.child) + ")", "AS", p.alias)
 
       case p: Join =>
         build(
@@ -390,7 +395,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
       case aggExpr =>
         val originalAggExpr = aggExpr.transformDown {
           // grouping_id() is converted to VirtualColumn.groupingIdName by Analyzer. Revert it back.
-          case ar: AttributeReference if ar == gid => GroupingID(Nil)
+          case ar: AttributeReference if ar == gid =>
+            GroupingID(Nil)
           case ar: AttributeReference if groupByAttrMap.contains(ar) =>
             groupByAttrMap(ar)
           case a @ Cast(
@@ -410,8 +416,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
           // generate a unique name for each attribute, so we should make sure the transformed
           // aggregate expression won't change the output, i.e. exprId and alias name should remain
           // the same.
-          case ne: NamedExpression if ne.exprId == aggExpr.exprId => ne
-          case e                                                  => Alias(e, normalizedName(aggExpr))(exprId = aggExpr.exprId)
+          case ne: NamedExpression if ne.exprId == aggExpr.exprId =>
+            ne
+          case e =>
+            Alias(e, normalizedName(aggExpr))(exprId = aggExpr.exprId)
         }
     }
 
@@ -501,7 +509,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
     object RemoveSubqueriesAboveSQLTable extends Rule[LogicalPlan] {
       override def apply(plan: LogicalPlan): LogicalPlan =
         plan transformUp {
-          case SubqueryAlias(_, t @ ExtractSQLTable(_)) => t
+          case SubqueryAlias(_, t @ ExtractSQLTable(_)) =>
+            t
         }
     }
 
@@ -547,11 +556,13 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
           case w @ Window(_, _, _, f @ Filter(_, _: Aggregate)) =>
             w.copy(child = addSubquery(f))
 
-          case p: Project => p.copy(child = addSubqueryIfNeeded(p.child))
+          case p: Project =>
+            p.copy(child = addSubqueryIfNeeded(p.child))
 
           // We will generate "SELECT ... FROM ..." for Window operator, so its child operator should
           // be able to put in the FROM clause, or we wrap it with a subquery.
-          case w: Window => w.copy(child = addSubqueryIfNeeded(w.child))
+          case w: Window =>
+            w.copy(child = addSubqueryIfNeeded(w.child))
 
           case j: Join =>
             j.copy(
@@ -577,15 +588,24 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
 
     private def addSubqueryIfNeeded(plan: LogicalPlan): LogicalPlan =
       plan match {
-        case _: SubqueryAlias => plan
-        case _: Filter        => plan
-        case _: Join          => plan
-        case _: LocalLimit    => plan
-        case _: GlobalLimit   => plan
-        case _: SQLTable      => plan
-        case _: Generate      => plan
-        case OneRowRelation   => plan
-        case _                => addSubquery(plan)
+        case _: SubqueryAlias =>
+          plan
+        case _: Filter =>
+          plan
+        case _: Join =>
+          plan
+        case _: LocalLimit =>
+          plan
+        case _: GlobalLimit =>
+          plan
+        case _: SQLTable =>
+          plan
+        case _: Generate =>
+          plan
+        case OneRowRelation =>
+          plan
+        case _ =>
+          addSubquery(plan)
       }
   }
 
@@ -615,7 +635,8 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
               m.tableName,
               m.output.map(_.withQualifiers(Nil))))
 
-        case _ => None
+        case _ =>
+          None
       }
   }
 }

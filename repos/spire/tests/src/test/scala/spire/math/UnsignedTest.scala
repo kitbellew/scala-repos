@@ -47,8 +47,10 @@ class ULongTest
           n / zero
           false
         } catch {
-          case _: ArithmeticException => true
-          case _: Exception           => false
+          case _: ArithmeticException =>
+            true
+          case _: Exception =>
+            false
         }
       error shouldBe true
     }
@@ -185,8 +187,10 @@ class UIntTest
           n / zero
           false
         } catch {
-          case _: ArithmeticException => true
-          case _: Exception           => false
+          case _: ArithmeticException =>
+            true
+          case _: Exception =>
+            false
         }
       error shouldBe true
     }
@@ -303,8 +307,10 @@ class UShortTest
           n / zero
           false
         } catch {
-          case _: ArithmeticException => true
-          case _: Exception           => false
+          case _: ArithmeticException =>
+            true
+          case _: Exception =>
+            false
         }
       error shouldBe true
     }
@@ -421,8 +427,10 @@ class UByteTest
           n / zero
           false
         } catch {
-          case _: ArithmeticException => true
-          case _: Exception           => false
+          case _: ArithmeticException =>
+            true
+          case _: Exception =>
+            false
         }
       error shouldBe true
     }

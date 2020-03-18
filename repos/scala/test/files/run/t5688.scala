@@ -14,9 +14,12 @@ object Test extends App {
   val matched = (for (l <- li)
     yield {
       l match {
-        case _: TA with TB => "tab"
-        case _: TA         => "ta"
-        case _: TB         => "tb"
+        case _: TA with TB =>
+          "tab"
+        case _: TA =>
+          "ta"
+        case _: TB =>
+          "tb"
       }
     })
 

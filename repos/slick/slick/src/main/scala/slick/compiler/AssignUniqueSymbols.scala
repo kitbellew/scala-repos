@@ -27,8 +27,10 @@ class AssignUniqueSymbols extends Phase {
       val replace = new HashMap[TermSymbol, AnonSymbol]
       def checkFeatures(n: Node): Unit =
         n match {
-          case _: Distinct    => hasDistinct = true
-          case _: TypeMapping => hasTypeMapping = true
+          case _: Distinct =>
+            hasDistinct = true
+          case _: TypeMapping =>
+            hasTypeMapping = true
           case n: Apply =>
             if (n.sym.isInstanceOf[AggregateFunctionSymbol])
               hasAggregate = true
@@ -42,7 +44,8 @@ class AssignUniqueSymbols extends Phase {
       def tr(n: Node): Node = {
         val n3 =
           n match {
-            case Select(in, s) => Select(tr(in), s) :@ n.nodeType
+            case Select(in, s) =>
+              Select(tr(in), s) :@ n.nodeType
             case r @ Ref(a: AnonSymbol) =>
               val s = replace.getOrElse(a, a)
               if (s eq a)
@@ -51,7 +54,8 @@ class AssignUniqueSymbols extends Phase {
                 Ref(s)
             case t: TableNode =>
               t.copy(identity = new AnonTableIdentitySymbol)(t.profileTable)
-            case Pure(value, _) => Pure(tr(value))
+            case Pure(value, _) =>
+              Pure(tr(value))
             case g: GroupBy =>
               val d = g.copy(identity = new AnonTypeSymbol)
               val a = new AnonSymbol
@@ -61,7 +65,8 @@ class AssignUniqueSymbols extends Phase {
                 tr(g.from),
                 tr(g.by),
                 identity = new AnonTypeSymbol)
-            case n: StructNode => n.mapChildren(tr)
+            case n: StructNode =>
+              n.mapChildren(tr)
             case d: DefNode =>
               checkFeatures(d)
               replace ++= d.generators.iterator.map(_._1 -> new AnonSymbol)
@@ -89,9 +94,12 @@ class AssignUniqueSymbols extends Phase {
 
   def hasNominalType(t: Type): Boolean =
     t match {
-      case _: NominalType => true
-      case _: AtomicType  => false
-      case _              => t.children.exists(hasNominalType)
+      case _: NominalType =>
+        true
+      case _: AtomicType =>
+        false
+      case _ =>
+        t.children.exists(hasNominalType)
     }
 }
 

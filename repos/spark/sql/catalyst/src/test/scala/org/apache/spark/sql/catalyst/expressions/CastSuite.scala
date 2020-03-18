@@ -34,8 +34,10 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   private def cast(v: Any, targetType: DataType): Cast = {
     v match {
-      case lit: Expression => Cast(lit, targetType)
-      case _               => Cast(Literal(v), targetType)
+      case lit: Expression =>
+        Cast(lit, targetType)
+      case _ =>
+        Cast(Literal(v), targetType)
     }
   }
 

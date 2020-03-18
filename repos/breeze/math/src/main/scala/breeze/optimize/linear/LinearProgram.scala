@@ -348,9 +348,12 @@ object LinearProgram {
 
       def relationToConstraintType(r: Relation) =
         r match {
-          case LTE => Relationship.LEQ
-          case GTE => Relationship.GEQ
-          case EQ  => Relationship.EQ
+          case LTE =>
+            Relationship.LEQ
+          case GTE =>
+            Relationship.GEQ
+          case EQ =>
+            Relationship.EQ
         }
 
       for (v <- variables)

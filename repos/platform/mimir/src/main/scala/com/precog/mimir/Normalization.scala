@@ -74,7 +74,8 @@ trait NormalizationHelperModule[M[+_]]
               new Map1Column(col) with NumColumn {
                 def apply(row: Int) = BigDecimal(col(row))
               }
-            case (col: NumColumn) => col
+            case (col: NumColumn) =>
+              col
           })(collection.breakOut)
 
         new UnionLotsColumn[NumColumn](cols0) with NumColumn {
@@ -182,7 +183,8 @@ trait NormalizationHelperModule[M[+_]]
 
             val groupedCols: Map[CPath, Map[ColumnRef, Column]] = numericCols
               .groupBy {
-                case (ColumnRef(selector, _), _) => selector
+                case (ColumnRef(selector, _), _) =>
+                  selector
               }
 
             def continue: Map[ColumnRef, Column] = {

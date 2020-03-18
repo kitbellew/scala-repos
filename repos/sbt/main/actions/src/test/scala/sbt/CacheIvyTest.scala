@@ -84,10 +84,14 @@ class CacheIvyTest extends Properties("CacheIvy") {
       import CrossVersion._
       def rest = a.copy(crossVersion = b.crossVersion) == b
       (a.crossVersion, b.crossVersion) match {
-        case (Disabled, Disabled)   => rest
-        case (_: Binary, _: Binary) => rest
-        case (_: Full, _: Full)     => rest
-        case (a, b)                 => Prop(false) :| s"CrossVersions don't match: $a vs $b"
+        case (Disabled, Disabled) =>
+          rest
+        case (_: Binary, _: Binary) =>
+          rest
+        case (_: Full, _: Full) =>
+          rest
+        case (a, b) =>
+          Prop(false) :| s"CrossVersions don't match: $a vs $b"
       }
 
     }

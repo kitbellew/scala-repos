@@ -188,8 +188,10 @@ object Resolvers {
     val base = new File(in, Hash.halfHashString(uri.normalize.toASCIIString))
     val last =
       shortName(uri) match {
-        case Some(n) => normalizeDirectoryName(n);
-        case None    => "root"
+        case Some(n) =>
+          normalizeDirectoryName(n);
+        case None =>
+          "root"
       }
     new File(base, last)
   }

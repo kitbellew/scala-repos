@@ -91,8 +91,10 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
 
   private def status: Status =
     system match {
-      case None    => Status.DRIVER_STOPPED
-      case Some(_) => Status.DRIVER_RUNNING
+      case None =>
+        Status.DRIVER_STOPPED
+      case Some(_) =>
+        Status.DRIVER_RUNNING
     }
 
   override def start(): Status = {
@@ -112,7 +114,8 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
   override def stop(): Status = abort()
   override def abort(): Status = {
     system match {
-      case None => Status.DRIVER_NOT_STARTED
+      case None =>
+        Status.DRIVER_NOT_STARTED
       case Some(sys) =>
         sys.shutdown()
         Status.DRIVER_ABORTED
@@ -126,7 +129,8 @@ class SimulatedDriver(driverProps: Props) extends SchedulerDriver {
 
   override def join(): Status = {
     system match {
-      case None => Status.DRIVER_NOT_STARTED
+      case None =>
+        Status.DRIVER_NOT_STARTED
       case Some(sys) =>
         sys.awaitTermination()
         driverActorRefOpt = None

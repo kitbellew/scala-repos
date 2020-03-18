@@ -526,10 +526,12 @@ final class StringCodecSuite extends RedisRequestTest {
     codec(wrap("Hello\r\n")) match {
       case MSet(kv) :: Nil =>
         val nkv = kv.map {
-          case (k, v) => (BytesToString(k.array), BytesToString(v.array))
+          case (k, v) =>
+            (BytesToString(k.array), BytesToString(v.array))
         }
         assert(nkv == Map("foo" -> "bar baz", "bar" -> "Hello"))
-      case _ => fail("Expected MSet to be returned")
+      case _ =>
+        fail("Expected MSet to be returned")
     }
   }
 }

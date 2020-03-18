@@ -23,10 +23,12 @@ object InetSocketAddressUtil {
         val host =
           try InetAddress.getLocalHost()
           catch {
-            case _: UnknownHostException => InetAddress.getLoopbackAddress
+            case _: UnknownHostException =>
+              InetAddress.getLoopbackAddress
           }
         new InetSocketAddress(host, addr.getPort())
-      case _ => bound
+      case _ =>
+        bound
     }
   }
 
@@ -45,8 +47,10 @@ object InetSocketAddressUtil {
       hp =>
         require(hp.length == 2, "You must specify host and port")
         hp match {
-          case Array(host, "*")     => (host, 0)
-          case Array(host, portStr) => (host, portStr.toInt)
+          case Array(host, "*") =>
+            (host, 0)
+          case Array(host, portStr) =>
+            (host, portStr.toInt)
           case _ =>
             throw new IllegalArgumentException(
               "Malformed host/port specification: " + hosts)

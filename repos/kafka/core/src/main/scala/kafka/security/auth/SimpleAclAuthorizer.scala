@@ -92,7 +92,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
     val configs = javaConfigs.asScala
     val props = new java.util.Properties()
     configs.foreach {
-      case (key, value) => props.put(key, value.toString)
+      case (key, value) =>
+        props.put(key, value.toString)
     }
 
     superUsers = configs

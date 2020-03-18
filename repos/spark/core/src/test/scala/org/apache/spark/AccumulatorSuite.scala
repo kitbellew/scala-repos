@@ -438,7 +438,8 @@ private class SaveInfoListener extends SparkListener {
       } catch {
         // Store any exception thrown here so we can throw them later in the main thread.
         // Otherwise, if `jobCompletionCallback` threw something it wouldn't fail the test.
-        case NonFatal(e) => exception = e
+        case NonFatal(e) =>
+          exception = e
       } finally {
         jobCompletionSem.release()
       }

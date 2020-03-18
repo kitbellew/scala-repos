@@ -82,12 +82,14 @@ sealed trait Spool[+A] {
         f(Some(head))
       } flatMap { _ =>
         tail transform {
-          case Return(s) => s.foreachElem(f)
+          case Return(s) =>
+            s.foreachElem(f)
           case Throw(_: EOFException) =>
             Future {
               f(None)
             }
-          case Throw(cause) => Future.exception(cause)
+          case Throw(cause) =>
+            Future.exception(cause)
         }
       }
     } else {
@@ -154,14 +156,17 @@ sealed trait Spool[+A] {
       // more than once, freeing us up to have if-guards or unapplies that are
       // mutating.
       f.lift(head) match {
-        case Some(result) => Future.value(new LazyCons(result, _tail))
-        case None         => _tail
+        case Some(result) =>
+          Future.value(new LazyCons(result, _tail))
+        case None =>
+          _tail
       }
     }
 
   def map[B](f: A => B): Spool[B] = {
     val s = collect {
-      case x => f(x)
+      case x =>
+        f(x)
     }
     Await.result(s, Duration.Zero)
   }
@@ -183,7 +188,8 @@ sealed trait Spool[+A] {
 
   def filter(f: A => Boolean): Future[Spool[A]] =
     collect {
-      case x if f(x) => x
+      case x if f(x) =>
+        x
     }
 
   /**
@@ -248,7 +254,8 @@ sealed trait Spool[+A] {
         val fned = fn(item)
         set.synchronized {
           fned match {
-            case alreadySeen if set(alreadySeen) => false
+            case alreadySeen if set(alreadySeen) =>
+              false
             case distinctItem =>
               set += distinctItem
               true
@@ -433,7 +440,8 @@ object Spool {
   class ToSpool[A](s: Seq[A]) {
     def toSpool: Spool[A] =
       s.reverse.foldLeft(Spool.empty: Spool[A]) {
-        case (tail, head) => head *:: Future.value(tail)
+        case (tail, head) =>
+          head *:: Future.value(tail)
       }
   }
 
@@ -453,11 +461,14 @@ object Spool {
   private[this] def mergeNonempty[A](
       spools: Seq[Future[Spool[A]]]): Future[Spool[A]] =
     Future.select(spools).flatMap {
-      case (anything, Nil)             => new ConstFuture(anything)
-      case (Return(Spool.Empty), rest) => merge(rest)
+      case (anything, Nil) =>
+        new ConstFuture(anything)
+      case (Return(Spool.Empty), rest) =>
+        merge(rest)
       case (Return(spool), rest) =>
         Future.value(new LazyCons(spool.head, merge(rest :+ spool.tail)))
-      case (Throw(exc), _) => Future.exception(exc)
+      case (Throw(exc), _) =>
+        Future.exception(exc)
     }
 
 }

@@ -70,7 +70,8 @@ class ZookeeperServerSetCluster(
           endpointName match {
             case Some(name) =>
               Option(serviceInstance.getAdditionalEndpoints.get(name))
-            case None => Some(serviceInstance.getServiceEndpoint)
+            case None =>
+              Some(serviceInstance.getServiceEndpoint)
           }
 
         endpoint map { endpoint =>

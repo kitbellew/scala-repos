@@ -68,7 +68,8 @@ private[http] object Handshake {
         hostHeaderPresent: Boolean): Option[UpgradeToWebSocket] = {
       def find[T <: HttpHeader: ClassTag]: Option[T] =
         headers.collectFirst {
-          case t: T ⇒ t
+          case t: T ⇒
+            t
         }
 
       // Host header is validated in general HTTP logic
@@ -267,11 +268,13 @@ private[http] object Handshake {
       def compare(
           candidate: HttpHeader,
           caseInsensitive: Boolean): Option[HttpHeader] ⇒ Boolean = {
-        case Some(`candidate`) if !caseInsensitive ⇒ true
+        case Some(`candidate`) if !caseInsensitive ⇒
+          true
         case Some(header)
             if caseInsensitive && candidate.value.toRootLowerCase == header.value.toRootLowerCase ⇒
           true
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
 
       def headerExists(
@@ -283,7 +286,8 @@ private[http] object Handshake {
           {
             case Some(other) if showExactOther ⇒
               s"response that was missing required `$candidate` header. Found `$other` with the wrong value."
-            case Some(_) ⇒ s"response with invalid `${candidate.name}` header."
+            case Some(_) ⇒
+              s"response with invalid `${candidate.name}` header."
             case None ⇒
               s"response that was missing required `${candidate.name}` header."
           }
@@ -313,7 +317,8 @@ private[http] object Handshake {
             Left(
               s"response that indicated that the given subprotocol was not supported. (client supported: ${subprotocols
                 .mkString(", ")}, server supported: $subs)")
-        case Some(problem) ⇒ Left(problem)
+        case Some(problem) ⇒
+          Left(problem)
       }
     }
   }

@@ -38,8 +38,10 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
     tryo {
       l.isReachable(50)
     } match {
-      case Full(true) => l.getHostAddress
-      case _          => "127.0.0.1"
+      case Full(true) =>
+        l.getHostAddress
+      case _ =>
+        "127.0.0.1"
     }
   }
 

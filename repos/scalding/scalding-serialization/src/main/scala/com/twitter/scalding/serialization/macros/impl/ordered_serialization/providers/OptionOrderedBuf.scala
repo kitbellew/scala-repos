@@ -156,7 +156,8 @@ object OptionOrderedBuf {
             if ($element.isDefined) { $t + $dynlen(1) }
             else { $dynlen(1) }
           """)
-          case _ => NoLengthCalculationAvailable(c)
+          case _ =>
+            NoLengthCalculationAvailable(c)
         }
       }
     }

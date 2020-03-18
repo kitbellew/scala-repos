@@ -242,7 +242,8 @@ trait JobManager[M[+_]] {
       def getResult(job: JobId)
           : N[Either[String, (Option[MimeType], StreamT[N, Array[Byte]])]] =
         t(self.getResult(job)) map {
-          case Left(s) => Left(s)
+          case Left(s) =>
+            Left(s)
           case Right((mimeType, data)) =>
             Right((mimeType, transformStreamForward(data)))
         }
@@ -262,7 +263,8 @@ trait JobStateManager[M[+_]] {
 
   def start(id: JobId, startTime: DateTime): M[Either[String, Job]] =
     transition(id) {
-      case NotStarted => Right(Started(startTime, NotStarted))
+      case NotStarted =>
+        Right(Started(startTime, NotStarted))
       case badState =>
         Left("Cannot start job. %s" format JobState.describe(badState))
     }
@@ -274,7 +276,8 @@ trait JobStateManager[M[+_]] {
     transition(id) {
       case prev @ (NotStarted | Started(_, _)) =>
         Right(Cancelled(reason, cancelledAt, prev))
-      case badState => Left(JobState.describe(badState))
+      case badState =>
+        Left(JobState.describe(badState))
     }
 
   def abort(

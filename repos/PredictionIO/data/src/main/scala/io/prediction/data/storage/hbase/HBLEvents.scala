@@ -184,9 +184,12 @@ class HBLEvents(
       // Get all events if None or Some(-1)
       val results: Iterator[Result] =
         limit match {
-          case Some(-1) => eventsIter
-          case None     => eventsIter
-          case Some(x)  => eventsIter.take(x)
+          case Some(-1) =>
+            eventsIter
+          case None =>
+            eventsIter
+          case Some(x) =>
+            eventsIter.take(x)
         }
 
       val eventsIt = results.map {

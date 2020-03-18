@@ -349,8 +349,10 @@ trait StringLike[+Repr]
   private def parseBoolean(s: String): Boolean =
     if (s != null)
       s.toLowerCase match {
-        case "true"  => true
-        case "false" => false
+        case "true" =>
+          true
+        case "false" =>
+          false
         case _ =>
           throw new IllegalArgumentException("For input string: \"" + s + "\"")
       }
@@ -362,8 +364,10 @@ trait StringLike[+Repr]
 
   private def unwrapArg(arg: Any): AnyRef =
     arg match {
-      case x: ScalaNumber => x.underlying
-      case x              => x.asInstanceOf[AnyRef]
+      case x: ScalaNumber =>
+        x.underlying
+      case x =>
+        x.asInstanceOf[AnyRef]
     }
 
   /** Uses the underlying string as a pattern (in a fashion similar to

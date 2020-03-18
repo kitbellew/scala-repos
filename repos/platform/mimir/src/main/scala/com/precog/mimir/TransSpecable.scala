@@ -165,7 +165,8 @@ trait TransSpecableModule[M[+_]]
       // Bifunctor leftMap would be better here if it existed in pimped type inferrable form
       def leftMap(parent: S)(f: TransSpec1 => TransSpec1) =
         get(parent) match {
-          case (spec, ancestor) => set(parent, (f(spec), ancestor))
+          case (spec, ancestor) =>
+            set(parent, (f(spec), ancestor))
         }
 
       new TransSpecableFold[N[S]] {
@@ -341,18 +342,24 @@ trait TransSpecableModule[M[+_]]
     object ConstInt {
       def unapply(c: Const) =
         c match {
-          case Const(CNum(n))    => Some(n.toInt)
-          case Const(CLong(n))   => Some(n.toInt)
-          case Const(CDouble(n)) => Some(n.toInt)
-          case _                 => None
+          case Const(CNum(n)) =>
+            Some(n.toInt)
+          case Const(CLong(n)) =>
+            Some(n.toInt)
+          case Const(CDouble(n)) =>
+            Some(n.toInt)
+          case _ =>
+            None
         }
     }
 
     object Op2F2ForBinOp {
       def unapply(op: BinaryOperation): Option[Op2F2] =
         op2ForBinOp(op).flatMap {
-          case op2f2: Op2F2 => Some(op2f2)
-          case _            => None
+          case op2f2: Op2F2 =>
+            Some(op2f2)
+          case _ =>
+            None
         }
     }
 
@@ -361,7 +368,8 @@ trait TransSpecableModule[M[+_]]
 
       def loop(graph: DepGraph): T =
         graph match {
-          case node if from.map(_ == node).getOrElse(false) => alg.done(node)
+          case node if from.map(_ == node).getOrElse(false) =>
+            alg.done(node)
 
           case node @ Join(
                 instructions.WrapObject,
@@ -383,7 +391,8 @@ trait TransSpecableModule[M[+_]]
           case node @ Operate(instructions.WrapArray, parent) =>
             alg.WrapArray(node)(loop(parent))
 
-          case node => alg.unmatched(node)
+          case node =>
+            alg.unmatched(node)
         }
 
       loop(to)
@@ -394,7 +403,8 @@ trait TransSpecableModule[M[+_]]
 
       def loop(graph: DepGraph): T =
         graph match {
-          case node if from.map(_ == node).getOrElse(false) => alg.done(node)
+          case node if from.map(_ == node).getOrElse(false) =>
+            alg.done(node)
 
           case node @ dag.Cond(
                 pred,
@@ -520,7 +530,8 @@ trait TransSpecableModule[M[+_]]
           case node @ Operate(op, parent) =>
             alg.Op1(node)(loop(parent), op)
 
-          case node => alg.unmatched(node)
+          case node =>
+            alg.unmatched(node)
         }
 
       loop(to)

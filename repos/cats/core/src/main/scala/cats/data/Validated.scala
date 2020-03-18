@@ -11,8 +11,10 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
 
   def fold[B](fe: E => B, fa: A => B): B =
     this match {
-      case Invalid(e) => fe(e)
-      case Valid(a)   => fa(a)
+      case Invalid(e) =>
+        fe(e)
+      case Valid(a) =>
+        fa(a)
     }
 
   def isValid: Boolean = fold(_ => false, _ => true)
@@ -43,8 +45,10 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
     */
   def orElse[EE, AA >: A](default: => Validated[EE, AA]): Validated[EE, AA] =
     this match {
-      case v @ Valid(_) => v
-      case Invalid(_)   => default
+      case v @ Valid(_) =>
+        v
+      case Invalid(_) =>
+        default
     }
 
   /**
@@ -66,8 +70,10 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
   /** Lift the Invalid value into a NonEmptyList. */
   def toValidatedNel[EE >: E, AA >: A]: ValidatedNel[EE, AA] =
     this match {
-      case v @ Valid(_) => v
-      case Invalid(e)   => Validated.invalidNel(e)
+      case v @ Valid(_) =>
+        v
+      case Invalid(e) =>
+        Validated.invalidNel(e)
     }
 
   /**
@@ -115,10 +121,14 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
   def ap[EE >: E, B](f: Validated[EE, A => B])(implicit
       EE: Semigroup[EE]): Validated[EE, B] =
     (this, f) match {
-      case (Valid(a), Valid(f))       => Valid(f(a))
-      case (Invalid(e1), Invalid(e2)) => Invalid(EE.combine(e2, e1))
-      case (e @ Invalid(_), _)        => e
-      case (_, e @ Invalid(_))        => e
+      case (Valid(a), Valid(f)) =>
+        Valid(f(a))
+      case (Invalid(e1), Invalid(e2)) =>
+        Invalid(EE.combine(e2, e1))
+      case (e @ Invalid(_), _) =>
+        e
+      case (_, e @ Invalid(_)) =>
+        e
     }
 
   /**
@@ -127,10 +137,14 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
   def product[EE >: E, B](fb: Validated[EE, B])(implicit
       EE: Semigroup[EE]): Validated[EE, (A, B)] =
     (this, fb) match {
-      case (Valid(a), Valid(b))       => Valid((a, b))
-      case (Invalid(e1), Invalid(e2)) => Invalid(EE.combine(e1, e2))
-      case (e @ Invalid(_), _)        => e
-      case (_, e @ Invalid(_))        => e
+      case (Valid(a), Valid(b)) =>
+        Valid((a, b))
+      case (Invalid(e1), Invalid(e2)) =>
+        Invalid(EE.combine(e1, e2))
+      case (e @ Invalid(_), _) =>
+        e
+      case (_, e @ Invalid(_)) =>
+        e
     }
 
   /**
@@ -184,8 +198,10 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
     */
   def andThen[EE >: E, B](f: A => Validated[EE, B]): Validated[EE, B] =
     this match {
-      case Valid(a)       => f(a)
-      case i @ Invalid(_) => i
+      case Valid(a) =>
+        f(a)
+      case i @ Invalid(_) =>
+        i
     }
 
   /**
@@ -198,16 +214,22 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
       EE: Semigroup[EE],
       AA: Semigroup[AA]): Validated[EE, AA] =
     (this, that) match {
-      case (Valid(a), Valid(b))     => Valid(AA.combine(a, b))
-      case (Invalid(a), Invalid(b)) => Invalid(EE.combine(a, b))
-      case (Invalid(_), _)          => this
-      case _                        => that
+      case (Valid(a), Valid(b)) =>
+        Valid(AA.combine(a, b))
+      case (Invalid(a), Invalid(b)) =>
+        Invalid(EE.combine(a, b))
+      case (Invalid(_), _) =>
+        this
+      case _ =>
+        that
     }
 
   def swap: Validated[A, E] =
     this match {
-      case Valid(a)   => Invalid(a)
-      case Invalid(e) => Valid(e)
+      case Valid(a) =>
+        Invalid(a)
+      case Invalid(e) =>
+        Valid(e)
     }
 }
 
@@ -281,8 +303,10 @@ private[data] sealed abstract class ValidatedInstances
       def handleErrorWith[A](fa: Validated[E, A])(
           f: E => Validated[E, A]): Validated[E, A] =
         fa match {
-          case Validated.Invalid(e)   => f(e)
-          case v @ Validated.Valid(_) => v
+          case Validated.Invalid(e) =>
+            f(e)
+          case v @ Validated.Valid(_) =>
+            v
         }
       def raiseError[A](e: E): Validated[E, A] = Validated.Invalid(e)
     }
@@ -352,7 +376,8 @@ trait ValidatedFunctions {
     try {
       valid(f)
     } catch {
-      case scala.util.control.NonFatal(t) => invalid(t)
+      case scala.util.control.NonFatal(t) =>
+        invalid(t)
     }
 
   /**
@@ -360,8 +385,10 @@ trait ValidatedFunctions {
     */
   def fromTry[A](t: Try[A]): Validated[Throwable, A] =
     t match {
-      case Failure(e) => invalid(e)
-      case Success(v) => valid(v)
+      case Failure(e) =>
+        invalid(e)
+      case Success(v) =>
+        valid(v)
     }
 
   /**

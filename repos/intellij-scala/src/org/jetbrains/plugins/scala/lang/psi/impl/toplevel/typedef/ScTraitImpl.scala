@@ -45,8 +45,10 @@ class ScTraitImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -103,8 +105,10 @@ class ScTraitImpl private (
 
   override def hasModifierProperty(name: String): Boolean =
     name match {
-      case PsiModifier.ABSTRACT if isInterface => true
-      case _                                   => super.hasModifierProperty(name)
+      case PsiModifier.ABSTRACT if isInterface =>
+        true
+      case _ =>
+        super.hasModifierProperty(name)
     }
 
   override def getAllMethods: Array[PsiMethod] = {

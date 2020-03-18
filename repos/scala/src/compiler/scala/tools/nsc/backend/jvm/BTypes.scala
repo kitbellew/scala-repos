@@ -143,21 +143,31 @@ abstract class BTypes {
     */
   def bTypeForDescriptorOrInternalNameFromClassfile(desc: String): BType =
     (desc(0): @switch) match {
-      case 'V' => UNIT
-      case 'Z' => BOOL
-      case 'C' => CHAR
-      case 'B' => BYTE
-      case 'S' => SHORT
-      case 'I' => INT
-      case 'F' => FLOAT
-      case 'J' => LONG
-      case 'D' => DOUBLE
+      case 'V' =>
+        UNIT
+      case 'Z' =>
+        BOOL
+      case 'C' =>
+        CHAR
+      case 'B' =>
+        BYTE
+      case 'S' =>
+        SHORT
+      case 'I' =>
+        INT
+      case 'F' =>
+        FLOAT
+      case 'J' =>
+        LONG
+      case 'D' =>
+        DOUBLE
       case '[' =>
         ArrayBType(
           bTypeForDescriptorOrInternalNameFromClassfile(desc.substring(1)))
       case 'L' if desc.last == ';' =>
         classBTypeFromParsedClassfile(desc.substring(1, desc.length - 1))
-      case _ => classBTypeFromParsedClassfile(desc)
+      case _ =>
+        classBTypeFromParsedClassfile(desc)
     }
 
   /**
@@ -172,7 +182,8 @@ abstract class BTypes {
           case Left(msg) =>
             res.info = Left(NoClassBTypeInfoMissingBytecode(msg));
             res
-          case Right(c) => setClassInfoFromClassNode(c, res)
+          case Right(c) =>
+            setClassInfoFromClassNode(c, res)
         }
       }
     )
@@ -287,7 +298,8 @@ abstract class BTypes {
       else
         classNode.attrs.asScala
           .collect({
-            case a: InlineInfoAttribute => a
+            case a: InlineInfoAttribute =>
+              a
           })
           .headOption
           .map(_.inlineInfo)
@@ -344,18 +356,30 @@ abstract class BTypes {
   sealed trait BType {
     final override def toString: String =
       this match {
-        case UNIT                     => "V"
-        case BOOL                     => "Z"
-        case CHAR                     => "C"
-        case BYTE                     => "B"
-        case SHORT                    => "S"
-        case INT                      => "I"
-        case FLOAT                    => "F"
-        case LONG                     => "J"
-        case DOUBLE                   => "D"
-        case ClassBType(internalName) => "L" + internalName + ";"
-        case ArrayBType(component)    => "[" + component
-        case MethodBType(args, res)   => "(" + args.mkString + ")" + res
+        case UNIT =>
+          "V"
+        case BOOL =>
+          "Z"
+        case CHAR =>
+          "C"
+        case BYTE =>
+          "B"
+        case SHORT =>
+          "S"
+        case INT =>
+          "I"
+        case FLOAT =>
+          "F"
+        case LONG =>
+          "J"
+        case DOUBLE =>
+          "D"
+        case ClassBType(internalName) =>
+          "L" + internalName + ";"
+        case ArrayBType(component) =>
+          "[" + component
+        case MethodBType(args, res) =>
+          "(" + args.mkString + ")" + res
       }
 
     /**
@@ -372,9 +396,12 @@ abstract class BTypes {
       */
     final def size: Int =
       this match {
-        case UNIT          => 0
-        case LONG | DOUBLE => 2
-        case _             => 1
+        case UNIT =>
+          0
+        case LONG | DOUBLE =>
+          2
+        case _ =>
+          1
       }
 
     final def isPrimitive: Boolean = this.isInstanceOf[PrimitiveBType]
@@ -421,7 +448,8 @@ abstract class BTypes {
                 other match {
                   case ArrayBType(otherComponent) =>
                     component.conformsTo(otherComponent).orThrow
-                  case _ => false
+                  case _ =>
+                    false
                 }
 
             case classType: ClassBType =>
@@ -436,7 +464,8 @@ abstract class BTypes {
                       classType
                         .isSubtypeOf(otherClassType)
                         .orThrow // e.g., java/lang/Double conforms to java/lang/Number
-                    case _ => false
+                    case _ =>
+                      false
                   }
               } else if (isNullType) {
                 if (other.isNothingType)
@@ -475,7 +504,8 @@ abstract class BTypes {
       */
     final def maxType(other: BType): BType =
       this match {
-        case pt: PrimitiveBType => pt.maxValueType(other)
+        case pt: PrimitiveBType =>
+          pt.maxValueType(other)
 
         case _: ArrayBType | _: ClassBType =>
           if (isNothingType)
@@ -500,14 +530,22 @@ abstract class BTypes {
       */
     private def loadStoreOpcodeOffset: Int =
       this match {
-        case UNIT | INT  => 0
-        case BOOL | BYTE => 5
-        case CHAR        => 6
-        case SHORT       => 7
-        case FLOAT       => 2
-        case LONG        => 1
-        case DOUBLE      => 3
-        case _           => 4
+        case UNIT | INT =>
+          0
+        case BOOL | BYTE =>
+          5
+        case CHAR =>
+          6
+        case SHORT =>
+          7
+        case FLOAT =>
+          2
+        case LONG =>
+          1
+        case DOUBLE =>
+          3
+        case _ =>
+          4
       }
 
     /**
@@ -516,12 +554,18 @@ abstract class BTypes {
       */
     private def typedOpcodeOffset: Int =
       this match {
-        case UNIT                             => 5
-        case BOOL | CHAR | BYTE | SHORT | INT => 0
-        case FLOAT                            => 2
-        case LONG                             => 1
-        case DOUBLE                           => 3
-        case _                                => 4
+        case UNIT =>
+          5
+        case BOOL | CHAR | BYTE | SHORT | INT =>
+          0
+        case FLOAT =>
+          2
+        case LONG =>
+          1
+        case DOUBLE =>
+          3
+        case _ =>
+          4
       }
 
     /**
@@ -554,19 +598,30 @@ abstract class BTypes {
       */
     def toASMType: asm.Type =
       this match {
-        case UNIT   => asm.Type.VOID_TYPE
-        case BOOL   => asm.Type.BOOLEAN_TYPE
-        case CHAR   => asm.Type.CHAR_TYPE
-        case BYTE   => asm.Type.BYTE_TYPE
-        case SHORT  => asm.Type.SHORT_TYPE
-        case INT    => asm.Type.INT_TYPE
-        case FLOAT  => asm.Type.FLOAT_TYPE
-        case LONG   => asm.Type.LONG_TYPE
-        case DOUBLE => asm.Type.DOUBLE_TYPE
+        case UNIT =>
+          asm.Type.VOID_TYPE
+        case BOOL =>
+          asm.Type.BOOLEAN_TYPE
+        case CHAR =>
+          asm.Type.CHAR_TYPE
+        case BYTE =>
+          asm.Type.BYTE_TYPE
+        case SHORT =>
+          asm.Type.SHORT_TYPE
+        case INT =>
+          asm.Type.INT_TYPE
+        case FLOAT =>
+          asm.Type.FLOAT_TYPE
+        case LONG =>
+          asm.Type.LONG_TYPE
+        case DOUBLE =>
+          asm.Type.DOUBLE_TYPE
         case ClassBType(internalName) =>
           asm.Type.getObjectType(internalName) // see (*) above
-        case a: ArrayBType  => asm.Type.getObjectType(a.descriptor)
-        case m: MethodBType => asm.Type.getMethodType(m.descriptor)
+        case a: ArrayBType =>
+          asm.Type.getObjectType(a.descriptor)
+        case m: MethodBType =>
+          asm.Type.getMethodType(m.descriptor)
       }
 
     def asRefBType: RefBType = this.asInstanceOf[RefBType]
@@ -608,24 +663,34 @@ abstract class BTypes {
 
         case SHORT =>
           other match {
-            case BYTE                        => SHORT
-            case CHAR                        => INT
-            case INT | LONG | FLOAT | DOUBLE => other
-            case _                           => uncomparable
+            case BYTE =>
+              SHORT
+            case CHAR =>
+              INT
+            case INT | LONG | FLOAT | DOUBLE =>
+              other
+            case _ =>
+              uncomparable
           }
 
         case CHAR =>
           other match {
-            case BYTE | SHORT                => INT
-            case INT | LONG | FLOAT | DOUBLE => other
-            case _                           => uncomparable
+            case BYTE | SHORT =>
+              INT
+            case INT | LONG | FLOAT | DOUBLE =>
+              other
+            case _ =>
+              uncomparable
           }
 
         case INT =>
           other match {
-            case BYTE | SHORT | CHAR   => INT
-            case LONG | FLOAT | DOUBLE => other
-            case _                     => uncomparable
+            case BYTE | SHORT | CHAR =>
+              INT
+            case LONG | FLOAT | DOUBLE =>
+              other
+            case _ =>
+              uncomparable
           }
 
         case LONG =>
@@ -650,7 +715,8 @@ abstract class BTypes {
           else
             uncomparable
 
-        case UNIT | BOOL => uncomparable
+        case UNIT | BOOL =>
+          uncomparable
       }
     }
   }
@@ -680,8 +746,10 @@ abstract class BTypes {
       */
     def classOrArrayType: String =
       this match {
-        case ClassBType(internalName) => internalName
-        case a: ArrayBType            => a.descriptor
+        case ClassBType(internalName) =>
+          internalName
+        case a: ArrayBType =>
+          a.descriptor
       }
   }
 
@@ -1020,8 +1088,10 @@ abstract class BTypes {
     def superClassesTransitive: Either[NoClassBTypeInfo, List[ClassBType]] =
       info.flatMap(i =>
         i.superClass match {
-          case None     => Right(Nil)
-          case Some(sc) => sc.superClassesTransitive.map(sc :: _)
+          case None =>
+            Right(Nil)
+          case Some(sc) =>
+            sc.superClassesTransitive.map(sc :: _)
         })
 
     /**
@@ -1030,8 +1100,10 @@ abstract class BTypes {
     def packageInternalName: String = {
       val name = internalName
       name.lastIndexOf('/') match {
-        case -1 => ""
-        case i  => name.substring(0, i)
+        case -1 =>
+          ""
+        case i =>
+          name.substring(0, i)
       }
     }
 
@@ -1110,7 +1182,8 @@ abstract class BTypes {
         // (*) check if some interface of this class conforms to other.
         Right(info.orThrow.interfaces.exists(_.isSubtypeOf(other).orThrow))
       } catch {
-        case Invalid(noInfo: NoClassBTypeInfo) => Left(noInfo)
+        case Invalid(noInfo: NoClassBTypeInfo) =>
+          Left(noInfo)
       }
 
     /**
@@ -1265,14 +1338,18 @@ abstract class BTypes {
   final case class ArrayBType(componentType: BType) extends RefBType {
     def dimension: Int =
       componentType match {
-        case a: ArrayBType => 1 + a.dimension
-        case _             => 1
+        case a: ArrayBType =>
+          1 + a.dimension
+        case _ =>
+          1
       }
 
     def elementType: BType =
       componentType match {
-        case a: ArrayBType => a.elementType
-        case t             => t
+        case a: ArrayBType =>
+          a.elementType
+        case t =>
+          t
       }
   }
 

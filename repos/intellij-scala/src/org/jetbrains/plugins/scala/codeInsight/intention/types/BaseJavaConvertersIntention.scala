@@ -37,7 +37,8 @@ abstract class BaseJavaConvertersIntention(methodName: String)
           case Parent(parent: ScExpression) =>
             !isAlreadyConvertedCollection(
               parent.getTypeAfterImplicitConversion().tr)
-          case _ => true
+          case _ =>
+            true
         }
       properTargetCollection && parentNonConvertedCollection
     }
@@ -92,7 +93,8 @@ abstract class BaseJavaConvertersIntention(methodName: String)
         pClasses: List[PsiClass],
         superNames: Set[String] = Set.empty): Set[String] = {
       pClasses match {
-        case Nil => superNames
+        case Nil =>
+          superNames
         case head :: tail =>
           allSuperNames(
             head.getSupers.toList ::: tail,

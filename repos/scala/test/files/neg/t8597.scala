@@ -23,17 +23,20 @@ class Unchecked[C] {
   class D extends C
   def okay =
     (List(new D): Seq[D]) match {
-      case _: List[C] => case _ =>
+      case _: List[C] =>
+      case _          =>
     } // nowarn
   class B2[A, B]
   class A2[X] extends B2[X, String]
   def okay2(x: A2[Int]) =
     x match {
-      case _: B2[Int, _] => true
+      case _: B2[Int, _] =>
+        true
     } // nowarn
   def okay3(x: A2[Int]) =
     x match {
-      case _: B2[Int, typeVar] => true
+      case _: B2[Int, typeVar] =>
+        true
     } // nowarn
 
   def warnArray[T] =

@@ -343,7 +343,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
               .head
               .options
               .collect {
-                case SqlProfile.ColumnOption.SqlType(tpe) => tpe
+                case SqlProfile.ColumnOption.SqlType(tpe) =>
+                  tpe
               }
               .head
           assert(
@@ -405,7 +406,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
               defaultTest.columns.filter(_.name == name).head
             def columnDefault(name: String) =
               column(name).options.collect {
-                case RelationalProfile.ColumnOption.Default(v) => v
+                case RelationalProfile.ColumnOption.Default(v) =>
+                  v
               }.headOption
             assertEquals(None, columnDefault("some_bool"))
             ifCapU(jcap.booleanMetaData) {
@@ -476,7 +478,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             typeTest.columns.filter(_.name.toUpperCase == name.toUpperCase).head
           def columnDefault(name: String) =
             column(name).options.collect {
-              case RelationalProfile.ColumnOption.Default(v) => v
+              case RelationalProfile.ColumnOption.Default(v) =>
+                v
             }.headOption
 
           ifCapU(jcap.booleanMetaData) {
@@ -570,7 +573,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
             typeTest.columns.filter(_.name.toUpperCase == name.toUpperCase).head
           def columnDefault(name: String) =
             column(name).options.collect {
-              case RelationalProfile.ColumnOption.Default(v) => v
+              case RelationalProfile.ColumnOption.Default(v) =>
+                v
             }.headOption
 
           ifCapU(jcap.nullableNoDefault) {

@@ -44,7 +44,8 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
       requestFromServer("/hello") { request =>
         request.get()
       } {
-        case ("GET", "/hello") => Action(Ok("greetings"))
+        case ("GET", "/hello") =>
+          Action(Ok("greetings"))
       } { response =>
         response.body must_== "greetings"
       }(reallyLongTimeout)
@@ -54,7 +55,8 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
       requestFromServer("/hello") { request =>
         request.get()
       } {
-        case ("GET", "/hello") => Action(Ok("greetings"))
+        case ("GET", "/hello") =>
+          Action(Ok("greetings"))
       } { response =>
         response.status must_== 200
         response.header(CONTENT_TYPE) must_== Some("text/plain; charset=UTF-8")
@@ -209,7 +211,8 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           val resultString = s"result-$i"
           val app = GuiceApplicationBuilder()
             .routes {
-              case ("GET", "/") => Action(Ok(resultString))
+              case ("GET", "/") =>
+                Action(Ok(resultString))
             }
             .build()
           val server = TestServer(

@@ -19,7 +19,8 @@ private object TimeoutFilterTest {
         @volatile
         var interrupted: Option[Throwable] = None
         setInterruptHandler {
-          case exc => interrupted = Some(exc)
+          case exc =>
+            interrupted = Some(exc)
         }
       }
     val service =

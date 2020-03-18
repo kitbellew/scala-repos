@@ -178,19 +178,25 @@ object EvaluateConfigurations {
       (definitions.generated ++ dslEntries.flatMap(_.generated))
     loader => {
       val projects = definitions.values(loader).collect {
-        case p: Project => resolveBase(file.getParentFile, p)
+        case p: Project =>
+          resolveBase(file.getParentFile, p)
       }
       val (settingsRaw, manipulationsRaw) =
         dslEntries map (_.result apply loader) partition {
-          case internals.ProjectSettings(_) => true
-          case _                            => false
+          case internals.ProjectSettings(_) =>
+            true
+          case _ =>
+            false
         }
       val settings = settingsRaw flatMap {
-        case internals.ProjectSettings(settings) => settings
-        case _                                   => Nil
+        case internals.ProjectSettings(settings) =>
+          settings
+        case _ =>
+          Nil
       }
       val manipulations = manipulationsRaw map {
-        case internals.ProjectManipulation(f) => f
+        case internals.ProjectManipulation(f) =>
+          f
       }
       // TODO -get project manipulations.
       new LoadedSbtFile(
@@ -212,13 +218,15 @@ object EvaluateConfigurations {
     loader => mksettings.flatMap(_ apply loader)
   def addOffset(offset: Int, lines: Seq[(String, Int)]): Seq[(String, Int)] =
     lines.map {
-      case (s, i) => (s, i + offset)
+      case (s, i) =>
+        (s, i + offset)
     }
   def addOffsetToRange(
       offset: Int,
       ranges: Seq[(String, LineRange)]): Seq[(String, LineRange)] =
     ranges.map {
-      case (s, r) => (s, r shift offset)
+      case (s, r) =>
+        (s, r shift offset)
     }
 
   /**
@@ -296,13 +304,16 @@ object EvaluateConfigurations {
       expression: String,
       range: LineRange): LazyClassLoaded[Seq[Setting[_]]] = {
     evaluateDslEntry(eval, name, imports, expression, range).result andThen {
-      case internals.ProjectSettings(values) => values
-      case _                                 => Nil
+      case internals.ProjectSettings(values) =>
+        values
+      case _ =>
+        Nil
     }
   }
   private[this] def isSpace = (c: Char) => Character isWhitespace c
   private[this] def fstS(f: String => Boolean): ((String, Int)) => Boolean = {
-    case (s, i) => f(s)
+    case (s, i) =>
+      f(s)
   }
   private[this] def firstNonSpaceIs(lit: String) =
     (_: String).view.dropWhile(isSpace).startsWith(lit)
@@ -359,7 +370,8 @@ object EvaluateConfigurations {
       else {
         val start = lines dropWhile fstS(skipInitial)
         val (next, tail) = start.span {
-          case (s, _) => !delimiter(s)
+          case (s, _) =>
+            !delimiter(s)
         }
         val grouped =
           if (next.isEmpty)
@@ -376,7 +388,8 @@ object EvaluateConfigurations {
   private[this] def splitSettingsDefinitions(lines: Seq[(String, LineRange)])
       : (Seq[(String, LineRange)], Seq[(String, LineRange)]) =
     lines partition {
-      case (line, range) => isDefinition(line)
+      case (line, range) =>
+        isDefinition(line)
     }
   private[this] def isDefinition(line: String): Boolean = {
     val trimmed = line.trim
@@ -395,7 +408,8 @@ object EvaluateConfigurations {
       definitions: Seq[(String, LineRange)],
       file: Option[File]): compiler.EvalDefinitions = {
     val convertedRanges = definitions.map {
-      case (s, r) => (s, r.start to r.end)
+      case (s, r) =>
+        (s, r.start to r.end)
     }
     eval.evalDefinitions(
       convertedRanges,
@@ -437,18 +451,22 @@ object Index {
       label: AttributeKey[_] => String): Map[String, AttributeKey[_]] = {
     val multiMap = settings.groupBy(label)
     val duplicates = multiMap collect {
-      case (k, xs) if xs.size > 1 => (k, xs.map(_.manifest))
+      case (k, xs) if xs.size > 1 =>
+        (k, xs.map(_.manifest))
     } collect {
-      case (k, xs) if xs.size > 1 => (k, xs)
+      case (k, xs) if xs.size > 1 =>
+        (k, xs)
     }
     if (duplicates.isEmpty)
       multiMap.collect {
-        case (k, v) if validID(k) => (k, v.head)
+        case (k, v) if validID(k) =>
+          (k, v.head)
       } toMap
     else
       sys.error(
         duplicates map {
-          case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"
+          case (k, tps) =>
+            "'" + k + "' (" + tps.mkString(", ") + ")"
         } mkString (
           "Some keys were defined with the same name but different types: ", ", ", ""
         ))

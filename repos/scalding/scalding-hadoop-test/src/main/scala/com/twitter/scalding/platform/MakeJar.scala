@@ -91,8 +91,10 @@ object MakeJar {
           result.foldLeft(None: Option[File]) { (cum, part) =>
             Some(
               cum match {
-                case Some(p) => new File(p, part)
-                case None    => new File(part)
+                case Some(p) =>
+                  new File(p, part)
+                case None =>
+                  new File(part)
               })
           }
         } else {
@@ -102,6 +104,7 @@ object MakeJar {
             src.getName :: result)
         }
       }
-      case None => None
+      case None =>
+        None
     }
 }

@@ -86,8 +86,10 @@ class MarathonSchedulerActor private (
       case LocalLeadershipEvent.ElectedAsLeader =>
         log.info("Starting scheduler actor")
         deploymentRepository.all() onComplete {
-          case Success(deployments) => self ! RecoverDeployments(deployments)
-          case Failure(_)           => self ! RecoverDeployments(Nil)
+          case Success(deployments) =>
+            self ! RecoverDeployments(deployments)
+          case Failure(_) =>
+            self ! RecoverDeployments(Nil)
         }
 
       case RecoverDeployments(deployments) =>
@@ -104,7 +106,8 @@ class MarathonSchedulerActor private (
       case LocalLeadershipEvent.Standby =>
       // ignore, FIXME: When we get this while recovering deployments, we become active
 
-      case _ => stash()
+      case _ =>
+        stash()
     }
 
   //TODO: fix style issue and enable this scalastyle check
@@ -139,7 +142,8 @@ class MarathonSchedulerActor private (
                 // if we want to ensure that we trigger a new reconciliation for
                 // the first call after the last ReconcileTasks.answer has been received.
                   .andThen {
-                    case _ => self ! ReconcileFinished
+                    case _ =>
+                      self ! ReconcileFinished
                   }
               case Some(active) =>
                 log.info("task reconciliation still active, reusing result")
@@ -154,7 +158,8 @@ class MarathonSchedulerActor private (
         case ReconcileHealthChecks =>
           schedulerActions.reconcileHealthChecks()
 
-        case ScaleApps => schedulerActions.scaleApps()
+        case ScaleApps =>
+          schedulerActions.scaleApps()
 
         case cmd @ ScaleApp(appId) =>
           val origSender = sender()
@@ -165,7 +170,8 @@ class MarathonSchedulerActor private (
               res.sendAnswer(origSender, cmd)
 
             res andThen {
-              case _ => self ! cmd.answer // unlock app
+              case _ =>
+                self ! cmd.answer // unlock app
             }
           }
 
@@ -208,9 +214,11 @@ class MarathonSchedulerActor private (
       lockedApps --= plan.affectedApplicationIds
       deploymentFailed(plan, reason)
 
-    case AppScaled(id) => lockedApps -= id
+    case AppScaled(id) =>
+      lockedApps -= id
 
-    case TasksKilled(appId, _) => lockedApps -= appId
+    case TasksKilled(appId, _) =>
+      lockedApps -= appId
 
     case RetrieveRunningDeployments =>
       deploymentManager forward RetrieveRunningDeployments
@@ -244,7 +252,8 @@ class MarathonSchedulerActor private (
         unstashAll()
         context.become(started)
 
-      case _ => stash()
+      case _ =>
+        stash()
     }
 
   /**
@@ -493,7 +502,8 @@ class SchedulerActions(
         case Success(appIds) =>
           for (appId <- appIds)
             schedulerActor ! ScaleApp(appId)
-        case Failure(t) => log.warn("Failed to get task names", t)
+        case Failure(t) =>
+          log.warn("Failed to get task names", t)
       }
       .map(_ => ())
   }
@@ -601,8 +611,10 @@ class SchedulerActions(
 
   def scale(driver: SchedulerDriver, appId: PathId): Future[Unit] = {
     currentAppVersion(appId).map {
-      case Some(app) => scale(driver, app)
-      case _         => log.warn(s"App $appId does not exist. Not scaling.")
+      case Some(app) =>
+        scale(driver, app)
+      case _ =>
+        log.warn(s"App $appId does not exist. Not scaling.")
     }
   }
 

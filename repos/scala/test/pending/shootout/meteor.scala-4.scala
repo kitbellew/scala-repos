@@ -362,16 +362,26 @@ final class Piece(_number: Int) {
 
   private def makePiece(number: Int, cells: Array[PieceCell]) = {
     number match {
-      case 0 => make0(cells)
-      case 1 => make1(cells)
-      case 2 => make2(cells)
-      case 3 => make3(cells)
-      case 4 => make4(cells)
-      case 5 => make5(cells)
-      case 6 => make6(cells)
-      case 7 => make7(cells)
-      case 8 => make8(cells)
-      case 9 => make9(cells)
+      case 0 =>
+        make0(cells)
+      case 1 =>
+        make1(cells)
+      case 2 =>
+        make2(cells)
+      case 3 =>
+        make3(cells)
+      case 4 =>
+        make4(cells)
+      case 5 =>
+        make5(cells)
+      case 6 =>
+        make6(cells)
+      case 7 =>
+        make7(cells)
+      case 8 =>
+        make8(cells)
+      case 9 =>
+        make9(cells)
     }
   }
 

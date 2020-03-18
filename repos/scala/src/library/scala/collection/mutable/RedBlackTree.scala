@@ -90,8 +90,10 @@ private[collection] object RedBlackTree {
 
   def get[A: Ordering, B](tree: Tree[A, B], key: A): Option[B] =
     getNode(tree.root, key) match {
-      case null => None
-      case node => Some(node.value)
+      case null =>
+        None
+      case node =>
+        Some(node.value)
     }
 
   @tailrec
@@ -114,14 +116,18 @@ private[collection] object RedBlackTree {
 
   def min[A, B](tree: Tree[A, B]): Option[(A, B)] =
     minNode(tree.root) match {
-      case null => None
-      case node => Some((node.key, node.value))
+      case null =>
+        None
+      case node =>
+        Some((node.key, node.value))
     }
 
   def minKey[A](tree: Tree[A, _]): Option[A] =
     minNode(tree.root) match {
-      case null => None
-      case node => Some(node.key)
+      case null =>
+        None
+      case node =>
+        Some(node.key)
     }
 
   private def minNode[A, B](node: Node[A, B]): Node[A, B] =
@@ -139,14 +145,18 @@ private[collection] object RedBlackTree {
 
   def max[A, B](tree: Tree[A, B]): Option[(A, B)] =
     maxNode(tree.root) match {
-      case null => None
-      case node => Some((node.key, node.value))
+      case null =>
+        None
+      case node =>
+        Some((node.key, node.value))
     }
 
   def maxKey[A](tree: Tree[A, _]): Option[A] =
     maxNode(tree.root) match {
-      case null => None
-      case node => Some(node.key)
+      case null =>
+        None
+      case node =>
+        Some(node.key)
     }
 
   private def maxNode[A, B](node: Node[A, B]): Node[A, B] =
@@ -169,15 +179,19 @@ private[collection] object RedBlackTree {
   def minAfter[A, B](tree: Tree[A, B], key: A)(implicit
       ord: Ordering[A]): Option[(A, B)] =
     minNodeAfter(tree.root, key) match {
-      case null => None
-      case node => Some((node.key, node.value))
+      case null =>
+        None
+      case node =>
+        Some((node.key, node.value))
     }
 
   def minKeyAfter[A](tree: Tree[A, _], key: A)(implicit
       ord: Ordering[A]): Option[A] =
     minNodeAfter(tree.root, key) match {
-      case null => None
-      case node => Some(node.key)
+      case null =>
+        None
+      case node =>
+        Some(node.key)
     }
 
   private[this] def minNodeAfter[A, B](node: Node[A, B], key: A)(implicit
@@ -210,15 +224,19 @@ private[collection] object RedBlackTree {
   def maxBefore[A, B](tree: Tree[A, B], key: A)(implicit
       ord: Ordering[A]): Option[(A, B)] =
     maxNodeBefore(tree.root, key) match {
-      case null => None
-      case node => Some((node.key, node.value))
+      case null =>
+        None
+      case node =>
+        Some((node.key, node.value))
     }
 
   def maxKeyBefore[A](tree: Tree[A, _], key: A)(implicit
       ord: Ordering[A]): Option[A] =
     maxNodeBefore(tree.root, key) match {
-      case null => None
-      case node => Some(node.key)
+      case null =>
+        None
+      case node =>
+        Some(node.key)
     }
 
   private[this] def maxNodeBefore[A, B](node: Node[A, B], key: A)(implicit
@@ -615,7 +633,8 @@ private[collection] object RedBlackTree {
 
     def next(): R =
       nextNode match {
-        case null => throw new NoSuchElementException("next on empty iterator")
+        case null =>
+          throw new NoSuchElementException("next on empty iterator")
         case node =>
           nextNode = successor(node)
           setNullIfAfterEnd()
@@ -624,8 +643,10 @@ private[collection] object RedBlackTree {
 
     private[this] var nextNode: Node[A, B] =
       start match {
-        case None       => minNode(tree.root)
-        case Some(from) => minNodeAfter(tree.root, from)
+        case None =>
+          minNode(tree.root)
+        case Some(from) =>
+          minNodeAfter(tree.root, from)
       }
 
     private[this] def setNullIfAfterEnd(): Unit =

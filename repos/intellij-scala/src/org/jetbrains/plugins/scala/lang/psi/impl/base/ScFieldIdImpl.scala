@@ -41,7 +41,8 @@ class ScFieldIdImpl private (
 
   def getType(ctx: TypingContext) =
     getParent /*id list*/ .getParent match {
-      case typed: ScTypedDeclaration => typed.getType(ctx)
+      case typed: ScTypedDeclaration =>
+        typed.getType(ctx)
       //partial matching
     }
 
@@ -52,10 +53,13 @@ class ScFieldIdImpl private (
     getContext match {
       case l: ScIdList =>
         l.getContext match {
-          case _: ScVariable => false
-          case _             => true
+          case _: ScVariable =>
+            false
+          case _ =>
+            true
         }
-      case _ => true
+      case _ =>
+        true
     }
 
   override def delete() {

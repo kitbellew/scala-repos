@@ -54,7 +54,8 @@ object BlockStat {
       case ScalaTokenTypes.kCLASS | ScalaTokenTypes.kTRAIT |
           ScalaTokenTypes.kOBJECT =>
         return TmplDef.parse(builder)
-      case _ if patcher.parse(builder) => parse(builder)
+      case _ if patcher.parse(builder) =>
+        parse(builder)
       case _ =>
         if (!Expr1.parse(builder)) {
           if (!Def.parse(builder, isMod = false, isImplicit = true)) {

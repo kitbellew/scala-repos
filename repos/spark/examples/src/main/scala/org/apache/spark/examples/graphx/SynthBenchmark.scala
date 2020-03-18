@@ -50,8 +50,10 @@ object SynthBenchmark {
   def main(args: Array[String]) {
     val options = args.map { arg =>
       arg.dropWhile(_ == '-').split('=') match {
-        case Array(opt, v) => (opt -> v)
-        case _             => throw new IllegalArgumentException("Invalid argument: " + arg)
+        case Array(opt, v) =>
+          (opt -> v)
+        case _ =>
+          throw new IllegalArgumentException("Invalid argument: " + arg)
       }
     }
 
@@ -66,16 +68,24 @@ object SynthBenchmark {
     var seed: Int = -1
 
     options.foreach {
-      case ("app", v)      => app = v
-      case ("niters", v)   => niter = v.toInt
-      case ("nverts", v)   => numVertices = v.toInt
-      case ("numEPart", v) => numEPart = Some(v.toInt)
+      case ("app", v) =>
+        app = v
+      case ("niters", v) =>
+        niter = v.toInt
+      case ("nverts", v) =>
+        numVertices = v.toInt
+      case ("numEPart", v) =>
+        numEPart = Some(v.toInt)
       case ("partStrategy", v) =>
         partitionStrategy = Some(PartitionStrategy.fromString(v))
-      case ("mu", v)      => mu = v.toDouble
-      case ("sigma", v)   => sigma = v.toDouble
-      case ("degFile", v) => degFile = v
-      case ("seed", v)    => seed = v.toInt
+      case ("mu", v) =>
+        mu = v.toDouble
+      case ("sigma", v) =>
+        sigma = v.toDouble
+      case ("degFile", v) =>
+        degFile = v
+      case ("seed", v) =>
+        seed = v.toInt
       case (opt, _) =>
         throw new IllegalArgumentException("Invalid option: " + opt)
     }
@@ -115,7 +125,8 @@ object SynthBenchmark {
         .map(p => p._2)
         .countByValue()
       hist.foreach {
-        case (deg, count) => pos.println(s"$deg \t $count")
+        case (deg, count) =>
+          pos.println(s"$deg \t $count")
       }
     }
 

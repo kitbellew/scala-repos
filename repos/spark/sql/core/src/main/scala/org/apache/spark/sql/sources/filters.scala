@@ -97,7 +97,8 @@ case class In(attribute: String, values: Array[Any]) extends Filter {
         a == attribute && vs.length == values.length && vs
           .zip(values)
           .forall(x => x._1 == x._2)
-      case _ => false
+      case _ =>
+        false
     }
   override def toString: String = {
     s"In($attribute, [${values.mkString(",")}]"

@@ -84,16 +84,22 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
 
   protected def jvalueToSValue(value: JValue): SValue =
     value match {
-      case JUndefined   => sys.error("don't use jnothing; doh!")
-      case JNull        => SNull
-      case JBool(value) => SBoolean(value)
-      case JNum(bi)     => SDecimal(bi)
-      case JString(str) => SString(str)
+      case JUndefined =>
+        sys.error("don't use jnothing; doh!")
+      case JNull =>
+        SNull
+      case JBool(value) =>
+        SBoolean(value)
+      case JNum(bi) =>
+        SDecimal(bi)
+      case JString(str) =>
+        SString(str)
 
       case JObject(fields) => {
         val map: Map[String, SValue] =
           fields.map({
-            case JField(name, value) => (name, jvalueToSValue(value))
+            case JField(name, value) =>
+              (name, jvalueToSValue(value))
           })(collection.breakOut)
 
         SObject(map)
@@ -120,8 +126,10 @@ trait StringIdMemoryDatasetConsumer[M[+_]] extends MemoryDatasetConsumer[M] {
   //
   def extractIds(jv: JValue): Seq[String] =
     (jv --> classOf[JArray]).elements collect {
-      case JString(s) => s
-      case JNum(i)    => i.toString
+      case JString(s) =>
+        s
+      case JNum(i) =>
+        i.toString
     }
 }
 

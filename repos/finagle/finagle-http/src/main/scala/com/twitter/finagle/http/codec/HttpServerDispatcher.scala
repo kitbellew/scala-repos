@@ -76,13 +76,16 @@ class HttpServerDispatcher(
 
         val addr =
           trans.remoteAddress match {
-            case ia: InetSocketAddress => ia
-            case _                     => new InetSocketAddress(0)
+            case ia: InetSocketAddress =>
+              ia
+            case _ =>
+              new InetSocketAddress(0)
           }
 
         val req = Request(reqIn, reader, addr)
         service(req).handle {
-          case _ => Response(req.version, Status.InternalServerError)
+          case _ =>
+            Response(req.version, Status.InternalServerError)
         }
 
       case invalid =>

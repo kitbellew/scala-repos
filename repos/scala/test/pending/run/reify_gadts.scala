@@ -24,12 +24,15 @@ object Test extends App {
       */
     def eval[T](t: Term[T]): T =
       t match {
-        case Lit(n) => n
+        case Lit(n) =>
+          n
 
         // the right hand side makes use of the fact
         // that T = Int and so it can use '+'
-        case Succ(u)   => eval(u) + 1
-        case IsZero(u) => eval(u) == 0
+        case Succ(u) =>
+          eval(u) + 1
+        case IsZero(u) =>
+          eval(u) == 0
         case If(c, u1, u2) =>
           eval(
             if (eval(c))

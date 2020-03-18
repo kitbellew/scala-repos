@@ -49,7 +49,8 @@ class IngestStress(settings: Settings) extends Task(settings) {
         ingestString(account.apiKey, account, str, "application/json")(
           _ / account.bareRootPath / "foo")
       } catch {
-        case t => println(t)
+        case t =>
+          println(t)
       }
 
       if (n > 0)

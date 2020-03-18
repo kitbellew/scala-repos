@@ -1135,7 +1135,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       import scalaz.std.anyVal._
       val result =
         input.foldDown[Int](true) {
-          case _: AbsoluteLoad => 1
+          case _: AbsoluteLoad =>
+            1
         }
 
       result mustEqual 2

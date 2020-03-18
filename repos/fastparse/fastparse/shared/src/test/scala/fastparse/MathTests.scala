@@ -13,10 +13,14 @@ object MathTests extends TestSuite {
     ops.foldLeft(base) {
       case (left, (op, right)) =>
         op match {
-          case "+" => left + right
-          case "-" => left - right
-          case "*" => left * right
-          case "/" => left / right
+          case "+" =>
+            left + right
+          case "-" =>
+            left - right
+          case "*" =>
+            left * right
+          case "/" =>
+            left / right
         }
     }
   }

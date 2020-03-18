@@ -66,8 +66,10 @@ abstract class TreeBuilder {
     val lname = freshTermName(nme.WHILE_PREFIX)
     def default =
       wrappingPos(List(cond, body)) match {
-        case p if p.isDefined => p.end
-        case _                => startPos
+        case p if p.isDefined =>
+          p.end
+        case _ =>
+          startPos
       }
     val continu =
       atPos(o2p(body.pos pointOrElse default)) {
@@ -97,8 +99,10 @@ abstract class TreeBuilder {
   def makeAlternative(ts: List[Tree]): Tree = {
     def alternatives(t: Tree): List[Tree] =
       t match {
-        case Alternative(ts) => ts
-        case _               => List(t)
+        case Alternative(ts) =>
+          ts
+        case _ =>
+          List(t)
       }
     Alternative(ts flatMap alternatives)
   }

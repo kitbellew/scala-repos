@@ -51,14 +51,16 @@ abstract class AbstractTable[T](
       case _: BaseTag =>
         val sym = new AnonSymbol
         TableExpansion(sym, tableNode, tableTag.taggedAs(Ref(sym)).*.toNode)
-      case t: RefTag => t.path
+      case t: RefTag =>
+        t.path
     }
 
   def create_* : Iterable[FieldSymbol] = collectFieldSymbols(*.toNode)
 
   protected[this] def collectFieldSymbols(n: Node): Iterable[FieldSymbol] =
     n.collect {
-        case Select(in, f: FieldSymbol) if in == tableNode => f
+        case Select(in, f: FieldSymbol) if in == tableNode =>
+          f
       }
       .toSeq
       .distinct
@@ -130,7 +132,8 @@ abstract class AbstractTable[T](
   final def foreignKeys: Iterable[ForeignKey] =
     tableConstraints
       .collect {
-        case q: ForeignKeyQuery[_, _] => q.fks
+        case q: ForeignKeyQuery[_, _] =>
+          q.fks
       }
       .flatten
       .toIndexedSeq
@@ -139,7 +142,8 @@ abstract class AbstractTable[T](
   final def primaryKeys: Iterable[PrimaryKey] =
     tableConstraints
       .collect {
-        case k: PrimaryKey => k
+        case k: PrimaryKey =>
+          k
       }
       .toIndexedSeq
       .sortBy(_.name)

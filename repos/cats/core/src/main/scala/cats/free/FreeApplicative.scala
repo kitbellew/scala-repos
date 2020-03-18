@@ -23,8 +23,10 @@ sealed abstract class FreeApplicative[F[_], A]
 
   final def map[B](f: A => B): FA[F, B] =
     this match {
-      case Pure(a)       => Pure(f(a))
-      case Ap(pivot, fn) => apply(pivot)(fn.map(f compose _))
+      case Pure(a) =>
+        Pure(f(a))
+      case Ap(pivot, fn) =>
+        apply(pivot)(fn.map(f compose _))
     }
 
   /** Interprets/Runs the sequence of operations using the semantics of Applicative G
@@ -32,8 +34,10 @@ sealed abstract class FreeApplicative[F[_], A]
     */
   final def foldMap[G[_]](f: F ~> G)(implicit G: Applicative[G]): G[A] =
     this match {
-      case Pure(a)       => G.pure(a)
-      case Ap(pivot, fn) => G.map2(f(pivot), fn.foldMap(f))((a, g) => g(a))
+      case Pure(a) =>
+        G.pure(a)
+      case Ap(pivot, fn) =>
+        G.map2(f(pivot), fn.foldMap(f))((a, g) => g(a))
     }
 
   /** Interpret/run the operations using the semantics of `Applicative[F]`.

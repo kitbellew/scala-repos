@@ -52,7 +52,8 @@ trait TernaryUpdateRegistry[A, B, C, Op]
     val cached = cache.get((ac, bc, cc))
     if (cached != null) {
       cached match {
-        case None => bindingMissing(a, b, c)
+        case None =>
+          bindingMissing(a, b, c)
         case Some(m) =>
           m.asInstanceOf[InPlaceImpl3[Op, A, B, C]].apply(a, b, c)
       }

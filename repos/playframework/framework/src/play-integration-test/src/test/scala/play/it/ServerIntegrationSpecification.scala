@@ -41,7 +41,8 @@ trait ServerIntegrationSpecification extends PendingUntilFixed with AroundEach {
       parent match {
         case _: NettyIntegrationSpecification =>
           ResultExecution.execute(AsResult(t))
-        case _: AkkaHttpIntegrationSpecification => Skipped()
+        case _: AkkaHttpIntegrationSpecification =>
+          Skipped()
       }
   }
 

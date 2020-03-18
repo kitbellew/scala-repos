@@ -490,7 +490,8 @@ private[camel] trait ActorProducerFixture
       Props(
         new Actor {
           def receive = {
-            case msg ⇒ sender() ! "received " + msg
+            case msg ⇒
+              sender() ! "received " + msg
           }
         }),
       name = "echoActor")

@@ -120,8 +120,10 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
 
   def toLong: Long =
     get match {
-      case null    => 0L
-      case d: Date => d.getTime / 1000L
+      case null =>
+        0L
+      case d: Date =>
+        d.getTime / 1000L
     }
 
   def asJsExp: JsExp = JE.Num(toLong)
@@ -129,8 +131,10 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
   def asJsonValue: Box[JsonAST.JValue] =
     Full(
       get match {
-        case null => JsonAST.JNull
-        case x    => JsonAST.JInt(x.getTime)
+        case null =>
+          JsonAST.JNull
+        case x =>
+          JsonAST.JInt(x.getTime)
       })
 
   /**
@@ -171,30 +175,44 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
           }
                      value={
             get match {
-              case null => ""
-              case s    => format(s)
+              case null =>
+                ""
+              case s =>
+                format(s)
             }
           }/>))
     }
 
   override def setFromAny(f: Any): Date =
     f match {
-      case JsonAST.JNull                   => this.set(null)
-      case JsonAST.JInt(v)                 => this.set(new Date(v.longValue))
-      case "" | null                       => this.set(null)
-      case s: String                       => parse(s).map(s => this.set(s)).openOr(this.get)
-      case x :: _                          => setFromAny(x)
-      case d: Date                         => this.set(d)
-      case Some(d: Date)                   => this.set(d)
-      case Full(d: Date)                   => this.set(d)
-      case None | Empty | Failure(_, _, _) => this.set(null)
-      case f                               => toDate(f).map(d => this.set(d)).openOr(this.get)
+      case JsonAST.JNull =>
+        this.set(null)
+      case JsonAST.JInt(v) =>
+        this.set(new Date(v.longValue))
+      case "" | null =>
+        this.set(null)
+      case s: String =>
+        parse(s).map(s => this.set(s)).openOr(this.get)
+      case x :: _ =>
+        setFromAny(x)
+      case d: Date =>
+        this.set(d)
+      case Some(d: Date) =>
+        this.set(d)
+      case Full(d: Date) =>
+        this.set(d)
+      case None | Empty | Failure(_, _, _) =>
+        this.set(null)
+      case f =>
+        toDate(f).map(d => this.set(d)).openOr(this.get)
     }
 
   def jdbcFriendly(field: String): Object =
     get match {
-      case null => null
-      case d    => new java.sql.Time(d.getTime)
+      case null =>
+        null
+      case d =>
+        new java.sql.Time(d.getTime)
     }
 
   def real_convertToJDBCFriendly(value: Date): Object =
@@ -222,7 +240,8 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedTime[T] => f.st(toDate(v))
+          case f: MappedTime[T] =>
+            f.st(toDate(v))
         })
 
   def buildSetLongValue(
@@ -249,7 +268,8 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedTime[T] => f.st(toDate(v))
+          case f: MappedTime[T] =>
+            f.st(toDate(v))
         })
 
   def buildSetDateValue(
@@ -260,7 +280,8 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedTime[T] => f.st(Full(v))
+          case f: MappedTime[T] =>
+            f.st(Full(v))
         })
 
   def buildSetBooleanValue(
@@ -271,7 +292,8 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedTime[T] => f.st(Empty)
+          case f: MappedTime[T] =>
+            f.st(Empty)
         })
 
   /**

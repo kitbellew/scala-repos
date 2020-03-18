@@ -79,7 +79,8 @@ private class TaskTrackerActor(
 
   override val supervisorStrategy =
     OneForOneStrategy() {
-      case _: Exception => Escalate
+      case _: Exception =>
+        Escalate
     }
 
   override def preStart(): Unit = {
@@ -128,8 +129,10 @@ private class TaskTrackerActor(
         appId: PathId)(taskId: Task.Id, newTask: Option[Task]): Unit = {
       val updatedAppTasks =
         newTask match {
-          case None       => appTasks.updateApp(appId)(_.withoutTask(taskId))
-          case Some(task) => appTasks.updateApp(appId)(_.withTask(task))
+          case None =>
+            appTasks.updateApp(appId)(_.withoutTask(taskId))
+          case Some(task) =>
+            appTasks.updateApp(appId)(_.withTask(task))
         }
 
       val updatedCounts = {

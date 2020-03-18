@@ -61,8 +61,10 @@ class DefaultPromiseTest {
              p0 <- c.promises; if (p0 == p))
           yield ((cid, c))
       found.toList match {
-        case Nil      => None
-        case x :: Nil => Some(x)
+        case Nil =>
+          None
+        case x :: Nil =>
+          Some(x)
         case _ =>
           throw new IllegalStateException(
             s"Promise $p found in more than one chain")
@@ -91,8 +93,10 @@ class DefaultPromiseTest {
 
       def assertIllegalResult =
         result match {
-          case Failure(e: IllegalStateException) => ()
-          case _                                 => fail(s"Expected IllegalStateException: $result")
+          case Failure(e: IllegalStateException) =>
+            ()
+          case _ =>
+            fail(s"Expected IllegalStateException: $result")
         }
 
       expected match {
@@ -103,7 +107,8 @@ class DefaultPromiseTest {
           assert(result.isSuccess)
           val expectedCounts =
             handlers.foldLeft(Map.empty[(Try[Result], HandlerId), Int]) {
-              case (map, hid) => map.updated((firingResult, hid), 1)
+              case (map, hid) =>
+                map.updated((firingResult, hid), 1)
             }
           assertEquals(expectedCounts, fireCounts)
         case MaybeIllegalThrown =>
@@ -121,8 +126,10 @@ class DefaultPromiseTest {
       for ((cid, chain) <- chains;
            p <- chain.promises) {
         chain.state match {
-          case Right(result) => assertEquals(Some(result), promises(p).value)
-          case Left(_)       => ()
+          case Right(result) =>
+            assertEquals(Some(result), promises(p).value)
+          case Left(_) =>
+            ()
         }
       }
     }
@@ -143,8 +150,10 @@ class DefaultPromiseTest {
       val (cid, chain) = promiseChain(p).get
       val (completionEffect, newState) =
         chain.state match {
-          case Left(handlers)    => (HandlersFired(r, handlers), Right(r))
-          case Right(completion) => (IllegalThrown, chain.state)
+          case Left(handlers) =>
+            (HandlersFired(r, handlers), Right(r))
+          case Right(completion) =>
+            (IllegalThrown, chain.state)
         }
       checkEffect(completionEffect) {
         promises(p).complete(r)
@@ -194,7 +203,8 @@ class DefaultPromiseTest {
 
       val (newCidA, newCidB) =
         mergeOp match {
-          case NoMerge => (cidA, cidB)
+          case NoMerge =>
+            (cidA, cidB)
           case Merge(newState) => {
             chains = chains - cidA
             chains = chains - cidB
@@ -266,9 +276,12 @@ class DefaultPromiseTest {
 
     actions foreach { action =>
       action match {
-        case Complete(p)      => t.complete(byKey(p))
-        case Link(a, b)       => t.link(byKey(a), byKey(b))
-        case AttachHandler(p) => t.attachHandler(byKey(p))
+        case Complete(p) =>
+          t.complete(byKey(p))
+        case Link(a, b) =>
+          t.link(byKey(a), byKey(b))
+        case AttachHandler(p) =>
+          t.attachHandler(byKey(p))
       }
     }
   }
@@ -282,7 +295,8 @@ class DefaultPromiseTest {
         yield (a, b)
 
     var allActions = ps.map(Complete(_)) ++ pPairs.map {
-      case (a, b) => Link(a, b)
+      case (a, b) =>
+        Link(a, b)
     } ++ ps.map(AttachHandler(_))
     for ((permutation, i) <- allActions.permutations.zipWithIndex) {
       testActions(permutation)
@@ -331,8 +345,10 @@ class DefaultPromiseTest {
       assertEquals(flatMapCount + 1, t.chains.size) // All promises are unlinked
       val shuffled = random.shuffle(events)
       shuffled foreach {
-        case Link(a, b)  => t.link(a, b)
-        case Complete(p) => t.complete(p)
+        case Link(a, b) =>
+          t.link(a, b)
+        case Complete(p) =>
+          t.complete(p)
       }
       // All promises should be linked together, no matter the order of their linking
       assertEquals(1, t.chains.size)
@@ -357,7 +373,8 @@ class DefaultPromiseTest {
                 f
                 doneLatch.countDown()
               } catch {
-                case NonFatal(e) => ec.reportFailure(e)
+                case NonFatal(e) =>
+                  ec.reportFailure(e)
               }
             }
           })

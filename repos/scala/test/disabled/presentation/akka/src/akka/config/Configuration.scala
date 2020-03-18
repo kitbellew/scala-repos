@@ -70,7 +70,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       Some(map(key))
     } catch {
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -81,7 +82,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       map(key).asInstanceOf[Seq[Any]]
     } catch {
-      case _ => Seq.empty[Any]
+      case _ =>
+        Seq.empty[Any]
     }
   }
 
@@ -94,7 +96,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       map(key).asInstanceOf[Seq[String]]
     } catch {
-      case _ => Seq.empty[String]
+      case _ =>
+        Seq.empty[String]
     }
   }
 
@@ -102,7 +105,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       Some(map(key).toString.toInt)
     } catch {
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -113,7 +117,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       Some(map(key).toString.toLong)
     } catch {
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -124,7 +129,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       Some(map(key).toString.toFloat)
     } catch {
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -135,7 +141,8 @@ class Configuration(val map: Map[String, Any]) {
     try {
       Some(map(key).toString.toDouble)
     } catch {
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -162,8 +169,10 @@ class Configuration(val map: Map[String, Any]) {
 
   def apply(key: String): String =
     getString(key) match {
-      case None    => throw new ConfigurationException("undefined config: " + key)
-      case Some(v) => v
+      case None =>
+        throw new ConfigurationException("undefined config: " + key)
+      case Some(v) =>
+        v
     }
 
   def apply(key: String, defaultValue: String) = getString(key, defaultValue)
@@ -174,7 +183,8 @@ class Configuration(val map: Map[String, Any]) {
   def getSection(name: String): Option[Configuration] = {
     val l = name.length + 1
     val m = map.collect {
-      case (k, v) if k.startsWith(name) => (k.substring(l), v)
+      case (k, v) if k.startsWith(name) =>
+        (k.substring(l), v)
     }
     if (m.isEmpty)
       None

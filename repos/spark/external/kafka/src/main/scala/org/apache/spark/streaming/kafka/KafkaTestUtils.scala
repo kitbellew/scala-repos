@@ -192,7 +192,8 @@ private[kafka] class KafkaTestUtils extends Logging {
   def sendMessages(topic: String, messageToFreq: Map[String, Int]): Unit = {
     val messages =
       messageToFreq.flatMap {
-        case (s, freq) => Seq.fill(freq)(s)
+        case (s, freq) =>
+          Seq.fill(freq)(s)
       }.toArray
     sendMessages(topic, messages)
   }
@@ -237,7 +238,8 @@ private[kafka] class KafkaTestUtils extends Logging {
       try {
         Right(func)
       } catch {
-        case e if NonFatal(e) => Left(e)
+        case e if NonFatal(e) =>
+          Left(e)
       }
     }
 
@@ -245,7 +247,8 @@ private[kafka] class KafkaTestUtils extends Logging {
     @tailrec
     def tryAgain(attempt: Int): T = {
       makeAttempt() match {
-        case Right(result) => result
+        case Right(result) =>
+          result
         case Left(e) =>
           val duration = System.currentTimeMillis() - startTime
           if (duration < timeout.milliseconds) {

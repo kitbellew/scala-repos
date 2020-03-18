@@ -62,8 +62,10 @@ Please do not reply to this message; it was sent from an unmonitored email addre
 
   def confirm(token: String): Fu[Option[User]] =
     tokener read token flatMap {
-      case u @ Some(user) => UserRepo setEmailConfirmed user.id inject u
-      case _              => fuccess(none)
+      case u @ Some(user) =>
+        UserRepo setEmailConfirmed user.id inject u
+      case _ =>
+        fuccess(none)
     }
 
   private object tokener {
@@ -94,7 +96,8 @@ Please do not reply to this message; it was sent from an unmonitored email addre
             getHashedEmail(userId) flatMap { hashedEmail =>
               (userHashedEmail == hashedEmail) ?? (UserRepo enabledById userId)
             }
-          case _ => fuccess(none)
+          case _ =>
+            fuccess(none)
         }
       }
   }
@@ -108,7 +111,8 @@ Please do not reply to this message; it was sent from an unmonitored email addre
       try {
         Some(new String(Base64.getDecoder decode txt))
       } catch {
-        case _: java.lang.IllegalArgumentException => none
+        case _: java.lang.IllegalArgumentException =>
+          none
       }
   }
 }

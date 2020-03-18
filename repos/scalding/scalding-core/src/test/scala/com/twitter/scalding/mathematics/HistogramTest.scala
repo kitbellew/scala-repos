@@ -38,7 +38,8 @@ class HistogramJob(args: Args) extends Job(args) {
       .write(Tsv("stats-output"))
 
   } catch {
-    case e: Exception => e.printStackTrace()
+    case e: Exception =>
+      e.printStackTrace()
   }
 }
 

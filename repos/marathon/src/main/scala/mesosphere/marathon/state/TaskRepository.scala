@@ -15,8 +15,10 @@ class TaskRepository(
 
   def task(key: String): Future[Option[MarathonTask]] =
     currentVersion(key).map {
-      case Some(taskState) => Some(taskState.toProto)
-      case _               => None
+      case Some(taskState) =>
+        Some(taskState.toProto)
+      case _ =>
+        None
     }
 
   def tasksKeys(appId: PathId): Future[Iterable[String]] = {

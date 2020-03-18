@@ -45,8 +45,10 @@ trait FreshNames {
 
     def unapply(name: Name): Option[String] =
       name.toString match {
-        case freshlyNamed(prefix) => Some(prefix)
-        case _                    => None
+        case freshlyNamed(prefix) =>
+          Some(prefix)
+        case _ =>
+          None
       }
   }
 }

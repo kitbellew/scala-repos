@@ -141,43 +141,55 @@ trait StringValidators {
   def crop(in: ValueType): ValueType =
     boxStrToValType(
       valueTypeToBoxString(in).map {
-        case null => null
-        case s    => s.substring(0, math.min(s.length, maxLen))
+        case null =>
+          null
+        case s =>
+          s.substring(0, math.min(s.length, maxLen))
       })
 
   def removeRegExChars(regEx: String)(in: ValueType): ValueType =
     boxStrToValType(
       valueTypeToBoxString(in).map {
-        case null => null
-        case s    => s.replaceAll(regEx, "")
+        case null =>
+          null
+        case s =>
+          s.replaceAll(regEx, "")
       })
 
   def toLower(in: ValueType): ValueType =
     boxStrToValType(
       valueTypeToBoxString(in).map {
-        case null => null
-        case s    => s.toLowerCase
+        case null =>
+          null
+        case s =>
+          s.toLowerCase
       })
 
   def toUpper(in: ValueType): ValueType =
     boxStrToValType(
       valueTypeToBoxString(in).map {
-        case null => null
-        case s    => s.toUpperCase
+        case null =>
+          null
+        case s =>
+          s.toUpperCase
       })
 
   def trim(in: ValueType): ValueType =
     boxStrToValType(
       valueTypeToBoxString(in).map {
-        case null => null
-        case s    => s.trim
+        case null =>
+          null
+        case s =>
+          s.trim
       })
 
   def notNull(in: ValueType): ValueType =
     boxStrToValType(
       valueTypeToBoxString(in) match {
-        case Full(str) if null ne str => Full(str)
-        case _                        => Full("")
+        case Full(str) if null ne str =>
+          Full(str)
+        case _ =>
+          Full("")
       })
 
   /**
@@ -186,8 +198,10 @@ trait StringValidators {
     */
   def valMinLen(len: Int, msg: => String)(value: ValueType): List[FieldError] =
     valueTypeToBoxString(value) match {
-      case Full(str) if (null ne str) && str.length >= len => Nil
-      case _                                               => List(FieldError(this, Text(msg)))
+      case Full(str) if (null ne str) && str.length >= len =>
+        Nil
+      case _ =>
+        List(FieldError(this, Text(msg)))
     }
 
   /**
@@ -196,8 +210,10 @@ trait StringValidators {
     */
   def valMaxLen(len: Int, msg: => String)(value: ValueType): List[FieldError] =
     valueTypeToBoxString(value) match {
-      case Full(str) if (null eq str) || str.length <= len => Nil
-      case _                                               => List(FieldError(this, Text(msg)))
+      case Full(str) if (null eq str) || str.length <= len =>
+        Nil
+      case _ =>
+        List(FieldError(this, Text(msg)))
     }
 
   /**
@@ -211,8 +227,10 @@ trait StringValidators {
       else
         Empty
     } match {
-      case Full(true) => Nil
-      case _          => List(FieldError(this, Text(msg)))
+      case Full(true) =>
+        Nil
+      case _ =>
+        List(FieldError(this, Text(msg)))
     }
 }
 

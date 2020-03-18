@@ -315,8 +315,10 @@ object PersistentFSM {
       */
     def forMax(timeout: Duration): State[S, D, E] =
       timeout match {
-        case f: FiniteDuration ⇒ copy(timeout = Some(f))
-        case _ ⇒ copy(timeout = None)
+        case f: FiniteDuration ⇒
+          copy(timeout = Some(f))
+        case _ ⇒
+          copy(timeout = None)
       }
 
     /**

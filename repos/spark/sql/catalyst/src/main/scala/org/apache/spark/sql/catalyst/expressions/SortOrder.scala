@@ -94,8 +94,10 @@ case class SortPrefix(child: SortOrder) extends UnaryExpression {
           (
             DoublePrefixComparator.computePrefix(Double.NegativeInfinity),
             s"$DoublePrefixCmp.computePrefix((double)$input)")
-        case StringType => (0L, s"$input.getPrefix()")
-        case BinaryType => (0L, s"$BinaryPrefixCmp.computePrefix($input)")
+        case StringType =>
+          (0L, s"$input.getPrefix()")
+        case BinaryType =>
+          (0L, s"$BinaryPrefixCmp.computePrefix($input)")
         case dt: DecimalType
             if dt.precision - dt.scale <= Decimal.MAX_LONG_DIGITS =>
           val prefix =
@@ -112,7 +114,8 @@ case class SortPrefix(child: SortOrder) extends UnaryExpression {
           (
             DoublePrefixComparator.computePrefix(Double.NegativeInfinity),
             s"$DoublePrefixCmp.computePrefix($input.toDouble())")
-        case _ => (0L, "0L")
+        case _ =>
+          (0L, "0L")
       }
 
     childCode.code +

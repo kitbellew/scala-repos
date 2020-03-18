@@ -96,7 +96,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
       res
     } else
       it.foldLeft(state) {
-        case (n, p) => runPhase(p, n)
+        case (n, p) =>
+          runPhase(p, n)
       }
   }
 
@@ -131,7 +132,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
         n1.children.iterator
           .zip(n2.children.iterator)
           .map {
-            case (n1, n2) => detectRebuiltLeafs(n1, n2)
+            case (n1, n2) =>
+              detectRebuiltLeafs(n1, n2)
           }
           .foldLeft(Set.empty[RefId[Dumpable]])(_ ++ _)
       if (chres.isEmpty)

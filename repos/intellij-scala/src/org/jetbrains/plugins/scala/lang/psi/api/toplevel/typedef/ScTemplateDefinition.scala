@@ -90,7 +90,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                  if asPsi.isInstanceOf[PsiClassType])
               yield asPsi.asInstanceOf[PsiClassType]
           ).toArray[PsiClassType]
-        case _ => PsiClassType.EMPTY_ARRAY
+        case _ =>
+          PsiClassType.EMPTY_ARRAY
       }
     } else
       PsiClassType.EMPTY_ARRAY
@@ -155,9 +156,11 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               case myClass: ScTemplateDefinition
                   if myClass.members.contains(wrapper.function) =>
                 0
-              case _ => 1
+              case _ =>
+                1
             }
-          case _ => 1
+          case _ =>
+            1
         })
   }
 
@@ -225,7 +228,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .allFirstSeq()
       .flatMap(n =>
         n.map {
-          case (_, x) => (x.info, x.substitutor)
+          case (_, x) =>
+            (x.info, x.substitutor)
         }) ++ syntheticTypeDefinitions
       .filter(!_.isObject)
       .map((_, ScSubstitutor.empty))
@@ -241,7 +245,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .allFirstSeq()
               .flatMap(
                 _.map {
-                  case (_, n) => (n.info, n.substitutor)
+                  case (_, n) =>
+                    (n.info, n.substitutor)
                 })
           case _ =>
             allTypeAliases
@@ -263,15 +268,19 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                 x.info.namedElement match {
                   case v =>
                     ScalaPsiUtil.nameContext(v) match {
-                      case _: ScVariable => v.name == x.info.name
-                      case _: ScValue    => v.name == x.info.name
-                      case _             => true
+                      case _: ScVariable =>
+                        v.name == x.info.name
+                      case _: ScValue =>
+                        v.name == x.info.name
+                      case _ =>
+                        true
                     }
                 }
               )
         })
       .map {
-        case (_, n) => (n.info.namedElement, n.substitutor)
+        case (_, n) =>
+          (n.info.namedElement, n.substitutor)
       }
 
   def allValsIncludingSelfType = {
@@ -291,15 +300,19 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                         x.info.namedElement match {
                           case v =>
                             ScalaPsiUtil.nameContext(v) match {
-                              case _: ScVariable => v.name == x.info.name
-                              case _: ScValue    => v.name == x.info.name
-                              case _             => true
+                              case _: ScVariable =>
+                                v.name == x.info.name
+                              case _: ScValue =>
+                                v.name == x.info.name
+                              case _ =>
+                                true
                             }
                         }
                       )
                 })
               .map {
-                case (_, n) => (n.info.namedElement, n.substitutor)
+                case (_, n) =>
+                  (n.info.namedElement, n.substitutor)
               }
           case _ =>
             allVals
@@ -315,10 +328,12 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .allFirstSeq()
       .flatMap(
         _.filter {
-          case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+          case (_, n) =>
+            n.info.isInstanceOf[PhysicalSignature]
         })
       .map {
-        case (_, n) => n.info.asInstanceOf[PhysicalSignature]
+        case (_, n) =>
+          n.info.asInstanceOf[PhysicalSignature]
       } ++
       syntheticMethodsNoOverride.map(
         new PhysicalSignature(_, ScSubstitutor.empty))
@@ -334,10 +349,12 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .allFirstSeq()
               .flatMap(
                 _.filter {
-                  case (_, n) => n.info.isInstanceOf[PhysicalSignature]
+                  case (_, n) =>
+                    n.info.isInstanceOf[PhysicalSignature]
                 })
               .map {
-                case (_, n) => n.info.asInstanceOf[PhysicalSignature]
+                case (_, n) =>
+                  n.info.asInstanceOf[PhysicalSignature]
               } ++
               syntheticMethodsNoOverride.map(
                 new PhysicalSignature(_, ScSubstitutor.empty))
@@ -355,7 +372,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       .allFirstSeq()
       .flatMap(
         _.map {
-          case (_, n) => n.info
+          case (_, n) =>
+            n.info
         })
 
   def allSignaturesIncludingSelfType = {
@@ -369,7 +387,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               .allFirstSeq()
               .flatMap(
                 _.map {
-                  case (_, n) => n.info
+                  case (_, n) =>
+                    n.info
                 })
           case _ =>
             allSignatures
@@ -381,8 +400,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
   def isScriptFileClass =
     getContainingFile match {
-      case file: ScalaFile => file.isScriptFile(false)
-      case _               => false
+      case file: ScalaFile =>
+        file.isScriptFile(false)
+      case _ =>
+        false
     }
 
   def processDeclarations(
@@ -393,14 +414,17 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     if (!processor.isInstanceOf[BaseProcessor]) {
       val lastChild =
         this match {
-          case s: ScalaStubBasedElementImpl[_] => s.getLastChildStub
-          case _                               => this.getLastChild
+          case s: ScalaStubBasedElementImpl[_] =>
+            s.getLastChildStub
+          case _ =>
+            this.getLastChild
         }
       val languageLevel: LanguageLevel =
         processor match {
           case methodProcessor: MethodsProcessor =>
             methodProcessor.getLanguageLevel
-          case _ => PsiUtil.getLanguageLevel(place)
+          case _ =>
+            PsiUtil.getLanguageLevel(place)
         }
       return PsiClassImplUtil.processDeclarationsInClass(
         this,
@@ -541,7 +565,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       case Some(body) =>
         val before =
           anchor match {
-            case Some(a) => a.getNode
+            case Some(a) =>
+              a.getNode
             case None =>
               val last = body.getNode.getLastChildNode
               if (ScalaPsiUtil.isLineTerminator(last.getTreePrev.getPsi)) {
@@ -612,10 +637,14 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
               val c = supersIterator.next()
               val value =
                 baseClass match {
-                  case _: ScTrait if c.isInstanceOf[ScTrait]      => true
-                  case _: ScClass if c.isInstanceOf[ScClass]      => true
-                  case _ if !c.isInstanceOf[ScTemplateDefinition] => true
-                  case _                                          => false
+                  case _: ScTrait if c.isInstanceOf[ScTrait] =>
+                    true
+                  case _: ScClass if c.isInstanceOf[ScClass] =>
+                    true
+                  case _ if !c.isInstanceOf[ScTemplateDefinition] =>
+                    true
+                  case _ =>
+                    false
                 }
               if (value && c.name == baseName && c.qualifiedName == baseQualifiedName && value)
                 return true

@@ -39,9 +39,12 @@ private[immutable] object LongMapUtils extends BitOperations.Long {
       left: LongMap[T],
       right: LongMap[T]): LongMap[T] =
     (left, right) match {
-      case (left, LongMap.Nil)  => left
-      case (LongMap.Nil, right) => right
-      case (left, right)        => LongMap.Bin(prefix, mask, left, right)
+      case (left, LongMap.Nil) =>
+        left
+      case (LongMap.Nil, right) =>
+        right
+      case (left, right) =>
+        LongMap.Bin(prefix, mask, left, right)
     }
 }
 
@@ -74,9 +77,12 @@ object LongMap {
     // Important, don't remove this! See IntMap for explanation.
     override def equals(that: Any) =
       that match {
-        case (that: AnyRef) if (this eq that) => true
-        case (that: LongMap[_])               => false // The only empty LongMaps are eq Nil
-        case that                             => super.equals(that)
+        case (that: AnyRef) if (this eq that) =>
+          true
+        case (that: LongMap[_]) =>
+          false // The only empty LongMaps are eq Nil
+        case that =>
+          super.equals(that)
       }
   }
 
@@ -142,10 +148,12 @@ private[immutable] abstract class LongMapIterator[V, T](it: LongMap[V])
         push(left)
         next
       }
-      case t @ LongMap.Tip(_, _) => valueOf(t)
+      case t @ LongMap.Tip(_, _) =>
+        valueOf(t)
       // This should never happen. We don't allow LongMap.Nil in subtrees of the LongMap
       // and don't return an LongMapIterator for LongMap.Nil.
-      case LongMap.Nil => sys.error("Empty maps not allowed as subtrees")
+      case LongMap.Nil =>
+        sys.error("Empty maps not allowed as subtrees")
     }
 }
 
@@ -199,8 +207,10 @@ sealed abstract class LongMap[+T]
     */
   def iterator: Iterator[(Long, T)] =
     this match {
-      case LongMap.Nil => Iterator.empty
-      case _           => new LongMapEntryIterator(this)
+      case LongMap.Nil =>
+        Iterator.empty
+      case _ =>
+        new LongMapEntryIterator(this)
     }
 
   /**
@@ -212,14 +222,17 @@ sealed abstract class LongMap[+T]
         left.foreach(f);
         right.foreach(f)
       }
-      case LongMap.Tip(key, value) => f((key, value))
-      case LongMap.Nil             =>
+      case LongMap.Tip(key, value) =>
+        f((key, value))
+      case LongMap.Nil =>
     }
 
   override def keysIterator: Iterator[Long] =
     this match {
-      case LongMap.Nil => Iterator.empty
-      case _           => new LongMapKeyIterator(this)
+      case LongMap.Nil =>
+        Iterator.empty
+      case _ =>
+        new LongMapKeyIterator(this)
     }
 
   /**
@@ -234,14 +247,17 @@ sealed abstract class LongMap[+T]
         left.foreachKey(f);
         right.foreachKey(f)
       }
-      case LongMap.Tip(key, _) => f(key)
-      case LongMap.Nil         =>
+      case LongMap.Tip(key, _) =>
+        f(key)
+      case LongMap.Nil =>
     }
 
   override def valuesIterator: Iterator[T] =
     this match {
-      case LongMap.Nil => Iterator.empty
-      case _           => new LongMapValueIterator(this)
+      case LongMap.Nil =>
+        Iterator.empty
+      case _ =>
+        new LongMapValueIterator(this)
     }
 
   /**
@@ -256,8 +272,9 @@ sealed abstract class LongMap[+T]
         left.foreachValue(f);
         right.foreachValue(f)
       }
-      case LongMap.Tip(_, value) => f(value)
-      case LongMap.Nil           =>
+      case LongMap.Tip(_, value) =>
+        f(value)
+      case LongMap.Nil =>
     }
 
   override def stringPrefix = "LongMap"
@@ -278,22 +295,28 @@ sealed abstract class LongMap[+T]
           this
         else
           LongMap.Nil
-      case LongMap.Nil => LongMap.Nil
+      case LongMap.Nil =>
+        LongMap.Nil
     }
 
   def transform[S](f: (Long, T) => S): LongMap[S] =
     this match {
       case b @ LongMap.Bin(prefix, mask, left, right) =>
         b.bin(left.transform(f), right.transform(f))
-      case t @ LongMap.Tip(key, value) => t.withValue(f(key, value))
-      case LongMap.Nil                 => LongMap.Nil
+      case t @ LongMap.Tip(key, value) =>
+        t.withValue(f(key, value))
+      case LongMap.Nil =>
+        LongMap.Nil
     }
 
   final override def size: Int =
     this match {
-      case LongMap.Nil                    => 0
-      case LongMap.Tip(_, _)              => 1
-      case LongMap.Bin(_, _, left, right) => left.size + right.size
+      case LongMap.Nil =>
+        0
+      case LongMap.Tip(_, _) =>
+        1
+      case LongMap.Bin(_, _, left, right) =>
+        left.size + right.size
     }
 
   final def get(key: Long): Option[T] =
@@ -308,12 +331,14 @@ sealed abstract class LongMap[+T]
           Some(value)
         else
           None
-      case LongMap.Nil => None
+      case LongMap.Nil =>
+        None
     }
 
   final override def getOrElse[S >: T](key: Long, default: => S): S =
     this match {
-      case LongMap.Nil => default
+      case LongMap.Nil =>
+        default
       case LongMap.Tip(key2, value) =>
         if (key == key2)
           value
@@ -338,7 +363,8 @@ sealed abstract class LongMap[+T]
           value
         else
           sys.error("Key not found")
-      case LongMap.Nil => sys.error("key not found")
+      case LongMap.Nil =>
+        sys.error("key not found")
     }
 
   def +[S >: T](kv: (Long, S)): LongMap[S] = updated(kv._1, kv._2)
@@ -357,7 +383,8 @@ sealed abstract class LongMap[+T]
           LongMap.Tip(key, value)
         else
           join(key, LongMap.Tip(key, value), key2, this)
-      case LongMap.Nil => LongMap.Tip(key, value)
+      case LongMap.Nil =>
+        LongMap.Tip(key, value)
     }
 
   /**
@@ -391,7 +418,8 @@ sealed abstract class LongMap[+T]
           LongMap.Tip(key, f(value2, value))
         else
           join(key, LongMap.Tip(key, value), key2, this)
-      case LongMap.Nil => LongMap.Tip(key, value)
+      case LongMap.Nil =>
+        LongMap.Tip(key, value)
     }
 
   def -(key: Long): LongMap[T] =
@@ -408,7 +436,8 @@ sealed abstract class LongMap[+T]
           LongMap.Nil
         else
           this
-      case LongMap.Nil => LongMap.Nil
+      case LongMap.Nil =>
+        LongMap.Nil
     }
 
   /**
@@ -432,7 +461,8 @@ sealed abstract class LongMap[+T]
       }
       case LongMap.Tip(key, value) =>
         f(key, value) match {
-          case None         => LongMap.Nil
+          case None =>
+            LongMap.Nil
           case Some(value2) =>
             //hack to preserve sharing
             if (value.asInstanceOf[AnyRef] eq value2.asInstanceOf[AnyRef])
@@ -440,7 +470,8 @@ sealed abstract class LongMap[+T]
             else
               LongMap.Tip(key, value2)
         }
-      case LongMap.Nil => LongMap.Nil
+      case LongMap.Nil =>
+        LongMap.Nil
     }
 
   /**
@@ -499,8 +530,10 @@ sealed abstract class LongMap[+T]
         ) // TODO: remove [S] when SI-5548 is fixed
       case (x, LongMap.Tip(key, value)) =>
         x.updateWith[S](key, value, (x, y) => f(key, x, y))
-      case (LongMap.Nil, x) => x
-      case (x, LongMap.Nil) => x
+      case (LongMap.Nil, x) =>
+        x
+      case (x, LongMap.Nil) =>
+        x
     }
 
   /**
@@ -538,15 +571,20 @@ sealed abstract class LongMap[+T]
         }
       case (LongMap.Tip(key, value), that) =>
         that.get(key) match {
-          case None         => LongMap.Nil
-          case Some(value2) => LongMap.Tip(key, f(key, value, value2))
+          case None =>
+            LongMap.Nil
+          case Some(value2) =>
+            LongMap.Tip(key, f(key, value, value2))
         }
       case (_, LongMap.Tip(key, value)) =>
         this.get(key) match {
-          case None         => LongMap.Nil
-          case Some(value2) => LongMap.Tip(key, f(key, value2, value))
+          case None =>
+            LongMap.Nil
+          case Some(value2) =>
+            LongMap.Tip(key, f(key, value2, value))
         }
-      case (_, _) => LongMap.Nil
+      case (_, _) =>
+        LongMap.Nil
     }
 
   /**
@@ -565,17 +603,23 @@ sealed abstract class LongMap[+T]
   @tailrec
   final def firstKey: Long =
     this match {
-      case LongMap.Bin(_, _, l, r) => l.firstKey
-      case LongMap.Tip(k, v)       => k
-      case LongMap.Nil             => sys.error("Empty set")
+      case LongMap.Bin(_, _, l, r) =>
+        l.firstKey
+      case LongMap.Tip(k, v) =>
+        k
+      case LongMap.Nil =>
+        sys.error("Empty set")
     }
 
   @tailrec
   final def lastKey: Long =
     this match {
-      case LongMap.Bin(_, _, l, r) => r.lastKey
-      case LongMap.Tip(k, v)       => k
-      case LongMap.Nil             => sys.error("Empty set")
+      case LongMap.Bin(_, _, l, r) =>
+        r.lastKey
+      case LongMap.Tip(k, v) =>
+        k
+      case LongMap.Nil =>
+        sys.error("Empty set")
     }
 
 }

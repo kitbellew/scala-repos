@@ -31,8 +31,10 @@ sealed abstract class ZapInstances {
       def zapWith[A, B, C](a: (F[A] \/ G[A]), b: (FF[B], GG[B]))(
           f: (A, B) => C) =
         a match {
-          case -\/(fa) => d1.zapWith(fa, b._1)(f)
-          case \/-(ga) => d2.zapWith(ga, b._2)(f)
+          case -\/(fa) =>
+            d1.zapWith(fa, b._1)(f)
+          case \/-(ga) =>
+            d2.zapWith(ga, b._2)(f)
         }
     }
 
@@ -44,8 +46,10 @@ sealed abstract class ZapInstances {
       def zapWith[A, B, C](a: (FF[A], GG[A]), b: (F[B] \/ G[B]))(
           f: (A, B) => C) =
         b match {
-          case -\/(fb) => d1.zapWith(a._1, fb)(f)
-          case \/-(gb) => d2.zapWith(a._2, gb)(f)
+          case -\/(fb) =>
+            d1.zapWith(a._1, fb)(f)
+          case \/-(gb) =>
+            d2.zapWith(a._2, gb)(f)
         }
     }
 
@@ -57,8 +61,10 @@ sealed abstract class ZapInstances {
       def zapWith[A, B, C](ma: Free[F, A], wb: Cofree[G, B])(
           f: (A, B) => C): C =
         ma.resume match {
-          case \/-(a) => f(a, wb.head)
-          case -\/(k) => d.zapWith(k, wb.tail)(zapWith(_, _)(f))
+          case \/-(a) =>
+            f(a, wb.head)
+          case -\/(k) =>
+            d.zapWith(k, wb.tail)(zapWith(_, _)(f))
         }
     }
 
@@ -70,8 +76,10 @@ sealed abstract class ZapInstances {
       def zapWith[A, B, C](wa: Cofree[F, A], mb: Free[G, B])(
           f: (A, B) => C): C =
         mb.resume match {
-          case \/-(b) => f(wa.head, b)
-          case -\/(k) => d.zapWith(wa.tail, k)(zapWith(_, _)(f))
+          case \/-(b) =>
+            f(wa.head, b)
+          case -\/(k) =>
+            d.zapWith(wa.tail, k)(zapWith(_, _)(f))
         }
     }
 }

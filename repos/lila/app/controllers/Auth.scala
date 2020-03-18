@@ -48,11 +48,14 @@ object Auth extends LilaController {
 
   private def authRecovery(implicit
       ctx: Context): PartialFunction[Throwable, Fu[Result]] = {
-    case lila.security.Api.AuthFromTorExitNode => noTorResponse
+    case lila.security.Api.AuthFromTorExitNode =>
+      noTorResponse
     case lila.security.Api.MustConfirmEmail(userId) =>
       UserRepo byId userId map {
-        case Some(user) => BadRequest(html.auth.checkYourEmail(user))
-        case None       => BadRequest
+        case Some(user) =>
+          BadRequest(html.auth.checkYourEmail(user))
+        case None =>
+          BadRequest
       }
   }
 
@@ -227,9 +230,11 @@ object Auth extends LilaController {
                 UserRepo countEngines otherIds flatMap {
                   case nb if nb >= 2 && nb >= otherIds.size / 2 =>
                     Env.report.api.autoCheatPrintReport(me.id)
-                  case _ => funit
+                  case _ =>
+                    funit
                 }
-              case _ => funit
+              case _ =>
+                funit
             }
           }
         }
@@ -239,7 +244,8 @@ object Auth extends LilaController {
   def passwordReset =
     Open { implicit ctx =>
       forms.passwordResetWithCaptcha map {
-        case (form, captcha) => Ok(html.auth.passwordReset(form, captcha))
+        case (form, captcha) =>
+          Ok(html.auth.passwordReset(form, captcha))
       }
     }
 
@@ -281,7 +287,8 @@ object Auth extends LilaController {
           fuccess(
             html.auth
               .passwordResetConfirm(user, token, forms.passwdReset, none))
-        case _ => notFound
+        case _ =>
+          notFound
       }
     }
 
@@ -296,7 +303,8 @@ object Auth extends LilaController {
           } { data =>
             UserRepo.passwd(user.id, data.newPasswd1) >> authenticateUser(user)
           }
-        case _ => notFound
+        case _ =>
+          notFound
       }
     }
 }

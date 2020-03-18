@@ -31,8 +31,10 @@ object ParsingSpec
         val result = Await
           .result(parsed, Duration.Inf)
           .map {
-            case Matched(kiki)   => "Matched(" + new String(kiki) + ")"
-            case Unmatched(data) => "Unmatched(" + new String(data) + ")"
+            case Matched(kiki) =>
+              "Matched(" + new String(kiki) + ")"
+            case Unmatched(data) =>
+              "Unmatched(" + new String(data) + ")"
           }
           .mkString(", ")
 
@@ -62,8 +64,10 @@ object ParsingSpec
         val result = Await
           .result(parsed, Duration.Inf)
           .map {
-            case Matched(kiki)   => "Matched(" + new String(kiki) + ")"
-            case Unmatched(data) => "Unmatched(" + new String(data) + ")"
+            case Matched(kiki) =>
+              "Matched(" + new String(kiki) + ")"
+            case Unmatched(data) =>
+              "Unmatched(" + new String(data) + ")"
           }
           .mkString(", ")
 

@@ -62,7 +62,8 @@ class ParquetHiveCompatibilitySuite
         withSQLConf(HiveContext.CONVERT_METASTORE_PARQUET.key -> "false") {
           withTempTable("data") {
             val fields = hiveTypes.zipWithIndex.map {
-              case (typ, index) => s"  col_$index $typ"
+              case (typ, index) =>
+                s"  col_$index $typ"
             }
 
             val ddl = s"""CREATE TABLE parquet_compat(

@@ -163,13 +163,16 @@ trait HTTPProvider {
     */
   protected def isLiftRequest_?(session: Req): Boolean = {
     NamedPF.applyBox(session, LiftRules.liftRequest.toList) match {
-      case Full(b) => b
+      case Full(b) =>
+        b
       case _ =>
         session.path.endSlash ||
           (
             session.path.wholePath.takeRight(1) match {
-              case Nil     => true
-              case x :: xs => liftHandled(x)
+              case Nil =>
+                true
+              case x :: xs =>
+                liftHandled(x)
             }
           ) ||
           context.resource(session.uri) == null

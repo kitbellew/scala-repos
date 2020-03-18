@@ -28,13 +28,20 @@ object StorageUnit {
       lower = lower dropRight 1
 
     lower match {
-      case "byte"     => 1L
-      case "kilobyte" => 1L << 10
-      case "megabyte" => 1L << 20
-      case "gigabyte" => 1L << 30
-      case "terabyte" => 1L << 40
-      case "petabyte" => 1L << 50
-      case "exabyte"  => 1L << 60
+      case "byte" =>
+        1L
+      case "kilobyte" =>
+        1L << 10
+      case "megabyte" =>
+        1L << 20
+      case "gigabyte" =>
+        1L << 30
+      case "terabyte" =>
+        1L << 40
+      case "petabyte" =>
+        1L << 50
+      case "exabyte" =>
+        1L << 60
       case badUnit =>
         throw new NumberFormatException("Unrecognized unit %s".format(badUnit))
     }

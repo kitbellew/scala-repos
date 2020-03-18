@@ -17,7 +17,8 @@ trait AttributesTest {
       attributesMap("three") = "3"
       attributesMap -= "two"
       attributesMap foreach {
-        case (k, v) => response.setHeader(k, v.toString)
+        case (k, v) =>
+          response.setHeader(k, v.toString)
       }
     }
   }

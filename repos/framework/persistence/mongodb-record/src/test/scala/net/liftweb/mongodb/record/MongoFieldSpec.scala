@@ -113,7 +113,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
             owned.owner.runSafe {
               field.resetDirty
             }
-          case _ => field.resetDirty
+          case _ =>
+            field.resetDirty
         }
         field.dirty_? must_== false
         val valueBox = field.valueBox
@@ -149,7 +150,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
         mandatory.valueBox.isDefined must_== true
         mandatory.setBox(Empty)
         mandatory.valueBox must beLike {
-          case Failure(s, _, _) => s must_== mandatory.notOptionalErrorMessage
+          case Failure(s, _, _) =>
+            s must_== mandatory.notOptionalErrorMessage
         }
       }
     }
@@ -232,7 +234,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
                     ns.filter {
                       case e: Elem =>
                         e.attribute("selected").map(_.text) == Some("selected")
-                      case _ => false
+                      case _ =>
+                        false
                     }) andThen "* [value]" #> ".*"
                 )
               )(fprime)

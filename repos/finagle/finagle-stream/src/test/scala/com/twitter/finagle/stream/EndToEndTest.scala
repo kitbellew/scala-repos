@@ -129,8 +129,10 @@ class EndToEndTest extends FunSuite {
       val clientRes = Await.result(client(streamRequest), 15.seconds)
       assert(
         client(streamRequest).poll match {
-          case Some(Throw(_: TooManyConcurrentRequestsException)) => true
-          case _                                                  => false
+          case Some(Throw(_: TooManyConcurrentRequestsException)) =>
+            true
+          case _ =>
+            false
         })
       client.close()
     }
@@ -167,8 +169,10 @@ class EndToEndTest extends FunSuite {
                       e match {
                         case se: ChannelStateEvent =>
                           se.getState == ChannelState.OPEN
-                        case _: WriteCompletionEvent => false
-                        case _                       => true
+                        case _: WriteCompletionEvent =>
+                          false
+                        case _ =>
+                          true
                       }
                     if (keep)
                       recvd ! e
@@ -200,27 +204,34 @@ class EndToEndTest extends FunSuite {
               e.getState == ChannelState.OPEN && (
                 java.lang.Boolean.TRUE equals e.getValue
               )
-            case _ => false
+            case _ =>
+              false
           })
 
         assert(
           Await.result(recvd ?, 1.second) match {
             case m: MessageEvent =>
               m.getMessage match {
-                case res: HttpResponse => res.isChunked
-                case _                 => false
+                case res: HttpResponse =>
+                  res.isChunked
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           })
 
         assert(
           Await.result(recvd ?, 1.second) match {
             case m: MessageEvent =>
               m.getMessage match {
-                case res: HttpChunk => !res.isLast // get "chunk1"
-                case _              => false
+                case res: HttpChunk =>
+                  !res.isLast // get "chunk1"
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           })
 
         // The following requests should be ignored
@@ -237,10 +248,13 @@ class EndToEndTest extends FunSuite {
           Await.result(recvd ?, 1.second) match {
             case m: MessageEvent =>
               m.getMessage match {
-                case res: HttpChunk => !res.isLast // get "chunk2"
-                case _              => false
+                case res: HttpChunk =>
+                  !res.isLast // get "chunk2"
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           })
 
         error !! EOF
@@ -252,10 +266,13 @@ class EndToEndTest extends FunSuite {
             // case e: ExceptionEvent => throw new Exception(e.getCause)
             case m: MessageEvent =>
               m.getMessage match {
-                case res: HttpChunkTrailer => res.isLast
-                case _                     => false
+                case res: HttpChunkTrailer =>
+                  res.isLast
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           })
 
         // And finally it's closed.
@@ -265,7 +282,8 @@ class EndToEndTest extends FunSuite {
               e.getState == ChannelState.OPEN && (
                 java.lang.Boolean.FALSE equals e.getValue
               )
-            case _ => false
+            case _ =>
+              false
           })
 
         bootstrap.releaseExternalResources()

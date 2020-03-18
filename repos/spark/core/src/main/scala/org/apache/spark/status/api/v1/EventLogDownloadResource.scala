@@ -40,8 +40,10 @@ private[v1] class EventLogDownloadResource(
     try {
       val fileName = {
         attemptId match {
-          case Some(id) => s"eventLogs-$appId-$id.zip"
-          case None     => s"eventLogs-$appId.zip"
+          case Some(id) =>
+            s"eventLogs-$appId-$id.zip"
+          case None =>
+            s"eventLogs-$appId.zip"
         }
       }
 

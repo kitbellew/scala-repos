@@ -172,7 +172,8 @@ private[akkahttp] class ModelConversion(
           HttpHeader.parse(CONTENT_TYPE, ct) match {
             case HttpHeader.ParsingResult.Ok(`Content-Type`(akkaCt), _) =>
               akkaCt
-            case _ => ContentTypes.NoContentType
+            case _ =>
+              ContentTypes.NoContentType
           }
 
       }

@@ -207,8 +207,10 @@ class JavaTimer(isDaemon: Boolean, name: Option[String]) extends Timer {
 
   private[this] val underlying =
     name match {
-      case Some(n) => new java.util.Timer(n, isDaemon)
-      case None    => new java.util.Timer(isDaemon)
+      case Some(n) =>
+        new java.util.Timer(n, isDaemon)
+      case None =>
+        new java.util.Timer(isDaemon)
     }
 
   private[this] val catcher: PartialFunction[Throwable, Unit] = {

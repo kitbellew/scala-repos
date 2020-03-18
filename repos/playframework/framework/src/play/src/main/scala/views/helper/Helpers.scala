@@ -20,8 +20,10 @@ package views.html.helper {
       args.get('_help).map(m => Seq(m.toString)).getOrElse {
         (
           if (args.get('_showConstraints) match {
-                case Some(false) => false
-                case _           => true
+                case Some(false) =>
+                  false
+                case _ =>
+                  true
               }) {
             field.constraints.map(c =>
               messages(c._1, c._2.map(a => translateMsgArg(a)): _*)) ++
@@ -38,13 +40,16 @@ package views.html.helper {
         args.get('_error) match {
           case Some(Some(play.api.data.FormError(_, message, args))) =>
             Some(Seq(messages(message, args.map(a => translateMsgArg(a)): _*)))
-          case _ => None
+          case _ =>
+            None
         }
       ).getOrElse {
         (
           if (args.get('_showErrors) match {
-                case Some(false) => false
-                case _           => true
+                case Some(false) =>
+                  false
+                case _ =>
+                  true
               }) {
             field.errors.map(e =>
               messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
@@ -70,9 +75,12 @@ package views.html.helper {
 
     private def translateMsgArg(msgArg: Any) =
       msgArg match {
-        case key: String       => messages(key)
-        case keys: Seq[String] => keys.map(key => messages(key))
-        case _                 => msgArg
+        case key: String =>
+          messages(key)
+        case keys: Seq[String] =>
+          keys.map(key => messages(key))
+        case _ =>
+          msgArg
       }
 
   }
@@ -114,9 +122,11 @@ package views.html.helper {
         fieldRenderer: play.api.data.Field => Html): Seq[Html] = {
       val indexes =
         field.indexes match {
-          case Nil                              => 0 until min
-          case complete if complete.size >= min => field.indexes
-          case partial                          =>
+          case Nil =>
+            0 until min
+          case complete if complete.size >= min =>
+            field.indexes
+          case partial =>
             // We don't have enough elements, append indexes starting from the largest
             val start = field.indexes.max + 1
             val needed = min - field.indexes.size

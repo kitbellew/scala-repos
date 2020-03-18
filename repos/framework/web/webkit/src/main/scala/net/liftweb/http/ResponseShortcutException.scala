@@ -32,10 +32,14 @@ class ContinueResponseException(val continue: () => Nothing)
 object ContinueResponseException {
   def unapply(in: Throwable): Option[ContinueResponseException] =
     in match {
-      case null                           => None
-      case cre: ContinueResponseException => Some(cre)
-      case e: Exception                   => unapply(e.getCause)
-      case _                              => None
+      case null =>
+        None
+      case cre: ContinueResponseException =>
+        Some(cre)
+      case e: Exception =>
+        unapply(e.getCause)
+      case _ =>
+        None
     }
 
 }
@@ -66,7 +70,8 @@ object ResponseShortcutException {
     S.session match {
       case Full(liftSession) =>
         redirect(liftSession.attachRedirectFunc(to, Full(func)))
-      case _ => redirect(to)
+      case _ =>
+        redirect(to)
     }
 
   def seeOther(to: String): ResponseShortcutException =
@@ -79,6 +84,7 @@ object ResponseShortcutException {
     S.session match {
       case Full(liftSession) =>
         seeOther(liftSession.attachRedirectFunc(to, Full(func)))
-      case _ => seeOther(to)
+      case _ =>
+        seeOther(to)
     }
 }

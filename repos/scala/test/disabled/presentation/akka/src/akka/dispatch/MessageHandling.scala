@@ -185,8 +185,9 @@ trait MessageDispatcher {
     while (i.hasNext()) {
       val uuid = i.next()
       Actor.registry.actorFor(uuid) match {
-        case Some(actor) => actor.stop()
-        case None        => {}
+        case Some(actor) =>
+          actor.stop()
+        case None => {}
       }
     }
   }
@@ -303,10 +304,14 @@ abstract class MessageDispatcherConfigurator {
           _.setAllowCoreThreadTimeout(allow)),
         conf_?(
           config getString "rejection-policy" map {
-            case "abort"          => new AbortPolicy()
-            case "caller-runs"    => new CallerRunsPolicy()
-            case "discard-oldest" => new DiscardOldestPolicy()
-            case "discard"        => new DiscardPolicy()
+            case "abort" =>
+              new AbortPolicy()
+            case "caller-runs" =>
+              new CallerRunsPolicy()
+            case "discard-oldest" =>
+              new DiscardOldestPolicy()
+            case "discard" =>
+              new DiscardPolicy()
             case x =>
               throw new IllegalArgumentException(
                 "[%s] is not a valid rejectionPolicy!" format x)

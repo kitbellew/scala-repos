@@ -253,8 +253,10 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       mapFunc: (VertexId, VD, U) => VD): Graph[VD, ED] = {
     val uf = (id: VertexId, data: VD, o: Option[U]) => {
       o match {
-        case Some(u) => mapFunc(id, data, u)
-        case None    => data
+        case Some(u) =>
+          mapFunc(id, data, u)
+        case None =>
+          data
       }
     }
     graph.outerJoinVertices(table)(uf)
@@ -337,8 +339,10 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
       mergeFunc: (ED, ED) => ED = (e1, e2) => e1): Graph[VD, ED] = {
     val newEdges = graph.edges
       .map {
-        case e if e.srcId < e.dstId => ((e.srcId, e.dstId), e.attr)
-        case e                      => ((e.dstId, e.srcId), e.attr)
+        case e if e.srcId < e.dstId =>
+          ((e.srcId, e.dstId), e.attr)
+        case e =>
+          ((e.dstId, e.srcId), e.attr)
       }
       .reduceByKey(mergeFunc)
       .map(e => new Edge(e._1._1, e._1._2, e._2))

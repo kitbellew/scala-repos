@@ -24,8 +24,10 @@ class HoconPsiFile(provider: FileViewProvider)
     @tailrec
     def entriesInner(child: PsiElement): HObjectEntries =
       child match {
-        case obj: HObject        => obj.entries
-        case ets: HObjectEntries => ets
+        case obj: HObject =>
+          obj.entries
+        case ets: HObjectEntries =>
+          ets
         case comment: PsiComment =>
           entriesInner(comment.getNextSiblingNotWhitespace)
       }
@@ -35,8 +37,10 @@ class HoconPsiFile(provider: FileViewProvider)
 
   def toplevelObject =
     getFirstChild match {
-      case obj: HObject => Some(obj)
-      case _            => None
+      case obj: HObject =>
+        Some(obj)
+      case _ =>
+        None
     }
 
   def elementsAt(offset: Int): Iterator[PsiElement] = {

@@ -285,10 +285,12 @@ class HiveContext private[hive] (
           // starting from the given classLoader.
           def allJars(classLoader: ClassLoader): Array[URL] =
             classLoader match {
-              case null => Array.empty[URL]
+              case null =>
+                Array.empty[URL]
               case urlClassLoader: URLClassLoader =>
                 urlClassLoader.getURLs ++ allJars(urlClassLoader.getParent)
-              case other => allJars(other.getParent)
+              case other =>
+                allJars(other.getParent)
             }
 
           val classLoader = Utils.getContextOrSparkClassLoader
@@ -627,10 +629,12 @@ class HiveContext private[hive] (
 
     override def simpleString: String =
       logical match {
-        case _: HiveNativeCommand => "<Native command: executed by Hive>"
+        case _: HiveNativeCommand =>
+          "<Native command: executed by Hive>"
         case _: SetCommand =>
           "<SET command: executed by Hive, and noted by SQLContext>"
-        case _ => super.simpleString
+        case _ =>
+          super.simpleString
       }
   }
 
@@ -818,15 +822,19 @@ private[hive] object HiveContext {
           .toSeq
           .sorted
           .mkString("{", ",", "}")
-      case (null, _)                     => "NULL"
-      case (d: Int, DateType)            => new DateWritable(d).toString
-      case (t: Timestamp, TimestampType) => new TimestampWritable(t).toString
+      case (null, _) =>
+        "NULL"
+      case (d: Int, DateType) =>
+        new DateWritable(d).toString
+      case (t: Timestamp, TimestampType) =>
+        new TimestampWritable(t).toString
       case (bin: Array[Byte], BinaryType) =>
         new String(bin, StandardCharsets.UTF_8)
       case (decimal: java.math.BigDecimal, DecimalType()) =>
         // Hive strips trailing zeros so use its toString
         HiveDecimal.create(decimal).toString
-      case (other, tpe) if primitiveTypes contains tpe => other.toString
+      case (other, tpe) if primitiveTypes contains tpe =>
+        other.toString
     }
 
   /** Hive outputs fields of structs slightly differently than top level attributes. */
@@ -852,9 +860,13 @@ private[hive] object HiveContext {
           .toSeq
           .sorted
           .mkString("{", ",", "}")
-      case (null, _)                                   => "null"
-      case (s: String, StringType)                     => "\"" + s + "\""
-      case (decimal, DecimalType())                    => decimal.toString
-      case (other, tpe) if primitiveTypes contains tpe => other.toString
+      case (null, _) =>
+        "null"
+      case (s: String, StringType) =>
+        "\"" + s + "\""
+      case (decimal, DecimalType()) =>
+        decimal.toString
+      case (other, tpe) if primitiveTypes contains tpe =>
+        other.toString
     }
 }

@@ -319,8 +319,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def options: Iterable[Code] =
         model.options
           .filter {
-            case t: SqlProfile.ColumnOption.SqlType => dbType
-            case _                                  => true
+            case t: SqlProfile.ColumnOption.SqlType =>
+              dbType
+            case _ =>
+              true
           }
           .flatMap(columnOptionCode(_).toSeq)
 
@@ -334,8 +336,10 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def default: Option[Code] =
         model.options
           .collect {
-            case RelationalProfile.ColumnOption.Default(value) => value
-            case _ if fakeNullable                             => None
+            case RelationalProfile.ColumnOption.Default(value) =>
+              value
+            case _ if fakeNullable =>
+              None
           }
           .map(defaultCode)
           .headOption
@@ -692,8 +696,10 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
       str.toLowerCase
         .split("_")
         .map {
-          case "" => "_"
-          case s  => s
+          case "" =>
+            "_"
+          case s =>
+            s
         } // avoid possible collisions caused by multiple '_'
         .map(_.capitalize)
         .mkString("")

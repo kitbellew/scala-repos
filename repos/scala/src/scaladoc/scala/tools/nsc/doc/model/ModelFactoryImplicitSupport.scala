@@ -214,7 +214,8 @@ trait ModelFactoryImplicitSupport {
           _.typed(appliedTree),
           reportAmbiguousErrors = false) match {
 
-          case global.analyzer.SilentResultValue(t: Tree) => t
+          case global.analyzer.SilentResultValue(t: Tree) =>
+            t
           case global.analyzer.SilentTypeError(err) =>
             global.reporter.warning(sym.pos, err.toString)
             return Nil
@@ -442,7 +443,8 @@ trait ModelFactoryImplicitSupport {
       convertorOwner match {
         case doc: DocTemplateImpl =>
           val convertors = members.collect {
-            case m: MemberImpl if m.sym == convSym => m
+            case m: MemberImpl if m.sym == convSym =>
+              m
           }
           if (convertors.length == 1)
             convertor = convertors.head
@@ -517,7 +519,8 @@ trait ModelFactoryImplicitSupport {
     val membersByName: Map[Name, List[MemberImpl]] = members.groupBy(_.sym.name)
     val convsByMember =
       (Map.empty[MemberImpl, ImplicitConversionImpl] /: convs) {
-        case (map, conv) => map ++ conv.memberImpls.map(_ -> conv)
+        case (map, conv) =>
+          map ++ conv.memberImpls.map(_ -> conv)
       }
 
     for (conv <- convs) {
@@ -586,7 +589,8 @@ trait ModelFactoryImplicitSupport {
             glb(constr.hiBounds map typeVarToOriginOrWildcard))))
     } catch {
       // does this actually ever happen? (probably when type vars occur in the bounds)
-      case x: Throwable => (constr.loBounds.distinct, constr.hiBounds.distinct)
+      case x: Throwable =>
+        (constr.loBounds.distinct, constr.hiBounds.distinct)
     }
 
   /**

@@ -29,18 +29,21 @@ object PersistentActorBoundedStashingSpec {
     var events: List[Any] = Nil
 
     val updateState: Receive = {
-      case Evt(data) ⇒ events = data :: events
+      case Evt(data) ⇒
+        events = data :: events
     }
 
     val commonBehavior: Receive = {
-      case GetState ⇒ sender() ! events.reverse
+      case GetState ⇒
+        sender() ! events.reverse
     }
 
     def receiveRecover = updateState
 
     override def receiveCommand: Receive =
       commonBehavior orElse {
-        case Cmd(x: Any) ⇒ persist(Evt(x))(updateState)
+        case Cmd(x: Any) ⇒
+          persist(Evt(x))(updateState)
       }
   }
 

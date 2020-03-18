@@ -26,9 +26,12 @@ abstract class JSEnvTest {
 
       val log = logger.getLog
       val hasBadLog = log exists {
-        case Log(level, _) if level >= Level.Warn => true
-        case Trace(_)                             => true
-        case _                                    => false
+        case Log(level, _) if level >= Level.Warn =>
+          true
+        case Trace(_) =>
+          true
+        case _ =>
+          false
       }
 
       assertFalse(

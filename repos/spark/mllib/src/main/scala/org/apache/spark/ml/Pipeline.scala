@@ -383,7 +383,8 @@ object PipelineModel extends MLReadable[PipelineModel] {
         sc,
         path)
       val transformers = stages map {
-        case stage: Transformer => stage
+        case stage: Transformer =>
+          stage
         case other =>
           throw new RuntimeException(
             s"PipelineModel.read loaded a stage but found it" +

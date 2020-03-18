@@ -116,7 +116,8 @@ private[r] object SparkRWrappers {
 
   def getKMeansModelSize(model: PipelineModel): Array[Int] = {
     model.stages.last match {
-      case m: KMeansModel => Array(m.getK) ++ m.summary.size
+      case m: KMeansModel =>
+        Array(m.getK) ++ m.summary.size
       case other =>
         throw new UnsupportedOperationException(
           s"KMeansModel required but ${other.getClass.getSimpleName} found.")

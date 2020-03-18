@@ -192,7 +192,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
             // set time limit to avoid super long DB access
             timeout = Duration(200, "millis")
           ) match {
-            case Right(x) => x
+            case Right(x) =>
+              x
             case Left(e) => {
               logger.error(s"Error when read seen events: ${e}")
               Iterator[Event]()
@@ -333,7 +334,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         // set time limit to avoid super long DB access
         timeout = Duration(200, "millis")
       ) match {
-        case Right(x) => x
+        case Right(x) =>
+          x
         case Left(e) => {
           logger.error(s"Error when read recent events: ${e}")
           Iterator[Event]()
@@ -362,7 +364,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         productFeatures
           .get(i)
           .map {
-            case (item, f) => f
+            case (item, f) =>
+              f
           }
           .flatten
       }.flatten

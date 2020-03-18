@@ -86,7 +86,8 @@ class BytecodeTest extends ClearAfterClass {
       val f =
         (
           outfiles collect {
-            case (`classfile`, bytes) => AsmUtils.readClass(bytes)
+            case (`classfile`, bytes) =>
+              AsmUtils.readClass(bytes)
           }
         ).head
       val descs = f.visibleAnnotations.asScala.map(_.desc).toList
@@ -156,8 +157,10 @@ class BytecodeTest extends ClearAfterClass {
     )
 
     val mainIns = getSingleMethod(module, "main").instructions filter {
-      case _: LineNumber | _: Invoke | _: Jump => true
-      case _                                   => false
+      case _: LineNumber | _: Invoke | _: Jump =>
+        true
+      case _ =>
+        false
     }
     assertSameCode(mainIns, expected)
   }

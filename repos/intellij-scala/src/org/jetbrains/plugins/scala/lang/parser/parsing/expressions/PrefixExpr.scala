@@ -29,7 +29,8 @@ object PrefixExpr {
           prefixMarker.done(ScalaElementTypes.PREFIX_EXPR);
           true
         }
-      case _ => SimpleExpr.parse(builder)
+      case _ =>
+        SimpleExpr.parse(builder)
     }
   }
 }

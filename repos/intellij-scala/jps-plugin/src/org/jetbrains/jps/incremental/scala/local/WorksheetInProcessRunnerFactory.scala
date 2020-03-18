@@ -51,7 +51,8 @@ class WorksheetInProcessRunnerFactory {
           loader
         else
           createClassLoader(compilerSet, classpathSet)
-      case _ => createClassLoader(compilerSet, classpathSet)
+      case _ =>
+        createClassLoader(compilerSet, classpathSet)
     }
   }
 
@@ -130,13 +131,15 @@ class WorksheetInProcessRunnerFactory {
             val cl = Class.forName(className, true, classLoader)
 
             cl.getDeclaredMethods.find {
-              case m => m.getName == "main"
+              case m =>
+                m.getName == "main"
             } map {
               case method =>
                 System.out match {
                   case threadLocal: ThreadLocalPrintStream =>
                     threadLocal.init(new PrintStream(myOut))
-                  case _ => System.setOut(new PrintStream(myOut))
+                  case _ =>
+                    System.setOut(new PrintStream(myOut))
                 }
                 method.invoke(null, null)
             }

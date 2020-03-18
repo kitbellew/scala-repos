@@ -27,7 +27,8 @@ private[akka] final class Unfold[S, E](s: S, f: S ⇒ Option[(S, E)])
         new OutHandler {
           override def onPull(): Unit =
             f(state) match {
-              case None ⇒ complete(out)
+              case None ⇒
+                complete(out)
               case Some((newState, v)) ⇒ {
                 push(out, v)
                 state = newState
@@ -52,8 +53,10 @@ private[akka] final class UnfoldAsync[S, E](s: S, f: S ⇒ Future[Option[(S, E)]
 
       override def preStart() = {
         val ac = getAsyncCallback[Try[Option[(S, E)]]] {
-          case Failure(ex) ⇒ fail(out, ex)
-          case Success(None) ⇒ complete(out)
+          case Failure(ex) ⇒
+            fail(out, ex)
+          case Success(None) ⇒
+            complete(out)
           case Success(Some((newS, elem))) ⇒
             push(out, elem)
             state = newS

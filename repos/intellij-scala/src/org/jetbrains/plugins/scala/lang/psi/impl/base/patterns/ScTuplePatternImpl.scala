@@ -19,8 +19,10 @@ class ScTuplePatternImpl(node: ASTNode)
     with ScTuplePattern {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -28,7 +30,9 @@ class ScTuplePatternImpl(node: ASTNode)
 
   override def subpatterns =
     patternList match {
-      case Some(l) => l.patterns
-      case None    => Seq.empty
+      case Some(l) =>
+        l.patterns
+      case None =>
+        Seq.empty
     }
 }

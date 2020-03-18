@@ -73,7 +73,8 @@ class Replayer(raw: Reader) extends LogReplay {
         case UnpickleSuccess(_) =>
           nextComma = true;
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -86,7 +87,8 @@ class Replayer(raw: Reader) extends LogReplay {
         case UnpickleSuccess(y) =>
           nextComma = true;
           Some(y)
-        case _ => None
+        case _ =>
+          None
       }
     }
 

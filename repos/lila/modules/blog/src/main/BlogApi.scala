@@ -37,9 +37,12 @@ final class BlogApi(prismicUrl: String, collection: String) {
   private val cache = BuiltInCache(200)
   private val prismicLogger = (level: Symbol, message: String) =>
     level match {
-      case 'DEBUG => logger debug message
-      case 'ERROR => logger error message
-      case _      => logger info message
+      case 'DEBUG =>
+        logger debug message
+      case 'ERROR =>
+        logger error message
+      case _ =>
+        logger info message
     }
 
   private val fetchPrismicApi = AsyncCache.single[Api](
@@ -58,7 +61,8 @@ object BlogApi {
       .map {
         case Fragment.StructuredText.Block.Paragraph(text, _, _) =>
           s"<p>$text</p>"
-        case _ => ""
+        case _ =>
+          ""
       }
       .mkString
 

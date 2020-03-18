@@ -69,7 +69,8 @@ class DontLeakActorsOnFailingConnectionSpecs
           }
         }
         result
-      case _ ⇒ block
+      case _ ⇒
+        block
     }
 
   "Http.superPool" should {
@@ -84,12 +85,14 @@ class DontLeakActorsOnFailingConnectionSpecs
 
         val countDown = new CountDownLatch(reqsCount)
         val sink = Sink.foreach[(Try[HttpResponse], Int)] {
-          case (resp, id) ⇒ handleResponse(resp, id)
+          case (resp, id) ⇒
+            handleResponse(resp, id)
         }
 
         val resps = source.via(clientFlow).runWith(sink)
         resps.onComplete({
-          case _ ⇒ countDown.countDown()
+          case _ ⇒
+            countDown.countDown()
         })
 
         countDown.await(10, TimeUnit.SECONDS)

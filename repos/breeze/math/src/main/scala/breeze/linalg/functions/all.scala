@@ -48,7 +48,8 @@ object all extends UFunc {
           ctv.traverse(v2, Visitor)
           true
         } catch {
-          case Found => false
+          case Found =>
+            false
         }
 
       }

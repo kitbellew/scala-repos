@@ -112,7 +112,8 @@ trait Test2 {
     try {
       printClass(Class.forName(name))
     } catch {
-      case e: Exception => println(e)
+      case e: Exception =>
+        println(e)
     }
   }
   def printClass(cls: Class[_]) {
@@ -120,7 +121,8 @@ trait Test2 {
     try {
       printInnerClasses(cls)
     } catch {
-      case e: Exception => println(e)
+      case e: Exception =>
+        println(e)
     }
   }
 }

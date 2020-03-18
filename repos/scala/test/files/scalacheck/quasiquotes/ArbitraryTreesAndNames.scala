@@ -5,8 +5,10 @@ trait ArbitraryTreesAndNames {
   def smallList[T](size: Int, g: Gen[T]) = {
     val n: Int =
       choose(0, size / 2 + 1).sample match {
-        case Some(i) => i
-        case None    => 0
+        case Some(i) =>
+          i
+        case None =>
+          0
       }
     containerOfN[List, T](n, g)
   }

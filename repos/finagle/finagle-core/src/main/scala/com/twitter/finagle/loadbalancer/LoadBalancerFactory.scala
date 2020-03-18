@@ -123,8 +123,10 @@ object LoadBalancerFactory {
 
       val rawStatsReceiver =
         statsReceiver match {
-          case sr: RollupStatsReceiver => sr.self
-          case sr                      => sr
+          case sr: RollupStatsReceiver =>
+            sr.self
+          case sr =>
+            sr
         }
 
       // Determine which stats receiver to use based on `perHostStats`
@@ -149,7 +151,8 @@ object LoadBalancerFactory {
               addr match {
                 case Address.Inet(ia, _) =>
                   "%s:%d".format(ia.getHostName, ia.getPort)
-                case other => other.toString
+                case other =>
+                  other.toString
               }
             val host = hostStatsReceiver.scope(label).scope(scope)
             BroadcastStatsReceiver(Seq(host, statsReceiver))
@@ -158,8 +161,10 @@ object LoadBalancerFactory {
         val composite = {
           val ia =
             addr match {
-              case Address.Inet(ia, _) => Some(ia)
-              case _                   => None
+              case Address.Inet(ia, _) =>
+                Some(ia)
+              case _ =>
+                None
             }
           reporter(label, ia).andThen(monitor)
         }
@@ -273,7 +278,8 @@ object ConcurrentLoadBalancerFactory {
     case Address.Inet(ia, metadata) =>
       for (i: Int <- (0 until num).toSet)
         yield Address.Inet(ia, metadata + (ReplicaKey -> i))
-    case addr => Set(addr)
+    case addr =>
+      Set(addr)
   }
 
   /**
@@ -301,7 +307,8 @@ object ConcurrentLoadBalancerFactory {
         val newDest = dest.map {
           case bound @ Addr.Bound(set, _) =>
             bound.copy(addrs = set.flatMap(replicate(numConnections)))
-          case addr => addr
+          case addr =>
+            addr
         }
         super.make(params + Dest(newDest), next)
       }
@@ -367,14 +374,18 @@ object DefaultBalancerFactory extends LoadBalancerFactory {
 
   private def p2c(): LoadBalancerFactory =
     exp.loadMetric() match {
-      case "ewma" => Balancers.p2cPeakEwma()
-      case _      => Balancers.p2c()
+      case "ewma" =>
+        Balancers.p2cPeakEwma()
+      case _ =>
+        Balancers.p2c()
     }
 
   private val underlying =
     defaultBalancer() match {
-      case "heap"   => Balancers.heap()
-      case "choice" => p2c()
+      case "heap" =>
+        Balancers.heap()
+      case "choice" =>
+        p2c()
       case x =>
         log.warning(s"""Invalid load balancer $x, using "choice" balancer.""")
         p2c()

@@ -67,9 +67,12 @@ case class WebAuthService(
     withJsonClient { client =>
       eitherT(
         client.query("apiKey", apiKey).get[JValue]("apikeys/" + apiKey) map {
-          case HttpResponse(HttpStatus(OK, _), _, _, _)       => \/.right(true)
-          case HttpResponse(HttpStatus(NotFound, _), _, _, _) => \/.right(false)
-          case res                                            => \/.left("Unexpected response from auth service:\n" + res)
+          case HttpResponse(HttpStatus(OK, _), _, _, _) =>
+            \/.right(true)
+          case HttpResponse(HttpStatus(NotFound, _), _, _, _) =>
+            \/.right(false)
+          case res =>
+            \/.left("Unexpected response from auth service:\n" + res)
         })
     }
 }

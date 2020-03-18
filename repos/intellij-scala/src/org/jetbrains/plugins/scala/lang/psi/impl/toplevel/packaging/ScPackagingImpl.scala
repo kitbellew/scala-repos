@@ -68,8 +68,10 @@ class ScPackagingImpl private (
     if (next == null)
       return None
     next match {
-      case ref: ScStableCodeReferenceElement => Some(ref)
-      case _                                 => findChild(classOf[ScStableCodeReferenceElement])
+      case ref: ScStableCodeReferenceElement =>
+        Some(ref)
+      case _ =>
+        findChild(classOf[ScStableCodeReferenceElement])
     }
   }
 
@@ -89,8 +91,10 @@ class ScPackagingImpl private (
       return stub.asInstanceOf[ScPackageContainerStub].ownNamePart
     }
     reference match {
-      case Some(r) => r.qualName
-      case None    => ""
+      case Some(r) =>
+        r.qualName
+      case None =>
+        ""
     }
   }
 
@@ -107,9 +111,12 @@ class ScPackagingImpl private (
             _packName + "." + p.getPackageName
           else
             p.getPackageName
-        case f: ScalaFileImpl => "" //f.getPackageName
-        case null             => ""
-        case parent           => parentPackageName(parent)
+        case f: ScalaFileImpl =>
+          "" //f.getPackageName
+        case null =>
+          ""
+        case parent =>
+          parentPackageName(parent)
       }
     parentPackageName(this)
   }
@@ -128,8 +135,9 @@ class ScPackagingImpl private (
       var curr = getFirstChild
       while (curr != null) {
         curr match {
-          case definition: ScTypeDefinition => buffer += definition
-          case _                            =>
+          case definition: ScTypeDefinition =>
+            buffer += definition
+          case _ =>
         }
         curr = curr.getNextSibling
       }

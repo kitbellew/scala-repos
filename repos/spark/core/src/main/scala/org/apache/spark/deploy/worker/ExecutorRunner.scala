@@ -112,7 +112,8 @@ private[deploy] class ExecutorRunner(
     try {
       worker.send(ExecutorStateChanged(appId, execId, state, message, exitCode))
     } catch {
-      case e: IllegalStateException => logWarning(e.getMessage(), e)
+      case e: IllegalStateException =>
+        logWarning(e.getMessage(), e)
     }
   }
 
@@ -126,7 +127,8 @@ private[deploy] class ExecutorRunner(
       try {
         ShutdownHookManager.removeShutdownHook(shutdownHook)
       } catch {
-        case e: IllegalStateException => None
+        case e: IllegalStateException =>
+          None
       }
     }
   }
@@ -134,12 +136,18 @@ private[deploy] class ExecutorRunner(
   /** Replace variables such as {{EXECUTOR_ID}} and {{CORES}} in a command argument passed to us */
   private[worker] def substituteVariables(argument: String): String =
     argument match {
-      case "{{WORKER_URL}}"  => workerUrl
-      case "{{EXECUTOR_ID}}" => execId.toString
-      case "{{HOSTNAME}}"    => host
-      case "{{CORES}}"       => cores.toString
-      case "{{APP_ID}}"      => appId
-      case other             => other
+      case "{{WORKER_URL}}" =>
+        workerUrl
+      case "{{EXECUTOR_ID}}" =>
+        execId.toString
+      case "{{HOSTNAME}}" =>
+        host
+      case "{{CORES}}" =>
+        cores.toString
+      case "{{APP_ID}}" =>
+        appId
+      case other =>
+        other
     }
 
   /**

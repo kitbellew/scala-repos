@@ -780,8 +780,10 @@ trait Crudify {
   lazy val locSnippets =
     new DispatchLocSnippets {
       val dispatch: PartialFunction[String, NodeSeq => NodeSeq] = {
-        case "crud.all"    => doCrudAll
-        case "crud.create" => crudDoForm(create, S.?("Created"))
+        case "crud.all" =>
+          doCrudAll
+        case "crud.create" =>
+          crudDoForm(create, S.?("Created"))
       }
 
     }
@@ -847,7 +849,8 @@ trait Crudify {
                     err._2
                   }</span>))
 
-          case _ => NodeSeq.Empty
+          case _ =>
+            NodeSeq.Empty
         }
       }
 

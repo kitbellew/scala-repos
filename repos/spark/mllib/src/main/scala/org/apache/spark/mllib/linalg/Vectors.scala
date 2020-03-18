@@ -73,9 +73,11 @@ sealed trait Vector extends Serializable {
             Vectors.equals(s1.indices, s1.values, 0 until d1.size, d1.values)
           case (d1: DenseVector, s1: SparseVector) =>
             Vectors.equals(0 until d1.size, d1.values, s1.indices, s1.values)
-          case (_, _) => util.Arrays.equals(this.toArray, v2.toArray)
+          case (_, _) =>
+            util.Arrays.equals(this.toArray, v2.toArray)
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -262,8 +264,10 @@ class VectorUDT extends UserDefinedType[Vector] {
 
   override def equals(o: Any): Boolean = {
     o match {
-      case v: VectorUDT => true
-      case _            => false
+      case v: VectorUDT =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -445,8 +449,10 @@ object Vectors {
         s"You specified p=$p.")
     val values =
       vector match {
-        case DenseVector(vs)          => vs
-        case SparseVector(n, ids, vs) => vs
+        case DenseVector(vs) =>
+          vs
+        case SparseVector(n, ids, vs) =>
+          vs
         case v =>
           throw new IllegalArgumentException(
             "Do not support vector type " + v.getClass)

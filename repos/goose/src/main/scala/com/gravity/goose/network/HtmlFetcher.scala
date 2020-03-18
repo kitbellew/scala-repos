@@ -132,8 +132,9 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       HttpStatusValidator.validate(
         cleanUrl,
         response.getStatusLine.getStatusCode) match {
-        case Left(ex) => throw ex
-        case _        =>
+        case Left(ex) =>
+          throw ex
+        case _ =>
       }
 
       entity = response.getEntity

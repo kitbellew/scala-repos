@@ -62,8 +62,10 @@ object Tags {
       @tailrec
       def loop(rules: List[Rule]): Boolean =
         rules match {
-          case x :: xs => x(m) && loop(xs)
-          case Nil     => true
+          case x :: xs =>
+            x(m) && loop(xs)
+          case Nil =>
+            true
         }
       loop(rules.toList)
     }

@@ -40,7 +40,8 @@ trait Importer {
       in.close()
       sb.toString
     } catch {
-      case x => throw new ConfigurationException(x.toString)
+      case x =>
+        throw new ConfigurationException(x.toString)
     }
   }
 }

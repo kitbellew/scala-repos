@@ -16,16 +16,20 @@ object NoExcep {
     try {
       Console.println(t);
     } catch {
-      case Node(Leaf(_), Leaf(_)) => a;
-      case Leaf(_)                => b;
+      case Node(Leaf(_), Leaf(_)) =>
+        a;
+      case Leaf(_) =>
+        b;
     }
 
   def method2 =
     try {
       Console.println("Hello, world");
     } catch {
-      case _: Error     => Console.println("File error");
-      case t: Throwable => Console.println("Unknown error");
+      case _: Error =>
+        Console.println("File error");
+      case t: Throwable =>
+        Console.println("Unknown error");
     }
 
   def method3 =
@@ -33,19 +37,24 @@ object NoExcep {
       try {
         Console.println("method3");
       } catch {
-        case Node(Leaf(_), Leaf(_)) => Console.println("First one");
-        case Leaf(_)                => Console.println("Second one");
+        case Node(Leaf(_), Leaf(_)) =>
+          Console.println("First one");
+        case Leaf(_) =>
+          Console.println("Second one");
       }
     } catch {
-      case _: Error     => Console.println("File error");
-      case t: Exception => Console.println("Unknown error");
+      case _: Error =>
+        Console.println("File error");
+      case t: Exception =>
+        Console.println("Unknown error");
     }
 
   def method4 =
     try {
       Console.println("..");
     } catch {
-      case _: Throwable => sys.error("..");
+      case _: Throwable =>
+        sys.error("..");
     }
 }
 
@@ -79,8 +88,10 @@ object Test {
         throw Leaf(10);
       Console.println("nooo oneeee can priiiint meee");
     } catch {
-      case Leaf(a)      => Console.println(a);
-      case _: Exception => Console.println("Exception occurred");
+      case Leaf(a) =>
+        Console.println(a);
+      case _: Exception =>
+        Console.println("Exception occurred");
     } finally {
       Console.println("Finally!");
     }
@@ -91,16 +102,20 @@ object Test {
         throw Leaf(10);
       Console.println("nooo oneeee can priiiint meee");
     } catch {
-      case Leaf(a)      => Console.println(a);
-      case _: Exception => Console.println("Exception occurred");
+      case Leaf(a) =>
+        Console.println(a);
+      case _: Exception =>
+        Console.println("Exception occurred");
     }
 
     try {
       val a: Leaf = null;
       println(a.x);
     } catch {
-      case Leaf(a)                 => Console.println(a);
-      case _: NullPointerException => Console.println("Exception occurred");
+      case Leaf(a) =>
+        Console.println(a);
+      case _: NullPointerException =>
+        Console.println("Exception occurred");
     }
   }
 
@@ -110,7 +125,8 @@ object Test {
         val a: Leaf = null;
         println(a.x);
       } catch {
-        case Leaf(a) => Console.println(a);
+        case Leaf(a) =>
+          Console.println(a);
       }
     } catch {
       case npe: NullPointerException =>
@@ -162,7 +178,8 @@ object Test {
       try {
         Console.println(fin);
       } catch {
-        case _: Throwable => ()
+        case _: Throwable =>
+          ()
       }
     }
 
@@ -266,7 +283,8 @@ object Test {
     try {
       f;
     } catch {
-      case _: Throwable => ()
+      case _: Throwable =>
+        ()
     }
 
   def returnWithFinallyClean: Int =
@@ -284,7 +302,8 @@ object Test {
       try {
         1
       } catch {
-        case e: java.io.IOException => ()
+        case e: java.io.IOException =>
+          ()
       }
     }
 

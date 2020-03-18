@@ -54,7 +54,8 @@ private[launchqueue] class LaunchQueueDelegate(
     val answerFuture = actorRef ? message
     import scala.concurrent.ExecutionContext.Implicits.global
     answerFuture.recover {
-      case NonFatal(e) => throw new RuntimeException(s"in $method", e)
+      case NonFatal(e) =>
+        throw new RuntimeException(s"in $method", e)
     }
     answerFuture
   }

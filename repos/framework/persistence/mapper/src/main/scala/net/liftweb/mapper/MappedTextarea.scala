@@ -45,8 +45,10 @@ abstract class MappedTextarea[T <: Mapper[T]](owner: T, maxLen: Int)
             textareaCols.toString
           }>{
             get match {
-              case null => ""
-              case s    => s
+              case null =>
+                ""
+              case s =>
+                s
             }
           }</textarea>))
     }

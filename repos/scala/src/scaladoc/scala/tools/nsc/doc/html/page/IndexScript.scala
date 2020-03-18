@@ -111,7 +111,8 @@ class IndexScript(universe: doc.Universe) extends Page {
             params.map(p => p.name + ": " + p.resultType.name).mkString(", ")
           }
           .mkString("(", ")(", "): " + d.resultType.name)
-      case v: Val => ": " + v.resultType.name
+      case v: Val =>
+        ": " + v.resultType.name
     }
 
     /** This function takes a member entity and return all modifiers in a
@@ -146,8 +147,10 @@ class IndexScript(universe: doc.Universe) extends Page {
       ) // permalink to the member
 
     mbr match {
-      case d: Def => jsonObject(d)
-      case v: Val => jsonObject(v)
+      case d: Def =>
+        jsonObject(d)
+      case v: Val =>
+        jsonObject(v)
       case m: MemberEntity =>
         JSONObject(
           Map("member" -> m.definitionName, "error" -> "unsupported entity"))

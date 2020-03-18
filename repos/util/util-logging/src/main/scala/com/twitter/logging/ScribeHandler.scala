@@ -230,7 +230,8 @@ class ScribeHandler(
         return
 
       serverType = socket match {
-        case None => Unknown
+        case None =>
+          Unknown
         case Some(s) => {
           val outStream = s.getOutputStream()
 
@@ -255,7 +256,8 @@ class ScribeHandler(
               "Scribe server is archaic; changing to old protocol for future requests.")
             Archaic
           } catch {
-            case NonFatal(_) => Modern
+            case NonFatal(_) =>
+              Modern
           }
         }
       }

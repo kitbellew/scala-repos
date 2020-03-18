@@ -420,7 +420,8 @@ class HistoryServerSuite
       val json = parse(HistoryServerSuite.getUrl(applications("", "")))
       logDebug(s"${JsonMethods.pretty(json)}")
       json match {
-        case JNothing => Seq()
+        case JNothing =>
+          Seq()
         case apps: JArray =>
           apps
             .filter(app => {
@@ -429,11 +430,13 @@ class HistoryServerSuite
                   val state = (attempts.children.head \ "completed")
                     .asInstanceOf[JBool]
                   state.value == completed
-                case _ => false
+                case _ =>
+                  false
               }
             })
             .map(app => (app \ "id").asInstanceOf[JString].values)
-        case _ => Seq()
+        case _ =>
+          Seq()
       }
     }
 
@@ -573,14 +576,16 @@ object HistoryServerSuite {
       try {
         Option(connection.getInputStream())
       } catch {
-        case io: IOException => None
+        case io: IOException =>
+          None
       }
     val errString =
       try {
         val err = Option(connection.getErrorStream())
         err.map(IOUtils.toString)
       } catch {
-        case io: IOException => None
+        case io: IOException =>
+          None
       }
     (code, inStream, errString)
   }

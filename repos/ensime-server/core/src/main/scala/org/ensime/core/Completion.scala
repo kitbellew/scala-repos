@@ -99,8 +99,10 @@ trait CompletionControl {
 
       val defaultPrefix =
         IdentRegexp.findFirstMatchIn(preceding) match {
-          case Some(m) => m.group(1)
-          case _       => ""
+          case Some(m) =>
+            m.group(1)
+          case _ =>
+            ""
         }
 
       val constructing =
@@ -177,7 +179,8 @@ trait CompletionControl {
                         prefix,
                         constructing))
                 }
-              case Literal(Constant(_)) => None
+              case Literal(Constant(_)) =>
+                None
               case New(name) =>
                 Some(
                   ScopeContext(
@@ -232,7 +235,8 @@ trait CompletionControl {
               })
               .take(maxResults)
           )
-        case _ => CompletionInfoList("", Nil)
+        case _ =>
+          CompletionInfoList("", Nil)
       }
     }
   }
@@ -296,7 +300,8 @@ trait CompletionControl {
             Some(fetchTypeSearchCompletions(prefix, maxResults, indexer))
           } else
             None
-        case _ => None
+        case _ =>
+          None
       }
 
     var members = List[Member]()
@@ -309,8 +314,9 @@ trait CompletionControl {
     }
     do {
       x.get match {
-        case Left(mems) => members ++= mems
-        case _          =>
+        case Left(mems) =>
+          members ++= mems
+        case _ =>
       }
     } while (!x.isComplete)
 
@@ -454,7 +460,8 @@ trait Completion {
           }
           .toList
           .sortBy(ci => (ci.relevance, ci.name))
-      case _ => List.empty
+      case _ =>
+        List.empty
     }
   }
 
@@ -507,7 +514,8 @@ object CompletionUtil {
       }
       .map(Some(_))
       .recover {
-        case _ => None
+        case _ =>
+          None
       }
   }
 

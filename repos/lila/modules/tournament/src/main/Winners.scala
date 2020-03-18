@@ -42,7 +42,8 @@ final class Winners(
             UserRepo isEngine player.userId map { engine =>
               !engine option Winner(tour.id, tour.name, player.userId)
             }
-          case _ => fuccess(none)
+          case _ =>
+            fuccess(none)
         }
       }
       .sequenceFu map (_.flatten take 10)

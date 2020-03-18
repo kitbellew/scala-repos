@@ -17,8 +17,10 @@ package object util {
 
     override def equals(o: Any): Boolean = {
       o match {
-        case o: Box[_] => inner === o.inner
-        case _         => false
+        case o: Box[_] =>
+          inner === o.inner
+        case _ =>
+          false
       }
     }
 

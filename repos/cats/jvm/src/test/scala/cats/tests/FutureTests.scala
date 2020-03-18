@@ -20,7 +20,8 @@ class FutureTests extends CatsSuite {
 
   def futureXor[A](f: Future[A]): Future[Xor[Throwable, A]] =
     f.map(Xor.right[Throwable, A]).recover {
-      case t => Xor.left(t)
+      case t =>
+        Xor.left(t)
     }
 
   implicit def eqfa[A: Eq]: Eq[Future[A]] =
@@ -29,7 +30,8 @@ class FutureTests extends CatsSuite {
         val fz = futureXor(fx) zip futureXor(fy)
         Await.result(
           fz.map {
-            case (tx, ty) => tx === ty
+            case (tx, ty) =>
+              tx === ty
           },
           timeout)
       }

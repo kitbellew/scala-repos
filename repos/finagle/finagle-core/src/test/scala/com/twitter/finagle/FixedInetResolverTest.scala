@@ -23,10 +23,12 @@ class FixedInetResolverTest extends FunSuite {
         Await.result(result) match {
           case Addr.Bound(set, _) =>
             assert(set.contains(Address("1.2.3.4", 100)))
-          case _ => fail("Should have been a bound address")
+          case _ =>
+            fail("Should have been a bound address")
         }
 
-      case _ => fail("Should have successfully resolved to a name")
+      case _ =>
+        fail("Should have successfully resolved to a name")
     }
   }
 
@@ -56,7 +58,8 @@ class FixedInetResolverTest extends FunSuite {
 
         Await.result(request.toFuture(), 2.milliseconds) match {
           case Addr.Bound(_, _) =>
-          case _                => fail("Resolution should have succeeded")
+          case _ =>
+            fail("Resolution should have succeeded")
         }
       }
 
@@ -77,7 +80,8 @@ class FixedInetResolverTest extends FunSuite {
 
         Await.result(request.toFuture(), 2.milliseconds) match {
           case Addr.Neg =>
-          case x        => fail(s"Resolution should have failed: $x")
+          case x =>
+            fail(s"Resolution should have failed: $x")
         }
       }
 

@@ -58,7 +58,8 @@ object RawCompileLike {
           else
             loop(tail.toList, result)
         }
-        case Nil | List(_) => result
+        case Nil | List(_) =>
+          result
       }
     }
     loop(options.toList, Nil)

@@ -76,9 +76,12 @@ object ContentEncoding {
 
   def forName(name: String): Option[ContentEncoding] =
     name.toLowerCase match {
-      case "gzip"    => Some(GZip)
-      case "deflate" => Some(Deflate)
-      case _         => None
+      case "gzip" =>
+        Some(GZip)
+      case "deflate" =>
+        Some(Deflate)
+      case _ =>
+        None
     }
 }
 

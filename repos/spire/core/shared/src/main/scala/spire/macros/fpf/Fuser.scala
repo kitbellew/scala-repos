@@ -85,7 +85,8 @@ private[spire] trait Fuser[C <: Context, A] {
 
       case q"$constr($apx, $mes, $ind, $exact)" =>
         termify(apx, mes, ind, exact) map {
-          case (apx, mes, ind, exact) => Fused(Nil, apx, mes, ind, exact)
+          case (apx, mes, ind, exact) =>
+            Fused(Nil, apx, mes, ind, exact)
         } getOrElse Approx(apx, mes, Left(ind), exact).fused(Nil)
 
       case _ if typeCheck(c)(tree).tpe <:< c.weakTypeOf[FpFilterExact[A]] =>
@@ -113,7 +114,8 @@ private[spire] trait Fuser[C <: Context, A] {
       case q"$lift($exact)($ev)" =>
         (typeCheck(c)(tree).tpe <:< c.weakTypeOf[FpFilter[A]]) &&
           (typeCheck(c)(exact).tpe <:< c.weakTypeOf[FpFilterExact[A]])
-      case _ => false
+      case _ =>
+        false
     }
 
   private def isApproxLift(tree: Tree): Boolean =
@@ -121,21 +123,26 @@ private[spire] trait Fuser[C <: Context, A] {
       case q"$lift($approx)($ev)" =>
         (typeCheck(c)(tree).tpe <:< c.weakTypeOf[FpFilter[A]]) &&
           (typeCheck(c)(approx).tpe <:< c.weakTypeOf[FpFilterApprox[A]])
-      case _ => false
+      case _ =>
+        false
     }
 
   private def termify(apx: Tree, mes: Tree, ind: Tree, exact: Tree)
       : Option[(TermName, TermName, Either[TermName, Int], TermName)] = {
     def t(tree: Tree): Option[TermName] =
       tree match {
-        case Ident(name: TermName) => Some(name: TermName)
-        case _                     => None
+        case Ident(name: TermName) =>
+          Some(name: TermName)
+        case _ =>
+          None
       }
 
     def l(tree: Tree): Option[Int] =
       tree match {
-        case Literal(Constant(n: Int)) => Some(n)
-        case _                         => None
+        case Literal(Constant(n: Int)) =>
+          Some(n)
+        case _ =>
+          None
       }
 
     val ind0 = t(ind).map(Left(_)) orElse l(ind).map(Right(_))
@@ -161,10 +168,14 @@ private[spire] trait Fuser[C <: Context, A] {
       f: (Tree, Tree) => Tree,
       g: (Int, Int) => Int): Either[Tree, Int] = {
     (a, b) match {
-      case (Right(n), Right(m)) => Right(g(n, m))
-      case (Right(n), Left(t))  => Left(f(intLit(n), t))
-      case (Left(t), Right(n))  => Left(f(t, intLit(n)))
-      case (Left(t), Left(u))   => Left(f(t, u))
+      case (Right(n), Right(m)) =>
+        Right(g(n, m))
+      case (Right(n), Left(t)) =>
+        Left(f(intLit(n), t))
+      case (Left(t), Right(n)) =>
+        Left(f(t, intLit(n)))
+      case (Left(t), Left(u)) =>
+        Left(f(t, u))
     }
   }
 
@@ -298,11 +309,16 @@ private[spire] trait Fuser[C <: Context, A] {
   }
 
   private def mkComp(t: Tree): Cmp => Tree = {
-    case Cmp.Lt   => q"$t < 0"
-    case Cmp.Gt   => q"$t > 0"
-    case Cmp.LtEq => q"$t <= 0"
-    case Cmp.GtEq => q"$t >= 0"
-    case Cmp.Eq   => q"$t == 0"
+    case Cmp.Lt =>
+      q"$t < 0"
+    case Cmp.Gt =>
+      q"$t > 0"
+    case Cmp.LtEq =>
+      q"$t <= 0"
+    case Cmp.GtEq =>
+      q"$t >= 0"
+    case Cmp.Eq =>
+      q"$t == 0"
   }
 
   def comp(lhs: Tree, rhs: Tree)(rng: Tree, signed: Tree)(cmp: Cmp): Tree = {

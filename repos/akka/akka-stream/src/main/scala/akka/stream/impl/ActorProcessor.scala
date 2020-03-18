@@ -138,16 +138,23 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
   }
 
   protected def waitingForUpstream: Actor.Receive = {
-    case OnComplete ⇒ onComplete()
-    case OnSubscribe(subscription) ⇒ onSubscribe(subscription)
-    case OnError(cause) ⇒ onError(cause)
+    case OnComplete ⇒
+      onComplete()
+    case OnSubscribe(subscription) ⇒
+      onSubscribe(subscription)
+    case OnError(cause) ⇒
+      onError(cause)
   }
 
   protected def upstreamRunning: Actor.Receive = {
-    case OnNext(element) ⇒ enqueueInputElement(element)
-    case OnComplete ⇒ onComplete()
-    case OnError(cause) ⇒ onError(cause)
-    case OnSubscribe(subscription) ⇒ subscription.cancel() // spec rule 2.5
+    case OnNext(element) ⇒
+      enqueueInputElement(element)
+    case OnComplete ⇒
+      onComplete()
+    case OnError(cause) ⇒
+      onError(cause)
+    case OnSubscribe(subscription) ⇒
+      subscription.cancel() // spec rule 2.5
   }
 
   protected def completed: Actor.Receive = {

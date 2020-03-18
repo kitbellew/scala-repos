@@ -191,7 +191,8 @@ class Registrar(
     actorRefs = actorRefs + ref
     val result = camel.activationFutureFor(ref)
     result.onFailure {
-      case e ⇒ log.error("activationFutureFor {} failed: {}", ref, e.getMessage)
+      case e ⇒
+        log.error("activationFutureFor {} failed: {}", ref, e.getMessage)
     }
     activations += result
   }
@@ -202,7 +203,8 @@ class EchoConsumer(endpoint: String) extends Actor with Consumer {
   def endpointUri = endpoint
 
   def receive = {
-    case msg: CamelMessage ⇒ sender() ! msg
+    case msg: CamelMessage ⇒
+      sender() ! msg
   }
 
   /**

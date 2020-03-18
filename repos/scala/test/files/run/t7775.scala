@@ -15,11 +15,13 @@ object Test extends App {
     for (i <- 1 to attempts;
          p <- systemProperties)
       p match {
-        case (k, v) => assert(k != null && v != null, fail(i))
+        case (k, v) =>
+          assert(k != null && v != null, fail(i))
       }
   }
   probe onComplete {
-    case _ => done = true
+    case _ =>
+      done = true
   }
 
   System.setProperty("foo", "fooz")

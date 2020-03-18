@@ -140,7 +140,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job =
         jobs.createJob(validAPIKey, "name", "job type", None, None).copoint
       job must beLike {
-        case Job(_, _, "name", "job type", None, NotStarted) => ok
+        case Job(_, _, "name", "job type", None, NotStarted) =>
+          ok
       }
     }
 
@@ -149,7 +150,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job =
         jobs.createJob(validAPIKey, "name", "job type", None, Some(t)).copoint
       job must beLike {
-        case Job(_, _, "name", "job type", None, Started(`t`, NotStarted)) => ok
+        case Job(_, _, "name", "job type", None, Started(`t`, NotStarted)) =>
+          ok
       }
     }
 
@@ -174,10 +176,12 @@ trait JobManagerSpec[M[+_]] extends Specification {
           .copoint
       val job2 = jobs.findJob(job.id).copoint
       job must beLike {
-        case Job(_, _, "name", "job type", Some(`data`), NotStarted) => ok
+        case Job(_, _, "name", "job type", Some(`data`), NotStarted) =>
+          ok
       }
       job2 must beLike {
-        case Some(Job(_, _, "name", "job type", Some(`data`), NotStarted)) => ok
+        case Some(Job(_, _, "name", "job type", Some(`data`), NotStarted)) =>
+          ok
       }
     }
 
@@ -192,7 +196,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
           .copoint
       val (s0, s5) = (BigDecimal(0), BigDecimal(5))
       status1 must beLike {
-        case Right(Status(`jobId`, _, "1", `s0`, "%", None)) => ok
+        case Right(Status(`jobId`, _, "1", `s0`, "%", None)) =>
+          ok
       }
       status2 must beLike {
         case Right(Status(`jobId`, _, "2", `s5`, "%", Some(JString("...")))) =>
@@ -272,7 +277,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
           val status2x = jobs.getStatus(jobId).copoint
           status2x must_== status1
           status2 must beLike {
-            case Left(_) => ok
+            case Left(_) =>
+              ok
           }
       }
     }
@@ -409,7 +415,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
       }
 
       jobs.findJob(jobId).copoint must beLike {
-        case Some(Job(`jobId`, _, _, _, _, Cancelled(_, _, `state`))) => ok
+        case Some(Job(`jobId`, _, _, _, _, Cancelled(_, _, `state`))) =>
+          ok
       }
     }
 
@@ -417,10 +424,12 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job =
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
       jobs.cancel(job.id, "It was redundant.").copoint must beLike {
-        case Right(_) => ok
+        case Right(_) =>
+          ok
       }
       jobs.cancel(job.id, "It was redundant.").copoint must beLike {
-        case Left(_) => ok
+        case Left(_) =>
+          ok
       }
     }
 
@@ -485,7 +494,8 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val jobId = job.id
       val dt = new DateTime
       jobs.start(job.id, dt).copoint must beLike {
-        case Right(Job(`jobId`, _, _, _, _, Started(`dt`, NotStarted))) => ok
+        case Right(Job(`jobId`, _, _, _, _, Started(`dt`, NotStarted))) =>
+          ok
       }
     }
 
@@ -493,13 +503,15 @@ trait JobManagerSpec[M[+_]] extends Specification {
       val job = jobs.createJob(validAPIKey, "b", "c", None, None).copoint
       jobs.start(job.id).copoint
       jobs.start(job.id).copoint must beLike {
-        case Left(_) => ok
+        case Left(_) =>
+          ok
       }
 
       val job2 =
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
       jobs.start(job2.id).copoint must beLike {
-        case Left(_) => ok
+        case Left(_) =>
+          ok
       }
     }
 
@@ -512,10 +524,12 @@ trait JobManagerSpec[M[+_]] extends Specification {
         List(MimeTypes.text / plain),
         "Hello, world!".getBytes())
       jobs.finish(job.id).copoint must beLike {
-        case Right(Job(_, _, _, _, _, Finished(_, _))) => ok
+        case Right(Job(_, _, _, _, _, Finished(_, _))) =>
+          ok
       }
       jobs.findJob(job.id).copoint must beLike {
-        case Some(Job(_, _, _, _, _, Finished(_, _))) => ok
+        case Some(Job(_, _, _, _, _, Finished(_, _))) =>
+          ok
       }
     }
   }

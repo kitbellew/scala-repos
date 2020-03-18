@@ -89,7 +89,8 @@ class NaiveBayesModel private[spark] (
   // application of this condition (in predict function).
   private val (thetaMinusNegTheta, negThetaSum) =
     modelType match {
-      case Multinomial => (None, None)
+      case Multinomial =>
+        (None, None)
       case Bernoulli =>
         val negTheta = thetaMatrix.map(value => math.log(1.0 - math.exp(value)))
         val ones =
@@ -407,8 +408,10 @@ class NaiveBayes private (
       (v: Vector) => {
         val values =
           v match {
-            case sv: SparseVector => sv.values
-            case dv: DenseVector  => dv.values
+            case sv: SparseVector =>
+              sv.values
+            case dv: DenseVector =>
+              dv.values
           }
         if (!values.forall(_ >= 0.0)) {
           throw new SparkException(
@@ -420,8 +423,10 @@ class NaiveBayes private (
       (v: Vector) => {
         val values =
           v match {
-            case sv: SparseVector => sv.values
-            case dv: DenseVector  => dv.values
+            case sv: SparseVector =>
+              sv.values
+            case dv: DenseVector =>
+              dv.values
           }
         if (!values.forall(v => v == 0.0 || v == 1.0)) {
           throw new SparkException(
@@ -464,7 +469,8 @@ class NaiveBayes private (
     }
     val numFeatures =
       aggregated.head match {
-        case (_, (_, v)) => v.size
+        case (_, (_, v)) =>
+          v.size
       }
 
     val labels = new Array[Double](numLabels)
@@ -481,8 +487,9 @@ class NaiveBayes private (
           modelType match {
             case Multinomial =>
               math.log(sumTermFreqs.values.sum + numFeatures * lambda)
-            case Bernoulli => math.log(n + 2.0 * lambda)
-            case _         =>
+            case Bernoulli =>
+              math.log(n + 2.0 * lambda)
+            case _ =>
               // This should never happen.
               throw new UnknownError(s"Invalid modelType: $modelType.")
           }

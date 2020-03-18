@@ -62,16 +62,20 @@ package docs.serialization {
     // Use `""` if manifest is not needed.
     def manifest(obj: AnyRef): String =
       obj match {
-        case _: Customer => CustomerManifest
-        case _: User     => UserManifest
+        case _: Customer =>
+          CustomerManifest
+        case _: User =>
+          UserManifest
       }
 
     // "toBinary" serializes the given object to an Array of Bytes
     def toBinary(obj: AnyRef): Array[Byte] = {
       // Put the real code that serializes the object here
       obj match {
-        case Customer(name) => name.getBytes(UTF_8)
-        case User(name)     => name.getBytes(UTF_8)
+        case Customer(name) =>
+          name.getBytes(UTF_8)
+        case User(name) =>
+          name.getBytes(UTF_8)
       }
     }
 

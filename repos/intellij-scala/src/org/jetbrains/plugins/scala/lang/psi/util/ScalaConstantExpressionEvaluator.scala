@@ -22,8 +22,10 @@ class ScalaConstantExpressionEvaluator extends ConstantExpressionEvaluator {
       throwExceptionOnOverflow: Boolean,
       auxEvaluator: AuxEvaluator): AnyRef = {
     expression match {
-      case expr: ScExpression => evaluate(expr)
-      case _                  => null
+      case expr: ScExpression =>
+        evaluate(expr)
+      case _ =>
+        null
     }
   }
 
@@ -39,22 +41,29 @@ class ScalaConstantExpressionEvaluator extends ConstantExpressionEvaluator {
           throwExceptionOnOverflow)
       case deff: ScPatternDefinition =>
         deff.expr.map {
-          case e => computeConstantExpression(e, throwExceptionOnOverflow)
+          case e =>
+            computeConstantExpression(e, throwExceptionOnOverflow)
         }.orNull
-      case expr: ScExpression => evaluate(expr)
-      case _                  => null
+      case expr: ScExpression =>
+        evaluate(expr)
+      case _ =>
+        null
     }
   }
 
   private def evaluate(expr: ScExpression): AnyRef = {
     expr match {
-      case l: ScLiteral => l.getValue
+      case l: ScLiteral =>
+        l.getValue
       case p: ScParenthesisedExpr =>
         p.expr match {
-          case Some(e) => evaluate(e)
-          case _       => null
+          case Some(e) =>
+            evaluate(e)
+          case _ =>
+            null
         }
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

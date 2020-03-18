@@ -15,6 +15,7 @@ private[ws] object CollectionUtil {
       headers: Map[String, Seq[String]]): ju.Map[String, ju.List[String]] =
     mapAsJavaMap(
       headers.map {
-        case (k, v) => k -> seqAsJavaList(v)
+        case (k, v) =>
+          k -> seqAsJavaList(v)
       })
 }

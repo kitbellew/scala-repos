@@ -69,8 +69,9 @@ trait ScPattern extends ScalaPsiElement {
 
     def inner(p: ScPattern) {
       p match {
-        case binding: ScBindingPattern => b += binding
-        case _                         =>
+        case binding: ScBindingPattern =>
+          b += binding
+        case _ =>
       }
 
       for (sub <- p.subpatterns) {
@@ -113,8 +114,10 @@ trait ScPattern extends ScalaPsiElement {
 
   def subpatterns: Seq[ScPattern] =
     this match {
-      case _: ScReferencePattern => Seq.empty
-      case _                     => findChildrenByClassScala[ScPattern](classOf[ScPattern])
+      case _: ScReferencePattern =>
+        Seq.empty
+      case _ =>
+        findChildrenByClassScala[ScPattern](classOf[ScPattern])
     }
 
   private def expectedTypeForExtractorArg(
@@ -136,9 +139,12 @@ trait ScPattern extends ScalaPsiElement {
                     ref.refName,
                     ref.getKinds(incomplete = false),
                     ref.getContext match {
-                      case inf: ScInfixPattern          => inf.expectedType
-                      case constr: ScConstructorPattern => constr.expectedType
-                      case _                            => None
+                      case inf: ScInfixPattern =>
+                        inf.expectedType
+                      case constr: ScConstructorPattern =>
+                        constr.expectedType
+                      case _ =>
+                        None
                     })
                 )
             }
@@ -146,11 +152,14 @@ trait ScPattern extends ScalaPsiElement {
             None
           else {
             resolve(0) match {
-              case s: ScalaResolveResult => Some(s)
-              case _                     => None
+              case s: ScalaResolveResult =>
+                Some(s)
+              case _ =>
+                None
             }
           }
-        case m => m
+        case m =>
+          m
       }
 
     def calculateSubstitutor(
@@ -159,8 +168,10 @@ trait ScPattern extends ScalaPsiElement {
         substitutor: ScSubstitutor): ScSubstitutor = {
       val tp =
         _tp match {
-          case ex: ScExistentialType => ex.skolem
-          case _                     => _tp
+          case ex: ScExistentialType =>
+            ex.skolem
+          case _ =>
+            _tp
         }
 
       def rightWay: ScSubstitutor = {
@@ -172,8 +183,10 @@ trait ScPattern extends ScalaPsiElement {
         if (t._1) {
           val undefSubst = t._2
           undefSubst.getSubstitutor match {
-            case Some(newSubst) => newSubst.followed(substitutor)
-            case _              => substitutor
+            case Some(newSubst) =>
+              newSubst.followed(substitutor)
+            case _ =>
+              substitutor
           }
         } else
           substitutor
@@ -188,8 +201,10 @@ trait ScPattern extends ScalaPsiElement {
       if (t._1) {
         val undefSubst = t._2
         undefSubst.getSubstitutor match {
-          case Some(newSubst) => newSubst.followed(substitutor)
-          case _              => rightWay
+          case Some(newSubst) =>
+            newSubst.followed(substitutor)
+          case _ =>
+            rightWay
         }
       } else
         rightWay
@@ -244,13 +259,17 @@ trait ScPattern extends ScalaPsiElement {
             }
             val firstParameterType =
               fun.parameters.head.getType(TypingContext.empty) match {
-                case Success(tp, _) => tp
-                case _              => return None
+                case Success(tp, _) =>
+                  tp
+                case _ =>
+                  return None
               }
             val funType = undefSubst.subst(firstParameterType)
             expected match {
-              case Some(tp) => calculateSubstitutor(tp, funType, substitutor)
-              case _        => substitutor
+              case Some(tp) =>
+                calculateSubstitutor(tp, funType, substitutor)
+              case _ =>
+                substitutor
             }
           }
         fun.returnType match {
@@ -266,7 +285,8 @@ trait ScPattern extends ScalaPsiElement {
                       substitutor.subst(tp.lower.v)
                     else
                       substitutor.subst(tp.upper.v))
-                case (typez, _) => (false, typez)
+                case (typez, _) =>
+                  (false, typez)
               }
             }
             val subbedRetTp: ScType = subst.subst(rt)
@@ -284,7 +304,8 @@ trait ScPattern extends ScalaPsiElement {
               else
                 None
             }
-          case _ => None
+          case _ =>
+            None
         }
       case Some(ScalaResolveResult(fun: ScFunction, substitutor: ScSubstitutor))
           if fun.name == "unapplySeq" &&
@@ -301,13 +322,17 @@ trait ScPattern extends ScalaPsiElement {
             }
             val firstParameterRetTp =
               fun.parameters.head.getType(TypingContext.empty) match {
-                case Success(tp, _) => tp
-                case _              => return None
+                case Success(tp, _) =>
+                  tp
+                case _ =>
+                  return None
               }
             val funType = undefSubst.subst(firstParameterRetTp)
             expected match {
-              case Some(tp) => calculateSubstitutor(tp, funType, substitutor)
-              case _        => substitutor
+              case Some(tp) =>
+                calculateSubstitutor(tp, funType, substitutor)
+              case _ =>
+                substitutor
             }
           }
         fun.returnType match {
@@ -326,18 +351,22 @@ trait ScPattern extends ScalaPsiElement {
                 seqArgs.length == 1 && ScType.extractClass(des).exists {
                   clazz => clazz.qualifiedName == "scala.collection.Seq"
                 }
-              case _ => false
+              case _ =>
+                false
             } match {
               case Some(seq @ ScParameterizedType(des, seqArgs)) =>
                 this match {
                   case n: ScNamingPattern
                       if n.getLastChild.isInstanceOf[ScSeqWildcard] =>
                     Some(subst.subst(seq))
-                  case _ => Some(subst.subst(seqArgs.head))
+                  case _ =>
+                    Some(subst.subst(seqArgs.head))
                 }
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
       case Some(
             ScalaResolveResult(
@@ -362,7 +391,8 @@ trait ScPattern extends ScalaPsiElement {
           Some(args(argIndex))
         else
           None
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -371,8 +401,10 @@ trait ScPattern extends ScalaPsiElement {
     getContext match {
       case list: ScPatternList =>
         list.getContext match {
-          case _var: ScVariable => _var.getType(TypingContext.empty).toOption
-          case _val: ScValue    => _val.getType(TypingContext.empty).toOption
+          case _var: ScVariable =>
+            _var.getType(TypingContext.empty).toOption
+          case _val: ScValue =>
+            _val.getType(TypingContext.empty).toOption
         }
       case argList: ScPatternArgumentList =>
         argList.getContext match {
@@ -383,9 +415,11 @@ trait ScPattern extends ScalaPsiElement {
               thisIndex,
               constr.expectedType,
               argList.patterns.length)
-          case _ => None
+          case _ =>
+            None
         }
-      case composite: ScCompositePattern => composite.expectedType
+      case composite: ScCompositePattern =>
+        composite.expectedType
       case infix: ScInfixPattern =>
         val i =
           if (infix.leftPattern == this)
@@ -395,7 +429,8 @@ trait ScPattern extends ScalaPsiElement {
           else
             1
         expectedTypeForExtractorArg(infix.reference, i, infix.expectedType, 2)
-      case par: ScParenthesisedPattern => par.expectedType
+      case par: ScParenthesisedPattern =>
+        par.expectedType
       case patternList: ScPatterns =>
         patternList.getContext match {
           case tuple: ScTuplePattern =>
@@ -407,12 +442,15 @@ trait ScPattern extends ScalaPsiElement {
                     tuple.patternList match {
                       case Some(patterns: ScPatterns) =>
                         patterns.patterns.indexWhere(_ == this)
-                      case _ => return None
+                      case _ =>
+                        return None
                     }
                   val patternLength: Int =
                     tuple.patternList match {
-                      case Some(pat) => pat.patterns.length
-                      case _         => -1 //is it possible to get here?
+                      case Some(pat) =>
+                        pat.patterns.length
+                      case _ =>
+                        -1 //is it possible to get here?
                     }
                   return expectedTypeForExtractorArg(
                     infix.reference,
@@ -433,7 +471,8 @@ trait ScPattern extends ScalaPsiElement {
                 None
               case et0 if et0 == types.AnyRef || et0 == types.Any =>
                 Some(types.Any)
-              case _ => None
+              case _ =>
+                None
             }
           case _: ScXmlPattern =>
             val nodeClass: Option[PsiClass] = ScalaPsiManager
@@ -451,17 +490,21 @@ trait ScPattern extends ScalaPsiElement {
                       ScDesignatorType(seqClass),
                       Seq(ScDesignatorType(nodeClass)))
                   }
-                case _ => Some(ScDesignatorType(nodeClass))
+                case _ =>
+                  Some(ScDesignatorType(nodeClass))
               }
             }
-          case _ => None
+          case _ =>
+            None
         }
       case clause: ScCaseClause =>
         clause.getContext /*clauses*/ .getContext match {
           case matchStat: ScMatchStmt =>
             matchStat.expr match {
-              case Some(e) => Some(e.getType(TypingContext.empty).getOrAny)
-              case _       => None
+              case Some(e) =>
+                Some(e.getType(TypingContext.empty).getOrAny)
+              case _ =>
+                None
             }
           case b: ScBlockExpr if b.getContext.isInstanceOf[ScCatchBlock] =>
             val thr = ScalaPsiManager
@@ -472,19 +515,26 @@ trait ScPattern extends ScalaPsiElement {
             b.expectedType(fromUnderscore = false) match {
               case Some(et) =>
                 et.removeAbstracts match {
-                  case ScFunctionType(_, Seq())   => Some(types.Unit)
-                  case ScFunctionType(_, Seq(p0)) => Some(p0)
+                  case ScFunctionType(_, Seq()) =>
+                    Some(types.Unit)
+                  case ScFunctionType(_, Seq(p0)) =>
+                    Some(p0)
                   case ScFunctionType(_, params) =>
                     val tt = ScTupleType(params)(getProject, getResolveScope)
                     Some(tt)
-                  case ScPartialFunctionType(_, param) => Some(param)
-                  case _                               => None
+                  case ScPartialFunctionType(_, param) =>
+                    Some(param)
+                  case _ =>
+                    None
                 }
-              case None => None
+              case None =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case named: ScNamingPattern => named.expectedType
+      case named: ScNamingPattern =>
+        named.expectedType
       case gen: ScGenerator =>
         val analog = getAnalog
         if (analog != this)
@@ -495,7 +545,8 @@ trait ScPattern extends ScalaPsiElement {
         Option(enum.rvalue).flatMap { rvalue =>
           rvalue.getType(TypingContext.empty).toOption
         }
-      case _ => None
+      case _ =>
+        None
     }
 
   def getAnalog: ScPattern = {
@@ -503,8 +554,10 @@ trait ScPattern extends ScalaPsiElement {
       case gen: ScGenerator =>
         val f: ScForStatement =
           gen.getContext.getContext match {
-            case fr: ScForStatement => fr
-            case _                  => return this
+            case fr: ScForStatement =>
+              fr
+            case _ =>
+              return this
           }
         f.getDesugarizedExpr match {
           case Some(expr) =>
@@ -513,7 +566,8 @@ trait ScPattern extends ScalaPsiElement {
           case _ =>
         }
         this
-      case _ => this
+      case _ =>
+        this
     }
   }
 
@@ -526,7 +580,8 @@ object ScPattern {
     fun.syntheticCaseClass match {
       case Some(c: ScClass) =>
         c.constructor.exists(_.effectiveFirstParameterSection.length == 1)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -546,7 +601,8 @@ object ScPattern {
       case ScalaResolveResult(param: ScClassParameter, subst)
           if param.name == name =>
         Seq(subst.subst(param.getType(TypingContext.empty).getOrAny))
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }.headOption
   }
 
@@ -587,7 +643,8 @@ object ScPattern {
     def collectFor2_11: Seq[ScType] = {
       findMember("isEmpty", returnType, place) match {
         case Some(tp) if types.Boolean.equiv(tp) =>
-        case _                                   => return Seq.empty
+        case _ =>
+          return Seq.empty
       }
 
       val receiverType = findMember("get", returnType, place).getOrElse(
@@ -625,15 +682,20 @@ object ScPattern {
                   }
                 }
                 args.head match {
-                  case tp if isOneArgCaseClass => Seq(tp)
-                  case ScTupleType(comps)      => comps
-                  case tp                      => checkProduct(tp)
+                  case tp if isOneArgCaseClass =>
+                    Seq(tp)
+                  case ScTupleType(comps) =>
+                    comps
+                  case tp =>
+                    checkProduct(tp)
                 }
               } else
                 Seq.empty
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           }
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     }
   }

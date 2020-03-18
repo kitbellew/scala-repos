@@ -12,7 +12,8 @@ class BlacklistStatsReceiverTest extends FunSuite {
       new BlacklistStatsReceiver(
         inmemory,
         {
-          case _ => true
+          case _ =>
+            true
         })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
@@ -34,7 +35,8 @@ class BlacklistStatsReceiverTest extends FunSuite {
       new BlacklistStatsReceiver(
         inmemory,
         {
-          case _ => false
+          case _ =>
+            false
         })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
@@ -56,7 +58,8 @@ class BlacklistStatsReceiverTest extends FunSuite {
       new BlacklistStatsReceiver(
         inmemory,
         {
-          case seq => seq.length != 2
+          case seq =>
+            seq.length != 2
         })
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()
@@ -78,7 +81,8 @@ class BlacklistStatsReceiverTest extends FunSuite {
       new BlacklistStatsReceiver(
         inmemory,
         {
-          case seq => seq == Seq("foo", "bar")
+          case seq =>
+            seq == Seq("foo", "bar")
         }).scope("foo")
     val ctr = bsr.counter("foo", "bar")
     ctr.incr()

@@ -248,8 +248,10 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
       eitherT(
         client.post[JValue]("apikeys/" + accountKey + "/grants/")(
           requestBody) map {
-          case HttpResponse(HttpStatus(Created, _), _, None, _) => right(true)
-          case _                                                => right(false)
+          case HttpResponse(HttpStatus(Created, _), _, None, _) =>
+            right(true)
+          case _ =>
+            right(false)
         })
     }
   }

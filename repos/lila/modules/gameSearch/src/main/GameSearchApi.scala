@@ -41,9 +41,12 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
       .obj(
         Fields.status -> (
           game.status match {
-            case s if s.is(_.Timeout) => chess.Status.Resign
-            case s if s.is(_.NoStart) => chess.Status.Resign
-            case s                    => game.status
+            case s if s.is(_.Timeout) =>
+              chess.Status.Resign
+            case s if s.is(_.NoStart) =>
+              chess.Status.Resign
+            case s =>
+              game.status
           }
         ).id,
         Fields.turns -> math.ceil(game.turns.toFloat / 2),
@@ -76,7 +79,8 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
         writeable = false
         Thread sleep 3000
         c.putMapping >> indexSince("2011-01-01")
-      case _ => funit
+      case _ =>
+        funit
     }
   }
 
@@ -92,7 +96,8 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
             Thread sleep 3000
             writeable = true
           }
-        case _ => funit
+        case _ =>
+          funit
       }
     }
 

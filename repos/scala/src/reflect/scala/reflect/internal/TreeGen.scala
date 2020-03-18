@@ -133,7 +133,8 @@ abstract class TreeGen {
     qual.tpe match {
       case MethodType(Nil, restpe) =>
         atPos(qual.pos)(Apply(qual, Nil) setType restpe)
-      case _ => qual
+      case _ =>
+        qual
     }
 
   //          val selType = testedBinder.info
@@ -153,19 +154,24 @@ abstract class TreeGen {
 
   def mkAttributedQualifierIfPossible(prefix: Type): Option[Tree] =
     prefix match {
-      case NoType | NoPrefix | ErrorType => None
+      case NoType | NoPrefix | ErrorType =>
+        None
       case TypeRef(_, sym, _) if sym.isModule || sym.isClass || sym.isType =>
         None
-      case pre => Some(mkAttributedQualifier(prefix))
+      case pre =>
+        Some(mkAttributedQualifier(prefix))
     }
 
   /** Builds a reference to given symbol with given stable prefix. */
   def mkAttributedRef(pre: Type, sym: Symbol): RefTree = {
     val qual = mkAttributedQualifier(pre)
     qual match {
-      case EmptyTree                                  => mkAttributedIdent(sym)
-      case This(clazz) if qual.symbol.isEffectiveRoot => mkAttributedIdent(sym)
-      case _                                          => mkAttributedSelect(qual, sym)
+      case EmptyTree =>
+        mkAttributedIdent(sym)
+      case This(clazz) if qual.symbol.isEffectiveRoot =>
+        mkAttributedIdent(sym)
+      case _ =>
+        mkAttributedSelect(qual, sym)
     }
   }
 
@@ -197,8 +203,10 @@ abstract class TreeGen {
   /** Replaces tree type with a stable type if possible */
   def stabilize(tree: Tree): Tree =
     stableTypeFor(tree) match {
-      case NoType => tree
-      case tp     => tree setType tp
+      case NoType =>
+        tree
+      case tp =>
+        tree setType tp
     }
 
   /** Computes stable type for a tree if possible */
@@ -207,10 +215,14 @@ abstract class TreeGen {
        NoType
      else
        tree match {
-         case This(_)         => ThisType(tree.symbol)
-         case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
-         case Select(qual, _) => singleType(qual.tpe, tree.symbol)
-         case _               => NoType
+         case This(_) =>
+           ThisType(tree.symbol)
+         case Ident(_) =>
+           singleType(tree.symbol.owner.thisType, tree.symbol)
+         case Select(qual, _) =>
+           singleType(qual.tpe, tree.symbol)
+         case _ =>
+           NoType
        })
 
   /** Builds a reference with stable type to given symbol */
@@ -357,22 +369,34 @@ abstract class TreeGen {
     */
   def mkZero(tp: Type): Tree =
     tp.typeSymbol match {
-      case NothingClass => mkMethodCall(Predef_???, Nil) setType NothingTpe
-      case _            => Literal(mkConstantZero(tp)) setType tp
+      case NothingClass =>
+        mkMethodCall(Predef_???, Nil) setType NothingTpe
+      case _ =>
+        Literal(mkConstantZero(tp)) setType tp
     }
 
   def mkConstantZero(tp: Type): Constant =
     tp.typeSymbol match {
-      case UnitClass    => Constant(())
-      case BooleanClass => Constant(false)
-      case FloatClass   => Constant(0.0f)
-      case DoubleClass  => Constant(0.0d)
-      case ByteClass    => Constant(0.toByte)
-      case ShortClass   => Constant(0.toShort)
-      case IntClass     => Constant(0)
-      case LongClass    => Constant(0L)
-      case CharClass    => Constant(0.toChar)
-      case _            => Constant(null)
+      case UnitClass =>
+        Constant(())
+      case BooleanClass =>
+        Constant(false)
+      case FloatClass =>
+        Constant(0.0f)
+      case DoubleClass =>
+        Constant(0.0d)
+      case ByteClass =>
+        Constant(0.toByte)
+      case ShortClass =>
+        Constant(0.toShort)
+      case IntClass =>
+        Constant(0)
+      case LongClass =>
+        Constant(0L)
+      case CharClass =>
+        Constant(0.toChar)
+      case _ =>
+        Constant(null)
     }
 
   /** Wrap an expression in a named argument. */
@@ -483,7 +507,8 @@ abstract class TreeGen {
         )
     }
     val lvdefs = evdefs collect {
-      case vdef: ValDef => copyValDef(vdef)(mods = vdef.mods | PRESUPER)
+      case vdef: ValDef =>
+        copyValDef(vdef)(mods = vdef.mods | PRESUPER)
     }
 
     val constr = {
@@ -642,9 +667,12 @@ abstract class TreeGen {
     */
   def mkTreeOrBlock(stats: List[Tree]) =
     stats match {
-      case Nil         => EmptyTree
-      case head :: Nil => head
-      case _           => mkBlock(stats)
+      case Nil =>
+        EmptyTree
+      case head :: Nil =>
+        head
+      case _ =>
+        mkBlock(stats)
     }
 
   /** Create a tree representing an assignment <lhs = rhs> */
@@ -652,7 +680,8 @@ abstract class TreeGen {
     lhs match {
       case Apply(fn, args) =>
         Apply(atPos(fn.pos)(Select(fn, nme.update)), args :+ rhs)
-      case _ => Assign(lhs, rhs)
+      case _ =>
+        Assign(lhs, rhs)
     }
 
   def mkPackageObject(
@@ -696,7 +725,8 @@ abstract class TreeGen {
         case Apply(id @ Ident(nme.LARROWkw), List(pat, rhs))
             if id.hasAttachment[ForAttachment.type] =>
           Some((pat, rhs))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -709,7 +739,8 @@ abstract class TreeGen {
       tree match {
         case Assign(pat, rhs) if tree.hasAttachment[ForAttachment.type] =>
           Some((pat, rhs))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -723,7 +754,8 @@ abstract class TreeGen {
         case Apply(id @ Ident(nme.IFkw), List(cond))
             if id.hasAttachment[ForAttachment.type] =>
           Some((cond))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -737,7 +769,8 @@ abstract class TreeGen {
         case Apply(id @ Ident(nme.YIELDkw), List(tree))
             if id.hasAttachment[ForAttachment.type] =>
           Some(tree)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -792,8 +825,10 @@ abstract class TreeGen {
       fresh: FreshNameCreator): Tree = {
     val (mapName, flatMapName, body) =
       sugarBody match {
-        case Yield(tree) => (nme.map, nme.flatMap, tree)
-        case _           => (nme.foreach, nme.foreach, sugarBody)
+        case Yield(tree) =>
+          (nme.map, nme.flatMap, tree)
+        case _ =>
+          (nme.foreach, nme.foreach, sugarBody)
       }
 
     /* make a closure pat => body.
@@ -843,14 +878,17 @@ abstract class TreeGen {
     /* If `pat` is not yet a `Bind` wrap it in one with a fresh name */
     def makeBind(pat: Tree): Tree =
       pat match {
-        case Bind(_, _) => pat
-        case _          => Bind(freshTermName(), pat) setPos pat.pos
+        case Bind(_, _) =>
+          pat
+        case _ =>
+          Bind(freshTermName(), pat) setPos pat.pos
       }
 
     /* A reference to the name bound in Bind `pat`. */
     def makeValue(pat: Tree): Tree =
       pat match {
-        case Bind(name, _) => Ident(name) setPos pat.pos.focus
+        case Bind(name, _) =>
+          Ident(name) setPos pat.pos.focus
       }
 
     /* The position of the closure that starts with generator at position `genpos`. */
@@ -860,8 +898,10 @@ abstract class TreeGen {
       else {
         val end =
           body.pos match {
-            case NoPosition => genpos.point
-            case bodypos    => bodypos.end
+            case NoPosition =>
+              genpos.point
+            case bodypos =>
+              bodypos.end
           }
         rangePos(genpos.source, genpos.start, genpos.point, end)
       }
@@ -894,10 +934,12 @@ abstract class TreeGen {
         assert(!valeqs.isEmpty)
         val rest1 = rest.drop(valeqs.length)
         val pats = valeqs map {
-          case ValEq(pat, _) => pat
+          case ValEq(pat, _) =>
+            pat
         }
         val rhss = valeqs map {
-          case ValEq(_, rhs) => rhs
+          case ValEq(_, rhs) =>
+            rhs
         }
         val defpat1 = makeBind(pat)
         val defpats = pats map makeBind
@@ -1049,15 +1091,22 @@ abstract class TreeGen {
   private def matchVarPattern(tree: Tree): Option[(Name, Tree)] = {
     def wildType(t: Tree): Option[Tree] =
       t match {
-        case Ident(x) if x.toTermName == nme.WILDCARD             => Some(TypeTree())
-        case Typed(Ident(x), tpt) if x.toTermName == nme.WILDCARD => Some(tpt)
-        case _                                                    => None
+        case Ident(x) if x.toTermName == nme.WILDCARD =>
+          Some(TypeTree())
+        case Typed(Ident(x), tpt) if x.toTermName == nme.WILDCARD =>
+          Some(tpt)
+        case _ =>
+          None
       }
     tree match {
-      case Ident(name)             => Some((name, TypeTree()))
-      case Bind(name, body)        => wildType(body) map (x => (name, x))
-      case Typed(Ident(name), tpt) => Some((name, tpt))
-      case _                       => None
+      case Ident(name) =>
+        Some((name, TypeTree()))
+      case Bind(name, body) =>
+        wildType(body) map (x => (name, x))
+      case Typed(Ident(name), tpt) =>
+        Some((name, tpt))
+      case _ =>
+        None
     }
   }
 

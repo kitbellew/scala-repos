@@ -42,7 +42,8 @@ class SimpleBuildFileModifier(
       acc match {
         case Some(accList) =>
           addElements(module, nextType, fileToWorkingCopy).map(_ :: accList)
-        case _ => None
+        case _ =>
+          None
       })
   }
 
@@ -110,7 +111,8 @@ class SimpleBuildFileModifier(
     SimpleBuildFileModifier.supportedElementTypes.filter {
       case BuildFileElementType.libraryDependencyElementId =>
         libDependencies.nonEmpty
-      case BuildFileElementType.resolverElementId => resolvers.nonEmpty
+      case BuildFileElementType.resolverElementId =>
+        resolvers.nonEmpty
       case BuildFileElementType.`scalacOptionsElementId` =>
         scalacOptions.nonEmpty
       case elementType =>
@@ -196,7 +198,8 @@ object SimpleBuildFileModifier {
         //modification is performed from setupLibrary (see org.jetbrains.plugins.scala.testingSupport.test.AbstractTestFramework)
         VfsUtil.saveText(res, psiFile.getText)
         Some(res)
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -229,7 +232,8 @@ object SimpleBuildFileModifier {
         val res = element.getContainingFile
         element.delete()
         Some(res)
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -249,7 +253,8 @@ object SimpleBuildFileModifier {
         val res = element.getContainingFile
         element.replace(modifyFunction(element))
         Some(res)
-      case None => None
+      case None =>
+        None
     }
   }
 }

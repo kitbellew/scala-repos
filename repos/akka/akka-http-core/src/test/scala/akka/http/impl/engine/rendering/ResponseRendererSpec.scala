@@ -709,7 +709,8 @@ class ResponseRendererSpec
           ) // never send upstream completion
             .via(renderer.named("renderer"))
             .map {
-              case ResponseRenderingOutput.HttpData(bytes) ⇒ bytes
+              case ResponseRenderingOutput.HttpData(bytes) ⇒
+                bytes
               case _: ResponseRenderingOutput.SwitchToWebSocket ⇒
                 throw new IllegalStateException(
                   "Didn't expect websocket response")
@@ -726,7 +727,8 @@ class ResponseRendererSpec
             Await.ready(wasCompletedFuture, 100.millis)
             true
           } catch {
-            case NonFatal(_) ⇒ false
+            case NonFatal(_) ⇒
+              false
           }
         Await
           .result(resultFuture, 250.millis)

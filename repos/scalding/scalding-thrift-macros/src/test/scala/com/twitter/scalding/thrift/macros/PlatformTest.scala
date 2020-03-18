@@ -77,7 +77,8 @@ class PlatformTest
         val expected = input
           .groupBy(identity)
           .map {
-            case (k, v) => (k.hashCode, v.size)
+            case (k, v) =>
+              (k.hashCode, v.size)
           }
 
         out.toSet shouldBe expected.toSet

@@ -21,8 +21,10 @@ class ScXmlEndTagImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case scVisitor: ScalaElementVisitor => scVisitor.visitXmlEndTag(this)
-      case _                              => super.accept(visitor)
+      case scVisitor: ScalaElementVisitor =>
+        scVisitor.visitXmlEndTag(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

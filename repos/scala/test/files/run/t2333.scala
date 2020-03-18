@@ -5,7 +5,8 @@ class A {
       try {
         2
       } catch {
-        case _: Throwable => 0
+        case _: Throwable =>
+          0
       }
     a
     b

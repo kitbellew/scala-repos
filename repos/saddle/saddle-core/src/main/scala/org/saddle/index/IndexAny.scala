@@ -145,7 +145,8 @@ class IndexAny[T: ST: ORD](keys: Vec[T]) extends Index[T] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
   }
 }

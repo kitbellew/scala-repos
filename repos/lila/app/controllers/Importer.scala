@@ -60,7 +60,8 @@ object Importer extends LilaController {
           fuccess(redirectAtFen(game))
         case _ =>
           (GameRepo remove id) >> Env.explorer.fetchPgn(id) flatMap {
-            case None => fuccess(NotFound)
+            case None =>
+              fuccess(NotFound)
             case Some(pgn) =>
               env.importer(
                 lila.importer.ImportData(pgn, none),

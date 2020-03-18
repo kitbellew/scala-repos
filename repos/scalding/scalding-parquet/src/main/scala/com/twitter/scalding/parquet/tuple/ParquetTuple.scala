@@ -38,8 +38,10 @@ trait ParquetTupleSource extends FileSource with HasFilterPredicate {
 
     val scheme =
       withFilter match {
-        case Some(fp) => new ParquetTupleScheme(fp, fields)
-        case None     => new ParquetTupleScheme(fields)
+        case Some(fp) =>
+          new ParquetTupleScheme(fp, fields)
+        case None =>
+          new ParquetTupleScheme(fields)
       }
 
     HadoopSchemeInstance(scheme.asInstanceOf[Scheme[_, _, _, _, _]])

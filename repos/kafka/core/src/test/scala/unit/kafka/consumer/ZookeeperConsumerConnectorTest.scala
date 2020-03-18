@@ -97,7 +97,8 @@ class ZookeeperConsumerConnectorTest
         fail("should get an exception")
       } catch {
         case e: ConsumerTimeoutException => // this is ok
-        case e: Throwable                => throw e
+        case e: Throwable =>
+          throw e
       }
     }
 

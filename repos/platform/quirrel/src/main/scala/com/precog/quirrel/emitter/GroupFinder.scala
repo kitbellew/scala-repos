@@ -52,7 +52,8 @@ trait GroupFinder extends parser.AST with Tracer {
           } dropWhile {
             !_.isInstanceOf[Where]
           } collect {
-            case d: Dispatch if d.binding.isInstanceOf[LetBinding] => d
+            case d: Dispatch if d.binding.isInstanceOf[LetBinding] =>
+              d
           }
 
           (sigma, where, dtrace)
@@ -87,18 +88,25 @@ trait GroupFinder extends parser.AST with Tracer {
               _,
               _: Add | _: Sub | _: Mul | _: Div | _: Neg | _: Paren) :: tail =>
           state1(tail)
-        case (_, _: ComparisonOp) :: tail => state2(tail)
-        case (_, _: Dispatch) :: tail     => state1(tail)
-        case _                            => None
+        case (_, _: ComparisonOp) :: tail =>
+          state2(tail)
+        case (_, _: Dispatch) :: tail =>
+          state1(tail)
+        case _ =>
+          None
       }
 
     @tailrec
     def state2(btrace: List[(Sigma, Expr)]): Option[(Sigma, Where)] =
       btrace match {
-        case (_, _: Comp | _: And | _: Or) :: tail => state2(tail)
-        case (sigma, where: Where) :: _            => Some((sigma, where))
-        case (_, _: Dispatch) :: tail              => state2(tail)
-        case _                                     => None
+        case (_, _: Comp | _: And | _: Or) :: tail =>
+          state2(tail)
+        case (sigma, where: Where) :: _ =>
+          Some((sigma, where))
+        case (_, _: Dispatch) :: tail =>
+          state2(tail)
+        case _ =>
+          None
       }
 
     state1(btrace)
@@ -116,7 +124,8 @@ trait GroupFinder extends parser.AST with Tracer {
         constrVars ++ findVars(solve, id)(child)
       }
 
-      case New(_, child) => findVars(solve, id)(child)
+      case New(_, child) =>
+        findVars(solve, id)(child)
 
       case Assert(_, pred, child) =>
         findVars(solve, id)(pred) ++ findVars(solve, id)(child)
@@ -129,7 +138,8 @@ trait GroupFinder extends parser.AST with Tracer {
       case expr @ TicVar(_, `id`) if expr.binding == SolveBinding(solve) =>
         Set(expr)
 
-      case _: TicVar => Set()
+      case _: TicVar =>
+        Set()
 
       case NaryOp(_, values) =>
         values map findVars(solve, id) reduceOption {

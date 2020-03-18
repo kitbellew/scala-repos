@@ -87,7 +87,8 @@ trait RouteTest
       s"Could not unmarshal entity to type '${implicitly[ClassTag[T]]}' for `entityAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(
       Unmarshal(responseEntity).to[T].fast.recover[T] {
-        case error ⇒ failTest(msg(error))
+        case error ⇒
+          failTest(msg(error))
       },
       timeout)
   }
@@ -97,7 +98,8 @@ trait RouteTest
       s"Could not unmarshal response to type '${implicitly[ClassTag[T]]}' for `responseAs` assertion: $e\n\nResponse was: $responseSafe"
     Await.result(
       Unmarshal(response).to[T].fast.recover[T] {
-        case error ⇒ failTest(msg(error))
+        case error ⇒
+          failTest(msg(error))
       },
       timeout)
   }
@@ -114,13 +116,17 @@ trait RouteTest
 
   def closingExtension: String =
     chunks.lastOption match {
-      case Some(HttpEntity.LastChunk(extension, _)) ⇒ extension
-      case _ ⇒ ""
+      case Some(HttpEntity.LastChunk(extension, _)) ⇒
+        extension
+      case _ ⇒
+        ""
     }
   def trailer: immutable.Seq[HttpHeader] =
     chunks.lastOption match {
-      case Some(HttpEntity.LastChunk(_, trailer)) ⇒ trailer
-      case _ ⇒ Nil
+      case Some(HttpEntity.LastChunk(_, trailer)) ⇒
+        trailer
+      case _ ⇒
+        Nil
     }
 
   def rejections: immutable.Seq[Rejection] = result.rejections
@@ -144,8 +150,10 @@ trait RouteTest
     if (!isWebSocketUpgrade)
       failTest("Response was no WebSocket Upgrade response")
     header[`Sec-WebSocket-Protocol`] match {
-      case Some(`Sec-WebSocket-Protocol`(Seq(protocol))) ⇒ body(protocol)
-      case _ ⇒ failTest("No WebSocket protocol found in response.")
+      case Some(`Sec-WebSocket-Protocol`(Seq(protocol))) ⇒
+        body(protocol)
+      case _ ⇒
+        failTest("No WebSocket protocol found in response.")
     }
   }
 

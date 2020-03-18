@@ -4,7 +4,8 @@ object Test {
     try {
       throw new RuntimeException
     } catch {
-      case _: Throwable => bar
+      case _: Throwable =>
+        bar
     }
   }
 }

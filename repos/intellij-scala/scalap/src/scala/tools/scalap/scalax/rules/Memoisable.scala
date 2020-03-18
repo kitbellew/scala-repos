@@ -33,8 +33,10 @@ trait MemoisableRules extends Rules {
       name,
       (in: In) =>
         in match {
-          case s: Memoisable => s.memo(name, f(in))
-          case _             => f(in)
+          case s: Memoisable =>
+            s.memo(name, f(in))
+          case _ =>
+            f(in)
         })
 }
 

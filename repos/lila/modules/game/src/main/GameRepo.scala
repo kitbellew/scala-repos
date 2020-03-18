@@ -116,7 +116,8 @@ object GameRepo {
 
   def save(progress: Progress): Funit =
     GameDiff(progress.origin, progress.game) match {
-      case (Nil, Nil) => funit
+      case (Nil, Nil) =>
+        funit
       case (sets, unsets) =>
         gameTube.coll
           .update(
@@ -350,7 +351,8 @@ object GameRepo {
       initialFen(game.id) map {
         case None if game.variant == chess.variant.Chess960 =>
           Forsyth.initial.some
-        case fen => fen
+        case fen =>
+          fen
       }
     else
       fuccess(none)

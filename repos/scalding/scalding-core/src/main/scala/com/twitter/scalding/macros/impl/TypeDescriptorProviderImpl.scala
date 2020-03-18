@@ -56,7 +56,8 @@ object TypeDescriptorProviderImpl {
     def flattenOnce(t: Type): List[Type] =
       t.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .map(_.returnType.asSeenFrom(t, t.typeSymbol.asClass))
         .toList
@@ -71,12 +72,18 @@ object TypeDescriptorProviderImpl {
             thisColumn
           else
             (offset + 1, None)
-        case tpe if tpe =:= typeOf[Boolean] => thisColumn
-        case tpe if tpe =:= typeOf[Short]   => thisColumn
-        case tpe if tpe =:= typeOf[Int]     => thisColumn
-        case tpe if tpe =:= typeOf[Long]    => thisColumn
-        case tpe if tpe =:= typeOf[Float]   => thisColumn
-        case tpe if tpe =:= typeOf[Double]  => thisColumn
+        case tpe if tpe =:= typeOf[Boolean] =>
+          thisColumn
+        case tpe if tpe =:= typeOf[Short] =>
+          thisColumn
+        case tpe if tpe =:= typeOf[Int] =>
+          thisColumn
+        case tpe if tpe =:= typeOf[Long] =>
+          thisColumn
+        case tpe if tpe =:= typeOf[Float] =>
+          thisColumn
+        case tpe if tpe =:= typeOf[Double] =>
+          thisColumn
         // We recurse on Option and case classes
         case tpe if tpe.erasure =:= typeOf[Option[Any]] =>
           val innerTpe = optionInner(c)(tpe).get
@@ -87,15 +94,18 @@ object TypeDescriptorProviderImpl {
           val flattened =
             flattenOnce(tpe)
               .scanLeft((offset, Option.empty[Int])) {
-                case ((off, _), t) => go(t, off)
+                case ((off, _), t) =>
+                  go(t, off)
               }
 
           val nextPos = flattened.last._1
           val ev = flattened.collectFirst {
-            case (_, Some(col)) => col
+            case (_, Some(col)) =>
+              col
           }
           (nextPos, ev)
-        case _ if allowUnknown => thisColumn
+        case _ if allowUnknown =>
+          thisColumn
         case t =>
           c.abort(
             c.enclosingPosition,

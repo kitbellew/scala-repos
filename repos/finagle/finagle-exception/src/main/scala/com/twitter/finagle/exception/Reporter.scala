@@ -194,10 +194,13 @@ sealed case class Reporter(
     */
   def handle(t: Throwable): Boolean = {
     client.log(createEntry(t) :: Nil) onSuccess {
-      case ResultCode.Ok       => okCounter.incr()
-      case ResultCode.TryLater => tryLaterCounter.incr()
+      case ResultCode.Ok =>
+        okCounter.incr()
+      case ResultCode.TryLater =>
+        tryLaterCounter.incr()
     } onFailure {
-      case e => statsReceiver.counter("report_exception_" + e.toString).incr()
+      case e =>
+        statsReceiver.counter("report_exception_" + e.toString).incr()
     }
 
     false // did not actually handle
@@ -218,6 +221,7 @@ class ExceptionReporter extends ReporterFactory {
     addr match {
       case Some(a: InetSocketAddress) =>
         new Reporter(client, name).withClient(a.getAddress)
-      case _ => new Reporter(client, name)
+      case _ =>
+        new Reporter(client, name)
     }
 }

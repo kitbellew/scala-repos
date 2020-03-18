@@ -48,8 +48,10 @@ class Jar(file: File) extends Iterable[JarEntry] {
       yield cp
   def classPathElements: List[String] =
     classPathString match {
-      case Some(s) => s split "\\s+" toList
-      case _       => Nil
+      case Some(s) =>
+        s split "\\s+" toList
+      case _ =>
+        Nil
     }
 
   /** Invoke f with input for named jar entry (or None). */
@@ -57,7 +59,8 @@ class Jar(file: File) extends Iterable[JarEntry] {
     val jarFile = new JarFile(file.jfile)
     def apply() =
       jarFile getEntry name match {
-        case null => f(None)
+        case null =>
+          f(None)
         case entry =>
           val in = Some(jarFile getInputStream entry)
           try f(in)
@@ -124,7 +127,8 @@ class JarWriter(val file: File, val manifest: Manifest) {
     val buf = new Array[Byte](10240)
     def loop(): Unit =
       in.read(buf, 0, buf.length) match {
-        case -1 => in.close()
+        case -1 =>
+          in.close()
         case n =>
           out.write(buf, 0, n);
           loop()

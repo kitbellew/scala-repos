@@ -293,8 +293,9 @@ private[streaming] class BlockGenerator(
       // While blocks are being generated, keep polling for to-be-pushed blocks and push them.
       while (areBlocksBeingGenerated) {
         Option(blocksForPushing.poll(10, TimeUnit.MILLISECONDS)) match {
-          case Some(block) => pushBlock(block)
-          case None        =>
+          case Some(block) =>
+            pushBlock(block)
+          case None =>
         }
       }
 

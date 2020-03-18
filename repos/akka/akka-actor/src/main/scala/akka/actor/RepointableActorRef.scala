@@ -122,7 +122,8 @@ private[akka] class RepointableActorRef(
         cell.start()
         u.replaceWith(cell)
         this
-      case null ⇒ throw new IllegalStateException("underlying cell is null")
+      case null ⇒
+        throw new IllegalStateException("underlying cell is null")
       case _ ⇒
         this // this happens routinely for things which were created async=false
     }
@@ -148,10 +149,12 @@ private[akka] class RepointableActorRef(
 
   def isStarted: Boolean =
     underlying match {
-      case _: UnstartedCell ⇒ false
+      case _: UnstartedCell ⇒
+        false
       case null ⇒
         throw new IllegalStateException("isStarted called before initialized")
-      case _ ⇒ true
+      case _ ⇒
+        true
     }
 
   @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
@@ -166,8 +169,10 @@ private[akka] class RepointableActorRef(
   def getChild(name: Iterator[String]): InternalActorRef =
     if (name.hasNext) {
       name.next match {
-        case ".." ⇒ getParent.getChild(name)
-        case "" ⇒ getChild(name)
+        case ".." ⇒
+          getParent.getChild(name)
+        case "" ⇒
+          getChild(name)
         case other ⇒
           val (childName, uid) = ActorCell.splitNameAndUid(other)
           lookup.getChildByName(childName) match {
@@ -176,8 +181,10 @@ private[akka] class RepointableActorRef(
               crs.child.asInstanceOf[InternalActorRef].getChild(name)
             case _ ⇒
               lookup match {
-                case ac: ActorCell ⇒ ac.getFunctionRefOrNobody(childName, uid)
-                case _ ⇒ Nobody
+                case ac: ActorCell ⇒
+                  ac.getFunctionRefOrNobody(childName, uid)
+                case _ ⇒
+                  Nobody
               }
           }
       }

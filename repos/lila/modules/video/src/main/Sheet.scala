@@ -52,10 +52,12 @@ private[video] final class Sheet(url: String, api: VideoApi) {
                 )
                 logger.info(s"sheet insert $video")
                 api.video.save(video)
-              case _ => funit
+              case _ =>
+                funit
             }
             .recover {
-              case e: Exception => logger.warn("sheet update", e)
+              case e: Exception =>
+                logger.warn("sheet update", e)
             }
         }
         .sequenceFu
@@ -69,10 +71,13 @@ private[video] final class Sheet(url: String, api: VideoApi) {
     WS.url(url).get() flatMap {
       case res if res.status == 200 =>
         readEntries reads res.json match {
-          case JsError(err)          => fufail(err.toString)
-          case JsSuccess(entries, _) => fuccess(entries.toList)
+          case JsError(err) =>
+            fufail(err.toString)
+          case JsSuccess(entries, _) =>
+            fuccess(entries.toList)
         }
-      case res => fufail(s"[video sheet] fetch ${res.status}")
+      case res =>
+        fufail(s"[video sheet] fetch ${res.status}")
     }
 }
 

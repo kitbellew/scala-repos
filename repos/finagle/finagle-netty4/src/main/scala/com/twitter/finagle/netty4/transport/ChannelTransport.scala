@@ -30,7 +30,8 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
   private[this] val closed = new Promise[Throwable]
 
   private[this] val readInterruptHandler: PartialFunction[Throwable, Unit] = {
-    case e => fail(e)
+    case e =>
+      fail(e)
   }
 
   val onClose: Future[Throwable] = closed
@@ -79,7 +80,8 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
         })
 
       p.setInterruptHandler {
-        case _ => op.cancel(true /* mayInterruptIfRunning */ )
+        case _ =>
+          op.cancel(true /* mayInterruptIfRunning */ )
       }
       p
     }

@@ -174,12 +174,18 @@ abstract class MappedDecimal[T <: Mapper[T]](
       // FIXME set for big decimal
       // case JsonAST.JDouble(db) => MappedDecimal.this.setAll(java.math.BigDecimal.valueOf(db))
       // case JsonAST.JInt(bi) => MappedDecimal.this.set(new java.math.BigDecimal(bi.bigInteger))
-      case bd: BigDecimal                         => setAll(bd)
-      case n :: _                                 => setFromString(n.toString)
-      case Some(n)                                => setFromString(n.toString)
-      case Full(n)                                => setFromString(n.toString)
-      case None | Empty | Failure(_, _, _) | null => setFromString("0")
-      case n                                      => setFromString(n.toString)
+      case bd: BigDecimal =>
+        setAll(bd)
+      case n :: _ =>
+        setFromString(n.toString)
+      case Some(n) =>
+        setFromString(n.toString)
+      case Full(n) =>
+        setFromString(n.toString)
+      case None | Empty | Failure(_, _, _) | null =>
+        setFromString("0")
+      case n =>
+        setFromString(n.toString)
     }
 
   def setFromString(in: String): BigDecimal = {

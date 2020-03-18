@@ -128,9 +128,12 @@ trait ScFunction
     @tailrec
     def hasUnitRT(t: ScType): Boolean =
       t match {
-        case UnitType                   => true
-        case ScMethodType(result, _, _) => hasUnitRT(result)
-        case _                          => false
+        case UnitType =>
+          true
+        case ScMethodType(result, _, _) =>
+          hasUnitRT(result)
+        case _ =>
+          false
       }
     hasUnitRT(methodType)
   }
@@ -171,9 +174,11 @@ trait ScFunction
       this match {
         case _: ScFunctionDeclaration =>
           containingClass match {
-            case t: ScTrait                          => return true
-            case c: ScClass if c.hasAbstractModifier => return true
-            case _                                   =>
+            case t: ScTrait =>
+              return true
+            case c: ScClass if c.hasAbstractModifier =>
+              return true
+            case _ =>
           }
         case _ =>
       }
@@ -186,7 +191,8 @@ trait ScFunction
     */
   def getInheritedReturnType: Option[ScType] = {
     returnTypeElement match {
-      case Some(_) => returnType.toOption
+      case Some(_) =>
+        returnType.toOption
       case None =>
         val superReturnType =
           superMethodAndSubstitutor match {
@@ -224,7 +230,8 @@ trait ScFunction
                   .subst(
                     ScType
                       .create(fun.getReturnType, getProject, getResolveScope)))
-            case _ => None
+            case _ =>
+              None
           }
         superReturnType
     }
@@ -235,9 +242,12 @@ trait ScFunction
     if (effectiveParameterClauses.nonEmpty)
       return true
     superMethod match {
-      case Some(fun: ScFunction) => fun.hasParameterClause
-      case Some(psi: PsiMethod)  => true
-      case None                  => false
+      case Some(fun: ScFunction) =>
+        fun.hasParameterClause
+      case Some(psi: PsiMethod) =>
+        true
+      case None =>
+        false
     }
   }
 
@@ -260,16 +270,20 @@ trait ScFunction
 
   def definedReturnType: TypeResult[ScType] = {
     returnTypeElement match {
-      case Some(ret)       => ret.getType(TypingContext.empty)
-      case _ if !hasAssign => Success(types.Unit, Some(this))
+      case Some(ret) =>
+        ret.getType(TypingContext.empty)
+      case _ if !hasAssign =>
+        Success(types.Unit, Some(this))
       case _ =>
         superMethod match {
-          case Some(f: ScFunction) => f.definedReturnType
+          case Some(f: ScFunction) =>
+            f.definedReturnType
           case Some(m: PsiMethod) =>
             Success(
               ScType.create(m.getReturnType, getProject, getResolveScope),
               Some(this))
-          case _ => Failure("No defined return type", Some(this))
+          case _ =>
+            Failure("No defined return type", Some(this))
         }
     }
   }
@@ -281,8 +295,10 @@ trait ScFunction
     val clauses = effectiveParameterClauses
     val resultType =
       result match {
-        case None    => returnType.getOrAny
-        case Some(x) => x
+        case None =>
+          returnType.getOrAny
+        case Some(x) =>
+          x
       }
     if (!hasParameterClause)
       return resultType
@@ -337,8 +353,9 @@ trait ScFunction
     val colon = children.find(
       _.getNode.getElementType == ScalaTokenTypes.tCOLON)
     (colon, returnTypeElement) match {
-      case (Some(first), Some(last)) => deleteChildRange(first, last)
-      case _                         =>
+      case (Some(first), Some(last)) =>
+        deleteChildRange(first, last)
+      case _ =>
     }
   }
 
@@ -362,7 +379,8 @@ trait ScFunction
             case stub: ScalaStubBasedElementImpl[_] if stub.getStub != null =>
               import scala.collection.JavaConverters._
               stub.getStub.getChildrenStubs.asScala.map(_.getPsi)
-            case _ => parent.getChildren.toSeq
+            case _ =>
+              parent.getChildren.toSeq
           }
         children.foreach {
           case fun: ScFunction if fun.importantOrderFunction() =>
@@ -407,7 +425,8 @@ trait ScFunction
               owner,
               paramClauses,
               classParam = false)
-        case _ => None
+        case _ =>
+          None
       }
     } else {
       if (hasImplicit)
@@ -438,7 +457,8 @@ trait ScFunction
               param.deprecatedName.exists(
                 ScalaPsiUtil.memberNamesEquals(_, name))
         }
-      case i if i < 0 || i >= effectiveParameterClauses.length => None
+      case i if i < 0 || i >= effectiveParameterClauses.length =>
+        None
       case _ =>
         effectiveParameterClauses
           .apply(clausePosition)
@@ -465,7 +485,8 @@ trait ScFunction
           clazz.functions.find(_.name == name + "_=")
         } else
           None
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -476,10 +497,13 @@ trait ScFunction
       annot.typeElement match {
         case s: ScSimpleTypeElement =>
           s.reference match {
-            case Some(ref) => ref.refName == "bridge"
-            case _         => false
+            case Some(ref) =>
+              ref.refName == "bridge"
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }
     })
   }
@@ -513,9 +537,12 @@ trait ScFunction
       true
     else {
       superMethod match {
-        case Some(f: ScFunction) => f.isJavaVarargs
-        case Some(m: PsiMethod)  => m.isVarArgs
-        case _                   => false
+        case Some(f: ScFunction) =>
+          f.isJavaVarargs
+        case Some(m: PsiMethod) =>
+          m.isVarArgs
+        case _ =>
+          false
       }
     }
   }
@@ -577,7 +604,8 @@ trait ScFunction
     tp match {
       case ScFunctionType(rt, _) =>
         ScType.toPsi(rt, getProject, getResolveScope)
-      case _ => ScType.toPsi(tp, getProject, getResolveScope)
+      case _ =>
+        ScType.toPsi(tp, getProject, getResolveScope)
     }
   }
 
@@ -637,7 +665,8 @@ trait ScFunction
           x.supers.map {
             _.info
           }
-        case None => Seq[Signature]()
+        case None =>
+          Seq[Signature]()
       }
     t
   }
@@ -681,7 +710,8 @@ trait ScFunction
                 .map {
                   _.info
                 } :+ x.info
-            case None => Seq.empty
+            case None =>
+              Seq.empty
           }
       }
     } else {
@@ -694,7 +724,8 @@ trait ScFunction
           x.supers.map {
             _.info
           }
-        case None => Seq.empty
+        case None =>
+          Seq.empty
       }
     }
   }
@@ -760,16 +791,21 @@ trait ScFunction
                       case Some(clazz)
                           if clazz.qualifiedName == "java.lang.Class" =>
                         ScType.toPsi(arg, getProject, getResolveScope) match {
-                          case c: PsiClassType => Seq(c)
-                          case _               => Seq.empty
+                          case c: PsiClassType =>
+                            Seq(c)
+                          case _ =>
+                            Seq.empty
                         }
-                      case _ => Seq.empty
+                      case _ =>
+                        Seq.empty
                     }
-                  case _ => Seq.empty
+                  case _ =>
+                    Seq.empty
                 }
               }
               .toArray
-          case _ => PsiClassType.EMPTY_ARRAY
+          case _ =>
+            PsiClassType.EMPTY_ARRAY
         }
       }
     }
@@ -792,7 +828,8 @@ trait ScFunction
           i = i - 1
         }
         res
-      case x => x
+      case x =>
+        x
     }
   }
 
@@ -808,7 +845,8 @@ trait ScFunction
           else
             true
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   def hasAssign =
@@ -888,7 +926,8 @@ trait ScFunction
         rt.map(
           params.foldLeft(_)((res, params) =>
             ScFunctionType(res, params)(project, resolveScope)))
-      case None => Failure("no params", Some(this))
+      case None =>
+        Failure("no params", Some(this))
     }
   }
 

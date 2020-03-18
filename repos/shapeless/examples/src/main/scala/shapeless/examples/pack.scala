@@ -81,7 +81,8 @@ object PackExamples extends App {
 
           def split(p: Pack[F, H :: T]): (F[H], Pack[F, T]) =
             p match {
-              case PCons(fh, pt) => (fh, pt)
+              case PCons(fh, pt) =>
+                (fh, pt)
             }
         }
     }

@@ -44,7 +44,8 @@ case class BroadcastExchange(mode: BroadcastMode, child: SparkPlan)
     plan match {
       case p: BroadcastExchange =>
         mode.compatibleWith(p.mode) && child.sameResult(p.child)
-      case _ => false
+      case _ =>
+        false
     }
 
   @transient

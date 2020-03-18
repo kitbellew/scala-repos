@@ -37,7 +37,8 @@ trait ScInterpolated extends ScalaPsiElement {
     val res = ListBuffer[PsiReference]()
     val children: Array[PsiElement] =
       this match {
-        case ip: ScInterpolationPattern => ip.args.children.toArray
+        case ip: ScInterpolationPattern =>
+          ip.args.children.toArray
         case sl: ScInterpolatedStringLiteral =>
           Option(sl.getFirstChild.getNextSibling).toArray
       }
@@ -74,11 +75,16 @@ trait ScInterpolated extends ScalaPsiElement {
   def getInjections: Array[ScExpression] = {
     getNode.getChildren(null).flatMap {
       _.getPsi match {
-        case a: ScBlockExpr                       => Array[ScExpression](a)
-        case _: ScInterpolatedStringPartReference => Array[ScExpression]()
-        case _: ScInterpolatedPrefixReference     => Array[ScExpression]()
-        case b: ScReferenceExpression             => Array[ScExpression](b)
-        case _                                    => Array[ScExpression]()
+        case a: ScBlockExpr =>
+          Array[ScExpression](a)
+        case _: ScInterpolatedStringPartReference =>
+          Array[ScExpression]()
+        case _: ScInterpolatedPrefixReference =>
+          Array[ScExpression]()
+        case b: ScReferenceExpression =>
+          Array[ScExpression](b)
+        case _ =>
+          Array[ScExpression]()
       }
     }
   }
@@ -93,15 +99,21 @@ trait ScInterpolated extends ScalaPsiElement {
       child.getElementType match {
         case ScalaTokenTypes.tINTERPOLATED_STRING =>
           child.getText.headOption match {
-            case Some('"') => result += child.getText.substring(1)
-            case Some(_)   => result += child.getText
-            case None      => result += emptyString
+            case Some('"') =>
+              result += child.getText.substring(1)
+            case Some(_) =>
+              result += child.getText
+            case None =>
+              result += emptyString
           }
         case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
           child.getText match {
-            case s if s.startsWith("\"\"\"") => result += s.substring(3)
-            case s: String                   => result += s
-            case _                           => result += emptyString
+            case s if s.startsWith("\"\"\"") =>
+              result += s.substring(3)
+            case s: String =>
+              result += s
+            case _ =>
+              result += emptyString
           }
         case ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
             ScalaTokenTypes.tINTERPOLATED_STRING_END =>

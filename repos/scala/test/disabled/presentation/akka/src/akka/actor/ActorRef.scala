@@ -243,8 +243,10 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     */
   def isRunning: Boolean =
     _status match {
-      case ActorRefInternals.BEING_RESTARTED | ActorRefInternals.RUNNING => true
-      case _                                                             => false
+      case ActorRefInternals.BEING_RESTARTED | ActorRefInternals.RUNNING =>
+        true
+      case _ =>
+        false
     }
 
   /**
@@ -1169,8 +1171,10 @@ class LocalActorRef private[akka] (
       val actorRef = i.next
       actorRef.lifeCycle match {
         // either permanent or none where default is permanent
-        case Temporary => shutDownTemporaryActor(actorRef)
-        case _         => actorRef.restart(reason, maxNrOfRetries, withinTimeRange)
+        case Temporary =>
+          shutDownTemporaryActor(actorRef)
+        case _ =>
+          actorRef.restart(reason, maxNrOfRetries, withinTimeRange)
       }
     }
   }
@@ -1225,8 +1229,10 @@ class LocalActorRef private[akka] (
       notifySupervisorWithMessage(Exit(this, reason))
     else {
       lifeCycle match {
-        case Temporary => shutDownTemporaryActor(this)
-        case _         => dispatcher.resume(this) //Resume processing for this actor
+        case Temporary =>
+          shutDownTemporaryActor(this)
+        case _ =>
+          dispatcher.resume(this) //Resume processing for this actor
       }
     }
   }
@@ -1272,7 +1278,8 @@ class LocalActorRef private[akka] (
               null)
           true
         } catch {
-          case e: NoSuchFieldException => false
+          case e: NoSuchFieldException =>
+            false
         }
 
       if (success)

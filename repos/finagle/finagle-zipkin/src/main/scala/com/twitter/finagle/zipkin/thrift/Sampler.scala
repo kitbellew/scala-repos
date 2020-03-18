@@ -85,8 +85,10 @@ class Sampler {
     */
   def sampleRecord(record: Record): Boolean = {
     sampleTrace(record.traceId) match {
-      case Some(sampled) => sampled
-      case None          => false
+      case Some(sampled) =>
+        sampled
+      case None =>
+        false
     }
   }
 }

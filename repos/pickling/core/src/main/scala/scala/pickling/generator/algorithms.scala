@@ -19,8 +19,10 @@ private[pickling] sealed trait AlgorithmResult {
   def map(f: PickleUnpickleImplementation => PickleUnpickleImplementation)
       : AlgorithmResult =
     this match {
-      case AlgorithmSucccess(i) => AlgorithmSucccess(f(i))
-      case x                    => x
+      case AlgorithmSucccess(i) =>
+        AlgorithmSucccess(f(i))
+      case x =>
+        x
     }
 }
 private[pickling] final case class AlgorithmSucccess(
@@ -34,8 +36,10 @@ private[pickling] final case class AlgorithmFailure(reasons: List[String])
     extends AlgorithmResult {
   def join(other: => AlgorithmResult): AlgorithmResult =
     other match {
-      case x: AlgorithmSucccess => x
-      case AlgorithmFailure(rs) => AlgorithmFailure(reasons ++ rs)
+      case x: AlgorithmSucccess =>
+        x
+      case AlgorithmFailure(rs) =>
+        AlgorithmFailure(reasons ++ rs)
     }
 }
 private[pickling] object AlgorithmFailure {
@@ -55,7 +59,8 @@ private[pickling] object PicklingAlgorithm {
       tpe: IrClass,
       logger: AlgorithmLogger): Option[PickleUnpickleImplementation] = {
     alg.generate(tpe, logger) match {
-      case AlgorithmSucccess(success) => Some(success)
+      case AlgorithmSucccess(success) =>
+        Some(success)
       case AlgorithmFailure(failures) =>
         val fString = failures.mkString("\n - ", "\n - ", "\n")
         logger.error(
@@ -83,8 +88,9 @@ private[pickling] object PicklingAlgorithm {
         algs.foldLeft(AlgorithmFailure(List()): AlgorithmResult) {
           (prev, next) =>
             prev match {
-              case x: AlgorithmSucccess => x
-              case y: AlgorithmFailure  =>
+              case x: AlgorithmSucccess =>
+                x
+              case y: AlgorithmFailure =>
                 //logger.debug(s"Trying algorithm: $next on $tpe")
                 y join next.generate(tpe, logger)
             }

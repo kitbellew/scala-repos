@@ -59,7 +59,8 @@ private[orc] object OrcFileOperator extends Logging {
             s"ORC file $path has empty schema, it probably contains no rows. " +
               "Trying to read another ORC file to figure out the schema.")
           false
-        case _ => true
+        case _ =>
+          true
       }
     }
 
@@ -74,7 +75,8 @@ private[orc] object OrcFileOperator extends Logging {
         path -> OrcFile.createReader(fs, path)
       }
       .collectFirst {
-        case (path, reader) if isWithNonEmptySchema(path, reader) => reader
+        case (path, reader) if isWithNonEmptySchema(path, reader) =>
+          reader
       }
   }
 

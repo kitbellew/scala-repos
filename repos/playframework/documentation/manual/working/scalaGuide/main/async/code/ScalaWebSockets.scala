@@ -217,8 +217,10 @@ object Samples {
       WebSocket.tryAcceptWithActor[String, String] { request =>
         Future.successful(
           request.session.get("user") match {
-            case None    => Left(Forbidden)
-            case Some(_) => Right(MyWebSocketActor.props)
+            case None =>
+              Left(Forbidden)
+            case Some(_) =>
+              Right(MyWebSocketActor.props)
           })
       }
     //#actor-try-accept

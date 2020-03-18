@@ -171,7 +171,9 @@ private[akka] trait SubscriberManagement[T]
                 subscription.totalDemand = x
                 requestFromUpstreamIfRequired()
             }
-          case ErrorCompleted(_) ⇒ // ignore, the Subscriber might not have seen our error event yet
+          case ErrorCompleted(
+                _
+              ) ⇒ // ignore, the Subscriber might not have seen our error event yet
         }
       }
     }
@@ -182,7 +184,8 @@ private[akka] trait SubscriberManagement[T]
       remaining match {
         case head :: tail ⇒
           maxRequested(tail, math.max(head.totalDemand, result))
-        case _ ⇒ result
+        case _ ⇒
+          result
       }
     val desired =
       Math
@@ -213,7 +216,8 @@ private[akka] trait SubscriberManagement[T]
             dispatch(tail, sent = true)
           } else
             dispatch(tail, sent)
-        case _ ⇒ sent
+        case _ ⇒
+          sent
       }
 
     endOfStream match {
@@ -247,7 +251,8 @@ private[akka] trait SubscriberManagement[T]
               completeDoneSubscriptions(tail, result)
             } else
               completeDoneSubscriptions(tail, head :: result)
-          case _ ⇒ result
+          case _ ⇒
+            result
         }
       endOfStream = Completed
       subscriptions = completeDoneSubscriptions(subscriptions)
@@ -272,9 +277,12 @@ private[akka] trait SubscriberManagement[T]
     endOfStream match {
       case NotReached if subscriptions.exists(_.subscriber == subscriber) ⇒
         ReactiveStreamsCompliance.rejectDuplicateSubscriber(subscriber)
-      case NotReached ⇒ addSubscription(subscriber)
-      case Completed if buffer.nonEmpty ⇒ addSubscription(subscriber)
-      case eos ⇒ eos(subscriber)
+      case NotReached ⇒
+        addSubscription(subscriber)
+      case Completed if buffer.nonEmpty ⇒
+        addSubscription(subscriber)
+      case eos ⇒
+        eos(subscriber)
     }
 
   private def addSubscription(subscriber: Subscriber[_ >: T]): Unit = {
@@ -284,7 +292,8 @@ private[akka] trait SubscriberManagement[T]
     buffer.initCursor(newSubscription)
     try tryOnSubscribe(subscriber, newSubscription)
     catch {
-      case _: SpecViolation ⇒ unregisterSubscriptionInternal(newSubscription)
+      case _: SpecViolation ⇒
+        unregisterSubscriptionInternal(newSubscription)
     }
   }
 

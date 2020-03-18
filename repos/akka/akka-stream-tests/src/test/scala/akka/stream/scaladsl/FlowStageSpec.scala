@@ -400,7 +400,8 @@ class FlowStageSpec
                 case Some(expected) if count != expected ⇒
                   throw new RuntimeException(s"Expected $expected, got $count")
                     with NoStackTrace
-                case _ ⇒ ctx.finish()
+                case _ ⇒
+                  ctx.finish()
               }
           })
         .runWith(TestSink.probe[Int])

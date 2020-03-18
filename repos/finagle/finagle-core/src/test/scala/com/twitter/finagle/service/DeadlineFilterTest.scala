@@ -340,7 +340,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     assert(
       (
         ps[Param] match {
-          case Param(t, d) => (t, d)
+          case Param(t, d) =>
+            (t, d)
         }
       ) == ((1.second, 0.5)))
   }

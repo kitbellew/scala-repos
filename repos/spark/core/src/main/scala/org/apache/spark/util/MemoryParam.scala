@@ -26,7 +26,8 @@ private[spark] object MemoryParam {
     try {
       Some(Utils.memoryStringToMb(str))
     } catch {
-      case e: NumberFormatException => None
+      case e: NumberFormatException =>
+        None
     }
   }
 }

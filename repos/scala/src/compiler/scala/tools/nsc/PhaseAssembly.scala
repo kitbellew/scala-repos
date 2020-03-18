@@ -39,8 +39,10 @@ trait PhaseAssembly {
 
       def allPhaseNames(): String =
         phaseobj match {
-          case None      => phasename
-          case Some(lst) => lst.map(_.phaseName).reduceLeft(_ + "," + _)
+          case None =>
+            phasename
+          case Some(lst) =>
+            lst.map(_.phaseName).reduceLeft(_ + "," + _)
         }
     }
 

@@ -40,13 +40,16 @@ class ExternalAssets @Inject() (environment: Environment) extends Controller {
   def at(rootPath: String, file: String): Action[AnyContent] =
     Action { request =>
       environment.mode match {
-        case Mode.Prod => NotFound
+        case Mode.Prod =>
+          NotFound
         case _ => {
 
           val fileToServe =
             rootPath match {
-              case AbsolutePath(_) => new File(rootPath, file)
-              case _               => new File(environment.getFile(rootPath), file)
+              case AbsolutePath(_) =>
+                new File(rootPath, file)
+              case _ =>
+                new File(environment.getFile(rootPath), file)
             }
 
           if (fileToServe.exists) {

@@ -86,11 +86,14 @@ trait Role {
       case false =>
         childs.find(role =>
           role.getRoleByName(roleName) match {
-            case Empty       => false
-            case theRole @ _ => return theRole
+            case Empty =>
+              false
+            case theRole @ _ =>
+              return theRole
           })
         Empty
-      case _ => Full(this)
+      case _ =>
+        Full(this)
     }
 
   /**
@@ -117,8 +120,10 @@ trait Role {
     */
   def isChildOf(roleName: String): Boolean =
     (this.name == roleName) match {
-      case true => return true
-      case _    => this.parent.map(_ isChildOf (roleName)) openOr false
+      case true =>
+        return true
+      case _ =>
+        this.parent.map(_ isChildOf (roleName)) openOr false
     }
 
   /**

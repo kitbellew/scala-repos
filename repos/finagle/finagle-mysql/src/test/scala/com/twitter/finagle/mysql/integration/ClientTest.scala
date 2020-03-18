@@ -82,7 +82,8 @@ class ClientTest extends FunSuite with IntegrationClient {
         fail("Expected an error when using an unauthenticated client")
       } catch {
         // Expected Access Denied Error Code
-        case ServerError(code, _, _) => assert(code == 1045)
+        case ServerError(code, _, _) =>
+          assert(code == 1045)
       }
     }
 

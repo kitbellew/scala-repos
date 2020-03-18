@@ -29,7 +29,8 @@ object ToSetAndBackToDistinct extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "distinct"))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -38,7 +39,8 @@ object ToSetAndBackToDistinct extends SimplificationType {
       case (ScParameterizedType(des1, _), ScParameterizedType(des2, _))
           if des1.equiv(des2) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

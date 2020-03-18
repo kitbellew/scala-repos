@@ -21,19 +21,23 @@ object ClusterShardingGetStateSpec {
   class ShardedActor extends Actor with ActorLogging {
     log.info(self.path.toString)
     def receive = {
-      case Stop ⇒ context.stop(self)
-      case _: Ping ⇒ sender() ! Pong
+      case Stop ⇒
+        context.stop(self)
+      case _: Ping ⇒
+        sender() ! Pong
     }
   }
 
   val extractEntityId: ShardRegion.ExtractEntityId = {
-    case msg @ Ping(id) ⇒ (id.toString, msg)
+    case msg @ Ping(id) ⇒
+      (id.toString, msg)
   }
 
   val numberOfShards = 2
 
   val extractShardId: ShardRegion.ExtractShardId = {
-    case Ping(id) ⇒ (id % numberOfShards).toString
+    case Ping(id) ⇒
+      (id % numberOfShards).toString
   }
 
   val shardTypeName = "Ping"
@@ -150,7 +154,8 @@ abstract class ClusterShardingGetStateSpec
             // trigger starting of 4 entities
             (1 to 4).foreach(n ⇒ region.tell(Ping(n), pingProbe.ref))
             pingProbe.receiveWhile(messages = 4) {
-              case Pong ⇒ ()
+              case Pong ⇒
+                ()
             }
           }
         }
@@ -178,7 +183,8 @@ abstract class ClusterShardingGetStateSpec
           }
           val states =
             probe.receiveWhile(messages = regions.size) {
-              case msg: ShardRegion.CurrentShardRegionState ⇒ msg
+              case msg: ShardRegion.CurrentShardRegionState ⇒
+                msg
             }
           val allEntityIds =
             for {

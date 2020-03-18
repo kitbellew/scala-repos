@@ -56,7 +56,8 @@ object ForeignKey {
     val sels = new ArrayBuffer[Node]
     def f(n: Node): Unit =
       n match {
-        case _: Select | _: Ref | _: TableNode => sels += n
+        case _: Select | _: Ref | _: TableNode =>
+          sels += n
         case _: ProductNode | _: OptionApply | _: GetOrElse | _: TypeMapping |
             _: ClientSideOp =>
           n.childrenForeach(f)

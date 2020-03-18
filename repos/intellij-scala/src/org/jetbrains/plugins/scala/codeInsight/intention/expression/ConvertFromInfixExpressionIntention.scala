@@ -55,7 +55,8 @@ class ConvertFromInfixExpressionIntention
     val methodCallExpr = ScalaPsiElementFactory.createEquivMethodCall(infixExpr)
     val referenceExpr =
       methodCallExpr.getInvokedExpr match {
-        case ref: ScReferenceExpression => ref
+        case ref: ScReferenceExpression =>
+          ref
         case call: ScGenericCall =>
           call.referencedExpr.asInstanceOf[ScReferenceExpression]
       }

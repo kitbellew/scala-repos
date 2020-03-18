@@ -67,8 +67,10 @@ object Name {
       @tailrec
       def tailrecM[A, B](f: A => Name[A \/ B])(a: A): Name[B] =
         f(a).value match {
-          case -\/(a0) => tailrecM(f)(a0)
-          case \/-(b)  => Name(b)
+          case -\/(a0) =>
+            tailrecM(f)(a0)
+          case \/-(b) =>
+            Name(b)
         }
     }
   implicit def nameEqual[A: Equal]: Equal[Name[A]] =
@@ -134,8 +136,10 @@ object Need {
       @tailrec
       def tailrecM[A, B](f: A => Need[A \/ B])(a: A): Need[B] =
         f(a).value match {
-          case -\/(a0) => tailrecM(f)(a0)
-          case \/-(b)  => Need(b)
+          case -\/(a0) =>
+            tailrecM(f)(a0)
+          case \/-(b) =>
+            Need(b)
         }
     }
   implicit def needEqual[A: Equal]: Equal[Need[A]] =
@@ -189,8 +193,10 @@ object Value {
       @tailrec
       def tailrecM[A, B](f: A => Value[A \/ B])(a: A): Value[B] =
         f(a).value match {
-          case -\/(a0) => tailrecM(f)(a0)
-          case \/-(b)  => Value(b)
+          case -\/(a0) =>
+            tailrecM(f)(a0)
+          case \/-(b) =>
+            Value(b)
         }
     }
   implicit def valueEqual[A: Equal]: Equal[Value[A]] =

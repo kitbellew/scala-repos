@@ -217,7 +217,8 @@ trait Jvm {
     val mainClass =
       for {
         (_, stack) <- Thread.getAllStackTraces().asScala.find {
-          case (t, s) => t.getName == "main"
+          case (t, s) =>
+            t.getName == "main"
         }
         frame <- stack.reverse.find { elem =>
           !(elem.getClassName.startsWith("scala.tools.nsc.MainGenericRunner"))
@@ -257,7 +258,8 @@ object Jvm {
   private lazy val _jvm =
     try new Hotspot
     catch {
-      case NonFatal(_) => NilJvm
+      case NonFatal(_) =>
+        NilJvm
     }
 
   private val log = Logger.getLogger(getClass.getName)

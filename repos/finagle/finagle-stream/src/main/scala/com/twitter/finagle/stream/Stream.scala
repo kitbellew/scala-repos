@@ -121,8 +121,10 @@ final class Header private (val key: String, val value: String) {
   override def toString: String = s"Header($key, $value)"
   override def equals(o: Any): Boolean =
     o match {
-      case h: Header => h.key == key && h.value == value
-      case _         => false
+      case h: Header =>
+        h.key == key && h.value == value
+      case _ =>
+        false
     }
 }
 

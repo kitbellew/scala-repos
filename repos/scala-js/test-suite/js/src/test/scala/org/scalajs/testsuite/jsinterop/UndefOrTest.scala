@@ -148,17 +148,20 @@ class UndefOrTest {
     assertEquals(
       "ok",
       some("hello") collect {
-        case "hello" => "ok"
+        case "hello" =>
+          "ok"
       })
     assertTrue(
       js.isUndefined(
         some("hello") collect {
-          case "notthis" => "ko"
+          case "notthis" =>
+            "ko"
         }))
     assertTrue(
       js.isUndefined(
         none[String] collect {
-          case "hello" => "ko"
+          case "hello" =>
+            "ko"
         }))
   }
 
@@ -172,7 +175,8 @@ class UndefOrTest {
     assertEquals(
       "ok",
       some("hello") collect {
-        case x @ "hello" if guard(x) => "ok"
+        case x @ "hello" if guard(x) =>
+          "ok"
       })
     assertEquals(1, witness)
   }

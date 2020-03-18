@@ -23,19 +23,23 @@ class ScalaQualifiedNameProvider extends QualifiedNameProvider {
 
   def getQualifiedName(element: PsiElement): String = {
     element match {
-      case clazz: ScTypeDefinition => clazz.qualifiedName
+      case clazz: ScTypeDefinition =>
+        clazz.qualifiedName
       case named: ScNamedElement =>
         val clazz =
           ScalaPsiUtil.nameContext(named) match {
-            case member: ScMember => member.containingClass
-            case _                => null
+            case member: ScMember =>
+              member.containingClass
+            case _ =>
+              null
           }
         if (clazz != null) {
           clazz.qualifiedName + "#" + named.name
         } else {
           named.name
         }
-      case _ => null
+      case _ =>
+        null
     }
   }
 

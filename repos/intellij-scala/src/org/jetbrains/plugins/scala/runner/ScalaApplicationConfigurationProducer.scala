@@ -57,9 +57,12 @@ abstract class BaseScalaApplicationConfigurationProducer[
       val aClass: PsiClass = method.containingClass
       if (ConfigurationUtil.MAIN_CLASS.value(aClass)) {
         myPsiElement = method match {
-          case fun: ScFunction        => fun.getFirstChild
-          case fun: ScFunctionWrapper => fun.function.getFirstChild
-          case elem                   => elem.getFirstChild
+          case fun: ScFunction =>
+            fun.getFirstChild
+          case fun: ScFunctionWrapper =>
+            fun.function.getFirstChild
+          case elem =>
+            elem.getFirstChild
         }
         createConfiguration(aClass, context, location, configuration)
         return true
@@ -95,20 +98,24 @@ abstract class BaseScalaApplicationConfigurationProducer[
       name: String): Boolean = {
     def isConfigClassWithName(clazz: PsiClass) =
       clazz match {
-        case clazz: PsiClassWrapper if clazz.getQualifiedName == name => true
+        case clazz: PsiClassWrapper if clazz.getQualifiedName == name =>
+          true
         case o: ScObject
             if o.fakeCompanionClassOrCompanionClass.getQualifiedName == name =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     var element = _element
     do {
       element match {
-        case clazz: PsiClass if isConfigClassWithName(clazz) => return true
+        case clazz: PsiClass if isConfigClassWithName(clazz) =>
+          return true
         case f: ScalaFile if f.getClasses.exists(isConfigClassWithName) =>
           return true
-        case _ => element = element.getParent
+        case _ =>
+          element = element.getParent
       }
     } while (element != null)
     false
@@ -163,9 +170,12 @@ abstract class BaseScalaApplicationConfigurationProducer[
       val aClass: PsiClass = method.containingClass
       if (ConfigurationUtil.MAIN_CLASS.value(aClass)) {
         myPsiElement = method match {
-          case fun: ScFunction        => fun.getFirstChild
-          case fun: ScFunctionWrapper => fun.function.getFirstChild
-          case elem                   => elem.getFirstChild
+          case fun: ScFunction =>
+            fun.getFirstChild
+          case fun: ScFunctionWrapper =>
+            fun.function.getFirstChild
+          case elem =>
+            elem.getFirstChild
         }
         createConfiguration(aClass, context, location, configuration)
         sourceElement.set(myPsiElement)
@@ -236,13 +246,16 @@ object ScalaApplicationConfigurationProducer {
                     .headOption
                   if PsiMethodUtil.isMainMethod(wrapper)
                 } yield wrapper
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
       }
       isMainMethod(method) match {
-        case Some(mainMethod) => return mainMethod
+        case Some(mainMethod) =>
+          return mainMethod
         case _ =>
           if (firstContMethodOnly)
             return null
@@ -258,8 +271,10 @@ object ScalaApplicationConfigurationProducer {
     var element = _element
     while (element != null) {
       element match {
-        case method: PsiMethod => return method
-        case _                 => element = element.getParent
+        case method: PsiMethod =>
+          return method
+        case _ =>
+          element = element.getParent
       }
     }
     element.asInstanceOf[PsiMethod]

@@ -111,13 +111,18 @@ sealed abstract class Free[S[_], A] {
   @tailrec
   final def resume(implicit S: Functor[S]): (S[Free[S, A]] \/ A) =
     this match {
-      case Return(a)  => \/-(a)
-      case Suspend(t) => -\/(S.map(t)(Return(_)))
+      case Return(a) =>
+        \/-(a)
+      case Suspend(t) =>
+        -\/(S.map(t)(Return(_)))
       case b @ Gosub() =>
         b.a match {
-          case Return(a)   => b.f(a).resume
-          case Suspend(t)  => -\/(S.map(t)(b.f))
-          case c @ Gosub() => c.a.flatMap(z => c.f(z).flatMap(b.f)).resume
+          case Return(a) =>
+            b.f(a).resume
+          case Suspend(t) =>
+            -\/(S.map(t)(b.f))
+          case c @ Gosub() =>
+            c.a.flatMap(z => c.f(z).flatMap(b.f)).resume
         }
     }
 
@@ -131,13 +136,17 @@ sealed abstract class Free[S[_], A] {
   /** Modifies the first suspension with the given natural transformation. */
   final def mapFirstSuspension(f: S ~> S): Free[S, A] =
     step match {
-      case Suspend(s) => Suspend(f(s))
+      case Suspend(s) =>
+        Suspend(f(s))
       case a @ Gosub() =>
         a.a match {
-          case Suspend(s) => Suspend(f(s)).flatMap(a.f)
-          case _          => a.a.mapFirstSuspension(f).flatMap(a.f)
+          case Suspend(s) =>
+            Suspend(f(s)).flatMap(a.f)
+          case _ =>
+            a.a.mapFirstSuspension(f).flatMap(a.f)
         }
-      case x => x
+      case x =>
+        x
     }
 
   /**
@@ -161,8 +170,10 @@ sealed abstract class Free[S[_], A] {
   final def bounce(f: S[Free[S, A]] => Free[S, A])(implicit
       S: Functor[S]): Free[S, A] =
     resume match {
-      case -\/(s) => f(s)
-      case \/-(r) => Return(r)
+      case -\/(s) =>
+        f(s)
+      case \/-(r) =>
+        Return(r)
     }
 
   /** Runs to completion, using a function that extracts the resumption from its suspension functor. */
@@ -170,8 +181,10 @@ sealed abstract class Free[S[_], A] {
     @tailrec
     def go2(t: Free[S, A]): A =
       t.resume match {
-        case -\/(s) => go2(f(s))
-        case \/-(r) => r
+        case -\/(s) =>
+          go2(f(s))
+        case \/-(r) =>
+          r
       }
     go2(this)
   }
@@ -185,8 +198,10 @@ sealed abstract class Free[S[_], A] {
       M: Monad[M]): M[A] = {
     def runM2(t: Free[S, A]): M[A] =
       t.resume match {
-        case -\/(s) => Monad[M].bind(f(s))(runM2)
-        case \/-(r) => Monad[M].pure(r)
+        case -\/(s) =>
+          Monad[M].bind(f(s))(runM2)
+        case \/-(r) =>
+          Monad[M].pure(r)
       }
     runM2(this)
   }
@@ -200,8 +215,10 @@ sealed abstract class Free[S[_], A] {
       B: BindRec[M]): M[A] = {
     def go(e: S[Free[S, A]] \/ A): M[Free[S, A] \/ A] =
       e match {
-        case -\/(sf)    => M.map(f(sf))(\/.left)
-        case a @ \/-(_) => M.point(a)
+        case -\/(sf) =>
+          M.map(f(sf))(\/.left)
+        case a @ \/-(_) =>
+          M.point(a)
       }
 
     B.tailrecM[Free[S, A], A]((ma: Free[S, A]) => go(ma.resume))(this)
@@ -223,7 +240,8 @@ sealed abstract class Free[S[_], A] {
           case _ =>
             x
         }
-      case x => x
+      case x =>
+        x
     }
 
   /**
@@ -233,21 +251,27 @@ sealed abstract class Free[S[_], A] {
     */
   final def foldMap[M[_]](f: S ~> M)(implicit M: Monad[M]): M[A] =
     step match {
-      case Return(a)  => M.pure(a)
-      case Suspend(s) => f(s)
+      case Return(a) =>
+        M.pure(a)
+      case Suspend(s) =>
+        f(s)
       // This is stack safe because `step` ensures right-associativity of Gosub
-      case a @ Gosub() => M.bind(a.a foldMap f)(c => a.f(c) foldMap f)
+      case a @ Gosub() =>
+        M.bind(a.a foldMap f)(c => a.f(c) foldMap f)
     }
 
   final def foldMapRec[M[_]](
       f: S ~> M)(implicit M: Applicative[M], B: BindRec[M]): M[A] =
     B.tailrecM[Free[S, A], A] {
       _.step match {
-        case Return(a)  => M.point(\/-(a))
-        case Suspend(t) => M.map(f(t))(\/.right)
+        case Return(a) =>
+          M.point(\/-(a))
+        case Suspend(t) =>
+          M.map(f(t))(\/.right)
         case b @ Gosub() =>
           (b.a: @unchecked) match {
-            case Suspend(t) => M.map(f(t))(a => -\/(b.f(a)))
+            case Suspend(t) =>
+              M.map(f(t))(a => -\/(b.f(a)))
           }
       }
     }(this)
@@ -260,8 +284,10 @@ sealed abstract class Free[S[_], A] {
   final def foldRight[G[_]](z: Id ~> G)(f: λ[α => S[G[α]]] ~> G)(implicit
       S: Functor[S]): G[A] =
     this.resume match {
-      case -\/(s) => f(S.map(s)(_.foldRight(z)(f)))
-      case \/-(r) => z(r)
+      case -\/(s) =>
+        f(S.map(s)(_.foldRight(z)(f)))
+      case \/-(r) =>
+        z(r)
     }
 
   /** Runs to completion, allowing the resumption function to thread an arbitrary state of type `B`. */
@@ -273,7 +299,8 @@ sealed abstract class Free[S[_], A] {
         case -\/(s) =>
           val (b1, s1) = f(z, s)
           foldRun2(s1, b1)
-        case \/-(r) => (z, r)
+        case \/-(r) =>
+          (z, r)
       }
     foldRun2(this, b)
   }
@@ -284,12 +311,16 @@ sealed abstract class Free[S[_], A] {
   /** Interleave this computation with another, combining the results with the given function. */
   final def zipWith[B, C](tb: Free[S, B])(f: (A, B) => C): Free[S, C] = {
     (step, tb.step) match {
-      case (Return(a), Return(b))      => Return(f(a, b))
-      case (a @ Suspend(_), Return(b)) => a.flatMap(x => Return(f(x, b)))
-      case (Return(a), b @ Suspend(_)) => b.flatMap(x => Return(f(a, x)))
+      case (Return(a), Return(b)) =>
+        Return(f(a, b))
+      case (a @ Suspend(_), Return(b)) =>
+        a.flatMap(x => Return(f(x, b)))
+      case (Return(a), b @ Suspend(_)) =>
+        b.flatMap(x => Return(f(a, x)))
       case (a @ Suspend(_), b @ Suspend(_)) =>
         a.flatMap(x => b.map(y => f(x, y)))
-      case (a @ Gosub(), Return(b)) => a.a.flatMap(x => a.f(x).map(f(_, b)))
+      case (a @ Gosub(), Return(b)) =>
+        a.a.flatMap(x => a.f(x).map(f(_, b)))
       case (a @ Gosub(), b @ Suspend(_)) =>
         a.a.flatMap(x => b.flatMap(y => a.f(x).map(f(_, y))))
       case (a @ Gosub(), b @ Gosub()) =>
@@ -304,8 +335,10 @@ sealed abstract class Free[S[_], A] {
     @tailrec
     def go(c: Source[B, A], v: Vector[B] = Vector()): (Vector[B], A) =
       c.resume match {
-        case -\/((b, cont)) => go(cont, v :+ b)
-        case \/-(r)         => (v, r)
+        case -\/((b, cont)) =>
+          go(cont, v :+ b)
+        case \/-(r) =>
+          (v, r)
       }
     go(ev(this))
   }
@@ -316,10 +349,14 @@ sealed abstract class Free[S[_], A] {
     @tailrec
     def go(src: Source[E, A], snk: Sink[Option[E], B]): (A, B) =
       (src.resume, snk.resume) match {
-        case (-\/((e, c)), -\/(f)) => go(c, f(Some(e)))
-        case (-\/((e, c)), \/-(y)) => go(c, Sink.sinkMonad[Option[E]].pure(y))
-        case (\/-(x), -\/(f))      => go(Source.sourceMonad[E].pure(x), f(None))
-        case (\/-(x), \/-(y))      => (x, y)
+        case (-\/((e, c)), -\/(f)) =>
+          go(c, f(Some(e)))
+        case (-\/((e, c)), \/-(y)) =>
+          go(c, Sink.sinkMonad[Option[E]].pure(y))
+        case (\/-(x), -\/(f)) =>
+          go(Source.sourceMonad[E].pure(x), f(None))
+        case (\/-(x), \/-(y)) =>
+          (x, y)
       }
     go(ev(this), sink)
   }
@@ -329,9 +366,12 @@ sealed abstract class Free[S[_], A] {
     @tailrec
     def go(snk: Sink[E, A], rest: Stream[E]): A =
       (rest, snk.resume) match {
-        case (x #:: xs, -\/(f)) => go(f(x), xs)
-        case (Stream(), -\/(f)) => go(f(sys.error("No more values.")), Stream())
-        case (_, \/-(r))        => r
+        case (x #:: xs, -\/(f)) =>
+          go(f(x), xs)
+        case (Stream(), -\/(f)) =>
+          go(f(sys.error("No more values.")), Stream())
+        case (_, \/-(r)) =>
+          r
       }
     go(ev(this), ss)
   }
@@ -342,10 +382,14 @@ sealed abstract class Free[S[_], A] {
     @tailrec
     def go(src: Source[E, B], snk: Sink[E, A]): (A, B) =
       (src.resume, snk.resume) match {
-        case (-\/((e, c)), -\/(f)) => go(c, f(e))
-        case (-\/((e, c)), \/-(y)) => go(c, Sink.sinkMonad[E].pure(y))
-        case (\/-(x), -\/(f))      => sys.error("Not enough values in source.")
-        case (\/-(x), \/-(y))      => (y, x)
+        case (-\/((e, c)), -\/(f)) =>
+          go(c, f(e))
+        case (-\/((e, c)), \/-(y)) =>
+          go(c, Sink.sinkMonad[E].pure(y))
+        case (\/-(x), -\/(f)) =>
+          sys.error("Not enough values in source.")
+        case (\/-(x), \/-(y)) =>
+          (y, x)
       }
     go(source, ev(this))
   }
@@ -476,10 +520,14 @@ sealed abstract class FreeInstances
     new Zip[Free[S, ?]] {
       override def zip[A, B](aa: => Free[S, A], bb: => Free[S, B]) =
         (aa.resume, bb.resume) match {
-          case (-\/(a), -\/(b)) => roll(Z.zipWith(a, b)(zip(_, _)))
-          case (-\/(a), \/-(b)) => roll(F.map(a)(zip(_, point(b))))
-          case (\/-(a), -\/(b)) => roll(F.map(b)(zip(point(a), _)))
-          case (\/-(a), \/-(b)) => point((a, b))
+          case (-\/(a), -\/(b)) =>
+            roll(Z.zipWith(a, b)(zip(_, _)))
+          case (-\/(a), \/-(b)) =>
+            roll(F.map(a)(zip(_, point(b))))
+          case (\/-(a), -\/(b)) =>
+            roll(F.map(b)(zip(point(a), _)))
+          case (\/-(a), \/-(b)) =>
+            point((a, b))
         }
     }
 
@@ -498,21 +546,27 @@ private sealed trait FreeFoldable[F[_]] extends Foldable[Free[F, ?]] {
 
   override final def foldMap[A, B: Monoid](fa: Free[F, A])(f: A => B): B =
     fa.resume match {
-      case -\/(s) => F.foldMap(s)(foldMap(_)(f))
-      case \/-(r) => f(r)
+      case -\/(s) =>
+        F.foldMap(s)(foldMap(_)(f))
+      case \/-(r) =>
+        f(r)
     }
 
   override final def foldLeft[A, B](fa: Free[F, A], z: B)(f: (B, A) => B): B =
     fa.resume match {
-      case -\/(s) => F.foldLeft(s, z)((b, a) => foldLeft(a, b)(f))
-      case \/-(r) => f(z, r)
+      case -\/(s) =>
+        F.foldLeft(s, z)((b, a) => foldLeft(a, b)(f))
+      case \/-(r) =>
+        f(z, r)
     }
 
   override final def foldRight[A, B](fa: Free[F, A], z: => B)(
       f: (A, => B) => B): B =
     fa.resume match {
-      case -\/(s) => F.foldRight(s, z)(foldRight(_, _)(f))
-      case \/-(r) => f(r, z)
+      case -\/(s) =>
+        F.foldRight(s, z)(foldRight(_, _)(f))
+      case \/-(r) =>
+        f(r, z)
     }
 }
 
@@ -522,8 +576,10 @@ private sealed trait FreeFoldable1[F[_]] extends Foldable1[Free[F, ?]] {
 
   override final def foldMap1[A, B: Semigroup](fa: Free[F, A])(f: A => B): B =
     fa.resume match {
-      case -\/(s) => F.foldMap1(s)(foldMap1(_)(f))
-      case \/-(r) => f(r)
+      case -\/(s) =>
+        F.foldMap1(s)(foldMap1(_)(f))
+      case \/-(r) =>
+        f(r)
     }
 
   override final def foldMapRight1[A, B](fa: Free[F, A])(z: A => B)(
@@ -531,7 +587,8 @@ private sealed trait FreeFoldable1[F[_]] extends Foldable1[Free[F, ?]] {
     fa.resume match {
       case -\/(s) =>
         F.foldMapRight1(s)(foldMapRight1(_)(z)(f))(foldRight(_, _)(f))
-      case \/-(r) => z(r)
+      case \/-(r) =>
+        z(r)
     }
 
   override final def foldMapLeft1[A, B](fa: Free[F, A])(z: A => B)(
@@ -539,7 +596,8 @@ private sealed trait FreeFoldable1[F[_]] extends Foldable1[Free[F, ?]] {
     fa.resume match {
       case -\/(s) =>
         F.foldMapLeft1(s)(foldMapLeft1(_)(z)(f))((b, a) => foldLeft(a, b)(f))
-      case \/-(r) => z(r)
+      case \/-(r) =>
+        z(r)
     }
 }
 
@@ -556,7 +614,8 @@ private sealed trait FreeTraverse[F[_]]
     fa.resume match {
       case -\/(s) =>
         G.map(F.traverseImpl(s)(traverseImpl[G, A, B](_)(f)))(roll(_))
-      case \/-(r) => G.map(f(r))(point(_))
+      case \/-(r) =>
+        G.map(f(r))(point(_))
     }
 }
 
@@ -571,6 +630,7 @@ private sealed abstract class FreeTraverse1[F[_]]
     fa.resume match {
       case -\/(s) =>
         G.map(F.traverse1Impl(s)(traverse1Impl[G, A, B](_)(f)))(roll(_))
-      case \/-(r) => G.map(f(r))(point(_))
+      case \/-(r) =>
+        G.map(f(r))(point(_))
     }
 }

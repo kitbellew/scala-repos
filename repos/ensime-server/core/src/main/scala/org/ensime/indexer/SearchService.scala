@@ -55,8 +55,10 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
 
   private def scan(f: FileObject) =
     f.findFiles(ClassfileSelector) match {
-      case null => Nil
-      case res  => res.toList
+      case null =>
+        Nil
+      case res =>
+        res.toList
     }
 
   /**
@@ -92,13 +94,19 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
       config.modules.flatMap {
         case (name, m) =>
           m.targetDirs.flatMap {
-            case d if !d.exists() => Nil
-            case d if d.isJar     => List(vfs.vfile(d))
-            case d                => scan(vfs.vfile(d))
+            case d if !d.exists() =>
+              Nil
+            case d if d.isJar =>
+              List(vfs.vfile(d))
+            case d =>
+              scan(vfs.vfile(d))
           } ::: m.testTargetDirs.flatMap {
-            case d if !d.exists() => Nil
-            case d if d.isJar     => List(vfs.vfile(d))
-            case d                => scan(vfs.vfile(d))
+            case d if !d.exists() =>
+              Nil
+            case d if d.isJar =>
+              List(vfs.vfile(d))
+            case d =>
+              scan(vfs.vfile(d))
           } :::
             m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
       }
@@ -130,7 +138,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
       Future
         .sequence(
           basesWithChecks.map {
-            case (file, check) => indexBase(file, check)
+            case (file, check) =>
+              indexBase(file, check)
           })
         .map(_.flatten.sum)
     }
@@ -202,7 +211,8 @@ class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
       container: FileObject,
       f: FileObject): List[FqnSymbol] = {
     f.pathWithinArchive match {
-      case Some(relative) if blacklist.exists(relative.startsWith) => Nil
+      case Some(relative) if blacklist.exists(relative.startsWith) =>
+        Nil
       case _ =>
         val name = container.getName.getURI
         val path = f.getName.getURI

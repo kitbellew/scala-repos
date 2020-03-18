@@ -125,7 +125,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             .toSet
             .flatten
 
-        case _ => current
+        case _ =>
+          current
       }
 
     sealed trait LoadState
@@ -213,7 +214,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                         val selector =
                           jTypeToProperties(tpe, Set())
                             .foldLeft(new BasicDBObject()) {
-                              case (obj, path) => obj.append(path, 1)
+                              case (obj, path) =>
+                                obj.append(path, 1)
                             }
 
                         val cursorGen =

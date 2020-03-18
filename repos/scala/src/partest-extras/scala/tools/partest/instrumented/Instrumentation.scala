@@ -98,7 +98,8 @@ object Instrumentation {
     // <count> <trace>
     val format = "%5d  %s\n"
     toBePrinted foreach {
-      case (trace, count) => printf(format, count, trace)
+      case (trace, count) =>
+        printf(format, count, trace)
     }
   }
 

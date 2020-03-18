@@ -375,11 +375,16 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
     import ir.Trees.JSUnaryOp._
     val tok =
       (op: @switch) match {
-        case !        => Token.NOT
-        case ~        => Token.BITNOT
-        case +        => Token.POS
-        case -        => Token.NEG
-        case `typeof` => Token.TYPEOF
+        case ! =>
+          Token.NOT
+        case ~ =>
+          Token.BITNOT
+        case + =>
+          Token.POS
+        case - =>
+          Token.NEG
+        case `typeof` =>
+          Token.TYPEOF
       }
 
     new Node(tok, lhs)
@@ -390,32 +395,53 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
     import ir.Trees.JSBinaryOp._
     val tok =
       (op: @switch) match {
-        case === => Token.SHEQ
-        case !== => Token.SHNE
+        case === =>
+          Token.SHEQ
+        case !== =>
+          Token.SHNE
 
-        case + => Token.ADD
-        case - => Token.SUB
-        case * => Token.MUL
-        case / => Token.DIV
-        case % => Token.MOD
+        case + =>
+          Token.ADD
+        case - =>
+          Token.SUB
+        case * =>
+          Token.MUL
+        case / =>
+          Token.DIV
+        case % =>
+          Token.MOD
 
-        case |   => Token.BITOR
-        case &   => Token.BITAND
-        case ^   => Token.BITXOR
-        case <<  => Token.LSH
-        case >>  => Token.RSH
-        case >>> => Token.URSH
+        case | =>
+          Token.BITOR
+        case & =>
+          Token.BITAND
+        case ^ =>
+          Token.BITXOR
+        case << =>
+          Token.LSH
+        case >> =>
+          Token.RSH
+        case >>> =>
+          Token.URSH
 
-        case <  => Token.LT
-        case <= => Token.LE
-        case >  => Token.GT
-        case >= => Token.GE
+        case < =>
+          Token.LT
+        case <= =>
+          Token.LE
+        case > =>
+          Token.GT
+        case >= =>
+          Token.GE
 
-        case || => Token.OR
-        case && => Token.AND
+        case || =>
+          Token.OR
+        case && =>
+          Token.AND
 
-        case `in`         => Token.IN
-        case `instanceof` => Token.INSTANCEOF
+        case `in` =>
+          Token.IN
+        case `instanceof` =>
+          Token.INSTANCEOF
       }
 
     new Node(tok, lhs, rhs)

@@ -17,7 +17,8 @@ object StreamIO {
       bufferSize: Int = 1024) {
     val buf = new Array[Byte](bufferSize)
     inputStream.read(buf, 0, buf.length) match {
-      case -1 => ()
+      case -1 =>
+        ()
       case n =>
         outputStream.write(buf, 0, n)
         copy(inputStream, outputStream, bufferSize)

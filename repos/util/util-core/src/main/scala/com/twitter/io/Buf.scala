@@ -49,8 +49,10 @@ trait Buf {
 
   override def equals(other: Any): Boolean =
     other match {
-      case other: Buf => Buf.equals(this, other)
-      case _          => false
+      case other: Buf =>
+        Buf.equals(this, other)
+      case _ =>
+        false
     }
 
   def isEmpty = length == 0
@@ -80,16 +82,20 @@ private[io] case class ConcatBuf(chain: Vector[Buf]) extends Buf {
 
   override def concat(right: Buf): Buf =
     right match {
-      case buf if buf.isEmpty    => this
-      case ConcatBuf(rightChain) => ConcatBuf(chain ++ rightChain)
-      case buf                   => ConcatBuf(chain :+ right)
+      case buf if buf.isEmpty =>
+        this
+      case ConcatBuf(rightChain) =>
+        ConcatBuf(chain ++ rightChain)
+      case buf =>
+        ConcatBuf(chain :+ right)
     }
 
   // Incrementally determine equality over each segment of the ConcatBuf.
   // TODO detect if the other Buf is a ConcatBuf and special-case.
   override def equals(other: Any): Boolean =
     other match {
-      case other: Buf if isEmpty && other.isEmpty => true
+      case other: Buf if isEmpty && other.isEmpty =>
+        true
 
       case other: Buf if other.length == length =>
         var i = 0
@@ -104,7 +110,8 @@ private[io] case class ConcatBuf(chain: Vector[Buf]) extends Buf {
         }
         true
 
-      case _ => false
+      case _ =>
+        false
     }
 
   def length: Int = {
@@ -290,7 +297,8 @@ object Buf {
             case None =>
               equalsBytes(other.copiedByteArray, 0)
           }
-        case _ => false
+        case _ =>
+          false
       }
 
     protected def unsafeByteArrayBuf: Option[Buf.ByteArray] = Some(this)
@@ -309,10 +317,12 @@ object Buf {
       */
     def coerce(buf: Buf): Buf.ByteArray =
       buf match {
-        case buf: Buf.ByteArray => buf
+        case buf: Buf.ByteArray =>
+          buf
         case buf =>
           buf.unsafeByteArrayBuf match {
-            case Some(buf) => buf
+            case Some(buf) =>
+              buf
             case None =>
               val bytes = buf.copiedByteArray
               new ByteArray(bytes, 0, bytes.length)
@@ -419,8 +429,10 @@ object Buf {
       other match {
         case ByteBuffer(otherBB) =>
           underlying.equals(otherBB)
-        case buf: Buf => Buf.equals(this, buf)
-        case _        => false
+        case buf: Buf =>
+          Buf.equals(this, buf)
+        case _ =>
+          false
       }
 
     protected def unsafeByteArrayBuf: Option[Buf.ByteArray] =
@@ -442,7 +454,8 @@ object Buf {
     /** Coerce a generic buffer to a Buf.ByteBuffer, potentially without copying data. */
     def coerce(buf: Buf): ByteBuffer =
       buf match {
-        case buf: ByteBuffer => buf
+        case buf: ByteBuffer =>
+          buf
         case _ =>
           val bb =
             buf.unsafeByteArrayBuf match {
@@ -519,7 +532,8 @@ object Buf {
   private[this] def finishHash(hash: Long): Int = (hash & UintMax).toInt
   private[this] def hashBuf(buf: Buf, init: Long = Fnv1a32Init): Long =
     buf match {
-      case buf if buf.isEmpty => init
+      case buf if buf.isEmpty =>
+        init
 
       case buf: ConcatBuf =>
         var i = 0

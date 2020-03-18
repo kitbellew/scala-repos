@@ -34,18 +34,24 @@ private[util] trait StackTracing extends Any {
     def clazz(e: Throwable) = e.getClass.getName
     def because(e: Throwable): String =
       e.getCause match {
-        case null => null;
-        case c    => header(c)
+        case null =>
+          null;
+        case c =>
+          header(c)
       }
     def msg(e: Throwable): String =
       e.getMessage match {
-        case null => because(e);
-        case s    => s
+        case null =>
+          because(e);
+        case s =>
+          s
       }
     def txt(e: Throwable): String =
       msg(e) match {
-        case null => "";
-        case s    => s": $s"
+        case null =>
+          "";
+        case s =>
+          s": $s"
       }
     def header(e: Throwable): String = s"${clazz(e)}${txt(e)}"
 

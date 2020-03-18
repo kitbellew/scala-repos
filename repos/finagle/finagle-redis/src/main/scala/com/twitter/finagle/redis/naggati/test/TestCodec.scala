@@ -66,8 +66,10 @@ class TestCodec[A](val codec: Codec[A]) {
   private def toStrings(wrapped: Seq[Any]): Seq[String] =
     wrapped.map { item =>
       item match {
-        case x: Array[Byte] => new String(x, "UTF-8")
-        case x              => x.toString
+        case x: Array[Byte] =>
+          new String(x, "UTF-8")
+        case x =>
+          x.toString
       }
     }
 

@@ -40,9 +40,12 @@ trait JodaTimeTypedField extends TypedField[DateTime] with JodaHelpers {
 
   def setFromString(s: String): Box[DateTime] =
     s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case other                   => setBox(toDateTime(other))
+      case null | "" if optional_? =>
+        setBox(Empty)
+      case null | "" =>
+        setBox(Failure(notOptionalErrorMessage))
+      case other =>
+        setBox(toDateTime(other))
     }
 
   private def elem =
@@ -63,8 +66,10 @@ trait JodaTimeTypedField extends TypedField[DateTime] with JodaHelpers {
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def asJs = valueBox.map(v => Num(v.getMillis)) openOr JsNull
@@ -81,9 +86,12 @@ trait JodaTimeTypedField extends TypedField[DateTime] with JodaHelpers {
   protected def setFromJInt(jvalue: JValue)(
       decode: BigInt => Box[MyType]): Box[MyType] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JInt(n)                        => setBox(decode(n))
-      case other                          => setBox(FieldHelpers.expectedA("JInt", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JInt(n) =>
+        setBox(decode(n))
+      case other =>
+        setBox(FieldHelpers.expectedA("JInt", other))
     }
 }
 

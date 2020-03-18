@@ -7,14 +7,18 @@ object Test {
 
   def m1 =
     (1, 2) match {
-      case T1 => true
-      case _  => false
+      case T1 =>
+        true
+      case _ =>
+        false
     }
 
   def m2 =
     (1, 2) match {
-      case T2 => true
-      case _  => false
+      case T2 =>
+        true
+      case _ =>
+        false
     }
 
   def main(args: Array[String]) = {

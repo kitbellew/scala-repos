@@ -51,7 +51,8 @@ trait UnaryLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val tpe = UnaryOperationType(JBooleanT, JBooleanT)
         def f1(ctx: MorphContext): F1 =
           CF1P("builtin::unary::comp") {
-            case c: BoolColumn => new BoolFrom.B(c, !_)
+            case c: BoolColumn =>
+              new BoolFrom.B(c, !_)
           }
 
         def spec[A <: SourceType](
@@ -64,9 +65,12 @@ trait UnaryLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val tpe = UnaryOperationType(JNumberT, JNumberT)
         def f1(ctx: MorphContext): F1 =
           CF1P("builtin::unary::neg") {
-            case c: DoubleColumn => new DoubleFrom.D(c, doubleIsDefined, -_)
-            case c: LongColumn   => new LongFrom.L(c, n => true, -_)
-            case c: NumColumn    => new NumFrom.N(c, n => true, -_)
+            case c: DoubleColumn =>
+              new DoubleFrom.D(c, doubleIsDefined, -_)
+            case c: LongColumn =>
+              new LongFrom.L(c, n => true, -_)
+            case c: NumColumn =>
+              new NumFrom.N(c, n => true, -_)
           }
 
         def spec[A <: SourceType](

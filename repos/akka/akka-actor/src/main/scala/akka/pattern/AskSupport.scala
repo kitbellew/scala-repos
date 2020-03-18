@@ -596,7 +596,8 @@ private[akka] final class PromiseActorRef private (
   @tailrec // Returns false if the Promise is already completed
   private[this] final def addWatcher(watcher: ActorRef): Boolean =
     watchedBy match {
-      case null ⇒ false
+      case null ⇒
+        false
       case other ⇒
         updateWatchedBy(other, other + watcher) || addWatcher(watcher)
     }
@@ -604,7 +605,8 @@ private[akka] final class PromiseActorRef private (
   @tailrec
   private[this] final def remWatcher(watcher: ActorRef): Unit =
     watchedBy match {
-      case null ⇒ ()
+      case null ⇒
+        ()
       case other ⇒
         if (!updateWatchedBy(other, other - watcher))
           remWatcher(watcher)
@@ -613,7 +615,8 @@ private[akka] final class PromiseActorRef private (
   @tailrec
   private[this] final def clearWatchers(): Set[ActorRef] =
     watchedBy match {
-      case null ⇒ ActorCell.emptyActorRefSet
+      case null ⇒
+        ActorCell.emptyActorRefSet
       case other ⇒
         if (!updateWatchedBy(other, null))
           clearWatchers()
@@ -658,28 +661,35 @@ private[akka] final class PromiseActorRef private (
           }
         } else
           path
-      case p: ActorPath ⇒ p
-      case StoppedWithPath(p) ⇒ p
+      case p: ActorPath ⇒
+        p
+      case StoppedWithPath(p) ⇒
+        p
       case Stopped ⇒
         // even if we are already stopped we still need to produce a proper path
         updateState(Stopped, StoppedWithPath(provider.tempPath()))
         path
-      case Registering ⇒ path // spin until registration is completed
+      case Registering ⇒
+        path // spin until registration is completed
     }
 
   override def !(message: Any)(implicit
       sender: ActorRef = Actor.noSender): Unit =
     state match {
-      case Stopped | _: StoppedWithPath ⇒ provider.deadLetters ! message
+      case Stopped | _: StoppedWithPath ⇒
+        provider.deadLetters ! message
       case _ ⇒
         if (message == null)
           throw new InvalidMessageException("Message is null")
         if (!(
               result.tryComplete(
                 message match {
-                  case Status.Success(r) ⇒ Success(r)
-                  case Status.Failure(f) ⇒ Failure(f)
-                  case other ⇒ Success(other)
+                  case Status.Success(r) ⇒
+                    Success(r)
+                  case Status.Failure(f) ⇒
+                    Failure(f)
+                  case other ⇒
+                    Success(other)
                 })
             ))
           provider.deadLetters ! message
@@ -687,7 +697,8 @@ private[akka] final class PromiseActorRef private (
 
   override def sendSystemMessage(message: SystemMessage): Unit =
     message match {
-      case _: Terminate ⇒ stop()
+      case _: Terminate ⇒
+        stop()
       case DeathWatchNotification(a, ec, at) ⇒
         this.!(Terminated(a)(existenceConfirmed = ec, addressTerminated = at))
       case Watch(watchee, watcher) ⇒
@@ -714,8 +725,10 @@ private[akka] final class PromiseActorRef private (
   @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
   override private[akka] def isTerminated: Boolean =
     state match {
-      case Stopped | _: StoppedWithPath ⇒ true
-      case _ ⇒ false
+      case Stopped | _: StoppedWithPath ⇒
+        true
+      case _ ⇒
+        false
     }
 
   @tailrec

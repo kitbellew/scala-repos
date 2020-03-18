@@ -49,8 +49,9 @@ class FieldFinder[T: ClassTag](
     // find the magic fields for the given superclass
     def findForClass(clz: Class[_]): List[Method] =
       clz match {
-        case null => Nil
-        case c    =>
+        case null =>
+          Nil
+        case c =>
           // get the names of fields that represent the type we want
 
           val fields = Map(
@@ -69,7 +70,8 @@ class FieldFinder[T: ClassTag](
           // this method will find all the super classes and super-interfaces
           def getAllSupers(clz: Class[_]): List[Class[_]] =
             clz match {
-              case null => Nil
+              case null =>
+                Nil
               case c =>
                 c :: c.getInterfaces.toList.flatMap(getAllSupers) :::
                   getAllSupers(c.getSuperclass)

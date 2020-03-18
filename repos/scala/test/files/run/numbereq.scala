@@ -67,10 +67,13 @@ object Test {
     x match {
       case bd: BigDecimal =>
         y match {
-          case _: Float | _: Double => bd.toString.length > 15
-          case _                    => false
+          case _: Float | _: Double =>
+            bd.toString.length > 15
+          case _ =>
+            false
         }
-      case _ => canSwap && isIffy(y, x, false)
+      case _ =>
+        canSwap && isIffy(y, x, false)
     }
 
   // Don't necessarily expect BigInt to agree with Float/Double beyond a Long
@@ -78,10 +81,13 @@ object Test {
     x match {
       case bi: BigInt =>
         y match {
-          case _: Float | _: Double => bi < Long.MinValue || bi > Long.MaxValue
-          case _                    => false
+          case _: Float | _: Double =>
+            bi < Long.MinValue || bi > Long.MaxValue
+          case _ =>
+            false
         }
-      case _ => canSwap && isIffyB(y, x, false)
+      case _ =>
+        canSwap && isIffyB(y, x, false)
     }
 
   def main(args: Array[String]): Unit = {

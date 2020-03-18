@@ -72,7 +72,8 @@ private[v1] class JacksonMessageWriter extends MessageBodyWriter[Object] {
     t match {
       case ErrorWrapper(err) =>
         outputStream.write(err.getBytes(StandardCharsets.UTF_8))
-      case _ => mapper.writeValue(outputStream, t)
+      case _ =>
+        mapper.writeValue(outputStream, t)
     }
   }
 

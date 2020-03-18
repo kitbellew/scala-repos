@@ -44,8 +44,10 @@ object LookupElementManager {
           expectedClassOption: Option[PsiClass]): Boolean = {
         expectedClassOption.exists { expectedClass =>
           ScalaPsiUtil.nameContext(element) match {
-            case m: PsiMember if m.containingClass == expectedClass => true
-            case _                                                  => false
+            case m: PsiMember if m.containingClass == expectedClass =>
+              true
+            case _ =>
+              false
           }
         }
       }
@@ -62,24 +64,30 @@ object LookupElementManager {
             case Some((named, _)) =>
               val clazz: Option[PsiClass] =
                 named match {
-                  case cl: PsiClass => Some(cl)
+                  case cl: PsiClass =>
+                    Some(cl)
                   case tp: TypingContextOwner =>
                     tp.getType(TypingContext.empty)
                       .map(ScType.extractClass(_))
                       .getOrElse(None)
-                  case _ => None
+                  case _ =>
+                    None
                 }
               checkIsExpectedClassMember(clazz)
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => checkIsExpectedClassMember(containingClass)
+        case _ =>
+          checkIsExpectedClassMember(containingClass)
       }
     }
 
     def isDeprecated: Boolean = {
       element match {
-        case doc: PsiDocCommentOwner if doc.isDeprecated => true
-        case _                                           => false
+        case doc: PsiDocCommentOwner if doc.isDeprecated =>
+          true
+        case _ =>
+          false
       }
     }
 
@@ -114,7 +122,8 @@ object LookupElementManager {
         Seq(
           getLookupElementInternal(isAssignment = true, prefix),
           getLookupElementInternal(isAssignment = false, name))
-      case _ => Seq(getLookupElementInternal(isAssignment = false, name))
+      case _ =>
+        Seq(getLookupElementInternal(isAssignment = false, name))
     }
   }
 }

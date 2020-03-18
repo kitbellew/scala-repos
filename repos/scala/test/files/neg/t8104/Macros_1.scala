@@ -5,7 +5,8 @@ object Macros {
     import c.universe._
     import definitions._
     val fields = T.tpe.decls.toList.collect {
-      case x: TermSymbol if x.isVal && x.isCaseAccessor => x
+      case x: TermSymbol if x.isVal && x.isCaseAccessor =>
+        x
     }
     val Repr = appliedType(
       TupleClass(fields.length).asType.toType,

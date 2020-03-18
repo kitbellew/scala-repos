@@ -16,8 +16,10 @@ package p0 {
 object Test {
   def main(args: Array[String]): Unit = {
     "catdog" match {
-      case p0.Single(x) => println(s"`$x` has ${x.length} chars")
-      case x            => println("fail: " + x)
+      case p0.Single(x) =>
+        println(s"`$x` has ${x.length} chars")
+      case x =>
+        println("fail: " + x)
     }
   }
 }

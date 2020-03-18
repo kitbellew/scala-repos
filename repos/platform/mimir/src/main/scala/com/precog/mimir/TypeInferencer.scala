@@ -75,9 +75,11 @@ trait TypeInferencer extends DAG {
           splits: Map[Identifier, Split],
           graph: DepGraph): Map[DepGraph, Set[JType]] = {
         graph match {
-          case _: Root => typing
+          case _: Root =>
+            typing
 
-          case New(parent) => inner(jtpe, typing, splits, parent)
+          case New(parent) =>
+            inner(jtpe, typing, splits, parent)
 
           case ld @ AbsoluteLoad(parent, _) =>
             val typing0 = inner(Some(JTextT), typing, splits, parent)
@@ -142,7 +144,8 @@ trait TypeInferencer extends DAG {
               case JObjectFixedT(map) =>
                 map get str getOrElse universe
 
-              case _ => universe
+              case _ =>
+                universe
             }
 
             inner(jtpe2, typing, splits, right)
@@ -150,8 +153,10 @@ trait TypeInferencer extends DAG {
 
           case Join(ArraySwap, Cross(_), left, right) => {
             val jtpe2 = jtpe flatMap {
-              case JArrayFixedT(_) => jtpe
-              case _               => Some(JArrayUnfixedT)
+              case JArrayFixedT(_) =>
+                jtpe
+              case _ =>
+                Some(JArrayUnfixedT)
             }
 
             inner(
@@ -193,9 +198,11 @@ trait TypeInferencer extends DAG {
           case AddSortKey(parent, _, _, _) =>
             inner(jtpe, typing, splits, parent)
 
-          case Memoize(parent, _) => inner(jtpe, typing, splits, parent)
+          case Memoize(parent, _) =>
+            inner(jtpe, typing, splits, parent)
 
-          case Distinct(parent) => inner(jtpe, typing, splits, parent)
+          case Distinct(parent) =>
+            inner(jtpe, typing, splits, parent)
 
           case s @ Split(spec, child, id) =>
             inner(
@@ -245,11 +252,15 @@ trait TypeInferencer extends DAG {
         case IntersectBucketSpec(left, right) =>
           findGroup(left, id) orElse findGroup(right, id)
 
-        case Group(`id`, target, _) => Some(target)
-        case Group(_, _, _)         => None
+        case Group(`id`, target, _) =>
+          Some(target)
+        case Group(_, _, _) =>
+          None
 
-        case UnfixedSolution(_, _) => None
-        case Extra(_)              => None
+        case UnfixedSolution(_, _) =>
+          None
+        case Extra(_) =>
+          None
       }
 
     def findParams(spec: BucketSpec, id: Int): Set[DepGraph] =
@@ -259,11 +270,15 @@ trait TypeInferencer extends DAG {
         case IntersectBucketSpec(left, right) =>
           findParams(left, id) ++ findParams(right, id)
 
-        case Group(_, _, child) => findParams(child, id)
+        case Group(_, _, child) =>
+          findParams(child, id)
 
-        case UnfixedSolution(`id`, child) => Set(child)
-        case UnfixedSolution(_, _)        => Set()
-        case Extra(_)                     => Set()
+        case UnfixedSolution(`id`, child) =>
+          Set(child)
+        case UnfixedSolution(_, _) =>
+          Set()
+        case Extra(_) =>
+          Set()
       }
 
     val collectedTypes = collectTypes(jtpe, graph)

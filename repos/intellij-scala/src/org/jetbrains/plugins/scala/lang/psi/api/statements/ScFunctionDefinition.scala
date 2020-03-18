@@ -54,7 +54,8 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
         ownerModifiers.has(ScalaTokenTypes.kFINAL) ||
         methodModifiers.has(ScalaTokenTypes.kPRIVATE) ||
         methodModifiers.has(ScalaTokenTypes.kFINAL)
-      case _ => true
+      case _ =>
+        true
     }
 
   def hasTailRecursionAnnotation: Boolean =
@@ -70,10 +71,14 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
     @scala.annotation.tailrec
     def possiblyTailRecursiveCallFor(elem: PsiElement): PsiElement =
       elem.getParent match {
-        case call: ScMethodCall  => possiblyTailRecursiveCallFor(call)
-        case call: ScGenericCall => possiblyTailRecursiveCallFor(call)
-        case ret: ScReturnStmt   => ret
-        case _                   => elem
+        case call: ScMethodCall =>
+          possiblyTailRecursiveCallFor(call)
+        case call: ScGenericCall =>
+          possiblyTailRecursiveCallFor(call)
+        case ret: ScReturnStmt =>
+          ret
+        case _ =>
+          elem
       }
 
     def expandIf(elem: PsiElement): Seq[PsiElement] = {
@@ -82,9 +87,11 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
           i.thenBranch match {
             case Some(thenBranch) =>
               thenBranch.calculateReturns().flatMap(expandIf) :+ elem
-            case _ => Seq(elem)
+            case _ =>
+              Seq(elem)
           }
-        case _ => Seq(elem)
+        case _ =>
+          Seq(elem)
       }
     }
     val expressions = resultExpressions.flatMap(expandIf)
@@ -98,15 +105,19 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
             ref,
             expressions.contains(possiblyTailRecursiveCallFor(ref)))
         }
-      case None => Seq.empty
+      case None =>
+        Seq.empty
     }
   }
 
   def recursionType: RecursionType =
     recursiveReferences match {
-      case Seq()                           => RecursionType.NoRecursion
-      case seq if seq.forall(_.isTailCall) => RecursionType.TailRecursion
-      case _                               => RecursionType.OrdinaryRecursion
+      case Seq() =>
+        RecursionType.NoRecursion
+      case seq if seq.forall(_.isTailCall) =>
+        RecursionType.TailRecursion
+      case _ =>
+        RecursionType.OrdinaryRecursion
     }
 
   override def controlFlowScope: Option[ScalaPsiElement] = body

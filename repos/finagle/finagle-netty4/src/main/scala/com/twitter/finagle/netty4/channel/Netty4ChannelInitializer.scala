@@ -146,7 +146,8 @@ private[netty4] class ChannelExceptionHandler(
 
   private[this] def severity(exc: Throwable): Level =
     exc match {
-      case e: Failure => e.logLevel
+      case e: Failure =>
+        e.logLevel
       case _: java.nio.channels.ClosedChannelException |
           _: javax.net.ssl.SSLException | _: ReadTimeoutException |
           _: WriteTimedOutException | _: javax.net.ssl.SSLException =>
@@ -154,16 +155,19 @@ private[netty4] class ChannelExceptionHandler(
       case e: java.io.IOException
           if FinestIOExceptionMessages.contains(e.getMessage) =>
         Level.FINEST
-      case _ => Level.WARNING
+      case _ =>
+        Level.WARNING
     }
 
   override def exceptionCaught(
       ctx: ChannelHandlerContext,
       t: Throwable): Unit = {
     t match {
-      case e: ReadTimeoutException   => readTimeoutCounter.incr()
-      case e: WriteTimedOutException => writeTimeoutCounter.incr()
-      case _                         =>
+      case e: ReadTimeoutException =>
+        readTimeoutCounter.incr()
+      case e: WriteTimedOutException =>
+        writeTimeoutCounter.incr()
+      case _ =>
     }
 
     val remoteAddr = Option(ctx.channel.remoteAddress)

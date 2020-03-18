@@ -130,7 +130,8 @@ object expand {
         }
         val ret = c.Expr(Block(newDefs.toList, Literal(Constant(()))))
         ret
-      case _ => ???
+      case _ =>
+        ???
     }
   }
 
@@ -138,7 +139,8 @@ object expand {
       c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
     name.toString + "_" + typeMap
       .map {
-        case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
+        case (k, v) =>
+          v.toString.reverse.takeWhile(_ != '.').reverse
       }
       .mkString("_")
   }
@@ -153,8 +155,10 @@ object expand {
     class InlineTerm(name: TermName, value: Tree) extends Transformer {
       override def transform(tree: Tree): Tree =
         tree match {
-          case Ident(`name`) => value
-          case _             => super.transform(tree)
+          case Ident(`name`) =>
+            value
+          case _ =>
+            super.transform(tree)
         }
     }
 
@@ -179,7 +183,8 @@ object expand {
                   val (fa, a) = pair
                   new InlineTerm(fa.name, a).transform(currentBody)
                 }
-              case x => x
+              case x =>
+                x
             }
           case Ident(x) if valExpansions.contains(x) =>
             val (tname, tmap) = valExpansions(x)
@@ -276,7 +281,8 @@ object expand {
     import c.mirror.universe._
     mods.annotations
       .collectFirst {
-        case q"new expand.valify" => true
+        case q"new expand.valify" =>
+          true
       }
       .getOrElse(false)
   }
@@ -285,8 +291,10 @@ object expand {
       td: c.mirror.universe.TypeDef): Boolean = {
     import c.mirror.universe._
     td.mods.annotations.exists {
-      case q"new expand.args(...$args)" => true
-      case _                            => false
+      case q"new expand.args(...$args)" =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -294,8 +302,10 @@ object expand {
       td: c.mirror.universe.ValDef): Boolean = {
     import c.mirror.universe._
     td.mods.annotations.exists {
-      case x @ q"new expand.sequence[..$targs](...$args)" => true
-      case _                                              => false
+      case x @ q"new expand.sequence[..$targs](...$args)" =>
+        true
+      case _ =>
+        false
     }
   }
 }

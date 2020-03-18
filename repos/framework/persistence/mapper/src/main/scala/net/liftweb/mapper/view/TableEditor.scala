@@ -108,9 +108,12 @@ trait ItemsList[T <: Mapper[T]] {
                   aval.asInstanceOf[java.lang.Comparable[Any]] compareTo bval
                     .asInstanceOf[java.lang.Comparable[Any]]
                 ) < 0
-              case (null, _)    => sortNullFirst
-              case (_, null)    => !sortNullFirst
-              case (aval, bval) => aval.toString < bval.toString
+              case (null, _) =>
+                sortNullFirst
+              case (_, null) =>
+                !sortNullFirst
+              case (aval, bval) =>
+                aval.toString < bval.toString
             }
           ) match {
             case cmp =>

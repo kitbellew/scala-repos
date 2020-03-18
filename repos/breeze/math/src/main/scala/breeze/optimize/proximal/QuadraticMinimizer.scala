@@ -392,10 +392,14 @@ class QuadraticMinimizer(
 
   private def computeRho(H: DenseMatrix[Double]): Double = {
     proximal match {
-      case null                                      => 0.0
-      case ProximalL1(lambda: Double)                => computeRhoSparse(H)
-      case ProjectProbabilitySimplex(lambda: Double) => computeRhoSparse(H)
-      case _                                         => sqrt(QuadraticMinimizer.normColumn(H))
+      case null =>
+        0.0
+      case ProximalL1(lambda: Double) =>
+        computeRhoSparse(H)
+      case ProjectProbabilitySimplex(lambda: Double) =>
+        computeRhoSparse(H)
+      case _ =>
+        sqrt(QuadraticMinimizer.normColumn(H))
     }
   }
 
@@ -624,8 +628,10 @@ object QuadraticMinimizer {
       constraint: Constraint,
       lambda: Double = 1.0): QuadraticMinimizer = {
     constraint match {
-      case SMOOTH   => new QuadraticMinimizer(rank)
-      case POSITIVE => new QuadraticMinimizer(rank, ProjectPos())
+      case SMOOTH =>
+        new QuadraticMinimizer(rank)
+      case POSITIVE =>
+        new QuadraticMinimizer(rank, ProjectPos())
       case BOX => {
         //Direct QP with bounds
         val lb = DenseVector.zeros[Double](rank)

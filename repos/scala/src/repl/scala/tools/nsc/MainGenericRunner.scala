@@ -128,7 +128,8 @@ class MainGenericRunner {
               "",
               Some(ex)
             ) // there must be a useful message of hope to offer here
-          case Right(b) => b
+          case Right(b) =>
+            b
         }
     }
 

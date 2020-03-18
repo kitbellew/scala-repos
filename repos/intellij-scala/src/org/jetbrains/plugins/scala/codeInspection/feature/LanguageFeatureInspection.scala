@@ -48,7 +48,8 @@ class LanguageFeatureInspection
       "postfixOps",
       _.postfixOps,
       _.postfixOps = true) {
-      case e: ScPostfixExpr => e.operation
+      case e: ScPostfixExpr =>
+        e.operation
     },
     Feature(
       "reflective call",
@@ -58,8 +59,10 @@ class LanguageFeatureInspection
       _.reflectiveCalls = true) {
       case e @ ReferenceTarget(Parent(_: ScRefinement)) =>
         e.getLastChild match {
-          case id @ ElementType(ScalaTokenTypes.tIDENTIFIER) => id
-          case _                                             => e
+          case id @ ElementType(ScalaTokenTypes.tIDENTIFIER) =>
+            id
+          case _ =>
+            e
         }
     },
     Feature(
@@ -92,8 +95,10 @@ class LanguageFeatureInspection
       "higherKinds",
       _.higherKinds,
       _.higherKinds = true) {
-      case (e: ScTypeParamClause) && Parent(Parent(_: ScTypeParamClause)) => e
-      case (e: ScTypeParamClause) && Parent(_: ScTypeAliasDeclaration)    => e
+      case (e: ScTypeParamClause) && Parent(Parent(_: ScTypeParamClause)) =>
+        e
+      case (e: ScTypeParamClause) && Parent(_: ScTypeAliasDeclaration) =>
+        e
     },
     Feature(
       "existential type",
@@ -164,7 +169,8 @@ private case class Feature(
       .resolve() match {
       case e: ScReferencePattern =>
         Option(e.containingClass).exists(_.qualifiedName == flagQualifier)
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

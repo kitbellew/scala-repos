@@ -170,9 +170,12 @@ private[stats] class BucketedHistogram(limits: Array[Int])
       i += 1
     }
     i match {
-      case 0                      => 0
-      case _ if i == countsLength => maximum
-      case _                      => limitMidpoint(i - 1)
+      case 0 =>
+        0
+      case _ if i == countsLength =>
+        maximum
+      case _ =>
+        limitMidpoint(i - 1)
     }
   }
 
@@ -222,9 +225,12 @@ private[stats] class BucketedHistogram(limits: Array[Int])
   /** Get the midpoint of bucket `i` */
   private[this] def limitMidpoint(i: Int): Long = {
     i match {
-      case 0                       => 0
-      case _ if i >= limits.length => Int.MaxValue
-      case _                       => (limits(i - 1).toLong + limits(i)) / 2
+      case 0 =>
+        0
+      case _ if i >= limits.length =>
+        Int.MaxValue
+      case _ =>
+        (limits(i - 1).toLong + limits(i)) / 2
     }
   }
 

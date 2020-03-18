@@ -36,7 +36,8 @@ object ContainerSerializer {
     // we can only serialize DockerVolumes into a Mesos Protobuf.
     // PersistentVolumes and ExternalVolumes are handled differently
     val serializedVolumes = container.volumes.collect {
-      case dv: DockerVolume => VolumeSerializer.toMesos(dv)
+      case dv: DockerVolume =>
+        VolumeSerializer.toMesos(dv)
     }
     val builder = mesos.Protos.ContainerInfo.newBuilder
       .setType(container.`type`)

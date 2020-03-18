@@ -20,7 +20,8 @@ private[thrift] class ThriftChannelBufferDecoder extends OneToOneDecoder {
         val arr = new Array[Byte](buffer.readableBytes)
         buffer.getBytes(buffer.readerIndex, arr)
         arr
-      case _ => throw new IllegalArgumentException("no byte buffer")
+      case _ =>
+        throw new IllegalArgumentException("no byte buffer")
     }
   }
 }

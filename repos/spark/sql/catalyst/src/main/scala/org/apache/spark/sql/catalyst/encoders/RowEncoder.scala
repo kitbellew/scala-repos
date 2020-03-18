@@ -60,7 +60,8 @@ object RowEncoder {
           CalendarIntervalType =>
         inputObject
 
-      case p: PythonUserDefinedType => extractorsFor(inputObject, p.sqlType)
+      case p: PythonUserDefinedType =>
+        extractorsFor(inputObject, p.sqlType)
 
       case udt: UserDefinedType[_] =>
         val obj = NewInstance(
@@ -169,17 +170,28 @@ object RowEncoder {
 
   private def externalDataTypeFor(dt: DataType): DataType =
     dt match {
-      case _ if ScalaReflection.isNativeType(dt) => dt
-      case CalendarIntervalType                  => dt
-      case TimestampType                         => ObjectType(classOf[java.sql.Timestamp])
-      case DateType                              => ObjectType(classOf[java.sql.Date])
-      case _: DecimalType                        => ObjectType(classOf[java.math.BigDecimal])
-      case StringType                            => ObjectType(classOf[java.lang.String])
-      case _: ArrayType                          => ObjectType(classOf[scala.collection.Seq[_]])
-      case _: MapType                            => ObjectType(classOf[scala.collection.Map[_, _]])
-      case _: StructType                         => ObjectType(classOf[Row])
-      case udt: UserDefinedType[_]               => ObjectType(udt.userClass)
-      case _: NullType                           => ObjectType(classOf[java.lang.Object])
+      case _ if ScalaReflection.isNativeType(dt) =>
+        dt
+      case CalendarIntervalType =>
+        dt
+      case TimestampType =>
+        ObjectType(classOf[java.sql.Timestamp])
+      case DateType =>
+        ObjectType(classOf[java.sql.Date])
+      case _: DecimalType =>
+        ObjectType(classOf[java.math.BigDecimal])
+      case StringType =>
+        ObjectType(classOf[java.lang.String])
+      case _: ArrayType =>
+        ObjectType(classOf[scala.collection.Seq[_]])
+      case _: MapType =>
+        ObjectType(classOf[scala.collection.Map[_, _]])
+      case _: StructType =>
+        ObjectType(classOf[Row])
+      case udt: UserDefinedType[_] =>
+        ObjectType(udt.userClass)
+      case _: NullType =>
+        ObjectType(classOf[java.lang.Object])
     }
 
   private def constructorFor(schema: StructType): Expression = {
@@ -187,8 +199,10 @@ object RowEncoder {
       case (f, i) =>
         val dt =
           f.dataType match {
-            case p: PythonUserDefinedType => p.sqlType
-            case other                    => other
+            case p: PythonUserDefinedType =>
+              p.sqlType
+            case other =>
+              other
           }
         val field = BoundReference(i, dt, f.nullable)
         If(

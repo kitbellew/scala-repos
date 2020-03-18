@@ -25,11 +25,14 @@ final class Sequencer(
 
     case Done =>
       dequeue match {
-        case None       => context become idle
-        case Some(work) => processThenDone(work)
+        case None =>
+          context become idle
+        case Some(work) =>
+          processThenDone(work)
       }
 
-    case msg => queue enqueue msg
+    case msg =>
+      queue enqueue msg
   }
 
   def receive = idle
@@ -41,7 +44,8 @@ final class Sequencer(
 
   private def processThenDone(work: Any) {
     work match {
-      case ReceiveTimeout => self ! PoisonPill
+      case ReceiveTimeout =>
+        self ! PoisonPill
       case Sequencer.Work(run, promiseOption, timeoutOption) =>
         val future = timeoutOption.orElse(executionTimeout).fold(run()) {
           timeout =>
@@ -53,7 +57,8 @@ final class Sequencer(
           self ! Done
         }
         promiseOption foreach (_ completeWith future)
-      case x => logger.branch("Sequencer").warn(s"Unsupported message $x")
+      case x =>
+        logger.branch("Sequencer").warn(s"Unsupported message $x")
     }
   }
 }

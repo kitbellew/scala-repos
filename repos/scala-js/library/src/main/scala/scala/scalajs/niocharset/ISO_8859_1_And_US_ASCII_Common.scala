@@ -29,7 +29,8 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
     that match {
       case that: ISO_8859_1_And_US_ASCII_Common =>
         this.maxValue >= that.maxValue
-      case _ => false
+      case _ =>
+        false
     }
 
   def newDecoder(): CharsetDecoder = new Decoder

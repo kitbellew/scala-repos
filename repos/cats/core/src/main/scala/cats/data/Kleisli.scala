@@ -56,12 +56,14 @@ final case class Kleisli[F[_], A, B](run: A => F[B]) {
 
   def first[C](implicit F: Functor[F]): Kleisli[F, (A, C), (B, C)] =
     Kleisli {
-      case (a, c) => F.fproduct(run(a))(_ => c)
+      case (a, c) =>
+        F.fproduct(run(a))(_ => c)
     }
 
   def second[C](implicit F: Functor[F]): Kleisli[F, (C, A), (C, B)] =
     Kleisli {
-      case (c, a) => F.map(run(a))(c -> _)
+      case (c, a) =>
+        F.map(run(a))(c -> _)
     }
 }
 
@@ -270,7 +272,8 @@ private trait KleisliSplit[F[_]] extends Split[Kleisli[F, ?, ?]] {
       f: Kleisli[F, A, B],
       g: Kleisli[F, C, D]): Kleisli[F, (A, C), (B, D)] =
     Kleisli {
-      case (a, c) => F.flatMap(f.run(a))(b => F.map(g.run(c))(d => (b, d)))
+      case (a, c) =>
+        F.flatMap(f.run(a))(b => F.map(g.run(c))(d => (b, d)))
     }
 
   def compose[A, B, C](

@@ -76,8 +76,10 @@ case class SortMergeJoin(
         PartitioningCollection(
           Seq(left.outputPartitioning, right.outputPartitioning))
       // For left and right outer joins, the output is partitioned by the streamed input's join keys.
-      case LeftOuter  => left.outputPartitioning
-      case RightOuter => right.outputPartitioning
+      case LeftOuter =>
+        left.outputPartitioning
+      case RightOuter =>
+        right.outputPartitioning
       case FullOuter =>
         UnknownPartitioning(left.outputPartitioning.numPartitions)
       case x =>

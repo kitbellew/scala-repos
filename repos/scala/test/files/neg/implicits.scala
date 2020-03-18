@@ -47,8 +47,10 @@ class Mxml {
 
       e match {
 
-        case s: scala.collection.Traversable[_] => s
-        case a                                  => List(a)
+        case s: scala.collection.Traversable[_] =>
+          s
+        case a =>
+          List(a)
 
       }
 

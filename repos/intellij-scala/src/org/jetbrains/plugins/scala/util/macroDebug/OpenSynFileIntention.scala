@@ -23,11 +23,12 @@ class OpenSynFileIntention extends PsiElementBaseIntentionAction {
   def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     element.getContainingFile match {
       case scalaFile: ScalaFile
-          if (
-            ScalaMacroDebuggingUtil.isEnabled
-          ) && (ScalaMacroDebuggingUtil isLoaded scalaFile) =>
+          if (ScalaMacroDebuggingUtil.isEnabled) && (
+            ScalaMacroDebuggingUtil isLoaded scalaFile
+          ) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   override def getText: String = "Navigate to file with macros expanded"

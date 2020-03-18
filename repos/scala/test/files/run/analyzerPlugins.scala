@@ -148,7 +148,8 @@ object Test extends DirectTest {
         .groupBy(identity)
         .mapValues(_.size)
         .map {
-          case (k, v) => s"$k [$v]"
+          case (k, v) =>
+            s"$k [$v]"
         }
         .toList
         .sorted

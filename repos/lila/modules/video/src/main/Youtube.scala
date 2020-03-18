@@ -42,7 +42,8 @@ private[video] final class Youtube(
               )
             )
             .recover {
-              case e: Exception => logger.warn("update all youtube", e)
+              case e: Exception =>
+                logger.warn("update all youtube", e)
             }
         }
         .sequenceFu
@@ -59,8 +60,10 @@ private[video] final class Youtube(
         .get() flatMap {
         case res if res.status == 200 =>
           readEntries reads res.json match {
-            case JsError(err)          => fufail(err.toString)
-            case JsSuccess(entries, _) => fuccess(entries.toList)
+            case JsError(err) =>
+              fufail(err.toString)
+            case JsSuccess(entries, _) =>
+              fuccess(entries.toList)
           }
         case res =>
           println(res.body)

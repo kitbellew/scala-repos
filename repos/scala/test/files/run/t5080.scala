@@ -13,8 +13,10 @@ object Test extends App {
     new {
       def toInt =
         x match {
-          case Num(n) => n
-          case _      => throw new RuntimeException
+          case Num(n) =>
+            n
+          case _ =>
+            throw new RuntimeException
         }
     }
 

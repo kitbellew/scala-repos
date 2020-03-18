@@ -188,17 +188,21 @@ object RemoveInternalClusterShardingData {
 
     def waitDeleteSnapshotsSuccess: Receive =
       ({
-        case DeleteSnapshotsSuccess(_) ⇒ done()
+        case DeleteSnapshotsSuccess(_) ⇒
+          done()
       }: Receive).orElse(handleFailure)
 
     def waitDeleteMessagesSuccess: Receive =
       ({
-        case DeleteMessagesSuccess(_) ⇒ done()
+        case DeleteMessagesSuccess(_) ⇒
+          done()
       }: Receive).orElse(handleFailure)
 
     def handleFailure: Receive = {
-      case DeleteMessagesFailure(cause, _) ⇒ failure(cause)
-      case DeleteSnapshotsFailure(_, cause) ⇒ failure(cause)
+      case DeleteMessagesFailure(cause, _) ⇒
+        failure(cause)
+      case DeleteSnapshotsFailure(_, cause) ⇒
+        failure(cause)
     }
 
     def done(): Unit = {

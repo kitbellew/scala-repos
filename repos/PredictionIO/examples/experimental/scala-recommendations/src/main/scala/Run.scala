@@ -46,7 +46,8 @@ case class DataSource(val dsp: DataSourceParams)
       })
 
     val featureTargets: RDD[((Int, Int), Double)] = ratings.map {
-      case Rating(user, product, rate) => ((user, product), rate)
+      case Rating(user, product, rate) =>
+        ((user, product), rate)
     }
 
     Seq((null, ratings, featureTargets))
@@ -115,7 +116,8 @@ class ALSAlgorithm(val ap: AlgorithmParams)
       }
       .join(p)
       .map {
-        case (up, (fi, r)) => (fi, r)
+        case (up, (fi, r)) =>
+          (fi, r)
       }
   }
 
@@ -159,8 +161,10 @@ class Tuple2IntSerializer
     extends CustomSerializer[(Int, Int)](format =>
       (
         {
-          case JArray(List(JInt(x), JInt(y))) => (x.intValue, y.intValue)
+          case JArray(List(JInt(x), JInt(y))) =>
+            (x.intValue, y.intValue)
         },
         {
-          case x: (Int, Int) => JArray(List(JInt(x._1), JInt(x._2)))
+          case x: (Int, Int) =>
+            JArray(List(JInt(x._1), JInt(x._2)))
         }))

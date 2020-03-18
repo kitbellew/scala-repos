@@ -9,7 +9,8 @@ object AbstractMap {
     other match {
       case other: Map.Entry[_, _] =>
         entry.getKey === other.getKey && entry.getValue === other.getValue
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -167,7 +168,8 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
             self.size == m.size &&
               entrySet.forall(item => m.get(item.getKey) === item.getValue)
           )
-        case _ => false
+        case _ =>
+          false
       }
     }
   }

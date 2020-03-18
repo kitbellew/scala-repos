@@ -23,9 +23,12 @@ class PathBindableExtractor[T](implicit pb: PathBindable[T]) {
     */
   def unapply(s: Option[String]): Option[Option[T]] = {
     s match {
-      case None              => Some(None)
-      case Some(self(value)) => Some(Some(value))
-      case _                 => None
+      case None =>
+        Some(None)
+      case Some(self(value)) =>
+        Some(Some(value))
+      case _ =>
+        None
     }
   }
 
@@ -34,7 +37,8 @@ class PathBindableExtractor[T](implicit pb: PathBindable[T]) {
     */
   def unapply(s: Seq[String]): Option[Seq[T]] = {
     val bound = s.collect {
-      case self(value) => value
+      case self(value) =>
+        value
     }
     if (bound.length == s.length) {
       Some(bound)

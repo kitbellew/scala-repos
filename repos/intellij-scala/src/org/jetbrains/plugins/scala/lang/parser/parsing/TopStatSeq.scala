@@ -30,8 +30,10 @@ object TopStatSeq {
     while (true) {
       builder.getTokenType match {
         //end of parsing when find } or builder.eof
-        case ScalaTokenTypes.tRBRACE if waitBrace => return parseState
-        case null                                 => return parseState
+        case ScalaTokenTypes.tRBRACE if waitBrace =>
+          return parseState
+        case null =>
+          return parseState
         case ScalaTokenTypes.tSEMICOLON =>
           builder.advanceLexer() //not interesting case
         //otherwise parse TopStat
@@ -41,14 +43,17 @@ object TopStatSeq {
             builder.advanceLexer
           }
           (parseState, TopStat.parse(builder, parseState)) match {
-            case (_, 0) => error
+            case (_, 0) =>
+              error
             case (0, i) => {
               parseState = i % 3
               builder.getTokenType match {
                 case ScalaTokenTypes.tSEMICOLON =>
                   builder.advanceLexer //it is good
-                case ScalaTokenTypes.tRBRACE if waitBrace => return parseState
-                case null                                 => return parseState
+                case ScalaTokenTypes.tRBRACE if waitBrace =>
+                  return parseState
+                case null =>
+                  return parseState
                 case _ =>
                   if (!builder.newlineBeforeCurrentToken)
                     builder error ScalaBundle.message("semi.expected")
@@ -58,8 +63,10 @@ object TopStatSeq {
               builder.getTokenType match {
                 case ScalaTokenTypes.tSEMICOLON =>
                   builder.advanceLexer //it is good
-                case ScalaTokenTypes.tRBRACE if waitBrace => return parseState
-                case null                                 => return parseState
+                case ScalaTokenTypes.tRBRACE if waitBrace =>
+                  return parseState
+                case null =>
+                  return parseState
                 case _ =>
                   if (!builder.newlineBeforeCurrentToken)
                     builder error ScalaBundle.message("semi.expected")

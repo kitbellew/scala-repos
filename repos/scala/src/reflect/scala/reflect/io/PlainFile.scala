@@ -45,8 +45,10 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
   override def hashCode(): Int = fpath.hashCode()
   override def equals(that: Any): Boolean =
     that match {
-      case x: PlainFile => fpath == x.fpath
-      case _            => false
+      case x: PlainFile =>
+        fpath == x.fpath
+      case _ =>
+        false
     }
 
   /** Is this abstract file a directory? */
@@ -61,8 +63,10 @@ class PlainFile(val givenPath: Path) extends AbstractFile {
     // between the call to `list` and the iteration. This saves a call to `exists`.
     def existsFast(path: Path) =
       path match {
-        case (_: Directory | _: io.File) => true
-        case _                           => path.exists
+        case (_: Directory | _: io.File) =>
+          true
+        case _ =>
+          path.exists
       }
     if (!isDirectory)
       Iterator.empty

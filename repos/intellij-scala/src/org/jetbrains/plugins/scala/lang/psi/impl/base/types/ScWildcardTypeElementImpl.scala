@@ -41,8 +41,10 @@ class ScWildcardTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitWildcardTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitWildcardTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

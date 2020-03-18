@@ -137,7 +137,8 @@ private[serializer] class GenericAvroSerializer(schemas: Map[Long, String])
         schemaCache.getOrElseUpdate(
           fingerprint, {
             schemas.get(fingerprint) match {
-              case Some(s) => new Schema.Parser().parse(s)
+              case Some(s) =>
+                new Schema.Parser().parse(s)
               case None =>
                 throw new SparkException(
                   "Error reading attempting to read avro data -- encountered an unknown " +

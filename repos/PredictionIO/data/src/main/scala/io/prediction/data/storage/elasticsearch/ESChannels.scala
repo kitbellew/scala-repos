@@ -81,7 +81,8 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
       case e: ElasticsearchException =>
         error(e.getMessage)
         None
-      case e: NullPointerException => None
+      case e: NullPointerException =>
+        None
     }
   }
 

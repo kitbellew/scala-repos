@@ -138,7 +138,8 @@ trait Mailer extends SimpleInjector {
   lazy val properties: Properties = {
     val p = System.getProperties.clone.asInstanceOf[Properties]
     customProperties.foreach {
-      case (name, value) => p.put(name, value)
+      case (name, value) =>
+        p.put(name, value)
     }
     // allow the properties file to set/override system properties
 
@@ -162,15 +163,18 @@ trait Mailer extends SimpleInjector {
 
   private def _host =
     properties.getProperty("mail.smtp.host") match {
-      case null => "localhost"
-      case s    => s
+      case null =>
+        "localhost"
+      case s =>
+        s
     }
 
   def buildProps: Properties = {
     val p = properties.clone.asInstanceOf[Properties]
     p.getProperty("mail.smtp.host") match {
-      case null => p.put("mail.smtp.host", host)
-      case _    =>
+      case null =>
+        p.put("mail.smtp.host", host)
+      case _ =>
     }
 
     p
@@ -182,8 +186,10 @@ trait Mailer extends SimpleInjector {
     */
   lazy val charSet =
     properties.getProperty("mail.charset") match {
-      case null => "UTF-8"
-      case x    => x
+      case null =>
+        "UTF-8"
+      case x =>
+        x
     }
 
   // def host_=(hostname: String) = System.setProperty("mail.smtp.host", hostname)
@@ -194,7 +200,8 @@ trait Mailer extends SimpleInjector {
         try {
           msgSendImpl(from, subject, info)
         } catch {
-          case e: Exception => logger.error("Couldn't send mail", e)
+          case e: Exception =>
+            logger.error("Couldn't send mail", e)
         }
     }
   }
@@ -203,12 +210,18 @@ trait Mailer extends SimpleInjector {
     import Props.RunModes._
     (
       Props.mode match {
-        case Development => devModeSend.vend
-        case Test        => testModeSend.vend
-        case Staging     => stagingModeSend.vend
-        case Production  => productionModeSend.vend
-        case Pilot       => pilotModeSend.vend
-        case Profile     => profileModeSend.vend
+        case Development =>
+          devModeSend.vend
+        case Test =>
+          testModeSend.vend
+        case Staging =>
+          stagingModeSend.vend
+        case Production =>
+          productionModeSend.vend
+        case Pilot =>
+          pilotModeSend.vend
+        case Profile =>
+          profileModeSend.vend
       }
     ).apply(msg)
   }
@@ -260,8 +273,10 @@ trait Mailer extends SimpleInjector {
   def msgSendImpl(from: From, subject: Subject, info: List[MailTypes]) {
     val session =
       authenticator match {
-        case Full(a) => jndiSession openOr Session.getInstance(buildProps, a)
-        case _       => jndiSession openOr Session.getInstance(buildProps)
+        case Full(a) =>
+          jndiSession openOr Session.getInstance(buildProps, a)
+        case _ =>
+          jndiSession openOr Session.getInstance(buildProps)
       }
     val subj = MimeUtility.encodeText(subject.subject, "utf-8", "Q")
     val message = new MimeMessage(session)
@@ -269,37 +284,48 @@ trait Mailer extends SimpleInjector {
     message.setRecipients(
       Message.RecipientType.TO,
       info.flatMap {
-        case x: To => Some[To](x)
-        case _     => None
+        case x: To =>
+          Some[To](x)
+        case _ =>
+          None
       })
     message.setRecipients(
       Message.RecipientType.CC,
       info.flatMap {
-        case x: CC => Some[CC](x)
-        case _     => None
+        case x: CC =>
+          Some[CC](x)
+        case _ =>
+          None
       })
     message.setRecipients(
       Message.RecipientType.BCC,
       info.flatMap {
-        case x: BCC => Some[BCC](x)
-        case _      => None
+        case x: BCC =>
+          Some[BCC](x)
+        case _ =>
+          None
       })
     message.setSentDate(new java.util.Date())
     // message.setReplyTo(filter[MailTypes, ReplyTo](info, {case x @ ReplyTo(_) => Some(x); case _ => None}))
     message.setReplyTo(
       info.flatMap {
-        case x: ReplyTo => Some[ReplyTo](x)
-        case _          => None
+        case x: ReplyTo =>
+          Some[ReplyTo](x)
+        case _ =>
+          None
       })
     message.setSubject(subj)
     info.foreach {
-      case MessageHeader(name, value) => message.addHeader(name, value)
-      case _                          =>
+      case MessageHeader(name, value) =>
+        message.addHeader(name, value)
+      case _ =>
     }
 
     val bodyTypes = info.flatMap {
-      case x: MailBodyType => Some[MailBodyType](x);
-      case _               => None
+      case x: MailBodyType =>
+        Some[MailBodyType](x);
+      case _ =>
+        None
     }
     bodyTypes match {
       case PlainMailBodyType(txt) :: Nil =>
@@ -327,17 +353,20 @@ trait Mailer extends SimpleInjector {
 
   protected def firstNode(in: NodeSeq): Node =
     in match {
-      case n: Node => n
+      case n: Node =>
+        n
       case ns =>
         ns.toList.collect {
-          case e: Elem => e
+          case e: Elem =>
+            e
         } match {
           case Nil =>
             if (ns.length == 0)
               Text("")
             else
               ns(0)
-          case x :: xs => x
+          case x :: xs =>
+            x
         }
     }
 

@@ -201,9 +201,12 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
             hints.elidedType.get.key)) {
         val lookahead = in.getByte()
         lookahead match {
-          case UNIT_TAG => FastTypeTag.Unit
-          case NULL_TAG => FastTypeTag.Null
-          case REF_TAG  => FastTypeTag.Ref
+          case UNIT_TAG =>
+            FastTypeTag.Unit
+          case NULL_TAG =>
+            FastTypeTag.Null
+          case REF_TAG =>
+            FastTypeTag.Ref
           case _ =>
             in.setLookahead(lookahead);
             hints.elidedType.get
@@ -255,27 +258,46 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
   def readPrimitive(): Any = {
     val res =
       lastTagRead match {
-        case KEY_NULL    => null
-        case KEY_REF     => lookupUnpicklee(in.getInt)
-        case KEY_BYTE    => in.getByte
-        case KEY_SHORT   => in.getShort
-        case KEY_CHAR    => in.getChar
-        case KEY_INT     => in.getInt
-        case KEY_LONG    => in.getLong
-        case KEY_BOOLEAN => in.getBoolean
-        case KEY_FLOAT   => in.getFloat
-        case KEY_DOUBLE  => in.getDouble
+        case KEY_NULL =>
+          null
+        case KEY_REF =>
+          lookupUnpicklee(in.getInt)
+        case KEY_BYTE =>
+          in.getByte
+        case KEY_SHORT =>
+          in.getShort
+        case KEY_CHAR =>
+          in.getChar
+        case KEY_INT =>
+          in.getInt
+        case KEY_LONG =>
+          in.getLong
+        case KEY_BOOLEAN =>
+          in.getBoolean
+        case KEY_FLOAT =>
+          in.getFloat
+        case KEY_DOUBLE =>
+          in.getDouble
 
-        case KEY_STRING => in.getString
+        case KEY_STRING =>
+          in.getString
 
-        case KEY_ARRAY_BYTE    => in.getByteArray
-        case KEY_ARRAY_SHORT   => in.getShortArray
-        case KEY_ARRAY_CHAR    => in.getCharArray
-        case KEY_ARRAY_INT     => in.getIntArray
-        case KEY_ARRAY_LONG    => in.getLongArray
-        case KEY_ARRAY_BOOLEAN => in.getBooleanArray
-        case KEY_ARRAY_FLOAT   => in.getFloatArray
-        case KEY_ARRAY_DOUBLE  => in.getDoubleArray
+        case KEY_ARRAY_BYTE =>
+          in.getByteArray
+        case KEY_ARRAY_SHORT =>
+          in.getShortArray
+        case KEY_ARRAY_CHAR =>
+          in.getCharArray
+        case KEY_ARRAY_INT =>
+          in.getIntArray
+        case KEY_ARRAY_LONG =>
+          in.getLongArray
+        case KEY_ARRAY_BOOLEAN =>
+          in.getBooleanArray
+        case KEY_ARRAY_FLOAT =>
+          in.getFloatArray
+        case KEY_ARRAY_DOUBLE =>
+          in.getDoubleArray
       }
     res
   }

@@ -72,7 +72,8 @@ object Future {
   private val toUnit: Any => Future[Unit] = scala.Function.const(Unit)
   private val toVoid: Any => Future[Void] = scala.Function.const(Void)
   private val AlwaysMasked: PartialFunction[Throwable, Boolean] = {
-    case _ => true
+    case _ =>
+      true
   }
 
   // Exception used to raise on Futures.
@@ -1516,7 +1517,8 @@ abstract class Future[+A] extends Awaitable[A] {
     } catch {
       // For legacy reasons, we catch even
       // fatal exceptions.
-      case e: Throwable => Throw(e)
+      case e: Throwable =>
+        Throw(e)
     }
 
   /**
@@ -1663,8 +1665,10 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def flatMap[B](f: A => Future[B]): Future[B] =
     transform {
-      case Return(v)   => f(v)
-      case t: Throw[_] => Future.const[B](t.cast[B])
+      case Return(v) =>
+        f(v)
+      case t: Throw[_] =>
+        Future.const[B](t.cast[B])
     }
 
   /**
@@ -1675,8 +1679,10 @@ abstract class Future[+A] extends Awaitable[A] {
   def before[B](f: => Future[B])(implicit
       ev: this.type <:< Future[Unit]): Future[B] =
     transform {
-      case Return(_)   => f
-      case t: Throw[_] => Future.const[B](t.cast[B])
+      case Return(_) =>
+        f
+      case t: Throw[_] =>
+        Future.const[B](t.cast[B])
     }
 
   /**
@@ -1699,7 +1705,8 @@ abstract class Future[+A] extends Awaitable[A] {
           this
         else
           result
-      case _ => this
+      case _ =>
+        this
     })
 
   /**
@@ -1727,7 +1734,8 @@ abstract class Future[+A] extends Awaitable[A] {
         Future {
           f(r)
         }
-      case t: Throw[_] => Future.const[B](t.cast[B])
+      case t: Throw[_] =>
+        Future.const[B](t.cast[B])
     }
 
   def filter(p: A => Boolean): Future[A] =
@@ -1749,8 +1757,9 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def onSuccess(f: A => Unit): Future[A] =
     respond({
-      case Return(value) => f(value)
-      case _             =>
+      case Return(value) =>
+        f(value)
+      case _ =>
     })
 
   /**
@@ -1771,8 +1780,9 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def onFailure(fn: Throwable => Unit): Future[A] =
     respond {
-      case Throw(t) => fn(t)
-      case _        =>
+      case Throw(t) =>
+        fn(t)
+      case _ =>
     }
 
   /**
@@ -1788,8 +1798,10 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def addEventListener(listener: FutureEventListener[_ >: A]): Future[A] =
     respond {
-      case Throw(cause)  => listener.onFailure(cause)
-      case Return(value) => listener.onSuccess(value)
+      case Throw(cause) =>
+        listener.onFailure(cause)
+      case Return(value) =>
+        listener.onSuccess(value)
     }
 
   /**
@@ -1808,8 +1820,10 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   def transformedBy[B](transformer: FutureTransformer[A, B]): Future[B] =
     transform {
-      case Return(v) => transformer.flatMap(v)
-      case Throw(t)  => transformer.rescue(t)
+      case Return(v) =>
+        transformer.flatMap(v)
+      case Throw(t) =>
+        transformer.rescue(t)
     }
 
   /**
@@ -1828,7 +1842,8 @@ abstract class Future[+A] extends Awaitable[A] {
     rescue {
       case e: Throwable if rescueException.isDefinedAt(e) =>
         Future(rescueException(e))
-      case e: Throwable => this
+      case e: Throwable =>
+        this
     }
 
   /**
@@ -1863,11 +1878,14 @@ abstract class Future[+A] extends Awaitable[A] {
   def join[B](other: Future[B]): Future[(A, B)] = {
     val p = Promise.interrupts[(A, B)](this, other)
     this.respond {
-      case Throw(t) => p.update(Throw(t))
+      case Throw(t) =>
+        p.update(Throw(t))
       case Return(a) =>
         other.respond {
-          case Throw(t)  => p.update(Throw(t))
-          case Return(b) => p.update(Return((a, b)))
+          case Throw(t) =>
+            p.update(Throw(t))
+          case Return(b) =>
+            p.update(Return((a, b)))
         }
     }
     p
@@ -1978,7 +1996,8 @@ abstract class Future[+A] extends Awaitable[A] {
   def mask(pred: PartialFunction[Throwable, Boolean]): Future[A] = {
     val p = Promise[A]()
     p.setInterruptHandler {
-      case t if !PartialFunction.cond(t)(pred) => this.raise(t)
+      case t if !PartialFunction.cond(t)(pred) =>
+        this.raise(t)
     }
     this.proxyTo(p)
     p
@@ -2013,8 +2032,10 @@ abstract class Future[+A] extends Awaitable[A] {
   def lowerFromTry[T](implicit ev: A <:< Try[T]): Future[T] =
     this.flatMap { a =>
       ev(a) match {
-        case Return(t)  => Future.value(t)
-        case Throw(exc) => Future.exception(exc)
+        case Return(t) =>
+          Future.value(t)
+        case Throw(exc) =>
+          Future.exception(exc)
       }
     }
 
@@ -2083,7 +2104,8 @@ class ConstFuture[A](result: Try[A]) extends Future[A] {
             catch {
               case e: NonLocalReturnControl[_] =>
                 Future.exception(new FutureNonLocalReturnControl(e))
-              case NonFatal(e) => Future.exception(e)
+              case NonFatal(e) =>
+                Future.exception(e)
               case t: Throwable =>
                 Monitor.handle(t)
                 throw t

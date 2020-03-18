@@ -264,10 +264,14 @@ trait MappedNullableField[NullableFieldType <: Any, OwnerType <: Mapper[
           }
                        value={
             get match {
-              case null       => ""
-              case Full(null) => ""
-              case Full(s)    => s.toString
-              case _          => ""
+              case null =>
+                ""
+              case Full(null) =>
+                ""
+              case Full(s) =>
+                s.toString
+              case _ =>
+                ""
             }
           }/>))
     }
@@ -491,9 +495,12 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   def toForm: Box[NodeSeq] = {
     def mf(in: scala.xml.Node): NodeSeq =
       in match {
-        case g: Group => g.nodes.flatMap(mf)
-        case e: Elem  => e % toFormAppendedAttributes
-        case other    => other
+        case g: Group =>
+          g.nodes.flatMap(mf)
+        case e: Elem =>
+          e % toFormAppendedAttributes
+        case other =>
+          other
       }
 
     _toForm
@@ -518,8 +525,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
           }
                        value={
             get match {
-              case null => ""
-              case s    => s.toString
+              case null =>
+                ""
+              case s =>
+                s.toString
             }
           }/>))
     }
@@ -540,7 +549,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
         import util.Helpers._
         in % ("id" -> i)
       }
-      case _ => in
+      case _ =>
+        in
     }
 
   /**
@@ -566,8 +576,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
       in: FieldType,
       filter: List[FieldType => FieldType]): FieldType =
     filter match {
-      case Nil     => in
-      case x :: xs => runFilters(x(in), xs)
+      case Nil =>
+        in
+      case x :: xs =>
+        runFilters(x(in), xs)
     }
 
   /**
@@ -696,8 +708,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
 
   override def toString: String =
     get match {
-      case null => ""
-      case v    => v.toString
+      case null =>
+        ""
+      case v =>
+        v.toString
     }
 
   def validations: List[FieldType => List[FieldError]] = Nil
@@ -717,7 +731,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
 
     def runValidations(validators: List[FieldType => List[FieldError]]) {
       validators match {
-        case Nil => ()
+        case Nil =>
+          ()
         case x :: rest =>
           val errors =
             x match {
@@ -726,11 +741,13 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
                   pf(cv)
                 else
                   Nil
-              case f => f(cv)
+              case f =>
+                f(cv)
             }
 
           (errors, x) match {
-            case (Nil, _) => runValidations(rest)
+            case (Nil, _) =>
+              runValidations(rest)
             case (errors, e: StopValidationOnError[FieldType]) =>
               errorRet.appendAll(errors)
             case (errors, _) =>
@@ -750,8 +767,10 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
 
   override def hashCode(): Int =
     i_is_! match {
-      case null => 0
-      case x    => x.hashCode
+      case null =>
+        0
+      case x =>
+        x.hashCode
     }
 
   /**
@@ -760,24 +779,30 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
   override def equals(other: Any): Boolean = {
     (
       other match {
-        case e: scala.Equals => e canEqual this
-        case _               => true
+        case e: scala.Equals =>
+          e canEqual this
+        case _ =>
+          true
       }
     ) && (
       other match {
-        case mapped: MappedField[_, _] => this.i_is_! == mapped.i_is_!
+        case mapped: MappedField[_, _] =>
+          this.i_is_! == mapped.i_is_!
         case ov: AnyRef
             if (ov ne null) && dbFieldClass.isAssignableFrom(ov.getClass) =>
           this.get == runFilters(ov.asInstanceOf[FieldType], setFilter)
-        case ov => this.get == ov
+        case ov =>
+          this.get == ov
       }
     )
   }
 
   def canEqual(that: Any) =
     that match {
-      case ar: AnyRef => ar.getClass == this.getClass
-      case _          => false
+      case ar: AnyRef =>
+        ar.getClass == this.getClass
+      case _ =>
+        false
     }
 
   override def asHtml: scala.xml.Node = Text(toString)

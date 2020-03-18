@@ -36,13 +36,17 @@ case class BitCount(
       Seq(CommandBytes.BITCOUNT, key) ++
         (
           start match {
-            case Some(i) => Seq(StringToChannelBuffer(i.toString))
-            case None    => Seq.empty
+            case Some(i) =>
+              Seq(StringToChannelBuffer(i.toString))
+            case None =>
+              Seq.empty
           }
         ) ++ (
         end match {
-          case Some(i) => Seq(StringToChannelBuffer(i.toString))
-          case None    => Seq.empty
+          case Some(i) =>
+            Seq(StringToChannelBuffer(i.toString))
+          case None =>
+            Seq.empty
         }
       ))
   }
@@ -129,7 +133,8 @@ class DecrBy(val key: ChannelBuffer, val amount: Long)
       case that: DecrBy =>
         that.canEqual(
           this) && this.key == that.key && this.amount == that.amount
-      case _ => false
+      case _ =>
+        false
     }
   def canEqual(other: Any) = other.isInstanceOf[DecrBy]
 }
@@ -234,7 +239,8 @@ class IncrBy(val key: ChannelBuffer, val amount: Long)
       case that: IncrBy =>
         that.canEqual(
           this) && this.key == that.key && this.amount == that.amount
-      case _ => false
+      case _ =>
+        false
     }
   def canEqual(other: Any) = other.isInstanceOf[IncrBy]
 }
@@ -342,7 +348,8 @@ case class Set(
               Seq(Set.ExBytes, StringToChannelBuffer(seconds.toString))
             case Some(InMilliseconds(millis)) =>
               Seq(Set.PxBytes, StringToChannelBuffer(millis.toString))
-            case _ => Seq()
+            case _ =>
+              Seq()
           }
         ) ++ (
         if (nx)
@@ -381,13 +388,15 @@ object Set {
 
     def run(args: Seq[Array[Byte]], set: Set): Set = {
       args.headOption match {
-        case None => set
+        case None =>
+          set
         case Some(bytes) => {
           val flag = CBToString(ChannelBuffers.wrappedBuffer(bytes)).toUpperCase
           flag match {
             case Ex =>
               args.tail.headOption match {
-                case None => throw ClientError("Invalid syntax for SET")
+                case None =>
+                  throw ClientError("Invalid syntax for SET")
                 case Some(bytes) =>
                   run(
                     args.tail.tail,
@@ -399,7 +408,8 @@ object Set {
               }
             case Px =>
               args.tail.headOption match {
-                case None => throw ClientError("Invalid syntax for SET")
+                case None =>
+                  throw ClientError("Invalid syntax for SET")
                 case Some(bytes) =>
                   run(
                     args.tail.tail,
@@ -409,9 +419,12 @@ object Set {
                           NumberFormat.toLong(BytesToString(bytes))
                         }))))
               }
-            case Nx => run(args.tail, set.copy(nx = true))
-            case Xx => run(args.tail, set.copy(xx = true))
-            case _  => throw ClientError("Invalid syntax for SET")
+            case Nx =>
+              run(args.tail, set.copy(nx = true))
+            case Xx =>
+              run(args.tail, set.copy(xx = true))
+            case _ =>
+              throw ClientError("Invalid syntax for SET")
           }
         }
       }

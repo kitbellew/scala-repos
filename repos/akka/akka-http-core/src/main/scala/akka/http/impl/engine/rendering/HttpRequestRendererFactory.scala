@@ -40,7 +40,8 @@ private[http] class HttpRequestRendererFactory(
         case `Raw-Request-URI`(rawUri) ⇒
           r ~~ rawUri;
           true
-        case _ ⇒ false
+        case _ ⇒
+          false
       }
       if (!rawRequestUriRendered)
         UriRendering.renderUriWithoutFragment(r, uri, UTF8)
@@ -181,14 +182,16 @@ private[http] class HttpRequestRendererFactory(
       val headerPart = Source.single(r.get)
       val stream =
         ctx.sendEntityTrigger match {
-          case None ⇒ headerPart ++ body
+          case None ⇒
+            headerPart ++ body
           case Some(future) ⇒
             val barrier = Source
               .fromFuture(future)
               .drop(1)
               .asInstanceOf[Source[ByteString, Any]]
             (headerPart ++ barrier ++ body).recoverWith {
-              case HttpResponseParser.OneHundredContinueError ⇒ Source.empty
+              case HttpResponseParser.OneHundredContinueError ⇒
+                Source.empty
             }
         }
       RequestRenderingOutput.Streamed(stream)
@@ -225,7 +228,8 @@ private[http] class HttpRequestRendererFactory(
 
   def renderStrict(ctx: RequestRenderingContext): ByteString =
     render(ctx) match {
-      case RequestRenderingOutput.Strict(bytes) ⇒ bytes
+      case RequestRenderingOutput.Strict(bytes) ⇒
+        bytes
       case _: RequestRenderingOutput.Streamed ⇒
         throw new IllegalArgumentException(
           s"Request entity was not Strict but ${ctx.request.entity.getClass.getSimpleName}")

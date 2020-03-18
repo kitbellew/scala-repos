@@ -7,7 +7,8 @@ object Test {
       try {
         s.toInt
       } catch {
-        case _: Throwable => 1
+        case _: Throwable =>
+          1
       }
     byval(n)
   }
@@ -16,7 +17,8 @@ object Test {
       try {
         s.toInt
       } catch {
-        case _: Throwable => 1
+        case _: Throwable =>
+          1
       }
     closure(() => n)
   }

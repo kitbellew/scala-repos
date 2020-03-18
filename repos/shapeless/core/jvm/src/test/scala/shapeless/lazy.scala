@@ -99,7 +99,8 @@ class LazyStrictTestsJVM {
           f;
           false
         } catch {
-          case _: StackOverflowError => true
+          case _: StackOverflowError =>
+            true
         }
 
       (

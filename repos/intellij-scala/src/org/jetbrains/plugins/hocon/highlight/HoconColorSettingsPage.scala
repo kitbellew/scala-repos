@@ -97,6 +97,7 @@ object HoconColorSettingsPage {
     "Key" -> HHC.EntryKey,
     "Key in substitution" -> HHC.SubstitutionKey
   ).map({
-    case (displayName, key) => new AttributesDescriptor(displayName, key)
+    case (displayName, key) =>
+      new AttributesDescriptor(displayName, key)
   })
 }

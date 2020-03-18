@@ -45,8 +45,10 @@ class AbstractTestRerunFailedTestsAction(
         failed.getLocation(
           getProject,
           GlobalSearchScope.allScope(getProject)) match {
-          case PsiLocationWithName(_, _, testName) => testName
-          case _                                   => failed.getName
+          case PsiLocationWithName(_, _, testName) =>
+            testName
+          case _ =>
+            failed.getName
         }
       }
 
@@ -124,7 +126,8 @@ class AbstractTestRerunFailedTestsAction(
       case test: SMTestProxy =>
         val info = test.getMagnitudeInfo
         info == Magnitude.FAILED_INDEX || info == Magnitude.ERROR_INDEX
-      case _ => !test.isPassed
+      case _ =>
+        !test.isPassed
     }
   }
 

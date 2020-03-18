@@ -38,7 +38,8 @@ object ScalatraAtmosphereHandler {
       val resource = event.getResource
       resource.transport match {
         case JSONP | AJAX | LONG_POLLING =>
-        case _                           => resource.getResponse.flushBuffer()
+        case _ =>
+          resource.getResponse.flushBuffer()
       }
     }
 
@@ -200,8 +201,10 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
   private[this] def liftAction(action: org.scalatra.Action) =
     try {
       action() match {
-        case cl: AtmosphereClient => Some(cl)
-        case _                    => None
+        case cl: AtmosphereClient =>
+          Some(cl)
+        case _ =>
+          None
       }
     } catch {
       case t: Throwable =>
@@ -212,8 +215,9 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(implicit
   private[this] def resumeIfNeeded(resource: AtmosphereResource) {
     import org.atmosphere.cpr.AtmosphereResource.TRANSPORT._
     resource.transport match {
-      case JSONP | AJAX | LONG_POLLING => resource.resumeOnBroadcast(true)
-      case _                           =>
+      case JSONP | AJAX | LONG_POLLING =>
+        resource.resumeOnBroadcast(true)
+      case _ =>
     }
   }
 }

@@ -23,8 +23,10 @@ object $enumerate {
       op: A => Funit): Funit =
     query.cursor[Option[A]]().enumerate(limit, stopOnError = false) run {
       Iteratee.foldM(()) {
-        case (_, Some(obj)) => op(obj)
-        case _              => funit
+        case (_, Some(obj)) =>
+          op(obj)
+        case _ =>
+          funit
       }
     }
 
@@ -34,7 +36,8 @@ object $enumerate {
       limit: Int = Int.MaxValue)(op: List[A] => Funit): Funit =
     query.batch(size).cursor[A]().enumerateBulks(limit) run {
       Iteratee.foldM(()) {
-        case (_, objs) => op(objs.toList)
+        case (_, objs) =>
+          op(objs.toList)
       }
     }
 
@@ -45,6 +48,7 @@ object $enumerate {
   def foldMonoid[A: BSONDocumentReader, B: Monoid](query: QueryBuilder)(
       f: A => B): Fu[B] =
     fold[A, B](query)(Monoid[B].zero) {
-      case (b, a) => f(a) |+| b
+      case (b, a) =>
+        f(a) |+| b
     }
 }

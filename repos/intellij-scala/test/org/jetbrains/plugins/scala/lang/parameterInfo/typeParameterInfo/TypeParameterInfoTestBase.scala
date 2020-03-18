@@ -100,7 +100,8 @@ abstract class TypeParameterInfoTestBase
     val text = lastPsi.getText
     val output =
       lastPsi.getNode.getElementType match {
-        case ScalaTokenTypes.tLINE_COMMENT => text.substring(2).trim
+        case ScalaTokenTypes.tLINE_COMMENT =>
+          text.substring(2).trim
         case ScalaTokenTypes.tBLOCK_COMMENT | ScalaTokenTypes.tDOC_COMMENT =>
           text.substring(2, text.length - 2).trim
         case _ =>

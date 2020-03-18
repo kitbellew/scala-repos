@@ -47,7 +47,8 @@ object TypeArgs {
                     }
                   } else
                     false
-                case _ => false
+                case _ =>
+                  false
               }
             } else
               false
@@ -67,11 +68,13 @@ object TypeArgs {
           builder.getTokenType match {
             case ScalaTokenTypes.tRSQBRACKET =>
               builder.advanceLexer() //Ate ]
-            case _ => builder error ScalaBundle.message("rsqbracket.expected")
+            case _ =>
+              builder error ScalaBundle.message("rsqbracket.expected")
           }
           builder.restoreNewlinesState
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
 }

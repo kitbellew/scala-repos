@@ -70,8 +70,10 @@ class ScTypeParamImpl private (
   def getIndex: Int = 0
   def getOwner: PsiTypeParameterListOwner =
     getContext.getContext match {
-      case c: PsiTypeParameterListOwner => c
-      case _                            => null
+      case c: PsiTypeParameterListOwner =>
+        c
+      case _ =>
+        null
     }
 
   override def getContainingClass: ScTemplateDefinition = null
@@ -82,8 +84,10 @@ class ScTypeParamImpl private (
       return stub.asInstanceOf[ScTypeParamStub].isCovariant
     }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
-      case null => false
-      case x    => x.getText == "+"
+      case null =>
+        false
+      case x =>
+        x.getText == "+"
     }
   }
 
@@ -93,8 +97,10 @@ class ScTypeParamImpl private (
       return stub.asInstanceOf[ScTypeParamStub].isContravariant
     }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
-      case null => false
-      case x    => x.getText == "-"
+      case null =>
+        false
+      case x =>
+        x.getText == "-"
     }
   }
 
@@ -161,16 +167,20 @@ class ScTypeParamImpl private (
             t match {
               case ScParameterizedType(des, _) =>
                 ScType.toPsi(des, getProject, getResolveScope)
-              case _ => ScType.toPsi(t, getProject, getResolveScope)
+              case _ =>
+                ScType.toPsi(t, getProject, getResolveScope)
             }
           } else {
             ScType.toPsi(t, getProject, getResolveScope)
           }
         psiType match {
-          case x: PsiClassType => Array(x)
-          case _               => Array() // TODO
+          case x: PsiClassType =>
+            Array(x)
+          case _ =>
+            Array() // TODO
         }
-      case Failure(_, _) => Array()
+      case Failure(_, _) =>
+        Array()
     }
   }
 }

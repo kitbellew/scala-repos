@@ -84,8 +84,10 @@ class TypeAnnotationInspection extends AbstractInspection {
 
   private def isSimple(exp: ScExpression): Boolean = {
     exp match {
-      case _: ScLiteral => true
-      case _            => false
+      case _: ScLiteral =>
+        true
+      case _ =>
+        false
     }
   }
 

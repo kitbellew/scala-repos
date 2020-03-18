@@ -33,7 +33,8 @@ trait EntityRepository[T <: MarathonState[_, T]]
     timedRead {
       this.store.names().map { names =>
         names.collect {
-          case name: String if noVersionKey(name) => name
+          case name: String if noVersionKey(name) =>
+            name
         }
       }
     }

@@ -27,8 +27,10 @@ object TypeCheckerWithExplicitTypesAST {
 
   def litToTy(l: Literal): Type =
     l match {
-      case Num(_)  => numT
-      case Bool(_) => boolT
+      case Num(_) =>
+        numT
+      case Bool(_) =>
+        boolT
     }
 
   val predef: TypeEnv = Map(

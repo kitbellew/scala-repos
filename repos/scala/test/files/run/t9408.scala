@@ -34,7 +34,8 @@ class Outer {
     val outer1 = new Outer
     val outer2 = new Outer
     (new outer1.Member: Any) match {
-      case _: outer2.Member => sys.error("wrong match!")
+      case _: outer2.Member =>
+        sys.error("wrong match!")
       case _: outer1.Member => // okay
     }
 
@@ -50,7 +51,8 @@ class Outer {
     val localOuter1 = new LocalOuter
     val localOuter2 = new LocalOuter
     (new localOuter1.Member: Any) match {
-      case _: localOuter2.Member => sys.error("wrong match!")
+      case _: localOuter2.Member =>
+        sys.error("wrong match!")
       case _: localOuter1.Member => // okay
     }
     // Final member classes still lose the outer reference.

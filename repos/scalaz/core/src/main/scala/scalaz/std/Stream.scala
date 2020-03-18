@@ -109,9 +109,12 @@ trait StreamInstances {
           @annotation.tailrec
           def rec(abs: Stream[A \/ B]): Stream[B] =
             abs match {
-              case \/-(b) #:: tail => b #:: go(tail)
-              case -\/(a) #:: tail => rec(f(a) #::: tail)
-              case Stream.Empty    => Stream.Empty
+              case \/-(b) #:: tail =>
+                b #:: go(tail)
+              case -\/(a) #:: tail =>
+                rec(f(a) #::: tail)
+              case Stream.Empty =>
+                Stream.Empty
             }
           rec(s)
         }
@@ -172,8 +175,10 @@ trait StreamInstances {
             GT
           else {
             A.order(a.head, b.head) match {
-              case EQ => order(a.tail, b.tail)
-              case x  => x
+              case EQ =>
+                order(a.tail, b.tail)
+              case x =>
+                x
             }
           }
         }
@@ -199,13 +204,16 @@ trait StreamFunctions {
 
   final def toZipper[A](as: Stream[A]): Option[Zipper[A]] =
     as match {
-      case Empty   => None
-      case h #:: t => Some(Zipper.zipper(empty, h, t))
+      case Empty =>
+        None
+      case h #:: t =>
+        Some(Zipper.zipper(empty, h, t))
     }
 
   final def zipperEnd[A](as: Stream[A]): Option[Zipper[A]] =
     as match {
-      case Empty => None
+      case Empty =>
+        None
       case _ =>
         val x = as.reverse
         Some(Zipper.zipper(x.tail, x.head, empty))
@@ -214,15 +222,19 @@ trait StreamFunctions {
   /** `[as take 1, as take 2, ..., as]` */
   final def heads[A](as: Stream[A]): Stream[Stream[A]] =
     as match {
-      case h #:: t => scala.Stream(h) #:: heads(t).map(h #:: _)
-      case _       => empty
+      case h #:: t =>
+        scala.Stream(h) #:: heads(t).map(h #:: _)
+      case _ =>
+        empty
     }
 
   /** `[as, as.tail, as.tail.tail, ..., Stream(as.last)]` */
   final def tails[A](as: Stream[A]): Stream[Stream[A]] =
     as match {
-      case h #:: t => as #:: tails(t)
-      case _       => empty
+      case h #:: t =>
+        as #:: tails(t)
+      case _ =>
+        empty
     }
 
   final def zapp[A, B, C](a: Stream[A])(
@@ -240,7 +252,8 @@ trait StreamFunctions {
     as.map(a => {
       def unfoldTree(x: A): Tree[B] =
         f(x) match {
-          case (b, bs) => Tree.Node(b, unfoldForest(bs())(f))
+          case (b, bs) =>
+            Tree.Node(b, unfoldForest(bs())(f))
         }
 
       unfoldTree(a)
@@ -250,7 +263,8 @@ trait StreamFunctions {
       f: A => M[(B, Stream[A])]): M[Stream[Tree[B]]] = {
     def mapM[T, U](ts: Stream[T], f: T => M[U]): M[Stream[U]] =
       ts.foldRight[M[Stream[U]]](Monad[M].point(scala.Stream())) {
-        case (g, h) => Monad[M].apply2(f(g), h)(_ #:: _)
+        case (g, h) =>
+          Monad[M].apply2(f(g), h)(_ #:: _)
       }
 
     def unfoldTreeM(v: A) =
@@ -265,25 +279,33 @@ trait StreamFunctions {
   final def intersperse[A](as: Stream[A], a: A): Stream[A] = {
     def loop(rest: Stream[A]): Stream[A] =
       rest match {
-        case Stream.Empty => Stream.empty
-        case h #:: t      => a #:: h #:: loop(t)
+        case Stream.Empty =>
+          Stream.empty
+        case h #:: t =>
+          a #:: h #:: loop(t)
       }
     as match {
-      case Stream.Empty => Stream.empty
-      case h #:: t      => h #:: loop(t)
+      case Stream.Empty =>
+        Stream.empty
+      case h #:: t =>
+        h #:: loop(t)
     }
   }
 
   def unfold[A, B](seed: A)(f: A => Option[(B, A)]): Stream[B] =
     f(seed) match {
-      case None         => Stream.empty
-      case Some((b, a)) => Stream.cons(b, unfold(a)(f))
+      case None =>
+        Stream.empty
+      case Some((b, a)) =>
+        Stream.cons(b, unfold(a)(f))
     }
 
   def unfoldm[A, B](seed: A)(f: A => Maybe[(B, A)]): Stream[B] =
     f(seed) match {
-      case Maybe.Empty()      => Stream.empty
-      case Maybe.Just((b, a)) => Stream.cons(b, unfoldm(a)(f))
+      case Maybe.Empty() =>
+        Stream.empty
+      case Maybe.Just((b, a)) =>
+        Stream.cons(b, unfoldm(a)(f))
     }
 }
 

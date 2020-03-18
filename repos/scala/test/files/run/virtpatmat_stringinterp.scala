@@ -12,6 +12,7 @@ object Test extends App {
 
   val x: Node = Node(0)
   x match {
-    case xml"""<foo arg=$a/>""" => println(a)
+    case xml"""<foo arg=$a/>""" =>
+      println(a)
   }
 }

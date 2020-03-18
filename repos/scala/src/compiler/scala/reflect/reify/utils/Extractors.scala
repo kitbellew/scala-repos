@@ -61,19 +61,22 @@ trait Extractors {
             nme.apply,
             SelectFromTypeTree(Ident(tparamu), tpnme.Tree),
             ApiUniverseClass)
-        case _ => throw new Error(s"unexpected flavor $flavor")
+        case _ =>
+          throw new Error(s"unexpected flavor $flavor")
       }
     val reifierBody = {
       def gc(symtab: SymbolTable): SymbolTable = {
         def loop(symtab: SymbolTable): SymbolTable = {
           def extractNames(tree: Tree) =
             tree.collect {
-              case ref: RefTree => ref.name
+              case ref: RefTree =>
+                ref.name
             }.toSet
           val usedNames = extractNames(rtree) ++ symtab.syms.flatMap(sym =>
             extractNames(symtab.symDef(sym)))
           symtab filterAliases {
-            case (_, name) => usedNames(name)
+            case (_, name) =>
+              usedNames(name)
           }
         }
         var prev = symtab
@@ -274,8 +277,10 @@ trait Extractors {
             if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme.MIRROR_SHORT =>
           val tagFlavor =
             tagFactory match {
-              case Select(Select(_, tagFlavor), _) => tagFlavor
-              case Select(_, tagFlavor)            => tagFlavor
+              case Select(Select(_, tagFlavor), _) =>
+                tagFlavor
+              case Select(_, tagFlavor) =>
+                tagFlavor
             }
           Some(
             (
@@ -348,8 +353,10 @@ trait Extractors {
             if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme.MIRROR_SHORT =>
           val tagFlavor =
             tagFactory match {
-              case Select(Select(_, tagFlavor), _) => tagFlavor
-              case Select(_, tagFlavor)            => tagFlavor
+              case Select(Select(_, tagFlavor), _) =>
+                tagFlavor
+              case Select(_, tagFlavor) =>
+                tagFlavor
             }
           Some(
             (
@@ -382,9 +389,12 @@ trait Extractors {
   object ApplyCall {
     def unapply(tree: Tree): Option[(Tree, List[Tree])] =
       tree match {
-        case Apply(Select(id, nme.apply), args) => Some((id, args))
-        case Apply(id, args)                    => Some((id, args))
-        case _                                  => None
+        case Apply(Select(id, nme.apply), args) =>
+          Some((id, args))
+        case Apply(id, args) =>
+          Some((id, args))
+        case _ =>
+          None
       }
   }
 

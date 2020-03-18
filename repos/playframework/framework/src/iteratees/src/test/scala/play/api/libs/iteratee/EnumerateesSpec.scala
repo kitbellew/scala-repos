@@ -91,9 +91,12 @@ object EnumerateesSpec
       mustExecute(2) { mapEC =>
         val eee =
           Enumeratee.mapInputFlatten[Int][Int] {
-            case Input.El(x) => Enumerator(x * 2)
-            case Input.Empty => Enumerator.empty
-            case Input.EOF   => Enumerator.empty
+            case Input.El(x) =>
+              Enumerator(x * 2)
+            case Input.Empty =>
+              Enumerator.empty
+            case Input.EOF =>
+              Enumerator.empty
           }(mapEC)
         mustTransformTo(1, 2)(2, 4)(eee compose Enumeratee.take(2))
       }
@@ -397,8 +400,10 @@ object EnumerateesSpec
       mustExecute(9, 7, 3) { (mapInputEC, foldEC, mapEC) =>
         val folderIteratee =
           Enumeratee.mapInput[String] {
-            case Input.El("Concat") => Input.EOF;
-            case other              => other
+            case Input.El("Concat") =>
+              Input.EOF;
+            case other =>
+              other
           }(mapInputEC) &>>
             Iteratee.fold[String, String]("")((s, e) => s + e)(foldEC)
 

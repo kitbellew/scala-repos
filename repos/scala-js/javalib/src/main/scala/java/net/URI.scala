@@ -164,8 +164,10 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: URI => internalCompare(that)(URI.escapeAwareCompare) == 0
-      case _         => false
+      case that: URI =>
+        internalCompare(that)(URI.escapeAwareCompare) == 0
+      case _ =>
+        false
     }
 
   def getAuthority(): String = _authority.map(decodeComponent).orNull
@@ -376,7 +378,8 @@ object URI {
   def create(str: String): URI = {
     try new URI(str)
     catch {
-      case e: URISyntaxException => throw new IllegalArgumentException(e)
+      case e: URISyntaxException =>
+        throw new IllegalArgumentException(e)
     }
   }
 

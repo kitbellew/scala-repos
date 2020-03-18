@@ -67,11 +67,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         (uindex -> iindex) -> 1
       }
       .filter {
-        case ((u, i), v) => (i != -1) && (u != -1)
+        case ((u, i), v) =>
+          (i != -1) && (u != -1)
       }
       .reduceByKey(_ + _) // aggregate all view events of same item
       .map {
-        case ((u, i), v) => MLlibRating(u, i, v)
+        case ((u, i), v) =>
+          MLlibRating(u, i, v)
       }
 
     // MLLib ALS cannot handle empty training data.

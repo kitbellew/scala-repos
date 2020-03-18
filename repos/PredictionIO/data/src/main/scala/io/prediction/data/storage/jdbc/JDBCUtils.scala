@@ -27,8 +27,10 @@ object JDBCUtils {
   def driverType(url: String): String = {
     val capture = """jdbc:([^:]+):""".r
     capture findFirstIn url match {
-      case Some(capture(driverType)) => driverType
-      case None                      => ""
+      case Some(capture(driverType)) =>
+        driverType
+      case None =>
+        ""
     }
   }
 
@@ -39,9 +41,12 @@ object JDBCUtils {
     */
   def binaryColumnType(url: String): SQLSyntax = {
     driverType(url) match {
-      case "postgresql" => sqls"bytea"
-      case "mysql"      => sqls"longblob"
-      case _            => sqls"longblob"
+      case "postgresql" =>
+        sqls"bytea"
+      case "mysql" =>
+        sqls"longblob"
+      case _ =>
+        sqls"longblob"
     }
   }
 
@@ -52,9 +57,12 @@ object JDBCUtils {
     */
   def timestampFunction(url: String): String = {
     driverType(url) match {
-      case "postgresql" => "to_timestamp"
-      case "mysql"      => "from_unixtime"
-      case _            => "from_unixtime"
+      case "postgresql" =>
+        "to_timestamp"
+      case "mysql" =>
+        "from_unixtime"
+      case _ =>
+        "from_unixtime"
     }
   }
 

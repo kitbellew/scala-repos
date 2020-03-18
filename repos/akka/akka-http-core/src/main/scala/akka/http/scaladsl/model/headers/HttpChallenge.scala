@@ -19,7 +19,8 @@ final case class HttpChallenge(
     r ~~ scheme ~~ " realm=" ~~#! realm
     if (params.nonEmpty)
       params.foreach {
-        case (k, v) ⇒ r ~~ ',' ~~ k ~~ '=' ~~# v
+        case (k, v) ⇒
+          r ~~ ',' ~~ k ~~ '=' ~~# v
       }
     r
   }

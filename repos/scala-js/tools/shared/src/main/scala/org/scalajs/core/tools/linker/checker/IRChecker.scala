@@ -301,8 +301,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
     val bodyStats =
       body match {
-        case Block(stats) => stats
-        case _            => body :: Nil
+        case Block(stats) =>
+          stats
+        case _ =>
+          body :: Nil
       }
 
     val (prepStats, superCallAndRest) = bodyStats.span(
@@ -850,10 +852,14 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         val clazz = lookupClass(cls)
         val valid =
           clazz.kind match {
-            case ClassKind.JSClass       => true
-            case ClassKind.JSModuleClass => true
-            case ClassKind.RawJSType     => clazz.jsName.isDefined
-            case _                       => false
+            case ClassKind.JSClass =>
+              true
+            case ClassKind.JSModuleClass =>
+              true
+            case ClassKind.RawJSType =>
+              clazz.jsName.isDefined
+            case _ =>
+              false
           }
         if (!valid)
           reportError(s"JS class type expected but $cls found")
@@ -964,8 +970,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
   private def refTypeToType(refType: ReferenceType)(implicit
       ctx: ErrorContext): Type = {
     refType match {
-      case arrayType: ArrayType   => arrayType
-      case ClassType(encodedName) => classNameToType(encodedName)
+      case arrayType: ArrayType =>
+        arrayType
+      case ClassType(encodedName) =>
+        classNameToType(encodedName)
     }
   }
 
@@ -973,14 +981,22 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       ctx: ErrorContext): Type = {
     if (encodedName.length == 1) {
       (encodedName.charAt(0): @switch) match {
-        case 'V'                   => NoType
-        case 'Z'                   => BooleanType
-        case 'C' | 'B' | 'S' | 'I' => IntType
-        case 'J'                   => LongType
-        case 'F'                   => FloatType
-        case 'D'                   => DoubleType
-        case 'O'                   => AnyType
-        case 'T'                   => ClassType(StringClass) // NOT StringType
+        case 'V' =>
+          NoType
+        case 'Z' =>
+          BooleanType
+        case 'C' | 'B' | 'S' | 'I' =>
+          IntType
+        case 'J' =>
+          LongType
+        case 'F' =>
+          FloatType
+        case 'D' =>
+          DoubleType
+        case 'O' =>
+          AnyType
+        case 'T' =>
+          ClassType(StringClass) // NOT StringType
       }
     } else if (encodedName == "sr_Nothing$") {
       NothingType
@@ -1209,8 +1225,10 @@ object IRChecker {
     override def toString(): String = {
       val (pos, name) =
         treeOrLinkedClass match {
-          case tree: Tree               => (tree.pos, tree.getClass.getSimpleName)
-          case linkedClass: LinkedClass => (linkedClass.pos, "ClassDef")
+          case tree: Tree =>
+            (tree.pos, tree.getClass.getSimpleName)
+          case linkedClass: LinkedClass =>
+            (linkedClass.pos, "ClassDef")
         }
       s"${pos.source}(${pos.line + 1}:${pos.column + 1}:$name)"
     }

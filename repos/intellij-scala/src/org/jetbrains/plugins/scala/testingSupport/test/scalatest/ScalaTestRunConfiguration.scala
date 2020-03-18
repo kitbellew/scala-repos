@@ -58,7 +58,8 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
           c.secondaryConstructors
             .filter(_.isConstructor)
             .toList ::: c.constructor.toList
-        case _ => clazz.getConstructors.toList
+        case _ =>
+          clazz.getConstructors.toList
       }
     for (con <- constructors) {
       if (con.isConstructor && con.getParameterList.getParametersCount == 1) {
@@ -80,7 +81,8 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
                 paramClass match {
                   case parameterizedType: ScParameterizedType =>
                     parameterizedType.designator
-                  case _ => paramClass
+                  case _ =>
+                    paramClass
                 }
               if (Conformance.conforms(mapClass, conformanceType))
                 return false
@@ -99,7 +101,8 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
         case classDef: ScTypeDefinition =>
           val annotation = classDef.hasAnnotation(wrapWithAnnotationFqn)
           annotation.isDefined
-        case _ => false
+        case _ =>
+          false
       }
     if (hasConfigMapAnnotation) {
       lackConfigMapConstructor(clazz)

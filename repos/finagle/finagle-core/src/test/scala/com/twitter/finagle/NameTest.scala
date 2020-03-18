@@ -26,7 +26,8 @@ class NameTest extends FunSuite {
     val Addr.Bound(s2, r) = addr
     assert(
       s2.collect {
-        case Address.Inet(ia, _) => ia
+        case Address.Inet(ia, _) =>
+          ia
       } == set)
     assert(r.isEmpty)
 

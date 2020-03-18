@@ -161,10 +161,12 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
   private def processEvent(event: JobSchedulerEvent) {
     try {
       event match {
-        case JobStarted(job, startTime) => handleJobStart(job, startTime)
+        case JobStarted(job, startTime) =>
+          handleJobStart(job, startTime)
         case JobCompleted(job, completedTime) =>
           handleJobCompletion(job, completedTime)
-        case ErrorReported(m, e) => handleError(m, e)
+        case ErrorReported(m, e) =>
+          handleError(m, e)
       }
     } catch {
       case e: Throwable =>

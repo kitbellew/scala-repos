@@ -73,8 +73,10 @@ class ParHashMap[K, +V] private[immutable] (
       oldc: Option[Combiner[S, That]],
       newc: Combiner[S, That]) =
     oldc match {
-      case Some(old) => old
-      case None      => newc
+      case Some(old) =>
+        old
+      case None =>
+        newc
     }
 
   class ParHashMapIterator(
@@ -332,7 +334,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
           // check to see if already present
           val cmb: Combiner[V, Repr] =
             trie.get0(kv._1, hc, rootbits) match {
-              case Some(cmb) => cmb
+              case Some(cmb) =>
+                cmb
               case None =>
                 val cmb: Combiner[V, Repr] = cbf()
                 trie = trie.updated0[Combiner[V, Repr]](
@@ -372,7 +375,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
             i += 1
           }
           htm.asInstanceOf[HashMap[K, Repr]]
-        case empty => empty.asInstanceOf[HashMap[K, Repr]]
+        case empty =>
+          empty.asInstanceOf[HashMap[K, Repr]]
       }
     def split = {
       val fp = howmany / 2

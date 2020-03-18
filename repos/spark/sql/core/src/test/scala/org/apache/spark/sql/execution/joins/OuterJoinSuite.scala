@@ -122,9 +122,12 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
       test(s"$testName using BroadcastHashJoin") {
         val buildSide =
           joinType match {
-            case LeftOuter  => BuildRight
-            case RightOuter => BuildLeft
-            case _          => fail(s"Unsupported join type $joinType")
+            case LeftOuter =>
+              BuildRight
+            case RightOuter =>
+              BuildLeft
+            case _ =>
+              fail(s"Unsupported join type $joinType")
           }
         extractJoinParts().foreach {
           case (_, leftKeys, rightKeys, boundCondition, _, _) =>

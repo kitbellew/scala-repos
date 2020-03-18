@@ -19,8 +19,10 @@ object Statistics {
     @tailrec
     def average(a: List[T], sum: T, depth: Int): Double = {
       a match {
-        case Nil     => n.toDouble(sum) / depth
-        case x :: xs => average(xs, n.plus(sum, x), depth + 1)
+        case Nil =>
+          n.toDouble(sum) / depth
+        case x :: xs =>
+          average(xs, n.plus(sum, x), depth + 1)
       }
     }
     average(a.tail, a.head, 1)
@@ -58,16 +60,22 @@ object Statistics {
 
   def listAverage[T](x: List[T])(implicit n: Numeric[T]): Double =
     x match {
-      case Nil      => 0
-      case a :: Nil => n.toDouble(a)
-      case a :: b   => average(NonEmptyList.nel(a, b))
+      case Nil =>
+        0
+      case a :: Nil =>
+        n.toDouble(a)
+      case a :: b =>
+        average(NonEmptyList.nel(a, b))
     }
 
   def listDeviation[T](x: List[T])(implicit n: Numeric[T]): Double =
     x match {
-      case Nil      => 0
-      case _ :: Nil => 0
-      case a :: b   => deviation(NonEmptyList.nel(a, b))
+      case Nil =>
+        0
+      case _ :: Nil =>
+        0
+      case a :: b =>
+        deviation(NonEmptyList.nel(a, b))
     }
 }
 

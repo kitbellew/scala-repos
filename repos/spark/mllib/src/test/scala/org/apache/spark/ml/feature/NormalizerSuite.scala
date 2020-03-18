@@ -82,16 +82,20 @@ class NormalizerSuite
 
   def collectResult(result: DataFrame): Array[Vector] = {
     result.select("normalized_features").collect().map {
-      case Row(features: Vector) => features
+      case Row(features: Vector) =>
+        features
     }
   }
 
   def assertTypeOfVector(lhs: Array[Vector], rhs: Array[Vector]): Unit = {
     assert(
       (lhs, rhs).zipped.forall {
-        case (v1: DenseVector, v2: DenseVector)   => true
-        case (v1: SparseVector, v2: SparseVector) => true
-        case _                                    => false
+        case (v1: DenseVector, v2: DenseVector) =>
+          true
+        case (v1: SparseVector, v2: SparseVector) =>
+          true
+        case _ =>
+          false
       },
       "The vector type should be preserved after normalization."
     )

@@ -35,9 +35,12 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
   // Parquet does not play well with NullType.
   override protected def supportsDataType(dataType: DataType): Boolean =
     dataType match {
-      case _: NullType             => false
-      case _: CalendarIntervalType => false
-      case _                       => true
+      case _: NullType =>
+        false
+      case _: CalendarIntervalType =>
+        false
+      case _ =>
+        true
     }
 
   test(
@@ -170,11 +173,13 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
 
       assert(
         physicalPlan.collect {
-          case p: execution.Project => p
+          case p: execution.Project =>
+            p
         }.length === 1)
       assert(
         physicalPlan.collect {
-          case p: execution.Filter => p
+          case p: execution.Filter =>
+            p
         }.length === 1)
     }
   }

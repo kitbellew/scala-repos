@@ -134,14 +134,16 @@ private[hive] case class HiveTableScan(
     */
   private[hive] def prunePartitions(partitions: Seq[HivePartition]) = {
     boundPruningPred match {
-      case None => partitions
+      case None =>
+        partitions
       case Some(shouldKeep) =>
         partitions.filter { part =>
           val dataTypes = relation.partitionKeys.map(_.dataType)
           val castedValues = part.getValues.asScala
             .zip(dataTypes)
             .map {
-              case (value, dataType) => castFromString(value, dataType)
+              case (value, dataType) =>
+                castFromString(value, dataType)
             }
 
           // Only partitioned values are needed here, since the predicate has already been bound to

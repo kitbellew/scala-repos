@@ -90,8 +90,10 @@ trait Reifiers {
 
     if (universe.settings.logFreeTerms || universe.settings.logFreeTypes)
       reification match {
-        case ReifiedTree(_, _, symtab, _, _, _, _) => logFreeVars(symtab)
-        case ReifiedType(_, _, symtab, _, _, _)    => logFreeVars(symtab)
+        case ReifiedTree(_, _, symtab, _, _, _, _) =>
+          logFreeVars(symtab)
+        case ReifiedType(_, _, symtab, _, _, _) =>
+          logFreeVars(symtab)
       }
   }
 }

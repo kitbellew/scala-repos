@@ -44,7 +44,8 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
               "show" -> c.show)
           case TimeControl.Correspondence(d) =>
             Json.obj("type" -> "correspondence", "daysPerTurn" -> d)
-          case TimeControl.Unlimited => Json.obj("type" -> "unlimited")
+          case TimeControl.Unlimited =>
+            Json.obj("type" -> "unlimited")
         }
       ),
       "color" -> c.colorChoice.toString.toLowerCase,

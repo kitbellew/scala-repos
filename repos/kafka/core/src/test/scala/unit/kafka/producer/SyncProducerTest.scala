@@ -221,7 +221,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
           acks = 0))
     } catch {
       case e: java.io.IOException => // success
-      case e2: Throwable          => throw e2
+      case e2: Throwable =>
+        throw e2
     }
   }
 
@@ -304,7 +305,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
       fail(
         "Should have received timeout exception since request handling is stopped.")
     } catch {
-      case e: SocketTimeoutException => /* success */
+      case e: SocketTimeoutException =>
+      /* success */
       case e: Throwable =>
         fail("Unexpected exception when expecting timeout: " + e)
     }

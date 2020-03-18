@@ -63,8 +63,10 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
       editor)
     val javaLikeQuoteHandler: JavaLikeQuoteHandler =
       fileTypeHandler match {
-        case quoteHandler: JavaLikeQuoteHandler => quoteHandler
-        case _                                  => null
+        case quoteHandler: JavaLikeQuoteHandler =>
+          quoteHandler
+        case _ =>
+          null
       }
     while (true) {
       val tokenType: IElementType = lexer.getTokenType

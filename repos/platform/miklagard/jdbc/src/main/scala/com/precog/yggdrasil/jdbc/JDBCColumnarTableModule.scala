@@ -72,13 +72,20 @@ object JDBCColumnarTableModule {
   def escapePath(path: String) =
     path.toList
       .map {
-        case '['            => "PCLBRACKET"
-        case ']'            => "PCRBRACKET"
-        case '-'            => "PCFIELDDASH"
-        case '.'            => "PCDOTSEP"
-        case ' '            => "PCSPACE"
-        case c if c.isUpper => "PCUPPER" + c
-        case c              => c.toString
+        case '[' =>
+          "PCLBRACKET"
+        case ']' =>
+          "PCRBRACKET"
+        case '-' =>
+          "PCFIELDDASH"
+        case '.' =>
+          "PCDOTSEP"
+        case ' ' =>
+          "PCSPACE"
+        case c if c.isUpper =>
+          "PCUPPER" + c
+        case c =>
+          c.toString
       }
       .mkString("")
 
@@ -369,7 +376,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             .toSet
             .flatten
 
-        case _ => current
+        case _ =>
+          current
       }
 
     case class Query(expr: String, limit: Int) {

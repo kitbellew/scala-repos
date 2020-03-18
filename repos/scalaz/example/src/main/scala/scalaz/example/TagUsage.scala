@@ -106,6 +106,7 @@ object TagUsage extends App {
 
   // we can also use pattern matching:
   def minOption_v2[A]: List[A] @@ Sorted ⇒ Option[A] = {
-    case Sorted(list) ⇒ list.headOption
+    case Sorted(list) ⇒
+      list.headOption
   }
 }

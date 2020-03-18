@@ -104,7 +104,8 @@ trait Counter2Like[
   override def toString: String = {
     data.iterator
       .map {
-        case (k1, c) => k1 + " -> " + c.toString
+        case (k1, c) =>
+          k1 + " -> " + c.toString
       }
       .mkString("Counter2(", ",\n", ")")
   }
@@ -113,7 +114,8 @@ trait Counter2Like[
     p1 match {
       case x: Counter2[_, _, _] =>
         x.activeIterator.toSet == activeIterator.toSet
-      case _ => false
+      case _ =>
+        false
     }
 
 }
@@ -174,7 +176,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       values: TraversableOnce[(K1, K2, V)]): Counter2[K1, K2, V] = {
     val rv = apply[K1, K2, V]()
     values.foreach({
-      case (k1, k2, v) => rv(k1, k2) = implicitly[Semiring[V]].+(rv(k1, k2), v)
+      case (k1, k2, v) =>
+        rv(k1, k2) = implicitly[Semiring[V]].+(rv(k1, k2), v)
     })
     rv
   }
@@ -184,7 +187,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       values: TraversableOnce[(K1, K2)]): Counter2[K1, K2, Int] = {
     val rv = apply[K1, K2, Int]()
     values.foreach({
-      case (k1, k2) => rv(k1, k2) += 1;
+      case (k1, k2) =>
+        rv(k1, k2) += 1;
     })
     rv
   }

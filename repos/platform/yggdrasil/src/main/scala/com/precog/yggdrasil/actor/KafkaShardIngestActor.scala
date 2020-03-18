@@ -223,7 +223,8 @@ object FilesystemIngestFailureLog {
                       .getOrElse(Failure(Invalid("Incomplete ingest message")))
                   }
 
-              case "archive" => jv.validated[ArchiveMessage]("message")
+              case "archive" =>
+                jv.validated[ArchiveMessage]("message")
             }
             checkpoint <- jv.validated[YggCheckpoint]("lastKnownGood")
           } yield LogRecord(offset, message, checkpoint)
@@ -279,7 +280,8 @@ abstract class KafkaShardIngestActor(
   }
 
   def receive = {
-    case Status => sender ! status
+    case Status =>
+      sender ! status
 
     case complete @ BatchComplete(requestor, checkpoint) =>
       pendingCompletes :+= complete
@@ -543,7 +545,8 @@ abstract class KafkaShardIngestActor(
               messageSet collect {
                 case (_, \/-(IngestMessage(apiKey, path, _, _, _, _, _))) =>
                   (apiKey, path)
-                case (_, -\/((apiKey, path, _))) => (apiKey, path)
+                case (_, -\/((apiKey, path, _))) =>
+                  (apiKey, path)
               }
             }
 
@@ -569,8 +572,10 @@ abstract class KafkaShardIngestActor(
                 System.currentTimeMillis - authoritiesStartTime))
             val authorityCache =
               cached.foldLeft(Map.empty[(APIKey, Path), Authorities]) {
-                case (acc, (k, Some(a))) => acc + (k -> a)
-                case (acc, (_, None))    => acc
+                case (acc, (k, Some(a))) =>
+                  acc + (k -> a)
+                case (acc, (_, None)) =>
+                  acc
               }
 
             val updatedMessages: List[(Long, EventMessage)] = messageSet

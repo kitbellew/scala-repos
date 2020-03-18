@@ -43,7 +43,8 @@ private final class Socket(
         self ! PoisonPill
     }
 
-    case GetVersion => sender ! history.version
+    case GetVersion =>
+      sender ! history.version
 
     case Socket.Join(uid, userId, owner) =>
       val (enumerator, channel) = Concurrent.broadcast[JsValue]
@@ -51,7 +52,8 @@ private final class Socket(
       addMember(uid, member)
       sender ! Socket.Connected(enumerator, member)
 
-    case Quit(uid) => quit(uid)
+    case Quit(uid) =>
+      quit(uid)
   }
 
   protected def shouldSkipMessageFor(message: Message, member: Socket.Member) =

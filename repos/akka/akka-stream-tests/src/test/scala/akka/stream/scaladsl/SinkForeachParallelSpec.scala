@@ -118,7 +118,8 @@ class SinkForeachParallelSpec extends AkkaSpec {
           Unit
       }
       p.onSuccess {
-        case _ ⇒ fail()
+        case _ ⇒
+          fail()
       }
 
       latch.countDown()

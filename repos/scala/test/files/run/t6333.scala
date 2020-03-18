@@ -10,10 +10,12 @@ object Test extends App {
     Try(expr) orElse argh
     Try(expr).transform(_ => argh, _ => argh)
     Try(expr).recoverWith {
-      case e if (a == fail) => Try(a)
+      case e if (a == fail) =>
+        Try(a)
     }
     Try(expr).recoverWith {
-      case _ => argh
+      case _ =>
+        argh
     }
     Try(expr).getOrElse(a)
     // TODO - Fail getOrElse?
@@ -26,7 +28,8 @@ object Test extends App {
     Try(expr) filter (_ => throw new Exception("O NOES"))
     Try(expr) filter (_ => true)
     Try(expr) recover {
-      case _ => fail
+      case _ =>
+        fail
     }
     Try(expr).failed
   }

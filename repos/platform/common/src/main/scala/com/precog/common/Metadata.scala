@@ -42,21 +42,32 @@ sealed trait MetadataType
 object MetadataType {
   def toName(metadataType: MetadataType): String =
     metadataType match {
-      case BooleanValueStats    => "BooleanValueStats"
-      case LongValueStats       => "LongValueStats"
-      case DoubleValueStats     => "DoubleValueStats"
-      case BigDecimalValueStats => "BigDecimalValueStats"
-      case StringValueStats     => "StringValueStats"
+      case BooleanValueStats =>
+        "BooleanValueStats"
+      case LongValueStats =>
+        "LongValueStats"
+      case DoubleValueStats =>
+        "DoubleValueStats"
+      case BigDecimalValueStats =>
+        "BigDecimalValueStats"
+      case StringValueStats =>
+        "StringValueStats"
     }
 
   def fromName(name: String): Option[MetadataType] =
     name match {
-      case "BooleanValueStats"    => Option(BooleanValueStats)
-      case "LongValueStats"       => Option(LongValueStats)
-      case "DoubleValueStats"     => Option(DoubleValueStats)
-      case "BigDecimalValueStats" => Option(BigDecimalValueStats)
-      case "StringValueStats"     => Option(StringValueStats)
-      case _                      => None
+      case "BooleanValueStats" =>
+        Option(BooleanValueStats)
+      case "LongValueStats" =>
+        Option(LongValueStats)
+      case "DoubleValueStats" =>
+        Option(DoubleValueStats)
+      case "BigDecimalValueStats" =>
+        Option(BigDecimalValueStats)
+      case "StringValueStats" =>
+        Option(StringValueStats)
+      case _ =>
+        None
     }
 }
 
@@ -92,17 +103,23 @@ object Metadata {
           case metadata @ JObject(entries) if entries.size == 1 => {
             val (key, value) = entries.head
             MetadataType.fromName(key).map {
-              case BooleanValueStats    => value.validated[BooleanValueStats]
-              case LongValueStats       => value.validated[LongValueStats]
-              case DoubleValueStats     => value.validated[DoubleValueStats]
-              case BigDecimalValueStats => value.validated[BigDecimalValueStats]
-              case StringValueStats     => value.validated[StringValueStats]
+              case BooleanValueStats =>
+                value.validated[BooleanValueStats]
+              case LongValueStats =>
+                value.validated[LongValueStats]
+              case DoubleValueStats =>
+                value.validated[DoubleValueStats]
+              case BigDecimalValueStats =>
+                value.validated[BigDecimalValueStats]
+              case StringValueStats =>
+                value.validated[StringValueStats]
             } getOrElse {
               Failure(Invalid("Unknown metadata type: " + key))
             }
           }
 
-          case _ => Failure(Invalid("Invalid metadata entry: " + obj))
+          case _ =>
+            Failure(Invalid("Invalid metadata entry: " + obj))
         }
     }
 
@@ -155,7 +172,8 @@ case class BooleanValueStats(count: Long, trueCount: Long)
     that match {
       case BooleanValueStats(count, trueCount) =>
         Some(BooleanValueStats(this.count + count, this.trueCount + trueCount))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -193,7 +211,8 @@ case class LongValueStats(count: Long, min: Long, max: Long)
             this.count + count,
             this.min.min(min),
             this.max.max(max)))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -229,7 +248,8 @@ case class DoubleValueStats(count: Long, min: Double, max: Double)
             this.count + count,
             this.min min min,
             this.max max max))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -267,7 +287,8 @@ case class BigDecimalValueStats(count: Long, min: BigDecimal, max: BigDecimal)
             this.count + count,
             this.min min min,
             this.max max max))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -305,7 +326,8 @@ case class StringValueStats(count: Long, min: String, max: String)
             this.count + count,
             Order[String].min(this.min, min),
             Order[String].max(this.max, max)))
-      case _ => None
+      case _ =>
+        None
     }
 }
 

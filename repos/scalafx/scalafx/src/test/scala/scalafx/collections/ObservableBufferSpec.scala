@@ -159,7 +159,8 @@ class ObservableBufferSpec[T]
             position should be(expectedPosition)
             elements should have size 1
             elements.toSeq(0) should equal(addedElement)
-          case _ => fail("Unexpected changes: " + changes)
+          case _ =>
+            fail("Unexpected changes: " + changes)
         }
       }
     }
@@ -198,7 +199,8 @@ class ObservableBufferSpec[T]
             changeCount += 1
             position should equal(3 * changeCount)
             elements should equal(Seq("d", "e", "f"))
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -237,7 +239,8 @@ class ObservableBufferSpec[T]
             position should be(expectedPosition)
             elements should have size 1
             elements.toSeq(0) should equal(removedElement)
-          case _ => fail("Unexpected changes: " + changes)
+          case _ =>
+            fail("Unexpected changes: " + changes)
         }
       }
     }
@@ -272,8 +275,9 @@ class ObservableBufferSpec[T]
             changeCount += 1
             position should equal(0)
             elements should equal(Seq("a", "b", "c"))
-          case Add(_, _)      =>
-          case _ @otherChange => fail(otherChange.toString)
+          case Add(_, _) =>
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -324,8 +328,9 @@ class ObservableBufferSpec[T]
             changeCount += 1
             position should equal(1)
             elements should equal(Seq("b", "c", "d"))
-          case Add(_, _)      =>
-          case _ @otherChange => fail(otherChange.toString)
+          case Add(_, _) =>
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -353,7 +358,8 @@ class ObservableBufferSpec[T]
             changeCount += 1
             position should equal(0)
             elements should equal(Seq("a", "b", "c", "d", "e", "f"))
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -380,7 +386,8 @@ class ObservableBufferSpec[T]
             changeCount += 1
             position should equal(0)
             elements should equal(Seq("a", "b", "c"))
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -404,7 +411,8 @@ class ObservableBufferSpec[T]
             for (i <- 0 until 5) {
               permutation(i) should equal(5 - i)
             }
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -429,7 +437,8 @@ class ObservableBufferSpec[T]
             for (i <- 0 until 5) {
               permutation(i) should equal(5 - i)
             }
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -465,7 +474,8 @@ class ObservableBufferSpec[T]
             for (i <- 0 until 5) {
               permutation(i) should equal(i)
             }
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -494,7 +504,8 @@ class ObservableBufferSpec[T]
             pos should equal(0)
             removedBuffer.size should equal(buffer.size)
             removedBuffer.toBuffer.sameElements(buffer)
-          case _ @otherChange => fail(otherChange.toString)
+          case _ @otherChange =>
+            fail(otherChange.toString)
         }
     }
 
@@ -629,7 +640,8 @@ class ObservableBufferSpec[T]
               val p = Buffer.empty[(Int, Int)]
               (start until end).foreach(i => p += ((i, permutation(i))))
               permutations += p
-            case Update(pas, updated) => println(s"  case Update: $change")
+            case Update(pas, updated) =>
+              println(s"  case Update: $change")
 
           }
       }
@@ -675,7 +687,8 @@ class ObservableBufferSpec[T]
           case ObservableBuffer.Update(from, to) =>
             actualFrom = from
             actualTo = to
-          case _ @otherChange => fail("Wrong change: " + otherChange.toString)
+          case _ @otherChange =>
+            fail("Wrong change: " + otherChange.toString)
         }
     })
 

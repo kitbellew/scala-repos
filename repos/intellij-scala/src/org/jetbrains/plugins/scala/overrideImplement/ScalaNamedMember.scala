@@ -39,7 +39,8 @@ class ScMethodMember(val sign: PhysicalSignature, val isOverride: Boolean)
   val name: String = sign.name
   val scType: ScType =
     sign.method match {
-      case fun: ScFunction => sign.substitutor.subst(fun.returnType.getOrAny)
+      case fun: ScFunction =>
+        sign.substitutor.subst(fun.returnType.getOrAny)
       case method: PsiMethod =>
         sign.substitutor.subst(
           ScType.create(

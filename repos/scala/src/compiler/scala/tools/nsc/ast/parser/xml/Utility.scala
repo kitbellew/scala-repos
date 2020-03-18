@@ -146,8 +146,10 @@ object Utility {
     *  }}} */
   final def isSpace(ch: Char): Boolean =
     ch match {
-      case '\u0009' | '\u000A' | '\u000D' | '\u0020' => true
-      case _                                         => false
+      case '\u0009' | '\u000A' | '\u000D' | '\u0020' =>
+        true
+      case _ =>
+        false
     }
 
   /** {{{
@@ -165,7 +167,8 @@ object Utility {
         case COMBINING_SPACING_MARK | ENCLOSING_MARK | NON_SPACING_MARK |
             MODIFIER_LETTER | DECIMAL_DIGIT_NUMBER =>
           true
-        case _ => ".-:" contains ch
+        case _ =>
+          ".-:" contains ch
       }
     )
   }
@@ -186,7 +189,8 @@ object Utility {
       case LOWERCASE_LETTER | UPPERCASE_LETTER | OTHER_LETTER |
           TITLECASE_LETTER | LETTER_NUMBER =>
         true
-      case _ => ch == '_'
+      case _ =>
+        ch == '_'
     }
   }
 }

@@ -68,7 +68,8 @@ private[reflect] object ScalaSigReader {
   def findClass(sig: ScalaSig, clazz: Class[_]): Option[ClassSymbol] = {
     sig.symbols
       .collect {
-        case c: ClassSymbol if !c.isModule => c
+        case c: ClassSymbol if !c.isModule =>
+          c
       }
       .find(_.name == clazz.getSimpleName)
       .orElse {
@@ -78,7 +79,8 @@ private[reflect] object ScalaSigReader {
             sig.topLevelObjects.map { obj =>
               val t = obj.infoType.asInstanceOf[TypeRefType]
               t.symbol.children collect {
-                case c: ClassSymbol => c
+                case c: ClassSymbol =>
+                  c
               } find (_.symbolInfo.name == clazz.getSimpleName)
             }.head
           }
@@ -89,7 +91,8 @@ private[reflect] object ScalaSigReader {
       c: ClassSymbol,
       argNames: List[String]): Option[MethodSymbol] = {
     val ms = c.children collect {
-      case m: MethodSymbol if m.name == "<init>" => m
+      case m: MethodSymbol if m.name == "<init>" =>
+        m
     }
     ms.find(m => m.children.map(_.name) == argNames)
   }
@@ -97,7 +100,8 @@ private[reflect] object ScalaSigReader {
   private def findField(c: ClassSymbol, name: String): Option[MethodSymbol] =
     (
       c.children collect {
-        case m: MethodSymbol if m.name == name => m
+        case m: MethodSymbol if m.name == name =>
+          m
       }
     ).headOption
 
@@ -108,16 +112,20 @@ private[reflect] object ScalaSigReader {
           symbol
         case TypeRefType(_, _, TypeRefType(ThisType(_), symbol, _) :: xs) =>
           symbol
-        case TypeRefType(_, symbol, Nil) => symbol
+        case TypeRefType(_, symbol, Nil) =>
+          symbol
         case TypeRefType(_, _, args) if typeArgIndex >= args.length =>
           findPrimitive(args(0))
         case TypeRefType(_, _, args) =>
           val ta = args(typeArgIndex)
           ta match {
-            case ref @ TypeRefType(_, _, _) => findPrimitive(ref)
-            case x                          => fail("Unexpected type info " + x)
+            case ref @ TypeRefType(_, _, _) =>
+              findPrimitive(ref)
+            case x =>
+              fail("Unexpected type info " + x)
           }
-        case x => fail("Unexpected type info " + x)
+        case x =>
+          fail("Unexpected type info " + x)
       }
     }
     toClass(
@@ -134,16 +142,20 @@ private[reflect] object ScalaSigReader {
       t match {
         case TypeRefType(ThisType(_), symbol, _) if isPrimitive(symbol) =>
           symbol
-        case TypeRefType(_, symbol, Nil) => symbol
+        case TypeRefType(_, symbol, Nil) =>
+          symbol
         case TypeRefType(_, _, args) if typeArgIndexes(ii) >= args.length =>
           findPrimitive(args(0 max args.length - 1), curr + 1)
         case TypeRefType(_, _, args) =>
           val ta = args(typeArgIndexes(ii))
           ta match {
-            case ref @ TypeRefType(_, _, _) => findPrimitive(ref, curr + 1)
-            case x                          => fail("Unexpected type info " + x)
+            case ref @ TypeRefType(_, _, _) =>
+              findPrimitive(ref, curr + 1)
+            case x =>
+              fail("Unexpected type info " + x)
           }
-        case x => fail("Unexpected type info " + x)
+        case x =>
+          fail("Unexpected type info " + x)
       }
     }
     toClass(
@@ -157,28 +169,40 @@ private[reflect] object ScalaSigReader {
       typeArgIdx: Int): Class[_] = {
     val t =
       s.infoType match {
-        case NullaryMethodType(TypeRefType(_, _, args)) => args(typeArgIdx)
+        case NullaryMethodType(TypeRefType(_, _, args)) =>
+          args(typeArgIdx)
       }
 
     def findPrimitive(t: Type): Symbol =
       t match {
-        case TypeRefType(ThisType(_), symbol, _) => symbol
-        case ref @ TypeRefType(_, _, _)          => findPrimitive(ref)
-        case x                                   => fail("Unexpected type info " + x)
+        case TypeRefType(ThisType(_), symbol, _) =>
+          symbol
+        case ref @ TypeRefType(_, _, _) =>
+          findPrimitive(ref)
+        case x =>
+          fail("Unexpected type info " + x)
       }
     toClass(findPrimitive(t))
   }
 
   private def toClass(s: Symbol) =
     s.path match {
-      case "scala.Short"   => classOf[Short]
-      case "scala.Int"     => classOf[Int]
-      case "scala.Long"    => classOf[Long]
-      case "scala.Boolean" => classOf[Boolean]
-      case "scala.Float"   => classOf[Float]
-      case "scala.Double"  => classOf[Double]
-      case "scala.Byte"    => classOf[Byte]
-      case _               => classOf[AnyRef]
+      case "scala.Short" =>
+        classOf[Short]
+      case "scala.Int" =>
+        classOf[Int]
+      case "scala.Long" =>
+        classOf[Long]
+      case "scala.Boolean" =>
+        classOf[Boolean]
+      case "scala.Float" =>
+        classOf[Float]
+      case "scala.Double" =>
+        classOf[Double]
+      case "scala.Byte" =>
+        classOf[Byte]
+      case _ =>
+        classOf[AnyRef]
     }
 
   private[this] def isPrimitive(s: Symbol) = toClass(s) != classOf[AnyRef]
@@ -236,7 +260,8 @@ private[reflect] object ScalaSigReader {
       case Nil =>
         sys.error(
           "resolveClass: expected 1+ classloaders but received empty list")
-      case List(cl) => Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
+      case List(cl) =>
+        Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
       case many => {
         try {
           var clazz: Class[_] = null
@@ -254,7 +279,8 @@ private[reflect] object ScalaSigReader {
           else
             None
         } catch {
-          case _: Throwable => None
+          case _: Throwable =>
+            None
         }
       }
     }

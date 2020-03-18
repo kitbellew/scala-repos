@@ -39,30 +39,46 @@ class UUIDField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def setFromAny(in: Any): Box[UUID] =
     in match {
-      case uid: UUID           => setBox(Full(uid))
-      case Some(uid: UUID)     => setBox(Full(uid))
-      case Full(uid: UUID)     => setBox(Full(uid))
-      case (uid: UUID) :: _    => setBox(Full(uid))
-      case s: String           => setFromString(s)
-      case Some(s: String)     => setFromString(s)
-      case Full(s: String)     => setFromString(s)
-      case null | None | Empty => setBox(defaultValueBox)
-      case f: Failure          => setBox(f)
-      case o                   => setFromString(o.toString)
+      case uid: UUID =>
+        setBox(Full(uid))
+      case Some(uid: UUID) =>
+        setBox(Full(uid))
+      case Full(uid: UUID) =>
+        setBox(Full(uid))
+      case (uid: UUID) :: _ =>
+        setBox(Full(uid))
+      case s: String =>
+        setFromString(s)
+      case Some(s: String) =>
+        setFromString(s)
+      case Full(s: String) =>
+        setFromString(s)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case f: Failure =>
+        setBox(f)
+      case o =>
+        setFromString(o.toString)
     }
 
   def setFromJValue(jvalue: JValue): Box[UUID] =
     jvalue match {
-      case JNothing | JNull if optional_?              => setBox(Empty)
-      case JObject(JField("$uuid", JString(s)) :: Nil) => setFromString(s)
-      case other                                       => setBox(FieldHelpers.expectedA("JObject", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JObject(JField("$uuid", JString(s)) :: Nil) =>
+        setFromString(s)
+      case other =>
+        setBox(FieldHelpers.expectedA("JObject", other))
     }
 
   def setFromString(in: String): Box[UUID] =
     tryo(UUID.fromString(in)) match {
-      case Full(uid: UUID) => setBox(Full(uid))
-      case f: Failure      => setBox(f)
-      case other           => setBox(Failure("Invalid UUID string: " + in))
+      case Full(uid: UUID) =>
+        setBox(Full(uid))
+      case f: Failure =>
+        setBox(f)
+      case other =>
+        setBox(Failure("Invalid UUID string: " + in))
     }
 
   private def elem =
@@ -81,14 +97,18 @@ class UUIDField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   def toForm =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def asJs =
     asJValue match {
-      case JNothing => JsNull
-      case jv       => JsRaw(compactRender(jv))
+      case JNothing =>
+        JsNull
+      case jv =>
+        JsRaw(compactRender(jv))
     }
 
   def asJValue: JValue =

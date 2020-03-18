@@ -170,9 +170,12 @@ final case class NestedPrivateVarCaseClass(x: Int) {
   private var y = NestedPrivateVarCaseClass.globalY
   override def equals(x: Any): Boolean =
     x match {
-      case null                         => false
-      case x: NestedPrivateVarCaseClass => (x.y == y) && (x.x == x.x)
-      case _                            => false
+      case null =>
+        false
+      case x: NestedPrivateVarCaseClass =>
+        (x.y == y) && (x.x == x.x)
+      case _ =>
+        false
     }
   override def toString = s"NestedPrivateVarCaseClass($x) { var y = $y }"
 }
@@ -202,8 +205,10 @@ case class OpenCaseClass(x: Int)
 final class OpenCaseClassSub(x: Int, var y: Int) extends OpenCaseClass(x) {
   override def equals(other: Any): Boolean =
     other match {
-      case value: OpenCaseClassSub => (value.y == y) && (value.x == x)
-      case _                       => false
+      case value: OpenCaseClassSub =>
+        (value.y == y) && (value.x == x)
+      case _ =>
+        false
     }
   override def toString = s"OpenCaseClassSub($x, $y)"
 }

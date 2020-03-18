@@ -22,7 +22,8 @@ class Test {
 
   def cov1(c: Cov[Cov[String]]) =
     c match {
-      case l: Cov[a] => l.head.head
+      case l: Cov[a] =>
+        l.head.head
     }
   cov1(null): String // was: found A, required String
 

@@ -34,7 +34,8 @@ object ReplicatedMetrics {
       percentPerNode.toSeq
         .sortBy(_._1)
         .map {
-          case (key, value) ⇒ key + " --> " + value + " %"
+          case (key, value) ⇒
+            key + " --> " + value + " %"
         }
         .mkString("\n")
   }
@@ -100,8 +101,10 @@ class ReplicatedMetrics(
         _ + (node -> used))
       replicator ! Update(MaxHeapKey, LWWMap.empty[Long], WriteLocal) { data ⇒
         data.get(node) match {
-          case Some(`max`) ⇒ data // unchanged
-          case _ ⇒ data + (node -> max)
+          case Some(`max`) ⇒
+            data // unchanged
+          case _ ⇒
+            data + (node -> max)
         }
       }
 
@@ -130,7 +133,8 @@ class ReplicatedMetrics(
     case Cleanup ⇒
       def cleanupRemoved(data: LWWMap[Long]): LWWMap[Long] =
         (data.entries.keySet -- nodesInCluster).foldLeft(data) {
-          case (d, key) ⇒ d - key
+          case (d, key) ⇒
+            d - key
         }
 
       replicator ! Update(UsedHeapKey, LWWMap.empty[Long], WriteLocal)(

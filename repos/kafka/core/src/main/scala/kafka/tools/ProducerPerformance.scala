@@ -385,7 +385,8 @@ object ProducerPerformance extends Logging {
       try {
         producer.close()
       } catch {
-        case e: Throwable => error("Error when closing producer", e)
+        case e: Throwable =>
+          error("Error when closing producer", e)
       }
       totalBytesSent.addAndGet(bytesSent)
       totalMessagesSent.addAndGet(nSends)

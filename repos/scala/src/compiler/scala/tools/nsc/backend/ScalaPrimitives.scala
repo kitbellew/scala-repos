@@ -449,8 +449,10 @@ abstract class ScalaPrimitives {
         addPrimitive(
           s,
           s.info.paramTypes match {
-            case tp :: _ if code == ADD && tp =:= StringTpe => CONCAT
-            case _                                          => code
+            case tp :: _ if code == ADD && tp =:= StringTpe =>
+              CONCAT
+            case _ =>
+              code
           }))
   }
 
@@ -465,7 +467,8 @@ abstract class ScalaPrimitives {
       case NEW_ZARRAY | NEW_BARRAY | NEW_SARRAY | NEW_CARRAY | NEW_IARRAY |
           NEW_LARRAY | NEW_FARRAY | NEW_DARRAY | NEW_OARRAY =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def isArrayLength(code: Int): Boolean =
@@ -474,7 +477,8 @@ abstract class ScalaPrimitives {
           IARRAY_LENGTH | LARRAY_LENGTH | FARRAY_LENGTH | DARRAY_LENGTH |
           OARRAY_LENGTH | LENGTH =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def isArrayGet(code: Int): Boolean =
@@ -482,7 +486,8 @@ abstract class ScalaPrimitives {
       case ZARRAY_GET | BARRAY_GET | SARRAY_GET | CARRAY_GET | IARRAY_GET |
           LARRAY_GET | FARRAY_GET | DARRAY_GET | OARRAY_GET | APPLY =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def isArraySet(code: Int): Boolean =
@@ -490,43 +495,56 @@ abstract class ScalaPrimitives {
       case ZARRAY_SET | BARRAY_SET | SARRAY_SET | CARRAY_SET | IARRAY_SET |
           LARRAY_SET | FARRAY_SET | DARRAY_SET | OARRAY_SET | UPDATE =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   /** Check whether the given code is a comparison operator */
   def isComparisonOp(code: Int): Boolean =
     code match {
-      case ID | NI | EQ | NE | LT | LE | GT | GE => true
+      case ID | NI | EQ | NE | LT | LE | GT | GE =>
+        true
 
-      case _ => false
+      case _ =>
+        false
     }
   def isUniversalEqualityOp(code: Int): Boolean = (code == EQ) || (code == NE)
   def isReferenceEqualityOp(code: Int): Boolean = (code == ID) || (code == NI)
 
   def isArithmeticOp(code: Int): Boolean =
     code match {
-      case POS | NEG | NOT                  => true; // unary
-      case ADD | SUB | MUL | DIV | MOD      => true; // binary
-      case OR | XOR | AND | LSL | LSR | ASR => true; // bitwise
-      case _                                => false
+      case POS | NEG | NOT =>
+        true; // unary
+      case ADD | SUB | MUL | DIV | MOD =>
+        true; // binary
+      case OR | XOR | AND | LSL | LSR | ASR =>
+        true; // bitwise
+      case _ =>
+        false
     }
 
   def isLogicalOp(code: Int): Boolean =
     code match {
-      case ZNOT | ZAND | ZOR => true
-      case _                 => false
+      case ZNOT | ZAND | ZOR =>
+        true
+      case _ =>
+        false
     }
 
   def isShiftOp(code: Int): Boolean =
     code match {
-      case LSL | LSR | ASR => true
-      case _               => false
+      case LSL | LSR | ASR =>
+        true
+      case _ =>
+        false
     }
 
   def isBitwiseOp(code: Int): Boolean =
     code match {
-      case OR | XOR | AND => true
-      case _              => false
+      case OR | XOR | AND =>
+        true
+      case _ =>
+        false
     }
 
   def isPrimitive(sym: Symbol): Boolean = primitives contains sym
@@ -554,7 +572,8 @@ abstract class ScalaPrimitives {
     def elementType =
       enteringTyper {
         val arrayParent = tpe :: tpe.parents collectFirst {
-          case TypeRef(_, ArrayClass, elem :: Nil) => elem
+          case TypeRef(_, ArrayClass, elem :: Nil) =>
+            elem
         }
         arrayParent getOrElse sys.error(
           fun.fullName + " : " + (tpe :: tpe.baseTypeSeq.toList).mkString(", "))
@@ -564,45 +583,72 @@ abstract class ScalaPrimitives {
 
       case APPLY =>
         typeToBType(elementType) match {
-          case BOOL                          => ZARRAY_GET
-          case BYTE                          => BARRAY_GET
-          case SHORT                         => SARRAY_GET
-          case CHAR                          => CARRAY_GET
-          case INT                           => IARRAY_GET
-          case LONG                          => LARRAY_GET
-          case FLOAT                         => FARRAY_GET
-          case DOUBLE                        => DARRAY_GET
-          case _: ClassBType | _: ArrayBType => OARRAY_GET
+          case BOOL =>
+            ZARRAY_GET
+          case BYTE =>
+            BARRAY_GET
+          case SHORT =>
+            SARRAY_GET
+          case CHAR =>
+            CARRAY_GET
+          case INT =>
+            IARRAY_GET
+          case LONG =>
+            LARRAY_GET
+          case FLOAT =>
+            FARRAY_GET
+          case DOUBLE =>
+            DARRAY_GET
+          case _: ClassBType | _: ArrayBType =>
+            OARRAY_GET
           case _ =>
             abort("Unexpected array element type: " + elementType)
         }
 
       case UPDATE =>
         typeToBType(elementType) match {
-          case BOOL                          => ZARRAY_SET
-          case BYTE                          => BARRAY_SET
-          case SHORT                         => SARRAY_SET
-          case CHAR                          => CARRAY_SET
-          case INT                           => IARRAY_SET
-          case LONG                          => LARRAY_SET
-          case FLOAT                         => FARRAY_SET
-          case DOUBLE                        => DARRAY_SET
-          case _: ClassBType | _: ArrayBType => OARRAY_SET
+          case BOOL =>
+            ZARRAY_SET
+          case BYTE =>
+            BARRAY_SET
+          case SHORT =>
+            SARRAY_SET
+          case CHAR =>
+            CARRAY_SET
+          case INT =>
+            IARRAY_SET
+          case LONG =>
+            LARRAY_SET
+          case FLOAT =>
+            FARRAY_SET
+          case DOUBLE =>
+            DARRAY_SET
+          case _: ClassBType | _: ArrayBType =>
+            OARRAY_SET
           case _ =>
             abort("Unexpected array element type: " + elementType)
         }
 
       case LENGTH =>
         typeToBType(elementType) match {
-          case BOOL                          => ZARRAY_LENGTH
-          case BYTE                          => BARRAY_LENGTH
-          case SHORT                         => SARRAY_LENGTH
-          case CHAR                          => CARRAY_LENGTH
-          case INT                           => IARRAY_LENGTH
-          case LONG                          => LARRAY_LENGTH
-          case FLOAT                         => FARRAY_LENGTH
-          case DOUBLE                        => DARRAY_LENGTH
-          case _: ClassBType | _: ArrayBType => OARRAY_LENGTH
+          case BOOL =>
+            ZARRAY_LENGTH
+          case BYTE =>
+            BARRAY_LENGTH
+          case SHORT =>
+            SARRAY_LENGTH
+          case CHAR =>
+            CARRAY_LENGTH
+          case INT =>
+            IARRAY_LENGTH
+          case LONG =>
+            LARRAY_LENGTH
+          case FLOAT =>
+            FARRAY_LENGTH
+          case DOUBLE =>
+            DARRAY_LENGTH
+          case _: ClassBType | _: ArrayBType =>
+            OARRAY_LENGTH
           case _ =>
             abort("Unexpected array element type: " + elementType)
         }

@@ -26,14 +26,16 @@ object ComparingUtil {
         .search(clazz, new LocalSearchScope(clazz.getContainingFile), false)
         .toArray(PsiClass.EMPTY_ARRAY)
         .collect {
-          case x: ScTypeDefinition => x
+          case x: ScTypeDefinition =>
+            x
         }
 
     def sealedAndAllChildrenAreIrreconcilable = {
       val areSealed = classes.forall {
         case modOwner: ScModifierListOwner =>
           modOwner.hasModifierProperty("sealed")
-        case _ => false
+        case _ =>
+          false
       }
       def childrenAreIrreconcilable =
         inheritorsInSameFile(clazz1).forall { c1 =>
@@ -92,11 +94,14 @@ object ComparingUtil {
               -1
             else
               0
-          case _ => 0
+          case _ =>
+            0
         }
       tps1.zip(tps2).zip(tparams.map(getVariance)) exists {
-        case ((t1, t2), vr) => isNeverSubArg(t1, t2, vr)
-        case _              => false
+        case ((t1, t2), vr) =>
+          isNeverSubArg(t1, t2, vr)
+        case _ =>
+          false
       }
     }
 
@@ -104,7 +109,8 @@ object ComparingUtil {
       (tp1, tp2) match {
         case (ScParameterizedType(_, args1), ScParameterizedType(_, args2)) =>
           isNeverSubArgs(args1, args2, clazz2.getTypeParameters)
-        case _ => false
+        case _ =>
+          false
       }
     }
 

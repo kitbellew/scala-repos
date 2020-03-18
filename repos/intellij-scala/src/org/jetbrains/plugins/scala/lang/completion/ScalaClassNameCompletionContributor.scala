@@ -123,8 +123,10 @@ object ScalaClassNameCompletionContributor {
           classOf[ScNewTemplateDefinition])
         //todo: probably we need to remove all abstracts here according to variance
         newExpr.expectedTypes().map {
-          case ScAbstractType(_, lower, upper) => upper
-          case tp                              => tp
+          case ScAbstractType(_, lower, upper) =>
+            upper
+          case tp =>
+            tp
         }
       } else
         Array.empty
@@ -139,7 +141,8 @@ object ScalaClassNameCompletionContributor {
             "s" + position.getText,
             position.getContext.getContext)
           (interpolated.findElementAt(offsetInString), true)
-        case _ => (dummyPosition, false)
+        case _ =>
+          (dummyPosition, false)
       }
     val invocationCount = parameters.getInvocationCount
     if (!inString && !ScalaPsiUtil
@@ -209,7 +212,8 @@ object ScalaClassNameCompletionContributor {
           typeToImport.element match {
             case member: PsiMember =>
               ResolveUtils.isAccessible(member, position, forCompletion = true)
-            case _ => true
+            case _ =>
+              true
           }
         )
       if (!isAccessible)
@@ -221,8 +225,9 @@ object ScalaClassNameCompletionContributor {
         case _: ScClass | _: ScTrait | _: ScTypeAlias
             if !isInImport && !onlyClasses =>
           return
-        case _: ScObject if !isInImport && onlyClasses => return
-        case _                                         =>
+        case _: ScObject if !isInImport && onlyClasses =>
+          return
+        case _ =>
       }
       val renamed = renamesMap
         .get(typeToImport.name)
@@ -302,9 +307,11 @@ object ScalaClassNameCompletionContributor {
       if !prefixMatcher.prefixMatches(elem.name)
     } {
       elem match {
-        case clazz: PsiClass => addTypeForCompletion(ClassTypeToImport(clazz))
-        case ta: ScTypeAlias => addTypeForCompletion(TypeAliasToImport(ta))
-        case _               =>
+        case clazz: PsiClass =>
+          addTypeForCompletion(ClassTypeToImport(clazz))
+        case ta: ScTypeAlias =>
+          addTypeForCompletion(TypeAliasToImport(ta))
+        case _ =>
       }
     }
 

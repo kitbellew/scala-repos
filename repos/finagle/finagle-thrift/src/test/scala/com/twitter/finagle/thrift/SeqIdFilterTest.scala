@@ -60,8 +60,10 @@ class SeqIdFilterTest
             getmsg(req.getValue.message).seqid)))
 
       f.poll match {
-        case Some(Return(buf)) => assert(getmsg(buf).seqid == seqId)
-        case _                 => fail()
+        case Some(Return(buf)) =>
+          assert(getmsg(buf).seqid == seqId)
+        case _ =>
+          fail()
       }
     }
 
@@ -93,8 +95,10 @@ class SeqIdFilterTest
         p.setValue(mkmsg(new TMessage("proc", TMessageType.REPLY, 1111)))
         assert(
           f.poll match {
-            case Some(Throw(SeqMismatchException(1111, expected))) => true
-            case _                                                 => false
+            case Some(Throw(SeqMismatchException(1111, expected))) =>
+              true
+            case _ =>
+              false
           })
       }
     }
@@ -103,7 +107,8 @@ class SeqIdFilterTest
       filtered(new ThriftClientRequest(bytes, false)).poll match {
         case Some(Throw(exc: IllegalArgumentException)) =>
           assert(exc.getMessage == exceptionMsg)
-        case _ => fail()
+        case _ =>
+          fail()
       }
     }
 

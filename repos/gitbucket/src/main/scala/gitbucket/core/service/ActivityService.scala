@@ -29,10 +29,12 @@ trait ActivityService {
           }
       }
       .sortBy {
-        case (t1, t2) => t1.activityId desc
+        case (t1, t2) =>
+          t1.activityId desc
       }
       .map {
-        case (t1, t2) => t1
+        case (t1, t2) =>
+          t1
       }
       .take(30)
       .list
@@ -42,13 +44,16 @@ trait ActivityService {
       .innerJoin(Repositories)
       .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
       .filter {
-        case (t1, t2) => t2.isPrivate === false.bind
+        case (t1, t2) =>
+          t2.isPrivate === false.bind
       }
       .sortBy {
-        case (t1, t2) => t1.activityId desc
+        case (t1, t2) =>
+          t1.activityId desc
       }
       .map {
-        case (t1, t2) => t1
+        case (t1, t2) =>
+          t1
       }
       .take(30)
       .list
@@ -63,10 +68,12 @@ trait ActivityService {
           (t2.isPrivate === false.bind) || (t2.userName inSetBind owners)
       }
       .sortBy {
-        case (t1, t2) => t1.activityId desc
+        case (t1, t2) =>
+          t1.activityId desc
       }
       .map {
-        case (t1, t2) => t1
+        case (t1, t2) =>
+          t1
       }
       .take(30)
       .list

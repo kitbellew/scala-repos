@@ -43,8 +43,10 @@ package object trees extends Logging {
   class TreeNodeRef(val obj: TreeNode[_]) {
     override def equals(o: Any): Boolean =
       o match {
-        case that: TreeNodeRef => that.obj.eq(obj)
-        case _                 => false
+        case that: TreeNodeRef =>
+          that.obj.eq(obj)
+        case _ =>
+          false
       }
 
     override def hashCode: Int =

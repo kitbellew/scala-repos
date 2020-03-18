@@ -22,19 +22,22 @@ trait FutureInstances extends FutureInstances1 {
       def handleErrorWith[A](fea: Future[A])(
           f: Throwable => Future[A]): Future[A] =
         fea.recoverWith {
-          case t => f(t)
+          case t =>
+            f(t)
         }
 
       def raiseError[A](e: Throwable): Future[A] = Future.failed(e)
       override def handleError[A](fea: Future[A])(
           f: Throwable => A): Future[A] =
         fea.recover {
-          case t => f(t)
+          case t =>
+            f(t)
         }
 
       override def attempt[A](fa: Future[A]): Future[Throwable Xor A] =
         (fa map Xor.right) recover {
-          case NonFatal(t) => Xor.left(t)
+          case NonFatal(t) =>
+            Xor.left(t)
         }
 
       override def recover[A](fa: Future[A])(
@@ -72,7 +75,8 @@ private[cats] class FutureSemigroup[A: Semigroup](implicit ec: ExecutionContext)
     extends Semigroup[Future[A]] {
   def combine(fx: Future[A], fy: Future[A]): Future[A] =
     (fx zip fy).map {
-      case (x, y) => x |+| y
+      case (x, y) =>
+        x |+| y
     }
 }
 
@@ -88,6 +92,7 @@ private[cats] class FutureGroup[A](implicit A: Group[A], ec: ExecutionContext)
   def inverse(fx: Future[A]): Future[A] = fx.map(_.inverse)
   override def remove(fx: Future[A], fy: Future[A]): Future[A] =
     (fx zip fy).map {
-      case (x, y) => x |-| y
+      case (x, y) =>
+        x |-| y
     }
 }

@@ -9,7 +9,8 @@ object Test {
     try {
       catching(classOf[NumberFormatException]) withTry (sys.error("O NOES"))
     } catch {
-      case t: Throwable => println(t.getMessage)
+      case t: Throwable =>
+        println(t.getMessage)
     }
     println(nonFatalCatch withTry ("Hi".toDouble))
   }

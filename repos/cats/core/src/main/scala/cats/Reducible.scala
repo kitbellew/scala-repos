@@ -178,8 +178,10 @@ abstract class NonEmptyReducible[F[_], G[_]](implicit G: Foldable[G])
     Always(split(fa)).flatMap {
       case (a, ga) =>
         G.reduceRightToOption(ga)(f)(g).flatMap {
-          case Some(b) => g(a, Now(b))
-          case None    => Later(f(a))
+          case Some(b) =>
+            g(a, Now(b))
+          case None =>
+            Later(f(a))
         }
     }
 }

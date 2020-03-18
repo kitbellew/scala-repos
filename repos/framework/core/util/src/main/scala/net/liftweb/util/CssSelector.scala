@@ -105,7 +105,8 @@ final case class SurroundKids() extends SubNode with WithKids {
           e.scope,
           e.minimizeEmpty,
           e.child ++ original: _*)
-      case x => x
+      case x =>
+        x
     }
 
     if (changed)
@@ -168,8 +169,10 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private def internalParse(toParse: String): Box[CssSelector] = {
     val reader: Input = new CharSequenceReader(toParse, 0)
     topParser(reader) match {
-      case Success(v, _) => Full(v)
-      case x: NoSuccess  => ParamFailure(x.msg, Empty, Empty, x)
+      case Success(v, _) =>
+        Full(v)
+      case x: NoSuccess =>
+        ParamFailure(x.msg, Empty, Empty, x)
     }
   }
 
@@ -183,9 +186,12 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
       sn: Option[SubNode]): CssSelector = {
     (all, sn) match {
       // case (Nil, Some())
-      case (r :: Nil, None)     => r
-      case (r :: Nil, Some(sn)) => r.withSubnode(sn)
-      case (lst, None)          => lst.reduceRight((b, a) => EnclosedSelector(b, a))
+      case (r :: Nil, None) =>
+        r
+      case (r :: Nil, Some(sn)) =>
+        r.withSubnode(sn)
+      case (lst, None) =>
+        lst.reduceRight((b, a) => EnclosedSelector(b, a))
       case (lst, Some(sn)) =>
         (lst.dropRight(1) ::: lst.takeRight(1).map(_.withSubnode(sn)))
           .reduceRight((b, a) => EnclosedSelector(b, a))
@@ -205,65 +211,86 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
           _idMatch | _dataNameMatch | _nameMatch | _classMatch | _attrMatch | _elemMatch |
             _colonMatch | _starMatch
         ) <~ (rep1(' ') | atEnd)) ~ opt(subNode)) ^^ {
-      case (one :: Nil) ~ sn => fixAll(List(one), sn)
+      case (one :: Nil) ~ sn =>
+        fixAll(List(one), sn)
       case all ~ None if all.takeRight(1).head == StarSelector(Empty, false) =>
         fixAll(all.dropRight(1), Some(KidsSubNode()))
-      case all ~ sn => fixAll(all, sn)
+      case all ~ sn =>
+        fixAll(all, sn)
     }
 
   private lazy val _colonMatch: Parser[CssSelector] =
     (':' ~> id) ^? {
-      case "button"   => AttrSelector("type", "button", Empty)
-      case "checkbox" => AttrSelector("type", "checkbox", Empty)
-      case "file"     => AttrSelector("type", "file", Empty)
-      case "password" => AttrSelector("type", "password", Empty)
-      case "radio"    => AttrSelector("type", "radio", Empty)
-      case "reset"    => AttrSelector("type", "reset", Empty)
-      case "submit"   => AttrSelector("type", "submit", Empty)
-      case "text"     => AttrSelector("type", "text", Empty)
+      case "button" =>
+        AttrSelector("type", "button", Empty)
+      case "checkbox" =>
+        AttrSelector("type", "checkbox", Empty)
+      case "file" =>
+        AttrSelector("type", "file", Empty)
+      case "password" =>
+        AttrSelector("type", "password", Empty)
+      case "radio" =>
+        AttrSelector("type", "radio", Empty)
+      case "reset" =>
+        AttrSelector("type", "reset", Empty)
+      case "submit" =>
+        AttrSelector("type", "submit", Empty)
+      case "text" =>
+        AttrSelector("type", "text", Empty)
     }
 
   private lazy val _idMatch: Parser[CssSelector] = '#' ~> id ^^ {
-    case id => IdSelector(id, Empty)
+    case id =>
+      IdSelector(id, Empty)
   }
 
   private lazy val _nameMatch: Parser[CssSelector] = '@' ~> id ^^ {
-    case name => NameSelector(name, Empty)
+    case name =>
+      NameSelector(name, Empty)
   }
 
   private lazy val _elemMatch: Parser[CssSelector] = id ^^ {
-    case elem => ElemSelector(elem, Empty)
+    case elem =>
+      ElemSelector(elem, Empty)
   }
 
   private lazy val _starMatch: Parser[CssSelector] = (
     '*' ^^ {
-      case sn => StarSelector(Empty, false)
+      case sn =>
+        StarSelector(Empty, false)
     }
   ) | (
     '^' ^^ {
-      case sn => StarSelector(Empty, true)
+      case sn =>
+        StarSelector(Empty, true)
     }
   )
 
   private lazy val _dataNameMatch: Parser[CssSelector] = ';' ~> id ^^ {
-    case name => AttrSelector("data-name", name, Empty)
+    case name =>
+      AttrSelector("data-name", name, Empty)
   }
 
   private lazy val _classMatch: Parser[CssSelector] =
     '.' ~> attrName ^^ {
-      case cls => ClassSelector(cls, Empty)
+      case cls =>
+        ClassSelector(cls, Empty)
     }
 
   private lazy val _attrMatch: Parser[CssSelector] =
     attrName ~ '=' ~ attrConst ^^ {
-      case "id" ~ _ ~ const   => IdSelector(const, Empty)
-      case "name" ~ _ ~ const => NameSelector(const, Empty)
-      case n ~ _ ~ v          => AttrSelector(n, v, Empty)
+      case "id" ~ _ ~ const =>
+        IdSelector(const, Empty)
+      case "name" ~ _ ~ const =>
+        NameSelector(const, Empty)
+      case n ~ _ ~ v =>
+        AttrSelector(n, v, Empty)
     }
 
   private lazy val id: Parser[String] = letter ~
     rep(letter | number | '-' | '_' | ':' | '.') ^^ {
-    case first ~ rest => (first :: rest).mkString
+    case first ~ rest =>
+      (first :: rest).mkString
   }
 
   private def isLetter(c: Char): Boolean = c.isLetter
@@ -303,7 +330,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
 
   private lazy val attrName: Parser[String] = (letter | '_' | ':') ~
     rep(letter | number | '-' | '_' | ':' | '.') ^^ {
-    case first ~ rest => (first :: rest).mkString
+    case first ~ rest =>
+      (first :: rest).mkString
   }
 
   private lazy val attrConst: Parser[String] = {
@@ -316,7 +344,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
               c != '\'' && c >= ' '
             })) <~ '\''
       ) ^^ {
-        case s => s.mkString
+        case s =>
+          s.mkString
       }
     ) |
       (
@@ -328,7 +357,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
                 c != '"' && c >= ' '
               })) <~ '"'
         ) ^^ {
-          case s => s.mkString
+          case s =>
+            s.mkString
         }
       ) |
       (
@@ -338,7 +368,8 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
             (c: Char) => {
               c != '\'' && c != '"' && c > ' '
             })) ^^ {
-          case s => s.mkString
+          case s =>
+            s.mkString
         }
       )
 

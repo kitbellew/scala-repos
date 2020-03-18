@@ -53,7 +53,8 @@ class FileUploadTestHelpersTestServlet
   }
 
   error {
-    case e => e.printStackTrace()
+    case e =>
+      e.printStackTrace()
   }
 }
 

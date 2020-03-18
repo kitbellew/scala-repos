@@ -10,8 +10,10 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
 
   def <:::(bs: IList[A]): NonEmptyList[A] =
     bs match {
-      case INil()       => this
-      case ICons(b, bs) => nel(b, bs ::: list)
+      case INil() =>
+        this
+      case ICons(b, bs) =>
+        nel(b, bs ::: list)
     }
 
   def :::>(bs: IList[A]): NonEmptyList[A] = nel(head, tail ::: bs)
@@ -34,18 +36,21 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
 
   def distinct(implicit A: Order[A]): NonEmptyList[A] =
     (list.distinct: @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
+      case ICons(x, xs) =>
+        nel(x, xs)
     }
 
   def traverse1[F[_], B](f: A => F[B])(implicit
       F: Apply[F]): F[NonEmptyList[B]] = {
     tail match {
-      case INil() => F.map(f(head))(nel(_, INil()))
+      case INil() =>
+        F.map(f(head))(nel(_, INil()))
       case ICons(b, bs) =>
         F.apply2(
           f(head),
           OneAnd.oneAndTraverse[IList].traverse1(OneAnd(b, bs))(f)) {
-          case (h, t) => nel(h, t.head :: t.tail)
+          case (h, t) =>
+            nel(h, t.head :: t.tail)
         }
     }
   }
@@ -59,8 +64,10 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
   def zipperEnd: Zipper[A] = {
     import Stream._
     tail.reverse match {
-      case INil()       => zipper(empty, head, empty)
-      case ICons(t, ts) => zipper(ts.toStream :+ head, t, empty)
+      case INil() =>
+        zipper(empty, head, empty)
+      case ICons(t, ts) =>
+        zipper(ts.toStream :+ head, t, empty)
     }
   }
 
@@ -78,33 +85,39 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
         as: NonEmptyList[A],
         accum: IList[NonEmptyList[A]]): NonEmptyList[NonEmptyList[A]] =
       as.tail match {
-        case INil()      => nel(as, accum).reverse
-        case ICons(h, t) => tails0(nel(h, t), as :: accum)
+        case INil() =>
+          nel(as, accum).reverse
+        case ICons(h, t) =>
+          tails0(nel(h, t), as :: accum)
       }
     tails0(this, IList.empty)
   }
 
   def reverse: NonEmptyList[A] =
     (list.reverse: @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
+      case ICons(x, xs) =>
+        nel(x, xs)
     }
 
   /** @since 7.0.2 */
   def sortBy[B](f: A => B)(implicit o: Order[B]): NonEmptyList[A] =
     (list.sortBy(f): @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
+      case ICons(x, xs) =>
+        nel(x, xs)
     }
 
   /** @since 7.0.2 */
   def sortWith(lt: (A, A) => Boolean): NonEmptyList[A] =
     (list.toList.sortWith(lt): @unchecked) match {
-      case x :: xs => nel(x, IList.fromList(xs))
+      case x :: xs =>
+        nel(x, IList.fromList(xs))
     }
 
   /** @since 7.0.2 */
   def sorted(implicit o: Order[A]): NonEmptyList[A] =
     (list.sorted(o): @unchecked) match {
-      case ICons(x, xs) => nel(x, xs)
+      case ICons(x, xs) =>
+        nel(x, xs)
     }
 
   def size: Int = 1 + tail.length
@@ -125,8 +138,10 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
     @annotation.tailrec
     def loop(as: IList[A], i: Int, acc: IList[(A, Int)]): IList[(A, Int)] =
       as match {
-        case ICons(x, y) => loop(y, i + 1, (x, i) :: acc)
-        case _           => acc.reverse
+        case ICons(x, y) =>
+          loop(y, i + 1, (x, i) :: acc)
+        case _ =>
+          acc.reverse
       }
     new NonEmptyList((head, 0), loop(tail, 1, IList.empty))
   }
@@ -135,8 +150,10 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
 
   override def equals(any: Any): Boolean =
     any match {
-      case that: NonEmptyList[_] => this.list == that.list
-      case _                     => false
+      case that: NonEmptyList[_] =>
+        this.list == that.list
+      case _ =>
+        false
     }
 
   override def hashCode: Int = list.hashCode
@@ -153,8 +170,10 @@ object NonEmptyList extends NonEmptyListInstances {
   def nels[A](h: A, t: A*): NonEmptyList[A] = nel(h, IList(t: _*))
 
   def lift[A, B](f: NonEmptyList[A] => B): IList[A] => Option[B] = {
-    case INil() ⇒ None
-    case ICons(h, t) ⇒ Some(f(NonEmptyList.nel(h, t)))
+    case INil() ⇒
+      None
+    case ICons(h, t) ⇒
+      Some(f(NonEmptyList.nel(h, t)))
   }
 }
 
@@ -248,7 +267,8 @@ sealed abstract class NonEmptyListInstances extends NonEmptyListInstances0 {
 
       def tailrecM[A, B](f: A => NonEmptyList[A \/ B])(a: A): NonEmptyList[B] =
         (BindRec[IList].tailrecM[A, B](a => f(a).list)(a): @unchecked) match {
-          case ICons(h, t) => NonEmptyList.nel(h, t)
+          case ICons(h, t) =>
+            NonEmptyList.nel(h, t)
         }
     }
 

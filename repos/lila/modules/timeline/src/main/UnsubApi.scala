@@ -17,7 +17,8 @@ private[timeline] final class UnsubApi(coll: Coll) {
     else
       coll.remove(select(channel, userId)).void
   } recover {
-    case e: Exception => ()
+    case e: Exception =>
+      ()
   }
 
   def get(channel: String, userId: String): Fu[Boolean] =

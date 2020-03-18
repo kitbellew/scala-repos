@@ -250,7 +250,8 @@ class RegexMatcherTest {
           block
           throw new Error("No exception thrown")
         } catch {
-          case e: Throwable => e
+          case e: Throwable =>
+            e
         }
 
       assertEquals(

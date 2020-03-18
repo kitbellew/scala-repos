@@ -18,7 +18,8 @@ object Test {
       val i: Int = Magic.magic("42");
       Console.println(i);
     } catch {
-      case ex: Throwable => ex.printStackTrace()
+      case ex: Throwable =>
+        ex.printStackTrace()
     }
   }
 }

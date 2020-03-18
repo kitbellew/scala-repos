@@ -23,13 +23,15 @@ class ScalaRunConfigurationRefactoringListenerProvider
     new RefactoringElementListener {
       def elementMoved(newElement: PsiElement) =
         newElement match {
-          case td: ScTemplateDefinition => listener.elementMoved(wrap(td))
-          case _                        =>
+          case td: ScTemplateDefinition =>
+            listener.elementMoved(wrap(td))
+          case _ =>
         }
       def elementRenamed(newElement: PsiElement) =
         newElement match {
-          case td: ScTemplateDefinition => listener.elementRenamed(wrap(td))
-          case _                        =>
+          case td: ScTemplateDefinition =>
+            listener.elementRenamed(wrap(td))
+          case _ =>
         }
     }
   }
@@ -39,7 +41,8 @@ class ScalaRunConfigurationRefactoringListenerProvider
       case td: ScTemplateDefinition =>
         val wrapper = wrap(td)
         decorate(super.getListener(wrapper))
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

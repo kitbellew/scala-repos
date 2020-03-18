@@ -48,8 +48,10 @@ object Analytics extends Logging {
     val fname = args(1)
     val optionsList = args.drop(2).map { arg =>
       arg.dropWhile(_ == '-').split('=') match {
-        case Array(opt, v) => (opt -> v)
-        case _             => throw new IllegalArgumentException("Invalid argument: " + arg)
+        case Array(opt, v) =>
+          (opt -> v)
+        case _ =>
+          throw new IllegalArgumentException("Invalid argument: " + arg)
       }
     }
     val options = mutable.Map(optionsList: _*)
@@ -107,8 +109,10 @@ object Analytics extends Logging {
         val pr =
           (
             numIterOpt match {
-              case Some(numIter) => PageRank.run(graph, numIter)
-              case None          => PageRank.runUntilConvergence(graph, tol)
+              case Some(numIter) =>
+                PageRank.run(graph, numIter)
+              case None =>
+                PageRank.runUntilConvergence(graph, tol)
             }
           ).vertices.cache()
 
@@ -117,7 +121,8 @@ object Analytics extends Logging {
         if (!outFname.isEmpty) {
           logWarning("Saving pageranks of pages to " + outFname)
           pr.map {
-              case (id, r) => id + "\t" + r
+              case (id, r) =>
+                id + "\t" + r
             }
             .saveAsTextFile(outFname)
         }
@@ -152,7 +157,8 @@ object Analytics extends Logging {
         println(
           "Components: " + cc.vertices
             .map {
-              case (vid, data) => data
+              case (vid, data) =>
+                data
             }
             .distinct())
         sc.stop()
@@ -184,7 +190,8 @@ object Analytics extends Logging {
         println(
           "Triangles: " + triangles.vertices
             .map {
-              case (vid, data) => data.toLong
+              case (vid, data) =>
+                data.toLong
             }
             .reduce(_ + _) / 3)
         sc.stop()

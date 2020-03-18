@@ -55,14 +55,16 @@ class ScalaPullUpProcessor(
     val extendsBlock = targetClass.extendsBlock
     val templateBody =
       extendsBlock.templateBody match {
-        case Some(tb) => tb
+        case Some(tb) =>
+          tb
         case None =>
           extendsBlock.add(ScalaPsiElementFactory.createTemplateBody(manager))
       }
     val anchor = templateBody.getLastChild
 
     val collectImportScope = memberInfos.collect {
-      case ScalaExtractMemberInfo(m, false) => m
+      case ScalaExtractMemberInfo(m, false) =>
+        m
     } //extracted declarations are handled with ScalaPsiUtil.adjustTypes
 
     ScalaChangeContextUtil.encodeContextInfo(collectImportScope)
@@ -133,14 +135,17 @@ class ScalaPullUpProcessor(
         val shift = "override ".length
         ScalaChangeContextUtil.shiftAssociations(copy, -shift)
         Seq(copy)
-      case _ => Seq(info.getMember.copy().asInstanceOf[ScMember])
+      case _ =>
+        Seq(info.getMember.copy().asInstanceOf[ScMember])
     }
   }
 
   private def handleOldMember(info: ScalaExtractMemberInfo) = {
     info match {
-      case ScalaExtractMemberInfo(m: ScDeclaration, _) => m.delete()
-      case ScalaExtractMemberInfo(m, false)            => m.delete()
+      case ScalaExtractMemberInfo(m: ScDeclaration, _) =>
+        m.delete()
+      case ScalaExtractMemberInfo(m, false) =>
+        m.delete()
       case ScalaExtractMemberInfo(m, true) =>
         m.setModifierProperty("override", value = true)
     }
@@ -150,13 +155,16 @@ class ScalaPullUpProcessor(
     def textForBinding(b: ScBindingPattern) = {
       val typeText =
         b.getType(TypingContext.empty) match {
-          case Success(t, _) => s": ${t.canonicalText}"
-          case _             => ""
+          case Success(t, _) =>
+            s": ${t.canonicalText}"
+          case _ =>
+            ""
         }
       s"${b.name}$typeText"
     }
     m match {
-      case decl: ScDeclaration => Seq(decl.getText)
+      case decl: ScDeclaration =>
+        Seq(decl.getText)
       case funDef: ScFunctionDefinition =>
         val copy = funDef.copy().asInstanceOf[ScFunctionDefinition]
         copy.setModifierProperty("override", value = false)
@@ -174,12 +182,14 @@ class ScalaPullUpProcessor(
       case valDef: ScPatternDefinition =>
         val copy = valDef.copy().asInstanceOf[ScPatternDefinition]
         copy.bindings.collect {
-          case b: ScBindingPattern => "val " + textForBinding(b)
+          case b: ScBindingPattern =>
+            "val " + textForBinding(b)
         }
       case varDef: ScVariableDefinition =>
         val copy = varDef.copy().asInstanceOf[ScVariableDefinition]
         copy.bindings.collect {
-          case b: ScBindingPattern => "var " + textForBinding(b)
+          case b: ScBindingPattern =>
+            "var " + textForBinding(b)
         }
       case ta: ScTypeAliasDefinition =>
         val copy = ta.copy().asInstanceOf[ScTypeAliasDefinition]

@@ -127,7 +127,8 @@ private[spark] class ZookeeperMesosClusterPersistenceEngine(
       val fileData = zk.getData().forPath(zkPath)
       Some(Utils.deserialize[T](fileData))
     } catch {
-      case e: NoNodeException => None
+      case e: NoNodeException =>
+        None
       case e: Exception => {
         logWarning("Exception while reading persisted file, deleting", e)
         zk.delete().forPath(zkPath)

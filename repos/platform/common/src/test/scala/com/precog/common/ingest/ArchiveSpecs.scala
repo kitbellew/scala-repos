@@ -44,7 +44,8 @@ class ArchiveSpecs
   "serialization of an archive" should {
     "read back the data that was written" in check { in: Archive =>
       in.serialize.validated[Archive] must beLike {
-        case Success(out) => in must_== out
+        case Success(out) =>
+          in must_== out
       }
     }
 
@@ -63,7 +64,8 @@ class ArchiveSpecs
 ]""")
 
       val results = input.map(_.validated[Archive]).collect {
-        case Success(result) => result
+        case Success(result) =>
+          result
       }
 
       results.size mustEqual 9
@@ -85,7 +87,8 @@ class ArchiveSpecs
 ]""")
 
       val results = input.map(_.validated[Archive]).collect {
-        case Success(result) => result
+        case Success(result) =>
+          result
       }
 
       results.size mustEqual 5
@@ -103,7 +106,8 @@ class ArchiveSpecs
 ]""")
 
       val results = input.map(_.validated[Archive]).collect {
-        case Success(result) => result
+        case Success(result) =>
+          result
       }
 
       results.size mustEqual 5

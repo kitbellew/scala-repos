@@ -4,7 +4,8 @@ object Test extends App {
 
 // inferred type should be Map[String, Int]
   val res = a collect {
-    case (p, Some(a)) => (p, a)
+    case (p, Some(a)) =>
+      (p, a)
   }
 
 // variations: const target -> switch, non-const -> normal match, char target --> scrut needs toInt,
@@ -21,11 +22,16 @@ object Test extends App {
 
     def acceptClosingAngle(in: Char) {
       val closers: PartialFunction[Char, Char] = {
-        case GTGTGTEQ => GTGTEQ
-        case GTGTGT   => GTGT
-        case GTGTEQ   => GTEQ
-        case GTGT     => GT
-        case GTEQ     => ASSIGN
+        case GTGTGTEQ =>
+          GTGTEQ
+        case GTGTGT =>
+          GTGT
+        case GTGTEQ =>
+          GTEQ
+        case GTGT =>
+          GT
+        case GTEQ =>
+          ASSIGN
       }
       if (closers isDefinedAt in)
         println(closers(in))
@@ -52,11 +58,16 @@ object Test extends App {
       val closers: PartialFunction[Char, Char] =
         x =>
           x match {
-            case GTGTGTEQ => GTGTEQ
-            case GTGTGT   => GTGT
-            case GTGTEQ   => GTEQ
-            case GTGT     => GT
-            case GTEQ     => ASSIGN
+            case GTGTGTEQ =>
+              GTGTEQ
+            case GTGTGT =>
+              GTGT
+            case GTGTEQ =>
+              GTEQ
+            case GTGT =>
+              GT
+            case GTEQ =>
+              ASSIGN
           }
       if (closers isDefinedAt in)
         println(closers(in))
@@ -83,11 +94,16 @@ object Test extends App {
       val closers: PartialFunction[Char, Char] =
         x =>
           x match {
-            case GTGTGTEQ => GTGTEQ
-            case GTGTGT   => GTGT
-            case GTGTEQ   => GTEQ
-            case GTGT     => GT
-            case GTEQ     => ASSIGN
+            case GTGTGTEQ =>
+              GTGTEQ
+            case GTGTGT =>
+              GTGT
+            case GTGTEQ =>
+              GTEQ
+            case GTGT =>
+              GT
+            case GTEQ =>
+              ASSIGN
           }
       if (closers isDefinedAt in)
         println(closers(in))
@@ -112,11 +128,16 @@ object Test extends App {
 
     def acceptClosingAngle(in: Char) {
       val closers: PartialFunction[Char, Char] = {
-        case GTGTGTEQ => GTGTEQ
-        case GTGTGT   => GTGT
-        case GTGTEQ   => GTEQ
-        case GTGT     => GT
-        case GTEQ     => ASSIGN
+        case GTGTGTEQ =>
+          GTGTEQ
+        case GTGTGT =>
+          GTGT
+        case GTGTEQ =>
+          GTEQ
+        case GTGT =>
+          GT
+        case GTEQ =>
+          ASSIGN
       }
       if (closers isDefinedAt in)
         println(closers(in))
@@ -146,11 +167,16 @@ object Test extends App {
             println("hai!");
             (x + 1)
           } match {
-            case GTGTGTEQ => GTGTEQ
-            case GTGTGT   => GTGT
-            case GTGTEQ   => GTEQ
-            case GTGT     => GT
-            case GTEQ     => ASSIGN
+            case GTGTGTEQ =>
+              GTGTEQ
+            case GTGTGT =>
+              GTGT
+            case GTGTEQ =>
+              GTEQ
+            case GTGT =>
+              GT
+            case GTEQ =>
+              ASSIGN
           }
       if (closers isDefinedAt in)
         println(closers(in))
@@ -175,11 +201,16 @@ object Test extends App {
 
     def acceptClosingAngle(in: Int) {
       val closers: PartialFunction[Int, Int] = {
-        case GTGTGTEQ => GTGTEQ
-        case GTGTGT   => GTGT
-        case GTGTEQ   => GTEQ
-        case GTGT     => GT
-        case GTEQ     => ASSIGN
+        case GTGTGTEQ =>
+          GTGTEQ
+        case GTGTGT =>
+          GTGT
+        case GTGTEQ =>
+          GTEQ
+        case GTGT =>
+          GT
+        case GTEQ =>
+          ASSIGN
       }
       if (closers isDefinedAt in)
         println(closers(in))

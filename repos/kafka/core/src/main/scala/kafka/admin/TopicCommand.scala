@@ -560,8 +560,10 @@ object TopicCommand extends Logging {
   def warnOnMaxMessagesChange(configs: Properties, replicas: Integer): Unit = {
     val maxMessageBytes =
       configs.get(LogConfig.MaxMessageBytesProp) match {
-        case n: String => n.toInt
-        case _         => -1
+        case n: String =>
+          n.toInt
+        case _ =>
+          -1
       }
     if (maxMessageBytes > Defaults.MaxMessageSize)
       if (replicas > 1) {

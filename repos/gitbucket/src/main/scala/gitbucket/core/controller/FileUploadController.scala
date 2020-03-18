@@ -52,7 +52,8 @@ class FileUploadController extends ScalatraServlet with FileUploadSupport {
 
           Ok(fileId)
         }
-      case _ => BadRequest
+      case _ =>
+        BadRequest
     }
 
 }

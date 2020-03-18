@@ -115,7 +115,8 @@ object ClassFileParser extends ByteCodeReader {
   val magicNumber =
     (u4 filter (_ == 0xCAFEBABE)) | error("Not a valid class file")
   val version = u2 ~ u2 ^^ {
-    case minor ~ major => (major, minor)
+    case minor ~ major =>
+      (major, minor)
   }
   val constantPool =
     (u2 ^^ ConstantPool) >> repeatUntil(constantPoolEntry)(_ isFull)
@@ -155,7 +156,8 @@ object ClassFileParser extends ByteCodeReader {
       pool => "MethodHandle: " + referenceKind + ", " + pool(referenceIndex)
   }
   val methodType = u2 ^^ add1 {
-    case descriptorIndex => pool => "MethodType: " + pool(descriptorIndex)
+    case descriptorIndex =>
+      pool => "MethodType: " + pool(descriptorIndex)
   }
   val invokeDynamic = u2 ~ u2 ^^ add1 {
     case bootstrapMethodAttrIndex ~ nameAndTypeIndex =>
@@ -165,20 +167,34 @@ object ClassFileParser extends ByteCodeReader {
   }
 
   val constantPoolEntry = u1 >> {
-    case 1  => utf8String
-    case 3  => intConstant
-    case 4  => floatConstant
-    case 5  => longConstant
-    case 6  => doubleConstant
-    case 7  => classRef
-    case 8  => stringRef
-    case 9  => fieldRef
-    case 10 => methodRef
-    case 11 => interfaceMethodRef
-    case 12 => nameAndType
-    case 15 => methodHandle
-    case 16 => methodType
-    case 18 => invokeDynamic
+    case 1 =>
+      utf8String
+    case 3 =>
+      intConstant
+    case 4 =>
+      floatConstant
+    case 5 =>
+      longConstant
+    case 6 =>
+      doubleConstant
+    case 7 =>
+      classRef
+    case 8 =>
+      stringRef
+    case 9 =>
+      fieldRef
+    case 10 =>
+      methodRef
+    case 11 =>
+      interfaceMethodRef
+    case 12 =>
+      nameAndType
+    case 15 =>
+      methodHandle
+    case 16 =>
+      methodType
+    case 18 =>
+      invokeDynamic
   }
 
   val interfaces = u2 >> u2.times
@@ -207,10 +223,14 @@ object ClassFileParser extends ByteCodeReader {
     u1 >> {
       case 'B' | 'C' | 'D' | 'F' | 'I' | 'J' | 'S' | 'Z' | 's' =>
         u2 ^^ ConstValueIndex
-      case 'e' => u2 ~ u2 ^~^ EnumConstValue
-      case 'c' => u2 ^^ ClassInfoIndex
-      case '@' => annotation //nested annotation
-      case '[' => u2 >> element_value.times ^^ ArrayValue
+      case 'e' =>
+        u2 ~ u2 ^~^ EnumConstValue
+      case 'c' =>
+        u2 ^^ ClassInfoIndex
+      case '@' =>
+        annotation //nested annotation
+      case '[' =>
+        u2 >> element_value.times ^^ ArrayValue
     }
 
   val element_value_pair = u2 ~ element_value ^~^ AnnotationElement
@@ -259,8 +279,10 @@ case class ClassFile(
 
   def constant(index: Int) =
     header.constants(index) match {
-      case StringBytesPair(str, _) => str
-      case z                       => z
+      case StringBytesPair(str, _) =>
+        str
+      case z =>
+        z
     }
 
   def constantWrapped(index: Int) = header.constants(index)

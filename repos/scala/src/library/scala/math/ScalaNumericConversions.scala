@@ -114,13 +114,21 @@ trait ScalaNumericAnyConversions extends Any {
     */
   protected def unifiedPrimitiveEquals(x: Any) =
     x match {
-      case x: Char   => isValidChar && (toInt == x.toInt)
-      case x: Byte   => isValidByte && (toByte == x)
-      case x: Short  => isValidShort && (toShort == x)
-      case x: Int    => isValidInt && (toInt == x)
-      case x: Long   => toLong == x
-      case x: Float  => toFloat == x
-      case x: Double => toDouble == x
-      case _         => false
+      case x: Char =>
+        isValidChar && (toInt == x.toInt)
+      case x: Byte =>
+        isValidByte && (toByte == x)
+      case x: Short =>
+        isValidShort && (toShort == x)
+      case x: Int =>
+        isValidInt && (toInt == x)
+      case x: Long =>
+        toLong == x
+      case x: Float =>
+        toFloat == x
+      case x: Double =>
+        toDouble == x
+      case _ =>
+        false
     }
 }

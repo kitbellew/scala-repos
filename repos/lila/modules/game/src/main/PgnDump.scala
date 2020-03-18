@@ -22,7 +22,8 @@ final class PgnDump(
     }
     val ts = tags(game, initialFen, imported)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap {
-      case Tag(_, fen) => Forsyth <<< fen
+      case Tag(_, fen) =>
+        Forsyth <<< fen
     }
     val moves2 = fenSituation
       .??(_.situation.color.black)
@@ -103,12 +104,18 @@ final class PgnDump(
             _.Termination, {
               import chess.Status._
               game.status match {
-                case Created | Started                             => "Unterminated"
-                case Aborted | NoStart                             => "Abandoned"
-                case Timeout | Outoftime                           => "Time forfeit"
-                case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
-                case Cheat                                         => "Rules infraction"
-                case UnknownFinish                                 => "Unknown"
+                case Created | Started =>
+                  "Unterminated"
+                case Aborted | NoStart =>
+                  "Abandoned"
+                case Timeout | Outoftime =>
+                  "Time forfeit"
+                case Resign | Draw | Stalemate | Mate | VariantEnd =>
+                  "Normal"
+                case Cheat =>
+                  "Rules infraction"
+                case UnknownFinish =>
+                  "Unknown"
               }
             }
           )

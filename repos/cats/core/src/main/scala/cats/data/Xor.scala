@@ -23,8 +23,10 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   def fold[C](fa: A => C, fb: B => C): C =
     this match {
-      case Xor.Left(a)  => fa(a)
-      case Xor.Right(b) => fb(b)
+      case Xor.Left(a) =>
+        fa(a)
+      case Xor.Right(b) =>
+        fb(b)
     }
 
   def isLeft: Boolean = fold(_ => true, _ => false)
@@ -39,21 +41,27 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   def orElse[C, BB >: B](fallback: => C Xor BB): C Xor BB =
     this match {
-      case Xor.Left(_)      => fallback
-      case r @ Xor.Right(_) => r
+      case Xor.Left(_) =>
+        fallback
+      case r @ Xor.Right(_) =>
+        r
     }
 
   def recover[BB >: B](pf: PartialFunction[A, BB]): A Xor BB =
     this match {
-      case Xor.Left(a) if pf.isDefinedAt(a) => Xor.right(pf(a))
-      case _                                => this
+      case Xor.Left(a) if pf.isDefinedAt(a) =>
+        Xor.right(pf(a))
+      case _ =>
+        this
     }
 
   def recoverWith[AA >: A, BB >: B](
       pf: PartialFunction[A, AA Xor BB]): AA Xor BB =
     this match {
-      case Xor.Left(a) if pf.isDefinedAt(a) => pf(a)
-      case _                                => this
+      case Xor.Left(a) if pf.isDefinedAt(a) =>
+        pf(a)
+      case _ =>
+        this
     }
 
   def valueOr[BB >: B](f: A => BB): BB = fold(f, identity)
@@ -92,26 +100,34 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
 
   def bimap[C, D](fa: A => C, fb: B => D): C Xor D =
     this match {
-      case Xor.Left(a)  => Xor.Left(fa(a))
-      case Xor.Right(b) => Xor.Right(fb(b))
+      case Xor.Left(a) =>
+        Xor.Left(fa(a))
+      case Xor.Right(b) =>
+        Xor.Right(fb(b))
     }
 
   def map[D](f: B => D): A Xor D =
     this match {
-      case l @ Xor.Left(_) => l
-      case Xor.Right(b)    => Xor.Right(f(b))
+      case l @ Xor.Left(_) =>
+        l
+      case Xor.Right(b) =>
+        Xor.Right(f(b))
     }
 
   def leftMap[C](f: A => C): C Xor B =
     this match {
-      case Xor.Left(a)      => Xor.Left(f(a))
-      case r @ Xor.Right(_) => r
+      case Xor.Left(a) =>
+        Xor.Left(f(a))
+      case r @ Xor.Right(_) =>
+        r
     }
 
   def flatMap[AA >: A, D](f: B => AA Xor D): AA Xor D =
     this match {
-      case l @ Xor.Left(_) => l
-      case Xor.Right(b)    => f(b)
+      case l @ Xor.Left(_) =>
+        l
+      case Xor.Right(b) =>
+        f(b)
     }
 
   def compare[AA >: A, BB >: B](
@@ -136,8 +152,10 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
   def traverse[F[_], AA >: A, D](f: B => F[D])(implicit
       F: Applicative[F]): F[AA Xor D] =
     this match {
-      case l @ Xor.Left(_) => F.pure(l)
-      case Xor.Right(b)    => F.map(f(b))(Xor.right _)
+      case l @ Xor.Left(_) =>
+        F.pure(l)
+      case Xor.Right(b) =>
+        F.map(f(b))(Xor.right _)
     }
 
   def foldLeft[C](c: C)(f: (C, B) => C): C = fold(_ => c, f(c, _))
@@ -153,13 +171,17 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
     this match {
       case Xor.Left(a1) =>
         that match {
-          case Xor.Left(a2)  => Xor.Left(AA.combine(a1, a2))
-          case Xor.Right(b2) => Xor.Left(a1)
+          case Xor.Left(a2) =>
+            Xor.Left(AA.combine(a1, a2))
+          case Xor.Right(b2) =>
+            Xor.Left(a1)
         }
       case Xor.Right(b1) =>
         that match {
-          case Xor.Left(a2)  => Xor.Left(a2)
-          case Xor.Right(b2) => Xor.Right(BB.combine(b1, b2))
+          case Xor.Left(a2) =>
+            Xor.Left(a2)
+          case Xor.Right(b2) =>
+            Xor.Right(BB.combine(b1, b2))
         }
     }
 
@@ -200,24 +222,30 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
           fab: Xor[A, B])(f: A => G[C], g: B => G[D])(implicit
           G: Applicative[G]): G[Xor[C, D]] =
         fab match {
-          case Xor.Left(a)  => G.map(f(a))(Xor.left)
-          case Xor.Right(b) => G.map(g(b))(Xor.right)
+          case Xor.Left(a) =>
+            G.map(f(a))(Xor.left)
+          case Xor.Right(b) =>
+            G.map(g(b))(Xor.right)
         }
 
       def bifoldLeft[A, B, C](fab: Xor[A, B], c: C)(
           f: (C, A) => C,
           g: (C, B) => C): C =
         fab match {
-          case Xor.Left(a)  => f(c, a)
-          case Xor.Right(b) => g(c, b)
+          case Xor.Left(a) =>
+            f(c, a)
+          case Xor.Right(b) =>
+            g(c, b)
         }
 
       def bifoldRight[A, B, C](fab: Xor[A, B], c: Eval[C])(
           f: (A, Eval[C]) => Eval[C],
           g: (B, Eval[C]) => Eval[C]): Eval[C] =
         fab match {
-          case Xor.Left(a)  => f(a, c)
-          case Xor.Right(b) => g(b, c)
+          case Xor.Left(a) =>
+            f(a, c)
+          case Xor.Right(b) =>
+            g(b, c)
         }
     }
 
@@ -234,8 +262,10 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
       def pure[B](b: B): A Xor B = Xor.right(b)
       def handleErrorWith[B](fea: Xor[A, B])(f: A => Xor[A, B]): Xor[A, B] =
         fea match {
-          case Xor.Left(e)      => f(e)
-          case r @ Xor.Right(_) => r
+          case Xor.Left(e) =>
+            f(e)
+          case r @ Xor.Right(_) =>
+            r
         }
       def raiseError[B](e: A): Xor[A, B] = Xor.left(e)
       override def map[B, C](fa: A Xor B)(f: B => C): A Xor C = fa.map(f)
@@ -303,7 +333,8 @@ trait XorFunctions {
     try {
       right(f)
     } catch {
-      case scala.util.control.NonFatal(t) => left(t)
+      case scala.util.control.NonFatal(t) =>
+        left(t)
     }
 
   /**
@@ -311,8 +342,10 @@ trait XorFunctions {
     */
   def fromTry[A](t: Try[A]): Throwable Xor A =
     t match {
-      case Failure(e) => left(e)
-      case Success(v) => right(v)
+      case Failure(e) =>
+        left(e)
+      case Success(v) =>
+        right(v)
     }
 
   /**

@@ -277,8 +277,10 @@ final class JUnitExecuteTest(
       fMethod,
       msg)
     exOpt match {
-      case Some(ex) => richLogger.error(formattedMsg, ex)
-      case None     => richLogger.error(formattedMsg)
+      case Some(ex) =>
+        richLogger.error(formattedMsg, ex)
+      case None =>
+        richLogger.error(formattedMsg)
     }
   }
 

@@ -37,7 +37,8 @@ class PackageSplitLinesProcessor extends SmartEnterProcessor {
             "\n%spackage %s".format(prefix, tail))
           true
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

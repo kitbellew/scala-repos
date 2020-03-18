@@ -120,7 +120,8 @@ trait GenSetLike[A, +Repr]
             (
               try this subsetOf that.asInstanceOf[GenSet[A]]
               catch {
-                case ex: ClassCastException => false
+                case ex: ClassCastException =>
+                  false
               }
             )
       case _ =>

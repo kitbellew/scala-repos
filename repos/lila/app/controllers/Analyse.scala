@@ -34,8 +34,10 @@ object Analyse extends LilaController {
             ip = HTTPRequest.lastRemoteAddress(ctx.req).some,
             mod = isGranted(_.Hunter),
             system = false)) map {
-          case true  => Ok(html.analyse.computing(id))
-          case false => Unauthorized
+          case true =>
+            Ok(html.analyse.computing(id))
+          case false =>
+            Unauthorized
         }
       }
     }

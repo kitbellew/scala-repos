@@ -82,8 +82,10 @@ private[twitter] class ClientSession(
   private[this] val leaseGauge =
     sr.addGauge("current_lease_ms") {
       state match {
-        case l: Leasing => l.remaining.inMilliseconds
-        case _          => (Time.Top - Time.now).inMilliseconds
+        case l: Leasing =>
+          l.remaining.inMilliseconds
+        case _ =>
+          (Time.Top - Time.now).inMilliseconds
       }
     }
 
@@ -129,7 +131,8 @@ private[twitter] class ClientSession(
           // a irrecoverable states.
         } finally writeLk.unlock()
 
-      case Message.Tping(tag) => trans.write(Message.Rping(tag))
+      case Message.Tping(tag) =>
+        trans.write(Message.Rping(tag))
 
       case _ => // do nothing
     }
@@ -175,14 +178,17 @@ private[twitter] class ClientSession(
       case _: Message.Treq | _: Message.Tdispatch =>
         outstanding.incrementAndGet()
         trans.write(msg).onFailure(processTwriteFail)
-      case _ => trans.write(msg)
+      case _ =>
+        trans.write(msg)
     }
 
   private[this] def processRead(msg: Message) =
     msg match {
-      case m @ Message.Rmessage(_)       => processRmsg(m)
-      case m @ Message.ControlMessage(_) => processControlMsg(m)
-      case _                             => // do nothing.
+      case m @ Message.Rmessage(_) =>
+        processRmsg(m)
+      case m @ Message.ControlMessage(_) =>
+        processControlMsg(m)
+      case _ => // do nothing.
     }
 
   /**
@@ -192,8 +198,10 @@ private[twitter] class ClientSession(
   def write(msg: Message): Future[Unit] = {
     readLk.lock()
     try state match {
-      case Dispatching | Leasing(_) => processAndWrite(msg)
-      case Draining | Drained       => FutureNackException
+      case Dispatching | Leasing(_) =>
+        processAndWrite(msg)
+      case Draining | Drained =>
+        FutureNackException
     } finally readLk.unlock()
   }
 
@@ -221,15 +229,21 @@ private[twitter] class ClientSession(
     Status.worst(
       detector.status,
       trans.status match {
-        case Status.Closed => Status.Closed
-        case Status.Busy   => Status.Busy
+        case Status.Closed =>
+          Status.Closed
+        case Status.Busy =>
+          Status.Busy
         case Status.Open =>
           readLk.lock()
           try state match {
-            case Draining                              => Status.Busy
-            case Drained                               => Status.Closed
-            case leased @ Leasing(_) if leased.expired => Status.Busy
-            case Leasing(_) | Dispatching              => Status.Open
+            case Draining =>
+              Status.Busy
+            case Drained =>
+              Status.Closed
+            case leased @ Leasing(_) if leased.expired =>
+              Status.Busy
+            case Leasing(_) | Dispatching =>
+              Status.Open
           } finally readLk.unlock()
       }
     )

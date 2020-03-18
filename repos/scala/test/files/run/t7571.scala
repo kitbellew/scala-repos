@@ -1,7 +1,8 @@
 class Foo(val a: Int) extends AnyVal {
   def foo = {
     {
-      case x => x + a
+      case x =>
+        x + a
     }: PartialFunction[Int, Int]
   }
 

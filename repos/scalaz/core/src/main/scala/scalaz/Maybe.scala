@@ -24,8 +24,10 @@ sealed abstract class Maybe[A] {
     * the provided fallback value */
   final def cata[B](f: A => B, b: => B): B =
     this match {
-      case Just(a) => f(a)
-      case Empty() => b
+      case Just(a) =>
+        f(a)
+      case Empty() =>
+        b
     }
 
   /** Return the underlying value if present, otherwise the provided fallback value */
@@ -163,14 +165,16 @@ object Maybe extends MaybeInstances {
     try {
       just(a)
     } catch {
-      case e if ex.runtimeClass.isInstance(e) => empty
+      case e if ex.runtimeClass.isInstance(e) =>
+        empty
     }
 
   def fromTryCatchNonFatal[T](a: => T): Maybe[T] =
     try {
       just(a)
     } catch {
-      case NonFatal(t) => empty
+      case NonFatal(t) =>
+        empty
     }
 }
 
@@ -246,10 +250,14 @@ sealed abstract class MaybeInstances {
       def append(f1: MinMaybe[A], f2: => MinMaybe[A]) =
         Tag(
           (Tag unwrap f1, Tag unwrap f2) match {
-            case (Just(v1), Just(v2))     => Just(Order[A].min(v1, v2))
-            case (_f1 @ Just(_), Empty()) => _f1
-            case (Empty(), _f2 @ Just(_)) => _f2
-            case (Empty(), Empty())       => empty
+            case (Just(v1), Just(v2)) =>
+              Just(Order[A].min(v1, v2))
+            case (_f1 @ Just(_), Empty()) =>
+              _f1
+            case (Empty(), _f2 @ Just(_)) =>
+              _f2
+            case (Empty(), Empty()) =>
+              empty
           })
     }
 
@@ -269,10 +277,14 @@ sealed abstract class MaybeInstances {
       def append(f1: MaxMaybe[A], f2: => MaxMaybe[A]) =
         Tag(
           (Tag unwrap f1, Tag unwrap f2) match {
-            case (Just(v1), Just(v2))     => Just(Order[A].max(v1, v2))
-            case (_f1 @ Just(_), Empty()) => _f1
-            case (Empty(), _f2 @ Just(_)) => _f2
-            case (Empty(), Empty())       => Empty()
+            case (Just(v1), Just(v2)) =>
+              Just(Order[A].max(v1, v2))
+            case (_f1 @ Just(_), Empty()) =>
+              _f1
+            case (Empty(), _f2 @ Just(_)) =>
+              _f2
+            case (Empty(), Empty()) =>
+              Empty()
           })
     }
 
@@ -316,9 +328,12 @@ sealed abstract class MaybeInstances {
       @scala.annotation.tailrec
       def tailrecM[A, B](f: A => Maybe[A \/ B])(a: A): Maybe[B] =
         f(a) match {
-          case Empty()      => Empty()
-          case Just(-\/(a)) => tailrecM(f)(a)
-          case Just(\/-(b)) => Just(b)
+          case Empty() =>
+            Empty()
+          case Just(-\/(a)) =>
+            tailrecM(f)(a)
+          case Just(\/-(b)) =>
+            Just(b)
         }
 
       override def map[A, B](fa: Maybe[A])(f: A => B) = fa map f

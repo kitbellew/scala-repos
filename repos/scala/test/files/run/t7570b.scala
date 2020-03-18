@@ -13,6 +13,7 @@ object Test extends App {
     val csym = tb.define(q"""class C { override def toString = $msg }""")
     println(tb.eval(q"new $csym"))
   } catch {
-    case ToolBoxError(message, _) => println(s"compilation failed: $message")
+    case ToolBoxError(message, _) =>
+      println(s"compilation failed: $message")
   }
 }

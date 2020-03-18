@@ -26,8 +26,9 @@ class SbtProjectComponent(project: Project)
   object TreeListener extends PsiTreeChangeAdapter {
     override def childrenChanged(event: PsiTreeChangeEvent) {
       event.getFile match {
-        case file: SbtFileImpl => analyzer.restart(file)
-        case _                 =>
+        case file: SbtFileImpl =>
+          analyzer.restart(file)
+        case _ =>
       }
     }
   }

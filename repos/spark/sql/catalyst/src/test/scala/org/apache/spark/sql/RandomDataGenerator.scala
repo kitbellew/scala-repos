@@ -148,7 +148,8 @@ object RandomDataGenerator {
             rand.nextBytes(arr)
             arr
           })
-        case BooleanType => Some(() => rand.nextBoolean())
+        case BooleanType =>
+          Some(() => rand.nextBoolean())
         case DateType =>
           val generator = () => {
             var milliseconds = rand.nextLong() % 253402329599999L
@@ -239,7 +240,8 @@ object RandomDataGenerator {
             rand,
             _.nextInt().toShort,
             Seq(Short.MinValue, Short.MaxValue, 0.toShort))
-        case NullType => Some(() => null)
+        case NullType =>
+          Some(() => null)
         case ArrayType(elementType, containsNull) => {
           forType(elementType, nullable = containsNull, rand).map {
             elementGenerator => () =>
@@ -303,7 +305,8 @@ object RandomDataGenerator {
             None
           }
         }
-        case unsupportedType => None
+        case unsupportedType =>
+          None
       }
     // Handle nullability by wrapping the non-null value generator:
     valueGenerator.map { valueGenerator =>

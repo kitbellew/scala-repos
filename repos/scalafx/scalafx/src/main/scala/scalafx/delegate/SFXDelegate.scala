@@ -78,8 +78,10 @@ trait SFXDelegate[+D <: Object] extends AnyRef {
     */
   override def equals(ref: Any): Boolean = {
     ref match {
-      case sfxd: SFXDelegate[_] => delegate.equals(sfxd.delegate)
-      case _                    => delegate.equals(ref)
+      case sfxd: SFXDelegate[_] =>
+        delegate.equals(sfxd.delegate)
+      case _ =>
+        delegate.equals(ref)
     }
   }
 

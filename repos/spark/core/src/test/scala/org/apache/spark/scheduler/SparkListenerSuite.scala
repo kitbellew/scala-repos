@@ -368,7 +368,8 @@ class SparkListenerSuite
         1.to(maxRpcMessageSize).toArray
       }
       .reduce {
-        case (x, y) => x
+        case (x, y) =>
+          x
       }
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
@@ -386,7 +387,8 @@ class SparkListenerSuite
 
     // Make a task whose result is larger than the RPC message size
     val result = sc.parallelize(Seq(1), 1).map(2 * _).reduce {
-      case (x, y) => x
+      case (x, y) =>
+        x
     }
     assert(result === 2)
 

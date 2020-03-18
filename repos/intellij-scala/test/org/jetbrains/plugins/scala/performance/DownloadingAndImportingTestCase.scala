@@ -124,10 +124,12 @@ abstract class DownloadingAndImportingTestCase
       searchScope)
     val file =
       files.filter(_.getName == filename).toList match {
-        case vf :: Nil => vf
+        case vf :: Nil =>
+          vf
         case Nil => //is this a filepath?
           files.find(_.getCanonicalPath == s"$projectDirPath/$filename") match {
-            case Some(vf) => vf
+            case Some(vf) =>
+              vf
             case _ =>
               Assert.assertTrue(
                 s"Could not find file: $filename.\nConsider providing relative path from project root",

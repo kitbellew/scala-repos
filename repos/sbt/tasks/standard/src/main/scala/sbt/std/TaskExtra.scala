@@ -181,8 +181,10 @@ trait TaskExtra {
           })
       def ||[T >: S](alt: Task[T]): Task[T] =
         flatMapR {
-          case Value(v) => task(v);
-          case Inc(i)   => alt
+          case Value(v) =>
+            task(v);
+          case Inc(i) =>
+            alt
         }
       def &&[T](alt: Task[T]): Task[T] = flatMap(_ => alt)
     }
@@ -276,9 +278,12 @@ object TaskExtra extends TaskExtra {
   }
   def reduced[S](i: IndexedSeq[Task[S]], f: (S, S) => S): Task[S] =
     i match {
-      case Seq()     => sys.error("Cannot reduce empty sequence")
-      case Seq(x)    => x
-      case Seq(x, y) => reducePair(x, y, f)
+      case Seq() =>
+        sys.error("Cannot reduce empty sequence")
+      case Seq(x) =>
+        x
+      case Seq(x, y) =>
+        reducePair(x, y, f)
       case z =>
         val (a, b) = i.splitAt(i.size / 2)
         reducePair(reduced(a, f), reduced(b, f), f)
@@ -299,16 +304,20 @@ object TaskExtra extends TaskExtra {
         incs
     }
   def failM[T]: Result[T] => Incomplete = {
-    case Inc(i) => i;
-    case x      => expectedFailure
+    case Inc(i) =>
+      i;
+    case x =>
+      expectedFailure
   }
 
   def expectedFailure =
     throw Incomplete(None, message = Some("Expected dependency to fail."))
 
   def successM[T]: Result[T] => T = {
-    case Inc(i)   => throw i;
-    case Value(t) => t
+    case Inc(i) =>
+      throw i;
+    case Value(t) =>
+      t
   }
   def allM[K[L[x]]](implicit a: AList[K]): K[Result] => K[Id] =
     in => {
@@ -330,7 +339,8 @@ object TaskExtra extends TaskExtra {
   }
   def failures[A](results: Seq[Result[A]]): Seq[Incomplete] =
     results.collect {
-      case Inc(i) => i
+      case Inc(i) =>
+        i
     }
 
   def incompleteDeps(incs: Seq[Incomplete]): Incomplete =

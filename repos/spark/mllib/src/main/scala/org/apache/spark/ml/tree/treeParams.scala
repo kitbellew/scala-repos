@@ -249,9 +249,11 @@ private[ml] trait TreeClassifierParams extends Params {
   /** Convert new impurity to old impurity. */
   private[ml] def getOldImpurity: OldImpurity = {
     getImpurity match {
-      case "entropy" => OldEntropy
-      case "gini"    => OldGini
-      case _         =>
+      case "entropy" =>
+        OldEntropy
+      case "gini" =>
+        OldGini
+      case _ =>
         // Should never happen because of check in setter method.
         throw new RuntimeException(
           s"TreeClassifierParams was given unrecognized impurity: $impurity.")
@@ -301,8 +303,9 @@ private[ml] trait TreeRegressorParams extends Params {
   /** Convert new impurity to old impurity. */
   private[ml] def getOldImpurity: OldImpurity = {
     getImpurity match {
-      case "variance" => OldVariance
-      case _          =>
+      case "variance" =>
+        OldVariance
+      case _ =>
         // Should never happen because of check in setter method.
         throw new RuntimeException(
           s"TreeRegressorParams was given unrecognized impurity: $impurity")

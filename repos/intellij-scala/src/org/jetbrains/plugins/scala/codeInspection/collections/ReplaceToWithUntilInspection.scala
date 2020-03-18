@@ -22,7 +22,8 @@ object ReplaceToWithUntil extends SimplificationType {
           replace(expr)
             .withText(invocationText(qual, "until", x))
             .highlightFrom(qual))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

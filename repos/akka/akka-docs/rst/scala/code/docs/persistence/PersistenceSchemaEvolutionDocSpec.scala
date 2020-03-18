@@ -54,10 +54,14 @@ class ProtobufReadOptional {
   object SeatType {
     def fromString(s: String) =
       s match {
-        case Window.code => Window
-        case Aisle.code  => Aisle
-        case Other.code  => Other
-        case _           => Unknown
+        case Window.code =>
+          Window
+        case Aisle.code =>
+          Aisle
+        case Other.code =>
+          Other
+        case _ =>
+          Unknown
       }
     case object Window extends SeatType {
       override val code = "W"
@@ -162,8 +166,10 @@ class RenamePlainJson {
           EventSeq(
             marshaller.fromJson(
               manifest match {
-                case V1 => rename(json, "code", "seatNr")
-                case V2 => json // pass-through
+                case V1 =>
+                  rename(json, "code", "seatNr")
+                case V2 =>
+                  json // pass-through
                 case unknown =>
                   throw new IllegalArgumentException(
                     s"Unknown manifest: $unknown")
@@ -212,7 +218,8 @@ object SimplestCustomSerializer {
     // serialize the object
     override def toBinary(obj: AnyRef): Array[Byte] =
       obj match {
-        case p: Person => s"""${p.name}|${p.surname}""".getBytes(Utf8)
+        case p: Person =>
+          s"""${p.name}|${p.surname}""".getBytes(Utf8)
         case _ =>
           throw new IllegalArgumentException(
             s"Unable to serialize to bytes, clazz was: ${obj.getClass}!")
@@ -277,10 +284,12 @@ class UserEventsAdapter extends EventAdapter {
     event match {
       case UserDetailsChanged(null, address) =>
         EventSeq(UserAddressChanged(address))
-      case UserDetailsChanged(name, null) => EventSeq(UserNameChanged(name))
+      case UserDetailsChanged(name, null) =>
+        EventSeq(UserNameChanged(name))
       case UserDetailsChanged(name, address) =>
         EventSeq(UserNameChanged(name), UserAddressChanged(address))
-      case event: V2 => EventSeq(event)
+      case event: V2 =>
+        EventSeq(event)
     }
 
   override def toJournal(event: Any): Any = event
@@ -304,7 +313,8 @@ class RemovedEventsAwareSerializer extends SerializerWithStringManifest {
 
   override def toBinary(o: AnyRef): Array[Byte] =
     o match {
-      case _ => o.toString.getBytes(utf8) // example serialization
+      case _ =>
+        o.toString.getBytes(utf8) // example serialization
     }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
@@ -312,7 +322,8 @@ class RemovedEventsAwareSerializer extends SerializerWithStringManifest {
       case m if SkipEventManifestsEvents.contains(m) =>
         EventDeserializationSkipped
 
-      case other => new String(bytes, utf8)
+      case other =>
+        new String(bytes, utf8)
     }
 }
 //#string-serializer-skip-deleved-event-by-manifest
@@ -324,8 +335,10 @@ class SkippedEventsAwareAdapter extends EventAdapter {
 
   override def fromJournal(event: Any, manifest: String) =
     event match {
-      case EventDeserializationSkipped => EventSeq.empty
-      case _                           => EventSeq(event)
+      case EventDeserializationSkipped =>
+        EventSeq.empty
+      case _ =>
+        EventSeq(event)
     }
 }
 //#string-serializer-skip-deleved-event-by-manifest-adapter
@@ -343,15 +356,19 @@ class RenamedEventAwareSerializer extends SerializerWithStringManifest {
 
   override def toBinary(o: AnyRef): Array[Byte] =
     o match {
-      case SamplePayload(data) => s"""$data""".getBytes(Utf8)
+      case SamplePayload(data) =>
+        s"""$data""".getBytes(Utf8)
       // previously also handled "old" events here.
     }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
     manifest match {
-      case OldPayloadClassName => SamplePayload(new String(bytes, Utf8))
-      case MyPayloadClassName  => SamplePayload(new String(bytes, Utf8))
-      case other               => throw new Exception(s"unexpected manifest [$other]")
+      case OldPayloadClassName =>
+        SamplePayload(new String(bytes, Utf8))
+      case MyPayloadClassName =>
+        SamplePayload(new String(bytes, Utf8))
+      case other =>
+        throw new Exception(s"unexpected manifest [$other]")
     }
 }
 //#string-serializer-handle-rename

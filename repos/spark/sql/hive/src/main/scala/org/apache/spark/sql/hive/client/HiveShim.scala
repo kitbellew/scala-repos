@@ -424,8 +424,10 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
     getDriverResultsMethod.invoke(driver, res)
     res.asScala.map { r =>
       r match {
-        case s: String        => s
-        case a: Array[Object] => a(0).asInstanceOf[String]
+        case s: String =>
+          s
+        case a: Array[Object] =>
+          a(0).asInstanceOf[String]
       }
     }
   }

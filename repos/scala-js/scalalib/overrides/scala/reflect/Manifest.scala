@@ -50,8 +50,10 @@ trait Manifest[T] extends ClassManifest[T] with Equals {
 
   override def canEqual(that: Any): Boolean =
     that match {
-      case _: Manifest[_] => true
-      case _              => false
+      case _: Manifest[_] =>
+        true
+      case _ =>
+        false
     }
 
   /** Note: testing for erasure here is important, as it is many times
@@ -63,7 +65,8 @@ trait Manifest[T] extends ClassManifest[T] with Equals {
         (m canEqual this) && (this.runtimeClass == m.runtimeClass) && (
           this <:< m
         ) && (m <:< this)
-      case _ => false
+      case _ =>
+        false
     }
   override def hashCode = this.runtimeClass.##
 }
@@ -78,8 +81,10 @@ abstract class AnyValManifest[T <: AnyVal](override val toString: String)
     (that eq this) || (that eq Manifest.Any) || (that eq Manifest.AnyVal)
   override def canEqual(other: Any) =
     other match {
-      case _: AnyValManifest[_] => true
-      case _                    => false
+      case _: AnyValManifest[_] =>
+        true
+      case _ =>
+        false
     }
   override def equals(that: Any): Boolean = this eq that.asInstanceOf[AnyRef]
   override def hashCode = System.identityHashCode(this)

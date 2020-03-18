@@ -32,7 +32,8 @@ object Handler {
       userId: Option[String])(connecter: Connecter): Fu[JsSocketHandler] = {
 
     def baseController(member: SocketMember): Controller = {
-      case ("p", _) => socket ! Ping(uid)
+      case ("p", _) =>
+        socket ! Ping(uid)
       case ("following_onlines", _) =>
         userId foreach { u =>
           hub.actor.relation ! ReloadOnlineFriends(u)
@@ -107,7 +108,8 @@ object Handler {
     }
 
     socket ? join map connecter map {
-      case (controller, enum, member) => iteratee(controller, member) -> enum
+      case (controller, enum, member) =>
+        iteratee(controller, member) -> enum
     }
   }
 }

@@ -115,7 +115,8 @@ trait BasicTypesHelpers {
     val rs: Seq[Node] = right.toSeq
     if (ls.length == rs.length) {
       ls.zip(rs).foldLeft(true) {
-        case (b, (l, r)) => b && compareNode(l, r)
+        case (b, (l, r)) =>
+          b && compareNode(l, r)
       }
     } else {
       false
@@ -147,7 +148,8 @@ trait BasicTypesHelpers {
               if p2 == pre && l2 == label && v2.text == value.text =>
             found = true
             false
-          case _ => true
+          case _ =>
+            true
         }
       case UnprefixedAttribute(label, value, _) if !found =>
         m match {
@@ -155,9 +157,11 @@ trait BasicTypesHelpers {
               if l2 == label && v2.text == value.text =>
             found = true
             false
-          case _ => true
+          case _ =>
+            true
         }
-      case _ => true
+      case _ =>
+        true
     }
     if (found)
       Full(ret)
@@ -170,15 +174,21 @@ trait BasicTypesHelpers {
     */
   def compareMetaData(left: List[MetaData], right: List[MetaData]): Boolean =
     (left, right) match {
-      case (Nil, Nil) => true
-      case (_, Nil)   => false
-      case (Nil, _)   => false
+      case (Nil, Nil) =>
+        true
+      case (_, Nil) =>
+        false
+      case (Nil, _) =>
+        false
       case (attr :: rl, right) =>
         findFilter(attr, right) match {
-          case Full(rr) => compareMetaData(rl, rr)
-          case _        => false
+          case Full(rr) =>
+            compareMetaData(rl, rr)
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   /**
@@ -186,16 +196,25 @@ trait BasicTypesHelpers {
     */
   def compareNode(left: Node, right: Node): Boolean = {
     (left, right) match {
-      case (Group(gl), Group(gr))       => compareXml(gl, gr)
-      case (el: Elem, er: Elem)         => compareElem(el, er)
-      case (Unparsed(tl), Unparsed(tr)) => tl == tr
-      case (Text(tl), Text(tr))         => tl == tr
+      case (Group(gl), Group(gr)) =>
+        compareXml(gl, gr)
+      case (el: Elem, er: Elem) =>
+        compareElem(el, er)
+      case (Unparsed(tl), Unparsed(tr)) =>
+        tl == tr
+      case (Text(tl), Text(tr)) =>
+        tl == tr
 
-      case (el: EntityRef, er: EntityRef) => el === er
-      case (Comment(cl), Comment(cr))     => cl == cr
-      case (PCData(dl), PCData(dr))       => dl == dr
-      case (pl: ProcInstr, pr: ProcInstr) => pl === pr
-      case (a, b)                         => a.toString == b.toString
+      case (el: EntityRef, er: EntityRef) =>
+        el === er
+      case (Comment(cl), Comment(cr)) =>
+        cl == cr
+      case (PCData(dl), PCData(dr)) =>
+        dl == dr
+      case (pl: ProcInstr, pr: ProcInstr) =>
+        pl === pr
+      case (a, b) =>
+        a.toString == b.toString
     }
 
   }
@@ -239,16 +258,20 @@ trait BasicTypesHelpers {
   implicit class OptionExtension[T](option: Option[T]) {
     def toBox: Box[T] =
       option match {
-        case Some(x) => Full(x)
-        case None    => Empty
+        case Some(x) =>
+          Full(x)
+        case None =>
+          Empty
       }
   }
 
   implicit class TryExtension[T](tryy: Try[T]) {
     def toBox: Box[T] =
       tryy match {
-        case scala.util.Success(x)  => Full(x)
-        case scala.util.Failure(ex) => Failure(ex.getMessage, Full(ex), Empty)
+        case scala.util.Success(x) =>
+          Full(x)
+        case scala.util.Failure(ex) =>
+          Failure(ex.getMessage, Full(ex), Empty)
       }
   }
 
@@ -257,18 +280,30 @@ trait BasicTypesHelpers {
     */
   def toBoolean(in: Any): Boolean = {
     in match {
-      case null                     => false
-      case b: Boolean               => b
-      case i: Int                   => i != 0
-      case lo: Long                 => lo != 0
-      case n: Number                => n.intValue != 0
-      case s: String                => asBoolean(s) openOr false
-      case None                     => false
-      case Empty | Failure(_, _, _) => false
-      case Full(n)                  => toBoolean(n)
-      case Some(n)                  => toBoolean(n)
-      case x :: xs                  => toBoolean(x)
-      case o                        => toBoolean(o.toString)
+      case null =>
+        false
+      case b: Boolean =>
+        b
+      case i: Int =>
+        i != 0
+      case lo: Long =>
+        lo != 0
+      case n: Number =>
+        n.intValue != 0
+      case s: String =>
+        asBoolean(s) openOr false
+      case None =>
+        false
+      case Empty | Failure(_, _, _) =>
+        false
+      case Full(n) =>
+        toBoolean(n)
+      case Some(n) =>
+        toBoolean(n)
+      case x :: xs =>
+        toBoolean(x)
+      case o =>
+        toBoolean(o.toString)
     }
   }
 
@@ -287,9 +322,12 @@ trait BasicTypesHelpers {
         None
       else
         in.toLowerCase match {
-          case "t" | "true" | "yes" | "1" | "on"  => Full(true)
-          case "f" | "false" | "no" | "0" | "off" => Full(false)
-          case _                                  => None
+          case "t" | "true" | "yes" | "1" | "on" =>
+            Full(true)
+          case "f" | "false" | "no" | "0" | "off" =>
+            Full(false)
+          case _ =>
+            None
         }
   }
 
@@ -340,18 +378,30 @@ trait BasicTypesHelpers {
     */
   def asLong(in: Any): Box[Long] = {
     in match {
-      case null                            => Empty
-      case i: Int                          => Full(i.toLong)
-      case n: Long                         => Full(n)
-      case d: java.util.Date               => Full(d.getTime)
-      case n: Number                       => Full(n.longValue)
-      case (n: Number) :: _                => Full(n.longValue)
-      case Some(n)                         => asLong(n)
-      case Full(n)                         => asLong(n)
-      case None | Empty | Failure(_, _, _) => Empty
-      case s: String                       => asLong(s)
-      case x :: xs                         => asLong(x)
-      case o                               => asLong(o.toString)
+      case null =>
+        Empty
+      case i: Int =>
+        Full(i.toLong)
+      case n: Long =>
+        Full(n)
+      case d: java.util.Date =>
+        Full(d.getTime)
+      case n: Number =>
+        Full(n.longValue)
+      case (n: Number) :: _ =>
+        Full(n.longValue)
+      case Some(n) =>
+        asLong(n)
+      case Full(n) =>
+        asLong(n)
+      case None | Empty | Failure(_, _, _) =>
+        Empty
+      case s: String =>
+        asLong(s)
+      case x :: xs =>
+        asLong(x)
+      case o =>
+        asLong(o.toString)
     }
   }
 
@@ -360,18 +410,30 @@ trait BasicTypesHelpers {
     */
   def toInt(in: Any): Int = {
     in match {
-      case null                            => 0
-      case n: Int                          => n
-      case lo: Long                        => lo.toInt
-      case n: Number                       => n.intValue
-      case (n: Number) :: _                => n.intValue
-      case Some(n)                         => toInt(n)
-      case Full(n)                         => toInt(n)
-      case None | Empty | Failure(_, _, _) => 0
-      case s: String                       => parseNumber(s).toInt
-      case d: java.util.Date               => (d.getTime / 1000L).toInt
-      case x :: xs                         => toInt(x)
-      case o                               => toInt(o.toString)
+      case null =>
+        0
+      case n: Int =>
+        n
+      case lo: Long =>
+        lo.toInt
+      case n: Number =>
+        n.intValue
+      case (n: Number) :: _ =>
+        n.intValue
+      case Some(n) =>
+        toInt(n)
+      case Full(n) =>
+        toInt(n)
+      case None | Empty | Failure(_, _, _) =>
+        0
+      case s: String =>
+        parseNumber(s).toInt
+      case d: java.util.Date =>
+        (d.getTime / 1000L).toInt
+      case x :: xs =>
+        toInt(x)
+      case o =>
+        toInt(o.toString)
     }
   }
 
@@ -380,18 +442,30 @@ trait BasicTypesHelpers {
     */
   def toLong(in: Any): Long = {
     in match {
-      case null                            => 0L
-      case i: Int                          => i
-      case n: Long                         => n
-      case d: java.util.Date               => d.getTime
-      case n: Number                       => n.longValue
-      case (n: Number) :: _                => n.longValue
-      case Some(n)                         => toLong(n)
-      case Full(n)                         => toLong(n)
-      case None | Empty | Failure(_, _, _) => 0L
-      case s: String                       => parseNumber(s)
-      case x :: xs                         => toLong(x)
-      case o                               => toLong(o.toString)
+      case null =>
+        0L
+      case i: Int =>
+        i
+      case n: Long =>
+        n
+      case d: java.util.Date =>
+        d.getTime
+      case n: Number =>
+        n.longValue
+      case (n: Number) :: _ =>
+        n.longValue
+      case Some(n) =>
+        toLong(n)
+      case Full(n) =>
+        toLong(n)
+      case None | Empty | Failure(_, _, _) =>
+        0L
+      case s: String =>
+        parseNumber(s)
+      case x :: xs =>
+        toLong(x)
+      case o =>
+        toLong(o.toString)
     }
   }
 

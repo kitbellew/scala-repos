@@ -108,7 +108,8 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
         }
         return result
       } catch {
-        case ie: InterruptedException => throw ie
+        case ie: InterruptedException =>
+          throw ie
         case e: Exception =>
           lastException = e
           logWarning(

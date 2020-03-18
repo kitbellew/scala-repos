@@ -172,7 +172,8 @@ object SessionSettings {
   @deprecated("This method will no longer be public", "0.13.7")
   def removeRanges[T](in: Seq[T], ranges: Seq[(Int, Int)]): Seq[T] = {
     val asSet = (Set.empty[Int] /: ranges) {
-      case (s, (hi, lo)) => s ++ (hi to lo)
+      case (s, (hi, lo)) =>
+        s ++ (hi to lo)
     }
     in.zipWithIndex.flatMap {
       case (t, index) =>
@@ -263,7 +264,8 @@ object SessionSettings {
           s.pos match {
             case RangePosition(`path`, _) if !keys.contains(s.key) =>
               (s :: in, oth, keys + s.key)
-            case _ => (in, s :: oth, keys)
+            case _ =>
+              (in, s :: oth, keys)
           }
       }
 
@@ -400,7 +402,8 @@ save, save-all
 
   def range: Parser[(Int, Int)] =
     (NatBasic ~ ('-' ~> NatBasic).?).map {
-      case lo ~ hi => (lo, hi getOrElse lo)
+      case lo ~ hi =>
+        (lo, hi getOrElse lo)
     }
 
   /** The raw implementation of the session command. */
@@ -421,6 +424,7 @@ save, save-all
           clearAllSettings(s)
         else
           clearSettings(s)
-      case r: Remove => removeSettings(s, r.ranges)
+      case r: Remove =>
+        removeSettings(s, r.ranges)
     }
 }

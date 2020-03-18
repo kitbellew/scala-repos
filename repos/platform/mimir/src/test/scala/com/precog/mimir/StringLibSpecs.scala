@@ -51,8 +51,10 @@ trait StringLibSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -76,7 +78,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(6, 12, 16, 26, 42, 0)
@@ -89,7 +92,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -108,7 +112,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -127,7 +132,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -146,7 +152,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -159,7 +166,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -179,7 +187,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(4)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(101, 32, 34, 115)
@@ -192,7 +201,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(0)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain()
@@ -205,7 +215,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -218,7 +229,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(-1, 3, 14, 27)
@@ -231,7 +243,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -250,7 +263,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -263,7 +277,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(4)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(99, 58, 97, 101)
@@ -276,7 +291,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(0)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain()
@@ -288,7 +304,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -306,7 +323,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -324,7 +342,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -340,7 +359,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -378,7 +398,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -393,7 +414,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(4)
 
       val result2 = result collect {
-        case (ids, SArray(vec)) if ids.length == 1 => vec
+        case (ids, SArray(vec)) if ids.length == 1 =>
+          vec
       }
 
       result2 must contain(
@@ -412,7 +434,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -36, -73, -81, -6)
@@ -430,7 +453,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -4, -73, -81, -6)
@@ -447,7 +471,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -36, -73, -81, -6)
@@ -465,7 +490,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -4, -73, -81, -6)
@@ -483,7 +509,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -501,7 +528,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(-1, 7, 4, 12, 6)
@@ -519,7 +547,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -538,7 +567,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(6, 12, 16, 26, 42, 0)
@@ -554,7 +584,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -576,7 +607,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -598,7 +630,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -620,7 +653,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -636,7 +670,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -661,7 +696,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(4)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(101, 32, 34, 115)
@@ -679,7 +715,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(0)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain()
@@ -697,7 +734,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -715,7 +753,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(-1, 3, 14, 27)
@@ -733,7 +772,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -757,7 +797,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -775,7 +816,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(4)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(99, 58, 97, 101)
@@ -793,7 +835,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(0)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain()
@@ -810,7 +853,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -833,7 +877,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -856,7 +901,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -878,7 +924,8 @@ trait StringLibSpecs[M[+_]]
 
       result must haveSize(6)
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -915,7 +962,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -927,7 +975,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -36, -73, -81, -6)
@@ -939,7 +988,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -4, -73, -81, -6)
@@ -951,7 +1001,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -36, -73, -81, -6)
@@ -963,7 +1014,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(0, 2, -4, -73, -81, -6)
@@ -975,7 +1027,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -993,7 +1046,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(-1, 7, 4, 12, 6)
@@ -1011,7 +1065,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val result2 = result collect {
-        case (ids, SBoolean(d)) if ids.length == 1 => d
+        case (ids, SBoolean(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(true, false)
@@ -1030,7 +1085,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(8)
 
       val ns = result.toList.collect {
-        case (_, SDecimal(n)) => n
+        case (_, SDecimal(n)) =>
+          n
       }
 
       ns must contain(
@@ -1058,7 +1114,8 @@ trait StringLibSpecs[M[+_]]
       result must haveSize(6)
 
       val ss = result.toList.collect {
-        case (_, SString(s)) => s
+        case (_, SString(s)) =>
+          s
       }
 
       ss must contain("4", "3", "4", "4", "3", "4").only
@@ -1075,7 +1132,8 @@ trait StringLibSpecs[M[+_]]
       resultE must haveSize(1)
 
       val result = resultE.collect {
-        case (_, SString(s)) => s
+        case (_, SString(s)) =>
+          s
       }
 
       result must contain("3")
@@ -1089,12 +1147,14 @@ trait StringLibSpecs[M[+_]]
     def mogrify(result: Set[(Vector[SValue], SValue)]): List[Vector[String]] =
       result.toList
         .map {
-          case (Vector(n), SArray(elems)) => (n, elems)
+          case (Vector(n), SArray(elems)) =>
+            (n, elems)
         }
         .sorted(o)
         .map(
           _._2.map {
-            case SString(s) => s
+            case SString(s) =>
+              s
           })
 
     def mktree(f: Op2, path: String, sep: String) =
@@ -1132,7 +1192,8 @@ trait StringLibSpecs[M[+_]]
       testEval(input) collect {
         case (_, SArray(vec)) =>
           vec collect {
-            case SString(str) => str
+            case SString(str) =>
+              str
           }
       } mustEqual Set(Vector("foo", "bar"))
     }

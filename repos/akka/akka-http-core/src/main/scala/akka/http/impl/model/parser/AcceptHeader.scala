@@ -30,7 +30,8 @@ private[parser] trait AcceptHeader {
                   registered
                 else
                   registered.withParams(params.toMap)
-              case None ⇒ MediaRange.custom(mainLower, params.toMap)
+              case None ⇒
+                MediaRange.custom(mainLower, params.toMap)
             }
           } else {
             val (p, q) = MediaRange.splitOffQValue(params.toMap)

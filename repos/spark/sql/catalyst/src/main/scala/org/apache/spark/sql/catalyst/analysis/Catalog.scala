@@ -144,8 +144,10 @@ trait OverrideCatalog extends Catalog {
 
   abstract override def tableExists(tableIdent: TableIdentifier): Boolean = {
     getOverriddenTable(tableIdent) match {
-      case Some(_) => true
-      case None    => super.tableExists(tableIdent)
+      case Some(_) =>
+        true
+      case None =>
+        super.tableExists(tableIdent)
     }
   }
 
@@ -163,7 +165,8 @@ trait OverrideCatalog extends Catalog {
           .map(a => SubqueryAlias(a, tableWithQualifiers))
           .getOrElse(tableWithQualifiers)
 
-      case None => super.lookupRelation(tableIdent, alias)
+      case None =>
+        super.lookupRelation(tableIdent, alias)
     }
   }
 

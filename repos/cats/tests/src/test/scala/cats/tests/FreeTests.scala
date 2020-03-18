@@ -66,7 +66,8 @@ class FreeTests extends CatsSuite {
       new (FTestApi ~> Id) {
         def apply[A](fa: FTestApi[A]): Id[A] =
           fa match {
-            case TB(i) => i + 1
+            case TB(i) =>
+              i + 1
           }
       }
 

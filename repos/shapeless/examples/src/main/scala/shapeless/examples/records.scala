@@ -34,7 +34,8 @@ object RecordExamples extends App {
       ktl: ToList[K, Any],
       vtl: ToList[V, Any]) = {
     (b.keys.toList zip b.values.toList) foreach {
-      case (field, value) => println(field + ": " + value)
+      case (field, value) =>
+        println(field + ": " + value)
     }
     println
   }

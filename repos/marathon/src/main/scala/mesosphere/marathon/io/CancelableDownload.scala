@@ -53,7 +53,9 @@ final class CancelableDownload(
   override def hashCode(): Int = url.hashCode()
   override def equals(other: Any): Boolean =
     other match {
-      case c: CancelableDownload => (c.url == this.url) && (c.path == path)
-      case _                     => false
+      case c: CancelableDownload =>
+        (c.url == this.url) && (c.path == path)
+      case _ =>
+        false
     }
 }

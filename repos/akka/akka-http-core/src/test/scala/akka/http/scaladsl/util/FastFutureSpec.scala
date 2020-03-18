@@ -145,7 +145,8 @@ class FastFutureSpec extends FreeSpec with Matchers {
         test(
           Failure(UnexpectedException),
           _.recoverWith {
-            case _ ⇒ FastFuture.successful(23)
+            case _ ⇒
+              FastFuture.successful(23)
           }) {
           _ shouldEqual Success(23)
         }
@@ -154,7 +155,8 @@ class FastFutureSpec extends FreeSpec with Matchers {
         test(
           Failure(UnexpectedException),
           _.recoverWith {
-            case _ ⇒ FastFuture.failed(TheException)
+            case _ ⇒
+              FastFuture.failed(TheException)
           }) {
           _ shouldEqual Failure(TheException)
         }
@@ -175,7 +177,8 @@ class FastFutureSpec extends FreeSpec with Matchers {
         test(
           Failure(UnexpectedException),
           _.recover {
-            case _ ⇒ 23
+            case _ ⇒
+              23
           }) {
           _ shouldEqual Success(23)
         }

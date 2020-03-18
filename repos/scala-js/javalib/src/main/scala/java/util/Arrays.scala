@@ -933,16 +933,26 @@ object Arrays {
     @inline
     def getHash(elem: AnyRef): Int = {
       elem match {
-        case elem: Array[AnyRef]  => deepHashCode(elem)
-        case elem: Array[Long]    => hashCode(elem)
-        case elem: Array[Int]     => hashCode(elem)
-        case elem: Array[Short]   => hashCode(elem)
-        case elem: Array[Char]    => hashCode(elem)
-        case elem: Array[Byte]    => hashCode(elem)
-        case elem: Array[Boolean] => hashCode(elem)
-        case elem: Array[Float]   => hashCode(elem)
-        case elem: Array[Double]  => hashCode(elem)
-        case _                    => elem.hashCode
+        case elem: Array[AnyRef] =>
+          deepHashCode(elem)
+        case elem: Array[Long] =>
+          hashCode(elem)
+        case elem: Array[Int] =>
+          hashCode(elem)
+        case elem: Array[Short] =>
+          hashCode(elem)
+        case elem: Array[Char] =>
+          hashCode(elem)
+        case elem: Array[Byte] =>
+          hashCode(elem)
+        case elem: Array[Boolean] =>
+          hashCode(elem)
+        case elem: Array[Float] =>
+          hashCode(elem)
+        case elem: Array[Double] =>
+          hashCode(elem)
+        case _ =>
+          elem.hashCode
       }
     }
     hashCodeImpl(a, getHash)
@@ -1006,16 +1016,26 @@ object Arrays {
         "null"
       else {
         e match {
-          case e: Array[AnyRef]  => deepToStringImpl(e, branch + new AsRef(a))
-          case e: Array[Long]    => toString(e)
-          case e: Array[Int]     => toString(e)
-          case e: Array[Short]   => toString(e)
-          case e: Array[Byte]    => toString(e)
-          case e: Array[Char]    => toString(e)
-          case e: Array[Boolean] => toString(e)
-          case e: Array[Float]   => toString(e)
-          case e: Array[Double]  => toString(e)
-          case _                 => String.valueOf(e)
+          case e: Array[AnyRef] =>
+            deepToStringImpl(e, branch + new AsRef(a))
+          case e: Array[Long] =>
+            toString(e)
+          case e: Array[Int] =>
+            toString(e)
+          case e: Array[Short] =>
+            toString(e)
+          case e: Array[Byte] =>
+            toString(e)
+          case e: Array[Char] =>
+            toString(e)
+          case e: Array[Boolean] =>
+            toString(e)
+          case e: Array[Float] =>
+            toString(e)
+          case e: Array[Double] =>
+            toString(e)
+          case _ =>
+            String.valueOf(e)
         }
       }
     }
@@ -1052,8 +1072,10 @@ object Arrays {
 
     override def equals(obj: Any): Boolean = {
       obj match {
-        case obj: AsRef => obj.inner eq inner
-        case _          => false
+        case obj: AsRef =>
+          obj.inner eq inner
+        case _ =>
+          false
       }
     }
   }

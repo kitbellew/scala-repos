@@ -9,7 +9,8 @@ object test {
 
   def matchAndGetArgFromFoo[a](e: Foo[a]): a = {
     e match {
-      case Foo(x) => x
+      case Foo(x) =>
+        x
     }
   }
 
@@ -26,7 +27,8 @@ object test {
 
   def matchAndGetFunFromBar[a](b: Bar[a]): FunIntToA[a] = {
     b match {
-      case Bar(x) => x
+      case Bar(x) =>
+        x
     }
   }
 

@@ -144,7 +144,8 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                   case None =>
                     doInspection(primaryConstr.parameters, null)
                 }
-              case None => registerBadParams()
+              case None =>
+                registerBadParams()
             }
           case traitt: ScTrait =>
             doInspection(null, traitt.typeParameters)

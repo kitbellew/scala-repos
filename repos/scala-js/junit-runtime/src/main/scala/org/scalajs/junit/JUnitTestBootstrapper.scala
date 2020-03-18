@@ -35,12 +35,14 @@ final class JUnitMethodMetadata(
 
   def getTestAnnotation: Option[org.junit.Test] =
     annotations.collectFirst {
-      case test: org.junit.Test => test
+      case test: org.junit.Test =>
+        test
     }
 
   def getIgnoreAnnotation: Option[org.junit.Ignore] =
     annotations.collectFirst {
-      case ign: org.junit.Ignore => ign
+      case ign: org.junit.Ignore =>
+        ign
     }
 }
 
@@ -72,7 +74,8 @@ final class JUnitClassMetadata(
   def getFixMethodOrderAnnotation: FixMethodOrder = {
     classAnnotations
       .collectFirst {
-        case fmo: FixMethodOrder => fmo
+        case fmo: FixMethodOrder =>
+          fmo
       }
       .getOrElse(new FixMethodOrder)
   }

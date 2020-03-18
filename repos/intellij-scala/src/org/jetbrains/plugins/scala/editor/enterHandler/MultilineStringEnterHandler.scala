@@ -185,7 +185,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
                   !hasMarginChars(element, mChar.toString) && lines.length > 3
                 ) || needAddByType(literal) =>
             marginCharFromSettings
-          case _ => None
+          case _ =>
+            None
         }
 
       if (wasSingleLine || lines.length == 3 &&
@@ -204,7 +205,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
                 if op.refName == "+" && StringConcatenationParser.isString(
                   expr) =>
               Option(expr)
-            case _ => None
+            case _ =>
+              None
           }
         val needInsertNLBefore = (
           !trimmedStartLine.startsWith(

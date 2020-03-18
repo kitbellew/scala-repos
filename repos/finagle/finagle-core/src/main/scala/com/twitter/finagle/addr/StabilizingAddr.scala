@@ -20,7 +20,8 @@ private[finagle] object StabilizingAddr {
 
   private def qcontains[T](q: Queue[(T, _)], elem: T): Boolean =
     q exists {
-      case (e, _) => e == elem
+      case (e, _) =>
+        e == elem
     }
 
   /**
@@ -88,7 +89,8 @@ private[finagle] object StabilizingAddr {
                 // Transitioned to healthy: push back
                 val newTime = Time.now + grace
                 val newq = remq map {
-                  case (elem, _) => (elem, newTime)
+                  case (elem, _) =>
+                    (elem, newTime)
                 }
                 loop(newq, Healthy, active, needPush, srcAddr)
               case newh =>
@@ -100,7 +102,8 @@ private[finagle] object StabilizingAddr {
               // Update our pending queue so that newly added
               // entries aren't later removed.
               var q = remq filter {
-                case (e, _) => !(newSet contains e)
+                case (e, _) =>
+                  !(newSet contains e)
               }
 
               // Add newly removed elements to the remove queue.
@@ -135,8 +138,10 @@ private[finagle] object StabilizingAddr {
             // pass through the current active address.
             val attrs =
               srcAddr match {
-                case Addr.Bound(_, attrs) => attrs
-                case _                    => Addr.Metadata.empty
+                case Addr.Bound(_, attrs) =>
+                  attrs
+                case _ =>
+                  Addr.Metadata.empty
               }
             val addr =
               if (active.nonEmpty)

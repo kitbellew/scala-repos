@@ -261,7 +261,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
           NominalAttribute.defaultAttr
             .withName("label")
             .withNumValues(numClasses)
-        case attr: Attribute => attr
+        case attr: Attribute =>
+          attr
       }
     val model = new OneVsRestModel(uid, labelAttribute.toMetadata(), models)
       .setParent(this)

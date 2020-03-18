@@ -23,7 +23,8 @@ object SameElementsToEquals extends SimplificationType {
           replace(expr)
             .withText(s"${left.getText} == ${right.getText}")
             .highlightRef)
-      case _ => None
+      case _ =>
+        None
     }
 
   private def isOfSameKind(left: ScExpression, right: ScExpression) = {
@@ -50,6 +51,7 @@ object CorrespondsToEquals extends SimplificationType {
           replace(expr)
             .withText(s"${left.getText} == ${right.getText}")
             .highlightRef)
-      case _ => None
+      case _ =>
+        None
     }
 }

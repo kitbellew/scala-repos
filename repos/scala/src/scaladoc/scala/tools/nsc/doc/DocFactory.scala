@@ -130,7 +130,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
             throw NoCompilerRunException
           }
           universer setUniverse universe
-        case _ => ()
+        case _ =>
+          ()
       }
       docletInstance.generate()
     }

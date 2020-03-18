@@ -28,9 +28,11 @@ private[finagle] class DelayedReleaseService[-Req <: Request](
       new Reader {
         def read(n: Int) =
           in.reader.read(n) respond {
-            case Return(None) => done()
-            case Throw(_)     => done()
-            case _            =>
+            case Return(None) =>
+              done()
+            case Throw(_) =>
+              done()
+            case _ =>
           }
 
         def discard() = {

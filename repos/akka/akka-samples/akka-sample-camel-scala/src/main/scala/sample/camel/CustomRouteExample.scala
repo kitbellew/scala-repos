@@ -27,7 +27,8 @@ object CustomRouteExample {
 
     def receive = {
       // Forward a string representation of the message body to transformer
-      case msg: CamelMessage => transformer.forward(msg.withBodyAs[String])
+      case msg: CamelMessage =>
+        transformer.forward(msg.withBodyAs[String])
     }
   }
 

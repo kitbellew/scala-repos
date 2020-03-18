@@ -125,35 +125,50 @@ object Test {
                                                                   case None =>
                                                                     None
                                                                 }
-                                                              case None => None
+                                                              case None =>
+                                                                None
                                                             }
-                                                          case None => None
+                                                          case None =>
+                                                            None
                                                         }
-                                                      case None => None
+                                                      case None =>
+                                                        None
                                                     }
-                                                  case None => None
+                                                  case None =>
+                                                    None
                                                 }
-                                              case None => None
+                                              case None =>
+                                                None
                                             }
-                                          case None => None
+                                          case None =>
+                                            None
                                         }
-                                      case None => None
+                                      case None =>
+                                        None
                                     }
-                                  case None => None
+                                  case None =>
+                                    None
                                 }
-                              case None => None
+                              case None =>
+                                None
                             }
-                          case None => None
+                          case None =>
+                            None
                         }
-                      case None => None
+                      case None =>
+                        None
                     }
-                  case None => None
+                  case None =>
+                    None
                 }
-              case None => None
+              case None =>
+                None
             }
-          case None => None
+          case None =>
+            None
         }
-      case None => None
+      case None =>
+        None
     }
   }
 }

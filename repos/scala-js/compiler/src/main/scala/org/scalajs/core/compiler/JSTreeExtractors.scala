@@ -19,8 +19,10 @@ object JSTreeExtractors {
       def unapply(tree: Tree): Some[(List[Tree], Tree)] =
         Some(
           tree match {
-            case Block(trees) => (trees.init, trees.last)
-            case _            => (Nil, tree)
+            case Block(trees) =>
+              (trees.init, trees.last)
+            case _ =>
+              (Nil, tree)
           })
     }
 
@@ -50,7 +52,8 @@ object JSTreeExtractors {
               None
             else
               genNamedLitExtract(xs, acc, failIfNonLit)
-          case Nil => Some(acc.reverse)
+          case Nil =>
+            Some(acc.reverse)
         }
     }
 

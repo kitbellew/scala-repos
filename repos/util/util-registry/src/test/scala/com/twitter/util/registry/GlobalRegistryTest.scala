@@ -17,7 +17,8 @@ class GlobalRegistryTest extends RegistryTest {
       haystack: Iterable[Entry],
       needle: Seq[String]): Option[Entry] =
     haystack.find({
-      case Entry(key, value) => key == needle
+      case Entry(key, value) =>
+        key == needle
     })
 
   test(s"$name can write, swap registry, and then read the old write") {

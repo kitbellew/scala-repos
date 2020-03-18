@@ -102,9 +102,12 @@ trait LocalSourceOverride extends SchemedSource {
       }.toList
 
     taps match {
-      case Nil           => throw new InvalidSourceException("LocalPaths is empty")
-      case oneTap :: Nil => oneTap
-      case many          => new ScaldingMultiSourceTap(many)
+      case Nil =>
+        throw new InvalidSourceException("LocalPaths is empty")
+      case oneTap :: Nil =>
+        oneTap
+      case many =>
+        new ScaldingMultiSourceTap(many)
     }
   }
 }
@@ -192,13 +195,15 @@ object FileSource {
     val uniqueUsedDirs = MapAlgebra
       .sumByKey(usedDirs)
       .filter {
-        case (_, (_, _, hasNonHidden)) => (!hiddenFilter || hasNonHidden.get)
+        case (_, (_, _, hasNonHidden)) =>
+          (!hiddenFilter || hasNonHidden.get)
       }
 
     // there is at least one valid path, and all paths have success
     //
     uniqueUsedDirs.nonEmpty && uniqueUsedDirs.forall {
-      case (_, (_, hasSuccess, _)) => hasSuccess.get
+      case (_, (_, hasSuccess, _)) =>
+        hasSuccess.get
     }
   }
 }
@@ -237,13 +242,16 @@ abstract class FileSource
       // TODO support strict in Local
       case Local(_) => {
         readOrWrite match {
-          case Read  => createLocalTap(sinkMode)
-          case Write => new FileTap(localScheme, localWritePath, sinkMode)
+          case Read =>
+            createLocalTap(sinkMode)
+          case Write =>
+            new FileTap(localScheme, localWritePath, sinkMode)
         }
       }
       case hdfsMode @ Hdfs(_, _) =>
         readOrWrite match {
-          case Read => createHdfsReadTap(hdfsMode)
+          case Read =>
+            createHdfsReadTap(hdfsMode)
           case Write =>
             CastHfsTap(createHfsTap(hdfsScheme, hdfsWritePath, sinkMode))
         }
@@ -263,7 +271,8 @@ abstract class FileSource
           }
 
         tryTtp match {
-          case Success(s) => s
+          case Success(s) =>
+            s
           case Failure(e) =>
             throw new java.lang.IllegalArgumentException(
               s"Failed to create tap for: $toString, with error: ${e.getMessage}",
@@ -316,7 +325,8 @@ abstract class FileSource
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
         }
       }
-      case _ => ()
+      case _ =>
+        ()
     }
   }
 
@@ -326,7 +336,8 @@ abstract class FileSource
   protected def goodHdfsPaths(hdfsMode: Hdfs) = {
     hdfsMode match {
       //we check later that all the paths are good
-      case Hdfs(true, _) => hdfsPaths
+      case Hdfs(true, _) =>
+        hdfsPaths
       // If there are no matching paths, this is still an error, we need at least something:
       case Hdfs(false, conf) =>
         hdfsPaths.filter {
@@ -348,8 +359,10 @@ abstract class FileSource
         //openForRead on mappers should fail when using this tap.
         new InvalidSourceTap(hdfsPaths)
       }
-      case 1 => taps.head
-      case _ => new ScaldingMultiSourceTap(taps)
+      case 1 =>
+        taps.head
+      case _ =>
+        new ScaldingMultiSourceTap(taps)
     }
   }
 }
@@ -484,9 +497,12 @@ trait LocalTapSource extends LocalSourceOverride {
       }.toSeq
 
     taps match {
-      case Nil           => throw new InvalidSourceException("LocalPaths is empty")
-      case oneTap :: Nil => oneTap
-      case many          => new ScaldingMultiSourceTap(many)
+      case Nil =>
+        throw new InvalidSourceException("LocalPaths is empty")
+      case oneTap :: Nil =>
+        oneTap
+      case many =>
+        new ScaldingMultiSourceTap(many)
     }
   }
 }

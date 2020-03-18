@@ -70,7 +70,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
       ScalaPsiUtil.nameContext(el.element) match {
         case memb: ScMember =>
           ResolveUtils.isAccessible(memb, place, forCompletion = true)
-        case _ => true
+        case _ =>
+          true
       }
     }
 
@@ -83,9 +84,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
       val chainVariant = _variant.isInstanceOf[ScalaChainLookupElement]
       val variant =
         _variant match {
-          case el: ScalaLookupItem         => el
-          case ch: ScalaChainLookupElement => ch.element
-          case _                           => return
+          case el: ScalaLookupItem =>
+            el
+          case ch: ScalaChainLookupElement =>
+            ch.element
+          case _ =>
+            return
         }
       val elemToAdd = _variant.asInstanceOf[LookupElement]
       variant match {
@@ -162,8 +166,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
               case fun: ScFunction =>
                 if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef") {
                   fun.name match {
-                    case "implicitly" | "identity" | "locally" => return
-                    case _                                     =>
+                    case "implicitly" | "identity" | "locally" =>
+                      return
+                    case _ =>
                   }
                 }
                 val infer =
@@ -178,8 +183,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     .isEmpty
                 val added =
                   fun.returnType match {
-                    case Success(tp, _) => checkType(tp, infer, second)
-                    case _              => false
+                    case Success(tp, _) =>
+                      checkType(tp, infer, second)
+                    case _ =>
+                      false
                   }
                 if (!added) {
                   fun.getType(TypingContext.empty) match {
@@ -312,8 +319,9 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
               case Some(c: ScClass)
                   if c.qualifiedName == "scala.Option" || c.qualifiedName == "scala.Some" =>
                 tp match {
-                  case ScParameterizedType(_, Seq(scType)) => checkType(scType)
-                  case _                                   =>
+                  case ScParameterizedType(_, Seq(scType)) =>
+                    checkType(scType)
+                  case _ =>
                 }
               case Some(o: ScObject) => //do nothing
               case Some(clazz: ScTypeDefinition) =>
@@ -365,7 +373,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     applyVariant(lookup)
                   }
                 })
-              case _ => checkTypeProjection(tp)
+              case _ =>
+                checkTypeProjection(tp)
             }
           }
           checkType(tp)
@@ -382,7 +391,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           var foundClazz = false
           while (parent != null) {
             parent match {
-              case t: ScNewTemplateDefinition if foundClazz => //do nothing, impossible to invoke
+              case t: ScNewTemplateDefinition
+                  if foundClazz => //do nothing, impossible to invoke
               case t: ScTemplateDefinition =>
                 t.getTypeWithProjections(
                   TypingContext.empty,
@@ -542,15 +552,19 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
     for (expected <- expects) {
       def params(tp: ScType): Seq[ScType] =
         tp match {
-          case ScFunctionType(_, params) => params
-          case _                         => null
+          case ScFunctionType(_, params) =>
+            params
+          case _ =>
+            null
         }
       val actualParams = params(expected)
       if (actualParams != null) {
         val params =
           actualParams match {
-            case Seq(ScTupleType(types)) if braceArgs => types
-            case _                                    => actualParams
+            case Seq(ScTupleType(types)) if braceArgs =>
+              types
+            case _ =>
+              actualParams
           }
         val presentableParams = params.map(_.removeAbstracts)
         val anonFunRenderer =
@@ -1045,8 +1059,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         val newExpr = PsiTreeUtil
           .getContextOfType(element, classOf[ScNewTemplateDefinition])
         val types: Array[ScType] = newExpr.expectedTypes().map {
-          case ScAbstractType(_, lower, upper) => upper
-          case tp                              => tp
+          case ScAbstractType(_, lower, upper) =>
+            upper
+          case tp =>
+            tp
         }
         for (typez <- types) {
           val element: LookupElement = convertTypeToLookupElement(

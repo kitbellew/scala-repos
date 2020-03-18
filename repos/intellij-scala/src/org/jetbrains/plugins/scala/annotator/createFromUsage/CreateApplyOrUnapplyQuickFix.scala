@@ -30,10 +30,14 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
   override val getText = {
     val classKind =
       td match {
-        case _: ScObject => "object"
-        case _: ScTrait  => "trait"
-        case _: ScClass  => "class"
-        case _           => ""
+        case _: ScObject =>
+          "object"
+        case _: ScTrait =>
+          "trait"
+        case _: ScClass =>
+          "class"
+        case _ =>
+          ""
       }
     s"$getFamilyName in $classKind ${td.name}"
   }
@@ -42,9 +46,12 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
     if (!td.isValid)
       return false
     td.getContainingFile match {
-      case _: ScalaCodeFragment         => false
-      case f: ScalaFile if f.isWritable => true
-      case _                            => false
+      case _: ScalaCodeFragment =>
+        false
+      case f: ScalaFile if f.isWritable =>
+        true
+      case _ =>
+        false
     }
   }
 

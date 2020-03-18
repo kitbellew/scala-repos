@@ -205,8 +205,10 @@ object Expr1 {
               builder error ErrMsg("enumerators.expected")
             }
             builder.getTokenType match {
-              case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer()
-              case _                             => builder error ErrMsg("rparenthesis.expected")
+              case ScalaTokenTypes.tRPARENTHESIS =>
+                builder.advanceLexer()
+              case _ =>
+                builder error ErrMsg("rparenthesis.expected")
             }
             builder.restoreNewlinesState
           case _ =>
@@ -300,7 +302,8 @@ object Expr1 {
                 }
                 ParserUtils.parseLoopUntilRBrace(builder, foo)
                 builder.restoreNewlinesState
-              case _ => builder error ErrMsg("case.clauses.expected")
+              case _ =>
+                builder error ErrMsg("case.clauses.expected")
             }
             exprMarker.done(ScalaElementTypes.MATCH_STMT)
             return true

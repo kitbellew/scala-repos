@@ -28,7 +28,8 @@ class ExtendsFilter extends ElementFilter {
         prev = getPrevSiblingNotWhitespace(leafParent)
       prev match {
         case _: PsiErrorElement =>
-        case _                  => return false
+        case _ =>
+          return false
       }
       val prev2 = prev.getPrevSibling
       prev2 match {
@@ -43,7 +44,8 @@ class ExtendsFilter extends ElementFilter {
             else
               return true
           }
-        case _ => return false
+        case _ =>
+          return false
       }
     }
     false

@@ -105,8 +105,10 @@ object JsonApi {
 
   def fromWork(w: W): Work =
     w match {
-      case m: W.Move     => Move(w.id.value, m.level, fromGame(m.game))
-      case a: W.Analysis => Analysis(w.id.value, fromGame(a.game))
+      case m: W.Move =>
+        Move(w.id.value, m.level, fromGame(m.game))
+      case a: W.Analysis =>
+        Analysis(w.id.value, fromGame(a.game))
     }
 
   object readers {
@@ -141,7 +143,8 @@ object JsonApi {
       Json.obj(
         "work" -> (
           work match {
-            case a: Analysis => Json.obj("type" -> "analysis", "id" -> work.id)
+            case a: Analysis =>
+              Json.obj("type" -> "analysis", "id" -> work.id)
             case m: Move =>
               Json.obj("type" -> "move", "id" -> work.id, "level" -> m.level)
           }

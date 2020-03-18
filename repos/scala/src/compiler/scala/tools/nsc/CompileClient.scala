@@ -57,7 +57,8 @@ class StandardCompileClient extends HasCompileSocket with CompileOutputCommon {
         compileSocket.getSocket(settings.server.value)
 
     socket match {
-      case Some(sock) => compileOnServer(sock, fscArgs)
+      case Some(sock) =>
+        compileOnServer(sock, fscArgs)
       case _ =>
         echo(
           if (shutdown)
@@ -78,7 +79,8 @@ object CompileClient extends StandardCompileClient {
         else
           1
       } catch {
-        case _: Exception => 1
+        case _: Exception =>
+          1
       }
     }
 }

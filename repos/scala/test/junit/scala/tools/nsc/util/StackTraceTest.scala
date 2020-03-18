@@ -32,7 +32,8 @@ class StackTraceTest extends Expecting {
     try {
       sample
     } catch {
-      case e: Throwable => throw new RuntimeException("resample", e)
+      case e: Throwable =>
+        throw new RuntimeException("resample", e)
     }
   def resampler: String = resample
 
@@ -41,14 +42,16 @@ class StackTraceTest extends Expecting {
     try {
       sample
     } catch {
-      case e: Throwable => throw new RuntimeException(e)
+      case e: Throwable =>
+        throw new RuntimeException(e)
     }
   // another onion skin
   def rewrapper: String =
     try {
       wrapper
     } catch {
-      case e: Throwable => throw new RuntimeException(e)
+      case e: Throwable =>
+        throw new RuntimeException(e)
     }
   def rewrapperer: String = rewrapper
 
@@ -87,10 +90,13 @@ class StackTraceTest extends Expecting {
   def probe(s: => String)(p: StackTraceElement => Boolean)(
       t: String => Unit): Unit = {
     Try(s) recover {
-      case e => e stackTracePrefixString p
+      case e =>
+        e stackTracePrefixString p
     } match {
-      case Success(s) => t(s)
-      case Failure(e) => throw e
+      case Success(s) =>
+        t(s)
+      case Failure(e) =>
+        throw e
     }
   }
 
@@ -151,7 +157,8 @@ class StackTraceTest extends Expecting {
       assert(
         (
           res collect {
-            case s if s startsWith CausedBy.toString => s
+            case s if s startsWith CausedBy.toString =>
+              s
           }
         ).size == 2)
     }

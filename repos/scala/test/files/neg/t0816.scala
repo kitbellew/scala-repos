@@ -7,7 +7,9 @@ case class Ctest(override val data: String) extends Btest(data, true)
 class testCaseClass {
   def test(x: Atest) =
     x match {
-      case Ctest(data)    => Console.println("C")
-      case Btest(data, b) => Console.println("B")
+      case Ctest(data) =>
+        Console.println("C")
+      case Btest(data, b) =>
+        Console.println("B")
     }
 }

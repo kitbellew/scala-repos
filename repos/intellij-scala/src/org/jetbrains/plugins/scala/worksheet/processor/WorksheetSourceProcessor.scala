@@ -62,7 +62,8 @@ object WorksheetSourceProcessor {
           else
             None
         } catch {
-          case _: NumberFormatException => None
+          case _: NumberFormatException =>
+            None
         }
       } else
         None
@@ -83,7 +84,8 @@ object WorksheetSourceProcessor {
     val name = s"A$$A$iterNumber"
     val instanceName = s"inst$$A$$A"
     val packOpt = Option(srcFile.getContainingDirectory) flatMap {
-      case dir => Option(JavaDirectoryService.getInstance().getPackage(dir))
+      case dir =>
+        Option(JavaDirectoryService.getInstance().getPackage(dir))
     } collect {
       case psiPackage: PsiPackage
           if !psiPackage.getQualifiedName.trim.isEmpty =>
@@ -100,8 +102,10 @@ object WorksheetSourceProcessor {
       Option(RunWorksheetAction getModuleFor srcFile) flatMap {
         case module =>
           module.scalaSdk.flatMap(_.compilerVersion).collect {
-            case v if v.startsWith("2.10") => if210
-            case v if v.startsWith("2.11") => if211
+            case v if v.startsWith("2.10") =>
+              if210
+            case v if v.startsWith("2.11") =>
+              if211
           }
       } getOrElse dflt
 
@@ -145,7 +149,8 @@ object WorksheetSourceProcessor {
             ";"
           else
             StringUtil.repeat("\n", c)
-        case _ => ";"
+        case _ =>
+          ";"
       }
 
     @inline
@@ -167,8 +172,10 @@ object WorksheetSourceProcessor {
                     iter(ws.getNextSibling)
                   case a: PsiElement if a.getTextRange.isEmpty =>
                     iter(a.getNextSibling)
-                  case a: PsiElement => a
-                  case _             => psi
+                  case a: PsiElement =>
+                    a
+                  case _ =>
+                    psi
                 }
               }
 
@@ -196,7 +203,8 @@ object WorksheetSourceProcessor {
           case valDef: ScPatternDefinition
               if !valDef.getModifierList.has(ScalaTokenTypes.kLAZY) =>
             "lazy " + valDef.getText
-          case a => a.getText
+          case a =>
+            a.getText
         }
 
       classRes append txt append insertNlsFromWs(psi)
@@ -207,8 +215,10 @@ object WorksheetSourceProcessor {
       val range = comment.getTextRange
       val backOffset =
         comment.getPrevSibling match {
-          case ws: PsiWhiteSpace if countNls(ws.getText) > 0 => 0
-          case _                                             => 1
+          case ws: PsiWhiteSpace if countNls(ws.getText) > 0 =>
+            0
+          case _ =>
+            1
         }
 
       ifDocument map { document =>
@@ -337,7 +347,8 @@ object WorksheetSourceProcessor {
 
     def insertUntouched(exprs: mutable.Iterable[PsiElement]) {
       exprs foreach {
-        case expr => classRes append expr.getText append insertNlsFromWs(expr)
+        case expr =>
+          classRes append expr.getText append insertNlsFromWs(expr)
       }
     }
 
@@ -362,7 +373,8 @@ object WorksheetSourceProcessor {
           case (a: PsiElement, cl: ScTemplateDefinition) =>
             postDeclarations += cl
             a
-          case (a, _) => a
+          case (a, _) =>
+            a
         }
       }
 
@@ -370,9 +382,12 @@ object WorksheetSourceProcessor {
 
     val rootChildren =
       root match {
-        case file: PsiFile => file.getChildren
-        case null          => srcFile.getChildren
-        case other         => other.getNode.getChildren(null) map (_.getPsi)
+        case file: PsiFile =>
+          file.getChildren
+        case null =>
+          srcFile.getChildren
+        case other =>
+          other.getNode.getChildren(null) map (_.getPsi)
       }
 
     rootChildren foreach {
@@ -400,9 +415,12 @@ object WorksheetSourceProcessor {
           tpeDef, {
             val keyword =
               tpeDef match {
-                case _: ScClass => "class"
-                case _: ScTrait => "trait"
-                case _          => "module"
+                case _: ScClass =>
+                  "class"
+                case _: ScTrait =>
+                  "trait"
+                case _ =>
+                  "module"
               }
 
             objectRes append withPrint(s"defined $keyword ${tpeDef.name}")
@@ -427,14 +445,17 @@ object WorksheetSourceProcessor {
       case varDef: ScVariableDefinition =>
         def writeTypedPatter(p: ScTypedPattern) = {
           p.typePattern map {
-            case typed => p.name + ":" + typed.typeElement.getText
+            case typed =>
+              p.name + ":" + typed.typeElement.getText
           } getOrElse p.name
         }
 
         def typeElement2Types(te: ScTypeElement) =
           te match {
-            case tpl: ScTupleTypeElement => tpl.components
-            case other                   => Seq(other)
+            case tpl: ScTupleTypeElement =>
+              tpl.components
+            case other =>
+              Seq(other)
           }
 
         val lineNum = psiToLineNumbers(varDef)
@@ -444,7 +465,8 @@ object WorksheetSourceProcessor {
             case (Some(tpl: ScTypeElement), Some(expr)) =>
               "var " + (
                 typeElement2Types(tpl) zip varDef.declaredElements map {
-                  case (tpe, el) => el.name + ": " + tpe.getText
+                  case (tpe, el) =>
+                    el.name + ": " + tpe.getText
                 }
               ).mkString("(", ",", ")") + " = { " + expr.getText + ";}"
             case (_, Some(expr)) =>
@@ -452,10 +474,12 @@ object WorksheetSourceProcessor {
                 .map {
                   case tpePattern: ScTypedPattern =>
                     writeTypedPatter(tpePattern)
-                  case a => a.name
+                  case a =>
+                    a.name
                 }
                 .mkString("(", ",", ")") + " = { " + expr.getText + ";}"
-            case _ => varDef.getText
+            case _ =>
+              varDef.getText
           }
 
         classRes append txt append ";"
@@ -501,9 +525,11 @@ object WorksheetSourceProcessor {
         appendPsiLineInfo(expr, lineNums)
 
         resCount += 1
-      case ws: PsiWhiteSpace      => appendPsiWhitespace(ws)
-      case error: PsiErrorElement => return Right(error)
-      case a                      =>
+      case ws: PsiWhiteSpace =>
+        appendPsiWhitespace(ws)
+      case error: PsiErrorElement =>
+        return Right(error)
+      case a =>
     }
 
     insertUntouched(postDeclarations)
@@ -533,9 +559,12 @@ object WorksheetSourceProcessor {
           obj.extendsBlock.templateParents.isEmpty && isObjectOk(
             obj.getNextSibling
           ) //isOk(psi.getNextSibling) - for compatibility with Eclipse. Its worksheet proceeds with expressions inside first object found
-        case _: PsiClass if isEclipseMode => isObjectOk(psi.getNextSibling)
-        case null                         => true
-        case _                            => false
+        case _: PsiClass if isEclipseMode =>
+          isObjectOk(psi.getNextSibling)
+        case null =>
+          true
+        case _ =>
+          false
       }
 
     isObjectOk(file.getFirstChild)

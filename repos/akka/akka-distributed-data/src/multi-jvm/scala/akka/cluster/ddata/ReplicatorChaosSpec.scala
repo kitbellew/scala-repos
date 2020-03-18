@@ -79,10 +79,14 @@ class ReplicatorChaosSpec
           expectMsgPF() {
             case g @ GetSuccess(`key`, _) ⇒
               g.dataValue match {
-                case c: GCounter ⇒ c.value
-                case c: PNCounter ⇒ c.value
-                case c: GSet[_] ⇒ c.elements
-                case c: ORSet[_] ⇒ c.elements
+                case c: GCounter ⇒
+                  c.value
+                case c: PNCounter ⇒
+                  c.value
+                case c: GSet[_] ⇒
+                  c.elements
+                case c: ORSet[_] ⇒
+                  c.elements
               }
           }
         value should be(expected)

@@ -48,8 +48,10 @@ trait TimeTruncationSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -65,7 +67,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -86,7 +89,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -107,7 +111,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -128,7 +133,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain("04-29", "02-21", "09-06", "02-11", "12-28")
@@ -144,7 +150,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -165,7 +172,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -186,7 +194,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -207,7 +216,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -228,7 +238,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -249,7 +260,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -270,7 +282,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain("09:37", "20:09", "06:44", "09:11", "22:38")
@@ -286,7 +299,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -310,7 +324,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -331,7 +346,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -352,7 +368,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -373,7 +390,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain("04-29", "02-21", "09-06", "02-11", "12-28")
@@ -389,7 +407,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -410,7 +429,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -431,7 +451,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -452,7 +473,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -473,7 +495,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -494,7 +517,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -515,7 +539,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain("09:37", "20:09", "06:44", "09:11", "22:38")
@@ -531,7 +556,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -556,7 +582,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -596,7 +623,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -633,7 +661,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -673,7 +702,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -712,7 +742,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -752,7 +783,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -792,7 +824,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -832,7 +865,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -872,7 +906,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -912,7 +947,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -952,7 +988,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -992,7 +1029,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1035,7 +1073,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1062,7 +1101,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1089,7 +1129,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1116,7 +1157,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1143,7 +1185,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1171,7 +1214,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1199,7 +1243,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1227,7 +1272,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1255,7 +1301,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1283,7 +1330,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1310,7 +1358,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(
@@ -1337,7 +1386,8 @@ trait TimeTruncationSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SString(d)) if ids.length == 1 => d
+        case (ids, SString(d)) if ids.length == 1 =>
+          d
       }
 
       result2 must contain(

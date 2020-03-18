@@ -156,7 +156,8 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
             x
           else
             yarnMaxAttempts
-        case None => yarnMaxAttempts
+        case None =>
+          yarnMaxAttempts
       }
 
     retval

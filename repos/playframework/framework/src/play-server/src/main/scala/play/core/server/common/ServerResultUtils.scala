@@ -92,9 +92,11 @@ object ServerResultUtils {
     */
   def cancelEntity(entity: HttpEntity)(implicit mat: Materializer) = {
     entity match {
-      case HttpEntity.Chunked(chunks, _)   => chunks.runWith(Sink.cancelled)
-      case HttpEntity.Streamed(data, _, _) => data.runWith(Sink.cancelled)
-      case _                               =>
+      case HttpEntity.Chunked(chunks, _) =>
+        chunks.runWith(Sink.cancelled)
+      case HttpEntity.Streamed(data, _, _) =>
+        data.runWith(Sink.cancelled)
+      case _ =>
     }
   }
 

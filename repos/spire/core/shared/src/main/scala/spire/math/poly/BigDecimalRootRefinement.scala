@@ -16,11 +16,16 @@ case class BigDecimalRootRefinement(
   def approximateValue: JBigDecimal = {
     import context.{floor, ceil}
     approximation match {
-      case ExactRoot(root)         => floor(root)
-      case Bounded(lb, _, _, _, n) => ceil(lb)
-      case BoundedLeft(_, ub)      => floor(ub)
-      case BoundedRight(lb, _)     => ceil(lb)
-      case Unbounded(lb, ub)       => ceil(lb)
+      case ExactRoot(root) =>
+        floor(root)
+      case Bounded(lb, _, _, _, n) =>
+        ceil(lb)
+      case BoundedLeft(_, ub) =>
+        floor(ub)
+      case BoundedRight(lb, _) =>
+        ceil(lb)
+      case Unbounded(lb, ub) =>
+        ceil(lb)
     }
   }
 

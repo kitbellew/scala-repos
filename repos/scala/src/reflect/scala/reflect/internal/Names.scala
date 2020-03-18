@@ -563,7 +563,8 @@ trait Names extends api.Names {
 
     private def dropTraitSetterSeparator: TermName =
       name indexOf TRAIT_SETTER_SEPARATOR_STRING match {
-        case -1 => name.toTermName
+        case -1 =>
+          name.toTermName
         case idx =>
           name.toTermName drop idx drop TRAIT_SETTER_SEPARATOR_STRING.length
       }

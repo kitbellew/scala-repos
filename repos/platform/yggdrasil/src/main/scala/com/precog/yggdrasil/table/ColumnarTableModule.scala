@@ -327,7 +327,8 @@ object ColumnarTableModule extends Logging {
       val sb = new StringBuilder()
 
       pastIndices match {
-        case None => indices.writeToBuilder(sb)
+        case None =>
+          indices.writeToBuilder(sb)
         case Some(ind) =>
           if (ind != indices) {
             sb.append("\r\n")
@@ -612,8 +613,10 @@ trait ColumnarTableModule[M[+_]]
 
       def sources(spec: GroupKeySpec): Seq[GroupKeySpecSource] =
         (spec: @unchecked) match {
-          case GroupKeySpecAnd(left, right) => sources(left) ++ sources(right)
-          case src: GroupKeySpecSource      => Vector(src)
+          case GroupKeySpecAnd(left, right) =>
+            sources(left) ++ sources(right)
+          case src: GroupKeySpecSource =>
+            Vector(src)
         }
 
       def mkProjections(spec: GroupKeySpec) =
@@ -632,7 +635,8 @@ trait ColumnarTableModule[M[+_]]
           source <- grouping.sources
           groupKeyProjections <- mkProjections(source.groupKeySpec)
           disjunctGroupKeyTransSpecs = groupKeyProjections.map {
-            case (key, spec) => spec
+            case (key, spec) =>
+              spec
           }
         } yield {
           TableIndex
@@ -662,14 +666,16 @@ trait ColumnarTableModule[M[+_]]
             : Set[Key] = {
           def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] = {
             l match {
-              case Seq(hd) => hd.map(Seq(_))
+              case Seq(hd) =>
+                hd.map(Seq(_))
               case Seq(hd, tl @ _*) => {
                 for {
                   disjunctHd <- hd
                   disjunctTl <- allSourceDNF(tl)
                 } yield disjunctHd +: disjunctTl
               }
-              case empty => empty
+              case empty =>
+                empty
             }
           }
 
@@ -697,8 +703,10 @@ trait ColumnarTableModule[M[+_]]
 
             def merge(key0: Key, key1: Key): Key =
               (key0 zip key1).map {
-                case (k0, CUndefined) => k0
-                case (_, k1)          => k1
+                case (k0, CUndefined) =>
+                  k0
+                case (_, k1) =>
+                  k1
               }
 
             // TODO: This "mini-cross" is much better than the
@@ -797,7 +805,8 @@ trait ColumnarTableModule[M[+_]]
             schema.columns(JTextT) flatMap {
               case s: StrColumn =>
                 range.filter(s.isDefinedAt).map(i => Path(s(i)))
-              case _ => Set()
+              case _ =>
+                Set()
             }
           }
         }
@@ -883,8 +892,10 @@ trait ColumnarTableModule[M[+_]]
     def reduce[A](reducer: Reducer[A])(implicit monoid: Monoid[A]): M[A] = {
       def rec(stream: StreamT[M, A], acc: A): M[A] = {
         stream.uncons flatMap {
-          case Some((head, tail)) => rec(tail, head |+| acc)
-          case None               => M.point(acc)
+          case Some((head, tail)) =>
+            rec(tail, head |+| acc)
+          case None =>
+            M.point(acc)
         }
       }
 
@@ -1027,8 +1038,10 @@ trait ColumnarTableModule[M[+_]]
 
       def concat(rslices: List[Slice]): Slice =
         rslices.reverse match {
-          case Nil          => Slice(Map.empty, 0)
-          case slice :: Nil => slice
+          case Nil =>
+            Slice(Map.empty, 0)
+          case slice :: Nil =>
+            slice
           case slices =>
             val slice = Slice.concat(slices)
             if (slices.size > (slice.size / yggConfig.smallSliceSize)) {
@@ -1632,7 +1645,8 @@ trait ColumnarTableModule[M[+_]]
                     Some(
                       leftResult -> (
                         unconsed map {
-                          case (nhead, ntail) => EndLeft(lr0, nhead, ntail)
+                          case (nhead, ntail) =>
+                            EndLeft(lr0, nhead, ntail)
                         } getOrElse CogroupDone
                       ))
                   }
@@ -1649,14 +1663,16 @@ trait ColumnarTableModule[M[+_]]
                     Some(
                       rightResult -> (
                         unconsed map {
-                          case (nhead, ntail) => EndRight(rr0, nhead, ntail)
+                          case (nhead, ntail) =>
+                            EndRight(rr0, nhead, ntail)
                         } getOrElse CogroupDone
                       ))
                   }
                 }
               }
 
-            case CogroupDone => M.point(None)
+            case CogroupDone =>
+              M.point(None)
           }
         } // end of step
 
@@ -1705,13 +1721,15 @@ trait ColumnarTableModule[M[+_]]
 
               val optM = cogroup orElse {
                 leftUnconsed map {
-                  case (head, tail) => EndLeft(stlr.initial, head, tail)
+                  case (head, tail) =>
+                    EndLeft(stlr.initial, head, tail)
                 } map {
                   M point _
                 }
               } orElse {
                 rightUnconsed map {
-                  case (head, tail) => EndRight(strr.initial, head, tail)
+                  case (head, tail) =>
+                    EndRight(strr.initial, head, tail)
                 } map {
                   M point _
                 }
@@ -1901,17 +1919,20 @@ trait ColumnarTableModule[M[+_]]
                   }
                 } yield back
 
-              case None => M.point(StreamT.empty[M, Slice])
+              case None =>
+                M.point(StreamT.empty[M, Slice])
             }
 
-          case None => M.point(StreamT.empty[M, Slice])
+          case None =>
+            M.point(StreamT.empty[M, Slice])
         }
       }
 
       // TODO: We should be able to fully compute the size of the result above.
       val newSize =
         (size, that.size) match {
-          case (ExactSize(l), ExactSize(r)) => TableSize(l max r, l * r)
+          case (ExactSize(l), ExactSize(r)) =>
+            TableSize(l max r, l * r)
           case (EstimateSize(ln, lx), ExactSize(r)) =>
             TableSize(ln max r, lx * r)
           case (ExactSize(l), EstimateSize(rn, rx)) =>
@@ -1922,9 +1943,12 @@ trait ColumnarTableModule[M[+_]]
 
       val newSizeM =
         newSize match {
-          case ExactSize(s)       => Some(s)
-          case EstimateSize(_, s) => Some(s)
-          case _                  => None
+          case ExactSize(s) =>
+            Some(s)
+          case EstimateSize(_, s) =>
+            Some(s)
+          case _ =>
+            None
         }
 
       val sizeCheck =
@@ -2014,7 +2038,8 @@ trait ColumnarTableModule[M[+_]]
           case Some(_) if readSoFar < (startIndex + 1) =>
             inner(stream, 0, (startIndex - readSoFar).toInt)
           // Read off the end (we took nothing)
-          case _ => M.point(StreamT.empty[M, Slice])
+          case _ =>
+            M.point(StreamT.empty[M, Slice])
         }
 
       def inner(
@@ -2029,7 +2054,8 @@ trait ColumnarTableModule[M[+_]]
             inner(tail, takenSoFar + (head.size - (sliceStartIndex)), 0)
               .map(needed :: _)
           }
-          case _ => M.point(StreamT.empty[M, Slice])
+          case _ =>
+            M.point(StreamT.empty[M, Slice])
         }
 
       def calcNewSize(current: Long): Long =
@@ -2037,11 +2063,14 @@ trait ColumnarTableModule[M[+_]]
 
       val newSize =
         size match {
-          case ExactSize(sz) => ExactSize(calcNewSize(sz))
+          case ExactSize(sz) =>
+            ExactSize(calcNewSize(sz))
           case EstimateSize(sMin, sMax) =>
             TableSize(calcNewSize(sMin), calcNewSize(sMax))
-          case UnknownSize  => UnknownSize
-          case InfiniteSize => InfiniteSize
+          case UnknownSize =>
+            UnknownSize
+          case InfiniteSize =>
+            InfiniteSize
         }
 
       Table(StreamT.wrapEffect(loop(slices, 0)), newSize)
@@ -2193,9 +2222,12 @@ trait ColumnarTableModule[M[+_]]
         @tailrec
         def loop(xs: List[Array[Int]], y: Array[Int]): Boolean =
           xs match {
-            case x :: xs if x.length == y.length && equal(x, y, 0) => true
-            case _ :: xs                                           => loop(xs, y)
-            case Nil                                               => false
+            case x :: xs if x.length == y.length && equal(x, y, 0) =>
+              true
+            case _ :: xs =>
+              loop(xs, y)
+            case Nil =>
+              false
           }
 
         loop(masks, mask)
@@ -2221,16 +2253,26 @@ trait ColumnarTableModule[M[+_]]
       def mkSchema(cols: List[ColumnRef]): Option[JType] = {
         def leafType(ctype: CType): JType =
           ctype match {
-            case CBoolean               => JBooleanT
-            case CLong | CDouble | CNum => JNumberT
-            case CString                => JTextT
-            case CDate                  => JDateT
-            case CPeriod                => JPeriodT
-            case CArrayType(elemType)   => leafType(elemType)
-            case CEmptyObject           => JObjectFixedT(Map.empty)
-            case CEmptyArray            => JArrayFixedT(Map.empty)
-            case CNull                  => JNullT
-            case CUndefined             => sys.error("not supported")
+            case CBoolean =>
+              JBooleanT
+            case CLong | CDouble | CNum =>
+              JNumberT
+            case CString =>
+              JTextT
+            case CDate =>
+              JDateT
+            case CPeriod =>
+              JPeriodT
+            case CArrayType(elemType) =>
+              leafType(elemType)
+            case CEmptyObject =>
+              JObjectFixedT(Map.empty)
+            case CEmptyArray =>
+              JArrayFixedT(Map.empty)
+            case CNull =>
+              JNullT
+            case CUndefined =>
+              sys.error("not supported")
           }
 
         def fresh(paths: List[CPathNode], leaf: JType): Option[JType] =
@@ -2245,8 +2287,10 @@ trait ColumnarTableModule[M[+_]]
               }
             case CPathArray :: paths =>
               fresh(paths, leaf) map (JArrayHomogeneousT(_))
-            case CPathMeta(field) :: _ => None
-            case Nil                   => Some(leaf)
+            case CPathMeta(field) :: _ =>
+              None
+            case Nil =>
+              Some(leaf)
           }
 
         def merge(
@@ -2320,7 +2364,8 @@ trait ColumnarTableModule[M[+_]]
             val next = masks flatMap { schemaMask =>
               mkSchema(
                 refs collect {
-                  case (ref, i) if RawBitSet.get(schemaMask, i) => ref
+                  case (ref, i) if RawBitSet.get(schemaMask, i) =>
+                    ref
                 })
             }
 

@@ -163,7 +163,8 @@ private[spark] class YarnClientSchedulerBackend(
         allowInterrupt = false
         sc.stop()
       } catch {
-        case e: InterruptedException => logInfo("Interrupting monitor thread")
+        case e: InterruptedException =>
+          logInfo("Interrupting monitor thread")
       }
     }
 

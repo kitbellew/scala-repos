@@ -506,8 +506,10 @@ class Message(
 
   override def equals(any: Any): Boolean = {
     any match {
-      case that: Message => this.buffer.equals(that.buffer)
-      case _             => false
+      case that: Message =>
+        this.buffer.equals(that.buffer)
+      case _ =>
+        false
     }
   }
 

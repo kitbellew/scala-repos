@@ -215,11 +215,16 @@ object BSON {
     def bytesO(b: Array[Byte]): Option[BSONBinary] = byteArrayO(ByteArray(b))
     def listO(list: List[String]): Option[List[String]] =
       list match {
-        case Nil          => None
-        case List("")     => None
-        case List("", "") => None
-        case List(a, "")  => Some(List(a))
-        case full         => Some(full)
+        case Nil =>
+          None
+        case List("") =>
+          None
+        case List("", "") =>
+          None
+        case List(a, "") =>
+          Some(List(a))
+        case full =>
+          Some(full)
       }
     def docO(o: BSONDocument): Option[BSONDocument] =
       if (o.isEmpty)
@@ -247,24 +252,29 @@ object BSON {
 
   def debug(v: BSONValue): String =
     v match {
-      case d: BSONDocument => debugDoc(d)
-      case d: BSONArray    => debugArr(d)
-      case v               => v.toString
+      case d: BSONDocument =>
+        debugDoc(d)
+      case d: BSONArray =>
+        debugArr(d)
+      case v =>
+        v.toString
     }
   def debugArr(doc: BSONArray): String =
     doc.values.toList.map(debug).mkString("[", ", ", "]")
   def debugDoc(doc: BSONDocument): String =
     (
       doc.elements.toList map {
-        case (k, v) => s"$k: ${debug(v)}"
+        case (k, v) =>
+          s"$k: ${debug(v)}"
       }
     ).mkString("{", ", ", "}")
 
   def asStrings(vs: List[BSONValue]): List[String] = {
     val b = new scala.collection.mutable.ListBuffer[String]
     vs foreach {
-      case BSONString(s) => b += s
-      case _             =>
+      case BSONString(s) =>
+        b += s
+      case _ =>
     }
     b.toList
   }
@@ -272,8 +282,9 @@ object BSON {
   def asStringSet(vs: List[BSONValue]): Set[String] = {
     val b = Set.newBuilder[String]
     vs foreach {
-      case BSONString(s) => b += s
-      case _             =>
+      case BSONString(s) =>
+        b += s
+      case _ =>
     }
     b.result
   }

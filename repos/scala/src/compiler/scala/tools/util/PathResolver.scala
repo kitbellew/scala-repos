@@ -61,9 +61,12 @@ object PathResolver {
   /** pretty print class path */
   def ppcp(s: String) =
     split(s) match {
-      case Nil    => ""
-      case Seq(x) => x
-      case xs     => xs.mkString(EOL, EOL, "")
+      case Nil =>
+        ""
+      case Seq(x) =>
+        x
+      case xs =>
+        xs.mkString(EOL, EOL, "")
     }
 
   /** Values found solely by inspecting environment or property variables.
@@ -71,7 +74,8 @@ object PathResolver {
   object Environment {
     private def searchForBootClasspath =
       systemProperties collectFirst {
-        case (k, v) if k endsWith ".boot.class.path" => v
+        case (k, v) if k endsWith ".boot.class.path" =>
+          v
       } getOrElse ""
 
     /** Environment variables which java pays attention to so it
@@ -256,20 +260,28 @@ abstract class PathResolverBase[BaseClassPathType <: ClassFileLookup[
   private def cmdLineOrElse(name: String, alt: String) = {
     (
       commandLineFor(name) match {
-        case Some("") => None
-        case x        => x
+        case Some("") =>
+          None
+        case x =>
+          x
       }
     ) getOrElse alt
   }
 
   private def commandLineFor(s: String): Option[String] =
     condOpt(s) {
-      case "javabootclasspath" => settings.javabootclasspath.value
-      case "javaextdirs"       => settings.javaextdirs.value
-      case "bootclasspath"     => settings.bootclasspath.value
-      case "extdirs"           => settings.extdirs.value
-      case "classpath" | "cp"  => settings.classpath.value
-      case "sourcepath"        => settings.sourcepath.value
+      case "javabootclasspath" =>
+        settings.javabootclasspath.value
+      case "javaextdirs" =>
+        settings.javaextdirs.value
+      case "bootclasspath" =>
+        settings.bootclasspath.value
+      case "extdirs" =>
+        settings.extdirs.value
+      case "classpath" | "cp" =>
+        settings.classpath.value
+      case "sourcepath" =>
+        settings.sourcepath.value
     }
 
   /** Calculated values based on any given command line options, falling back on
@@ -404,6 +416,7 @@ object PathResolverFactory {
     settings.YclasspathImpl.value match {
       case ClassPathRepresentationType.Flat =>
         new FlatClassPathResolver(settings)
-      case ClassPathRepresentationType.Recursive => new PathResolver(settings)
+      case ClassPathRepresentationType.Recursive =>
+        new PathResolver(settings)
     }
 }

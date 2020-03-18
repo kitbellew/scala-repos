@@ -109,7 +109,8 @@ class ScalaStatementMover extends LineMover {
     element match {
       case call: ScMethodCall =>
         call.argumentExpressions.lastOption.exists(_.isInstanceOf[ScBlockExpr])
-      case _ => false
+      case _ =>
+        false
     }
 
   private def rangeOf(e: PsiElement, editor: Editor) = {

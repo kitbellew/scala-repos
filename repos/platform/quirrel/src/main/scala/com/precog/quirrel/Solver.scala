@@ -40,8 +40,10 @@ trait Solver extends parser.AST with typer.Binder {
 
     def sigmaFormal(d: Dispatch): Option[Expr] =
       d.binding match {
-        case FormalBinding(let) => sigma get ((d.name, let))
-        case _                  => None
+        case FormalBinding(let) =>
+          sigma get ((d.name, let))
+        case _ =>
+          None
       }
 
     // VERY IMPORTANT!!!  each rule must represent a monotonic reduction in tree complexity
@@ -59,22 +61,28 @@ trait Solver extends parser.AST with typer.Binder {
           Set(NumLit(loc, "1"))
       },
       {
-        case Add(loc, left, right) => Set(Add(loc, right, left))
+        case Add(loc, left, right) =>
+          Set(Add(loc, right, left))
       },
       {
-        case Sub(loc, left, right) => Set(Add(loc, Neg(loc, right), left))
+        case Sub(loc, left, right) =>
+          Set(Add(loc, Neg(loc, right), left))
       },
       {
-        case Add(loc, Neg(_, left), right) => Set(Sub(loc, right, left))
+        case Add(loc, Neg(_, left), right) =>
+          Set(Sub(loc, right, left))
       },
       {
-        case Mul(loc, left, right) => Set(Mul(loc, right, left))
+        case Mul(loc, left, right) =>
+          Set(Mul(loc, right, left))
       },
       {
-        case Add(loc, Add(loc2, x, y), z) => Set(Add(loc, x, Add(loc2, y, z)))
+        case Add(loc, Add(loc2, x, y), z) =>
+          Set(Add(loc, x, Add(loc2, y, z)))
       },
       {
-        case Mul(loc, Mul(loc2, x, y), z) => Set(Mul(loc, x, Mul(loc2, y, z)))
+        case Mul(loc, Mul(loc2, x, y), z) =>
+          Set(Mul(loc, x, Mul(loc2, y, z)))
       },
       {
         case Add(loc, Mul(loc2, x, y), z) if y equalsIgnoreLoc z =>
@@ -107,14 +115,16 @@ trait Solver extends parser.AST with typer.Binder {
               Mul(loc2, x, z)))
       },
       {
-        case Mul(loc, Div(loc2, x, y), z) => Set(Div(loc2, Mul(loc, x, z), y))
+        case Mul(loc, Div(loc2, x, y), z) =>
+          Set(Div(loc2, Mul(loc, x, z), y))
       },
       {
         case Mul(loc, Div(loc2, w, x), Div(loc3, y, z)) =>
           Set(Div(loc2, Mul(loc, w, y), Mul(loc, x, z)))
       },
       {
-        case Div(_, Mul(_, x, y), z) if x equalsIgnoreLoc z => Set(y)
+        case Div(_, Mul(_, x, y), z) if x equalsIgnoreLoc z =>
+          Set(y)
       },
       {
         case Div(loc, Mul(_, w, x), Mul(_, y, z)) if w equalsIgnoreLoc y =>
@@ -153,7 +163,8 @@ trait Solver extends parser.AST with typer.Binder {
           Set(Div(loc2, Neg(loc, x), y), Div(loc2, x, Neg(loc, y)))
       },
       {
-        case Neg(_, Neg(_, x)) => Set(x)
+        case Neg(_, Neg(_, x)) =>
+          Set(x)
       },
       {
         case Add(loc, left, right) =>
@@ -180,10 +191,12 @@ trait Solver extends parser.AST with typer.Binder {
             yield Div(loc, left2, right2)
       },
       {
-        case Neg(loc, child) => possibilities(child) map neg(loc)
+        case Neg(loc, child) =>
+          possibilities(child) map neg(loc)
       },
       {
-        case Paren(_, child) => Set(child)
+        case Paren(_, child) =>
+          Set(child)
       },
       {
         case d @ Dispatch(_, id, _) if sigmaFormal(d).isDefined =>
@@ -193,7 +206,8 @@ trait Solver extends parser.AST with typer.Binder {
 
     def inner(tree: Expr): Expr => Option[Expr] =
       tree match {
-        case n if predicate(n) => Some apply _
+        case n if predicate(n) =>
+          Some apply _
 
         case tree @ Dispatch(_, id, actuals) => {
           tree.binding match {
@@ -214,7 +228,8 @@ trait Solver extends parser.AST with typer.Binder {
               resultM getOrElse sys.error("er...?")
             }
 
-            case _ => const(None) _
+            case _ =>
+              const(None) _
           }
         }
 
@@ -234,8 +249,10 @@ trait Solver extends parser.AST with typer.Binder {
           inner(child) andThen {
             _ map neg(loc)
           }
-        case Paren(_, child) => inner(child)
-        case _               => const(None) _
+        case Paren(_, child) =>
+          inner(child)
+        case _ =>
+          const(None) _
       }
 
     def solveBinary(tree: Expr, left: Expr, right: Expr)(
@@ -308,11 +325,16 @@ trait Solver extends parser.AST with typer.Binder {
 
     def isSimplified(tree: Expr) =
       tree match {
-        case Add(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case Sub(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case Mul(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case Div(_, left, right) => !isSubtree(left) || !isSubtree(right)
-        case _                   => !isSubtree(tree)
+        case Add(_, left, right) =>
+          !isSubtree(left) || !isSubtree(right)
+        case Sub(_, left, right) =>
+          !isSubtree(left) || !isSubtree(right)
+        case Mul(_, left, right) =>
+          !isSubtree(left) || !isSubtree(right)
+        case Div(_, left, right) =>
+          !isSubtree(left) || !isSubtree(right)
+        case _ =>
+          !isSubtree(tree)
       }
 
     def possibilities(expr: Expr): Set[Expr] =
@@ -325,7 +347,8 @@ trait Solver extends parser.AST with typer.Binder {
     def isSubtree(tree: Node): Boolean = {
       def inner(tree: Node, sigma: Sigma): Boolean =
         tree match {
-          case tree if predicate(tree) => true
+          case tree if predicate(tree) =>
+            true
 
           case tree @ Dispatch(_, id, actuals) => {
             tree.binding match {
@@ -346,7 +369,8 @@ trait Solver extends parser.AST with typer.Binder {
                 resultM getOrElse sys.error("er...?")
               }
 
-              case _ => false
+              case _ =>
+                false
             }
           }
 
@@ -370,13 +394,19 @@ trait Solver extends parser.AST with typer.Binder {
       predicate: PartialFunction[Node, Boolean]): Option[Expr] = {
     val leftRight: Option[(LineStream, Expr, Expr)] =
       re match {
-        case Lt(_, _, _)   => None
-        case LtEq(_, _, _) => None
-        case Gt(_, _, _)   => None
-        case GtEq(_, _, _) => None
+        case Lt(_, _, _) =>
+          None
+        case LtEq(_, _, _) =>
+          None
+        case Gt(_, _, _) =>
+          None
+        case GtEq(_, _, _) =>
+          None
 
-        case Eq(loc, left, right) => Some((loc, left, right))
-        case NotEq(_, _, _)       => None
+        case Eq(loc, left, right) =>
+          Some((loc, left, right))
+        case NotEq(_, _, _) =>
+          None
       }
 
     val result = leftRight flatMap {
@@ -412,15 +442,22 @@ trait Solver extends parser.AST with typer.Binder {
       c: Comp,
       sigma: Sigma): PartialFunction[Node, Boolean] => Option[Expr] =
     c.child match {
-      case Lt(loc, left, right)   => solveRelation(GtEq(loc, left, right), sigma)
-      case LtEq(loc, left, right) => solveRelation(Gt(loc, left, right), sigma)
-      case Gt(loc, left, right)   => solveRelation(LtEq(loc, left, right), sigma)
-      case GtEq(loc, left, right) => solveRelation(Lt(loc, left, right), sigma)
+      case Lt(loc, left, right) =>
+        solveRelation(GtEq(loc, left, right), sigma)
+      case LtEq(loc, left, right) =>
+        solveRelation(Gt(loc, left, right), sigma)
+      case Gt(loc, left, right) =>
+        solveRelation(LtEq(loc, left, right), sigma)
+      case GtEq(loc, left, right) =>
+        solveRelation(Lt(loc, left, right), sigma)
 
-      case Eq(loc, left, right)    => solveRelation(NotEq(loc, left, right), sigma)
-      case NotEq(loc, left, right) => solveRelation(Eq(loc, left, right), sigma)
+      case Eq(loc, left, right) =>
+        solveRelation(NotEq(loc, left, right), sigma)
+      case NotEq(loc, left, right) =>
+        solveRelation(Eq(loc, left, right), sigma)
 
-      case _ => const(None)
+      case _ =>
+        const(None)
     }
 
   private def printTrace(trace: List[Expr]) {

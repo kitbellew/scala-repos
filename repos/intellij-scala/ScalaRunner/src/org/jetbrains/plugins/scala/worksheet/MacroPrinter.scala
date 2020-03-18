@@ -41,7 +41,8 @@ object MacroPrinter {
     import c.universe._
 
     toPrint.tree match {
-      case c.universe.Block(imp, _) => q"${imp.head.toString()}"
+      case c.universe.Block(imp, _) =>
+        q"${imp.head.toString()}"
     }
   }
 
@@ -75,9 +76,11 @@ object MacroPrinter {
                   .mkString("")} => ${defdef.tpt.toString()}"
 
               Some(a)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     q"${e getOrElse ""}"

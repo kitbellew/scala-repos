@@ -46,18 +46,24 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
     override def postStop(): Unit = monitor ! PostStop(persistenceId)
 
     def receiveRecover = {
-      case x ⇒ monitor ! x
+      case x ⇒
+        monitor ! x
     }
     def receiveCommand =
       behavior orElse {
-        case m: Multi ⇒ m.cmd.foreach(behavior)
+        case m: Multi ⇒
+          m.cmd.foreach(behavior)
       }
 
     val behavior: Receive = {
-      case p: Persist ⇒ P(p)
-      case p: PersistAsync ⇒ PA(p)
-      case Echo(id) ⇒ sender() ! Done(id, 0)
-      case Fail(ex) ⇒ throw ex
+      case p: Persist ⇒
+        P(p)
+      case p: PersistAsync ⇒
+        PA(p)
+      case Echo(id) ⇒
+        sender() ! Done(id, 0)
+      case Fail(ex) ⇒
+        throw ex
     }
     val doNothing = (_: Any) ⇒ ()
 
@@ -96,7 +102,8 @@ class JournalProbe(implicit private val system: ExtendedActorSystem)
 class JournalPuppet extends Actor {
   val ref = JournalPuppet(context.system).ref
   def receive = {
-    case x ⇒ ref forward x
+    case x ⇒
+      ref forward x
   }
 }
 
@@ -122,7 +129,8 @@ class PersistentActorJournalProtocolSpec
             case (PersistentRepr(evt, _), m) ⇒
               evt should ===(m)
           }
-        case x ⇒ fail(s"unexpected $x")
+        case x ⇒
+          fail(s"unexpected $x")
       }
     }
     w
@@ -135,7 +143,8 @@ class PersistentActorJournalProtocolSpec
         msgs.foreach(msg ⇒
           w.persistentActor
             .tell(WriteMessageSuccess(msg, w.actorInstanceId), msg.sender))
-      case NonPersistentRepr(msg, sender) ⇒ w.persistentActor.tell(msg, sender)
+      case NonPersistentRepr(msg, sender) ⇒
+        w.persistentActor.tell(msg, sender)
     }
   }
 

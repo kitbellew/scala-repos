@@ -42,8 +42,10 @@ final class ScalaCallerMethodsTreeStructure(
       .asInstanceOf[PsiMethod]
     val containing =
       baseMethod match {
-        case mem: ScMember => mem.getContainingClassLoose
-        case x             => x.containingClass
+        case mem: ScMember =>
+          mem.getContainingClassLoose
+        case x =>
+          x.containingClass
       }
     val searchScope: SearchScope = getSearchScope(scopeType, containing)
     val originalClass: PsiClass = method.containingClass
@@ -52,8 +54,10 @@ final class ScalaCallerMethodsTreeStructure(
     methodsToFind += method
     methodsToFind ++= {
       method match {
-        case fun: ScFunction => fun.superMethods
-        case _               => method.findDeepestSuperMethods
+        case fun: ScFunction =>
+          fun.superMethods
+        case _ =>
+          method.findDeepestSuperMethods
       }
     }
     val methodToDescriptorMap =

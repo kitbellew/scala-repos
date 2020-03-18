@@ -148,63 +148,120 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     /** Returns the string representation of given token. */
     def token2string(token: Int): String =
       token match {
-        case IDENTIFIER => "identifier"
-        case CHARLIT    => "character literal"
-        case DOUBLELIT  => "double literal"
-        case FLOATLIT   => "float literal"
-        case INTLIT     => "integer literal"
-        case LONGLIT    => "long literal"
-        case STRINGLIT  => "string literal"
-        case EOF        => "eof"
-        case ERROR      => "something"
-        case AMP        => "`&'"
-        case AMPAMP     => "`&&'"
-        case AMPEQ      => "`&='"
-        case ASTERISK   => "`*'"
-        case ASTERISKEQ => "`*='"
-        case AT         => "`@'"
-        case BANG       => "`!'"
-        case BANGEQ     => "`!='"
-        case BAR        => "`|'"
-        case BARBAR     => "`||'"
-        case BAREQ      => "`|='"
-        case COLON      => "`:'"
-        case COMMA      => "`,'"
-        case DOT        => "`.'"
-        case DOTDOTDOT  => "`...'"
-        case EQEQ       => "`=='"
-        case EQUALS     => "`='"
-        case GT         => "`>'"
-        case GTEQ       => "`>='"
-        case GTGT       => "`>>'"
-        case GTGTEQ     => "`>>='"
-        case GTGTGT     => "`>>>'"
-        case GTGTGTEQ   => "`>>>='"
-        case HAT        => "`^'"
-        case HATEQ      => "`^='"
-        case LBRACE     => "`{'"
-        case LBRACKET   => "`['"
-        case LPAREN     => "`('"
-        case LT         => "`<'"
-        case LTEQ       => "`<='"
-        case LTLT       => "`<<'"
-        case LTLTEQ     => "`<<='"
-        case MINUS      => "`-'"
-        case MINUSEQ    => "`-='"
-        case MINUSMINUS => "`--'"
-        case PERCENT    => "`%'"
-        case PERCENTEQ  => "`%='"
-        case PLUS       => "`+'"
-        case PLUSEQ     => "`+='"
-        case PLUSPLUS   => "`++'"
-        case QMARK      => "`?'"
-        case RBRACE     => "`}'"
-        case RBRACKET   => "`]'"
-        case RPAREN     => "`)'"
-        case SEMI       => "`;'"
-        case SLASH      => "`/'"
-        case SLASHEQ    => "`/='"
-        case TILDE      => "`~'"
+        case IDENTIFIER =>
+          "identifier"
+        case CHARLIT =>
+          "character literal"
+        case DOUBLELIT =>
+          "double literal"
+        case FLOATLIT =>
+          "float literal"
+        case INTLIT =>
+          "integer literal"
+        case LONGLIT =>
+          "long literal"
+        case STRINGLIT =>
+          "string literal"
+        case EOF =>
+          "eof"
+        case ERROR =>
+          "something"
+        case AMP =>
+          "`&'"
+        case AMPAMP =>
+          "`&&'"
+        case AMPEQ =>
+          "`&='"
+        case ASTERISK =>
+          "`*'"
+        case ASTERISKEQ =>
+          "`*='"
+        case AT =>
+          "`@'"
+        case BANG =>
+          "`!'"
+        case BANGEQ =>
+          "`!='"
+        case BAR =>
+          "`|'"
+        case BARBAR =>
+          "`||'"
+        case BAREQ =>
+          "`|='"
+        case COLON =>
+          "`:'"
+        case COMMA =>
+          "`,'"
+        case DOT =>
+          "`.'"
+        case DOTDOTDOT =>
+          "`...'"
+        case EQEQ =>
+          "`=='"
+        case EQUALS =>
+          "`='"
+        case GT =>
+          "`>'"
+        case GTEQ =>
+          "`>='"
+        case GTGT =>
+          "`>>'"
+        case GTGTEQ =>
+          "`>>='"
+        case GTGTGT =>
+          "`>>>'"
+        case GTGTGTEQ =>
+          "`>>>='"
+        case HAT =>
+          "`^'"
+        case HATEQ =>
+          "`^='"
+        case LBRACE =>
+          "`{'"
+        case LBRACKET =>
+          "`['"
+        case LPAREN =>
+          "`('"
+        case LT =>
+          "`<'"
+        case LTEQ =>
+          "`<='"
+        case LTLT =>
+          "`<<'"
+        case LTLTEQ =>
+          "`<<='"
+        case MINUS =>
+          "`-'"
+        case MINUSEQ =>
+          "`-='"
+        case MINUSMINUS =>
+          "`--'"
+        case PERCENT =>
+          "`%'"
+        case PERCENTEQ =>
+          "`%='"
+        case PLUS =>
+          "`+'"
+        case PLUSEQ =>
+          "`+='"
+        case PLUSPLUS =>
+          "`++'"
+        case QMARK =>
+          "`?'"
+        case RBRACE =>
+          "`}'"
+        case RBRACKET =>
+          "`]'"
+        case RPAREN =>
+          "`)'"
+        case SEMI =>
+          "`;'"
+        case SLASH =>
+          "`/'"
+        case SLASHEQ =>
+          "`/='"
+        case TILDE =>
+          "`~'"
         case _ =>
           try ("`" + tokenName(token) + "'")
           catch {
@@ -598,7 +655,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       @tailrec
       def skipJavaComment(): Unit =
         in.ch match {
-          case SU => incompleteInputError("unclosed comment")
+          case SU =>
+            incompleteInputError("unclosed comment")
           case '*' =>
             in.next;
             if (in.ch == '/')
@@ -618,7 +676,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
           in.next;
           skipJavaComment();
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -680,14 +739,22 @@ trait JavaScanners extends ast.parser.ScannersCommon {
           putChar(oct.asInstanceOf[Char])
         } else {
           in.ch match {
-            case 'b'  => putChar('\b')
-            case 't'  => putChar('\t')
-            case 'n'  => putChar('\n')
-            case 'f'  => putChar('\f')
-            case 'r'  => putChar('\r')
-            case '\"' => putChar('\"')
-            case '\'' => putChar('\'')
-            case '\\' => putChar('\\')
+            case 'b' =>
+              putChar('\b')
+            case 't' =>
+              putChar('\t')
+            case 'n' =>
+              putChar('\n')
+            case 'f' =>
+              putChar('\f')
+            case 'r' =>
+              putChar('\r')
+            case '\"' =>
+              putChar('\"')
+            case '\'' =>
+              putChar('\'')
+            case '\\' =>
+              putChar('\\')
             case _ =>
               syntaxError(in.cpos - 1, "invalid escape character")
               putChar(in.ch)

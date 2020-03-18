@@ -107,7 +107,8 @@ trait DefaultActorPool extends ActorPool {
               }
               keep
           }
-        case _ => _delegates //No change
+        case _ =>
+          _delegates //No change
       }
 
     _lastCapacityChange = requestedCapacity

@@ -43,8 +43,10 @@ object JavaResults
       Some(ContentTypes.withCharset(mimeType)))
   def contentBody(content: Content): String =
     content match {
-      case xml: play.twirl.api.Xml => xml.body.trim;
-      case c                       => c.body
+      case xml: play.twirl.api.Xml =>
+        xml.body.trim;
+      case c =>
+        c.body
     }
   def writeString(mimeType: String)(implicit codec: Codec): Writeable[String] =
     Writeable(

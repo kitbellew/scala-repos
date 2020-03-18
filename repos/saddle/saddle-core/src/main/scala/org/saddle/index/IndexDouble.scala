@@ -124,7 +124,8 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
   }
 }

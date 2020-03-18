@@ -93,16 +93,20 @@ class GroupsResource @Inject() (
 
       def groupResponse(id: PathId) =
         infoService.selectGroup(id, allAuthorized, appEmbed, groupEmbed).map {
-          case Some(info) => ok(info)
-          case None       => unknownGroup(id)
+          case Some(info) =>
+            ok(info)
+          case None =>
+            unknownGroup(id)
         }
 
       def groupVersionResponse(id: PathId, version: Timestamp) =
         infoService
           .selectGroupVersion(id, version, allAuthorized, groupEmbed)
           .map {
-            case Some(info) => ok(info)
-            case None       => unknownGroup(id)
+            case Some(info) =>
+              ok(info)
+            case None =>
+              unknownGroup(id)
           }
 
       def versionsResponse(groupId: PathId) = {
@@ -115,15 +119,20 @@ class GroupsResource @Inject() (
 
       val response: Future[Response] =
         id match {
-          case ListApps(gid)       => appsResponse(gid.toRootPath)
-          case ListRootApps()      => appsResponse(PathId.empty)
-          case ListVersionsRE(gid) => versionsResponse(gid.toRootPath)
-          case ListRootVersionRE() => versionsResponse(PathId.empty)
+          case ListApps(gid) =>
+            appsResponse(gid.toRootPath)
+          case ListRootApps() =>
+            appsResponse(PathId.empty)
+          case ListVersionsRE(gid) =>
+            versionsResponse(gid.toRootPath)
+          case ListRootVersionRE() =>
+            versionsResponse(PathId.empty)
           case GetVersionRE(gid, version) =>
             groupVersionResponse(gid.toRootPath, Timestamp(version))
           case GetRootVersionRE(version) =>
             groupVersionResponse(PathId.empty, Timestamp(version))
-          case _ => groupResponse(id.toRootPath)
+          case _ =>
+            groupResponse(id.toRootPath)
         }
 
       result(response)
@@ -284,8 +293,10 @@ class GroupsResource @Inject() (
 
       def deleteGroup(parentGroup: Group) = {
         parentGroup.group(groupId) match {
-          case Some(group) => checkAuthorization(DeleteGroup, group)
-          case None        => throw UnknownGroupException(groupId)
+          case Some(group) =>
+            checkAuthorization(DeleteGroup, group)
+          case None =>
+            throw UnknownGroupException(groupId)
         }
         parentGroup.remove(groupId, version)
       }
@@ -326,7 +337,8 @@ class GroupsResource @Inject() (
       maybeExistingGroup match {
         case Some(existingGroup) =>
           checkAuthorization(UpdateGroup, existingGroup)
-        case None => checkAuthorization(CreateApp, updatedGroup)
+        case None =>
+          checkAuthorization(CreateApp, updatedGroup)
       }
 
       updatedGroup

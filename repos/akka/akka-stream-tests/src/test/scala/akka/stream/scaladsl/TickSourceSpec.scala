@@ -75,7 +75,8 @@ class TickSourceSpec extends AkkaSpec {
             Source(1 to 100) ~> zip.in0
             Source.tick(1.second, 1.second, "tick") ~> zip.in1
             zip.out ~> Flow[(Int, String)].map {
-              case (n, _) ⇒ n
+              case (n, _) ⇒
+                n
             } ~> Sink.fromSubscriber(c)
             ClosedShape
           })

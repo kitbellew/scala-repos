@@ -107,7 +107,8 @@ object TaskTracker {
     def forTasks(tasks: Task*): TasksByApp =
       of(
         tasks.groupBy(_.appId).map {
-          case (appId, appTasks) => appId -> AppTasks.forTasks(appId, appTasks)
+          case (appId, appTasks) =>
+            appId -> AppTasks.forTasks(appId, appTasks)
         })
 
     def empty: TasksByApp =

@@ -113,7 +113,8 @@ object EnumeratorTTest extends SpecLite {
 
     val testIter =
       IterateeT.fold[Int, IO, Boolean](true) {
-        case (false, _) => false
+        case (false, _) =>
+          false
         case (true, i) =>
           if (i <= 2)
             v == 0

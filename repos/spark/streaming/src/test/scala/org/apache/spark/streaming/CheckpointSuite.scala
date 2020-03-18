@@ -168,7 +168,8 @@ trait DStreamCheckpointTester {
   protected def getTestOutputStream[V: ClassTag](
       streams: Array[DStream[_]]): TestOutputStreamWithPartitions[V] = {
     streams.collect {
-      case ds: TestOutputStreamWithPartitions[V @unchecked] => ds
+      case ds: TestOutputStreamWithPartitions[V @unchecked] =>
+        ds
     }.head
   }
 
@@ -223,7 +224,8 @@ trait DStreamCheckpointTester {
         expectedOutput.takeRight(output.size)
       }
     val setComparison = output.zip(expectedPartialOutput).forall {
-      case (o, e) => o.toSet === e.toSet
+      case (o, e) =>
+        o.toSet === e.toSet
     }
     assert(
       setComparison,

@@ -43,10 +43,13 @@ class PerfTestRunnerSpec extends Specification {
         case Tree.Node((RunSequential, _), results) =>
           results must have size (2)
           results map {
-            case Tree.Node((_, time), _) => time
+            case Tree.Node((_, time), _) =>
+              time
           } sliding 2 forall {
-            case Stream(Some((_, t1)), Some((t2, _))) => t1 <= t2
-            case _                                    => false
+            case Stream(Some((_, t1)), Some((t2, _))) =>
+              t1 <= t2
+            case _ =>
+              false
           } must_== true
       }
     }

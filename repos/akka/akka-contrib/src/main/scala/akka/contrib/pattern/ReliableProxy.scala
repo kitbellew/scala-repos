@@ -80,7 +80,8 @@ object ReliableProxy {
         } else {
           logDebug("Received message from {} with wrong serial: {}", snd, msg)
         }
-      case Terminated(`target`) ⇒ context stop self
+      case Terminated(`target`) ⇒
+        context stop self
     }
   }
 
@@ -91,9 +92,12 @@ object ReliableProxy {
   def compare(a: Int, b: Int): Int = {
     val c = a - b
     c match {
-      case x if x < 0 ⇒ -1
-      case x if x == 0 ⇒ 0
-      case x if x > 0 ⇒ 1
+      case x if x < 0 ⇒
+        -1
+      case x if x == 0 ⇒
+        0
+      case x if x > 0 ⇒
+        1
     }
   }
 
@@ -306,7 +310,8 @@ class ReliableProxy(
 
   override def supervisorStrategy =
     OneForOneStrategy() {
-      case _ ⇒ SupervisorStrategy.Escalate
+      case _ ⇒
+        SupervisorStrategy.Escalate
     }
 
   override def postStop() {
@@ -320,16 +325,23 @@ class ReliableProxy(
   startWith(initialState, Vector.empty)
 
   when(Idle) {
-    case Event(Terminated(_), _) ⇒ terminated()
-    case Event(Ack(_), _) ⇒ stay()
-    case Event(Unsent(msgs), _) ⇒ goto(Active) using resend(updateSerial(msgs))
-    case Event(msg, _) ⇒ goto(Active) using Vector(send(msg, sender()))
+    case Event(Terminated(_), _) ⇒
+      terminated()
+    case Event(Ack(_), _) ⇒
+      stay()
+    case Event(Unsent(msgs), _) ⇒
+      goto(Active) using resend(updateSerial(msgs))
+    case Event(msg, _) ⇒
+      goto(Active) using Vector(send(msg, sender()))
   }
 
   onTransition {
-    case _ -> Active ⇒ scheduleTick()
-    case Active -> Idle ⇒ cancelTimer(resendTimer)
-    case _ -> Connecting ⇒ scheduleReconnectTick()
+    case _ -> Active ⇒
+      scheduleTick()
+    case Active -> Idle ⇒
+      cancelTimer(resendTimer)
+    case _ -> Connecting ⇒
+      scheduleReconnectTick()
   }
 
   when(Active) {

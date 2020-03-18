@@ -22,8 +22,10 @@ trait EtaExpansion {
   object etaExpansion {
     private def isMatch(vparam: ValDef, arg: Tree) =
       arg match {
-        case Ident(name) => vparam.name == name
-        case _           => false
+        case Ident(name) =>
+          vparam.name == name
+        case _ =>
+          false
       }
 
     def unapply(tree: Tree): Option[(List[ValDef], Tree, List[Tree])] =

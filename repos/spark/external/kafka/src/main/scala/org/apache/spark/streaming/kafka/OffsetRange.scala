@@ -64,7 +64,8 @@ final class OffsetRange private (
           this.partition == that.partition &&
           this.fromOffset == that.fromOffset &&
           this.untilOffset == that.untilOffset
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {

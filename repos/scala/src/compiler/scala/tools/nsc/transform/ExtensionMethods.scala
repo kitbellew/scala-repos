@@ -331,7 +331,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
                 defns.toList map (defn =>
                   atOwner(md.symbol)(
                     localTyper.typedPos(md.pos.focus)(defn.duplicate)))
-              case _ => Nil
+              case _ =>
+                Nil
             }
           if (extraStats.isEmpty)
             md
@@ -374,7 +375,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
               allTargs)
             allArgss.foldLeft(fun)(Apply(_, _))
           }
-        case _ => super.transform(tree)
+        case _ =>
+          super.transform(tree)
       }
   }
 }

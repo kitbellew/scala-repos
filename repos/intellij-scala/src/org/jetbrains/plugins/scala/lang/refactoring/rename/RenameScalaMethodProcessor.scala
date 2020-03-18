@@ -60,8 +60,10 @@ class RenameScalaMethodProcessor
       renameCallback: Pass[PsiElement]) {
     val named =
       element match {
-        case named: ScNamedElement => named;
-        case _                     => return
+        case named: ScNamedElement =>
+          named;
+        case _ =>
+          return
       }
     val guess = ScalaRenameUtil.findSubstituteElement(element)
     if (guess != element)
@@ -97,9 +99,12 @@ class RenameScalaMethodProcessor
 object RenameScalaMethodProcessor {
   def canProcessElement(element: PsiElement): Boolean =
     element match {
-      case _: FakePsiMethod                        => false
-      case _: ScFunction | _: ScPrimaryConstructor => true
-      case _                                       => false
+      case _: FakePsiMethod =>
+        false
+      case _: ScFunction | _: ScPrimaryConstructor =>
+        true
+      case _ =>
+        false
     }
 }
 
@@ -113,8 +118,10 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
       allRenames: util.Map[PsiElement, String]) {
     val function =
       element match {
-        case x: ScFunction => x
-        case _             => return
+        case x: ScFunction =>
+          x
+        case _ =>
+          return
       }
     val buff = new ArrayBuffer[PsiNamedElement]
     val getterOrSetter =
@@ -122,15 +129,17 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
         case Some(function2) =>
           buff += function2
           Some(function2)
-        case _ => None
+        case _ =>
+          None
       }
     for (elem <- ScalaOverridingMemberSearcher.search(function, deep = true)) {
       allRenames.put(elem, newName)
       elem match {
         case fun: ScFunction =>
           fun.getGetterOrSetterFunction match {
-            case Some(function2) => buff += function2
-            case _               =>
+            case Some(function2) =>
+              buff += function2
+            case _ =>
           }
         case _ =>
       }

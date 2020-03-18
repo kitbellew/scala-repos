@@ -24,8 +24,10 @@ object Test {
       //case SecondMatch(p) => p         // byte code is generated, which causes a java.lang.VerifyError at runtime
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      case SubclassMatch(p) => p
-      case StandardMatch(p) => p
+      case SubclassMatch(p) =>
+        p
+      case StandardMatch(p) =>
+        p
     }
   }
 }

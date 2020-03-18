@@ -56,7 +56,8 @@ import xml.Text
 object Msgs extends DispatchSnippet {
   // Dispatch to the render method no matter how we're called
   def dispatch: DispatchIt = {
-    case _ => render
+    case _ =>
+      render
   }
 
   /**
@@ -87,8 +88,10 @@ object Msgs extends DispatchSnippet {
             (styles \\ noticeType.styleTag) ++
               (styles \\ noticeType.titleTag \\ "@class")
           ).toList.map(_.text.trim) match {
-            case Nil     => Empty
-            case classes => Full(classes.mkString(" "))
+            case Nil =>
+              Empty
+            case classes =>
+              Full(classes.mkString(" "))
           }
 
         // Save the settings for AJAX usage
@@ -143,7 +146,8 @@ object Msgs extends DispatchSnippet {
                 e
               }</li>
             )) match {
-            case Nil => Nil
+            case Nil =>
+              Nil
             case msgList => {
               val ret =
                 <div id={
@@ -216,8 +220,10 @@ object Msgs extends DispatchSnippet {
       default: T,
       wrap: JsCmd => T): T =
     LiftRules.noticesEffects()(noticeType, id) match {
-      case Full(jsCmd) => wrap(jsCmd)
-      case _           => default
+      case Full(jsCmd) =>
+        wrap(jsCmd)
+      case _ =>
+        default
     }
 
   /**

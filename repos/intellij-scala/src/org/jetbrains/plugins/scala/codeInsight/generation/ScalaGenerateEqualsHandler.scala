@@ -66,7 +66,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
                 hashCodeMethod.get.delete()
                 true
               } catch {
-                case e: IncorrectOperationException => false
+                case e: IncorrectOperationException =>
+                  false
               }
             }
           })
@@ -248,8 +249,10 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   def isValidFor(editor: Editor, file: PsiFile): Boolean = {
     lazy val isSuitableClass =
       GenerationUtil.classAtCaret(editor, file) match {
-        case Some(c: ScClass) if !c.isCase => true
-        case _                             => false
+        case Some(c: ScClass) if !c.isCase =>
+          true
+        case _ =>
+          false
       }
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isSuitableClass
   }
@@ -290,8 +293,10 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
     val needModifier = ScalaOIUtil
       .methodSignaturesToOverride(aClass, withSelfType = false)
       .exists {
-        case sign: PhysicalSignature => sign.equiv(signature)
-        case _                       => false
+        case sign: PhysicalSignature =>
+          sign.equiv(signature)
+        case _ =>
+          false
       }
     if (needModifier)
       ScalaKeyword.OVERRIDE
@@ -309,7 +314,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
       case sign: PhysicalSignature if sign.equiv(signature) =>
         //used only for equals and hashcode methods
         sign.isJava && sign.method.findSuperMethods(false).isEmpty
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

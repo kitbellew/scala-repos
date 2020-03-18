@@ -94,7 +94,8 @@ class MultilayerPerceptronClassifierSuite
       .select("prediction", "label")
       .rdd
       .map {
-        case Row(p: Double, l: Double) => (p, l)
+        case Row(p: Double, l: Double) =>
+          (p, l)
       }
     // train multinomial logistic regression
     val lr = new LogisticRegressionWithLBFGS()

@@ -81,8 +81,10 @@ abstract class DoubleBuffer private[nio] (
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: DoubleBuffer => compareTo(that) == 0
-      case _                  => false
+      case that: DoubleBuffer =>
+        compareTo(that) == 0
+      case _ =>
+        false
     }
 
   @noinline

@@ -24,7 +24,8 @@ import scala.xml._
 
 object Tail extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   def render(xhtml: NodeSeq): NodeSeq =
@@ -41,13 +42,15 @@ object Head extends DispatchSnippet {
   lazy val valid = Set("title", "base", "link", "meta", "style", "script")
 
   def dispatch: DispatchIt = {
-    case _ => render _
+    case _ =>
+      render _
   }
 
   def render(_xhtml: NodeSeq): NodeSeq = {
     def validHeadTagsOnly(in: NodeSeq): NodeSeq =
       in flatMap {
-        case Group(ns) => validHeadTagsOnly(ns)
+        case Group(ns) =>
+          validHeadTagsOnly(ns)
         case e: Elem if (null eq e.prefix) && valid.contains(e.label) => {
           new Elem(
             e.prefix,
@@ -57,8 +60,10 @@ object Head extends DispatchSnippet {
             e.minimizeEmpty,
             validHeadTagsOnly(e.child): _*)
         }
-        case e: Elem if (null eq e.prefix) => NodeSeq.Empty
-        case x                             => x
+        case e: Elem if (null eq e.prefix) =>
+          NodeSeq.Empty
+        case x =>
+          x
       }
 
     val xhtml = validHeadTagsOnly(_xhtml)

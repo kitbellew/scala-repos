@@ -50,8 +50,10 @@ class JsonValueReader(val data: JValue)(implicit formats: Formats)
   protected def get(path: String, subj: JValue): Option[JValue] = {
     val jv = subj \ path
     jv match {
-      case JNothing => None
-      case o        => Some(o)
+      case JNothing =>
+        None
+      case o =>
+        Some(o)
     }
   }
 }

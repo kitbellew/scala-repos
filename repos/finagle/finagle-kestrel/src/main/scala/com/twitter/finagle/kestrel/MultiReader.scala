@@ -151,7 +151,8 @@ private[finagle] object MultiReaderHelper {
     // Wait until the ReadHandles set is populated before initializing.
     val readHandlesPopulatedFuture = readHandles.changes
       .collect[Try[Set[ReadHandle]]] {
-        case r @ Return(x) if x.nonEmpty => r
+        case r @ Return(x) if x.nonEmpty =>
+          r
       }
       .toFuture()
 
@@ -167,8 +168,10 @@ private[finagle] object MultiReaderHelper {
       val witness = Witness { tsr: Try[Set[ReadHandle]] =>
         synchronized {
           tsr match {
-            case Return(newHandles) => clusterUpdate !! newHandles
-            case Throw(t)           => error !! t
+            case Return(newHandles) =>
+              clusterUpdate !! newHandles
+            case Throw(t) =>
+              error !! t
           }
         }
       }
@@ -233,7 +236,8 @@ private[finagle] object MultiReaderHelper {
 object MultiReaderMemcache {
   def apply(dest: Name, queueName: String): MultiReaderBuilderMemcache = {
     dest match {
-      case Name.Bound(va) => apply(va, queueName)
+      case Name.Bound(va) =>
+        apply(va, queueName)
       case Name.Path(_) =>
         throw new UnsupportedOperationException(
           "Failed to bind Name.Path in `MultiReaderMemcache.apply`")
@@ -304,7 +308,8 @@ object MultiReaderThrift {
       queueName: String,
       clientId: Option[ClientId]): MultiReaderBuilderThrift = {
     dest match {
-      case Name.Bound(va) => apply(va, queueName, clientId)
+      case Name.Bound(va) =>
+        apply(va, queueName, clientId)
       case Name.Path(_) =>
         throw new UnsupportedOperationException(
           "Failed to bind Name.Path in `MultiReaderThrift.apply`")
@@ -565,8 +570,10 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
   private[this] def buildReadHandleVar(): Var[Try[Set[ReadHandle]]] = {
     val baseClientBuilder =
       config.clientBuilder match {
-        case Some(clientBuilder) => clientBuilder
-        case None                => defaultClientBuilder
+        case Some(clientBuilder) =>
+          clientBuilder
+        case None =>
+          defaultClientBuilder
       }
 
     // Use a mutable Map so that we can modify it in-place on cluster change.
@@ -589,7 +596,8 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
             (config.retryBackoffs, config.timer) match {
               case (Some(backoffs), Some(timer)) =>
                 client.readReliably(config.queueName, timer, backoffs())
-              case _ => client.readReliably(config.queueName)
+              case _ =>
+                client.readReliably(config.queueName)
             }
 
           handle.error foreach {
@@ -607,7 +615,8 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 
         synchronized {
           currentHandles.retain {
-            case (addr, _) => addrs.contains(addr)
+            case (addr, _) =>
+              addrs.contains(addr)
           }
           currentHandles ++= newHandles
         }
@@ -615,9 +624,11 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
         Return(currentHandles.values.toSet)
       }
 
-      case Addr.Failed(t) => Throw(t)
+      case Addr.Failed(t) =>
+        Throw(t)
 
-      case _ => ReturnEmptySet
+      case _ =>
+        ReturnEmptySet
     }
 
     Var(Return(Set.empty), event)

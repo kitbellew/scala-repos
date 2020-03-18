@@ -21,31 +21,38 @@ object Match {
             Extractor3("b", "b", y),
             Extractor3("c", "c", z)) =>
         println(z)
-      case _ => println("fail")
+      case _ =>
+        println("fail")
     }
   }
 
   object Extractor1 {
     def unapply(x: Any) =
       x match {
-        case x: String => Some(x, x + x, x + x + x, x + x, x)
-        case _         => None
+        case x: String =>
+          Some(x, x + x, x + x + x, x + x, x)
+        case _ =>
+          None
       }
   }
 
   object Extractor2 {
     def unapply(x: Any) =
       x match {
-        case x: String => Some(x, x + x, x + x + x)
-        case _         => None
+        case x: String =>
+          Some(x, x + x, x + x + x)
+        case _ =>
+          None
       }
   }
 
   object Extractor3 {
     def unapply(x: Any) =
       x match {
-        case x: String => Some(x, x, x)
-        case _         => None
+        case x: String =>
+          Some(x, x, x)
+        case _ =>
+          None
       }
   }
 }

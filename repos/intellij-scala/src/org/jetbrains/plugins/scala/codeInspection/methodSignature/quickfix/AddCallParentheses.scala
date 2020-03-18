@@ -16,9 +16,12 @@ class AddCallParentheses(e: ScExpression)
       return
     val exprToFix =
       expr.getParent match {
-        case postf: ScPostfixExpr => postf
-        case call: ScGenericCall  => call
-        case _                    => expr
+        case postf: ScPostfixExpr =>
+          postf
+        case call: ScGenericCall =>
+          call
+        case _ =>
+          expr
       }
     val text = s"${exprToFix.getText}()"
     val call = ScalaPsiElementFactory.createExpressionFromText(

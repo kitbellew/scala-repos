@@ -41,7 +41,8 @@ final case class ChildRestartStats(
   def requestRestartPermission(
       retriesWindow: (Option[Int], Option[Int])): Boolean =
     retriesWindow match {
-      case (Some(retries), _) if retries < 1 ⇒ false
+      case (Some(retries), _) if retries < 1 ⇒
+        false
       case (Some(retries), None) ⇒ {
         maxNrOfRetriesCount += 1;
         maxNrOfRetriesCount <= retries
@@ -53,7 +54,8 @@ final case class ChildRestartStats(
           else
             1,
           window)
-      case (None, _) ⇒ true
+      case (None, _) ⇒
+        true
     }
 
   private def retriesInWindowOkay(retries: Int, window: Int): Boolean = {
@@ -170,10 +172,14 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     * The error is escalated if it's a `Throwable`, i.e. `Error`.
     */
   final val defaultDecider: Decider = {
-    case _: ActorInitializationException ⇒ Stop
-    case _: ActorKilledException ⇒ Stop
-    case _: DeathPactException ⇒ Stop
-    case _: Exception ⇒ Restart
+    case _: ActorInitializationException ⇒
+      Stop
+    case _: ActorKilledException ⇒
+      Stop
+    case _: DeathPactException ⇒
+      Stop
+    case _: Exception ⇒
+      Restart
   }
 
   /**
@@ -191,7 +197,8 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     */
   final val stoppingStrategy: SupervisorStrategy = {
     def stoppingDecider: Decider = {
-      case _: Exception ⇒ Stop
+      case _: Exception ⇒
+        Stop
     }
     OneForOneStrategy()(stoppingDecider)
   }
@@ -239,7 +246,8 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     {
       case x ⇒
         directives collectFirst {
-          case (c, d) if c isInstance x ⇒ d
+          case (c, d) if c isInstance x ⇒
+            d
         } getOrElse Escalate
     }
   }
@@ -248,7 +256,8 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     * Converts a Java Decider into a Scala Decider
     */
   def makeDecider(func: JDecider): Decider = {
-    case x ⇒ func(x)
+    case x ⇒
+      func(x)
   }
 
   /**
@@ -261,8 +270,10 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
       in: Iterable[CauseDirective]): immutable.Seq[CauseDirective] =
     (new ArrayBuffer[CauseDirective](in.size) /: in) { (buf, ca) ⇒
       buf.indexWhere(_._1 isAssignableFrom ca._1) match {
-        case -1 ⇒ buf append ca
-        case x ⇒ buf insert (x, ca)
+        case -1 ⇒
+          buf append ca
+        case x ⇒
+          buf insert (x, ca)
       }
       buf
     }.to[immutable.IndexedSeq]
@@ -389,7 +400,8 @@ abstract class SupervisorStrategy {
         cause match {
           case e: ActorInitializationException if e.getCause ne null ⇒
             e.getCause.getMessage
-          case e ⇒ e.getMessage
+          case e ⇒
+            e.getMessage
         }
       decision match {
         case Resume ⇒

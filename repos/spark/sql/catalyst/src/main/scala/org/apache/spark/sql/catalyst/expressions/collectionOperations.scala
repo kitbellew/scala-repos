@@ -39,8 +39,10 @@ case class Size(child: Expression)
 
   override def nullSafeEval(value: Any): Int =
     child.dataType match {
-      case _: ArrayType => value.asInstanceOf[ArrayData].numElements()
-      case _: MapType   => value.asInstanceOf[MapData].numElements()
+      case _: ArrayType =>
+        value.asInstanceOf[ArrayData].numElements()
+      case _: MapType =>
+        value.asInstanceOf[MapData].numElements()
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -158,11 +160,14 @@ case class ArrayContains(left: Expression, right: Expression)
 
   override def inputTypes: Seq[AbstractDataType] =
     right.dataType match {
-      case NullType => Seq()
+      case NullType =>
+        Seq()
       case _ =>
         left.dataType match {
-          case n @ ArrayType(element, _) => Seq(n, element)
-          case _                         => Seq()
+          case n @ ArrayType(element, _) =>
+            Seq(n, element)
+          case _ =>
+            Seq()
         }
     }
 

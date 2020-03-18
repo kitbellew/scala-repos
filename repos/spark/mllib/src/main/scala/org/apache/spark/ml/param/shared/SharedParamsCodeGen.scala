@@ -156,16 +156,22 @@ private[shared] object SharedParamsCodeGen {
     def paramTypeName: String = {
       val c = implicitly[ClassTag[T]].runtimeClass
       c match {
-        case _ if c == classOf[Int]     => "IntParam"
-        case _ if c == classOf[Long]    => "LongParam"
-        case _ if c == classOf[Float]   => "FloatParam"
-        case _ if c == classOf[Double]  => "DoubleParam"
-        case _ if c == classOf[Boolean] => "BooleanParam"
+        case _ if c == classOf[Int] =>
+          "IntParam"
+        case _ if c == classOf[Long] =>
+          "LongParam"
+        case _ if c == classOf[Float] =>
+          "FloatParam"
+        case _ if c == classOf[Double] =>
+          "DoubleParam"
+        case _ if c == classOf[Boolean] =>
+          "BooleanParam"
         case _ if c.isArray && c.getComponentType == classOf[String] =>
           s"StringArrayParam"
         case _ if c.isArray && c.getComponentType == classOf[Double] =>
           s"DoubleArrayParam"
-        case _ => s"Param[${getTypeString(c)}]"
+        case _ =>
+          s"Param[${getTypeString(c)}]"
       }
     }
 
@@ -176,13 +182,20 @@ private[shared] object SharedParamsCodeGen {
 
     private def getTypeString(c: Class[_]): String = {
       c match {
-        case _ if c == classOf[Int]     => "Int"
-        case _ if c == classOf[Long]    => "Long"
-        case _ if c == classOf[Float]   => "Float"
-        case _ if c == classOf[Double]  => "Double"
-        case _ if c == classOf[Boolean] => "Boolean"
-        case _ if c == classOf[String]  => "String"
-        case _ if c.isArray             => s"Array[${getTypeString(c.getComponentType)}]"
+        case _ if c == classOf[Int] =>
+          "Int"
+        case _ if c == classOf[Long] =>
+          "Long"
+        case _ if c == classOf[Float] =>
+          "Float"
+        case _ if c == classOf[Double] =>
+          "Double"
+        case _ if c == classOf[Boolean] =>
+          "Boolean"
+        case _ if c == classOf[String] =>
+          "String"
+        case _ if c.isArray =>
+          s"Array[${getTypeString(c.getComponentType)}]"
       }
     }
   }

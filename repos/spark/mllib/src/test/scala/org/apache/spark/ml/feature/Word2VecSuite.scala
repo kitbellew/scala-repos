@@ -67,7 +67,8 @@ class Word2VecSuite
           .map(codes.apply)
           .reduce((word1, word2) =>
             word1.zip(word2).map {
-              case (v1, v2) => v1 + v2
+              case (v1, v2) =>
+                v1 + v2
             })
           .map(_ / numOfWords))
     }
@@ -120,7 +121,8 @@ class Word2VecSuite
         0.11731560528278351)
     )
     val expectedVectors = codes.toSeq.sortBy(_._1).map {
-      case (w, v) => Vectors.dense(v)
+      case (w, v) =>
+        Vectors.dense(v)
     }
 
     val docDF = doc.zip(doc).toDF("text", "alsotext")
@@ -137,7 +139,8 @@ class Word2VecSuite
       .select("vector")
       .rdd
       .map {
-        case Row(v: Vector) => v
+        case Row(v: Vector) =>
+          v
       }
       .collect()
     // These expectations are just magic values, characterizing the current
@@ -183,7 +186,8 @@ class Word2VecSuite
         .findSynonyms("a", 2)
         .rdd
         .map {
-          case Row(w: String, sim: Double) => (w, sim)
+          case Row(w: String, sim: Double) =>
+            (w, sim)
         }
         .collect()
         .unzip
@@ -219,7 +223,8 @@ class Word2VecSuite
         .findSynonyms("a", 6)
         .rdd
         .map {
-          case Row(w: String, sim: Double) => (w, sim)
+          case Row(w: String, sim: Double) =>
+            (w, sim)
         }
         .collect()
         .unzip
@@ -238,7 +243,8 @@ class Word2VecSuite
         .findSynonyms("a", 6)
         .rdd
         .map {
-          case Row(w: String, sim: Double) => (w, sim)
+          case Row(w: String, sim: Double) =>
+            (w, sim)
         }
         .collect()
         .unzip

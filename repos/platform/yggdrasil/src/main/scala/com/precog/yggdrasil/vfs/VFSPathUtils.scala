@@ -66,7 +66,8 @@ object VFSPathUtils extends Logging {
             if toEscape.contains(needsEscape) || needsEscape.endsWith(
               escapeSuffix) =>
           needsEscape + escapeSuffix
-        case fine => fine
+        case fine =>
+          fine
       }.toList)
 
   def unescapePath(path: Path) =
@@ -74,7 +75,8 @@ object VFSPathUtils extends Logging {
       path.elements.map {
         case escaped if escaped.endsWith(escapeSuffix) =>
           escaped.substring(0, escaped.length - escapeSuffix.length)
-        case fine => fine
+        case fine =>
+          fine
       }.toList)
 
   /**
@@ -138,7 +140,8 @@ object VFSPathUtils extends Logging {
               containsNonemptyChild(xs)
           }
 
-        case Nil => IO(false)
+        case Nil =>
+          IO(false)
       }
 
     val pathDir0 = pathDir(baseDir, path)

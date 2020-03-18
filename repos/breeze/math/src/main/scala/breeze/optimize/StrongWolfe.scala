@@ -42,7 +42,8 @@ abstract class CubicLineSearch
       case _ if t > ubound =>
         logger.debug("Cubic " + t + " above RHS limit: " + ubound)
         ubound
-      case _ => t
+      case _ =>
+        t
     }
   }
 }

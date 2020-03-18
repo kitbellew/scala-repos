@@ -153,10 +153,12 @@ private[cors] trait AbstractCORSPolicy {
       val result =
         try {
           next(taggedRequest).recoverWith {
-            case e: Throwable => errorHandler.onServerError(taggedRequest, e)
+            case e: Throwable =>
+              errorHandler.onServerError(taggedRequest, e)
           }
         } catch {
-          case e: Throwable => errorHandler.onServerError(taggedRequest, e)
+          case e: Throwable =>
+            errorHandler.onServerError(taggedRequest, e)
         }
       result.map(_.withHeaders(headerBuilder.result(): _*))
     }
@@ -214,7 +216,8 @@ private[cors] trait AbstractCORSPolicy {
             val accessControlRequestHeaders: List[String] = {
               request.headers.get(
                 HeaderNames.ACCESS_CONTROL_REQUEST_HEADERS) match {
-                case None => List.empty[String]
+                case None =>
+                  List.empty[String]
                 case Some(headerVal) =>
                   headerVal.trim
                     .split(',')
@@ -336,7 +339,8 @@ private[cors] trait AbstractCORSPolicy {
       try {
         new URI(origin).getScheme ne null
       } catch {
-        case _: URISyntaxException => false
+        case _: URISyntaxException =>
+          false
       }
     }
   }

@@ -49,7 +49,8 @@ class Future2ActorSpec extends AkkaSpec with DefaultTimeout {
         Props(
           new Actor {
             def receive = {
-              case "do" ⇒ Future(31) pipeTo context.sender()
+              case "do" ⇒
+                Future(31) pipeTo context.sender()
               case "ex" ⇒
                 Future(throw new AssertionError) pipeTo context.sender()
             }

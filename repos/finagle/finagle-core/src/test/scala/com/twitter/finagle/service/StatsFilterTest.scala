@@ -232,8 +232,10 @@ class StatsFilterTest extends FunSuite {
         Future(i)
     }
     val aClassifier: ResponseClassifier = {
-      case ReqRep(_, Return(i: Int)) if i == 5         => ResponseClass.RetryableFailure
-      case ReqRep(_, Throw(x)) if x.getMessage == "-5" => ResponseClass.Success
+      case ReqRep(_, Return(i: Int)) if i == 5 =>
+        ResponseClass.RetryableFailure
+      case ReqRep(_, Throw(x)) if x.getMessage == "-5" =>
+        ResponseClass.Success
     }
     val statsFilter =
       new StatsFilter[Int, Int](

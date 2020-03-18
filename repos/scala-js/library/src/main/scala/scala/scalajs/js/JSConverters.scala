@@ -47,7 +47,8 @@ object JSConverters extends JSConvertersLowPrioImplicits {
     final def toJSDictionary: Dictionary[T] = {
       val result = Dictionary.empty[T]
       map.foreach {
-        case (key, value) => result(key) = value
+        case (key, value) =>
+          result(key) = value
       }
       result
     }
@@ -95,8 +96,10 @@ object JSConverters extends JSConvertersLowPrioImplicits {
             case scala.util.Failure(th) =>
               reject(
                 th match {
-                  case JavaScriptException(e) => e
-                  case _                      => th
+                  case JavaScriptException(e) =>
+                    e
+                  case _ =>
+                    th
                 })
           }
       })

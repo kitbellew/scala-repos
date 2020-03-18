@@ -47,8 +47,10 @@ object ErrorInfo {
     */
   def fromCompoundString(message: String): ErrorInfo =
     message.split(": ", 2) match {
-      case Array(summary, detail) ⇒ apply(summary, detail)
-      case _ ⇒ ErrorInfo("", message)
+      case Array(summary, detail) ⇒
+        apply(summary, detail)
+      case _ ⇒
+        ErrorInfo("", message)
     }
 }
 

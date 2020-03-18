@@ -67,8 +67,10 @@ sealed trait Task {
       ipAddresses.map(_.getIpAddress).headOption
 
     maybeContainerIp match {
-      case Some(ipAddress) if app.ipAddress.isDefined => ipAddress
-      case _                                          => agentInfo.host
+      case Some(ipAddress) if app.ipAddress.isDefined =>
+        ipAddress
+      case _ =>
+        agentInfo.host
     }
   }
 }
@@ -288,8 +290,10 @@ object Task {
 
     def appId(taskId: String): PathId = {
       taskId match {
-        case TaskIdRegex(appId, uuid) => PathId.fromSafePath(appId)
-        case _                        => throw new MatchError(s"taskId $taskId is no valid identifier")
+        case TaskIdRegex(appId, uuid) =>
+          PathId.fromSafePath(appId)
+        case _ =>
+          throw new MatchError(s"taskId $taskId is no valid identifier")
       }
     }
 
@@ -388,7 +392,8 @@ object Task {
       id match {
         case LocalVolumeEncoderRE(app, path, uuid) =>
           Some(LocalVolumeId(PathId.fromSafePath(app), path, uuid))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -406,8 +411,10 @@ object Task {
 
     def ipAddresses: Iterable[MesosProtos.NetworkInfo.IPAddress] =
       networking match {
-        case list: NetworkInfoList => list.addresses
-        case _                     => Iterable.empty
+        case list: NetworkInfoList =>
+          list.addresses
+        case _ =>
+          Iterable.empty
       }
   }
 
@@ -469,7 +476,8 @@ object Task {
         case TASK_ERROR | TASK_FAILED | TASK_FINISHED | TASK_KILLED |
             TASK_LOST =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     def unapply(state: TaskState): Option[TaskState] =

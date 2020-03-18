@@ -38,7 +38,8 @@ trait JavaResultsHandlingSpec
       implicit val port = testServerPort
       lazy val app: Application = GuiceApplicationBuilder()
         .routes {
-          case _ => JAction(app, controller)
+          case _ =>
+            JAction(app, controller)
         }
         .build()
 

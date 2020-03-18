@@ -9,7 +9,8 @@ object FingerTreeUsage extends App {
 
   def streamToTree[A](stream: Stream[A]): FingerTree[Int, A] =
     stream.foldLeft(empty(SizeReducer[A])) {
-      case (t, x) => (t :+ x)
+      case (t, x) =>
+        (t :+ x)
     }
 
   val intStream = Stream.from(1)

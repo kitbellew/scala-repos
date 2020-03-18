@@ -202,9 +202,12 @@ trait TypedPipe[+T] extends Serializable {
     */
   def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] =
     other match {
-      case EmptyTypedPipe                             => this
-      case IterablePipe(thatIter) if thatIter.isEmpty => this
-      case _                                          => MergedTypedPipe(this, other)
+      case EmptyTypedPipe =>
+        this
+      case IterablePipe(thatIter) if thatIter.isEmpty =>
+        this
+      case _ =>
+        MergedTypedPipe(this, other)
     }
 
   /**
@@ -248,12 +251,14 @@ trait TypedPipe[+T] extends Serializable {
     */
   def cross[V](p: ValuePipe[V]): TypedPipe[(T, V)] =
     p match {
-      case EmptyValue => EmptyTypedPipe
+      case EmptyValue =>
+        EmptyTypedPipe
       case LiteralValue(v) =>
         map {
           (_, v)
         }
-      case ComputedValue(pipe) => cross(pipe)
+      case ComputedValue(pipe) =>
+        cross(pipe)
     }
 
   /** prints the current pipe to stdout */
@@ -306,8 +311,10 @@ trait TypedPipe[+T] extends Serializable {
       }.sumByKey
     val reduced =
       numReducers match {
-        case Some(red) => op.withReducers(red)
-        case None      => op
+        case Some(red) =>
+          op.withReducers(red)
+        case None =>
+          op
       }
     reduced.map(_._2)
   }
@@ -357,7 +364,8 @@ trait TypedPipe[+T] extends Serializable {
   def mapValues[K, V, U](f: V => U)(implicit
       ev: T <:< (K, V)): TypedPipe[(K, U)] =
     raiseTo[(K, V)].map {
-      case (k, v) => (k, f(v))
+      case (k, v) =>
+        (k, f(v))
     }
 
   /** Similar to mapValues, but allows to return a collection of outputs for each input value */
@@ -415,7 +423,8 @@ trait TypedPipe[+T] extends Serializable {
   def flattenValues[K, U](implicit
       ev: T <:< (K, TraversableOnce[U])): TypedPipe[(K, U)] =
     raiseTo[(K, TraversableOnce[U])].flatMap {
-      case (k, us) => us.map((k, _))
+      case (k, us) =>
+        us.map((k, _))
     }
 
   protected def onRawSingle(onPipe: Pipe => Pipe): TypedPipe[T] = {
@@ -691,7 +700,8 @@ trait TypedPipe[+T] extends Serializable {
         dest.validateTaps(mode)
         Execution.from(TypedPipe.from(dest))
       } catch {
-        case ivs: InvalidSourceException => writeThrough(dest)
+        case ivs: InvalidSourceException =>
+          writeThrough(dest)
       }
     }
 
@@ -722,7 +732,8 @@ trait TypedPipe[+T] extends Serializable {
         map {
           (_, Some(v))
         }
-      case ComputedValue(pipe) => leftCross(pipe)
+      case ComputedValue(pipe) =>
+        leftCross(pipe)
     }
 
   /** uses hashJoin but attaches None if thatPipe is empty */
@@ -807,7 +818,8 @@ trait TypedPipe[+T] extends Serializable {
     map((_, ()))
       .hashLeftJoin(grouped)
       .map {
-        case (t, (_, optV)) => (t, optV)
+        case (t, (_, optV)) =>
+          (t, optV)
       }
 
   /**
@@ -917,10 +929,14 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
 
   override def ++[U >: T](other: TypedPipe[U]): TypedPipe[U] =
     other match {
-      case IterablePipe(thatIter) => IterablePipe(iterable ++ thatIter)
-      case EmptyTypedPipe         => this
-      case _ if iterable.isEmpty  => other
-      case _                      => MergedTypedPipe(this, other)
+      case IterablePipe(thatIter) =>
+        IterablePipe(iterable ++ thatIter)
+      case EmptyTypedPipe =>
+        this
+      case _ if iterable.isEmpty =>
+        other
+      case _ =>
+        MergedTypedPipe(this, other)
     }
 
   override def cross[U](tiny: TypedPipe[U]) =
@@ -932,8 +948,10 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
 
   override def filter(f: T => Boolean): TypedPipe[T] =
     iterable.filter(f) match {
-      case eit if eit.isEmpty => EmptyTypedPipe
-      case filtered           => IterablePipe(filtered)
+      case eit if eit.isEmpty =>
+        EmptyTypedPipe
+      case filtered =>
+        IterablePipe(filtered)
     }
 
   /**
@@ -971,8 +989,10 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       sg: Semigroup[V]) = {
     val kvit =
       raiseTo[(K, V)] match {
-        case IterablePipe(kviter) => kviter
-        case p                    => sys.error("This must be IterablePipe: " + p.toString)
+        case IterablePipe(kviter) =>
+          kviter
+        case p =>
+          sys.error("This must be IterablePipe: " + p.toString)
       }
     IterablePipe(
       kvit
@@ -1016,7 +1036,8 @@ object TypedPipeFactory {
             val res = next(fd, m)
             memo.put(fd, (m, res))
             res
-          case (memoMode, pipe) if memoMode == m => pipe
+          case (memoMode, pipe) if memoMode == m =>
+            pipe
           case (memoMode, pipe) =>
             sys.error(
               "FlowDef reused on different Mode. Original: %s, now: %s"
@@ -1031,7 +1052,8 @@ object TypedPipeFactory {
     tp match {
       case tp: TypedPipeFactory[_] =>
         Some(tp.asInstanceOf[TypedPipeFactory[T]].next)
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -1087,11 +1109,14 @@ class TypedPipeFactory[T] private (
       case TypedPipeFactory(n) =>
         val fullTrace =
           n match {
-            case NoStackAndThen.WithStackTrace(_, st) => st
-            case _                                    => Array[StackTraceElement]()
+            case NoStackAndThen.WithStackTrace(_, st) =>
+              st
+            case _ =>
+              Array[StackTraceElement]()
           }
         unwrap(n(flowDef, mode), st ++ fullTrace)
-      case tp => (tp, st)
+      case tp =>
+        (tp, st)
     }
 }
 
@@ -1137,8 +1162,10 @@ class TypedPipeInst[T] private[scalding] (
 
   override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] =
     tiny match {
-      case EmptyTypedPipe        => EmptyTypedPipe
-      case MergedTypedPipe(l, r) => MergedTypedPipe(cross(l), cross(r))
+      case EmptyTypedPipe =>
+        EmptyTypedPipe
+      case MergedTypedPipe(l, r) =>
+        MergedTypedPipe(cross(l), cross(r))
       case IterablePipe(iter) =>
         flatMap { t =>
           iter.map {
@@ -1146,7 +1173,8 @@ class TypedPipeInst[T] private[scalding] (
           }
         }
       // This should work for any, TODO, should we just call this?
-      case _ => map(((), _)).hashJoin(tiny.groupAll).values
+      case _ =>
+        map(((), _)).hashJoin(tiny.groupAll).values
     }
 
   override def filter(f: T => Boolean): TypedPipe[T] =
@@ -1233,7 +1261,8 @@ class TypedPipeInst[T] private[scalding] (
                   .map(tup => conv(tup.selectEntry(fields)))
             }
         }
-      case _ => forceToDiskExecution.flatMap(_.toIterableExecution)
+      case _ =>
+        forceToDiskExecution.flatMap(_.toIterableExecution)
     }
 }
 
@@ -1242,8 +1271,10 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
 
   override def cross[U](tiny: TypedPipe[U]): TypedPipe[(T, U)] =
     tiny match {
-      case EmptyTypedPipe => EmptyTypedPipe
-      case _              => MergedTypedPipe(left.cross(tiny), right.cross(tiny))
+      case EmptyTypedPipe =>
+        EmptyTypedPipe
+      case _ =>
+        MergedTypedPipe(left.cross(tiny), right.cross(tiny))
     }
 
   override def debug: TypedPipe[T] = MergedTypedPipe(left.debug, right.debug)
@@ -1274,11 +1305,14 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
       fd: FlowDef,
       m: Mode): List[TypedPipe[T]] =
     toFlatten match {
-      case MergedTypedPipe(l, r) :: rest => flattenMerge(l :: r :: rest, acc)
+      case MergedTypedPipe(l, r) :: rest =>
+        flattenMerge(l :: r :: rest, acc)
       case TypedPipeFactory(next) :: rest =>
         flattenMerge(next(fd, m) :: rest, acc)
-      case nonmerge :: rest => flattenMerge(rest, nonmerge :: acc)
-      case Nil              => acc
+      case nonmerge :: rest =>
+        flattenMerge(rest, nonmerge :: acc)
+      case Nil =>
+        acc
     }
 
   override def asPipe[U >: T](fieldNames: Fields)(implicit
@@ -1298,8 +1332,10 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
         .groupBy(identity)
         .mapValues(_.size)
         .map {
-          case (pipe, 1)   => pipe
-          case (pipe, cnt) => pipe.flatMap(List.fill(cnt)(_).iterator)
+          case (pipe, 1) =>
+            pipe
+          case (pipe, cnt) =>
+            pipe.flatMap(List.fill(cnt)(_).iterator)
         }
         .map(_.toPipe[U](fieldNames)(flowDef, mode, setter))
         .toList

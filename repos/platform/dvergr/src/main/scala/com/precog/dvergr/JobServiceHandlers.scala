@@ -228,10 +228,12 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
                 case (JString(msg), JNum(progress), JString(unit)) =>
                   val prevId =
                     request.parameters.get('prevStatusId) match {
-                      case Some(StatusId(id)) => Right(Some(id))
+                      case Some(StatusId(id)) =>
+                        Right(Some(id))
                       case Some(badId) =>
                         Left("Invalid status ID '%s'." format badId)
-                      case None => Right(None)
+                      case None =>
+                        Right(None)
                     }
                   val result =
                     prevId.right map { prevId =>
@@ -243,8 +245,10 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
                         unit,
                         content \? "info")
                     } match {
-                      case Right(resultM) => resultM
-                      case Left(error)    => Future(Left(error))
+                      case Right(resultM) =>
+                        resultM
+                      case Left(error) =>
+                        Future(Left(error))
                     }
 
                   result map {
@@ -356,10 +360,12 @@ class ListMessagesHandler(jobs: JobManager[Future])(implicit
         } yield {
           val prevId =
             request.parameters get 'after match {
-              case Some(MessageId(id)) => Right(Some(id))
+              case Some(MessageId(id)) =>
+                Right(Some(id))
               case Some(badId) =>
                 Left("Invalid message ID in 'after '%s'." format badId)
-              case None => Right(None)
+              case None =>
+                Right(None)
             }
 
           Success(

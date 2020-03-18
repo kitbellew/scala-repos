@@ -13,9 +13,12 @@ object Prismic {
 
   val prismicLogger = (level: Symbol, message: String) =>
     level match {
-      case 'DEBUG => logger debug message
-      case 'ERROR => logger error message
-      case _      => logger info message
+      case 'DEBUG =>
+        logger debug message
+      case 'ERROR =>
+        logger error message
+      case _ =>
+        logger info message
     }
 
   private val fetchPrismicApi = AsyncCache.single[PrismicApi](
@@ -30,7 +33,8 @@ object Prismic {
     DocumentLinkResolver(prismicApi) {
       case (DocumentLink(id, _, _, slug, false), _) =>
         routes.Blog.show(id, slug, ref).url
-      case _ => routes.Lobby.home.url
+      case _ =>
+        routes.Lobby.home.url
     }
 
   def getDocument(id: String): Fu[Option[Document]] =

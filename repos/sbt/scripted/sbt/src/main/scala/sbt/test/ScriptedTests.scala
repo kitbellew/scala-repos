@@ -134,7 +134,8 @@ final class ScriptedTests(
         e.getCause match {
           case null | _: java.net.SocketException =>
             buffered.error("   " + e.getMessage)
-          case _ => e.printStackTrace
+          case _ =>
+            e.printStackTrace
         }
         if (!pending)
           throw e
@@ -343,11 +344,16 @@ object CompatibilityLevel extends Enumeration {
 
   def defaultVersions(level: Value) =
     level match {
-      case Full      => "2.7.4 2.7.7 2.9.0.RC1 2.8.0 2.8.1"
-      case Basic     => "2.7.7 2.7.4 2.8.1 2.8.0"
-      case Minimal   => "2.7.7 2.8.1"
-      case Minimal27 => "2.7.7"
-      case Minimal28 => "2.8.1"
+      case Full =>
+        "2.7.4 2.7.7 2.9.0.RC1 2.8.0 2.8.1"
+      case Basic =>
+        "2.7.7 2.7.4 2.8.1 2.8.0"
+      case Minimal =>
+        "2.7.7 2.8.1"
+      case Minimal27 =>
+        "2.7.7"
+      case Minimal28 =>
+        "2.8.1"
     }
 }
 class PendingTestSuccessException(label: String) extends Exception {

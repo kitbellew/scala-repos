@@ -33,9 +33,12 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
 
   def flatMap[Out2, B, X2 >: X](fa2ruleb: A => Out => Result[Out2, B, X2]) =
     mapResult {
-      case Success(out, a) => fa2ruleb(a)(out)
-      case Failure         => Failure
-      case err @ Error(_)  => err
+      case Success(out, a) =>
+        fa2ruleb(a)(out)
+      case Failure =>
+        Failure
+      case err @ Error(_) =>
+        err
     }
 
   def map[B](fa2b: A => B) =
@@ -82,9 +85,12 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   /** Maps an Error */
   def !^[Y](fx2y: X => Y) =
     mapResult {
-      case s @ Success(_, _) => s
-      case Failure           => Failure
-      case Error(x)          => Error(fx2y(x))
+      case s @ Success(_, _) =>
+        s
+      case Failure =>
+        Failure
+      case Error(x) =>
+        Error(fx2y(x))
     }
 
   def >>[Out2, B, X2 >: X](fa2ruleb: A => Out => Result[Out2, B, X2]) =
@@ -159,7 +165,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   def ^~^[B1, B2, B >: A <% B1 ~ B2, C](f: (B1, B2) => C) =
     map { a =>
       (a: B1 ~ B2) match {
-        case b1 ~ b2 => f(b1, b2)
+        case b1 ~ b2 =>
+          f(b1, b2)
       }
     }
 
@@ -168,7 +175,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   def ^~~^[B1, B2, B3, B >: A <% B1 ~ B2 ~ B3, C](f: (B1, B2, B3) => C) =
     map { a =>
       (a: B1 ~ B2 ~ B3) match {
-        case b1 ~ b2 ~ b3 => f(b1, b2, b3)
+        case b1 ~ b2 ~ b3 =>
+          f(b1, b2, b3)
       }
     }
 
@@ -178,7 +186,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       f: (B1, B2, B3, B4) => C) =
     map { a =>
       (a: B1 ~ B2 ~ B3 ~ B4) match {
-        case b1 ~ b2 ~ b3 ~ b4 => f(b1, b2, b3, b4)
+        case b1 ~ b2 ~ b3 ~ b4 =>
+          f(b1, b2, b3, b4)
       }
     }
 
@@ -188,7 +197,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       f: (B1, B2, B3, B4, B5) => C) =
     map { a =>
       (a: B1 ~ B2 ~ B3 ~ B4 ~ B5) match {
-        case b1 ~ b2 ~ b3 ~ b4 ~ b5 => f(b1, b2, b3, b4, b5)
+        case b1 ~ b2 ~ b3 ~ b4 ~ b5 =>
+          f(b1, b2, b3, b4, b5)
       }
     }
 
@@ -198,7 +208,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       f: (B1, B2, B3, B4, B5, B6) => C) =
     map { a =>
       (a: B1 ~ B2 ~ B3 ~ B4 ~ B5 ~ B6) match {
-        case b1 ~ b2 ~ b3 ~ b4 ~ b5 ~ b6 => f(b1, b2, b3, b4, b5, b6)
+        case b1 ~ b2 ~ b3 ~ b4 ~ b5 ~ b6 =>
+          f(b1, b2, b3, b4, b5, b6)
       }
     }
 
@@ -216,7 +227,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       C](f: (B1, B2, B3, B4, B5, B6, B7) => C) =
     map { a =>
       (a: B1 ~ B2 ~ B3 ~ B4 ~ B5 ~ B6 ~ B7) match {
-        case b1 ~ b2 ~ b3 ~ b4 ~ b5 ~ b6 ~ b7 => f(b1, b2, b3, b4, b5, b6, b7)
+        case b1 ~ b2 ~ b3 ~ b4 ~ b5 ~ b6 ~ b7 =>
+          f(b1, b2, b3, b4, b5, b6, b7)
       }
     }
 
@@ -226,7 +238,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
       f: (B1, B2) => Out => Result[Out2, C, X2]) =
     flatMap { a =>
       (a: B1 ~ B2) match {
-        case b1 ~ b2 => f(b1, b2)
+        case b1 ~ b2 =>
+          f(b1, b2)
       }
     }
 
@@ -242,7 +255,8 @@ trait Rule[-In, +Out, +A, +X] extends (In => Result[Out, A, X]) {
   def ^~>~^[B1, B2, B3, B >: A <% B2 ~ B3, C](f: (B1, B2, B3) => C) =
     map { a =>
       (a: B2 ~ B3) match {
-        case b2 ~ b3 => b1: B1 => f(b1, b2, b3)
+        case b2 ~ b3 =>
+          b1: B1 => f(b1, b2, b3)
       }
     }
 }
@@ -253,11 +267,14 @@ trait Choice[-In, +Out, +A, +X] extends Rule[In, Out, A, X] {
   def apply(in: In) = {
     def oneOf(list: List[Rule[In, Out, A, X]]): Result[Out, A, X] =
       list match {
-        case Nil => Failure
+        case Nil =>
+          Failure
         case first :: rest =>
           first(in) match {
-            case Failure => oneOf(rest)
-            case result  => result
+            case Failure =>
+              oneOf(rest)
+            case result =>
+              result
           }
       }
     oneOf(choices)

@@ -45,10 +45,13 @@ object RoutesFileParser {
         validate(
           routesFile,
           parsed.collect {
-            case r: Route => r
+            case r: Route =>
+              r
           }) match {
-          case Nil    => Right(parsed)
-          case errors => Left(errors)
+          case Nil =>
+            Right(parsed)
+          case errors =>
+            Left(errors)
         }
       case parser.NoSuccess(message, in) =>
         Left(
@@ -168,8 +171,10 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def namedError[A](p: Parser[A], msg: String): Parser[A] =
     Parser[A] { i =>
       p(i) match {
-        case Failure(_, in) => Failure(msg, in)
-        case o              => o
+        case Failure(_, in) =>
+          Failure(msg, in)
+        case o =>
+          o
       }
     }
 
@@ -185,8 +190,10 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
             case Success(x, rest) =>
               elems += x;
               applyp(rest)
-            case Failure(_, _) => Success(elems.toList, in0)
-            case err: Error    => err
+            case Failure(_, _) =>
+              Success(elems.toList, in0)
+            case err: Error =>
+              err
           }
         applyp(in)
       }
@@ -213,7 +220,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def comment: Parser[Comment] =
     "#" ~> ".*".r ^^ {
-      case c => Comment(c)
+      case c =>
+        Comment(c)
     }
 
   def newLine: Parser[String] =
@@ -221,31 +229,36 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def blankLine: Parser[Unit] =
     ignoreWhiteSpace ~> newLine ^^ {
-      case _ => ()
+      case _ =>
+        ()
     }
 
   def parentheses: Parser[String] = {
     "(" ~ (several((parentheses | not(")") ~> """.""".r))) ~ commit(")") ^^ {
-      case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
+      case p1 ~ charList ~ p2 =>
+        p1 + charList.mkString + p2
     }
   }
 
   def brackets: Parser[String] = {
     "[" ~ (several((parentheses | not("]") ~> """.""".r))) ~ commit("]") ^^ {
-      case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
+      case p1 ~ charList ~ p2 =>
+        p1 + charList.mkString + p2
     }
   }
 
   def string: Parser[String] = {
     "\"" ~ (several((parentheses | not("\"") ~> """.""".r))) ~ commit("\"") ^^ {
-      case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
+      case p1 ~ charList ~ p2 =>
+        p1 + charList.mkString + p2
     }
   }
 
   def multiString: Parser[String] = {
     "\"\"\"" ~ (several((parentheses | not("\"\"\"") ~> """.""".r))) ~ commit(
       "\"\"\"") ^^ {
-      case p1 ~ charList ~ p2 => p1 + charList.mkString + p2
+      case p1 ~ charList ~ p2 =>
+        p1 + charList.mkString + p2
     }
   }
 
@@ -253,31 +266,37 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
     namedError(
       "GET" | "POST" | "PUT" | "PATCH" | "HEAD" | "DELETE" | "OPTIONS",
       "HTTP Verb expected") ^^ {
-      case v => HttpVerb(v)
+      case v =>
+        HttpVerb(v)
     }
 
   def singleComponentPathPart: Parser[DynamicPart] =
     (":" ~> identifier) ^^ {
-      case name => DynamicPart(name, """[^/]+""", encode = true)
+      case name =>
+        DynamicPart(name, """[^/]+""", encode = true)
     }
 
   def multipleComponentsPathPart: Parser[DynamicPart] =
     ("*" ~> identifier) ^^ {
-      case name => DynamicPart(name, """.+""", encode = false)
+      case name =>
+        DynamicPart(name, """.+""", encode = false)
     }
 
   def regexComponentPathPart: Parser[DynamicPart] =
     "$" ~> identifier ~ (
       "<" ~> (not(">") ~> """[^\s]""".r +) <~ ">" ^^ {
-        case c => c.mkString
+        case c =>
+          c.mkString
       }
     ) ^^ {
-      case name ~ regex => DynamicPart(name, regex, encode = false)
+      case name ~ regex =>
+        DynamicPart(name, regex, encode = false)
     }
 
   def staticPathPart: Parser[StaticPart] =
     (not(":") ~> not("*") ~> not("$") ~> """[^\s]""".r +) ^^ {
-      case chars => StaticPart(chars.mkString)
+      case chars =>
+        StaticPart(chars.mkString)
     }
 
   def path: Parser[PathPattern] =
@@ -288,7 +307,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
           regexComponentPathPart) | staticPathPart
       ) *
     ) ^^ {
-      case _ ~ parts => PathPattern(parts)
+      case _ ~ parts =>
+        PathPattern(parts)
     }
 
   def space(s: String): Parser[String] =
@@ -298,19 +318,23 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def simpleType: Parser[String] = {
     ((stableId <~ ignoreWhiteSpace) ~ opt(typeArgs)) ^^ {
-      case sid ~ ta => sid.toString + ta.getOrElse("")
+      case sid ~ ta =>
+        sid.toString + ta.getOrElse("")
     } |
       (space("(") ~ types ~ space(")")) ^^ {
-        case _ ~ b ~ _ => "(" + b + ")"
+        case _ ~ b ~ _ =>
+          "(" + b + ")"
       }
   }
 
   def typeArgs: Parser[String] = {
     (space("[") ~ types ~ space("]") ~ opt(typeArgs)) ^^ {
-      case _ ~ ts ~ _ ~ ta => "[" + ts + "]" + ta.getOrElse("")
+      case _ ~ ts ~ _ ~ ta =>
+        "[" + ts + "]" + ta.getOrElse("")
     } |
       (space("#") ~ identifier ~ opt(typeArgs)) ^^ {
-        case _ ~ id ~ ta => "#" + id + ta.getOrElse("")
+        case _ ~ id ~ ta =>
+          "#" + id + ta.getOrElse("")
       }
   }
 
@@ -322,17 +346,20 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def expression: Parser[String] =
     (multiString | string | parentheses | brackets | """[^),?=\n]""".r +) ^^ {
-      case p => p.mkString
+      case p =>
+        p.mkString
     }
 
   def parameterFixedValue: Parser[String] =
     "=" ~ ignoreWhiteSpace ~ expression ^^ {
-      case a ~ _ ~ b => a + b
+      case a ~ _ ~ b =>
+        a + b
     }
 
   def parameterDefaultValue: Parser[String] =
     "?=" ~ ignoreWhiteSpace ~ expression ^^ {
-      case a ~ _ ~ b => a + b
+      case a ~ _ ~ b =>
+        a + b
     }
 
   def parameter: Parser[Parameter] =
@@ -358,7 +385,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def absoluteMethod: Parser[List[String]] =
     namedError(
       javaIdent ~ "." ~ javaIdent ~ "." ~ rep1sep(javaIdent, ".") ^^ {
-        case first ~ _ ~ second ~ _ ~ rest => first :: second :: rest
+        case first ~ _ ~ second ~ _ ~ rest =>
+          first :: second :: rest
       },
       "Controller method call expected")
 
@@ -377,18 +405,21 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def router: Parser[String] =
     rep1sep(identifier, ".") ^^ {
-      case parts => parts.mkString(".")
+      case parts =>
+        parts.mkString(".")
     }
 
   def route =
     httpVerb ~! separator ~ path ~ separator ~ positioned(
       call) ~ ignoreWhiteSpace ^^ {
-      case v ~ _ ~ p ~ _ ~ c ~ _ => Route(v, p, c)
+      case v ~ _ ~ p ~ _ ~ c ~ _ =>
+        Route(v, p, c)
     }
 
   def include =
     "->" ~! separator ~ path ~ separator ~ router ~ ignoreWhiteSpace ^^ {
-      case _ ~ _ ~ p ~ _ ~ r ~ _ => Include(p.toString, r)
+      case _ ~ _ ~ p ~ _ ~ r ~ _ =>
+        Include(p.toString, r)
     }
 
   def sentence: Parser[Product with Serializable] =
@@ -403,17 +434,22 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
       case routes =>
         routes.reverse
           .foldLeft(List[(Option[Rule], List[Comment])]()) {
-            case (s, r @ Route(_, _, _, _)) => (Some(r), List()) :: s
-            case (s, i @ Include(_, _))     => (Some(i), List()) :: s
-            case (s, c @ ())                => (None, List()) :: s
+            case (s, r @ Route(_, _, _, _)) =>
+              (Some(r), List()) :: s
+            case (s, i @ Include(_, _)) =>
+              (Some(i), List()) :: s
+            case (s, c @ ()) =>
+              (None, List()) :: s
             case ((r, comments) :: others, c @ Comment(_)) =>
               (r, c :: comments) :: others
-            case (s, _) => s
+            case (s, _) =>
+              s
           }
           .collect {
             case (Some(r @ Route(_, _, _, _)), comments) =>
               r.copy(comments = comments).setPos(r.pos)
-            case (Some(i @ Include(_, _)), _) => i
+            case (Some(i @ Include(_, _)), _) =>
+              i
           }
     }
 

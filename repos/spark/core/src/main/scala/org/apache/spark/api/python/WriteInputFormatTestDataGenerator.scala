@@ -158,17 +158,20 @@ object WriteInputFormatTestDataGenerator {
     sc.parallelize(intKeys).saveAsSequenceFile(intPath)
     sc.parallelize(
         intKeys.map {
-          case (k, v) => (k.toDouble, v)
+          case (k, v) =>
+            (k.toDouble, v)
         })
       .saveAsSequenceFile(doublePath)
     sc.parallelize(
         intKeys.map {
-          case (k, v) => (k.toString, v)
+          case (k, v) =>
+            (k.toString, v)
         })
       .saveAsSequenceFile(textPath)
     sc.parallelize(
         intKeys.map {
-          case (k, v) => (k, v.getBytes(StandardCharsets.UTF_8))
+          case (k, v) =>
+            (k, v.getBytes(StandardCharsets.UTF_8))
         })
       .saveAsSequenceFile(bytesPath)
     val bools = Seq(
@@ -230,7 +233,8 @@ object WriteInputFormatTestDataGenerator {
       ("4", TestWritable("test4", 4, 4.2))
     )
     val rdd = sc.parallelize(testClass, numSlices = 2).map {
-      case (k, v) => (new Text(k), v)
+      case (k, v) =>
+        (new Text(k), v)
     }
     rdd.saveAsNewAPIHadoopFile(
       classPath,

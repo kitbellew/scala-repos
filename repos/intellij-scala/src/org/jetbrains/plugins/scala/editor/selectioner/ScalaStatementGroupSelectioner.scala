@@ -20,9 +20,12 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScBlock, ScBlockStatement}
 class ScalaStatementGroupSelectioner extends ExtendWordSelectionHandlerBase {
   def canSelect(e: PsiElement) = {
     e match {
-      case _: ScBlockStatement => true
-      case _: PsiComment       => true
-      case _                   => false
+      case _: ScBlockStatement =>
+        true
+      case _: PsiComment =>
+        true
+      case _ =>
+        false
     }
   }
 

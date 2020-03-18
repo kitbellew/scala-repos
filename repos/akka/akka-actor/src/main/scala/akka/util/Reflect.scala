@@ -34,7 +34,8 @@ private[akka] object Reflect {
         m.invoke(null, Array[AnyRef](i.asInstanceOf[java.lang.Integer]): _*)
           .asInstanceOf[Class[_]])
     } catch {
-      case NonFatal(e) ⇒ None
+      case NonFatal(e) ⇒
+        None
     }
   }
 
@@ -154,7 +155,8 @@ private[akka] object Reflect {
         rec(curr.getSuperclass)
       else
         curr.getGenericInterfaces collectFirst {
-          case c: Class[_] if marker isAssignableFrom c ⇒ c
+          case c: Class[_] if marker isAssignableFrom c ⇒
+            c
           case t: ParameterizedType
               if marker isAssignableFrom t.getRawType.asInstanceOf[Class[_]] ⇒
             t
@@ -172,7 +174,8 @@ private[akka] object Reflect {
               t
             else
               rec(t.getRawType.asInstanceOf[Class[_]])
-          case _ ⇒ ??? // cannot happen due to collectFirst
+          case _ ⇒
+            ??? // cannot happen due to collectFirst
         }
     }
     rec(root)
@@ -203,8 +206,10 @@ private[akka] object Reflect {
 
     clearFirst(clazz.getDeclaredFields, 0) || {
       clazz.getSuperclass match {
-        case null ⇒ false // clazz == classOf[AnyRef]
-        case sc ⇒ lookupAndSetField(sc, instance, name, value)
+        case null ⇒
+          false // clazz == classOf[AnyRef]
+        case sc ⇒
+          lookupAndSetField(sc, instance, name, value)
       }
     }
   }

@@ -26,7 +26,8 @@ object ReachingDefinitions {
 
     override def fun(i: Instruction)(set: RDSet): RDSet =
       i match {
-        case dv: DefinitionInstruction => set + dv
+        case dv: DefinitionInstruction =>
+          set + dv
         case wr @ ReadWriteVariableInstruction(_, _, Some(target), true) =>
           def previousAssignments(i: Instruction) =
             i match {
@@ -34,11 +35,13 @@ object ReachingDefinitions {
                 named == target
               case ReadWriteVariableInstruction(_, _, Some(target1), true) =>
                 target1 == target
-              case _ => false
+              case _ =>
+                false
             }
 
           set.filterNot(previousAssignments) + wr
-        case _ => set
+        case _ =>
+          set
       }
   }
 

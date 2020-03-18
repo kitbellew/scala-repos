@@ -25,8 +25,10 @@ class ScalaWithParenthesisSurrounder extends ScalaExpressionSurrounder {
   }
   override def isApplicable(element: PsiElement): Boolean = {
     element match {
-      case _: ScBlockExpr => true
-      case _: ScBlock     => false
+      case _: ScBlockExpr =>
+        true
+      case _: ScBlock =>
+        false
       case _: ScExpression | _: PsiWhiteSpace => {
         true
       }

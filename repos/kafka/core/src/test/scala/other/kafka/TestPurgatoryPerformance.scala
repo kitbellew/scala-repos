@@ -218,7 +218,8 @@ object TestPurgatoryPerformance {
               .invoke(osMXBean)
               .asInstanceOf[Long])
         } catch {
-          case _: Throwable => None
+          case _: Throwable =>
+            None
         }
     }
   }

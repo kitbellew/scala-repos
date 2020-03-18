@@ -83,7 +83,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
               ta.getElement match {
                 case tad: ScTypeAliasDefinition =>
                   tad.aliasedTypeElement.calcType.presentableText
-                case _ => ""
+                case _ =>
+                  ""
               }
             (ta.getText, aliasType)
         }
@@ -146,14 +147,16 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
 
     def membersToRender =
       position.getContext match {
-        case m: PsiMethod => classMembers.filter(_.isInstanceOf[ScMethodMember])
+        case m: PsiMethod =>
+          classMembers.filter(_.isInstanceOf[ScMethodMember])
         case typedDefinition: ScTypedDefinition if typedDefinition.isVal =>
           classMembers.filter(_.isInstanceOf[ScValueMember])
         case typedDefinition: ScTypedDefinition if typedDefinition.isVar =>
           classMembers.filter(_.isInstanceOf[ScVariableMember])
         case typeAlis: ScTypeAlias =>
           classMembers.filter(_.isInstanceOf[ScAliasMember])
-        case _ => classMembers
+        case _ =>
+          classMembers
       }
 
     handleMembers(
@@ -235,13 +238,16 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
             needsOverride = false,
             isVal = false,
             needsInferType = needsInferType)
-        case _ => " "
+        case _ =>
+          " "
       }
 
     if (!full)
       text.indexOf(" ", 1) match { //remove val, var, def or type
-        case -1   => text
-        case part => text.substring(part + 1)
+        case -1 =>
+          text
+        case part =>
+          text.substring(part + 1)
       }
     else
       "override " + text

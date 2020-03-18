@@ -47,8 +47,10 @@ object PerformanceSpec {
     }
 
     val controlBehavior: Receive = {
-      case StopMeasure ⇒ deferAsync(StopMeasure)(_ ⇒ sender() ! StopMeasure)
-      case FailAt(sequenceNr) ⇒ failAt = sequenceNr
+      case StopMeasure ⇒
+        deferAsync(StopMeasure)(_ ⇒ sender() ! StopMeasure)
+      case FailAt(sequenceNr) ⇒
+        failAt = sequenceNr
     }
 
   }
@@ -117,8 +119,10 @@ object PerformanceSpec {
 
     val receiveCommand: Receive = printProgress andThen (
       controlBehavior orElse {
-        case "a" ⇒ persist("a")(_ ⇒ context.become(processC))
-        case "b" ⇒ persist("b")(_ ⇒ ())
+        case "a" ⇒
+          persist("a")(_ ⇒ context.become(processC))
+        case "b" ⇒
+          persist("b")(_ ⇒ ())
       }
     )
 
@@ -126,7 +130,8 @@ object PerformanceSpec {
       case "c" ⇒
         persist("c")(_ ⇒ context.unbecome())
         unstashAll()
-      case other ⇒ stash()
+      case other ⇒
+        stash()
     }
   }
 }

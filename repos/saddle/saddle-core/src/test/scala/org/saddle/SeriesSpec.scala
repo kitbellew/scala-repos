@@ -38,14 +38,16 @@ class SeriesSpec extends Specification {
   "map works" in {
     val s = Series('a' -> 1, 'b' -> 2, 'b' -> 3)
     s.map {
-      case (k, v) => (k, v + 1)
+      case (k, v) =>
+        (k, v + 1)
     } must_== s + 1
   }
 
   "flatMap works" in {
     val s = Series('a' -> 1, 'b' -> 2, 'b' -> 3)
     s.flatMap {
-      case (k, v) => Some((k, v + 1))
+      case (k, v) =>
+        Some((k, v + 1))
     } must_== s + 1
   }
 }

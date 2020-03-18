@@ -634,7 +634,8 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
                 SupervisorStrategy.Restart
             }
           def receive = {
-            case x: InetSocketAddress ⇒ testActor ! controller
+            case x: InetSocketAddress ⇒
+              testActor ! controller
           }
         }).withDeploy(Deploy.local))
     val actor = expectMsgType[ActorRef]
@@ -658,7 +659,8 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
                 SupervisorStrategy.Restart
             }
           def receive = {
-            case _ ⇒ sender() ! barrier
+            case _ ⇒
+              sender() ! barrier
           }
         }).withDeploy(Deploy.local)) ! ""
     expectMsgType[ActorRef]

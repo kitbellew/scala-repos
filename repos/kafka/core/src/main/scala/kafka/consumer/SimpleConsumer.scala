@@ -221,8 +221,10 @@ class SimpleConsumer(
       .partitionErrorAndOffsets(topicAndPartition)
     val offset =
       partitionErrorAndOffset.error match {
-        case ErrorMapping.NoError => partitionErrorAndOffset.offsets.head
-        case _                    => throw ErrorMapping.exceptionFor(partitionErrorAndOffset.error)
+        case ErrorMapping.NoError =>
+          partitionErrorAndOffset.offsets.head
+        case _ =>
+          throw ErrorMapping.exceptionFor(partitionErrorAndOffset.error)
       }
     offset
   }

@@ -62,10 +62,12 @@ class ModelSerializer
             fields.foldLeft(seed) {
               case (i, field) =>
                 field match {
-                  case JField("id", JString(id)) => i.copy(id = id)
+                  case JField("id", JString(id)) =>
+                    i.copy(id = id)
                   case JField("models", JString(models)) =>
                     i.copy(models = BaseEncoding.base64.decode(models))
-                  case _ => i
+                  case _ =>
+                    i
                 }
             }
         },

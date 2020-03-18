@@ -30,12 +30,14 @@ class HttpMuxer(
 
   private[this] val sorted: Seq[(String, Service[Request, Response])] =
     handlers.sortBy {
-      case (pattern, _) => pattern.length
+      case (pattern, _) =>
+        pattern.length
     }.reverse
 
   def patterns: Seq[String] =
     sorted map {
-      case (p, _) => p
+      case (p, _) =>
+        p
     }
 
   /**
@@ -48,7 +50,8 @@ class HttpMuxer(
     val norm = normalize(pattern)
     new HttpMuxer(
       handlers.filterNot {
-        case (pat, _) => pat == norm
+        case (pat, _) =>
+          pat == norm
       } :+ ((norm, service)))
   }
 
@@ -71,8 +74,10 @@ class HttpMuxer(
     }
 
     matching match {
-      case Some((_, service)) => service(request)
-      case None               => Future.value(Response(request.version, Status.NotFound))
+      case Some((_, service)) =>
+        service(request)
+      case None =>
+        Future.value(Response(request.version, Status.NotFound))
     }
   }
 

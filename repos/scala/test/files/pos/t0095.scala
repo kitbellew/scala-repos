@@ -14,8 +14,10 @@ abstract class Nonterminal[Output] {
     nts match {
       case nt :: nts =>
         nt.parse match {
-          case Success(so) => Success(so)
+          case Success(so) =>
+            Success(so)
         }
-      case Nil => throw new Error
+      case Nil =>
+        throw new Error
     }
 }

@@ -138,7 +138,8 @@ trait MatchCodeGen extends Interface {
               any = true,
               wrapInApply = false
             ) // the magic incantation is true/false here
-          case const => Literal(const)
+          case const =>
+            Literal(const)
         }
     }
   }

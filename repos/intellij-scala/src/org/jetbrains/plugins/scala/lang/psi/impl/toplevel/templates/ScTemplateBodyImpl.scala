@@ -77,24 +77,30 @@ class ScTemplateBodyImpl private (
     getStubOrPsiChildren(
       TokenSets.DECLARED_ELEMENTS_HOLDER,
       JavaArrayFactoryUtil.ScDeclaredElementsHolderFactory).filterNot {
-      case s: ScMember => s.isLocal
-      case _           => false
+      case s: ScMember =>
+        s.isLocal
+      case _ =>
+        false
     }
 
   def exprs: Array[ScExpression] =
     getStubOrPsiChildren(
       TokenSets.EXPRESSION_BIT_SET,
       JavaArrayFactoryUtil.ScExpressionFactory).filterNot {
-      case s: ScMember => s.isLocal
-      case _           => false
+      case s: ScMember =>
+        s.isLocal
+      case _ =>
+        false
     }
 
   def selfTypeElement: Option[ScSelfTypeElement] = {
     val stub = getStub
     if (stub != null) {
       stub.findChildStubByType(ScalaElementTypes.SELF_TYPE) match {
-        case null => return None
-        case s    => return Some(s.getPsi)
+        case null =>
+          return None
+        case s =>
+          return Some(s.getPsi)
       }
     }
     Option(findChildByType[ScSelfTypeElement](ScalaElementTypes.SELF_TYPE))

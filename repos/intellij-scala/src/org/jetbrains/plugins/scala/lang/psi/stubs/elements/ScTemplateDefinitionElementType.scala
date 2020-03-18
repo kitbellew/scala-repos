@@ -45,8 +45,10 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
     val signs = psi.functions.map(_.name).toArray
     val isPO =
       psi match {
-        case td: ScTypeDefinition => td.isPackageObject
-        case _                    => false
+        case td: ScTypeDefinition =>
+          td.isPackageObject
+        case _ =>
+          false
       }
     val isSFC = psi.isScriptFileClass
 
@@ -58,7 +60,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
               val typeText = a.constructor.typeElement.getText
               typeText != "deprecated" && typeText != "scala.deprecated"
             }
-            case _ => true
+            case _ =>
+              true
           })
 
     val isImplicitObject =
@@ -74,8 +77,9 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
       var element = elem.getParent
       while (element != null && res) {
         element match {
-          case o: ScObject if o.isPackageObject => res = false
-          case _                                =>
+          case o: ScObject if o.isPackageObject =>
+            res = false
+          case _ =>
         }
         element = element.getParent
       }

@@ -57,8 +57,10 @@ private[lobby] object Biter {
         UserRepo.firstGetsWhite(
           creatorUser.map(_.id),
           joinerUser.map(_.id)) map chess.Color.apply
-      case Color.White => fuccess(chess.White)
-      case Color.Black => fuccess(chess.Black)
+      case Color.White =>
+        fuccess(chess.White)
+      case Color.Black =>
+        fuccess(chess.Black)
     }
 
   private def blame(color: ChessColor, userOption: Option[User], game: Game) =

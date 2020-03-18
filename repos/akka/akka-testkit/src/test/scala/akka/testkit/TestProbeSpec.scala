@@ -84,7 +84,8 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
         new TestActor.AutoPilot {
           def run(sender: ActorRef, msg: Any): TestActor.AutoPilot =
             msg match {
-              case "stop" ⇒ TestActor.NoAutoPilot
+              case "stop" ⇒
+                TestActor.NoAutoPilot
               case x ⇒
                 testActor.tell(x, sender);
                 TestActor.KeepRunning
@@ -119,7 +120,8 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
 
     "be able to ignore primitive types" in {
       ignoreMsg {
-        case 42 ⇒ true
+        case 42 ⇒
+          true
       }
       testActor ! 42
       testActor ! "pigdog"

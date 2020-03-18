@@ -55,7 +55,8 @@ object SpanId {
     try {
       Some(SpanId(new RichU64String(spanId).toU64Long))
     } catch {
-      case NonFatal(_) => None
+      case NonFatal(_) =>
+        None
     }
 }
 
@@ -147,14 +148,18 @@ final case class TraceId(
     flags: Flags) {
   def traceId: SpanId =
     _traceId match {
-      case None     => parentId
-      case Some(id) => id
+      case None =>
+        parentId
+      case Some(id) =>
+        id
     }
 
   def parentId: SpanId =
     _parentId match {
-      case None     => spanId
-      case Some(id) => id
+      case None =>
+        spanId
+      case Some(id) =>
+        id
     }
 
   // debug flag overrides sampled to be true
@@ -168,8 +173,10 @@ final case class TraceId(
 
   override def equals(other: Any) =
     other match {
-      case other: TraceId => this.ids equals other.ids
-      case _              => false
+      case other: TraceId =>
+        this.ids equals other.ids
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = ids.hashCode()

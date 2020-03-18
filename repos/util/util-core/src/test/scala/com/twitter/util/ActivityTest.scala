@@ -11,8 +11,10 @@ class ActivityTest extends FunSuite {
     val v = Var(Activity.Pending: Activity.State[Int])
     val ref = new AtomicReference[Seq[Activity.State[Int]]]
     val act = Activity(v) flatMap {
-      case i if i % 2 == 0 => Activity.value(-i)
-      case i               => Activity.value(i)
+      case i if i % 2 == 0 =>
+        Activity.value(-i)
+      case i =>
+        Activity.value(i)
     }
     act.states.build.register(Witness(ref))
 
@@ -33,7 +35,8 @@ class ActivityTest extends FunSuite {
 
     val ref = new AtomicReference[Activity.State[Int]]
     a.handle {
-        case E(x) => x
+        case E(x) =>
+          x
       }
       .states
       .register(Witness(ref))
@@ -51,7 +54,8 @@ class ActivityTest extends FunSuite {
     val v = Var(Activity.Pending: Activity.State[Int])
     val ref = new AtomicReference(Seq.empty: Seq[Try[String]])
     val act = Activity(v) collect {
-      case i if i % 2 == 0 => "EVEN%d".format(i)
+      case i if i % 2 == 0 =>
+        "EVEN%d".format(i)
     }
     act.values.build.register(Witness(ref))
 
@@ -139,14 +143,20 @@ class ActivityTest extends FunSuite {
 
     val ref = new AtomicReference(Seq.empty: Seq[Try[Int]])
     val b = a map {
-      case 111 => throw exc1
-      case i   => i
+      case 111 =>
+        throw exc1
+      case i =>
+        i
     } flatMap {
-      case 222 => throw exc2
-      case i   => Activity.value(i)
+      case 222 =>
+        throw exc2
+      case i =>
+        Activity.value(i)
     } transform {
-      case Activity.Ok(333) => throw exc3
-      case other            => Activity(Var.value(other))
+      case Activity.Ok(333) =>
+        throw exc3
+      case other =>
+        Activity(Var.value(other))
     }
 
     b.values.build.register(Witness(ref))

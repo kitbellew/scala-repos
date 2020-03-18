@@ -37,8 +37,10 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def next: Option[Zipper[A]] =
     rights match {
-      case Stream.Empty => None
-      case r #:: rs     => Some(zipper(Stream.cons(focus, lefts), r, rs))
+      case Stream.Empty =>
+        None
+      case r #:: rs =>
+        Some(zipper(Stream.cons(focus, lefts), r, rs))
     }
 
   /**
@@ -51,8 +53,10 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def previous: Option[Zipper[A]] =
     lefts match {
-      case Stream.Empty => None
-      case l #:: ls     => Some(zipper(ls, l, Stream.cons(focus, rights)))
+      case Stream.Empty =>
+        None
+      case l #:: ls =>
+        Some(zipper(ls, l, Stream.cons(focus, rights)))
     }
 
   /**
@@ -94,11 +98,14 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def deleteLeft: Option[Zipper[A]] =
     lefts match {
-      case l #:: ls => Some(zipper(ls, l, rights))
+      case l #:: ls =>
+        Some(zipper(ls, l, rights))
       case Stream.Empty =>
         rights match {
-          case r #:: rs     => Some(zipper(Stream.empty, r, rs))
-          case Stream.Empty => None
+          case r #:: rs =>
+            Some(zipper(Stream.empty, r, rs))
+          case Stream.Empty =>
+            None
         }
     }
 
@@ -115,11 +122,14 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def deleteRight: Option[Zipper[A]] =
     rights match {
-      case r #:: rs => Some(zipper(lefts, r, rs))
+      case r #:: rs =>
+        Some(zipper(lefts, r, rs))
       case Stream.Empty =>
         lefts match {
-          case l #:: ls     => Some(zipper(ls, l, Stream.empty))
-          case Stream.Empty => None
+          case l #:: ls =>
+            Some(zipper(ls, l, Stream.empty))
+          case Stream.Empty =>
+            None
         }
     }
 
@@ -240,7 +250,8 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
             Some(z)
           else
             go(f(z))
-        case None => None
+        case None =>
+          None
       }
     }
     go(f(this))
@@ -280,7 +291,8 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def nextC: Zipper[A] =
     (lefts, rights) match {
-      case (Stream.Empty, Stream.Empty) => this
+      case (Stream.Empty, Stream.Empty) =>
+        this
       case (_, Stream.Empty) =>
         val xs = lefts.reverse
         zipper(rights, xs.head, xs.tail.append(Stream(focus)))
@@ -293,11 +305,13 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def previousC: Zipper[A] =
     (lefts, rights) match {
-      case (Stream.Empty, Stream.Empty) => this
+      case (Stream.Empty, Stream.Empty) =>
+        this
       case (Stream.Empty, _) =>
         val xs = rights.reverse
         zipper(xs.tail.append(Stream(focus)), xs.head, lefts)
-      case (_, _) => tryPrevious
+      case (_, _) =>
+        tryPrevious
     }
 
   /**
@@ -306,13 +320,15 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def deleteLeftC: Option[Zipper[A]] =
     lefts match {
-      case l #:: ls => Some(zipper(ls, l, rights))
+      case l #:: ls =>
+        Some(zipper(ls, l, rights))
       case Stream.Empty =>
         rights match {
           case _ #:: _ =>
             val rrev = rights.reverse;
             Some(zipper(rrev.tail, rrev.head, Stream.empty))
-          case Stream.Empty => None
+          case Stream.Empty =>
+            None
         }
     }
 
@@ -329,13 +345,15 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     */
   def deleteRightC: Option[Zipper[A]] =
     rights match {
-      case r #:: rs => Some(zipper(lefts, r, rs))
+      case r #:: rs =>
+        Some(zipper(lefts, r, rs))
       case Stream.Empty =>
         lefts match {
           case _ #:: _ =>
             val lrev = lefts.reverse;
             Some(zipper(Stream.empty, lrev.head, lrev.tail))
-          case Stream.Empty => None
+          case Stream.Empty =>
+            None
         }
     }
 
@@ -364,10 +382,12 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
 
   def ap[B](f: => Zipper[A => B]): Zipper[B] = {
     val ls = lefts.zip(f.lefts) map {
-      case (aa, ff) => ff(aa)
+      case (aa, ff) =>
+        ff(aa)
     }
     val rs = rights.zip(f.rights) map {
-      case (aa, ff) => ff(aa)
+      case (aa, ff) =>
+        ff(aa)
     }
     zipper(ls, f.focus(focus), rs)
   }
@@ -414,24 +434,30 @@ sealed abstract class ZipperInstances {
         fa.rights.foldLeft(
           Foldable[Stream].foldMapRight1Opt(fa.lefts)(f)((a, b) =>
             F.append(b, f(a))) match {
-            case Some(b) => F.append(b, f(fa.focus))
-            case None    => f(fa.focus)
+            case Some(b) =>
+              F.append(b, f(fa.focus))
+            case None =>
+              f(fa.focus)
           })((b, a) => F.append(b, f(a)))
       override def foldMapRight1[A, B](fa: Zipper[A])(z: A => B)(
           f: (A, => B) => B) =
         Foldable[Stream].foldLeft(
           fa.lefts,
           Foldable[Stream].foldMapRight1Opt(fa.rights)(z)(f) match {
-            case Some(b) => f(fa.focus, b)
-            case None    => z(fa.focus)
+            case Some(b) =>
+              f(fa.focus, b)
+            case None =>
+              z(fa.focus)
           })((b, a) => f(a, b))
       override def foldMapLeft1[A, B](fa: Zipper[A])(z: A => B)(
           f: (B, A) => B) =
         fa.rights.foldLeft(
           Foldable[Stream].foldMapRight1Opt(fa.lefts)(z)((a, b) =>
             f(b, a)) match {
-            case Some(b) => f(b, fa.focus)
-            case None    => z(fa.focus)
+            case Some(b) =>
+              f(b, fa.focus)
+            case None =>
+              z(fa.focus)
           })(f)
       override def traverse1Impl[G[_], A, B](fa: Zipper[A])(f: A => G[B])(
           implicit G: Apply[G]) = {

@@ -192,14 +192,18 @@ private[parquet] class CatalystWriteSupport
             writeFields(row.getStruct(ordinal, t.length), t, fieldWriters)
           }
 
-      case t: ArrayType => makeArrayWriter(t)
+      case t: ArrayType =>
+        makeArrayWriter(t)
 
-      case t: MapType => makeMapWriter(t)
+      case t: MapType =>
+        makeMapWriter(t)
 
-      case t: UserDefinedType[_] => makeWriter(t.sqlType)
+      case t: UserDefinedType[_] =>
+        makeWriter(t.sqlType)
 
       // TODO Adds IntervalType support
-      case _ => sys.error(s"Unsupported data type $dataType.")
+      case _ =>
+        sys.error(s"Unsupported data type $dataType.")
     }
   }
 
@@ -279,17 +283,20 @@ private[parquet] class CatalystWriteSupport
 
     writeLegacyParquetFormat match {
       // Standard mode, 1 <= precision <= 9, writes as INT32
-      case false if precision <= Decimal.MAX_INT_DIGITS => int32Writer
+      case false if precision <= Decimal.MAX_INT_DIGITS =>
+        int32Writer
 
       // Standard mode, 10 <= precision <= 18, writes as INT64
-      case false if precision <= Decimal.MAX_LONG_DIGITS => int64Writer
+      case false if precision <= Decimal.MAX_LONG_DIGITS =>
+        int64Writer
 
       // Legacy mode, 1 <= precision <= 18, writes as FIXED_LEN_BYTE_ARRAY
       case true if precision <= Decimal.MAX_LONG_DIGITS =>
         binaryWriterUsingUnscaledLong
 
       // Either standard or legacy mode, 19 <= precision <= 38, writes as FIXED_LEN_BYTE_ARRAY
-      case _ => binaryWriterUsingUnscaledBytes
+      case _ =>
+        binaryWriterUsingUnscaledBytes
     }
   }
 

@@ -34,7 +34,8 @@ object CoGrouped {
     @annotation.tailrec
     def go(l: List[T], seen: Set[U] = Set[U](), acc: List[T] = Nil): List[T] =
       l match {
-        case Nil => acc.reverse // done
+        case Nil =>
+          acc.reverse // done
         case h :: tail =>
           val uh = fn(h)
           if (seen(uh))
@@ -300,7 +301,8 @@ trait CoGrouped[K, +R]
 
               val pipes: Array[Pipe] =
                 distincts.zipWithIndex.map {
-                  case (item, idx) => assignName(renamePipe(idx, item))
+                  case (item, idx) =>
+                    assignName(renamePipe(idx, item))
                 }.toArray
 
               val cjoiner =
@@ -341,7 +343,8 @@ trait CoGrouped[K, +R]
                 "Except for self joins, where you are joining something with only itself,\n" +
                   "left-most pipe can only appear once. Firsts: " +
                   inputs.collect {
-                    case x if x == inputs.head => x
+                    case x if x == inputs.head =>
+                      x
                   }.toString)
             }
         }
@@ -396,7 +399,8 @@ abstract class CoGroupedJoiner[K](
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     val keyTuple =
       iters.collectFirst {
-        case iter if iter.nonEmpty => iter.head
+        case iter if iter.nonEmpty =>
+          iter.head
       }.get // One of these must have a key
     val key = getter.get(keyTuple, 0)
 

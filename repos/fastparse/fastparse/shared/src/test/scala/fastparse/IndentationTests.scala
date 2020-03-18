@@ -9,10 +9,14 @@ import all._
 object IndentationTests extends TestSuite {
   def eval(tree: (String, Seq[Int])) =
     tree match {
-      case ("+", nums) => nums.reduceLeft(_ + _)
-      case ("-", nums) => nums.reduceLeft(_ - _)
-      case ("*", nums) => nums.reduceLeft(_ * _)
-      case ("/", nums) => nums.reduceLeft(_ / _)
+      case ("+", nums) =>
+        nums.reduceLeft(_ + _)
+      case ("-", nums) =>
+        nums.reduceLeft(_ - _)
+      case ("*", nums) =>
+        nums.reduceLeft(_ * _)
+      case ("/", nums) =>
+        nums.reduceLeft(_ / _)
     }
 
   /**

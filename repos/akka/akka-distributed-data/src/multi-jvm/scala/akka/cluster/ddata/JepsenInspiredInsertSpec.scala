@@ -66,7 +66,8 @@ class JepsenInspiredInsertSpec
   val data: Map[RoleName, Seq[Int]] = {
     val nodeIndex =
       nodes.zipWithIndex.map {
-        case (n, i) ⇒ i -> n
+        case (n, i) ⇒
+          i -> n
       }.toMap
     (0 until totalCount).groupBy(i ⇒ nodeIndex(i % nodeCount))
   }
@@ -132,10 +133,12 @@ class JepsenInspiredInsertSpec
         writeProbe.receiveOne(3.seconds)
       }
       val successWriteAcks = writeAcks.collect {
-        case success: UpdateSuccess[_] ⇒ success
+        case success: UpdateSuccess[_] ⇒
+          success
       }
       val failureWriteAcks = writeAcks.collect {
-        case fail: UpdateFailure[_] ⇒ fail
+        case fail: UpdateFailure[_] ⇒
+          fail
       }
       successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
       successWriteAcks.size should be(myData.size)
@@ -149,7 +152,8 @@ class JepsenInspiredInsertSpec
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
           val result =
             readProbe.expectMsgPF() {
-              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+              case g @ GetSuccess(`key`, _) ⇒
+                g.get(key)
             }
           result.elements should be(expectedData)
         }
@@ -174,10 +178,12 @@ class JepsenInspiredInsertSpec
         writeProbe.receiveOne(timeout + 1.second)
       }
       val successWriteAcks = writeAcks.collect {
-        case success: UpdateSuccess[_] ⇒ success
+        case success: UpdateSuccess[_] ⇒
+          success
       }
       val failureWriteAcks = writeAcks.collect {
-        case fail: UpdateFailure[_] ⇒ fail
+        case fail: UpdateFailure[_] ⇒
+          fail
       }
       successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
       successWriteAcks.size should be(myData.size)
@@ -191,7 +197,8 @@ class JepsenInspiredInsertSpec
       replicator.tell(Get(key, readMajority), readProbe.ref)
       val result =
         readProbe.expectMsgPF() {
-          case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+          case g @ GetSuccess(`key`, _) ⇒
+            g.get(key)
         }
       val survivors = result.elements.size
       result.elements should be(expectedData)
@@ -229,10 +236,12 @@ class JepsenInspiredInsertSpec
         writeProbe.receiveOne(3.seconds)
       }
       val successWriteAcks = writeAcks.collect {
-        case success: UpdateSuccess[_] ⇒ success
+        case success: UpdateSuccess[_] ⇒
+          success
       }
       val failureWriteAcks = writeAcks.collect {
-        case fail: UpdateFailure[_] ⇒ fail
+        case fail: UpdateFailure[_] ⇒
+          fail
       }
       successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
       successWriteAcks.size should be(myData.size)
@@ -248,7 +257,8 @@ class JepsenInspiredInsertSpec
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
           val result =
             readProbe.expectMsgPF() {
-              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+              case g @ GetSuccess(`key`, _) ⇒
+                g.get(key)
             }
           result.elements should be(expectedData)
         }
@@ -285,10 +295,12 @@ class JepsenInspiredInsertSpec
         writeProbe.receiveOne(timeout + 1.second)
       }
       val successWriteAcks = writeAcks.collect {
-        case success: UpdateSuccess[_] ⇒ success
+        case success: UpdateSuccess[_] ⇒
+          success
       }
       val failureWriteAcks = writeAcks.collect {
-        case fail: UpdateFailure[_] ⇒ fail
+        case fail: UpdateFailure[_] ⇒
+          fail
       }
       runOn(n1, n4, n5) {
         successWriteAcks.map(_.request.get).toSet should be(myData.toSet)
@@ -310,7 +322,8 @@ class JepsenInspiredInsertSpec
         replicator.tell(Get(key, readMajority), readProbe.ref)
         val result =
           readProbe.expectMsgPF() {
-            case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+            case g @ GetSuccess(`key`, _) ⇒
+              g.get(key)
           }
         val survivors = result.elements.size
         result.elements should be(expectedData)
@@ -325,7 +338,8 @@ class JepsenInspiredInsertSpec
           replicator.tell(Get(key, ReadLocal), readProbe.ref)
           val result =
             readProbe.expectMsgPF() {
-              case g @ GetSuccess(`key`, _) ⇒ g.get(key)
+              case g @ GetSuccess(`key`, _) ⇒
+                g.get(key)
             }
           result.elements should be(expectedData)
         }

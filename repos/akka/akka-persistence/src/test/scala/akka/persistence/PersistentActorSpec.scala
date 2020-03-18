@@ -28,14 +28,17 @@ object PersistentActorSpec {
     var askedForDelete: Option[ActorRef] = None
 
     val updateState: Receive = {
-      case Evt(data) ⇒ events = data :: events
+      case Evt(data) ⇒
+        events = data :: events
       case d @ Some(ref: ActorRef) ⇒
         askedForDelete = d.asInstanceOf[Some[ActorRef]]
     }
 
     val commonBehavior: Receive = {
-      case "boom" ⇒ throw new TestException("boom")
-      case GetState ⇒ sender() ! events.reverse
+      case "boom" ⇒
+        throw new TestException("boom")
+      case GetState ⇒
+        sender() ! events.reverse
       case Delete(toSequenceNr) ⇒
         persist(Some(sender())) { s ⇒
           askedForDelete = s
@@ -63,16 +66,20 @@ object PersistentActorSpec {
         event: Any,
         seqNr: Long): Unit =
       event match {
-        case Evt(data) ⇒ sender() ! s"Rejected: $data"
-        case _ ⇒ super.onPersistRejected(cause, event, seqNr)
+        case Evt(data) ⇒
+          sender() ! s"Rejected: $data"
+        case _ ⇒
+          super.onPersistRejected(cause, event, seqNr)
       }
     override protected def onPersistFailure(
         cause: Throwable,
         event: Any,
         seqNr: Long): Unit =
       event match {
-        case Evt(data) ⇒ sender() ! s"Failure: $data"
-        case _ ⇒ super.onPersistFailure(cause, event, seqNr)
+        case Evt(data) ⇒
+          sender() ! s"Failure: $data"
+        case _ ⇒
+          super.onPersistFailure(cause, event, seqNr)
       }
   }
 
@@ -182,9 +189,12 @@ object PersistentActorSpec {
 
     def receiveCommand: Receive =
       commonBehavior orElse {
-        case c: Cmd ⇒ handleCmd(c)
-        case SaveSnapshotSuccess(_) ⇒ probe ! "saved"
-        case "snap" ⇒ saveSnapshot(events)
+        case c: Cmd ⇒
+          handleCmd(c)
+        case SaveSnapshotSuccess(_) ⇒
+          probe ! "saved"
+        case "snap" ⇒
+          saveSnapshot(events)
       }
   }
 
@@ -202,14 +212,16 @@ object PersistentActorSpec {
     override def receiveRecover = becomingRecover.orElse(super.receiveRecover)
 
     val becomingCommand: Receive = receiveCommand orElse {
-      case "It's changing me" ⇒ probe ! "I am becoming"
+      case "It's changing me" ⇒
+        probe ! "I am becoming"
     }
   }
 
   class ReplyInEventHandlerPersistentActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
-      case Cmd("a") ⇒ persist(Evt("a"))(evt ⇒ sender() ! evt.data)
+      case Cmd("a") ⇒
+        persist(Evt("a"))(evt ⇒ sender() ! evt.data)
     }
   }
 
@@ -235,8 +247,10 @@ object PersistentActorSpec {
         event: Any,
         seqNr: Long): Unit =
       event match {
-        case Evt(data) ⇒ sender() ! s"Failure: $data"
-        case _ ⇒ super.onPersistFailure(cause, event, seqNr)
+        case Evt(data) ⇒
+          sender() ! s"Failure: $data"
+        case _ ⇒
+          super.onPersistFailure(cause, event, seqNr)
       }
 
   }
@@ -375,7 +389,8 @@ object PersistentActorSpec {
   class AnyValEventPersistentActor(name: String)
       extends ExamplePersistentActor(name) {
     val receiveCommand: Receive = {
-      case Cmd("a") ⇒ persist(5)(evt ⇒ sender() ! evt)
+      case Cmd("a") ⇒
+        persist(5)(evt ⇒ sender() ! evt)
     }
   }
 
@@ -399,7 +414,8 @@ object PersistentActorSpec {
 
     override def receiveCommand: Receive =
       super.receiveCommand orElse {
-        case s: String ⇒ probe ! s
+        case s: String ⇒
+          probe ! s
       }
 
   }
@@ -604,7 +620,8 @@ object PersistentActorSpec {
             Thread.sleep(1000) // really long wait here...
             // the next incoming command must be handled by the following function
             context.become({
-              case _ ⇒ sender() ! "done"
+              case _ ⇒
+                sender() ! "done"
             })
           }
         }
@@ -648,7 +665,8 @@ object PersistentActorSpec {
     }
 
     def receiveRecover = {
-      case _ ⇒ ()
+      case _ ⇒
+        ()
     }
 
     override def preStart(): Unit = {

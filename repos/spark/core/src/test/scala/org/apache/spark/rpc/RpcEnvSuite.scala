@@ -86,7 +86,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         override val rpcEnv = env
 
         override def receive = {
-          case msg: String => message = msg
+          case msg: String =>
+            message = msg
         }
       })
     rpcEndpointRef.send("hello")
@@ -105,7 +106,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         override val rpcEnv = env
 
         override def receive: PartialFunction[Any, Unit] = {
-          case msg: String => message = msg
+          case msg: String =>
+            message = msg
         }
       })
 
@@ -135,8 +137,10 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         override val rpcEnv = env
 
         override def receiveAndReply(context: RpcCallContext) = {
-          case "Hello" => context.reply(self)
-          case "Echo"  => context.reply("Echo")
+          case "Hello" =>
+            context.reply(self)
+          case "Echo" =>
+            context.reply("Echo")
         }
       }
     val rpcEndpointRef = env.setupEndpoint("send-ref", endpoint)
@@ -327,7 +331,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         override val rpcEnv = env
 
         override def receive: PartialFunction[Any, Unit] = {
-          case m => throw new RuntimeException("Oops!")
+          case m =>
+            throw new RuntimeException("Oops!")
         }
 
         override def onError(cause: Throwable): Unit = {
@@ -432,7 +437,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           override val rpcEnv = env
 
           override def receive: PartialFunction[Any, Unit] = {
-            case m => result += 1
+            case m =>
+              result += 1
           }
 
         })
@@ -489,7 +495,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case m => context.reply("ack")
+          case m =>
+            context.reply("ack")
         }
       }
     )
@@ -509,7 +516,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case m => context.reply("ack")
+          case m =>
+            context.reply("ack")
         }
       }
     )
@@ -541,7 +549,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case m => context.sendFailure(new SparkException("Oops"))
+          case m =>
+            context.sendFailure(new SparkException("Oops"))
         }
       }
     )
@@ -563,7 +572,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case msg: String => context.sendFailure(new SparkException("Oops"))
+          case msg: String =>
+            context.sendFailure(new SparkException("Oops"))
         }
       }
     )
@@ -604,7 +614,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receive: PartialFunction[Any, Unit] = {
           case "hello" =>
-          case m       => events.add("receive" -> m)
+          case m =>
+            events.add("receive" -> m)
         }
 
         override def onConnected(remoteAddress: RpcAddress): Unit = {
@@ -753,7 +764,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case msg: String => context.sendFailure(new UnserializableException)
+          case msg: String =>
+            context.sendFailure(new UnserializableException)
         }
       }
     )
@@ -805,7 +817,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           override val rpcEnv = localEnv
 
           override def receive: PartialFunction[Any, Unit] = {
-            case msg: String => message = msg
+            case msg: String =>
+              message = msg
           }
         })
       val rpcEndpointRef = remoteEnv.setupEndpointRef(
@@ -909,7 +922,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case msg: String   => context.reply(msg)
+          case msg: String =>
+            context.reply(msg)
           case _: NeverReply =>
         }
       }

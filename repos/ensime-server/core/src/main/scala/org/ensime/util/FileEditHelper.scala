@@ -11,8 +11,10 @@ object FileEditHelper {
 
   def fromChange(ch: Change): FileEdit = {
     ch match {
-      case ch: TextChange => TextEdit(ch.file.file, ch.from, ch.to, ch.text)
-      case _              => throw new UnsupportedOperationException(ch.toString)
+      case ch: TextChange =>
+        TextEdit(ch.file.file, ch.from, ch.to, ch.text)
+      case _ =>
+        throw new UnsupportedOperationException(ch.toString)
     }
   }
 

@@ -205,11 +205,13 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
   test(s"conversion is working") {
     assert(
       sql("SELECT * FROM normal_parquet").queryExecution.sparkPlan.collect {
-        case _: HiveTableScan => true
+        case _: HiveTableScan =>
+          true
       }.isEmpty)
     assert(
       sql("SELECT * FROM normal_parquet").queryExecution.sparkPlan.collect {
-        case _: DataSourceScan => true
+        case _: DataSourceScan =>
+          true
       }.nonEmpty)
   }
 
@@ -385,7 +387,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
       assertResult(2) {
         analyzed.collect {
-          case r @ LogicalRelation(_: HadoopFsRelation, _, _) => r
+          case r @ LogicalRelation(_: HadoopFsRelation, _, _) =>
+            r
         }.size
       }
     }
@@ -395,7 +398,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     val plan = df.queryExecution.analyzed
     plan
       .collectFirst {
-        case LogicalRelation(r: HadoopFsRelation, _, _) => r
+        case LogicalRelation(r: HadoopFsRelation, _, _) =>
+          r
       }
       .getOrElse {
         fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan")
@@ -920,7 +924,8 @@ abstract class ParquetPartitioningTest
         sql(s"SELECT concat(stringField, stringField) FROM $table"),
         sql(s"SELECT stringField FROM $table").rdd
           .map {
-            case Row(s: String) => Row(s + s)
+            case Row(s: String) =>
+              Row(s + s)
           }
           .collect()
           .toSeq

@@ -55,7 +55,8 @@ class TableDef[T](_cols: Column[T]*) {
 
     def mkFormatString(sepf: Int => String): String =
       specs.zipWithIndex map {
-        case (c, i) => c + sepf(i)
+        case (c, i) =>
+          c + sepf(i)
       } mkString
 
     def toFormattedSeq = argLists map (xs => rowFormat.format(xs: _*))

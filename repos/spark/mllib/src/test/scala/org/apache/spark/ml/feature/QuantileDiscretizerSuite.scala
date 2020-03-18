@@ -149,7 +149,8 @@ private object QuantileDiscretizerSuite extends SparkFunSuite {
       .select("result")
       .collect()
       .map {
-        case Row(transformedFeature: Double) => transformedFeature
+        case Row(transformedFeature: Double) =>
+          transformedFeature
       }
     val transformedAttrs =
       Attribute

@@ -35,10 +35,13 @@ object GenerationUtil {
     aClass match {
       case cl: ScTemplateDefinition =>
         cl.extendsBlock match {
-          case ScExtendsBlock.TemplateBody(body) => body.lastChild
-          case _                                 => None
+          case ScExtendsBlock.TemplateBody(body) =>
+            body.lastChild
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 
   def addMembers(
@@ -79,9 +82,12 @@ object GenerationUtil {
 
   def isVar(elem: ScNamedElement) =
     ScalaPsiUtil.nameContext(elem) match {
-      case _: ScVariable                          => true
-      case param: ScClassParameter if param.isVar => true
-      case _                                      => false
+      case _: ScVariable =>
+        true
+      case param: ScClassParameter if param.isVar =>
+        true
+      case _ =>
+        false
     }
 
   def getAllFields(aClass: PsiClass): Seq[ScNamedElement] = {
@@ -89,9 +95,12 @@ object GenerationUtil {
       case classParam: ScClassParameter
           if classParam.isVal || classParam.isVar =>
         Seq(classParam)
-      case value: ScValue       => value.declaredElements
-      case variable: ScVariable => variable.declaredElements
-      case _                    => Seq.empty
+      case value: ScValue =>
+        value.declaredElements
+      case variable: ScVariable =>
+        variable.declaredElements
+      case _ =>
+        Seq.empty
     }
 
     allMembers(aClass).flatMap(memberProcessor)
@@ -101,7 +110,8 @@ object GenerationUtil {
     val memberProcessor: (ScMember) => Seq[ScNamedElement] = {
       case method: ScFunction if method.parameters.isEmpty =>
         method.declaredElements
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
 
     allMembers(aClass).flatMap(memberProcessor)
@@ -119,9 +129,12 @@ object GenerationUtil {
     aClass match {
       case scClass: ScClass =>
         scClass.members ++ scClass.constructor.toSeq.flatMap(_.parameters)
-      case scObject: ScObject => scObject.members
-      case scTrait: ScTrait   => scTrait.members
-      case _                  => Seq.empty
+      case scObject: ScObject =>
+        scObject.members
+      case scTrait: ScTrait =>
+        scTrait.members
+      case _ =>
+        Seq.empty
     }
   }
 }

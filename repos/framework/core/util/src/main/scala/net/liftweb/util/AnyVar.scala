@@ -55,7 +55,8 @@ trait MemoizeVar[K, V] {
   def get(key: K): Box[V] =
     coreVar.doSync {
       coreVar.is.get(key) match {
-        case Full(x) => x
+        case Full(x) =>
+          x
         case _ => {
           val ret = defaultFunction(key)
           coreVar.is.update(key, ret)
@@ -73,7 +74,8 @@ trait MemoizeVar[K, V] {
   def get(key: K, dflt: => V): V =
     coreVar.doSync {
       get(key) match {
-        case Full(v) => v
+        case Full(v) =>
+          v
         case _ =>
           val ret = dflt
           set(key, ret)
@@ -182,7 +184,8 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
   def is: T =
     doSync {
       findFunc(name) match {
-        case Full(v) => v
+        case Full(v) =>
+          v
         case _ =>
           val ret = calcDefaultValue
           testInitialized
@@ -191,8 +194,10 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
           }
           // Use findFunc so that we clear the "unread" flag
           findFunc(name) match {
-            case Full(v) => v
-            case _       => ret
+            case Full(v) =>
+              v
+            case _ =>
+              ret
           }
       }
     }
@@ -287,8 +292,10 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
       f
     } finally {
       old match {
-        case Full(t) => _setFunc(name, t)
-        case _       => _clearFunc(name)
+        case Full(t) =>
+          _setFunc(name, t)
+        case _ =>
+          _clearFunc(name)
       }
     }
   }

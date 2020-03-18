@@ -44,7 +44,8 @@ object MergeOperations {
       collect: FutureCollector[(T, U)]): Future[Seq[(T, U)]] =
     collect {
       seq.map {
-        case (t, futureU) => futureU.map(t -> _)
+        case (t, futureU) =>
+          futureU.map(t -> _)
       }
     }
 
@@ -60,7 +61,8 @@ object MergeOperations {
   def dropBatches[K, V](
       m: Map[K, Future[Option[(BatchID, V)]]]): Map[K, Future[Option[V]]] =
     m.map {
-      case (k, v) => k -> v.map(_.map(_._2))
+      case (k, v) =>
+        k -> v.map(_.map(_._2))
     }
 
   /**
@@ -72,7 +74,8 @@ object MergeOperations {
       case (k, it) =>
         k -> collect(it.toSeq).map {
           _.map {
-            case (batchID, optV) => optV.map(batchID -> _)
+            case (batchID, optV) =>
+              optV.map(batchID -> _)
           }
         }
     }
@@ -84,7 +87,8 @@ object MergeOperations {
         k -> futureOptV.map { optV =>
           Seq(
             optV.map {
-              case (batchID, v) => (batchID.prev, v)
+              case (batchID, v) =>
+                (batchID.prev, v)
             })
         }
     }

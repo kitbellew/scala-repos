@@ -38,8 +38,10 @@ class RenameScalaTypeAliasProcessor
       renameCallback: Pass[PsiElement]) {
     val named =
       element match {
-        case named: ScNamedElement => named
-        case _                     => return
+        case named: ScNamedElement =>
+          named
+        case _ =>
+          return
       }
     RenameSuperMembersUtil.chooseAndProcessSuper(
       named,
@@ -58,8 +60,10 @@ class RenameScalaTypeAliasProcessor
       allRenames: util.Map[PsiElement, String]) {
     val typeAlias =
       element match {
-        case x: ScTypeAlias => x
-        case _              => return
+        case x: ScTypeAlias =>
+          x
+        case _ =>
+          return
       }
 
     for (elem <- ScalaOverridingMemberSearcher.search(typeAlias, deep = true)) {

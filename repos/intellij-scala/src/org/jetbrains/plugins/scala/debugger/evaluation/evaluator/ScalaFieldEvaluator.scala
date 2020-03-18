@@ -146,7 +146,8 @@ case class ScalaFieldEvaluator(
           refType.getValue(field)
         else
           objRef.getValue(field)
-      case null => throw EvaluationException(new NullPointerException)
+      case null =>
+        throw EvaluationException(new NullPointerException)
       case _ =>
         throw EvaluationException(
           DebuggerBundle
@@ -190,7 +191,8 @@ case class ScalaFieldEvaluator(
           myEvaluatedQualifier match {
             case reference: ObjectReference =>
               new FieldDescriptorImpl(project, reference, myEvaluatedField)
-            case _ => null
+            case _ =>
+              null
           }
         }
       }

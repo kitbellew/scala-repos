@@ -22,7 +22,8 @@ package scala.collection.mutable {
       } yield {
         val tree = RB.Tree.empty[A, B]
         entries.foreach {
-          case (k, v) => RB.insert(tree, k, v)
+          case (k, v) =>
+            RB.insert(tree, k, v)
         }
         tree
       }
@@ -57,10 +58,12 @@ package scala.collection.mutable {
 
     property("insert") = forAll { (tree: RB.Tree[K, V], entries: Seq[(K, V)]) =>
       entries.foreach {
-        case (k, v) => RB.insert(tree, k, v)
+        case (k, v) =>
+          RB.insert(tree, k, v)
       }
       RB.isValid(tree) && entries.toMap.forall {
-        case (k, v) => RB.get(tree, k) == Some(v)
+        case (k, v) =>
+          RB.get(tree, k) == Some(v)
       }
     }
 
@@ -76,8 +79,10 @@ package scala.collection.mutable {
     property("insert & delete") = forAll {
       (tree: RB.Tree[K, V], ops: Seq[Either[(K, V), K]]) =>
         ops.foreach {
-          case Left((k, v)) => RB.insert(tree, k, v)
-          case Right(k)     => RB.delete(tree, k)
+          case Left((k, v)) =>
+            RB.insert(tree, k, v)
+          case Right(k) =>
+            RB.delete(tree, k)
         }
         RB.isValid(tree)
     }
@@ -85,7 +90,8 @@ package scala.collection.mutable {
     property("min") = forAll { (entries: Seq[(K, V)]) =>
       val tree = RB.Tree.empty[K, V]
       entries.foreach {
-        case (k, v) => RB.insert(tree, k, v)
+        case (k, v) =>
+          RB.insert(tree, k, v)
       }
       RB.min(tree) == (
         if (entries.isEmpty)
@@ -98,7 +104,8 @@ package scala.collection.mutable {
     property("max") = forAll { (entries: Seq[(K, V)]) =>
       val tree = RB.Tree.empty[K, V]
       entries.foreach {
-        case (k, v) => RB.insert(tree, k, v)
+        case (k, v) =>
+          RB.insert(tree, k, v)
       }
       RB.max(tree) == (
         if (entries.isEmpty)
@@ -152,7 +159,8 @@ package scala.collection.mutable {
         val oldEntries = map.toMap
         map ++= entries
         (oldEntries ++ entries).forall {
-          case (k, v) => map.get(k) == Some(v)
+          case (k, v) =>
+            map.get(k) == Some(v)
         }
     }
 
@@ -275,7 +283,8 @@ package scala.collection.mutable {
         until: Option[K])(implicit bf: CanBuildFrom[This, (K, V), That]) = {
       (
         bf.apply(entries) ++= entries.filter {
-          case (k, _) => in(k, from, until)
+          case (k, _) =>
+            in(k, from, until)
         }
       ).result()
     }

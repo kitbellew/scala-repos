@@ -64,8 +64,9 @@ object ScalaStubsUtil {
         }
       } else {
         extendsBlock.getParent match {
-          case tp: ScTemplateDefinition => inheritors += tp
-          case _                        =>
+          case tp: ScTemplateDefinition =>
+            inheritors += tp
+          case _ =>
         }
       }
     }

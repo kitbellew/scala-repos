@@ -88,9 +88,12 @@ object GitSpecUtil {
         @scala.annotation.tailrec
         def _getPathObjectId: ObjectId =
           walk.next match {
-            case true if (walk.getPathString == path) => walk.getObjectId(0)
-            case true                                 => _getPathObjectId
-            case false                                => throw new Exception(s"not found ${branch} / ${path}")
+            case true if (walk.getPathString == path) =>
+              walk.getObjectId(0)
+            case true =>
+              _getPathObjectId
+            case false =>
+              throw new Exception(s"not found ${branch} / ${path}")
           }
         _getPathObjectId
       }
@@ -109,7 +112,8 @@ object GitSpecUtil {
       try {
         !merger.merge(mergeBaseTip, mergeTip)
       } catch {
-        case e: NoMergeBaseException => true
+        case e: NoMergeBaseException =>
+          true
       }
     if (conflicted) {
       throw new RuntimeException("conflict!")

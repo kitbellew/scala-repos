@@ -54,8 +54,10 @@ private[thrift] class TTwitterClientFilter(
     header.setFlags(traceId.flags.toLong)
 
     traceId.sampled match {
-      case Some(s) => header.setSampled(s)
-      case None    => header.unsetSampled()
+      case Some(s) =>
+        header.setSampled(s)
+      case None =>
+        header.unsetSampled()
     }
 
     val contexts = Contexts.broadcast.marshal().iterator

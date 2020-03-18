@@ -240,12 +240,18 @@ object KuhnMunkres extends BipartiteMatching {
     var step = 1;
     while (step < 7) {
       step = step match {
-        case 1 => step1();
-        case 2 => step2();
-        case 3 => step3();
-        case 4 => step4();
-        case 5 => step5();
-        case 6 => step6();
+        case 1 =>
+          step1();
+        case 2 =>
+          step2();
+        case 3 =>
+          step3();
+        case 4 =>
+          step4();
+        case 5 =>
+          step5();
+        case 6 =>
+          step6();
       }
     }
 

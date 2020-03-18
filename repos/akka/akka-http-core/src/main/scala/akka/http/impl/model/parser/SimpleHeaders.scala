@@ -134,7 +134,8 @@ private[parser] trait SimpleHeaders {
       oneOrMore(`optional-cookie-pair`).separatedBy(';' ~ OWS) ~ EOI ~> {
         pairs ⇒
           val validPairs = pairs.collect {
-            case Some(p) ⇒ p
+            case Some(p) ⇒
+              p
           }
           `Cookie` {
             if (validPairs.nonEmpty)

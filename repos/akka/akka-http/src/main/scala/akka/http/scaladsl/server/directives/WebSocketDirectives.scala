@@ -20,8 +20,10 @@ trait WebSocketDirectives {
     */
   def extractUpgradeToWebSocket: Directive1[UpgradeToWebSocket] =
     optionalHeaderValueByType[UpgradeToWebSocket](()).flatMap {
-      case Some(upgrade) ⇒ provide(upgrade)
-      case None ⇒ reject(ExpectedWebSocketRequestRejection)
+      case Some(upgrade) ⇒
+        provide(upgrade)
+      case None ⇒
+        reject(ExpectedWebSocketRequestRejection)
     }
 
   /**

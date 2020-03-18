@@ -820,14 +820,22 @@ object DateTimeUtils {
   def getDayOfWeekFromString(string: UTF8String): Int = {
     val dowString = string.toString.toUpperCase
     dowString match {
-      case "SU" | "SUN" | "SUNDAY"    => 3
-      case "MO" | "MON" | "MONDAY"    => 4
-      case "TU" | "TUE" | "TUESDAY"   => 5
-      case "WE" | "WED" | "WEDNESDAY" => 6
-      case "TH" | "THU" | "THURSDAY"  => 0
-      case "FR" | "FRI" | "FRIDAY"    => 1
-      case "SA" | "SAT" | "SATURDAY"  => 2
-      case _                          => -1
+      case "SU" | "SUN" | "SUNDAY" =>
+        3
+      case "MO" | "MON" | "MONDAY" =>
+        4
+      case "TU" | "TUE" | "TUESDAY" =>
+        5
+      case "WE" | "WED" | "WEDNESDAY" =>
+        6
+      case "TH" | "THU" | "THURSDAY" =>
+        0
+      case "FR" | "FRI" | "FRIDAY" =>
+        1
+      case "SA" | "SAT" | "SATURDAY" =>
+        2
+      case _ =>
+        -1
     }
   }
 
@@ -876,9 +884,12 @@ object DateTimeUtils {
       TRUNC_INVALID
     } else {
       format.toString.toUpperCase match {
-        case "YEAR" | "YYYY" | "YY" => TRUNC_TO_YEAR
-        case "MON" | "MONTH" | "MM" => TRUNC_TO_MONTH
-        case _                      => TRUNC_INVALID
+        case "YEAR" | "YYYY" | "YY" =>
+          TRUNC_TO_YEAR
+        case "MON" | "MONTH" | "MM" =>
+          TRUNC_TO_MONTH
+        case _ =>
+          TRUNC_INVALID
       }
     }
   }

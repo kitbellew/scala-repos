@@ -25,8 +25,10 @@ class TypeFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       parent match {
-        case _: ScStableCodeReferenceElement => return true
-        case _                               => return false
+        case _: ScStableCodeReferenceElement =>
+          return true
+        case _ =>
+          return false
       }
     }
     false

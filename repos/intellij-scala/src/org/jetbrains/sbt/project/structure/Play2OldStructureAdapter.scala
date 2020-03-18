@@ -18,13 +18,15 @@ object Play2OldStructureAdapter {
 
   def apply(newData: Seq[(ProjectId, File, Play2Data)]): Play2ProjectData = {
     val projectKeyValueTriples = newData.toSeq.flatMap {
-      case (id, baseDir, data) => extractProjectKeyValue(id, baseDir, data)
+      case (id, baseDir, data) =>
+        extractProjectKeyValue(id, baseDir, data)
     }
     val oldData = projectKeyValueTriples
       .groupBy(_._2)
       .mapValues(
         _.map({
-          case (id, _, v) => (id, v)
+          case (id, _, v) =>
+            (id, v)
         }))
 
     new Play2ProjectData(
@@ -55,7 +57,8 @@ object Play2OldStructureAdapter {
     )
 
     keyValues.map({
-      case (k, v) => (id, k.name, v)
+      case (k, v) =>
+        (id, k.name, v)
     })
   }
 

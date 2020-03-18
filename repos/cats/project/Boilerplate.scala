@@ -46,7 +46,8 @@ object Boilerplate {
     val synTypes = (0 until arity) map (n => s"A$n")
     val synVals = (0 until arity) map (n => s"a$n")
     val synTypedVals = (synVals zip synTypes) map {
-      case (v, t) => v + ":" + t
+      case (v, t) =>
+        v + ":" + t
     }
     val `A..N` = synTypes.mkString(", ")
     val `a..n` = synVals.mkString(", ")
@@ -116,7 +117,8 @@ object Boilerplate {
       }
       val tpesString = synTypes mkString ", "
       val params = (synVals zip tpes) map {
-        case (v, t) => s"$v:$t"
+        case (v, t) =>
+          s"$v:$t"
       } mkString ", "
       val next =
         if (arity + 1 <= maxArity) {
@@ -192,7 +194,8 @@ object Boilerplate {
         "f" + _
       }
       val fparams = (fargs zip tpes) map {
-        case (v, t) => s"$v:$t"
+        case (v, t) =>
+          s"$v:$t"
       } mkString ", "
 
       val a = arity / 2
@@ -252,7 +255,8 @@ object Boilerplate {
         "f" + _
       }
       val fparams = (fargs zip tpes) map {
-        case (v, t) => s"$v:$t"
+        case (v, t) =>
+          s"$v:$t"
       } mkString ", "
       val fargsS = fargs mkString ", "
 

@@ -16,7 +16,8 @@ object ValidationHelper {
         f.violations
           .flatMap(Validation.allRuleViolationsWithFullDescription(_))
           .map(r => ViolationMessageAndPath(r.constraint, r.description))
-      case _ => Set.empty[ViolationMessageAndPath]
+      case _ =>
+        Set.empty[ViolationMessageAndPath]
     }
   }
 }

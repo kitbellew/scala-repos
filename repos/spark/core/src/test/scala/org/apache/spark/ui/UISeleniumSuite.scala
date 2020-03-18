@@ -265,8 +265,10 @@ class UISeleniumSuite
         jobGroup = job \ "jobGroup"
       } {
         jobId.toInt match {
-          case 0 => jobGroup should be(JNothing)
-          case 1 => jobGroup should be(JString("my-job-group"))
+          case 0 =>
+            jobGroup should be(JNothing)
+          case 1 =>
+            jobGroup should be(JString("my-job-group"))
         }
       }
     }

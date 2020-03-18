@@ -426,8 +426,10 @@ trait MethodSynthesis {
       override def isSetter = true
       private def setterParam =
         derivedSym.paramss match {
-          case (p :: Nil) :: _ => p
-          case _               => NoSymbol
+          case (p :: Nil) :: _ =>
+            p
+          case _ =>
+            NoSymbol
         }
 
       private def setterRhs = {
@@ -523,7 +525,8 @@ trait MethodSynthesis {
               )
             case _ if isDeferred =>
               TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
-            case _ => TypeTree(getterTp)
+            case _ =>
+              TypeTree(getterTp)
           }
         tpt setPos tree.tpt.pos.focus
       }
@@ -546,8 +549,9 @@ trait MethodSynthesis {
 
         override def traverse(tree: Tree) {
           tree match {
-            case _: DefTree => change(tree.symbol.moduleClass)
-            case _          =>
+            case _: DefTree =>
+              change(tree.symbol.moduleClass)
+            case _ =>
           }
           super.traverse(tree)
         }

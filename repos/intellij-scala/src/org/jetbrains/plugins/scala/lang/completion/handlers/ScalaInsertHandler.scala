@@ -60,7 +60,8 @@ object ScalaInsertHandler {
           val clause = fun.paramClauses.head
           (clause.length, fun.asInstanceOf[ScSyntheticFunction].name, false)
         }
-      case _ => (0, item.element.name, true)
+      case _ =>
+        (0, item.element.name, true)
     }
   }
 }
@@ -150,7 +151,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
               newRefText,
               ref.getManager)
             ref.getParent.replace(newRef).getFirstChild
-          case elem => elem
+          case elem =>
+            elem
         }
       } else
         file.findElementAt(startOffset)
@@ -160,16 +162,25 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       while (parent match {
                case _: ScStableCodeReferenceElement =>
                  parent.getParent match {
-                   case _: ScThisReference | _: ScSuperReference => true
-                   case _                                        => false
+                   case _: ScThisReference | _: ScSuperReference =>
+                     true
+                   case _ =>
+                     false
                  }
-               case _: ScReferenceExpression                        => true
-               case _: ScThisReference                              => true
-               case _: ScSuperReference                             => true
-               case inf: ScInfixExpr if elem == inf.operation       => true
-               case pref: ScPrefixExpr if elem == pref.operation    => true
-               case postf: ScPostfixExpr if elem == postf.operation => true
-               case _                                               => false
+               case _: ScReferenceExpression =>
+                 true
+               case _: ScThisReference =>
+                 true
+               case _: ScSuperReference =>
+                 true
+               case inf: ScInfixExpr if elem == inf.operation =>
+                 true
+               case pref: ScPrefixExpr if elem == pref.operation =>
+                 true
+               case postf: ScPostfixExpr if elem == postf.operation =>
+                 true
+               case _ =>
+                 false
              }) {
         elem = parent
         parent = parent.getParent
@@ -283,12 +294,16 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
               ref.getParent match {
                 case ass: ScAssignStmt if ass.getLExpression == ref =>
                   ass.getParent match {
-                    case args: ScArgumentExprList => false
-                    case _                        => true
+                    case args: ScArgumentExprList =>
+                      false
+                    case _ =>
+                      true
                   }
-                case _ => true
+                case _ =>
+                  true
               }
-            case _ => true //should be impossible
+            case _ =>
+              true //should be impossible
           }
         context.setAddCompletionChar(false)
         if (shouldAddEqualsSign) {
@@ -297,8 +312,10 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
           editor.getCaretModel.moveToOffset(endOffset)
         }
         return
-      case _: PsiMethod if item.isInImport => moveCaretIfNeeded()
-      case _: ScFun if item.isInImport     => moveCaretIfNeeded()
+      case _: PsiMethod if item.isInImport =>
+        moveCaretIfNeeded()
+      case _: ScFun if item.isInImport =>
+        moveCaretIfNeeded()
       case fun: ScFunction
           if fun.name == "classOf" && fun.containingClass != null &&
             fun.containingClass.qualifiedName == "scala.Predef" =>
@@ -432,7 +449,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
             withSomeNum = false)
           //do not add () or {} in this case, use will choose what he want later
         }
-      case _ => moveCaretIfNeeded()
+      case _ =>
+        moveCaretIfNeeded()
     }
 
     if (completionChar == ',') {

@@ -39,7 +39,8 @@ class Specs2TestFramework extends AbstractTestFramework {
         Seq("\"scalaz-bintray\" at \"http://dl.bintray.com/scalaz/releases\"")
       case Some(v) if v.startsWith("2.10") =>
         Seq("\"scalaz-bintray\" at \"http://dl.bintray.com/scalaz/releases\"")
-      case _ => Seq()
+      case _ =>
+        Seq()
     }
 
   override protected def getAdditionalBuildCommands(

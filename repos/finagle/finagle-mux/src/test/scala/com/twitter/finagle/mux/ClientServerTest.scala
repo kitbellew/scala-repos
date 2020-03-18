@@ -84,7 +84,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
               ping().before {
                 Future.value(Message.Rping(tag))
               }
-            case req => service(req)
+            case req =>
+              service(req)
           }
       }
 
@@ -171,8 +172,10 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     assert(f1.poll == None)
     val req2 = Request(Path.empty, buf(2))
     client(req2).poll match {
-      case Some(Throw(f: Failure)) => assert(f.isFlagged(Failure.Restartable))
-      case _                       => fail()
+      case Some(Throw(f: Failure)) =>
+        assert(f.isFlagged(Failure.Restartable))
+      case _ =>
+        fail()
     }
     verify(service, never)(req2)
 
@@ -191,8 +194,10 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
       .thenReturn(Future.exception(Failure.rejected("come back tomorrow")))
 
     client(req1).poll match {
-      case Some(Throw(f: Failure)) => assert(f.isFlagged(Failure.Restartable))
-      case bad                     => fail(s"got $bad")
+      case Some(Throw(f: Failure)) =>
+        assert(f.isFlagged(Failure.Restartable))
+      case bad =>
+        fail(s"got $bad")
     }
   }
 

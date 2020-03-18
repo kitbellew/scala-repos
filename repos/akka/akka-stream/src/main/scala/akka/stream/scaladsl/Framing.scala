@@ -252,8 +252,10 @@ object Framing {
     private val minimumChunkSize = lengthFieldOffset + lengthFieldLength
     private val intDecoder =
       byteOrder match {
-        case ByteOrder.BIG_ENDIAN ⇒ bigEndianDecoder
-        case ByteOrder.LITTLE_ENDIAN ⇒ littleEndianDecoder
+        case ByteOrder.BIG_ENDIAN ⇒
+          bigEndianDecoder
+        case ByteOrder.LITTLE_ENDIAN ⇒
+          littleEndianDecoder
       }
 
     private def tryPull(ctx: Context[ByteString]): SyncDirective =

@@ -50,8 +50,10 @@ trait ScValue
   def declaredType: Option[ScType] =
     typeElement flatMap (
       _.getType(TypingContext.empty) match {
-        case Success(t, _) => Some(t)
-        case _             => None
+        case Success(t, _) =>
+          Some(t)
+        case _ =>
+          None
       }
     )
 
@@ -67,16 +69,20 @@ trait ScValue
             return true
         }
         false
-      case _ => false
+      case _ =>
+        false
     }
 
   override def getIcon(flags: Int): Icon = {
     var parent = getParent
     while (parent != null) {
       parent match {
-        case _: ScExtendsBlock => return Icons.FIELD_VAL
-        case _: ScBlock        => return Icons.VAL
-        case _                 => parent = parent.getParent
+        case _: ScExtendsBlock =>
+          return Icons.FIELD_VAL
+        case _: ScBlock =>
+          return Icons.VAL
+        case _ =>
+          parent = parent.getParent
       }
     }
     null

@@ -212,8 +212,10 @@ object PlayRun {
             val duration = System.currentTimeMillis - start
             val formatted =
               duration match {
-                case ms if ms < 1000 => ms + "ms"
-                case seconds         => (seconds / 1000) + "s"
+                case ms if ms < 1000 =>
+                  ms + "ms"
+                case seconds =>
+                  (seconds / 1000) + "s"
               }
             println(
               "[" + Colors.green("success") + "] Compiled in " + formatted)
@@ -318,7 +320,8 @@ object PlayRun {
         // problem occurs in this area then at least we know what to look at.
         val args = Seq(stagingBin) ++
           properties.map {
-            case (key, value) => s"-D$key=$value"
+            case (key, value) =>
+              s"-D$key=$value"
           } ++
           javaProductionOptions ++
           Seq("-Dhttp.port=" + httpPort.getOrElse("disabled"))

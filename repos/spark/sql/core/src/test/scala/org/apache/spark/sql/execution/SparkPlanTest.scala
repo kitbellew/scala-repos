@@ -96,8 +96,9 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       expectedAnswer,
       sortAnswers,
       sqlContext) match {
-      case Some(errorMessage) => fail(errorMessage)
-      case None               =>
+      case Some(errorMessage) =>
+        fail(errorMessage)
+      case None =>
     }
   }
 
@@ -124,8 +125,9 @@ private[sql] abstract class SparkPlanTest extends SparkFunSuite {
       expectedPlanFunction,
       sortAnswers,
       sqlContext) match {
-      case Some(errorMessage) => fail(errorMessage)
-      case None               =>
+      case Some(errorMessage) =>
+        fail(errorMessage)
+      case None =>
     }
   }
 }

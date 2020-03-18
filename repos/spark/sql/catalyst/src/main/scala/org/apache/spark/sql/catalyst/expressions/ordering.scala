@@ -111,13 +111,18 @@ object RowOrdering {
     */
   def isOrderable(dataType: DataType): Boolean =
     dataType match {
-      case NullType       => true
-      case dt: AtomicType => true
+      case NullType =>
+        true
+      case dt: AtomicType =>
+        true
       case struct: StructType =>
         struct.fields.forall(f => isOrderable(f.dataType))
-      case array: ArrayType        => isOrderable(array.elementType)
-      case udt: UserDefinedType[_] => isOrderable(udt.sqlType)
-      case _                       => false
+      case array: ArrayType =>
+        isOrderable(array.elementType)
+      case udt: UserDefinedType[_] =>
+        isOrderable(udt.sqlType)
+      case _ =>
+        false
     }
 
   /**

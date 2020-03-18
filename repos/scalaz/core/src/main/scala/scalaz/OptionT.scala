@@ -14,15 +14,19 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
   def flatMap[B](f: A => OptionT[F, B])(implicit F: Monad[F]): OptionT[F, B] =
     new OptionT[F, B](
       F.bind(self.run) {
-        case None    => F.point(None: Option[B])
-        case Some(z) => f(z).run
+        case None =>
+          F.point(None: Option[B])
+        case Some(z) =>
+          f(z).run
       })
 
   def flatMapF[B](f: A => F[B])(implicit F: Monad[F]): OptionT[F, B] =
     new OptionT[F, B](
       F.bind(self.run) {
-        case None    => F.point(none[B])
-        case Some(z) => F.map(f(z))(b => some(b))
+        case None =>
+          F.point(none[B])
+        case Some(z) =>
+          F.map(f(z))(b => some(b))
       })
 
   def foldRight[Z](z: => Z)(f: (A, => Z) => Z)(implicit F: Foldable[F]): Z = {
@@ -41,8 +45,10 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
   def ap[B](f: => OptionT[F, A => B])(implicit F: Monad[F]): OptionT[F, B] =
     OptionT(
       F.bind(f.run) {
-        case None     => F.point(None)
-        case Some(ff) => F.map(run)(_ map ff)
+        case None =>
+          F.point(None)
+        case Some(ff) =>
+          F.map(run)(_ map ff)
       })
 
   /** Apply a function in the environment of both options, containing
@@ -51,7 +57,8 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
   def app[B](f: => OptionT[F, A => B])(implicit F: Apply[F]): OptionT[F, B] =
     OptionT(
       F.apply2(f.run, run) {
-        case (ff, aa) => optionInstance.ap(aa)(ff)
+        case (ff, aa) =>
+          optionInstance.ap(aa)(ff)
       })
 
   def isDefined(implicit F: Functor[F]): F[Boolean] = mapO(_.isDefined)
@@ -66,8 +73,10 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
 
   def fold[X](some: A => X, none: => X)(implicit F: Functor[F]): F[X] =
     mapO {
-      case None    => none
-      case Some(a) => some(a)
+      case None =>
+        none
+      case Some(a) =>
+        some(a)
     }
 
   def getOrElse(default: => A)(implicit F: Functor[F]): F[A] =
@@ -78,8 +87,10 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
 
   def getOrElseF(default: => F[A])(implicit F: Monad[F]): F[A] =
     F.bind(self.run) {
-      case None    => default
-      case Some(a) => F.point(a)
+      case None =>
+        default
+      case Some(a) =>
+        F.point(a)
     }
 
   def orZero(implicit F0: Functor[F], M0: Monoid[A]): F[A] = getOrElse(M0.zero)
@@ -95,8 +106,10 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
   def orElse(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] =
     OptionT(
       F.bind(run) {
-        case None        => a.run
-        case x @ Some(_) => F.point(x)
+        case None =>
+          a.run
+        case x @ Some(_) =>
+          F.point(x)
       })
 
   def |||(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] = orElse(a)
@@ -322,8 +335,10 @@ private trait OptionTMonadListen[F[_], W]
   def listen[A](ma: OptionT[F, A]): OptionT[F, (A, W)] = {
     val tmp =
       MT.bind[(Option[A], W), Option[(A, W)]](MT.listen(ma.run)) {
-        case (None, _)    => MT.point(None)
-        case (Some(a), w) => MT.point(Some(a, w))
+        case (None, _) =>
+          MT.point(None)
+        case (Some(a), w) =>
+          MT.point(Some(a, w))
       }
 
     OptionT.optionT[F].apply[(A, W)](tmp)

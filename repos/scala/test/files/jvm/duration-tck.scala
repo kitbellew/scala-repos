@@ -23,7 +23,8 @@ object Test extends App {
           assert(
             left.asInstanceOf[AnyRef] eq Undefined,
             s"$left was not Undefined")
-        case _ => assert(left == right, s"$left was not equal to $right")
+        case _ =>
+          assert(left == right, s"$left was not equal to $right")
       }
   }
 

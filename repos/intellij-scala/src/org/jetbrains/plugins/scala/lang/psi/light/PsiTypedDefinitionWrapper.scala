@@ -41,12 +41,15 @@ class PsiTypedDefinitionWrapper(
             val res = s.containingClass
             if (isStatic) {
               res match {
-                case o: ScObject => o.fakeCompanionClassOrCompanionClass
-                case _           => res
+                case o: ScObject =>
+                  o.fakeCompanionClassOrCompanionClass
+                case _ =>
+                  res
               }
             } else
               res
-          case _ => null
+          case _ =>
+            null
         }
     if (result == null) {
       val message =
@@ -92,8 +95,10 @@ with LightScalaMethod {
 
   override def hasModifierProperty(name: String): Boolean = {
     name match {
-      case "abstract" if isInterface => true
-      case _                         => super.hasModifierProperty(name)
+      case "abstract" if isInterface =>
+        true
+      case _ =>
+        super.hasModifierProperty(name)
     }
   }
 
@@ -136,21 +141,28 @@ object PsiTypedDefinitionWrapper {
 
     val result = b.getType(TypingContext.empty)
     result match {
-      case _ if role == SETTER || role == EQ => builder.append("void")
+      case _ if role == SETTER || role == EQ =>
+        builder.append("void")
       case Success(tp, _) =>
         builder.append(
           JavaConversionUtil.typeText(tp, b.getProject, b.getResolveScope))
-      case _ => builder.append("java.lang.Object")
+      case _ =>
+        builder.append("java.lang.Object")
     }
 
     builder.append(" ")
     val name =
       role match {
-        case SIMPLE_ROLE => b.getName
-        case GETTER      => "get" + b.getName.capitalize
-        case IS_GETTER   => "is" + b.getName.capitalize
-        case SETTER      => "set" + b.getName.capitalize
-        case EQ          => b.getName + "_$eq"
+        case SIMPLE_ROLE =>
+          b.getName
+        case GETTER =>
+          "get" + b.getName.capitalize
+        case IS_GETTER =>
+          "is" + b.getName.capitalize
+        case SETTER =>
+          "set" + b.getName.capitalize
+        case EQ =>
+          b.getName + "_$eq"
       }
     builder.append(name)
     if (role != SETTER && role != EQ) {
@@ -161,7 +173,8 @@ object PsiTypedDefinitionWrapper {
         case Success(tp, _) =>
           builder.append(
             JavaConversionUtil.typeText(tp, b.getProject, b.getResolveScope))
-        case _ => builder.append("java.lang.Object")
+        case _ =>
+          builder.append("java.lang.Object")
       }
       builder.append(" ").append(b.getName).append(")")
     }

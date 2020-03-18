@@ -24,7 +24,8 @@ trait BuildFileModificationLocationProvider {
       buildFile: PsiFile): Option[PsiElement] = {
     findLocationInFile(buildFile, module, elementType, Some(elementCondition))
       .map {
-        case (parent, index) => parent.getChildren.apply(index)
+        case (parent, index) =>
+          parent.getChildren.apply(index)
       }
   }
 

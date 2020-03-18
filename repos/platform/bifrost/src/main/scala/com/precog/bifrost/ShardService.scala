@@ -114,8 +114,10 @@ trait ShardService
     val utf8 = Charset.forName("UTF-8")
     (qr: QueryResult) =>
       qr match {
-        case Left(jv)      => Left(jv.renderCompact.getBytes(utf8))
-        case Right(stream) => Right(VFSModule.bufferOutput(stream))
+        case Left(jv) =>
+          Left(jv.renderCompact.getBytes(utf8))
+        case Right(stream) =>
+          Right(VFSModule.bufferOutput(stream))
       }
   }
 

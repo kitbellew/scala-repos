@@ -42,7 +42,8 @@ object Utils {
           }
         }
         result
-      case _ ⇒ block
+      case _ ⇒
+        block
     }
 
   def assertDispatcher(ref: ActorRef, dispatcher: String): Unit =

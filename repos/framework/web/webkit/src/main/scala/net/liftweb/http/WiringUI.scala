@@ -137,8 +137,10 @@ object WiringUI {
     in => {
       val myElem: Elem = in
         .find {
-          case e: Elem => true
-          case _       => false
+          case e: Elem =>
+            true
+          case _ =>
+            false
         }
         .map(_.asInstanceOf[Elem])
         .getOrElse(
@@ -276,8 +278,10 @@ object WiringUI {
       f: (T, NodeSeq) => NodeSeq): NodeSeq = {
     val myElem: Elem = in
       .find {
-        case e: Elem => true
-        case _       => false
+        case e: Elem =>
+          true
+        case _ =>
+          false
       }
       .map(_.asInstanceOf[Elem])
       .getOrElse(
@@ -321,8 +325,10 @@ object WiringUI {
     in => {
       val myElem: Elem = in
         .find {
-          case e: Elem => true
-          case _       => false
+          case e: Elem =>
+            true
+          case _ =>
+            false
         }
         .map(_.asInstanceOf[Elem])
         .getOrElse(

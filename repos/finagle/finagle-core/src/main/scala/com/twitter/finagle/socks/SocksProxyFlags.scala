@@ -24,13 +24,17 @@ private[finagle] object socksPasswordFlag
 private[finagle] object SocksProxyFlags {
   def socksProxy: Option[SocketAddress] =
     (socksProxyHost.get, socksProxyPort.get) match {
-      case (Some(host), Some(port)) => Some(new InetSocketAddress(host, port))
-      case _                        => None
+      case (Some(host), Some(port)) =>
+        Some(new InetSocketAddress(host, port))
+      case _ =>
+        None
     }
 
   def socksUsernameAndPassword: Option[(String, String)] =
     (socksUsernameFlag.get, socksPasswordFlag.get) match {
-      case (Some(username), Some(password)) => Some((username, password))
-      case _                                => None
+      case (Some(username), Some(password)) =>
+        Some((username, password))
+      case _ =>
+        None
     }
 }

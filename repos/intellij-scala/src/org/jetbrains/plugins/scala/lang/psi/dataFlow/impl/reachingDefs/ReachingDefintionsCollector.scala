@@ -82,19 +82,26 @@ object ReachingDefintionsCollector {
           r.multiResolve(false)
             .map(_.getElement)
             .exists(PsiEquivalenceUtil.areElementsEquivalent(_, element))
-        case _ => false
+        case _ =>
+          false
       }
     val isInstanceMethod =
       element match {
-        case fun: ScFunction => fun.isInstance
-        case m: PsiMethod    => !m.hasModifierPropertyScala("static")
-        case _               => false
+        case fun: ScFunction =>
+          fun.isInstance
+        case m: PsiMethod =>
+          !m.hasModifierPropertyScala("static")
+        case _ =>
+          false
       }
     val isSynthetic =
       element match {
-        case _: SyntheticNamedElement => true
-        case fun: ScFunction          => fun.isSynthetic
-        case _                        => false
+        case _: SyntheticNamedElement =>
+          true
+        case fun: ScFunction =>
+          fun.isSynthetic
+        case _ =>
+          false
       }
     import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory.{
       createDeclarationFromText,
@@ -123,7 +130,8 @@ object ReachingDefintionsCollector {
           decl.typeElement match {
             case Some(st: ScSimpleTypeElement) =>
               st.reference.exists(checkResolve)
-            case _ => false
+            case _ =>
+              false
           }
         case _ =>
           checkResolve(
@@ -175,14 +183,16 @@ object ReachingDefintionsCollector {
       innerInstructions: Seq[Instruction]): Iterable[VariableInfo] = {
     val buffer = mutable.Set[PsiNamedElement]()
     val definedHere = innerInstructions.collect {
-      case DefinitionInstruction(_, named, _) => named
+      case DefinitionInstruction(_, named, _) =>
+        named
     }
     innerInstructions.foreach {
       case ReadWriteVariableInstruction(_, _, Some(definition), _)
           if !definedHere.contains(definition) =>
         definition match {
           case _: PsiPackage =>
-          case _             => buffer += definition
+          case _ =>
+            buffer += definition
         }
       case _ =>
     }

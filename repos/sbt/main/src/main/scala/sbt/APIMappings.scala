@@ -17,7 +17,8 @@ private[sbt] object APIMappings {
       entry: Attributed[File],
       log: Logger): Option[(File, URL)] =
     entry.get(Keys.entryApiURL) match {
-      case Some(u) => Some((entry.data, u))
+      case Some(u) =>
+        Some((entry.data, u))
       case None =>
         entry.get(Keys.moduleID.key).flatMap { mid =>
           extractFromID(entry.data, mid, log)
@@ -47,7 +48,9 @@ private[sbt] object APIMappings {
 
   def store[T](attr: Attributed[T], entryAPI: Option[URL]): Attributed[T] =
     entryAPI match {
-      case None    => attr
-      case Some(u) => attr.put(Keys.entryApiURL, u)
+      case None =>
+        attr
+      case Some(u) =>
+        attr.put(Keys.entryApiURL, u)
     }
 }

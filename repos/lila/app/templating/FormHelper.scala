@@ -24,7 +24,8 @@ trait FormHelper {
           transKey(e.message, e.args) match {
             case m if m == e.message =>
               errNames.get(e.message).fold(e.message)(_.str())
-            case m => m
+            case m =>
+              m
           }
         s"""<p class="error">$msg</p>"""
       } mkString

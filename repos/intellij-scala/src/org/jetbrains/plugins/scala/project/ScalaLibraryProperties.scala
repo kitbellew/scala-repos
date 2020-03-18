@@ -35,7 +35,8 @@ class ScalaLibraryProperties
     obj match {
       case that: ScalaLibraryProperties =>
         languageLevel == that.languageLevel && compilerClasspath == that.compilerClasspath
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode() =

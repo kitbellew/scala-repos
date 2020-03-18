@@ -276,9 +276,12 @@ package object project {
       @tailrec
       def getContainingFileByContext(element: PsiElement): PsiFile = {
         element match {
-          case file: PsiFile => file
-          case null          => null
-          case elem          => getContainingFileByContext(elem.getContext)
+          case file: PsiFile =>
+            file
+          case null =>
+            null
+          case elem =>
+            getContainingFileByContext(elem.getContext)
         }
       }
       val file: PsiFile = getContainingFileByContext(element)

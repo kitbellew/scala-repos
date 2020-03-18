@@ -14,7 +14,8 @@ object QaQuestion extends QaController {
     Open { implicit ctx =>
       api.question.recentPaginator(page getOrElse 1, 20) zip
         fetchPopular map {
-        case (questions, popular) => Ok(html.qa.index(questions, popular))
+        case (questions, popular) =>
+          Ok(html.qa.index(questions, popular))
       }
     }
 
@@ -36,7 +37,8 @@ object QaQuestion extends QaController {
     Open { implicit ctx =>
       api.question.byTag(tag, 20) zip
         fetchPopular map {
-        case (questions, popular) => Ok(html.qa.byTag(tag, questions, popular))
+        case (questions, popular) =>
+          Ok(html.qa.byTag(tag, questions, popular))
       }
     }
 
@@ -91,8 +93,10 @@ object QaQuestion extends QaController {
           err => renderEdit(err, q, Results.BadRequest),
           data =>
             api.question.edit(data, q.id) map {
-              case None     => NotFound
-              case Some(q2) => Redirect(routes.QaQuestion.show(q2.id, q2.slug))
+              case None =>
+                NotFound
+              case Some(q2) =>
+                Redirect(routes.QaQuestion.show(q2.id, q2.slug))
             }
         )
       }
@@ -114,7 +118,8 @@ object QaQuestion extends QaController {
           api.question.vote(id, me, v == 1) map {
             case Some(vote) =>
               Ok(html.qa.vote(routes.QaQuestion.vote(id).url, vote))
-            case None => NotFound
+            case None =>
+              NotFound
           })
     }
 

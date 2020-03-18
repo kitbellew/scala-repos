@@ -116,18 +116,26 @@ class WindowSpec private[sql] (
   private def between(typ: FrameType, start: Long, end: Long): WindowSpec = {
     val boundaryStart =
       start match {
-        case 0             => CurrentRow
-        case Long.MinValue => UnboundedPreceding
-        case x if x < 0    => ValuePreceding(-start.toInt)
-        case x if x > 0    => ValueFollowing(start.toInt)
+        case 0 =>
+          CurrentRow
+        case Long.MinValue =>
+          UnboundedPreceding
+        case x if x < 0 =>
+          ValuePreceding(-start.toInt)
+        case x if x > 0 =>
+          ValueFollowing(start.toInt)
       }
 
     val boundaryEnd =
       end match {
-        case 0             => CurrentRow
-        case Long.MaxValue => UnboundedFollowing
-        case x if x < 0    => ValuePreceding(-end.toInt)
-        case x if x > 0    => ValueFollowing(end.toInt)
+        case 0 =>
+          CurrentRow
+        case Long.MaxValue =>
+          UnboundedFollowing
+        case x if x < 0 =>
+          ValuePreceding(-end.toInt)
+        case x if x > 0 =>
+          ValueFollowing(end.toInt)
       }
 
     new WindowSpec(

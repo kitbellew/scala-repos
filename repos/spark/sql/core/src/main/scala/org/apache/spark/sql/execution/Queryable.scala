@@ -34,7 +34,8 @@ private[sql] trait Queryable {
     try {
       val builder = new StringBuilder
       val fields = schema.take(2).map {
-        case f => s"${f.name}: ${f.dataType.simpleString(2)}"
+        case f =>
+          s"${f.name}: ${f.dataType.simpleString(2)}"
       }
       builder.append("[")
       builder.append(fields.mkString(", "))

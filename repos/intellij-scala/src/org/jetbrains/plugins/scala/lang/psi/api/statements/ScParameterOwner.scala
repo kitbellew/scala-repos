@@ -14,7 +14,9 @@ trait ScParameterOwner extends ScalaPsiElement {
   def clauses: Option[ScParameters]
   def allClauses: Seq[ScParameterClause] =
     clauses match {
-      case Some(x) => x.clauses
-      case None    => Seq.empty
+      case Some(x) =>
+        x.clauses
+      case None =>
+        Seq.empty
     }
 }

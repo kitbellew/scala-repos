@@ -59,7 +59,8 @@ object Test {
       else
         r.toString
     } catch {
-      case e: InternalError => e.getMessage
+      case e: InternalError =>
+        e.getMessage
     }
 
   def assertNotAnonymous(c: Class[_]) = {
@@ -68,7 +69,8 @@ object Test {
         c.isAnonymousClass
       } catch {
         // isAnonymousClass is implemented using getSimpleName, which may throw.
-        case e: InternalError => false
+        case e: InternalError =>
+          false
       }
     assert(!an, c)
   }
@@ -80,7 +82,8 @@ object Test {
       try {
         c.isLocalClass
       } catch {
-        case e: InternalError => true
+        case e: InternalError =>
+          true
       }
     if (loc)
       assert(!c.isMemberClass, c)

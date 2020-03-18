@@ -20,7 +20,8 @@ class ApplyMethodSearcher extends ApplyUnapplyMethodSearcherBase {
           if x.getInvokedExpr == ref.getElement =>
         Some(sref)
       // TODO Check every ScMethodCall? Sounds expensive!
-      case _ => None
+      case _ =>
+        None
     }
 
 }

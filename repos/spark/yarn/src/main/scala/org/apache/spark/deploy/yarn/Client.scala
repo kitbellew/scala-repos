@@ -222,7 +222,8 @@ private[spark] class Client(
       }
     }
     sparkConf.get(MAX_APP_ATTEMPTS) match {
-      case Some(v) => appContext.setMaxAppAttempts(v)
+      case Some(v) =>
+        appContext.setMaxAppAttempts(v)
       case None =>
         logDebug(
           s"${MAX_APP_ATTEMPTS.key} is not set. " +
@@ -697,7 +698,8 @@ private[spark] class Client(
       // Save Spark configuration to a file in the archive.
       val props = new Properties()
       sparkConf.getAll.foreach {
-        case (k, v) => props.setProperty(k, v)
+        case (k, v) =>
+          props.setProperty(k, v)
       }
       confStream.putNextEntry(new ZipEntry(SPARK_CONF_FILE))
       val writer = new OutputStreamWriter(confStream, StandardCharsets.UTF_8)
@@ -772,13 +774,16 @@ private[spark] class Client(
     val amEnvPrefix = "spark.yarn.appMasterEnv."
     sparkConf.getAll
       .filter {
-        case (k, v) => k.startsWith(amEnvPrefix)
+        case (k, v) =>
+          k.startsWith(amEnvPrefix)
       }
       .map {
-        case (k, v) => (k.substring(amEnvPrefix.length), v)
+        case (k, v) =>
+          (k.substring(amEnvPrefix.length), v)
       }
       .foreach {
-        case (k, v) => YarnSparkHadoopUtil.addPathToEnvironment(env, k, v)
+        case (k, v) =>
+          YarnSparkHadoopUtil.addPathToEnvironment(env, k, v)
       }
 
     // Keep this for backwards compatibility but users should move to the config
@@ -1060,11 +1065,13 @@ private[spark] class Client(
     logDebug(s"    user class: ${Option(args.userClass).getOrElse("N/A")}")
     logDebug("    env:")
     launchEnv.foreach {
-      case (k, v) => logDebug(s"        $k -> $v")
+      case (k, v) =>
+        logDebug(s"        $k -> $v")
     }
     logDebug("    resources:")
     localResources.foreach {
-      case (k, v) => logDebug(s"        $k -> $v")
+      case (k, v) =>
+        logDebug(s"        $k -> $v")
     }
     logDebug("    command:")
     logDebug(s"        ${printableCommands.mkString(" ")}")
@@ -1345,14 +1352,18 @@ object Client extends Logging {
   private def getYarnAppClasspath(conf: Configuration): Option[Seq[String]] =
     Option(
       conf.getStrings(YarnConfiguration.YARN_APPLICATION_CLASSPATH)) match {
-      case Some(s) => Some(s.toSeq)
-      case None    => getDefaultYarnApplicationClasspath
+      case Some(s) =>
+        Some(s.toSeq)
+      case None =>
+        getDefaultYarnApplicationClasspath
     }
 
   private def getMRAppClasspath(conf: Configuration): Option[Seq[String]] =
     Option(conf.getStrings("mapreduce.application.classpath")) match {
-      case Some(s) => Some(s.toSeq)
-      case None    => getDefaultMRApplicationClasspath
+      case Some(s) =>
+        Some(s.toSeq)
+      case None =>
+        getDefaultMRApplicationClasspath
     }
 
   private[yarn] def getDefaultYarnApplicationClasspath: Option[Seq[String]] = {
@@ -1362,7 +1373,8 @@ object Client extends Logging {
       val value = field.get(null).asInstanceOf[Array[String]]
       value.toSeq
     } recoverWith {
-      case e: NoSuchFieldException => Success(Seq.empty[String])
+      case e: NoSuchFieldException =>
+        Success(Seq.empty[String])
     }
 
     triedDefault match {
@@ -1384,7 +1396,8 @@ object Client extends Logging {
         "DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH")
       StringUtils.getStrings(field.get(null).asInstanceOf[String]).toSeq
     } recoverWith {
-      case e: NoSuchFieldException => Success(Seq.empty[String])
+      case e: NoSuchFieldException =>
+        Success(Seq.empty[String])
     }
 
     triedDefault match {

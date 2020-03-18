@@ -158,22 +158,26 @@ object ClassHelpersSpec extends Specification {
   "The invokeMethod function" should {
     "return a Failure if the class is null" in {
       invokeMethod(null, "", "length") must beLike {
-        case Failure(_, _, _) => 1 must_== 1
+        case Failure(_, _, _) =>
+          1 must_== 1
       }
     }
     "return a Failure if the instance is null" in {
       invokeMethod(classOf[String], null, "length") must beLike {
-        case Failure(_, _, _) => 1 must_== 1
+        case Failure(_, _, _) =>
+          1 must_== 1
       }
     }
     "return a Failure if the method name is null" in {
       invokeMethod(classOf[String], "", null) must beLike {
-        case Failure(_, _, _) => 1 must_== 1
+        case Failure(_, _, _) =>
+          1 must_== 1
       }
     }
     "return a Failure if the method doesnt exist on the class" in {
       invokeMethod(classOf[String], "", "isNotEmpty") must beLike {
-        case Failure(_, _, _) => 1 must_== 1
+        case Failure(_, _, _) =>
+          1 must_== 1
       }
     }
     "return a Full can with the result if the method exist on the class" in {
@@ -218,7 +222,8 @@ object ClassHelpersSpec extends Specification {
     }
     "return a failure if a class can not be instantiated with a new instance" in {
       instantiate(classOf[java.util.Calendar]) must beLike {
-        case Failure(_, _, _) => 1 must_== 1
+        case Failure(_, _, _) =>
+          1 must_== 1
       }
     }
   }

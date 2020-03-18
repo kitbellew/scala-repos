@@ -41,7 +41,8 @@ class ScalaDocCompletionContributor extends ScalaCompletionContributor {
         if (posParent != null) {
           val allowedTags =
             posParent.asInstanceOf[ScDocComment].getOwner match {
-              case _: ScFunction => MyScaladocParsing.allTags
+              case _: ScFunction =>
+                MyScaladocParsing.allTags
               case _: ScClass =>
                 MyScaladocParsing.allTags - MyScaladocParsing.RETURN_TAG
               case _: ScTypeAlias | _: ScTrait =>

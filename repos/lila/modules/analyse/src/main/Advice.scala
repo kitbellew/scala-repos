@@ -20,8 +20,10 @@ sealed trait Advice {
       }) +
       (
         this match {
-          case MateAdvice(seq, _, _, _) => seq.desc
-          case CpAdvice(nag, _, _)      => nag.toString
+          case MateAdvice(seq, _, _, _) =>
+            seq.desc
+          case CpAdvice(nag, _, _) =>
+            nag.toString
         }
       ) + "." + {
       withBestMove ?? {
@@ -78,7 +80,8 @@ private[analyse] object CpAdvice {
         info.color.fold(-d, d)
       }
       nag ← cpNags find {
-        case (d, n) => d <= delta
+        case (d, n) =>
+          d <= delta
       } map (_._2)
     } yield CpAdvice(nag, info, prev)
 }
@@ -94,10 +97,14 @@ private[analyse] case object MateCreated
 private[analyse] object MateSequence {
   def apply(prev: Option[Int], next: Option[Int]): Option[MateSequence] =
     (prev, next).some collect {
-      case (None, Some(n)) if n < 0                        => MateCreated
-      case (Some(p), None) if p > 0                        => MateLost
-      case (Some(p), Some(n)) if (p > 0) && (n < 0)        => MateLost
-      case (Some(p), Some(n)) if p > 0 && n >= p && p <= 5 => MateDelayed
+      case (None, Some(n)) if n < 0 =>
+        MateCreated
+      case (Some(p), None) if p > 0 =>
+        MateLost
+      case (Some(p), Some(n)) if (p > 0) && (n < 0) =>
+        MateLost
+      case (Some(p), Some(n)) if p > 0 && n >= p && p <= 5 =>
+        MateDelayed
     }
 }
 private[analyse] case class MateAdvice(
@@ -115,13 +122,20 @@ private[analyse] object MateAdvice {
     MateSequence(prev.mate map reverse, info.mate map reverse) map { sequence =>
       val nag =
         sequence match {
-          case MateCreated if prevScore < -999 => Nag.Inaccuracy
-          case MateCreated if prevScore < -700 => Nag.Mistake
-          case MateCreated                     => Nag.Blunder
-          case MateLost if nextScore > 999     => Nag.Inaccuracy
-          case MateLost if nextScore > 700     => Nag.Mistake
-          case MateLost                        => Nag.Blunder
-          case MateDelayed                     => Nag.Inaccuracy
+          case MateCreated if prevScore < -999 =>
+            Nag.Inaccuracy
+          case MateCreated if prevScore < -700 =>
+            Nag.Mistake
+          case MateCreated =>
+            Nag.Blunder
+          case MateLost if nextScore > 999 =>
+            Nag.Inaccuracy
+          case MateLost if nextScore > 700 =>
+            Nag.Mistake
+          case MateLost =>
+            Nag.Blunder
+          case MateDelayed =>
+            Nag.Inaccuracy
         }
       MateAdvice(sequence, nag, info, prev)
     }

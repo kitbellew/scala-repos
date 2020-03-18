@@ -20,8 +20,9 @@ class Plugin(val global: Global) extends NscPlugin {
           tree match {
             case Literal(const @ Constant(x)) if tree.tpe == null =>
               tree setType ConstantType(const)
-            case _ if tree.tpe == null => tree setType NoType
-            case _                     => ;
+            case _ if tree.tpe == null =>
+              tree setType NoType
+            case _ => ;
           }
           super.transform(tree)
         }

@@ -171,8 +171,10 @@ object CreateWorkflow extends Logging {
         e.split(',')
           .flatMap(p =>
             p.split('=') match {
-              case Array(k, v) => List(k -> v)
-              case _           => Nil
+              case Array(k, v) =>
+                List(k -> v)
+              case _ =>
+                Nil
             })
           .toMap)
       .getOrElse(Map())
@@ -182,7 +184,8 @@ object CreateWorkflow extends Logging {
       val engineFactory =
         if (wfc.engineFactory == "") {
           variantJson \ "engineFactory" match {
-            case JString(s) => s
+            case JString(s) =>
+              s
             case _ =>
               error(
                 "Unable to read engine factory class name from " +
@@ -193,7 +196,8 @@ object CreateWorkflow extends Logging {
           wfc.engineFactory
       val variantId =
         variantJson \ "id" match {
-          case JString(s) => s
+          case JString(s) =>
+            s
           case _ =>
             error(
               "Unable to read engine variant ID from " +

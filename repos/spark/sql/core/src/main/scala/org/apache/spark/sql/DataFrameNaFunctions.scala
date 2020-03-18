@@ -90,8 +90,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     */
   def drop(how: String, cols: Seq[String]): DataFrame = {
     how.toLowerCase match {
-      case "any" => drop(cols.size, cols)
-      case "all" => drop(1, cols)
+      case "any" =>
+        drop(cols.size, cols)
+      case "all" =>
+        drop(1, cols)
       case _ =>
         throw new IllegalArgumentException(s"how ($how) must be 'any' or 'all'")
     }
@@ -355,11 +357,14 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     // replacementMap is either Map[String, String] or Map[Double, Double] or Map[Boolean,Boolean]
     val replacementMap: Map[_, _] =
       replacement.head._2 match {
-        case v: String  => replacement
-        case v: Boolean => replacement
+        case v: String =>
+          replacement
+        case v: Boolean =>
+          replacement
         case _ =>
           replacement.map {
-            case (k, v) => (convertToDouble(k), convertToDouble(v))
+            case (k, v) =>
+              (convertToDouble(k), convertToDouble(v))
           }
       }
 
@@ -368,8 +373,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
       replacement.head._1 match {
         case _: jl.Double | _: jl.Float | _: jl.Integer | _: jl.Long =>
           DoubleType
-        case _: jl.Boolean => BooleanType
-        case _: String     => StringType
+        case _: jl.Boolean =>
+          BooleanType
+        case _: String =>
+          StringType
       }
 
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
@@ -409,17 +416,24 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       values
         .find {
-          case (k, _) => columnEquals(k, f.name)
+          case (k, _) =>
+            columnEquals(k, f.name)
         }
         .map {
           case (_, v) =>
             v match {
-              case v: jl.Float   => fillCol[Double](f, v.toDouble)
-              case v: jl.Double  => fillCol[Double](f, v)
-              case v: jl.Long    => fillCol[Double](f, v.toDouble)
-              case v: jl.Integer => fillCol[Double](f, v.toDouble)
-              case v: jl.Boolean => fillCol[Boolean](f, v.booleanValue())
-              case v: String     => fillCol[String](f, v)
+              case v: jl.Float =>
+                fillCol[Double](f, v.toDouble)
+              case v: jl.Double =>
+                fillCol[Double](f, v)
+              case v: jl.Long =>
+                fillCol[Double](f, v.toDouble)
+              case v: jl.Integer =>
+                fillCol[Double](f, v.toDouble)
+              case v: jl.Boolean =>
+                fillCol[Boolean](f, v.booleanValue())
+              case v: String =>
+                fillCol[String](f, v)
             }
         }
         .getOrElse(df.col(f.name))
@@ -464,10 +478,14 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
 
   private def convertToDouble(v: Any): Double =
     v match {
-      case v: Float  => v.toDouble
-      case v: Double => v
-      case v: Long   => v.toDouble
-      case v: Int    => v.toDouble
+      case v: Float =>
+        v.toDouble
+      case v: Double =>
+        v
+      case v: Long =>
+        v.toDouble
+      case v: Int =>
+        v.toDouble
       case v =>
         throw new IllegalArgumentException(
           s"Unsupported value type ${v.getClass.getName} ($v).")

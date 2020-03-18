@@ -34,8 +34,10 @@ package object rhino {
               thisObj: Scriptable,
               args: Array[AnyRef]): AnyRef = {
             function(args) match {
-              case () => Undefined.instance
-              case r  => r.asInstanceOf[AnyRef]
+              case () =>
+                Undefined.instance
+              case r =>
+                r.asInstanceOf[AnyRef]
             }
           }
         }

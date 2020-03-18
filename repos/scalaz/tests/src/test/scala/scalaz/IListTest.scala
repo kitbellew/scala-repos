@@ -57,9 +57,12 @@ object IListTest extends SpecLite {
   "intersperse vs benchmark" ! forAll { (a: IList[Int], b: Int) =>
     def intersperse[A](value: IList[A], a: A): IList[A] =
       value match {
-        case INil()           => INil()
-        case ICons(x, INil()) => x :: INil()
-        case ICons(h, t)      => h :: a :: intersperse(t, a)
+        case INil() =>
+          INil()
+        case ICons(x, INil()) =>
+          x :: INil()
+        case ICons(h, t) =>
+          h :: a :: intersperse(t, a)
       }
     a.intersperse(b) must_=== intersperse(a, b)
   }
@@ -151,14 +154,16 @@ object IListTest extends SpecLite {
 
   "collect" ! forAll { (ns: IList[Int]) =>
     val pf: PartialFunction[Int, Int] = {
-      case n if n % 2 == 0 => n + 1
+      case n if n % 2 == 0 =>
+        n + 1
     }
     ns.collect(pf).toList must_=== ns.toList.collect(pf)
   }
 
   "collectFirst" ! forAll { (ns: IList[Int]) =>
     val pf: PartialFunction[Int, Int] = {
-      case n if n % 2 == 0 => n + 1
+      case n if n % 2 == 0 =>
+        n + 1
     }
     ns.collectFirst(pf) must_=== ns.toList.collectFirst(pf)
   }
@@ -252,7 +257,8 @@ object IListTest extends SpecLite {
     ns.initOption.map(_.toList) must_=== (
       try Some(ns.toList.init)
       catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     )
   }
@@ -336,7 +342,8 @@ object IListTest extends SpecLite {
     ns.reduceLeftOption(f) must_=== (
       try Some(ns.toList.reduceLeft(f))
       catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     )
   }
@@ -345,7 +352,8 @@ object IListTest extends SpecLite {
     ns.reduceRightOption(f) must_=== (
       try Some(ns.toList.reduceRight(f))
       catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     )
   }
@@ -408,7 +416,8 @@ object IListTest extends SpecLite {
     ns.tailOption.map(_.toList) must_=== (
       try Some(ns.toList.tail)
       catch {
-        case e: Exception => None
+        case e: Exception =>
+          None
       }
     )
   }

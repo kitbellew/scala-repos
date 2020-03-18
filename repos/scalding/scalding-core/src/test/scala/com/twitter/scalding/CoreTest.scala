@@ -77,7 +77,8 @@ class SpillingTest extends WordSpec with Matchers {
           (v.map(_._2).sum, v.size)
         }
         .map {
-          case (a, (b, c)) => (a, b, c)
+          case (a, (b, c)) =>
+            (a, b, c)
         }
         .toSet
 
@@ -194,12 +195,14 @@ class MapToGroupBySizeSumMaxTest extends WordSpec with Matchers {
           ((xv > 0.5), xv)
       }
       .groupBy {
-        case (kx: Boolean, x: Double) => kx
+        case (kx: Boolean, x: Double) =>
+          kx
       }
       .mapValues { vals =>
         val vlist =
           vals.map {
-            case (k: Boolean, x: Double) => x
+            case (k: Boolean, x: Double) =>
+              x
           }.toList
         val size = vlist.size
         val sum = vlist.sum
@@ -254,11 +257,13 @@ class PartitionJobTest extends WordSpec with Matchers {
       (2, 13))
 
     val (adults, minors) = input.partition {
-      case (age, _) => age > 18
+      case (age, _) =>
+        age > 18
     }
     val Seq(adultWeights, minorWeights) = Seq(adults, minors).map { list =>
       list.map {
-        case (_, weight) => weight
+        case (_, weight) =>
+          weight
       }
     }
     val expectedOutput = Map(
@@ -1764,19 +1769,22 @@ object TypedThrowsErrorsJob {
 
   def trans1(x: (String, Int)) =
     x match {
-      case (str, int) => (str, int, int)
+      case (str, int) =>
+        (str, int, int)
     }
   val trap1 = TypedTsv[(String, Int, Int)]("trapped1")
 
   val trap2 = TypedTsv[(String, Int, Int, String)]("trapped2")
   def trans2(x: (String, Int, Int)) =
     x match {
-      case (str, int1, int2) => (str, int1, int2 * int1, str)
+      case (str, int1, int2) =>
+        (str, int1, int2 * int1, str)
     }
 
   def trans3(x: (String, Int, Int, String)) =
     x match {
-      case (str, int, _, _) => (str, int)
+      case (str, int, _, _) =>
+        (str, int)
     }
 }
 
@@ -1812,15 +1820,18 @@ object TypedThrowsErrorsJob2 {
 
   def trans1(x: (String, Int)) =
     x match {
-      case (str, int) => (str, int, int)
+      case (str, int) =>
+        (str, int, int)
     }
   def trans2(x: (String, Int, Int)) =
     x match {
-      case (str, int1, int2) => (str, int1, int2 * int1, str)
+      case (str, int1, int2) =>
+        (str, int1, int2 * int1, str)
     }
   def trans3(x: (String, Int, Int, String)) =
     x match {
-      case (str, int, _, _) => (str, int)
+      case (str, int, _, _) =>
+        (str, int)
     }
 }
 
@@ -1907,7 +1918,8 @@ class TypedItsATrapTest extends WordSpec with Matchers {
 class GroupAllToListTestJob(args: Args) extends Job(args) {
   TypedTsv[(Long, String, Double)]("input")
     .mapTo('a, 'b) {
-      case (id, k, v) => (id, Map(k -> v))
+      case (id, k, v) =>
+        (id, Map(k -> v))
     }
     .groupBy('a) {
       _.sum[Map[String, Double]]('b)
@@ -1953,7 +1965,8 @@ class GroupAllToListTest extends WordSpec with Matchers {
 class ToListGroupAllToListTestJob(args: Args) extends Job(args) {
   TypedTsv[(Long, String)]("input")
     .mapTo('b, 'c) {
-      case (k, v) => (k, v)
+      case (k, v) =>
+        (k, v)
     }
     .groupBy('c) {
       _.toList[Long]('b -> 'bList)
@@ -2172,7 +2185,8 @@ class SortingJobTest extends WordSpec with Matchers {
 class CollectJob(args: Args) extends Job(args) {
   Tsv("input", new Fields("name", "age"))
     .collectTo[(String, Int), String](('name, 'age) -> 'adultFirstNames) {
-      case (name, age) if age > 18 => name.split(" ").head
+      case (name, age) if age > 18 =>
+        name.split(" ").head
     }
     .write(Tsv("output"))
 }
@@ -2186,7 +2200,8 @@ class CollectJobTest extends WordSpec with Matchers {
       ("jill q", 55),
       ("some child", 8))
     val expectedOutput = input.collect {
-      case (name, age) if age > 18 => name.split(" ").head
+      case (name, age) if age > 18 =>
+        name.split(" ").head
     }
 
     JobTest(new CollectJob(_))
@@ -2289,7 +2304,8 @@ class CounterJobTest extends WordSpec with Matchers {
     val expectedOutput =
       input
         .collect {
-          case (name, age) if age > 18 => age
+          case (name, age) if age > 18 =>
+            age
         }
         .sum
         .toString

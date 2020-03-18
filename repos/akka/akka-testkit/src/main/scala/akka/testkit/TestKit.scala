@@ -75,14 +75,20 @@ class TestActor(queue: BlockingDeque[TestActor.Message]) extends Actor {
   var autopilot: AutoPilot = NoAutoPilot
 
   def receive = {
-    case SetIgnore(ign) ⇒ ignore = ign
-    case Watch(ref) ⇒ context.watch(ref)
-    case UnWatch(ref) ⇒ context.unwatch(ref)
-    case SetAutoPilot(pilot) ⇒ autopilot = pilot
+    case SetIgnore(ign) ⇒
+      ignore = ign
+    case Watch(ref) ⇒
+      context.watch(ref)
+    case UnWatch(ref) ⇒
+      context.unwatch(ref)
+    case SetAutoPilot(pilot) ⇒
+      autopilot = pilot
     case x: AnyRef ⇒
       autopilot = autopilot.run(sender(), x) match {
-        case KeepRunning ⇒ autopilot
-        case other ⇒ other
+        case KeepRunning ⇒
+          autopilot
+        case other ⇒
+          other
       }
       val observe = ignore map (ignoreFunc ⇒
         !ignoreFunc.applyOrElse(x, FALSE)) getOrElse true
@@ -144,8 +150,10 @@ trait TestKitBase {
       "%s-%d".format(testActorName, TestKit.testActorId.incrementAndGet))
     awaitCond(
       ref match {
-        case r: RepointableRef ⇒ r.isStarted
-        case _ ⇒ true
+        case r: RepointableRef ⇒
+          r.isStarted
+        case _ ⇒
+          true
       },
       3.seconds.dilated,
       10.millis)
@@ -219,7 +227,8 @@ trait TestKitBase {
     */
   def remaining: FiniteDuration =
     end match {
-      case f: FiniteDuration ⇒ f - now
+      case f: FiniteDuration ⇒
+        f - now
       case _ ⇒
         throw new AssertionError(
           "`remaining` may not be called outside of `within`")
@@ -231,18 +240,22 @@ trait TestKitBase {
     */
   def remainingOr(duration: FiniteDuration): FiniteDuration =
     end match {
-      case x if x eq Duration.Undefined ⇒ duration
+      case x if x eq Duration.Undefined ⇒
+        duration
       case x if !x.isFinite ⇒
         throw new IllegalArgumentException("`end` cannot be infinite")
-      case f: FiniteDuration ⇒ f - now
+      case f: FiniteDuration ⇒
+        f - now
     }
 
   private def remainingOrDilated(max: Duration): FiniteDuration =
     max match {
-      case x if x eq Duration.Undefined ⇒ remainingOrDefault
+      case x if x eq Duration.Undefined ⇒
+        remainingOrDefault
       case x if !x.isFinite ⇒
         throw new IllegalArgumentException("max duration cannot be infinite")
-      case f: FiniteDuration ⇒ f.dilated
+      case f: FiniteDuration ⇒
+        f.dilated
     }
 
   /**
@@ -442,7 +455,8 @@ trait TestKitBase {
       target: ActorRef,
       max: Duration = Duration.Undefined): Terminated =
     expectMsgPF(max, "Terminated " + target) {
-      case t @ Terminated(`target`) ⇒ t
+      case t @ Terminated(`target`) ⇒
+        t
     }
 
   /**

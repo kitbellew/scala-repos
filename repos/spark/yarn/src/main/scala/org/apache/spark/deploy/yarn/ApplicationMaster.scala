@@ -596,7 +596,8 @@ private[spark] class ApplicationMaster(
     if (isClusterMode) {
       System.setProperty("spark.ui.filters", amFilter)
       params.foreach {
-        case (k, v) => System.setProperty(s"spark.$amFilter.param.$k", v)
+        case (k, v) =>
+          System.setProperty(s"spark.$amFilter.param.$k", v)
       }
     } else {
       amEndpoint.send(AddWebUIFilter(amFilter, params.toMap, proxyBase))
@@ -723,7 +724,8 @@ private[spark] class ApplicationMaster(
         logInfo(
           s"Driver requested to kill executor(s) ${executorIds.mkString(", ")}.")
         Option(allocator) match {
-          case Some(a) => executorIds.foreach(a.killExecutor)
+          case Some(a) =>
+            executorIds.foreach(a.killExecutor)
           case None =>
             logWarning(
               "Container allocator is not ready to kill executors yet.")

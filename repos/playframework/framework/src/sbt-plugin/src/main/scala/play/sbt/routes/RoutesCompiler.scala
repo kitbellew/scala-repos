@@ -169,11 +169,13 @@ object RoutesCompiler extends AutoPlugin {
           results.map {
             case (op, Right(inputs)) =>
               op -> OpSuccess(Set(op.task.file), inputs.toSet)
-            case (op, Left(_)) => op -> OpFailure
+            case (op, Left(_)) =>
+              op -> OpFailure
           }.toMap
         val errors =
           results.collect {
-            case (_, Left(e)) => e
+            case (_, Left(e)) =>
+              e
           }.flatten
         (opResults, errors)
       }
@@ -210,8 +212,10 @@ object RoutesCompiler extends AutoPlugin {
         Option(error.position).map { pos =>
           // print a carat under the offending character
           val spaces = (line: Seq[Char]).take(pos).map {
-            case '\t' => '\t'
-            case x    => ' '
+            case '\t' =>
+              '\t'
+            case x =>
+              ' '
           }
           log.error(spaces.mkString + "^")
         }

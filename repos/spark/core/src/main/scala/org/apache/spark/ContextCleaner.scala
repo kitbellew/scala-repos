@@ -224,7 +224,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
           }
         } catch {
           case ie: InterruptedException if stopped => // ignore
-          case e: Exception                        => logError("Error in cleaning thread", e)
+          case e: Exception =>
+            logError("Error in cleaning thread", e)
         }
       }
     }
@@ -237,7 +238,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
       listeners.asScala.foreach(_.rddCleaned(rddId))
       logInfo("Cleaned RDD " + rddId)
     } catch {
-      case e: Exception => logError("Error cleaning RDD " + rddId, e)
+      case e: Exception =>
+        logError("Error cleaning RDD " + rddId, e)
     }
   }
 
@@ -250,7 +252,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
       listeners.asScala.foreach(_.shuffleCleaned(shuffleId))
       logInfo("Cleaned shuffle " + shuffleId)
     } catch {
-      case e: Exception => logError("Error cleaning shuffle " + shuffleId, e)
+      case e: Exception =>
+        logError("Error cleaning shuffle " + shuffleId, e)
     }
   }
 
@@ -275,7 +278,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
       listeners.asScala.foreach(_.accumCleaned(accId))
       logInfo("Cleaned accumulator " + accId)
     } catch {
-      case e: Exception => logError("Error cleaning accumulator " + accId, e)
+      case e: Exception =>
+        logError("Error cleaning accumulator " + accId, e)
     }
   }
 

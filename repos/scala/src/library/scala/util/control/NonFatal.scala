@@ -39,7 +39,8 @@ object NonFatal {
       case _: VirtualMachineError | _: ThreadDeath | _: InterruptedException |
           _: LinkageError | _: ControlThrowable =>
         false
-      case _ => true
+      case _ =>
+        true
     }
 
   /**

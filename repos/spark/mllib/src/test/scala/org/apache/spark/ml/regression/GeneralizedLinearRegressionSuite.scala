@@ -1331,9 +1331,12 @@ object GeneralizedLinearRegressionSuite {
     }
     val (generator, mean) =
       family match {
-        case "gaussian" => (new StandardNormalGenerator, 0.0)
-        case "poisson"  => (new PoissonGenerator(1.0), 1.0)
-        case "gamma"    => (new GammaGenerator(1.0, 1.0), 1.0)
+        case "gaussian" =>
+          (new StandardNormalGenerator, 0.0)
+        case "poisson" =>
+          (new PoissonGenerator(1.0), 1.0)
+        case "gamma" =>
+          (new GammaGenerator(1.0, 1.0), 1.0)
       }
     generator.setSeed(seed)
 
@@ -1345,10 +1348,14 @@ object GeneralizedLinearRegressionSuite {
       val eta = BLAS.dot(Vectors.dense(coefficients), features) + intercept
       val mu =
         link match {
-          case "identity" => eta
-          case "log"      => math.exp(eta)
-          case "sqrt"     => math.pow(eta, 2.0)
-          case "inverse"  => 1.0 / eta
+          case "identity" =>
+            eta
+          case "log" =>
+            math.exp(eta)
+          case "sqrt" =>
+            math.pow(eta, 2.0)
+          case "inverse" =>
+            1.0 / eta
         }
       val label = mu + noiseLevel * (generator.nextValue() - mean)
       // Return LabeledPoints with DenseVector

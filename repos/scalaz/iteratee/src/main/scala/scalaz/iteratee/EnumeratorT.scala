@@ -169,7 +169,8 @@ trait EnumeratorTFunctions {
           xs match {
             case h #:: t =>
               s.mapCont(k => k(elInput(h)) >>== enumStream[E, F](t).apply[A])
-            case _ => s.pointI
+            case _ =>
+              s.pointI
           }
     }
 
@@ -180,7 +181,8 @@ trait EnumeratorTFunctions {
           xs match {
             case h :: t =>
               s.mapCont(k => k(elInput(h)) >>== enumList[E, F](t).apply[A])
-            case Nil => s.pointI
+            case Nil =>
+              s.pointI
           }
     }
 

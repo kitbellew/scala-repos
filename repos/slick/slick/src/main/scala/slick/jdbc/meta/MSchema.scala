@@ -13,7 +13,8 @@ object MSchema {
     ResultSetAction[MSchema] { s =>
       try s.metaData.getSchemas(catalog.orNull, schemaPattern.orNull)
       catch {
-        case _: AbstractMethodError => null
+        case _: AbstractMethodError =>
+          null
       }
     } { r =>
       MSchema(r.<<, r.<<?)

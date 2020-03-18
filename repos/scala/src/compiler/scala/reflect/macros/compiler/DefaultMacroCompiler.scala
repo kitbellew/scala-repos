@@ -51,7 +51,8 @@ abstract class DefaultMacroCompiler
         compiler.validateMacroImplRef();
         scala.util.Success(compiler.macroImplRef)
       } catch {
-        case ex: MacroImplResolutionException => scala.util.Failure(ex)
+        case ex: MacroImplResolutionException =>
+          scala.util.Failure(ex)
       }
     }
     val vanillaImplRef = MacroImplRefCompiler(

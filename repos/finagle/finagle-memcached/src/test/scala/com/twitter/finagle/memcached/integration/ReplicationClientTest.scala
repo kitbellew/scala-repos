@@ -60,7 +60,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
         case Some(server) =>
           firstTestServerPool :+= server
           firstPoolCluster.join(server.address)
-        case None => fail("Cannot start memcached.")
+        case None =>
+          fail("Cannot start memcached.")
       }
     }
 
@@ -75,7 +76,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
         case Some(server) =>
           secondTestServerPool :+= server
           secondPoolCluster.join(server.address)
-        case None => fail("Cannot start memcached.")
+        case None =>
+          fail("Cannot start memcached.")
       }
     }
 
@@ -164,8 +166,10 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       firstTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.set("foo", Buf.Utf8("baz"))) match {
-          case InconsistentReplication(Seq(Throw(_), Return(()))) => true
-          case _                                                  => false
+          case InconsistentReplication(Seq(Throw(_), Return(()))) =>
+            true
+          case _ =>
+            false
         })
       assert(
         Await.result(replicatedClient.getOne("foo")) == Some(Buf.Utf8("baz")))
@@ -175,8 +179,10 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       secondTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.set("foo", Buf.Utf8("baz"))) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
       intercept[WriteException] {
         Await.result(replicatedClient.getOne("foo"))
@@ -243,14 +249,17 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       firstTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.set("foo", Buf.Utf8("baz"))) match {
-          case InconsistentReplication(Seq(Throw(_), Return(()))) => true
-          case _                                                  => false
+          case InconsistentReplication(Seq(Throw(_), Return(()))) =>
+            true
+          case _ =>
+            false
         })
       assert(
         Await.result(replicatedClient.getAll("foo")) match {
           case InconsistentReplication(Seq(Throw(_), Return(Some(v)))) =>
             v equals Buf.Utf8("baz")
-          case _ => false
+          case _ =>
+            false
         })
 
       // all failed
@@ -258,13 +267,17 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       secondTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.set("foo", Buf.Utf8("baz"))) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
       assert(
         Await.result(replicatedClient.getAll("foo")) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
     }
 
@@ -327,7 +340,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           case InconsistentReplication(
                 Seq(Return(JBoolean.FALSE), Return(JBoolean.TRUE))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
 
       // inconsistent replica state
@@ -338,7 +352,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
         Await.result(replicatedClient.delete("client2-only")) match {
           case InconsistentReplication(Seq(Throw(_), Return(JBoolean.TRUE))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
 
       // all failed
@@ -346,8 +361,10 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       secondTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.delete("client2-only")) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
     }
 
@@ -456,7 +473,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           case InconsistentReplication(
                 Seq(Throw(_), Return(CasResult.NotFound))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
       Await.result(client1.set("foo", Buf.Utf8("bar")))
       assert(
@@ -475,7 +493,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           case InconsistentReplication(
                 Seq(Throw(_), Return(Some((v, SCasUnique(_)))))) =>
             v equals Buf.Utf8("bar")
-          case _ => false
+          case _ =>
+            false
         })
       assert(
         Await.result(
@@ -486,7 +505,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           case InconsistentReplication(
                 Seq(Throw(_), Return(CasResult.Stored))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
 
       // all failed
@@ -494,8 +514,10 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       secondTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.getsAll("foo")) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
       assert(
         Await.result(
@@ -503,8 +525,10 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
             "foo",
             Buf.Utf8("bar"),
             Seq(Buf.Utf8("7"), Buf.Utf8("7")))) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
     }
 
@@ -582,7 +606,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           case InconsistentReplication(
                 Seq(Return(JBoolean.TRUE), Return(JBoolean.FALSE))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
       assert(
         Await.result(
@@ -590,7 +615,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           case InconsistentReplication(
                 Seq(Return(JBoolean.TRUE), Return(JBoolean.FALSE))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
 
       // inconsistent replica state
@@ -601,14 +627,16 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
           replicatedClient.add("client2-only", Buf.Utf8("test"))) match {
           case InconsistentReplication(Seq(Throw(_), Return(JBoolean.FALSE))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
       assert(
         Await.result(
           replicatedClient.replace("client1-only", Buf.Utf8("test"))) match {
           case InconsistentReplication(Seq(Throw(_), Return(JBoolean.FALSE))) =>
             true
-          case _ => false
+          case _ =>
+            false
         })
 
       // all failed
@@ -617,14 +645,18 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       assert(
         Await.result(
           replicatedClient.add("client2-only", Buf.Utf8("test"))) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
       assert(
         Await.result(
           replicatedClient.replace("client1-only", Buf.Utf8("test"))) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
     }
 
@@ -710,7 +742,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
         Await.result(replicatedClient.decr("foo", 1)) match {
           case InconsistentReplication(Seq(Throw(_), Return(Some(v)))) =>
             v equals 1L
-          case _ => false
+          case _ =>
+            false
         })
 
       // all failed
@@ -718,8 +751,10 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
       secondTestServerPool(1).stop()
       assert(
         Await.result(replicatedClient.decr("foo", 1)) match {
-          case FailedReplication(Seq(Throw(_), Throw(_))) => true
-          case _                                          => false
+          case FailedReplication(Seq(Throw(_), Throw(_))) =>
+            true
+          case _ =>
+            false
         })
 
     }
@@ -786,7 +821,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
               case InconsistentReplication(Seq(Throw(_), Return(Some(v)))) =>
                 val Buf.Utf8(res) = v
                 res equals "bar" + n
-              case _ => false
+              case _ =>
+                false
             })
         }
       }
@@ -844,12 +880,15 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
         Await.result(replicatedClient.getAll("foo")) match {
           case InconsistentReplication(Seq(Throw(_), Return(Some(v)))) =>
             v equals Buf.Utf8("bar")
-          case _ => false
+          case _ =>
+            false
         })
       assert(
         Await.result(replicatedClient.set("foo", Buf.Utf8("baz"))) match {
-          case InconsistentReplication(Seq(Throw(_), Return(()))) => true
-          case _                                                  => false
+          case InconsistentReplication(Seq(Throw(_), Return(()))) =>
+            true
+          case _ =>
+            false
         })
 
       // bring back primary pool
@@ -860,7 +899,8 @@ class ReplicationClientTest extends FunSuite with BeforeAndAfterEach {
         Await.result(replicatedClient.getAll("foo")) match {
           case InconsistentReplication(Seq(Return(None), Return(Some(v)))) =>
             v equals Buf.Utf8("baz")
-          case _ => false
+          case _ =>
+            false
         })
       assert(
         Await.result(

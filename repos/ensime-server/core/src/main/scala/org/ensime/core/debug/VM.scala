@@ -97,7 +97,8 @@ class VM(
   private val process = vm.process()
   private val monitor =
     mode match {
-      case VmAttach(_, _) => Nil
+      case VmAttach(_, _) =>
+        Nil
       case VmStart(_) =>
         List(
           new MonitorOutput(process.getErrorStream, broadcaster),
@@ -130,8 +131,10 @@ class VM(
 
   def remember(value: Value): Value = {
     value match {
-      case v: ObjectReference => remember(v)
-      case _                  => value
+      case v: ObjectReference =>
+        remember(v)
+      case _ =>
+        value
     }
   }
 
@@ -215,7 +218,8 @@ class VM(
             loc.sourcePath == that.sourcePath &&
               loc.sourceName == that.sourceName &&
               loc.lineNumber == that.lineNumber
-          case _ => false
+          case _ =>
+            false
         }
       override def hashCode: Int =
         loc.lineNumber.hashCode ^ loc.sourceName.hashCode
@@ -250,16 +254,26 @@ class VM(
   // us what we want...
   def valueSummary(value: Value): String = {
     value match {
-      case v: BooleanValue    => v.value().toString
-      case v: ByteValue       => v.value().toString
-      case v: CharValue       => "'" + v.value().toString + "'"
-      case v: DoubleValue     => v.value().toString
-      case v: FloatValue      => v.value().toString
-      case v: IntegerValue    => v.value().toString
-      case v: LongValue       => v.value().toString
-      case v: ShortValue      => v.value().toString
-      case v: VoidValue       => "void"
-      case v: StringReference => "\"" + v.value() + "\""
+      case v: BooleanValue =>
+        v.value().toString
+      case v: ByteValue =>
+        v.value().toString
+      case v: CharValue =>
+        "'" + v.value().toString + "'"
+      case v: DoubleValue =>
+        v.value().toString
+      case v: FloatValue =>
+        v.value().toString
+      case v: IntegerValue =>
+        v.value().toString
+      case v: LongValue =>
+        v.value().toString
+      case v: ShortValue =>
+        v.value().toString
+      case v: VoidValue =>
+        "void"
+      case v: StringReference =>
+        "\"" + v.value() + "\""
       case v: ArrayReference =>
         val length = v.length()
         if (length > 3)
@@ -276,14 +290,17 @@ class VM(
           valueSummary(v.getValue(elemField))
         } else
           "Instance of " + lastNameComponent(v.referenceType().name())
-      case _ => "NA"
+      case _ =>
+        "NA"
     }
   }
 
   private def lastNameComponent(s: String): String = {
     "^.*?\\.([^\\.]+)$".r.findFirstMatchIn(s) match {
-      case Some(m) => m.group(1)
-      case None    => s
+      case Some(m) =>
+        m.group(1)
+      case None =>
+        s
     }
   }
 
@@ -307,7 +324,8 @@ class VM(
           tpe = tpe.superclass
         }
         fields
-      case _ => List.empty
+      case _ =>
+        List.empty
     }
   }
 
@@ -325,7 +343,8 @@ class VM(
           tpe = tpe.superclass
         }
         result
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -363,10 +382,14 @@ class VM(
       makeDebugNull()
     else {
       value match {
-        case v: ArrayReference  => makeDebugArr(v)
-        case v: StringReference => makeDebugStr(v)
-        case v: ObjectReference => makeDebugObj(v)
-        case v: PrimitiveValue  => makeDebugPrim(v)
+        case v: ArrayReference =>
+          makeDebugArr(v)
+        case v: StringReference =>
+          makeDebugStr(v)
+        case v: ObjectReference =>
+          makeDebugObj(v)
+        case v: PrimitiveValue =>
+          makeDebugPrim(v)
       }
     }
   }
@@ -405,7 +428,8 @@ class VM(
         threadById(threadId) match {
           case Some(thread) =>
             valueForStackVar(thread, frame, offset)
-          case None => None
+          case None =>
+            None
         }
     }
   }
@@ -468,11 +492,14 @@ class VM(
             new java.util.Vector()) match {
             case Some(v: StringReference) =>
               Some(v.value)
-            case Some(null) => Some("null")
-            case _          => None
+            case Some(null) =>
+              Some("null")
+            case _ =>
+              None
           }
         }
-      case Some(value) => Some(valueSummary(value))
+      case Some(value) =>
+        Some(valueSummary(value))
       case _ =>
         log.info("No value found at location.")
         None
@@ -497,8 +524,10 @@ class VM(
       objectId: DebugObjectId,
       index: Int): Option[Value] = {
     savedObjects.get(objectId) match {
-      case Some(arr: ArrayReference) => Some(remember(arr.getValue(index)))
-      case _                         => None
+      case Some(arr: ArrayReference) =>
+        Some(remember(arr.getValue(index)))
+      case _ =>
+        None
     }
   }
 
@@ -541,7 +570,8 @@ class VM(
     try {
       action
     } catch {
-      case e: Exception => orElse
+      case e: Exception =>
+        orElse
     }
   }
 
@@ -600,20 +630,29 @@ class VM(
     val s = toMirror.trim
     if (s.length > 0) {
       tpe match {
-        case tpe: BooleanType => Some(vm.mirrorOf(s.toBoolean))
-        case tpe: ByteType    => Some(vm.mirrorOf(s.toByte))
-        case tpe: CharType    => Some(vm.mirrorOf(s(0)))
-        case tpe: DoubleType  => Some(vm.mirrorOf(s.toDouble))
-        case tpe: FloatType   => Some(vm.mirrorOf(s.toFloat))
-        case tpe: IntegerType => Some(vm.mirrorOf(s.toInt))
-        case tpe: LongType    => Some(vm.mirrorOf(s.toLong))
-        case tpe: ShortType   => Some(vm.mirrorOf(s.toShort))
+        case tpe: BooleanType =>
+          Some(vm.mirrorOf(s.toBoolean))
+        case tpe: ByteType =>
+          Some(vm.mirrorOf(s.toByte))
+        case tpe: CharType =>
+          Some(vm.mirrorOf(s(0)))
+        case tpe: DoubleType =>
+          Some(vm.mirrorOf(s.toDouble))
+        case tpe: FloatType =>
+          Some(vm.mirrorOf(s.toFloat))
+        case tpe: IntegerType =>
+          Some(vm.mirrorOf(s.toInt))
+        case tpe: LongType =>
+          Some(vm.mirrorOf(s.toLong))
+        case tpe: ShortType =>
+          Some(vm.mirrorOf(s.toShort))
         case tpe: ReferenceType if tpe.name == "java.lang.String" =>
           if (s.startsWith("\"") && s.endsWith("\"")) {
             Some(vm.mirrorOf(s.substring(1, s.length - 1)))
           } else
             Some(vm.mirrorOf(s))
-        case _ => None
+        case _ =>
+          None
       }
     } else
       None
@@ -632,7 +671,8 @@ class VM(
         case Some(v) =>
           stackFrame.setValue(localVar, v);
           true
-        case None => false
+        case None =>
+          false
       }
     } else
       false

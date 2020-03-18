@@ -45,8 +45,10 @@ object ScEquivalenceUtil {
       return false
 
     clazz1 match {
-      case _: ScObject => clazz2.isInstanceOf[ScObject]
-      case _           => !clazz2.isInstanceOf[ScObject]
+      case _: ScObject =>
+        clazz2.isInstanceOf[ScObject]
+      case _ =>
+        !clazz2.isInstanceOf[ScObject]
     }
   }
 
@@ -60,8 +62,10 @@ object ScEquivalenceUtil {
     (elem1, elem2) match {
       case (clazz1: PsiClass, clazz2: PsiClass) =>
         areClassesEquivalent(clazz1, clazz2)
-      case (p1: PsiPackage, p2: PsiPackage) => arePackagesEquivalent(p1, p2)
-      case _                                => elem1 == elem2
+      case (p1: PsiPackage, p2: PsiPackage) =>
+        arePackagesEquivalent(p1, p2)
+      case _ =>
+        elem1 == elem2
     }
   }
 }

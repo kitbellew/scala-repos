@@ -16,10 +16,12 @@ trait ProtectedBranchService {
     ProtectedBranches
       .leftJoin(ProtectedBranchContexts)
       .on {
-        case (pb, c) => pb.byBranch(c.userName, c.repositoryName, c.branch)
+        case (pb, c) =>
+          pb.byBranch(c.userName, c.repositoryName, c.branch)
       }
       .map {
-        case (pb, c) => pb -> c.context.?
+        case (pb, c) =>
+          pb -> c.context.?
       }
       .filter(_._1.byPrimaryKey(owner, repository, branch))
       .list
@@ -146,11 +148,13 @@ object ProtectedBranchService {
               case s if s.size >= 1 =>
                 Some(
                   s"${s.size} of ${contexts.size} required status checks are expected")
-              case _ => None
+              case _ =>
+                None
             }
           case ReceiveCommand.Type.DELETE =>
             Some("Cannot delete a protected branch")
-          case _ => None
+          case _ =>
+            None
         }
       } else {
         None
@@ -168,11 +172,16 @@ object ProtectedBranchService {
       }
     def needStatusCheck(pusher: String)(implicit session: Session): Boolean =
       pusher match {
-        case _ if !enabled              => false
-        case _ if contexts.isEmpty      => false
-        case _ if includeAdministrators => true
-        case p if isAdministrator(p)    => false
-        case _                          => true
+        case _ if !enabled =>
+          false
+        case _ if contexts.isEmpty =>
+          false
+        case _ if includeAdministrators =>
+          true
+        case p if isAdministrator(p) =>
+          false
+        case _ =>
+          true
       }
   }
   object ProtectedBranchInfo {

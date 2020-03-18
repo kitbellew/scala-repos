@@ -104,7 +104,8 @@ private[yarn] class ExecutorRunnable(
       |YARN executor launch context:
       |  env:
       |${env.map {
-           case (k, v) => s"    $k -> $v\n"
+           case (k, v) =>
+             s"    $k -> $v\n"
          }.mkString}
       |  command:
       |    ${commands.mkString(" ")}
@@ -190,7 +191,8 @@ private[yarn] class ExecutorRunnable(
     // authentication settings.
     sparkConf.getAll
       .filter {
-        case (k, v) => SparkConf.isExecutorStartupConf(k)
+        case (k, v) =>
+          SparkConf.isExecutorStartupConf(k)
       }
       .foreach {
         case (k, v) =>
@@ -402,7 +404,8 @@ private[yarn] class ExecutorRunnable(
       .asScala
       .filterKeys(_.startsWith("SPARK"))
       .foreach {
-        case (k, v) => env(k) = v
+        case (k, v) =>
+          env(k) = v
       }
     env
   }

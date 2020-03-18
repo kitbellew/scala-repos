@@ -66,7 +66,8 @@ abstract class Driver {
           compiler.reportThrowable(ex)
           ex match {
             case FatalError(msg) => // signals that we should fail compilation.
-            case _               => throw ex // unexpected error, tell the outside world.
+            case _ =>
+              throw ex // unexpected error, tell the outside world.
           }
       }
     } else if (reporter.hasErrors)

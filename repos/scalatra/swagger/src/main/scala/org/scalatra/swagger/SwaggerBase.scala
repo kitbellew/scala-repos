@@ -40,8 +40,10 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
       if (fmt != null)
         format = fmt
       swagger.doc(doc) match {
-        case Some(d) ⇒ renderDoc(d.asInstanceOf[ApiType])
-        case _ ⇒ halt(404)
+        case Some(d) ⇒
+          renderDoc(d.asInstanceOf[ApiType])
+        case _ ⇒
+          halt(404)
       }
     }
 

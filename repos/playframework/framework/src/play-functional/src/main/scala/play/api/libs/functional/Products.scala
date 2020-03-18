@@ -47,7 +47,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.fmap[A1 ~ A2, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 => f(a1, a2)
+          case a1 ~ a2 =>
+            f(a1, a2)
         })
 
     def apply[B](f: B => (A1, A2))(implicit fu: ContravariantFunctor[M]): M[B] =
@@ -63,7 +64,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.inmap[A1 ~ A2, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 => f1(a1, a2)
+          case a1 ~ a2 =>
+            f1(a1, a2)
         },
         (b: B) => {
           val (a1, a2) = f2(b);
@@ -116,7 +118,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.fmap[A1 ~ A2 ~ A3, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 => f(a1, a2, a3)
+          case a1 ~ a2 ~ a3 =>
+            f(a1, a2, a3)
         })
 
     def apply[B](f: B => (A1, A2, A3))(implicit
@@ -133,7 +136,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.inmap[A1 ~ A2 ~ A3, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 => f1(a1, a2, a3)
+          case a1 ~ a2 ~ a3 =>
+            f1(a1, a2, a3)
         },
         (b: B) => {
           val (a1, a2, a3) = f2(b);
@@ -189,7 +193,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.fmap[A1 ~ A2 ~ A3 ~ A4, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 => f(a1, a2, a3, a4)
+          case a1 ~ a2 ~ a3 ~ a4 =>
+            f(a1, a2, a3, a4)
         })
 
     def apply[B](f: B => (A1, A2, A3, A4))(implicit
@@ -206,7 +211,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.inmap[A1 ~ A2 ~ A3 ~ A4, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 => f1(a1, a2, a3, a4)
+          case a1 ~ a2 ~ a3 ~ a4 =>
+            f1(a1, a2, a3, a4)
         },
         (b: B) => {
           val (a1, a2, a3, a4) = f2(b);
@@ -266,7 +272,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.fmap[A1 ~ A2 ~ A3 ~ A4 ~ A5, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 ~ a5 => f(a1, a2, a3, a4, a5)
+          case a1 ~ a2 ~ a3 ~ a4 ~ a5 =>
+            f(a1, a2, a3, a4, a5)
         })
 
     def apply[B](f: B => (A1, A2, A3, A4, A5))(implicit
@@ -283,7 +290,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.inmap[A1 ~ A2 ~ A3 ~ A4 ~ A5, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 ~ a5 => f1(a1, a2, a3, a4, a5)
+          case a1 ~ a2 ~ a3 ~ a4 ~ a5 =>
+            f1(a1, a2, a3, a4, a5)
         },
         (b: B) => {
           val (a1, a2, a3, a4, a5) = f2(b);
@@ -350,7 +358,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.fmap[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 => f(a1, a2, a3, a4, a5, a6)
+          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 =>
+            f(a1, a2, a3, a4, a5, a6)
         })
 
     def apply[B](f: B => (A1, A2, A3, A4, A5, A6))(implicit
@@ -369,7 +378,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.inmap[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 => f1(a1, a2, a3, a4, a5, a6)
+          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 =>
+            f1(a1, a2, a3, a4, a5, a6)
         },
         (b: B) => {
           val (a1, a2, a3, a4, a5, a6) = f2(b);
@@ -440,7 +450,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.fmap[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7, B](
         canBuild(m1, m2),
         {
-          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 ~ a7 => f(a1, a2, a3, a4, a5, a6, a7)
+          case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 ~ a7 =>
+            f(a1, a2, a3, a4, a5, a6, a7)
         })
 
     def apply[B](f: B => (A1, A2, A3, A4, A5, A6, A7))(implicit

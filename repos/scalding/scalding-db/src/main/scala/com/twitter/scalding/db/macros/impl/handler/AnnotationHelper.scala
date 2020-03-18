@@ -49,7 +49,8 @@ private[handler] abstract class AnnotationHelper {
   def consume[T](t: ctx.universe.Type)(
       fn: Option[Option[Int]] => T): scala.util.Try[(AnnotationHelper, T)] = {
     val (matchedAnnotations, remainingAnnotations) = cannotationInfo.partition {
-      case (tpe, _) => tpe =:= t
+      case (tpe, _) =>
+        tpe =:= t
     }
 
     val newHelper =
@@ -61,11 +62,13 @@ private[handler] abstract class AnnotationHelper {
       } with AnnotationHelper
 
     matchedAnnotations match {
-      case h :: Nil => Success((newHelper, fn(Some(h._2))))
+      case h :: Nil =>
+        Success((newHelper, fn(Some(h._2))))
       case h :: t =>
         Failure(
           new Exception(s"Error more than one annotation when looking for $t"))
-      case Nil => Success((newHelper, fn(None)))
+      case Nil =>
+        Success((newHelper, fn(None)))
     }
   }
 

@@ -166,7 +166,8 @@ case class ScalaMethodEvaluator(
                 else
                   args.length == m.argumentTypeNames().size()
               } catch {
-                case a: AbsentInformationException => true
+                case a: AbsentInformationException =>
+                  true
               }
             }
             if (filtered.isEmpty)
@@ -239,7 +240,8 @@ case class ScalaMethodEvaluator(
                 context,
                 className,
                 context.getClassLoader) match {
-                case c: ClassType => _refType = c
+                case c: ClassType =>
+                  _refType = c
                 case _ =>
                   _refType = referenceType.asInstanceOf[ClassType].superclass
               }
@@ -288,7 +290,8 @@ case class ScalaMethodEvaluator(
         jdiMethod,
         unwrappedArgs(args, jdiMethod))
     } catch {
-      case e: Exception => throw EvaluationException(e)
+      case e: Exception =>
+        throw EvaluationException(e)
     }
   }
 
@@ -300,7 +303,8 @@ case class ScalaMethodEvaluator(
       case (DebuggerUtil.scalaRuntimeRefTo(value), idx)
           if !DebuggerUtil.isScalaRuntimeRef(argTypeNames.get(idx)) =>
         value
-      case (arg, _) => arg
+      case (arg, _) =>
+        arg
     }
   }
 }

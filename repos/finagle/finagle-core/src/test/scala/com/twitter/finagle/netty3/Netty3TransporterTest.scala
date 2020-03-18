@@ -136,8 +136,10 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
           new InetSocketAddress(0),
           NullStatsReceiver)
         val idleHandlerFound = pl.toMap.asScala.values.find {
-          case _: IdleStateHandler => true
-          case _                   => false
+          case _: IdleStateHandler =>
+            true
+          case _ =>
+            false
         }
         assert(idleHandlerFound.nonEmpty == isHanlderExist)
         idleHandlerFound.foreach { h =>
@@ -206,8 +208,10 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
 
       def hasSocksConnectHandler(pipeline: ChannelPipeline) =
         pipeline.toMap.asScala.values.exists {
-          case _: SocksConnectHandler => true
-          case _                      => false
+          case _: SocksConnectHandler =>
+            true
+          case _ =>
+            false
         }
 
       it("is not added if no proxy address is given") {

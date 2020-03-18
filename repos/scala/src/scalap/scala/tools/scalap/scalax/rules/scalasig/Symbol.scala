@@ -52,16 +52,20 @@ case class SymbolInfo(
     entry: ScalaSig#Entry) {
   def symbolString(any: AnyRef) =
     any match {
-      case sym: SymbolInfoSymbol => sym.index.toString
-      case other                 => other.toString
+      case sym: SymbolInfoSymbol =>
+        sym.index.toString
+      case other =>
+        other.toString
     }
 
   override def toString =
     name + ", owner=" + symbolString(
       owner) + ", flags=" + flags.toHexString + ", info=" + info + (
       privateWithin match {
-        case Some(any) => ", privateWithin=" + symbolString(any)
-        case None      => " "
+        case Some(any) =>
+          ", privateWithin=" + symbolString(any)
+        case None =>
+          " "
       }
     )
 }

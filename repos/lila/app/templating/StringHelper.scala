@@ -121,7 +121,8 @@ trait StringHelper {
           "%s<br /><strong>%s</strong>".format(
             text,
             (~parseIntOption(number)).localize)
-        case h => h.replace("\n", "<br />")
+        case h =>
+          h.replace("\n", "<br />")
       }
     }
   def splitNumber(s: Html)(implicit ctx: UserContext): Html =

@@ -227,7 +227,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     c match {
       case tc: TypedColumn[_, _] =>
         tc.withInputType(resolvedVEncoder.bind(dataAttributes), dataAttributes)
-      case _ => c
+      case _ =>
+        c
     }
 
   /**

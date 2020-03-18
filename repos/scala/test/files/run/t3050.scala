@@ -3,10 +3,12 @@ object Test {
     val x =
       try {
         ("": Any) match {
-          case List(_*) => true
+          case List(_*) =>
+            true
         }
       } catch {
-        case _: Throwable => false
+        case _: Throwable =>
+          false
       }
 
     assert(!x)

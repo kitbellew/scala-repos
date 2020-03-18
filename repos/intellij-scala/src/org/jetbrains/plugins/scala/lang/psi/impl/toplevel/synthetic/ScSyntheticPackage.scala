@@ -80,7 +80,8 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
           }
         }
         true
-      case _ => true
+      case _ =>
+        true
     }
   }
 }
@@ -146,7 +147,8 @@ object ScSyntheticPackage {
                 name: String,
                 scope: GlobalSearchScope): Array[PsiClass] = Array.empty
           }
-        case None => null
+        case None =>
+          null
       }
     } else {
       val pkgs = packages.filter(pc => {
@@ -186,7 +188,8 @@ object ScSyntheticPackage {
                     case td @ (c: ScTypeDefinition)
                         if c.fakeCompanionModule.isDefined =>
                       Seq(td, c.fakeCompanionModule.get)
-                    case td => Seq(td)
+                    case td =>
+                      Seq(td)
                   }
                 else
                   Seq.empty): _*)

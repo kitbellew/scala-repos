@@ -36,7 +36,8 @@ final class Messenger(
       member.userId match {
         case Some(userId) =>
           UserTalk(gameId, userId, text, socket, public = false)
-        case None => PlayerTalk(gameId, member.color.white, text, socket)
+        case None =>
+          PlayerTalk(gameId, member.color.white, text, socket)
       }
     )
 }

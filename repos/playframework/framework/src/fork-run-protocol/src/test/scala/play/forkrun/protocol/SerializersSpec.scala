@@ -111,8 +111,10 @@ trait PicklingTestUtils extends Specification {
       //System.err.println(s"json: $json")
       val parsed = SerializedValue.fromJsonString(json).parse[A].get
       (a, parsed) match {
-        case (a: Throwable, parsed: Throwable) => e(a, parsed)
-        case _                                 => f(a, parsed)
+        case (a: Throwable, parsed: Throwable) =>
+          e(a, parsed)
+        case _ =>
+          f(a, parsed)
       }
     }
 

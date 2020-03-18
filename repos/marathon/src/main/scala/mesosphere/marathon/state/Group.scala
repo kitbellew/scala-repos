@@ -45,7 +45,8 @@ case class Group(
             Some(head)
           else
             in(rest).orElse(in(head.groups.toList))
-        case Nil => None
+        case Nil =>
+          None
       }
     if (fn(this))
       Some(this)
@@ -98,8 +99,10 @@ case class Group(
       fn: Group => Group): Group = {
     def in(groups: List[Group]): List[Group] =
       groups match {
-        case head :: rest => head.update(timestamp)(fn) :: in(rest)
-        case Nil          => Nil
+        case head :: rest =>
+          head.update(timestamp)(fn) :: in(rest)
+        case Nil =>
+          Nil
       }
     fn(this.copy(groups = in(groups.toList).toSet, version = timestamp))
   }
@@ -227,7 +230,8 @@ case class Group(
     obj match {
       case that: Group =>
         (that eq this) || (that.id == id && that.version == version)
-      case _ => false
+      case _ =>
+        false
     }
   }
 

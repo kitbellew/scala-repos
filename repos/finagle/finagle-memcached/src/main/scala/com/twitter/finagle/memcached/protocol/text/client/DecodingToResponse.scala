@@ -31,7 +31,8 @@ abstract class AbstractDecodingToResponse[R <: AnyRef] extends OneToOneDecoder {
         parseValues(lines)
       case StatLines(lines) =>
         parseStatLines(lines)
-      case _ => throw new IllegalArgumentException("Expecting a Decoding")
+      case _ =>
+        throw new IllegalArgumentException("Expecting a Decoding")
     }
 
   protected def parseResponse(tokens: Seq[Buf]): R
@@ -45,19 +46,26 @@ class DecodingToResponse extends AbstractDecodingToResponse[Response] {
 
   protected def parseResponse(tokens: Seq[Buf]) = {
     tokens.headOption match {
-      case None             => Response.NoOp
-      case Some(NOT_FOUND)  => Response.NotFound
-      case Some(STORED)     => Response.Stored
-      case Some(NOT_STORED) => Response.NotStored
-      case Some(EXISTS)     => Response.Exists
-      case Some(DELETED)    => Response.Deleted
+      case None =>
+        Response.NoOp
+      case Some(NOT_FOUND) =>
+        Response.NotFound
+      case Some(STORED) =>
+        Response.Stored
+      case Some(NOT_STORED) =>
+        Response.NotStored
+      case Some(EXISTS) =>
+        Response.Exists
+      case Some(DELETED) =>
+        Response.Deleted
       case Some(ERROR) =>
         Error(new NonexistentCommand(parseErrorMessage(tokens)))
       case Some(CLIENT_ERROR) =>
         Error(new ClientError(parseErrorMessage(tokens)))
       case Some(SERVER_ERROR) =>
         Error(new ServerError(parseErrorMessage(tokens)))
-      case Some(ds) => Number(ds.toLong)
+      case Some(ds) =>
+        Number(ds.toLong)
     }
   }
 
@@ -91,7 +99,8 @@ class DecodingToResponse extends AbstractDecodingToResponse[Response] {
     tokens
       .drop(1)
       .map {
-        case Buf.Utf8(s) => s
+        case Buf.Utf8(s) =>
+          s
       }
       .mkString(" ")
 

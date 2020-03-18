@@ -153,8 +153,10 @@ trait Context {
 
   private[finagle] def env: Env =
     local() match {
-      case Some(env) => env
-      case None      => Empty
+      case Some(env) =>
+        env
+      case None =>
+        Empty
     }
 
   /**
@@ -208,7 +210,8 @@ trait Context {
   def letClear[R](keys: Key[_]*)(fn: => R): R = {
     val newEnv =
       keys.foldLeft(env) {
-        case (e, k) => e.cleared(k)
+        case (e, k) =>
+          e.cleared(k)
       }
     local.let(newEnv)(fn)
   }
@@ -384,8 +387,10 @@ final class MarshalledContext extends Context {
 
     private[this] def copy(buf: Buf): Buf =
       buf match {
-        case ChannelBufferBuf(cb) => Buf.ByteBuffer.Shared(cb.toByteBuffer)
-        case _                    => buf
+        case ChannelBufferBuf(cb) =>
+          Buf.ByteBuffer.Shared(cb.toByteBuffer)
+        case _ =>
+          buf
       }
   }
 }

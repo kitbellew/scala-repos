@@ -18,8 +18,10 @@ class ScInterpolatedStringPartReference(node: ASTNode)
   override def multiResolve(incomplete: Boolean): Array[ResolveResult] = {
     val parent =
       getParent match {
-        case p: ScInterpolatedStringLiteral => p
-        case _                              => return Array[ResolveResult]()
+        case p: ScInterpolatedStringLiteral =>
+          p
+        case _ =>
+          return Array[ResolveResult]()
       }
 
     parent.getStringContextExpression match {
@@ -28,9 +30,11 @@ class ScInterpolatedStringPartReference(node: ASTNode)
           case ref: PsiPolyVariantReference =>
             val resolve1 = ref.multiResolve(incomplete)
             resolve1.filter(_.getElement.isInstanceOf[ScFunction])
-          case _ => Array[ResolveResult]()
+          case _ =>
+            Array[ResolveResult]()
         }
-      case _ => Array[ResolveResult]()
+      case _ =>
+        Array[ResolveResult]()
     }
   }
 }

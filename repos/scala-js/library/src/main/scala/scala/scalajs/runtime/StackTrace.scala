@@ -54,7 +54,8 @@ object StackTrace {
       // Intentionally throw a JavaScript error
       new js.Object().asInstanceOf[js.Dynamic].undef()
     } catch {
-      case js.JavaScriptException(e) => e
+      case js.JavaScriptException(e) =>
+        e
     }
   }
 
@@ -72,7 +73,8 @@ object StackTrace {
       js.Dynamic.global.Packages.org.mozilla.javascript.JavaScriptException
       true
     } catch {
-      case js.JavaScriptException(_) => false
+      case js.JavaScriptException(_) =>
+        false
     }
   }
 

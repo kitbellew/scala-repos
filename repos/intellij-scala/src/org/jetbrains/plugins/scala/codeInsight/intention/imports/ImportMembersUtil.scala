@@ -34,14 +34,17 @@ object ImportMembersUtil {
 
   def hasQualifier(ref: ScReferenceElement) = {
     ref match {
-      case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) => true
-      case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`))  => true
+      case _ childOf(ScInfixExpr(qual: ScReferenceExpression, `ref`, _)) =>
+        true
+      case _ childOf(ScPostfixExpr(qual: ScReferenceExpression, `ref`)) =>
+        true
       case ScReferenceExpression.withQualifier(
             qualRef: ScReferenceExpression) =>
         true
       case stCodeRef: ScStableCodeReferenceElement =>
         stCodeRef.qualifier.isDefined
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -55,8 +58,10 @@ object ImportMembersUtil {
           member.hasModifierProperty(
             PsiModifier.STATIC) || member.containingClass == null
         )
-      case named: PsiNamedElement => ScalaPsiUtil.hasStablePath(named)
-      case _                      => false
+      case named: PsiNamedElement =>
+        ScalaPsiUtil.hasStablePath(named)
+      case _ =>
+        false
     }
   }
 
@@ -95,7 +100,8 @@ object ImportMembersUtil {
             ScalaPsiElementFactory
               .createReferenceFromText(name, oldRef.getManager))
           .asInstanceOf[ScReferenceElement]
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -135,8 +141,10 @@ object ImportMembersUtil {
           case expr: ScReferenceExpression =>
             val clazz =
               toBind match {
-                case m: PsiMember => Option(m.getContainingClass)
-                case _            => None
+                case m: PsiMember =>
+                  Option(m.getContainingClass)
+                case _ =>
+                  None
               }
             val refExpr = ScalaPsiElementFactory.createExpressionFromText(
               name,
@@ -168,13 +176,18 @@ object ImportMembersUtil {
           ref
         else
           ref match {
-            case isQualifierFor(r) => r
-            case _                 => ref
+            case isQualifierFor(r) =>
+              r
+            case _ =>
+              ref
           }
       trueRef match {
-        case _ childOf (inf @ ScInfixExpr(_, `trueRef`, _))    => inf
-        case _ childOf (postfix @ ScPostfixExpr(_, `trueRef`)) => postfix
-        case _                                                 => trueRef.getElement
+        case _ childOf (inf @ ScInfixExpr(_, `trueRef`, _)) =>
+          inf
+        case _ childOf (postfix @ ScPostfixExpr(_, `trueRef`)) =>
+          postfix
+        case _ =>
+          trueRef.getElement
       }
     }
     val lessThan: (PsiReference, PsiReference) => Boolean = { (ref1, ref2) =>
@@ -189,13 +202,17 @@ object ImportMembersUtil {
   object isQualifierFor {
     def unapply(qual: ScReferenceElement): Option[ScReferenceElement] = {
       qual.getParent match {
-        case ref @ ScReferenceExpression.withQualifier(`qual`) => Some(ref)
-        case ScInfixExpr(`qual`, op, _)                        => Some(op)
-        case ScPostfixExpr(`qual`, op: ScReferenceElement)     => Some(op)
+        case ref @ ScReferenceExpression.withQualifier(`qual`) =>
+          Some(ref)
+        case ScInfixExpr(`qual`, op, _) =>
+          Some(op)
+        case ScPostfixExpr(`qual`, op: ScReferenceElement) =>
+          Some(op)
         case stRef: ScStableCodeReferenceElement
             if stRef.qualifier.contains(qual) =>
           Some(stRef)
-        case _ => None
+        case _ =>
+          None
       }
     }
   }

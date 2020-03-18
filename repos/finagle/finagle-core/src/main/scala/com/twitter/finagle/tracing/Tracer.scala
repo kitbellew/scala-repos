@@ -98,10 +98,14 @@ object NullTracer extends NullTracer
 object BroadcastTracer {
   def apply(tracers: Seq[Tracer]): Tracer =
     tracers.filterNot(_ == NullTracer) match {
-      case Seq()              => NullTracer
-      case Seq(tracer)        => tracer
-      case Seq(first, second) => new Two(first, second)
-      case _                  => new N(tracers)
+      case Seq() =>
+        NullTracer
+      case Seq(tracer) =>
+        tracer
+      case Seq(first, second) =>
+        new Two(first, second)
+      case _ =>
+        new N(tracers)
     }
 
   private class Two(first: Tracer, second: Tracer) extends Tracer {

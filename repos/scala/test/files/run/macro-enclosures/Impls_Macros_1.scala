@@ -5,8 +5,10 @@ object Macros {
     import c.universe._
     def chain(sym: Symbol): List[Symbol] =
       sym.owner match {
-        case NoSymbol => sym :: Nil
-        case owner    => sym :: chain(owner)
+        case NoSymbol =>
+          sym :: Nil
+        case owner =>
+          sym :: chain(owner)
       }
     q"""
       println("enclosingPackage = " + ${c.enclosingPackage.toString})

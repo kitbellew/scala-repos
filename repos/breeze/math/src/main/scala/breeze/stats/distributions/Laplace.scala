@@ -45,8 +45,10 @@ case class Laplace(location: Double, scale: Double)(implicit
 
   def cdf(x: Double) =
     x match {
-      case Double.NegativeInfinity => 0.0
-      case Double.PositiveInfinity => 1.0
+      case Double.NegativeInfinity =>
+        0.0
+      case Double.PositiveInfinity =>
+        1.0
       case x if x < location =>
         0.5 * exp(unnormalizedLogPdf(x))
       case x =>

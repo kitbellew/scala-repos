@@ -57,8 +57,10 @@ class ScImportSelectorImpl private (
       return stub.asInstanceOf[ScImportSelectorStub].reference
     }
     getFirstChild match {
-      case s: ScStableCodeReferenceElement => s
-      case _                               => null
+      case s: ScStableCodeReferenceElement =>
+        s
+      case _ =>
+        null
     }
   }
 
@@ -108,7 +110,8 @@ class ScImportSelectorImpl private (
 
   def isAliasedImport: Boolean = {
     getStub match {
-      case stub: ScImportSelectorStub => stub.isAliasedImport
+      case stub: ScImportSelectorStub =>
+        stub.isAliasedImport
       case _ =>
         PsiTreeUtil
           .getParentOfType(this, classOf[ScImportExpr])

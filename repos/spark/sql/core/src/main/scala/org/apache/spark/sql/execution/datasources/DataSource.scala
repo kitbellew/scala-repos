@@ -204,7 +204,8 @@ case class DataSource(
   def createSink(): Sink = {
     val datasourceClass =
       providingClass.newInstance() match {
-        case s: StreamSinkProvider => s
+        case s: StreamSinkProvider =>
+          s
         case _ =>
           throw new UnsupportedOperationException(
             s"Data source $className does not support streamed writing")

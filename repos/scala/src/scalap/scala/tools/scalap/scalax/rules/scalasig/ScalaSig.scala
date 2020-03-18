@@ -30,7 +30,8 @@ object ScalaSigParser {
 
     def getBytes(bytesElem: AnnotationElement): Array[Byte] =
       bytesElem.elementValue match {
-        case ConstValueIndex(index) => bytesForIndex(index)
+        case ConstValueIndex(index) =>
+          bytesForIndex(index)
         case ArrayValue(signatureParts) =>
           mergedLongSignatureBytes(signatureParts)
       }
@@ -38,7 +39,8 @@ object ScalaSigParser {
     def mergedLongSignatureBytes(
         signatureParts: Seq[ElementValue]): Array[Byte] =
       signatureParts.flatMap {
-        case ConstValueIndex(index) => bytesForIndex(index)
+        case ConstValueIndex(index) =>
+          bytesForIndex(index)
       }(collection.breakOut)
 
     def bytesForIndex(index: Int) =
@@ -73,7 +75,8 @@ object ScalaSigParser {
       // No entries in ScalaSig attribute implies that the signature is stored in the annotation
       case Some(ScalaSig(_, _, entries)) if entries.length == 0 =>
         scalaSigFromAnnotation(classFile)
-      case x => x
+      case x =>
+        x
     }
   }
 
@@ -98,7 +101,8 @@ object ScalaSigAttributeParsers extends ByteCodeReader {
           else
             natN(out, y)
         }
-        case _ => Failure
+        case _ =>
+          Failure
       }
     in => natN(in, 0)
   }
@@ -310,8 +314,10 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
 
   def isTopLevel(symbol: Symbol) =
     symbol.parent match {
-      case Some(ext: ExternalSymbol) => true
-      case _                         => false
+      case Some(ext: ExternalSymbol) =>
+        true
+      case _ =>
+        false
     }
   def isTopLevelClass(symbol: Symbol) = !symbol.isModule && isTopLevel(symbol)
 }

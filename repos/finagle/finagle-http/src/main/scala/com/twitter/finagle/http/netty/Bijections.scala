@@ -26,8 +26,10 @@ object Bijections {
     new Injection[Version, HttpVersion] {
       def apply(v: Version) =
         v match {
-          case Version.Http11 => HttpVersion.HTTP_1_1
-          case Version.Http10 => HttpVersion.HTTP_1_0
+          case Version.Http11 =>
+            HttpVersion.HTTP_1_1
+          case Version.Http10 =>
+            HttpVersion.HTTP_1_0
         }
     }
 
@@ -39,9 +41,12 @@ object Bijections {
     new Injection[HttpVersion, Version] {
       def apply(v: HttpVersion) =
         v match {
-          case HttpVersion.HTTP_1_1 => Version.Http11
-          case HttpVersion.HTTP_1_0 => Version.Http10
-          case _                    => Version.Http11
+          case HttpVersion.HTTP_1_1 =>
+            Version.Http11
+          case HttpVersion.HTTP_1_0 =>
+            Version.Http10
+          case _ =>
+            Version.Http11
         }
     }
 

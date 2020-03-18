@@ -72,7 +72,8 @@ class QueryExecution(val sqlContext: SQLContext, val logical: LogicalPlan) {
   protected def stringOrError[A](f: => A): String =
     try f.toString
     catch {
-      case e: Throwable => e.toString
+      case e: Throwable =>
+        e.toString
     }
 
   def simpleString: String = {

@@ -72,8 +72,10 @@ private[finagle] object TrafficDistributor {
         stale
       case (stale @ Activity.Ok(state), Activity.Pending) if init != state =>
         stale
-      case (_, failed @ Activity.Failed(_)) => failed
-      case (_, Activity.Pending)            => Activity.Pending
+      case (_, failed @ Activity.Failed(_)) =>
+        failed
+      case (_, Activity.Pending) =>
+        Activity.Pending
     }
   }
 
@@ -89,7 +91,8 @@ private[finagle] object TrafficDistributor {
         IndexedSeq[ServiceFactory[Req, Rep]],
         Drv) = {
       val tupled = classes.map {
-        case WeightClass(b, weight, size) => (b, weight * size)
+        case WeightClass(b, weight, size) =>
+          (b, weight * size)
       }
       val (bs, ws) = tupled.unzip
       (bs.toIndexedSeq, Drv.fromWeights(ws.toSeq))
@@ -188,7 +191,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
                   cache.updated(
                     addr,
                     WeightedFactory(endpoint, closeGate, weight))
-                case _ => cache
+                case _ =>
+                  cache
               }
           }
 
@@ -203,13 +207,17 @@ private[finagle] class TrafficDistributor[Req, Rep](
                 g.setDone()
                 f.close()
                 cache - addr
-              case _ => cache
+              case _ =>
+                cache
             }
         }
     }.map {
-      case Activity.Ok(cache)          => Activity.Ok(cache.values.toSet)
-      case Activity.Pending            => Activity.Pending
-      case failed @ Activity.Failed(_) => failed
+      case Activity.Ok(cache) =>
+        Activity.Ok(cache.values.toSet)
+      case Activity.Pending =>
+        Activity.Pending
+      case failed @ Activity.Failed(_) =>
+        failed
     }
   }
 
@@ -232,7 +240,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
           weightedGroups.foldLeft(balancers) {
             case (cache, (weight, factories)) =>
               val unweighted = factories.map {
-                case WeightedFactory(f, _, _) => f
+                case WeightedFactory(f, _, _) =>
+                  f
               }
               val newCacheEntry =
                 if (cache.contains(weight)) {
@@ -259,7 +268,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
               case Some(CachedBalancer(bal, _, _)) =>
                 bal.close()
                 cache - weight
-              case _ => cache
+              case _ =>
+                cache
             }
         }
     }.map {
@@ -269,8 +279,10 @@ private[finagle] class TrafficDistributor[Req, Rep](
             case (weight, CachedBalancer(bal, _, size)) =>
               WeightClass(bal, weight, size)
           })
-      case Activity.Pending            => Activity.Pending
-      case failed @ Activity.Failed(_) => failed
+      case Activity.Pending =>
+        Activity.Pending
+      case failed @ Activity.Failed(_) =>
+        failed
     }
   }
 

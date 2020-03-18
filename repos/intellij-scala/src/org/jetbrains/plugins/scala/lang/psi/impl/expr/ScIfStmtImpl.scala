@@ -25,8 +25,10 @@ class ScIfStmtImpl(node: ASTNode)
     with ScIfStmt {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -52,7 +54,8 @@ class ScIfStmtImpl(node: ASTNode)
         PsiTreeUtil.getPrevSiblingOfType(kElse, classOf[ScExpression])
       else
         getLastChild match {
-          case expression: ScExpression => expression
+          case expression: ScExpression =>
+            expression
           case _ =>
             PsiTreeUtil.getPrevSiblingOfType(
               getLastChild,
@@ -62,9 +65,12 @@ class ScIfStmtImpl(node: ASTNode)
       None
     else
       condition match {
-        case None              => Some(t)
-        case Some(c) if c != t => Some(t)
-        case _                 => None
+        case None =>
+          Some(t)
+        case Some(c) if c != t =>
+          Some(t)
+        case _ =>
+          None
       }
   }
 
@@ -109,7 +115,8 @@ class ScIfStmtImpl(node: ASTNode)
           }
       case (Some(t), None) =>
         t.getType(TypingContext.empty).map(tt => Bounds.weakLub(tt, types.Unit))
-      case _ => Failure(ScalaBundle.message("nothing.to.type"), Some(this))
+      case _ =>
+        Failure(ScalaBundle.message("nothing.to.type"), Some(this))
     }
   }
 }

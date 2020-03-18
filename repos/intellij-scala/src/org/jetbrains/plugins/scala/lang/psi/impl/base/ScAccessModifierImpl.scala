@@ -47,8 +47,10 @@ class ScAccessModifierImpl private (
       return stub.asInstanceOf[ScAccessModifierStub].getIdText
     }
     getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER) match {
-      case null => None
-      case x    => Some(x.getPsi.getText)
+      case null =>
+        None
+      case x =>
+        Some(x.getPsi.getText)
     }
   }
 
@@ -58,7 +60,8 @@ class ScAccessModifierImpl private (
         PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
       case ref =>
         ref.resolve() match {
-          case named: PsiNamedElement => named
+          case named: PsiNamedElement =>
+            named
           case _ =>
             PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
         }
@@ -103,9 +106,12 @@ class ScAccessModifierImpl private (
         }
         def getCanonicalText =
           resolve() match {
-            case td: ScTypeDefinition => td.qualifiedName
-            case p: PsiPackage        => p.getQualifiedName
-            case _                    => null
+            case td: ScTypeDefinition =>
+              td.qualifiedName
+            case p: PsiPackage =>
+              p.getQualifiedName
+            case _ =>
+              null
           }
         def isSoft = false
 
@@ -113,8 +119,10 @@ class ScAccessModifierImpl private (
           doRename(newElementName)
         def bindToElement(e: PsiElement) =
           e match {
-            case td: ScTypeDefinition => doRename(td.name)
-            case p: PsiPackage        => doRename(p.name)
+            case td: ScTypeDefinition =>
+              doRename(td.name)
+            case p: PsiPackage =>
+              doRename(p.name)
             case _ =>
               throw new IncorrectOperationException(
                 "cannot bind to anything but type definition or package")
@@ -131,9 +139,12 @@ class ScAccessModifierImpl private (
 
         def isReferenceTo(element: PsiElement) =
           element match {
-            case td: ScTypeDefinition => td.name == text.get && resolve == td
-            case p: PsiPackage        => p.name == text.get && resolve == p
-            case _                    => false
+            case td: ScTypeDefinition =>
+              td.name == text.get && resolve == td
+            case p: PsiPackage =>
+              p.name == text.get && resolve == p
+            case _ =>
+              false
           }
 
         def resolve(): PsiElement = {
@@ -151,11 +162,16 @@ class ScAccessModifierImpl private (
 
           def find(e: PsiElement): PsiNamedElement =
             e match {
-              case null                                    => null
-              case td: ScTypeDefinition if td.name == name => td
-              case file: ScalaFile                         => findPackage("")
-              case container: ScPackageContainer           => findPackage(container.fqn)
-              case _                                       => find(e.getParent)
+              case null =>
+                null
+              case td: ScTypeDefinition if td.name == name =>
+                td
+              case file: ScalaFile =>
+                findPackage("")
+              case container: ScPackageContainer =>
+                findPackage(container.fqn)
+              case _ =>
+                find(e.getParent)
             }
           find(getParent)
         }
@@ -176,10 +192,12 @@ class ScAccessModifierImpl private (
               case td: ScTypeDefinition =>
                 buff += td;
                 append(td.getParent)
-              case file: ScalaFile => processPackages("")
+              case file: ScalaFile =>
+                processPackages("")
               case container: ScPackageContainer =>
                 processPackages(container.fqn)
-              case _ => append(e.getParent)
+              case _ =>
+                append(e.getParent)
             }
           }
           append(getParent)

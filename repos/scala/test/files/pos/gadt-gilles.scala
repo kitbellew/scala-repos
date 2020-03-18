@@ -7,12 +7,14 @@ object Test {
   val x: A[C with D] = new B[C, D] {}
   val y: A[C with D] =
     x match {
-      case b: B[u, v] => (new B[u, v] {}): A[u with v]
+      case b: B[u, v] =>
+        (new B[u, v] {}): A[u with v]
     } // OK
 
   def f[T, U](p: A[T with U]): A[T with U] =
     p match {
-      case b: B[u, v] => new A[u with v] {}
+      case b: B[u, v] =>
+        new A[u with v] {}
     } // Not OK
 }
 
@@ -23,7 +25,8 @@ object Test1 {
   def f(r: Any) =
     r match {
 
-      case t: T[u, v] => new T[u, v] {}
+      case t: T[u, v] =>
+        new T[u, v] {}
 
     }
 
@@ -36,7 +39,8 @@ object Test2 {
 
   x match {
 
-    case t: T[u, v] => new T[u, v] {}
+    case t: T[u, v] =>
+      new T[u, v] {}
 
   }
 

@@ -39,7 +39,8 @@ private[io] class UdpSender(
   def receive: Receive = {
     case registration: ChannelRegistration ⇒
       options.foreach {
-        case v2: Inet.SocketOptionV2 ⇒ v2.afterConnect(channel.socket)
+        case v2: Inet.SocketOptionV2 ⇒
+          v2.afterConnect(channel.socket)
         case _ ⇒
       }
       commander ! SimpleSenderReady
@@ -51,7 +52,8 @@ private[io] class UdpSender(
       log.debug("Closing DatagramChannel after being stopped")
       try channel.close()
       catch {
-        case NonFatal(e) ⇒ log.debug("Error closing DatagramChannel: {}", e)
+        case NonFatal(e) ⇒
+          log.debug("Error closing DatagramChannel: {}", e)
       }
     }
 }

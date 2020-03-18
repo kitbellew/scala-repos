@@ -291,8 +291,10 @@ object TestSubscriber {
         case null ⇒
           throw new AssertionError(
             s"Expected OnNext(_), yet no element signaled during $t")
-        case OnNext(elem) ⇒ elem.asInstanceOf[I]
-        case other ⇒ throw new AssertionError("expected OnNext, found " + other)
+        case OnNext(elem) ⇒
+          elem.asInstanceOf[I]
+        case other ⇒
+          throw new AssertionError("expected OnNext, found " + other)
       }
     }
 
@@ -496,11 +498,15 @@ object TestSubscriber {
       */
     def expectNextOrError(): Either[Throwable, I] = {
       probe.fishForMessage(hint = s"OnNext(_) or error") {
-        case OnNext(element) ⇒ true
-        case OnError(cause) ⇒ true
+        case OnNext(element) ⇒
+          true
+        case OnError(cause) ⇒
+          true
       } match {
-        case OnNext(n: I @unchecked) ⇒ Right(n)
-        case OnError(err) ⇒ Left(err)
+        case OnNext(n: I @unchecked) ⇒
+          Right(n)
+        case OnError(err) ⇒
+          Left(err)
       }
     }
 
@@ -513,11 +519,15 @@ object TestSubscriber {
         cause: Throwable): Either[Throwable, I] = {
       probe.fishForMessage(hint =
         s"OnNext($element) or ${cause.getClass.getName}") {
-        case OnNext(`element`) ⇒ true
-        case OnError(`cause`) ⇒ true
+        case OnNext(`element`) ⇒
+          true
+        case OnError(`cause`) ⇒
+          true
       } match {
-        case OnNext(n: I @unchecked) ⇒ Right(n)
-        case OnError(err) ⇒ Left(err)
+        case OnNext(n: I @unchecked) ⇒
+          Right(n)
+        case OnError(err) ⇒
+          Left(err)
       }
     }
 
@@ -526,11 +536,15 @@ object TestSubscriber {
       */
     def expectNextOrComplete(): Either[OnComplete.type, I] = {
       probe.fishForMessage(hint = s"OnNext(_) or OnComplete") {
-        case OnNext(n) ⇒ true
-        case OnComplete ⇒ true
+        case OnNext(n) ⇒
+          true
+        case OnComplete ⇒
+          true
       } match {
-        case OnComplete ⇒ Left(OnComplete)
-        case OnNext(n: I @unchecked) ⇒ Right(n)
+        case OnComplete ⇒
+          Left(OnComplete)
+        case OnNext(n: I @unchecked) ⇒
+          Right(n)
       }
     }
 
@@ -541,8 +555,10 @@ object TestSubscriber {
       */
     def expectNextOrComplete(element: I): Self = {
       probe.fishForMessage(hint = s"OnNext($element) or OnComplete") {
-        case OnNext(`element`) ⇒ true
-        case OnComplete ⇒ true
+        case OnNext(`element`) ⇒
+          true
+        case OnComplete ⇒
+          true
       }
       self
     }
@@ -597,8 +613,10 @@ object TestSubscriber {
         messages: Int = Int.MaxValue): immutable.Seq[I] =
       probe
         .receiveWhile(max, max, messages) {
-          case OnNext(i) ⇒ Some(i.asInstanceOf[I])
-          case _ ⇒ None
+          case OnNext(i) ⇒
+            Some(i.asInstanceOf[I])
+          case _ ⇒
+            None
         }
         .flatten
 
@@ -714,13 +732,16 @@ private[testkit] object StreamTestKit {
       publisherProbe.expectMsg(RequestMore(this, n))
     def expectRequest(): Long =
       publisherProbe.expectMsgPF() {
-        case RequestMore(sub, n) if sub eq this ⇒ n
+        case RequestMore(sub, n) if sub eq this ⇒
+          n
       }
 
     def expectCancellation(): Unit =
       publisherProbe.fishForMessage() {
-        case CancelSubscription(sub) if sub eq this ⇒ true
-        case RequestMore(sub, _) if sub eq this ⇒ false
+        case CancelSubscription(sub) if sub eq this ⇒
+          true
+        case RequestMore(sub, _) if sub eq this ⇒
+          false
       }
 
     def sendNext(element: I): Unit = subscriber.onNext(element)

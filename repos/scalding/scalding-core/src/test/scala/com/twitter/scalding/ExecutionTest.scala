@@ -80,8 +80,10 @@ class ExecutionTest extends WordSpec with Matchers {
     def shouldSucceed(): T = {
       val r = ex.waitFor(Config.default, Local(true))
       r match {
-        case Success(s) => s
-        case Failure(e) => fail(s"Failed running execution, exception:\n$e")
+        case Success(s) =>
+          s
+        case Failure(e) =>
+          fail(s"Failed running execution, exception:\n$e")
       }
     }
     def shouldFail(): Unit = {
@@ -103,7 +105,8 @@ class ExecutionTest extends WordSpec with Matchers {
         ExecutionTestJobs
           .zipped(TypedPipe.from(0 until 100), TypedPipe.from(100 until 200))
           .shouldSucceed() match {
-          case (it1, it2) => (it1.head, it2.head)
+          case (it1, it2) =>
+            (it1.head, it2.head)
         }
       ) shouldBe ((0 until 100).sum, (100 until 200).sum)
     }

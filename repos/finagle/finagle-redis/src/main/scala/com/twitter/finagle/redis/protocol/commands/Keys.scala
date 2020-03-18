@@ -229,12 +229,15 @@ case class Scan(
       count match {
         case Some(count) =>
           bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))
-        case None => bufs
+        case None =>
+          bufs
       }
     val withPattern =
       pattern match {
-        case Some(pattern) => withCount ++ Seq(Pattern.PATTERN_CB, pattern)
-        case None          => withCount
+        case Some(pattern) =>
+          withCount ++ Seq(Pattern.PATTERN_CB, pattern)
+        case None =>
+          withCount
       }
     RedisCodec.toUnifiedFormat(withPattern)
   }
@@ -247,10 +250,12 @@ object Scan {
       args != null && !args.isEmpty,
       "Expected at least 1 arguments for scan command")
     args match {
-      case cursor :: Nil => new Scan(NumberFormat.toLong(BytesToString(cursor)))
+      case cursor :: Nil =>
+        new Scan(NumberFormat.toLong(BytesToString(cursor)))
       case cursor :: tail =>
         parseArgs(NumberFormat.toLong(BytesToString(cursor)), tail)
-      case _ => throw new ClientError("Unexpected args to scan command")
+      case _ =>
+        throw new ClientError("Unexpected args to scan command")
     }
   }
 
@@ -290,8 +295,10 @@ object ScanCompanion {
 
   def findArgs(args: Seq[String]): (Seq[String], Seq[String]) = {
     args.head.toUpperCase match {
-      case Count.COUNT     => args.splitAt(2)
-      case Pattern.PATTERN => args.splitAt(2)
+      case Count.COUNT =>
+        args.splitAt(2)
+      case Pattern.PATTERN =>
+        args.splitAt(2)
       case s =>
         throw ClientError(
           "COUNT or PATTERN argument expected, found %s".format(s))
@@ -304,10 +311,13 @@ object ScanCompanion {
         Count(args1) match {
           case None =>
             throw ClientError("Have additional arguments but unable to process")
-          case c => c
+          case c =>
+            c
         }
-      case None => None
-      case c    => c
+      case None =>
+        None
+      case c =>
+        c
     }
 
   def findPattern(args0: Seq[String], args1: Seq[String]) =
@@ -316,10 +326,13 @@ object ScanCompanion {
         Pattern(args1) match {
           case None =>
             throw ClientError("Have additional arguments but unable to process")
-          case pattern => pattern
+          case pattern =>
+            pattern
         }
-      case None    => None
-      case pattern => pattern
+      case None =>
+        None
+      case pattern =>
+        pattern
     }
 
 }

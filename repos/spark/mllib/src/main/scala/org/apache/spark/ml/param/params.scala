@@ -78,8 +78,10 @@ class Param[T](
     if (!isValid(value)) {
       val valueToString =
         value match {
-          case v: Array[_] => v.mkString("[", ",", "]")
-          case _           => value.toString
+          case v: Array[_] =>
+            v.mkString("[", ",", "]")
+          case _ =>
+            value.toString
         }
       throw new IllegalArgumentException(
         s"$parent parameter $name given invalid value $valueToString.")
@@ -119,8 +121,10 @@ class Param[T](
 
   override final def equals(obj: Any): Boolean = {
     obj match {
-      case p: Param[_] => (p.parent == parent) && (p.name == name)
-      case _           => false
+      case p: Param[_] =>
+        (p.parent == parent) && (p.name == name)
+      case _ =>
+        false
     }
   }
 }
@@ -164,11 +168,15 @@ object ParamValidators {
     */
   private def getDouble[T](value: T): Double =
     value match {
-      case x: Int    => x.toDouble
-      case x: Long   => x.toDouble
-      case x: Float  => x.toDouble
-      case x: Double => x.toDouble
-      case _         =>
+      case x: Int =>
+        x.toDouble
+      case x: Long =>
+        x.toDouble
+      case x: Float =>
+        x.toDouble
+      case x: Double =>
+        x.toDouble
+      case _ =>
         // The type should be checked before this is ever called.
         throw new IllegalArgumentException(
           "Numerical Param validation failed because" +
@@ -976,7 +984,8 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
     // Otherwise, we get ClassCastException.
     // Not using filterKeys also avoid SI-6654
     val filtered = map.filter {
-      case (k, _) => k.parent == parent.uid
+      case (k, _) =>
+        k.parent == parent.uid
     }
     new ParamMap(filtered)
   }

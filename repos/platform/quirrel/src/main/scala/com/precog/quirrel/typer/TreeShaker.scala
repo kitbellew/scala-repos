@@ -66,7 +66,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
             ): _*) &~ leftNameBindings
 
           val errors = unusedParamBindings map {
-            case (id, _) => Error(b, UnusedFormalBinding(id))
+            case (id, _) =>
+              Error(b, UnusedFormalBinding(id))
           }
 
           (
@@ -92,7 +93,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
 
         val (constNameVector, constVarVector) =
           mapped map {
-            case (_, names, vars, _) => (names, vars)
+            case (_, names, vars, _) =>
+              (names, vars)
           } unzip
 
         val constNames = constNameVector reduce {
@@ -116,7 +118,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
           ): _*) &~ childVars
 
         val errors = unusedBindings map {
-          case (id, _) => Error(b, UnusedTicVariable(id))
+          case (id, _) =>
+            Error(b, UnusedTicVariable(id))
         }
 
         (
@@ -173,11 +176,16 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       case e @ TicVar(loc, id) =>
         (TicVar(loc, id), Set(), Set(id -> e.binding), Set())
 
-      case e @ StrLit(_, _)    => (e, Set(), Set(), Set())
-      case e @ NumLit(_, _)    => (e, Set(), Set(), Set())
-      case e @ BoolLit(_, _)   => (e, Set(), Set(), Set())
-      case e @ UndefinedLit(_) => (e, Set(), Set(), Set())
-      case e @ NullLit(_)      => (e, Set(), Set(), Set())
+      case e @ StrLit(_, _) =>
+        (e, Set(), Set(), Set())
+      case e @ NumLit(_, _) =>
+        (e, Set(), Set(), Set())
+      case e @ BoolLit(_, _) =>
+        (e, Set(), Set(), Set())
+      case e @ UndefinedLit(_) =>
+        (e, Set(), Set(), Set())
+      case e @ NullLit(_) =>
+        (e, Set(), Set(), Set())
 
       case ObjectDef(loc, props) => {
         val mapped: Vector[(
@@ -187,11 +195,13 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
                 Set[(Identifier, NameBinding)],
                 Set[(TicId, VarBinding)],
                 Set[Error]))] = props map {
-          case (key, value) => (key, performShake(value))
+          case (key, value) =>
+            (key, performShake(value))
         }
 
         val props2 = mapped map {
-          case (key, (value, _, _, _)) => (key, value)
+          case (key, (value, _, _, _)) =>
+            (key, value)
         }
 
         val (names, vars) =
@@ -203,7 +213,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
 
         val errors =
           mapped.foldLeft(Set[Error]()) {
-            case (errors, (_, (_, _, _, errors2))) => errors ++ errors2
+            case (errors, (_, (_, _, _, errors2))) =>
+              errors ++ errors2
           }
 
         (ObjectDef(loc, props2), names, vars, errors)
@@ -212,7 +223,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       case ArrayDef(loc, values) => {
         val mapped = values map performShake
         val values2 = mapped map {
-          case (value, _, _, _) => value
+          case (value, _, _, _) =>
+            value
         }
 
         val (names, vars) =
@@ -224,7 +236,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
 
         val errors =
           mapped.foldLeft(Set[Error]()) {
-            case (errors, (_, _, _, errors2)) => errors ++ errors2
+            case (errors, (_, _, _, errors2)) =>
+              errors ++ errors2
           }
 
         (ArrayDef(loc, values2), names, vars, errors)
@@ -254,7 +267,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       case d @ Dispatch(loc, name, actuals) => {
         val mapped = actuals map performShake
         val actuals2 = mapped map {
-          case (value, _, _, _) => value
+          case (value, _, _, _) =>
+            value
         }
 
         val (names, vars) =
@@ -266,7 +280,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
 
         val errors =
           mapped.foldLeft(Set[Error]()) {
-            case (errors, (_, _, _, errors2)) => errors ++ errors2
+            case (errors, (_, _, _, errors2)) =>
+              errors ++ errors2
           }
 
         (
@@ -507,6 +522,7 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         (Neg(loc, child2), names, vars, errors)
       }
 
-      case Paren(_, child) => performShake(child) // nix parentheses on shake
+      case Paren(_, child) =>
+        performShake(child) // nix parentheses on shake
     }
 }

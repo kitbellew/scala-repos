@@ -68,10 +68,12 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
 
     val doc =
       keyDefinitionArgs.headOption match {
-        case Some(_: ScLiteral) => getDocForNewKeyDefinition(argStrings)
+        case Some(_: ScLiteral) =>
+          getDocForNewKeyDefinition(argStrings)
         case Some(_: ScReferenceExpressionImpl) =>
           getDocForKeyReference(argStrings)
-        case _ => None
+        case _ =>
+          None
       }
 
     doc.getOrElse("")
@@ -83,14 +85,17 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
       .safeMap(_.getParent)
       .safeMap(_.getParent)
       .collect {
-        case s: ScPatternDefinition => s
+        case s: ScPatternDefinition =>
+          s
       }
 
   private def getKeyDefinitionArgs(
       keyDefinition: ScPatternDefinition): Seq[ScExpression] =
     keyDefinition.lastChild match {
-      case Some(call: ScMethodCall) => call.argumentExpressions
-      case _                        => Seq.empty
+      case Some(call: ScMethodCall) =>
+        call.argumentExpressions
+      case _ =>
+        Seq.empty
     }
 
   private def argToString(arg: ScExpression): Option[String] =

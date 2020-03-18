@@ -36,8 +36,10 @@ class ReplTest extends WordSpec {
 
     val suffix =
       mode match {
-        case _: CascadingLocal => "local"
-        case _: HadoopMode     => "hadoop"
+        case _: CascadingLocal =>
+          "local"
+        case _: HadoopMode =>
+          "hadoop"
       }
     val testPath = "/tmp/scalding-repl/test/" + suffix + "/"
     val helloRef = List("Hello world", "Goodbye world")
@@ -64,8 +66,10 @@ class ReplTest extends WordSpec {
 
         val pipeName =
           mode match {
-            case m: HadoopMode => m.jobConf.get("hadoop.tmp.dir")
-            case _             => "IterableSource"
+            case m: HadoopMode =>
+              m.jobConf.get("hadoop.tmp.dir")
+            case _ =>
+              "IterableSource"
           }
         assert(s.toPipe(Fields.ALL).toString.contains(pipeName))
 
@@ -133,7 +137,8 @@ class ReplTest extends WordSpec {
           linesByWord
             .join(wordScores)
             .mapValues {
-              case (text, score) => score
+              case (text, score) =>
+                score
             }
             .sum
 

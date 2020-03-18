@@ -37,7 +37,8 @@ private[api] final class UserApi(
 
   def one(username: String)(implicit ctx: Context): Fu[Option[JsObject]] =
     UserRepo named username flatMap {
-      case None => fuccess(none)
+      case None =>
+        fuccess(none)
       case Some(u) =>
         GameRepo mostUrgentGame u zip
           (

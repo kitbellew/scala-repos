@@ -146,7 +146,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         """
       // If we have parent behavior, we need to do a quick instanceOf check first.
       x.parentBehavior match {
-        case None => subclasses
+        case None =>
+          subclasses
         case Some(b) =>
           val parentTpe = x.parent.tpe[c.universe.type](c.universe)
           val impl = generatePickleImplFromAst(b)
@@ -177,10 +178,14 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     }
     def genPickleOp(op: PicklerAst): c.Tree =
       op match {
-        case PickleBehavior(ops) => q"""..${ops.map(genPickleOp)}"""
-        case x: GetField         => genGetField(x)
-        case x: PickleEntry      => genPickleEntry(x)
-        case x: SubclassDispatch => genSubclassDispatch(x)
+        case PickleBehavior(ops) =>
+          q"""..${ops.map(genPickleOp)}"""
+        case x: GetField =>
+          genGetField(x)
+        case x: PickleEntry =>
+          genPickleEntry(x)
+        case x: SubclassDispatch =>
+          genSubclassDispatch(x)
         case x: PickleExternalizable =>
           genExternalizablePickle(
             newTermName("picklee"),
@@ -364,14 +369,22 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   /** This will lift any primitive value into  the java-boxed version (usefulf or reflective code.) */
   def liftPrimitives(value: c.Tree, tpe: Type): c.Tree = {
     tpe match {
-      case ShortType   => q"new _root_.java.lang.Short($value)"
-      case CharType    => q"new _root_.java.lang.Character($value)"
-      case IntType     => q"new _root_.java.lang.Integer($value)"
-      case LongType    => q"new _root_.java.lang.Long($value)"
-      case FloatType   => q"new _root_.java.lang.Float($value)"
-      case DoubleType  => q"new _root_.java.lang.Double($value)"
-      case BooleanType => q"new _root_.java.lang.Boolean($value)"
-      case _           => value
+      case ShortType =>
+        q"new _root_.java.lang.Short($value)"
+      case CharType =>
+        q"new _root_.java.lang.Character($value)"
+      case IntType =>
+        q"new _root_.java.lang.Integer($value)"
+      case LongType =>
+        q"new _root_.java.lang.Long($value)"
+      case FloatType =>
+        q"new _root_.java.lang.Float($value)"
+      case DoubleType =>
+        q"new _root_.java.lang.Double($value)"
+      case BooleanType =>
+        q"new _root_.java.lang.Boolean($value)"
+      case _ =>
+        value
     }
   }
 
@@ -406,7 +419,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         unpickler.asInstanceOf[_root_.scala.pickling.Unpickler[$tpe]].unpickle(tagKey, reader)
         """
     x.parentBehavior match {
-      case None => subClass
+      case None =>
+        subClass
       case Some(p) =>
         val ptree = generateUnpickleImplFromAst(p)
         q"""if(tagKey == ${tpe.key}) $ptree else $subClass"""
@@ -425,12 +439,18 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
 
   def generateUnpickleImplFromAst(unpicklerAst: UnpicklerAst): c.Tree = {
     unpicklerAst match {
-      case c: CallConstructor             => genConstructorUnpickle(c)
-      case c: CallModuleFactory           => genCallModuleFactory(c)
-      case x: SetField                    => genSetField(x)
-      case x: SubclassUnpicklerDelegation => genSubclassUnpickler(x)
-      case x: UnpickleSingleton           => genUnpickleSingleton(x)
-      case x: AllocateInstance            => genAllocateInstance(x)
+      case c: CallConstructor =>
+        genConstructorUnpickle(c)
+      case c: CallModuleFactory =>
+        genCallModuleFactory(c)
+      case x: SetField =>
+        genSetField(x)
+      case x: SubclassUnpicklerDelegation =>
+        genSubclassUnpickler(x)
+      case x: UnpickleSingleton =>
+        genUnpickleSingleton(x)
+      case x: AllocateInstance =>
+        genAllocateInstance(x)
       // TODO - This is kind of hacky, should be a temproary workaround for a better solution.
       case x: UnpickleExternalizable =>
         genExternalizablUnPickle(newTermName("reader"), x)
@@ -438,7 +458,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         val behavior = x.operations.map(generateUnpickleImplFromAst).toList
         // TODO - This is kind of hacky.  We're trying to make sure during unpickling we always register/unregister appropriately...
         x.operations match {
-          case List() => q"null"
+          case List() =>
+            q"null"
           case List(head: SubclassUnpicklerDelegation) =>
             generateUnpickleImplFromAst(head)
           // TODO - Can we assume that ever additional operation is something which manipualtes the result?

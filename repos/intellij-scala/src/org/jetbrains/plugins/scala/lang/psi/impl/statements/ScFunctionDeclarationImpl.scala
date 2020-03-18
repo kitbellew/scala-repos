@@ -32,7 +32,8 @@ class ScFunctionDeclarationImpl private (
     visitor match {
       case visitor: ScalaElementVisitor =>
         visitor.visitFunctionDeclaration(this)
-      case _ => super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -47,8 +48,10 @@ class ScFunctionDeclarationImpl private (
 
   def returnTypeInner: TypeResult[ScType] = {
     typeElement match {
-      case Some(t) => t.getType(TypingContext.empty)
-      case None    => Success(Unit, Some(this))
+      case Some(t) =>
+        t.getType(TypingContext.empty)
+      case None =>
+        Success(Unit, Some(this))
     }
   }
 }

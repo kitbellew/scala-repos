@@ -343,7 +343,8 @@ private[sql] class SQLListener(conf: SparkConf)
                 (accumulatorUpdate.id, accumulatorUpdate.update.get)
               }
           }.filter {
-            case (id, _) => executionUIData.accumulatorMetrics.contains(id)
+            case (id, _) =>
+              executionUIData.accumulatorMetrics.contains(id)
           }
           mergeAccumulatorUpdates(
             accumulatorUpdates,
@@ -414,7 +415,8 @@ private[spark] class SQLHistoryListener(conf: SparkConf, sparkUI: SparkUI)
           sqlTabAttached = true
         }
         super.onOtherEvent(event)
-      case _ => super.onOtherEvent(event)
+      case _ =>
+        super.onOtherEvent(event)
     }
 }
 
@@ -447,7 +449,8 @@ private[ui] class SQLExecutionUIData(
   def runningJobs: Seq[Long] =
     jobs
       .filter {
-        case (_, status) => status == JobExecutionStatus.RUNNING
+        case (_, status) =>
+          status == JobExecutionStatus.RUNNING
       }
       .keys
       .toSeq
@@ -455,7 +458,8 @@ private[ui] class SQLExecutionUIData(
   def succeededJobs: Seq[Long] =
     jobs
       .filter {
-        case (_, status) => status == JobExecutionStatus.SUCCEEDED
+        case (_, status) =>
+          status == JobExecutionStatus.SUCCEEDED
       }
       .keys
       .toSeq
@@ -463,7 +467,8 @@ private[ui] class SQLExecutionUIData(
   def failedJobs: Seq[Long] =
     jobs
       .filter {
-        case (_, status) => status == JobExecutionStatus.FAILED
+        case (_, status) =>
+          status == JobExecutionStatus.FAILED
       }
       .keys
       .toSeq

@@ -58,8 +58,10 @@ private[pickling] class IrScalaSymbols[
     if (tpe.typeSymbol.isClass) {
       val (quantified, rawTpe) =
         tpe match {
-          case ExistentialType(quantified, rtpe) => (quantified, rtpe);
-          case rtpe                              => (Nil, rtpe)
+          case ExistentialType(quantified, rtpe) =>
+            (quantified, rtpe);
+          case rtpe =>
+            (Nil, rtpe)
         }
       new ScalaIrClass(tpe, quantified, rawTpe)
     } else
@@ -71,8 +73,10 @@ private[pickling] class IrScalaSymbols[
     def this(tpe: Type, quantified: List[Symbol], rawType: Type) = this(tpe)
     private[generator] val (quantified, rawType) =
       tpe match {
-        case ExistentialType(quantified, rtpe) => (quantified, rtpe);
-        case rtpe                              => (Nil, rtpe)
+        case ExistentialType(quantified, rtpe) =>
+          (quantified, rtpe);
+        case rtpe =>
+          (Nil, rtpe)
       }
     private def classSymbol = tpe.typeSymbol.asClass
 
@@ -93,7 +97,8 @@ private[pickling] class IrScalaSymbols[
             new ScalaIrConstructor(overloaded.alternatives.head.asMethod, this))
         case primaryCtor: MethodSymbol =>
           Some(new ScalaIrConstructor(primaryCtor, this))
-        case NoSymbol => None
+        case NoSymbol =>
+          None
       }
     }
 
@@ -102,7 +107,8 @@ private[pickling] class IrScalaSymbols[
       val constructorArgs =
         tpe.members
           .collect {
-            case meth: MethodSymbol => meth
+            case meth: MethodSymbol =>
+              meth
           }
           .toList
           .filter { x =>
@@ -114,7 +120,8 @@ private[pickling] class IrScalaSymbols[
       // NOTE - This will only collect memeber vals/vals.  It's possible some things come from the constructor.
       val declaredVars =
         (tpe.declarations).collect {
-          case meth: MethodSymbol => meth
+          case meth: MethodSymbol =>
+            meth
         }.toList
       // NOTE - There can be duplication between 'constructor args' and 'declared vars' we'd like to avoid.
       declaredVars
@@ -217,8 +224,10 @@ private[pickling] class IrScalaSymbols[
 
       val rawSymTpe =
         baseSymTpe match {
-          case NullaryMethodType(ntpe) => ntpe;
-          case ntpe                    => ntpe
+          case NullaryMethodType(ntpe) =>
+            ntpe;
+          case ntpe =>
+            ntpe
         }
       val result = existentialAbstraction(quantified, rawSymTpe)
       //System.err.println(s"result = ${result.toString}")
@@ -266,7 +275,8 @@ private[pickling] class IrScalaSymbols[
         case x if x endsWith " " =>
           //System.err.println(s"Caugh funny symbol: $field, name: ${field.name}, fullName: ${field.fullName}")
           x.dropRight(1).toString
-        case x => x
+        case x =>
+          x
       }
     override def fieldName: String = removeTrailingSpace(field.name.toString)
     override def tpe[U <: Universe with Singleton](u: U): u.Type =
@@ -327,8 +337,10 @@ private[pickling] class IrScalaSymbols[
     override def methodName: String = {
       mthd.name.toString match {
         // TODO - Why do we need this random fix, is this a bug?
-        case x if x endsWith " " => x.dropRight(1).toString
-        case x                   => x
+        case x if x endsWith " " =>
+          x.dropRight(1).toString
+        case x =>
+          x
       }
     }
     override def javaReflectionName: String = {
@@ -345,7 +357,8 @@ private[pickling] class IrScalaSymbols[
             buf: StringBuilder,
             isStart: Boolean = false): String =
           names match {
-            case Nil => buf.toString
+            case Nil =>
+              buf.toString
             case next :: rest if isStart =>
               buf.append(next)
               makeEncodedJvmName(rest, buf, isStart = false)
@@ -363,8 +376,10 @@ private[pickling] class IrScalaSymbols[
         mthd match {
           // Note: Not available in Scala 2.10.x
           //case TermName(n) => n
-          case x: TermName => x.toString
-          case _           => mthd.name.encodedName.toString
+          case x: TermName =>
+            x.toString
+          case _ =>
+            mthd.name.encodedName.toString
         }
     }
     // TODO - Figure out if the method is JVM public or not.
@@ -391,8 +406,10 @@ private[pickling] class IrScalaSymbols[
         .asInstanceOf[u.Type]
     override def setter: Option[IrMethod] = {
       mthd.setter match {
-        case NoSymbol => None
-        case x        => Some(new ScalaIrMethod(x.asMethod, owner))
+        case NoSymbol =>
+          None
+        case x =>
+          Some(new ScalaIrMethod(x.asMethod, owner))
       }
     }
   }

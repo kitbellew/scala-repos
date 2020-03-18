@@ -40,7 +40,8 @@ object CascadingTokenUpdater {
   // return the cascading token format for it
   private def toksToString(m: Map[Int, String]): String =
     m.map {
-        case (tok, clazz) => s"$tok=$clazz"
+        case (tok, clazz) =>
+          s"$tok=$clazz"
       }
       .mkString(",")
 

@@ -34,8 +34,10 @@ object PairingSystem extends AbstractPairingSystem {
         evenOrAll(data, users)
       else
         makePreps(data, users.waiting) flatMap {
-          case Nil => fuccess(Nil)
-          case _   => evenOrAll(data, users)
+          case Nil =>
+            fuccess(Nil)
+          case _ =>
+            evenOrAll(data, users)
         }
       pairings <- preps.map { prep =>
         UserRepo.firstGetsWhite(
@@ -51,8 +53,10 @@ object PairingSystem extends AbstractPairingSystem {
 
   private def evenOrAll(data: Data, users: WaitingUsers) =
     makePreps(data, users.evenNumber) flatMap {
-      case Nil if users.isOdd => makePreps(data, users.all)
-      case x                  => fuccess(x)
+      case Nil if users.isOdd =>
+        makePreps(data, users.all)
+      case x =>
+        fuccess(x)
     }
 
   val pairingGroupSize = 18
@@ -75,8 +79,10 @@ object PairingSystem extends AbstractPairingSystem {
                 b) ::: naivePairings(tour, c take pairingGroupSize)
             case a :: b :: Nil =>
               smartPairings(data, a) ::: smartPairings(data, b)
-            case a :: Nil => smartPairings(data, a)
-            case Nil      => Nil
+            case a :: Nil =>
+              smartPairings(data, a)
+            case Nil =>
+              Nil
           }
       }
   }.chronometer
@@ -89,7 +95,8 @@ object PairingSystem extends AbstractPairingSystem {
       tour: Tournament,
       players: RankedPlayers): List[Pairing.Prep] =
     players grouped 2 collect {
-      case List(p1, p2) => Pairing.prep(tour, p1.player, p2.player)
+      case List(p1, p2) =>
+        Pairing.prep(tour, p1.player, p2.player)
     } toList
 
   private val smartPairingsMaxMillis = 400
@@ -146,7 +153,8 @@ object PairingSystem extends AbstractPairingSystem {
             rest.map { b =>
               (a, b) :: combo
             }
-          case _ => Nil
+          case _ =>
+            Nil
         }
 
       sealed trait FindBetter
@@ -156,7 +164,8 @@ object PairingSystem extends AbstractPairingSystem {
 
       def findBetter(from: Combination, than: Score): FindBetter =
         nextCombos(from) match {
-          case Nil => End
+          case Nil =>
+            End
           case nexts =>
             nexts.foldLeft(none[Combination]) {
               case (current, next) =>
@@ -165,38 +174,47 @@ object PairingSystem extends AbstractPairingSystem {
                   current
                 else if (continue)
                   findBetter(next, toBeat) match {
-                    case Found(b) => b.some
-                    case End      => next.some
-                    case NoBetter => current
+                    case Found(b) =>
+                      b.some
+                    case End =>
+                      next.some
+                    case NoBetter =>
+                      current
                   }
                 else
                   current
             } match {
-              case Some(best) => Found(best)
-              case None       => NoBetter
+              case Some(best) =>
+                Found(best)
+              case None =>
+                NoBetter
             }
         }
 
       val preps = (
         players match {
-          case x if x.size < 2 => Nil
+          case x if x.size < 2 =>
+            Nil
           case List(p1, p2) if onlyTwoActivePlayers =>
             List(p1.player -> p2.player)
           case List(p1, p2)
               if justPlayedTogether(p1.player.userId, p2.player.userId) =>
             Nil
-          case List(p1, p2) => List(p1.player -> p2.player)
+          case List(p1, p2) =>
+            List(p1.player -> p2.player)
           case ps =>
             findBetter(Nil, Int.MaxValue) match {
               case Found(best) =>
                 best map {
-                  case (rp0, rp1) => rp0.player -> rp1.player
+                  case (rp0, rp1) =>
+                    rp0.player -> rp1.player
                 }
               case _ =>
                 pairingLogger.warn(
                   "Could not make smart pairings for arena tournament")
                 players map (_.player) grouped 2 collect {
-                  case List(p1, p2) => (p1, p2)
+                  case List(p1, p2) =>
+                    (p1, p2)
                 } toList
             }
         }

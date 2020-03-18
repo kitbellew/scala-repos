@@ -36,10 +36,14 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
   // ORC does not play well with NullType and UDT.
   override protected def supportsDataType(dataType: DataType): Boolean =
     dataType match {
-      case _: NullType             => false
-      case _: CalendarIntervalType => false
-      case _: UserDefinedType[_]   => false
-      case _                       => true
+      case _: NullType =>
+        false
+      case _: CalendarIntervalType =>
+        false
+      case _: UserDefinedType[_] =>
+        false
+      case _ =>
+        true
     }
 
   test(

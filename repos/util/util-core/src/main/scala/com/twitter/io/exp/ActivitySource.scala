@@ -57,8 +57,10 @@ object ActivitySource {
       extends ActivitySource[U] {
     def get(name: String): Activity[U] = {
       primary.get(name) transform {
-        case Activity.Failed(_) => failover.get(name)
-        case state              => Activity(Var.value(state))
+        case Activity.Failed(_) =>
+          failover.get(name)
+        case state =>
+          Activity(Var.value(state))
       }
     }
   }
@@ -86,7 +88,8 @@ class CachingActivitySource[T](underlying: ActivitySource[T])
       Option(forward.get(name)) flatMap { wr =>
         Option(wr.get())
       } match {
-        case Some(v) => v
+        case Some(v) =>
+          v
         case None =>
           val v = underlying.get(name)
           val ref = new WeakReference(v, refq)
@@ -190,7 +193,8 @@ class ClassLoaderActivitySource private[exp] (
         if (runOnce.compareAndSet(false, true)) {
           pool {
             classLoader.getResourceAsStream(name) match {
-              case null => p.setValue(Activity.Failed(NotFound))
+              case null =>
+                p.setValue(Activity.Failed(NotFound))
               case stream =>
                 val reader =
                   new InputStreamReader(

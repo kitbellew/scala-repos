@@ -532,8 +532,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           value: String,
           messages: Messages): Option[String] =
         getAccountByUserName(value) match {
-          case None                          => Some("User does not exist.")
-          case Some(x) if (x.isGroupAccount) => Some("User does not exist.")
+          case None =>
+            Some("User does not exist.")
+          case Some(x) if (x.isGroupAccount) =>
+            Some("User does not exist.")
           case Some(x)
               if (
                 x.userName == params("owner") || getCollaborators(
@@ -541,7 +543,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
                   params("repository")).contains(x.userName)
               ) =>
             Some("User can access this repository already.")
-          case _ => None
+          case _ =>
+            None
         }
     }
 
@@ -574,7 +577,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
           value: String,
           messages: Messages): Option[String] =
         getAccountByUserName(value) match {
-          case None => Some("User does not exist.")
+          case None =>
+            Some("User does not exist.")
           case Some(x) =>
             if (x.userName == params("owner")) {
               Some("This is current repository owner.")

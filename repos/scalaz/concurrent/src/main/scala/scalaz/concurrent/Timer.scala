@@ -45,7 +45,8 @@ case class Timer(
                 }
               expireFutures(expiredFutures)
             }
-            case _ => ()
+            case _ =>
+              ()
           }
           // Should we keep running?
           if (continueRunning) {

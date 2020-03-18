@@ -385,7 +385,8 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
 
     val s =
       octaveL1.foldLeft(0.0) {
-        case (agg, entry) => agg + abs(entry)
+        case (agg, entry) =>
+          agg + abs(entry)
       }
     val nlResult = NonlinearMinimizer(25, SPARSE, s)
       .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))

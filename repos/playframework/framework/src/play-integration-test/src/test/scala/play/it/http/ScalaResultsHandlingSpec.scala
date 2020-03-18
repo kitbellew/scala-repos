@@ -49,7 +49,8 @@ trait ScalaResultsHandlingSpec
           port,
           GuiceApplicationBuilder()
             .routes {
-              case _ => Action(result)
+              case _ =>
+                Action(result)
             }
             .build())) {
         block(port)
@@ -171,7 +172,8 @@ trait ScalaResultsHandlingSpec
             BasicRequest("GET", "/", "HTTP/1.0", Map(), ""))
         responses(0).status must_== 200
         responses(0).headers.get(CONNECTION) must beSome.like {
-          case s => s.toLowerCase(ENGLISH) must_== "keep-alive"
+          case s =>
+            s.toLowerCase(ENGLISH) must_== "keep-alive"
         }
         responses(1).status must_== 200
     }

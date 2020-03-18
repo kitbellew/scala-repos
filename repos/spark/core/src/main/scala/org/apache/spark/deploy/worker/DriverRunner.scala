@@ -88,9 +88,12 @@ private[deploy] class DriverRunner(
 
           def substituteVariables(argument: String): String =
             argument match {
-              case "{{WORKER_URL}}" => workerUrl
-              case "{{USER_JAR}}"   => localJarFilename
-              case other            => other
+              case "{{WORKER_URL}}" =>
+                workerUrl
+              case "{{USER_JAR}}" =>
+                localJarFilename
+              case other =>
+                other
             }
 
           // TODO: If we add ability to submit multiple jars they should also be added here
@@ -102,7 +105,8 @@ private[deploy] class DriverRunner(
             substituteVariables)
           launchDriver(builder, driverDir, driverDesc.supervise)
         } catch {
-          case e: Exception => finalException = Some(e)
+          case e: Exception =>
+            finalException = Some(e)
         }
 
         val state =
@@ -112,8 +116,10 @@ private[deploy] class DriverRunner(
             DriverState.ERROR
           } else {
             finalExitCode match {
-              case Some(0) => DriverState.FINISHED
-              case _       => DriverState.FAILED
+              case Some(0) =>
+                DriverState.FINISHED
+              case _ =>
+                DriverState.FAILED
             }
           }
 

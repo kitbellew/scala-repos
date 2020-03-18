@@ -49,7 +49,8 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
     // otherwise we could defer the evaluation until output attribute is actually used.
     val usedExprIds = projectList.flatMap(
       _.collect {
-        case a: Attribute => a.exprId
+        case a: Attribute =>
+          a.exprId
       })
     val usedMoreThanOnce =
       usedExprIds.groupBy(id => id).filter(_._2.size > 1).keySet
@@ -97,8 +98,10 @@ case class Filter(condition: Expression, child: SparkPlan)
   // Split out all the IsNotNulls from condition.
   private val (notNullPreds, otherPreds) = splitConjunctivePredicates(condition)
     .partition {
-      case IsNotNull(a) if child.output.contains(a) => true
-      case _                                        => false
+      case IsNotNull(a) if child.output.contains(a) =>
+        true
+      case _ =>
+        false
     }
 
   // The columns that will filtered out by `IsNotNull` could be considered as not nullable.

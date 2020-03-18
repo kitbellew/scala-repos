@@ -21,10 +21,12 @@ object MarkdownParser {
 
   def childrenOfBody(in: NodeSeq): NodeSeq = {
     (in \ "body").toList match {
-      case Nil => in
+      case Nil =>
+        in
       case xs =>
         xs.collect {
-            case e: Elem => e
+            case e: Elem =>
+              e
           }
           .flatMap(_.child)
     }
@@ -40,7 +42,8 @@ object MarkdownParser {
       info <- res.map { res =>
         (res \ "body")
           .collect {
-            case e: Elem => e
+            case e: Elem =>
+              e
           }
           .flatMap(_.child)
       }

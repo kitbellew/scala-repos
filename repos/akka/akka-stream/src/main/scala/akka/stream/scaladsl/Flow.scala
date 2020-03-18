@@ -376,9 +376,12 @@ object Flow {
     */
   def fromGraph[I, O, M](g: Graph[FlowShape[I, O], M]): Flow[I, O, M] =
     g match {
-      case f: Flow[I, O, M] ⇒ f
-      case f: javadsl.Flow[I, O, M] ⇒ f.asScala
-      case other ⇒ new Flow(other.module)
+      case f: Flow[I, O, M] ⇒
+        f
+      case f: javadsl.Flow[I, O, M] ⇒
+        f.asScala
+      case other ⇒
+        new Flow(other.module)
     }
 
   /**
@@ -414,8 +417,10 @@ object RunnableGraph {
     */
   def fromGraph[Mat](g: Graph[ClosedShape, Mat]): RunnableGraph[Mat] =
     g match {
-      case r: RunnableGraph[Mat] ⇒ r
-      case other ⇒ RunnableGraph(other.module)
+      case r: RunnableGraph[Mat] ⇒
+        r
+      case other ⇒
+        RunnableGraph(other.module)
     }
 }
 

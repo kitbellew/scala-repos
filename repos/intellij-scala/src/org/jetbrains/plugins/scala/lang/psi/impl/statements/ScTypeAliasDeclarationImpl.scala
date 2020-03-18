@@ -58,21 +58,26 @@ class ScTypeAliasDeclarationImpl private (
             getStub.asInstanceOf[ScTypeAliasStub].getName,
             getManager)
           .getPsi
-      case n => n
+      case n =>
+        n
     }
 
   override def toString: String = "ScTypeAliasDeclaration: " + name
 
   def lowerBound =
     lowerTypeElement match {
-      case Some(te) => te.getType(TypingContext.empty)
-      case None     => Success(Nothing, Some(this))
+      case Some(te) =>
+        te.getType(TypingContext.empty)
+      case None =>
+        Success(Nothing, Some(this))
     }
 
   def upperBound =
     upperTypeElement match {
-      case Some(te) => te.getType(TypingContext.empty)
-      case None     => Success(Any, Some(this))
+      case Some(te) =>
+        te.getType(TypingContext.empty)
+      case None =>
+        Success(Any, Some(this))
     }
 
   override def upperTypeElement: Option[ScTypeElement] = {
@@ -87,8 +92,10 @@ class ScTypeAliasDeclarationImpl private (
     val tUpper = findLastChildByType[PsiElement](ScalaTokenTypes.tUPPER_BOUND)
     if (tUpper != null) {
       PsiTreeUtil.getNextSiblingOfType(tUpper, classOf[ScTypeElement]) match {
-        case null => None
-        case te   => Some(te)
+        case null =>
+          None
+        case te =>
+          Some(te)
       }
     } else
       None
@@ -106,8 +113,10 @@ class ScTypeAliasDeclarationImpl private (
     val tLower = findLastChildByType[PsiElement](ScalaTokenTypes.tLOWER_BOUND)
     if (tLower != null) {
       PsiTreeUtil.getNextSiblingOfType(tLower, classOf[ScTypeElement]) match {
-        case null => None
-        case te   => Some(te)
+        case null =>
+          None
+        case te =>
+          Some(te)
       }
     } else
       None
@@ -133,8 +142,10 @@ class ScTypeAliasDeclarationImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitTypeAliasDeclaration(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitTypeAliasDeclaration(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

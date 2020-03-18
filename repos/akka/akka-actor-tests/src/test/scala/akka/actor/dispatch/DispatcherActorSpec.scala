@@ -34,7 +34,8 @@ object DispatcherActorSpec {
     """
   class TestActor extends Actor {
     def receive = {
-      case "Hello" ⇒ sender() ! "World"
+      case "Hello" ⇒
+        sender() ! "World"
       case "Failure" ⇒
         throw new RuntimeException(
           "Expected exception; to test fault-tolerance")
@@ -46,7 +47,8 @@ object DispatcherActorSpec {
   }
   class OneWayTestActor extends Actor {
     def receive = {
-      case "OneWay" ⇒ OneWayTestActor.oneWay.countDown()
+      case "OneWay" ⇒
+        OneWayTestActor.oneWay.countDown()
     }
   }
 }
@@ -86,7 +88,8 @@ class DispatcherActorSpec
         Props(
           new Actor {
             def receive = {
-              case "sabotage" ⇒ works.set(false)
+              case "sabotage" ⇒
+                works.set(false)
             }
           })
           .withDispatcher(throughputDispatcher))

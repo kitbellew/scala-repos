@@ -21,7 +21,8 @@ object SetTest extends SpecLite {
 
       def sum =
         Set(1, 2, 3).foldLeftM[Option, Int](0) {
-          case (x, y) => Some(x + y)
+          case (x, y) =>
+            Some(x + y)
         }
 
       sum must_== Some(6)

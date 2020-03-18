@@ -58,7 +58,8 @@ final class ScalaJSRunner private[testadapter] (
 
       val taskInfos =
         ComUtils.receiveResponse(master) {
-          case ("ok", data) => fromJSON[List[TaskInfo]](readJSON(data))
+          case ("ok", data) =>
+            fromJSON[List[TaskInfo]](readJSON(data))
         }
 
       taskInfos.map(ScalaJSTask.fromInfo(this, _)).toArray
@@ -88,7 +89,8 @@ final class ScalaJSRunner private[testadapter] (
         master.send("runnerDone")
         val summary =
           ComUtils.receiveResponse(master, masterDeadline.timeLeft) {
-            case ("ok", summary) => summary
+            case ("ok", summary) =>
+              summary
           }
         master.close()
         summary
@@ -177,7 +179,8 @@ final class ScalaJSRunner private[testadapter] (
 
     // Return the first failed of all these Try's
     (stopMessagesSent ++ slavesClosed) collectFirst {
-      case failure: Failure[Unit] => failure
+      case failure: Failure[Unit] =>
+        failure
     } getOrElse Success(())
   }
 

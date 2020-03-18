@@ -150,7 +150,8 @@ object Pattern {
           case '\\' | '.' | '(' | ')' | '[' | ']' | '{' | '}' | '|' | '?' |
               '*' | '+' | '^' | '$' =>
             "\\" + c
-          case _ => c
+          case _ =>
+            c
         }
       )
       i += 1
@@ -194,14 +195,22 @@ object Pattern {
 
   private def charToFlag(c: Char) =
     (c: @switch) match {
-      case 'i' => CASE_INSENSITIVE
-      case 'd' => UNIX_LINES
-      case 'm' => MULTILINE
-      case 's' => DOTALL
-      case 'u' => UNICODE_CASE
-      case 'x' => COMMENTS
-      case 'U' => UNICODE_CHARACTER_CLASS
-      case _   => sys.error("bad in-pattern flag")
+      case 'i' =>
+        CASE_INSENSITIVE
+      case 'd' =>
+        UNIX_LINES
+      case 'm' =>
+        MULTILINE
+      case 's' =>
+        DOTALL
+      case 'u' =>
+        UNICODE_CASE
+      case 'x' =>
+        COMMENTS
+      case 'U' =>
+        UNICODE_CHARACTER_CLASS
+      case _ =>
+        sys.error("bad in-pattern flag")
     }
 
   /** matches \Q<char>\E to support StringLike.split */

@@ -21,8 +21,10 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
         editor,
         file,
         classOf[ScVariableDefinition]) match {
-        case Some(v) if v.isSimple && v.containingClass != null => true
-        case _                                                  => false
+        case Some(v) if v.isSimple && v.containingClass != null =>
+          true
+        case _ =>
+          false
       }
     }
     file != null && ScalaFileType.SCALA_FILE_TYPE == file.getFileType && isOnVar
@@ -34,8 +36,10 @@ class ScalaGeneratePropertyHandler extends LanguageCodeInsightActionHandler {
         editor,
         file,
         classOf[ScVariableDefinition]) match {
-        case Some(x) if x.isSimple && x.containingClass != null => x
-        case _                                                  => return
+        case Some(x) if x.isSimple && x.containingClass != null =>
+          x
+        case _ =>
+          return
       }
 
     addPropertyMembers(varDef)

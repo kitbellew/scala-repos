@@ -119,7 +119,8 @@ class OffsetIndex(
   def readLastEntry(): OffsetPosition = {
     inLock(lock) {
       size.get match {
-        case 0 => OffsetPosition(baseOffset, 0)
+        case 0 =>
+          OffsetPosition(baseOffset, 0)
         case s =>
           OffsetPosition(
             baseOffset + relativeOffset(this.mmap, s - 1),
@@ -332,7 +333,8 @@ class OffsetIndex(
         m.asInstanceOf[sun.nio.ch.DirectBuffer]
       ).cleaner().clean()
     } catch {
-      case t: Throwable => warn("Error when freeing index buffer", t)
+      case t: Throwable =>
+        warn("Error when freeing index buffer", t)
     }
   }
 

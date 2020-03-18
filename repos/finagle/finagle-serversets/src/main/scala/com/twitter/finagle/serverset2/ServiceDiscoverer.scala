@@ -23,7 +23,8 @@ private[serverset2] object ServiceDiscoverer {
     ents map { ent =>
       val w =
         vecs.foldLeft(1.0) {
-          case (w, vec) => w * vec.weightOf(ent)
+          case (w, vec) =>
+            w * vec.weightOf(ent)
         }
       ent -> w
     }
@@ -174,7 +175,8 @@ private[serverset2] class ServiceDiscoverer(
                 // flatten() to fix this (see the comment on ZkNodeDataCache for why we get a Seq[])
                 .map(tries =>
                   tries.collect {
-                    case Return(e) => e
+                    case Return(e) =>
+                      e
                   }.flatten)
                 .map { seq =>
                   // if we have *any* results or no-failure, we consider it a success
@@ -233,7 +235,8 @@ private[serverset2] class ServiceDiscoverer(
     val vs = vectorsOf(path)
 
     val raw = es.join(vs).map {
-      case (ents, vecs) => zipWithWeights(ents, vecs.toSet)
+      case (ents, vecs) =>
+        zipWithWeights(ents, vecs.toSet)
     }
 
     // Squash duplicate updates

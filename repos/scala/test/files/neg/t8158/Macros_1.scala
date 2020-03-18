@@ -28,7 +28,8 @@ object Max {
           }.unapply($unargs)
         """
          */
-        case _ => fail("bad appl")
+        case _ =>
+          fail("bad appl")
       }
     c.Expr[Any](t)
   }

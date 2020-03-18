@@ -55,7 +55,8 @@ private[changeSignature] object ConflictsUtil {
             (pd, "pattern definition", pd.isSimple)
           case ScalaPsiUtil.inNameContext(vd: ScVariableDefinition) =>
             (vd, "variable definition", vd.isSimple)
-          case _ => return
+          case _ =>
+            return
         }
 
       if (!isSimple) {

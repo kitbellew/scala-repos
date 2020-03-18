@@ -57,6 +57,7 @@ class SimplifyBooleanExprWithLiteralIntention
           Some(expr)
         else
           findSimplifiableParent(expr)
-      case _ => None
+      case _ =>
+        None
     }
 }

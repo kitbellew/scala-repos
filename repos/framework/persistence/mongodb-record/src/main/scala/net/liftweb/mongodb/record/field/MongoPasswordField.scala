@@ -82,8 +82,10 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
 
   override def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   private def validatePassword(pwd: Password): List[FieldError] =
@@ -93,7 +95,8 @@ class MongoPasswordField[OwnerType <: BsonRecord[OwnerType]](
         Text(S.?("password.must.be.set"))
       case Password(pwd, _) if pwd.length < minLen =>
         Text(S.?("password.too.short"))
-      case _ => Nil
+      case _ =>
+        Nil
     }
 
   override def validations = validatePassword _ :: Nil

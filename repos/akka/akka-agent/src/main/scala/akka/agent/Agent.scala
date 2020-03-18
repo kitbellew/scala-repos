@@ -83,8 +83,10 @@ object Agent {
       */
     private final def withinTransaction(run: Runnable): Unit = {
       Txn.findCurrent match {
-        case Some(txn) ⇒ Txn.afterCommit(_ ⇒ updater.execute(run))(txn)
-        case _ ⇒ updater.execute(run)
+        case Some(txn) ⇒
+          Txn.afterCommit(_ ⇒ updater.execute(run))(txn)
+        case _ ⇒
+          updater.execute(run)
       }
     }
 
@@ -97,7 +99,8 @@ object Agent {
           val result = Promise[T]()
           Txn.afterCommit(status ⇒ result completeWith Future(f)(updater))(txn)
           result.future
-        case _ ⇒ Future(f)(updater)
+        case _ ⇒
+          Future(f)(updater)
       }
     }
 

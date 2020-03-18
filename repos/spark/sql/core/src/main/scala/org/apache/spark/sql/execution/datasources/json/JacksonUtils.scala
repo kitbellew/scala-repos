@@ -26,8 +26,10 @@ private object JacksonUtils {
     */
   def nextUntil(parser: JsonParser, stopOn: JsonToken): Boolean = {
     parser.nextToken() match {
-      case null => false
-      case x    => x != stopOn
+      case null =>
+        false
+      case x =>
+        x != stopOn
     }
   }
 }

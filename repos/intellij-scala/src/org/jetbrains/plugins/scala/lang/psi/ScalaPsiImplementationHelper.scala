@@ -68,7 +68,8 @@ object ScalaPsiImplementationHelper {
             .getOrElse(classes(0))
         case _: ScObject =>
           classes.find(td => td.isInstanceOf[ScObject]).getOrElse(classes(0))
-        case _ => classes(0)
+        case _ =>
+          classes(0)
       }
     }
   }

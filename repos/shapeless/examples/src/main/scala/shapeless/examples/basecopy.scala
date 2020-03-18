@@ -152,8 +152,10 @@ object UpdateRepr {
     new UpdateRepr[H :+: T, R] {
       def apply(t: H :+: T, r: R): H :+: T =
         t match {
-          case Inl(h) => Inl(uh.value(h, r))
-          case Inr(t) => Inr(ut.value(t, r))
+          case Inl(h) =>
+            Inl(uh.value(h, r))
+          case Inr(t) =>
+            Inr(ut.value(t, r))
         }
     }
 

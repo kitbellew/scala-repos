@@ -11,8 +11,10 @@ object Library {
     override def hashCode = name.hashCode
     override def equals(o: Any) =
       o match {
-        case o: JdbcFunction => name == o.name
-        case _               => false
+        case o: JdbcFunction =>
+          name == o.name
+        case _ =>
+          false
       }
   }
   class SqlFunction(name: String) extends FunctionSymbol(name)

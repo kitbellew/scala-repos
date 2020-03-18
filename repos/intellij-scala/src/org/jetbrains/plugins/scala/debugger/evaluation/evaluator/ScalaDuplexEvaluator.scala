@@ -30,7 +30,8 @@ case class ScalaDuplexEvaluator(first: Evaluator, second: Evaluator)
           case e2: Exception =>
             throw EvaluationException(e1.getMessage + "\n " + e2.getMessage)
         }
-      case e: Exception => throw EvaluationException(e)
+      case e: Exception =>
+        throw EvaluationException(e)
     }
     result
   }

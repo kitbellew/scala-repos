@@ -130,9 +130,12 @@ object DevServerStart {
 
                     val reloaded =
                       buildLink.reload match {
-                        case NonFatal(t)     => Failure(t)
-                        case cl: ClassLoader => Success(Some(cl))
-                        case null            => Success(None)
+                        case NonFatal(t) =>
+                          Failure(t)
+                        case cl: ClassLoader =>
+                          Success(Some(cl))
+                        case null =>
+                          Success(None)
                       }
 
                     reloaded.flatMap {
@@ -178,7 +181,8 @@ object DevServerStart {
                                               file: java.io.File,
                                               line: java.lang.Integer) =>
                                           Some((file, Some(line)))
-                                        case _ => None
+                                        case _ =>
+                                          None
                                       }
                                     }
                                   }
@@ -285,7 +289,8 @@ object DevServerStart {
           serverConfig.configuration)
         serverProvider.createServer(serverContext)
       } catch {
-        case e: ExceptionInInitializerError => throw e.getCause
+        case e: ExceptionInInitializerError =>
+          throw e.getCause
       }
 
     }

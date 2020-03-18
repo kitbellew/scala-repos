@@ -434,8 +434,10 @@ abstract protected[kestrel] class ClientBase[
     }
 
     underlying() respond {
-      case Return(r) => recv(r, openCommand)
-      case Throw(t)  => error ! t
+      case Return(r) =>
+        recv(r, openCommand)
+      case Throw(t) =>
+        error ! t
     }
 
     ReadHandle(messages.recv, error.recv, close.send(()))
@@ -453,8 +455,10 @@ abstract protected[kestrel] class ClientBase[
       closed: Promise[Throwable]) {
     offer.sync().foreach { item =>
       set(queueName, item).unit respond {
-        case Return(_) => write(queueName, offer)
-        case Throw(t)  => closed() = Return(t)
+        case Return(_) =>
+          write(queueName, offer)
+        case Throw(t) =>
+          closed() = Return(t)
       }
     }
   }
@@ -509,9 +513,12 @@ protected[kestrel] class ConnectedClient(
       queueName: String,
       waitUpTo: Duration = 0.seconds): Future[Option[Buf]] =
     underlying.toService(Get(Buf.Utf8(queueName), Some(waitUpTo))).map {
-      case Values(Seq())                       => None
-      case Values(Seq(Value(key, value: Buf))) => Some(value)
-      case _                                   => throw new IllegalArgumentException
+      case Values(Seq()) =>
+        None
+      case Values(Seq(Value(key, value: Buf))) =>
+        Some(value)
+      case _ =>
+        throw new IllegalArgumentException
     }
 
   private def MemCommand(command: Command)(
@@ -526,8 +533,10 @@ protected[kestrel] class ConnectedClient(
     read(
       (response: Response) =>
         response match {
-          case Values(Seq(Value(_, item))) => Return(Some((item, ())))
-          case Values(Seq())               => Return(None)
+          case Values(Seq(Value(_, item))) =>
+            Return(Some((item, ())))
+          case Values(Seq()) =>
+            Return(None)
           case _ =>
             Throw(new IllegalArgumentException("invalid reply from kestrel"))
         },
@@ -621,9 +630,12 @@ protected[kestrel] class ThriftConnectedClient(
     val waitUpToMsec = safeLongToInt(waitUpTo.inMilliseconds)
     withClient[Option[Buf]](client =>
       client.get(queueName, 1, waitUpToMsec).map {
-        case Seq()           => None
-        case Seq(item: Item) => Some(Buf.ByteBuffer.Owned(item.data))
-        case _               => throw new IllegalArgumentException
+        case Seq() =>
+          None
+        case Seq(item: Item) =>
+          Some(Buf.ByteBuffer.Owned(item.data))
+        case _ =>
+          throw new IllegalArgumentException
       })
   }
 
@@ -653,7 +665,8 @@ protected[kestrel] class ThriftConnectedClient(
         response match {
           case Seq(Item(data, id)) =>
             Return(Some((Buf.ByteBuffer.Owned(data), id)))
-          case Seq() => Return(None)
+          case Seq() =>
+            Return(None)
           case _ =>
             Throw(new IllegalArgumentException("invalid reply from kestrel"))
         },

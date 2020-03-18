@@ -159,7 +159,8 @@ class EnsembleTree(
 
   def getDashThumbsCtrl =
     thumbnails.flatMap {
-      case (heading, ts) => Seq(createCategoryLabel(heading), createTiles(ts))
+      case (heading, ts) =>
+        Seq(createCategoryLabel(heading), createTiles(ts))
     }
 
   def getDashThumb(ctrlGrpName: String) =

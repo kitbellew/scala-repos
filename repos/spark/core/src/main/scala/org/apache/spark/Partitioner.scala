@@ -86,8 +86,10 @@ class HashPartitioner(partitions: Int) extends Partitioner {
 
   def getPartition(key: Any): Int =
     key match {
-      case null => 0
-      case _    => Utils.nonNegativeMod(key.hashCode, numPartitions)
+      case null =>
+        0
+      case _ =>
+        Utils.nonNegativeMod(key.hashCode, numPartitions)
     }
 
   override def equals(other: Any): Boolean =
@@ -231,7 +233,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     Utils.tryOrIOException {
       val sfactory = SparkEnv.get.serializer
       sfactory match {
-        case js: JavaSerializer => out.defaultWriteObject()
+        case js: JavaSerializer =>
+          out.defaultWriteObject()
         case _ =>
           out.writeBoolean(ascending)
           out.writeObject(ordering)
@@ -250,7 +253,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     Utils.tryOrIOException {
       val sfactory = SparkEnv.get.serializer
       sfactory match {
-        case js: JavaSerializer => in.defaultReadObject()
+        case js: JavaSerializer =>
+          in.defaultReadObject()
         case _ =>
           ascending = in.readBoolean()
           ordering = in.readObject().asInstanceOf[Ordering[K]]

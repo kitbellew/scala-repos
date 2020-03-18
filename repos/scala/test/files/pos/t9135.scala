@@ -1,7 +1,8 @@
 class Free[A] {
 
   this match {
-    case a @ Gosub() => gosub(a.a)(x => gosub(???)(???))
+    case a @ Gosub() =>
+      gosub(a.a)(x => gosub(???)(???))
   }
   def gosub[A, B](a0: Free[A])(f0: A => Any): Free[B] = ???
 }

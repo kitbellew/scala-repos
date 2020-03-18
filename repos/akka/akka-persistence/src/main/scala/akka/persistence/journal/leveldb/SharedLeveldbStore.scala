@@ -36,13 +36,15 @@ class SharedLeveldbStore extends {
               // in case the asyncWriteMessages throws
               try asyncWriteMessages(prep)
               catch {
-                case NonFatal(e) ⇒ Future.failed(e)
+                case NonFatal(e) ⇒
+                  Future.failed(e)
               }
             case f @ Failure(_) ⇒
               // exception from preparePersistentBatch => rejected
               Future.successful(
                 messages.collect {
-                  case a: AtomicWrite ⇒ f
+                  case a: AtomicWrite ⇒
+                    f
                 })
           }
         ).map { results ⇒
@@ -80,7 +82,8 @@ class SharedLeveldbStore extends {
           ReplaySuccess(highSeqNr)
         }
         .recover {
-          case e ⇒ ReplayFailure(e)
+          case e ⇒
+            ReplayFailure(e)
         }
         .pipeTo(replyTo)
   }

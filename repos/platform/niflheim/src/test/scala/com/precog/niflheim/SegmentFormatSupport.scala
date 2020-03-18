@@ -65,13 +65,20 @@ trait SegmentFormatSupport {
 
   def genForCType[A](ctype: CValueType[A]): Gen[A] =
     ctype match {
-      case CPeriod  => arbitrary[Long].map(new Period(_))
-      case CBoolean => arbitrary[Boolean]
-      case CString  => arbitrary[String]
-      case CLong    => arbitrary[Long]
-      case CDouble  => arbitrary[Double]
-      case CNum     => arbitrary[BigDecimal]
-      case CDate    => arbitrary[Long] map (new DateTime(_))
+      case CPeriod =>
+        arbitrary[Long].map(new Period(_))
+      case CBoolean =>
+        arbitrary[Boolean]
+      case CString =>
+        arbitrary[String]
+      case CLong =>
+        arbitrary[Long]
+      case CDouble =>
+        arbitrary[Double]
+      case CNum =>
+        arbitrary[BigDecimal]
+      case CDate =>
+        arbitrary[Long] map (new DateTime(_))
       case CArrayType(elemType: CValueType[a]) =>
         val list: Gen[List[a]] = listOf(genForCType(elemType))
         val array: Gen[Array[a]] = list map (_.toArray(elemType.manifest))

@@ -54,13 +54,17 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
       outerProducer: Prod[T],
       jamfs: JamfMap): (Stream[T], JamfMap) =
     jamfs.get(outerProducer) match {
-      case Some(s) => (s, jamfs)
+      case Some(s) =>
+        (s, jamfs)
       case None =>
         val (s, m) =
           outerProducer match {
-            case NamedProducer(producer, _)      => toStream(producer, jamfs)
-            case IdentityKeyedProducer(producer) => toStream(producer, jamfs)
-            case Source(source)                  => (source.toStream, jamfs)
+            case NamedProducer(producer, _) =>
+              toStream(producer, jamfs)
+            case IdentityKeyedProducer(producer) =>
+              toStream(producer, jamfs)
+            case Source(source) =>
+              (source.toStream, jamfs)
             case OptionMappedProducer(producer, fn) =>
               val (s, m) = toStream(producer, jamfs)
               (s.flatMap(fn(_)), m)
@@ -113,7 +117,8 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
             case LeftJoinedProducer(producer, service) =>
               val (s, m) = toStream(producer, jamfs)
               val joined = s.map {
-                case (k, v) => (k, (v, service.get(k)))
+                case (k, v) =>
+                  (k, (v, service.get(k)))
               }
               (joined, m)
 

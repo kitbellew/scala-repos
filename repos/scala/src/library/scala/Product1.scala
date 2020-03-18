@@ -33,8 +33,10 @@ trait Product1[@specialized(Int, Long, Double) +T1] extends Any with Product {
   @throws(classOf[IndexOutOfBoundsException])
   override def productElement(n: Int) =
     n match {
-      case 0 => _1
-      case _ => throw new IndexOutOfBoundsException(n.toString())
+      case 0 =>
+        _1
+      case _ =>
+        throw new IndexOutOfBoundsException(n.toString())
     }
 
   /** A projection of element 1 of this Product.

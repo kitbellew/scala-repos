@@ -31,7 +31,8 @@ case class Forecast(
     steps.foldLeft(none[Uci.Move]) {
       case (None, fst :: snd :: _) if g.turns == fst.ply && fst.is(last) =>
         snd.uciMove
-      case (move, _) => move
+      case (move, _) =>
+        move
     }
 }
 

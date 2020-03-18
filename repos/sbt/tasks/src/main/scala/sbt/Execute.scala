@@ -67,8 +67,10 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     new (A ~> Result) {
       def apply[T](a: A[T]): Result[T] =
         view.inline(a) match {
-          case Some(v) => Value(v())
-          case None    => results(a)
+          case Some(v) =>
+            Value(v())
+          case None =>
+            results(a)
         }
     }
   private[this] var progressState: progress.S = progress.initial
@@ -86,7 +88,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     try {
       runKeep(root)(strategy)(root)
     } catch {
-      case i: Incomplete => Inc(i)
+      case i: Incomplete =>
+        Inc(i)
     }
   def runKeep[T](root: A[T])(implicit strategy: Strategy): RMap[A, Result] = {
     assert(state.isEmpty, "Execute already running/ran.")
@@ -135,7 +138,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     }
 
     results.get(target) match {
-      case Some(result) => retire(node, result)
+      case Some(result) =>
+        retire(node, result)
       case None =>
         state(node) = Calling
         addChecked(target)
@@ -184,8 +188,10 @@ private[sbt] final class Execute[A[_] <: AnyRef](
   }
   def callerResult[T](node: A[T], result: Result[T]): Result[T] =
     result match {
-      case _: Value[T] => result
-      case Inc(i)      => Inc(Incomplete(Some(node), tpe = i.tpe, causes = i :: Nil))
+      case _: Value[T] =>
+        result
+      case Inc(i) =>
+        Inc(Incomplete(Some(node), tpe = i.tpe, causes = i :: Nil))
     }
 
   def notifyDone(node: A[_], dependent: A[_])(implicit
@@ -297,23 +303,29 @@ private[sbt] final class Execute[A[_] <: AnyRef](
           i.copy(node = Some(node))
         else
           i
-      case e => Incomplete(Some(node), Incomplete.Error, directCause = Some(e))
+      case e =>
+        Incomplete(Some(node), Incomplete.Error, directCause = Some(e))
     }
     val result = rewrap(rawResult)
     progress.workFinished(node, result)
     completed {
       result match {
-        case Right(v)     => retire(node, v)
-        case Left(target) => call(node, target)
+        case Right(v) =>
+          retire(node, v)
+        case Left(target) =>
+          call(node, target)
       }
     }
   }
   private[this] def rewrap[T](
       rawResult: Either[Incomplete, Either[A[T], T]]): Either[A[T], Result[T]] =
     rawResult match {
-      case Left(i)             => Right(Inc(i))
-      case Right(Right(v))     => Right(Value(v))
-      case Right(Left(target)) => Left(target)
+      case Left(i) =>
+        Right(Inc(i))
+      case Right(Right(v)) =>
+        Right(Value(v))
+      case Right(Left(target)) =>
+        Left(target)
     }
 
   def remove[K, V](map: Map[K, V], k: K): V =
@@ -345,8 +357,10 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     dependencies(node) foreach { dep =>
       def onOpt[T](o: Option[T])(f: T => Boolean) =
         o match {
-          case None    => false;
-          case Some(x) => f(x)
+          case None =>
+            false;
+          case Some(x) =>
+            f(x)
         }
       def checkForward =
         onOpt(forward.get(node)) {

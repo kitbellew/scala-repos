@@ -77,7 +77,8 @@ trait ArgumentCapture {
       .zip(arg1)
       .zip(arg2)
       .map({
-        case ((a, b), c) => (a, b, c)
+        case ((a, b), c) =>
+          (a, b, c)
       })
       .toSeq
   }
@@ -114,7 +115,8 @@ trait ArgumentCapture {
       .zip(arg2)
       .zip(arg3)
       .map({
-        case (((a, b), c), d) => (a, b, c, d)
+        case (((a, b), c), d) =>
+          (a, b, c, d)
       })
       .toSeq
   }
@@ -160,7 +162,8 @@ trait ArgumentCapture {
       .zip(arg3)
       .zip(arg4)
       .map({
-        case ((((a, b), c), d), e) => (a, b, c, d, e)
+        case ((((a, b), c), d), e) =>
+          (a, b, c, d, e)
       })
       .toSeq
   }
@@ -220,7 +223,8 @@ trait ArgumentCapture {
       .zip(arg4)
       .zip(arg5)
       .map({
-        case (((((a, b), c), d), e), f) => (a, b, c, d, e, f)
+        case (((((a, b), c), d), e), f) =>
+          (a, b, c, d, e, f)
       })
       .toSeq
   }
@@ -289,7 +293,8 @@ trait ArgumentCapture {
       .zip(arg5)
       .zip(arg6)
       .map({
-        case ((((((a, b), c), d), e), f), g) => (a, b, c, d, e, f, g)
+        case ((((((a, b), c), d), e), f), g) =>
+          (a, b, c, d, e, f, g)
       })
       .toSeq
   }
@@ -367,7 +372,8 @@ trait ArgumentCapture {
       .zip(arg6)
       .zip(arg7)
       .map({
-        case (((((((a, b), c), d), e), f), g), h) => (a, b, c, d, e, f, g, h)
+        case (((((((a, b), c), d), e), f), g), h) =>
+          (a, b, c, d, e, f, g, h)
       })
       .toSeq
   }

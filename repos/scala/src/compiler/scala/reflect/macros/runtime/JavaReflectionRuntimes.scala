@@ -30,8 +30,10 @@ trait JavaReflectionRuntimes {
                 WhiteboxContext]
             def isBundleCtor(ctor: jConstructor[_]) =
               ctor.getParameterTypes match {
-                case Array(param) if isMacroContext(param) => true
-                case _                                     => false
+                case Array(param) if isMacroContext(param) =>
+                  true
+                case _ =>
+                  false
               }
             val Array(bundleCtor) = implClass.getConstructors.filter(
               isBundleCtor)

@@ -54,7 +54,8 @@ object Test {
               0,
               0) =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     assert(result)
   }

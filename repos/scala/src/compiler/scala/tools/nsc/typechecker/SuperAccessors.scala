@@ -101,8 +101,10 @@ abstract class SuperAccessors
             SUPERACCESSOR | PRIVATE | ARTIFACT) setAlias sym
           val tpe =
             clazz.thisType memberType sym match {
-              case t if sym.isModuleNotMethod => NullaryMethodType(t)
-              case t                          => t
+              case t if sym.isModuleNotMethod =>
+                NullaryMethodType(t)
+              case t =>
+                t
             }
           acc setInfoAndEnter (tpe cloneInfo acc)
           // Diagnostic for SI-7091
@@ -178,7 +180,8 @@ abstract class SuperAccessors
 
       def mixIsTrait =
         sup.tpe match {
-          case SuperType(thisTpe, superTpe) => superTpe.typeSymbol.isTrait
+          case SuperType(thisTpe, superTpe) =>
+            superTpe.typeSymbol.isTrait
         }
 
       val needAccessor = name.isTermName && {
@@ -553,8 +556,10 @@ abstract class SuperAccessors
       val res =
         atPos(tree.pos) {
           targs.head match {
-            case EmptyTree => mkApply(selection)
-            case _         => mkApply(TypeApply(selection, targs))
+            case EmptyTree =>
+              mkApply(selection)
+            case _ =>
+              mkApply(TypeApply(selection, targs))
           }
         }
       debuglog(s"Replaced $tree with $res")
@@ -579,8 +584,10 @@ abstract class SuperAccessors
       // owner class
       val clazz =
         pt match {
-          case TypeRef(pre, _, _) => thisTypeOfPath(pre)
-          case _                  => NoSymbol
+          case TypeRef(pre, _, _) =>
+            thisTypeOfPath(pre)
+          case _ =>
+            NoSymbol
         }
       val result = gen.paramToArg(v)
       if (clazz != NoSymbol && (
@@ -694,20 +701,29 @@ abstract class SuperAccessors
     /** For a path-dependent type, return the this type. */
     private def thisTypeOfPath(path: Type): Symbol =
       path match {
-        case ThisType(outerSym)  => outerSym
-        case SingleType(rest, _) => thisTypeOfPath(rest)
-        case _                   => NoSymbol
+        case ThisType(outerSym) =>
+          outerSym
+        case SingleType(rest, _) =>
+          thisTypeOfPath(rest)
+        case _ =>
+          NoSymbol
       }
 
     /** Is 'tpe' the type of a member of an enclosing class? */
     private def isThisType(tpe: Type): Boolean =
       tpe match {
-        case ThisType(sym)           => sym.isClass && !sym.isPackageClass
-        case TypeRef(pre, _, _)      => isThisType(pre)
-        case SingleType(pre, _)      => isThisType(pre)
-        case RefinedType(parents, _) => parents exists isThisType
-        case AnnotatedType(_, tp)    => isThisType(tp)
-        case _                       => false
+        case ThisType(sym) =>
+          sym.isClass && !sym.isPackageClass
+        case TypeRef(pre, _, _) =>
+          isThisType(pre)
+        case SingleType(pre, _) =>
+          isThisType(pre)
+        case RefinedType(parents, _) =>
+          parents exists isThisType
+        case AnnotatedType(_, tp) =>
+          isThisType(tp)
+        case _ =>
+          false
       }
   }
 }

@@ -47,26 +47,38 @@ case class Term[@sp(Float, Double) C](coeff: C, exp: Int) {
 
     def expString =
       exp match {
-        case 0 => ""
-        case 1 => "x"
-        case _ => "x" + exp.toString.map(superscript)
+        case 0 =>
+          ""
+        case 1 =>
+          "x"
+        case _ =>
+          "x" + exp.toString.map(superscript)
       }
 
     def simpleCoeff: Option[String] =
       coeff match {
-        case 0              => Some("")
-        case 1 if exp == 0  => Some(s" + $coeff")
-        case 1              => Some(s" + $expString")
-        case -1 if exp != 0 => Some(s" - $expString")
-        case _              => None
+        case 0 =>
+          Some("")
+        case 1 if exp == 0 =>
+          Some(s" + $coeff")
+        case 1 =>
+          Some(s" + $expString")
+        case -1 if exp != 0 =>
+          Some(s" - $expString")
+        case _ =>
+          None
       }
 
     def stringCoeff: Option[String] =
       coeff.toString match {
-        case IsZero()                        => Some("")
-        case IsNegative(posPart) if exp == 0 => Some(s" - $posPart")
-        case IsNegative(posPart)             => Some(s" - $posPart$expString")
-        case _                               => None
+        case IsZero() =>
+          Some("")
+        case IsNegative(posPart) if exp == 0 =>
+          Some(s" - $posPart")
+        case IsNegative(posPart) =>
+          Some(s" - $posPart$expString")
+        case _ =>
+          None
       }
 
     simpleCoeff orElse stringCoeff getOrElse s" + $coeff$expString"

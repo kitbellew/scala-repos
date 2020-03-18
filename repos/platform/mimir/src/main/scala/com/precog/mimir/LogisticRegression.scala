@@ -88,11 +88,14 @@ trait LogisticRegressionLibModule[M[+_]]
               t1: Option[Seq[ColumnValues]],
               t2: => Option[Seq[ColumnValues]]) = {
             t1 match {
-              case None => t2
+              case None =>
+                t2
               case Some(c1) =>
                 t2 match {
-                  case None     => Some(c1)
-                  case Some(c2) => Some(c1 ++ c2)
+                  case None =>
+                    Some(c1)
+                  case Some(c2) =>
+                    Some(c1 ++ c2)
                 }
             }
           }
@@ -191,7 +194,8 @@ trait LogisticRegressionLibModule[M[+_]]
                   1.0 +: c.asInstanceOf[HomogeneousArrayColumn[Double]](i)
                 }
                 reduceDouble(mapped)
-              case _ => None
+              case _ =>
+                None
             }
 
             if (result.isEmpty)
@@ -209,7 +213,8 @@ trait LogisticRegressionLibModule[M[+_]]
         val theta = gradient(seq, theta0, alpha)
 
         val diffs = theta0.zip(theta) map {
-          case (t0, t) => math.abs(t0 - t)
+          case (t0, t) =>
+            math.abs(t0 - t)
         }
         val sum = diffs.sum
 
@@ -333,7 +338,8 @@ trait LogisticRegressionLibModule[M[+_]]
 
             val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
               _.map {
-                case (table, jtype) => tableReducer(table, jtype)
+                case (table, jtype) =>
+                  tableReducer(table, jtype)
               }.toStream.sequence map (_.toSeq)
             }
 

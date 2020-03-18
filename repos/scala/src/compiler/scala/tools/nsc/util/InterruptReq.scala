@@ -27,7 +27,8 @@ abstract class InterruptReq {
       try {
         result = Some(Left(todo()))
       } catch {
-        case t: Throwable => result = Some(Right(t))
+        case t: Throwable =>
+          result = Some(Right(t))
       } finally {
         notify()
         for (k <- waiting.reverse)
@@ -42,13 +43,16 @@ abstract class InterruptReq {
         try {
           wait()
         } catch {
-          case _: InterruptedException => ()
+          case _: InterruptedException =>
+            ()
         }
       }
 
       result.get match {
-        case Left(res) => res
-        case Right(t)  => throw new FailedInterrupt(t)
+        case Left(res) =>
+          res
+        case Right(t) =>
+          throw new FailedInterrupt(t)
       }
     }
 

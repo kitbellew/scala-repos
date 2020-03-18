@@ -35,8 +35,10 @@ class Predict @Since("1.2.0") (
 
   override def equals(other: Any): Boolean = {
     other match {
-      case p: Predict => predict == p.predict && prob == p.prob
-      case _          => false
+      case p: Predict =>
+        predict == p.predict && prob == p.prob
+      case _ =>
+        false
     }
   }
 

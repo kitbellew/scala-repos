@@ -55,8 +55,10 @@ object adjoin {
 
         def apply(a: H :+: T): H :+: adjoinT.Out =
           a match {
-            case Inl(h) => Inl(h)
-            case Inr(t) => Inr(adjoinT(t))
+            case Inl(h) =>
+              Inl(h)
+            case Inr(t) =>
+              Inr(adjoinT(t))
           }
       }
   }
@@ -98,8 +100,10 @@ object adjoin {
 
         def apply(a: H :+: T): extend.Out =
           a match {
-            case Inl(h) => extend.right(h)
-            case Inr(t) => extend.left(adjoinT(t))
+            case Inl(h) =>
+              extend.right(h)
+            case Inr(t) =>
+              extend.left(adjoinT(t))
           }
       }
   }

@@ -18,9 +18,11 @@ class Axis {
   import Axis._
   def test(f: Format) =
     f match {
-      case Format.Integer => "Int"
+      case Format.Integer =>
+        "Int"
       // case Format.Time( hours, millis ) => "Time"
-      case Format.Decimal => "Dec"
+      case Format.Decimal =>
+        "Dec"
     }
 }
 
@@ -50,9 +52,12 @@ class Test1 {
   def test(f: Format) = {
     val ff: f.type = f
     ff match {
-      case FI             => "Int"
-      case Format.Decimal => "Dec"
-      case Shorty         => "Sho"
+      case FI =>
+        "Int"
+      case Format.Decimal =>
+        "Dec"
+      case Shorty =>
+        "Sho"
     }
   }
 }

@@ -39,8 +39,10 @@ trait Dependent {
       _iDependOn =
         new WeakReference(who.asInstanceOf[Object]) :: _iDependOn.filter(
           _.get match {
-            case null => false
-            case x    => x ne who
+            case null =>
+              false
+            case x =>
+              x ne who
           })
     }
 
@@ -51,8 +53,10 @@ trait Dependent {
     synchronized {
       val tList = _iDependOn.filter(
         _.get match {
-          case null => false
-          case x    => x ne who
+          case null =>
+            false
+          case x =>
+            x ne who
         })
 
       _iDependOn = tList
@@ -66,8 +70,10 @@ trait Dependent {
       _iDependOn
         .flatMap(
           _.get match {
-            case null => Nil
-            case x    => List(x)
+            case null =>
+              Nil
+            case x =>
+              List(x)
           })
         .asInstanceOf[List[Cell[_]]]
     }
@@ -121,8 +127,10 @@ trait Cell[T] extends Dependent {
     synchronized {
       val tList = _dependentCells.filter(
         _.get match {
-          case null => false
-          case x    => x ne dep
+          case null =>
+            false
+          case x =>
+            x ne dep
         })
 
       _dependentCells = new WeakReference(dep: Dependent) :: tList
@@ -140,8 +148,10 @@ trait Cell[T] extends Dependent {
     synchronized {
       _dependentCells = _dependentCells.filter(
         _.get match {
-          case null => false
-          case x    => x ne dep
+          case null =>
+            false
+          case x =>
+            x ne dep
         })
     }
 
@@ -167,8 +177,10 @@ trait Cell[T] extends Dependent {
     synchronized {
       _dependentCells.flatMap(
         _.get match {
-          case null => Nil
-          case x    => List(x)
+          case null =>
+            Nil
+          case x =>
+            List(x)
         })
     }
 
@@ -263,8 +275,10 @@ final class ValueCell[A](initialValue: A) extends Cell[A] with LiftValue[A] {
   override def equals(other: Any): Boolean =
     synchronized {
       other match {
-        case vc: ValueCell[_] => value == vc.get
-        case _                => false
+        case vc: ValueCell[_] =>
+          value == vc.get
+        case _ =>
+          false
       }
     }
 }

@@ -15,8 +15,10 @@ trait SortedSets {
     Either[ZRangeResults, Seq[ChannelBuffer]]]] = {
     val parse
         : PartialFunction[Reply, Either[ZRangeResults, Seq[ChannelBuffer]]] = {
-      case MBulkReply(messages) => withScoresHelper(withScores)(messages)
-      case EmptyMBulkReply()    => withScoresHelper(withScores)(Nil)
+      case MBulkReply(messages) =>
+        withScoresHelper(withScores)(messages)
+      case EmptyMBulkReply() =>
+        withScoresHelper(withScores)(Nil)
     }
     parse andThen Future.value
   }
@@ -60,7 +62,8 @@ trait SortedSets {
         members.map { m =>
           ZMember(m._1, m._2)
         })) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
   }
 
@@ -72,7 +75,8 @@ trait SortedSets {
     */
   def zCard(key: ChannelBuffer): Future[JLong] =
     doRequest(ZCard(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -87,7 +91,8 @@ trait SortedSets {
       min: ZInterval,
       max: ZInterval): Future[JLong] =
     doRequest(ZCount(key, min, max)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -114,7 +119,8 @@ trait SortedSets {
     */
   def zRem(key: ChannelBuffer, members: Seq[ChannelBuffer]): Future[JLong] =
     doRequest(ZRem(key, members)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -159,7 +165,8 @@ trait SortedSets {
     doRequest(ZScore(key, member)) {
       case BulkReply(message) =>
         Future.value(Some(NumberFormat.toDouble(BytesToString(message.array))))
-      case EmptyBulkReply() => Future.value(None)
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -172,8 +179,10 @@ trait SortedSets {
       key: ChannelBuffer,
       member: ChannelBuffer): Future[Option[JLong]] =
     doRequest(ZRevRank(key, member)) {
-      case IntegerReply(n)  => Future.value(Some(n))
-      case EmptyBulkReply() => Future.value(None)
+      case IntegerReply(n) =>
+        Future.value(Some(n))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -192,7 +201,8 @@ trait SortedSets {
     doRequest(ZIncrBy(key, amount, member)) {
       case BulkReply(message) =>
         Future.value(Some(NumberFormat.toDouble(BytesToString(message.array))))
-      case EmptyBulkReply() => Future.value(None)
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -203,8 +213,10 @@ trait SortedSets {
     */
   def zRank(key: ChannelBuffer, member: ChannelBuffer): Future[Option[JLong]] =
     doRequest(ZRank(key, member)) {
-      case IntegerReply(n)  => Future.value(Some(n))
-      case EmptyBulkReply() => Future.value(None)
+      case IntegerReply(n) =>
+        Future.value(Some(n))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -219,7 +231,8 @@ trait SortedSets {
       start: JLong,
       stop: JLong): Future[JLong] =
     doRequest(ZRemRangeByRank(key, start, stop)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -234,7 +247,8 @@ trait SortedSets {
       min: ZInterval,
       max: ZInterval): Future[JLong] =
     doRequest(ZRemRangeByScore(key, min, max)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**

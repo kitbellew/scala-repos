@@ -75,8 +75,10 @@ trait CounterLike[
 
   override def equals(p1: Any): Boolean =
     p1 match {
-      case x: Counter[K, V] => x.data == this.data
-      case _                => false
+      case x: Counter[K, V] =>
+        x.data == this.data
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = data.hashCode()
@@ -104,7 +106,8 @@ object Counter extends CounterOps {
     val rv = apply[K, V]()
     val field = implicitly[Semiring[V]]
     values.foreach({
-      case (k, v) => rv(k) = field.+(v, rv(k))
+      case (k, v) =>
+        rv(k) = field.+(v, rv(k))
     })
     rv
   }

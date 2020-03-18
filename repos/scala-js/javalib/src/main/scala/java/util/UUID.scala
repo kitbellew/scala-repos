@@ -184,7 +184,8 @@ object UUID {
       val i4 = parseHex8(name.substring(28, 32), name.substring(32, 36))
       new UUID(i1, i2, i3, i4, null, null)
     } catch {
-      case _: NumberFormatException => fail()
+      case _: NumberFormatException =>
+        fail()
     }
   }
 }

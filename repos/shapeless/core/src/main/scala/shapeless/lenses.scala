@@ -218,8 +218,10 @@ object OpticDefns {
       def get(m: Map[K, V]): Option[V] = m get k
       def set(m: Map[K, V])(ov: Option[V]): Map[K, V] =
         ov match {
-          case Some(v) => m + (k -> v)
-          case None    => m - k
+          case Some(v) =>
+            m + (k -> v)
+          case None =>
+            m - k
         }
     }
 

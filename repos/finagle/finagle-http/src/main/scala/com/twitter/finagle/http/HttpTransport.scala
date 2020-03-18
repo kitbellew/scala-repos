@@ -35,7 +35,8 @@ class HttpTransport(self: Transport[Any, Any], manager: ConnectionManager)
       else
         f
     } catch {
-      case NonFatal(e) => Future.exception(e)
+      case NonFatal(e) =>
+        Future.exception(e)
     }
 
   def status =

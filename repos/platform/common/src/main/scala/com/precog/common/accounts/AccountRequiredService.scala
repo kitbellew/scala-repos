@@ -51,14 +51,16 @@ class AccountRequiredService[A, B](
         request.parameters.get('ownerAccountId) map { accountId =>
           logger.debug("Using provided ownerAccountId: " + accountId)
           accountFinder.findAccountDetailsById(accountId) flatMap {
-            case Some(account) => f(apiKey, path, account.accountId)
+            case Some(account) =>
+              f(apiKey, path, account.accountId)
             case None =>
               Future(err(BadRequest, "Unknown account Id: " + accountId))
           }
         } getOrElse {
           logger.trace("Looking up accounts based on apiKey " + apiKey)
           accountFinder.findAccountByAPIKey(apiKey) flatMap {
-            case Some(accountId) => f(apiKey, path, accountId)
+            case Some(accountId) =>
+              f(apiKey, path, accountId)
             case None =>
               logger.warn(
                 "Unable to determine account Id from api key: " + apiKey)

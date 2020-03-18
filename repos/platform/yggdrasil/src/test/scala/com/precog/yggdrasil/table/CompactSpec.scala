@@ -63,9 +63,12 @@ trait CompactSpec[M[+_]]
   def mkDeref(path: CPath): TransSpec1 = {
     def mkDeref0(nodes: List[CPathNode]): TransSpec1 =
       nodes match {
-        case (f: CPathField) :: rest => DerefObjectStatic(mkDeref0(rest), f)
-        case (i: CPathIndex) :: rest => DerefArrayStatic(mkDeref0(rest), i)
-        case _                       => Leaf(Source)
+        case (f: CPathField) :: rest =>
+          DerefObjectStatic(mkDeref0(rest), f)
+        case (i: CPathIndex) :: rest =>
+          DerefArrayStatic(mkDeref0(rest), i)
+        case _ =>
+          Leaf(Source)
       }
 
     mkDeref0(path.nodes)
@@ -73,11 +76,16 @@ trait CompactSpec[M[+_]]
 
   def extractPath(spec: TransSpec1): Option[CPath] =
     spec match {
-      case DerefObjectStatic(TransSpec1.Id, f) => Some(f)
-      case DerefObjectStatic(lhs, f)           => extractPath(lhs).map(_ \ f)
-      case DerefArrayStatic(TransSpec1.Id, i)  => Some(i)
-      case DerefArrayStatic(lhs, f)            => extractPath(lhs).map(_ \ f)
-      case _                                   => None
+      case DerefObjectStatic(TransSpec1.Id, f) =>
+        Some(f)
+      case DerefObjectStatic(lhs, f) =>
+        extractPath(lhs).map(_ \ f)
+      case DerefArrayStatic(TransSpec1.Id, i) =>
+        Some(i)
+      case DerefArrayStatic(lhs, f) =>
+        extractPath(lhs).map(_ \ f)
+      case _ =>
+        None
     }
 
   def chooseColumn(table: Table): TransSpec1 =

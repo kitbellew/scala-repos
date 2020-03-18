@@ -45,8 +45,10 @@ object EventMessageSerializationSpec
       check { (in: EventMessage) =>
         val buf = EventMessageEncoding.toMessageBytes(in)
         EventMessageEncoding.read(buf) must beLike {
-          case Success(\/-(out))             => out must_== in
-          case Failure(Extractor.Thrown(ex)) => throw ex
+          case Success(\/-(out)) =>
+            out must_== in
+          case Failure(Extractor.Thrown(ex)) =>
+            throw ex
         }
       }
     }

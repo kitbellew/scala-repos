@@ -80,7 +80,8 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
             if (startElement.getParent.getParent == endElement.getParent) =>
         case (false, true)
             if (startElement.getParent == endElement.getParent.getParent) =>
-        case _                                                            => return PsiElement.EMPTY_ARRAY
+        case _ =>
+          return PsiElement.EMPTY_ARRAY
       }
     } else if (isFirstElementMarked && isLastElementMarked) { // in case <selection>__blah blah__</selection>
       return Array(startElement.getParent)

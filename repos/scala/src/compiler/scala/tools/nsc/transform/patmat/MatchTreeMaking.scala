@@ -187,7 +187,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
 
       private lazy val (stored, substed) = (subPatBinders, subPatRefs).zipped
         .partition {
-          case (sym, _) => storedBinders(sym)
+          case (sym, _) =>
+            storedBinders(sym)
         }
 
       protected lazy val localSubstitution: Substitution =
@@ -225,10 +226,12 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           in.foreach {
             case tt: TypeTree =>
               tt.tpe foreach { // SI-7459 e.g. case Prod(t) => new t.u.Foo
-                case SingleType(_, sym) => ref(sym)
-                case _                  =>
+                case SingleType(_, sym) =>
+                  ref(sym)
+                case _ =>
               }
-            case t => ref(t.symbol)
+            case t =>
+              ref(t.symbol)
           }
 
           if (usedBinders.isEmpty)
@@ -237,7 +240,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             // only store binders actually used
             val (subPatBindersStored, subPatRefsStored) =
               stored.filter {
-                case (b, _) => usedBinders(b)
+                case (b, _) =>
+                  usedBinders(b)
               }.unzip
             Block(
               map2(subPatBindersStored.toList, subPatRefsStored.toList)(
@@ -372,10 +376,13 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       // (argument of the right type, length check succeeds for unapplySeq,...)
       def irrefutableExtractorType(tp: Type): Boolean =
         tp.resultType.dealias match {
-          case TypeRef(_, SomeClass, _) => true
+          case TypeRef(_, SomeClass, _) =>
+            true
           // probably not useful since this type won't be inferred nor can it be written down (yet)
-          case ConstantTrue => true
-          case _            => false
+          case ConstantTrue =>
+            true
+          case _ =>
+            false
         }
 
       def unapply(xtm: ExtractorTreeMaker): Option[(Tree, Symbol)] =
@@ -443,7 +450,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             orig
           else
             gen.mkAttributedQualifierIfPossible(expectedPrefix) match {
-              case None                   => orig
+              case None =>
+                orig
               case Some(expectedOuterRef) =>
                 // ExplicitOuter replaces `Select(q, outerSym) OBJ_EQ expectedPrefix`
                 // by `Select(q, outerAccessor(outerSym.owner)) OBJ_EQ expectedPrefix`
@@ -596,9 +604,12 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               ) // must use == to support e.g. List() == Nil
             case ConstantType(Constant(null)) if isAnyRef =>
               mkEqTest(expTp(CODE.NULL))
-            case ConstantType(const) => mkEqualsTest(expTp(Literal(const)))
-            case ThisType(sym)       => mkEqTest(expTp(This(sym)))
-            case _                   => mkDefault
+            case ConstantType(const) =>
+              mkEqualsTest(expTp(Literal(const)))
+            case ThisType(sym) =>
+              mkEqTest(expTp(This(sym)))
+            case _ =>
+              mkDefault
           }
       }
 
@@ -743,7 +754,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     case Ident(name)
                         if name startsWith nme.CHECK_IF_REFUTABLE_STRING =>
                       true // SI-7183 don't warn for withFilter's that turn out to be irrefutable.
-                    case _ => false
+                    case _ =>
+                      false
                   }
                 val suppression = Suppression(
                   suppressExhaustive,
@@ -755,13 +767,15 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                   // avoids traversing the entire list if there are more than 3 elements
                   def lengthMax3[T](l: List[T]): Int =
                     l match {
-                      case a :: b :: c :: _ => 3
+                      case a :: b :: c :: _ =>
+                        3
                       case cases =>
                         cases
                           .map({
                             case AlternativesTreeMaker(_, alts, _) :: _ =>
                               lengthMax3(alts)
-                            case c => 1
+                            case c =>
+                              1
                           })
                           .sum
                     }
@@ -837,9 +851,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               t.symbol = currentOwner.newAnonymousFunctionValue(t.pos)
               debug.patmat("new symbol for " + ((t, t.symbol.ownerChain)))
             case Function(_, _)
-                if (
-                  t.symbol.owner == NoSymbol
-                ) || (t.symbol.owner == origOwner) =>
+                if (t.symbol.owner == NoSymbol) || (
+                  t.symbol.owner == origOwner
+                ) =>
               debug.patmat(
                 "fundef: " + (
                   (

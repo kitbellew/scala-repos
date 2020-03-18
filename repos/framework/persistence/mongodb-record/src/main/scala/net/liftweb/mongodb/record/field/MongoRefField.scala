@@ -102,8 +102,10 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
   override def toForm =
     if (options.length > 0)
       uniqueFieldId match {
-        case Full(id) => Full(elem % ("id" -> id))
-        case _        => Full(elem)
+        case Full(id) =>
+          Full(elem % ("id" -> id))
+        case _ =>
+          Full(elem)
       }
     else
       Empty

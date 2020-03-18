@@ -102,8 +102,10 @@ object CompilerData {
 
   def isDottyModule(module: JpsModule) = {
     compilerJarsIn(module) match {
-      case Right(jars) => jars.dotty.isDefined
-      case _           => false
+      case Right(jars) =>
+        jars.dotty.isDefined
+      case _ =>
+        false
     }
   }
 
@@ -125,7 +127,8 @@ object CompilerData {
         case Left(error) =>
           Left(
             error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
-        case right => right
+        case right =>
+          right
       }
 
     library.flatMap { libraryJar =>
@@ -134,7 +137,8 @@ object CompilerData {
           case Left(error) =>
             Left(
               error + " in Scala compiler classpath in Scala SDK " + sdk.getName)
-          case right => right
+          case right =>
+            right
         }
 
       compiler.flatMap { compilerJar =>
@@ -150,7 +154,8 @@ object CompilerData {
                   ) => // TODO implement a better version comparison
                 find(extraJars, "scala-reflect", ".jar").left.toOption
                   .map(_ + " in Scala compiler classpath in Scala SDK " + sdk.getName)
-              case _ => None
+              case _ =>
+                None
             }
         }
 

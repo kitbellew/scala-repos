@@ -16,13 +16,15 @@ object CheckIsEmpty extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case _ `.isEmpty` () => None
+      case _ `.isEmpty` () =>
+        None
       case CheckIsEmpty(qual, start, end) if !isArray(qual) =>
         Some(
           replace(expr)
             .withText(invocationText(qual, "isEmpty"))
             .highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
 
   def unapply(expr: ScExpression): Option[(ScExpression, Int, Int)] = {
@@ -40,7 +42,8 @@ object CheckIsEmpty extends SimplificationType {
           Some((coll, coll.end, expr.end))
         case scalaNone() `==` coll if isOption(coll) =>
           Some((coll, expr.start, coll.start))
-        case _ => None
+        case _ =>
+          None
       }
     extractInner(firstLevel)
   }
@@ -48,12 +51,14 @@ object CheckIsEmpty extends SimplificationType {
   def extractInner(firstLevel: Option[(ScExpression, Int, Int)])
       : Option[(ScExpression, Int, Int)] = {
     firstLevel match {
-      case None => None
+      case None =>
+        None
       case Some((inner @ coll `.headOption` (), start, end)) if coll != null =>
         Some(coll, Math.min(coll.end, start), Math.max(inner.end, end))
       case Some((inner @ coll `.lastOption` (), start, end)) if coll != null =>
         Some(coll, Math.min(coll.end, start), Math.max(inner.end, end))
-      case _ => firstLevel
+      case _ =>
+        firstLevel
     }
   }
 }
@@ -63,14 +68,16 @@ object CheckNonEmpty extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case qual `.nonEmpty` () => None
+      case qual `.nonEmpty` () =>
+        None
       case CheckNonEmpty(qual, start, end)
           if !isOption(qual) && !isArray(qual) =>
         Some(
           replace(expr)
             .withText(invocationText(qual, "nonEmpty"))
             .highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
 
   def unapply(expr: ScExpression): Option[(ScExpression, Int, Int)] = {
@@ -92,7 +99,8 @@ object CheckNonEmpty extends SimplificationType {
           Some(qual, expr.start, qual.start)
         case qual `.isDefined` () if isOption(qual) =>
           Some(qual, qual.end, expr.end)
-        case _ => None
+        case _ =>
+          None
       }
     CheckIsEmpty.extractInner(firstLevel)
   }
@@ -103,20 +111,23 @@ object CheckIsDefined extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case _ `.isDefined` () => None
+      case _ `.isDefined` () =>
+        None
       case CheckIsDefined(qual, start, end) =>
         Some(
           replace(expr)
             .withText(invocationText(qual, "isDefined"))
             .highlightRange(start, end))
-      case _ => None
+      case _ =>
+        None
     }
 
   def unapply(expr: ScExpression): Option[(ScExpression, Int, Int)] = {
     expr match {
       case CheckNonEmpty(qual, start, end) if isOption(qual) =>
         Some((qual, start, end))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

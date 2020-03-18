@@ -43,7 +43,8 @@ private class TaggingInvoker[-A](
     val handler = underlyingInvoker.call(call)
     // All JavaAction's should already be tagged
     handler match {
-      case alreadyTagged: RequestTaggingHandler => alreadyTagged
+      case alreadyTagged: RequestTaggingHandler =>
+        alreadyTagged
       case action: EssentialAction =>
         new EssentialAction with RequestTaggingHandler {
           def apply(rh: RequestHeader) = action(rh)
@@ -52,7 +53,8 @@ private class TaggingInvoker[-A](
         }
       case ws: WebSocket =>
         WebSocket(rh => ws(taggedRequest(rh, cachedHandlerTags)))
-      case other => other
+      case other =>
+        other
     }
   }
 }
@@ -127,7 +129,8 @@ object HandlerInvokerFactory {
             handlerDef.classLoader.loadClass(
               handlerDef.routerPackage + "." + handlerDef.controller)
           } catch {
-            case NonFatal(_) => throw e
+            case NonFatal(_) =>
+              throw e
           }
         } else
           throw e
@@ -278,10 +281,14 @@ object HandlerInvokerFactory {
                     Right(
                       Flow[Message]
                         .map {
-                          case TextMessage(text)   => new JMessage.Text(text)
-                          case BinaryMessage(data) => new JMessage.Binary(data)
-                          case PingMessage(data)   => new JMessage.Ping(data)
-                          case PongMessage(data)   => new JMessage.Pong(data)
+                          case TextMessage(text) =>
+                            new JMessage.Text(text)
+                          case BinaryMessage(data) =>
+                            new JMessage.Binary(data)
+                          case PingMessage(data) =>
+                            new JMessage.Ping(data)
+                          case PongMessage(data) =>
+                            new JMessage.Pong(data)
                           case CloseMessage(code, reason) =>
                             new JMessage.Close(
                               OptionConverters
@@ -291,11 +298,14 @@ object HandlerInvokerFactory {
                         }
                         .via(resultOrFlow.right.get.asScala)
                         .map {
-                          case text: JMessage.Text => TextMessage(text.data)
+                          case text: JMessage.Text =>
+                            TextMessage(text.data)
                           case binary: JMessage.Binary =>
                             BinaryMessage(binary.data)
-                          case ping: JMessage.Ping => PingMessage(ping.data)
-                          case pong: JMessage.Pong => PongMessage(pong.data)
+                          case ping: JMessage.Ping =>
+                            PingMessage(ping.data)
+                          case pong: JMessage.Pong =>
+                            PongMessage(pong.data)
                           case close: JMessage.Close =>
                             CloseMessage(
                               OptionConverters

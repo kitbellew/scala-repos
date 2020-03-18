@@ -88,7 +88,8 @@ object TestUtil {
       batcher: Batcher): TraversableOnce[(Long, T)] = {
     val batchRange = batcher.toTimestamp(batcher.batchesCoveredBy(inputRange))
     input.filter {
-      case (ts, _) => batchRange.contains(Timestamp(ts))
+      case (ts, _) =>
+        batchRange.contains(Timestamp(ts))
     }
   }
 
@@ -98,7 +99,8 @@ object TestUtil {
       inputRange: Interval[Timestamp],
       batcher: Batcher): TraversableOnce[T] = {
     pruneToBatchCoveredWithTime(input, inputRange, batcher).map {
-      case (ts, v) => v
+      case (ts, v) =>
+        v
     }
   }
 
@@ -121,10 +123,14 @@ object TestUtil {
 
       def earliestTimeOf(batch: BatchID) =
         batch.id match {
-          case 0L => Timestamp.Min
-          case 1L => Timestamp(0)
-          case 2L => Timestamp.Max
-          case 3L => Timestamp.Max
+          case 0L =>
+            Timestamp.Min
+          case 1L =>
+            Timestamp(0)
+          case 2L =>
+            Timestamp.Max
+          case 3L =>
+            Timestamp.Max
         }
       // this is just for testing, it covers everything with batch 1
       override def cover(interval: Interval[Timestamp]): Interval[BatchID] =

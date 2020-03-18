@@ -91,14 +91,20 @@ object Trees {
   object Block {
     def apply(stats: List[Tree])(implicit pos: Position): Tree = {
       val flattenedStats = stats flatMap {
-        case Skip()          => Nil
-        case Block(subStats) => subStats
-        case other           => other :: Nil
+        case Skip() =>
+          Nil
+        case Block(subStats) =>
+          subStats
+        case other =>
+          other :: Nil
       }
       flattenedStats match {
-        case Nil         => Skip()
-        case only :: Nil => only
-        case _           => new Block(flattenedStats)
+        case Nil =>
+          Skip()
+        case only :: Nil =>
+          only
+        case _ =>
+          new Block(flattenedStats)
       }
     }
 
@@ -114,8 +120,10 @@ object Trees {
       extends Tree {
     require(
       lhs match {
-        case _: VarRef | _: DotSelect | _: BracketSelect => true
-        case _                                           => false
+        case _: VarRef | _: DotSelect | _: BracketSelect =>
+          true
+        case _ =>
+          false
       },
       s"Invalid lhs for Assign: $lhs")
   }
@@ -183,8 +191,10 @@ object Trees {
   case class Delete(prop: Tree)(implicit val pos: Position) extends Tree {
     require(
       prop match {
-        case _: DotSelect | _: BracketSelect => true
-        case _                               => false
+        case _: DotSelect | _: BracketSelect =>
+          true
+        case _ =>
+          false
       },
       s"Invalid prop for Delete: $prop")
   }

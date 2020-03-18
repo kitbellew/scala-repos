@@ -31,8 +31,10 @@ object StructureViewUtil {
     for (param <- x.parameters) {
       if (short) {
         param.paramType match {
-          case Some(pt) => res.append(pt.getText).append(", ")
-          case None     => res.append("AnyRef").append(", ")
+          case Some(pt) =>
+            res.append(pt.getText).append(", ")
+          case None =>
+            res.append("AnyRef").append(", ")
         }
       } else {
         res.append(param.name + ": ")

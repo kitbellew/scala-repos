@@ -169,7 +169,8 @@ class FormatterTest extends WordSpec {
             ExceptionLooper.cycle(10)
             null
           } catch {
-            case t: Throwable => t
+            case t: Throwable =>
+              t
           }
         assert(
           Formatter.formatStackTrace(exception, 5).map {
@@ -190,7 +191,8 @@ class FormatterTest extends WordSpec {
             ExceptionLooper.cycle2(2)
             null
           } catch {
-            case t: Throwable => t
+            case t: Throwable =>
+              t
           }
         assert(
           Formatter.formatStackTrace(exception, 2).map {

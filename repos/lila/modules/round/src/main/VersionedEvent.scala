@@ -17,8 +17,10 @@ case class VersionedEvent(
 
   lazy val decoded: JsValue =
     encoded match {
-      case Left(s)   => Json parse s
-      case Right(js) => js
+      case Left(s) =>
+        Json parse s
+      case Right(js) =>
+        js
     }
 
   def jsFor(m: Member): JsObject =
@@ -76,9 +78,12 @@ private[round] object VersionedEvent {
           "t" -> o.typ,
           "d" -> (
             o.encoded match {
-              case Left(s)       => s.some
-              case Right(JsNull) => none
-              case Right(js)     => Json.stringify(js).some
+              case Left(s) =>
+                s.some
+              case Right(JsNull) =>
+                none
+              case Right(js) =>
+                Json.stringify(js).some
             }
           ),
           "o" -> o.only.map(_.white),

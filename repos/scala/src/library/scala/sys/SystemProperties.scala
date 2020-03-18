@@ -65,7 +65,8 @@ class SystemProperties
   def wrapAccess[T](body: => T): Option[T] =
     try Some(body)
     catch {
-      case _: AccessControlException => None
+      case _: AccessControlException =>
+        None
     }
 }
 
@@ -92,12 +93,16 @@ object SystemProperties {
 
   def help(key: String): String =
     key match {
-      case HeadlessKey            => "system should not utilize a display device"
-      case PreferIPv4StackKey     => "system should prefer IPv4 sockets"
-      case PreferIPv6AddressesKey => "system should prefer IPv6 addresses"
+      case HeadlessKey =>
+        "system should not utilize a display device"
+      case PreferIPv4StackKey =>
+        "system should prefer IPv4 sockets"
+      case PreferIPv6AddressesKey =>
+        "system should prefer IPv6 addresses"
       case NoTraceSuppressionKey =>
         "scala should not suppress any stack trace creation"
-      case _ => ""
+      case _ =>
+        ""
     }
 
   lazy val headless: BooleanProp = BooleanProp.keyExists(HeadlessKey)

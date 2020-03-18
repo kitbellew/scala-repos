@@ -23,8 +23,10 @@ class ScDoStmtImpl(node: ASTNode)
   def getExprBody: Option[ScExpression] = findChild(classOf[ScExpression])
   def hasExprBody: Boolean = {
     getExprBody match {
-      case None    => false
-      case Some(_) => true
+      case None =>
+        false
+      case Some(_) =>
+        true
     }
   }
 
@@ -43,8 +45,10 @@ class ScDoStmtImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

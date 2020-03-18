@@ -52,8 +52,10 @@ object FSMActorSpec {
           }
         }
       }
-      case Event("hello", _) ⇒ stay replying "world"
-      case Event("bye", _) ⇒ stop(FSM.Shutdown)
+      case Event("hello", _) ⇒
+        stay replying "world"
+      case Event("bye", _) ⇒
+        stop(FSM.Shutdown)
     }
 
     when(Open) {
@@ -73,7 +75,8 @@ object FSMActorSpec {
     }
 
     onTransition {
-      case Locked -> Open ⇒ transitionLatch.open
+      case Locked -> Open ⇒
+        transitionLatch.open
     }
 
     // verify that old-style does still compile
@@ -124,7 +127,8 @@ class FSMActorSpec
         Props(
           new Actor {
             def receive = {
-              case Transition(_, _, _) ⇒ transitionCallBackLatch.open
+              case Transition(_, _, _) ⇒
+                transitionCallBackLatch.open
               case CurrentState(_, s: LockState) if s eq Locked ⇒
                 initialStateLatch.open // SI-5900 workaround
             }
@@ -156,9 +160,12 @@ class FSMActorSpec
         Props(
           new Actor {
             def receive = {
-              case Hello ⇒ lock ! "hello"
-              case "world" ⇒ answerLatch.open
-              case Bye ⇒ lock ! "bye"
+              case Hello ⇒
+                lock ! "hello"
+              case "world" ⇒
+                answerLatch.open
+              case Bye ⇒
+                lock ! "bye"
             }
           }))
       tester ! Hello
@@ -173,7 +180,8 @@ class FSMActorSpec
         new Actor with FSM[Int, Null] {
           startWith(1, null)
           when(1) {
-            case Event("go", _) ⇒ goto(2)
+            case Event("go", _) ⇒
+              goto(2)
           }
         })
       val name = fsm.path.toString
@@ -183,7 +191,8 @@ class FSMActorSpec
         system.eventStream.subscribe(testActor, classOf[Logging.Error])
         fsm ! "go"
         expectMsgPF(1 second, hint = "Next state 2 does not exist") {
-          case Logging.Error(_, `name`, _, "Next state 2 does not exist") ⇒ true
+          case Logging.Error(_, `name`, _, "Next state 2 does not exist") ⇒
+            true
         }
         system.eventStream.unsubscribe(testActor)
       }
@@ -205,7 +214,8 @@ class FSMActorSpec
             FSM.NullFunction
           }
           onTermination {
-            case x ⇒ testActor ! x
+            case x ⇒
+              testActor ! x
           }
         }
       val ref = system.actorOf(Props(fsm))
@@ -221,10 +231,12 @@ class FSMActorSpec
           new Actor with FSM[Int, String] {
             startWith(1, null)
             when(1) {
-              case Event(2, null) ⇒ stop(FSM.Normal, expected)
+              case Event(2, null) ⇒
+                stop(FSM.Normal, expected)
             }
             onTermination {
-              case StopEvent(FSM.Normal, 1, `expected`) ⇒ testActor ! "green"
+              case StopEvent(FSM.Normal, 1, `expected`) ⇒
+                testActor ! "green"
             }
           }))
       actor ! 2
@@ -239,10 +251,12 @@ class FSMActorSpec
         new Actor with FSM[String, Null] {
           startWith("not-started", null)
           when("not-started") {
-            case Event("start", _) ⇒ goto("started") replying "starting"
+            case Event("start", _) ⇒
+              goto("started") replying "starting"
           }
           when("started", stateTimeout = 10 seconds) {
-            case Event("stop", _) ⇒ stop()
+            case Event("stop", _) ⇒
+              stop()
           }
           onTransition {
             case "not-started" -> "started" ⇒
@@ -300,7 +314,8 @@ class FSMActorSpec
                     stop
                 }
                 onTermination {
-                  case StopEvent(r, _, _) ⇒ testActor ! r
+                  case StopEvent(r, _, _) ⇒
+                    testActor ! r
                 }
               })
             val name = fsm.path.toString
@@ -346,8 +361,10 @@ class FSMActorSpec
           override def logDepth = 3
           startWith(1, 0)
           when(1) {
-            case Event("count", c) ⇒ stay using (c + 1)
-            case Event("log", _) ⇒ stay replying getLog
+            case Event("count", c) ⇒
+              stay using (c + 1)
+            case Event("log", _) ⇒
+              stay replying getLog
           }
         })
       fsmref ! "log"
@@ -380,12 +397,15 @@ class FSMActorSpec
             startWith(0, 0)
             when(0)(
               transform {
-                case Event("go", _) ⇒ stay
+                case Event("go", _) ⇒
+                  stay
               } using {
-                case x ⇒ goto(1)
+                case x ⇒
+                  goto(1)
               })
             when(1) {
-              case _ ⇒ stay
+              case _ ⇒
+                stay
             }
           }))
       fsmref ! SubscribeTransitionCallBack(testActor)

@@ -55,8 +55,10 @@ class BufferingPool[Req, Rep](underlying: ServiceFactory[Req, Rep], size: Int)
     draining = true
     while (true) {
       buffer.tryGet() match {
-        case Some(service) => service.releaseSelf()
-        case None          => return
+        case Some(service) =>
+          service.releaseSelf()
+        case None =>
+          return
       }
     }
   }

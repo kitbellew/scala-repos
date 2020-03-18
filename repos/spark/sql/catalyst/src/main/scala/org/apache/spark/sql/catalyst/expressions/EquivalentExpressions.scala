@@ -34,8 +34,10 @@ class EquivalentExpressions {
   case class Expr(e: Expression) {
     override def equals(o: Any): Boolean =
       o match {
-        case other: Expr => e.semanticEquals(other.e)
-        case _           => false
+        case other: Expr =>
+          e.semanticEquals(other.e)
+        case _ =>
+          false
       }
     override val hashCode: Int = e.semanticHash()
   }

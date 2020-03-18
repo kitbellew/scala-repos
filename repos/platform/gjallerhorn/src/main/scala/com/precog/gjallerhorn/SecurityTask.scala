@@ -185,7 +185,8 @@ class SecurityTask(settings: Settings)
     "not describe invalid grants" in {
       val Account(user, pass, accountId, apiKey, rootPath) = createAccount
       describeGrant(apiKey, "does not exist") must beLike {
-        case ApiFailure(404, "\"Unable to find grant does not exist\"") => ok
+        case ApiFailure(404, "\"Unable to find grant does not exist\"") =>
+          ok
       }
     }
 

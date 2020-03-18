@@ -96,11 +96,13 @@ class MainTest extends AsyncTest[JdbcTestDB] {
 
     materialize(
       p1.mapResult {
-        case (id, f, l) => User(id, f, l.orNull)
+        case (id, f, l) =>
+          User(id, f, l.orNull)
       })
       .flatMap { allUsers =>
         allUsers shouldBe expectedUserTuples.map {
-          case (id, f, l) => User(id, f, l.orNull)
+          case (id, f, l) =>
+            User(id, f, l.orNull)
         }
         db.run(
           for {

@@ -188,8 +188,10 @@ object Test3 {
     try {
       List.range(1, 10, 0)
     } catch {
-      case e: IllegalArgumentException => ()
-      case _: Throwable                => throw new Error("List.range(1, 10, 0)")
+      case e: IllegalArgumentException =>
+        ()
+      case _: Throwable =>
+        throw new Error("List.range(1, 10, 0)")
     }
     assert(List.range(10, 0, -2) == List(10, 8, 6, 4, 2))
   }
@@ -210,9 +212,12 @@ object Test4 {
 object Test5 {
   def show(xs: List[String]) =
     xs match {
-      case "foo" :: args => args.toString
-      case List(x)       => x.toString
-      case Nil           => "Nil"
+      case "foo" :: args =>
+        args.toString
+      case List(x) =>
+        x.toString
+      case Nil =>
+        "Nil"
     }
   def run() {
     assert(show(List()) == "Nil")

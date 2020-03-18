@@ -140,13 +140,20 @@ object ImportInfo {
 
     def shouldAddName(resolveResult: ResolveResult): Boolean = {
       resolveResult match {
-        case ScalaResolveResult(p: PsiPackage, _)                        => true
-        case ScalaResolveResult(m: PsiMethod, _)                         => m.containingClass != null
-        case ScalaResolveResult(td: ScTypedDefinition, _) if td.isStable => true
-        case ScalaResolveResult(_: ScTypeAlias, _)                       => true
-        case ScalaResolveResult(_: PsiClass, _)                          => true
-        case ScalaResolveResult(f: PsiField, _)                          => f.hasFinalModifier
-        case _                                                           => false
+        case ScalaResolveResult(p: PsiPackage, _) =>
+          true
+        case ScalaResolveResult(m: PsiMethod, _) =>
+          m.containingClass != null
+        case ScalaResolveResult(td: ScTypedDefinition, _) if td.isStable =>
+          true
+        case ScalaResolveResult(_: ScTypeAlias, _) =>
+          true
+        case ScalaResolveResult(_: PsiClass, _) =>
+          true
+        case ScalaResolveResult(f: PsiField, _) =>
+          f.hasFinalModifier
+        case _ =>
+          false
       }
     }
 
@@ -240,16 +247,21 @@ object ImportInfo {
     def deepestQualifier(
         ref: ScStableCodeReferenceElement): ScStableCodeReferenceElement = {
       ref.qualifier match {
-        case Some(q) => deepestQualifier(q)
-        case None    => ref
+        case Some(q) =>
+          deepestQualifier(q)
+        case None =>
+          ref
       }
     }
 
     def packageFqn(p: PsiPackage): String = {
       p.getParentPackage match {
-        case null                             => name(p.getName)
-        case parent if parent.getName == null => name(p.getName)
-        case parent                           => packageFqn(parent) + "." + name(p.getName)
+        case null =>
+          name(p.getName)
+        case parent if parent.getName == null =>
+          name(p.getName)
+        case parent =>
+          packageFqn(parent) + "." + name(p.getName)
       }
     }
 
@@ -263,7 +275,8 @@ object ImportInfo {
           explicitQualifierString(q, withDeepest, ref.refName + withDot(res))
         case None if withDeepest && ref.refName != _root_prefix =>
           ref.refName + withDot(res)
-        case None => res
+        case None =>
+          res
       }
     }
 
@@ -281,10 +294,13 @@ object ImportInfo {
           o.containingClass match {
             case containingObject: ScObject =>
               isRelativeObject(containingObject, res = true)
-            case _ => false //inner of some class/trait
+            case _ =>
+              false //inner of some class/trait
           }
-        case _: ScPackaging | _: ScalaFile => true
-        case _                             => res //something in default package or in local object
+        case _: ScPackaging | _: ScalaFile =>
+          true
+        case _ =>
+          res //something in default package or in local object
       }
     }
 
@@ -316,9 +332,11 @@ object ImportInfo {
               m.containingClass match {
                 case o: ScObject if isRelativeObject(o, res = true) =>
                   o.qualifiedName + withDot(refName)
-                case _ => refName
+                case _ =>
+                  refName
               }
-            case _ => refName
+            case _ =>
+              refName
           }
         case Some(ScalaResolveResult(f: PsiField, _)) =>
           val clazzFqn =
@@ -344,7 +362,8 @@ object ImportInfo {
         val qualifiedDeepRef =
           try qualifiedRef(deepRef)
           catch {
-            case _: IllegalStateException => return None
+            case _: IllegalStateException =>
+              return None
           }
         val prefixQual = qualifiedDeepRef + withDot(
           explicitQualifierString(qualifier, withDeepest = false))
@@ -360,8 +379,10 @@ object ImportInfo {
 
     val isStableImport = {
       deepRef.resolve() match {
-        case named: PsiNamedElement => ScalaPsiUtil.hasStablePath(named)
-        case _                      => false
+        case named: PsiNamedElement =>
+          ScalaPsiUtil.hasStablePath(named)
+        case _ =>
+          false
       }
     }
 

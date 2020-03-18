@@ -513,7 +513,8 @@ trait HttpHelpers {
   def paramsToUrlParams(params: List[(String, String)]): String =
     params
       .map {
-        case (n, v) => urlEncode(n) + "=" + urlEncode(v)
+        case (n, v) =>
+          urlEncode(n) + "=" + urlEncode(v)
       }
       .mkString("&")
 
@@ -527,9 +528,12 @@ trait HttpHelpers {
     */
   def appendParams(url: String, params: Seq[(String, String)]): String =
     params.toList match {
-      case Nil                      => url
-      case xs if !url.contains("?") => url + "?" + paramsToUrlParams(xs)
-      case xs                       => url + "&" + paramsToUrlParams(xs)
+      case Nil =>
+        url
+      case xs if !url.contains("?") =>
+        url + "?" + paramsToUrlParams(xs)
+      case xs =>
+        url + "&" + paramsToUrlParams(xs)
     }
 
   /**
@@ -541,14 +545,16 @@ trait HttpHelpers {
     */
   def couldBeHtml(in: Map[String, String]): Boolean =
     in match {
-      case null => true
+      case null =>
+        true
       case n => {
         n.get("Content-Type") match {
           case Some(s) => {
             (s.toLowerCase == "text/html") ||
             (s.toLowerCase == "application/xhtml+xml")
           }
-          case None => true
+          case None =>
+            true
         }
       }
     }
@@ -580,13 +586,17 @@ trait HttpHelpers {
         toInsure: List[(String, String)],
         field: (String, String)): List[(String, String)] =
       toInsure.ciGet(field._1) match {
-        case Full(_) => toInsure
-        case _       => field :: toInsure
+        case Full(_) =>
+          toInsure
+        case _ =>
+          field :: toInsure
       }
 
     headers match {
-      case Nil     => toInsure
-      case x :: xs => insureField(insureField_inner(toInsure, x), xs)
+      case Nil =>
+        toInsure
+      case x :: xs =>
+        insureField(insureField_inner(toInsure, x), xs)
     }
   }
 
@@ -596,17 +606,28 @@ trait HttpHelpers {
   implicit def pairToUnprefixed(in: (String, Any)): MetaData = {
     val value: Option[NodeSeq] =
       in._2 match {
-        case null             => None
-        case js: ToJsCmd      => Some(Text(js.toJsCmd))
-        case n: Node          => Some(n)
-        case n: NodeSeq       => Some(n)
-        case None             => None
-        case Some(n: Node)    => Some(n)
-        case Some(n: NodeSeq) => Some(n)
-        case Empty            => None
-        case Full(n: Node)    => Some(n)
-        case Full(n: NodeSeq) => Some(n)
-        case s                => Some(Text(s.toString))
+        case null =>
+          None
+        case js: ToJsCmd =>
+          Some(Text(js.toJsCmd))
+        case n: Node =>
+          Some(n)
+        case n: NodeSeq =>
+          Some(n)
+        case None =>
+          None
+        case Some(n: Node) =>
+          Some(n)
+        case Some(n: NodeSeq) =>
+          Some(n)
+        case Empty =>
+          None
+        case Full(n: Node) =>
+          Some(n)
+        case Full(n: NodeSeq) =>
+          Some(n)
+        case s =>
+          Some(Text(s.toString))
       }
 
     value.map(v => new UnprefixedAttribute(in._1, v, Null)) getOrElse Null
@@ -625,7 +646,8 @@ trait HttpHelpers {
         val id = nextFuncName
         (in % ("id" -> id), id)
       }
-      case x :: xs => (in, x.text)
+      case x :: xs =>
+        (in, x.text)
     }
 
   /**
@@ -640,7 +662,8 @@ trait HttpHelpers {
         val (ne, id) = findOrAddId(e)
         f(id, ne)
       }
-      case x => x
+      case x =>
+        x
     }
   }
 
@@ -665,8 +688,10 @@ trait HttpHelpers {
     */
   def splitAtHash(str: String)(f: String => String): String =
     str.indexOf("#") match {
-      case idx if idx < 0 => f(str)
-      case idx            => f(str.substring(0, idx)) + str.substring(idx)
+      case idx if idx < 0 =>
+        f(str)
+      case idx =>
+        f(str.substring(0, idx)) + str.substring(idx)
     }
 
   /**
@@ -678,7 +703,8 @@ trait HttpHelpers {
       url: String,
       params: List[(String, String)]): String =
     params match {
-      case Nil => url
+      case Nil =>
+        url
       case ps =>
         splitAtHash(url) { to =>
           to +
@@ -689,7 +715,8 @@ trait HttpHelpers {
                 "?"
             ) +
             ps.map {
-                case (n, v) => urlEncode(n) + "=" + urlEncode(v)
+                case (n, v) =>
+                  urlEncode(n) + "=" + urlEncode(v)
               }
               .mkString("&")
         }
@@ -717,13 +744,15 @@ trait HttpHelpers {
     val ret = new ListBuffer[Elem]
     def find(what: NodeSeq) {
       what.foreach {
-        case Group(g) => find(g)
+        case Group(g) =>
+          find(g)
         case e: Elem =>
           if (f(e))
             ret += e
           find(e.child)
 
-        case n => find(n.child)
+        case n =>
+          find(n.child)
       }
     }
     find(nodes)
@@ -741,12 +770,14 @@ trait HttpHelpers {
 
     def find(what: NodeSeq) {
       what.foreach {
-        case Group(g) => find(g)
+        case Group(g) =>
+          find(g)
         case e: Elem =>
           ret ++= f(e)
           find(e.child)
 
-        case n => find(n.child)
+        case n =>
+          find(n.child)
       }
     }
 
@@ -784,8 +815,10 @@ trait HttpHelpers {
       in.foreach {
         case e: Elem if e.prefix == prefix && e.label == label =>
           e.child.foreach(ret.+=)
-        case g: Group => doIt(g.nodes)
-        case n        => doIt(n.child)
+        case g: Group =>
+          doIt(g.nodes)
+        case n =>
+          doIt(n.child)
       }
     }
 
@@ -804,18 +837,22 @@ trait ToJsCmd {
 object CheckNodeSeq {
   def unapply(in: Any): Option[NodeSeq] =
     in match {
-      case Some(ns: NodeSeq) => Some(ns)
-      case Full(ns: NodeSeq) => Some(ns)
+      case Some(ns: NodeSeq) =>
+        Some(ns)
+      case Full(ns: NodeSeq) =>
+        Some(ns)
       case Some(sq: Seq[_]) if sq.forall(_.isInstanceOf[Node]) =>
         val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
         Some(ns)
       case Full(sq: Seq[_]) if sq.forall(_.isInstanceOf[Node]) =>
         val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
         Some(ns)
-      case ns: NodeSeq => Some(ns)
+      case ns: NodeSeq =>
+        Some(ns)
       case sq: Seq[_] if sq.forall(_.isInstanceOf[Node]) =>
         val ns: NodeSeq = sq.asInstanceOf[Seq[Node]]
         Some(ns)
-      case _ => None
+      case _ =>
+        None
     }
 }

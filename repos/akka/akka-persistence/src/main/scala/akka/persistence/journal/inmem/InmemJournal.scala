@@ -67,8 +67,10 @@ private[persistence] trait InmemMessages {
   def add(p: PersistentRepr): Unit =
     messages = messages + (
       messages.get(p.persistenceId) match {
-        case Some(ms) ⇒ p.persistenceId -> (ms :+ p)
-        case None ⇒ p.persistenceId -> Vector(p)
+        case Some(ms) ⇒
+          p.persistenceId -> (ms :+ p)
+        case None ⇒
+          p.persistenceId -> Vector(p)
       }
     )
 
@@ -82,13 +84,16 @@ private[persistence] trait InmemMessages {
             else
               sp)
         )
-      case None ⇒ messages
+      case None ⇒
+        messages
     }
 
   def delete(pid: String, snr: Long): Unit =
     messages = messages.get(pid) match {
-      case Some(ms) ⇒ messages + (pid -> ms.filterNot(_.sequenceNr == snr))
-      case None ⇒ messages
+      case Some(ms) ⇒
+        messages + (pid -> ms.filterNot(_.sequenceNr == snr))
+      case None ⇒
+        messages
     }
 
   def read(
@@ -100,7 +105,8 @@ private[persistence] trait InmemMessages {
       case Some(ms) ⇒
         ms.filter(m ⇒ m.sequenceNr >= fromSnr && m.sequenceNr <= toSnr)
           .take(safeLongToInt(max))
-      case None ⇒ Nil
+      case None ⇒
+        Nil
     }
 
   def highestSequenceNr(pid: String): Long = {

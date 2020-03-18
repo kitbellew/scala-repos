@@ -157,7 +157,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
             select id, hash, apply_script, revert_script from ${schema}play_evolutions order by id
         """)) { rs =>
         rs.next match {
-          case false => None
+          case false =>
+            None
           case true => {
             Some(
               (
@@ -246,7 +247,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
           e match {
             case ex: SQLException =>
               ex.getMessage + " [ERROR:" + ex.getErrorCode + ", SQLSTATE:" + ex.getSQLState + "]"
-            case ex => ex.getMessage
+            case ex =>
+              ex.getMessage
           }
         if (!autocommit) {
           logger.error(message)
@@ -293,11 +295,16 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       try {
         val createScript =
           database.url match {
-            case SqlServerJdbcUrl() => CreatePlayEvolutionsSqlServerSql
-            case OracleJdbcUrl()    => CreatePlayEvolutionsOracleSql
-            case MysqlJdbcUrl(_)    => CreatePlayEvolutionsMySql
-            case DerbyJdbcUrl()     => CreatePlayEvolutionsDerby
-            case _                  => CreatePlayEvolutionsSql
+            case SqlServerJdbcUrl() =>
+              CreatePlayEvolutionsSqlServerSql
+            case OracleJdbcUrl() =>
+              CreatePlayEvolutionsOracleSql
+            case MysqlJdbcUrl(_) =>
+              CreatePlayEvolutionsMySql
+            case DerbyJdbcUrl() =>
+              CreatePlayEvolutionsDerby
+            case _ =>
+              CreatePlayEvolutionsSql
           }
 
         execute(createScript)
@@ -320,8 +327,10 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
         val hash = problem.getString("hash").take(7)
         val script =
           state match {
-            case "applying_up" => problem.getString("apply_script")
-            case _             => problem.getString("revert_script")
+            case "applying_up" =>
+              problem.getString("apply_script")
+            case _ =>
+              problem.getString("revert_script")
           }
         val error = problem.getString("last_problem")
 
@@ -343,8 +352,10 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       }
 
     } catch {
-      case e: InconsistentDatabase => throw e
-      case NonFatal(_)             => createPlayEvolutionsTable()
+      case e: InconsistentDatabase =>
+        throw e
+      case NonFatal(_) =>
+        createPlayEvolutionsTable()
     } finally {
       connection.close()
     }
@@ -490,15 +501,21 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
     val UNKNOWN = "UNKNOWN"
 
     val mapUpsAndDowns: PartialFunction[String, String] = {
-      case upsMarker()   => UPS
-      case downsMarker() => DOWNS
-      case _             => UNKNOWN
+      case upsMarker() =>
+        UPS
+      case downsMarker() =>
+        DOWNS
+      case _ =>
+        UNKNOWN
     }
 
     val isMarker: PartialFunction[String, Boolean] = {
-      case upsMarker()   => true
-      case downsMarker() => true
-      case _             => false
+      case upsMarker() =>
+        true
+      case downsMarker() =>
+        true
+      case _ =>
+        false
     }
 
     Collections
@@ -515,7 +532,8 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
 
           val parsed = Collections
             .unfoldLeft(("", script.split('\n').toList.map(_.trim))) {
-              case (_, Nil) => None
+              case (_, Nil) =>
+                None
               case (context, lines) => {
                 val (some, next) = lines.span(l => !isMarker(l))
                 Some(

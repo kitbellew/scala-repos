@@ -27,7 +27,8 @@ class BlockExpressionToArgumentIntention extends PsiElementBaseIntentionAction {
             Parent(Parent(list: ScArgumentExprList)))
           if list.exprs.size == 1 && block.caseClauses.isEmpty =>
         IntentionAvailabilityChecker.checkIntention(this, element)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -44,8 +45,9 @@ class BlockExpressionToArgumentIntention extends PsiElementBaseIntentionAction {
         .get
     val replacement = block.getParent.replace(arguments)
     replacement.getPrevSibling match {
-      case ws: PsiWhiteSpace => ws.delete()
-      case _                 =>
+      case ws: PsiWhiteSpace =>
+        ws.delete()
+      case _ =>
     }
   }
 }

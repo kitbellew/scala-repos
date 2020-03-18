@@ -41,7 +41,8 @@ private[thrift] class ThriftBufferDecoder(protocolFactory: TProtocolFactory)
     try {
       decode(ctx, channel, buffer, state)
     } catch {
-      case _: TTransportException => null
+      case _: TTransportException =>
+        null
     }
 
 }

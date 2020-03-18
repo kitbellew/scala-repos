@@ -13,7 +13,8 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
 
   "The headerValuePF directive" should {
     lazy val myHeaderValue = headerValuePF {
-      case Connection(tokens) ⇒ tokens.head
+      case Connection(tokens) ⇒
+        tokens.head
     }
 
     "extract the respective header value if a matching request header is present" in {
@@ -36,7 +37,8 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       Get("/abc") ~> addHeader(Connection("close")) ~> {
         (
           headerValuePF {
-            case _ ⇒ sys.error("Naah!")
+            case _ ⇒
+              sys.error("Naah!")
           }
         ) {
           echoComplete
@@ -144,8 +146,10 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
 
   "The optionalHeaderValue directive" should {
     lazy val myHeaderValue = optionalHeaderValue {
-      case Connection(tokens) ⇒ Some(tokens.head)
-      case _ ⇒ None
+      case Connection(tokens) ⇒
+        Some(tokens.head)
+      case _ ⇒
+        None
     }
 
     "extract the respective header value if a matching request header is present" in {
@@ -167,7 +171,8 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     "reject with a MalformedHeaderRejection if the extract function throws an exception" in {
       Get("/abc") ~> addHeader(Connection("close")) ~> {
         val myHeaderValue = optionalHeaderValue {
-          case _ ⇒ sys.error("Naaah!")
+          case _ ⇒
+            sys.error("Naaah!")
         }
         myHeaderValue {
           echoComplete
@@ -185,7 +190,8 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       optionalHeaderValueByType[Origin]() {
         case Some(origin) ⇒
           complete(s"The first origin was ${origin.origins.head}")
-        case None ⇒ complete("No Origin header found.")
+        case None ⇒
+          complete("No Origin header found.")
       }
     "extract Some(header) if the type is matching" in {
       val originHeader = Origin(HttpOrigin("http://localhost:8080"))

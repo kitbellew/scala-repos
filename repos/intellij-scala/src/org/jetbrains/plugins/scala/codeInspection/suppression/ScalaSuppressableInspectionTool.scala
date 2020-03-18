@@ -45,8 +45,10 @@ object ScalaSuppressableInspectionTool {
 
   def commentsFor(elem: PsiElement): Seq[PsiComment] = {
     elem match {
-      case null | _: PsiFile | _: PsiDirectory => Seq.empty
-      case co: ScCommentOwner                  => co.allComments
+      case null | _: PsiFile | _: PsiDirectory =>
+        Seq.empty
+      case co: ScCommentOwner =>
+        co.allComments
       case stmt =>
         val prev = stmt.getPrevSiblingNotWhitespace
         prev.asOptionOf[PsiComment].toSeq

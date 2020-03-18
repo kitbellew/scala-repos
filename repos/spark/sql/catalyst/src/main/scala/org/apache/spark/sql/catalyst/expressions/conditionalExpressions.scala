@@ -105,7 +105,8 @@ case class CaseWhen(
 
   def valueTypesEqual: Boolean =
     valueTypes.size <= 1 || valueTypes.sliding(2, 1).forall {
-      case Seq(dt1, dt2) => dt1.sameType(dt2)
+      case Seq(dt1, dt2) =>
+        dt1.sameType(dt2)
     }
 
   override def dataType: DataType = branches.head._2.dataType
@@ -213,7 +214,8 @@ case class CaseWhen(
   override def toString: String = {
     val cases =
       branches.map {
-        case (c, v) => s" WHEN $c THEN $v"
+        case (c, v) =>
+          s" WHEN $c THEN $v"
       }.mkString
     val elseCase = elseValue.map(" ELSE " + _).getOrElse("")
     "CASE" + cases + elseCase + " END"
@@ -222,7 +224,8 @@ case class CaseWhen(
   override def sql: String = {
     val cases =
       branches.map {
-        case (c, v) => s" WHEN ${c.sql} THEN ${v.sql}"
+        case (c, v) =>
+          s" WHEN ${c.sql} THEN ${v.sql}"
       }.mkString
     val elseCase = elseValue.map(" ELSE " + _.sql).getOrElse("")
     "CASE" + cases + elseCase + " END"
@@ -251,8 +254,10 @@ object CaseWhen {
       branches
         .grouped(2)
         .flatMap {
-          case cond :: value :: Nil => Some((cond, value))
-          case value :: Nil         => None
+          case cond :: value :: Nil =>
+            Some((cond, value))
+          case value :: Nil =>
+            None
         }
         .toArray
         .toSeq // force materialization to make the seq serializable
@@ -275,8 +280,10 @@ object CaseKeyWhen {
       branches
         .grouped(2)
         .flatMap {
-          case cond :: value :: Nil => Some((EqualTo(key, cond), value))
-          case value :: Nil         => None
+          case cond :: value :: Nil =>
+            Some((EqualTo(key, cond), value))
+          case value :: Nil =>
+            None
         }
         .toArray
         .toSeq // force materialization to make the seq serializable

@@ -75,17 +75,20 @@ object Test {
     println(
       "BigInt agrees with Long: " +
         (numericLongRanges zip numericBigIntRanges).forall {
-          case (lr, bir) => lr.sum == bir.sum
+          case (lr, bir) =>
+            lr.sum == bir.sum
         })
     println(
       "Long agrees with Int when rounded: " +
         (numericLongRanges zip numericIntRanges).forall {
-          case (lr, ir) => lr.sum.toInt == ir.sum
+          case (lr, ir) =>
+            lr.sum.toInt == ir.sum
         })
     println(
       "Numeric Int agrees with Range: " +
         (numericIntRanges zip ranges).forall {
-          case (ir, r) => ir.sum == r.sum
+          case (ir, r) =>
+            ir.sum == r.sum
         })
   }
 }

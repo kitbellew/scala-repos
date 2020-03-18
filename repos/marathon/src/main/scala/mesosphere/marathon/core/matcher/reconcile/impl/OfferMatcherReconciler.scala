@@ -51,7 +51,8 @@ private[reconcile] class OfferMatcherReconciler(
       offer.getResourcesList.asScala
         .groupBy(TaskLabels.taskIdForResource(frameworkId, _))
         .collect {
-          case (Some(taskId), resources) => taskId -> resources
+          case (Some(taskId), resources) =>
+            taskId -> resources
         }
     }
 

@@ -47,7 +47,8 @@ object H5Store {
     try {
       block
     } catch {
-      case e: HDF5LibraryException => throw wrapHdf5Exception(e)
+      case e: HDF5LibraryException =>
+        throw wrapHdf5Exception(e)
     } finally {
       monitor.unlock()
     }
@@ -792,11 +793,16 @@ object H5Store {
           (HDF5Constants.H5T_NATIVE_INT64, valArr)
         }
         // otherwise, don't need a transform on data
-        case c if c == ic => (HDF5Constants.H5T_NATIVE_INT32, data)
-        case c if c == lc => (HDF5Constants.H5T_NATIVE_INT64, data)
-        case c if c == dc => (HDF5Constants.H5T_NATIVE_DOUBLE, data)
-        case c if c == fc => (HDF5Constants.H5T_NATIVE_FLOAT, data)
-        case _            => throw new IllegalArgumentException("Unsupported array type")
+        case c if c == ic =>
+          (HDF5Constants.H5T_NATIVE_INT32, data)
+        case c if c == lc =>
+          (HDF5Constants.H5T_NATIVE_INT64, data)
+        case c if c == dc =>
+          (HDF5Constants.H5T_NATIVE_DOUBLE, data)
+        case c if c == fc =>
+          (HDF5Constants.H5T_NATIVE_FLOAT, data)
+        case _ =>
+          throw new IllegalArgumentException("Unsupported array type")
       }
 
     val cparms = H5.H5Pcreate(HDF5Constants.H5P_DATASET_CREATE)
@@ -1053,7 +1059,8 @@ object H5Store {
 
           return result
         }
-        case _ => throw new IllegalArgumentException("Unrecognized array type")
+        case _ =>
+          throw new IllegalArgumentException("Unrecognized array type")
       }
 
     // construct new array
@@ -1118,11 +1125,16 @@ object H5Store {
     val stag = implicitly[ST[X]]
     attribs ++ {
       stag.runtimeClass match {
-        case c if c == ic => List(("kind", "integer"))
-        case c if c == lc => List(("kind", "integer"))
-        case c if c == dc => List(("kind", "float"))
-        case c if c == fc => List(("kind", "float"))
-        case c if c == sc => List(("kind", "string"))
+        case c if c == ic =>
+          List(("kind", "integer"))
+        case c if c == lc =>
+          List(("kind", "integer"))
+        case c if c == dc =>
+          List(("kind", "float"))
+        case c if c == fc =>
+          List(("kind", "float"))
+        case c if c == sc =>
+          List(("kind", "string"))
         case c if c == tc =>
           List(
             ("index_class", "datetime"),
@@ -1214,7 +1226,8 @@ object H5Store {
           val data = Vec(readArray[Long](nodeid, "values"))
           new VecTime(data / 1000000).asInstanceOf[Vec[T]]
         }
-        case _ => Vec(readArray[T](nodeid, "values"))
+        case _ =>
+          Vec(readArray[T](nodeid, "values"))
       }
 
     val idxid = H5.H5Dopen(nodeid, "index", HDF5Constants.H5P_DEFAULT)
@@ -1257,7 +1270,8 @@ object H5Store {
           val data = Vec(readArray[Long](nodeid, idxid))
           new IndexTime(new IndexLong(data / 1000000)).asInstanceOf[Index[X]]
         }
-        case _ => Index(readArray[X](nodeid, idxid))
+        case _ =>
+          Index(readArray[X](nodeid, idxid))
       }
 
     H5Reg.close(idxid, H5D)
@@ -1699,7 +1713,8 @@ object H5Store {
     def closeAll() {
       withMonitor {
         registry.map {
-          case (v, t) => close(v, t)
+          case (v, t) =>
+            close(v, t)
         }
       }
     }

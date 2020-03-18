@@ -55,7 +55,8 @@ object ThriftResponseClassifier {
     */
   val ThriftExceptionsAsFailures: ResponseClassifier =
     ResponseClassifier.named("ThriftExceptionsAsFailures") {
-      case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
+      case ReqRep(_, Throw(_)) =>
+        ResponseClass.NonRetryableFailure
     }
 
   private[this] val NoDeserializeCtx: DeserializeCtx[Nothing] =
@@ -105,9 +106,11 @@ object ThriftResponseClassifier {
           case Return(bytes: Array[Byte]) =>
             try classifier.isDefinedAt(deserialized(deserCtx, bytes))
             catch {
-              case _: Throwable => false
+              case _: Throwable =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
       }
 
@@ -121,9 +124,11 @@ object ThriftResponseClassifier {
             try {
               classifier(deserialized(deserCtx, bytes))
             } catch {
-              case NonFatal(e) => throw new MatchError(e)
+              case NonFatal(e) =>
+                throw new MatchError(e)
             }
-          case e => throw new MatchError(e)
+          case e =>
+            throw new MatchError(e)
         }
     }
 

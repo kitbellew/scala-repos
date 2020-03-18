@@ -19,7 +19,8 @@ object PinnedActorSpec {
 
   class TestActor extends Actor {
     def receive = {
-      case "Hello" ⇒ sender() ! "World"
+      case "Hello" ⇒
+        sender() ! "World"
       case "Failure" ⇒
         throw new RuntimeException(
           "Expected exception; to test fault-tolerance")
@@ -44,7 +45,8 @@ class PinnedActorSpec
         Props(
           new Actor {
             def receive = {
-              case "OneWay" ⇒ oneWay.countDown()
+              case "OneWay" ⇒
+                oneWay.countDown()
             }
           }).withDispatcher("pinned-dispatcher"))
       val result = actor ! "OneWay"

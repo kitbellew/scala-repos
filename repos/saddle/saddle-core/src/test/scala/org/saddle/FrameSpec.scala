@@ -37,7 +37,8 @@ class FrameSpec extends Specification {
       "a" -> Series("x" -> 1, "y" -> 2, "z" -> 3),
       "b" -> Series("x" -> 4, "y" -> 5, "z" -> 6))
     f.map {
-      case (r, c, v) => (r, c, v + 1)
+      case (r, c, v) =>
+        (r, c, v + 1)
     } must_== f + 1
   }
 
@@ -46,7 +47,8 @@ class FrameSpec extends Specification {
       "a" -> Series("x" -> 1, "y" -> 2, "z" -> 3),
       "b" -> Series("x" -> 4, "y" -> 5, "z" -> 6))
     f.flatMap {
-      case (r, c, v) => Some((r, c, v + 1))
+      case (r, c, v) =>
+        Some((r, c, v + 1))
     } must_== f + 1
   }
 

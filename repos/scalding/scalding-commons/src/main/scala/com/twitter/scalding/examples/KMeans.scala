@@ -13,14 +13,16 @@ object KMeans {
       v1.iterator
         .zip(v2.iterator)
         .map {
-          case (l, r) => (l - r) * (l - r)
+          case (l, r) =>
+            (l - r) * (l - r)
         }
         .sum)
 
   // Just normal vector addition
   private def add(v1: Vector[Double], v2: Vector[Double]): Vector[Double] =
     v1.zip(v2).map {
-      case (l, r) => l + r
+      case (l, r) =>
+        l + r
     }
 
   // normal scalar multiplication
@@ -53,11 +55,13 @@ object KMeans {
     centroids
     // compute the distance to each center
       .map {
-        case (id, cent) => (distance(from, cent), (id, cent))
+        case (id, cent) =>
+          (distance(from, cent), (id, cent))
       }
       // take the minimum by the distance, ignoring the id and the centroid
       .minBy {
-        case (dist, _) => dist
+        case (dist, _) =>
+          dist
       }
       // Just keep the id and the centroid
       ._2
@@ -126,7 +130,8 @@ object KMeans {
         .sortedTake(k)(Ordering.by(_._1))
         .mapValues { randk =>
           randk.iterator.zipWithIndex.map {
-            case ((_, v), id) => (id, v)
+            case ((_, v), id) =>
+              (id, v)
           }.toList
         }
         .values

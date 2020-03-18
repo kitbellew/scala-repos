@@ -201,7 +201,8 @@ class StormLaws extends WordSpec {
     val expander = sample[Int => List[(Int, Int)]]
     val expansionFunc = { (x: Int) =>
       expander(x).flatMap {
-        case (k, v) => List((k, v), (k, v), (k, v), (k, v), (k, v))
+        case (k, v) =>
+          List((k, v), (k, v), (k, v), (k, v), (k, v))
       }
     }
     val returnedState = StormTestRun.simpleRun[Int, Int, Int](

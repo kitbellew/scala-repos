@@ -31,8 +31,10 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   }
   "headerValue-0" in {
     def extractHostPort: HttpHeader => Option[Int] = {
-      case h: `Host` => Some(h.port)
-      case x         => None
+      case h: `Host` =>
+        Some(h.port)
+      case x =>
+        None
     }
 
     val route =
@@ -52,20 +54,26 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   }
   "optionalHeaderValue-0" in {
     def extractHostPort: HttpHeader => Option[Int] = {
-      case h: `Host` => Some(h.port)
-      case x         => None
+      case h: `Host` =>
+        Some(h.port)
+      case x =>
+        None
     }
 
     val route =
       optionalHeaderValue(extractHostPort) {
-        case Some(port) => complete(s"The port was $port")
-        case None       => complete(s"The port was not provided explicitly")
+        case Some(port) =>
+          complete(s"The port was $port")
+        case None =>
+          complete(s"The port was not provided explicitly")
       } ~ // can also be written as:
         optionalHeaderValue(extractHostPort) { port =>
           complete {
             port match {
-              case Some(p) => s"The port was $p"
-              case _       => "The port was not provided explicitly"
+              case Some(p) =>
+                s"The port was $p"
+              case _ =>
+                "The port was not provided explicitly"
             }
           }
         }
@@ -81,14 +89,18 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   "optionalHeaderValueByName-0" in {
     val route =
       optionalHeaderValueByName("X-User-Id") {
-        case Some(userId) => complete(s"The user is $userId")
-        case None         => complete(s"No user was provided")
+        case Some(userId) =>
+          complete(s"The user is $userId")
+        case None =>
+          complete(s"No user was provided")
       } ~ // can also be written as:
         optionalHeaderValueByName("port") { port =>
           complete {
             port match {
-              case Some(p) => s"The user is $p"
-              case _       => "No user was provided"
+              case Some(p) =>
+                s"The user is $p"
+              case _ =>
+                "No user was provided"
             }
           }
         }
@@ -103,7 +115,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   }
   "headerValuePF-0" in {
     def extractHostPort: PartialFunction[HttpHeader, Int] = {
-      case h: `Host` => h.port
+      case h: `Host` =>
+        h.port
     }
 
     val route =
@@ -123,19 +136,24 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   }
   "optionalHeaderValuePF-0" in {
     def extractHostPort: PartialFunction[HttpHeader, Int] = {
-      case h: `Host` => h.port
+      case h: `Host` =>
+        h.port
     }
 
     val route =
       optionalHeaderValuePF(extractHostPort) {
-        case Some(port) => complete(s"The port was $port")
-        case None       => complete(s"The port was not provided explicitly")
+        case Some(port) =>
+          complete(s"The port was $port")
+        case None =>
+          complete(s"The port was not provided explicitly")
       } ~ // can also be written as:
         optionalHeaderValuePF(extractHostPort) { port =>
           complete {
             port match {
-              case Some(p) => s"The port was $p"
-              case _       => "The port was not provided explicitly"
+              case Some(p) =>
+                s"The port was $p"
+              case _ =>
+                "The port was not provided explicitly"
             }
           }
         }
@@ -175,7 +193,8 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
       optionalHeaderValueByType[Origin]() {
         case Some(origin) ⇒
           complete(s"The first origin was ${origin.origins.head}")
-        case None ⇒ complete("No Origin header found.")
+        case None ⇒
+          complete("No Origin header found.")
       }
 
     val originHeader = Origin(HttpOrigin("http://localhost:8080"))

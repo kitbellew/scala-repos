@@ -10,7 +10,8 @@ object Test extends App {
       symbolType: SymbolType): Set[Region] =
     rawSymbolInfos
       .collect {
-        case SymbolInfo(`symbolType`, regions, _) => regions
+        case SymbolInfo(`symbolType`, regions, _) =>
+          regions
       }
       .flatten
       .toSet

@@ -183,41 +183,53 @@ private[akka] class Shard(
   def receive = receiveCommand
 
   def receiveCommand: Receive = {
-    case Terminated(ref) ⇒ receiveTerminated(ref)
-    case msg: CoordinatorMessage ⇒ receiveCoordinatorMessage(msg)
-    case msg: ShardCommand ⇒ receiveShardCommand(msg)
-    case msg: ShardRegionCommand ⇒ receiveShardRegionCommand(msg)
-    case msg: ShardQuery ⇒ receiveShardQuery(msg)
-    case msg if extractEntityId.isDefinedAt(msg) ⇒ deliverMessage(msg, sender())
+    case Terminated(ref) ⇒
+      receiveTerminated(ref)
+    case msg: CoordinatorMessage ⇒
+      receiveCoordinatorMessage(msg)
+    case msg: ShardCommand ⇒
+      receiveShardCommand(msg)
+    case msg: ShardRegionCommand ⇒
+      receiveShardRegionCommand(msg)
+    case msg: ShardQuery ⇒
+      receiveShardQuery(msg)
+    case msg if extractEntityId.isDefinedAt(msg) ⇒
+      deliverMessage(msg, sender())
   }
 
   def receiveShardCommand(msg: ShardCommand): Unit =
     msg match {
-      case RestartEntity(id) ⇒ getEntity(id)
+      case RestartEntity(id) ⇒
+        getEntity(id)
     }
 
   def receiveShardRegionCommand(msg: ShardRegionCommand): Unit =
     msg match {
-      case Passivate(stopMessage) ⇒ passivate(sender(), stopMessage)
-      case _ ⇒ unhandled(msg)
+      case Passivate(stopMessage) ⇒
+        passivate(sender(), stopMessage)
+      case _ ⇒
+        unhandled(msg)
     }
 
   def receiveCoordinatorMessage(msg: CoordinatorMessage): Unit =
     msg match {
-      case HandOff(`shardId`) ⇒ handOff(sender())
+      case HandOff(`shardId`) ⇒
+        handOff(sender())
       case HandOff(shard) ⇒
         log.warning(
           "Shard [{}] can not hand off for another Shard [{}]",
           shardId,
           shard)
-      case _ ⇒ unhandled(msg)
+      case _ ⇒
+        unhandled(msg)
     }
 
   def receiveShardQuery(msg: ShardQuery): Unit =
     msg match {
       case GetCurrentShardState ⇒
         sender() ! CurrentShardState(shardId, refById.keySet)
-      case GetShardStats ⇒ sender() ! ShardStats(shardId, state.entities.size)
+      case GetShardStats ⇒
+        sender() ! ShardStats(shardId, state.entities.size)
     }
 
   def handOff(replyTo: ActorRef): Unit =
@@ -241,7 +253,8 @@ private[akka] class Shard(
 
           //During hand off we only care about watching for termination of the hand off stopper
           context become {
-            case Terminated(ref) ⇒ receiveTerminated(ref)
+            case Terminated(ref) ⇒
+              receiveTerminated(ref)
           }
         } else {
           replyTo ! ShardStopped(shardId)
@@ -311,7 +324,8 @@ private[akka] class Shard(
       //Now there is no deliveryBuffer we can try to redeliver
       // and as the child exists, the message will be directly forwarded
       messages foreach {
-        case (msg, snd) ⇒ deliverMessage(msg, snd)
+        case (msg, snd) ⇒
+          deliverMessage(msg, snd)
       }
     }
   }
@@ -325,7 +339,8 @@ private[akka] class Shard(
       context.system.deadLetters ! msg
     } else {
       messageBuffers.get(id) match {
-        case None ⇒ deliverTo(id, msg, payload, snd)
+        case None ⇒
+          deliverTo(id, msg, payload, snd)
 
         case Some(buf) if totalBufferSize >= bufferSize ⇒
           log.debug("Buffer is full, dropping message for entity [{}]", id)
@@ -341,8 +356,10 @@ private[akka] class Shard(
   def deliverTo(id: EntityId, msg: Any, payload: Msg, snd: ActorRef): Unit = {
     val name = URLEncoder.encode(id, "utf-8")
     context.child(name) match {
-      case Some(actor) ⇒ actor.tell(payload, snd)
-      case None ⇒ getEntity(id).tell(payload, snd)
+      case Some(actor) ⇒
+        actor.tell(payload, snd)
+      case None ⇒
+        getEntity(id).tell(payload, snd)
     }
   }
 
@@ -418,9 +435,12 @@ private[akka] class PersistentShard(
   }
 
   override def receiveRecover: Receive = {
-    case EntityStarted(id) ⇒ state = state.copy(state.entities + id)
-    case EntityStopped(id) ⇒ state = state.copy(state.entities - id)
-    case SnapshotOffer(_, snapshot: State) ⇒ state = snapshot
+    case EntityStarted(id) ⇒
+      state = state.copy(state.entities + id)
+    case EntityStopped(id) ⇒
+      state = state.copy(state.entities - id)
+    case SnapshotOffer(_, snapshot: State) ⇒
+      state = snapshot
     case RecoveryCompleted ⇒
       state.entities foreach getEntity
       super.initialized()

@@ -39,7 +39,8 @@ class Indexer(
 
   def oldSearchSymbols(terms: List[String], max: Int) =
     index.searchClassesMethods(terms, max).flatMap {
-      case hit if hit.declAs == DeclaredAs.Class => Some(typeResult(hit))
+      case hit if hit.declAs == DeclaredAs.Class =>
+        Some(typeResult(hit))
       case hit if hit.declAs == DeclaredAs.Method =>
         Some(
           MethodSearchResult(
@@ -48,7 +49,8 @@ class Indexer(
             hit.declAs,
             LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs),
             hit.fqn.split("\\.").init.mkString(".")))
-      case _ => None // were never supported
+      case _ =>
+        None // were never supported
     }
 
   override def receive =

@@ -247,19 +247,23 @@ package scala.sys {
       type URL = java.net.URL
 
       def onError[T](handler: Throwable => T): Throwable =?> T = {
-        case e @ _ => handler(e)
+        case e @ _ =>
+          handler(e)
       }
 
       def onIOInterrupt[T](handler: => T): Throwable =?> T = {
-        case _: InterruptedIOException => handler
+        case _: InterruptedIOException =>
+          handler
       }
 
       def onInterrupt[T](handler: => T): Throwable =?> T = {
-        case _: InterruptedException => handler
+        case _: InterruptedException =>
+          handler
       }
 
       def ioFailure[T](handler: IOException => T): Throwable =?> T = {
-        case e: IOException => handler(e)
+        case e: IOException =>
+          handler(e)
       }
 
       def dbg(msgs: Any*) =

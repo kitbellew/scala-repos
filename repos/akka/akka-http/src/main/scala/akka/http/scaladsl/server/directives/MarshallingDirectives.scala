@@ -26,7 +26,8 @@ trait MarshallingDirectives {
       import ctx.executionContext
       import ctx.materializer
       onComplete(um(ctx.request)) flatMap {
-        case Success(value) ⇒ provide(value)
+        case Success(value) ⇒
+          provide(value)
         case Failure(Unmarshaller.NoContentException) ⇒
           reject(RequestEntityExpectedRejection)
         case Failure(Unmarshaller.UnsupportedContentTypeException(x)) ⇒

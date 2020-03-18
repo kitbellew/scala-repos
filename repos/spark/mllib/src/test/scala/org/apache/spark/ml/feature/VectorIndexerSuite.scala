@@ -92,7 +92,8 @@ class VectorIndexerSuite
     def checkPair(dvSeq: Seq[Vector], svSeq: Seq[Vector]): Unit = {
       assert(
         dvSeq.zip(svSeq).forall {
-          case (dv, sv) => dv.toArray === sv.toArray
+          case (dv, sv) =>
+            dv.toArray === sv.toArray
         },
         "typo in unit test")
     }

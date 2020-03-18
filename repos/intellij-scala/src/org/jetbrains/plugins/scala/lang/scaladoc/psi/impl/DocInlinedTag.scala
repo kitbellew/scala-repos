@@ -25,8 +25,10 @@ class ScDocInlinedTagImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => accept(s)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        accept(s)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

@@ -35,7 +35,8 @@ object TlsFilter {
         tlsHostname match {
           case Transporter.TLSHostname(Some(host)) =>
             new TlsFilter(host) andThen next
-          case Transporter.TLSHostname(None) => next
+          case Transporter.TLSHostname(None) =>
+            next
         }
     }
 }

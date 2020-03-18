@@ -57,7 +57,8 @@ trait Conductor {
     _controller match {
       case null ⇒
         throw new IllegalStateException("TestConductorServer was not started")
-      case x ⇒ x
+      case x ⇒
+        x
     }
 
   /**
@@ -225,7 +226,8 @@ trait Conductor {
     // which is normal during shutdown
     controller ? Terminate(node, Right(exitValue)) mapTo classTag[
       Done] recover {
-      case _: ClientDisconnectedException ⇒ Done
+      case _: ClientDisconnectedException ⇒
+        Done
     }
   }
 
@@ -250,7 +252,8 @@ trait Conductor {
     // the recover is needed to handle ClientDisconnectedException exception,
     // which is normal during shutdown
     controller ? Terminate(node, Left(abort)) mapTo classTag[Done] recover {
-      case _: ClientDisconnectedException ⇒ Done
+      case _: ClientDisconnectedException ⇒
+        Done
     }
   }
 
@@ -373,7 +376,8 @@ private[akka] class ServerFSM(val controller: ActorRef, val channel: Channel)
         new ClientDisconnectedException(
           "client disconnected in state " + stateName + ": " + channel))
       stop()
-    case Event(ClientDisconnected, None) ⇒ stop()
+    case Event(ClientDisconnected, None) ⇒
+      stop()
   }
 
   onTermination {
@@ -483,15 +487,20 @@ private[akka] class Controller(
    */
   override def supervisorStrategy =
     OneForOneStrategy() {
-      case BarrierTimeout(data) ⇒ failBarrier(data)
-      case FailedBarrier(data) ⇒ failBarrier(data)
-      case BarrierEmpty(data, msg) ⇒ SupervisorStrategy.Resume
+      case BarrierTimeout(data) ⇒
+        failBarrier(data)
+      case FailedBarrier(data) ⇒
+        failBarrier(data)
+      case BarrierEmpty(data, msg) ⇒
+        SupervisorStrategy.Resume
       case WrongBarrier(name, client, data) ⇒ {
         client ! ToClient(BarrierResult(name, false));
         failBarrier(data)
       }
-      case ClientLost(data, node) ⇒ failBarrier(data)
-      case DuplicateNode(data, node) ⇒ failBarrier(data)
+      case ClientLost(data, node) ⇒
+        failBarrier(data)
+      case DuplicateNode(data, node) ⇒
+        failBarrier(data)
     }
 
   def failBarrier(data: Data): SupervisorStrategy.Directive = {
@@ -512,7 +521,8 @@ private[akka] class Controller(
       case CreateServerFSM(channel) ⇒
         val (ip, port) =
           channel.getRemoteAddress match {
-            case s: InetSocketAddress ⇒ (s.getAddress.getHostAddress, s.getPort)
+            case s: InetSocketAddress ⇒
+              (s.getAddress.getHostAddress, s.getPort)
           }
         val name = ip + ":" + port + "-server" + generation.next
         sender() ! context.actorOf(
@@ -546,8 +556,10 @@ private[akka] class Controller(
         barrier forward c
       case op: ServerOp ⇒
         op match {
-          case _: EnterBarrier ⇒ barrier forward op
-          case _: FailBarrier ⇒ barrier forward op
+          case _: EnterBarrier ⇒
+            barrier forward op
+          case _: FailBarrier ⇒
+            barrier forward op
           case GetAddress(node) ⇒
             if (nodes contains node)
               sender() ! ToClient(AddressReply(node, nodes(node).addr))
@@ -573,8 +585,10 @@ private[akka] class Controller(
           case Remove(node) ⇒
             barrier ! BarrierCoordinator.RemoveClient(node)
         }
-      case GetNodes ⇒ sender() ! nodes.keys
-      case GetSockAddr ⇒ sender() ! connection.getLocalAddress
+      case GetNodes ⇒
+        sender() ! nodes.keys
+      case GetSockAddr ⇒
+        sender() ! connection.getLocalAddress
     }
 
   override def postStop() {
@@ -676,7 +690,8 @@ private[akka] class BarrierCoordinator
         stay using d.copy(clients = clients.filterNot(_.name == name))
       else {
         (clients find (_.name == name)) match {
-          case None ⇒ stay
+          case None ⇒
+            stay
           case Some(c) ⇒
             throw ClientLost(
               d.copy(
@@ -710,7 +725,8 @@ private[akka] class BarrierCoordinator
   onTransition {
     case Idle -> Waiting ⇒
       setTimer("Timeout", StateTimeout, nextStateData.deadline.timeLeft, false)
-    case Waiting -> Idle ⇒ cancelTimer("Timeout")
+    case Waiting -> Idle ⇒
+      cancelTimer("Timeout")
   }
 
   when(Waiting) {
@@ -733,7 +749,8 @@ private[akka] class BarrierCoordinator
         handleBarrier(d.copy(arrived = together))
     case Event(RemoveClient(name), d @ Data(clients, barrier, arrived, _)) ⇒
       clients find (_.name == name) match {
-        case None ⇒ stay
+        case None ⇒
+          stay
         case Some(client) ⇒
           handleBarrier(
             d.copy(

@@ -30,6 +30,7 @@ private[api] final class AnalysisApi {
       .map(s =>
         JsObject(
           s map {
-            case (nag, nb) => nag.toString.toLowerCase -> JsNumber(nb)
+            case (nag, nb) =>
+              nag.toString.toLowerCase -> JsNumber(nb)
           }))
 }

@@ -91,8 +91,10 @@ class Producer[K, V](
         throw new ProducerClosedException
       recordStats(messages)
       sync match {
-        case true  => eventHandler.handle(messages)
-        case false => asyncSend(messages)
+        case true =>
+          eventHandler.handle(messages)
+        case false =>
+          asyncSend(messages)
       }
     }
   }

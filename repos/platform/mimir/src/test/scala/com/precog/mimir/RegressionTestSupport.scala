@@ -70,13 +70,16 @@ trait RegressionTestSupport[M[+_]] {
             cpaths.tail.tail zip cvalues.tail.tail.toSeq
         }
         val withJPath = withCPath map {
-          case (cpath, cvalue) => cPathToJPaths(cpath, cvalue) head
+          case (cpath, cvalue) =>
+            cPathToJPaths(cpath, cvalue) head
         } // `head` is only okay if we don't have any homogeneous arrays
         val withJValue = withJPath map {
-          case (jpath, cvalue) => (jpath, cvalue.toJValue)
+          case (jpath, cvalue) =>
+            (jpath, cvalue.toJValue)
         }
         withJValue.foldLeft(JArray(Nil).asInstanceOf[JValue]) {
-          case (target, (jpath, jvalue)) => target.unsafeInsert(jpath, jvalue)
+          case (target, (jpath, jvalue)) =>
+            target.unsafeInsert(jpath, jvalue)
         }
     }
 

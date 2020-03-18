@@ -33,7 +33,8 @@ object Common {
     taps.flatMap {
       case multi: CompositeTap[_] =>
         unrollTaps(multi.getChildTaps.asScala.toSeq)
-      case t => Seq(t)
+      case t =>
+        Seq(t)
     }
 
   def unrollTaps(step: FlowStep[JobConf]): Seq[Tap[_, _, _]] =
@@ -55,8 +56,10 @@ object Common {
   def inputSizes(step: FlowStep[JobConf]): Seq[(String, Long)] = {
     val conf = step.getConfig
     unrollTaps(step).flatMap {
-      case tap: Hfs => Some(tap.toString -> size(tap, conf))
-      case _        => None
+      case tap: Hfs =>
+        Some(tap.toString -> size(tap, conf))
+      case _ =>
+        None
     }
   }
 
@@ -164,7 +167,8 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       case 0 =>
         LOG.info(
           s"${flow.getName} is a map-only step. Skipping reducer estimation.")
-      case _ => estimate(flow, preds, step)
+      case _ =>
+        estimate(flow, preds, step)
     }
   }
 

@@ -30,7 +30,8 @@ trait Base {
     new JSON[Boolean] {
       def read(json: JValue) =
         json match {
-          case JBool(b) => success(b)
+          case JBool(b) =>
+            success(b)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JBool])).toValidationNel
         }
@@ -42,7 +43,8 @@ trait Base {
     new JSON[Int] {
       def read(json: JValue) =
         json match {
-          case JInt(x) => success(x.intValue)
+          case JInt(x) =>
+            success(x.intValue)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JInt])).toValidationNel
         }
@@ -54,7 +56,8 @@ trait Base {
     new JSON[Long] {
       def read(json: JValue) =
         json match {
-          case JInt(x) => success(x.longValue)
+          case JInt(x) =>
+            success(x.longValue)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JInt])).toValidationNel
         }
@@ -66,7 +69,8 @@ trait Base {
     new JSON[Double] {
       def read(json: JValue) =
         json match {
-          case JDouble(x) => success(x)
+          case JDouble(x) =>
+            success(x)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JDouble])).toValidationNel
         }
@@ -78,7 +82,8 @@ trait Base {
     new JSON[String] {
       def read(json: JValue) =
         json match {
-          case JString(x) => success(x)
+          case JString(x) =>
+            success(x)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JString])).toValidationNel
         }
@@ -90,7 +95,8 @@ trait Base {
     new JSON[BigInt] {
       def read(json: JValue) =
         json match {
-          case JInt(x) => success(x)
+          case JInt(x) =>
+            success(x)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JInt])).toValidationNel
         }
@@ -129,8 +135,10 @@ trait Base {
     new JSONR[Option[A]] {
       def read(json: JValue) =
         json match {
-          case JNothing | JNull => success(None)
-          case x                => fromJSON[A](x).map(some)
+          case JNothing | JNull =>
+            success(None)
+          case x =>
+            fromJSON[A](x).map(some)
         }
     }
   implicit def optionJSONW[A: JSONW]: JSONW[Option[A]] =
@@ -161,7 +169,8 @@ trait Base {
       def write(values: Map[String, A]) =
         JObject(
           values.map {
-            case (k, v) => JField(k, toJSON(v))
+            case (k, v) =>
+              JField(k, toJSON(v))
           }(breakOut): _*)
     }
 }

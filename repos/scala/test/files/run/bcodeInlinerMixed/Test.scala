@@ -9,8 +9,10 @@ object Test extends BytecodeTest {
     for (i <- List(gIns, hIns)) {
       assert(
         i exists {
-          case Invoke(_, _, "bar", "()I", _) => true
-          case _                             => false
+          case Invoke(_, _, "bar", "()I", _) =>
+            true
+          case _ =>
+            false
         },
         i mkString "\n")
     }

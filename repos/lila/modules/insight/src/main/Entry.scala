@@ -88,13 +88,20 @@ object Termination {
 
   def fromStatus(s: chess.Status) =
     s match {
-      case S.Timeout             => Disconnect
-      case S.Outoftime           => ClockFlag
-      case S.Resign              => Resignation
-      case S.Draw                => Draw
-      case S.Stalemate           => Stalemate
-      case S.Mate | S.VariantEnd => Checkmate
-      case S.Cheat               => Resignation
+      case S.Timeout =>
+        Disconnect
+      case S.Outoftime =>
+        ClockFlag
+      case S.Resign =>
+        Resignation
+      case S.Draw =>
+        Draw
+      case S.Stalemate =>
+        Stalemate
+      case S.Mate | S.VariantEnd =>
+        Checkmate
+      case S.Cheat =>
+        Resignation
       case S.Created | S.Started | S.Aborted | S.NoStart | S.UnknownFinish =>
         logger.error("Unfinished game in the insight indexer")
         Resignation
@@ -126,11 +133,14 @@ object Phase {
     } toMap
   def of(div: chess.Division, ply: Int): Phase =
     div.middle.fold[Phase](Opening) {
-      case m if m > ply => Opening
+      case m if m > ply =>
+        Opening
       case m =>
         div.end.fold[Phase](Middle) {
-          case e if e > ply => Middle
-          case _            => End
+          case e if e > ply =>
+            Middle
+          case _ =>
+            End
         }
     }
 }
@@ -147,9 +157,12 @@ object Castling {
     } toMap
   def fromMoves(moves: List[String]) =
     moves.find(_ startsWith "O") match {
-      case Some("O-O")   => Kingside
-      case Some("O-O-O") => Queenside
-      case _             => None
+      case Some("O-O") =>
+        Kingside
+      case Some("O-O-O") =>
+        Queenside
+      case _ =>
+        None
     }
 }
 
@@ -179,11 +192,16 @@ object RelativeStrength {
     } toMap
   def apply(diff: Int) =
     diff match {
-      case d if d < -200 => MuchWeaker
-      case d if d < -100 => Weaker
-      case d if d > 200  => MuchStronger
-      case d if d > 100  => Stronger
-      case _             => Similar
+      case d if d < -200 =>
+        MuchWeaker
+      case d if d < -100 =>
+        Weaker
+      case d if d > 200 =>
+        MuchStronger
+      case d if d > 100 =>
+        Stronger
+      case _ =>
+        Similar
     }
 }
 

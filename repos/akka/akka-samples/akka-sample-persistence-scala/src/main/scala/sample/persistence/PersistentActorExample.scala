@@ -23,8 +23,10 @@ class ExamplePersistentActor extends PersistentActor {
   def numEvents = state.size
 
   val receiveRecover: Receive = {
-    case evt: Evt                                 => updateState(evt)
-    case SnapshotOffer(_, snapshot: ExampleState) => state = snapshot
+    case evt: Evt =>
+      updateState(evt)
+    case SnapshotOffer(_, snapshot: ExampleState) =>
+      state = snapshot
   }
 
   val receiveCommand: Receive = {
@@ -34,8 +36,10 @@ class ExamplePersistentActor extends PersistentActor {
         updateState(event)
         context.system.eventStream.publish(event)
       }
-    case "snap"  => saveSnapshot(state)
-    case "print" => println(state)
+    case "snap" =>
+      saveSnapshot(state)
+    case "print" =>
+      println(state)
   }
 
 }

@@ -84,8 +84,10 @@ abstract class Request extends Message with HttpRequestProxy {
   def path: String = {
     val u = uri
     u.indexOf('?') match {
-      case -1 => u
-      case n  => u.substring(0, n)
+      case -1 =>
+        u
+      case n =>
+        u.substring(0, n)
     }
   }
 
@@ -95,12 +97,16 @@ abstract class Request extends Message with HttpRequestProxy {
     val p = path
     val leaf =
       p.lastIndexOf('/') match {
-        case -1 => p
-        case n  => p.substring(n + 1)
+        case -1 =>
+          p
+        case n =>
+          p.substring(n + 1)
       }
     leaf.lastIndexOf('.') match {
-      case -1 => ""
-      case n  => leaf.substring(n + 1).toLowerCase
+      case -1 =>
+        ""
+      case n =>
+        leaf.substring(n + 1).toLowerCase
     }
   }
 

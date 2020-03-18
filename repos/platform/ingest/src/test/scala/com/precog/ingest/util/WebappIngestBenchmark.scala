@@ -230,7 +230,8 @@ Usage:
         .post[JValue]("")(event)
     Await.ready(f, 10 seconds)
     f.value match {
-      case Some(Right(HttpResponse(status, _, _, _))) if status.code == OK => ()
+      case Some(Right(HttpResponse(status, _, _, _))) if status.code == OK =>
+        ()
       case Some(Right(HttpResponse(status, _, _, _))) =>
         throw new RuntimeException("Server returned error code with request")
       case Some(Left(ex)) =>
@@ -276,7 +277,8 @@ class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
         .post[JValue](event.path.toString)(event.data.head)
     Await.ready(f, 10 seconds)
     f.value match {
-      case Some(Right(HttpResponse(status, _, _, _))) if status.code == OK => ()
+      case Some(Right(HttpResponse(status, _, _, _))) if status.code == OK =>
+        ()
       case Some(Right(HttpResponse(status, _, _, _))) =>
         throw new RuntimeException("Server returned error code with request")
       case Some(Left(ex)) =>

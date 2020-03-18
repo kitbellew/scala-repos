@@ -33,7 +33,8 @@ class IsotonicRegressionSuite
     sqlContext
       .createDataFrame(
         labels.zipWithIndex.map {
-          case (label, i) => (label, i.toDouble, 1.0)
+          case (label, i) =>
+            (label, i.toDouble, 1.0)
         })
       .toDF("label", "features", "weight")
   }
@@ -81,7 +82,8 @@ class IsotonicRegressionSuite
       .select("prediction")
       .rdd
       .map {
-        case Row(pred) => pred
+        case Row(pred) =>
+          pred
       }
       .collect()
 
@@ -184,7 +186,8 @@ class IsotonicRegressionSuite
       .select("prediction")
       .rdd
       .map {
-        case Row(pred) => pred
+        case Row(pred) =>
+          pred
       }
       .collect()
 

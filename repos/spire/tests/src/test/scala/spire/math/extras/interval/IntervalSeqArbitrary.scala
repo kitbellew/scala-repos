@@ -13,13 +13,17 @@ object IntervalSeqArbitrary {
     require(kind.forall(x => x >= 0 && x <= 2))
     def fromKind(x: Int, k: Int) =
       k match {
-        case 0 => IntervalSeq.point(x)
-        case 1 => IntervalSeq.above(x)
-        case 2 => IntervalSeq.atOrAbove(x)
+        case 0 =>
+          IntervalSeq.point(x)
+        case 1 =>
+          IntervalSeq.above(x)
+        case 2 =>
+          IntervalSeq.atOrAbove(x)
       }
     val r = IntervalSeq[Int](initial)
     (r /: (support zip kind)) {
-      case (current, (x, k)) => current ^ fromKind(x, k)
+      case (current, (x, k)) =>
+        current ^ fromKind(x, k)
     }
   }
 

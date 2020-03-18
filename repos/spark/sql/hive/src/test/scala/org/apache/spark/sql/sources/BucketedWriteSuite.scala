@@ -116,7 +116,8 @@ class BucketedWriteSuite
       // information), here we get the types from the original dataframe.
       val types = df.select(selectedColumns.map(col): _*).schema.map(_.dataType)
       val columns = selectedColumns.zip(types).map {
-        case (colName, dt) => col(colName).cast(dt)
+        case (colName, dt) =>
+          col(colName).cast(dt)
       }
 
       // Read the bucket file into a dataframe, so that it's easier to test.

@@ -34,7 +34,8 @@ package object codegen {
     object CleanExpressions extends rules.Rule[Expression] {
       def apply(e: Expression): Expression =
         e transform {
-          case Alias(c, _) => c
+          case Alias(c, _) =>
+            c
         }
     }
   }

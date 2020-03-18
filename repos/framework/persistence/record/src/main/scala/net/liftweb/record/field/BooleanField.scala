@@ -32,11 +32,16 @@ trait BooleanTypedField extends TypedField[Boolean] {
 
   def setFromAny(in: Any): Box[Boolean] =
     in match {
-      case b: java.lang.Boolean        => setBox(Full(b.booleanValue))
-      case Full(b: java.lang.Boolean)  => setBox(Full(b.booleanValue))
-      case Some(b: java.lang.Boolean)  => setBox(Full(b.booleanValue))
-      case (b: java.lang.Boolean) :: _ => setBox(Full(b.booleanValue))
-      case _                           => genericSetFromAny(in)
+      case b: java.lang.Boolean =>
+        setBox(Full(b.booleanValue))
+      case Full(b: java.lang.Boolean) =>
+        setBox(Full(b.booleanValue))
+      case Some(b: java.lang.Boolean) =>
+        setBox(Full(b.booleanValue))
+      case (b: java.lang.Boolean) :: _ =>
+        setBox(Full(b.booleanValue))
+      case _ =>
+        genericSetFromAny(in)
     }
 
   def setFromString(s: String): Box[Boolean] =
@@ -58,8 +63,10 @@ trait BooleanTypedField extends TypedField[Boolean] {
   def toForm: Box[NodeSeq] =
     // FIXME? no support for optional_?
     uniqueFieldId match {
-      case Full(id) => Full(elem("id" -> id))
-      case _        => Full(elem())
+      case Full(id) =>
+        Full(elem("id" -> id))
+      case _ =>
+        Full(elem())
     }
 
   def asJs: JsExp = valueBox.map(boolToJsExp) openOr JsNull
@@ -67,9 +74,12 @@ trait BooleanTypedField extends TypedField[Boolean] {
   def asJValue: JValue = valueBox.map(JBool) openOr (JNothing: JValue)
   def setFromJValue(jvalue: JValue) =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case JBool(b)                       => setBox(Full(b))
-      case other                          => setBox(FieldHelpers.expectedA("JBool", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JBool(b) =>
+        setBox(Full(b))
+      case other =>
+        setBox(FieldHelpers.expectedA("JBool", other))
     }
 }
 

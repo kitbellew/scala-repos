@@ -19,7 +19,8 @@ object ForumCateg extends LilaController with ForumController {
       NotForKids {
         CategGrantRead(slug) {
           OptionOk(categApi.show(slug, page, ctx.troll)) {
-            case (categ, topics) => html.forum.categ.show(categ, topics)
+            case (categ, topics) =>
+              html.forum.categ.show(categ, topics)
           }
         }
       }

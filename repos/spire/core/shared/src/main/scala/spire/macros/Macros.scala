@@ -34,54 +34,67 @@ object Macros {
       else
         Right(n)
     } catch {
-      case _: Exception => Left("illegal constant: %s" format s)
+      case _: Exception =>
+        Left("illegal constant: %s" format s)
     }
 
   def byte(c: Context)(): c.Expr[Byte] = {
     import c.universe._
     parseContext(c, BigInt(-128), BigInt(255)) match {
-      case Right(n) => c.Expr(q"${n.toByte}")
-      case Left(s)  => throw new NumberFormatException(s)
+      case Right(n) =>
+        c.Expr(q"${n.toByte}")
+      case Left(s) =>
+        throw new NumberFormatException(s)
     }
   }
 
   def ubyte(c: Context)(): c.Expr[UByte] = {
     import c.universe._
     parseContext(c, BigInt(0), BigInt(255)) match {
-      case Right(n) => c.Expr(q"spire.math.UByte(${n.toByte})")
-      case Left(s)  => throw new NumberFormatException(s)
+      case Right(n) =>
+        c.Expr(q"spire.math.UByte(${n.toByte})")
+      case Left(s) =>
+        throw new NumberFormatException(s)
     }
   }
 
   def short(c: Context)(): c.Expr[Short] = {
     import c.universe._
     parseContext(c, BigInt(-32768), BigInt(65535)) match {
-      case Right(n) => c.Expr(q"${n.toShort}")
-      case Left(s)  => throw new NumberFormatException(s)
+      case Right(n) =>
+        c.Expr(q"${n.toShort}")
+      case Left(s) =>
+        throw new NumberFormatException(s)
     }
   }
 
   def ushort(c: Context)(): c.Expr[UShort] = {
     import c.universe._
     parseContext(c, BigInt(0), BigInt(65535)) match {
-      case Right(n) => c.Expr(q"spire.math.UShort(${n.toShort})")
-      case Left(s)  => throw new NumberFormatException(s)
+      case Right(n) =>
+        c.Expr(q"spire.math.UShort(${n.toShort})")
+      case Left(s) =>
+        throw new NumberFormatException(s)
     }
   }
 
   def uint(c: Context)(): c.Expr[UInt] = {
     import c.universe._
     parseContext(c, BigInt(0), BigInt(4294967295L)) match {
-      case Right(n) => c.Expr(q"spire.math.UInt(${n.toInt})")
-      case Left(s)  => throw new NumberFormatException(s)
+      case Right(n) =>
+        c.Expr(q"spire.math.UInt(${n.toInt})")
+      case Left(s) =>
+        throw new NumberFormatException(s)
     }
   }
 
   def ulong(c: Context)(): c.Expr[ULong] = {
     import c.universe._
     parseContext(c, BigInt(0), BigInt("18446744073709551615")) match {
-      case Right(n) => c.Expr(q"spire.math.ULong(${n.toLong})")
-      case Left(s)  => throw new NumberFormatException(s)
+      case Right(n) =>
+        c.Expr(q"spire.math.ULong(${n.toLong})")
+      case Left(s) =>
+        throw new NumberFormatException(s)
     }
   }
 
@@ -209,9 +222,12 @@ object Macros {
     import c.universe._
     c.Expr[A](
       c.prefix.tree match {
-        case Apply((_, List(Literal(Constant(0))))) => q"$ev.zero"
-        case Apply((_, List(Literal(Constant(1))))) => q"$ev.one"
-        case Apply((_, List(n)))                    => q"$ev.fromInt($n)"
+        case Apply((_, List(Literal(Constant(0))))) =>
+          q"$ev.zero"
+        case Apply((_, List(Literal(Constant(1))))) =>
+          q"$ev.one"
+        case Apply((_, List(n))) =>
+          q"$ev.fromInt($n)"
       })
   }
 
@@ -219,9 +235,12 @@ object Macros {
     import c.universe._
     c.Expr[A](
       c.prefix.tree match {
-        case Apply((_, List(Literal(Constant(0.0))))) => q"$ev.zero"
-        case Apply((_, List(Literal(Constant(1.0))))) => q"$ev.one"
-        case Apply((_, List(n)))                      => q"$ev.fromDouble($n)"
+        case Apply((_, List(Literal(Constant(0.0))))) =>
+          q"$ev.zero"
+        case Apply((_, List(Literal(Constant(1.0))))) =>
+          q"$ev.one"
+        case Apply((_, List(n))) =>
+          q"$ev.fromDouble($n)"
       })
   }
 }

@@ -11,7 +11,8 @@ object Test extends App {
 
   def c =
     b match {
-      case Some(b) => b.t
+      case Some(b) =>
+        b.t
     }
 
 }

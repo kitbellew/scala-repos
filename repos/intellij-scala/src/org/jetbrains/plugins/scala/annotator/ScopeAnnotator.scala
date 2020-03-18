@@ -66,11 +66,13 @@ trait ScopeAnnotator {
                 checkScope(elements.toSeq: _*)
                 elements.clear()
                 elements += generator
-              case child => elements += child
+              case child =>
+                elements += child
             }
             checkScope(elements.toSeq: _*)
         }
-      case _ => checkScope(element)
+      case _ =>
+        checkScope(element)
     }
   }
 
@@ -91,16 +93,22 @@ trait ScopeAnnotator {
 
         element.children.foreach {
           _.depthFirst(!_.isScope).foreach {
-            case e: ScObject => objects ::= e
+            case e: ScObject =>
+              objects ::= e
             case e: ScFunction =>
               if (e.typeParameters.isEmpty)
                 terms ::= e
-            case e: ScTypedDefinition   => terms ::= e
-            case e: ScTypeAlias         => types ::= e
-            case e: ScTypeParam         => types ::= e
-            case e: ScClass if e.isCase => caseClasses ::= e
-            case e: ScTypeDefinition    => types ::= e
-            case _                      =>
+            case e: ScTypedDefinition =>
+              terms ::= e
+            case e: ScTypeAlias =>
+              types ::= e
+            case e: ScTypeParam =>
+              types ::= e
+            case e: ScClass if e.isCase =>
+              caseClasses ::= e
+            case e: ScTypeDefinition =>
+              types ::= e
+            case _ =>
           }
         }
     }
@@ -118,7 +126,8 @@ trait ScopeAnnotator {
     element match {
       case f: ScFunction if !f.getParent.isInstanceOf[ScBlockExpr] =>
         f.name + signatureOf(f)
-      case _ => element.name
+      case _ =>
+        element.name
     }
 
   private def signatureOf(f: ScFunction): String = {

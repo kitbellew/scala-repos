@@ -66,7 +66,8 @@ trait ScalaSeparatorProvider {
         Some(DefaultGroup)
       case it: ScNewTemplateDefinition if it.extendsBlock != null =>
         Some(DefaultGroup)
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -88,9 +89,12 @@ trait ScalaSeparatorProvider {
 
   def isSeparationBlocker(element: PsiElement) = {
     element match {
-      case _: ScBlock | _: ScIfStmt                               => true
-      case it: ScNewTemplateDefinition if it.extendsBlock != null => true
-      case _                                                      => false
+      case _: ScBlock | _: ScIfStmt =>
+        true
+      case it: ScNewTemplateDefinition if it.extendsBlock != null =>
+        true
+      case _ =>
+        false
     }
   }
 

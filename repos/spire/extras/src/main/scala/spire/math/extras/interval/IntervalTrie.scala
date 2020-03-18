@@ -191,9 +191,12 @@ object IntervalTrie {
   private[interval] def fromKind[T: Element](value: T, kind: Int) = {
     val bound =
       kind match {
-        case 0 => Below(value)
-        case 1 => Above(value)
-        case 2 => Both(value)
+        case 0 =>
+          Below(value)
+        case 1 =>
+          Above(value)
+        case 2 =>
+          Both(value)
       }
     IntervalTrie[T](false, bound)
   }
@@ -225,17 +228,28 @@ object IntervalTrie {
 
   def apply[T: Element](interval: Interval[T]): IntervalTrie[T] =
     interval.fold {
-      case (Closed(a), Closed(b)) if a == b => point(a)
-      case (Unbound(), Open(x))             => below(x)
-      case (Unbound(), Closed(x))           => atOrBelow(x)
-      case (Open(x), Unbound())             => above(x)
-      case (Closed(x), Unbound())           => atOrAbove(x)
-      case (Closed(a), Closed(b))           => fromTo(Below(a), Above(b))
-      case (Closed(a), Open(b))             => fromTo(Below(a), Below(b))
-      case (Open(a), Closed(b))             => fromTo(Above(a), Above(b))
-      case (Open(a), Open(b))               => fromTo(Above(a), Below(b))
-      case (Unbound(), Unbound())           => all[T]
-      case (EmptyBound(), EmptyBound())     => empty[T]
+      case (Closed(a), Closed(b)) if a == b =>
+        point(a)
+      case (Unbound(), Open(x)) =>
+        below(x)
+      case (Unbound(), Closed(x)) =>
+        atOrBelow(x)
+      case (Open(x), Unbound()) =>
+        above(x)
+      case (Closed(x), Unbound()) =>
+        atOrAbove(x)
+      case (Closed(a), Closed(b)) =>
+        fromTo(Below(a), Above(b))
+      case (Closed(a), Open(b)) =>
+        fromTo(Below(a), Below(b))
+      case (Open(a), Closed(b)) =>
+        fromTo(Above(a), Above(b))
+      case (Open(a), Open(b)) =>
+        fromTo(Above(a), Below(b))
+      case (Unbound(), Unbound()) =>
+        all[T]
+      case (EmptyBound(), EmptyBound()) =>
+        empty[T]
     }
 
   private object Below {
@@ -351,9 +365,11 @@ object IntervalTrie {
           push(b.right)
           push(b.left)
           nextLeaf()
-        case l: Leaf => l
+        case l: Leaf =>
+          l
         // $COVERAGE-OFF$
-        case _ => unreachable
+        case _ =>
+          unreachable
         // $COVERAGE-ON$
       }
   }
@@ -396,7 +412,8 @@ object IntervalTrie {
               lower = Open(fromLong(x))
 
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
         else
@@ -414,7 +431,8 @@ object IntervalTrie {
               result = Interval.fromBounds[T](lower, upper)
               lower = null
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
       } else if (lower ne null) {
@@ -460,16 +478,23 @@ object IntervalTrie {
     def isContiguous =
       if (belowAll) {
         tree match {
-          case a: Leaf => a.sign
-          case null    => true
-          case _       => false
+          case a: Leaf =>
+            a.sign
+          case null =>
+            true
+          case _ =>
+            false
         }
       } else {
         tree match {
-          case _: Leaf                        => true
-          case Branch(_, _, a: Leaf, b: Leaf) => a.sign & b.sign
-          case null                           => true
-          case _                              => false
+          case _: Leaf =>
+            true
+          case Branch(_, _, a: Leaf, b: Leaf) =>
+            a.sign & b.sign
+          case null =>
+            true
+          case _ =>
+            false
         }
       }
 
@@ -477,18 +502,26 @@ object IntervalTrie {
       @tailrec
       def lowerBound(a: Tree): Bound[T] =
         a match {
-          case a: Branch => lowerBound(a.left)
-          case Above(x)  => Open(ise.fromLong(x))
-          case Below(x)  => Closed(ise.fromLong(x))
-          case Both(x)   => Closed(ise.fromLong(x))
+          case a: Branch =>
+            lowerBound(a.left)
+          case Above(x) =>
+            Open(ise.fromLong(x))
+          case Below(x) =>
+            Closed(ise.fromLong(x))
+          case Both(x) =>
+            Closed(ise.fromLong(x))
         }
       @tailrec
       def upperBound(a: Tree): Bound[T] =
         a match {
-          case a: Branch => upperBound(a.right)
-          case Both(x)   => Closed(ise.fromLong(x))
-          case Above(x)  => Closed(ise.fromLong(x))
-          case Below(x)  => Open(ise.fromLong(x))
+          case a: Branch =>
+            upperBound(a.right)
+          case Both(x) =>
+            Closed(ise.fromLong(x))
+          case Above(x) =>
+            Closed(ise.fromLong(x))
+          case Below(x) =>
+            Open(ise.fromLong(x))
         }
       if (isEmpty) {
         Interval.empty[T]

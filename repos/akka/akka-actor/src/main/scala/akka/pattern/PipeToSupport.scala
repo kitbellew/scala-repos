@@ -18,15 +18,19 @@ trait PipeToSupport {
     def pipeTo(recipient: ActorRef)(implicit
         sender: ActorRef = Actor.noSender): Future[T] = {
       future andThen {
-        case Success(r) ⇒ recipient ! r
-        case Failure(f) ⇒ recipient ! Status.Failure(f)
+        case Success(r) ⇒
+          recipient ! r
+        case Failure(f) ⇒
+          recipient ! Status.Failure(f)
       }
     }
     def pipeToSelection(recipient: ActorSelection)(implicit
         sender: ActorRef = Actor.noSender): Future[T] = {
       future andThen {
-        case Success(r) ⇒ recipient ! r
-        case Failure(f) ⇒ recipient ! Status.Failure(f)
+        case Success(r) ⇒
+          recipient ! r
+        case Failure(f) ⇒
+          recipient ! Status.Failure(f)
       }
     }
     def to(recipient: ActorRef): PipeableFuture[T] =

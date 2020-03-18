@@ -58,8 +58,10 @@ object DependantsTest extends Properties("Dependants") {
       val deps = Producer.dependenciesOf(prod)
       (Producer.transitiveDependenciesOf(prod) == deps) ==> {
         deps.forall {
-          case s @ Source(_) => true;
-          case _             => false
+          case s @ Source(_) =>
+            true;
+          case _ =>
+            false
         }
       }
     }
@@ -176,7 +178,8 @@ object DependantsTest extends Properties("Dependants") {
       (!dependants.allTails.isEmpty) && {
         val alsoCount =
           dependants.nodes.collect {
-            case AlsoProducer(_, _) => 1
+            case AlsoProducer(_, _) =>
+              1
           }.sum
         (dependants.allTails.size <= (alsoCount + 1))
       }
@@ -187,7 +190,8 @@ object DependantsTest extends Properties("Dependants") {
       val allNodes = Producer.entireGraphOf(prod)
       val sources =
         allNodes.collect {
-          case s @ Source(_) => s
+          case s @ Source(_) =>
+            s
         }.toSet
       val dependants = Dependants(prod)
       val sAndDown = (sources ++ sources.flatMap {
@@ -204,7 +208,8 @@ object DependantsTest extends Properties("Dependants") {
         val output = dependants
           .transitiveDependantsTillOutput(n)
           .collect {
-            case t: TailProducer[_, _] => t
+            case t: TailProducer[_, _] =>
+              t
           }
           .toSet[Producer[Memory, Any]]
 
@@ -221,7 +226,8 @@ object DependantsTest extends Properties("Dependants") {
         val writerDependencies =
           depTillWrite
             .collect {
-              case t: TailProducer[_, _] => t
+              case t: TailProducer[_, _] =>
+                t
             }
             .flatMap { n =>
               n :: Producer.transitiveDependenciesOf(n)
@@ -230,7 +236,8 @@ object DependantsTest extends Properties("Dependants") {
 
         depTillWrite
           .collectFirst {
-            case MergedProducer(_, _) => true
+            case MergedProducer(_, _) =>
+              true
           }
           .getOrElse(false) || writerDependencies.isEmpty || (
           (
@@ -247,8 +254,10 @@ object DependantsTest extends Properties("Dependants") {
         val tillWrite = dependants.transitiveDependantsTillOutput(n)
         val outputChildren = tillWrite
           .collect {
-            case s @ Summer(_, _, _)       => s
-            case w @ WrittenProducer(_, _) => w
+            case s @ Summer(_, _, _) =>
+              s
+            case w @ WrittenProducer(_, _) =>
+              w
           }
           .flatMap {
             dependants.transitiveDependantsOf(_)
@@ -256,7 +265,8 @@ object DependantsTest extends Properties("Dependants") {
           .toSet[Producer[Memory, Any]]
         tillWrite
           .collectFirst {
-            case MergedProducer(_, _) => true
+            case MergedProducer(_, _) =>
+              true
           }
           .getOrElse(false) || (
           tillWrite.toSet & outputChildren.toSet
@@ -272,8 +282,10 @@ object DependantsTest extends Properties("Dependants") {
         dependants
           .dependantsAfterMerge(n)
           .collectFirst {
-            case m @ MergedProducer(_, _) => m
-            case a @ AlsoProducer(_, _)   => a
+            case m @ MergedProducer(_, _) =>
+              m
+            case a @ AlsoProducer(_, _) =>
+              a
           }
           .isEmpty
       }
@@ -288,9 +300,12 @@ object DependantsTest extends Properties("Dependants") {
       def nonMergeDependencies(
           n: Producer[Memory, Any]): Set[Producer[Memory, Any]] =
         Producer.dependenciesOf(n).toSet[Producer[Memory, Any]].flatMap {
-          case m @ MergedProducer(_, _) => nonMergeDependencies(m)
-          case a @ AlsoProducer(_, _)   => nonMergeDependencies(a)
-          case other                    => Set(other)
+          case m @ MergedProducer(_, _) =>
+            nonMergeDependencies(m)
+          case a @ AlsoProducer(_, _) =>
+            nonMergeDependencies(a)
+          case other =>
+            Set(other)
         }
 
       val cache = collection.mutable
@@ -298,9 +313,12 @@ object DependantsTest extends Properties("Dependants") {
 
       dependants.nodes
         .filterNot {
-          case MergedProducer(_, _) => true
-          case AlsoProducer(_, _)   => true
-          case _                    => false
+          case MergedProducer(_, _) =>
+            true
+          case AlsoProducer(_, _) =>
+            true
+          case _ =>
+            false
         } // for all non-merged/also nodes
         .forall { n =>
           val nonMergeDeps = nonMergeDependencies(n)
@@ -326,10 +344,14 @@ object DependantsTest extends Properties("Dependants") {
         dependantsAfterMerge(n)
           .flatMap(Producer.dependenciesOf)
           .forall {
-            case node if node == n    => true
-            case AlsoProducer(_, _)   => true
-            case MergedProducer(_, _) => true
-            case _                    => false
+            case node if node == n =>
+              true
+            case AlsoProducer(_, _) =>
+              true
+            case MergedProducer(_, _) =>
+              true
+            case _ =>
+              false
           }
       }
     }

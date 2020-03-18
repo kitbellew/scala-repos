@@ -37,8 +37,10 @@ class XmlRenameHandler extends RenameHandler {
       return false
 
     element.getParent match {
-      case _: ScXmlPairedTag => true
-      case _                 => false
+      case _: ScXmlPairedTag =>
+        true
+      case _ =>
+        false
     }
   }
 

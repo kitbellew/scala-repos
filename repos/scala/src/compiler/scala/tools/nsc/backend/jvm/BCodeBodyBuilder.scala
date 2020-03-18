@@ -43,7 +43,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case NoSymbol =>
           debuglog(s"Rejecting $selector as host class for $sym");
           sym.owner
-        case _ => selector.typeSymbol
+        case _ =>
+          selector.typeSymbol
       }
 
     /* ---------------- helper utils for generating methods and code ---------------- */
@@ -54,13 +55,20 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     def emitZeroOf(tk: BType) {
       tk match {
-        case BOOL                      => bc.boolconst(false)
-        case BYTE | SHORT | CHAR | INT => bc.iconst(0)
-        case LONG                      => bc.lconst(0)
-        case FLOAT                     => bc.fconst(0)
-        case DOUBLE                    => bc.dconst(0)
-        case UNIT                      => ()
-        case _                         => emit(asm.Opcodes.ACONST_NULL)
+        case BOOL =>
+          bc.boolconst(false)
+        case BYTE | SHORT | CHAR | INT =>
+          bc.iconst(0)
+        case LONG =>
+          bc.lconst(0)
+        case FLOAT =>
+          bc.fconst(0)
+        case DOUBLE =>
+          bc.dconst(0)
+        case UNIT =>
+          ()
+        case _ =>
+          emit(asm.Opcodes.ACONST_NULL)
       }
     }
 
@@ -126,9 +134,12 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Nil =>
           genLoad(larg, resKind)
           code match {
-            case POS => () // nothing
-            case NEG => bc.neg(resKind)
-            case NOT => bc.genPrimitiveNot(resKind)
+            case POS =>
+              () // nothing
+            case NEG =>
+              bc.neg(resKind)
+            case NOT =>
+              bc.genPrimitiveNot(resKind)
             case _ =>
               abort(
                 s"Unknown unary operation: ${fun.symbol.fullName} code: $code")
@@ -153,17 +164,25 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               resKind)
 
           (code: @switch) match {
-            case ADD => bc add resKind
-            case SUB => bc sub resKind
-            case MUL => bc mul resKind
-            case DIV => bc div resKind
-            case MOD => bc rem resKind
+            case ADD =>
+              bc add resKind
+            case SUB =>
+              bc sub resKind
+            case MUL =>
+              bc mul resKind
+            case DIV =>
+              bc div resKind
+            case MOD =>
+              bc rem resKind
 
-            case OR | XOR | AND => bc.genPrimitiveLogical(code, resKind)
+            case OR | XOR | AND =>
+              bc.genPrimitiveLogical(code, resKind)
 
-            case LSL | LSR | ASR => bc.genPrimitiveShift(code, resKind)
+            case LSL | LSR | ASR =>
+              bc.genPrimitiveShift(code, resKind)
 
-            case _ => abort(s"Unknown primitive: ${fun.symbol}[$code]")
+            case _ =>
+              abort(s"Unknown primitive: ${fun.symbol}[$code]")
           }
 
         case _ =>
@@ -312,7 +331,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       lineNumber(tree)
 
       tree match {
-        case lblDf: LabelDef => genLabelDef(lblDf, expectedType)
+        case lblDf: LabelDef =>
+          genLabelDef(lblDf, expectedType)
 
         case ValDef(_, nme.THIS, _, _) =>
           debuglog("skipping trivial assign to _$this: " + tree)
@@ -365,7 +385,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             numStaticArgs)
           val boostrapDescriptor = staticHandleFromSymbol(boostrapMethodRef)
           val bootstrapArgs = staticArgs.map({
-            case t @ Literal(c: Constant) => bootstrapMethodArg(c, t.pos)
+            case t @ Literal(c: Constant) =>
+              bootstrapMethodArg(c, t.pos)
           })
           val descriptor = methodBTypeFromMethodType(qual.symbol.info, false)
           genLoadArguments(
@@ -457,11 +478,14 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 generatedType = tpeTK(tree)
             }
 
-        case blck: Block => genBlock(blck, expectedType)
+        case blck: Block =>
+          genBlock(blck, expectedType)
 
-        case Typed(Super(_, _), _) => genLoad(This(claszSymbol), expectedType)
+        case Typed(Super(_, _), _) =>
+          genLoad(This(claszSymbol), expectedType)
 
-        case Typed(expr, _) => genLoad(expr, expectedType)
+        case Typed(expr, _) =>
+          genLoad(expr, expectedType)
 
         case Assign(_, _) =>
           generatedType = UNIT
@@ -544,18 +568,27 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
     def genConstant(const: Constant) {
       (const.tag: @switch) match {
 
-        case BooleanTag => bc.boolconst(const.booleanValue)
+        case BooleanTag =>
+          bc.boolconst(const.booleanValue)
 
-        case ByteTag  => bc.iconst(const.byteValue)
-        case ShortTag => bc.iconst(const.shortValue)
-        case CharTag  => bc.iconst(const.charValue)
-        case IntTag   => bc.iconst(const.intValue)
+        case ByteTag =>
+          bc.iconst(const.byteValue)
+        case ShortTag =>
+          bc.iconst(const.shortValue)
+        case CharTag =>
+          bc.iconst(const.charValue)
+        case IntTag =>
+          bc.iconst(const.intValue)
 
-        case LongTag   => bc.lconst(const.longValue)
-        case FloatTag  => bc.fconst(const.floatValue)
-        case DoubleTag => bc.dconst(const.doubleValue)
+        case LongTag =>
+          bc.lconst(const.longValue)
+        case FloatTag =>
+          bc.fconst(const.floatValue)
+        case DoubleTag =>
+          bc.dconst(const.doubleValue)
 
-        case UnitTag => ()
+        case UnitTag =>
+          ()
 
         case StringTag =>
           assert(
@@ -566,13 +599,16 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             const.stringValue
           ) // `stringValue` special-cases null, but not for a const with StringTag
 
-        case NullTag => emit(asm.Opcodes.ACONST_NULL)
+        case NullTag =>
+          emit(asm.Opcodes.ACONST_NULL)
 
         case ClazzTag =>
           val toPush: BType = {
             typeToBType(const.typeValue) match {
-              case kind: PrimitiveBType => boxedClassOfPrimitive(kind)
-              case kind                 => kind
+              case kind: PrimitiveBType =>
+                boxedClassOfPrimitive(kind)
+              case kind =>
+                kind
             }
           }
           mnode.visitLdcInsn(toPush.toASMType)
@@ -588,7 +624,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             fieldName,
             fieldDesc)
 
-        case _ => abort(s"Unknown constant value: $const")
+        case _ =>
+          abort(s"Unknown constant value: $const")
       }
     }
 
@@ -658,8 +695,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           val sym = fun.symbol
           val cast =
             sym match {
-              case Object_isInstanceOf => false
-              case Object_asInstanceOf => true
+              case Object_isInstanceOf =>
+                false
+              case Object_asInstanceOf =>
+                true
               case _ =>
                 abort(
                   s"Unexpected type application $fun[sym: ${sym.fullName}] in: $app")
@@ -755,7 +794,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                   elemKind = ArrayBType(elemKind)
               }
               argsSize match {
-                case 1 => bc newarray elemKind
+                case 1 =>
+                  bc newarray elemKind
                 case _ =>
                   val descr = (
                     '[' * argsSize
@@ -893,8 +933,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                     }
                   else
                     t match {
-                      case Apply(fun, _) => checkInlineAnnotated(fun)
-                      case _             =>
+                      case Apply(fun, _) =>
+                        checkInlineAnnotated(fun)
+                      case _ =>
                     }
                 }
                 checkInlineAnnotated(app)
@@ -1020,8 +1061,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
     def adapt(from: BType, to: BType) {
       if (!from.conformsTo(to).get) {
         to match {
-          case UNIT => bc drop from
-          case _    => bc.emitT2T(from, to)
+          case UNIT =>
+            bc drop from
+          case _ =>
+            bc.emitT2T(from, to)
         }
       } else if (from.isNothingType) {
         /* There are two possibilities for from.isNothingType: emitting a "throw e" expressions and
@@ -1089,7 +1132,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         (from, to) match {
           case (BYTE, LONG) | (SHORT, LONG) | (CHAR, LONG) | (INT, LONG) =>
             bc.emitT2T(INT, LONG)
-          case _ => ()
+          case _ =>
+            ()
         }
     }
 
@@ -1097,8 +1141,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
     def genLoadQualifier(tree: Tree) {
       lineNumber(tree)
       tree match {
-        case Select(qualifier, _) => genLoad(qualifier)
-        case _                    => abort(s"Unknown qualifier $tree")
+        case Select(qualifier, _) =>
+          genLoad(qualifier)
+        case _ =>
+          abort(s"Unknown qualifier $tree")
       }
     }
 
@@ -1116,9 +1162,12 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
         def isTrivial(kv: (Tree, Symbol)) =
           kv match {
-            case (This(_), p) if p.name == nme.THIS     => true
-            case (arg @ Ident(_), p) if arg.symbol == p => true
-            case _                                      => false
+            case (This(_), p) if p.name == nme.THIS =>
+              true
+            case (arg @ Ident(_), p) if arg.symbol == p =>
+              true
+            case _ =>
+              false
           }
 
         (args zip params) filterNot isTrivial
@@ -1126,7 +1175,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
       // first push *all* arguments. This makes sure muliple uses of the same labelDef-var will all denote the (previous) value.
       aps foreach {
-        case (arg, param) => genLoad(arg, locals(param).tk)
+        case (arg, param) =>
+          genLoad(arg, locals(param).tk)
       } // `locals` is known to contain `param` because `genDefDef()` visited `labelDefsAtOrUnder`
 
       // second assign one by one to the LabelDef's variables.
@@ -1143,7 +1193,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     def genLoadArguments(args: List[Tree], btpes: List[BType]) {
       (args zip btpes) foreach {
-        case (arg, btpe) => genLoad(arg, btpe)
+        case (arg, btpe) =>
+          genLoad(arg, btpe)
       }
     }
 
@@ -1202,7 +1253,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
     def genCoercion(code: Int) {
       import scalaPrimitives._
       (code: @switch) match {
-        case B2B | S2S | C2C | I2I | L2L | F2F | D2D => ()
+        case B2B | S2S | C2C | I2I | L2L | F2F | D2D =>
+          ()
         case _ =>
           val from = coercionFrom(code)
           val to = coercionTo(code)
@@ -1229,7 +1281,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                   // there's only a single synthetic `+` method "added" to the string class.
                   value
 
-                case _ => elem
+                case _ =>
+                  elem
               }
             val elemType = tpeTK(loadedElem)
             genLoad(loadedElem, elemType)
@@ -1370,7 +1423,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           bc.emitIF_ACMP(op, success)
         } else {
           (tk: @unchecked) match {
-            case LONG => emit(asm.Opcodes.LCMP)
+            case LONG =>
+              emit(asm.Opcodes.LCMP)
             case FLOAT =>
               if (op == TestOp.LT || op == TestOp.LE)
                 emit(asm.Opcodes.FCMPG)
@@ -1403,8 +1457,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           bc.emitIF(op, success)
         } else if (tk.isRef) { // REFERENCE(_) | ARRAY(_)
           op match { // references are only compared with EQ and NE
-            case TestOp.EQ => bc emitIFNULL success
-            case TestOp.NE => bc emitIFNONNULL success
+            case TestOp.EQ =>
+              bc emitIFNULL success
+            case TestOp.NE =>
+              bc emitIFNONNULL success
           }
         } else {
           (tk: @unchecked) match {
@@ -1433,24 +1489,34 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     def testOpForPrimitive(primitiveCode: Int) =
       (primitiveCode: @switch) match {
-        case scalaPrimitives.ID => TestOp.EQ
-        case scalaPrimitives.NI => TestOp.NE
-        case scalaPrimitives.EQ => TestOp.EQ
-        case scalaPrimitives.NE => TestOp.NE
-        case scalaPrimitives.LT => TestOp.LT
-        case scalaPrimitives.LE => TestOp.LE
-        case scalaPrimitives.GE => TestOp.GE
-        case scalaPrimitives.GT => TestOp.GT
+        case scalaPrimitives.ID =>
+          TestOp.EQ
+        case scalaPrimitives.NI =>
+          TestOp.NE
+        case scalaPrimitives.EQ =>
+          TestOp.EQ
+        case scalaPrimitives.NE =>
+          TestOp.NE
+        case scalaPrimitives.LT =>
+          TestOp.LT
+        case scalaPrimitives.LE =>
+          TestOp.LE
+        case scalaPrimitives.GE =>
+          TestOp.GE
+        case scalaPrimitives.GT =>
+          TestOp.GT
       }
 
     /** Some useful equality helpers. */
     def isNull(t: Tree) =
       PartialFunction.cond(t) {
-        case Literal(Constant(null)) => true
+        case Literal(Constant(null)) =>
+          true
       }
     def isLiteral(t: Tree) =
       PartialFunction.cond(t) {
-        case Literal(_) => true
+        case Literal(_) =>
+          true
       }
     def isNonNullExpr(t: Tree) =
       isLiteral(t) || ((t.symbol ne null) && t.symbol.isModule)
@@ -1526,9 +1592,12 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           }
 
           getPrimitive(fun.symbol) match {
-            case ZNOT => genCond(lhs, failure, success, targetIfNoJump)
-            case ZAND => genZandOrZor(and = true)
-            case ZOR  => genZandOrZor(and = false)
+            case ZNOT =>
+              genCond(lhs, failure, success, targetIfNoJump)
+            case ZAND =>
+              genZandOrZor(and = true)
+            case ZOR =>
+              genZandOrZor(and = false)
             case code =>
               if (scalaPrimitives.isUniversalEqualityOp(code) && tpeTK(
                     lhs).isClass) {
@@ -1555,7 +1624,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 loadAndTestBoolean()
           }
 
-        case _ => loadAndTestBoolean()
+        case _ =>
+          loadAndTestBoolean()
       }
 
     } // end of genCond()

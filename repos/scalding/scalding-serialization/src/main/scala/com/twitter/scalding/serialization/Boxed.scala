@@ -1838,21 +1838,24 @@ object Boxed {
       case Some(cls) =>
         val untypedRes =
           Option(boxedCache.get(cls)) match {
-            case Some(r) => r
+            case Some(r) =>
+              r
             case None =>
               val r = next[Any]()
               boxedCache.putIfAbsent(cls, r)
               r
           }
         untypedRes.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
-      case None => next[K]()
+      case None =>
+        next[K]()
     }
 
   def next[K](): (K => Boxed[K], Class[Boxed[K]]) =
     boxes.get match {
       case list @ (h :: tail) if boxes.compareAndSet(list, tail) =>
         h.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
-      case (h :: tail) => next[K]() // Try again
+      case (h :: tail) =>
+        next[K]() // Try again
       case Nil =>
         sys.error(
           """|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.

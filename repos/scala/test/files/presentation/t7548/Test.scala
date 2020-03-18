@@ -12,8 +12,10 @@ object Test extends InteractiveTest {
     val pos = compiler.rangePos(sourceFiles.head, 102, 102, 102)
     compiler.askTypeAt(pos, res)
     res.get match {
-      case Left(tree) => compiler.ask(() => reporter.println(tree.tpe))
-      case Right(ex)  => reporter.println(ex)
+      case Left(tree) =>
+        compiler.ask(() => reporter.println(tree.tpe))
+      case Right(ex) =>
+        reporter.println(ex)
     }
   }
 }

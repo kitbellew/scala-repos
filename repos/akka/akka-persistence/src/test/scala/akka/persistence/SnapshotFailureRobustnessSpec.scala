@@ -23,14 +23,19 @@ object SnapshotFailureRobustnessSpec {
   class SaveSnapshotTestPersistentActor(name: String, probe: ActorRef)
       extends NamedPersistentActor(name) {
     override def receiveRecover: Receive = {
-      case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
-      case other ⇒ probe ! other
+      case SnapshotOffer(md, s) ⇒
+        probe ! ((md, s))
+      case other ⇒
+        probe ! other
     }
 
     override def receiveCommand = {
-      case Cmd(payload) ⇒ persist(payload)(_ ⇒ saveSnapshot(payload))
-      case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
-      case other ⇒ probe ! other
+      case Cmd(payload) ⇒
+        persist(payload)(_ ⇒ saveSnapshot(payload))
+      case SaveSnapshotSuccess(md) ⇒
+        probe ! md.sequenceNr
+      case other ⇒
+        probe ! other
     }
   }
 
@@ -42,25 +47,35 @@ object SnapshotFailureRobustnessSpec {
       "akka.persistence.snapshot-store.local-delete-fail"
 
     override def receiveRecover: Receive = {
-      case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
-      case other ⇒ probe ! other
+      case SnapshotOffer(md, s) ⇒
+        probe ! ((md, s))
+      case other ⇒
+        probe ! other
     }
 
     override def receiveCommand = {
-      case Cmd(payload) ⇒ persist(payload)(_ ⇒ saveSnapshot(payload))
-      case DeleteSnapshot(seqNr) ⇒ deleteSnapshot(seqNr)
-      case DeleteSnapshots(crit) ⇒ deleteSnapshots(crit)
-      case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
-      case other ⇒ probe ! other
+      case Cmd(payload) ⇒
+        persist(payload)(_ ⇒ saveSnapshot(payload))
+      case DeleteSnapshot(seqNr) ⇒
+        deleteSnapshot(seqNr)
+      case DeleteSnapshots(crit) ⇒
+        deleteSnapshots(crit)
+      case SaveSnapshotSuccess(md) ⇒
+        probe ! md.sequenceNr
+      case other ⇒
+        probe ! other
     }
   }
 
   class LoadSnapshotTestPersistentActor(name: String, probe: ActorRef)
       extends NamedPersistentActor(name) {
     override def receiveRecover: Receive = {
-      case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
-      case payload: String ⇒ probe ! s"${payload}-${lastSequenceNr}"
-      case other ⇒ probe ! other
+      case SnapshotOffer(md, s) ⇒
+        probe ! ((md, s))
+      case payload: String ⇒
+        probe ! s"${payload}-${lastSequenceNr}"
+      case other ⇒
+        probe ! other
     }
 
     override def receiveCommand = {
@@ -68,8 +83,10 @@ object SnapshotFailureRobustnessSpec {
         persist(payload) { _ ⇒
           probe ! s"${payload}-${lastSequenceNr}"
         }
-      case SnapshotOffer(md, s) ⇒ probe ! ((md, s))
-      case other ⇒ probe ! other
+      case SnapshotOffer(md, s) ⇒
+        probe ! ((md, s))
+      case other ⇒
+        probe ! other
     }
   }
 

@@ -275,9 +275,12 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
             val hour = date.getHourOfDay
             val speed =
               hour % 3 match {
-                case 0 => Bullet
-                case 1 => SuperBlitz
-                case _ => Blitz
+                case 0 =>
+                  Bullet
+                case 1 =>
+                  SuperBlitz
+                case _ =>
+                  Blitz
               }
             List(
               Schedule(Hourly, speed, Crazyhouse, std, at(date, hour)).some,
@@ -291,10 +294,14 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
         ).flatten
 
       nextSchedules.foldLeft(List[Schedule]()) {
-        case (scheds, sched) if sched.at.isBeforeNow      => scheds
-        case (scheds, sched) if overlaps(sched, dbScheds) => scheds
-        case (scheds, sched) if overlaps(sched, scheds)   => scheds
-        case (scheds, sched)                              => sched :: scheds
+        case (scheds, sched) if sched.at.isBeforeNow =>
+          scheds
+        case (scheds, sched) if overlaps(sched, dbScheds) =>
+          scheds
+        case (scheds, sched) if overlaps(sched, scheds) =>
+          scheds
+        case (scheds, sched) =>
+          sched :: scheds
       } foreach api.createScheduled
   }
 
@@ -310,7 +317,8 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
         interval(s) overlaps interval(s2)
       case s2 if s.similarSpeed(s2) && s.sameVariant(s2) =>
         interval(s) overlaps interval(s2)
-      case _ => false
+      case _ =>
+        false
     }
 
   private def day(year: Int, month: Int, day: Int) =

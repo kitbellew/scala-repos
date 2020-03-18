@@ -777,7 +777,8 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     val s =
       octaveL1.foldLeft(0.0) {
-        case (agg, entry) => agg + abs(entry)
+        case (agg, entry) =>
+          agg + abs(entry)
       }
     val projectL1 = ProjectL1(s)
 

@@ -26,7 +26,8 @@ object FunDef {
   def parse(builder: ScalaPsiBuilder): Boolean = {
     val faultMarker = builder.mark
     builder.getTokenType match {
-      case ScalaTokenTypes.kDEF => builder.advanceLexer()
+      case ScalaTokenTypes.kDEF =>
+        builder.advanceLexer()
       case _ =>
         faultMarker.drop()
         return false

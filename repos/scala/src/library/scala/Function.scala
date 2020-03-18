@@ -78,7 +78,8 @@ object Function {
     */
   // @deprecated("Use `f.tupled` instead")
   def tupled[a1, a2, b](f: (a1, a2) => b): Tuple2[a1, a2] => b = {
-    case Tuple2(x1, x2) => f(x1, x2)
+    case Tuple2(x1, x2) =>
+      f(x1, x2)
   }
 
   /** Tupling for functions of arity 3. This transforms a function
@@ -86,7 +87,8 @@ object Function {
     */
   // @deprecated("Use `f.tupled` instead")
   def tupled[a1, a2, a3, b](f: (a1, a2, a3) => b): Tuple3[a1, a2, a3] => b = {
-    case Tuple3(x1, x2, x3) => f(x1, x2, x3)
+    case Tuple3(x1, x2, x3) =>
+      f(x1, x2, x3)
   }
 
   /** Tupling for functions of arity 4. This transforms a function
@@ -95,7 +97,8 @@ object Function {
   // @deprecated("Use `f.tupled` instead")
   def tupled[a1, a2, a3, a4, b](
       f: (a1, a2, a3, a4) => b): Tuple4[a1, a2, a3, a4] => b = {
-    case Tuple4(x1, x2, x3, x4) => f(x1, x2, x3, x4)
+    case Tuple4(x1, x2, x3, x4) =>
+      f(x1, x2, x3, x4)
   }
 
   /** Tupling for functions of arity 5. This transforms a function
@@ -104,7 +107,8 @@ object Function {
   // @deprecated("Use `f.tupled` instead")
   def tupled[a1, a2, a3, a4, a5, b](
       f: (a1, a2, a3, a4, a5) => b): Tuple5[a1, a2, a3, a4, a5] => b = {
-    case Tuple5(x1, x2, x3, x4, x5) => f(x1, x2, x3, x4, x5)
+    case Tuple5(x1, x2, x3, x4, x5) =>
+      f(x1, x2, x3, x4, x5)
   }
 
   /** Un-tupling for functions of arity 2. This transforms a function taking

@@ -24,7 +24,8 @@ class TreeGenTest {
         assertEquals(TermName("scala"), preName)
         assertEquals(TypeName("Some"), name)
         assertEquals(SomeClass, sel.symbol)
-      case _ => fail(showRaw(ref))
+      case _ =>
+        fail(showRaw(ref))
     }
   }
 
@@ -37,7 +38,8 @@ class TreeGenTest {
       case sel @ Select(
             Select(Ident(TermName("scala")), TermName("runtime")),
             TermName("ScalaRunTime")) =>
-      case _                          => fail(showRaw(ref))
+      case _ =>
+        fail(showRaw(ref))
     }
   }
   @Test

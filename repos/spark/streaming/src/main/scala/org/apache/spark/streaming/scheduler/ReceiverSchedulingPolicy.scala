@@ -223,7 +223,8 @@ private[streaming] class ReceiverSchedulingPolicy {
       receiverTrackingInfo: ReceiverTrackingInfo)
       : Seq[(ExecutorCacheTaskLocation, Double)] = {
     receiverTrackingInfo.state match {
-      case ReceiverState.INACTIVE => Nil
+      case ReceiverState.INACTIVE =>
+        Nil
       case ReceiverState.SCHEDULED =>
         val scheduledLocations = receiverTrackingInfo.scheduledLocations.get
         // The probability that a scheduled receiver will run in an executor is

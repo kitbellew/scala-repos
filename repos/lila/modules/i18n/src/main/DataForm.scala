@@ -33,7 +33,8 @@ final class DataForm(
         msg.some map sanitize filter (_.nonEmpty)
       }
     ).toList collect {
-      case (key, Some(value)) => key -> value
+      case (key, Some(value)) =>
+        key -> value
     }
     messages.nonEmpty ?? TranslationRepo.nextId flatMap { id =>
       val sorted =
@@ -46,7 +47,8 @@ final class DataForm(
         id = id,
         code = code,
         text = sorted map {
-          case (key, trans) => key + "=" + trans
+          case (key, trans) =>
+            key + "=" + trans
         } mkString "\n",
         comment = metadata.comment,
         author = user.some,

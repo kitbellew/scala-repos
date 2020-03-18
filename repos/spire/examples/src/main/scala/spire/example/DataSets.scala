@@ -24,10 +24,14 @@ final class DataSet[V, @sp(Double) F, @sp(Double) K](
 
     def varType(v: Variable[F]): String =
       v match {
-        case Ignored(_)       => "ignored"
-        case Continuous(_, _) => "continuous"
-        case Categorical(_)   => "categorical"
-        case Missing(v0, _)   => s"${varType(v0)} with missing values"
+        case Ignored(_) =>
+          "ignored"
+        case Continuous(_, _) =>
+          "continuous"
+        case Categorical(_) =>
+          "categorical"
+        case Missing(v0, _) =>
+          s"${varType(v0)} with missing values"
       }
 
     val vars = variables.zipWithIndex map {

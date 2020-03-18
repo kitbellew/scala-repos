@@ -75,14 +75,19 @@ abstract class ScTypeDefinitionImpl protected (
               Some(
                 ScalaPsiElementFactory
                   .createMethodFromText(newMemberText, getManager))
-            case _ => None
+            case _ =>
+              None
           }
         mem match {
-          case Some(m) => addMember(m, None)
-          case _       => super.add(element)
+          case Some(m) =>
+            addMember(m, None)
+          case _ =>
+            super.add(element)
         }
-      case mem: ScMember => addMember(mem, None)
-      case _             => super.add(element)
+      case mem: ScMember =>
+        addMember(mem, None)
+      case _ =>
+        super.add(element)
     }
   }
 
@@ -91,8 +96,10 @@ abstract class ScTypeDefinitionImpl protected (
       case tp =>
         val psiType = ScType.toPsi(tp, getProject, getResolveScope)
         psiType match {
-          case c: PsiClassType => Seq(c)
-          case _               => Seq.empty
+          case c: PsiClassType =>
+            Seq(c)
+          case _ =>
+            Seq.empty
         }
     }.toArray
   }
@@ -187,8 +194,10 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def getNavigationElement =
     getContainingFile match {
-      case s: ScalaFileImpl if s.isCompiled => getSourceMirrorClass
-      case _                                => this
+      case s: ScalaFileImpl if s.isCompiled =>
+        getSourceMirrorClass
+      case _ =>
+        this
     }
 
   private def hasSameScalaKind(other: PsiClass) =
@@ -196,7 +205,8 @@ abstract class ScTypeDefinitionImpl protected (
       case (_: ScTrait, _: ScTrait) | (_: ScObject, _: ScObject) |
           (_: ScClass, _: ScClass) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def getSourceMirrorClass: PsiClass = {
@@ -208,8 +218,10 @@ abstract class ScTypeDefinitionImpl protected (
     if (classParent == null) {
       val classes: Array[PsiClass] =
         getContainingFile.getNavigationElement match {
-          case o: ScalaFile     => o.typeDefinitions.toArray
-          case o: PsiClassOwner => o.getClasses
+          case o: ScalaFile =>
+            o.typeDefinitions.toArray
+          case o: PsiClassOwner =>
+            o.getClasses
         }
       val classesIterator = classes.iterator
       while (classesIterator.hasNext) {
@@ -224,7 +236,8 @@ abstract class ScTypeDefinitionImpl protected (
         case td: ScTypeDefinitionImpl =>
           for (i <- td.typeDefinitions if name == i.name && hasSameScalaKind(i))
             return i
-        case _ => this
+        case _ =>
+          this
       }
     }
     this
@@ -233,8 +246,10 @@ abstract class ScTypeDefinitionImpl protected (
   override def isLocal: Boolean = {
     val stub: StubElement[_ <: PsiElement] =
       this match {
-        case st: ScalaStubBasedElementImpl[_] => st.getStub
-        case _                                => null
+        case st: ScalaStubBasedElementImpl[_] =>
+          st.getStub
+        case _ =>
+          null
       }
     stub match {
       case memberOrLocal: ScMemberOrLocal =>
@@ -253,8 +268,10 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def getContainingClass: PsiClass = {
     super[ScTypeDefinition].getContainingClass match {
-      case o: ScObject     => o.fakeCompanionClassOrCompanionClass
-      case containingClass => containingClass
+      case o: ScObject =>
+        o.fakeCompanionClassOrCompanionClass
+      case containingClass =>
+        containingClass
     }
   }
 
@@ -346,7 +363,8 @@ abstract class ScTypeDefinitionImpl protected (
       e.getContext match {
         case o: ScObject if o.isPackageObject && o.name == "`package`" =>
           _packageName(o, sep, k)
-        case _: ScClass | _: ScTrait if trunced => k("")
+        case _: ScClass | _: ScTrait if trunced =>
+          k("")
         case t: ScTypeDefinition =>
           _packageName(
             t,
@@ -364,12 +382,18 @@ abstract class ScTypeDefinitionImpl protected (
               pn + "."
             else
               "")
-        case _: PsiFile | null         => k("")
-        case _: ScBlock                => k("")
-        case parent: ScTemplateBody    => _packageName(parent, sep, k)
-        case parent: ScExtendsBlock    => _packageName(parent, sep, k)
-        case parent: ScTemplateParents => _packageName(parent, sep, k)
-        case parent                    => _packageName(parent, sep, identity)
+        case _: PsiFile | null =>
+          k("")
+        case _: ScBlock =>
+          k("")
+        case parent: ScTemplateBody =>
+          _packageName(parent, sep, k)
+        case parent: ScExtendsBlock =>
+          _packageName(parent, sep, k)
+        case parent: ScTemplateParents =>
+          _packageName(parent, sep, k)
+        case parent =>
+          _packageName(parent, sep, identity)
       }
 
     val packageName = _packageName(this, classSeparator, identity)
@@ -386,7 +410,8 @@ abstract class ScTypeDefinitionImpl protected (
             packageName
           else
             packageName.substring(index + 1, packageName.length)
-        case _ => name
+        case _ =>
+          name
       }
 
     new ItemPresentation() {
@@ -396,8 +421,10 @@ abstract class ScTypeDefinitionImpl protected (
 
       def getLocationString: String =
         getPath match {
-          case "" => "<default>"
-          case p  => '(' + p + ')'
+          case "" =>
+            "<default>"
+          case p =>
+            '(' + p + ')'
         }
 
       override def getIcon(open: Boolean) = ScTypeDefinitionImpl.this.getIcon(0)
@@ -460,8 +487,10 @@ abstract class ScTypeDefinitionImpl protected (
       parent = toDelete.getParent
     }
     toDelete match {
-      case file: ScalaFile => file.delete()
-      case _               => parent.getNode.removeChild(toDelete.getNode)
+      case file: ScalaFile =>
+        file.delete()
+      case _ =>
+        parent.getNode.removeChild(toDelete.getNode)
     }
   }
 
@@ -563,11 +592,13 @@ abstract class ScTypeDefinitionImpl protected (
           case t: ScTrait =>
             res += t
             res += t.fakeCompanionClass
-          case c: ScClass => res += c
-          case _          =>
+          case c: ScClass =>
+            res += c
+          case _ =>
         }
         res.toArray
-      case _ => ownInnerClasses
+      case _ =>
+        ownInnerClasses
     }
   }
 

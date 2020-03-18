@@ -50,7 +50,8 @@ private[spark] object JavaUtils {
       try {
         underlying.getOrElse(key.asInstanceOf[A], null.asInstanceOf[B])
       } catch {
-        case ex: ClassCastException => null.asInstanceOf[B]
+        case ex: ClassCastException =>
+          null.asInstanceOf[B]
       }
 
     override def entrySet: ju.Set[ju.Map.Entry[A, B]] =
@@ -78,7 +79,8 @@ private[spark] object JavaUtils {
                   other match {
                     case e: ju.Map.Entry[_, _] =>
                       k == e.getKey && v == e.getValue
-                    case _ => false
+                    case _ =>
+                      false
                   }
               }
             }

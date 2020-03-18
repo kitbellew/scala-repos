@@ -46,7 +46,8 @@ private class WhenLeaderActor(childProps: => Props)
         sender() ! Prepared(self)
         context.become(active(childRef))
 
-      case Stop => sender() ! Stopped
+      case Stop =>
+        sender() ! Stopped
 
       case unhandled: Any =>
         log.debug("unhandled message in suspend: {}", unhandled)
@@ -75,9 +76,12 @@ private class WhenLeaderActor(childProps: => Props)
 
   private[impl] def active(childRef: ActorRef): Receive =
     LoggingReceive.withLabel("active") {
-      case PrepareForStart => sender() ! Prepared(self)
-      case Stop            => stop(childRef)
-      case unhandled: Any  => childRef.forward(unhandled)
+      case PrepareForStart =>
+        sender() ! Prepared(self)
+      case Stop =>
+        stop(childRef)
+      case unhandled: Any =>
+        childRef.forward(unhandled)
     }
 
   private[impl] def dying(stopAckRef: ActorRef, childRef: ActorRef): Receive =

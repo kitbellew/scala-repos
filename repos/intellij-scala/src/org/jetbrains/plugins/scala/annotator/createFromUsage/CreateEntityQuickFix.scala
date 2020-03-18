@@ -53,8 +53,10 @@ abstract class CreateEntityQuickFix(
 
     def checkBlock(expr: ScExpression) =
       blockFor(expr) match {
-        case Success(bl) => !bl.isInCompiledFile
-        case _           => false
+        case Success(bl) =>
+          !bl.isInCompiledFile
+        case _ =>
+          false
       }
 
     ref match {
@@ -68,8 +70,10 @@ abstract class CreateEntityQuickFix(
         it.qualifier match {
           case Some(sup: ScSuperReference) =>
             unambiguousSuper(sup).exists(!_.isInCompiledFile)
-          case Some(qual) => checkBlock(qual)
-          case None       => !it.isInCompiledFile
+          case Some(qual) =>
+            checkBlock(qual)
+          case None =>
+            !it.isInCompiledFile
         }
     }
   }
@@ -77,7 +81,8 @@ abstract class CreateEntityQuickFix(
   def invokeInner(project: Project, editor: Editor, file: PsiFile) {
     def tryToFindBlock(expr: ScExpression): Option[ScExtendsBlock] = {
       blockFor(expr) match {
-        case Success(bl) => Some(bl)
+        case Success(bl) =>
+          Some(bl)
         case Failure(e) =>
           CommonRefactoringUtil.showErrorHint(
             project,
@@ -113,9 +118,12 @@ abstract class CreateEntityQuickFix(
 
     val block =
       ref match {
-        case it if it.isQualified       => ref.qualifier.flatMap(tryToFindBlock)
-        case Parent(infix: ScInfixExpr) => tryToFindBlock(infix.getBaseExpr)
-        case _                          => None
+        case it if it.isQualified =>
+          ref.qualifier.flatMap(tryToFindBlock)
+        case Parent(infix: ScInfixExpr) =>
+          tryToFindBlock(infix.getBaseExpr)
+        case _ =>
+          None
       }
 
     if (!FileModificationService.getInstance.prepareFileForWrite(
@@ -128,8 +136,10 @@ abstract class CreateEntityQuickFix(
           case Some(_ childOf (obj: ScObject)) if obj.isSyntheticObject =>
             val bl = materializeSytheticObject(obj).extendsBlock
             createEntity(bl, ref, text)
-          case Some(it) => createEntity(it, ref, text)
-          case None     => createEntity(ref, text)
+          case Some(it) =>
+            createEntity(it, ref, text)
+          case None =>
+            createEntity(ref, text)
         }
 
       ScalaPsiUtil.adjustTypes(entity)
@@ -181,14 +191,16 @@ object CreateEntityQuickFix {
     }
 
     exp match {
-      case InstanceOfClass(td: ScTemplateDefinition) => Success(td.extendsBlock)
+      case InstanceOfClass(td: ScTemplateDefinition) =>
+        Success(td.extendsBlock)
       case th: ScThisReference
           if PsiTreeUtil.getParentOfType(
             th,
             classOf[ScExtendsBlock],
             true) != null =>
         th.refTemplate match {
-          case Some(ScTemplateDefinition.ExtendsBlock(block)) => Success(block)
+          case Some(ScTemplateDefinition.ExtendsBlock(block)) =>
+            Success(block)
           case None =>
             val parentBl = PsiTreeUtil.getParentOfType(
               th,
@@ -203,7 +215,8 @@ object CreateEntityQuickFix {
         }
       case sup: ScSuperReference =>
         unambiguousSuper(sup) match {
-          case Some(ScTemplateDefinition.ExtendsBlock(block)) => Success(block)
+          case Some(ScTemplateDefinition.ExtendsBlock(block)) =>
+            Success(block)
           case None =>
             Failure(
               new IllegalStateException(
@@ -256,13 +269,16 @@ object CreateEntityQuickFix {
 
   private def typeFor(ref: ScReferenceExpression): Option[String] =
     ref.getParent match {
-      case call: ScMethodCall => call.expectedType().map(_.canonicalText)
-      case _                  => ref.expectedType().map(_.canonicalText)
+      case call: ScMethodCall =>
+        call.expectedType().map(_.canonicalText)
+      case _ =>
+        ref.expectedType().map(_.canonicalText)
     }
 
   private def parametersFor(ref: ScReferenceExpression): Option[String] = {
     ref.parent.collect {
-      case MethodRepr(_, _, Some(`ref`), args) => paramsText(args)
+      case MethodRepr(_, _, Some(`ref`), args) =>
+        paramsText(args)
       case (_: ScGenericCall) childOf(MethodRepr(_, _, Some(`ref`), args)) =>
         paramsText(args)
     }
@@ -272,8 +288,10 @@ object CreateEntityQuickFix {
     ref.parent.collect {
       case genCall: ScGenericCall =>
         genCall.arguments match {
-          case args if args.size == 1 => "[T]"
-          case args                   => args.indices.map(i => s"T$i").mkString("[", ", ", "]")
+          case args if args.size == 1 =>
+            "[T]"
+          case args =>
+            args.indices.map(i => s"T$i").mkString("[", ", ", "]")
         }
 
     }
@@ -284,9 +302,12 @@ object CreateEntityQuickFix {
     val anchors = ref :: parents
 
     val place = parents.zip(anchors).find {
-      case (_: ScTemplateBody, _) => true
-      case (_: ScalaFile, _)      => true
-      case _                      => false
+      case (_: ScTemplateBody, _) =>
+        true
+      case (_: ScalaFile, _) =>
+        true
+      case _ =>
+        false
     }
 
     place.map(_._2)
@@ -295,17 +316,22 @@ object CreateEntityQuickFix {
   private def unambiguousSuper(
       supRef: ScSuperReference): Option[ScTypeDefinition] = {
     supRef.staticSuper match {
-      case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) => Some(clazz)
+      case Some(ScType.ExtractClass(clazz: ScTypeDefinition)) =>
+        Some(clazz)
       case None =>
         supRef.parents.toSeq.collect {
-          case td: ScTemplateDefinition => td
+          case td: ScTemplateDefinition =>
+            td
         } match {
           case Seq(td) =>
             td.supers match {
-              case Seq(t: ScTypeDefinition) => Some(t)
-              case _                        => None
+              case Seq(t: ScTypeDefinition) =>
+                Some(t)
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
     }
   }

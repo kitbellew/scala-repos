@@ -163,7 +163,8 @@ final case class BalancingPool(
           else
             this
 
-        case _ ⇒ this
+        case _ ⇒
+          this
       }
     }
 

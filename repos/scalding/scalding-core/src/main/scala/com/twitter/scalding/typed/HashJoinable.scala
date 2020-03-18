@@ -104,12 +104,18 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
             isSafeToSkipForceToDisk(prevPipe, mode))
         } else
           false
-      case _: Checkpoint        => true
-      case _: GroupBy           => true
-      case _: CoGroup           => true
-      case _: Every             => true
-      case p if isSourcePipe(p) => true
-      case _                    => false
+      case _: Checkpoint =>
+        true
+      case _: GroupBy =>
+        true
+      case _: CoGroup =>
+        true
+      case _: Every =>
+        true
+      case p if isSourcePipe(p) =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -126,15 +132,21 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
     eachOperation match {
       case f: FlatMapFunction[_, _] =>
         f.getFunction match {
-          case _: Converter[_] => true
+          case _: Converter[_] =>
+            true
           case _: FilteredFn[_] =>
             false //we'd like to forceToDisk after a filter
-          case _: MapFn[_, _]        => false
-          case _: FlatMappedFn[_, _] => false
-          case _                     => false // treat empty fn as a Filter all so forceToDisk
+          case _: MapFn[_, _] =>
+            false
+          case _: FlatMappedFn[_, _] =>
+            false
+          case _ =>
+            false // treat empty fn as a Filter all so forceToDisk
         }
-      case _: CleanupIdentityFunction => true
-      case _                          => false
+      case _: CleanupIdentityFunction =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -143,7 +155,8 @@ trait HashJoinable[K, +V] extends CoGroupable[K, V] with KeyedPipe[K] {
       case h: HadoopMode =>
         val config = Config.fromHadoop(h.jobConf)
         config.getHashJoinAutoForceRight
-      case _ => false //default to false
+      case _ =>
+        false //default to false
     }
   }
 

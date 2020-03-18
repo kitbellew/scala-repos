@@ -80,12 +80,15 @@ trait ParametersAnnotator {
       holder.createErrorAnnotation(parameter, message)
     }
     parameter match {
-      case cp: ScClassParameter if cp.isVal => errorWithMessageAbout("\'val\'")
-      case cp: ScClassParameter if cp.isVar => errorWithMessageAbout("\'var\'")
+      case cp: ScClassParameter if cp.isVal =>
+        errorWithMessageAbout("\'val\'")
+      case cp: ScClassParameter if cp.isVar =>
+        errorWithMessageAbout("\'var\'")
       case cp: ScClassParameter if cp.isCaseClassVal =>
         errorWithMessageAbout("case class")
-      case p if p.isImplicitParameter => errorWithMessageAbout("implicit")
-      case _                          =>
+      case p if p.isImplicitParameter =>
+        errorWithMessageAbout("implicit")
+      case _ =>
     }
   }
 }

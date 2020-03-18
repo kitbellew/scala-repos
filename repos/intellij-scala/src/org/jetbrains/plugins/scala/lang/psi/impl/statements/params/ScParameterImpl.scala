@@ -57,7 +57,8 @@ class ScParameterImpl protected (
     paramType match {
       case Some(paramType) =>
         paramType.isCallByNameParameter
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -84,11 +85,13 @@ class ScParameterImpl protected (
                     None
                   else
                     Some(literalText.substring(1))
-                case _ => None
+                case _ =>
+                  None
               }
             }
         }
-      case None => None
+      case None =>
+        None
     }
   }
 
@@ -108,8 +111,10 @@ class ScParameterImpl protected (
       return stub.asInstanceOf[ScParameterStub].getTypeElement
     }
     paramType match {
-      case Some(x) if x.typeElement != null => Some(x.typeElement)
-      case _                                => None
+      case Some(x) if x.typeElement != null =>
+        Some(x.typeElement)
+      case _ =>
+        None
     }
   }
 
@@ -128,23 +133,30 @@ class ScParameterImpl protected (
             return Failure("Wrong Stub problem", Some(this)) //shouldn't be
           case str: String =>
             stub.asInstanceOf[ScParameterStub].getTypeElement match {
-              case Some(te) => return te.getType(TypingContext.empty)
-              case None     => return Failure("Wrong type element", Some(this))
+              case Some(te) =>
+                return te.getType(TypingContext.empty)
+              case None =>
+                return Failure("Wrong type element", Some(this))
             }
         }
       } else {
         typeElement match {
           case None if baseDefaultParam =>
             getActualDefaultExpression match {
-              case Some(t) => t.getType(TypingContext.empty).getOrNothing
-              case None    => lang.psi.types.Nothing
+              case Some(t) =>
+                t.getType(TypingContext.empty).getOrNothing
+              case None =>
+                lang.psi.types.Nothing
             }
           case None =>
             expectedParamType.map(_.unpackedType) match {
-              case Some(t) => t
-              case None    => lang.psi.types.Nothing
+              case Some(t) =>
+                t
+              case None =>
+                lang.psi.types.Nothing
             }
-          case Some(e) => e.getType(TypingContext.empty).getOrAny
+          case Some(e) =>
+            e.getType(TypingContext.empty).getOrAny
         }
       }
     }
@@ -165,8 +177,10 @@ class ScParameterImpl protected (
       return stub.asInstanceOf[ScParameterStub].isRepeated
     }
     paramType match {
-      case Some(p: ScParameterType) => p.isRepeatedParameter
-      case None                     => false
+      case Some(p: ScParameterType) =>
+        p.isRepeatedParameter
+      case None =>
+        false
     }
   }
 
@@ -215,8 +229,10 @@ class ScParameterImpl protected (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitParameter(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitParameter(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

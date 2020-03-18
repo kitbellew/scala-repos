@@ -86,8 +86,10 @@ class ScImportStmtImpl private (
       def workWithImportExpr: Boolean = {
         val ref =
           importExpr.reference match {
-            case Some(element) => element
-            case _             => return true
+            case Some(element) =>
+              element
+            case _ =>
+              return true
           }
         val nameHint = processor.getHint(NameHint.KEY)
         val name =
@@ -113,13 +115,17 @@ class ScImportStmtImpl private (
               if (!r.checkImports())
                 return false
               r.checkWildcardImports()
-            case _ => true
+            case _ =>
+              true
           }
         val exprQual: ScStableCodeReferenceElement =
           importExpr.selectorSet match {
-            case Some(_)                           => ref
-            case None if importExpr.singleWildcard => ref
-            case None                              => ref.qualifier.getOrElse(return true)
+            case Some(_) =>
+              ref
+            case None if importExpr.singleWildcard =>
+              ref
+            case None =>
+              ref.qualifier.getOrElse(return true)
           }
 
         val resolve: Array[ResolveResult] =
@@ -139,9 +145,11 @@ class ScImportStmtImpl private (
                 case ref: ResolvableStableCodeReferenceElement
                     if p.kinds.contains(ResolveTargets.METHOD) =>
                   ref.resolveMethodsOnly(false)
-                case _ => ref.multiResolve(false)
+                case _ =>
+                  ref.multiResolve(false)
               }
-            case _ => ref.multiResolve(false)
+            case _ =>
+              ref.multiResolve(false)
           }
 
         //todo: making lazy next two definitions leads to compiler failure
@@ -152,7 +160,8 @@ class ScImportStmtImpl private (
                 ScalaShortNamesCacheManager
                   .getInstance(getProject)
                   .getPackageObjectByName(p.getQualifiedName, getResolveScope))
-            case _ => None
+            case _ =>
+              None
           }
 
         val exprQualRefType = () =>
@@ -167,10 +176,13 @@ class ScImportStmtImpl private (
                 elem,
                 true,
                 classOf[ScTypeDefinition]) match {
-                case obj: ScObject if obj.isPackageObject => true
-                case _                                    => false
+                case obj: ScObject if obj.isPackageObject =>
+                  true
+                case _ =>
+                  false
               }
-            case _ => false
+            case _ =>
+              false
           }
         }
         def calculateRefType(checkPo: => Boolean) = {
@@ -182,9 +194,11 @@ class ScImportStmtImpl private (
                     po.getType(TypingContext.empty)
                   } else
                     Failure("no failure", Some(this))
-                case _ => Failure("no failure", Some(this))
+                case _ =>
+                  Failure("no failure", Some(this))
               }
-            case _ => exprQualRefType()
+            case _ =>
+              exprQualRefType()
           }
         }
 
@@ -198,8 +212,10 @@ class ScImportStmtImpl private (
                 def getFirstReference(ref: ScStableCodeReferenceElement)
                     : ScStableCodeReferenceElement = {
                   ref.qualifier match {
-                    case Some(qual) => getFirstReference(qual)
-                    case _          => ref
+                    case Some(qual) =>
+                      getFirstReference(qual)
+                    case _ =>
+                      ref
                   }
                 }
                 (
@@ -254,7 +270,8 @@ class ScImportStmtImpl private (
                     element match {
                       case elem: PsiNamedElement if isOK(elem.name) =>
                         processor.execute(element, state)
-                      case _ => true
+                      case _ =>
+                        true
                     }
                   }
                 },
@@ -382,8 +399,10 @@ class ScImportStmtImpl private (
                               element,
                               true,
                               classOf[ScTypeDefinition]) match {
-                              case obj: ScObject if obj.isPackageObject => true
-                              case _                                    => false
+                              case obj: ScObject if obj.isPackageObject =>
+                                true
+                              case _ =>
+                                false
                             }
                           }
                           calculateRefType(isElementInPo).foreach { tp =>
@@ -425,7 +444,8 @@ class ScImportStmtImpl private (
                               place))
                           return false
                     }
-                  case _ => true
+                  case _ =>
+                    true
                 }
               }
 
@@ -439,8 +459,10 @@ class ScImportStmtImpl private (
                   if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {
                     val rSubst =
                       result match {
-                        case result: ScalaResolveResult => result.substitutor
-                        case _                          => ScSubstitutor.empty
+                        case result: ScalaResolveResult =>
+                          result.substitutor
+                        case _ =>
+                          ScSubstitutor.empty
                       }
                     newState = newState
                       .put(

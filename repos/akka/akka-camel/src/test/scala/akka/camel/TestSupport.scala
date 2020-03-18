@@ -52,7 +52,8 @@ private[camel] object TestSupport {
           .asyncRequestBody(to, msg)
           .get(timeout.toNanos, TimeUnit.NANOSECONDS)
       } catch {
-        case e: ExecutionException ⇒ throw e.getCause
+        case e: ExecutionException ⇒
+          throw e.getCause
         case e: TimeoutException ⇒
           throw new AssertionError(
             "Failed to get response to message [%s], send to endpoint [%s], within [%s]"

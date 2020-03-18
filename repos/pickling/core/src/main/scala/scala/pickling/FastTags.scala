@@ -65,9 +65,12 @@ trait FastTypeTag[T] extends Equals {
   override def equals(x: Any) =
     canEqual(x) && {
       x match {
-        case null                  => false
-        case other: FastTypeTag[_] => this.key == other.key
-        case _                     => false
+        case null =>
+          false
+        case other: FastTypeTag[_] =>
+          this.key == other.key
+        case _ =>
+          false
       }
     }
   override def hashCode = key.hashCode
@@ -178,30 +181,51 @@ object FastTypeTag {
   def valueTypeName(tag: FastTypeTag[_]): String = {
     val clazz: Class[_] =
       tag match {
-        case FastTypeTag.String  => classOf[java.lang.String]
-        case FastTypeTag.Byte    => classOf[java.lang.Byte]
-        case FastTypeTag.Short   => classOf[java.lang.Short]
-        case FastTypeTag.Char    => classOf[java.lang.Character]
-        case FastTypeTag.Int     => classOf[java.lang.Integer]
-        case FastTypeTag.Long    => classOf[java.lang.Long]
-        case FastTypeTag.Boolean => classOf[java.lang.Boolean]
-        case FastTypeTag.Float   => classOf[java.lang.Float]
-        case FastTypeTag.Double  => classOf[java.lang.Double]
-        case _                   => null
+        case FastTypeTag.String =>
+          classOf[java.lang.String]
+        case FastTypeTag.Byte =>
+          classOf[java.lang.Byte]
+        case FastTypeTag.Short =>
+          classOf[java.lang.Short]
+        case FastTypeTag.Char =>
+          classOf[java.lang.Character]
+        case FastTypeTag.Int =>
+          classOf[java.lang.Integer]
+        case FastTypeTag.Long =>
+          classOf[java.lang.Long]
+        case FastTypeTag.Boolean =>
+          classOf[java.lang.Boolean]
+        case FastTypeTag.Float =>
+          classOf[java.lang.Float]
+        case FastTypeTag.Double =>
+          classOf[java.lang.Double]
+        case _ =>
+          null
       }
     if (clazz == null)
       tag match {
-        case FastTypeTag.Null         => "null"
-        case FastTypeTag.ArrayString  => "[Ljava.lang.String;"
-        case FastTypeTag.ArrayInt     => "[I"
-        case FastTypeTag.ArrayDouble  => "[D"
-        case FastTypeTag.ArrayBoolean => "[Z"
-        case FastTypeTag.ArrayLong    => "[J"
-        case FastTypeTag.ArrayByte    => "[B"
-        case FastTypeTag.ArrayFloat   => "[F"
-        case FastTypeTag.ArrayChar    => "[C"
-        case FastTypeTag.ArrayShort   => "[S"
-        case _                        => tag.key
+        case FastTypeTag.Null =>
+          "null"
+        case FastTypeTag.ArrayString =>
+          "[Ljava.lang.String;"
+        case FastTypeTag.ArrayInt =>
+          "[I"
+        case FastTypeTag.ArrayDouble =>
+          "[D"
+        case FastTypeTag.ArrayBoolean =>
+          "[Z"
+        case FastTypeTag.ArrayLong =>
+          "[J"
+        case FastTypeTag.ArrayByte =>
+          "[B"
+        case FastTypeTag.ArrayFloat =>
+          "[F"
+        case FastTypeTag.ArrayChar =>
+          "[C"
+        case FastTypeTag.ArrayShort =>
+          "[S"
+        case _ =>
+          tag.key
       }
     else
       clazz.getName

@@ -37,7 +37,8 @@ object SunSignalHandler {
       Class.forName("sun.misc.Signal")
       Some(new SunSignalHandler())
     } catch {
-      case ex: ClassNotFoundException => None
+      case ex: ClassNotFoundException =>
+        None
     }
   }
 }

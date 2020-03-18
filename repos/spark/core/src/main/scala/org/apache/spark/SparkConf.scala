@@ -167,7 +167,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   /** Set multiple parameters together */
   def setAll(settings: Traversable[(String, String)]): SparkConf = {
     settings.foreach {
-      case (k, v) => set(k, v)
+      case (k, v) =>
+        set(k, v)
     }
     this
   }
@@ -235,10 +236,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   def getAvroSchema: Map[Long, String] = {
     getAll
       .filter {
-        case (k, v) => k.startsWith(avroNamespace)
+        case (k, v) =>
+          k.startsWith(avroNamespace)
       }
       .map {
-        case (k, v) => (k.substring(avroNamespace.length).toLong, v)
+        case (k, v) =>
+          (k.substring(avroNamespace.length).toLong, v)
       }
       .toMap
   }
@@ -414,10 +417,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     val prefix = "spark.executorEnv."
     getAll
       .filter {
-        case (k, v) => k.startsWith(prefix)
+        case (k, v) =>
+          k.startsWith(prefix)
       }
       .map {
-        case (k, v) => (k.substring(prefix.length), v)
+        case (k, v) =>
+          (k.substring(prefix.length), v)
       }
   }
 
@@ -632,7 +637,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   def toDebugString: String = {
     getAll.sorted
       .map {
-        case (k, v) => k + "=" + v
+        case (k, v) =>
+          k + "=" + v
       }
       .mkString("\n")
   }

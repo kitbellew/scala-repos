@@ -63,11 +63,13 @@ object CachesUtil {
     */
   def getOrCreateKey[T](id: String): T =
     Option(keys.get(id)) match {
-      case Some(key) => key.asInstanceOf[T]
+      case Some(key) =>
+        key.asInstanceOf[T]
       case None =>
         synchronized {
           Option(keys.get(id)) match {
-            case Some(key) => key.asInstanceOf[T]
+            case Some(key) =>
+              key.asInstanceOf[T]
             case None =>
               val res: T = Key.create[T](id).asInstanceOf[T]
               keys.put(id, res)
@@ -148,7 +150,8 @@ object CachesUtil {
                 new CachedValueProvider.Result(
                   defaultValue,
                   provider.getDependencyItem)
-              case notNull => notNull
+              case notNull =>
+                notNull
             }
           }
         },
@@ -282,8 +285,10 @@ object CachesUtil {
               }
             }
           ) match {
-            case null    => defaultValue
-            case notNull => notNull
+            case null =>
+              defaultValue
+            case notNull =>
+              notNull
           }
         }
       }
@@ -313,7 +318,8 @@ object CachesUtil {
         ProjectRootManager.getInstance(element.getProject)
       case cls: ClsFileImpl =>
         ProjectRootManager.getInstance(element.getProject)
-      case _ => dep_item
+      case _ =>
+        dep_item
     }
   }
 
@@ -327,7 +333,8 @@ object CachesUtil {
           classOf[ScModificationTrackerOwner])) match {
         case Some(owner) if owner.isValidModificationTrackerOwner() =>
           owner.getModificationTracker
-        case Some(owner) => calc(owner.getContext)
+        case Some(owner) =>
+          calc(owner.getContext)
         case _ if elem != null =>
           ScalaPsiManager.instance(elem.getProject).modificationTracker
         case _ =>
@@ -348,12 +355,15 @@ object CachesUtil {
         false,
         classOf[ScModificationTrackerOwner],
         classOf[ScalaCodeFragment])) match {
-      case Some(_: ScalaCodeFragment) => //do not update on changes in dummy file
+      case Some(
+            _: ScalaCodeFragment
+          ) => //do not update on changes in dummy file
       case Some(owner: ScModificationTrackerOwner)
           if owner.isValidModificationTrackerOwner(checkForChangedReturn =
             true) =>
         owner.incModificationCount()
-      case Some(owner) => updateModificationCount(owner.getContext)
+      case Some(owner) =>
+        updateModificationCount(owner.getContext)
       case _ if incModCountOnTopLevel =>
         ScalaPsiManager.instance(elem.getProject).incModificationCount()
       case _ =>

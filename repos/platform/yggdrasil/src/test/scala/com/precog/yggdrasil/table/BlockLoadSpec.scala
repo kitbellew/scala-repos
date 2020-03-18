@@ -118,7 +118,8 @@ trait BlockLoadSpec[M[+_]]
     }
 
     val cschema = module.schema map {
-      case (jpath, ctype) => ColumnRef(CPath(jpath), ctype)
+      case (jpath, ctype) =>
+        ColumnRef(CPath(jpath), ctype)
     }
 
     val result =

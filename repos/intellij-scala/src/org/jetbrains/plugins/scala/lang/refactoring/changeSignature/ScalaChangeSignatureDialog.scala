@@ -208,8 +208,10 @@ class ScalaChangeSignatureDialog(
       : JBTableRowEditor = {
     val scalaItem =
       item match {
-        case si: ScalaParameterTableModelItem => si
-        case _                                => throw new IllegalArgumentException
+        case si: ScalaParameterTableModelItem =>
+          si
+        case _ =>
+          throw new IllegalArgumentException
       }
 
     new ScalaChangeSignatureRowEditor(scalaItem, this)
@@ -241,7 +243,8 @@ class ScalaChangeSignatureDialog(
           s"$getVisibility def $name"
         case pc: ScPrimaryConstructor =>
           s"class ${pc.getClassNameText} $getVisibility"
-        case _ => ""
+        case _ =>
+          ""
       }
     val paramsText =
       splittedItems.map(_.map(itemText).mkString("(", ", ", ")")).mkString
@@ -354,15 +357,19 @@ class ScalaChangeSignatureDialog(
 
   def getTypesMaxLength: Int = {
     parameterItems.map(_.typeText.length) match {
-      case Seq() => 0
-      case seq   => seq.max
+      case Seq() =>
+        0
+      case seq =>
+        seq.max
     }
   }
 
   def getNamesMaxLength: Int = {
     parameterItems.map(_.parameter.getName.length) match {
-      case Seq() => 0
-      case seq   => seq.max
+      case Seq() =>
+        0
+      case seq =>
+        seq.max
     }
   }
 
@@ -623,8 +630,10 @@ class ScalaChangeSignatureDialog(
     protected def nameText(item: ScalaParameterTableModelItem) = {
       val maxLength =
         parameterItems.map(_.parameter.getName.length) match {
-          case Seq() => 0
-          case seq   => seq.max
+          case Seq() =>
+            0
+          case seq =>
+            seq.max
         }
       val name = item.parameter.getName
       name + StringUtil.repeat(" ", maxLength - name.length)
@@ -633,8 +642,10 @@ class ScalaChangeSignatureDialog(
     protected def typeText(item: ScalaParameterTableModelItem) = {
       val maxLength =
         parameterItems.map(_.typeText.length) match {
-          case Seq() => 0
-          case seq   => seq.max
+          case Seq() =>
+            0
+          case seq =>
+            seq.max
         }
       val typeText = item.typeText
       typeText + StringUtil.repeat(" ", maxLength - typeText.length)

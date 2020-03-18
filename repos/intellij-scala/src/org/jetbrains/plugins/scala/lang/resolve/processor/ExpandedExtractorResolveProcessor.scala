@@ -44,7 +44,8 @@ class ExpandedExtractorResolveProcessor(
             getFromType(state) match {
               case Some(tp) =>
                 ScProjectionType(tp, bind, superReference = false)
-              case _ => bind.getType(TypingContext.empty).getOrAny
+              case _ =>
+                bind.getType(TypingContext.empty).getOrAny
             }
           var seq = false
           val buffer = new ArrayBuffer[ScalaResolveResult]
@@ -80,7 +81,8 @@ class ExpandedExtractorResolveProcessor(
             addResults(buffer.toSeq)
           }
         }
-        case _ => return super.execute(element, state)
+        case _ =>
+          return super.execute(element, state)
       }
     }
     true

@@ -58,10 +58,12 @@ object Receiver {
       SynchronousSelf { syncself ⇒
         Or(
           empty(ctx).widen {
-            case c: Command[t] ⇒ c.asInstanceOf[Command[T]]
+            case c: Command[t] ⇒
+              c.asInstanceOf[Command[T]]
           },
           Static[Any] {
-            case msg ⇒ syncself ! Enqueue(msg)
+            case msg ⇒
+              syncself ! Enqueue(msg)
           })
       }
     }.narrow
@@ -76,7 +78,8 @@ object Receiver {
         g.replyTo ! GetOneResult(ctx.self, None);
         Same
       }
-      case g @ GetOne(d) ⇒ asked(ctx, Queue(Asked(g.replyTo, Deadline.now + d)))
+      case g @ GetOne(d) ⇒
+        asked(ctx, Queue(Asked(g.replyTo, Deadline.now + d)))
       case g @ GetAll(d) if d <= Duration.Zero ⇒ {
         g.replyTo ! GetAllResult(ctx.self, Nil);
         Same
@@ -85,7 +88,8 @@ object Receiver {
         ctx.schedule(d, ctx.self, GetAll(Duration.Zero)(g.replyTo));
         Same
       }
-      case Enqueue(msg) ⇒ queued(ctx, msg)
+      case Enqueue(msg) ⇒
+        queued(ctx, msg)
     }
 
   private def queued[T](ctx: ActorContext[Any], t: T): Behavior[Command[T]] = {

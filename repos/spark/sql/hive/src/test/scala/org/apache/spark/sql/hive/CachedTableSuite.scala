@@ -212,7 +212,8 @@ class CachedTableSuite extends QueryTest with TestHiveSingleton {
     val sparkPlan = sql("SELECT * FROM cachedTable").queryExecution.sparkPlan
     assert(
       sparkPlan.collect {
-        case e: InMemoryColumnarTableScan => e
+        case e: InMemoryColumnarTableScan =>
+          e
       }.size === 1)
 
     sql("DROP TABLE cachedTable")

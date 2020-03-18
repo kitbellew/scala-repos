@@ -68,7 +68,8 @@ class HikariCPConnectionPool @Inject() (environment: Environment)
 
       datasource
     } match {
-      case Success(datasource) => datasource
+      case Success(datasource) =>
+        datasource
       case Failure(ex) =>
         throw config.reportError(name, ex.getMessage, Some(ex))
     }
@@ -82,8 +83,10 @@ class HikariCPConnectionPool @Inject() (environment: Environment)
   override def close(dataSource: DataSource) = {
     Logger.info("Shutting down connection pool.")
     dataSource match {
-      case ds: HikariDataSource => ds.close()
-      case _                    => sys.error("Unable to close data source: not a HikariDataSource")
+      case ds: HikariDataSource =>
+        ds.close()
+      case _ =>
+        sys.error("Unable to close data source: not a HikariDataSource")
     }
   }
 }

@@ -53,7 +53,8 @@ trait Imports {
   def importedSymbols = languageSymbols ++ sessionImportedSymbols
   def importedTermSymbols =
     importedSymbols collect {
-      case x: TermSymbol => x
+      case x: TermSymbol =>
+        x
     }
 
   /** Tuples of (source, imported symbols) in the order they were imported.
@@ -68,7 +69,8 @@ trait Imports {
   }
   def implicitSymbolsBySource: List[(Symbol, List[Symbol])] = {
     importedSymbolsBySource map {
-      case (k, vs) => (k, vs filter (_.isImplicit))
+      case (k, vs) =>
+        (k, vs filter (_.isImplicit))
     } filterNot (_._2.isEmpty)
   }
 
@@ -135,19 +137,22 @@ trait Imports {
             // While defining classes in class based mode - implicits are not needed.
             case h: ImportHandler if isClassBased && definesClass =>
               h.importedNames.exists(x => wanted.contains(x))
-            case _: ImportHandler => true
+            case _: ImportHandler =>
+              true
             case x if generousImports =>
               x.definesImplicit || (
                 x.definedNames exists (d => wanted.exists(w => d.startsWith(w)))
               )
-            case x => x.definesImplicit || (x.definedNames exists wanted)
+            case x =>
+              x.definesImplicit || (x.definedNames exists wanted)
           }
 
         reqs match {
           case Nil =>
             predefEscapes = wanted contains PredefModule.name;
             Nil
-          case rh :: rest if !keepHandler(rh.handler) => select(rest, wanted)
+          case rh :: rest if !keepHandler(rh.handler) =>
+            select(rest, wanted)
           case rh :: rest =>
             import rh.handler._
             val newWanted =
@@ -159,7 +164,8 @@ trait Imports {
       /** Flatten the handlers out and pair each with the original request */
       select(
         allReqAndHandlers reverseMap {
-          case (r, h) => ReqAndHandler(r, h)
+          case (r, h) =>
+            ReqAndHandler(r, h)
         },
         wanted).reverse
     }

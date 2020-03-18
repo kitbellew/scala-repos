@@ -39,7 +39,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
     notifier.fireTestStarted(desc)
     try runChildInner(child, notifier)
     catch {
-      case t: Throwable => addFailure(t, notifier, desc)
+      case t: Throwable =>
+        addFailure(t, notifier, desc)
     } finally notifier.fireTestFinished(desc)
   }
 
@@ -71,8 +72,10 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
   def run(notifier: RunNotifier) {
     try runChildren(notifier)
     catch {
-      case e: StoppedByUserException => throw e
-      case e: Throwable              => addFailure(e, notifier, getDescription)
+      case e: StoppedByUserException =>
+        throw e
+      case e: Throwable =>
+        addFailure(e, notifier, getDescription)
     }
   }
 
@@ -85,7 +88,8 @@ abstract class SimpleParentRunner[T](testClass: Class[_])
           filter.apply(ch);
           true
         } catch {
-          case _: NoTestsRemainException => false
+          case _: NoTestsRemainException =>
+            false
         }
     }
     if (children.isEmpty)

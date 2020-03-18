@@ -99,6 +99,7 @@ class MatInt(r: Int, c: Int, values: Array[Int]) extends Mat[Int] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

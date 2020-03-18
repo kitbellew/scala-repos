@@ -59,11 +59,13 @@ trait ScalatraFilter extends Filter with ServletBase {
               uri = uri.substring(0, pos)
           }
           UriDecoder.firstStep(uri)
-        case null => "/"
+        case null =>
+          "/"
       }
 
     request.get("org.scalatra.ScalatraFilter.requestPath") match {
-      case Some(uri) => uri.toString
+      case Some(uri) =>
+        uri.toString
       case _ => {
         val requestPath = getRequestPath
         request.setAttribute(

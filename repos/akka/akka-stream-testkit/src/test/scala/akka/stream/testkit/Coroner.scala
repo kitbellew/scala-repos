@@ -71,7 +71,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
       try {
         Await.result(cancelPromise.future, atMost)
       } catch {
-        case _: TimeoutException ⇒ false
+        case _: TimeoutException ⇒
+          false
       }
 
   }
@@ -235,9 +236,12 @@ object Coroner { // FIXME: remove once going back to project dependencies
         if (i == 0 && ti.getLockInfo != null) {
           import java.lang.Thread.State._
           ti.getThreadState match {
-            case BLOCKED ⇒ appendMsg("\t-  blocked on ", ti.getLockInfo)
-            case WAITING ⇒ appendMsg("\t-  waiting on ", ti.getLockInfo)
-            case TIMED_WAITING ⇒ appendMsg("\t-  waiting on ", ti.getLockInfo)
+            case BLOCKED ⇒
+              appendMsg("\t-  blocked on ", ti.getLockInfo)
+            case WAITING ⇒
+              appendMsg("\t-  waiting on ", ti.getLockInfo)
+            case TIMED_WAITING ⇒
+              appendMsg("\t-  waiting on ", ti.getLockInfo)
             case _ ⇒
           }
         }

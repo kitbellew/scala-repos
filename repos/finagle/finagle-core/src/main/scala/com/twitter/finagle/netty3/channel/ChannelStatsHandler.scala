@@ -129,8 +129,10 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
     if (!Monitor.isActive) {
       val level =
         evt.getCause match {
-          case t: IOException => Level.FINE
-          case _              => Level.WARNING
+          case t: IOException =>
+            Level.FINE
+          case _ =>
+            Level.WARNING
         }
       log.log(level, "ChannelStatsHandler caught an exception", evt.getCause)
     }

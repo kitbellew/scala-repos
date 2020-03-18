@@ -29,10 +29,13 @@ class OptsTest extends FunSuite {
           case clazz: Class[_]
               if clazz.getCanonicalName == "com.sun.management.VMOption" =>
             clazz.getMethod("isWriteable").invoke(option) match {
-              case bool: JBool => bool: Boolean
-              case _           => fail()
+              case bool: JBool =>
+                bool: Boolean
+              case _ =>
+                fail()
             }
-          case _ => false
+          case _ =>
+            false
         }
 
       if (writable) {

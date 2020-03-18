@@ -25,7 +25,8 @@ object JobStats {
     val m = statsMap(stats)
     new JobStats(
       stats match {
-        case cs: CascadeStats => m
+        case cs: CascadeStats =>
+          m
         case fs: FlowStats =>
           m + ("flow_step_stats" -> fs.getFlowStepStats.asScala.map(statsMap))
       })
@@ -75,17 +76,21 @@ object JobStats {
                 case m: Map[_, _] =>
                   acc + (
                     k -> m.foldLeft(Map.empty[String, Long]) {
-                      case (acc2, (k: String, v: Long)) => acc2 + (k -> v)
+                      case (acc2, (k: String, v: Long)) =>
+                        acc2 + (k -> v)
                       case (_, kv) =>
                         sys.error("inner k, v not (String, Long):" + kv)
                     }
                   )
-                case _ => sys.error("inner values are not Maps: " + v)
+                case _ =>
+                  sys.error("inner values are not Maps: " + v)
               }
-            case kv => sys.error("Map does not contain string keys: " + (kv))
+            case kv =>
+              sys.error("Map does not contain string keys: " + (kv))
           }
         }
-      case _ => Failure(new Exception("%s not a Map[String, Any]".format(cMap)))
+      case _ =>
+        Failure(new Exception("%s not a Map[String, Any]".format(cMap)))
     }
 
   def toJsonValue(a: Any): String =
@@ -94,7 +99,8 @@ object JobStats {
     else {
       Try(a.toString.toInt)
         .recoverWith {
-          case t: Throwable => Try(a.toString.toDouble)
+          case t: Throwable =>
+            Try(a.toString.toDouble)
         }
         .recover {
           case t: Throwable =>
@@ -119,7 +125,8 @@ case class JobStats(toMap: Map[String, Any]) {
   def toJson: String =
     toMap
       .map {
-        case (k, v) => "\"%s\" : %s".format(k, JobStats.toJsonValue(v))
+        case (k, v) =>
+          "\"%s\" : %s".format(k, JobStats.toJsonValue(v))
       }
       .mkString("{", ",", "}")
 }

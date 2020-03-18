@@ -15,8 +15,10 @@ package simple {
       extends HttpRequestHandler {
     def handlerForRequest(request: RequestHeader) = {
       router.routes.lift(request) match {
-        case Some(handler) => (request, handler)
-        case None          => (request, Action(Results.NotFound))
+        case Some(handler) =>
+          (request, handler)
+        case None =>
+          (request, Action(Results.NotFound))
       }
     }
   }
@@ -52,9 +54,12 @@ package virtualhost {
 
     override def routeRequest(request: RequestHeader) = {
       request.host match {
-        case "foo.example.com" => fooRouter.routes.lift(request)
-        case "bar.example.com" => barRouter.routes.lift(request)
-        case _                 => super.routeRequest(request)
+        case "foo.example.com" =>
+          fooRouter.routes.lift(request)
+        case "bar.example.com" =>
+          barRouter.routes.lift(request)
+        case _ =>
+          super.routeRequest(request)
       }
     }
   }

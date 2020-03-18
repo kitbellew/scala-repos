@@ -43,7 +43,8 @@ trait PathDirectives
     extract(ctx ⇒ pm(ctx.unmatchedPath)).flatMap {
       case Matched(rest, values) ⇒
         tprovide(values) & mapRequestContext(_ withUnmatchedPath rest)
-      case Unmatched ⇒ reject
+      case Unmatched ⇒
+        reject
     }
   }
 
@@ -62,8 +63,10 @@ trait PathDirectives
   def rawPathPrefixTest[L](pm: PathMatcher[L]): Directive[L] = {
     implicit val LIsTuple = pm.ev
     extract(ctx ⇒ pm(ctx.unmatchedPath)).flatMap {
-      case Matched(_, values) ⇒ tprovide(values)
-      case Unmatched ⇒ reject
+      case Matched(_, values) ⇒
+        tprovide(values)
+      case Unmatched ⇒
+        reject
     }
   }
 
@@ -78,7 +81,8 @@ trait PathDirectives
     extract(ctx ⇒ pm(ctx.unmatchedPath.reverse)).flatMap {
       case Matched(rest, values) ⇒
         tprovide(values) & mapRequestContext(_.withUnmatchedPath(rest.reverse))
-      case Unmatched ⇒ reject
+      case Unmatched ⇒
+        reject
     }
   }
 
@@ -92,8 +96,10 @@ trait PathDirectives
   def pathSuffixTest[L](pm: PathMatcher[L]): Directive[L] = {
     implicit val LIsTuple = pm.ev
     extract(ctx ⇒ pm(ctx.unmatchedPath.reverse)).flatMap {
-      case Matched(_, values) ⇒ tprovide(values)
-      case Unmatched ⇒ reject
+      case Matched(_, values) ⇒
+        tprovide(values)
+      case Unmatched ⇒
+        reject
     }
   }
 

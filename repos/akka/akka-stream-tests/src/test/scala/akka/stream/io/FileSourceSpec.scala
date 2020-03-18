@@ -169,7 +169,8 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
         val f = s.runWith(
           Sink.fold(0) {
-            case (acc, l) ⇒ acc + l.utf8String.count(_ == '\n')
+            case (acc, l) ⇒
+              acc + l.utf8String.count(_ == '\n')
           })
 
         val lineCount = Await.result(f, 3.seconds)

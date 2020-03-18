@@ -47,7 +47,8 @@ object union {
         type V = st.V
         def apply(u: H :+: T): Out =
           u match {
-            case Inl(l) => None
+            case Inl(l) =>
+              None
             case Inr(r) =>
               if (st == null)
                 None
@@ -67,8 +68,10 @@ object union {
         type V = V0
         def apply(u: FieldType[K, V] :+: T): Out =
           u match {
-            case Inl(l) => Some(l)
-            case Inr(r) => None
+            case Inl(l) =>
+              Some(l)
+            case Inr(r) =>
+              None
           }
       }
   }
@@ -135,8 +138,10 @@ object union {
         type Out = V :+: vt.Out
         def apply(l: FieldType[K, V] :+: T): Out =
           l match {
-            case Inl(l) => Inl(l)
-            case Inr(r) => Inr(vt(r))
+            case Inl(l) =>
+              Inl(l)
+            case Inr(r) =>
+              Inr(vt(r))
           }
       }
   }
@@ -173,8 +178,10 @@ object union {
         type Out = (K, V) :+: tailFields.Out
         def apply(u: FieldType[K, V] :+: T) =
           u match {
-            case Inl(v) => Inl(key.value -> v)
-            case Inr(t) => Inr(tailFields(t))
+            case Inl(v) =>
+              Inl(key.value -> v)
+            case Inr(t) =>
+              Inr(tailFields(t))
           }
       }
   }
@@ -218,7 +225,8 @@ object union {
         type Value = V
         def apply(c: FieldType[K, V] :+: CNil) =
           (c: @unchecked) match {
-            case Inl(h) => Map(wk.value -> (h: V))
+            case Inl(h) =>
+              Map(wk.value -> (h: V))
           }
       }
 
@@ -233,10 +241,12 @@ object union {
         type Value = V
         def apply(c: FieldType[HK, HV] :+: TH :+: TT) =
           c match {
-            case Inl(h) => Map(keyLub.left(wk.value) -> valueLub.left(h: HV))
+            case Inl(h) =>
+              Map(keyLub.left(wk.value) -> valueLub.left(h: HV))
             case Inr(t) =>
               tailToMap(t).map {
-                case (k, v) => keyLub.right(k) -> valueLub.right(v)
+                case (k, v) =>
+                  keyLub.right(k) -> valueLub.right(v)
               }
           }
       }
@@ -275,8 +285,10 @@ object union {
         type Out = FieldType[K, hc.Result] :+: tailMapValues.Out
         def apply(c: FieldType[K, V] :+: T) =
           c match {
-            case Inl(h) => Inl(field[K](hc(h: V)))
-            case Inr(t) => Inr(tailMapValues(t))
+            case Inl(h) =>
+              Inl(field[K](hc(h: V)))
+            case Inr(t) =>
+              Inr(tailMapValues(t))
           }
       }
   }

@@ -30,17 +30,23 @@ private[prediction] object MailChimpConnector extends FormConnector {
 
     val json =
       data.get("type") match {
-        case Some("subscribe") => subscribeToEventJson(data)
+        case Some("subscribe") =>
+          subscribeToEventJson(data)
         // UNSUBSCRIBE
-        case Some("unsubscribe") => unsubscribeToEventJson(data)
+        case Some("unsubscribe") =>
+          unsubscribeToEventJson(data)
         // PROFILE UPDATES
-        case Some("profile") => profileToEventJson(data)
+        case Some("profile") =>
+          profileToEventJson(data)
         // EMAIL UPDATE
-        case Some("upemail") => upemailToEventJson(data)
+        case Some("upemail") =>
+          upemailToEventJson(data)
         // CLEANED EMAILS
-        case Some("cleaned") => cleanedToEventJson(data)
+        case Some("cleaned") =>
+          cleanedToEventJson(data)
         // CAMPAIGN SENDING STATUS
-        case Some("campaign") => campaignToEventJson(data)
+        case Some("campaign") =>
+          campaignToEventJson(data)
         // invalid type
         case Some(x) =>
           throw new ConnectorException(

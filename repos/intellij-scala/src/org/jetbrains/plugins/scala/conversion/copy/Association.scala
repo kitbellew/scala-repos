@@ -21,7 +21,8 @@ case class Association(kind: DependencyKind, var range: TextRange, path: Path) {
         Dependency
           .dependencyFor(reference)
           .exists(it => it.kind == kind && it.path == path)
-      case _ => false
+      case _ =>
+        false
     }
 }
 

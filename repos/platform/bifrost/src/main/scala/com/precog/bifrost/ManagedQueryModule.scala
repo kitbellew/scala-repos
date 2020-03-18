@@ -138,7 +138,8 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
       job <- futureJob map { job =>
         Some(job)
       } recover {
-        case _ => None
+        case _ =>
+          None
       }
       queryStateManager = job map { job =>
         val mgr = JobQueryStateManager(
@@ -258,8 +259,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
             cancelled.compareAndSet(
               false,
               job map {
-                case Job(_, _, _, _, _, Cancelled(_, _, _)) => true
-                case _                                      => false
+                case Job(_, _, _, _, _, Cancelled(_, _, _)) =>
+                  true
+                case _ =>
+                  false
               } getOrElse false)
           }
         }

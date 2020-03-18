@@ -304,7 +304,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
     // tooltip
     node.tooltip match {
-      case Some(text) => attr += "tooltip" -> text
+      case Some(text) =>
+        attr += "tooltip" -> text
       // show full name where available (instead of TraversableOps[A] show scala.collection.parallel.TraversableOps[A])
       case None if node.tpl.isDefined =>
         attr += "tooltip" -> node.tpl.get.qualifiedName
@@ -565,7 +566,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
           scope,
           true,
           child map (x => transform(x)): _*)
-      case x => x
+      case x =>
+        x
     }
 
   def getKind(klass: String): String =
@@ -652,13 +654,15 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
   private def flatten(attributes: Map[String, String]) =
     attributes
       .map {
-        case (key, value) => key + "=\"" + value + "\""
+        case (key, value) =>
+          key + "=\"" + value + "\""
       }
       .mkString(", ")
 
   private val graphAttributesStr =
     graphAttributes.map {
-      case (key, value) => key + "=\"" + value + "\";\n"
+      case (key, value) =>
+        key + "=\"" + value + "\";\n"
     }.mkString
   private val nodeAttributesStr = flatten(nodeAttributes)
   private val edgeAttributesStr = flatten(edgeAttributes)

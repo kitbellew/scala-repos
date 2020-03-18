@@ -167,14 +167,17 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
   /** True if the index is included by an EOL sequence. */
   def isEndOfLine(idx: Int) =
     (content isDefinedAt idx) && PartialFunction.cond(content(idx)) {
-      case CR | LF => true
+      case CR | LF =>
+        true
     }
 
   /** True if the index is end of an EOL sequence. */
   def isAtEndOfLine(idx: Int) =
     charAtIsEOL(idx) {
-      case CR | LF => true
-      case _       => false
+      case CR | LF =>
+        true
+      case _ =>
+        false
     }
 
   def calculateLineIndices(cs: Array[Char]) = {
@@ -214,7 +217,8 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
     that match {
       case that: BatchSourceFile =>
         file.path == that.file.path && start == that.start
-      case _ => false
+      case _ =>
+        false
     }
   override def hashCode = file.path.## + start.##
 }

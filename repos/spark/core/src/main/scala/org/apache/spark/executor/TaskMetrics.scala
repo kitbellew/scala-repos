@@ -378,9 +378,11 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
             hasShuffleRead = true
           case sw if sw.startsWith(SHUFFLE_WRITE_METRICS_PREFIX) =>
             hasShuffleWrite = true
-          case in if in.startsWith(INPUT_METRICS_PREFIX)    => hasInput = true
-          case out if out.startsWith(OUTPUT_METRICS_PREFIX) => hasOutput = true
-          case _                                            =>
+          case in if in.startsWith(INPUT_METRICS_PREFIX) =>
+            hasInput = true
+          case out if out.startsWith(OUTPUT_METRICS_PREFIX) =>
+            hasOutput = true
+          case _ =>
         }
       }
     if (hasShuffleRead) {

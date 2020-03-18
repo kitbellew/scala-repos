@@ -264,7 +264,8 @@ private[sql] object ParquetFilters {
           .map(f => f.name -> f.dataType) ++ fields.flatMap { f =>
           getFieldMap(f.dataType)
         }
-      case _ => Array.empty[(String, DataType)]
+      case _ =>
+        Array.empty[(String, DataType)]
     }
 
   /**
@@ -346,7 +347,8 @@ private[sql] object ParquetFilters {
       case sources.Not(pred) =>
         createFilter(schema, pred).map(FilterApi.not)
 
-      case _ => None
+      case _ =>
+        None
     }
   }
 

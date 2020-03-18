@@ -32,7 +32,8 @@ object ClassDef {
     builder.getTokenType match {
       case ScalaTokenTypes.tLSQBRACKET =>
         TypeParamClause parse builder
-      case _ => /*it could be without type parameters*/
+      case _ =>
+      /*it could be without type parameters*/
     }
     val constructorMarker = builder.mark
     val annotationsMarker = builder.mark

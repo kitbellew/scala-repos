@@ -26,8 +26,10 @@ abstract class ScalaNullPostfixTemplate(val name: String, val example: String)
       expression: PsiElement): PsiElement = {
     val (head, tail) =
       expression match {
-        case prefix: ScInfixExpr => ("(" + getHead, ")" + getTail)
-        case _                   => (getHead, getTail)
+        case prefix: ScInfixExpr =>
+          ("(" + getHead, ")" + getTail)
+        case _ =>
+          (getHead, getTail)
       }
     myPsiInfo.createExpression(expression, head, tail)
   }

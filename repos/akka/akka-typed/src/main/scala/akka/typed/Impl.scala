@@ -44,8 +44,10 @@ private[typed] class ActorAdapter[T](_initialBehavior: () ⇒ Behavior[T])
 
   override def unhandled(msg: Any): Unit =
     msg match {
-      case Terminated(ref) ⇒ throw new DeathPactException(ref.untypedRef)
-      case other ⇒ super.unhandled(other)
+      case Terminated(ref) ⇒
+        throw new DeathPactException(ref.untypedRef)
+      case other ⇒
+        super.unhandled(other)
     }
 
   override val supervisorStrategy =
@@ -56,10 +58,14 @@ private[typed] class ActorAdapter[T](_initialBehavior: () ⇒ Behavior[T])
         val f = Failed(ex, ActorRef(sender()))
         next(behavior.management(ctx, f), f)
         f.getDecision match {
-          case Resume ⇒ s.Resume
-          case Restart ⇒ s.Restart
-          case Stop ⇒ s.Stop
-          case _ ⇒ s.Escalate
+          case Resume ⇒
+            s.Resume
+          case Restart ⇒
+            s.Restart
+          case Stop ⇒
+            s.Stop
+          case _ ⇒
+            s.Escalate
         }
     }
 
@@ -139,6 +145,7 @@ private[typed] class ActorContextAdapter[T](ctx: akka.actor.ActorContext)
   */
 private[typed] class MessageWrapper(f: Any ⇒ Any) extends akka.actor.Actor {
   def receive = {
-    case msg ⇒ context.parent ! f(msg)
+    case msg ⇒
+      context.parent ! f(msg)
   }
 }

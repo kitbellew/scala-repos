@@ -40,6 +40,7 @@ object AkkaException {
     try {
       InetAddress.getLocalHost.getHostName
     } catch {
-      case e: UnknownHostException => "unknown"
+      case e: UnknownHostException =>
+        "unknown"
     }
 }

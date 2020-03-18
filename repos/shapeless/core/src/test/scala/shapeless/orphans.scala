@@ -192,9 +192,12 @@ package OrphansTestDefns {
 
           def eqv(x: L :+: R, y: L :+: R): Boolean =
             (x, y) match {
-              case (Inl(x), Inl(y)) => l.eqv(x, y)
-              case (Inr(x), Inr(y)) => r.eqv(x, y)
-              case _                => false
+              case (Inl(x), Inl(y)) =>
+                l.eqv(x, y)
+              case (Inr(x), Inr(y)) =>
+                r.eqv(x, y)
+              case _ =>
+                false
             }
         }
 

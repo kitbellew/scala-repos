@@ -293,8 +293,10 @@ object JacksonParser extends Logging {
             parser.nextToken()
 
             convertRootField(factory, parser, schema) match {
-              case null             => failedRecord(record)
-              case row: InternalRow => row :: Nil
+              case null =>
+                failedRecord(record)
+              case row: InternalRow =>
+                row :: Nil
               case array: ArrayData =>
                 if (array.numElements() == 0) {
                   Nil

@@ -49,7 +49,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
         case assign: ScAssignStmt =>
           val elem = assign.assignNavigationElement
           Option(elem).toArray
-        case _ => null
+        case _ =>
+          null
       }
     }
 
@@ -57,10 +58,13 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
       sourceElement.getParent match {
         case self: ScSelfInvocation =>
           self.bind match {
-            case Some(elem) => return Array(elem)
-            case None       => return null
+            case Some(elem) =>
+              return Array(elem)
+            case None =>
+              return null
           }
-        case _ => return null
+        case _ =>
+          return null
       }
     }
 
@@ -96,7 +100,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
                   case _ =>
                     all.distinct flatMap goToTargets
                 }
-              case None => return null
+              case None =>
+                return null
             }
           case r =>
             Set(r.resolve()) flatMap goToTargets
@@ -108,13 +113,16 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
 
   private def goToTargets(element: PsiElement): Seq[PsiElement] = {
     element match {
-      case null => Seq.empty
+      case null =>
+        Seq.empty
       case fun: ScFunction =>
         Seq(fun.getSyntheticNavigationElement.getOrElse(element))
       case td: ScTypeDefinition if td.isSynthetic =>
         td.syntheticContainingClass match {
-          case Some(containingClass) => Seq(containingClass)
-          case _                     => Seq(element)
+          case Some(containingClass) =>
+            Seq(containingClass)
+          case _ =>
+            Seq(element)
         }
       case o: ScObject if o.isSyntheticObject =>
         Seq(ScalaPsiUtil.getCompanionModule(o).getOrElse(element))
@@ -123,7 +131,8 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
           .parameterForSyntheticParameter(param)
           .map(Seq[PsiElement](_))
           .getOrElse(Seq[PsiElement](element))
-      case _ => Seq(element)
+      case _ =>
+        Seq(element)
     }
   }
 }

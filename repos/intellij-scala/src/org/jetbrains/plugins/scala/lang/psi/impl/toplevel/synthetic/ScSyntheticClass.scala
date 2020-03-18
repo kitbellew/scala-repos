@@ -167,7 +167,8 @@ class ScSyntheticClass(
   override def getSuperTypes: Array[PsiClassType] = {
     val project = manager.getProject
     t.tSuper match {
-      case None => PsiClassType.EMPTY_ARRAY
+      case None =>
+        PsiClassType.EMPTY_ARRAY
       case Some(ts) =>
         Array[PsiClassType](
           JavaPsiFacade
@@ -192,8 +193,10 @@ class ScSyntheticFunction(
     if (name != "+")
       return false
     ScType.extractClass(retType, Some(manager.getProject)) match {
-      case Some(clazz) => clazz.qualifiedName == "java.lang.String"
-      case _           => false
+      case Some(clazz) =>
+        clazz.qualifiedName == "java.lang.String"
+      case _ =>
+        false
     }
   }
 
@@ -376,8 +379,10 @@ class SyntheticClasses(project: Project)
             manager,
             "unary_" + un_op,
             nc.t match {
-              case Long | Double | Float => nc.t
-              case _                     => Int
+              case Long | Double | Float =>
+                nc.t
+              case _ =>
+                Int
             },
             Seq.empty))
     }
@@ -395,8 +400,10 @@ class SyntheticClasses(project: Project)
 
       val ret =
         ic.t match {
-          case Long => Long
-          case _    => Int
+          case Long =>
+            Long
+          case _ =>
+            Int
         }
       for (op <- bitwise_shift_ops) {
         ic.addMethod(new ScSyntheticFunction(manager, op, ret, Seq(Seq(Int))))
@@ -559,10 +566,14 @@ object Unit
 
   def op_type(ic1: ScSyntheticClass, ic2: ScSyntheticClass) =
     (ic1.t, ic2.t) match {
-      case (_, Double) | (Double, _) => Double
-      case (Float, _) | (_, Float)   => Float
-      case (_, Long) | (Long, _)     => Long
-      case _                         => Int
+      case (_, Double) | (Double, _) =>
+        Double
+      case (Float, _) | (_, Float) =>
+        Float
+      case (_, Long) | (Long, _) =>
+        Long
+      case _ =>
+        Int
     }
 
   var file: PsiFile = _
@@ -602,8 +613,9 @@ object Unit
   def findClass(qName: String, scope: GlobalSearchScope): PsiClass = {
     if (qName.startsWith(prefix)) {
       byName(qName.substring(prefix.length)) match {
-        case Some(c) => return c
-        case _       =>
+        case Some(c) =>
+          return c
+        case _ =>
       }
     }
     for (obj <- syntheticObjects) {

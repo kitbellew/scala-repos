@@ -151,16 +151,20 @@ class CachedTableSuite
     assertCached(sqlContext.table("testData"))
     assert(
       sqlContext.table("testData").queryExecution.withCachedData match {
-        case _: InMemoryRelation => true
-        case _                   => false
+        case _: InMemoryRelation =>
+          true
+        case _ =>
+          false
       })
 
     sqlContext.uncacheTable("testData")
     assert(!sqlContext.isCached("testData"))
     assert(
       sqlContext.table("testData").queryExecution.withCachedData match {
-        case _: InMemoryRelation => false
-        case _                   => true
+        case _: InMemoryRelation =>
+          false
+        case _ =>
+          true
       })
   }
 
@@ -179,7 +183,8 @@ class CachedTableSuite
         .queryExecution
         .withCachedData
         .collect {
-          case r: InMemoryRelation => r
+          case r: InMemoryRelation =>
+            r
         }
         .size
     }
@@ -399,11 +404,13 @@ class CachedTableSuite
 
     assert(
       sparkPlan.collect {
-        case e: InMemoryColumnarTableScan => e
+        case e: InMemoryColumnarTableScan =>
+          e
       }.size === 3)
     assert(
       sparkPlan.collect {
-        case e: PhysicalRDD => e
+        case e: PhysicalRDD =>
+          e
       }.size === 0)
   }
 
@@ -413,7 +420,8 @@ class CachedTableSuite
   private def verifyNumExchanges(df: DataFrame, expected: Int): Unit = {
     assert(
       df.queryExecution.executedPlan.collect {
-        case e: ShuffleExchange => e
+        case e: ShuffleExchange =>
+          e
       }.size == expected)
   }
 

@@ -59,7 +59,8 @@ trait ScalarTag[@spec(Boolean, Int, Long, Float, Double) T]
         (
           this eq s
         ) || runtimeClass == s.runtimeClass && isAny == s.isAny && isAnyVal == s.isAnyVal
-      case _ => false
+      case _ =>
+        false
     }
 
   override def toString = "ScalarTag[%s]" format runtimeClass

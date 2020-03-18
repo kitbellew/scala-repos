@@ -153,7 +153,8 @@ object gen {
   def makeBoundedInterval[A: Arbitrary: Order](
       f: (A, A) => Interval[A]): Gen[Interval[A]] =
     bounds[A].map {
-      case (l, u) => f(l, u)
+      case (l, u) =>
+        f(l, u)
     }
 
   def openInterval[A: Arbitrary: Order]: Gen[Interval[A]] =
@@ -196,8 +197,10 @@ object gen {
     for {
       aas <- arbitrary[List[Either[A, A]]]
     } yield aas.foldLeft(FreeGroup.id[A]) {
-      case (acc, Left(a))  => acc |-| FreeGroup(a)
-      case (acc, Right(a)) => acc |+| FreeGroup(a)
+      case (acc, Left(a)) =>
+        acc |-| FreeGroup(a)
+      case (acc, Right(a)) =>
+        acc |+| FreeGroup(a)
     }
 
   def freeAbGroup[A: Arbitrary]: Gen[FreeAbGroup[A]] =
@@ -221,7 +224,8 @@ object gen {
     }
     Perm(
       images.zipWithIndex.filter {
-        case (p, i) => p != i
+        case (p, i) =>
+          p != i
       }.toMap)
   }
 }

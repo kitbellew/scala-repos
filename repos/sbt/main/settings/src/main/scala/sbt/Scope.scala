@@ -64,19 +64,25 @@ object Scope {
     * perform this transformation so that [[replaceThis]] picks it up.
     */
   def subThisProject: Scope => Scope = {
-    case s @ Scope(Select(ThisProject), _, _, _) => s.copy(project = This)
-    case s                                       => s
+    case s @ Scope(Select(ThisProject), _, _, _) =>
+      s.copy(project = This)
+    case s =>
+      s
   }
 
   def fillTaskAxis(scope: Scope, key: AttributeKey[_]): Scope =
     scope.task match {
-      case _: Select[_] => scope
-      case _            => scope.copy(task = Select(key))
+      case _: Select[_] =>
+        scope
+      case _ =>
+        scope.copy(task = Select(key))
     }
 
   def mapReference(f: Reference => Reference): Scope => Scope = {
-    case Scope(Select(ref), a, b, c) => Scope(Select(f(ref)), a, b, c)
-    case x                           => x
+    case Scope(Select(ref), a, b, c) =>
+      Scope(Select(f(ref)), a, b, c)
+    case x =>
+      x
   }
   def resolveProject(uri: URI, rootProject: URI => String): Scope => Scope =
     mapReference(ref => resolveReference(uri, rootProject, ref))
@@ -85,22 +91,30 @@ object Scope {
 
   def resolveBuildOnly(current: URI, ref: Reference): Reference =
     ref match {
-      case br: BuildReference   => resolveBuild(current, br)
-      case pr: ProjectReference => resolveProjectBuild(current, pr)
+      case br: BuildReference =>
+        resolveBuild(current, br)
+      case pr: ProjectReference =>
+        resolveProjectBuild(current, pr)
     }
   def resolveBuild(current: URI, ref: BuildReference): BuildReference =
     ref match {
-      case ThisBuild     => BuildRef(current)
-      case BuildRef(uri) => BuildRef(resolveBuild(current, uri))
+      case ThisBuild =>
+        BuildRef(current)
+      case BuildRef(uri) =>
+        BuildRef(resolveBuild(current, uri))
     }
   def resolveProjectBuild(
       current: URI,
       ref: ProjectReference): ProjectReference =
     ref match {
-      case LocalRootProject    => RootProject(current)
-      case LocalProject(id)    => ProjectRef(current, id)
-      case RootProject(uri)    => RootProject(resolveBuild(current, uri))
-      case ProjectRef(uri, id) => ProjectRef(resolveBuild(current, uri), id)
+      case LocalRootProject =>
+        RootProject(current)
+      case LocalProject(id) =>
+        ProjectRef(current, id)
+      case RootProject(uri) =>
+        RootProject(resolveBuild(current, uri))
+      case ProjectRef(uri, id) =>
+        ProjectRef(resolveBuild(current, uri), id)
     }
   def resolveBuild(current: URI, uri: URI): URI =
     if (!uri.isAbsolute && current.isOpaque && uri.getSchemeSpecificPart == ".")
@@ -113,8 +127,10 @@ object Scope {
       rootProject: URI => String,
       ref: Reference): ResolvedReference =
     ref match {
-      case br: BuildReference   => resolveBuildRef(current, br)
-      case pr: ProjectReference => resolveProjectRef(current, rootProject, pr)
+      case br: BuildReference =>
+        resolveBuildRef(current, br)
+      case pr: ProjectReference =>
+        resolveProjectRef(current, rootProject, pr)
     }
 
   def resolveProjectRef(
@@ -122,17 +138,22 @@ object Scope {
       rootProject: URI => String,
       ref: ProjectReference): ProjectRef =
     ref match {
-      case LocalRootProject => ProjectRef(current, rootProject(current))
-      case LocalProject(id) => ProjectRef(current, id)
+      case LocalRootProject =>
+        ProjectRef(current, rootProject(current))
+      case LocalProject(id) =>
+        ProjectRef(current, id)
       case RootProject(uri) =>
         val res = resolveBuild(current, uri);
         ProjectRef(res, rootProject(res))
-      case ProjectRef(uri, id) => ProjectRef(resolveBuild(current, uri), id)
+      case ProjectRef(uri, id) =>
+        ProjectRef(resolveBuild(current, uri), id)
     }
   def resolveBuildRef(current: URI, ref: BuildReference): BuildRef =
     ref match {
-      case ThisBuild     => BuildRef(current)
-      case BuildRef(uri) => BuildRef(resolveBuild(current, uri))
+      case ThisBuild =>
+        BuildRef(current)
+      case BuildRef(uri) =>
+        BuildRef(resolveBuild(current, uri))
     }
 
   def display(config: ConfigKey): String = config.name + ":"
@@ -203,18 +224,25 @@ object Scope {
     val GlobalStr = "*"
     val scope =
       (uriOpt, projectIdOpt, configOpt, inTaskOpt) match {
-        case (None, None, Some(GlobalStr), None) => GlobalScope
+        case (None, None, Some(GlobalStr), None) =>
+          GlobalScope
         case _ =>
           val projScope =
             (uriOpt, projectIdOpt) match {
-              case (Some(DotURI), Some("")) => Select(ThisBuild)
-              case (Some(uri), Some(""))    => Select(BuildRef(uri))
-              case (Some(uri), Some(p))     => Select(ProjectRef(uri, p))
-              case (None, Some(p))          => Select(LocalProject(p))
-              case _                        => This
+              case (Some(DotURI), Some("")) =>
+                Select(ThisBuild)
+              case (Some(uri), Some("")) =>
+                Select(BuildRef(uri))
+              case (Some(uri), Some(p)) =>
+                Select(ProjectRef(uri, p))
+              case (None, Some(p)) =>
+                Select(LocalProject(p))
+              case _ =>
+                This
             }
           val configScope = configOpt map {
-            case c if c != GlobalStr => Select(ConfigKey(c))
+            case c if c != GlobalStr =>
+              Select(ConfigKey(c))
           } getOrElse This
           val inTaskScope = inTaskOpt map { t =>
             Select(AttributeKey(t))
@@ -262,18 +290,24 @@ object Scope {
       val p = px.toOption getOrElse resolvedProj
       val configProj =
         p match {
-          case pr: ProjectRef => pr;
-          case br: BuildRef   => ProjectRef(br.build, rootProject(br.build))
+          case pr: ProjectRef =>
+            pr;
+          case br: BuildRef =>
+            ProjectRef(br.build, rootProject(br.build))
         }
       val cLin =
         scope.config match {
-          case Select(conf) => index.config(configProj, conf);
-          case _            => withGlobalAxis(scope.config)
+          case Select(conf) =>
+            index.config(configProj, conf);
+          case _ =>
+            withGlobalAxis(scope.config)
         }
       val tLin =
         scope.task match {
-          case t @ Select(task) => linearize(t)(taskInherit);
-          case _                => withGlobalAxis(scope.task)
+          case t @ Select(task) =>
+            linearize(t)(taskInherit);
+          case _ =>
+            withGlobalAxis(scope.task)
         }
       val eLin = withGlobalAxis(scope.extra)
       for (c <- cLin;
@@ -282,13 +316,16 @@ object Scope {
         yield Scope(px, c, t, e)
     }
     scope.project match {
-      case Global | This => globalProjectDelegates(scope)
+      case Global | This =>
+        globalProjectDelegates(scope)
       case Select(proj) =>
         val resolvedProj = resolve(proj)
         val projAxes: Seq[ScopeAxis[ResolvedReference]] =
           resolvedProj match {
-            case pr: ProjectRef => index.project(pr)
-            case br: BuildRef   => Select(br) :: Global :: Nil
+            case pr: ProjectRef =>
+              index.project(pr)
+            case br: BuildRef =>
+              Select(br) :: Global :: Nil
           }
         projAxes flatMap nonProjectScopes(resolvedProj)
     }
@@ -310,8 +347,10 @@ object Scope {
 
   def rawBuild(ps: ScopeAxis[ProjectRef]): Seq[ScopeAxis[BuildRef]] =
     ps match {
-      case Select(ref) => Select(BuildRef(ref.build)) :: Nil;
-      case _           => Nil
+      case Select(ref) =>
+        Select(BuildRef(ref.build)) :: Nil;
+      case _ =>
+        Nil
     }
 
   def delegates[Proj](
@@ -351,7 +390,8 @@ object Scope {
   def linearize[T](axis: ScopeAxis[T], appendGlobal: Boolean = true)(
       inherit: T => Seq[T]): Seq[ScopeAxis[T]] =
     axis match {
-      case Select(x) => topologicalSort[T](x, appendGlobal)(inherit)
+      case Select(x) =>
+        topologicalSort[T](x, appendGlobal)(inherit)
       case Global | This =>
         if (appendGlobal)
           Global :: Nil

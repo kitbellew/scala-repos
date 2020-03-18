@@ -343,7 +343,8 @@ private class GeneratedClass(
     @tailrec
     def findAnchorAndParent(elem: PsiElement): (ScBlockStatement, PsiElement) =
       elem match {
-        case (stmt: ScBlockStatement) childOf (b: ScBlock) => (stmt, b)
+        case (stmt: ScBlockStatement) childOf (b: ScBlock) =>
+          (stmt, b)
         case (stmt: ScBlockStatement) childOf (funDef: ScFunctionDefinition)
             if funDef.body.contains(stmt) =>
           (stmt, funDef)
@@ -365,8 +366,10 @@ private class GeneratedClass(
 
     val needBraces =
       parent match {
-        case _: ScBlock | _: ScTemplateBody => false
-        case _                              => true
+        case _: ScBlock | _: ScTemplateBody =>
+          false
+        case _ =>
+          true
       }
 
     val anchor =

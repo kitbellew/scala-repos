@@ -63,14 +63,17 @@ trait BlockAlignSpec[M[+_]]
     import module.trans.constants._
 
     val lstream = sample.data.zipWithIndex collect {
-      case (v, i) if i % 2 == 0 => v
+      case (v, i) if i % 2 == 0 =>
+        v
     }
     val rstream = sample.data.zipWithIndex collect {
-      case (v, i) if i % 3 == 0 => v
+      case (v, i) if i % 3 == 0 =>
+        v
     }
 
     val expected = sample.data.zipWithIndex collect {
-      case (v, i) if i % 2 == 0 && i % 3 == 0 => v
+      case (v, i) if i % 2 == 0 && i % 3 == 0 =>
+        v
     }
 
     val finalResults =
@@ -523,9 +526,12 @@ trait BlockAlignSpec[M[+_]]
     }
 
     i match {
-      case 0 => test0
-      case 1 => test1
-      case 2 => test2
+      case 0 =>
+        test0
+      case 1 =>
+        test1
+      case 2 =>
+        test2
     }
   }
 }

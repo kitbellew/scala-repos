@@ -109,12 +109,14 @@ class Column(protected[sql] val expr: Expression) extends Logging {
   def this(name: String) =
     this(
       name match {
-        case "*" => UnresolvedStar(None)
+        case "*" =>
+          UnresolvedStar(None)
         case _ if name.endsWith(".*") =>
           val parts = UnresolvedAttribute.parseAttributeName(
             name.substring(0, name.length - 2))
           UnresolvedStar(Some(parts))
-        case _ => UnresolvedAttribute.quotedString(name)
+        case _ =>
+          UnresolvedAttribute.quotedString(name)
       })
 
   /** Creates a column based on the given expression. */
@@ -128,17 +130,22 @@ class Column(protected[sql] val expr: Expression) extends Logging {
       // Wrap UnresolvedAttribute with UnresolvedAlias, as when we resolve UnresolvedAttribute, we
       // will remove intermediate Alias for ExtractValue chain, and we need to alias it again to
       // make it a NamedExpression.
-      case u: UnresolvedAttribute => UnresolvedAlias(u)
+      case u: UnresolvedAttribute =>
+        UnresolvedAlias(u)
 
-      case u: UnresolvedExtractValue => UnresolvedAlias(u)
+      case u: UnresolvedExtractValue =>
+        UnresolvedAlias(u)
 
-      case expr: NamedExpression => expr
+      case expr: NamedExpression =>
+        expr
 
       // Leave an unaliased generator with an empty list of names since the analyzer will generate
       // the correct defaults after the nested expression's type has been resolved.
-      case explode: Explode => MultiAlias(explode, Nil)
+      case explode: Explode =>
+        MultiAlias(explode, Nil)
 
-      case jt: JsonTuple => MultiAlias(jt, Nil)
+      case jt: JsonTuple =>
+        MultiAlias(jt, Nil)
 
       case func: UnresolvedFunction =>
         UnresolvedAlias(func, Some(usePrettyExpression(func).sql))
@@ -147,21 +154,27 @@ class Column(protected[sql] val expr: Expression) extends Logging {
       // NamedExpression under this Cast.
       case c: Cast =>
         c.transformUp {
-          case Cast(ne: NamedExpression, to) => UnresolvedAlias(Cast(ne, to))
+          case Cast(ne: NamedExpression, to) =>
+            UnresolvedAlias(Cast(ne, to))
         } match {
-          case ne: NamedExpression => ne
-          case other               => Alias(expr, usePrettyExpression(expr).sql)()
+          case ne: NamedExpression =>
+            ne
+          case other =>
+            Alias(expr, usePrettyExpression(expr).sql)()
         }
 
-      case expr: Expression => Alias(expr, usePrettyExpression(expr).sql)()
+      case expr: Expression =>
+        Alias(expr, usePrettyExpression(expr).sql)()
     }
 
   override def toString: String = usePrettyExpression(expr).sql
 
   override def equals(that: Any): Boolean =
     that match {
-      case that: Column => that.expr.equals(this.expr)
-      case _            => false
+      case that: Column =>
+        that.expr.equals(this.expr)
+      case _ =>
+        false
     }
 
   override def hashCode: Int = this.expr.hashCode
@@ -978,7 +991,8 @@ class Column(protected[sql] val expr: Expression) extends Logging {
       expr match {
         case ne: NamedExpression =>
           Alias(expr, alias)(explicitMetadata = Some(ne.metadata))
-        case other => Alias(other, alias)()
+        case other =>
+          Alias(other, alias)()
       }
     }
 
@@ -1030,7 +1044,8 @@ class Column(protected[sql] val expr: Expression) extends Logging {
       expr match {
         case ne: NamedExpression =>
           Alias(expr, alias.name)(explicitMetadata = Some(ne.metadata))
-        case other => Alias(other, alias.name)()
+        case other =>
+          Alias(other, alias.name)()
       }
     }
 

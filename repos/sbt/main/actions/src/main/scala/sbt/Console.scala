@@ -57,6 +57,7 @@ final class Console(compiler: AnalyzingCompiler) {
 object Console {
   def apply(conf: Inputs): Console =
     conf.compilers match {
-      case IncrementalCompilerImpl.Compilers(scalac, _) => new Console(scalac)
+      case IncrementalCompilerImpl.Compilers(scalac, _) =>
+        new Console(scalac)
     }
 }

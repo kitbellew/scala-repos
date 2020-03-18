@@ -110,8 +110,10 @@ private[parquet] class CatalystSchemaConverter(
     */
   def convertField(parquetType: Type): DataType =
     parquetType match {
-      case t: PrimitiveType => convertPrimitiveField(t)
-      case t: GroupType     => convertGroupField(t.asGroupType())
+      case t: PrimitiveType =>
+        convertPrimitiveField(t)
+      case t: GroupType =>
+        convertGroupField(t.asGroupType())
     }
 
   private def convertPrimitiveField(field: PrimitiveType): DataType = {
@@ -149,33 +151,51 @@ private[parquet] class CatalystSchemaConverter(
     }
 
     typeName match {
-      case BOOLEAN => BooleanType
+      case BOOLEAN =>
+        BooleanType
 
-      case FLOAT => FloatType
+      case FLOAT =>
+        FloatType
 
-      case DOUBLE => DoubleType
+      case DOUBLE =>
+        DoubleType
 
       case INT32 =>
         originalType match {
-          case INT_8         => ByteType
-          case INT_16        => ShortType
-          case INT_32 | null => IntegerType
-          case DATE          => DateType
-          case DECIMAL       => makeDecimalType(Decimal.MAX_INT_DIGITS)
-          case UINT_8        => typeNotSupported()
-          case UINT_16       => typeNotSupported()
-          case UINT_32       => typeNotSupported()
-          case TIME_MILLIS   => typeNotImplemented()
-          case _             => illegalType()
+          case INT_8 =>
+            ByteType
+          case INT_16 =>
+            ShortType
+          case INT_32 | null =>
+            IntegerType
+          case DATE =>
+            DateType
+          case DECIMAL =>
+            makeDecimalType(Decimal.MAX_INT_DIGITS)
+          case UINT_8 =>
+            typeNotSupported()
+          case UINT_16 =>
+            typeNotSupported()
+          case UINT_32 =>
+            typeNotSupported()
+          case TIME_MILLIS =>
+            typeNotImplemented()
+          case _ =>
+            illegalType()
         }
 
       case INT64 =>
         originalType match {
-          case INT_64 | null    => LongType
-          case DECIMAL          => makeDecimalType(Decimal.MAX_LONG_DIGITS)
-          case UINT_64          => typeNotSupported()
-          case TIMESTAMP_MILLIS => typeNotImplemented()
-          case _                => illegalType()
+          case INT_64 | null =>
+            LongType
+          case DECIMAL =>
+            makeDecimalType(Decimal.MAX_LONG_DIGITS)
+          case UINT_64 =>
+            typeNotSupported()
+          case TIMESTAMP_MILLIS =>
+            typeNotImplemented()
+          case _ =>
+            illegalType()
         }
 
       case INT96 =>
@@ -188,23 +208,32 @@ private[parquet] class CatalystSchemaConverter(
 
       case BINARY =>
         originalType match {
-          case UTF8 | ENUM | JSON           => StringType
-          case null if assumeBinaryIsString => StringType
-          case null                         => BinaryType
-          case BSON                         => BinaryType
-          case DECIMAL                      => makeDecimalType()
-          case _                            => illegalType()
+          case UTF8 | ENUM | JSON =>
+            StringType
+          case null if assumeBinaryIsString =>
+            StringType
+          case null =>
+            BinaryType
+          case BSON =>
+            BinaryType
+          case DECIMAL =>
+            makeDecimalType()
+          case _ =>
+            illegalType()
         }
 
       case FIXED_LEN_BYTE_ARRAY =>
         originalType match {
           case DECIMAL =>
             makeDecimalType(maxPrecisionForBytes(field.getTypeLength))
-          case INTERVAL => typeNotImplemented()
-          case _        => illegalType()
+          case INTERVAL =>
+            typeNotImplemented()
+          case _ =>
+            illegalType()
         }
 
-      case _ => illegalType()
+      case _ =>
+        illegalType()
     }
   }
 

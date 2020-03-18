@@ -152,7 +152,8 @@ private[exception] class TestServiceException(
                   ste.toString + "\n" + ste.toString,
                   "bad stacktrace",
                   hasStackTrace)
-              case a => fail(a, "exception contents")
+              case a =>
+                fail(a, "exception contents")
             }
           }
         }
@@ -180,7 +181,8 @@ private[exception] class TestServiceException(
             "cardinality",
             hasCardinality,
             false)
-        case a => fail(a, "service exception")
+        case a =>
+          fail(a, "service exception")
       }
     }
 

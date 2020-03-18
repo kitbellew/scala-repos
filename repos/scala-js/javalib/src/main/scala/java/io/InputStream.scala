@@ -22,7 +22,8 @@ abstract class InputStream extends Closeable {
           else {
             try read()
             catch {
-              case _: IOException => -1
+              case _: IOException =>
+                -1
             }
           }
         if (next != -1) {

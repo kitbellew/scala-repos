@@ -99,7 +99,8 @@ abstract class AggregationIterator(
               func match {
                 case function: ImperativeAggregate =>
                   function.withNewInputAggBufferOffset(inputBufferOffset)
-                case function => function
+                case function =>
+                  function
               }
             inputBufferOffset += func.aggBufferSchema.length
             updatedFunc
@@ -111,7 +112,8 @@ abstract class AggregationIterator(
             // mutableBufferOffset happens after all potential bindReference operations
             // because bindReference will create a new instance of the function.
             function.withNewMutableAggBufferOffset(mutableBufferOffset)
-          case function => function
+          case function =>
+            function
         }
       mutableBufferOffset += funcWithUpdatedAggBufferOffset.aggBufferSchema.length
       functions(i) = funcWithUpdatedAggBufferOffset
@@ -133,7 +135,8 @@ abstract class AggregationIterator(
     while (i < aggregateFunctions.length) {
       aggregateFunctions(i) match {
         case agg: DeclarativeAggregate =>
-        case _                         => positions += i
+        case _ =>
+          positions += i
       }
       i += 1
     }
@@ -143,7 +146,8 @@ abstract class AggregationIterator(
   // The projection used to initialize buffer values for all expression-based aggregates.
   protected[this] val expressionAggInitialProjection = {
     val initExpressions = aggregateFunctions.flatMap {
-      case ae: DeclarativeAggregate => ae.initialValues
+      case ae: DeclarativeAggregate =>
+        ae.initialValues
       // For the positions corresponding to imperative aggregate functions, we'll use special
       // no-op expressions which are ignored during projection code-generation.
       case i: ImperativeAggregate =>
@@ -168,8 +172,10 @@ abstract class AggregationIterator(
       val mergeExpressions = functions.zipWithIndex.flatMap {
         case (ae: DeclarativeAggregate, i) =>
           expressions(i).mode match {
-            case Partial | Complete   => ae.updateExpressions
-            case PartialMerge | Final => ae.mergeExpressions
+            case Partial | Complete =>
+              ae.updateExpressions
+            case PartialMerge | Final =>
+              ae.mergeExpressions
           }
         case (agg: AggregateFunction, _) =>
           Seq.fill(agg.aggBufferAttributes.length)(NoOp)
@@ -225,8 +231,10 @@ abstract class AggregationIterator(
     val bufferAttributes = aggregateFunctions.flatMap(_.aggBufferAttributes)
     if (modes.contains(Final) || modes.contains(Complete)) {
       val evalExpressions = aggregateFunctions.map {
-        case ae: DeclarativeAggregate => ae.evaluateExpression
-        case agg: AggregateFunction   => NoOp
+        case ae: DeclarativeAggregate =>
+          ae.evaluateExpression
+        case agg: AggregateFunction =>
+          NoOp
       }
       val aggregateResult =
         new SpecificMutableRow(aggregateAttributes.map(_.dataType))

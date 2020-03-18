@@ -81,7 +81,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
       for {
         arbInt <- Arbitrary.arbitrary[List[Int]]
         in = arbInt.zipWithIndex.map {
-          case (item: Int, time: Int) => (time.toLong, item)
+          case (item: Int, time: Int) =>
+            (time.toLong, item)
         }
         arbMap <- Arbitrary.arbitrary[Map[Int, Int]]
         batcher = TestUtil.randomBatcher(in)
@@ -129,8 +130,10 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
               testStore.initBatch.next)
             implicitly[Ordering[Timestamp]].equiv(readIntervalLower, start)
           }
-          case Right(_) => false
-          case Left(_)  => interval == Empty()
+          case Right(_) =>
+            false
+          case Left(_) =>
+            interval == Empty()
         }
     }
   }
@@ -164,8 +167,10 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
             implicitly[Ordering[Timestamp]]
               .lteq(readIntervalUpper, interval.upper.upper)
           }
-          case Right(_) => false
-          case Left(_)  => interval == Empty()
+          case Right(_) =>
+            false
+          case Left(_) =>
+            interval == Empty()
         }
     }
   }
@@ -212,8 +217,10 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     //to create data that fits a batch partially
     def atLeast2MsBatcher(batcher: Batcher): Boolean = {
       batcher match {
-        case b: MillisecondBatcher => b.durationMillis >= 2
-        case _                     => true
+        case b: MillisecondBatcher =>
+          b.durationMillis >= 2
+        case _ =>
+          true
       }
     }
     forAll {

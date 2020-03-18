@@ -31,14 +31,16 @@ class StringToMultilineStringIntention extends PsiElementBaseIntentionAction {
       classOf[ScLiteral],
       false)
     literalExpression match {
-      case null => false
+      case null =>
+        false
       case lit if lit.isMultiLineString =>
         setText("Convert to \"string\"")
         true
       case lit if lit.isString =>
         setText("Convert to \"\"\"string\"\"\"")
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -124,8 +126,10 @@ class StringToMultilineStringIntention extends PsiElementBaseIntentionAction {
               StripMarginParser.parse(literal).getOrElse(Nil)
             case _ =>
               literal.getValue match {
-                case s: String => List(Text(s))
-                case _         => Nil
+                case s: String =>
+                  List(Text(s))
+                case _ =>
+                  Nil
               }
           }
         parts match {

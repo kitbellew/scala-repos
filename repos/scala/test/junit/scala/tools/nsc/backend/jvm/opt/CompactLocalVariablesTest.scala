@@ -66,7 +66,8 @@ class CompactLocalVariablesTest {
     assertTrue(noCompact.instructions.size == withCompact.instructions.size)
 
     val varOpSlots = convertMethod(withCompact).instructions collect {
-      case VarOp(_, v) => v
+      case VarOp(_, v) =>
+        v
     }
     assertTrue(
       varOpSlots.toString,

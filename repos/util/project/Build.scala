@@ -28,7 +28,8 @@ object Util extends Build {
     CrossVersion.partialVersion(sv) match {
       case Some((2, x)) if x >= 11 =>
         Seq("org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4")
-      case _ => Nil
+      case _ =>
+        Nil
     }
   }
 
@@ -41,8 +42,10 @@ object Util extends Build {
       "utf8") ++ (
       CrossVersion.partialVersion(sv) match {
         // Needs -missing-interpolator due to https://issues.scala-lang.org/browse/SI-8761
-        case Some((2, x)) if x >= 11 => Seq("-Xlint:-missing-interpolator")
-        case _                       => Seq("-Xlint")
+        case Some((2, x)) if x >= 11 =>
+          Seq("-Xlint:-missing-interpolator")
+        case _ =>
+          Seq("-Xlint")
       }
     )
   }
@@ -62,8 +65,10 @@ object Util extends Build {
     resolvers += "twitter repo" at "https://maven.twttr.com",
     ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 10)) => false
-        case _             => true
+        case Some((2, 10)) =>
+          false
+        case _ =>
+          true
       }
     ),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),

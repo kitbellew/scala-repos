@@ -116,7 +116,8 @@ abstract class Directive[L](implicit val ev: Tuple[L]) {
       })(ctx).fast.flatMap {
         case RouteResult.Rejected(rejections) if !rejectedFromInnerRoute ⇒
           recovery(rejections).tapply(inner)(ctx)
-        case x ⇒ FastFuture.successful(x)
+        case x ⇒
+          FastFuture.successful(x)
       }
     }
 
@@ -169,12 +170,14 @@ object Directive {
       extends AnyRef {
     def map[R](f: T ⇒ R)(implicit tupler: Tupler[R]): Directive[tupler.Out] =
       underlying.tmap {
-        case Tuple1(value) ⇒ f(value)
+        case Tuple1(value) ⇒
+          f(value)
       }
 
     def flatMap[R: Tuple](f: T ⇒ Directive[R]): Directive[R] =
       underlying.tflatMap {
-        case Tuple1(value) ⇒ f(value)
+        case Tuple1(value) ⇒
+          f(value)
       }
 
     def require(predicate: T ⇒ Boolean, rejections: Rejection*): Directive0 =
@@ -183,7 +186,8 @@ object Directive {
     def filter(predicate: T ⇒ Boolean, rejections: Rejection*): Directive1[T] =
       underlying.tfilter(
         {
-          case Tuple1(value) ⇒ predicate(value)
+          case Tuple1(value) ⇒
+            predicate(value)
         },
         rejections: _*)
   }

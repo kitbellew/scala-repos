@@ -195,7 +195,8 @@ object OneVsRestExample {
     println(
       fprs
         .map {
-          case (label, fpr) => label + "\t" + fpr
+          case (label, fpr) =>
+            label + "\t" + fpr
         }
         .mkString("\n"))
     // $example off$

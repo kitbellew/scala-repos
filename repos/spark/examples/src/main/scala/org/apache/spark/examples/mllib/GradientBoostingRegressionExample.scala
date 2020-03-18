@@ -55,7 +55,8 @@ object GradientBoostingRegressionExample {
     }
     val testMSE = labelsAndPredictions
       .map {
-        case (v, p) => math.pow((v - p), 2)
+        case (v, p) =>
+          math.pow((v - p), 2)
       }
       .mean()
     println("Test Mean Squared Error = " + testMSE)

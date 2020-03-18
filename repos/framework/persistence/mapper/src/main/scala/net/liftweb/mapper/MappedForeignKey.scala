@@ -91,7 +91,8 @@ trait MappedForeignKey[KeyType, MyOwner <: Mapper[
     other match {
       case km: KeyedMapper[KeyType, Other] if checkTypes(km) =>
         this.get == km.primaryKeyField.get
-      case _ => super.equals(other)
+      case _ =>
+        super.equals(other)
     }
 
   def dbKeyToTable: KeyedMetaMapper[KeyType, Other]
@@ -104,7 +105,8 @@ trait MappedForeignKey[KeyType, MyOwner <: Mapper[
     Full(
       validSelectValues
         .flatMap {
-          case Nil => Empty
+          case Nil =>
+            Empty
 
           case xs =>
             Full(SHtml.selectObj(xs, Full(this.get), this.set))
@@ -282,9 +284,12 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
 
   override def setFromAny(in: Any): Long =
     in match {
-      case JsonAST.JNull        => this.set(0L)
-      case JsonAST.JInt(bigint) => this.set(bigint.longValue)
-      case o                    => super.setFromAny(o)
+      case JsonAST.JNull =>
+        this.set(0L)
+      case JsonAST.JInt(bigint) =>
+        this.set(bigint.longValue)
+      case o =>
+        super.setFromAny(o)
     }
 
   /**
@@ -358,8 +363,10 @@ abstract class MappedStringForeignKey[T <: Mapper[T], O <: KeyedMapper[
   def set(v: Box[O]): T = {
     val toSet: String =
       v match {
-        case Full(i) => i.primaryKeyField.get
-        case _       => null
+        case Full(i) =>
+          i.primaryKeyField.get
+        case _ =>
+          null
       }
 
     this(toSet)

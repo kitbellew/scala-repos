@@ -63,10 +63,14 @@ trait RowFormat {
       val a = aVals(cPath) find (_._2 != CUndefined)
       val b = bVals(cPath) find (_._2 != CUndefined)
       (a, b) match {
-        case (None, None)                 => 0
-        case (None, _)                    => -1
-        case (_, None)                    => 1
-        case (Some((_, a)), Some((_, b))) => CValue.compareValues(a, b)
+        case (None, None) =>
+          0
+        case (None, _) =>
+          -1
+        case (_, None) =>
+          1
+        case (Some((_, a)), Some((_, b))) =>
+          CValue.compareValues(a, b)
       }
     } find (_ != 0) getOrElse 0
 
@@ -140,8 +144,10 @@ trait RowFormatSupport {
         buffers: List[ByteBuffer]): List[ByteBuffer] = {
       val buffer = pool.acquire
       codec.writeMore(s, buffer) match {
-        case Some(s) => writeMore(s, pool, buffer :: buffers)
-        case None    => (buffer :: buffers).reverse
+        case Some(s) =>
+          writeMore(s, pool, buffer :: buffers)
+        case None =>
+          (buffer :: buffers).reverse
       }
     }
   }
@@ -157,8 +163,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -172,8 +180,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -187,8 +197,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -202,8 +214,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -217,8 +231,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -232,8 +248,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -247,8 +265,10 @@ trait RowFormatSupport {
               buffer: ByteBuffer,
               pool: ByteBufferPool): Option[List[ByteBuffer]] = {
             codec.writeInit(col(row), buffer) match {
-              case Some(s) => Some(writeMore(s, pool, buffer :: Nil))
-              case None    => None
+              case Some(s) =>
+                Some(writeMore(s, pool, buffer :: Nil))
+              case None =>
+                None
             }
           }
         }
@@ -441,7 +461,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     //  (columnRefs zip cols map { case (ref, col) => getColumnDecoder(ref.ctype, col) }).zipWithIndex
     val decoders: List[ColumnValueDecoder] =
       (columnRefs zip cols).map {
-        case (ref, col) => getColumnDecoder(ref.ctype, col)
+        case (ref, col) =>
+          getColumnDecoder(ref.ctype, col)
       }(collection.breakOut)
 
     new ColumnDecoder {
@@ -474,7 +495,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     private lazy val codecs: List[Codec[_ <: CValue]] = columnRefs.toList map {
       case ColumnRef(_, cType: CValueType[_]) =>
         Codec.CValueCodec(cType)(codecForCValueType(cType))
-      case ColumnRef(_, cType: CNullType) => Codec.ConstCodec(cType)
+      case ColumnRef(_, cType: CNullType) =>
+        Codec.ConstCodec(cType)
     }
 
     type S = (Either[rawBitSetCodec.S, StatefulCodec#State], List[CValue])
@@ -489,8 +511,9 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
           case CUndefined :: xs =>
             RawBitSet.set(bits, i);
             rec(i + 1, xs)
-          case _ :: xs => rec(i + 1, xs)
-          case Nil     =>
+          case _ :: xs =>
+            rec(i + 1, xs)
+          case Nil =>
         }
       rec(0, xs)
 
@@ -503,7 +526,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
           x match {
             case x: CWrappedValue[_] =>
               codecForCValueType(x.cType).encodedSize(x.value)
-            case _ => 0
+            case _ =>
+              0
           }
         )
       }
@@ -514,7 +538,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
           x match {
             case x: CWrappedValue[_] =>
               codecForCValueType(x.cType).maxSize(x.value)
-            case _ => 0
+            case _ =>
+              0
           }
         )
       }
@@ -534,29 +559,42 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
         case x :: xs =>
           (
             x match {
-              case CBoolean(x) => wrappedWriteInit[Boolean](x, sink)
-              case CString(x)  => wrappedWriteInit[String](x, sink)
-              case CDate(x)    => wrappedWriteInit[DateTime](x, sink)
-              case CPeriod(x)  => wrappedWriteInit[Period](x, sink)
-              case CLong(x)    => wrappedWriteInit[Long](x, sink)
-              case CDouble(x)  => wrappedWriteInit[Double](x, sink)
-              case CNum(x)     => wrappedWriteInit[BigDecimal](x, sink)
+              case CBoolean(x) =>
+                wrappedWriteInit[Boolean](x, sink)
+              case CString(x) =>
+                wrappedWriteInit[String](x, sink)
+              case CDate(x) =>
+                wrappedWriteInit[DateTime](x, sink)
+              case CPeriod(x) =>
+                wrappedWriteInit[Period](x, sink)
+              case CLong(x) =>
+                wrappedWriteInit[Long](x, sink)
+              case CDouble(x) =>
+                wrappedWriteInit[Double](x, sink)
+              case CNum(x) =>
+                wrappedWriteInit[BigDecimal](x, sink)
               case CArray(x, cType) =>
                 wrappedWriteInit(x, sink)(codecForCValueType(cType))
-              case _: CNullType => None
+              case _: CNullType =>
+                None
             }
           ) match {
-            case None    => writeCValues(xs, sink)
-            case Some(s) => Some((Right(s), xs))
+            case None =>
+              writeCValues(xs, sink)
+            case Some(s) =>
+              Some((Right(s), xs))
           }
 
-        case Nil => None
+        case Nil =>
+          None
       }
 
     def writeInit(xs: List[CValue], sink: ByteBuffer) = {
       rawBitSetCodec.writeInit(undefineds(xs), sink) match {
-        case Some(s) => Some((Left(s), xs))
-        case None    => writeCValues(xs, sink)
+        case Some(s) =>
+          Some((Left(s), xs))
+        case None =>
+          writeCValues(xs, sink)
       }
     }
 
@@ -572,8 +610,10 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     def read(src: ByteBuffer): List[CValue] = {
       val undefined = rawBitSetCodec.read(src)
       codecs.zipWithIndex collect {
-        case (codec, i) if RawBitSet.get(undefined, i) => CUndefined
-        case (codec, _)                                => codec.read(src)
+        case (codec, i) if RawBitSet.get(undefined, i) =>
+          CUndefined
+        case (codec, _) =>
+          codec.read(src)
       }
     }
   }
@@ -613,7 +653,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
         right: Seq[A],
         sels: List[(CPath, List[CType])]): List[(CPath, Seq[(A, CType)])] =
       sels match {
-        case Nil => zipped.reverse
+        case Nil =>
+          zipped.reverse
         case (path, cTypes) :: sels =>
           val (head, tail) = right splitAt cTypes.size
           zip((path, head zip cTypes) :: zipped, tail, sels)
@@ -644,8 +685,10 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     val nextBuffer = pool.acquire
                     nextBuffer.put(flag)
                     writer.encode(row, nextBuffer, pool) match {
-                      case Some(buffers) => Some(buffer :: buffers)
-                      case None          => Some(buffer :: nextBuffer :: Nil)
+                      case Some(buffers) =>
+                        Some(buffer :: buffers)
+                      case None =>
+                        Some(buffer :: nextBuffer :: Nil)
                     }
                   }
                 }
@@ -766,8 +809,10 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 
       val cType = cValue.cType
       cTypes map {
-        case `cType` => cValue
-        case _       => CUndefined
+        case `cType` =>
+          cValue
+        case _ =>
+          CUndefined
       }
     }
 
@@ -788,7 +833,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 
       if ((aType & 0xF0) == (bType & 0xF0)) {
         ((aType & 0xF0).toByte) match {
-          case FUndefined => 0
+          case FUndefined =>
+            0
           case FBoolean =>
             abuf.get() - bbuf.get()
           case FString =>
@@ -864,14 +910,18 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     }
                 }
             }
-          case FEmptyObject => 0
-          case FEmptyArray  => 0
-          case FNull        => 0
+          case FEmptyObject =>
+            0
+          case FEmptyArray =>
+            0
+          case FNull =>
+            0
           case FDate =>
             math.signum(Codec[Long].read(abuf) - Codec[Long].read(bbuf)).toInt
           case FPeriod =>
             math.signum(Codec[Long].read(abuf) - Codec[Long].read(bbuf)).toInt
-          case x => sys.error("Match error for: " + x)
+          case x =>
+            sys.error("Match error for: " + x)
         }
       } else {
         (aType.toInt & 0xFF) - (bType.toInt & 0xFF)
@@ -907,32 +957,54 @@ object SortingRowFormat {
 
   def flagForCType(cType: CType): Byte =
     cType match {
-      case CBoolean     => FBoolean
-      case CString      => FString
-      case CLong        => FLong
-      case CDouble      => FDouble
-      case CNum         => FBigDecimal
-      case CDate        => FDate
-      case CPeriod      => FPeriod
-      case CEmptyObject => FEmptyObject
-      case CEmptyArray  => FEmptyArray
-      case CNull        => FNull
-      case CUndefined   => FUndefined
+      case CBoolean =>
+        FBoolean
+      case CString =>
+        FString
+      case CLong =>
+        FLong
+      case CDouble =>
+        FDouble
+      case CNum =>
+        FBigDecimal
+      case CDate =>
+        FDate
+      case CPeriod =>
+        FPeriod
+      case CEmptyObject =>
+        FEmptyObject
+      case CEmptyArray =>
+        FEmptyArray
+      case CNull =>
+        FNull
+      case CUndefined =>
+        FUndefined
     }
 
   def cTypeForFlag(flag: Byte): CType =
     flag match {
-      case FBoolean     => CBoolean
-      case FString      => CString
-      case FLong        => CLong
-      case FDouble      => CDouble
-      case FBigDecimal  => CNum
-      case FDate        => CDate
-      case FPeriod      => CPeriod
-      case FEmptyObject => CEmptyObject
-      case FEmptyArray  => CEmptyArray
-      case FNull        => CNull
-      case FUndefined   => CUndefined
+      case FBoolean =>
+        CBoolean
+      case FString =>
+        CString
+      case FLong =>
+        CLong
+      case FDouble =>
+        CDouble
+      case FBigDecimal =>
+        CNum
+      case FDate =>
+        CDate
+      case FPeriod =>
+        CPeriod
+      case FEmptyObject =>
+        CEmptyObject
+      case FEmptyArray =>
+        CEmptyArray
+      case FNull =>
+        CNull
+      case FUndefined =>
+        CUndefined
     }
 
   private val FUndefined: Byte = 0x0.toByte
@@ -1029,9 +1101,12 @@ trait IdentitiesRowFormat extends RowFormat {
     @tailrec
     def sumPackedSize(cvals: List[CValue], len: Int): Int =
       cvals match {
-        case CLong(n) :: cvals => sumPackedSize(cvals, len + packedSize(n))
-        case cv :: _           => sys.error("Expecting CLong, but found: " + cv)
-        case Nil               => len
+        case CLong(n) :: cvals =>
+          sumPackedSize(cvals, len + packedSize(n))
+        case cv :: _ =>
+          sys.error("Expecting CLong, but found: " + cv)
+        case Nil =>
+          len
       }
 
     val bytes = new Array[Byte](sumPackedSize(cValues, 0))
@@ -1040,8 +1115,9 @@ trait IdentitiesRowFormat extends RowFormat {
     @tailrec
     def packAll(xs: List[CValue], offset: Int): Unit =
       xs match {
-        case CLong(n) :: xs => packAll(xs, packLong(n, bytes, offset))
-        case _              =>
+        case CLong(n) :: xs =>
+          packAll(xs, packLong(n, bytes, offset))
+        case _ =>
       }
 
     packAll(cValues, 0)
@@ -1076,8 +1152,10 @@ trait IdentitiesRowFormat extends RowFormat {
 
     val longCols: Array[LongColumn] =
       cols.map({
-        case col: LongColumn => col
-        case col             => sys.error("Expecing LongColumn, but found: " + col)
+        case col: LongColumn =>
+          col
+        case col =>
+          sys.error("Expecing LongColumn, but found: " + col)
       })(collection.breakOut)
 
     new ColumnEncoder {
@@ -1110,8 +1188,10 @@ trait IdentitiesRowFormat extends RowFormat {
 
     val longCols: Array[ArrayLongColumn] =
       cols.map({
-        case col: ArrayLongColumn => col
-        case col                  => sys.error("Expecing ArrayLongColumn, but found: " + col)
+        case col: ArrayLongColumn =>
+          col
+        case col =>
+          sys.error("Expecing ArrayLongColumn, but found: " + col)
       })(collection.breakOut)
 
     new ColumnDecoder {

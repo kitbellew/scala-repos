@@ -73,7 +73,8 @@ object ShardServiceCombinators extends Logging {
             Some(n)
           else
             None
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -117,8 +118,10 @@ object ShardServiceCombinators extends Logging {
       .get('timeout)
       .filter(_ != null)
       .map {
-        case Millis(n) => Validation.success(n)
-        case _         => Validation.failure("Timeout must be a non-negative integer.")
+        case Millis(n) =>
+          Validation.success(n)
+        case _ =>
+          Validation.failure("Timeout must be a non-negative integer.")
       }
       .sequence[
         ({
@@ -146,7 +149,8 @@ object ShardServiceCombinators extends Logging {
           case JArray(elems) =>
             Validation.success(
               elems collect {
-                case JString(path) => CPath(path)
+                case JString(path) =>
+                  CPath(path)
               })
           case JString(path) =>
             Validation.success(CPath(path) :: Nil)
@@ -170,7 +174,8 @@ object ShardServiceCombinators extends Logging {
         success(TableModule.SortAscending)
       case "desc" | "\"desc\"" | "descending" | "\"descending\"" =>
         success(TableModule.SortDescending)
-      case badOrder => failure("Unknown sort ordering: %s." format badOrder)
+      case badOrder =>
+        failure("Unknown sort ordering: %s." format badOrder)
     } getOrElse success(TableModule.SortAscending)
   }
 
@@ -180,7 +185,8 @@ object ShardServiceCombinators extends Logging {
       .get('limit)
       .filter(_ != null)
       .map {
-        case Limit(n) => Validation.success(n)
+        case Limit(n) =>
+          Validation.success(n)
         case _ =>
           Validation.failure(
             "The limit query parameter must be a positive integer.")
@@ -195,7 +201,8 @@ object ShardServiceCombinators extends Logging {
       .get('skip)
       .filter(_ != null)
       .map {
-        case Offset(n) if limit.map(_.isDefined) | true => Validation.success(n)
+        case Offset(n) if limit.map(_.isDefined) | true =>
+          Validation.success(n)
         case Offset(n) =>
           Validation.failure(
             "The offset query parameter cannot be used without a limit.")

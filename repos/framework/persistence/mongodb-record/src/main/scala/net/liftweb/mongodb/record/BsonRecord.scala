@@ -64,11 +64,13 @@ trait BsonRecord[MyType <: BsonRecord[MyType]] extends Record[MyType] {
             (a.valueBox, b.valueBox) match {
               case (Full(ap: Pattern), Full(bp: Pattern)) =>
                 ap.pattern == bp.pattern && ap.flags == bp.flags
-              case _ => a.valueBox == b.valueBox
+              case _ =>
+                a.valueBox == b.valueBox
             }
           )
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 }
@@ -121,13 +123,20 @@ trait BsonMetaRecord[BaseRecord <: BsonRecord[BaseRecord]]
       case field =>
         field.valueBox map (
           _.asInstanceOf[AnyRef] match {
-            case null                         => null
-            case x if primitive_?(x.getClass) => x
-            case x if mongotype_?(x.getClass) => x
-            case x if datetype_?(x.getClass)  => datetype2dbovalue(x)
-            case x: BsonRecord[_]             => x.asDBObject
-            case x: Array[Byte]               => x
-            case o                            => o.toString
+            case null =>
+              null
+            case x if primitive_?(x.getClass) =>
+              x
+            case x if mongotype_?(x.getClass) =>
+              x
+            case x if datetype_?(x.getClass) =>
+              datetype2dbovalue(x)
+            case x: BsonRecord[_] =>
+              x.asDBObject
+            case x: Array[Byte] =>
+              x
+            case o =>
+              o.toString
           }
         )
     }

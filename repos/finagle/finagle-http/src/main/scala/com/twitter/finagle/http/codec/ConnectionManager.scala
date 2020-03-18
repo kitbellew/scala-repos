@@ -15,10 +15,14 @@ class ConnectionManager {
   def observeMessage(message: Any) =
     synchronized {
       message match {
-        case request: HttpRequest   => observeRequest(request)
-        case response: HttpResponse => observeResponse(response)
-        case chunk: HttpChunk       => observeChunk(chunk)
-        case _                      => isKeepAlive = false // conservative
+        case request: HttpRequest =>
+          observeRequest(request)
+        case response: HttpResponse =>
+          observeResponse(response)
+        case chunk: HttpChunk =>
+          observeChunk(chunk)
+        case _ =>
+          isKeepAlive = false // conservative
       }
     }
 

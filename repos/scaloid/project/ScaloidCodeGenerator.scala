@@ -60,8 +60,10 @@ class ScaloidCodeGenerator(
     val parent = cls.parentType.map(p => helperTraitName(p.name) + "[This]")
     val mixin = companionTemplate.get(cls.name + "_mixin")
     (parent :: mixin :: Nil).flatten match {
-      case Nil          => ""
-      case head :: tail => s" extends $head" + tail.mkString(" ", " with ", "")
+      case Nil =>
+        ""
+      case head :: tail =>
+        s" extends $head" + tail.mkString(" ", " with ", "")
     }
   }
 
@@ -132,7 +134,8 @@ class ScaloidCodeGenerator(
       separator: String = ", ") =
     mappings
       .collect {
-        case (kind, fn) if cls.isA(kind) => fn(cls)
+        case (kind, fn) if cls.isA(kind) =>
+          fn(cls)
       }
       .mkString(separator)
 
@@ -162,8 +165,10 @@ class ScaloidCodeGenerator(
       val argStrings = con.paramedTypes.map(
         paramedType(_, define = true)) :+ customConstTypeParams.trim
       argStrings.filter(_.nonEmpty) match {
-        case Nil    => ""
-        case params => params.mkString("[", ", ", "]")
+        case Nil =>
+          ""
+        case params =>
+          params.mkString("[", ", ", "]")
       }
     }
   }
@@ -182,7 +187,8 @@ class ScaloidCodeGenerator(
       customArgs: String,
       isImplicit: Boolean) = {
     List(constArgs(args), customArgs).filter(_.nonEmpty) match {
-      case Nil => ""
+      case Nil =>
+        ""
       case argStrings =>
         s"(${if (isImplicit)
           "implicit "
@@ -216,22 +222,26 @@ class ScaloidCodeGenerator(
 
   def namedArgs(types: List[ScalaType]) =
     types match {
-      case t :: Nil => "p: " + genType(t)
+      case t :: Nil =>
+        "p: " + genType(t)
       case ts =>
         ts.zipWithIndex
           .map {
-            case (t, i) => s"p${i + 1}: ${genType(t)}"
+            case (t, i) =>
+              s"p${i + 1}: ${genType(t)}"
           }
           .mkString(", ")
     }
 
   def callArgs(types: List[ScalaType]) =
     types match {
-      case t :: Nil => "p"
+      case t :: Nil =>
+        "p"
       case ts =>
         ts.zipWithIndex
           .map {
-            case (_, i) => "p" + (i + 1)
+            case (_, i) =>
+              "p" + (i + 1)
           }
           .mkString(", ")
     }
@@ -430,7 +440,8 @@ class ScaloidCodeGenerator(
       paramedType(tpe)
     else
       tpe.params match {
-        case Nil => ""
+        case Nil =>
+          ""
         case params =>
           s"[${if (erased)
             "_"

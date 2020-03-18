@@ -631,7 +631,8 @@ package record {
         type Value = V
         def apply(l: FieldType[HK, HV] :: TH :: TT) =
           tailToMap(l.tail).map {
-            case (k, v) => keyLub.right(k) -> valueLub.right(v)
+            case (k, v) =>
+              keyLub.right(k) -> valueLub.right(v)
           } +
             (keyLub.left(wk.value) -> valueLub.left(l.head: HV))
       }

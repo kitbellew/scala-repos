@@ -125,7 +125,8 @@ trait SchedulableFuturesModule {
       try {
         promise.success(f)
       } catch {
-        case ex => promise.failure(ex)
+        case ex =>
+          promise.failure(ex)
       }
     }
 

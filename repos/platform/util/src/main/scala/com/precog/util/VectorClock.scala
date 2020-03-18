@@ -44,7 +44,8 @@ case class VectorClock(map: Map[Int, Int]) {
 
   def isDominatedBy(other: VectorClock): Boolean =
     map forall {
-      case (prodId, maxSeqId) => other.get(prodId).forall(_ >= maxSeqId)
+      case (prodId, maxSeqId) =>
+        other.get(prodId).forall(_ >= maxSeqId)
     }
 }
 

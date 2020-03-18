@@ -149,7 +149,8 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
 
       sSummer.addAll(cacheEntries).map(handleResult(_))
     } catch {
-      case NonFatal(e) => Future.exception(e)
+      case NonFatal(e) =>
+        Future.exception(e)
     }
   }
 

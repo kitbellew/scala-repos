@@ -34,33 +34,52 @@ object Cast {
     */
   def canCast(from: DataType, to: DataType): Boolean =
     (from, to) match {
-      case (fromType, toType) if fromType == toType => true
+      case (fromType, toType) if fromType == toType =>
+        true
 
-      case (NullType, _) => true
+      case (NullType, _) =>
+        true
 
-      case (_, StringType) => true
+      case (_, StringType) =>
+        true
 
-      case (StringType, BinaryType) => true
+      case (StringType, BinaryType) =>
+        true
 
-      case (StringType, BooleanType)     => true
-      case (DateType, BooleanType)       => true
-      case (TimestampType, BooleanType)  => true
-      case (_: NumericType, BooleanType) => true
+      case (StringType, BooleanType) =>
+        true
+      case (DateType, BooleanType) =>
+        true
+      case (TimestampType, BooleanType) =>
+        true
+      case (_: NumericType, BooleanType) =>
+        true
 
-      case (StringType, TimestampType)     => true
-      case (BooleanType, TimestampType)    => true
-      case (DateType, TimestampType)       => true
-      case (_: NumericType, TimestampType) => true
+      case (StringType, TimestampType) =>
+        true
+      case (BooleanType, TimestampType) =>
+        true
+      case (DateType, TimestampType) =>
+        true
+      case (_: NumericType, TimestampType) =>
+        true
 
-      case (_, DateType) => true
+      case (_, DateType) =>
+        true
 
-      case (StringType, CalendarIntervalType) => true
+      case (StringType, CalendarIntervalType) =>
+        true
 
-      case (StringType, _: NumericType)     => true
-      case (BooleanType, _: NumericType)    => true
-      case (DateType, _: NumericType)       => true
-      case (TimestampType, _: NumericType)  => true
-      case (_: NumericType, _: NumericType) => true
+      case (StringType, _: NumericType) =>
+        true
+      case (BooleanType, _: NumericType) =>
+        true
+      case (DateType, _: NumericType) =>
+        true
+      case (TimestampType, _: NumericType) =>
+        true
+      case (_: NumericType, _: NumericType) =>
+        true
 
       case (ArrayType(fromType, fn), ArrayType(toType, tn)) =>
         canCast(fromType, toType) &&
@@ -88,30 +107,45 @@ object Cast {
           if udt1.userClass == udt2.userClass =>
         true
 
-      case _ => false
+      case _ =>
+        false
     }
 
   private def resolvableNullability(from: Boolean, to: Boolean) = !from || to
 
   private def forceNullable(from: DataType, to: DataType) =
     (from, to) match {
-      case (NullType, _)        => true
-      case (_, _) if from == to => false
+      case (NullType, _) =>
+        true
+      case (_, _) if from == to =>
+        false
 
-      case (StringType, BinaryType) => false
-      case (StringType, _)          => true
-      case (_, StringType)          => false
+      case (StringType, BinaryType) =>
+        false
+      case (StringType, _) =>
+        true
+      case (_, StringType) =>
+        false
 
-      case (FloatType | DoubleType, TimestampType) => true
-      case (TimestampType, DateType)               => false
-      case (_, DateType)                           => true
-      case (DateType, TimestampType)               => false
-      case (DateType, _)                           => true
-      case (_, CalendarIntervalType)               => true
+      case (FloatType | DoubleType, TimestampType) =>
+        true
+      case (TimestampType, DateType) =>
+        false
+      case (_, DateType) =>
+        true
+      case (DateType, TimestampType) =>
+        false
+      case (DateType, _) =>
+        true
+      case (_, CalendarIntervalType) =>
+        true
 
-      case (_, _: DecimalType)                  => true // overflow
-      case (_: FractionalType, _: IntegralType) => true // NaN, infinity
-      case _                                    => false
+      case (_, _: DecimalType) =>
+        true // overflow
+      case (_: FractionalType, _: IntegralType) =>
+        true // NaN, infinity
+      case _ =>
+        false
     }
 }
 
@@ -140,7 +174,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   // UDFToString
   private[this] def castToString(from: DataType): Any => Any =
     from match {
-      case BinaryType => buildCast[Array[Byte]](_, UTF8String.fromBytes)
+      case BinaryType =>
+        buildCast[Array[Byte]](_, UTF8String.fromBytes)
       case DateType =>
         buildCast[Int](
           _,
@@ -149,13 +184,15 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         buildCast[Long](
           _,
           t => UTF8String.fromString(DateTimeUtils.timestampToString(t)))
-      case _ => buildCast[Any](_, o => UTF8String.fromString(o.toString))
+      case _ =>
+        buildCast[Any](_, o => UTF8String.fromString(o.toString))
     }
 
   // BinaryConverter
   private[this] def castToBinary(from: DataType): Any => Any =
     from match {
-      case StringType => buildCast[UTF8String](_, _.getBytes)
+      case StringType =>
+        buildCast[UTF8String](_, _.getBytes)
     }
 
   // UDFToBoolean
@@ -263,7 +300,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       // It is never possible to compare result when hive return with exception,
       // so we can return null
       // NULL is more reasonable here, since the query itself obeys the grammar.
-      case _ => _ => null
+      case _ =>
+        _ => null
     }
 
   // IntervalConverter
@@ -271,7 +309,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     from match {
       case StringType =>
         buildCast[UTF8String](_, s => CalendarInterval.fromString(s.toString))
-      case _ => _ => null
+      case _ =>
+        _ => null
     }
 
   // LongConverter
@@ -283,7 +322,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           s =>
             try s.toString.toLong
             catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -310,7 +350,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           s =>
             try s.toString.toInt
             catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -337,7 +378,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           s =>
             try s.toString.toShort
             catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -364,7 +406,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           s =>
             try s.toString.toByte
             catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -408,7 +451,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
             try {
               changePrecision(Decimal(new JavaBigDecimal(s.toString)), target)
             } catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -441,7 +485,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
               Decimal(x.fractional.asInstanceOf[Fractional[Any]].toDouble(b)),
               target)
           } catch {
-            case _: NumberFormatException => null
+            case _: NumberFormatException =>
+              null
           }
     }
 
@@ -454,7 +499,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           s =>
             try s.toString.toDouble
             catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -481,7 +527,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           s =>
             try s.toString.toFloat
             catch {
-              case _: NumberFormatException => null
+              case _: NumberFormatException =>
+                null
             })
       case BooleanType =>
         buildCast[Boolean](
@@ -537,7 +584,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
 
   private[this] def castStruct(from: StructType, to: StructType): Any => Any = {
     val castFuncs: Array[(Any) => Any] = from.fields.zip(to.fields).map {
-      case (fromField, toField) => cast(fromField.dataType, toField.dataType)
+      case (fromField, toField) =>
+        cast(fromField.dataType, toField.dataType)
     }
     // TODO: Could be faster?
     val newRow = new GenericMutableRow(from.fields.length)
@@ -560,23 +608,38 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
 
   private[this] def cast(from: DataType, to: DataType): Any => Any =
     to match {
-      case dt if dt == child.dataType => identity[Any]
-      case StringType                 => castToString(from)
-      case BinaryType                 => castToBinary(from)
-      case DateType                   => castToDate(from)
-      case decimal: DecimalType       => castToDecimal(from, decimal)
-      case TimestampType              => castToTimestamp(from)
-      case CalendarIntervalType       => castToInterval(from)
-      case BooleanType                => castToBoolean(from)
-      case ByteType                   => castToByte(from)
-      case ShortType                  => castToShort(from)
-      case IntegerType                => castToInt(from)
-      case FloatType                  => castToFloat(from)
-      case LongType                   => castToLong(from)
-      case DoubleType                 => castToDouble(from)
+      case dt if dt == child.dataType =>
+        identity[Any]
+      case StringType =>
+        castToString(from)
+      case BinaryType =>
+        castToBinary(from)
+      case DateType =>
+        castToDate(from)
+      case decimal: DecimalType =>
+        castToDecimal(from, decimal)
+      case TimestampType =>
+        castToTimestamp(from)
+      case CalendarIntervalType =>
+        castToInterval(from)
+      case BooleanType =>
+        castToBoolean(from)
+      case ByteType =>
+        castToByte(from)
+      case ShortType =>
+        castToShort(from)
+      case IntegerType =>
+        castToInt(from)
+      case FloatType =>
+        castToFloat(from)
+      case LongType =>
+        castToLong(from)
+      case DoubleType =>
+        castToDouble(from)
       case array: ArrayType =>
         castArray(from.asInstanceOf[ArrayType].elementType, array.elementType)
-      case map: MapType => castMap(from.asInstanceOf[MapType], map)
+      case map: MapType =>
+        castMap(from.asInstanceOf[MapType], map)
       case struct: StructType =>
         castStruct(from.asInstanceOf[StructType], struct)
       case udt: UserDefinedType[_]
@@ -614,28 +677,44 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       ctx: CodegenContext): CastFunction =
     to match {
 
-      case _ if from == NullType => (c, evPrim, evNull) => s"$evNull = true;"
-      case _ if to == from       => (c, evPrim, evNull) => s"$evPrim = $c;"
-      case StringType            => castToStringCode(from, ctx)
-      case BinaryType            => castToBinaryCode(from)
-      case DateType              => castToDateCode(from, ctx)
-      case decimal: DecimalType  => castToDecimalCode(from, decimal, ctx)
-      case TimestampType         => castToTimestampCode(from, ctx)
-      case CalendarIntervalType  => castToIntervalCode(from)
-      case BooleanType           => castToBooleanCode(from)
-      case ByteType              => castToByteCode(from)
-      case ShortType             => castToShortCode(from)
-      case IntegerType           => castToIntCode(from)
-      case FloatType             => castToFloatCode(from)
-      case LongType              => castToLongCode(from)
-      case DoubleType            => castToDoubleCode(from)
+      case _ if from == NullType =>
+        (c, evPrim, evNull) => s"$evNull = true;"
+      case _ if to == from =>
+        (c, evPrim, evNull) => s"$evPrim = $c;"
+      case StringType =>
+        castToStringCode(from, ctx)
+      case BinaryType =>
+        castToBinaryCode(from)
+      case DateType =>
+        castToDateCode(from, ctx)
+      case decimal: DecimalType =>
+        castToDecimalCode(from, decimal, ctx)
+      case TimestampType =>
+        castToTimestampCode(from, ctx)
+      case CalendarIntervalType =>
+        castToIntervalCode(from)
+      case BooleanType =>
+        castToBooleanCode(from)
+      case ByteType =>
+        castToByteCode(from)
+      case ShortType =>
+        castToShortCode(from)
+      case IntegerType =>
+        castToIntCode(from)
+      case FloatType =>
+        castToFloatCode(from)
+      case LongType =>
+        castToLongCode(from)
+      case DoubleType =>
+        castToDoubleCode(from)
 
       case array: ArrayType =>
         castArrayCode(
           from.asInstanceOf[ArrayType].elementType,
           array.elementType,
           ctx)
-      case map: MapType => castMapCode(from.asInstanceOf[MapType], map, ctx)
+      case map: MapType =>
+        castMapCode(from.asInstanceOf[MapType], map, ctx)
       case struct: StructType =>
         castStructCode(from.asInstanceOf[StructType], struct, ctx)
       case udt: UserDefinedType[_]
@@ -1136,8 +1215,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       // HiveQL doesn't allow casting to complex types. For logical plans translated from HiveQL, this
       // type of casting can only be introduced by the analyzer, and can be omitted when converting
       // back to SQL query string.
-      case _: ArrayType | _: MapType | _: StructType => child.sql
-      case _                                         => s"CAST(${child.sql} AS ${dataType.sql})"
+      case _: ArrayType | _: MapType | _: StructType =>
+        child.sql
+      case _ =>
+        s"CAST(${child.sql} AS ${dataType.sql})"
     }
 }
 

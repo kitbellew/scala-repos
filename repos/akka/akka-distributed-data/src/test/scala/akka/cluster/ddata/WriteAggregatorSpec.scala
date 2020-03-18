@@ -45,7 +45,8 @@ object WriteAggregatorSpec {
     override def senderAddress(): Address =
       probes
         .find {
-          case (a, r) ⇒ r == sender()
+          case (a, r) ⇒
+            r == sender()
         }
         .get
         ._1

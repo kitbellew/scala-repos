@@ -103,12 +103,15 @@ private[http] class RejectionHandlerWrapper(
 
             case CustomRejectionWrapper(custom) ⇒
               handleCustomRejection(ctx, custom)
-            case o ⇒ handleCustomScalaRejection(ctx, o)
+            case o ⇒
+              handleCustomScalaRejection(ctx, o)
           }
 
       handle() match {
-        case r: RouteResultImpl ⇒ r.underlying
-        case PassRejectionRouteResult ⇒ scalaCtx.reject(rejs: _*)
+        case r: RouteResultImpl ⇒
+          r.underlying
+        case PassRejectionRouteResult ⇒
+          scalaCtx.reject(rejs: _*)
       }
     }
 }

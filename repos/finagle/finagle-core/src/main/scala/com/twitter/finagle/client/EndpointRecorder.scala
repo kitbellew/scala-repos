@@ -38,7 +38,8 @@ private[finagle] object EndpointRecorder {
               baseDtab() ++ Dtab.local,
               bound.idStr,
               bound.addr)
-          case _ => next
+          case _ =>
+            next
         }
 
       }

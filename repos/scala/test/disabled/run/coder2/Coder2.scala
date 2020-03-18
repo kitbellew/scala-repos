@@ -209,7 +209,8 @@ object Test {
       if (st.size != pt.size) {
         val zipped = st.zip(pt)
         val ind = zipped.indexWhere {
-          case (a, b) => a != b
+          case (a, b) =>
+            a != b
         }
         val sliced = zipped.slice(ind - 10, ind + 10)
         //println(sliced.map(t => t._1 + "\n" + t._2 + "\n--------").mkString("\n"))
@@ -218,7 +219,8 @@ object Test {
       if (st != pt) {
         val zipped = (st.toList.sorted zip pt.toList.sorted);
         val diffp = zipped indexWhere {
-          case (x, y) => x != y
+          case (x, y) =>
+            x != y
         }
         //println(zipped/*.slice(diffp - 10, diffp + 10)*/ mkString ("\n"))
         //println((st.toList.sorted zip pt.toList.sorted) map { case (x, y) => (x == y) } reduceLeft(_ && _))

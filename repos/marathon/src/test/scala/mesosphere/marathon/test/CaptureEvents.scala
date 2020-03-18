@@ -21,7 +21,8 @@ class CaptureEvents(eventStream: EventStream) {
     val captureEventsActor = actor {
       new Act {
         become {
-          case captureMe: MarathonEvent => capture :+= captureMe
+          case captureMe: MarathonEvent =>
+            capture :+= captureMe
         }
       }
     }

@@ -36,7 +36,8 @@ case class HotSwap(code: ActorRef => Actor.Receive, discardOld: Boolean = true)
       (self: ActorRef) => {
         val behavior = code(self)
         val result: Actor.Receive = {
-          case msg => behavior(msg)
+          case msg =>
+            behavior(msg)
         }
         result
       },
@@ -210,12 +211,15 @@ object Actor extends ListenerManagement {
           clazz.asInstanceOf[Class[_]],
           noParams,
           noArgs) match {
-          case Right(actor) => actor
+          case Right(actor) =>
+            actor
           case Left(exception) =>
             val cause =
               exception match {
-                case i: InvocationTargetException => i.getTargetException
-                case _                            => exception
+                case i: InvocationTargetException =>
+                  i.getTargetException
+                case _ =>
+                  exception
               }
 
             throw new ActorInitializationException(
@@ -488,7 +492,8 @@ trait Actor {
   def isDefinedAt(message: Any): Boolean = {
     val behaviorStack = self.hotswap
     message match { //Same logic as apply(msg) but without the unhandled catch-all
-      case l: AutoReceivedMessage => true
+      case l: AutoReceivedMessage =>
+        true
       case msg
           if behaviorStack.nonEmpty &&
             behaviorStack.head.isDefinedAt(msg) =>
@@ -497,7 +502,8 @@ trait Actor {
           if behaviorStack.isEmpty &&
             processingBehavior.isDefinedAt(msg) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -529,7 +535,8 @@ trait Actor {
         "Message from [" + self.sender + "] to [" + self.toString + "] is null")
     val behaviorStack = self.hotswap
     msg match {
-      case l: AutoReceivedMessage => autoReceiveMessage(l)
+      case l: AutoReceivedMessage =>
+        autoReceiveMessage(l)
       case msg
           if behaviorStack.nonEmpty &&
             behaviorStack.head.isDefinedAt(msg) =>
@@ -547,16 +554,23 @@ trait Actor {
 
   private final def autoReceiveMessage(msg: AutoReceivedMessage): Unit =
     msg match {
-      case HotSwap(code, discardOld) => become(code(self), discardOld)
-      case RevertHotSwap             => unbecome()
-      case Exit(dead, reason)        => self.handleTrapExit(dead, reason)
-      case Link(child)               => self.link(child)
-      case Unlink(child)             => self.unlink(child)
+      case HotSwap(code, discardOld) =>
+        become(code(self), discardOld)
+      case RevertHotSwap =>
+        unbecome()
+      case Exit(dead, reason) =>
+        self.handleTrapExit(dead, reason)
+      case Link(child) =>
+        self.link(child)
+      case Unlink(child) =>
+        self.unlink(child)
       case UnlinkAndStop(child) =>
         self.unlink(child);
         child.stop()
-      case Restart(reason) => throw reason
-      case Kill            => throw new ActorKilledException("Kill")
+      case Restart(reason) =>
+        throw reason
+      case Kill =>
+        throw new ActorKilledException("Kill")
       case PoisonPill =>
         val f = self.senderFuture
         self.stop()

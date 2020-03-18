@@ -24,7 +24,8 @@ private final class Monitor(
 
   private def sumOf[A](ints: List[A])(f: A => Option[Int]) =
     ints.foldLeft(0) {
-      case (acc, a) => acc + f(a).getOrElse(0)
+      case (acc, a) =>
+        acc + f(a).getOrElse(0)
     }
 
   private[fishnet] def analysis(
@@ -153,14 +154,16 @@ private final class Monitor(
         .map(_.version.value)
         .groupBy(identity)
         .mapValues(_.size) foreach {
-        case (v, nb) => version(v)(nb)
+        case (v, nb) =>
+          version(v)(nb)
       }
       clients
         .flatMap(_.instance)
         .map(_.engine.name)
         .groupBy(identity)
         .mapValues(_.size) foreach {
-        case (s, nb) => engine(s)(nb)
+        case (s, nb) =>
+          engine(s)(nb)
       }
     } andThenAnyway scheduleClients
 

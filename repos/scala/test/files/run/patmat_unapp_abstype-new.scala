@@ -19,9 +19,12 @@ trait TypesAPI {
 trait TypesUser extends TypesAPI {
   def shouldNotCrash(tp: Type): Unit = {
     tp match {
-      case TypeRef(x)    => println("TypeRef")
-      case MethodType(x) => println("MethodType")
-      case _             => println("none of the above")
+      case TypeRef(x) =>
+        println("TypeRef")
+      case MethodType(x) =>
+        println("MethodType")
+      case _ =>
+        println("none of the above")
     }
   }
 }
@@ -53,8 +56,10 @@ trait RealFoos extends Foos {
 trait Intermed extends Foos {
   def crash(bar: Bar): Unit =
     bar match {
-      case Foo(x) => println("Foo")
-      case _      => println("Bar")
+      case Foo(x) =>
+        println("Foo")
+      case _ =>
+        println("Bar")
     }
 }
 

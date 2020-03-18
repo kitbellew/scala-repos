@@ -99,9 +99,12 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
               cellHasFocus)
           val color: Color =
             isSelected match {
-              case true                               => UIUtil.getListSelectionBackground
-              case false if firstPart.contains(item)  => implicitFirstPart
-              case false if secondPart.contains(item) => implicitSecondPart
+              case true =>
+                UIUtil.getListSelectionBackground
+              case false if firstPart.contains(item) =>
+                implicitFirstPart
+              case false if secondPart.contains(item) =>
+                implicitSecondPart
               case _ =>
                 throw new RuntimeException(
                   "Implicit conversions list contains unknown value: " + item)
@@ -128,7 +131,8 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
         b.name + ": " +
           PresentationUtil.presentationString(
             b.getType(TypingContext.empty).getOrAny)
-      case _ => element.name
+      case _ =>
+        element.name
     }
   }
 

@@ -111,7 +111,8 @@ object LeaderboardApi {
                 points = res.points ::: acc.points,
                 rank = res.rank ::: acc.rank)
           }
-        case Nil => PerfResult(0, Ints(Nil), Ints(Nil))
+        case Nil =>
+          PerfResult(0, Ints(Nil), Ints(Nil))
       }
   }
 

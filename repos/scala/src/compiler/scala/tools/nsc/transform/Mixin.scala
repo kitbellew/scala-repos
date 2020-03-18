@@ -412,7 +412,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     object SingleUseTraverser extends Traverser {
       override def traverse(tree: Tree) {
         tree match {
-          case Assign(lhs, rhs) => traverse(rhs) // assignments don't count
+          case Assign(lhs, rhs) =>
+            traverse(rhs) // assignments don't count
           case _ =>
             if (tree.hasSymbolField && tree.symbol != NoSymbol) {
               val sym = tree.symbol
@@ -438,8 +439,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     SingleUseTraverser(templ)
     debuglog("usedIn: " + usedIn)
     usedIn filter {
-      case (_, member :: Nil) => member.isValue && member.isLazy
-      case _                  => false
+      case (_, member :: Nil) =>
+        member.isValue && member.isLazy
+      case _ =>
+        false
     }
   }
 
@@ -478,10 +481,14 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
     private def flagsPerBitmap(field: Symbol): Int =
       bitmapKind(field) match {
-        case BooleanClass => 1
-        case ByteClass    => 8
-        case IntClass     => 32
-        case LongClass    => 64
+        case BooleanClass =>
+          1
+        case ByteClass =>
+          8
+        case IntClass =>
+          32
+        case LongClass =>
+          64
       }
 
     /** The first transform; called in a pre-order traversal at phase mixin
@@ -666,8 +673,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           }
           val init =
             bitmapKind match {
-              case BooleanClass => ValDef(sym, FALSE)
-              case _            => ValDef(sym, ZERO)
+              case BooleanClass =>
+                ValDef(sym, FALSE)
+              case _ =>
+                ValDef(sym, ZERO)
             }
 
           sym setFlag PrivateLocal
@@ -923,7 +932,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                   Select(This(clazz), res.symbol),
                   fieldOffset(sym))
 
-              case t => t // pass specialized lazy vals through
+              case t =>
+                t // pass specialized lazy vals through
             }
           } else if (needsInitFlag(sym) && !isEmpty && !clazz.hasFlag(TRAIT)) {
             assert(fieldOffset contains sym, sym)
@@ -962,8 +972,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             stat
         }
         stats map {
-          case defn: DefDef => dd(defn)
-          case stat         => stat
+          case defn: DefDef =>
+            dd(defn)
+          case stat =>
+            stat
         }
       }
 
@@ -993,7 +1005,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               case Apply(lhs @ Select(Ident(self), _), EmptyTree.asList)
                   if lhs.symbol.isSetter =>
                 Nil
-              case stat => List(stat)
+              case stat =>
+                List(stat)
             },
             exprOwner
           )
@@ -1032,8 +1045,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             bitmapKindForCategory(category) = LongClass
         }
         clazz.info.decls.toList groupBy bitmapCategory foreach {
-          case (nme.NO_NAME, _)   => ()
-          case (category, fields) => fold(fields, category)
+          case (nme.NO_NAME, _) =>
+            ()
+          case (category, fields) =>
+            fold(fields, category)
         }
       }
       buildBitmapOffsets()
@@ -1110,9 +1125,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             List(Assign(fieldAccess(setter), Ident(setter.firstParam)))
 
         (fieldInitializer ::: setInitFlag) match {
-          case Nil => UNIT
+          case Nil =>
+            UNIT
           // If there's only one statement, the Block factory does not actually create a Block.
-          case stats => Block(stats: _*)
+          case stats =>
+            Block(stats: _*)
         }
       }
 
@@ -1178,7 +1195,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           case vd: ValDef =>
             // TODO do we get here?
             false
-          case _ => true
+          case _ =>
+            true
         }
       if (!clazz.isTrait)
         stats1 = stats1 map completeSuperAccessor

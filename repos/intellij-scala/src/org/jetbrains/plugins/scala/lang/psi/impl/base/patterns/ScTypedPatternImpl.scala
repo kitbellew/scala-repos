@@ -31,8 +31,10 @@ class ScTypedPatternImpl(node: ASTNode)
     with ScTypedPattern {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -45,10 +47,13 @@ class ScTypedPatternImpl(node: ASTNode)
     t match {
       case Some(t) =>
         getType(TypingContext.empty) match {
-          case Success(tp, _) if t conforms tp => true
-          case _                               => false
+          case Success(tp, _) if t conforms tp =>
+            true
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -91,10 +96,12 @@ class ScTypedPatternImpl(node: ASTNode)
                               arg.args,
                               lowerBound,
                               upperBound)
-                          case (tp: ScType, param: ScTypeParam) => tp
+                          case (tp: ScType, param: ScTypeParam) =>
+                            tp
                         }
                       ).unpackedType
-                    case _ => tp
+                    case _ =>
+                      tp
                   }
                 case Some((clazz: PsiClass, subst)) =>
                   val typeParams: Array[PsiTypeParameter] =
@@ -131,14 +138,18 @@ class ScTypedPatternImpl(node: ASTNode)
                               arg.args,
                               lowerBound,
                               upperBound)
-                          case (tp: ScType, _) => tp
+                          case (tp: ScType, _) =>
+                            tp
                         }
                       ).unpackedType
-                    case _ => tp
+                    case _ =>
+                      tp
                   }
-                case _ => tp
+                case _ =>
+                  tp
               }
-            case tp: ScType => tp
+            case tp: ScType =>
+              tp
           }
         expectedType match {
           case Some(expectedType) =>
@@ -146,9 +157,11 @@ class ScTypedPatternImpl(node: ASTNode)
               case resType =>
                 Bounds.glb(expectedType, resType, checkWeak = false)
             }
-          case _ => typeElementType
+          case _ =>
+            typeElementType
         }
-      case None => Failure("No type pattern", Some(this))
+      case None =>
+        Failure("No type pattern", Some(this))
     }
   }
 

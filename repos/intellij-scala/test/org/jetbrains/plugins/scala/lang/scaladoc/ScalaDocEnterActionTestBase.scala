@@ -43,9 +43,12 @@ abstract class ScalaDocEnterActionTestBase
       new DataContext {
         def getData(dataId: String): AnyRef = {
           dataId match {
-            case "Language" | "language" => getFileAdapter.getLanguage
-            case "Project" | "project"   => getFileAdapter.getProject
-            case _                       => null
+            case "Language" | "language" =>
+              getFileAdapter.getLanguage
+            case "Project" | "project" =>
+              getFileAdapter.getProject
+            case _ =>
+              null
           }
         }
       }

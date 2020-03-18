@@ -20,8 +20,10 @@ class ScalaAnnotatedMacro extends Macro {
       params: Array[Expression],
       context: ExpressionContext): Query[PsiMember] = {
     (params, context) match {
-      case (null, _) => EmptyQuery.getEmptyQuery[PsiMember]
-      case (_, null) => EmptyQuery.getEmptyQuery[PsiMember]
+      case (null, _) =>
+        EmptyQuery.getEmptyQuery[PsiMember]
+      case (_, null) =>
+        EmptyQuery.getEmptyQuery[PsiMember]
       case _ if params.length > 0 => //TODO should params.length always equal 1?
         val project = context.getProject
         val scope = GlobalSearchScope.allScope(project)
@@ -42,8 +44,10 @@ class ScalaAnnotatedMacro extends Macro {
       .map(member =>
         new TextResult(
           member match {
-            case psiClass: PsiClass => psiClass.getQualifiedName
-            case _                  => member.getName
+            case psiClass: PsiClass =>
+              psiClass.getQualifiedName
+            case _ =>
+              member.getName
           }))
       .orNull
   }
@@ -78,8 +82,10 @@ class ScalaAnnotatedMacro extends Macro {
       .findAll()
       .filter(outerClass.isDefined && outerClass.contains(_))
       .map {
-        case psiClass: PsiClass if !isShortName => psiClass.getQualifiedName
-        case notClass                           => notClass.getName
+        case psiClass: PsiClass if !isShortName =>
+          psiClass.getQualifiedName
+        case notClass =>
+          notClass.getName
       }
       .toSet[String]
       .map(LookupElementBuilder.create)

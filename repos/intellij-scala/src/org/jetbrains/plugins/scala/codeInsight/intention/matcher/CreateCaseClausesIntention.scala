@@ -83,7 +83,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       expr: ScExpression,
       cls: PsiClass)(project: Project, editor: Editor, element: PsiElement) {
     val enumConsts: Array[PsiEnumConstant] = cls.getFields.collect {
-      case enumConstant: PsiEnumConstant => enumConstant
+      case enumConstant: PsiEnumConstant =>
+        enumConstant
     }
     val caseClauseTexts = enumConsts.map(ec =>
       "case %s.%s =>".format(cls.name, ec.name))
@@ -131,7 +132,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
   private def bindReference(caseClause: ScCaseClause, bindTo: PsiNamedElement) {
     val pattern: ScPattern = caseClause.pattern.get
     val ref = pattern.depthFirst.collectFirst {
-      case x: ScReferenceElement if x.refName == bindTo.name => x
+      case x: ScReferenceElement if x.refName == bindTo.name =>
+        x
     }
     ref.foreach(_.bindToElement(bindTo))
   }
@@ -141,7 +143,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       .search(cls, cls.getResolveScope, false)
       .toArray(PsiClass.EMPTY_ARRAY)
       .collect {
-        case x: ScTypeDefinition => x
+        case x: ScTypeDefinition =>
+          x
       }
     found.sortBy(_.getNavigationElement.getTextRange.getStartOffset)
   }
@@ -154,7 +157,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     val refText = td.name
     val (pattern, bindTo) =
       td match {
-        case obj: ScObject => (refText, obj)
+        case obj: ScObject =>
+          (refText, obj)
         case cls: ScClass if cls.isCase =>
           val companionObj = ScalaPsiUtil.getCompanionModule(cls).get
           val text =
@@ -201,9 +205,11 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
             Some(
               addMatchClausesForCaseClassesAndObjects(x, x.expr.get, cls),
               " for inherited objects and case classes")
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

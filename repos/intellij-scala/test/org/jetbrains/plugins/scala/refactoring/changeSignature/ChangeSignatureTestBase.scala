@@ -153,7 +153,8 @@ abstract class ChangeSignatureTestBase
             ScalaPsiElementFactory.createTypeFromText(newReturnType, fun, fun)
           else
             fun.returnType.getOrAny
-        case _ => types.Any
+        case _ =>
+          types.Any
       }
 
     val params = newParams.map(_.map(_.asInstanceOf[ScalaParameterInfo]))

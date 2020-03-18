@@ -293,17 +293,20 @@ object AdminUtils extends Logging {
       brokerRackMap: Map[Int, String]): Map[String, Seq[Int]] = {
     brokerRackMap.toSeq
       .map {
-        case (id, rack) => (rack, id)
+        case (id, rack) =>
+          (rack, id)
       }
       .groupBy {
-        case (rack, _) => rack
+        case (rack, _) =>
+          rack
       }
       .map {
         case (rack, rackAndIdList) =>
           (
             rack,
             rackAndIdList.map {
-              case (_, id) => id
+              case (_, id) =>
+                id
             }.sorted)
       }
   }
@@ -335,7 +338,8 @@ object AdminUtils extends Logging {
         case None =>
           throw new AdminOperationException(
             "the topic does not have partition with id 0, it should never happen")
-        case Some(headPartitionReplica) => headPartitionReplica._2
+        case Some(headPartitionReplica) =>
+          headPartitionReplica._2
       }
     val partitionsToAdd = numPartitions - existingPartitionsReplicaList.size
     if (partitionsToAdd <= 0)
@@ -422,7 +426,8 @@ object AdminUtils extends Logging {
       case e1: ZkNodeExistsException =>
         throw new TopicAlreadyMarkedForDeletionException(
           "topic %s is already marked for deletion".format(topic))
-      case e2: Throwable => throw new AdminOperationException(e2.toString)
+      case e2: Throwable =>
+        throw new AdminOperationException(e2.toString)
     }
   }
 
@@ -506,7 +511,8 @@ object AdminUtils extends Logging {
           brokers.map(broker => BrokerMetadata(broker.id, None))
         case RackAwareMode.Safe if brokersWithRack.size < brokers.size =>
           brokers.map(broker => BrokerMetadata(broker.id, None))
-        case _ => brokers.map(broker => BrokerMetadata(broker.id, broker.rack))
+        case _ =>
+          brokers.map(broker => BrokerMetadata(broker.id, broker.rack))
       }
     brokerMetadatas.sortBy(_.id)
   }
@@ -603,7 +609,8 @@ object AdminUtils extends Logging {
     } catch {
       case e: ZkNodeExistsException =>
         throw new TopicExistsException("topic %s already exists".format(topic))
-      case e2: Throwable => throw new AdminOperationException(e2.toString)
+      case e2: Throwable =>
+        throw new AdminOperationException(e2.toString)
     }
   }
 
@@ -698,7 +705,8 @@ object AdminUtils extends Logging {
         case None => // there are no config overrides
         case Some(mapAnon: Map[_, _]) =>
           val map = mapAnon collect {
-            case (k: String, v: Any) => k -> v
+            case (k: String, v: Any) =>
+              k -> v
           }
           require(map("version") == 1)
           map.get("config") match {
@@ -804,7 +812,8 @@ object AdminUtils extends Logging {
               cachedBrokerInfo,
               inSyncReplicas).map(_.getNode(protocol))
           } catch {
-            case e: Throwable => throw new ReplicaNotAvailableException(e)
+            case e: Throwable =>
+              throw new ReplicaNotAvailableException(e)
           }
           if (replicaInfo.size < replicas.size)
             throw new ReplicaNotAvailableException(

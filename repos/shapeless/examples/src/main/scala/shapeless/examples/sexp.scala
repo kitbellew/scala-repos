@@ -50,7 +50,8 @@ package sexp {
               SexpCons(SexpAtom(name), SexpCons(value, SexpNil)),
               cdr) =>
           Some((name, value), cdr)
-        case _ => None
+        case _ =>
+          None
       }
   }
 }
@@ -260,8 +261,10 @@ object SexpUserConvert {
     new SexpConvert[String] {
       def deser(s: Sexp) =
         s match {
-          case SexpAtom(s) => Some(s)
-          case _           => None
+          case SexpAtom(s) =>
+            Some(s)
+          case _ =>
+            None
         }
       def ser(s: String) = SexpAtom(s)
     }
@@ -269,8 +272,10 @@ object SexpUserConvert {
     new SexpConvert[Int] {
       def deser(s: Sexp) =
         s match {
-          case SexpAtom(s) => util.Try(s.toInt).toOption
-          case _           => None
+          case SexpAtom(s) =>
+            util.Try(s.toInt).toOption
+          case _ =>
+            None
         }
       def ser(i: Int) = SexpAtom(i.toString)
     }
@@ -278,8 +283,10 @@ object SexpUserConvert {
     new SexpConvert[Boolean] {
       def deser(s: Sexp) =
         s match {
-          case SexpNil => Some(false)
-          case other   => Some(true)
+          case SexpNil =>
+            Some(false)
+          case other =>
+            Some(true)
         }
       def ser(b: Boolean) =
         if (b)
@@ -292,13 +299,17 @@ object SexpUserConvert {
     new SexpConvert[Option[T]] {
       def deser(s: Sexp) =
         s match {
-          case SexpNil => None
-          case other   => Some(c.value.deser(other))
+          case SexpNil =>
+            None
+          case other =>
+            Some(c.value.deser(other))
         }
       def ser(o: Option[T]) =
         o match {
-          case None    => SexpNil
-          case Some(t) => c.value.ser(t)
+          case None =>
+            SexpNil
+          case Some(t) =>
+            c.value.ser(t)
         }
     }
 }
@@ -337,8 +348,10 @@ object SexpConvert {
       def ser(ft: FieldType[K, V] :: T): Sexp = {
         val car = SexpProp(key.value.name, scv.value.ser(ft.head))
         sct.value.ser(ft.tail) match {
-          case SexpNil => car
-          case cdr     => SexpCons(car, cdr)
+          case SexpNil =>
+            car
+          case cdr =>
+            SexpCons(car, cdr)
         }
       }
     }
@@ -367,8 +380,10 @@ object SexpConvert {
 
       def ser(lr: FieldType[K, V] :+: T): Sexp =
         lr match {
-          case Inl(l) => SexpCons(SexpAtom(key.value.name), scv.value.ser(l))
-          case Inr(r) => sct.value.ser(r)
+          case Inl(l) =>
+            SexpCons(SexpAtom(key.value.name), scv.value.ser(l))
+          case Inr(r) =>
+            sct.value.ser(r)
         }
     }
 

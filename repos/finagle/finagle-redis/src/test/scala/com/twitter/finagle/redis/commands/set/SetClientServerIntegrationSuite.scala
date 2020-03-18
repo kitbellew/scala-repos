@@ -54,7 +54,8 @@ final class SetClientServerIntegrationSuite
         }
         case EmptyMBulkReply() =>
           fail("Should not have received an EmptyMBulkReply")
-        case _ => fail("Received incorrect reply type")
+        case _ =>
+          fail("Received incorrect reply type")
       }
     }
   }

@@ -33,8 +33,10 @@ trait ScalacPatternExpanders {
 
     def newPatterns(patterns: List[Tree]): Patterns =
       patterns match {
-        case init :+ last if isStar(last) => Patterns(init, last)
-        case _                            => Patterns(patterns, NoPattern)
+        case init :+ last if isStar(last) =>
+          Patterns(init, last)
+        case _ =>
+          Patterns(patterns, NoPattern)
       }
     def elementTypeOf(tpe: Type) = {
       val seq = repeatedToSeq(tpe)
@@ -79,7 +81,8 @@ trait ScalacPatternExpanders {
       method.paramTypes match {
         case init :+ last if isScalaRepeatedParamType(last) =>
           newExtractor(whole, init, repeatedFromVarargs(last))
-        case tps => newExtractor(whole, tps, NoRepeated)
+        case tps =>
+          newExtractor(whole, tps, NoRepeated)
       }
     }
 
@@ -113,13 +116,16 @@ trait ScalacPatternExpanders {
             case global.NoType =>
               noGetError();
               Nil
-            case rawGet if !hasSelectors(rawGet) => rawGet :: Nil
-            case rawGet                          => typesOfSelectors(rawGet)
+            case rawGet if !hasSelectors(rawGet) =>
+              rawGet :: Nil
+            case rawGet =>
+              typesOfSelectors(rawGet)
           }
         expanded match {
           case init :+ last if isSeq =>
             newExtractor(whole, init, repeatedFromSeq(last), getResult)
-          case tps => newExtractor(whole, tps, NoRepeated, getResult)
+          case tps =>
+            newExtractor(whole, tps, NoRepeated, getResult)
         }
       }
     }
@@ -173,8 +179,10 @@ trait ScalacPatternExpanders {
     def apply(context: Context, sel: Tree, args: List[Tree]): Aligned = {
       val fn =
         sel match {
-          case Unapplied(fn) => fn
-          case _             => sel
+          case Unapplied(fn) =>
+            fn
+          case _ =>
+            sel
         }
       val patterns = newPatterns(args)
       val isUnapply = sel.symbol.name == nme.unapply
@@ -193,7 +201,8 @@ trait ScalacPatternExpanders {
               firstParamType(fn.tpe),
               sel.tpe,
               isSeq = true)
-          case _ => applyMethodTypes(fn.tpe)
+          case _ =>
+            applyMethodTypes(fn.tpe)
         }
 
       /** Rather than let the error that is SI-6675 pollute the entire matching
@@ -228,8 +237,10 @@ trait ScalacPatternExpanders {
 
     def apply(context: Context, tree: Tree): Aligned =
       tree match {
-        case Apply(fn, args)   => apply(context, fn, args)
-        case UnApply(fn, args) => apply(context, fn, args)
+        case Apply(fn, args) =>
+          apply(context, fn, args)
+        case UnApply(fn, args) =>
+          apply(context, fn, args)
       }
   }
 }

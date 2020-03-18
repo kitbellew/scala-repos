@@ -59,7 +59,8 @@ class ScClassParameterImpl private (
     getModifierList.accessModifier match {
       case Some(am) =>
         am.isThis && am.isPrivate
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -97,8 +98,10 @@ class ScClassParameterImpl private (
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitClassParameter(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitClassParameter(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

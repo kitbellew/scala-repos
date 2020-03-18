@@ -26,10 +26,14 @@ trait Naming {
     // except supposed line endings, otherwise scrubbed lines run together
     if (binaryChars > 5) // more than one can count while holding a hamburger
       cleaned map {
-        case c if lineSeparator contains c => c
-        case c if c.isWhitespace           => ' '
-        case c if c < 32                   => '?'
-        case c                             => c
+        case c if lineSeparator contains c =>
+          c
+        case c if c.isWhitespace =>
+          ' '
+        case c if c < 32 =>
+          '?'
+        case c =>
+          c
       }
     // Not lots - preserve whitespace and ESC
     else

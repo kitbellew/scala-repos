@@ -111,7 +111,8 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
     val parentPartitions =
       s.asInstanceOf[PartitionerAwareUnionRDDPartition].parents
     rdds.zip(parentPartitions).iterator.flatMap {
-      case (rdd, p) => rdd.iterator(p, context)
+      case (rdd, p) =>
+        rdd.iterator(p, context)
     }
   }
 

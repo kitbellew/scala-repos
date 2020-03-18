@@ -21,14 +21,18 @@ private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
 
   def parseNode(s: String): Either[String, (IpAddress, Option[Port])] = {
     parse(node, s) match {
-      case Success(matched, _) => Right(matched)
-      case Failure(msg, _)     => Left("failure: " + msg)
-      case Error(msg, _)       => Left("error: " + msg)
+      case Success(matched, _) =>
+        Right(matched)
+      case Failure(msg, _) =>
+        Left("failure: " + msg)
+      case Error(msg, _) =>
+        Left("error: " + msg)
     }
   }
 
   private lazy val node = phrase(nodename ~ opt(":" ~> nodeport)) ^^ {
-    case x ~ y => x -> y
+    case x ~ y =>
+      x -> y
   }
 
   private lazy val nodename =
@@ -36,16 +40,22 @@ private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
       case Rfc7239 =>
         // RFC 7239 recognises IPv4 addresses, escaped IPv6 addresses, unknown and obfuscated addresses
         (ipv4Address | "[" ~> ipv6Address <~ "]" | "unknown" | obfnode) ^^ {
-          case x: Inet4Address => Ip(x)
-          case x: Inet6Address => Ip(x)
-          case "unknown"       => UnknownIp
-          case x               => ObfuscatedIp(x.toString)
+          case x: Inet4Address =>
+            Ip(x)
+          case x: Inet6Address =>
+            Ip(x)
+          case "unknown" =>
+            UnknownIp
+          case x =>
+            ObfuscatedIp(x.toString)
         }
       case Xforwarded =>
         // X-Forwarded-For recognises IPv4 and escaped or unescaped IPv6 addresses
         (ipv4Address | "[" ~> ipv6Address <~ "]" | ipv6Address) ^^ {
-          case x: Inet4Address => Ip(x)
-          case x: Inet6Address => Ip(x)
+          case x: Inet4Address =>
+            Ip(x)
+          case x: Inet6Address =>
+            Ip(x)
         }
     }
 
@@ -56,12 +66,15 @@ private[common] class NodeIdentifierParser(version: ForwardedHeaderVersion)
   private lazy val obfnode = regex("_[\\p{Alnum}\\._-]+".r)
 
   private lazy val nodeport = (port | obfport) ^^ {
-    case x: Int => PortNumber(x)
-    case x      => ObfuscatedPort(x.toString)
+    case x: Int =>
+      PortNumber(x)
+    case x =>
+      ObfuscatedPort(x.toString)
   }
 
   private lazy val port = regex("\\d{1,5}".r) ^? {
-    case x if x.toInt <= 65535 => x.toInt
+    case x if x.toInt <= 65535 =>
+      x.toInt
   }
 
   private def obfport = regex("_[\\p{Alnum}\\._-]+".r)

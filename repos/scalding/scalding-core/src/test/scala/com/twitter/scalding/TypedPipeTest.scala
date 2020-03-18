@@ -182,7 +182,8 @@ class TypedPipeJoinKryoJob(args: Args) extends Job(args) {
     .from(TypedText.tsv[(Int, Int)]("inputFile0"))
     .join(TypedPipe.from(TypedText.tsv[(Int, Int)]("inputFile1")))
     .mapValues {
-      case (x, y) => x * y * box.get
+      case (x, y) =>
+        x * y * box.get
     }
     .write(TypedText.tsv[(Int, Int)]("outputFile"))
 }
@@ -401,7 +402,8 @@ class TypedWithOnCompleteJob(args: Args) extends Job(args) {
     .groupBy(identity)
     .mapValueStream(words => Iterator(words.size))
     .filter {
-      case (word, occurrences) => occurrences > 1
+      case (word, occurrences) =>
+        occurrences > 1
     }
     .keys
     .onComplete(onCompleteReducer)
@@ -455,7 +457,8 @@ class TypedPipeWithOuterAndLeftJoin(args: Args) extends Job(args) {
     .outerJoin(userData)
     .leftJoin(optionalData)
     .map {
-      case (id, ((nameOpt, userDataOption), optionalDataOpt)) => id
+      case (id, ((nameOpt, userDataOption), optionalDataOpt)) =>
+        id
     }
     .write(TypedText.tsv[Int]("output"))
 }
@@ -1079,7 +1082,8 @@ class TypedSortWithTakeTest extends WordSpec with Matchers {
             .groupBy(_._1)
             .mapValues(
               _.map {
-                case (k, v) => v
+                case (k, v) =>
+                  v
               }.toSet) shouldBe correct
         }
       }
@@ -1092,7 +1096,8 @@ class TypedSortWithTakeTest extends WordSpec with Matchers {
             .groupBy(_._1)
             .mapValues(
               _.map {
-                case (k, v) => v
+                case (k, v) =>
+                  v
               }.toSet) shouldBe correct
         }
       }
@@ -1273,7 +1278,8 @@ class TypedMultiJoinJob(args: Args) extends Job(args) {
 
   cogroup
     .map {
-      case (k, (v0, v1, v2)) => (k, v0, v1, v2)
+      case (k, (v0, v1, v2)) =>
+        (k, v0, v1, v2)
     }
     .write(TypedText.tsv[(Int, Int, Int, Int)]("output"))
 }
@@ -1309,7 +1315,8 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
             .groupBy(_._1)
             .mapValues(
               _.map {
-                case (_, v) => v
+                case (_, v) =>
+                  v
               })
           val d1 = groupMax(mk1)
           val d2 = groupMax(mk2)
@@ -1363,7 +1370,8 @@ class TypedMultiSelfJoinJob(args: Args) extends Job(args) {
 
   cogroup
     .map {
-      case (k, ((v0, v1), v2)) => (k, v0, v1, v2)
+      case (k, ((v0, v1), v2)) =>
+        (k, v0, v1, v2)
     }
     .write(TypedText.tsv[(Int, Int, Int, Int)]("output"))
 }
@@ -1397,7 +1405,8 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
             .groupBy(_._1)
             .mapValues(
               _.map {
-                case (_, v) => v
+                case (_, v) =>
+                  v
               })
           val d1 = group(mk1)(_ max _)
           val d2 = group(mk1)(_ min _)
@@ -1459,7 +1468,8 @@ class TypedMapGroupTest extends WordSpec with Matchers {
             it.groupBy(_._1)
               .mapValues { kvs =>
                 kvs.map {
-                  case (k, v) => k * v
+                  case (k, v) =>
+                    k * v
                 }.max
               }
               .toMap
@@ -1542,7 +1552,8 @@ class JoinMapGroupJob(args: Args) extends Job(args) {
   r1.groupBy(_._1)
     .join(r2.groupBy(_._1))
     .mapGroup {
-      case (a, b) => Iterator("a")
+      case (a, b) =>
+        Iterator("a")
     }
     .write(TypedText.tsv("output"))
 }
@@ -1572,7 +1583,8 @@ class MapValueStreamNonEmptyIteratorJob(args: Args) extends Job(args) {
     .leftJoin(extraKeys.group)
     .toTypedPipe
     .map {
-      case (key, (iteratorSize, extraOpt)) => (key, iteratorSize)
+      case (key, (iteratorSize, extraOpt)) =>
+        (key, iteratorSize)
     }
     .write(TypedText.tsv[(Int, Int)]("output"))
 }
@@ -1626,14 +1638,16 @@ class TypedSketchJoinJob(args: Args) extends Job(args) {
     .sketch(args("reducers").toInt)
     .join(one)
     .map {
-      case (k, (v0, v1)) => (k, v0, v1)
+      case (k, (v0, v1)) =>
+        (k, v0, v1)
     }
     .write(TypedText.tsv[(Int, Int, Int)]("output-sketch"))
 
   zero.group
     .join(one.group)
     .map {
-      case (k, (v0, v1)) => (k, v0, v1)
+      case (k, (v0, v1)) =>
+        (k, v0, v1)
     }
     .write(TypedText.tsv[(Int, Int, Int)]("output-join"))
 }
@@ -1648,14 +1662,16 @@ class TypedSketchLeftJoinJob(args: Args) extends Job(args) {
     .sketch(args("reducers").toInt)
     .leftJoin(one)
     .map {
-      case (k, (v0, v1)) => (k, v0, v1.getOrElse(-1))
+      case (k, (v0, v1)) =>
+        (k, v0, v1.getOrElse(-1))
     }
     .write(TypedText.tsv[(Int, Int, Int)]("output-sketch"))
 
   zero.group
     .leftJoin(one.group)
     .map {
-      case (k, (v0, v1)) => (k, v0, v1.getOrElse(-1))
+      case (k, (v0, v1)) =>
+        (k, v0, v1.getOrElse(-1))
     }
     .write(TypedText.tsv[(Int, Int, Int)]("output-join"))
 }

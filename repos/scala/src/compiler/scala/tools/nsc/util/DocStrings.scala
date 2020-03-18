@@ -111,8 +111,10 @@ object DocStrings {
     indices = mergeInheritdocSections(str, indices)
 
     indices match {
-      case List() => List()
-      case idxs   => idxs zip (idxs.tail ::: List(str.length - 2))
+      case List() =>
+        List()
+      case idxs =>
+        idxs zip (idxs.tail ::: List(str.length - 2))
     }
   }
 
@@ -153,8 +155,10 @@ object DocStrings {
     */
   def startTag(str: String, sections: List[(Int, Int)]) =
     sections match {
-      case Nil             => str.length - 2
-      case (start, _) :: _ => start
+      case Nil =>
+        str.length - 2
+      case (start, _) :: _ =>
+        start
     }
 
   /** A map from parameter names to start/end indices describing all parameter

@@ -156,7 +156,8 @@ class MemorySink(schema: StructType) extends Sink with Logging {
           val dataStr =
             try b.data.collect().mkString(" ")
             catch {
-              case NonFatal(e) => "[Error converting to string]"
+              case NonFatal(e) =>
+                "[Error converting to string]"
             }
           s"${b.end}: $dataStr"
         }

@@ -15,7 +15,8 @@ trait ScMethodCall extends ScExpression with MethodInvocation {
     getEffectiveInvokedExpr match {
       case call: ScMethodCall =>
         call.deepestInvokedExpr
-      case expr => expr
+      case expr =>
+        expr
     }
   }
 
@@ -32,8 +33,10 @@ trait ScMethodCall extends ScExpression with MethodInvocation {
 
   def updateExpression(): Option[ScExpression] = {
     getContext match {
-      case a: ScAssignStmt if a.getLExpression == this => a.getRExpression
-      case _                                           => None
+      case a: ScAssignStmt if a.getLExpression == this =>
+        a.getRExpression
+      case _ =>
+        None
     }
   }
 

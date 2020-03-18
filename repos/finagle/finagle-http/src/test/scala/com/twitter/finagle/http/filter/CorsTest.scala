@@ -22,9 +22,12 @@ class CorsTest extends FlatSpec with MustMatchers {
 
   val policy = Cors.Policy(
     allowsOrigin = {
-      case origin if origin.startsWith("juug") => Some(origin)
-      case origin if origin.endsWith("street") => Some(origin)
-      case _                                   => None
+      case origin if origin.startsWith("juug") =>
+        Some(origin)
+      case origin if origin.endsWith("street") =>
+        Some(origin)
+      case _ =>
+        None
     },
     allowsMethods = { method =>
       Some(method :: "TRAP" :: Nil)

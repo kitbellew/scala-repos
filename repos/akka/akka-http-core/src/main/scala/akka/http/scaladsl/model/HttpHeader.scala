@@ -69,7 +69,8 @@ object HttpHeader {
               name.toLowerCase,
               preProcessedValue,
               settings) match {
-              case Right(header) ⇒ ParsingResult.Ok(header, Nil)
+              case Right(header) ⇒
+                ParsingResult.Ok(header, Nil)
               case Left(info) ⇒
                 val errors = info.withSummaryPrepended(
                   s"Illegal HTTP header '$name'") :: Nil
@@ -82,8 +83,10 @@ object HttpHeader {
         case Failure(error) ⇒
           val info =
             error match {
-              case e: ParseError ⇒ parser.parseError(e)
-              case e ⇒ parser.failure(e)
+              case e: ParseError ⇒
+                parser.parseError(e)
+              case e ⇒
+                parser.failure(e)
             }
           ParsingResult.Error(
             info.left.get.withSummaryPrepended(s"Illegal HTTP header value"))

@@ -82,7 +82,8 @@ object PatternAnnotator {
       (ScType.extractClass(exprType), ScType.extractClass(patType)) match {
         case (Some(cl1), Some(cl2)) if pattern.isInstanceOf[ScTypedPattern] =>
           !isNeverSubClass(cl1, cl2)
-        case _ => false
+        case _ =>
+          false
       }
 
     object StableIdResolvesToVar {
@@ -90,11 +91,15 @@ object PatternAnnotator {
         stable.getReferenceExpression.orNull match {
           case ResolvesTo(ScalaPsiUtil.inNameContext(nameCtx)) =>
             nameCtx match {
-              case param: ScClassParameter => param.isVar
-              case _: ScVariable           => true
-              case _                       => false
+              case param: ScClassParameter =>
+                param.isVar
+              case _: ScVariable =>
+                true
+              case _ =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
       }
     }
@@ -170,13 +175,17 @@ object PatternAnnotator {
             case infix: ScInfixPattern =>
               val numPatterns: Int =
                 infix.rightPattern match {
-                  case Some(_: ScInfixPattern) => 2
+                  case Some(_: ScInfixPattern) =>
+                    2
                   case Some(right) =>
                     right.subpatterns match {
-                      case Seq() => 2
-                      case s     => s.length + 1
+                      case Seq() =>
+                        2
+                      case s =>
+                        s.length + 1
                     }
-                  case _ => 1
+                  case _ =>
+                    1
                 }
               (Option(infix.reference), numPatterns)
           }
@@ -234,9 +243,12 @@ object PatternAnnotator {
         ScType.extractDesignatorSingletonType(scType).getOrElse(scType)
       case _ =>
         scType.recursiveUpdate {
-          case ScAbstractType(_, _, upper)            => (true, upper)
-          case ScTypeParameterType(_, _, _, upper, _) => (true, upper.v)
-          case tp                                     => (false, tp)
+          case ScAbstractType(_, _, upper) =>
+            (true, upper)
+          case ScTypeParameterType(_, _, _, upper, _) =>
+            (true, upper.v)
+          case tp =>
+            (false, tp)
         }
     }
 
@@ -246,7 +258,8 @@ object PatternAnnotator {
       case tp: ScTypeParameterType =>
         buffer += tp
         (false, tp)
-      case _ => (false, tp)
+      case _ =>
+        (false, tp)
     }
     buffer.toSeq
   }
@@ -270,7 +283,8 @@ object PatternAnnotatorUtil {
               tp,
               abstraction(tp.lower.v, newVisited),
               abstraction(tp.upper.v, newVisited)))
-        case tpe => (false, tpe)
+        case tpe =>
+          (false, tpe)
       }
     }
 
@@ -280,17 +294,20 @@ object PatternAnnotatorUtil {
           case ScParameterizedType(ScDesignatorType(elem: ScClass), Seq(arg))
               if elem.qualifiedName == "scala.Array" =>
             Some(arg)
-          case _ => None
+          case _ =>
+            None
         }
     }
 
     matching.weakConforms(matched) || (
       (matching, matched) match {
-        case (arrayType(arg1), arrayType(arg2)) => matchesPattern(arg1, arg2)
+        case (arrayType(arg1), arrayType(arg2)) =>
+          matchesPattern(arg1, arg2)
         case (_, parameterized: ScParameterizedType) =>
           val newtp = abstraction(parameterized)
           !matched.equiv(newtp) && matching.weakConforms(newtp)
-        case _ => false
+        case _ =>
+          false
       }
     )
   }
@@ -303,9 +320,11 @@ object PatternAnnotatorUtil {
           srr.getElement match {
             case fun: ScFunction if fun.parameters.size == 1 =>
               Some(srr.substitutor.subst(fun.paramTypes.head))
-            case _ => None
+            case _ =>
+              None
           }
-        case None => None
+        case None =>
+          None
       }
     }
 
@@ -329,8 +348,10 @@ object PatternAnnotatorUtil {
         patternType(naming.named)
       case parenth: ScParenthesisedPattern =>
         patternType(parenth.subpattern.orNull)
-      case null => None
-      case _    => pattern.getType(TypingContext.empty).toOption
+      case null =>
+        None
+      case _ =>
+        pattern.getType(TypingContext.empty).toOption
     }
   }
 }

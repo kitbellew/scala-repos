@@ -34,7 +34,8 @@ class CookieDirectivesExamplesSpec extends RoutingSpec {
       optionalCookie("userName") {
         case Some(nameCookie) =>
           complete(s"The logged in user is '${nameCookie.value}'")
-        case None => complete("No user logged in")
+        case None =>
+          complete("No user logged in")
       }
 
     // tests:

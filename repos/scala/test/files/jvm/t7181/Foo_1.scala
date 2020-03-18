@@ -6,8 +6,10 @@ class Foo_1 {
     try {
       baz.bar
     } catch {
-      case _: Exception1 => println("exception 1")
-      case _: Exception2 => println("exception 2")
+      case _: Exception1 =>
+        println("exception 1")
+      case _: Exception2 =>
+        println("exception 2")
     } finally {
       // this should be the only copy of the magic constant 3
       // making it easy to detect copies of this finally block

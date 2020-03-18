@@ -45,13 +45,18 @@ object GenerateMainSources extends TestCodeGenerator {
           .map(
             new MyGen(_) {
               override def entityName = {
-                case "COFFEES" => "Coff"
-                case other     => super.entityName(other)
+                case "COFFEES" =>
+                  "Coff"
+                case other =>
+                  super.entityName(other)
               }
               override def tableName = {
-                case "COFFEES"   => "Coffs"
-                case "SUPPLIERS" => "Supps"
-                case other       => super.tableName(other)
+                case "COFFEES" =>
+                  "Coffs"
+                case "SUPPLIERS" =>
+                  "Supps"
+                case other =>
+                  super.tableName(other)
               }
               override def code = "trait AA; trait BB\n" + super.code
               override def Table =
@@ -99,8 +104,10 @@ val  SimpleA = CustomTyping.SimpleA
                     new Column(_) {
                       override def rawType =
                         model.name match {
-                          case "A1" => "Bool"
-                          case _    => super.rawType
+                          case "A1" =>
+                            "Bool"
+                          case _ =>
+                            super.rawType
                         }
                     }
                 }
@@ -183,7 +190,8 @@ val  SimpleA = CustomTyping.SimpleA
                     override def defaultCode: (Any) => String = {
                       case v: java.util.UUID =>
                         s"""java.util.UUID.fromString("${v.toString}")"""
-                      case v => super.defaultCode(v)
+                      case v =>
+                        super.defaultCode(v)
                     }
                   }
                 override def code = {

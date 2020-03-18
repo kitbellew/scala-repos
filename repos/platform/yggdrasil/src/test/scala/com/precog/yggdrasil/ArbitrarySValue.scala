@@ -64,9 +64,12 @@ trait CValueGenerators extends ArbitraryBigDecimal {
       leafSchema
     else
       oneOf(1, 2, 3) flatMap {
-        case 1 => objectSchema(depth, choose(1, 3))
-        case 2 => arraySchema(depth, choose(1, 5))
-        case 3 => leafSchema
+        case 1 =>
+          objectSchema(depth, choose(1, 3))
+        case 2 =>
+          arraySchema(depth, choose(1, 5))
+        case 3 =>
+          leafSchema
       }
   }
 
@@ -118,8 +121,10 @@ trait CValueGenerators extends ArbitraryBigDecimal {
   // FIXME: TODO Should this provide some form for CDate?
   def jvalue(ctype: CType): Gen[JValue] =
     ctype match {
-      case CString  => alphaStr map (JString(_))
-      case CBoolean => arbitrary[Boolean] map (JBool(_))
+      case CString =>
+        alphaStr map (JString(_))
+      case CBoolean =>
+        arbitrary[Boolean] map (JBool(_))
       case CLong =>
         arbitrary[Long] map { ln =>
           JNum(BigDecimal(ln, MathContext.UNLIMITED))
@@ -132,10 +137,14 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         arbitrary[BigDecimal] map { bd =>
           JNum(bd)
         }
-      case CNull        => JNull
-      case CEmptyObject => JObject.empty
-      case CEmptyArray  => JArray.empty
-      case CUndefined   => JUndefined
+      case CNull =>
+        JNull
+      case CEmptyObject =>
+        JObject.empty
+      case CEmptyArray =>
+        JArray.empty
+      case CUndefined =>
+        JUndefined
     }
 
   def jvalue(schema: Seq[(JPath, CType)]): Gen[JValue] = {
@@ -162,7 +171,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         dataSize,
         Gen.sequence[List, (JPath, JValue)](
           jschema map {
-            case (jpath, ctype) => jvalue(ctype).map(jpath ->)
+            case (jpath, ctype) =>
+              jvalue(ctype).map(jpath ->)
           }))
 
       falseDepth <- choose(1, 3)
@@ -175,7 +185,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         falseSize,
         Gen.sequence[List, (JPath, JValue)](
           falseSchema map {
-            case (jpath, ctype) => jvalue(ctype).map(jpath ->)
+            case (jpath, ctype) =>
+              jvalue(ctype).map(jpath ->)
           }))
 
       falseIds2 = falseIds -- ids // distinct ids
@@ -190,7 +201,8 @@ trait CValueGenerators extends ArbitraryBigDecimal {
   def assemble(parts: Seq[(JPath, JValue)]): JValue = {
     val result =
       parts.foldLeft[JValue](JUndefined) {
-        case (acc, (selector, jv)) => acc.unsafeInsert(selector, jv)
+        case (acc, (selector, jv)) =>
+          acc.unsafeInsert(selector, jv)
       }
 
     if (result != JUndefined || parts.isEmpty)
@@ -206,9 +218,12 @@ trait SValueGenerators extends ArbitraryBigDecimal {
       sleaf
     else
       oneOf(1, 2, 3) flatMap { //it's much faster to lazily compute the subtrees
-        case 1 => sobject(depth)
-        case 2 => sarray(depth)
-        case 3 => sleaf
+        case 1 =>
+          sobject(depth)
+        case 2 =>
+          sarray(depth)
+        case 3 =>
+          sleaf
       }
   }
 

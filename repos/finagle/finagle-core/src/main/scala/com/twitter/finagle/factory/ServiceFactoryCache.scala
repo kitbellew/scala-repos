@@ -102,7 +102,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
   private[this] val nidle =
     statsReceiver.addGauge("idle") {
       cache count {
-        case (_, f) => f.idleFor > Duration.Zero
+        case (_, f) =>
+          f.idleFor > Duration.Zero
       }
     }
 
@@ -184,7 +185,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
 
   private[this] def findEvictee(): Option[Key] = {
     val (evictNamer, evictFactory) = cache maxBy {
-      case (_, fac) => fac.idleFor
+      case (_, fac) =>
+        fac.idleFor
     }
     if (evictFactory.idleFor > Duration.Zero)
       Some(evictNamer)

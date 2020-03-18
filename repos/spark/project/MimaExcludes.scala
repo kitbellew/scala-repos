@@ -966,7 +966,8 @@ object MimaExcludes {
                     .map(_.fullName)
                     .sameElements(Seq("org.apache.spark.Logging")) =>
                 false
-              case _ => true
+              case _ =>
+                true
             }
         )
       case v if v.startsWith("1.6") =>
@@ -1865,6 +1866,7 @@ object MimaExcludes {
           MimaBuild.excludeSparkClass("mllib.regression.LassoWithSGD") ++
           MimaBuild.excludeSparkClass(
             "mllib.regression.LinearRegressionWithSGD")
-      case _ => Seq()
+      case _ =>
+        Seq()
     }
 }

@@ -40,8 +40,10 @@ object Test {
         allContainerVariances forall (_ == true)
       else
         expected match {
-          case CO => showsCovariance && !showsContravariance && !showsInvariance
-          case IN => showsInvariance && !showsCovariance && !showsContravariance
+          case CO =>
+            showsCovariance && !showsContravariance && !showsInvariance
+          case IN =>
+            showsInvariance && !showsCovariance && !showsContravariance
           case CONTRA =>
             showsContravariance && !showsCovariance && !showsInvariance
         }
@@ -70,10 +72,14 @@ object Test {
 
   def typeCompare[T, U](implicit ev1: Manifest[T], ev2: Manifest[U]) =
     (ev1 <:< ev2, ev2 <:< ev1) match {
-      case (true, true)   => SAME
-      case (true, false)  => SUB
-      case (false, true)  => SUPER
-      case (false, false) => NONE
+      case (true, true) =>
+        SAME
+      case (true, false) =>
+        SUB
+      case (false, true) =>
+        SUPER
+      case (false, false) =>
+        NONE
     }
 
   def assertAnyRef[T: Manifest] =

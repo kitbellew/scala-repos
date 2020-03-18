@@ -102,7 +102,8 @@ class CachedMacros(override val c: whitebox.Context)
         val treeOpt = CachedMacros.cache
           .asInstanceOf[List[(Type, Tree)]]
           .collectFirst {
-            case (eTpe, eTree) if eTpe =:= tpe => eTree
+            case (eTpe, eTree) if eTpe =:= tpe =>
+              eTree
           }
 
         treeOpt.getOrElse {

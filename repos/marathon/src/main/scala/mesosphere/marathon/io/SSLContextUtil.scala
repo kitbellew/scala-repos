@@ -18,8 +18,10 @@ object SSLContextUtil {
       keyStoreOpt: Option[String],
       passwordOpt: Option[String]): SSLContext =
     keyStoreOpt match {
-      case Some(keystorePath) => createSSLContext(keystorePath, passwordOpt)
-      case None               => SSLContext.getDefault
+      case Some(keystorePath) =>
+        createSSLContext(keystorePath, passwordOpt)
+      case None =>
+        SSLContext.getDefault
     }
 
   private[this] def createSSLContext(

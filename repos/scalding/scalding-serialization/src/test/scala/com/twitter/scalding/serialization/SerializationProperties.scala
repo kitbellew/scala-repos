@@ -34,9 +34,12 @@ object LawTester {
 abstract class LawTester[T](g: Gen[T], base: String, laws: Iterable[Law[T]])
     extends Properties(base) {
   laws.foreach {
-    case Law1(name, fn) => property(name) = forAll(g)(fn)
-    case Law2(name, fn) => property(name) = forAll(g, g)(fn)
-    case Law3(name, fn) => property(name) = forAll(g, g, g)(fn)
+    case Law1(name, fn) =>
+      property(name) = forAll(g)(fn)
+    case Law2(name, fn) =>
+      property(name) = forAll(g, g)(fn)
+    case Law3(name, fn) =>
+      property(name) = forAll(g, g, g)(fn)
   }
 }
 
@@ -100,7 +103,8 @@ object SerializationProperties extends Properties("SerializationProperties") {
         case Seq(a, b) =>
           Serialization.write(baos1, a)
           Serialization.write(baos2, b)
-        case _ => sys.error("unreachable")
+        case _ =>
+          sys.error("unreachable")
       }
       // now the compares must match:
       val in1 = baos1.toInputStream
@@ -109,7 +113,8 @@ object SerializationProperties extends Properties("SerializationProperties") {
         case Seq(a, b) =>
           OrderedSerialization.compareBinary[T](in1, in2) ==
             OrderedSerialization.resultFrom(OrderedSerialization.compare(a, b))
-        case _ => sys.error("unreachable")
+        case _ =>
+          sys.error("unreachable")
       }
     }
 
@@ -132,7 +137,8 @@ object SerializationProperties extends Properties("SerializationProperties") {
         case Seq(a, b) =>
           Serialization.write(baos1, a)
           Serialization.write(baos2, b)
-        case _ => sys.error("unreachable")
+        case _ =>
+          sys.error("unreachable")
       }
       // now the compares must match:
       val in1 = baos1.toInputStream
@@ -142,7 +148,8 @@ object SerializationProperties extends Properties("SerializationProperties") {
           val rta = Serialization.read[T](in1).get
           val rtb = Serialization.read[T](in2).get
           Serialization.equiv(a, rta) && Serialization.equiv(b, rtb)
-        case _ => sys.error("unreachable")
+        case _ =>
+          sys.error("unreachable")
       }
     }
   def serializeSequenceEquiv[T: Serialization: Arbitrary]: Prop =

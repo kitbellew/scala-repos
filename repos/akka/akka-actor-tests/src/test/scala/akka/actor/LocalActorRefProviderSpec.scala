@@ -126,7 +126,8 @@ class LocalActorRefProviderSpec
             new Actor {
               val child = context.actorOf(Props.empty)
               def receive = {
-                case `GetChild` ⇒ sender() ! child
+                case `GetChild` ⇒
+                  sender() ! child
               }
             })))
       a.tell(GetChild, testActor)
@@ -172,9 +173,12 @@ class LocalActorRefProviderSpec
                 address))
         val set = Set() ++ actors.map(a ⇒
           Await.ready(a, timeout.duration).value match {
-            case Some(Success(a: ActorRef)) ⇒ 1
-            case Some(Failure(ex: InvalidActorNameException)) ⇒ 2
-            case x ⇒ x
+            case Some(Success(a: ActorRef)) ⇒
+              1
+            case Some(Failure(ex: InvalidActorNameException)) ⇒
+              2
+            case x ⇒
+              x
           })
         set should ===(Set[Any](1, 2))
       }

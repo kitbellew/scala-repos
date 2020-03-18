@@ -12,7 +12,8 @@ object RemoteWatcherSpec {
 
   class TestActorProxy(testActor: ActorRef) extends Actor {
     def receive = {
-      case msg ⇒ testActor forward msg
+      case msg ⇒
+        testActor forward msg
     }
   }
 

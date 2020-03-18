@@ -86,7 +86,8 @@ class ProducerFeatureTest
               OneForOneStrategy(
                 maxNrOfRetries = 10,
                 withinTimeRange = 1 minute) {
-                case _: AkkaCamelException ⇒ Stop
+                case _: AkkaCamelException ⇒
+                  Stop
               }
           }),
         name = "02-prod-anonymous-supervisor"
@@ -480,8 +481,10 @@ object ProducerFeatureTest {
         new Processor() {
           def process(exchange: Exchange) = {
             exchange.getIn.getBody match {
-              case "fail" ⇒ throw new Exception("failure")
-              case body ⇒ exchange.getOut.setBody("received %s" format body)
+              case "fail" ⇒
+                throw new Exception("failure")
+              case body ⇒
+                exchange.getOut.setBody("received %s" format body)
             }
           }
         })
@@ -491,8 +494,10 @@ object ProducerFeatureTest {
   class SimpleProducer(override val endpointUri: String) extends Producer {
     override protected def transformResponse(msg: Any) =
       msg match {
-        case m: CamelMessage ⇒ m.bodyAs[String]
-        case m: Any ⇒ m
+        case m: CamelMessage ⇒
+          m.bodyAs[String]
+        case m: Any ⇒
+          m
       }
   }
 
@@ -501,7 +506,8 @@ object ProducerFeatureTest {
     def receive = {
       case msg: CamelMessage if msg.bodyAs[String] == "fail" ⇒
         sender() ! Failure(new Exception("fail"))
-      case msg: CamelMessage ⇒ sender() ! msg
+      case msg: CamelMessage ⇒
+        sender() ! msg
     }
   }
 

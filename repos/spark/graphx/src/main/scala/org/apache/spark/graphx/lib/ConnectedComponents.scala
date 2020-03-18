@@ -44,7 +44,8 @@ object ConnectedComponents {
         s" but got ${maxIterations}")
 
     val ccGraph = graph.mapVertices {
-      case (vid, _) => vid
+      case (vid, _) =>
+        vid
     }
     def sendMessage(
         edge: EdgeTriplet[VertexId, ED]): Iterator[(VertexId, VertexId)] = {

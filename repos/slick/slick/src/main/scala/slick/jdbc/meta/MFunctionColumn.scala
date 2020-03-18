@@ -35,7 +35,8 @@ object MFunctionColumn {
         functionPattern.name,
         columnNamePattern)
       catch {
-        case _: AbstractMethodError => null
+        case _: AbstractMethodError =>
+          null
       }
     } { r =>
       MFunctionColumn(
@@ -49,9 +50,12 @@ object MFunctionColumn {
         r.<<,
         r.<<,
         r.nextShort match {
-          case DatabaseMetaData.functionNoNulls  => Some(false)
-          case DatabaseMetaData.functionNullable => Some(true)
-          case _                                 => None
+          case DatabaseMetaData.functionNoNulls =>
+            Some(false)
+          case DatabaseMetaData.functionNullable =>
+            Some(true)
+          case _ =>
+            None
         },
         r.<<,
         r.<<,

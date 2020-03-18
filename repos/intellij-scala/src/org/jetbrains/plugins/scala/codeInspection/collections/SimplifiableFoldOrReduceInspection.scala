@@ -44,7 +44,8 @@ class FoldSimplificationType(
           .withText(invocationText(qual, methodName))
           .highlightFrom(qual)
         Some(simpl)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -67,7 +68,8 @@ class ReduceSimplificationType(
           .withText(invocationText(qual, methodName))
           .highlightFrom(qual)
         Some(simpl)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

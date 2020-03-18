@@ -59,8 +59,10 @@ object RenameSuperMembersUtil {
 
     val superMembers =
       named match {
-        case _: ScTypeAlias => allSuperTypes(named, withSelfType = false)
-        case _              => allSuperMembers(named, withSelfType = false)
+        case _: ScTypeAlias =>
+          allSuperTypes(named, withSelfType = false)
+        case _ =>
+          allSuperMembers(named, withSelfType = false)
       }
     val maxSuperMembers = findMaxSuperMembers(superMembers)
     if (maxSuperMembers.isEmpty || maxSuperMembers == Seq(named)) {
@@ -138,13 +140,17 @@ object RenameSuperMembersUtil {
       if (oneSuperClass) {
         val overimpl =
           ScalaPsiUtil.nameContext(superMembers(0)) match {
-            case decl: ScDeclaration => "implements"
-            case _                   => "overrides"
+            case decl: ScDeclaration =>
+              "implements"
+            case _ =>
+              "overrides"
           }
         val qualName =
           classes(0) match {
-            case td: ScTypeDefinition => td.qualifiedName
-            case cl                   => cl.getQualifiedName
+            case td: ScTypeDefinition =>
+              td.qualifiedName
+            case cl =>
+              cl.getQualifiedName
           }
         s"$name $overimpl member of $qualName"
       } else
@@ -165,9 +171,12 @@ object RenameSuperMembersUtil {
             return renameAllText
           def classKind =
             clazz match {
-              case _: ScObject => "object"
-              case _: ScTrait  => "trait"
-              case _           => "class"
+              case _: ScObject =>
+                "object"
+              case _: ScTrait =>
+                "trait"
+              case _ =>
+                "class"
             }
           if (clazz == classes.last)
             renameOnlyCurrent
@@ -213,8 +222,10 @@ object RenameSuperMembersUtil {
       withSelfType: Boolean): Seq[PsiNamedElement] = {
     val member =
       ScalaPsiUtil.nameContext(named) match {
-        case m: ScMember => m
-        case _           => return Seq()
+        case m: ScMember =>
+          m
+        case _ =>
+          return Seq()
       }
     val aClass = member.containingClass
     if (aClass == null)
@@ -235,8 +246,10 @@ object RenameSuperMembersUtil {
       withSelfType: Boolean): Seq[PsiNamedElement] = {
     val typeAlias =
       ScalaPsiUtil.nameContext(named) match {
-        case t: ScTypeAlias => t
-        case _              => return Seq()
+        case t: ScTypeAlias =>
+          t
+        case _ =>
+          return Seq()
       }
     val aClass = typeAlias.containingClass
     if (aClass == null)
@@ -257,9 +270,12 @@ object RenameSuperMembersUtil {
       elements: Seq[PsiNamedElement]): Seq[PsiNamedElement] = {
     def elementWithContainingClass(elem: PsiNamedElement) = {
       ScalaPsiUtil.nameContext(elem) match {
-        case sm: ScMember => Option(sm.containingClass, elem)
-        case m: PsiMember => Option((m.getContainingClass, elem))
-        case _            => None
+        case sm: ScMember =>
+          Option(sm.containingClass, elem)
+        case m: PsiMember =>
+          Option((m.getContainingClass, elem))
+        case _ =>
+          None
       }
     }
     val classToElement = elements.flatMap(elementWithContainingClass).toMap

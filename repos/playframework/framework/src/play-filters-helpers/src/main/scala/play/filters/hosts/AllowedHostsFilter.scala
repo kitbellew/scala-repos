@@ -70,8 +70,10 @@ private[hosts] case class HostMatcher(pattern: String) {
       s.trim.split(":", 2) match {
         case Array(h, p) if p.nonEmpty && p.forall(_.isDigit) =>
           (h, Some(p.toInt))
-        case Array(h, _)  => (h, Some(-1))
-        case Array(h, _*) => (h, None)
+        case Array(h, _) =>
+          (h, Some(-1))
+        case Array(h, _*) =>
+          (h, None)
       }
     (h.toLowerCase(java.util.Locale.ENGLISH).stripSuffix("."), p)
   }

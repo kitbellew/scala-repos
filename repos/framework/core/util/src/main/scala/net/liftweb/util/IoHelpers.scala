@@ -65,7 +65,8 @@ trait IoHelpers {
       else
         Failure(stdErr, Empty, Empty)
     } catch {
-      case e: Throwable => Failure(e.getMessage, Full(e), Empty)
+      case e: Throwable =>
+        Failure(e.getMessage, Full(e), Empty)
     }
   }
 

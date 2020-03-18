@@ -400,7 +400,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
           allResults <- (
             data groupBy {
-              case (offset, msg) => msg.path
+              case (offset, msg) =>
+                msg.path
             }
           ).toStream traverse {
             case (path, subset) =>
@@ -408,7 +409,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           }
         } yield {
           val errors: List[ResourceError] = allResults.toList collect {
-            case PathOpFailure(_, error) => error
+            case PathOpFailure(_, error) =>
+              error
           }
           errors.toNel.map(ResourceError.all).toLeftDisjunction(PrecogUnit)
         }
@@ -420,8 +422,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       implicit val t = projectionReadTimeout
       EitherT {
         (projectionsActor ? Read(path, version)).mapTo[ReadResult] map {
-          case ReadSuccess(_, resource) => \/.right(resource)
-          case PathOpFailure(_, error)  => \/.left(error)
+          case ReadSuccess(_, resource) =>
+            \/.right(resource)
+          case PathOpFailure(_, error) =>
+            \/.left(error)
         }
       }
     }
@@ -438,7 +442,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 yield {
                   pm.copy(path = p0)
                 })
-          case PathOpFailure(_, error) => \/.left(error)
+          case PathOpFailure(_, error) =>
+            \/.left(error)
         }
       }
     }
@@ -528,8 +533,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           }
         } yield {
           actorV valueOr {
-            case Extractor.Thrown(t) => throw t
-            case error               => throw new Exception(error.message)
+            case Extractor.Thrown(t) =>
+              throw t
+            case error =>
+              throw new Exception(error.message)
           }
         }
       }
@@ -580,7 +587,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         val requestor = sender
         val groupedAndPermissioned = messages
           .groupBy({
-            case (_, event) => event.path
+            case (_, event) =>
+              event.path
           })
           .toStream traverse {
           case (path, pathMessages) =>
@@ -652,8 +660,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     override def postStop = {
       val closeAll = versions.values.toStream traverse {
-        case NIHDBResource(db) => db.close(context.system)
-        case _                 => Promise successful PrecogUnit
+        case NIHDBResource(db) =>
+          db.close(context.system)
+        case _ =>
+          Promise successful PrecogUnit
       }
 
       Await.result(closeAll, shutdownTimeout)
@@ -1008,8 +1018,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     def versionOpt(version: Version) =
       version match {
-        case Version.Archived(id) => Some(id)
-        case Version.Current      => versionLog.current.map(_.id)
+        case Version.Archived(id) =>
+          Some(id)
+        case Version.Current =>
+          versionLog.current.map(_.id)
       }
 
     def receive = {
@@ -1017,7 +1029,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         logger.info(
           "Resource entering state of quiescence after receive timeout.")
         val quiesce = versions.values.toStream collect {
-          case NIHDBResource(db) => db
+          case NIHDBResource(db) =>
+            db
         } traverse (_.quiesce)
         quiesce.unsafePerformIO
 

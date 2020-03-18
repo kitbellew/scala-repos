@@ -43,8 +43,10 @@ class ScSelfTypeElementElementType[Func <: ScSelfTypeElement]
       this,
       psi.name,
       psi.typeElement match {
-        case None    => ""
-        case Some(x) => x.getText
+        case None =>
+          ""
+        case Some(x) =>
+          x.getText
       },
       psi.getClassNames)
   }

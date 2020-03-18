@@ -56,8 +56,10 @@ object CLI extends App with EvaluatorModule {
       if (line != null) {
         val result =
           JParser.parseFromString(line) match {
-            case Success(jv) => jv
-            case Failure(t)  => throw t
+            case Success(jv) =>
+              jv
+            case Failure(t) =>
+              throw t
           }
         result #:: gen
       } else {
@@ -77,8 +79,10 @@ object CLI extends App with EvaluatorModule {
       val file = new File(basePath + path)
 
       JParser.parseManyFromFile(file) match {
-        case Success(seq) => seq
-        case Failure(t)   => throw t
+        case Success(seq) =>
+          seq
+        case Failure(t) =>
+          throw t
       }
     }
   }
@@ -91,6 +95,7 @@ object CLI extends App with EvaluatorModule {
       case "--base" :: basePath :: tail =>
         processArgs(tail) + ('base -> basePath)
 
-      case query :: Nil => Map('query -> query)
+      case query :: Nil =>
+        Map('query -> query)
     }
 }

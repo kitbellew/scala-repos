@@ -58,22 +58,26 @@ class UpgradedImageIExtractor(
   def getBestImage(doc: Document, topNode: Element): Image = {
     trace("Starting to Look for the Most Relavent Image")
     checkForKnownElements() match {
-      case Some(image) => return image
+      case Some(image) =>
+        return image
       case None => {
         trace("No known images found")
       }
     }
 
     checkForLargeImages(topNode, 0, 0) match {
-      case Some(image) => return image
+      case Some(image) =>
+        return image
       case None => {
         trace("No big images found")
       }
     }
 
     checkForMetaTag match {
-      case Some(image) => return image
-      case None        => trace("No Meta Tag Images found")
+      case Some(image) =>
+        return image
+      case None =>
+        trace("No Meta Tag Images found")
     }
 
     new Image
@@ -100,22 +104,28 @@ class UpgradedImageIExtractor(
               trace("Got Known MSN Video Headline Image: " + imgUrl))
             imgOpt
 
-          case _ => None
+          case _ =>
+            None
         }
 
-      case _ => None
+      case _ =>
+        None
     }
   }
 
   private def checkForMetaTag: Option[Image] = {
     checkForLinkTag match {
-      case Some(image) => return Some(image)
-      case None        => trace("No known images found")
+      case Some(image) =>
+        return Some(image)
+      case None =>
+        trace("No known images found")
     }
 
     checkForOpenGraphTag match {
-      case Some(image) => return Some(image)
-      case None        => trace("No known images found")
+      case Some(image) =>
+        return Some(image)
+      case None =>
+        trace("No known images found")
     }
 
     None
@@ -172,7 +182,8 @@ class UpgradedImageIExtractor(
                   depthObj.parentDepth,
                   depthObj.siblingDepth)
               }
-              case None => trace("Image iteration is over!")
+              case None =>
+                trace("Image iteration is over!")
             }
           }
         }
@@ -186,7 +197,8 @@ class UpgradedImageIExtractor(
               depthObj.parentDepth,
               depthObj.siblingDepth)
           }
-          case None => trace("Image iteration is over!")
+          case None =>
+            trace("Image iteration is over!")
         }
       }
     }
@@ -409,11 +421,13 @@ class UpgradedImageIExtractor(
             }
 
           }
-          case None => trace(imageSrc + " unable to fetch")
+          case None =>
+            trace(imageSrc + " unable to fetch")
         }
 
       } catch {
-        case e: Exception => warn(e, e.toString)
+        case e: Exception =>
+          warn(e, e.toString)
       }
       cnt += 1
     })

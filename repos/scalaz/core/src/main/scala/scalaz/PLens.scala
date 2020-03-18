@@ -69,8 +69,10 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   /** If the Partial Lens is null, then return the target object, otherwise run the function on its projection. */
   def as(f: B1 => A1, a: A1): A1 =
     get(a) match {
-      case None    => a
-      case Some(w) => f(w)
+      case None =>
+        a
+      case Some(w) =>
+        f(w)
     }
 
   def is(a: A1): Boolean = run(a).isDefined
@@ -88,8 +90,10 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   /** Modify the potential value viewed through the partial lens */
   def mod[A >: A2 <: A1](f: B1 => B2, a: A): A =
     run(a) match {
-      case None    => a: A
-      case Some(w) => (w puts f): A
+      case None =>
+        a: A
+      case Some(w) =>
+        (w puts f): A
     }
 
   def =>=[A >: A2 <: A1](f: B1 => B2): A => A = mod(f, _)
@@ -99,7 +103,8 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def %=[A >: A2 <: A1](f: B1 => B2): PState[A, B2] =
     State(a =>
       run(a) match {
-        case None => (a, None)
+        case None =>
+          (a, None)
         case Some(w) => {
           val r = f(w.pos)
           (w put r, Some(r))
@@ -114,7 +119,8 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def %%=[A >: A2 <: A1, C](s: IndexedState[B1, B2, C]): PState[A, C] =
     State(a =>
       run(a) match {
-        case None => (a, None)
+        case None =>
+          (a, None)
         case Some(w) => {
           val r = s.run(w.pos): (B2, C)
           (w put r._1, Some(r._2))
@@ -127,10 +133,12 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   def >>-[A >: A2 <: A1, C](f: B1 => State[A, C]): PState[A, C] =
     StateT(a =>
       get(a) match {
-        case None => (a, None)
+        case None =>
+          (a, None)
         case Some(w) =>
           f(w) apply a match {
-            case (y, x) => (y, Some(x))
+            case (y, x) =>
+              (y, Some(x))
           }
       })
 
@@ -240,14 +248,18 @@ trait PLensFamilyFunctions extends PLensInstances {
 
   def leftPLensFamily[A1, A2, B]: PLensFamily[A1 \/ B, A2 \/ B, A1, A2] =
     plensFamily {
-      case -\/(a) => Some(IndexedStore(\/.left, a))
-      case \/-(_) => None
+      case -\/(a) =>
+        Some(IndexedStore(\/.left, a))
+      case \/-(_) =>
+        None
     }
 
   def rightPLensFamily[A, B1, B2]: PLensFamily[A \/ B1, A \/ B2, B1, B2] =
     plensFamily {
-      case \/-(b) => Some(IndexedStore(\/.right, b))
-      case -\/(_) => None
+      case \/-(b) =>
+        Some(IndexedStore(\/.right, b))
+      case -\/(_) =>
+        None
     }
 
   def tuple2PLensFamily[S1, S2, A, B](lens: PLensFamily[S1, S2, (A, B), (A, B)])
@@ -371,14 +383,18 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
   def leftPLens[A, B]: (A \/ B) @?> A =
     plens {
-      case -\/(a) => Some(Store(\/.left, a))
-      case \/-(_) => None
+      case -\/(a) =>
+        Some(Store(\/.left, a))
+      case \/-(_) =>
+        None
     }
 
   def rightPLens[A, B]: (A \/ B) @?> B =
     plens {
-      case \/-(b) => Some(Store(\/.right, b))
-      case -\/(_) => None
+      case \/-(b) =>
+        Some(Store(\/.right, b))
+      case -\/(_) =>
+        None
     }
 
   def tuple2PLens[S, A, B](lens: PLens[S, (A, B)]): (PLens[S, A], PLens[S, B]) =
@@ -432,14 +448,18 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
   def listHeadPLens[A]: List[A] @?> A =
     plens {
-      case Nil    => None
-      case h :: t => Some(Store(_ :: t, h))
+      case Nil =>
+        None
+      case h :: t =>
+        Some(Store(_ :: t, h))
     }
 
   def listTailPLens[A]: List[A] @?> List[A] =
     plens {
-      case Nil    => None
-      case h :: t => Some(Store(h :: _, t))
+      case Nil =>
+        None
+      case h :: t =>
+        Some(Store(h :: _, t))
     }
 
   def listNthPLens[A](n: Int): List[A] @?> A =
@@ -455,15 +475,20 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     def lookupr(t: (List[(K, V)], (K, V), List[(K, V)]))
         : Option[(List[(K, V)], (K, V), List[(K, V)])] =
       t match {
-        case (_, (k, _), _) if p(k) => Some(t)
-        case (_, _, Nil)            => None
-        case (l, x, r :: rs)        => lookupr(x :: l, r, rs)
+        case (_, (k, _), _) if p(k) =>
+          Some(t)
+        case (_, _, Nil) =>
+          None
+        case (l, x, r :: rs) =>
+          lookupr(x :: l, r, rs)
       }
     plens {
-      case Nil => None
+      case Nil =>
+        None
       case h :: t =>
         lookupr(Nil, h, t) map {
-          case (l, (k, v), r) => Store(w => l reverse_::: (k, w) :: r, v)
+          case (l, (k, v), r) =>
+            Store(w => l reverse_::: (k, w) :: r, v)
         }
     }
   }
@@ -485,14 +510,18 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
   def streamHeadPLens[A]: Stream[A] @?> A =
     plens {
-      case Empty   => None
-      case h #:: t => Some(Store(_ #:: t, h))
+      case Empty =>
+        None
+      case h #:: t =>
+        Some(Store(_ #:: t, h))
     }
 
   def streamTailPLens[A]: Stream[A] @?> Stream[A] =
     plens {
-      case Empty   => None
-      case h #:: t => Some(Store(h #:: _, t))
+      case Empty =>
+        None
+      case h #:: t =>
+        Some(Store(h #:: _, t))
     }
 
   def streamNthPLens[A](n: Int): Stream[A] @?> A =
@@ -508,15 +537,20 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     def lookupr(t: (Stream[(K, V)], (K, V), Stream[(K, V)]))
         : Option[(Stream[(K, V)], (K, V), Stream[(K, V)])] =
       t match {
-        case (_, (k, _), _) if p(k) => Some(t)
-        case (_, _, Stream.Empty)   => None
-        case (l, x, r #:: rs)       => lookupr(x #:: l, r, rs)
+        case (_, (k, _), _) if p(k) =>
+          Some(t)
+        case (_, _, Stream.Empty) =>
+          None
+        case (l, x, r #:: rs) =>
+          lookupr(x #:: l, r, rs)
       }
     plens {
-      case Stream.Empty => None
+      case Stream.Empty =>
+        None
       case h #:: t =>
         lookupr(Stream.empty, h, t) map {
-          case (l, (k, v), r) => Store(w => l.reverse #::: (k, w) #:: r, v)
+          case (l, (k, v), r) =>
+            Store(w => l.reverse #::: (k, w) #:: r, v)
         }
     }
   }
@@ -554,7 +588,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
     def lookupr(t: (EphemeralStream[(K, V)], (K, V), EphemeralStream[(K, V)]))
         : Option[(EphemeralStream[(K, V)], (K, V), EphemeralStream[(K, V)])] =
       t match {
-        case (_, (k, _), _) if p(k) => Some(t)
+        case (_, (k, _), _) if p(k) =>
+          Some(t)
         case (l, x, s) =>
           if (s.isEmpty)
             None
@@ -567,7 +602,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
       else
         lookupr(
           (EphemeralStream.emptyEphemeralStream, s.head(), s.tail())) map {
-          case (l, (k, v), r) => Store(w => l.reverse ++ cons((k, w), r), v)
+          case (l, (k, v), r) =>
+            Store(w => l.reverse ++ cons((k, w), r), v)
         })
   }
 

@@ -375,7 +375,8 @@ class ClientBuilder[
   def dest(addr: String)
       : ClientBuilder[Req, Rep, Yes, HasCodec, HasHostConnectionLimit] = {
     Resolver.evalLabeled(addr) match {
-      case (n, "") => dest(n)
+      case (n, "") =>
+        dest(n)
       case (n, l) =>
         val Label(label) = params[Label]
         val cb =
@@ -759,8 +760,10 @@ class ClientBuilder[
       (
         Transport.TLSClientEngine(
           Some({
-            case inet: InetSocketAddress => Ssl.client(hostname, inet.getPort)
-            case _                       => Ssl.client()
+            case inet: InetSocketAddress =>
+              Ssl.client(hostname, inet.getPort)
+            case _ =>
+              Ssl.client()
           }))
       ))
       .configured(Transporter.TLSHostname(Some(hostname)))
@@ -778,7 +781,8 @@ class ClientBuilder[
           Some({
             case inet: InetSocketAddress =>
               Ssl.client(sslContext, inet.getHostName, inet.getPort)
-            case _ => Ssl.client(sslContext)
+            case _ =>
+              Ssl.client(sslContext)
           }))
       ))
 
@@ -797,7 +801,8 @@ class ClientBuilder[
                 sslContext,
                 hostname.getOrElse(inet.getHostName),
                 inet.getPort)
-            case _ => Ssl.client(sslContext)
+            case _ =>
+              Ssl.client(sslContext)
           }))
       ))
       .configured(Transporter.TLSHostname(hostname))
@@ -813,7 +818,8 @@ class ClientBuilder[
             Ssl.clientWithoutCertificateValidation(
               inet.getHostName,
               inet.getPort)
-          case _ => Ssl.clientWithoutCertificateValidation()
+          case _ =>
+            Ssl.clientWithoutCertificateValidation()
         })))
 
   /**

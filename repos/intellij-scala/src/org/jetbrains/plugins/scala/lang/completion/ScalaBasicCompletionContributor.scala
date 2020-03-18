@@ -142,7 +142,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                     stringText.substring(endPoint),
                   position.getContext)
               (newInterpolated.findElementAt(offsetInString + 1), false, true)
-            case _ => return
+            case _ =>
+              return
           }
         result.restartCompletionWhenNothingMatches()
 
@@ -222,7 +223,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                     case f: FakePsiMethod
                         if f.name.endsWith(
                           "_=") && parameters.getInvocationCount < 2 => //don't show _= methods for vars in basic completion
-                    case fun: ScFun                                  => addElement(el)
+                    case fun: ScFun =>
+                      addElement(el)
                     case param: ScClassParameter =>
                       addElement(el)
                     case param: ScParameter if !el.isNamedParameter =>
@@ -247,7 +249,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                                 position,
                                 forCompletion = true))
                             addElement(el)
-                        case _ => addElement(el)
+                        case _ =>
+                          addElement(el)
                       }
                     case memb: PsiMember =>
                       if (parameters.getInvocationCount > 1 || ResolveUtils
@@ -416,7 +419,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                 null
             }
         ).orNull
-      case _ => null
+      case _ =>
+        null
     }
   }
 

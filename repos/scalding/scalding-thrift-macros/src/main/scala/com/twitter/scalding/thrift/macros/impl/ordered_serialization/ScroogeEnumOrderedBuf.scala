@@ -26,7 +26,8 @@ object ScroogeEnumOrderedBuf {
     import c.universe._
 
     val pf: PartialFunction[c.Type, TreeOrderedBuf[c.type]] = {
-      case tpe if tpe <:< typeOf[ThriftEnum] => ScroogeEnumOrderedBuf(c)(tpe)
+      case tpe if tpe <:< typeOf[ThriftEnum] =>
+        ScroogeEnumOrderedBuf(c)(tpe)
     }
     pf
   }

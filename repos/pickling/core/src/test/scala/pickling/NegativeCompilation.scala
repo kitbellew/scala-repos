@@ -24,7 +24,8 @@ object NegativeCompilation {
         list.length == prefixes.size,
         ("expected = " + prefixes.length + ", actual = " + list.length, list))
       list.zip(prefixes).foreach {
-        case (el, prefix) => el mustStartWith prefix
+        case (el, prefix) =>
+          el mustStartWith prefix
       }
     }
   }
@@ -60,10 +61,14 @@ object NegativeCompilation {
     val Pattern = """(\d+\.\d+)\..*""".r
     val SnapshotPattern = """(\d+\.\d+\.\d+)-\d+-\d+-.*""".r
     scala.util.Properties.versionNumberString match {
-      case s @ PreReleasePattern(_) => s
-      case SnapshotPattern(v)       => v + "-SNAPSHOT"
-      case Pattern(v)               => v
-      case _                        => ""
+      case s @ PreReleasePattern(_) =>
+        s
+      case SnapshotPattern(v) =>
+        v + "-SNAPSHOT"
+      case Pattern(v) =>
+        v
+      case _ =>
+        ""
     }
   }
 

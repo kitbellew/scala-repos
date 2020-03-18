@@ -26,8 +26,10 @@ class TraceTest
   test("have a default id without parents, etc.") {
     assert(
       Trace.id match {
-        case TraceId(None, None, _, None, Flags(0)) => true
-        case _                                      => false
+        case TraceId(None, None, _, None, Flags(0)) =>
+          true
+        case _ =>
+          false
       })
   }
 
@@ -63,8 +65,10 @@ class TraceTest
       assert(Trace.id != defaultId)
       assert(
         Trace.id match {
-          case TraceId(None, None, _, None, Flags(0)) => true
-          case _                                      => false
+          case TraceId(None, None, _, None, Flags(0)) =>
+            true
+          case _ =>
+            false
         })
     }
   }
@@ -78,7 +82,8 @@ class TraceTest
             case TraceId(Some(traceId), Some(parentId), _, None, Flags(0))
                 if traceId == topId.traceId && parentId == topId.spanId =>
               true
-            case _ => false
+            case _ =>
+              false
           })
       }
     }
@@ -243,8 +248,10 @@ class TraceTest
         val currentId = Trace.id
         assert(
           currentId match {
-            case TraceId(None, None, _, None, Flags(0)) => true
-            case _                                      => false
+            case TraceId(None, None, _, None, Flags(0)) =>
+              true
+            case _ =>
+              false
           })
         assert(Trace.isTerminal == false)
         assert(Trace.tracers == List(tracer))
@@ -283,7 +290,8 @@ class TraceTest
                   ) && (_parentId == parentId.spanId) &&
                     (_sampled == parentId.sampled.get) =>
                 true
-              case _ => false
+              case _ =>
+                false
             })
           assert(Trace.isTerminal == false)
           assert(Trace.tracers == List(tracer))
@@ -304,8 +312,10 @@ class TraceTest
         val currentId = Trace.id
         assert(
           currentId match {
-            case TraceId(None, None, _, None, Flags(0)) => true
-            case _                                      => false
+            case TraceId(None, None, _, None, Flags(0)) =>
+              true
+            case _ =>
+              false
           })
         assert(Trace.isTerminal == true)
         assert(Trace.tracers == List(tracer))
@@ -436,7 +446,8 @@ class TraceTest
 
     Trace.idCtx.tryUnmarshal(Buf.ByteArray.Owned(bytes)) match {
       case Throw(_: IllegalArgumentException) =>
-      case rv                                 => fail(s"Got $rv")
+      case rv =>
+        fail(s"Got $rv")
     }
   }
 

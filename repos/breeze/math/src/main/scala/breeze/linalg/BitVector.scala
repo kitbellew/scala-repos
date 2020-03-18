@@ -85,8 +85,10 @@ class BitVector(
       true
     else
       other match {
-        case x: BitVector => !x.enforceLength || x.length == length
-        case _            => other.length == length
+        case x: BitVector =>
+          !x.enforceLength || x.length == length
+        case _ =>
+          other.length == length
       }
   }
 

@@ -78,11 +78,16 @@ class ScalaFunctionParameterInfoHandler
     elem match {
       case argExprList: ScArgumentExprList =>
         argExprList.exprs.toArray
-      case u: ScUnitExpr          => Array.empty
-      case p: ScParenthesisedExpr => p.expr.toArray
-      case t: ScTuple             => t.exprs.toArray
-      case e: ScExpression        => Array(e)
-      case _                      => Array.empty
+      case u: ScUnitExpr =>
+        Array.empty
+      case p: ScParenthesisedExpr =>
+        p.expr.toArray
+      case t: ScTuple =>
+        t.exprs.toArray
+      case e: ScExpression =>
+        Array(e)
+      case _ =>
+        Array.empty
     }
   }
 
@@ -115,7 +120,8 @@ class ScalaFunctionParameterInfoHandler
     p match {
       case x: ScFunction =>
         x.parameters.toArray
-      case _ => ArrayUtil.EMPTY_OBJECT_ARRAY
+      case _ =>
+        ArrayUtil.EMPTY_OBJECT_ARRAY
     }
   }
 
@@ -249,7 +255,8 @@ class ScalaFunctionParameterInfoHandler
                               if (!exprType.conforms(paramType))
                                 isGrey = true
                             }
-                          case _ => isGrey = true
+                          case _ =>
+                            isGrey = true
                         }
                       }
                     case expr: ScExpression =>
@@ -277,7 +284,8 @@ class ScalaFunctionParameterInfoHandler
                         if (namedMode)
                           buffer.append(namedPostfix)
                       }
-                    case _ => appendFirst()
+                    case _ =>
+                      appendFirst()
                   }
                 }
               }
@@ -534,7 +542,8 @@ class ScalaFunctionParameterInfoHandler
 
       override def callReference: Option[ScReferenceExpression] = {
         element.getParent match {
-          case i: ScInfixExpr => Some(i.operation)
+          case i: ScInfixExpr =>
+            Some(i.operation)
         }
       }
     }
@@ -553,17 +562,24 @@ class ScalaFunctionParameterInfoHandler
       def create[T <: PsiElement](elem: T)(
           f: T => Invocation): Option[Invocation] = {
         elem.getParent match {
-          case i: ScInfixExpr if i.getArgExpr == elem => Some(f(elem))
-          case _                                      => None
+          case i: ScInfixExpr if i.getArgExpr == elem =>
+            Some(f(elem))
+          case _ =>
+            None
         }
       }
 
       elem match {
-        case args: ScArgumentExprList => Some(new CallInvocation(args))
-        case t: ScTuple               => create(t)(new InfixTupleInvocation(_))
-        case u: ScUnitExpr            => create(u)(new InfixUnitInvocation(_))
-        case e: ScExpression          => create(e)(new InfixExpressionInvocation(_))
-        case _                        => None
+        case args: ScArgumentExprList =>
+          Some(new CallInvocation(args))
+        case t: ScTuple =>
+          create(t)(new InfixTupleInvocation(_))
+        case u: ScUnitExpr =>
+          create(u)(new InfixUnitInvocation(_))
+        case e: ScExpression =>
+          create(e)(new InfixExpressionInvocation(_))
+        case _ =>
+          None
       }
     }
   }
@@ -609,7 +625,8 @@ class ScalaFunctionParameterInfoHandler
                       if !notExpr.isInstanceOf[ScExpression] || notExpr
                         .isInstanceOf[ScBlockExpr] =>
                     true
-                  case _ => false
+                  case _ =>
+                    false
                 }
               val count = args.invocationCount
               val gen = args.callGeneric.getOrElse(null: ScGenericCall)
@@ -625,7 +642,8 @@ class ScalaFunctionParameterInfoHandler
                     case ptpo: PsiTypeParameterListOwner =>
                       ptpo.getTypeParameters.map(p =>
                         (p.name, ScalaPsiUtil.getPsiElementId(p)))
-                    case _ => return ScSubstitutor.empty
+                    case _ =>
+                      return ScSubstitutor.empty
                   }
                 val typeArgs: Seq[ScTypeElement] = gen.arguments
                 val map =
@@ -777,19 +795,24 @@ class ScalaFunctionParameterInfoHandler
                                 Map.empty,
                                 None)
                             res += ((constr, substitutor.followed(subst), i))
-                          case _ => res += ((constr, subst, i))
+                          case _ =>
+                            res += ((constr, subst, i))
                         }
-                      case Some(_) if i == 0 => res += ""
-                      case None              => res += ""
-                      case _                 =>
+                      case Some(_) if i == 0 =>
+                        res += ""
+                      case None =>
+                        res += ""
+                      case _ =>
                     }
                     for (constr <- clazz.functions
                          if !constr.isInstanceOf[ScPrimaryConstructor] &&
                            constr.isConstructor && (
                            (
                              constr.clauses match {
-                               case Some(x) => x.clauses.length
-                               case None    => 1
+                               case Some(x) =>
+                                 x.clauses.length
+                               case None =>
+                                 1
                              }
                            ) > i
                          ))
@@ -866,9 +889,11 @@ class ScalaFunctionParameterInfoHandler
                   case Some(constr: ScPrimaryConstructor)
                       if i < constr.effectiveParameterClauses.length =>
                     res += ((constr, ScSubstitutor.empty, i))
-                  case Some(constr) if i == 0 => res += ""
-                  case None                   => res += ""
-                  case _                      =>
+                  case Some(constr) if i == 0 =>
+                    res += ""
+                  case None =>
+                    res += ""
+                  case _ =>
                 }
                 for {
                   constr <- clazz.functions

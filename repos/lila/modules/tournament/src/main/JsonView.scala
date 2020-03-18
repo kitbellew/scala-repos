@@ -34,9 +34,12 @@ final class JsonView(
         PlayerRepo.playerInfo(tour.id, _)
       }
       stand <- (myInfo, page) match {
-        case (_, Some(p)) => standing(tour, p)
-        case (Some(i), _) => standing(tour, i.page)
-        case _            => standing(tour, 1)
+        case (_, Some(p)) =>
+          standing(tour, p)
+        case (Some(i), _) =>
+          standing(tour, i.page)
+        case _ =>
+          standing(tour, 1)
       }
       playerInfoJson <- playerInfoExt ?? { pie =>
         playerInfo(pie).map(_.some)
@@ -157,7 +160,8 @@ final class JsonView(
         Json.obj(
           "game" -> s.scores.size,
           "berserk" -> pairings.foldLeft(0) {
-            case (nb, p) => nb + p.berserkOf(userId)
+            case (nb, p) =>
+              nb + p.berserkOf(userId)
           },
           "win" -> s.scores.count(_.isWin))
     }
@@ -226,8 +230,10 @@ final class JsonView(
       "fen" -> (chess.format.Forsyth exportBoard game.toChess.board),
       "color" -> (
         game.variant match {
-          case chess.variant.RacingKings => chess.White
-          case _                         => game.firstColor
+          case chess.variant.RacingKings =>
+            chess.White
+          case _ =>
+            game.firstColor
         }
       ).name,
       "lastMove" -> ~game.castleLastMoveTime.lastMoveString,
@@ -326,9 +332,12 @@ final class JsonView(
       "s" -> (
         if (p.finished)
           p.winner match {
-            case Some(w) if w == p.user1 => 2
-            case Some(w)                 => 3
-            case _                       => 1
+            case Some(w) if w == p.user1 =>
+              2
+            case Some(w) =>
+              3
+            case _ =>
+              1
           }
         else
           0

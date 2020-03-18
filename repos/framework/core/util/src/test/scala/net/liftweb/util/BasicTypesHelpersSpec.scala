@@ -180,8 +180,10 @@ object BasicTypesHelpersSpec extends Specification with DataTables {
       }
 
       val pf2: PartialFunction[String, Boolean] = {
-        case "snipe" => true
-        case "bipe"  => false
+        case "snipe" =>
+          true
+        case "bipe" =>
+          false
       }
 
       val pf3 = pf1.guard(pf2)

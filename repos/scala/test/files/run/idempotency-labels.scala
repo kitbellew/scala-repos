@@ -19,6 +19,7 @@ object Test extends App {
   try {
     println(tb.eval(rtlabel))
   } catch {
-    case _: ToolBoxError => println("error!")
+    case _: ToolBoxError =>
+      println("error!")
   }
 }

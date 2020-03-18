@@ -185,9 +185,12 @@ private final class KeyIndex0(val data: BuildIndex) extends ExtendableKeyIndex {
   }
   def parts(proj: Option[Reference]): (Option[URI], Option[String]) =
     proj match {
-      case Some(ProjectRef(uri, id)) => (Some(uri), Some(id))
-      case Some(BuildRef(uri))       => (Some(uri), None)
-      case _                         => (None, None)
+      case Some(ProjectRef(uri, id)) =>
+        (Some(uri), Some(id))
+      case Some(BuildRef(uri)) =>
+        (Some(uri), None)
+      case _ =>
+        (None, None)
     }
   private[this] def optConfigs(
       project: Option[ResolvedReference]): Seq[Option[String]] =

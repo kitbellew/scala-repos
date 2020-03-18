@@ -291,11 +291,13 @@ private[spark] class MemoryStore(
       entries.get(blockId)
     }
     entry match {
-      case null => None
+      case null =>
+        None
       case e: DeserializedMemoryEntry =>
         throw new IllegalArgumentException(
           "should only call getBytes on serialized blocks")
-      case SerializedMemoryEntry(bytes, _) => Some(bytes)
+      case SerializedMemoryEntry(bytes, _) =>
+        Some(bytes)
     }
   }
 
@@ -304,11 +306,13 @@ private[spark] class MemoryStore(
       entries.get(blockId)
     }
     entry match {
-      case null => None
+      case null =>
+        None
       case e: SerializedMemoryEntry =>
         throw new IllegalArgumentException(
           "should only call getValues on deserialized blocks")
-      case DeserializedMemoryEntry(values, _) => Some(values.iterator)
+      case DeserializedMemoryEntry(values, _) =>
+        Some(values.iterator)
     }
   }
 
@@ -400,8 +404,10 @@ private[spark] class MemoryStore(
           if (entry != null) {
             val data =
               entry match {
-                case DeserializedMemoryEntry(values, _) => Left(values)
-                case SerializedMemoryEntry(buffer, _)   => Right(buffer)
+                case DeserializedMemoryEntry(values, _) =>
+                  Left(values)
+                case SerializedMemoryEntry(buffer, _) =>
+                  Right(buffer)
               }
             val newEffectiveStorageLevel = blockManager.dropFromMemory(
               blockId,

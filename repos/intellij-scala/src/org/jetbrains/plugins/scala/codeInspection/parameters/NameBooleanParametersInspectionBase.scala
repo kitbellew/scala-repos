@@ -78,7 +78,8 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
                   .filterBy(classOf[ScFunction])
               targets.exists(_.parameters.size == 1)
             }
-          case _ => false
+          case _ =>
+            false
         }
       }
 

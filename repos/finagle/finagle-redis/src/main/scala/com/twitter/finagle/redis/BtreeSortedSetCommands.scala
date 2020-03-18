@@ -17,7 +17,8 @@ trait BtreeSortedSetCommands {
     */
   def bRem(key: ChannelBuffer, fields: Seq[ChannelBuffer]): Future[JLong] =
     doRequest(BRem(key, fields)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -29,8 +30,10 @@ trait BtreeSortedSetCommands {
       key: ChannelBuffer,
       field: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(BGet(key, field)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -43,7 +46,8 @@ trait BtreeSortedSetCommands {
       field: ChannelBuffer,
       value: ChannelBuffer): Future[JLong] =
     doRequest(BAdd(key, field, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -54,7 +58,8 @@ trait BtreeSortedSetCommands {
     */
   def bCard(key: ChannelBuffer): Future[JLong] =
     doRequest(BCard(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -70,7 +75,8 @@ trait BtreeSortedSetCommands {
     doRequest(BRange(key, startField, endField)) {
       case MBulkReply(messages) =>
         Future.value(returnPairs(ReplyFormat.toChannelBuffers(messages)))
-      case EmptyMBulkReply() => Future.Nil
+      case EmptyMBulkReply() =>
+        Future.Nil
     }
   }
 }

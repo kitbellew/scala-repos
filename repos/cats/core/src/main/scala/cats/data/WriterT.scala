@@ -13,7 +13,8 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
       L: Semigroup[L]): WriterT[F, L, Z] =
     WriterT(
       F.map2(f.run, run) {
-        case ((l1, fvz), (l2, v)) => (L.combine(l1, l2), fvz(v))
+        case ((l1, fvz), (l2, v)) =>
+          (L.combine(l1, l2), fvz(v))
       })
 
   def map[Z](fn: V => Z)(implicit functorF: Functor[F]): WriterT[F, L, Z] =
@@ -222,7 +223,8 @@ private[data] sealed trait WriterTApply[F[_], L]
       fb: WriterT[F, L, B]): WriterT[F, L, (A, B)] =
     WriterT(
       F0.map(F0.product(fa.run, fb.run)) {
-        case ((l1, a), (l2, b)) => (L0.combine(l1, l2), (a, b))
+        case ((l1, a), (l2, b)) =>
+          (L0.combine(l1, l2), (a, b))
       })
 }
 

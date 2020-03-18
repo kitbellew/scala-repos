@@ -125,7 +125,8 @@ class IndexLong(keys: Vec[Long]) extends Index[Long] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
   }
 }

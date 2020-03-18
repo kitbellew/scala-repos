@@ -96,8 +96,10 @@ trait IndexControllerBase extends ControllerBase {
 
   post("/signin", signinForm) { form =>
     authenticate(context.settings, form.userName, form.password) match {
-      case Some(account) => signin(account)
-      case None          => redirect("/signin")
+      case Some(account) =>
+        signin(account)
+      case None =>
+        redirect("/signin")
     }
   }
 
@@ -178,7 +180,8 @@ trait IndexControllerBase extends ControllerBase {
               else
                 i
             } catch {
-              case e: NumberFormatException => 1
+              case e: NumberFormatException =>
+                1
             }
 
           target.toLowerCase match {

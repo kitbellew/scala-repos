@@ -118,10 +118,12 @@ class ErrorFormatter(
         case NotPredicate(_, x) ⇒
           math.max(
             trace.prefix.collectFirst {
-              case NonTerminal(Atomic, off) ⇒ off + x
+              case NonTerminal(Atomic, off) ⇒
+                off + x
             } getOrElse x,
             len)
-        case _ ⇒ len
+        case _ ⇒
+          len
       }
     }
 
@@ -152,9 +154,12 @@ class ErrorFormatter(
     @tailrec
     def rec(remaining: List[String]): JStringBuilder =
       remaining match {
-        case Nil ⇒ sb.append("???")
-        case head :: Nil ⇒ sb.append(head)
-        case head :: last :: Nil ⇒ sb.append(head).append(" or ").append(last)
+        case Nil ⇒
+          sb.append("???")
+        case head :: Nil ⇒
+          sb.append(head)
+        case head :: last :: Nil ⇒
+          sb.append(head).append(" or ").append(last)
         case head :: tail ⇒
           sb.append(head).append(", ");
           rec(tail)
@@ -224,7 +229,8 @@ class ErrorFormatter(
             sb.append(
               new String(
                 Array.fill[Char](expandTabs - (sb.length % expandTabs))(' ')))
-          case c ⇒ sb.append(c)
+          case c ⇒
+            sb.append(c)
         }
         rec(inCol + 1, ec)
       } else
@@ -308,25 +314,44 @@ class ErrorFormatter(
     import CharUtils.escape
     val keyString =
       nonTerminal.key match {
-        case Action ⇒ "<action>"
-        case Atomic ⇒ "atomic"
-        case AndPredicate ⇒ "&"
-        case Capture ⇒ "capture"
-        case Cut ⇒ "cut"
-        case FirstOf ⇒ "|"
-        case x: IgnoreCaseString ⇒ '"' + escape(x.string) + '"'
-        case x: MapMatch ⇒ x.map.toString()
-        case x: Named ⇒ x.name
-        case OneOrMore ⇒ "+"
-        case Optional ⇒ "?"
-        case Quiet ⇒ "quiet"
-        case RuleCall ⇒ "call"
-        case Run ⇒ "<run>"
-        case RunSubParser ⇒ "runSubParser"
-        case Sequence ⇒ "~"
-        case x: StringMatch ⇒ '"' + escape(x.string) + '"'
-        case x: Times ⇒ "times"
-        case ZeroOrMore ⇒ "*"
+        case Action ⇒
+          "<action>"
+        case Atomic ⇒
+          "atomic"
+        case AndPredicate ⇒
+          "&"
+        case Capture ⇒
+          "capture"
+        case Cut ⇒
+          "cut"
+        case FirstOf ⇒
+          "|"
+        case x: IgnoreCaseString ⇒
+          '"' + escape(x.string) + '"'
+        case x: MapMatch ⇒
+          x.map.toString()
+        case x: Named ⇒
+          x.name
+        case OneOrMore ⇒
+          "+"
+        case Optional ⇒
+          "?"
+        case Quiet ⇒
+          "quiet"
+        case RuleCall ⇒
+          "call"
+        case Run ⇒
+          "<run>"
+        case RunSubParser ⇒
+          "runSubParser"
+        case Sequence ⇒
+          "~"
+        case x: StringMatch ⇒
+          '"' + escape(x.string) + '"'
+        case x: Times ⇒
+          "times"
+        case ZeroOrMore ⇒
+          "*"
       }
     if (nonTerminal.offset != 0 && showFrameStartOffset)
       keyString + ':' + nonTerminal.offset
@@ -338,19 +363,32 @@ class ErrorFormatter(
     import RuleTrace._
     import CharUtils.escape
     terminal match {
-      case ANY ⇒ "ANY"
-      case AnyOf(s) ⇒ '[' + escape(s) + ']'
-      case CharMatch(c) ⇒ "'" + escape(c) + '\''
-      case CharPredicateMatch(_) ⇒ "<CharPredicate>"
-      case CharRange(from, to) ⇒ s"'${escape(from)}'-'${escape(to)}'"
-      case Fail(expected) ⇒ expected
-      case IgnoreCaseChar(c) ⇒ "'" + escape(c) + '\''
-      case NoneOf(s) ⇒ s"[^${escape(s)}]"
-      case NotPredicate(NotPredicate.Terminal(t), _) ⇒ "!" + formatTerminal(t)
-      case NotPredicate(NotPredicate.RuleCall(t), _) ⇒ "!" + t
-      case NotPredicate(NotPredicate.Named(n), _) ⇒ "!" + n
-      case NotPredicate(NotPredicate.Anonymous, _) ⇒ "!<anon>"
-      case SemanticPredicate ⇒ "test"
+      case ANY ⇒
+        "ANY"
+      case AnyOf(s) ⇒
+        '[' + escape(s) + ']'
+      case CharMatch(c) ⇒
+        "'" + escape(c) + '\''
+      case CharPredicateMatch(_) ⇒
+        "<CharPredicate>"
+      case CharRange(from, to) ⇒
+        s"'${escape(from)}'-'${escape(to)}'"
+      case Fail(expected) ⇒
+        expected
+      case IgnoreCaseChar(c) ⇒
+        "'" + escape(c) + '\''
+      case NoneOf(s) ⇒
+        s"[^${escape(s)}]"
+      case NotPredicate(NotPredicate.Terminal(t), _) ⇒
+        "!" + formatTerminal(t)
+      case NotPredicate(NotPredicate.RuleCall(t), _) ⇒
+        "!" + t
+      case NotPredicate(NotPredicate.Named(n), _) ⇒
+        "!" + n
+      case NotPredicate(NotPredicate.Anonymous, _) ⇒
+        "!<anon>"
+      case SemanticPredicate ⇒
+        "test"
     }
   }
 }

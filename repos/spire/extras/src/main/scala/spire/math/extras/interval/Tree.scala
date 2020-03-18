@@ -160,7 +160,8 @@ private[interval] object Tree {
                 overlapA(a0, a.left, b0) && op(am, a.right, b0, b)
               }
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
       } else if (b_l > a_l) {
@@ -180,7 +181,8 @@ private[interval] object Tree {
                 overlapB(a0, b0, b.left) && op(a0, a, bm, b.right)
               }
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
       } else {
@@ -196,7 +198,8 @@ private[interval] object Tree {
             case (a: Leaf, b: Leaf) =>
               collision(a0, a, b0, b)
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
         } else {
@@ -315,7 +318,8 @@ private[interval] object Tree {
                 a.lr(overlapA(a0, a.left, b0), op(am, a.right, b0, b))
               }
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
       } else if (b_l > a_l) {
@@ -335,7 +339,8 @@ private[interval] object Tree {
                 b.lr(overlapB(a0, b0, b.left), op(a0, a, bm, b.right))
               }
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
       } else {
@@ -351,7 +356,8 @@ private[interval] object Tree {
             case (a: Leaf, b: Leaf) =>
               collision(a0, a, b0, b)
             // $COVERAGE-OFF$
-            case _ => unreachable
+            case _ =>
+              unreachable
             // $COVERAGE-ON$
           }
         } else {

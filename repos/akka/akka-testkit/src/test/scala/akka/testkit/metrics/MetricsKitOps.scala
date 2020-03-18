@@ -114,7 +114,8 @@ private[metrics] trait MetricsPrefix extends MetricSet {
     import collection.JavaConverters._
     (
       super.getMetrics.asScala.map {
-        case (k, v) ⇒ (prefix / k).toString -> v
+        case (k, v) ⇒
+          (prefix / k).toString -> v
       }
     ).asJava
   }

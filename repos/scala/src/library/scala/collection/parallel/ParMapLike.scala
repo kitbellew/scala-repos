@@ -42,14 +42,18 @@ trait ParMapLike[K, +V, +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[
 
   def apply(key: K) =
     get(key) match {
-      case Some(v) => v
-      case None    => default(key)
+      case Some(v) =>
+        v
+      case None =>
+        default(key)
     }
 
   def getOrElse[U >: V](key: K, default: => U): U =
     get(key) match {
-      case Some(v) => v
-      case None    => default
+      case Some(v) =>
+        v
+      case None =>
+        default
     }
 
   def contains(key: K): Boolean = get(key).isDefined

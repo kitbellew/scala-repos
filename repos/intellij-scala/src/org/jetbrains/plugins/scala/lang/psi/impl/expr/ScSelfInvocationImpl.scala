@@ -63,8 +63,10 @@ class ScSelfInvocationImpl(node: ASTNode)
       return Seq.empty
     val expressions: Seq[Expression] =
       args match {
-        case Some(arguments) => arguments.exprs.map(new Expression(_))
-        case None            => Seq.empty
+        case Some(arguments) =>
+          arguments.exprs.map(new Expression(_))
+        case None =>
+          Seq.empty
       }
     val proc =
       new MethodResolveProcessor(
@@ -83,8 +85,9 @@ class ScSelfInvocationImpl(node: ASTNode)
       proc.execute(constr, ResolveState.initial)
     }
     clazz.constructor match {
-      case Some(constr) => proc.execute(constr, ResolveState.initial())
-      case _            =>
+      case Some(constr) =>
+        proc.execute(constr, ResolveState.initial())
+      case _ =>
     }
     proc.candidates.toSeq.map(_.element)
   }
@@ -108,7 +111,8 @@ class ScSelfInvocationImpl(node: ASTNode)
         val params: Seq[TypeParameter] = tp.typeParameters.map(
           new TypeParameter(_))
         Success(ScTypePolymorphicType(res, params), Some(this))
-      case _ => Success(res, Some(this))
+      case _ =>
+        Success(res, Some(this))
     }
   }
 
@@ -133,8 +137,10 @@ class ScSelfInvocationImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitSelfInvocation(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitSelfInvocation(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

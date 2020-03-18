@@ -54,8 +54,10 @@ sealed abstract class MediaType
 
   override def equals(that: Any): Boolean =
     that match {
-      case x: MediaType ⇒ value equalsIgnoreCase x.value
-      case _ ⇒ false
+      case x: MediaType ⇒
+        value equalsIgnoreCase x.value
+      case _ ⇒
+        false
     }
 
   override def hashCode(): Int = value.hashCode
@@ -298,7 +300,8 @@ object MediaType {
     val r = new StringRendering ~~ mainType ~~ '/' ~~ subType
     if (params.nonEmpty)
       params foreach {
-        case (k, v) ⇒ r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
+        case (k, v) ⇒
+          r ~~ ';' ~~ ' ' ~~ k ~~ '=' ~~# v
       }
     r.get
   }

@@ -51,7 +51,8 @@ class ColorTagger extends WriteEventAdapter {
           event
         else
           Tagged(event, tags)
-      case _ ⇒ event
+      case _ ⇒
+        event
     }
 
   override def manifest(event: Any): String = ""

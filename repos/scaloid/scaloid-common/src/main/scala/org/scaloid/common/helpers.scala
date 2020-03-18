@@ -277,7 +277,8 @@ trait PreferenceHelpers {
           def put(value: Boolean, editor: SharedPreferences.Editor): Unit =
             editor.putBoolean(key, value)
         }.asInstanceOf[PreferenceVar[T]]
-      case _ => throw new Exception("Invalid type for SharedPreferences")
+      case _ =>
+        throw new Exception("Invalid type for SharedPreferences")
     }
 
   import scala.language.experimental.macros

@@ -98,8 +98,10 @@ trait CodingDirectives {
     */
   def requestEncodedWith(encoding: HttpEncoding): Directive0 =
     extract(_.request.encoding).flatMap {
-      case `encoding` ⇒ pass
-      case _ ⇒ reject(UnsupportedRequestEncodingRejection(encoding))
+      case `encoding` ⇒
+        pass
+      case _ ⇒
+        reject(UnsupportedRequestEncodingRejection(encoding))
     }
 
   /**
@@ -161,7 +163,8 @@ object CodingDirectives extends CodingDirectives {
         .pickEncoding(encodings)
         .flatMap(be ⇒ encoders.find(_.encoding == be))
       bestEncoder match {
-        case Some(encoder) ⇒ mapResponse(encoder.encode(_))
+        case Some(encoder) ⇒
+          mapResponse(encoder.encode(_))
         case _ ⇒
           if (encoders.contains(NoCoding) && !negotiator.hasMatchingFor(
                 HttpEncodings.identity))

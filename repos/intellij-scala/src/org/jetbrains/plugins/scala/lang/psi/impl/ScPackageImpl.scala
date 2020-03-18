@@ -54,8 +54,10 @@ class ScPackageImpl private (val pack: PsiPackage)
       if (!BaseProcessor.isImplicitProcessor(processor)) {
         val scope =
           processor match {
-            case r: ResolveProcessor => r.getResolveScope
-            case _                   => place.getResolveScope
+            case r: ResolveProcessor =>
+              r.getResolveScope
+            case _ =>
+              place.getResolveScope
           }
         val namesSet = ScalaShortNamesCacheManager
           .getInstance(getProject)
@@ -95,8 +97,10 @@ class ScPackageImpl private (val pack: PsiPackage)
     if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE) {
       val scope =
         processor match {
-          case r: ResolveProcessor => r.getResolveScope
-          case _                   => place.getResolveScope
+          case r: ResolveProcessor =>
+            r.getResolveScope
+          case _ =>
+            place.getResolveScope
         }
       if (getQualifiedName == "scala") {
         ScPackageImpl.implicitlyImportedObject(
@@ -183,9 +187,12 @@ class ScPackageImpl private (val pack: PsiPackage)
 object ScPackageImpl {
   def apply(pack: PsiPackage): ScPackageImpl = {
     pack match {
-      case null                => null
-      case impl: ScPackageImpl => impl
-      case _                   => new ScPackageImpl(pack)
+      case null =>
+        null
+      case impl: ScPackageImpl =>
+        impl
+      case _ =>
+        new ScPackageImpl(pack)
     }
   }
 

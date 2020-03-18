@@ -11,8 +11,10 @@ object FileUtil {
   def getMimeType(name: String): String =
     defining(new Tika()) { tika =>
       tika.detect(name) match {
-        case null     => "application/octet-stream"
-        case mimeType => mimeType
+        case null =>
+          "application/octet-stream"
+        case mimeType =>
+          mimeType
       }
     }
 
@@ -40,8 +42,10 @@ object FileUtil {
 
   def getExtension(name: String): String =
     name.lastIndexOf('.') match {
-      case i if (i >= 0) => name.substring(i + 1)
-      case _             => ""
+      case i if (i >= 0) =>
+        name.substring(i + 1)
+      case _ =>
+        ""
     }
 
   def withTmpDir[A](dir: File)(action: File => A): A = {

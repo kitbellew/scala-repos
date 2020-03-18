@@ -67,9 +67,12 @@ class ScalaVariableOfTypeMacro extends Macro {
               true
             else {
               clazz.qualifiedName match {
-                case "scala.Predef" => false
-                case "scala"        => false
-                case _              => true
+                case "scala.Predef" =>
+                  false
+                case "scala" =>
+                  false
+                case _ =>
+                  true
               }
             }
           })
@@ -119,9 +122,12 @@ class ScalaVariableOfTypeMacro extends Macro {
               true
             else {
               clazz.qualifiedName match {
-                case "scala.Predef" => false
-                case "scala"        => false
-                case _              => true
+                case "scala.Predef" =>
+                  false
+                case "scala" =>
+                  false
+                case _ =>
+                  true
               }
             }
           })
@@ -135,7 +141,8 @@ class ScalaVariableOfTypeMacro extends Macro {
           }
         }
         null
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -185,8 +192,10 @@ class ScalaVariableOfTypeMacro extends Macro {
           .find(expr =>
             (
               ScType.extractClassType(scType, Some(project)) match {
-                case Some((x, _)) => x.qualifiedName
-                case None         => ""
+                case Some((x, _)) =>
+                  x.qualifiedName
+                case None =>
+                  ""
               }
             ) == expr.calculateResult(context).toString)
           .map(_ => new TextResult(variant.getElement.name))
@@ -224,8 +233,10 @@ class ScalaVariableOfTypeMacro extends Macro {
         for (expr <- exprs) {
           if ((
                 ScType.extractClass(scType) match {
-                  case Some(x) => x.qualifiedName
-                  case None    => ""
+                  case Some(x) =>
+                    x.qualifiedName
+                  case None =>
+                    ""
                 }
               ) == expr)
             array += LookupElementBuilder.create(

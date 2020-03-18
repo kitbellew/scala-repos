@@ -35,7 +35,8 @@ class DefaultMethodTest extends ClearAfterClass {
             dd.symbol.setFlag(reflect.internal.Flags.JAVA_DEFAULTMETHOD)
             copyDefDef(dd)(rhs = Literal(Constant(1))
               .setType(definitions.IntTpe))
-          case _ => super.transform(tree)
+          case _ =>
+            super.transform(tree)
         }
     }
     val asmClasses: List[ClassNode] = readAsmClasses(

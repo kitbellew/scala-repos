@@ -13,12 +13,14 @@ class PruneProjections extends Phase {
       ClientSideOp.mapServerSide(n, true) { n =>
         val referenced =
           n.collect[(TypeSymbol, TermSymbol)] {
-              case Select(_ :@ NominalType(s, _), f) => (s, f)
+              case Select(_ :@ NominalType(s, _), f) =>
+                (s, f)
             }
             .toSet
         val allTSyms =
           n.collect[TypeSymbol] {
-              case p: Pure => p.identity
+              case p: Pure =>
+                p.identity
             }
             .toSet
         val unrefTSyms = allTSyms -- referenced.map(_._1)

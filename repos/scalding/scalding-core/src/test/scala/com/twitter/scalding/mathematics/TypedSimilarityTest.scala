@@ -32,7 +32,8 @@ class TypedCosineSimJob(args: Args) extends Job(args) {
   val graph = withInDegree {
     TypedTsv[(Int, Int)]("ingraph")
       .map {
-        case (from, to) => Edge(from, to, ())
+        case (from, to) =>
+          Edge(from, to, ())
       }
   }
   // Just keep the degree
@@ -62,7 +63,8 @@ class TypedDimsumCosineSimJob(args: Args) extends Job(args) {
   val graph = withInNorm {
     TypedTsv[(Int, Int, Double)]("ingraph")
       .map {
-        case (from, to, weight) => Edge(from, to, Weight(weight))
+        case (from, to, weight) =>
+          Edge(from, to, Weight(weight))
       }
   }
 
@@ -118,7 +120,8 @@ class TypedSimilarityTest extends WordSpec with Matchers {
       }
       .mapValues { seq =>
         seq.map {
-          case (from, to) => (from, 1.0)
+          case (from, to) =>
+            (from, 1.0)
         }.toMap
       }
     for ((k1, v1) <- matrix if (k1 % 2 == 0);
@@ -136,7 +139,8 @@ class TypedSimilarityTest extends WordSpec with Matchers {
       }
       .mapValues { seq =>
         seq.map {
-          case (from, to, weight) => (from, weight)
+          case (from, to, weight) =>
+            (from, weight)
         }.toMap
       }
     for ((k1, v1) <- matrix if (k1 % 2 == 0);
@@ -154,7 +158,8 @@ class TypedSimilarityTest extends WordSpec with Matchers {
         .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("out")) { ob =>
           val result =
             ob.map {
-              case (n1, n2, d) => ((n1 -> n2) -> d)
+              case (n1, n2, d) =>
+                ((n1 -> n2) -> d)
             }.toMap
           val error = Group.minus(result, cosineOf(edges))
           dot(error, error) should be < 0.001
@@ -168,7 +173,8 @@ class TypedSimilarityTest extends WordSpec with Matchers {
         .sink[(Int, Int, Double)](TypedTsv[(Int, Int, Double)]("out")) { ob =>
           val result =
             ob.map {
-              case (n1, n2, d) => ((n1 -> n2) -> d)
+              case (n1, n2, d) =>
+                ((n1 -> n2) -> d)
             }.toMap
           val error = Group.minus(result, weightedCosineOf(weightedEdges))
           dot(error, error) should be < (0.01 * error.size)

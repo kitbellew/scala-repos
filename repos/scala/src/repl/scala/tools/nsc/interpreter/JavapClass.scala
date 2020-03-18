@@ -71,8 +71,10 @@ class JavapClass(
   /** Associate the requested path with a possibly failed or empty array of bytes. */
   private def targeted(path: String): (String, Try[Array[Byte]]) =
     bytesFor(path) match {
-      case Success((target, bytes)) => (target, Try(bytes))
-      case f: Failure[_]            => (path, Failure(f.exception))
+      case Success((target, bytes)) =>
+        (target, Try(bytes))
+      case f: Failure[_] =>
+        (path, Failure(f.exception))
     }
 
   /** Find bytes. Handle "-", "Foo#bar" (by ignoring member), "#bar" (by taking "bar").
@@ -82,16 +84,21 @@ class JavapClass(
     Try {
       val req =
         path match {
-          case "-"                                    => intp.mostRecentVar
-          case HashSplit(prefix, _) if prefix != null => prefix
-          case HashSplit(_, member) if member != null => member
-          case s                                      => s
+          case "-" =>
+            intp.mostRecentVar
+          case HashSplit(prefix, _) if prefix != null =>
+            prefix
+          case HashSplit(_, member) if member != null =>
+            member
+          case s =>
+            s
         }
       (path, findBytes(req)) match {
         case (_, bytes) if bytes.isEmpty =>
           throw new FileNotFoundException(
             s"Could not find class bytes for '$path'")
-        case ok => ok
+        case ok =>
+          ok
       }
     }
 
@@ -317,15 +324,18 @@ class JavapClass(
       def uri(name: String): URI =
         try new URI(name) // new URI("jfo:" + name)
         catch {
-          case _: URISyntaxException => new URI("dummy")
+          case _: URISyntaxException =>
+            new URI("dummy")
         }
 
       def inputNamed(name: String): Try[ByteAry] =
         (managed find (_._1 == name)).get._2
       def managedFile(name: String, kind: Kind) =
         kind match {
-          case CLASS => fileObjectForInput(name, inputNamed(name), kind)
-          case _     => null
+          case CLASS =>
+            fileObjectForInput(name, inputNamed(name), kind)
+          case _ =>
+            null
         }
       // todo: just wrap it as scala abstractfile and adapt it uniformly
       def fileObjectForInput(
@@ -346,13 +356,17 @@ class JavapClass(
           className: String,
           kind: Kind): JavaFileObject =
         location match {
-          case CLASS_PATH => managedFile(className, kind)
-          case _          => null
+          case CLASS_PATH =>
+            managedFile(className, kind)
+          case _ =>
+            null
         }
       override def hasLocation(location: Location): Boolean =
         location match {
-          case CLASS_PATH => true
-          case _          => false
+          case CLASS_PATH =>
+            true
+          case _ =>
+            false
         }
     }
     def fileManager(inputs: Seq[Input]) = new JavapFileManager(inputs)()
@@ -397,14 +411,17 @@ class JavapClass(
       Try {
         task(options, Seq(klass), inputs).call()
       } map {
-        case true => JpResult(showable(klass, filter))
-        case _    => JpResult(reporter.reportable())
+        case true =>
+          JpResult(showable(klass, filter))
+        case _ =>
+          JpResult(reporter.reportable())
       } recoverWith {
         case e: java.lang.reflect.InvocationTargetException =>
           e.getCause match {
             case t: IllegalArgumentException =>
               Success(JpResult(t.getMessage)) // bad option
-            case x => Failure(x)
+            case x =>
+              Failure(x)
           }
       } lastly {
         reporter.clear()
@@ -417,7 +434,8 @@ class JavapClass(
         inputs map {
           case (klass, Success(_)) =>
             applyOne(options, filter, klass, inputs).get
-          case (_, Failure(e)) => JpResult(e.toString)
+          case (_, Failure(e)) =>
+            JpResult(e.toString)
         }
       ).toList orFailed List(noToolError)
   }
@@ -569,9 +587,12 @@ object Javap {
     def maybe(opt: String, s: String): Option[String] =
       opt match {
         // disambiguate by preferring short form
-        case r(lf, sf) if s == sf         => Some(sf)
-        case r(lf, sf) if lf startsWith s => Some(lf)
-        case _                            => None
+        case r(lf, sf) if s == sf =>
+          Some(sf)
+        case r(lf, sf) if lf startsWith s =>
+          Some(lf)
+        case _ =>
+          None
       }
     def candidates(s: String) = (helps map (h => maybe(h._1, s))).flatten
     // one candidate or one single-char candidate
@@ -608,7 +629,8 @@ object Javap {
   def helpText: String =
     (
       helps map {
-        case (name, help) => f"$name%-12.12s$help%n"
+        case (name, help) =>
+          f"$name%-12.12s$help%n"
       }
     ).mkString
 

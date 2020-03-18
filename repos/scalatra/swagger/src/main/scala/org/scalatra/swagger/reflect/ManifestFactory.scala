@@ -44,7 +44,8 @@ private[swagger] object ManifestFactory {
         else
           manifestOf(classOf[AnyRef])
 
-      case c: Class[_] => fromClass(c)
+      case c: Class[_] =>
+        fromClass(c)
 
     }
 
@@ -64,7 +65,8 @@ private[swagger] object ManifestFactory {
 
   def manifestOf(st: ScalaType): Manifest[_] =
     st match {
-      case t: ManifestScalaType => t.manifest
+      case t: ManifestScalaType =>
+        t.manifest
       case _ =>
         val typeArgs = st.typeArgs map manifestOf
         manifestOf(st.erasure, typeArgs)
@@ -72,15 +74,25 @@ private[swagger] object ManifestFactory {
 
   private def fromClass(clazz: Class[_]): Manifest[_] =
     clazz match {
-      case java.lang.Byte.TYPE      => Manifest.Byte
-      case java.lang.Short.TYPE     => Manifest.Short
-      case java.lang.Character.TYPE => Manifest.Char
-      case java.lang.Integer.TYPE   => Manifest.Int
-      case java.lang.Long.TYPE      => Manifest.Long
-      case java.lang.Float.TYPE     => Manifest.Float
-      case java.lang.Double.TYPE    => Manifest.Double
-      case java.lang.Boolean.TYPE   => Manifest.Boolean
-      case java.lang.Void.TYPE      => Manifest.Unit
-      case _                        => Manifest.classType(clazz)
+      case java.lang.Byte.TYPE =>
+        Manifest.Byte
+      case java.lang.Short.TYPE =>
+        Manifest.Short
+      case java.lang.Character.TYPE =>
+        Manifest.Char
+      case java.lang.Integer.TYPE =>
+        Manifest.Int
+      case java.lang.Long.TYPE =>
+        Manifest.Long
+      case java.lang.Float.TYPE =>
+        Manifest.Float
+      case java.lang.Double.TYPE =>
+        Manifest.Double
+      case java.lang.Boolean.TYPE =>
+        Manifest.Boolean
+      case java.lang.Void.TYPE =>
+        Manifest.Unit
+      case _ =>
+        Manifest.classType(clazz)
     }
 }

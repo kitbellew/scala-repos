@@ -93,8 +93,10 @@ case class SiteMap(
       .flatMap(_.locForGroup(group))
       .filter(
         _.testAccess match {
-          case Left(true) => true
-          case _          => false
+          case Left(true) =>
+            true
+          case _ =>
+            false
         })
 
   /**
@@ -113,8 +115,10 @@ case class SiteMap(
   def buildMenu(current: Box[Loc[_]]): CompleteMenu = {
     val path: List[Loc[_]] =
       current match {
-        case Full(loc) => loc.breadCrumbs
-        case _         => Nil
+        case Full(loc) =>
+          loc.breadCrumbs
+        case _ =>
+          Nil
       }
     CompleteMenu(kids.flatMap(_.makeMenuItem(path)))
   }
@@ -244,8 +248,10 @@ sealed class SiteMapSingleton {
   def findAndTestLoc(name: String): Box[Loc[_]] =
     findLoc(name).flatMap(l =>
       l.testAccess match {
-        case Left(true) => Full(l)
-        case _          => Empty
+        case Left(true) =>
+          Full(l)
+        case _ =>
+          Empty
       })
 
   def buildLink(name: String, text: NodeSeq): NodeSeq = {
@@ -256,8 +262,10 @@ sealed class SiteMapSingleton {
       } yield {
         val linkText =
           text match {
-            case x if x.length > 0 => x
-            case _                 => loc.linkText openOr Text(loc.name)
+            case x if x.length > 0 =>
+              x
+            case _ =>
+              loc.linkText openOr Text(loc.name)
           }
         <a href={
           link

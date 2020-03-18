@@ -16,7 +16,8 @@ class SpdyServerDispatcher(
     } flatMap { req =>
       loop()
       trans.peerCertificate match {
-        case None => service(req)
+        case None =>
+          service(req)
         case Some(cert) =>
           Contexts.local.let(Transport.peerCertCtx, cert) {
             service(req)

@@ -13,7 +13,8 @@ object Test {
         "abc"
     } finally {
       10 match {
-        case x => ()
+        case x =>
+          ()
       }
     }
   }

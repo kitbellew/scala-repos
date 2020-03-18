@@ -66,7 +66,8 @@ class IoSpec extends WordSpec with Matchers {
           copy(in, new ByteArrayOutputStream)
           None
         } catch {
-          case ex: Throwable => Some(ex)
+          case ex: Throwable =>
+            Some(ex)
         }
       caught should equal(Some(e))
     }
@@ -98,7 +99,8 @@ class IoSpec extends WordSpec with Matchers {
           throw new RuntimeException()
         }
       } catch {
-        case _: Throwable => f.exists() should be(false)
+        case _: Throwable =>
+          f.exists() should be(false)
       }
     }
   }

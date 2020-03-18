@@ -29,8 +29,10 @@ class PrepareResponseSpec extends AkkaSpec {
     List(),
     StreamedEntityCreator[ParserOutput, ResponseEntity] { entityChunks ⇒
       val chunks = entityChunks.collect {
-        case EntityChunk(chunk) ⇒ chunk
-        case EntityStreamError(info) ⇒ throw EntityStreamException(info)
+        case EntityChunk(chunk) ⇒
+          chunk
+        case EntityStreamError(info) ⇒
+          throw EntityStreamException(info)
       }
       HttpEntity.Chunked(
         ContentTypes.`application/octet-stream`,

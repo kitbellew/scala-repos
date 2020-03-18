@@ -407,7 +407,8 @@ object Matrix2Props extends Properties("Matrix2") {
         Option[Product[Any, Any, Any, Double]],
         List[Product[Any, Any, Any, Double]]) = {
       mf match {
-        case element @ MatrixLiteral(_, _) => (None, Nil)
+        case element @ MatrixLiteral(_, _) =>
+          (None, Nil)
         case Sum(left, right, _) => {
           val (lastLP, leftR) = toProducts(left)
           val (lastRP, rightR) = toProducts(right)
@@ -525,7 +526,8 @@ object Matrix2Props extends Properties("Matrix2") {
               labelLeft,
               labelRight))
         }
-        case _ => None
+        case _ =>
+          None
       }
     }
 
@@ -592,7 +594,8 @@ object Matrix2Props extends Properties("Matrix2") {
             p1Left,
             p2Right)
         }
-        case _ => None
+        case _ =>
+          None
       }
     }
 

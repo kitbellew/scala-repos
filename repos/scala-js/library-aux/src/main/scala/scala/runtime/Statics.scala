@@ -78,11 +78,16 @@ object Statics {
 
   def anyHash(x: Any): Int = {
     x match {
-      case null      => 0
-      case x: Long   => longHash(x)
-      case x: Double => doubleHash(x)
-      case x: Float  => floatHash(x)
-      case _         => x.hashCode()
+      case null =>
+        0
+      case x: Long =>
+        longHash(x)
+      case x: Double =>
+        doubleHash(x)
+      case x: Float =>
+        floatHash(x)
+      case _ =>
+        x.hashCode()
     }
   }
 }

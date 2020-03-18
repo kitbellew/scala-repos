@@ -106,7 +106,8 @@ private[akka] class RemoteWatcher(
 
   val remoteProvider: RemoteActorRefProvider =
     context.system.asInstanceOf[ExtendedActorSystem].provider match {
-      case rarp: RemoteActorRefProvider ⇒ rarp
+      case rarp: RemoteActorRefProvider ⇒
+        rarp
       case other ⇒
         throw new ConfigurationException(
           s"ActorSystem [${context.system}] needs to have a 'RemoteActorRefProvider' enabled in the configuration, currently uses [${other.getClass.getName}]")
@@ -147,13 +148,20 @@ private[akka] class RemoteWatcher(
   }
 
   def receive = {
-    case HeartbeatTick ⇒ sendHeartbeat()
-    case Heartbeat ⇒ receiveHeartbeat()
-    case HeartbeatRsp(uid) ⇒ receiveHeartbeatRsp(uid)
-    case ReapUnreachableTick ⇒ reapUnreachable()
-    case ExpectedFirstHeartbeat(from) ⇒ triggerFirstHeartbeat(from)
-    case WatchRemote(watchee, watcher) ⇒ addWatch(watchee, watcher)
-    case UnwatchRemote(watchee, watcher) ⇒ removeWatch(watchee, watcher)
+    case HeartbeatTick ⇒
+      sendHeartbeat()
+    case Heartbeat ⇒
+      receiveHeartbeat()
+    case HeartbeatRsp(uid) ⇒
+      receiveHeartbeatRsp(uid)
+    case ReapUnreachableTick ⇒
+      reapUnreachable()
+    case ExpectedFirstHeartbeat(from) ⇒
+      triggerFirstHeartbeat(from)
+    case WatchRemote(watchee, watcher) ⇒
+      addWatch(watchee, watcher)
+    case UnwatchRemote(watchee, watcher) ⇒
+      removeWatch(watchee, watcher)
     case t @ Terminated(watchee: InternalActorRef) ⇒
       terminated(watchee, t.existenceConfirmed, t.addressTerminated)
 

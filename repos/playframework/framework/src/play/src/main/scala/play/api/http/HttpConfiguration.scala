@@ -42,23 +42,31 @@ case class HttpConfiguration(
 case class CookiesConfiguration(strict: Boolean = true) {
   def serverEncoder: ServerCookieEncoder =
     strict match {
-      case true  => ServerCookieEncoder.STRICT
-      case false => ServerCookieEncoder.LAX
+      case true =>
+        ServerCookieEncoder.STRICT
+      case false =>
+        ServerCookieEncoder.LAX
     }
   def clientEncoder: ClientCookieEncoder =
     strict match {
-      case true  => ClientCookieEncoder.STRICT
-      case false => ClientCookieEncoder.LAX
+      case true =>
+        ClientCookieEncoder.STRICT
+      case false =>
+        ClientCookieEncoder.LAX
     }
   def serverDecoder: ServerCookieDecoder =
     strict match {
-      case true  => ServerCookieDecoder.STRICT
-      case false => ServerCookieDecoder.LAX
+      case true =>
+        ServerCookieDecoder.STRICT
+      case false =>
+        ServerCookieDecoder.LAX
     }
   def clientDecoder: ClientCookieDecoder =
     strict match {
-      case true  => ClientCookieDecoder.STRICT
-      case false => ClientCookieDecoder.LAX
+      case true =>
+        ClientCookieDecoder.STRICT
+      case false =>
+        ClientCookieDecoder.LAX
     }
 }
 

@@ -64,8 +64,10 @@ case class ScalaChangeInfo(
           fun.containingClass.name
         else
           fun.name
-      case pc: ScPrimaryConstructor => pc.containingClass.name
-      case _                        => newName
+      case pc: ScPrimaryConstructor =>
+        pc.containingClass.name
+      case _ =>
+        newName
     }
 
   override def getNewNameIdentifier =
@@ -88,6 +90,7 @@ case class ScalaChangeInfo(
       case f: ScFunction =>
         f.returnType.toOption.map(_.canonicalText) != Option(newType).map(
           _.canonicalText)
-      case _ => false
+      case _ =>
+        false
     }
 }

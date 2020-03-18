@@ -120,8 +120,10 @@ class MapEq[K, V](implicit V: Eq[V]) extends Eq[Map[K, V]] with Serializable {
       x forall {
         case (k, v) =>
           (y get k) match {
-            case Some(e) if V.eqv(e, v) => true
-            case _                      => false
+            case Some(e) if V.eqv(e, v) =>
+              true
+            case _ =>
+              false
           }
       }
     }
@@ -147,7 +149,8 @@ class MapVectorEq[K, V](implicit V: Eq[V], scalar: AdditiveMonoid[V])
         }
       } else {
         acc forall {
-          case (_, v) => V.eqv(v, scalar.zero)
+          case (_, v) =>
+            V.eqv(v, scalar.zero)
         }
       }
     }

@@ -22,8 +22,10 @@ class ScArgumentExprListImpl(node: ASTNode)
 
   def invocationCount: Int = {
     callExpression match {
-      case call: ScMethodCall => call.args.invocationCount + 1
-      case _                  => 1
+      case call: ScMethodCall =>
+        call.args.invocationCount + 1
+      case _ =>
+        1
     }
   }
 
@@ -31,15 +33,20 @@ class ScArgumentExprListImpl(node: ASTNode)
     getContext match {
       case call: ScMethodCall =>
         call.deepestInvokedExpr match {
-          case ref: ScReferenceExpression => Some(ref)
+          case ref: ScReferenceExpression =>
+            Some(ref)
           case gen: ScGenericCall =>
             gen.referencedExpr match {
-              case ref: ScReferenceExpression => Some(ref)
-              case _                          => None
+              case ref: ScReferenceExpression =>
+                Some(ref)
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -47,10 +54,13 @@ class ScArgumentExprListImpl(node: ASTNode)
     getContext match {
       case call: ScMethodCall =>
         call.deepestInvokedExpr match {
-          case gen: ScGenericCall => Some(gen)
-          case _                  => None
+          case gen: ScGenericCall =>
+            Some(gen)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -58,18 +68,22 @@ class ScArgumentExprListImpl(node: ASTNode)
     getContext match {
       case call: ScMethodCall =>
         call.getEffectiveInvokedExpr
-      case _ => null
+      case _ =>
+        null
     }
   }
 
   def matchedParameters: Seq[(ScExpression, Parameter)] = {
     getContext match {
-      case call: ScMethodCall => call.matchedParameters
+      case call: ScMethodCall =>
+        call.matchedParameters
       case constr: ScConstructor =>
         constr.matchedParameters.filter {
-          case (e, p) => this.isAncestorOf(e)
+          case (e, p) =>
+            this.isAncestorOf(e)
         }
-      case _ => Seq.empty
+      case _ =>
+        Seq.empty
     }
   }
 

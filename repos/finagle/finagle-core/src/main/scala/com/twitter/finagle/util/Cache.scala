@@ -148,7 +148,8 @@ private[finagle] class Cache[A](
     }
 
     evicted.asScala foreach {
-      case (_, item) => evict(item)
+      case (_, item) =>
+        evict(item)
     }
   }
 

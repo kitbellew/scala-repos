@@ -41,8 +41,10 @@ class ScTupleImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitTupleExpr(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitTupleExpr(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

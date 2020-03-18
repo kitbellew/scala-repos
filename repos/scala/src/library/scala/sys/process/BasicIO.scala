@@ -51,13 +51,15 @@ object BasicIO {
       val q = new LinkedBlockingQueue[Either[Int, T]]
       def next(): Stream[T] =
         q.take match {
-          case Left(0) => Stream.empty
+          case Left(0) =>
+            Stream.empty
           case Left(code) =>
             if (nonzeroException)
               scala.sys.error("Nonzero exit code: " + code)
             else
               Stream.empty
-          case Right(s) => Stream.cons(s, next())
+          case Right(s) =>
+            Stream.cons(s, next())
         }
       new Streamed(
         (s: T) => q put Right(s),
@@ -155,8 +157,10 @@ object BasicIO {
     */
   def getErr(log: Option[ProcessLogger]) =
     log match {
-      case Some(lg) => processErrFully(lg)
-      case None     => toStdErr
+      case Some(lg) =>
+        processErrFully(lg)
+      case None =>
+        toStdErr
     }
 
   private def processErrFully(log: ProcessLogger) = processFully(log err _)
@@ -166,7 +170,8 @@ object BasicIO {
   def close(c: Closeable) =
     try c.close()
     catch {
-      case _: IOException => ()
+      case _: IOException =>
+        ()
     }
 
   /** Returns a function `InputStream => Unit` that appends all data read to the
@@ -213,8 +218,10 @@ object BasicIO {
         val line =
           try readLine()
           catch {
-            case _: InterruptedException    => halting
-            case e: IOException if !working => halting
+            case _: InterruptedException =>
+              halting
+            case e: IOException if !working =>
+              halting
           }
         if (line != null) {
           processLine(line)
@@ -281,7 +288,8 @@ object BasicIO {
             out.flush();
             true
           } catch {
-            case _: IOException => false
+            case _: IOException =>
+              false
           }
         if (available)
           loop()

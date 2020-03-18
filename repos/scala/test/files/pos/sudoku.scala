@@ -34,8 +34,10 @@ object SudokuSolver extends App {
   // is found
   def search(x: Int, y: Int, f: (Int) => Int, accu: Int): Int =
     (x, y) match {
-      case (9, y) => search(0, y + 1, f, accu) // next row
-      case (0, 9) => f(accu) // found a solution
+      case (9, y) =>
+        search(0, y + 1, f, accu) // next row
+      case (0, 9) =>
+        f(accu) // found a solution
       case (x, y) =>
         if (m(y)(x) != '0')
           search(x + 1, y, f, accu)

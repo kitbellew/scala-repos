@@ -200,7 +200,8 @@ object M5 {
 
     private def next: Unit =
       agenda match {
-        case List() => ()
+        case List() =>
+          ()
         case (time, action) :: ag1 => {
           agenda = ag1;
           curtime = time;
@@ -546,7 +547,8 @@ class Simulator() {
 
   def next: Unit =
     agenda match {
-      case List() => ()
+      case List() =>
+        ()
       case (time, action) :: rest => {
         agenda = rest;
         curtime = time;
@@ -670,7 +672,8 @@ abstract class CircuitSimulator() extends BasicCircuitSimulator() {
 
   def demux(in: Wire, ctrl: List[Wire], out: List[Wire]): Unit =
     ctrl match {
-      case List() => connect(in, out.head);
+      case List() =>
+        connect(in, out.head);
       case c :: rest =>
         val c_ = new Wire();
         val w1 = new Wire();

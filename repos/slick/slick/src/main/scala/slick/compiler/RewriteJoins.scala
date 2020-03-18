@@ -57,8 +57,10 @@ class RewriteJoins extends Phase {
         val ref2 = Select(refSn, ElementSymbol(2))
         val sel2 = select.replace(
           {
-            case Ref(s) :@ tpe if s == s1 => ref1 :@ tpe
-            case Ref(s) :@ tpe if s == s2 => ref2 :@ tpe
+            case Ref(s) :@ tpe if s == s1 =>
+              ref1 :@ tpe
+            case Ref(s) :@ tpe if s == s2 =>
+              ref2 :@ tpe
           },
           bottomUp = true)
         val (j2, invalid) = hoistFilters(j)
@@ -74,7 +76,8 @@ class RewriteJoins extends Phase {
           Ellipsis(n, List(0), List(1, 0)))
         val sn, sj1, sj2 = new AnonSymbol
         val j2 = j.replace {
-          case Ref(s) :@ tpe if s == s1 => Ref(sj1) :@ tpe
+          case Ref(s) :@ tpe if s == s1 =>
+            Ref(sj1) :@ tpe
         }
         val oj = Join(sj1, sj2, f1, j2, JoinType.Inner, LiteralNode(true))
           .infer()
@@ -82,8 +85,10 @@ class RewriteJoins extends Phase {
         val ref1 = Select(refSn, ElementSymbol(1))
         val ref2 = Select(refSn, ElementSymbol(2))
         val sel2 = select.replace {
-          case Ref(s) :@ tpe if s == s1 => ref1 :@ tpe
-          case Ref(s) :@ tpe if s == s2 => ref2 :@ tpe
+          case Ref(s) :@ tpe if s == s1 =>
+            ref1 :@ tpe
+          case Ref(s) :@ tpe if s == s2 =>
+            ref2 :@ tpe
         }
         val (oj2, invalid) = hoistFilters(oj)
         val (oj3, m) = eliminateIllegalRefs(oj2, Set.empty, sn)
@@ -119,8 +124,10 @@ class RewriteJoins extends Phase {
         val ref1 = Select(refSn, ElementSymbol(1))
         val ref2 = Select(refSn, ElementSymbol(2))
         val sel2 = select.replace {
-          case Ref(s) :@ tpe if s == s1 => ref1 :@ tpe
-          case Ref(s) :@ tpe if s == s2 => ref2 :@ tpe
+          case Ref(s) :@ tpe if s == s1 =>
+            ref1 :@ tpe
+          case Ref(s) :@ tpe if s == s2 =>
+            ref2 :@ tpe
         }
         val (j2, invalid) = hoistFilters(j)
         val res = Bind(sn, j2, sel2.untypeReferences(invalid)).infer()
@@ -136,16 +143,19 @@ class RewriteJoins extends Phase {
             {
               case FwdPath(s :: rest) if s == s1 =>
                 rest.foldLeft(f1) {
-                  case (n, s) => n.select(s)
+                  case (n, s) =>
+                    n.select(s)
                 }
             },
             keepType = true)) :@ n.nodeType
         logger.debug("Inlined Pure 'from' in:", res)
         res
 
-      case b: Bind => flattenAliasingMap(b)
+      case b: Bind =>
+        flattenAliasingMap(b)
 
-      case n => n
+      case n =>
+        n
     }
 
   /** Hoist `Filter` nodes in `Join` generators into join predicates. */
@@ -153,17 +163,21 @@ class RewriteJoins extends Phase {
     def hoist(ts: TermSymbol, n: Node): (Node, Option[Node], Set[TypeSymbol]) =
       (
         n match {
-          case b: Bind => hoistFilterFromBind(b)
-          case n       => (n, Set.empty[TypeSymbol])
+          case b: Bind =>
+            hoistFilterFromBind(b)
+          case n =>
+            (n, Set.empty[TypeSymbol])
         }
       ) match {
         case (Filter(s, f, p), invalid) =>
           val p2 = p.replace({
-            case Ref(rs) :@ tpe if rs == s => Ref(ts)
+            case Ref(rs) :@ tpe if rs == s =>
+              Ref(ts)
           })
           val (f2, pOpt, invalid2) = hoist(ts, f)
           (f2, Some(and(pOpt, p2)), invalid ++ invalid2)
-        case (n, invalid) => (n, None, invalid)
+        case (n, invalid) =>
+          (n, None, invalid)
       }
     val (l1, p1Opt, inv1) = hoist(j.leftGen, j.left)
     val (r1, p2Opt, inv2) = hoist(j.rightGen, j.right)
@@ -189,8 +203,10 @@ class RewriteJoins extends Phase {
   def hoistFilterFromBind(b: Bind): (Node, Set[TypeSymbol]) = {
     (
       b.from match {
-        case b2: Bind => hoistFilterFromBind(b2)
-        case n        => (n, Set.empty[TypeSymbol])
+        case b2: Bind =>
+          hoistFilterFromBind(b2)
+        case n =>
+          (n, Set.empty[TypeSymbol])
       }
     ) match {
       case (Filter(fs1, from1, pred1), tss1) =>
@@ -210,20 +226,24 @@ class RewriteJoins extends Phase {
                 (
                   pOnBGen, /*None: Option[Symbol]*/ struct1
                     .find {
-                      case (s, n) => pOnBGen == n
+                      case (s, n) =>
+                        pOnBGen == n
                     }
                     .map(_._1)))
           }.toMap
         logger.debug(
           "Found references in predicate: " + foundRefs.mkString(", "))
         val newDefs = foundRefs.filter(_._2._2.isEmpty).map {
-          case (p, (pOnBGen, _)) => (p, (pOnBGen, new AnonSymbol))
+          case (p, (pOnBGen, _)) =>
+            (p, (pOnBGen, new AnonSymbol))
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
         val allRefs = foundRefs.collect {
-          case (p, (_, Some(s))) => (p, s)
+          case (p, (_, Some(s))) =>
+            (p, s)
         } ++ newDefs.map {
-          case (p, (_, s)) => (p, s)
+          case (p, (_, s)) =>
+            (p, s)
         }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
@@ -236,7 +256,8 @@ class RewriteJoins extends Phase {
                 StructNode(
                   struct1 ++ ConstArray.from(
                     newDefs.map {
-                      case (_, (pOnGen, s)) => (s, pOnGen)
+                      case (_, (pOnGen, s)) =>
+                        (s, pOnGen)
                     })),
                 pts),
               tss1 + pts)
@@ -257,7 +278,8 @@ class RewriteJoins extends Phase {
             ", ") + ") in:",
           res)
         (res, tss)
-      case _ => (b, Set.empty)
+      case _ =>
+        (b, Set.empty)
     }
   }
 
@@ -292,12 +314,14 @@ class RewriteJoins extends Phase {
           illegalDefs
             .flatMap(
               _._2.collect {
-                case p @ FwdPath(s :: _) if s == ok => p
+                case p @ FwdPath(s :: _) if s == ok =>
+                  p
               }.toSeq)
             .toSet
         val existingOkDefs =
           legalDefs.collect {
-            case (s, p @ FwdPath(s2 :: _)) if s2 == ok => (p, s)
+            case (s, p @ FwdPath(s2 :: _)) if s2 == ok =>
+              (p, s)
           }.toMap
         val createDefs =
           (requiredOkPaths -- existingOkDefs.keySet)
@@ -308,7 +332,8 @@ class RewriteJoins extends Phase {
         val replacements =
           (
             existingOkDefs ++ createDefs.map {
-              case (s, n) => (n, s)
+              case (s, n) =>
+                (n, s)
             }
           ).toMap
         def rebase(n: Node): Node =
@@ -319,7 +344,8 @@ class RewriteJoins extends Phase {
             },
             keepType = true)
         val rebasedIllegalDefs = illegalDefs.map {
-          case (s, n) => (s, rebase(n))
+          case (s, n) =>
+            (s, rebase(n))
         }
         logger.debug(
           "Rebased illegal defs are:",
@@ -332,7 +358,8 @@ class RewriteJoins extends Phase {
         illegal: Set[TermSymbol],
         outsideRef: TermSymbol): (Node, Map[List[TermSymbol], Node]) =
       n match {
-        case jch: Join => eliminateIllegalRefs(jch, illegal, outsideRef)
+        case jch: Join =>
+          eliminateIllegalRefs(jch, illegal, outsideRef)
         case b @ Bind(s1, from, Pure(sn1 @ StructNode(defs), ts)) =>
           val (sn2, pulled) = pullOut(sn1, s1, illegal)
           if (sn2 eq sn1)
@@ -342,10 +369,12 @@ class RewriteJoins extends Phase {
             (
               b2,
               pulled.map {
-                case (s, n) => (s :: Nil, n)
+                case (s, n) =>
+                  (s :: Nil, n)
               })
           }
-        case n => (n, Map.empty)
+        case n =>
+          (n, Map.empty)
       }
     val (l1, l1m) = trChild(j.left, illegal, j.leftGen)
     val (r1, r1m) = trChild(j.right, illegal + j.leftGen, j.rightGen)
@@ -374,10 +403,12 @@ class RewriteJoins extends Phase {
         "Eliminated illegal refs [" + illegal.mkString(", ") + "] in:",
         j2)
       val m = l1m.map {
-        case (p, n) => (ElementSymbol(1) :: p, n)
+        case (p, n) =>
+          (ElementSymbol(1) :: p, n)
       } ++
         r1m.map {
-          case (p, n) => (ElementSymbol(2) :: p, n)
+          case (p, n) =>
+            (ElementSymbol(2) :: p, n)
         }
       val m2 = m.mapValues(
         _.replace(
@@ -458,7 +489,8 @@ class RewriteJoins extends Phase {
           j
         else
           j.copy(right = j2b) :@ j.nodeType
-      case j => j
+      case j =>
+        j
     }
 
   // binary compatibility shim for 3.1
@@ -480,7 +512,8 @@ class RewriteJoins extends Phase {
             case (_, n) =>
               n.collect(
                   {
-                    case Path(_) => true
+                    case Path(_) =>
+                      true
                   },
                   stopOnMatch = true)
                 .length <= 1
@@ -504,14 +537,16 @@ class RewriteJoins extends Phase {
                       f1,
                       n.replace(
                         {
-                          case Select(Ref(s), f2) if s == s1 => m(f2)
+                          case Select(Ref(s), f2) if s == s1 =>
+                            m(f2)
                         },
                         keepType = true))
                 }),
               ts2)).infer()
         } else
           b
-      case b => b
+      case b =>
+        b
     }
 
   def splitConjunctions(n: Node): IndexedSeq[Node] = {
@@ -522,7 +557,8 @@ class RewriteJoins extends Phase {
           f(l);
           f(r)
         case LiteralNode(t) if t == true =>
-        case n                           => b += n
+        case n =>
+          b += n
       }
     f(n)
     b
@@ -557,7 +593,9 @@ class RewriteJoins extends Phase {
 
   def hasRefTo(n: Node, s: Set[TermSymbol]): Boolean =
     n.findNode {
-      case Ref(s2) if s contains s2 => true
-      case _                        => false
+      case Ref(s2) if s contains s2 =>
+        true
+      case _ =>
+        false
     }.isDefined
 }

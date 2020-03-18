@@ -128,8 +128,10 @@ class Tools[C <: Context](val c: C) {
     val baseSym = tpe.typeSymbol.asType
     val baseTargs =
       tpe match {
-        case TypeRef(_, _, args) => args;
-        case _                   => Nil
+        case TypeRef(_, _, args) =>
+          args;
+        case _ =>
+          Nil
       }
 
     def sourcepathScan(): List[Symbol] = {
@@ -140,10 +142,13 @@ class Tools[C <: Context](val c: C) {
       def loop(tree: Tree): Unit =
         tree match {
           // NOTE: only looking for classes defined in objects or top-level classes!
-          case PackageDef(_, stats) => stats.foreach(loop)
-          case cdef: ClassDef       => analyze(cdef.symbol)
-          case mdef: ModuleDef      => mdef.impl.body.foreach(loop)
-          case _                    => // do nothing
+          case PackageDef(_, stats) =>
+            stats.foreach(loop)
+          case cdef: ClassDef =>
+            analyze(cdef.symbol)
+          case mdef: ModuleDef =>
+            mdef.impl.body.foreach(loop)
+          case _ => // do nothing
         }
       c.enclosingRun.units.map(_.body).foreach(loop)
       subclasses.toList
@@ -159,8 +164,10 @@ class Tools[C <: Context](val c: C) {
           } else if (treatAsSealed(sym)) {
             val syms: List[ClassSymbol] = directSubclasses(sym)
               .map {
-                case csym: ClassSymbol  => csym
-                case msym: ModuleSymbol => msym.moduleClass.asClass
+                case csym: ClassSymbol =>
+                  csym
+                case msym: ModuleSymbol =>
+                  msym.moduleClass.asClass
                 case osym =>
                   throw new Exception(
                     s"unexpected known direct subclass: $osym <: $sym")
@@ -304,11 +311,13 @@ trait RichTypes {
 
     def isEffectivelyPrimitive: Boolean =
       tpe match {
-        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive => true
+        case TypeRef(_, sym: ClassSymbol, _) if sym.isPrimitive =>
+          true
         case TypeRef(_, sym, eltpe :: Nil)
             if sym == ArrayClass && eltpe.typeSymbol.isClass && eltpe.typeSymbol.asClass.isPrimitive =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     def isEffectivelyFinal = tpe.typeSymbol.isEffectivelyFinal
@@ -352,7 +361,8 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
             val more = newClassIR(currTpe).fields.map(_.tpe)
             loop(rest ++ more, visited + currTpe)
           }
-        case _ => false
+        case _ =>
+          false
       }
     }
     loop(List(tpe), Set())

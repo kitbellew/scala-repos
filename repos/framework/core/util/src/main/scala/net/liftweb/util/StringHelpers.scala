@@ -109,11 +109,16 @@ trait StringHelpers {
   def camelify(name: String): String = {
     def loop(x: List[Char]): List[Char] =
       (x: @unchecked) match {
-        case '_' :: '_' :: rest => loop('_' :: rest)
-        case '_' :: c :: rest   => Character.toUpperCase(c) :: loop(rest)
-        case '_' :: Nil         => Nil
-        case c :: rest          => c :: loop(rest)
-        case Nil                => Nil
+        case '_' :: '_' :: rest =>
+          loop('_' :: rest)
+        case '_' :: c :: rest =>
+          Character.toUpperCase(c) :: loop(rest)
+        case '_' :: Nil =>
+          Nil
+        case c :: rest =>
+          c :: loop(rest)
+        case Nil =>
+          Nil
       }
     if (name == null)
       ""
@@ -147,12 +152,16 @@ trait StringHelpers {
       (
         (
           in match {
-            case null => ""
-            case s    => s
+            case null =>
+              ""
+            case s =>
+              s
           }
         ).trim match {
-          case "" => "n/a"
-          case s  => s
+          case "" =>
+            "n/a"
+          case s =>
+            s
         }
       ).toLowerCase
     val sb = new GoodSB
@@ -189,7 +198,8 @@ trait StringHelpers {
         case c if (c == ' ' || c == '_') && !lastSymbol =>
           out.append(c);
           capify(in, pos + 1, max, false, true, out)
-        case _ => capify(in, pos + 1, max, false, true, out)
+        case _ =>
+          capify(in, pos + 1, max, false, true, out)
       }
     }
   }
@@ -223,8 +233,10 @@ trait StringHelpers {
 
         sb.append(
           (randNum & 0x1f) match {
-            case n if n < 26 => ('A' + n).toChar
-            case n           => ('0' + (n - 26)).toChar
+            case n if n < 26 =>
+              ('A' + n).toChar
+            case n =>
+              ('0' + (n - 26)).toChar
           })
         addChar(pos + 1, randNum >> 5, sb)
       }
@@ -255,14 +267,20 @@ trait StringHelpers {
       second: String): (String, String) = {
     (
       in match {
-        case null                      => List("")
-        case s if s.indexOf(".") != -1 => s.roboSplit("\\.")
-        case s                         => s.roboSplit(":")
+        case null =>
+          List("")
+        case s if s.indexOf(".") != -1 =>
+          s.roboSplit("\\.")
+        case s =>
+          s.roboSplit(":")
       }
     ) match {
-      case f :: s :: _ => (f, s)
-      case f :: Nil    => (f, second)
-      case _           => (first, second)
+      case f :: s :: _ =>
+        (f, s)
+      case f :: Nil =>
+        (f, second)
+      case _ =>
+        (first, second)
     }
   }
 
@@ -287,9 +305,12 @@ trait StringHelpers {
       0L
     else {
       tin.trim.toList match {
-        case '-' :: xs => -p(xs)
-        case '+' :: xs => p(xs)
-        case xs        => p(xs)
+        case '-' :: xs =>
+          -p(xs)
+        case '+' :: xs =>
+          p(xs)
+        case xs =>
+          p(xs)
       }
     }
   }
@@ -312,8 +333,10 @@ trait StringHelpers {
     */
   def roboSplit(what: String, sep: String): List[String] =
     what match {
-      case null => Nil
-      case s    => s.split(sep).toList.map(_.trim).filter(_.length > 0)
+      case null =>
+        Nil
+      case s =>
+        s.split(sep).toList.map(_.trim).filter(_.length > 0)
     }
 
   /**
@@ -322,7 +345,8 @@ trait StringHelpers {
     */
   def charSplit(what: String, sep: Char): List[String] =
     what match {
-      case null => Nil
+      case null =>
+        Nil
       case str => {
         val ret = new scala.collection.mutable.ListBuffer[String]
 
@@ -359,7 +383,8 @@ trait StringHelpers {
       return Nil
     else
       what.indexOf(sep) match {
-        case -1 => Nil
+        case -1 =>
+          Nil
         case n =>
           List((what.substring(0, n).trim, what.substring(n + sep.length).trim))
       }
@@ -379,11 +404,14 @@ trait StringHelpers {
       var pos = 0
       while (pos < len) {
         what.charAt(pos) match {
-          case c @ ('\\' | '\'') => sb.append(escChar(c))
-          case '"'               => sb.append("\\\"")
+          case c @ ('\\' | '\'') =>
+            sb.append(escChar(c))
+          case '"' =>
+            sb.append("\\\"")
           case c if c < ' ' || c > '~' || c == ']' || c.toInt >= 127 =>
             sb.append(escChar(c))
-          case c => sb.append(c)
+          case c =>
+            sb.append(c)
         }
         pos += 1
       }
@@ -404,11 +432,16 @@ trait StringHelpers {
 
       def commaIt(in: List[Char]): List[Char] =
         in match {
-          case Nil                   => in
-          case x :: Nil              => in
-          case x1 :: x2 :: Nil       => in
-          case x1 :: x2 :: x3 :: Nil => in
-          case x1 :: x2 :: x3 :: xs  => x1 :: x2 :: x3 :: ',' :: commaIt(xs)
+          case Nil =>
+            in
+          case x :: Nil =>
+            in
+          case x1 :: x2 :: Nil =>
+            in
+          case x1 :: x2 :: x3 :: Nil =>
+            in
+          case x1 :: x2 :: x3 :: xs =>
+            x1 :: x2 :: x3 :: ',' :: commaIt(xs)
         }
       commaIt(toDo).reverse.mkString("")
     }
@@ -439,8 +472,10 @@ trait StringHelpers {
     */
   def emptyForBlank(s: String) =
     blankForNull(s).trim match {
-      case "" => Empty
-      case s  => Full(s)
+      case "" =>
+        Empty
+      case s =>
+        Full(s)
     }
 }
 

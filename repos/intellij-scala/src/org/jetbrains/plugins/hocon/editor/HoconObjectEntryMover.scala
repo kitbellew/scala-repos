@@ -109,10 +109,14 @@ class HoconObjectEntryMover extends LineMover {
     @tailrec
     def enclosingAnchoredEntry(el: PsiElement): Option[HObjectEntry] =
       el match {
-        case _: PsiFile                                  => None
-        case _ if firstNonCommentLine(el) != currentLine => None
-        case entry: HObjectEntry if movableLines(entry)  => Some(entry)
-        case _                                           => enclosingAnchoredEntry(el.getParent)
+        case _: PsiFile =>
+          None
+        case _ if firstNonCommentLine(el) != currentLine =>
+          None
+        case entry: HObjectEntry if movableLines(entry) =>
+          Some(entry)
+        case _ =>
+          enclosingAnchoredEntry(el.getParent)
       }
 
     def isByEdge(entry: HObjectEntry) =
@@ -179,7 +183,8 @@ class HoconObjectEntryMover extends LineMover {
           .collectFirst {
             case entries: HObjectEntries =>
               entries.prefixingField.map(_.enclosingObjectField).contains(field)
-            case field: HKeyedField => false
+            case field: HKeyedField =>
+              false
           } getOrElse false
       }
 
@@ -194,7 +199,8 @@ class HoconObjectEntryMover extends LineMover {
       for {
         adjacentField <- adjacentEntry(field)
           .collect({
-            case f: HObjectField => f
+            case f: HObjectField =>
+              f
           })
           .filter(canInsertInto)
         prefixToRemove <- {
@@ -205,7 +211,8 @@ class HoconObjectEntryMover extends LineMover {
               .takeWhile {
                 case prefixed: HPrefixedField =>
                   prefixed.subField.getTextRange.contains(offset)
-                case _ => false
+                case _ =>
+                  false
               }
               .map(keyString)
               .toList

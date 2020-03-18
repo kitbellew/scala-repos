@@ -91,8 +91,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   /** Method that generates a RDD for the given Duration */
   def compute(validTime: Time): JavaPairRDD[K, V] = {
     dstream.compute(validTime) match {
-      case Some(rdd) => new JavaPairRDD(rdd)
-      case None      => null
+      case Some(rdd) =>
+        new JavaPairRDD(rdd)
+      case None =>
+        null
     }
   }
 
@@ -519,8 +521,10 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       val scalaState: Optional[S] = JavaUtils.optionToOptional(state)
       val result: Optional[S] = in.apply(list, scalaState)
       result.isPresent match {
-        case true => Some(result.get())
-        case _    => None
+        case true =>
+          Some(result.get())
+        case _ =>
+          None
       }
     }
     scalaFunc
@@ -699,7 +703,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.leftOuterJoin(other.dstream)
     joinResult.mapValues {
-      case (v, w) => (v, JavaUtils.optionToOptional(w))
+      case (v, w) =>
+        (v, JavaUtils.optionToOptional(w))
     }
   }
 
@@ -714,7 +719,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.leftOuterJoin(other.dstream, numPartitions)
     joinResult.mapValues {
-      case (v, w) => (v, JavaUtils.optionToOptional(w))
+      case (v, w) =>
+        (v, JavaUtils.optionToOptional(w))
     }
   }
 
@@ -729,7 +735,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.leftOuterJoin(other.dstream, partitioner)
     joinResult.mapValues {
-      case (v, w) => (v, JavaUtils.optionToOptional(w))
+      case (v, w) =>
+        (v, JavaUtils.optionToOptional(w))
     }
   }
 
@@ -743,7 +750,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.rightOuterJoin(other.dstream)
     joinResult.mapValues {
-      case (v, w) => (JavaUtils.optionToOptional(v), w)
+      case (v, w) =>
+        (JavaUtils.optionToOptional(v), w)
     }
   }
 
@@ -758,7 +766,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.rightOuterJoin(other.dstream, numPartitions)
     joinResult.mapValues {
-      case (v, w) => (JavaUtils.optionToOptional(v), w)
+      case (v, w) =>
+        (JavaUtils.optionToOptional(v), w)
     }
   }
 
@@ -773,7 +782,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.rightOuterJoin(other.dstream, partitioner)
     joinResult.mapValues {
-      case (v, w) => (JavaUtils.optionToOptional(v), w)
+      case (v, w) =>
+        (JavaUtils.optionToOptional(v), w)
     }
   }
 

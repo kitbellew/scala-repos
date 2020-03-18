@@ -204,10 +204,14 @@ private object CommonLibrary {
     name match {
       case "scalaz" =>
         CommonLibrary("scalaz", TestUtils.getMockScalazLib(version))
-      case "slick" => CommonLibrary("slick", TestUtils.getMockSlickLib(version))
-      case "spray" => CommonLibrary("spray", TestUtils.getMockSprayLib(version))
-      case "cats"  => CommonLibrary("cats", TestUtils.getCatsLib(version))
-      case _       => throw new IllegalArgumentException(s"Unknown library: $name")
+      case "slick" =>
+        CommonLibrary("slick", TestUtils.getMockSlickLib(version))
+      case "spray" =>
+        CommonLibrary("spray", TestUtils.getMockSprayLib(version))
+      case "cats" =>
+        CommonLibrary("cats", TestUtils.getCatsLib(version))
+      case _ =>
+        throw new IllegalArgumentException(s"Unknown library: $name")
     }
   }
 }

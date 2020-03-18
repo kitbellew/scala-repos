@@ -134,9 +134,12 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
     if (!Monitor.isActive) {
       val level =
         cause match {
-          case t: IOException => Level.FINE
-          case f: Failure     => f.logLevel
-          case _              => Level.WARNING
+          case t: IOException =>
+            Level.FINE
+          case f: Failure =>
+            f.logLevel
+          case _ =>
+            Level.WARNING
         }
       log.log(level, "ChannelStatsHandler caught an exception", cause)
     }

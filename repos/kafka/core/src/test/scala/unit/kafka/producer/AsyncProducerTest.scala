@@ -346,7 +346,8 @@ class AsyncProducerTest {
       handler.partitionAndCollate(producerDataList)
     } catch {
       // should not throw any exception
-      case e: Throwable => fail("Should not throw any exception")
+      case e: Throwable =>
+        fail("Should not throw any exception")
 
     }
   }

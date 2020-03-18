@@ -16,8 +16,10 @@ trait JacksonJsonParsing
       mf: Manifest[T]): T = {
     val requestFormat =
       request.contentType match {
-        case Some(contentType) => mimeTypes.getOrElse(contentType, format)
-        case None              => format
+        case Some(contentType) =>
+          mimeTypes.getOrElse(contentType, format)
+        case None =>
+          format
       }
 
     requestFormat match {

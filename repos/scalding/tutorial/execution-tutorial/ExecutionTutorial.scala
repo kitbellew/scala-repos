@@ -58,7 +58,8 @@ object MyExecJob extends ExecutionApp {
                   file.write(s"$k\t$v\n")
               }
               file.close
-            case Failure(e) => println("Error: " + e.toString)
+            case Failure(e) =>
+              println("Error: " + e.toString)
           }
         }
         // use the result and map it to a Unit. Otherwise the onComplete call won't happen

@@ -45,7 +45,8 @@ class DeploymentManager(
 
   override def supervisorStrategy: SupervisorStrategy =
     OneForOneStrategy() {
-      case NonFatal(e) => Stop
+      case NonFatal(e) =>
+        Stop
     }
 
   //TODO: fix style issue and enable this scalastyle check

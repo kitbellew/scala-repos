@@ -55,7 +55,8 @@ trait CORSSupport {
                   x.exists(_.isInstanceOf[MethodRejection])
               ) => {
             val allowedMethods: List[HttpMethod] = x.collect {
-              case rejection: MethodRejection => rejection.supported
+              case rejection: MethodRejection =>
+                rejection.supported
             }
             ctx.complete {
               HttpResponse().withHeaders(

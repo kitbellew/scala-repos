@@ -35,29 +35,44 @@ trait DateTypedField extends TypedField[Date] {
 
   def setFromAny(in: Any): Box[Date] =
     in match {
-      case d: Date             => setBox(Full(d))
-      case Some(d: Date)       => setBox(Full(d))
-      case Full(d: Date)       => setBox(Full(d))
-      case (d: Date) :: _      => setBox(Full(d))
-      case s: String           => setFromString(s)
-      case Some(s: String)     => setFromString(s)
-      case Full(s: String)     => setFromString(s)
-      case null | None | Empty => setBox(defaultValueBox)
-      case f: Failure          => setBox(f)
-      case o                   => setFromString(o.toString)
+      case d: Date =>
+        setBox(Full(d))
+      case Some(d: Date) =>
+        setBox(Full(d))
+      case Full(d: Date) =>
+        setBox(Full(d))
+      case (d: Date) :: _ =>
+        setBox(Full(d))
+      case s: String =>
+        setFromString(s)
+      case Some(s: String) =>
+        setFromString(s)
+      case Full(s: String) =>
+        setFromString(s)
+      case null | None | Empty =>
+        setBox(defaultValueBox)
+      case f: Failure =>
+        setBox(f)
+      case o =>
+        setFromString(o.toString)
     }
 
   def setFromString(in: String): Box[Date] =
     formats.dateFormat.parse(in) match {
-      case Some(d: Date) => setBox(Full(d))
-      case other         => setBox(Failure("Invalid Date string: " + in))
+      case Some(d: Date) =>
+        setBox(Full(d))
+      case other =>
+        setBox(Failure("Invalid Date string: " + in))
     }
 
   def setFromJValue(jvalue: JValue): Box[Date] =
     jvalue match {
-      case JNothing | JNull if optional_?            => setBox(Empty)
-      case JObject(JField("$dt", JString(s)) :: Nil) => setFromString(s)
-      case other                                     => setBox(FieldHelpers.expectedA("JObject", other))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case JObject(JField("$dt", JString(s)) :: Nil) =>
+        setFromString(s)
+      case other =>
+        setBox(FieldHelpers.expectedA("JObject", other))
     }
 
   private def elem =
@@ -76,14 +91,18 @@ trait DateTypedField extends TypedField[Date] {
 
   def toForm =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def asJs =
     asJValue match {
-      case JNothing => JsNull
-      case jv       => JsRaw(compactRender(jv))
+      case JNothing =>
+        JsNull
+      case jv =>
+        JsRaw(compactRender(jv))
     }
 
   def asJValue: JValue =
@@ -108,7 +127,8 @@ class DateField[OwnerType <: BsonRecord[OwnerType]](rec: OwnerType)
 
   override def toString =
     value match {
-      case null => "null"
+      case null =>
+        "null"
       case d =>
         valueBox.map { v =>
           formats.dateFormat.format(v)

@@ -105,7 +105,8 @@ final class FastaOutputStream(in: OutputStream)
 
     for (indexValue <- code zip comp)
       indexValue match {
-        case (i, v) => iub(i) = v
+        case (i, v) =>
+          iub(i) = v
       }
 
     iub

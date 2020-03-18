@@ -72,7 +72,8 @@ class BloomFilter[@specialized(Int, Long) T](
     other match {
       case that: BloomFilter[_] =>
         this.numBuckets == that.numBuckets && this.numHashFunctions == that.numHashFunctions && this.bits == that.bits
-      case _ => false
+      case _ =>
+        false
     }
 
   def +=(o: T): this.type = {

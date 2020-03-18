@@ -92,7 +92,8 @@ class FileUploadSupportSpecServlet
   }
 
   error {
-    case e => e.printStackTrace()
+    case e =>
+      e.printStackTrace()
   }
 }
 

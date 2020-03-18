@@ -658,7 +658,8 @@ class ClientServerSpec
       @tailrec
       def drain(): (String, BufferedReader) =
         reader.read(cbuf) match {
-          case -1 ⇒ sb.toString -> reader
+          case -1 ⇒
+            sb.toString -> reader
           case n ⇒
             sb.append(cbuf, 0, n);
             drain()

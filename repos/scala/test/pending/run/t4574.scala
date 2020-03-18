@@ -6,7 +6,8 @@ object Test {
       body;
       assert(false, "Should not succeed.")
     } catch {
-      case _: MatchError => println(msg)
+      case _: MatchError =>
+        println(msg)
     }
   }
 
@@ -16,7 +17,8 @@ object Test {
         yield x)
     expectMatchError("I denounce null as unListLike!")(
       (null: Any) match {
-        case List(_*) => true
+        case List(_*) =>
+          true
       })
   }
 }

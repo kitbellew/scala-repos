@@ -80,7 +80,8 @@ object Connector {
 
     connectors foreach {
       _ onSessionEvent {
-        case event => sessionBroker.send(event()).sync()
+        case event =>
+          sessionBroker.send(event()).sync()
       }
     }
 

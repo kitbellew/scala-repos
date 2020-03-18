@@ -30,8 +30,10 @@ class ReflectionTest {
 
   def implicitClassTagTest[A: ClassTag](x: Any): Boolean =
     x match {
-      case x: A => true
-      case _    => false
+      case x: A =>
+        true
+      case _ =>
+        false
     }
 
   @Test

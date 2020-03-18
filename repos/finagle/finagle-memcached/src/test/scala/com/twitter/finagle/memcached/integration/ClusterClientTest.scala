@@ -218,7 +218,8 @@ class ClusterClientTest
           updateCachePoolConfigData(10)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       /***** remove 2 servers from the zk serverset ******/
@@ -247,7 +248,8 @@ class ClusterClientTest
           updateCachePoolConfigData(8)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       /***** remove 2 more then add 3 ******/
@@ -277,7 +279,8 @@ class ClusterClientTest
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
     }
 
@@ -328,7 +331,8 @@ class ClusterClientTest
           updateCachePoolConfigData(10)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
     }
 
@@ -358,7 +362,8 @@ class ClusterClientTest
           zookeeperServer.startNetwork
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       /***** start 5 more memcached servers and join the cluster ******/
@@ -375,7 +380,8 @@ class ClusterClientTest
           updateCachePoolConfigData(10)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
     }
 
@@ -493,7 +499,8 @@ class ClusterClientTest
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -513,7 +520,8 @@ class ClusterClientTest
           updateCachePoolConfigData(7)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -533,7 +541,8 @@ class ClusterClientTest
           updateCachePoolConfigData(5)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -552,7 +561,8 @@ class ClusterClientTest
           updateCachePoolConfigData(7)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -571,7 +581,8 @@ class ClusterClientTest
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -592,7 +603,8 @@ class ClusterClientTest
           updateCachePoolConfigData(9)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -632,7 +644,8 @@ class ClusterClientTest
           additionalServers = addMoreServers(4)
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {
@@ -651,7 +664,8 @@ class ClusterClientTest
           additionalServers(1).leave()
         }.get(10.seconds)()
       } catch {
-        case _: Exception => fail("it shouldn't trown an exception")
+        case _: Exception =>
+          fail("it shouldn't trown an exception")
       }
 
       eventually {

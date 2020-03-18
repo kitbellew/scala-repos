@@ -21,7 +21,8 @@ private object AnalysisBuilder {
     )
 
     GameRepo.game(uciAnalysis.id) flatMap {
-      case None => fufail(AnalysisBuilder.GameIsGone(uciAnalysis.id))
+      case None =>
+        fufail(AnalysisBuilder.GameIsGone(uciAnalysis.id))
       case Some(game) =>
         GameRepo.initialFen(game) flatMap { initialFen =>
           def debug = s"Analysis ${game.id} from ${client.fullId}"
@@ -59,8 +60,10 @@ private object AnalysisBuilder {
       case ((List(before, after), move), index) => {
         val variation =
           before.cappedPvList match {
-            case first :: rest if first != move => first :: rest
-            case _                              => Nil
+            case first :: rest if first != move =>
+              first :: rest
+            case _ =>
+              Nil
           }
         val best = variation.headOption flatMap Uci.Move.apply
         val info = Info(

@@ -78,9 +78,11 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
             case c: ScObject
                 if c.qualifiedName == "scala.collection.mutable.HashSet" =>
               true
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }.get,
       '\t'
     )
@@ -116,9 +118,11 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
             case c: ScClass
                 if c.qualifiedName == "scala.collection.mutable.HashSet" =>
               true
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }.get,
       '\t'
     )
@@ -159,15 +163,18 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
               case c: ScClass
                   if c.qualifiedName == "scala.collection.mutable.ListMap" =>
                 true
-              case _ => false
+              case _ =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }.get,
         '\t'
       )
       checkResultByText(resultText)
     } catch {
-      case t: Exception => settings.setImportsWithPrefix(oldValue)
+      case t: Exception =>
+        settings.setImportsWithPrefix(oldValue)
     }
   }
 
@@ -202,9 +209,11 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
             case c: ScClass
                 if c.qualifiedName == "scala.collection.immutable.ListSet" =>
               true
-            case _ => false
+            case _ =>
+              false
           }
-        case _ => false
+        case _ =>
+          false
       }.get,
       '\t'
     )

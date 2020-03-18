@@ -126,9 +126,12 @@ object GetResult {
     */
   private[memcached] def merged(results: Seq[GetResult]): GetResult = {
     results match {
-      case Nil         => Empty
-      case Seq(single) => single
-      case Seq(a, b)   => a ++ b
+      case Nil =>
+        Empty
+      case Seq(single) =>
+        single
+      case Seq(a, b) =>
+        a ++ b
       case _ =>
         val hits = immutable.Map.newBuilder[String, Value]
         val misses = immutable.Set.newBuilder[String]
@@ -314,7 +317,8 @@ trait BaseClient[T] {
       } else {
         Future.value(
           result.valuesWithTokens.mapValues {
-            case (v, u) => (bufferToType(v), u)
+            case (v, u) =>
+              (bufferToType(v), u)
           })
       }
     }
@@ -423,7 +427,8 @@ trait Client extends BaseClient[Buf] {
       new Bijection[Buf, String] {
         def apply(a: Buf): String =
           a match {
-            case Buf.Utf8(s) => s
+            case Buf.Utf8(s) =>
+              s
           }
         def invert(b: String): Buf = Buf.Utf8(b)
       })
@@ -489,9 +494,12 @@ private[memcached] object ClientConstants {
   val FutureStored: Future[CasResult] = Future.value(CasResult.Stored)
 
   val CasFromCheckAndSet: CasResult => Future[JBoolean] = {
-    case CasResult.Stored   => JavaTrue
-    case CasResult.Exists   => JavaFalse
-    case CasResult.NotFound => JavaFalse
+    case CasResult.Stored =>
+      JavaTrue
+    case CasResult.Exists =>
+      JavaFalse
+    case CasResult.NotFound =>
+      JavaFalse
   }
 }
 
@@ -509,7 +517,8 @@ protected class ConnectedClient(
   protected def rawGet(command: RetrievalCommand) = {
     val keys: immutable.Set[String] =
       command.keys.map {
-        case Buf.Utf8(s) => s
+        case Buf.Utf8(s) =>
+          s
       }(breakOut)
 
     service(command).map {
@@ -522,7 +531,8 @@ protected class ConnectedClient(
           }(breakOut)
         val misses = util.NotFound(keys, hits.keySet)
         GetResult(hits, misses)
-      case Error(e) => throw e
+      case Error(e) =>
+        throw e
       case other =>
         throw new IllegalStateException(
           "Invalid response type from get: %s".format(
@@ -575,9 +585,12 @@ protected class ConnectedClient(
   def set(key: String, flags: Int, expiry: Time, value: Buf): Future[Unit] = {
     try {
       service(Set(key, flags, expiry, value)).map {
-        case Stored() => ()
-        case Error(e) => throw e
-        case _        => throw new IllegalStateException
+        case Stored() =>
+          ()
+        case Error(e) =>
+          throw e
+        case _ =>
+          throw new IllegalStateException
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -593,11 +606,16 @@ protected class ConnectedClient(
       casUnique: Buf): Future[CasResult] = {
     try {
       service(Cas(key, flags, expiry, value, casUnique)).flatMap {
-        case Stored()   => FutureStored
-        case Exists()   => FutureExists
-        case NotFound() => FutureNotFound
-        case Error(e)   => Future.exception(e)
-        case _          => Future.exception(new IllegalStateException)
+        case Stored() =>
+          FutureStored
+        case Exists() =>
+          FutureExists
+        case NotFound() =>
+          FutureNotFound
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -612,10 +630,14 @@ protected class ConnectedClient(
       value: Buf): Future[JBoolean] = {
     try {
       service(Add(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
+        case Stored() =>
+          JavaTrue
+        case NotStored() =>
+          JavaFalse
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -630,10 +652,14 @@ protected class ConnectedClient(
       value: Buf): Future[JBoolean] = {
     try {
       service(Append(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
+        case Stored() =>
+          JavaTrue
+        case NotStored() =>
+          JavaFalse
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -648,10 +674,14 @@ protected class ConnectedClient(
       value: Buf): Future[JBoolean] = {
     try {
       service(Prepend(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
+        case Stored() =>
+          JavaTrue
+        case NotStored() =>
+          JavaFalse
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -666,10 +696,14 @@ protected class ConnectedClient(
       value: Buf): Future[JBoolean] = {
     try {
       service(Replace(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
+        case Stored() =>
+          JavaTrue
+        case NotStored() =>
+          JavaFalse
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -680,10 +714,14 @@ protected class ConnectedClient(
   def delete(key: String): Future[JBoolean] = {
     try {
       service(Delete(key)).flatMap {
-        case Deleted()  => JavaTrue
-        case NotFound() => JavaFalse
-        case Error(e)   => Future.exception(e)
-        case _          => Future.exception(new IllegalStateException)
+        case Deleted() =>
+          JavaTrue
+        case NotFound() =>
+          JavaFalse
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -694,10 +732,14 @@ protected class ConnectedClient(
   def incr(key: String, delta: Long): Future[Option[JLong]] = {
     try {
       service(Incr(key, delta)).flatMap {
-        case Number(value) => Future.value(Some(value))
-        case NotFound()    => Future.None
-        case Error(e)      => Future.exception(e)
-        case _             => Future.exception(new IllegalStateException)
+        case Number(value) =>
+          Future.value(Some(value))
+        case NotFound() =>
+          Future.None
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -708,10 +750,14 @@ protected class ConnectedClient(
   def decr(key: String, delta: Long): Future[Option[JLong]] = {
     try {
       service(Decr(key, delta)).flatMap {
-        case Number(value) => Future.value(Some(value))
-        case NotFound()    => Future.None
-        case Error(e)      => Future.exception(e)
-        case _             => Future.exception(new IllegalStateException)
+        case Number(value) =>
+          Future.value(Some(value))
+        case NotFound() =>
+          Future.None
+        case Error(e) =>
+          Future.exception(e)
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     } catch {
       case t: IllegalArgumentException =>
@@ -722,8 +768,10 @@ protected class ConnectedClient(
   def stats(args: Option[String]): Future[Seq[String]] = {
     val statArgs: Seq[Buf] =
       args match {
-        case None       => Seq(Buf.Empty)
-        case Some(args) => args.split(" ").map(nonEmptyStringToBuf).toSeq
+        case None =>
+          Seq(Buf.Empty)
+        case Some(args) =>
+          args.split(" ").map(nonEmptyStringToBuf).toSeq
       }
     service(Stats(statArgs)).flatMap {
       case InfoLines(lines) =>
@@ -735,13 +783,17 @@ protected class ConnectedClient(
             "%s %s".format(
               keyStr,
               values.map {
-                case Buf.Utf8(str) => str
+                case Buf.Utf8(str) =>
+                  str
               } mkString (" "))
           }
         }
-      case Error(e)     => Future.exception(e)
-      case Values(list) => Future.Nil
-      case _            => Future.exception(new IllegalStateException)
+      case Error(e) =>
+        Future.exception(e)
+      case Values(list) =>
+        Future.Nil
+      case _ =>
+        Future.exception(new IllegalStateException)
     }
   }
 
@@ -821,9 +873,12 @@ object PartitionedClient {
       .filter((_ != ""))
       .map(_.split(":"))
       .map {
-        case Array(host)               => (host, 11211, 1)
-        case Array(host, port)         => (host, port.toInt, 1)
-        case Array(host, port, weight) => (host, port.toInt, weight.toInt)
+        case Array(host) =>
+          (host, 11211, 1)
+        case Array(host, port) =>
+          (host, port.toInt, 1)
+        case Array(host, port, weight) =>
+          (host, port.toInt, weight.toInt)
       }
 }
 
@@ -852,8 +907,10 @@ object KetamaClientKey {
 
   def fromCacheNode(node: CacheNode): KetamaClientKey =
     node.key match {
-      case Some(id) => KetamaClientKey(id)
-      case None     => KetamaClientKey(node.host, node.port, node.weight)
+      case Some(id) =>
+        KetamaClientKey(id)
+      case None =>
+        KetamaClientKey(node.host, node.port, node.weight)
     }
 }
 
@@ -915,7 +972,8 @@ private[finagle] object KetamaFailureAccrualFactory {
             val param.Timer(timer) = _timer
             f(timer) andThen next
 
-          case Param.Disabled => next
+          case Param.Disabled =>
+            next
         }
     }
 }
@@ -969,7 +1027,8 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
   // exclude CancelledRequestException and CancelledConnectionException for cache client failure accrual
   override def isSuccess(reqRep: ReqRep): Boolean =
     reqRep.response match {
-      case Return(_) => true
+      case Return(_) =>
+        true
       case Throw(f: Failure)
           if f.cause.exists(_.isInstanceOf[CancelledRequestException]) && f
             .isFlagged(Failure.Interrupted) =>
@@ -979,11 +1038,16 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
             .isFlagged(Failure.Interrupted) =>
         true
       // Failure.InterruptedBy(_) would subsume all these eventually after rb/334371
-      case Throw(WriteException(_: CancelledRequestException))    => true
-      case Throw(_: CancelledRequestException)                    => true
-      case Throw(WriteException(_: CancelledConnectionException)) => true
-      case Throw(_: CancelledConnectionException)                 => true
-      case Throw(e)                                               => false
+      case Throw(WriteException(_: CancelledRequestException)) =>
+        true
+      case Throw(_: CancelledRequestException) =>
+        true
+      case Throw(WriteException(_: CancelledConnectionException)) =>
+        true
+      case Throw(_: CancelledConnectionException) =>
+        true
+      case Throw(e) =>
+        false
     }
 
   override protected def didMarkDead() {
@@ -1002,14 +1066,16 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
     getState match {
-      case Alive | ProbeOpen => super.apply(conn)
+      case Alive | ProbeOpen =>
+        super.apply(conn)
       // One finagle client presents one node on the Ketama ring,
       // the load balancer has one cache client. When the client
       // is in a busy state, continuing to dispatch requests is likely
       // to fail again. Thus we fail immediately if failureAccrualFactory
       // is in a busy state, which is triggered when failureCount exceeds
       // a threshold.
-      case _ => failureAccrualEx
+      case _ =>
+        failureAccrualEx
     }
 }
 
@@ -1068,8 +1134,10 @@ private[finagle] class KetamaPartitionedClient(
   }
 
   nodeHealthBroker.recv foreach {
-    case NodeMarkedDead(key) => ejectNode(key)
-    case NodeRevived(key)    => reviveNode(key)
+    case NodeMarkedDead(key) =>
+      ejectNode(key)
+    case NodeRevived(key) =>
+      reviveNode(key)
   }
 
   private[this] val pristineDistributor = buildDistributor(
@@ -1082,7 +1150,8 @@ private[finagle] class KetamaPartitionedClient(
     statsReceiver.addGauge("live_nodes") {
       synchronized {
         nodes count {
-          case (_, Node(_, state)) => state == NodeState.Live
+          case (_, Node(_, state)) =>
+            state == NodeState.Live
         }
       }
     }
@@ -1090,7 +1159,8 @@ private[finagle] class KetamaPartitionedClient(
     statsReceiver.addGauge("dead_nodes") {
       synchronized {
         nodes count {
-          case (_, Node(_, state)) => state == NodeState.Ejected
+          case (_, Node(_, state)) =>
+            state == NodeState.Ejected
         }
       }
     }
@@ -1306,7 +1376,8 @@ case class KetamaClientBuilder private[memcached] (
     } else {
       copy(_group = Group(
         nodes.map {
-          case (host, port, weight) => new CacheNode(host, port, weight)
+          case (host, port, weight) =>
+            new CacheNode(host, port, weight)
         }: _*))
     }
   }

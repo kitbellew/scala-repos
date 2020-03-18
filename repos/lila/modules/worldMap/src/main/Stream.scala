@@ -30,8 +30,10 @@ private final class Stream(geoIp: MaxMindIpGeo, geoIpCacheTtl: Duration)
       ipCache get ip foreach { point =>
         val game =
           games get id match {
-            case Some(game) => game withPoint point
-            case None       => Stream.Game(id, List(point))
+            case Some(game) =>
+              game withPoint point
+            case None =>
+              Stream.Game(id, List(point))
           }
         games += (id -> game)
         channel push Stream.Event.Add(game)
@@ -50,8 +52,10 @@ private final class Stream(geoIp: MaxMindIpGeo, geoIpCacheTtl: Duration)
   val (enumerator, channel) = Concurrent.broadcast[Stream.Event]
 
   val producer = enumerator &> Enumeratee.map[Stream.Event].apply[JsValue] {
-    case Stream.Event.Add(game)  => game2json(makeMd5)(game)
-    case Stream.Event.Remove(id) => Json.obj("id" -> id)
+    case Stream.Event.Add(game) =>
+      game2json(makeMd5)(game)
+    case Stream.Event.Remove(id) =>
+      Json.obj("id" -> id)
   }
 
   val ipCache = lila.memo.Builder.cache(geoIpCacheTtl, ipToPoint)

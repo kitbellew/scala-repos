@@ -109,7 +109,8 @@ object Assign {
       val keys: Seq[T] = forallIn(key).value
       val enabled: Seq[Boolean] = forallIn(bool).value
       (keys zip enabled) collect {
-        case (a, true) => a
+        case (a, true) =>
+          a
       }
     }
   def forallIn[T](key: Initialize[T]): Initialize[Seq[T]] =

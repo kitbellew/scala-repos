@@ -147,7 +147,8 @@ case class AhcWSRequest(
   def withQueryString(parameters: (String, String)*): WSRequest =
     copy(queryString =
       parameters.foldLeft(this.queryString) {
-        case (m, (k, v)) => m + (k -> (v +: m.getOrElse(k, Nil)))
+        case (m, (k, v)) =>
+          m + (k -> (v +: m.getOrElse(k, Nil)))
       })
 
   def withFollowRedirects(follow: Boolean): WSRequest =
@@ -234,19 +235,27 @@ case class AhcWSRequest(
     */
   def getBody: Option[ByteString] = {
     body match {
-      case InMemoryBody(bytes) => Some(bytes)
-      case _                   => None
+      case InMemoryBody(bytes) =>
+        Some(bytes)
+      case _ =>
+        None
     }
   }
 
   private[libs] def authScheme(scheme: WSAuthScheme): Realm.AuthScheme =
     scheme match {
-      case WSAuthScheme.DIGEST   => Realm.AuthScheme.DIGEST
-      case WSAuthScheme.BASIC    => Realm.AuthScheme.BASIC
-      case WSAuthScheme.NTLM     => Realm.AuthScheme.NTLM
-      case WSAuthScheme.SPNEGO   => Realm.AuthScheme.SPNEGO
-      case WSAuthScheme.KERBEROS => Realm.AuthScheme.KERBEROS
-      case _                     => throw new RuntimeException("Unknown scheme " + scheme)
+      case WSAuthScheme.DIGEST =>
+        Realm.AuthScheme.DIGEST
+      case WSAuthScheme.BASIC =>
+        Realm.AuthScheme.BASIC
+      case WSAuthScheme.NTLM =>
+        Realm.AuthScheme.NTLM
+      case WSAuthScheme.SPNEGO =>
+        Realm.AuthScheme.SPNEGO
+      case WSAuthScheme.KERBEROS =>
+        Realm.AuthScheme.KERBEROS
+      case _ =>
+        throw new RuntimeException("Unknown scheme " + scheme)
     }
 
   /**
@@ -307,7 +316,8 @@ case class AhcWSRequest(
 
     val (builderWithBody, updatedHeaders) =
       body match {
-        case EmptyBody => (builder, this.headers)
+        case EmptyBody =>
+          (builder, this.headers)
         case FileBody(file) =>
           import org.asynchttpclient.request.body.generator.FileBodyGenerator
           val bodyGenerator = new FileBodyGenerator(file)
@@ -418,11 +428,16 @@ case class AhcWSRequest(
         wsProxyServer.protocol
           .getOrElse("http")
           .toLowerCase(java.util.Locale.ENGLISH) match {
-          case "http" | "https" => Realm.AuthScheme.BASIC
-          case "kerberos"       => Realm.AuthScheme.KERBEROS
-          case "ntlm"           => Realm.AuthScheme.NTLM
-          case "spnego"         => Realm.AuthScheme.SPNEGO
-          case _                => scala.sys.error("Unrecognized protocol!")
+          case "http" | "https" =>
+            Realm.AuthScheme.BASIC
+          case "kerberos" =>
+            Realm.AuthScheme.KERBEROS
+          case "ntlm" =>
+            Realm.AuthScheme.NTLM
+          case "spnego" =>
+            Realm.AuthScheme.SPNEGO
+          case _ =>
+            scala.sys.error("Unrecognized protocol!")
         }
       realmBuilder.setScheme(scheme)
       wsProxyServer.encoding.foreach(enc =>

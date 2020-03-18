@@ -94,8 +94,10 @@ final class WeakHashSet[A <: AnyRef](
     */
   private[this] def remove(bucket: Int, prevEntry: Entry[A], entry: Entry[A]) {
     prevEntry match {
-      case null => table(bucket) = entry.tail
-      case _    => prevEntry.tail = entry.tail
+      case null =>
+        table(bucket) = entry.tail
+      case _ =>
+        prevEntry.tail = entry.tail
     }
     count -= 1
   }
@@ -142,7 +144,8 @@ final class WeakHashSet[A <: AnyRef](
         @tailrec
         def linkedListLoop(entry: Entry[A]): Unit =
           entry match {
-            case null => ()
+            case null =>
+              ()
             case _ => {
               val bucket = bucketFor(entry.hash)
               val oldNext = entry.tail
@@ -171,7 +174,8 @@ final class WeakHashSet[A <: AnyRef](
         @tailrec
         def linkedListLoop(entry: Entry[A]): A =
           entry match {
-            case null => null.asInstanceOf[A]
+            case null =>
+              null.asInstanceOf[A]
             case _ => {
               val entryElem = entry.get
               if (elem == entryElem)
@@ -206,7 +210,8 @@ final class WeakHashSet[A <: AnyRef](
         @tailrec
         def linkedListLoop(entry: Entry[A]): A =
           entry match {
-            case null => add()
+            case null =>
+              add()
             case _ => {
               val entryElem = entry.get
               if (elem == entryElem)
@@ -241,9 +246,12 @@ final class WeakHashSet[A <: AnyRef](
         @tailrec
         def linkedListLoop(entry: Entry[A]): Unit =
           entry match {
-            case null                     => add()
-            case _ if (elem == entry.get) => ()
-            case _                        => linkedListLoop(entry.tail)
+            case null =>
+              add()
+            case _ if (elem == entry.get) =>
+              ()
+            case _ =>
+              linkedListLoop(entry.tail)
           }
 
         linkedListLoop(oldHead)
@@ -261,7 +269,8 @@ final class WeakHashSet[A <: AnyRef](
   // remove an element from this set and return this set
   override def -(elem: A): this.type =
     elem match {
-      case null => this
+      case null =>
+        this
       case _ => {
         removeStaleEntries()
         val bucket = bucketFor(elem.hashCode)
@@ -269,9 +278,12 @@ final class WeakHashSet[A <: AnyRef](
         @tailrec
         def linkedListLoop(prevEntry: Entry[A], entry: Entry[A]): Unit =
           entry match {
-            case null                     => ()
-            case _ if (elem == entry.get) => remove(bucket, prevEntry, entry)
-            case _                        => linkedListLoop(entry, entry.tail)
+            case null =>
+              ()
+            case _ if (elem == entry.get) =>
+              remove(bucket, prevEntry, entry)
+            case _ =>
+              linkedListLoop(entry, entry.tail)
           }
 
         linkedListLoop(null, table(bucket))

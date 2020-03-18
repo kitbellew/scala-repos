@@ -115,7 +115,9 @@ object U {
 class Test {
   def m(a: Any) =
     a match {
-      case U.T.C(1) => 1 // used to warn
-      case _        => 1
+      case U.T.C(1) =>
+        1 // used to warn
+      case _ =>
+        1
     }
 }

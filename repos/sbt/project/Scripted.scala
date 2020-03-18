@@ -36,7 +36,8 @@ object Scripted {
     // A parser for page definitions
     val pageP: Parser[ScriptedTestPage] =
       ("*" ~ NatBasic ~ "of" ~ NatBasic) map {
-        case _ ~ page ~ _ ~ total => ScriptedTestPage(page, total)
+        case _ ~ page ~ _ ~ total =>
+          ScriptedTestPage(page, total)
       }
     // Grabs the filenames from a given test group in the current page definition.
     def pagedFilenames(group: String, page: ScriptedTestPage): Seq[String] = {

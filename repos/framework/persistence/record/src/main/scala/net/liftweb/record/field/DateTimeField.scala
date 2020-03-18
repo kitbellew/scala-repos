@@ -46,9 +46,12 @@ trait DateTimeTypedField extends TypedField[Calendar] {
 
   def setFromString(s: String): Box[Calendar] =
     s match {
-      case null | "" if optional_? => setBox(Empty)
-      case null | ""               => setBox(Failure(notOptionalErrorMessage))
-      case other                   => setBox(tryo(dateToCal(parseInternetDate(s))))
+      case null | "" if optional_? =>
+        setBox(Empty)
+      case null | "" =>
+        setBox(Failure(notOptionalErrorMessage))
+      case other =>
+        setBox(tryo(dateToCal(parseInternetDate(s))))
     }
 
   private def elem =
@@ -69,8 +72,10 @@ trait DateTimeTypedField extends TypedField[Calendar] {
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   def asJs =

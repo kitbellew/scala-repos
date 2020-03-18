@@ -96,7 +96,8 @@ private[akka] class RemoteSystemDaemon(
       parent: ActorRef,
       child: ActorRef): Boolean = {
     parent2children.get(parent) match {
-      case null ⇒ false // no-op
+      case null ⇒
+        false // no-op
       case children ⇒
         val next = children - child
         if (next.isEmpty) {
@@ -130,16 +131,21 @@ private[akka] class RemoteSystemDaemon(
             (Nobody, n)
           else
             rec(s.substring(0, last), n + 1)
-        case ref if uid != undefinedUid && uid != ref.path.uid ⇒ (Nobody, n)
-        case ref ⇒ (ref, n)
+        case ref if uid != undefinedUid && uid != ref.path.uid ⇒
+          (Nobody, n)
+        case ref ⇒
+          (ref, n)
       }
     }
 
     val full = Vector() ++ names
     rec(full.mkString("/"), 0) match {
-      case (Nobody, _) ⇒ Nobody
-      case (ref, 0) ⇒ ref
-      case (ref, n) ⇒ ref.getChild(full.takeRight(n).iterator)
+      case (Nobody, _) ⇒
+        Nobody
+      case (ref, 0) ⇒
+        ref
+      case (ref, n) ⇒
+        ref.getChild(full.takeRight(n).iterator)
     }
   }
 
@@ -169,7 +175,8 @@ private[akka] class RemoteSystemDaemon(
               terminationHookDoneWhenNoChildren()
           }
         }
-      case _ ⇒ super.sendSystemMessage(message)
+      case _ ⇒
+        super.sendSystemMessage(message)
     }
 
   override def !(msg: Any)(implicit sender: ActorRef = Actor.noSender): Unit =
@@ -239,9 +246,12 @@ private[akka] class RemoteSystemDaemon(
               (acc.reverse, sel.msg)
             else {
               iter.next() match {
-                case SelectChildName(name) ⇒ rec(name :: acc)
-                case SelectParent if acc.isEmpty ⇒ rec(acc)
-                case SelectParent ⇒ rec(acc.tail)
+                case SelectChildName(name) ⇒
+                  rec(name :: acc)
+                case SelectParent if acc.isEmpty ⇒
+                  rec(acc)
+                case SelectParent ⇒
+                  rec(acc.tail)
                 case pat: SelectChildPattern ⇒
                   (acc.reverse, sel.copy(elements = pat +: iter.toVector))
               }
@@ -260,7 +270,8 @@ private[akka] class RemoteSystemDaemon(
             child.tell(m, sender)
         }
 
-      case Identify(messageId) ⇒ sender ! ActorIdentity(messageId, Some(this))
+      case Identify(messageId) ⇒
+        sender ! ActorIdentity(messageId, Some(this))
 
       case TerminationHook ⇒
         terminating.switchOn {

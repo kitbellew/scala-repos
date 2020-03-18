@@ -59,7 +59,8 @@ akka.actor.deployment {
 
   class Storage extends Actor {
     def receive = {
-      case x => sender() ! x
+      case x =>
+        sender() ! x
     }
   }
 

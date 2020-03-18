@@ -12,19 +12,25 @@ trait ScStableCodeReferenceElement
     with ScPathElement {
   def qualifier: Option[ScStableCodeReferenceElement] =
     getFirstChild match {
-      case s: ScStableCodeReferenceElement => Some(s)
-      case _                               => None
+      case s: ScStableCodeReferenceElement =>
+        Some(s)
+      case _ =>
+        None
     }
   def pathQualifier =
     getFirstChild match {
-      case s: ScPathElement => Some(s)
-      case _                => None
+      case s: ScPathElement =>
+        Some(s)
+      case _ =>
+        None
     }
 
   def qualName: String = {
     qualifier match {
-      case Some(x) => x.qualName + "." + refName
-      case _       => refName
+      case Some(x) =>
+        x.qualName + "." + refName
+      case _ =>
+        refName
     }
   }
 

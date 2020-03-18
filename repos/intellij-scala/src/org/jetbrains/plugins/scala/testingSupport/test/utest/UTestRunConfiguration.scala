@@ -49,8 +49,10 @@ class UTestRunConfiguration(
   override protected def getClassFileNames(
       classes: scala.collection.mutable.HashSet[PsiClass]): Seq[String] =
     classes.map {
-      case typeDef: ScTypeDefinition => getClassPath(typeDef)
-      case aClass                    => aClass.qualifiedName
+      case typeDef: ScTypeDefinition =>
+        getClassPath(typeDef)
+      case aClass =>
+        aClass.qualifiedName
     }.toSeq
 
   override def reporterClass: String = null

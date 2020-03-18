@@ -52,13 +52,20 @@ object JDBCPlatformSpecEngine extends Logging {
 
   def jvToSQL(jv: JValue): (String, String) =
     jv match {
-      case JBool(v)      => ("BOOL", v.toString)
-      case JNumLong(v)   => ("BIGINT", v.toString)
-      case JNumDouble(v) => ("DOUBLE", v.toString)
-      case JNumBigDec(v) => ("DECIMAL", v.toString)
-      case JNumStr(v)    => ("DECIMAL", v)
-      case JString(v)    => ("VARCHAR", "'" + v.replaceAll("'", "\\'") + "'")
-      case _             => sys.error("SQL conversion doesn't support: " + jv)
+      case JBool(v) =>
+        ("BOOL", v.toString)
+      case JNumLong(v) =>
+        ("BIGINT", v.toString)
+      case JNumDouble(v) =>
+        ("DOUBLE", v.toString)
+      case JNumBigDec(v) =>
+        ("DECIMAL", v.toString)
+      case JNumStr(v) =>
+        ("DECIMAL", v)
+      case JString(v) =>
+        ("VARCHAR", "'" + v.replaceAll("'", "\\'") + "'")
+      case _ =>
+        sys.error("SQL conversion doesn't support: " + jv)
     }
 
   private[this] val lock = new Object
@@ -159,7 +166,8 @@ object JDBCPlatformSpecEngine extends Logging {
                     case (acc, properties) =>
                       acc ++ (
                         properties.map {
-                          case (p, (t, _)) => (p, t)
+                          case (p, (t, _)) =>
+                            (p, t)
                         }
                       ).toSet
                   }
@@ -168,7 +176,8 @@ object JDBCPlatformSpecEngine extends Logging {
                   tableName,
                   schema
                     .map {
-                      case (p, t) => p + " " + t
+                      case (p, t) =>
+                        p + " " + t
                     }
                     .mkString(", "))
 
@@ -216,10 +225,12 @@ object JDBCPlatformSpecEngine extends Logging {
                 stmt2.close()
                 conn2.close()
 
-              case Failure(error) => logger.error("Error loading: " + error)
+              case Failure(error) =>
+                logger.error("Error loading: " + error)
             }
           } catch {
-            case t: Throwable => logger.error("Error loading: " + t)
+            case t: Throwable =>
+              logger.error("Error loading: " + t)
           }
         }
       }

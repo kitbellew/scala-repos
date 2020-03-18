@@ -94,10 +94,14 @@ object Delta extends Delta0 {
 
       def apply(before: Option[T], after: Option[T]): Out =
         (before, after) match {
-          case (None, None)       => Inl(None)
-          case (Some(b), Some(a)) => Inl(Some(deltaT.value.apply(b, a)))
-          case (Some(b), None)    => Inr(Inl(b))
-          case (None, Some(a))    => Inr(Inr(Inl(a)))
+          case (None, None) =>
+            Inl(None)
+          case (Some(b), Some(a)) =>
+            Inl(Some(deltaT.value.apply(b, a)))
+          case (Some(b), None) =>
+            Inr(Inl(b))
+          case (None, Some(a)) =>
+            Inr(Inr(Inl(a)))
         }
     }
 

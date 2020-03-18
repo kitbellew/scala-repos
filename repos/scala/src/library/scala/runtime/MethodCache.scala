@@ -69,8 +69,10 @@ private[scala] final class PolyMethodCache(
       method
     else
       next match {
-        case x: PolyMethodCache => x findInternal forReceiver
-        case _                  => next find forReceiver
+        case x: PolyMethodCache =>
+          x findInternal forReceiver
+        case _ =>
+          next find forReceiver
       }
 
   def find(forReceiver: JClass[_]): JMethod = findInternal(forReceiver)

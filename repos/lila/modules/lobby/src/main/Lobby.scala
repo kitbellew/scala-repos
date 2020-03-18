@@ -50,16 +50,20 @@ private[lobby] final class Lobby(
         HookRepo bySid sid foreach remove
       }
       findCompatible(hook) foreach {
-        case Some(h) => self ! BiteHook(h.id, hook.uid, hook.user)
-        case None    => self ! SaveHook(msg)
+        case Some(h) =>
+          self ! BiteHook(h.id, hook.uid, hook.user)
+        case None =>
+          self ! SaveHook(msg)
       }
     }
 
     case msg @ AddSeek(seek) =>
       lila.mon.lobby.seek.create()
       findCompatible(seek) foreach {
-        case Some(s) => self ! BiteSeek(s.id, seek.user)
-        case None    => self ! SaveSeek(msg)
+        case Some(s) =>
+          self ! BiteSeek(s.id, seek.user)
+        case None =>
+          self ! SaveSeek(msg)
       }
 
     case SaveHook(msg) =>
@@ -139,7 +143,8 @@ private[lobby] final class Lobby(
       lila.mon.lobby.socket.member(uids.size)
       lila.mon.lobby.hook.size(HookRepo.size)
 
-    case RemoveHooks(hooks) => hooks foreach remove
+    case RemoveHooks(hooks) =>
+      hooks foreach remove
 
     case Resync =>
       socket ! HookIds(HookRepo.vector.map(_.id))
@@ -149,8 +154,9 @@ private[lobby] final class Lobby(
     user.?? { u =>
       playban(u.id)
     } foreach {
-      case None => f
-      case _    =>
+      case None =>
+        f
+      case _ =>
     }
   }
 
@@ -159,7 +165,8 @@ private[lobby] final class Lobby(
 
   private def findCompatibleIn(hook: Hook, in: Vector[Hook]): Fu[Option[Hook]] =
     in match {
-      case Vector() => fuccess(none)
+      case Vector() =>
+        fuccess(none)
       case h +: rest =>
         Biter.canJoin(h, hook.user) ?? ! {
           (h.user |@| hook.user).tupled ?? {
@@ -172,8 +179,10 @@ private[lobby] final class Lobby(
               }
           }
         } flatMap {
-          case true  => fuccess(h.some)
-          case false => findCompatibleIn(hook, rest)
+          case true =>
+            fuccess(h.some)
+          case false =>
+            findCompatibleIn(hook, rest)
         }
     }
 

@@ -34,8 +34,10 @@ class ScalaMethodCompletionWeigher extends CompletionWeigher {
       location: CompletionLocation): Comparable[_] = {
     val obj =
       ScalaLookupItem.original(element) match {
-        case s: ScalaLookupItem => s.element
-        case _                  => return null //do not compare to anything in Java
+        case s: ScalaLookupItem =>
+          s.element
+        case _ =>
+          return null //do not compare to anything in Java
       }
     obj match {
       case psi: ScFunction =>
@@ -44,7 +46,8 @@ class ScalaMethodCompletionWeigher extends CompletionWeigher {
         MethodNameComparable(
           psi.name,
           psi.getParameterList.getParametersCount > 0)
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

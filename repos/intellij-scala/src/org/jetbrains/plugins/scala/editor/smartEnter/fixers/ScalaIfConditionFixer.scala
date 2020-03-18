@@ -75,7 +75,8 @@ class ScalaIfConditionFixer extends ScalaFixer {
       case Some(cond) if rightParenthesis == null =>
         doc.insertString(cond.getTextRange.getEndOffset, ")")
         WithReformat(0)
-      case _ => NoOperation
+      case _ =>
+        NoOperation
     }
   }
 }

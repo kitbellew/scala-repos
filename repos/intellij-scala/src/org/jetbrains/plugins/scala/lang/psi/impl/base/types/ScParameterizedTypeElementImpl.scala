@@ -40,8 +40,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
   def findConstructor = {
     getContext match {
-      case constr: ScConstructor => Some(constr)
-      case _                     => None
+      case constr: ScConstructor =>
+        Some(constr)
+      case _ =>
+        None
     }
   }
 
@@ -59,10 +61,13 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
         param.typeElement.getText match {
           case v @ ("+" | "-") => //λ[(-[A], +[B]) => Function2[A, Int, B]]
             param.typeArgList.typeArgs match {
-              case Seq(simple) => v ++ simple.getText
-              case _           => "" //should have only one type arg
+              case Seq(simple) =>
+                v ++ simple.getText
+              case _ =>
+                "" //should have only one type arg
             }
-          case _ => param.getText //it's a higher kind type
+          case _ =>
+            param.getText //it's a higher kind type
         }
       }
 
@@ -82,14 +87,16 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                         convertParameterized(parameterized)
                       case simple: ScSimpleTypeElement =>
                         convertSimpleType(simple)
-                      case _ => return None //something went terribly wrong
+                      case _ =>
+                        return None //something went terribly wrong
                     }
                     paramList.mkString(sep = ", ")
                   case simple: ScSimpleTypeElement =>
                     simple.getText.replaceAll("`", "")
                   case parameterized: ScParameterizedTypeElement =>
                     convertParameterized(parameterized)
-                  case _ => return None
+                  case _ =>
+                    return None
                 }
               val lambdaText =
                 s"({type $typeName[$paramText] = ${ret.getText}})#$typeName"
@@ -98,9 +105,11 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                 getContext,
                 this)
               Option(newTE)
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
 
@@ -124,7 +133,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
               if inlineSyntaxIds.contains(param.typeElement.getText) =>
             val name = generateName(i)
             (Some(param.getText.replace("?", name)), name)
-          case (a, _) => (None, a.getText)
+          case (a, _) =>
+            (None, a.getText)
         }.unzip
       val paramText = paramOpt.flatten.mkString(
         start = "[",
@@ -156,7 +166,8 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
           val res = s"_$$$count"
           count += 1
           res
-        case t => t.getText
+        case t =>
+          t.getText
       }
       forSomeBuilder.delete(forSomeBuilder.length - 2, forSomeBuilder.length)
       forSomeBuilder.append("}")
@@ -172,8 +183,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
     val kindProjectorEnabled = ScalaPsiUtil.kindProjectorPluginEnabled(this)
     def isKindProjectorFunctionSyntax(element: PsiElement): Boolean = {
       typeElement.getText match {
-        case "Lambda" | "λ" if kindProjectorEnabled => true
-        case _                                      => false
+        case "Lambda" | "λ" if kindProjectorEnabled =>
+          true
+        case _ =>
+          false
       }
     }
 
@@ -186,23 +199,29 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
           true
         case parametrized: ScParameterizedTypeElement if kindProjectorEnabled =>
           isKindProjectorInlineSyntax(parametrized.typeElement)
-        case _ => false
+        case _ =>
+          false
       }
     }
 
     typeArgList.typeArgs.find {
       case e: ScFunctionalTypeElement if isKindProjectorFunctionSyntax(e) =>
         true
-      case e if isKindProjectorInlineSyntax(e) => true
-      case e: ScWildcardTypeElementImpl        => true
-      case _                                   => false
+      case e if isKindProjectorInlineSyntax(e) =>
+        true
+      case e: ScWildcardTypeElementImpl =>
+        true
+      case _ =>
+        false
     } match {
       case Some(fun) if isKindProjectorFunctionSyntax(fun) =>
         kindProjectorFunctionSyntax(fun)
       case Some(e) if isKindProjectorInlineSyntax(e) =>
         kindProjectorInlineSyntax(e)
-      case Some(_) => existentialType
-      case _       => None
+      case Some(_) =>
+        existentialType
+      case _ =>
+        None
     }
   }
 
@@ -282,8 +301,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitParameterizedTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitParameterizedTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

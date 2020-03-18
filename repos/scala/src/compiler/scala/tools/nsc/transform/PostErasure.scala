@@ -50,7 +50,8 @@ trait PostErasure
           finish(v) // (new B(v)).unbox        ==> v
         case ValueClass.BoxAndCompare(v1, op, v2) =>
           binop(v1, op, v2) // new B(v1) == new B(v2)  ==> v1 == v2
-        case tree => tree
+        case tree =>
+          tree
       }
     }
   }

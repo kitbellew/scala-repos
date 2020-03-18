@@ -84,7 +84,8 @@ trait LibraryModule extends Binder {
 
       object sin extends Op1(Namespace, "sin") {
         override def pf = {
-          case JNum(num) => JNum(scala.math.sin(num.toDouble))
+          case JNum(num) =>
+            JNum(scala.math.sin(num.toDouble))
         }
       }
 
@@ -113,13 +114,16 @@ trait LibraryModule extends Binder {
         val zero = Some(JNum(0))
 
         override def prepare = {
-          case v => JNum(1)
+          case v =>
+            JNum(1)
         }
 
         override def apply(left: JValue, right: JValue) =
           (left, right) match {
-            case (JNum(l), JNum(r)) => JNum(l + r)
-            case _                  => JNum(0)
+            case (JNum(l), JNum(r)) =>
+              JNum(l + r)
+            case _ =>
+              JNum(0)
           }
       }
     }

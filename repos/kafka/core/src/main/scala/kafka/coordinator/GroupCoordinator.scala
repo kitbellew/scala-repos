@@ -803,8 +803,9 @@ class GroupCoordinator(
       "Member %s in group %s has failed".format(member.memberId, group.groupId))
     group.remove(member.memberId)
     group.currentState match {
-      case Dead                  =>
-      case Stable | AwaitingSync => maybePrepareRebalance(group)
+      case Dead =>
+      case Stable | AwaitingSync =>
+        maybePrepareRebalance(group)
       case PreparingRebalance =>
         joinPurgatory.checkAndComplete(GroupKey(group.groupId))
     }

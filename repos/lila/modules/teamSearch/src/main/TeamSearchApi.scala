@@ -40,6 +40,7 @@ final class TeamSearchApi(
             c.storeBulk(teamOptions.flatten map (t => Id(t.id) -> toDoc(t)))
           }
         }
-      case _ => funit
+      case _ =>
+        funit
     }
 }

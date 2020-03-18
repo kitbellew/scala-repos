@@ -52,8 +52,10 @@ abstract class Nat {
   override def toString = value.toString
   override def equals(o: Any) =
     o match {
-      case n: Nat => value == n.value
-      case _      => false
+      case n: Nat =>
+        value == n.value
+      case _ =>
+        false
     }
   override def hashCode = value
 
@@ -214,7 +216,8 @@ object Nat {
           Apply(
             TypeApply(Select(Ident(_Nat), TermName("_unsafe")), List(tt)),
             List(Literal(Constant(v)))))
-      case _ => reify(Nat._unsafe[Nat](i.splice))
+      case _ =>
+        reify(Nat._unsafe[Nat](i.splice))
     }
   }
 }

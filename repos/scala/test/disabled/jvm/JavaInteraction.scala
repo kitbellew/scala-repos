@@ -34,7 +34,8 @@ p.getC() = java.awt.Color[r=255,g=0,b=0]
     try {
       Console println connect()
     } catch {
-      case _: java.lang.InternalError => Console println expected
+      case _: java.lang.InternalError =>
+        Console println expected
     }
   }
 }

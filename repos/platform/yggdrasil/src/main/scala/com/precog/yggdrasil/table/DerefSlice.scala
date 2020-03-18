@@ -50,7 +50,8 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
         Some(
           (indexableArrays mapValues (_.select(i))) ++ forwardIndex
             .getOrElse(node, Map.empty))
-      case _ => forwardIndex get node
+      case _ =>
+        forwardIndex get node
     }
 
   val size = source.size
@@ -278,7 +279,8 @@ class DerefSlice(source: Slice, derefBy: PartialFunction[Int, CPathNode])
                     cols => cols(resultRef).isDefinedAt(row))
               }
 
-            case CUndefined => UndefinedColumn.raw
+            case CUndefined =>
+              UndefinedColumn.raw
           }
 
         acc + (resultRef -> acc.getOrElse(resultRef, resultCol))

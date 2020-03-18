@@ -63,14 +63,18 @@ object ScalaNamesUtil {
 
   def scalaName(element: PsiElement) =
     element match {
-      case scNamed: ScNamedElement   => scNamed.name
-      case psiNamed: PsiNamedElement => psiNamed.getName
+      case scNamed: ScNamedElement =>
+        scNamed.name
+      case psiNamed: PsiNamedElement =>
+        psiNamed.getName
     }
 
   def qualifiedName(named: PsiNamedElement): Option[String] = {
     ScalaPsiUtil.nameContext(named) match {
-      case pack: PsiPackage => Some(pack.getQualifiedName)
-      case clazz: PsiClass  => Some(clazz.qualifiedName)
+      case pack: PsiPackage =>
+        Some(pack.getQualifiedName)
+      case clazz: PsiClass =>
+        Some(clazz.qualifiedName)
       case memb: PsiMember =>
         val containingClass = memb.containingClass
         if (containingClass != null && containingClass.qualifiedName != null && memb
@@ -81,7 +85,8 @@ object ScalaNamesUtil {
               .mkString("."))
         } else
           None
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -104,8 +109,10 @@ object ScalaNamesUtil {
   def toJavaName(name: String) = {
     val toEncode =
       name match {
-        case ScalaNamesUtil.isBacktickedName(s) => s
-        case _                                  => name
+        case ScalaNamesUtil.isBacktickedName(s) =>
+          s
+        case _ =>
+          name
       }
     NameTransformer.encode(toEncode)
   }

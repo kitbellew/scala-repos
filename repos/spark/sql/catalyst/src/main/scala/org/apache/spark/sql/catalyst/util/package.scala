@@ -57,8 +57,10 @@ package object util {
       var reading = true
       while (reading) {
         inStream.read() match {
-          case -1 => reading = false
-          case c  => outStream.write(c)
+          case -1 =>
+            reading = false
+          case c =>
+            outStream.write(c)
         }
       }
       outStream.flush()
@@ -77,8 +79,10 @@ package object util {
       var reading = true
       while (reading) {
         inStream.read() match {
-          case -1 => reading = false
-          case c  => outStream.write(c)
+          case -1 =>
+            reading = false
+          case c =>
+            outStream.write(c)
         }
       }
       outStream.flush()
@@ -150,7 +154,8 @@ package object util {
   // generated column names don't contain back-ticks or double-quotes.
   def usePrettyExpression(e: Expression): Expression =
     e transform {
-      case a: Attribute => new PrettyAttribute(a)
+      case a: Attribute =>
+        new PrettyAttribute(a)
       case Literal(s: UTF8String, StringType) =>
         PrettyAttribute(s.toString, StringType)
       case Literal(v, t: NumericType) if v != null =>

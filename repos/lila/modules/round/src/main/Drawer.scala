@@ -48,7 +48,8 @@ private[round] final class Drawer(
             g.updatePlayer(color, _ offerDraw g.turns)
           }
         } inject List(Event.ReloadOwner)
-      case _ => fuccess(Nil)
+      case _ =>
+        fuccess(Nil)
     }
 
   def no(pov: Pov): Fu[Events] =
@@ -69,7 +70,8 @@ private[round] final class Drawer(
             g.updatePlayer(!color, _.removeDrawOffer)
           }
         } inject List(Event.ReloadOwner)
-      case _ => fuccess(Nil)
+      case _ =>
+        fuccess(Nil)
     }
 
   def claim(pov: Pov): Fu[Events] =

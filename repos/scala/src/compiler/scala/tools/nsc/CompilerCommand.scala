@@ -55,8 +55,10 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
       val str = format(s.helpSyntax) + "  " + s.helpDescription
       val suffix =
         s.deprecationMessage match {
-          case Some(msg) => "\n" + format("") + "      deprecated: " + msg
-          case _         => ""
+          case Some(msg) =>
+            "\n" + format("") + "      deprecated: " + msg
+          case _ =>
+            ""
         }
       str + suffix
     }
@@ -134,8 +136,9 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     else {
       val sb = new StringBuilder
       allSettings foreach {
-        case s: MultiChoiceSetting[_] if s.isHelping => sb append s.help
-        case _                                       =>
+        case s: MultiChoiceSetting[_] if s.isHelping =>
+          sb append s.help
+        case _ =>
       }
       sb.toString
     }
@@ -161,8 +164,10 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
   def processArguments: (Boolean, List[String]) = {
     // expand out @filename to the contents of that filename
     val expandedArguments = arguments flatMap {
-      case x if x startsWith "@" => expandArg(x)
-      case x                     => List(x)
+      case x if x startsWith "@" =>
+        expandArg(x)
+      case x =>
+        List(x)
     }
 
     settings.processArguments(expandedArguments, processAll = true)

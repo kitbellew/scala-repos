@@ -172,7 +172,8 @@ trait SingletonTypeUtils extends ReprTypes {
       t match {
         case q""" scala.Symbol.apply(${Literal(Constant(s: String))}) """ =>
           Some(s)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -191,7 +192,8 @@ trait SingletonTypeUtils extends ReprTypes {
                 TypeRef(_, TaggedSym, List(ConstantType(Constant(s: String))))),
               _) =>
           Some(s)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -203,14 +205,17 @@ trait SingletonTypeUtils extends ReprTypes {
   object SingletonType {
     def unapply(t: Tree): Option[Type] =
       (t, t.tpe) match {
-        case (Literal(k: Constant), _) => Some(c.internal.constantType(k))
-        case (LiteralSymbol(s), _)     => Some(SingletonSymbolType(s))
+        case (Literal(k: Constant), _) =>
+          Some(c.internal.constantType(k))
+        case (LiteralSymbol(s), _) =>
+          Some(SingletonSymbolType(s))
         case (_, keyType @ SingleType(p, v))
             if !v.isParameter && !isValueClass(v) =>
           Some(keyType)
         case (q""" $sops.narrow """, _) if sops.tpe <:< singletonOpsTpe =>
           Some(sops.tpe.member(TypeName("T")).typeSignature)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -219,8 +224,10 @@ trait SingletonTypeUtils extends ReprTypes {
       case Literal(k: Constant) =>
         val tpe = c.internal.constantType(k)
         (tpe, q"$t.asInstanceOf[$tpe]")
-      case LiteralSymbol(s) => (SingletonSymbolType(s), mkSingletonSymbol(s))
-      case _                => (t.tpe, t)
+      case LiteralSymbol(s) =>
+        (SingletonSymbolType(s), mkSingletonSymbol(s))
+      case _ =>
+        (t.tpe, t)
     }
   }
 
@@ -330,12 +337,14 @@ class SingletonTypeMacros(val c: whitebox.Context)
 
   def extractSingletonValue(tpe: Type): Tree =
     tpe match {
-      case ConstantType(c: Constant) => Literal(c)
+      case ConstantType(c: Constant) =>
+        Literal(c)
 
       case SingleType(p, v) if !v.isParameter && !isValueClass(v) =>
         mkAttributedRef(p, v)
 
-      case SingletonSymbolType(c) => mkSingletonSymbol(c)
+      case SingletonSymbolType(c) =>
+        mkSingletonSymbol(c)
 
       case _ =>
         c.abort(
@@ -408,7 +417,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
   def convertInstanceImplNatAux(i: Tree, tcTpe: Type): Tree = {
     val (n, nTpe) =
       i match {
-        case NatLiteral(n) => (mkNatValue(n), mkNatTpe(n))
+        case NatLiteral(n) =>
+          (mkNatValue(n), mkNatTpe(n))
         case _ =>
           c.abort(
             c.enclosingPosition,
@@ -445,7 +455,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
         })#λ]].map {
         case TypeRef(prefix, sym, args) if sym.isFreeType =>
           internal.typeRef(NoPrefix, tc2.typeSymbol, args)
-        case tpe => tpe
+        case tpe =>
+          tpe
       }
 
       val tci = appliedType(tc2, List(s, sTpe))
@@ -483,8 +494,10 @@ class SingletonTypeMacros(val c: whitebox.Context)
 
     val widenTpe =
       tpe match {
-        case SingletonSymbolType(s) => symbolTpe
-        case _                      => tpe.widen
+        case SingletonSymbolType(s) =>
+          symbolTpe
+        case _ =>
+          tpe.widen
       }
 
     if (widenTpe =:= tpe)

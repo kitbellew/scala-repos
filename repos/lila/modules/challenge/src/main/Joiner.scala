@@ -13,7 +13,8 @@ private[challenge] final class Joiner(onStart: String => Unit) {
 
   def apply(c: Challenge, destUser: Option[User]): Fu[Option[Pov]] =
     GameRepo exists c.id flatMap {
-      case true => fuccess(None)
+      case true =>
+        fuccess(None)
       case false =>
         c.challengerUserId.??(UserRepo.byId) flatMap { challengerUser =>
           def makeChess(variant: chess.variant.Variant): chess.Game =

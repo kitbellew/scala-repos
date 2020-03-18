@@ -124,7 +124,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
             assert(ioFile.exists, "File does not exist: " + ioFile.getPath)
             CompilerManager.getInstance(getProject).rebuild(callback)
           } catch {
-            case e: Exception => throw new RuntimeException(e)
+            case e: Exception =>
+              throw new RuntimeException(e)
           }
         }
       })
@@ -171,7 +172,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
         }
         Assert.assertFalse("Code did not compile!", aborted)
       } catch {
-        case t: Throwable => myError = t
+        case t: Throwable =>
+          myError = t
       } finally {
         semaphore.up()
       }

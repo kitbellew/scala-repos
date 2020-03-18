@@ -33,7 +33,8 @@ private[sql] class MyDenseVector(val data: Array[Double]) extends Serializable {
     other match {
       case v: MyDenseVector =>
         java.util.Arrays.equals(this.data, v.data)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -65,8 +66,10 @@ private[sql] class MyDenseVectorUDT extends UserDefinedType[MyDenseVector] {
 
   override def equals(other: Any): Boolean =
     other match {
-      case _: MyDenseVectorUDT => true
-      case _                   => false
+      case _: MyDenseVectorUDT =>
+        true
+      case _ =>
+        false
     }
 }
 
@@ -82,7 +85,8 @@ class UserDefinedTypeSuite
 
   test("register user type: MyDenseVector for MyLabeledPoint") {
     val labels: RDD[Double] = pointsRDD.select('label).rdd.map {
-      case Row(v: Double) => v
+      case Row(v: Double) =>
+        v
     }
     val labelsArrays: Array[Double] = labels.collect()
     assert(labelsArrays.size === 2)
@@ -90,7 +94,8 @@ class UserDefinedTypeSuite
     assert(labelsArrays.contains(0.0))
 
     val features: RDD[MyDenseVector] = pointsRDD.select('features).rdd.map {
-      case Row(v: MyDenseVector) => v
+      case Row(v: MyDenseVector) =>
+        v
     }
     val featuresArrays: Array[MyDenseVector] = features.collect()
     assert(featuresArrays.size === 2)

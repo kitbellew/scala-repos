@@ -21,8 +21,10 @@ trait TypeAdaptingTransformer {
 
     def isMethodTypeWithEmptyParams(tpe: Type) =
       tpe match {
-        case MethodType(Nil, _) => true
-        case _                  => false
+        case MethodType(Nil, _) =>
+          true
+        case _ =>
+          false
       }
 
     private def isSafelyRemovableUnbox(fn: Tree, arg: Tree): Boolean = {

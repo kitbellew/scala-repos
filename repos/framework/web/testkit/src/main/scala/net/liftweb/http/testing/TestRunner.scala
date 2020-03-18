@@ -94,7 +94,8 @@ class TestRunner(
           try {
             throw new Exception("")
           } catch {
-            case e: Exception => e.getStackTrace.toList.tail.head
+            case e: Exception =>
+              e.getStackTrace.toList.tail.head
           }
 
         if (testItem.resetDB)
@@ -109,7 +110,8 @@ class TestRunner(
                   ex: Throwable,
                   base: List[StackTraceElement]): List[StackTraceElement] =
                 ex match {
-                  case null => base
+                  case null =>
+                    base
                   case _ =>
                     combineStack(ex.getCause, ex.getStackTrace.toList ::: base)
                 }
@@ -137,7 +139,8 @@ class TestRunner(
                         try {
                           throw new Exception("")
                         } catch {
-                          case e: Exception => e.getStackTrace.toList.tail.head
+                          case e: Exception =>
+                            e.getStackTrace.toList.tail.head
                         }
 
                       if (testItem.resetDB)
@@ -153,7 +156,8 @@ class TestRunner(
                                 base: List[StackTraceElement])
                                 : List[StackTraceElement] =
                               ex match {
-                                case null => base
+                                case null =>
+                                  base
                                 case _ =>
                                   combineStack(
                                     ex.getCause,
@@ -191,8 +195,10 @@ class TestRunner(
 
       what.foreach { testItem =>
         testItem.forkCnt match {
-          case 0 => runASingleTest(testItem)
-          case n => runForkTest(testItem, n)
+          case 0 =>
+            runASingleTest(testItem)
+          case n =>
+            runForkTest(testItem, n)
         }
 
       }
@@ -227,7 +233,8 @@ case class TestResults(res: List[Tracker]) {
 
     val append =
       (failedTests, failedAsserts) match {
-        case (ft, fa) if ft.length == 0 && fa.length == 0 => ""
+        case (ft, fa) if ft.length == 0 && fa.length == 0 =>
+          ""
         case (ft, fa) =>
           "\n" + ft.length + " Failed Tests:\n" + ft
             .map(v =>
@@ -254,9 +261,12 @@ class Item(
     forkFunc: Box[Int => Any]) {
   def getFunc(cnt: Int) = {
     (func, forkFunc) match {
-      case (Full(f), _)  => f
-      case (_, Full(cf)) => () => cf(cnt)
-      case _             => () =>
+      case (Full(f), _) =>
+        f
+      case (_, Full(cf)) =>
+        () => cf(cnt)
+      case _ =>
+        () =>
     }
   }
 }

@@ -41,9 +41,12 @@ object CachedWithoutModificationCount {
       @tailrec
       def valueWrapperParam(valueWrapper: Tree): ValueWrapper =
         valueWrapper match {
-          case q"valueWrapper = $v" => valueWrapperParam(v)
-          case q"ValueWrapper.$v"   => ValueWrapper.withName(v.toString)
-          case q"$v"                => ValueWrapper.withName(v.toString)
+          case q"valueWrapper = $v" =>
+            valueWrapperParam(v)
+          case q"ValueWrapper.$v" =>
+            ValueWrapper.withName(v.toString)
+          case q"$v" =>
+            ValueWrapper.withName(v.toString)
         }
 
       c.prefix.tree match {
@@ -51,13 +54,16 @@ object CachedWithoutModificationCount {
             if params.length >= 2 =>
           val synch: Boolean =
             params.head match {
-              case q"synchronized = $v" => c.eval[Boolean](c.Expr(v))
-              case q"$v"                => c.eval[Boolean](c.Expr(v))
+              case q"synchronized = $v" =>
+                c.eval[Boolean](c.Expr(v))
+              case q"$v" =>
+                c.eval[Boolean](c.Expr(v))
             }
           val valueWrapper = valueWrapperParam(params(1))
           val buffers: List[Tree] = params.drop(2)
           (synch, valueWrapper, buffers)
-        case _ => abort("Wrong parameters")
+        case _ =>
+          abort("Wrong parameters")
       }
     }
 
@@ -89,7 +95,8 @@ object CachedWithoutModificationCount {
             EmptyTree
         val wrappedRetTp: Tree =
           valueWrapper match {
-            case ValueWrapper.None => retTp
+            case ValueWrapper.None =>
+              retTp
             case ValueWrapper.WeakReference =>
               tq"_root_.java.lang.ref.WeakReference[$retTp]"
             case ValueWrapper.SoftReference =>
@@ -134,7 +141,8 @@ object CachedWithoutModificationCount {
 
         val wrappedResult =
           valueWrapper match {
-            case ValueWrapper.None => q"cacheFunResult"
+            case ValueWrapper.None =>
+              q"cacheFunResult"
             case ValueWrapper.WeakReference =>
               q"new _root_.java.lang.ref.WeakReference(cacheFunResult)"
             case ValueWrapper.SoftReference =>
@@ -213,7 +221,8 @@ object CachedWithoutModificationCount {
           """
         println(res)
         c.Expr(res)
-      case _ => abort("You can only annotate one function!")
+      case _ =>
+        abort("You can only annotate one function!")
     }
   }
 }

@@ -59,16 +59,20 @@ private[routing] object RouterBuilderHelper {
 
                   val maybeParams =
                     params.foldLeft[Either[String, Seq[AnyRef]]](Right(Nil)) {
-                      case (error @ Left(_), _) => error
-                      case (_, Left(error))     => Left(error)
+                      case (error @ Left(_), _) =>
+                        error
+                      case (_, Left(error)) =>
+                        Left(error)
                       case (Right(values), Right(value: AnyRef)) =>
                         Right(values :+ value)
-                      case (values, _) => values
+                      case (values, _) =>
+                        values
                     }
 
                   val action =
                     maybeParams match {
-                      case Left(error)   => Action(Results.BadRequest(error))
+                      case Left(error) =>
+                        Action(Results.BadRequest(error))
                       case Right(params) =>
                         // Convert to a Scala action
                         val parser = HandlerInvokerFactory

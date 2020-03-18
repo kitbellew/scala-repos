@@ -15,8 +15,10 @@ trait AsyncCallbackPromise[T] extends Promise[T] {
   /** Process result iff rc is OK; otherwise throw a KeeperException. */
   protected def process(rc: Int, path: String)(result: => T) {
     KeeperException.Code.get(rc) match {
-      case KeeperException.Code.OK => updateIfEmpty(Return(result))
-      case code                    => updateIfEmpty(Throw(KeeperException.create(code, path)))
+      case KeeperException.Code.OK =>
+        updateIfEmpty(Return(result))
+      case code =>
+        updateIfEmpty(Throw(KeeperException.create(code, path)))
     }
   }
 }

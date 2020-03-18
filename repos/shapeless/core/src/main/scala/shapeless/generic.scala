@@ -498,12 +498,14 @@ trait CaseClassMacros extends ReprTypes {
 
   def mkHListValue(elems: List[Tree]): Tree =
     elems.foldRight(q"_root_.shapeless.HNil": Tree) {
-      case (elem, acc) => q"_root_.shapeless.::($elem, $acc)"
+      case (elem, acc) =>
+        q"_root_.shapeless.::($elem, $acc)"
     }
 
   def mkCompoundTpe(nil: Type, cons: Type, items: List[Type]): Type =
     items.foldRight(nil) {
-      case (tpe, acc) => appliedType(cons, List(devarargify(tpe), acc))
+      case (tpe, acc) =>
+        appliedType(cons, List(devarargify(tpe), acc))
     }
 
   def mkLabelTpe(name: Name): Type =
@@ -533,7 +535,8 @@ trait CaseClassMacros extends ReprTypes {
         (u baseType HConsSym) match {
           case TypeRef(pre, _, List(hd, tl)) if pre =:= HConsPre =>
             unfold(tl, hd :: acc)
-          case _ => abort(s"$tpe is not an HList type")
+          case _ =>
+            abort(s"$tpe is not an HList type")
         }
     }
 
@@ -547,7 +550,8 @@ trait CaseClassMacros extends ReprTypes {
       case RefinedType(List(v0, TypeRef(pre, KeyTagSym, List(k, v1))), _)
           if pre =:= KeyTagPre && v0 =:= v1 =>
         (k, v0)
-      case _ => abort(s"$tpe is not a field type")
+      case _ =>
+        abort(s"$tpe is not a field type")
     }
   }
 
@@ -560,7 +564,8 @@ trait CaseClassMacros extends ReprTypes {
         val argTrees = args.map(mkTypTree)
         AppliedTypeTree(tq"_root_.scala.collection.Seq", argTrees)
 
-      case t => tq"$t"
+      case t =>
+        tq"$t"
     }
   }
 
@@ -629,8 +634,10 @@ trait CaseClassMacros extends ReprTypes {
         case TypeRef(_, consSym, List(hd, tl))
             if consSym.asType.toType.typeConstructor =:= cons =>
           loop(tl, hd :: acc)
-        case `nil` => acc
-        case other => abort(s"Bad compound type $compoundTpe")
+        case `nil` =>
+          acc
+        case other =>
+          abort(s"Bad compound type $compoundTpe")
       }
     loop(compoundTpe, Nil).reverse
   }
@@ -650,9 +657,12 @@ trait CaseClassMacros extends ReprTypes {
 
   def param1(tpe: Type): Type =
     tpe match {
-      case t if (tpe.takesTypeArgs) => t.typeParams.head.asType.toType
-      case TypeRef(_, _, List(arg)) => arg
-      case _                        => NoType
+      case t if (tpe.takesTypeArgs) =>
+        t.typeParams.head.asType.toType
+      case TypeRef(_, _, List(arg)) =>
+        arg
+      case _ =>
+        NoType
     }
 
   def reprTypTree(tpe: Type): Tree = {
@@ -789,8 +799,10 @@ trait CaseClassMacros extends ReprTypes {
                   val lookupResult =
                     ctx.scope.lookupAll(name).filter(criterion).toList
                   lookupResult match {
-                    case Nil          => NoSymbol
-                    case List(unique) => unique
+                    case Nil =>
+                      NoSymbol
+                    case List(unique) =>
+                      unique
                     case _ =>
                       aabort(
                         s"unexpected multiple results for a companion symbol lookup for $original#{$original.id}")
@@ -862,19 +874,22 @@ trait CaseClassMacros extends ReprTypes {
     tpe match {
       case TypeRef(pre, _, args) if isVararg(tpe) =>
         appliedType(typeOf[scala.collection.Seq[_]].typeConstructor, args)
-      case _ => tpe
+      case _ =>
+        tpe
     }
 
   def unByName(tpe: Type): Type =
     tpe match {
       case TypeRef(_, sym, List(tpe)) if sym == definitions.ByNameParamClass =>
         tpe
-      case tpe => tpe
+      case tpe =>
+        tpe
     }
 
   def equalTypes(as: List[Type], bs: List[Type]): Boolean =
     as.length == bs.length && (as zip bs).foldLeft(true) {
-      case (acc, (a, b)) => acc && unByName(a) =:= unByName(b)
+      case (acc, (a, b)) =>
+        acc && unByName(a) =:= unByName(b)
     }
 
   def alignFields(tpe: Type, ts: List[Type]): Option[List[(TermName, Type)]] = {
@@ -888,14 +903,17 @@ trait CaseClassMacros extends ReprTypes {
           ts: Seq[Type],
           acc: List[(TermName, Type)]): Option[List[(TermName, Type)]] =
         ts match {
-          case Nil => Some(acc.reverse)
+          case Nil =>
+            Some(acc.reverse)
           case Seq(hd, tl @ _*) =>
             fields.span {
-              case (_, tpe) => !(tpe =:= hd)
+              case (_, tpe) =>
+                !(tpe =:= hd)
             } match {
               case (fpre, List(f, fsuff @ _*)) =>
                 loop(fpre ++ fsuff, tl, f :: acc)
-              case _ => None
+              case _ =>
+                None
             }
         }
 
@@ -936,8 +954,10 @@ trait CaseClassMacros extends ReprTypes {
           case TypeRef(_, _, List(o @ TypeRef(_, _, args)))
               if o <:< typeOf[Product] =>
             Some(args)
-          case TypeRef(_, _, args @ List(arg)) => Some(args)
-          case _                               => None
+          case TypeRef(_, _, args @ List(arg)) =>
+            Some(args)
+          case _ =>
+            None
         }
       else
         None
@@ -959,7 +979,8 @@ trait CaseClassMacros extends ReprTypes {
               ctorParamss.head.map(param => unByName(param.info)))
           else
             None
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -969,7 +990,8 @@ trait CaseClassMacros extends ReprTypes {
       (tpe, tpe) match {
         case (HasApply(as), HasUnapply(bs)) if equalTypes(as.map(_._2), bs) =>
           Some(as)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -980,7 +1002,8 @@ trait CaseClassMacros extends ReprTypes {
         case (HasUniqueCtor(as), HasUnapply(bs))
             if equalTypes(as.map(_._2), bs) =>
           Some(as)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -1015,7 +1038,8 @@ trait CaseClassMacros extends ReprTypes {
 
       def mkCtorDtor0(elems0: List[(TermName, Type)]) = {
         val elems = elems0.map {
-          case (name, tpe) => (TermName(c.freshName("pat")), tpe)
+          case (name, tpe) =>
+            (TermName(c.freshName("pat")), tpe)
         }
         val pattern =
           pq"${companionRef(tpe)}(..${elems.map {
@@ -1027,7 +1051,8 @@ trait CaseClassMacros extends ReprTypes {
           }})"
         val reprPattern =
           elems.foldRight(q"_root_.shapeless.HNil": Tree) {
-            case ((bound, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
+            case ((bound, _), acc) =>
+              pq"_root_.shapeless.::($bound, $acc)"
           }
         new CtorDtor {
           def construct(args: List[Tree]): Tree =
@@ -1036,13 +1061,15 @@ trait CaseClassMacros extends ReprTypes {
             (
               pattern,
               elems.map {
-                case (binder, tpe) => narrow(q"$binder", tpe)
+                case (binder, tpe) =>
+                  narrow(q"$binder", tpe)
               })
           def reprBinding: (Tree, List[Tree]) =
             (
               reprPattern,
               elems.map {
-                case (binder, tpe) => narrow1(q"$binder", tpe)
+                case (binder, tpe) =>
+                  narrow1(q"$binder", tpe)
               })
         }
       }
@@ -1053,7 +1080,8 @@ trait CaseClassMacros extends ReprTypes {
           rhs: List[Tree]) = {
         val reprPattern =
           elems.foldRight(q"_root_.shapeless.HNil": Tree) {
-            case ((bound, _, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
+            case ((bound, _, _), acc) =>
+              pq"_root_.shapeless.::($bound, $acc)"
           }
         new CtorDtor {
           def construct(args: List[Tree]): Tree = q"new $tpe(..$args)"
@@ -1062,7 +1090,8 @@ trait CaseClassMacros extends ReprTypes {
             (
               reprPattern,
               elems.map {
-                case (binder, _, tpe) => narrow1(q"$binder", tpe)
+                case (binder, _, tpe) =>
+                  narrow1(q"$binder", tpe)
               })
         }
       }
@@ -1098,15 +1127,18 @@ trait CaseClassMacros extends ReprTypes {
           }
 
         // case 3: case class
-        case tpe if isCaseClass => mkCtorDtor0(fieldsOf(tpe))
+        case tpe if isCaseClass =>
+          mkCtorDtor0(fieldsOf(tpe))
 
         // case 4: exactly one matching public apply/unapply
-        case HasApplyUnapply(args) => mkCtorDtor0(args)
+        case HasApplyUnapply(args) =>
+          mkCtorDtor0(args)
 
         // case 5: concrete, exactly one public constructor with matching public unapply
         case HasCtorUnapply(args) =>
           val elems = args.map {
-            case (name, tpe) => (TermName(c.freshName("pat")), name, tpe)
+            case (name, tpe) =>
+              (TermName(c.freshName("pat")), name, tpe)
           }
           val pattern =
             pq"${companionRef(tpe)}(..${elems.map {
@@ -1117,23 +1149,27 @@ trait CaseClassMacros extends ReprTypes {
                   pq"$binder"
             }})"
           val rhs = elems.map {
-            case (binder, _, tpe) => narrow(q"$binder", tpe)
+            case (binder, _, tpe) =>
+              narrow(q"$binder", tpe)
           }
           mkCtorDtor1(elems, pattern, rhs)
 
         // case 6: concrete, exactly one public constructor with matching accessible fields
         case HasUniqueCtor(args) =>
           val elems = args.map {
-            case (name, tpe) => (TermName(c.freshName("pat")), name, tpe)
+            case (name, tpe) =>
+              (TermName(c.freshName("pat")), name, tpe)
           }
           val binder = TermName(c.freshName("pat"))
           val pattern = pq"$binder"
           val rhs = elems.map {
-            case (_, name, tpe) => narrow(q"$binder.$name", tpe)
+            case (_, name, tpe) =>
+              narrow(q"$binder.$name", tpe)
           }
           mkCtorDtor1(elems, pattern, rhs)
 
-        case _ => abort(s"Bad product type $tpe")
+        case _ =>
+          abort(s"Bad product type $tpe")
       }
     }
   }

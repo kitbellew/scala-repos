@@ -206,7 +206,8 @@ class ScalaDocNewlinedPreFormatProcessor
       currentWs.getPrevSibling.getNode.getElementType match {
         case ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS =>
           currentWs = currentWs.getPrevSibling.getPrevSibling
-        case _ => currentWs = null
+        case _ =>
+          currentWs = null
       }
     }
     Some((newlinesCount, lastWhitespace))
@@ -232,8 +233,10 @@ object ScalaDocNewlinedPreFormatProcessor {
 
   def isNamedTag(element: PsiElement, names: String*): Boolean =
     element match {
-      case tag: ScDocTag => getTagName(tag).exists(names.contains)
-      case _             => false
+      case tag: ScDocTag =>
+        getTagName(tag).exists(names.contains)
+      case _ =>
+        false
     }
 
   def isParamTag(element: PsiElement) = isNamedTag(element, "@param", "@tparam")

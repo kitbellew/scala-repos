@@ -38,7 +38,8 @@ object SbtResolver {
         Some(new SbtResolver(Kind.withName(kind), name, root))
       case Seq(root, kind) =>
         Some(new SbtResolver(Kind.withName(kind), "", root))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

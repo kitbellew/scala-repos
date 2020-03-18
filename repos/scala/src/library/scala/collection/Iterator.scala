@@ -258,8 +258,10 @@ object Iterator {
             state = 2
             rhs.hasNext
           }
-        case 1 => true
-        case _ => rhs.hasNext
+        case 1 =>
+          true
+        case _ =>
+          rhs.hasNext
       }
     def next() =
       state match {
@@ -1483,8 +1485,10 @@ trait Iterator[+A] extends TraversableOnce[A] {
       override def hashCode = gap.hashCode()
       override def equals(other: Any) =
         other match {
-          case x: Partner => x.compareGap(gap) && gap.isEmpty
-          case _          => super.equals(other)
+          case x: Partner =>
+            x.compareGap(gap) && gap.isEmpty
+          case _ =>
+            super.equals(other)
         }
     }
     (new Partner, new Partner)

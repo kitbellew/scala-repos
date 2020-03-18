@@ -280,8 +280,10 @@ package object linalg {
       x: DenseMatrix[Double],
       covmatOpt: Option[DenseMatrix[Double]] = None): PCA = {
     covmatOpt match {
-      case Some(covmat) => new PCA(x, covmat)
-      case None         => new PCA(x, cov(x))
+      case Some(covmat) =>
+        new PCA(x, covmat)
+      case None =>
+        new PCA(x, cov(x))
     }
   }
 

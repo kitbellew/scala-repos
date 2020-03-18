@@ -60,7 +60,9 @@ object CommonLoanWrapper {
     */
   def apply[T, LWT <: CommonLoanWrapper](lst: List[LWT])(f: => T): T =
     lst match {
-      case Nil     => f
-      case x :: xs => x.apply(this.apply(xs)(f))
+      case Nil =>
+        f
+      case x :: xs =>
+        x.apply(this.apply(xs)(f))
     }
 }

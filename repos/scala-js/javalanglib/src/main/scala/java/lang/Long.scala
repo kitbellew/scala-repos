@@ -28,8 +28,10 @@ final class Long private () extends Number with Comparable[Long] {
   @inline
   override def equals(that: Any): scala.Boolean =
     that match {
-      case that: Long => longValue == that.longValue
-      case _          => false
+      case that: Long =>
+        longValue == that.longValue
+      case _ =>
+        false
     }
 
   @inline
@@ -112,9 +114,12 @@ object Long {
   @inline // because radix is almost certainly constant at call site
   def toUnsignedString(i: scala.Long, radix: Int): String = {
     (radix: @switch) match {
-      case 2  => toBinaryString(i)
-      case 8  => toOctalString(i)
-      case 16 => toHexString(i)
+      case 2 =>
+        toBinaryString(i)
+      case 8 =>
+        toOctalString(i)
+      case 16 =>
+        toHexString(i)
       case _ =>
         val radix1 =
           if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)

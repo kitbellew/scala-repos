@@ -164,17 +164,22 @@ object Tests {
 
     for (option <- config.options) {
       option match {
-        case Filter(include) => testFilters += include
+        case Filter(include) =>
+          testFilters += include
         case Filters(includes) =>
           if (orderedFilters.nonEmpty)
             sys.error("Cannot define multiple ordered test filters.")
           else
             orderedFilters = includes
-        case Exclude(exclude)         => excludeTestsSet ++= exclude
-        case Listeners(listeners)     => testListeners ++= listeners
-        case Setup(setupFunction)     => setup += setupFunction
-        case Cleanup(cleanupFunction) => cleanup += cleanupFunction
-        case a: Argument              => // now handled by whatever constructs `runners`
+        case Exclude(exclude) =>
+          excludeTestsSet ++= exclude
+        case Listeners(listeners) =>
+          testListeners ++= listeners
+        case Setup(setupFunction) =>
+          setup += setupFunction
+        case Cleanup(cleanupFunction) =>
+          cleanup += cleanupFunction
+        case a: Argument => // now handled by whatever constructs `runners`
       }
     }
 
@@ -304,7 +309,8 @@ object Tests {
       runnables: Seq[TestRunnable],
       tags: Seq[(Tag, Int)]): Task[Map[String, SuiteResult]] = {
     val tasks = runnables.map {
-      case (name, test) => toTask(loader, name, test, tags)
+      case (name, test) =>
+        toTask(loader, name, test, tags)
     }
     tasks.join.map(
       _.foldLeft(Map.empty[String, SuiteResult]) {
@@ -313,7 +319,8 @@ object Tests {
           val grouped = merged.groupBy(_._1)
           grouped.mapValues(
             _.map(_._2).foldLeft(SuiteResult.Empty) {
-              case (resultSum, result) => resultSum + result
+              case (resultSum, result) =>
+                resultSum + result
             })
       })
   }
@@ -335,8 +342,10 @@ object Tests {
         toTasks(loader, nestedRunnables, tags).map { currentResultMap =>
           val newResult =
             currentResultMap.get(name) match {
-              case Some(currentResult) => currentResult + result
-              case None                => result
+              case Some(currentResult) =>
+                currentResult + result
+              case None =>
+                result
             }
           currentResultMap.updated(name, newResult)
         }
@@ -363,7 +372,8 @@ object Tests {
           processRunnable(
             nestedRunnables.toList ::: rst,
             (hd._1, result) :: acc)
-        case Nil => acc
+        case Nil =>
+          acc
       }
 
     task {
@@ -396,7 +406,8 @@ object Tests {
           tasks: List[Task[Output]],
           acc: List[Output]): Task[List[Output]] =
         tasks match {
-          case Nil => task(acc.reverse)
+          case Nil =>
+            task(acc.reverse)
           case hd :: tl =>
             hd flatMap { out =>
               sequence(tl, out :: acc)
@@ -435,10 +446,12 @@ object Tests {
       definitions: Seq[Definition],
       log: Logger): (Seq[TestDefinition], Set[String]) = {
     val subclasses = fingerprints collect {
-      case sub: SubclassFingerprint => (sub.superclassName, sub.isModule, sub)
+      case sub: SubclassFingerprint =>
+        (sub.superclassName, sub.isModule, sub)
     };
     val annotations = fingerprints collect {
-      case ann: AnnotatedFingerprint => (ann.annotationName, ann.isModule, ann)
+      case ann: AnnotatedFingerprint =>
+        (ann.annotationName, ann.isModule, ann)
     };
     log.debug("Subclass fingerprints: " + subclasses)
     log.debug("Annotation fingerprints: " + annotations)
@@ -449,7 +462,8 @@ object Tests {
         names: Set[String],
         IsModule: Boolean): Seq[Fingerprint] =
       in collect {
-        case (name, IsModule, print) if names(name) => print
+        case (name, IsModule, print) if names(name) =>
+          print
       }
 
     def toFingerprints(d: Discovered): Seq[Fingerprint] =
@@ -468,7 +482,8 @@ object Tests {
           false,
           Array(new SuiteSelector))
     val mains = discovered collect {
-      case (df, di) if di.hasMain => df.name
+      case (df, di) if di.hasMain =>
+        df.name
     }
     (tests, mains.toSet)
   }

@@ -8,7 +8,8 @@ class Foo {
       type t1
     } =
       x match {
-        case y: Cell[t] => y
+        case y: Cell[t] =>
+          y
       }
 
     var x: Cell[T] forSome {
@@ -26,7 +27,8 @@ class FooW {
     case class Cell[T](var x: T)
     def f[T](x: Any): Cell[_] =
       x match {
-        case y: Cell[t] => y
+        case y: Cell[t] =>
+          y
       }
 
     var x: Cell[_] = new Cell(1)
@@ -68,7 +70,8 @@ object Bug1189 {
     }
   def f(x: Any): U =
     x match {
-      case y: Cell[_] => y
+      case y: Cell[_] =>
+        y
     }
 
   var x: U = Cell(1)

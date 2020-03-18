@@ -83,15 +83,24 @@ object GameFilterMenu {
       info: Option[UserInfo],
       filter: GameFilter): Option[Int] =
     filter match {
-      case Bookmark => info.map(_.nbBookmark)
-      case Imported => info.map(_.nbImported)
-      case All      => user.count.game.some
-      case Rated    => user.count.rated.some
-      case Win      => user.count.win.some
-      case Loss     => user.count.loss.some
-      case Draw     => user.count.draw.some
-      case Search   => user.count.game.some
-      case _        => None
+      case Bookmark =>
+        info.map(_.nbBookmark)
+      case Imported =>
+        info.map(_.nbImported)
+      case All =>
+        user.count.game.some
+      case Rated =>
+        user.count.rated.some
+      case Win =>
+        user.count.win.some
+      case Loss =>
+        user.count.loss.some
+      case Draw =>
+        user.count.draw.some
+      case Search =>
+        user.count.game.some
+      case _ =>
+        None
     }
 
   private def pag = Env.game.paginator
@@ -106,25 +115,33 @@ object GameFilterMenu {
     val nb = cachedNbOf(user, info, filter)
     def std(query: JsObject) = pag.recentlyCreated(query, nb)(page)
     filter match {
-      case Bookmark => Env.bookmark.api.gamePaginatorByUser(user, page)
+      case Bookmark =>
+        Env.bookmark.api.gamePaginatorByUser(user, page)
       case Imported =>
         pag.apply(
           selector = Query imported user.id,
           sort = Seq("pgni.ca" -> SortOrder.Descending),
           nb = nb)(page)
-      case All   => std(Query started user)
-      case Me    => std(Query.opponents(user, me | user))
-      case Rated => std(Query rated user)
-      case Win   => std(Query win user)
-      case Loss  => std(Query loss user)
-      case Draw  => std(Query draw user)
+      case All =>
+        std(Query started user)
+      case Me =>
+        std(Query.opponents(user, me | user))
+      case Rated =>
+        std(Query rated user)
+      case Win =>
+        std(Query win user)
+      case Loss =>
+        std(Query loss user)
+      case Draw =>
+        std(Query draw user)
       case Playing =>
         pag(selector = Query nowPlaying user.id, sort = Seq(), nb = nb)(
           page) addEffect { p =>
           p.currentPageResults.filter(
             _.finishedOrAborted) foreach GameRepo.unsetPlayingUids
         }
-      case Search => userGameSearch(user, page)
+      case Search =>
+        userGameSearch(user, page)
     }
   }
 
@@ -132,7 +149,9 @@ object GameFilterMenu {
       userGameSearch: lila.gameSearch.UserGameSearch,
       filter: GameFilter)(implicit req: Request[_]): play.api.data.Form[_] =
     filter match {
-      case Search => userGameSearch.requestForm
-      case _      => userGameSearch.defaultForm
+      case Search =>
+        userGameSearch.requestForm
+      case _ =>
+        userGameSearch.defaultForm
     }
 }

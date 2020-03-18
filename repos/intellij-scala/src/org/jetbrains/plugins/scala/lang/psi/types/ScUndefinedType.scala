@@ -32,7 +32,8 @@ case class ScUndefinedType(tpt: ScTypeParameterType) extends NonValueType {
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     var undefinedSubst = subst
     r match {
-      case _ if falseUndef => (false, undefinedSubst)
+      case _ if falseUndef =>
+        (false, undefinedSubst)
       case u2: ScUndefinedType if u2.level > level =>
         (true, undefinedSubst.addUpper((u2.tpt.name, u2.tpt.getId), this))
       case u2: ScUndefinedType if u2.level < level =>
@@ -89,7 +90,8 @@ case class ScAbstractType(
       case ScAbstractType(oTpt, oLower, oUpper) =>
         lower.equals(oLower) && upper.equals(oUpper) && tpt.args.equals(
           oTpt.args)
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -98,7 +100,8 @@ case class ScAbstractType(
       uSubst: ScUndefinedSubstitutor,
       falseUndef: Boolean): (Boolean, ScUndefinedSubstitutor) = {
     r match {
-      case _ if falseUndef => (false, uSubst)
+      case _ if falseUndef =>
+        (false, uSubst)
       case rt =>
         var t: (Boolean, ScUndefinedSubstitutor) = Conformance.conformsInner(
           upper,
@@ -132,13 +135,16 @@ case class ScAbstractType(
       visited: HashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     val newVisited = visited + this
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         try {
           ScAbstractType(
@@ -149,7 +155,8 @@ case class ScAbstractType(
             upper.recursiveUpdate(update, newVisited)
           )
         } catch {
-          case cce: ClassCastException => throw new RecursiveUpdateException
+          case cce: ClassCastException =>
+            throw new RecursiveUpdateException
         }
     }
   }
@@ -159,7 +166,8 @@ case class ScAbstractType(
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         try {
           ScAbstractType(
@@ -170,7 +178,8 @@ case class ScAbstractType(
             upper.recursiveVarianceUpdateModifiable(newData, update, variance)
           )
         } catch {
-          case cce: ClassCastException => throw new RecursiveUpdateException
+          case cce: ClassCastException =>
+            throw new RecursiveUpdateException
         }
     }
   }

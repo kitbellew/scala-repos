@@ -86,8 +86,10 @@ private[testutil] trait AbstractComparator extends Assertions {
 
     def getFinderMethod(javaMethod: Method) =
       (javaMethod.getParameterTypes.size, javaMethod.isVarArgs) match {
-        case (0, _)    => methodHasNoArgs _
-        case (1, true) => methodHasOneArgVararg _
+        case (0, _) =>
+          methodHasNoArgs _
+        case (1, true) =>
+          methodHasOneArgVararg _
         case (_, true) =>
           findMethodWithManyArgsVarargs(
             javaMethod.getParameterTypes.toList.init) _
@@ -176,20 +178,25 @@ private[testutil] trait AbstractComparator extends Assertions {
         classParameter.isArray,
         classParameter.getName.matches("""^\[.$"""),
         isVarargs) match {
-        case (true, true, true)  => classParameter.getName.last + "..."
-        case (true, true, false) => classParameter.getName.last + "[]"
+        case (true, true, true) =>
+          classParameter.getName.last + "..."
+        case (true, true, false) =>
+          classParameter.getName.last + "[]"
         case (true, false, true) =>
           classParameter.getName.substring(2).init + "..."
         case (true, false, false) =>
           classParameter.getName.substring(2).init + "[]"
-        case (false, _, _) => classParameter.getName
+        case (false, _, _) =>
+          classParameter.getName
       }
     }
 
     val strParameters =
       (m.getParameterTypes.size, m.isVarArgs) match {
-        case (0, _)    => ""
-        case (1, true) => classParameterToString(m.getParameterTypes.last, true)
+        case (0, _) =>
+          ""
+        case (1, true) =>
+          classParameterToString(m.getParameterTypes.last, true)
         case (_, true) =>
           m.getParameterTypes.init
             .map(classParameterToString(_))
@@ -244,7 +251,8 @@ private[testutil] trait AbstractComparator extends Assertions {
       scalaMethods: List[Method],
       javaMethodsNotMirrored: List[Method] = Nil): List[Method] = {
     javaMethods match {
-      case Nil => javaMethodsNotMirrored
+      case Nil =>
+        javaMethodsNotMirrored
       case javaMethod :: otherMethods => {
         val finderMethod = MethodsComparators.getFinderMethod(javaMethod)
         val desirableName = getDesirableMethodName(javaMethod)

@@ -98,7 +98,8 @@ class UnionMacros(val c: whitebox.Context) {
 
     val elem =
       elems match {
-        case Seq(e) => e
+        case Seq(e) =>
+          e
         case _ =>
           c.abort(
             c.enclosingPosition,

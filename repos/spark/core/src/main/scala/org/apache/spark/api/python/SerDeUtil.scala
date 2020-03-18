@@ -182,8 +182,10 @@ private[spark] object SerDeUtil extends Logging {
           val obj = unpickle.loads(row)
           if (batched) {
             obj match {
-              case array: Array[Any] => array.toSeq
-              case _                 => obj.asInstanceOf[JArrayList[_]].asScala
+              case array: Array[Any] =>
+                array.toSeq
+              case _ =>
+                obj.asInstanceOf[JArrayList[_]].asScala
             }
           } else {
             Seq(obj)
@@ -235,8 +237,10 @@ private[spark] object SerDeUtil extends Logging {
       batchSize: Int): RDD[Array[Byte]] = {
     val (keyFailed, valueFailed) =
       rdd.take(1) match {
-        case Array()      => (false, false)
-        case Array(first) => checkPickle(first)
+        case Array() =>
+          (false, false)
+        case Array(first) =>
+          checkPickle(first)
       }
 
     rdd.mapPartitions { iter =>

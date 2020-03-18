@@ -124,8 +124,10 @@ trait StatefulSnippet extends DispatchSnippet {
       toMerge: => NodeSeq): NodeSeq = {
     val formElem =
       Helpers.findOption(res) {
-        case e: Elem if e.label == "form" && null == e.prefix => Some(e)
-        case _                                                => None
+        case e: Elem if e.label == "form" && null == e.prefix =>
+          Some(e)
+        case _ =>
+          None
       }
 
     if (formElem.isDefined) {
@@ -211,8 +213,10 @@ object TransientSnippet {
     */
   def notTransient(obj: Any): Boolean =
     obj match {
-      case t: TransientSnippet => !t.transient_?
-      case _                   => true
+      case t: TransientSnippet =>
+        !t.transient_?
+      case _ =>
+        true
     }
 }
 
@@ -237,7 +241,8 @@ trait StatelessBehavior {
 trait SimpleStatelessBehavior extends StatelessBehavior {
   def stateless: NodeSeq => NodeSeq
   def statelessDispatch: PartialFunction[String, NodeSeq => NodeSeq] = {
-    case _ => stateless
+    case _ =>
+      stateless
   }
 }
 
@@ -246,6 +251,7 @@ trait SimpleStatelessBehavior extends StatelessBehavior {
   */
 trait BlankStatelessBehavior extends StatelessBehavior {
   def statelessDispatch: PartialFunction[String, NodeSeq => NodeSeq] = {
-    case _ => _ => NodeSeq.Empty
+    case _ =>
+      _ => NodeSeq.Empty
   }
 }

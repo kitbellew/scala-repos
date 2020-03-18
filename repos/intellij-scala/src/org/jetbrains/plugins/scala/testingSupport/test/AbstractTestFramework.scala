@@ -43,8 +43,10 @@ abstract class AbstractTestFramework extends JavaTestFramework {
   def isTestClass(clazz: PsiClass, canBePotential: Boolean): Boolean = {
     val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
       clazz match {
-        case wrapper: PsiClassWrapper => wrapper.definition
-        case _                        => clazz
+        case wrapper: PsiClassWrapper =>
+          wrapper.definition
+        case _ =>
+          clazz
       },
       classOf[ScTypeDefinition],
       false)

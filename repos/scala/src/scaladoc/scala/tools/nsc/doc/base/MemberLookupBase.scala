@@ -70,7 +70,8 @@ trait MemberLookupBase {
 
     val links =
       syms flatMap {
-        case (sym, site) => internalLink(sym, site)
+        case (sym, site) =>
+          internalLink(sym, site)
       } match {
         case Nil =>
           // (3) Look at external links
@@ -106,7 +107,8 @@ trait MemberLookupBase {
               else
                 None
           }
-        case links => links
+        case links =>
+          links
       }
     links match {
       case Nil =>
@@ -116,7 +118,8 @@ trait MemberLookupBase {
             "Could not find any member to link for \"" + query + "\".")
         // (4) if we still haven't found anything, create a tooltip
         Tooltip(query)
-      case List(l) => l
+      case List(l) =>
+        l
       case links =>
         val chosen = chooseLink(links)
         def linkToString(link: LinkTo) = {
@@ -163,7 +166,8 @@ trait MemberLookupBase {
     //     * we look for types with the same name, all the way up
     val result =
       members match {
-        case Nil => Nil
+        case Nil =>
+          Nil
         case mbrName :: Nil =>
           var syms = lookupInTemplate(pos, mbrName, container, OnlyType) map (
             (
@@ -185,7 +189,8 @@ trait MemberLookupBase {
             case Nil =>
               completeSearch(
                 lookupInTemplate(pos, tplName, container, OnlyType))
-            case syms => syms
+            case syms =>
+              syms
           }
       }
     //println("lookupInTemplate(" + members + ", " + container + ") => " + result)
@@ -223,9 +228,12 @@ trait MemberLookupBase {
           container.info.nonPrivateDecls) filter signatureMatch
       else
         strategy match {
-          case BothTypeAndTerm => termSyms ::: typeSyms
-          case OnlyType        => typeSyms
-          case OnlyTerm        => termSyms
+          case BothTypeAndTerm =>
+            termSyms ::: typeSyms
+          case OnlyType =>
+            typeSyms
+          case OnlyTerm =>
+            termSyms
         }
 
     //println("lookupInTemplate(" + member + ", " + container + ") => " + result)

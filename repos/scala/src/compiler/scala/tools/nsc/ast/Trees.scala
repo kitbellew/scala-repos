@@ -48,7 +48,8 @@ trait Trees extends scala.reflect.internal.Trees {
     */
   def PrimarySuperCall(argss: List[List[Tree]]): Tree =
     argss match {
-      case Nil => Apply(gen.mkSuperInitCall, Nil)
+      case Nil =>
+        Apply(gen.mkSuperInitCall, Nil)
       case xs :: rest =>
         rest.foldLeft(Apply(gen.mkSuperInitCall, xs): Tree)(Apply.apply)
     }
@@ -109,7 +110,8 @@ trait Trees extends scala.reflect.internal.Trees {
         traverser.traverse(arg)
       case TypeTreeWithDeferredRefCheck() =>
       // (and rewrap the result? how to update the deferred check? would need to store wrapped tree instead of returning it from check)
-      case _ => super.xtraverse(traverser, tree)
+      case _ =>
+        super.xtraverse(traverser, tree)
     }
 
   trait TreeCopier extends super.InternalTreeCopierOps {
@@ -152,7 +154,8 @@ trait Trees extends scala.reflect.internal.Trees {
         case t @ DocDef(comment0, definition0)
             if (comment0 == comment) && (definition0 == definition) =>
           t
-        case _ => this.treeCopy.DocDef(tree, comment, definition)
+        case _ =>
+          this.treeCopy.DocDef(tree, comment, definition)
       }
     def SelectFromArray(
         tree: Tree,
@@ -168,13 +171,17 @@ trait Trees extends scala.reflect.internal.Trees {
       }
     def InjectDerivedValue(tree: Tree, arg: Tree) =
       tree match {
-        case t @ InjectDerivedValue(arg0) if (arg0 == arg) => t
-        case _                                             => this.treeCopy.InjectDerivedValue(tree, arg)
+        case t @ InjectDerivedValue(arg0) if (arg0 == arg) =>
+          t
+        case _ =>
+          this.treeCopy.InjectDerivedValue(tree, arg)
       }
     def TypeTreeWithDeferredRefCheck(tree: Tree) =
       tree match {
-        case t @ TypeTreeWithDeferredRefCheck() => t
-        case _                                  => this.treeCopy.TypeTreeWithDeferredRefCheck(tree)
+        case t @ TypeTreeWithDeferredRefCheck() =>
+          t
+        case _ =>
+          this.treeCopy.TypeTreeWithDeferredRefCheck(tree)
       }
   }
 
@@ -293,8 +300,9 @@ trait Trees extends scala.reflect.internal.Trees {
           registerLocal(sym.companionModule)
           registerLocal(sym.deSkolemize)
           sym match {
-            case sym: TermSymbol => registerLocal(sym.referenced)
-            case _               => ;
+            case sym: TermSymbol =>
+              registerLocal(sym.referenced)
+            case _ => ;
           }
         }
       }

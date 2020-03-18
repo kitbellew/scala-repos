@@ -19,10 +19,14 @@ object Test {
     var obj: Object = null
     foreach(ois) { obj =>
       obj match {
-        case InvestmentType.Debt   => println("got " + obj)
-        case InvestmentType.Equity => println("got " + obj)
-        case InvestmentType.Future => println("got " + obj)
-        case _                     => println("unknown: " + obj + " of: " + obj.getClass)
+        case InvestmentType.Debt =>
+          println("got " + obj)
+        case InvestmentType.Equity =>
+          println("got " + obj)
+        case InvestmentType.Future =>
+          println("got " + obj)
+        case _ =>
+          println("unknown: " + obj + " of: " + obj.getClass)
       }
     }
   }

@@ -733,7 +733,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
                     i += 1
                   }
 
-                case _ => assert(a1 === a2, "Seed = " + seed)
+                case _ =>
+                  assert(a1 === a2, "Seed = " + seed)
               }
             case StructType(childFields) =>
               compareStruct(

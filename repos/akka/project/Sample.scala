@@ -29,7 +29,8 @@ object Sample {
         case s if s.startsWith("akka-sample") =>
           ti.unit.copy(loadedDefinitions = ti.unit.definitions.copy(projects =
             libraryToProjectDeps(ti.unit.definitions.projects)))
-        case _ => ti.unit
+        case _ =>
+          ti.unit
       }
 
   def project(name: String) = ProjectRef(file(s"akka-samples/$name"), name)
@@ -54,7 +55,8 @@ object Sample {
                 proj,
                 deps ++ projectDependencies.map(
                   ResolvedClasspathDependency(_, None)))
-            case (project, deps) => (project, deps)
+            case (project, deps) =>
+              (project, deps)
           }
           BuildDependencies(
             classpathWithProjectDependencies,
@@ -73,7 +75,8 @@ object Sample {
               * library dependency which has a direct transitive dependency to typesafe-config.
               */
             module.excludeAll(ExclusionRule(organization = module.organization))
-          case module => module
+          case module =>
+            module
         })
 
   /**

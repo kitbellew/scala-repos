@@ -248,8 +248,10 @@ object CodeGenTools {
     def expectedString =
       expected
         .map({
-          case s: String => s""""$s""""
-          case i: Int    => opcodeToString(i, i)
+          case s: String =>
+            s""""$s""""
+          case i: Int =>
+            opcodeToString(i, i)
         })
         .mkString("List(", ", ", ")")
     assert(
@@ -270,8 +272,10 @@ object CodeGenTools {
       method: String): Unit = {
     assert(
       l.exists {
-        case Invoke(_, `receiver`, `method`, _, _) => true
-        case _                                     => false
+        case Invoke(_, `receiver`, `method`, _, _) =>
+          true
+        case _ =>
+          false
       },
       l.stringLines)
   }
@@ -281,8 +285,10 @@ object CodeGenTools {
   def assertDoesNotInvoke(l: List[Instruction], method: String): Unit = {
     assert(
       !l.exists {
-        case i: Invoke => i.name == method
-        case _         => false
+        case i: Invoke =>
+          i.name == method
+        case _ =>
+          false
       },
       l.stringLines)
   }
@@ -295,7 +301,8 @@ object CodeGenTools {
     def quote(l: List[String]) =
       l.map(s => s""""$s"""").mkString("List(", ", ", ")")
     val actual = l collect {
-      case i: Invoke => i.owner + "." + i.name
+      case i: Invoke =>
+        i.owner + "." + i.name
     }
     assert(
       actual == expected,

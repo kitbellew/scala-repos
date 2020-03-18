@@ -71,9 +71,11 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
         case '>' =>
           myTask = completeXmlTag(tag =>
             "</" + Option(tag.getTagName).getOrElse("") + ">")
-        case '/'             => myTask = completeEmptyXmlTag(editor)
-        case '=' if withAttr => myTask = completeXmlAttributeQuote(editor)
-        case _               =>
+        case '/' =>
+          myTask = completeEmptyXmlTag(editor)
+        case '=' if withAttr =>
+          myTask = completeXmlAttributeQuote(editor)
+        case _ =>
       }
     }
 
@@ -96,7 +98,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
                      if !ScalaNamesUtil.isOperatorName(
                        i.getText) && i.getText != "=" =>
                    c == '>' || c == '/';
-                 case _ => false
+                 case _ =>
+                   false
                }) {
       chooseXmlTask(withAttr = false)
     } else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
@@ -108,8 +111,10 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       }
     } else if (c == '{' && (
                  element.getParent match {
-                   case l: ScInterpolatedStringLiteral => !l.isMultiLineString;
-                   case _                              => false
+                   case l: ScInterpolatedStringLiteral =>
+                     !l.isMultiLineString;
+                   case _ =>
+                     false
                  }
                )) {
       myTask = completeInterpolatedStringBraces
@@ -128,7 +133,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           .getPrevSiblingCondition(_.getTextLength != 0)
           .foreach(
             _.getNode.getElementType match {
-              case ScalaTokenTypes.tDOT => myTask = indentRefExprDot(file)
+              case ScalaTokenTypes.tDOT =>
+                myTask = indentRefExprDot(file)
               case ScalaTokenTypes.tCOMMA =>
                 myTask = indentParametersComma(file)
               case ScalaTokenTypes.tASSIGN =>
@@ -312,7 +318,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           tag.getParent.getParent.getFirstChild match {
             case st: ScXmlStartTag if st.getTagName == tag.getTagName =>
               doInsert(tag)
-            case _ => check(tag)
+            case _ =>
+              check(tag)
           }
         } else {
           check(tag)
@@ -384,7 +391,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
 
     text.charAt(offset) match {
       case ' ' | '\n' | '\t' | '\r' | ''' =>
-      case _                              => return null
+      case _ =>
+        return null
     }
 
     if (text.substring(offset - 3, offset) == "'''") {
@@ -458,8 +466,10 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       _ => true,
       elem =>
         Option(elem.getParent).map(_.getParent).exists {
-          case _: ScParameterClause | _: ScArgumentExprList => true
-          case _                                            => false
+          case _: ScParameterClause | _: ScArgumentExprList =>
+            true
+          case _ =>
+            false
         }
     )
   }
@@ -479,7 +489,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
         Option(elem.getParent).map(_.getParent).exists {
           case _: ScFunction | _: ScVariable | _: ScValue | _: ScTypeAlias =>
             true
-          case _ => false
+          case _ =>
+            false
         }
     )
   }

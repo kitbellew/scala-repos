@@ -49,7 +49,8 @@ package processtest {
           } else
             throw new FileNotFoundException(
               "No such file or directory: " + file)
-        case Nil => None
+        case Nil =>
+          None
       }
   }
   object echo {
@@ -82,7 +83,8 @@ object IO {
     try {
       new File(url.toURI)
     } catch {
-      case _: URISyntaxException => new File(url.getPath)
+      case _: URISyntaxException =>
+        new File(url.getPath)
     }
 }
 

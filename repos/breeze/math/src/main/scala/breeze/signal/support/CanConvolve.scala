@@ -62,7 +62,8 @@ object CanConvolve extends SerializableLogging {
 
         //val parsedOptMethod =
         method match {
-          case OptMethod.Automatic => require(true)
+          case OptMethod.Automatic =>
+            require(true)
           case _ =>
             require(false, "currently, only loop convolutions are supported.")
         }
@@ -77,13 +78,15 @@ object CanConvolve extends SerializableLogging {
           overhang /*optConvolveOverhangParsed*/ match {
 
             //No overhang
-            case OptOverhang.None => data
+            case OptOverhang.None =>
+              data
 
             //Overhang as much as possible
             case OptOverhang.Full =>
               DenseVector.vertcat(
                 padding match {
-                  case OptPadding.Cyclical => data(dl - (kl - 1) to dl - 1)
+                  case OptPadding.Cyclical =>
+                    data(dl - (kl - 1) to dl - 1)
                   case OptPadding.Boundary =>
                     DenseVector.ones[T](kernel.length - 1) * data(0)
                   case OptPadding.Zero =>
@@ -96,7 +99,8 @@ object CanConvolve extends SerializableLogging {
                 },
                 data,
                 padding match {
-                  case OptPadding.Cyclical => data(0 to kl - 1)
+                  case OptPadding.Cyclical =>
+                    data(0 to kl - 1)
                   case OptPadding.Boundary =>
                     DenseVector.ones[T](kernel.length - 1) * data(dl - 1)
                   case OptPadding.Zero =>
@@ -123,11 +127,13 @@ object CanConvolve extends SerializableLogging {
               //Actual padding
               DenseVector.vertcat(
                 padding match {
-                  case OptPadding.Cyclical => data(dl - leftPadding to dl - 1)
+                  case OptPadding.Cyclical =>
+                    data(dl - leftPadding to dl - 1)
                   case OptPadding.Boundary =>
                     DenseVector.ones[T](
                       leftPadding /*kernel.length-1*/ ) * data(0)
-                  case OptPadding.Zero => DenseVector.zeros[T](leftPadding)
+                  case OptPadding.Zero =>
+                    DenseVector.zeros[T](leftPadding)
                   case OptPadding.ValueOpt(v: T) =>
                     DenseVector.ones[T](leftPadding) * v
                   case op =>
@@ -136,10 +142,12 @@ object CanConvolve extends SerializableLogging {
                 },
                 data,
                 padding match {
-                  case OptPadding.Cyclical => data(0 to rightPadding - 1)
+                  case OptPadding.Cyclical =>
+                    data(0 to rightPadding - 1)
                   case OptPadding.Boundary =>
                     DenseVector.ones[T](rightPadding) * data(dl - 1)
-                  case OptPadding.Zero => DenseVector.zeros[T](rightPadding)
+                  case OptPadding.Zero =>
+                    DenseVector.zeros[T](rightPadding)
                   case OptPadding.ValueOpt(v: T) =>
                     DenseVector.ones[T](rightPadding) * v
                   case op =>
@@ -156,7 +164,8 @@ object CanConvolve extends SerializableLogging {
         val fullOptRangeLength = paddedData.length - kernel.length + 1
         val parsedOptRange =
           range match {
-            case OptRange.All => 0 until fullOptRangeLength
+            case OptRange.All =>
+              0 until fullOptRangeLength
             case RangeOpt(negativeR) =>
               negativeR.getRangeWithoutNegativeIndexes(fullOptRangeLength)
           }

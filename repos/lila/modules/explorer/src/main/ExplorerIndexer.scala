@@ -61,7 +61,8 @@ private final class ExplorerIndexer(
           }
         } &>
         Enumeratee.collect {
-          case Some(el) => el
+          case Some(el) =>
+            el
         } &>
         Enumeratee.grouped(Iteratee takeUpTo batchSize) |>>>
         Iteratee.foldM[Seq[GamePGN], Long](nowMillis) {
@@ -81,11 +82,13 @@ private final class ExplorerIndexer(
                   fufail(s"Stop import because of status ${res.status}")
               } >> {
               pairs.headOption match {
-                case None => fufail(s"No games left, import complete!")
+                case None =>
+                  fufail(s"No games left, import complete!")
                 case Some((g, _))
                     if (g.createdAt.isAfter(DateTime.now.minusMinutes(10))) =>
                   fufail(s"Found a recent game, import complete!")
-                case _ => funit
+                case _ =>
+                  funit
               }
             } inject nowMillis
         } void
@@ -136,19 +139,32 @@ private final class ExplorerIndexer(
   private def probability(game: Game, rating: Int) = {
     import lila.rating.PerfType._
     game.perfType ?? {
-      case Correspondence              => 1
-      case Classical if rating >= 2000 => 1
-      case Classical if rating >= 1800 => 2 / 5f
-      case Classical                   => 1 / 8f
-      case Blitz if rating >= 2000     => 1
-      case Blitz if rating >= 1800     => 1 / 4f
-      case Blitz                       => 1 / 8f
-      case Bullet if rating >= 2200    => 1
-      case Bullet if rating >= 2000    => 1 / 3f
-      case Bullet if rating >= 1800    => 1 / 5f
-      case Bullet                      => 1 / 7f
-      case _ if rating >= 1600         => 1 // variant games
-      case _                           => 1 / 2f // noob variant games
+      case Correspondence =>
+        1
+      case Classical if rating >= 2000 =>
+        1
+      case Classical if rating >= 1800 =>
+        2 / 5f
+      case Classical =>
+        1 / 8f
+      case Blitz if rating >= 2000 =>
+        1
+      case Blitz if rating >= 1800 =>
+        1 / 4f
+      case Blitz =>
+        1 / 8f
+      case Bullet if rating >= 2200 =>
+        1
+      case Bullet if rating >= 2000 =>
+        1 / 3f
+      case Bullet if rating >= 1800 =>
+        1 / 5f
+      case Bullet =>
+        1 / 7f
+      case _ if rating >= 1600 =>
+        1 // variant games
+      case _ =>
+        1 / 2f // noob variant games
     }
   }
 

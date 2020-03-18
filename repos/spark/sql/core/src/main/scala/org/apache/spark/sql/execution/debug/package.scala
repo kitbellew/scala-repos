@@ -67,8 +67,9 @@ package object debug {
       }
       logDebug(s"Results returned: ${debugPlan.execute().count()}")
       debugPlan.foreach {
-        case d: DebugNode => d.dumpStats()
-        case _            =>
+        case d: DebugNode =>
+          d.dumpStats()
+        case _ =>
       }
     }
   }

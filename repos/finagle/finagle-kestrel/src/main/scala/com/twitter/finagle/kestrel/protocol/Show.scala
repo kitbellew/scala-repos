@@ -37,10 +37,14 @@ private[kestrel] class ResponseToEncoding extends OneToOneEncoder {
       ch: Channel,
       message: AnyRef): Decoding = {
     message match {
-      case Stored()   => StoredTokens
-      case Deleted()  => DeletedTokens
-      case NotFound() => NotFoundTokens
-      case Error()    => ErrorTokens
+      case Stored() =>
+        StoredTokens
+      case Deleted() =>
+        DeletedTokens
+      case NotFound() =>
+        NotFoundTokens
+      case Error() =>
+        ErrorTokens
       case Values(values) =>
         val tokensWithData = values map {
           case Value(key, value) =>
@@ -83,8 +87,10 @@ private[kestrel] class CommandToEncoding extends OneToOneEncoder {
       suffix: Buf,
       timeout: Option[Duration]): Buf = {
     timeout match {
-      case Some(t) => queueName.concat(suffix).concat(encodeTimeout(t))
-      case None    => queueName.concat(suffix)
+      case Some(t) =>
+        queueName.concat(suffix).concat(encodeTimeout(t))
+      case None =>
+        queueName.concat(suffix)
     }
   }
 
@@ -100,8 +106,10 @@ private[kestrel] class CommandToEncoding extends OneToOneEncoder {
       case Get(queueName, timeout) =>
         val key =
           timeout match {
-            case Some(t) => queueName.concat(encodeTimeout(t))
-            case None    => queueName
+            case Some(t) =>
+              queueName.concat(encodeTimeout(t))
+            case None =>
+              queueName
           }
         Tokens(Seq(GET, key))
       case Open(queueName, timeout) =>

@@ -38,9 +38,12 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     }
 
     matches.size match {
-      case 0 => NameTree.Neg
-      case 1 => matches.head
-      case _ => NameTree.Alt(matches: _*)
+      case 0 =>
+        NameTree.Neg
+      case 1 =>
+        matches.head
+      case _ =>
+        NameTree.Alt(matches: _*)
     }
   }
 
@@ -116,7 +119,8 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
   def simplified: Dtab =
     Dtab({
       val simple = this map {
-        case Dentry(prefix, dst) => Dentry(prefix, dst.simplified)
+        case Dentry(prefix, dst) =>
+          Dentry(prefix, dst.simplified)
       }
 
       // Negative destinations are no-ops
@@ -171,7 +175,8 @@ object Dtab {
       def equiv(d1: Dtab, d2: Dtab): Boolean =
         (d1.size == d2.size &&
           d1.zip(d2).forall {
-            case (de1, de2) => Equiv[Dentry].equiv(de1, de2)
+            case (de1, de2) =>
+              Equiv[Dentry].equiv(de1, de2)
           })
     }
 
@@ -219,8 +224,10 @@ object Dtab {
     */
   def local: Dtab =
     l() match {
-      case Some(dtab) => dtab
-      case None       => Dtab.empty
+      case Some(dtab) =>
+        dtab
+      case None =>
+        Dtab.empty
     }
   def local_=(dtab: Dtab) {
     l() = dtab

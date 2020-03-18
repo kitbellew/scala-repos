@@ -73,7 +73,8 @@ private[sql] object DataSourceAnalysis extends Rule[LogicalPlan] {
         val outputPath = t.location.paths.head
         val inputPaths =
           query.collect {
-            case LogicalRelation(r: HadoopFsRelation, _, _) => r.location.paths
+            case LogicalRelation(r: HadoopFsRelation, _, _) =>
+              r.location.paths
           }.flatten
 
         val mode =
@@ -302,7 +303,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             false) if part.isEmpty =>
         ExecutedCommand(InsertIntoDataSource(l, query, overwrite)) :: Nil
 
-      case _ => Nil
+      case _ =>
+        Nil
     }
 
   private def buildPartitionedTableScan(
@@ -845,7 +847,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             .Contains(a: Attribute, Literal(v: UTF8String, StringType)) =>
         Some(sources.StringContains(a.name, v.toString))
 
-      case _ => None
+      case _ =>
+        None
     }
   }
 

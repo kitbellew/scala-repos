@@ -20,8 +20,10 @@ class ScalaClassNameMacro extends Macro {
       PsiTreeUtil
         .getParentOfType(context.getPsiElementAtStartOffset, classOf[PsiClass]))
       .map {
-        case obj: ScObject => obj.fakeCompanionClassOrCompanionClass.getName
-        case cl: PsiClass  => cl.getName
+        case obj: ScObject =>
+          obj.fakeCompanionClassOrCompanionClass.getName
+        case cl: PsiClass =>
+          cl.getName
       }
       .map(new TextResult(_))
       .orNull

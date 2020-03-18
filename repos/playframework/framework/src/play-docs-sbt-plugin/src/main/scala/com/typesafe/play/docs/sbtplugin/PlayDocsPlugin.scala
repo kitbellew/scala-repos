@@ -310,8 +310,10 @@ object PlayDocsPlugin extends AutoPlugin {
     val files = allResources.map(_.file).toArray[File]
     val baseDirs = allResources
       .map {
-        case PlayDocsJarFileResource(_, base) => base.orNull
-        case PlayDocsDirectoryResource(_)     => null
+        case PlayDocsJarFileResource(_, base) =>
+          base.orNull
+        case PlayDocsDirectoryResource(_) =>
+          null
       }
       .toArray[String]
 
@@ -391,7 +393,8 @@ object PlayDocsPlugin extends AutoPlugin {
         case 10 =>
           println();
           waitEOF()
-        case _ => waitEOF()
+        case _ =>
+          waitEOF()
       }
 
     }

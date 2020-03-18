@@ -94,9 +94,12 @@ trait Inbox {
 
     var currentMsg: Any = _
     val clientPredicate: (Query) ⇒ Boolean = {
-      case _: Get ⇒ true
-      case Select(_, p, _) ⇒ p isDefinedAt currentMsg
-      case _ ⇒ false
+      case _: Get ⇒
+        true
+      case Select(_, p, _) ⇒
+        p isDefinedAt currentMsg
+      case _ ⇒
+        false
     }
 
     var currentSelect: Select = _
@@ -118,12 +121,15 @@ trait Inbox {
           else {
             currentSelect = s
             messages.dequeueFirst(messagePredicate) match {
-              case Some(msg) ⇒ sender() ! msg
-              case None ⇒ enqueueQuery(s)
+              case Some(msg) ⇒
+                sender() ! msg
+              case None ⇒
+                enqueueQuery(s)
             }
             currentSelect = null
           }
-        case StartWatch(target) ⇒ context watch target
+        case StartWatch(target) ⇒
+          context watch target
         case Kick ⇒
           val now = Deadline.now
           val pred = (q: Query) ⇒ q.deadline.time < now.time
@@ -145,7 +151,8 @@ trait Inbox {
                 clientsByTimeout -= q;
                 q.client ! msg
               }
-              case None ⇒ enqueueMessage(msg)
+              case None ⇒
+                enqueueMessage(msg)
             }
             currentMsg = null
           }

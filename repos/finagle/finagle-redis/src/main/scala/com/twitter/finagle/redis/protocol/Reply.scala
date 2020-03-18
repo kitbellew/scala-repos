@@ -117,7 +117,8 @@ class ReplyCodec extends UnifiedProtocolCodec {
       RequireServerProtocol.safe {
         NumberFormat.toInt(line)
       } match {
-        case empty if empty < 0 => emit(EmptyBulkReply())
+        case empty if empty < 0 =>
+          emit(EmptyBulkReply())
         case replySz =>
           readBytes(replySz) { bytes =>
             readBytes(2) { eol =>
@@ -140,13 +141,18 @@ class ReplyCodec extends UnifiedProtocolCodec {
     if (i <= 0) {
       val reply =
         (i, lines) match {
-          case (i, _) if i < 0 => NilMBulkReply()
-          case (0, Nil)        => EmptyMBulkReply()
-          case (0, lines)      => MBulkReply(lines.reverse)
+          case (i, _) if i < 0 =>
+            NilMBulkReply()
+          case (0, Nil) =>
+            EmptyMBulkReply()
+          case (0, lines) =>
+            MBulkReply(lines.reverse)
         }
       stack match {
-        case Nil                 => emit(reply)
-        case (i, lines) :: stack => decodeMBulkLines(i, stack, reply :: lines)
+        case Nil =>
+          emit(reply)
+        case (i, lines) :: stack =>
+          decodeMBulkLines(i, stack, reply :: lines)
       }
     } else {
       readLine { line =>

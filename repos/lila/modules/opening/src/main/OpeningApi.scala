@@ -35,7 +35,8 @@ private[opening] final class OpeningApi(
       else {
         import Generated.generatedJSONRead
         Try(json.as[Generated]) match {
-          case Failure(err) => fufail(err.getMessage)
+          case Failure(err) =>
+            fufail(err.getMessage)
           case Success(generated) =>
             generated.toOpening.future flatMap insertOpening
         }
@@ -45,8 +46,10 @@ private[opening] final class OpeningApi(
       lila.db.Util findNextId openingColl flatMap { id =>
         val o = opening(id)
         openingColl.count(BSONDocument("fen" -> o.fen).some) flatMap {
-          case 0 => openingColl insert o inject o.id
-          case _ => fufail("Duplicate opening")
+          case 0 =>
+            openingColl insert o inject o.id
+          case _ =>
+            fufail("Duplicate opening")
         }
       }
   }

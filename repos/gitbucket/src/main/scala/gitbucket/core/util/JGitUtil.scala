@@ -215,8 +215,10 @@ object JGitUtil {
     val revWalk = new RevWalk(git.getRepository)
     val revCommit =
       revWalk.parseAny(objectId) match {
-        case r: RevTag => revWalk.parseCommit(r.getObject)
-        case _         => revWalk.parseCommit(objectId)
+        case r: RevTag =>
+          revWalk.parseCommit(r.getObject)
+        case _ =>
+          revWalk.parseCommit(objectId)
       }
     revWalk.dispose
     revCommit
@@ -315,17 +317,21 @@ object JGitUtil {
                 }
               }
             ) match {
-              case Some(child) => simplifyPath(child)
-              case _           => tuple
+              case Some(child) =>
+                simplifyPath(child)
+              case _ =>
+                tuple
             }
-          case _ => tuple
+          case _ =>
+            tuple
         }
 
       def tupleAdd(
           tuple: (ObjectId, FileMode, String, Option[String]),
           rev: RevCommit) =
         tuple match {
-          case (oid, fmode, name, opt) => (oid, fmode, name, opt, rev)
+          case (oid, fmode, name, opt) =>
+            (oid, fmode, name, opt, rev)
         }
 
       @tailrec
@@ -346,7 +352,8 @@ object JGitUtil {
         } else {
           val newCommit = revIterator.next
           val (thisTimeChecks, skips) = restList.partition {
-            case (tuple, parentsMap) => parentsMap.contains(newCommit)
+            case (tuple, parentsMap) =>
+              parentsMap.contains(newCommit)
           }
           if (thisTimeChecks.isEmpty) {
             findLastCommits(result, restList, revIterator)
@@ -426,9 +433,12 @@ object JGitUtil {
         }
         .sortWith { (file1, file2) =>
           (file1.isDirectory, file2.isDirectory) match {
-            case (true, false) => true
-            case (false, true) => false
-            case _             => file1.name.compareTo(file2.name) < 0
+            case (true, false) =>
+              true
+            case (false, true) =>
+              false
+            case _ =>
+              file1.name.compareTo(file2.name) < 0
           }
         }
         .toList
@@ -528,7 +538,8 @@ object JGitUtil {
             else
               logs)
         }
-        case _ => (logs, i.hasNext)
+        case _ =>
+          (logs, i.hasNext)
       }
 
     using(new RevWalk(git.getRepository)) { revWalk =>
@@ -569,7 +580,8 @@ object JGitUtil {
             getCommitLog(i, logs :+ new CommitInfo(revCommit))
           }
         }
-        case false => logs
+        case false =>
+          logs
       }
 
     using(new RevWalk(git.getRepository)) { revWalk =>
@@ -636,8 +648,10 @@ object JGitUtil {
         i: java.util.Iterator[RevCommit],
         logs: List[RevCommit]): List[RevCommit] =
       i.hasNext match {
-        case true if (logs.size < 2) => getCommitLog(i, logs :+ i.next)
-        case _                       => logs
+        case true if (logs.size < 2) =>
+          getCommitLog(i, logs :+ i.next)
+        case _ =>
+          logs
       }
 
     using(new RevWalk(git.getRepository)) { revWalk =>
@@ -875,8 +889,10 @@ object JGitUtil {
           revstr),
       repository.branchList.headOption)
       .flatMap {
-        case Some(rev) => Some((git.getRepository.resolve(rev), rev))
-        case None      => None
+        case Some(rev) =>
+          Some((git.getRepository.resolve(rev), rev))
+        case None =>
+          None
       }
       .find(_._1 != null)
   }
@@ -977,9 +993,12 @@ object JGitUtil {
     @scala.annotation.tailrec
     def getPathObjectId(path: String, walk: TreeWalk): Option[ObjectId] =
       walk.next match {
-        case true if (walk.getPathString == path) => Some(walk.getObjectId(0))
-        case true                                 => getPathObjectId(path, walk)
-        case false                                => None
+        case true if (walk.getPathString == path) =>
+          Some(walk.getObjectId(0))
+        case true =>
+          getPathObjectId(path, walk)
+        case false =>
+          None
       }
 
     using(new TreeWalk(git.getRepository)) { treeWalk =>
@@ -1054,7 +1073,8 @@ object JGitUtil {
         }
       }
     } catch {
-      case e: MissingObjectException => None
+      case e: MissingObjectException =>
+        None
     }
 
   /**
@@ -1072,7 +1092,8 @@ object JGitUtil {
         Some(f(db.open(id)))
       }
     } catch {
-      case e: MissingObjectException => None
+      case e: MissingObjectException =>
+        None
     }
 
   /**

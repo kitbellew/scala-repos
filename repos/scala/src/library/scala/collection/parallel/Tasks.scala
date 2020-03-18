@@ -586,10 +586,13 @@ trait ExecutionContextTasks extends Tasks {
     executionContext match {
       case eci: scala.concurrent.impl.ExecutionContextImpl =>
         eci.executor match {
-          case fjp: ForkJoinPool => new ForkJoinTaskSupport(fjp)
-          case _                 => new FutureTasks(environment)
+          case fjp: ForkJoinPool =>
+            new ForkJoinTaskSupport(fjp)
+          case _ =>
+            new FutureTasks(environment)
         }
-      case _ => new FutureTasks(environment)
+      case _ =>
+        new FutureTasks(environment)
     }
 
   def execute[R, Tp](task: Task[R, Tp]): () => R = driver execute task

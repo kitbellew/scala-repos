@@ -87,25 +87,32 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
               if injectedExpr.getParent
                 .isInstanceOf[ScInterpolatedStringLiteral] =>
             false
-          case _ => true
+          case _ =>
+            true
         }
         .filter(_.isInstanceOf[ScExpression])
         .toList
 
     val suitable = expressions forall {
-      case l: ScLiteral if l.isString                   => true
-      case _: ScInterpolatedPrefixReference             => true
-      case r: ScReferenceExpression if r.getText == "+" => true
-      case _: ScInfixExpr                               => true
+      case l: ScLiteral if l.isString =>
+        true
+      case _: ScInterpolatedPrefixReference =>
+        true
+      case r: ScReferenceExpression if r.getText == "+" =>
+        true
+      case _: ScInfixExpr =>
+        true
       case injectedExpr: ScExpression
           if injectedExpr.getParent.isInstanceOf[ScInterpolatedStringLiteral] =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
     if (suitable)
       expressions collect {
-        case x: ScLiteral if x.isString => x
+        case x: ScLiteral if x.isString =>
+          x
       }
     else
       Seq.empty
@@ -116,15 +123,17 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
       host: PsiElement,
       literals: scala.Seq[ScLiteral]): Boolean = {
     Configuration.getInstance.getAdvancedConfiguration.getDfaOption match {
-      case Configuration.DfaOption.OFF => return false
-      case _                           =>
+      case Configuration.DfaOption.OFF =>
+        return false
+      case _ =>
     }
 
     val expression = host.asInstanceOf[ScExpression]
     // TODO implicit conversion checking (SCL-2599), disabled (performance reasons)
     val annotationOwner =
       expression match {
-        case lit: ScLiteral => lit getAnnotationOwner (annotationOwnerFor(_))
+        case lit: ScLiteral =>
+          lit getAnnotationOwner (annotationOwnerFor(_))
         case _ =>
           annotationOwnerFor(
             expression
@@ -243,7 +252,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
               true
             }
         } getOrElse false
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -251,23 +261,32 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
   final def annotationOwnerFor(
       child: ScExpression): Option[PsiAnnotationOwner with PsiElement] =
     child.getParent match {
-      case pattern: ScPatternDefinition   => Some(pattern)
-      case variable: ScVariableDefinition => Some(variable)
-      case _: ScArgumentExprList          => parameterOf(child)
-      case assignment: ScAssignStmt       => assignmentTarget(assignment)
+      case pattern: ScPatternDefinition =>
+        Some(pattern)
+      case variable: ScVariableDefinition =>
+        Some(variable)
+      case _: ScArgumentExprList =>
+        parameterOf(child)
+      case assignment: ScAssignStmt =>
+        assignmentTarget(assignment)
       case infix: ScInfixExpr if child == infix.getFirstChild =>
         if (ScalaLanguageInjector isSafeCall infix)
           annotationOwnerFor(infix)
         else
           None
-      case infix: ScInfixExpr             => parameterOf(child)
-      case tuple: ScTuple if tuple.isCall => parameterOf(child)
-      case param: ScParameter             => Some(param)
-      case parExpr: ScParenthesisedExpr   => annotationOwnerFor(parExpr)
+      case infix: ScInfixExpr =>
+        parameterOf(child)
+      case tuple: ScTuple if tuple.isCall =>
+        parameterOf(child)
+      case param: ScParameter =>
+        Some(param)
+      case parExpr: ScParenthesisedExpr =>
+        annotationOwnerFor(parExpr)
       case safeCall: ScExpression
           if ScalaLanguageInjector isSafeCall safeCall =>
         annotationOwnerFor(safeCall)
-      case _ => None
+      case _ =>
+        None
     }
 
   def implicitAnnotationOwnerFor(
@@ -300,7 +319,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
                   mapping containsKey _.getText
                 ) =>
               true
-            case _ => false
+            case _ =>
+              false
           } foreach {
             case literal: ScInterpolatedStringLiteral =>
               val languageId = mapping get literal.reference.get.getText
@@ -335,7 +355,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
 
           !allInjections.isEmpty
         } getOrElse false
-      case _ => false //something is wrong
+      case _ =>
+        false //something is wrong
     }
   }
 
@@ -374,7 +395,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
               else
                 parameters(
                   index.min(parameters.size - 1)).getModifierList.toOption
-            case _ => None
+            case _ =>
+              None
           }
         }
     }
@@ -384,22 +406,28 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
         args.getParent match {
           case call: ScMethodCall =>
             getParameter(call, args.exprs.indexOf(argument))
-          case _ => None
+          case _ =>
+            None
         }
       case tuple: ScTuple if tuple.isCall =>
         getParameter(
           tuple.getContext.asInstanceOf[ScInfixExpr],
           tuple.exprs.indexOf(argument))
-      case infix: ScInfixExpr => getParameter(infix, 0)
-      case _                  => None
+      case infix: ScInfixExpr =>
+        getParameter(infix, 0)
+      case _ =>
+        None
     }
   }
 
   private def contextOf(element: PsiElement) =
     element match {
-      case p: ScReferencePattern => p.getParent.getParent
-      case field: PsiField       => field.getModifierList
-      case _                     => element
+      case p: ScReferencePattern =>
+        p.getParent.getParent
+      case field: PsiField =>
+        field.getModifierList
+      case _ =>
+        element
     }
 }
 
@@ -499,7 +527,9 @@ object ScalaLanguageInjector {
     testExpr match {
       case methodInv: MethodInvocation =>
         safeMethodsNames contains methodInv.getEffectiveInvokedExpr.getText
-      case ref: ScReferenceExpression => safeMethodsNames contains ref.refName
-      case _                          => false
+      case ref: ScReferenceExpression =>
+        safeMethodsNames contains ref.refName
+      case _ =>
+        false
     }
 }

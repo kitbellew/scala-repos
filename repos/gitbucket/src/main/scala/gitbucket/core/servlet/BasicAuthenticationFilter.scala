@@ -179,7 +179,8 @@ class BasicAuthenticationFilter
     try {
       new String(new sun.misc.BASE64Decoder().decodeBuffer(header.substring(6)))
     } catch {
-      case _: Throwable => ""
+      case _: Throwable =>
+        ""
     }
   }
 }

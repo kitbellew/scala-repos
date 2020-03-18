@@ -61,8 +61,10 @@ object JavaConversionUtil {
     }
 
     s.getModifierList.accessModifier match {
-      case Some(a) if a.isUnqualifiedPrivateOrThis => builder.append("private ")
-      case _                                       => builder.append("public ")
+      case Some(a) if a.isUnqualifiedPrivateOrThis =>
+        builder.append("private ")
+      case _ =>
+        builder.append("public ")
     }
 
     builder.toString()
@@ -71,14 +73,18 @@ object JavaConversionUtil {
   def annotations(holder: ScAnnotationsHolder): Seq[String] = {
     val convertibleAnnotations = holder.annotations.filterNot { a =>
       a.getQualifiedName match {
-        case null                                       => true
-        case s if keywordAnnotations.keySet.contains(s) => true
+        case null =>
+          true
+        case s if keywordAnnotations.keySet.contains(s) =>
+          true
         case s
             if Set("scala.throws", "scala.inline", "scala.unchecked").contains(
               s) =>
           true
-        case s if s.endsWith("BeanProperty") => true
-        case _                               => false
+        case s if s.endsWith("BeanProperty") =>
+          true
+        case _ =>
+          false
       }
     }
     convertibleAnnotations.map { a =>
@@ -94,10 +100,13 @@ object JavaConversionUtil {
       case a: ScAssignStmt =>
         val res = a.getLExpression.getText + " = "
         a.getRExpression match {
-          case Some(expr) => res + convertExpression(expr)
-          case _          => res
+          case Some(expr) =>
+            res + convertExpression(expr)
+          case _ =>
+            res
         }
-      case l: ScLiteral if !l.isMultiLineString => l.getText
+      case l: ScLiteral if !l.isMultiLineString =>
+        l.getText
       case l: ScLiteral =>
         "\"" + StringUtil.escapeStringCharacters(l.getValue.toString) + "\""
       case call: ScMethodCall =>
@@ -113,10 +122,13 @@ object JavaConversionUtil {
             typeResult match {
               case Success(tp, _) =>
                 ScType.extractClass(tp, Some(e.getProject)) match {
-                  case Some(clazz) => clazz.getQualifiedName + ".class"
-                  case _           => problem
+                  case Some(clazz) =>
+                    clazz.getQualifiedName + ".class"
+                  case _ =>
+                    problem
                 }
-              case _ => problem
+              case _ =>
+                problem
             }
           } else
             problem
@@ -138,15 +150,20 @@ object JavaConversionUtil {
                           case _ =>
                         }
                         res
-                      case _ => problem
+                      case _ =>
+                        problem
                     }
-                  case _ => problem
+                  case _ =>
+                    problem
                 }
-              case _ => problem
+              case _ =>
+                problem
             }
-          case _ => problem
+          case _ =>
+            problem
         }
-      case _ => problem
+      case _ =>
+        problem
     }
   }
 

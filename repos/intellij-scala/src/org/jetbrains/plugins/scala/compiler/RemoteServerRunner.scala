@@ -35,7 +35,8 @@ class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
               send(serverAlias, arguments, client)
               return
             } catch {
-              case _: ConnectException => Thread.sleep(100)
+              case _: ConnectException =>
+                Thread.sleep(100)
             }
           }
 

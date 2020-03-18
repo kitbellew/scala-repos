@@ -19,7 +19,8 @@ class HoconParserDefinition extends ParserDefinition {
     (left.getElementType, right.getElementType) match {
       case (Dollar, SubLBrace) | (SubLBrace, QMark) =>
         SpaceRequirements.MUST_NOT
-      case _ => SpaceRequirements.MAY
+      case _ =>
+        SpaceRequirements.MAY
     }
 
   def createFile(viewProvider: FileViewProvider): PsiFile =

@@ -147,26 +147,38 @@ sealed trait MathSet[A] extends Function1[A, Boolean] {
 
   def |(rhs: MathSet[A]): MathSet[A] =
     (lhs, rhs) match {
-      case (Fin(x), Fin(y)) => Fin(x | y)
-      case (Fin(x), Inf(y)) => Inf(y -- x)
-      case (Inf(x), Fin(y)) => Inf(x -- y)
-      case (Inf(x), Inf(y)) => Inf(x & y)
+      case (Fin(x), Fin(y)) =>
+        Fin(x | y)
+      case (Fin(x), Inf(y)) =>
+        Inf(y -- x)
+      case (Inf(x), Fin(y)) =>
+        Inf(x -- y)
+      case (Inf(x), Inf(y)) =>
+        Inf(x & y)
     }
 
   def &(rhs: MathSet[A]): MathSet[A] =
     (lhs, rhs) match {
-      case (Fin(x), Fin(y)) => Fin(x & y)
-      case (Fin(x), Inf(y)) => Fin(x -- y)
-      case (Inf(x), Fin(y)) => Fin(y -- x)
-      case (Inf(x), Inf(y)) => Inf(x | y)
+      case (Fin(x), Fin(y)) =>
+        Fin(x & y)
+      case (Fin(x), Inf(y)) =>
+        Fin(x -- y)
+      case (Inf(x), Fin(y)) =>
+        Fin(y -- x)
+      case (Inf(x), Inf(y)) =>
+        Inf(x | y)
     }
 
   def --(rhs: MathSet[A]): MathSet[A] =
     (lhs, rhs) match {
-      case (Fin(x), Fin(y)) => Fin(x -- y)
-      case (Fin(x), Inf(y)) => Fin(x & y)
-      case (Inf(x), Fin(y)) => Inf(x | y)
-      case (Inf(x), Inf(y)) => Fin(y -- x)
+      case (Fin(x), Fin(y)) =>
+        Fin(x -- y)
+      case (Fin(x), Inf(y)) =>
+        Fin(x & y)
+      case (Inf(x), Fin(y)) =>
+        Inf(x | y)
+      case (Inf(x), Inf(y)) =>
+        Fin(y -- x)
     }
 
   private def xor(x: Set[A], y: Set[A]): Set[A] = {
@@ -182,10 +194,14 @@ sealed trait MathSet[A] extends Function1[A, Boolean] {
 
   def ^(rhs: MathSet[A]): MathSet[A] =
     (lhs, rhs) match {
-      case (Fin(x), Fin(y)) => Fin(xor(x, y))
-      case (Fin(x), Inf(y)) => Inf(x -- y)
-      case (Inf(x), Fin(y)) => Inf(y -- x)
-      case (Inf(x), Inf(y)) => Fin(xor(x, y))
+      case (Fin(x), Fin(y)) =>
+        Fin(xor(x, y))
+      case (Fin(x), Inf(y)) =>
+        Inf(x -- y)
+      case (Inf(x), Fin(y)) =>
+        Inf(y -- x)
+      case (Inf(x), Inf(y)) =>
+        Fin(xor(x, y))
     }
 
   def power(universe: Stream[A]): Stream[Set[A]] =

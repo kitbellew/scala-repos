@@ -93,7 +93,8 @@ class IntroSpec extends TypedSpec {
 
     for {
       greeting <- future.recover {
-        case ex => ex.getMessage
+        case ex =>
+          ex.getMessage
       }
       done <- {
         println(s"result: $greeting");

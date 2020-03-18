@@ -12,8 +12,10 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params._
 trait ScTypeParametersOwner extends ScalaPsiElement {
   def typeParameters: Seq[ScTypeParam] = {
     typeParametersClause match {
-      case Some(clause) => clause.typeParameters
-      case _            => Seq.empty
+      case Some(clause) =>
+        clause.typeParameters
+      case _ =>
+        Seq.empty
     }
   }
 

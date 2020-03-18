@@ -5,9 +5,12 @@ object Days extends Enumeration {
   protected class DayValue extends Val {
     def isWeekday: Boolean =
       this match {
-        case Sun => false
-        case Sat => false
-        case _   => true
+        case Sun =>
+          false
+        case Sat =>
+          false
+        case _ =>
+          true
       }
   }
 }

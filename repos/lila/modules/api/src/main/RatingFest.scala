@@ -29,7 +29,8 @@ object RatingFest {
       UserRepo.pair(g.whitePlayer.userId, g.blackPlayer.userId).flatMap {
         case (Some(white), Some(black)) =>
           perfsUpdater.save(g, white, black, resetGameRatings = true) void
-        case _ => funit
+        case _ =>
+          funit
       }
 
     def unrate(game: Game) =
@@ -84,20 +85,27 @@ object RatingFest {
           games
             .map { game =>
               game.userIds match {
-                case _ if !game.rated                   => funit
-                case _ if !game.finished                => funit
-                case _ if game.fromPosition             => funit
-                case List(uidW, uidB) if (uidW == uidB) => funit
+                case _ if !game.rated =>
+                  funit
+                case _ if !game.finished =>
+                  funit
+                case _ if game.fromPosition =>
+                  funit
+                case List(uidW, uidB) if (uidW == uidB) =>
+                  funit
                 case List(uidW, uidB) if engineIds(uidW) || engineIds(uidB) =>
                   unrate(game)
-                case List(uidW, uidB) => rerate(game)
-                case _                => funit
+                case List(uidW, uidB) =>
+                  rerate(game)
+                case _ =>
+                  funit
               }
             }
             .sequenceFu
             .void
         } andThen {
-          case _ => log(nb)
+          case _ =>
+            log(nb)
         }
       }
     } yield ()

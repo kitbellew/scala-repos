@@ -5,7 +5,8 @@ class Test {
   val arr = Array("abc")
   def f[A](v: Covariant[A]) /*inferred!*/ =
     v match {
-      case Invariant(xs) => xs
+      case Invariant(xs) =>
+        xs
     }
   f(Invariant(arr): Covariant[Any])(0) = Nil
 }

@@ -26,7 +26,8 @@ object Test extends App {
       tag.info match {
         case NullaryMethodType(TypeRef(_, sym, targ :: Nil)) =>
           sym == typeOf[ClassTag[_]].typeSymbol && targ.typeSymbol == tm
-        case _ => false
+        case _ =>
+          false
       }))
   println(outliers)
 }

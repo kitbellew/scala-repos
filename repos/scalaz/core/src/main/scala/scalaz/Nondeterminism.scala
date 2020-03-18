@@ -42,7 +42,8 @@ trait Nondeterminism[F[_]] extends Monad[F] {
               (
                 a,
                 map(br) {
-                  case \/-(b) => b
+                  case \/-(b) =>
+                    b
                   case _ =>
                     sys.error(
                       "broken residual handling in a Nondeterminism instance")
@@ -51,7 +52,8 @@ trait Nondeterminism[F[_]] extends Monad[F] {
             \/-(
               (
                 map(ar) {
-                  case -\/(a) => a
+                  case -\/(a) =>
+                    a
                   case _ =>
                     sys.error(
                       "broken residual handling in a Nondeterminism instance")
@@ -86,8 +88,10 @@ trait Nondeterminism[F[_]] extends Monad[F] {
     */
   def mapBoth[A, B, C](a: F[A], b: F[B])(f: (A, B) => C): F[C] =
     bind(choose(a, b)) {
-      case -\/((a, rb)) => map(rb)(b => f(a, b))
-      case \/-((ra, b)) => map(ra)(a => f(a, b))
+      case -\/((a, rb)) =>
+        map(rb)(b => f(a, b))
+      case \/-((ra, b)) =>
+        map(ra)(a => f(a, b))
     }
 
   /**
@@ -184,14 +188,16 @@ trait Nondeterminism[F[_]] extends Monad[F] {
     map(
       gatherUnordered(
         fs.zipWithIndex.map {
-          case (f, i) => strengthR(f, i)
+          case (f, i) =>
+            strengthR(f, i)
         }))(ais => ais.sortBy(_._2).map(_._1))
 
   def gather1[A](fs: NonEmptyList[F[A]]): F[NonEmptyList[A]] =
     map(
       gatherUnordered1(
         fs.zipWithIndex.map {
-          case (f, i) => strengthR(f, i)
+          case (f, i) =>
+            strengthR(f, i)
         }))(ais => ais.sortBy(_._2).map(_._1))
 
   /**

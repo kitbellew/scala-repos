@@ -40,8 +40,10 @@ class ScalaMoveDirectoryWithClassesHelper
       psiFile match {
         case sf: ScalaFile =>
           val (packObj, classes) = sf.typeDefinitions.partition {
-            case o: ScObject if o.isPackageObject => true
-            case _                                => false
+            case o: ScObject if o.isPackageObject =>
+              true
+            case _ =>
+              false
           }
 
           for {
@@ -143,7 +145,8 @@ class ScalaMoveDirectoryWithClassesHelper
       case sf: ScalaFile if !FileTypeUtils.isInServerPageFile(file) =>
         sf.typeDefinitions.foreach(moveClass)
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -151,8 +154,9 @@ class ScalaMoveDirectoryWithClassesHelper
       usages: Array[UsageInfo],
       newDirMapper: Function[PsiDirectory, PsiDirectory]): Unit = {
     usages.foreach {
-      case ImportStatementToRemoveUsage(impStmt) => impStmt.delete()
-      case _                                     =>
+      case ImportStatementToRemoveUsage(impStmt) =>
+        impStmt.delete()
+      case _ =>
     }
   }
 
@@ -170,8 +174,9 @@ class ScalaMoveDirectoryWithClassesHelper
 
   private def forClassesInFile(elem: PsiElement)(action: PsiClass => Unit) = {
     elem.getContainingFile match {
-      case sf: ScalaFile => sf.typeDefinitions.foreach(action)
-      case _             =>
+      case sf: ScalaFile =>
+        sf.typeDefinitions.foreach(action)
+      case _ =>
     }
   }
 
@@ -188,7 +193,8 @@ class ScalaMoveDirectoryWithClassesHelper
           obj.qualifiedName.stripSuffix(".`package`")
         else
           obj.qualifiedName
-      case _ => sf.getPackageName
+      case _ =>
+        sf.getPackageName
     }
   }
 }

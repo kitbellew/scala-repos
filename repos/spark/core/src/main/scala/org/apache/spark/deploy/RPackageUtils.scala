@@ -79,10 +79,14 @@ private[deploy] object RPackageUtils extends Logging {
       }
     } else {
       level match {
-        case Level.INFO    => logInfo(msg)
-        case Level.WARNING => logWarning(msg)
-        case Level.SEVERE  => logError(msg, e)
-        case _             => logDebug(msg)
+        case Level.INFO =>
+          logInfo(msg)
+        case Level.WARNING =>
+          logWarning(msg)
+        case Level.SEVERE =>
+          logError(msg, e)
+        case _ =>
+          logDebug(msg)
       }
     }
   }

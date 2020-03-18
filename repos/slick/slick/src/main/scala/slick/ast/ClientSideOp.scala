@@ -22,17 +22,20 @@ object ClientSideOp {
     n match {
       case n: ClientSideOp =>
         n.nodeMapServerSide(keepType, (ch => mapServerSide(ch, keepType)(f)))
-      case n => f(n)
+      case n =>
+        f(n)
     }
   def mapResultSetMapping(n: Node, keepType: Boolean = true)(
       f: ResultSetMapping => Node): Node =
     n match {
-      case r: ResultSetMapping => f(r)
+      case r: ResultSetMapping =>
+        f(r)
       case n: ClientSideOp =>
         n.nodeMapServerSide(
           keepType,
           (ch => mapResultSetMapping(ch, keepType)(f)))
-      case n => throw new SlickException("No ResultSetMapping found in tree")
+      case n =>
+        throw new SlickException("No ResultSetMapping found in tree")
     }
 }
 
@@ -88,8 +91,10 @@ final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
   }
   def nodeMapServerSide(keepType: Boolean, r: Node => Node) = {
     val this2 = mapScopedChildren {
-      case (Some(_), ch) => r(ch)
-      case (None, ch)    => ch
+      case (Some(_), ch) =>
+        r(ch)
+      case (None, ch) =>
+        ch
     }
     if (keepType && hasType)
       this2 :@ nodeType
@@ -111,7 +116,8 @@ final case class ParameterSwitch(
   protected[this] def rebuild(ch: ConstArray[Node]): Self =
     copy(
       cases = cases.zip(ch).map {
-        case (c, n) => (c._1, n)
+        case (c, n) =>
+          (c._1, n)
       },
       default = ch.last)
   protected def buildType = default.nodeType

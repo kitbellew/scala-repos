@@ -17,7 +17,8 @@ class VoicesContentExtractor extends ContentExtractor {
         return string.empty
 
       titleElem.first().text() match {
-        case mt if (string.isNullOrEmpty(mt)) => string.empty
+        case mt if (string.isNullOrEmpty(mt)) =>
+          string.empty
         case titleText => {
           val pieces = DASH_SPLITTER.split(titleText)
           val titlePiece = pieces(0)

@@ -140,7 +140,8 @@ abstract class Pickler extends SubComponent {
       */
     private def putEntry(entry: AnyRef): Boolean =
       index.get(entry) match {
-        case Some(_) => false
+        case Some(_) =>
+          false
         case None =>
           if (ep == entries.length) {
             val entries1 = new Array[AnyRef](ep * 2)
@@ -155,8 +156,10 @@ abstract class Pickler extends SubComponent {
 
     private def deskolemizeTypeSymbols(ref: AnyRef): AnyRef =
       ref match {
-        case sym: Symbol => deskolemize(sym)
-        case _           => ref
+        case sym: Symbol =>
+          deskolemize(sym)
+        case _ =>
+          ref
       }
 
     /** If the symbol is a type skolem, deskolemize and log it.
@@ -172,8 +175,10 @@ abstract class Pickler extends SubComponent {
           val what0 = sym.defString
           val what =
             sym1.defString match {
-              case `what0` => what0
-              case other   => what0 + "->" + other
+              case `what0` =>
+                what0
+              case other =>
+                what0 + "->" + other
             }
           val where = sym.enclMethod.fullLocationString
           s"deskolemizing $what in $where"
@@ -248,8 +253,7 @@ abstract class Pickler extends SubComponent {
     private def putType(tp: Type): Unit =
       if (putEntry(tp)) {
         tp match {
-          case NoType | NoPrefix =>
-            ;
+          case NoType | NoPrefix => ;
           case ThisType(sym) =>
             putSymbol(sym)
           case SingleType(pre, sym) =>
@@ -352,17 +356,21 @@ abstract class Pickler extends SubComponent {
     private def putAnnotationBody(annot: AnnotationInfo) {
       def putAnnotArg(arg: Tree) {
         arg match {
-          case Literal(c) => putConstant(c)
-          case _          => putTree(arg)
+          case Literal(c) =>
+            putConstant(c)
+          case _ =>
+            putTree(arg)
         }
       }
       def putClassfileAnnotArg(carg: ClassfileAnnotArg) {
         (carg: @unchecked) match {
-          case LiteralAnnotArg(const) => putConstant(const)
+          case LiteralAnnotArg(const) =>
+            putConstant(const)
           case ArrayAnnotArg(args) =>
             if (putEntry(carg))
               args foreach putClassfileAnnotArg
-          case NestedAnnotArg(annInfo) => putAnnotation(annInfo)
+          case NestedAnnotArg(annInfo) =>
+            putAnnotation(annInfo)
         }
       }
       val AnnotationInfo(tpe, args, assocs) = annot
@@ -416,8 +424,10 @@ abstract class Pickler extends SubComponent {
     private def writeAnnotation(annot: AnnotationInfo) {
       def writeAnnotArg(arg: Tree) {
         arg match {
-          case Literal(c) => writeRef(c)
-          case _          => writeRef(arg)
+          case Literal(c) =>
+            writeRef(c)
+          case _ =>
+            writeRef(arg)
         }
       }
 
@@ -432,9 +442,12 @@ abstract class Pickler extends SubComponent {
     /** Write a ClassfileAnnotArg (argument to classfile annotation) */
     def writeClassfileAnnotArg(carg: ClassfileAnnotArg) {
       (carg: @unchecked) match {
-        case LiteralAnnotArg(const)  => writeRef(const)
-        case ArrayAnnotArg(args)     => writeRef(carg)
-        case NestedAnnotArg(annInfo) => writeRef(annInfo)
+        case LiteralAnnotArg(const) =>
+          writeRef(const)
+        case ArrayAnnotArg(args) =>
+          writeRef(carg)
+        case NestedAnnotArg(annInfo) =>
+          writeRef(annInfo)
       }
     }
 
@@ -478,9 +491,11 @@ abstract class Pickler extends SubComponent {
       def writeLocalSymbolBody(sym: Symbol) {
         writeSymInfo(sym)
         sym match {
-          case _: ClassSymbol if sym.hasSelfType => writeRef(sym.typeOfThis)
-          case _: TermSymbol if sym.alias.exists => writeRef(sym.alias)
-          case _                                 =>
+          case _: ClassSymbol if sym.hasSelfType =>
+            writeRef(sym.typeOfThis)
+          case _: TermSymbol if sym.alias.exists =>
+            writeRef(sym.alias)
+          case _ =>
         }
       }
       def writeExtSymbolBody(sym: Symbol) {
@@ -509,14 +524,16 @@ abstract class Pickler extends SubComponent {
       def writeTypeBody(tpe: Type): Unit =
         tpe match {
           case NoType | NoPrefix =>
-          case ThisType(sym)     => writeRef(sym)
+          case ThisType(sym) =>
+            writeRef(sym)
           case SingleType(pre, sym) =>
             writeRef(pre);
             writeRef(sym)
           case SuperType(thistpe, supertpe) =>
             writeRef(thistpe);
             writeRef(supertpe)
-          case ConstantType(value) => writeRef(value)
+          case ConstantType(value) =>
+            writeRef(value)
           case TypeBounds(lo, hi) =>
             writeRef(lo);
             writeRef(hi)
@@ -562,11 +579,16 @@ abstract class Pickler extends SubComponent {
                 1
               else
                 0)
-          case FloatTag  => writeLong(floatToIntBits(c.floatValue).toLong)
-          case DoubleTag => writeLong(doubleToLongBits(c.doubleValue))
-          case StringTag => writeRef(newTermName(c.stringValue))
-          case ClazzTag  => writeRef(c.typeValue)
-          case EnumTag   => writeRef(c.symbolValue)
+          case FloatTag =>
+            writeLong(floatToIntBits(c.floatValue).toLong)
+          case DoubleTag =>
+            writeLong(doubleToLongBits(c.doubleValue))
+          case StringTag =>
+            writeRef(newTermName(c.stringValue))
+          case ClazzTag =>
+            writeRef(c.typeValue)
+          case EnumTag =>
+            writeRef(c.symbolValue)
           case tag =>
             if (ByteTag <= tag && tag <= LongTag)
               writeLong(c.longValue)
@@ -582,23 +604,34 @@ abstract class Pickler extends SubComponent {
       def writeSymbolTuple(target: Symbol, other: Any) {
         writeRef(target)
         other match {
-          case annot: AnnotationInfo             => writeAnnotation(annot)
-          case children: List[Symbol @unchecked] => writeRefs(children)
-          case _                                 =>
+          case annot: AnnotationInfo =>
+            writeAnnotation(annot)
+          case children: List[Symbol @unchecked] =>
+            writeRefs(children)
+          case _ =>
         }
       }
 
       def writeBody(entry: AnyRef): Unit =
         entry match {
-          case tree: Tree              => writeTreeBody(tree)
-          case sym: Symbol             => writeSymbolBody(sym)
-          case tpe: Type               => writeTypeBody(tpe)
-          case name: Name              => writeName(name)
-          case const: Constant         => writeConstant(const)
-          case mods: Modifiers         => writeModifiers(mods)
-          case annot: AnnotationInfo   => writeAnnotation(annot)
-          case (target: Symbol, other) => writeSymbolTuple(target, other)
-          case ArrayAnnotArg(args)     => args foreach writeClassfileAnnotArg
+          case tree: Tree =>
+            writeTreeBody(tree)
+          case sym: Symbol =>
+            writeSymbolBody(sym)
+          case tpe: Type =>
+            writeTypeBody(tpe)
+          case name: Name =>
+            writeName(name)
+          case const: Constant =>
+            writeConstant(const)
+          case mods: Modifiers =>
+            writeModifiers(mods)
+          case annot: AnnotationInfo =>
+            writeAnnotation(annot)
+          case (target: Symbol, other) =>
+            writeSymbolTuple(target, other)
+          case ArrayAnnotArg(args) =>
+            args foreach writeClassfileAnnotArg
           case _ =>
             devWarning(
               s"Unexpected entry to pickler ${shortClassOfInstance(entry)} $entry")
@@ -613,7 +646,8 @@ abstract class Pickler extends SubComponent {
               EXTMODCLASSref
             else
               EXTref
-          case _ => picklerTag(entry)
+          case _ =>
+            picklerTag(entry)
         }
       writeNat(tag)
       writeByte(0) // reserve a place to record the number of bytes written

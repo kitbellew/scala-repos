@@ -45,8 +45,10 @@ object GnipSubSyntaxTest extends TestSuite {
 
     def apply(rule: String) =
       (new GnipRuleParser).parse(rule) match {
-        case Success(matched, index)      => scala.util.Success(matched)
-        case f @ Failure(_, index, extra) => scala.util.Failure(ParseError(f))
+        case Success(matched, index) =>
+          scala.util.Success(matched)
+        case f @ Failure(_, index, extra) =>
+          scala.util.Failure(ParseError(f))
       }
   }
 

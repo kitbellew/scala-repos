@@ -62,7 +62,8 @@ class ScalaIntroduceVariableHandler
                 if w.getTextRange.getStartOffset == offset &&
                   w.getText.contains("\n") =>
               file.findElementAt(offset - 1)
-            case p => p
+            case p =>
+              p
           }
         ScalaRefactoringUtil.getExpressions(element).nonEmpty
       }
@@ -81,7 +82,8 @@ class ScalaIntroduceVariableHandler
       file.findElementAt(offset) match {
         case w: PsiWhiteSpace if w.getTextRange.getStartOffset == offset =>
           findTypeElement(offset - 1)
-        case _ => findTypeElement(offset)
+        case _ =>
+          findTypeElement(offset)
       }
     }
 
@@ -108,7 +110,8 @@ class ScalaIntroduceVariableHandler
       selectedElement match {
         case Some(te: ScTypeElement) =>
           Option(te)
-        case _ => getTypeElementAtOffset
+        case _ =>
+          getTypeElementAtOffset
       }
 
     if (typeElement.isDefined) {

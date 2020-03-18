@@ -34,14 +34,17 @@ trait MatchWarnings {
             params find (_.name == name) getOrElse declarationOfName(
               restpe,
               name)
-          case ClassInfoType(_, _, clazz) => clazz.rawInfo member name
-          case _                          => NoSymbol
+          case ClassInfoType(_, _, clazz) =>
+            clazz.rawInfo member name
+          case _ =>
+            NoSymbol
         }
       pat match {
         case Bind(name, _) =>
           context.enclosingContextChain.foldLeft(NoSymbol: Symbol)((res, ctx) =>
             res orElse declarationOfName(ctx.owner.rawInfo, name))
-        case _ => NoSymbol
+        case _ =>
+          NoSymbol
       }
     }
 
@@ -61,7 +64,8 @@ trait MatchWarnings {
 
       def addendum(pat: Tree) = {
         matchingSymbolInScope(pat) match {
-          case NoSymbol => ""
+          case NoSymbol =>
+            ""
           case sym =>
             val desc =
               if (sym.isParameter)
@@ -87,8 +91,10 @@ trait MatchWarnings {
         else if (it.hasNext && (treeInfo isDefaultCase cdef)) {
           val vpatName =
             cdef.pat match {
-              case Bind(name, _) => s" '$name'"
-              case _             => ""
+              case Bind(name, _) =>
+                s" '$name'"
+              case _ =>
+                ""
             }
           vpat = s"variable pattern$vpatName on line ${cdef.pat.pos.line}"
           reporter.warning(

@@ -443,8 +443,10 @@ class ShardRegion(
 
   def matchingRole(member: Member): Boolean =
     role match {
-      case None ⇒ true
-      case Some(r) ⇒ member.hasRole(r)
+      case None ⇒
+        true
+      case Some(r) ⇒
+        member.hasRole(r)
     }
 
   def coordinatorSelection: Option[ActorSelection] =
@@ -469,15 +471,24 @@ class ShardRegion(
   }
 
   def receive = {
-    case Terminated(ref) ⇒ receiveTerminated(ref)
-    case ShardInitialized(shardId) ⇒ initializeShard(shardId, sender())
-    case evt: ClusterDomainEvent ⇒ receiveClusterEvent(evt)
-    case state: CurrentClusterState ⇒ receiveClusterState(state)
-    case msg: CoordinatorMessage ⇒ receiveCoordinatorMessage(msg)
-    case cmd: ShardRegionCommand ⇒ receiveCommand(cmd)
-    case query: ShardRegionQuery ⇒ receiveQuery(query)
-    case msg if extractEntityId.isDefinedAt(msg) ⇒ deliverMessage(msg, sender())
-    case msg: RestartShard ⇒ deliverMessage(msg, sender())
+    case Terminated(ref) ⇒
+      receiveTerminated(ref)
+    case ShardInitialized(shardId) ⇒
+      initializeShard(shardId, sender())
+    case evt: ClusterDomainEvent ⇒
+      receiveClusterEvent(evt)
+    case state: CurrentClusterState ⇒
+      receiveClusterState(state)
+    case msg: CoordinatorMessage ⇒
+      receiveCoordinatorMessage(msg)
+    case cmd: ShardRegionCommand ⇒
+      receiveCommand(cmd)
+    case query: ShardRegionQuery ⇒
+      receiveQuery(query)
+    case msg if extractEntityId.isDefinedAt(msg) ⇒
+      deliverMessage(msg, sender())
+    case msg: RestartShard ⇒
+      deliverMessage(msg, sender())
   }
 
   def receiveClusterState(state: CurrentClusterState): Unit = {
@@ -500,7 +511,8 @@ class ShardRegion(
 
       case _: MemberEvent ⇒ // these are expected, no need to warn about them
 
-      case _ ⇒ unhandled(evt)
+      case _ ⇒
+        unhandled(evt)
     }
 
   def receiveCoordinatorMessage(msg: CoordinatorMessage): Unit =
@@ -574,7 +586,8 @@ class ShardRegion(
         } else
           sender() ! ShardStopped(shard)
 
-      case _ ⇒ unhandled(msg)
+      case _ ⇒
+        unhandled(msg)
 
     }
 
@@ -597,15 +610,18 @@ class ShardRegion(
         sendGracefulShutdownToCoordinator()
         tryCompleteGracefulShutdown()
 
-      case _ ⇒ unhandled(cmd)
+      case _ ⇒
+        unhandled(cmd)
     }
 
   def receiveQuery(query: ShardRegionQuery): Unit =
     query match {
       case GetCurrentRegions ⇒
         coordinator match {
-          case Some(c) ⇒ c.forward(GetCurrentRegions)
-          case None ⇒ sender() ! CurrentRegions(Set.empty)
+          case Some(c) ⇒
+            c.forward(GetCurrentRegions)
+          case None ⇒
+            sender() ! CurrentRegions(Set.empty)
         }
 
       case GetShardRegionState ⇒
@@ -618,7 +634,8 @@ class ShardRegion(
         coordinator
           .fold(sender ! ClusterShardingStats(Map.empty))(_ forward msg)
 
-      case _ ⇒ unhandled(query)
+      case _ ⇒
+        unhandled(query)
     }
 
   def receiveTerminated(ref: ActorRef): Unit = {
@@ -665,7 +682,8 @@ class ShardRegion(
           }.toSet)
       }
       .recover {
-        case x: AskTimeoutException ⇒ CurrentShardRegionState(Set.empty)
+        case x: AskTimeoutException ⇒
+          CurrentShardRegionState(Set.empty)
       }
       .pipeTo(ref)
   }
@@ -675,11 +693,13 @@ class ShardRegion(
       .map { shardStats ⇒
         ShardRegionStats(
           shardStats.map {
-            case (shardId, stats) ⇒ (shardId, stats.entityCount)
+            case (shardId, stats) ⇒
+              (shardId, stats.entityCount)
           }.toMap)
       }
       .recover {
-        case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty)
+        case x: AskTimeoutException ⇒
+          ShardRegionStats(Map.empty)
       }
       .pipeTo(ref)
   }
@@ -688,7 +708,8 @@ class ShardRegion(
     implicit val timeout: Timeout = 3.seconds
     Future.sequence(
       shards.toSeq.map {
-        case (shardId, ref) ⇒ (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
+        case (shardId, ref) ⇒
+          (ref ? msg).mapTo[T].map(t ⇒ (shardId, t))
       })
   }
 
@@ -771,7 +792,8 @@ class ShardRegion(
           buf.size,
           shardId)
         buf.foreach {
-          case (msg, snd) ⇒ receiver.tell(msg, snd)
+          case (msg, snd) ⇒
+            receiver.tell(msg, snd)
         }
         shardBuffers -= shardId
       case None ⇒
@@ -814,7 +836,8 @@ class ShardRegion(
                   case None ⇒
                     shard.tell(msg, snd)
                 }
-              case None ⇒ bufferMessage(shardId, msg, snd)
+              case None ⇒
+                bufferMessage(shardId, msg, snd)
             }
           case Some(ref) ⇒
             log.debug("Forwarding request for shard [{}] to [{}]", shardId, ref)

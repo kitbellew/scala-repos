@@ -61,7 +61,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
             Result.Continue
         } else
           Result.Continue
-      case _ => Result.Continue
+      case _ =>
+        Result.Continue
     }
 
   override def postProcessEnter(

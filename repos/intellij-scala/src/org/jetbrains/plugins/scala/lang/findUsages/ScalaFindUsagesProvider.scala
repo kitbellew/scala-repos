@@ -34,7 +34,8 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
     element match {
       case _: ScNamedElement | _: PsiMethod | _: PsiClass | _: PsiVariable =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -44,38 +45,55 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
   @NotNull
   override def getType(element: PsiElement): String = {
     element match {
-      case _: ScTypeAlias => "type"
-      case _: ScClass     => "class"
-      case _: ScObject    => "object"
-      case _: ScTrait     => "trait"
+      case _: ScTypeAlias =>
+        "type"
+      case _: ScClass =>
+        "class"
+      case _: ScObject =>
+        "object"
+      case _: ScTrait =>
+        "trait"
       case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
         if (c.isInterface)
           "interface"
         else
           "class"
-      case _: PsiMethod   => "method"
-      case _: ScTypeParam => "type parameter"
+      case _: PsiMethod =>
+        "method"
+      case _: ScTypeParam =>
+        "type parameter"
       case _: ScBindingPattern =>
         var parent = element
         while (parent match {
-                 case null | _: ScValue | _: ScVariable => false
-                 case _                                 => true
+                 case null | _: ScValue | _: ScVariable =>
+                   false
+                 case _ =>
+                   true
                })
           parent = parent.getParent
         parent match {
-          case null => "pattern"
-          case _    => "variable"
+          case null =>
+            "pattern"
+          case _ =>
+            "variable"
         }
-      case _: PsiField     => "field"
-      case _: PsiParameter => "parameter"
-      case _: PsiVariable  => "variable"
+      case _: PsiField =>
+        "field"
+      case _: PsiParameter =>
+        "parameter"
+      case _: PsiVariable =>
+        "variable"
       case f: ScFieldId =>
         ScalaPsiUtil.nameContext(f) match {
-          case v: ScValue    => "pattern"
-          case v: ScVariable => "variable"
-          case _             => "pattern"
+          case v: ScValue =>
+            "pattern"
+          case v: ScVariable =>
+            "variable"
+          case _ =>
+            "pattern"
         }
-      case _ => ""
+      case _ =>
+        ""
     }
   }
 
@@ -92,12 +110,18 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
           if (x.containingClass != null)
             res = res + " of " + getDescriptiveName(x.containingClass)
           res
-        case x: PsiVariable                               => x.name
-        case x: PsiFile                                   => x.name
-        case x: ScTypeDefinition                          => x.qualifiedName
-        case x: ScNamedElement                            => x.name
-        case c: PsiClass if !c.isInstanceOf[PsiClassFake] => c.qualifiedName
-        case _                                            => element.getText
+        case x: PsiVariable =>
+          x.name
+        case x: PsiFile =>
+          x.name
+        case x: ScTypeDefinition =>
+          x.qualifiedName
+        case x: ScNamedElement =>
+          x.name
+        case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
+          c.qualifiedName
+        case _ =>
+          element.getText
       }
     Option(name) getOrElse "anonymous"
   }
@@ -114,20 +138,24 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
             PsiSubstitutor.EMPTY,
             PsiFormatUtilBase.SHOW_NAME | PsiFormatUtilBase.SHOW_PARAMETERS,
             PsiFormatUtilBase.SHOW_TYPE)
-        case c: PsiVariable => c.name
-        case c: PsiFile     => c.name
+        case c: PsiVariable =>
+          c.name
+        case c: PsiFile =>
+          c.name
         case c: ScTypeDefinition =>
           if (useFullName)
             c.qualifiedName
           else
             c.name
-        case c: ScNamedElement => c.name
+        case c: ScNamedElement =>
+          c.name
         case c: PsiClass if !c.isInstanceOf[PsiClassFake] =>
           if (useFullName)
             c.qualifiedName
           else
             c.name
-        case _ => element.getText
+        case _ =>
+          element.getText
       }
     Option(name) getOrElse "anonymous"
   }

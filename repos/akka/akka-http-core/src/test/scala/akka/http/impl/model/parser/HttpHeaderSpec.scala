@@ -1066,8 +1066,10 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       new TestHeader(header) {
         override def rendering(line: String): String =
           header match {
-            case x: ModeledHeader ⇒ x.name + ": " + expectedRendering
-            case _ ⇒ expectedRendering
+            case x: ModeledHeader ⇒
+              x.name + ": " + expectedRendering
+            case _ ⇒
+              expectedRendering
           }
 
         override def settings: Settings = outer.settings

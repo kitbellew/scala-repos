@@ -28,8 +28,10 @@ trait AttributesMap
       None
     else {
       attributes.getAttribute(key) match {
-        case null => None
-        case v    => Some(v)
+        case null =>
+          None
+        case v =>
+          Some(v)
       }
     }
   }

@@ -67,7 +67,8 @@ Please do not reply to this message; it was sent from an unmonitored email addre
           getPasswd(userId) flatMap { passwd =>
             (userPass == passwd) ?? (UserRepo enabledById userId)
           }
-        case _ => fuccess(none)
+        case _ =>
+          fuccess(none)
       }
   }
 

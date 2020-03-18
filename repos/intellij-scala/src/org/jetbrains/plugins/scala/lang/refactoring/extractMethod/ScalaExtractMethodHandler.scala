@@ -113,14 +113,16 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
 
     def checkLastReturn(elem: PsiElement): Boolean = {
       elem match {
-        case ret: ScReturnStmt => true
+        case ret: ScReturnStmt =>
+          true
         case m: ScMatchStmt =>
           m.getBranches.forall(checkLastReturn(_))
         case f: ScIfStmt if f.elseBranch.isDefined && f.thenBranch.isDefined =>
           checkLastReturn(f.thenBranch.get) && checkLastReturn(f.elseBranch.get)
         case block: ScBlock if block.lastExpr.isDefined =>
           checkLastReturn(block.lastExpr.get)
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -230,16 +232,20 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     var parent = element.getParent
     while (isParentOk(parent)) {
       parent match {
-        case file: ScalaFile if file.isScriptFile() => res += prev
-        case block: ScBlock                         => res += prev
-        case templ: ScTemplateBody                  => res += prev
-        case _                                      =>
+        case file: ScalaFile if file.isScriptFile() =>
+          res += prev
+        case block: ScBlock =>
+          res += prev
+        case templ: ScTemplateBody =>
+          res += prev
+        case _ =>
       }
       prev = parent
       parent = parent match {
         case file: ScalaFile =>
           null
-        case _ => parent.getParent
+        case _ =>
+          parent.getParent
       }
     }
     res.toArray.reverse
@@ -251,9 +257,12 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     def scopeBound(ref: ScReferenceElement): Option[PsiElement] = {
       val fromThisRef: Option[ScTemplateDefinition] =
         ref.qualifier match {
-          case Some(thisRef: ScThisReference) => thisRef.refTemplate
-          case Some(_)                        => return None
-          case None                           => None
+          case Some(thisRef: ScThisReference) =>
+            thisRef.refTemplate
+          case Some(_) =>
+            return None
+          case None =>
+            None
         }
       val defScope: Option[PsiElement] = fromThisRef.orElse {
         ref.resolve() match {
@@ -264,17 +273,21 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
                   clazz.parent
                 else
                   clazz.containingClass.toOption
-              case _ => None
+              case _ =>
+                None
             }
           case member: ScMember if !member.isLocal =>
             member.containingClass.toOption
-          case td: ScTypeDefinition => td.parent
+          case td: ScTypeDefinition =>
+            td.parent
           case ScalaPsiUtil.inNameContext(varDef: ScVariableDefinition)
               if ScalaPsiUtil.isLValue(ref) && !elements.exists(
                 _.isAncestorOf(varDef)) =>
             varDef.parent
-          case member: PsiMember => member.containingClass.toOption
-          case _                 => return None
+          case member: PsiMember =>
+            member.containingClass.toOption
+          case _ =>
+            return None
         }
       }
       defScope match {
@@ -284,7 +297,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
                 if td == clazz || td.isInheritor(clazz, deep = true) =>
               td
           }
-        case local @ Some(_) => local
+        case local @ Some(_) =>
+          local
         case _ =>
           PsiTreeUtil
             .getParentOfType(commonParent, classOf[ScPackaging])
@@ -306,8 +320,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         }
       }
     elements.foreach {
-      case elem: ScalaPsiElement => elem.accept(visitor)
-      case _                     =>
+      case elem: ScalaPsiElement =>
+        elem.accept(visitor)
+      case _ =>
     }
     Option(result)
   }
@@ -394,21 +409,29 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         PsiTreeUtil.getParentOfType(
           tbody,
           classOf[ScTemplateDefinition]) match {
-          case o: ScObject                => s"Extract method to object ${o.name}"
-          case c: ScClass                 => s"Extract method to class ${c.name}"
-          case t: ScTrait                 => s"Extract method to trait ${t.name}"
-          case n: ScNewTemplateDefinition => "Extract method to anonymous class"
+          case o: ScObject =>
+            s"Extract method to object ${o.name}"
+          case c: ScClass =>
+            s"Extract method to class ${c.name}"
+          case t: ScTrait =>
+            s"Extract method to trait ${t.name}"
+          case n: ScNewTemplateDefinition =>
+            "Extract method to anonymous class"
         }
-      case _: ScTryBlock    => local("try block")
-      case _: ScConstrBlock => local("constructor")
+      case _: ScTryBlock =>
+        local("try block")
+      case _: ScConstrBlock =>
+        local("constructor")
       case b: ScBlock =>
         b.getParent match {
-          case f: ScFunctionDefinition => local(s"def ${f.name}")
+          case f: ScFunctionDefinition =>
+            local(s"def ${f.name}")
           case p: ScPatternDefinition if p.bindings.nonEmpty =>
             local(s"val ${p.bindings.head.name}")
           case v: ScVariableDefinition if v.bindings.nonEmpty =>
             local(s"var ${v.bindings.head.name}")
-          case _: ScCaseClause => local("case clause")
+          case _: ScCaseClause =>
+            local("case clause")
           case ifStmt: ScIfStmt =>
             if (ifStmt.thenBranch.contains(b))
               local("if block")
@@ -422,10 +445,13 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
             local("do statement")
           case funExpr: ScFunctionExpr if funExpr.result.contains(b) =>
             local("function expression")
-          case _ => local("code block")
+          case _ =>
+            local("code block")
         }
-      case _: ScalaFile => "Extract file method"
-      case _            => "Unknown extraction"
+      case _: ScalaFile =>
+        "Extract file method"
+      case _ =>
+        "Unknown extraction"
     }
   }
 

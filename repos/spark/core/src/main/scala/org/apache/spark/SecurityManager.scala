@@ -425,7 +425,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
       Option(sparkConf.getenv(SecurityManager.ENV_AUTH_SECRET))
         .orElse(
           sparkConf.getOption(SecurityManager.SPARK_AUTH_SECRET_CONF)) match {
-        case Some(value) => value
+        case Some(value) =>
+          value
         case None =>
           throw new IllegalArgumentException(
             "Error: a secret key must be specified via the " +

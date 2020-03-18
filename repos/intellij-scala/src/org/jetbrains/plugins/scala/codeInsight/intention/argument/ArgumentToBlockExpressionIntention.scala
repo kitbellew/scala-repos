@@ -28,7 +28,8 @@ class ArgumentToBlockExpressionIntention extends PsiElementBaseIntentionAction {
               .exprs(0)
               .isInstanceOf[ScUnderscoreSection] =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     )
   }

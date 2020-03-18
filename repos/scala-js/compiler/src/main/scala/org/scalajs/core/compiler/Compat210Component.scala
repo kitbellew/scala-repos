@@ -188,8 +188,10 @@ trait Compat210Component {
 
     def repeatedToSingle(t: Type): Type =
       t match {
-        case TypeRef(_, self.RepeatedParamClass, arg :: Nil) => arg
-        case _                                               => t
+        case TypeRef(_, self.RepeatedParamClass, arg :: Nil) =>
+          arg
+        case _ =>
+          t
       }
 
   }

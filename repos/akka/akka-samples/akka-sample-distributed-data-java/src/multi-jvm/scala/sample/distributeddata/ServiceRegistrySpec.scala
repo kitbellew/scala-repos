@@ -30,7 +30,8 @@ object ServiceRegistrySpec extends MultiNodeConfig {
 
   class Service extends Actor {
     def receive = {
-      case s: String ⇒ sender() ! self.path.name + ": " + s
+      case s: String ⇒
+        sender() ! self.path.name + ": " + s
     }
   }
 

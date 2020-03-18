@@ -28,13 +28,17 @@ trait Cluster[T] {
   def ready: Future[Unit] = {
     def flatten(spool: Spool[Cluster.Change[T]]): Future[Unit] =
       spool match {
-        case Cluster.Add(_) *:: tail => Future.Done
-        case _ *:: tail              => tail.flatMap(flatten)
+        case Cluster.Add(_) *:: tail =>
+          Future.Done
+        case _ *:: tail =>
+          tail.flatMap(flatten)
       }
 
     snap match {
-      case (current, changes) if current.isEmpty => changes.flatMap(flatten)
-      case _                                     => Future.Done
+      case (current, changes) if current.isEmpty =>
+        changes.flatMap(flatten)
+      case _ =>
+        Future.Done
     }
   }
 

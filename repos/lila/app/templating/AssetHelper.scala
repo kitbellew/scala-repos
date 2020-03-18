@@ -75,10 +75,14 @@ trait AssetHelper {
   def momentLangTag(implicit ctx: lila.api.Context) =
     (
       lang(ctx).language match {
-        case "en" => none
-        case "pt" => "pt-br".some
-        case "zh" => "zh-cn".some
-        case l    => l.some
+        case "en" =>
+          none
+        case "pt" =>
+          "pt-br".some
+        case "zh" =>
+          "zh-cn".some
+        case l =>
+          l.some
       }
     ).fold(Html("")) { l =>
       jsAt(s"vendor/moment/locale/$l.js", static = true)

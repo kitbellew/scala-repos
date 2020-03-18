@@ -111,10 +111,14 @@ final class RegressionEvaluator @Since("1.4.0") (
     val metrics = new RegressionMetrics(predictionAndLabels)
     val metric =
       $(metricName) match {
-        case "rmse" => metrics.rootMeanSquaredError
-        case "mse"  => metrics.meanSquaredError
-        case "r2"   => metrics.r2
-        case "mae"  => metrics.meanAbsoluteError
+        case "rmse" =>
+          metrics.rootMeanSquaredError
+        case "mse" =>
+          metrics.meanSquaredError
+        case "r2" =>
+          metrics.r2
+        case "mae" =>
+          metrics.meanAbsoluteError
       }
     metric
   }
@@ -122,10 +126,14 @@ final class RegressionEvaluator @Since("1.4.0") (
   @Since("1.4.0")
   override def isLargerBetter: Boolean =
     $(metricName) match {
-      case "rmse" => false
-      case "mse"  => false
-      case "r2"   => true
-      case "mae"  => false
+      case "rmse" =>
+        false
+      case "mse" =>
+        false
+      case "r2" =>
+        true
+      case "mae" =>
+        false
     }
 
   @Since("1.5.0")

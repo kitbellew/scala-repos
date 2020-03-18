@@ -18,7 +18,8 @@ trait Lists {
     */
   def lLen(key: ChannelBuffer): Future[JLong] =
     doRequest(LLen(key)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -31,8 +32,10 @@ trait Lists {
     */
   def lIndex(key: ChannelBuffer, index: JLong): Future[Option[ChannelBuffer]] =
     doRequest(LIndex(key, index)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -89,8 +92,10 @@ trait Lists {
     */
   def lPop(key: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(LPop(key)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -102,7 +107,8 @@ trait Lists {
     */
   def lPush(key: ChannelBuffer, value: List[ChannelBuffer]): Future[JLong] =
     doRequest(LPush(key, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -119,7 +125,8 @@ trait Lists {
       count: JLong,
       value: ChannelBuffer): Future[JLong] =
     doRequest(LRem(key, count, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -134,7 +141,8 @@ trait Lists {
       index: JLong,
       value: ChannelBuffer): Future[Unit] =
     doRequest(LSet(key, index, value)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -152,7 +160,8 @@ trait Lists {
     doRequest(LRange(key, start, end)) {
       case MBulkReply(message) =>
         Future.value(ReplyFormat.toChannelBuffers(message))
-      case EmptyMBulkReply() => Future.value(List())
+      case EmptyMBulkReply() =>
+        Future.value(List())
     }
 
   /**
@@ -163,8 +172,10 @@ trait Lists {
     */
   def rPop(key: ChannelBuffer): Future[Option[ChannelBuffer]] =
     doRequest(RPop(key)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -176,7 +187,8 @@ trait Lists {
     */
   def rPush(key: ChannelBuffer, value: List[ChannelBuffer]): Future[JLong] =
     doRequest(RPush(key, value)) {
-      case IntegerReply(n) => Future.value(n)
+      case IntegerReply(n) =>
+        Future.value(n)
     }
 
   /**
@@ -187,6 +199,7 @@ trait Lists {
     */
   def lTrim(key: ChannelBuffer, start: JLong, end: JLong): Future[Unit] =
     doRequest(LTrim(key, start, end)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 }

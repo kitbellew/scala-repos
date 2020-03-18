@@ -48,8 +48,10 @@ trait TimeDifferenceSpecs[M[+_]]
 
   def testEval(graph: DepGraph): Set[SEvent] = {
     consumeEval(graph, defaultEvaluationContext) match {
-      case Success(results) => results
-      case Failure(error)   => throw error
+      case Success(results) =>
+        results
+      case Failure(error) =>
+        throw error
     }
   }
 
@@ -68,7 +70,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-2, -1, 0)
@@ -87,7 +90,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-16, -4, -27, 4, -11)
@@ -106,7 +110,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-49, -118, -72, -21, 21)
@@ -125,7 +130,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-505, -347, 148, -826, -150)
@@ -144,7 +150,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(-12131, -3606, -19836, -8340, 3554)
@@ -163,7 +170,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(-727898, 213295, -216396, -500411, -1190164)
@@ -182,7 +190,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(-30024690, -43673890, -12983796, -71409896, 12797729)
@@ -201,7 +210,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -228,7 +238,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-2, -1, 0)
@@ -247,7 +258,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-16, -4, -27, 4, -11)
@@ -266,7 +278,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-49, -118, -72, -21, 21)
@@ -285,7 +298,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-505, -347, 148, -826, -150)
@@ -304,7 +318,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(-12131, -3606, -19836, -8340, 3554)
@@ -323,7 +338,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(-727898, 213295, -216396, -500411, -1190164)
@@ -342,7 +358,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(-30024690, -43673890, -12983796, -71409896, 12797729)
@@ -361,7 +378,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(5)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -389,7 +407,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(0, 1, 2, 3, -1, -2)
@@ -409,7 +428,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -431,7 +451,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -453,7 +474,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(
@@ -475,7 +497,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -498,7 +521,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -521,7 +545,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -545,7 +570,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(22)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -573,7 +599,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(0, 1, 2, 3, -1)
@@ -593,7 +620,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-12, 38, -19, 13, 22, 27, -1, -9, 26)
@@ -613,7 +641,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-54, -39, -8, 57, 121, 116, -4, 166, -84, 99)
@@ -633,7 +662,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toInt
       }
 
       result2 must contain(-274, 849, -58, -588, 403, -384, 1167, -30, 699, 813)
@@ -653,7 +683,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -674,7 +705,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -696,7 +728,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(
@@ -718,7 +751,8 @@ trait TimeDifferenceSpecs[M[+_]]
       result must haveSize(10)
 
       val result2 = result collect {
-        case (ids, SDecimal(d)) if ids.length == 1 => d.toLong
+        case (ids, SDecimal(d)) if ids.length == 1 =>
+          d.toLong
       }
 
       result2 must contain(

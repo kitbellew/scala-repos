@@ -33,8 +33,10 @@ object ScalarTagTime extends ScalarTagAny[DateTime] {
     var i = 0
     while (i < sz) {
       larr(i) = Option(arr(i)) match {
-        case Some(x) => x.getMillis
-        case None    => ScalarTagLong.missing
+        case Some(x) =>
+          x.getMillis
+        case None =>
+          ScalarTagLong.missing
       }
       i += 1
     }

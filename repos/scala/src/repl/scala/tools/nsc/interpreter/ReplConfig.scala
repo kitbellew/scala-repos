@@ -42,7 +42,8 @@ trait ReplConfig {
   private[nsc] def logAndDiscard[T](
       label: String,
       alt: => T): PartialFunction[Throwable, T] = {
-    case t: ControlThrowable => throw t
+    case t: ControlThrowable =>
+      throw t
     case t: Throwable =>
       repldbg(label + ": " + unwrap(t))
       repltrace(stackTraceString(unwrap(t)))

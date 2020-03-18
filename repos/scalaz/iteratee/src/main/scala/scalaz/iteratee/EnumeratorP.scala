@@ -152,13 +152,17 @@ trait EnumeratorPFunctions {
         e: EnumeratorP[E, F],
         es: List[EnumeratorP[E, F]]): EnumeratorP[E, F] =
       es match {
-        case x :: xs => mergeOne(e merge x, xs)
-        case Nil     => e
+        case x :: xs =>
+          mergeOne(e merge x, xs)
+        case Nil =>
+          e
       }
 
     enumerators.toList match {
-      case x :: xs => mergeOne(x, xs)
-      case Nil     => empty[E, F]
+      case x :: xs =>
+        mergeOne(x, xs)
+      case Nil =>
+        empty[E, F]
     }
   }
 }

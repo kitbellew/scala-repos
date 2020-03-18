@@ -72,9 +72,12 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           (element, doc)
         }
       ) match {
-        case Some((null, _)) => return Collections.emptyList[SmartStepTarget]
-        case Some((e, d))    => (e, d)
-        case _               => return Collections.emptyList[SmartStepTarget]
+        case Some((null, _)) =>
+          return Collections.emptyList[SmartStepTarget]
+        case Some((e, d)) =>
+          (e, d)
+        case _ =>
+          return Collections.emptyList[SmartStepTarget]
       }
 
     val lineStart = doc.getLineStartOffset(line)
@@ -113,14 +116,16 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
                 new ScalaMethodFilter(
                   fun,
                   stepTarget.getCallingExpressionLines))
-            case _ => None
+            case _ =>
+              None
           }
         scalaFilter.getOrElse(super.createMethodFilter(stepTarget))
       case ScalaFunExprSmartStepTarget(fExpr, stmts) =>
         ScalaBreakpointMethodFilter
           .from(None, stmts, stepTarget.getCallingExpressionLines)
           .getOrElse(super.createMethodFilter(stepTarget))
-      case _ => super.createMethodFilter(stepTarget)
+      case _ =>
+        super.createMethodFilter(stepTarget)
     }
   }
 
@@ -130,10 +135,12 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
       lineStart: Int): PsiElement = {
     val parent = startElem.getParent
     parent match {
-      case _: ScBlock | null => startElem
+      case _: ScBlock | null =>
+        startElem
       case p if p.getTextRange.getStartOffset >= lineStart =>
         maxElementOnLine(parent, lineStart)
-      case _ => startElem
+      case _ =>
+        startElem
     }
   }
 
@@ -153,9 +160,12 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
 
       def findConstructor(typeElem: ScTypeElement): Option[ScConstructor] =
         typeElem match {
-          case p: ScParameterizedTypeElement => p.findConstructor
-          case s: ScSimpleTypeElement        => s.findConstructor
-          case _                             => None
+          case p: ScParameterizedTypeElement =>
+            p.findConstructor
+          case s: ScSimpleTypeElement =>
+            s.findConstructor
+          case _ =>
+            None
         }
 
       def addConstructor(): Unit = {
@@ -171,8 +181,10 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
           val generateAnonClass = DebuggerUtil.generatesAnonClass(templ)
           val method =
             ref.resolve() match {
-              case m: PsiMethod if !generateAnonClass => m
-              case _                                  => new FakeAnonymousClassConstructor(templ, ref.refName)
+              case m: PsiMethod if !generateAnonClass =>
+                m
+              case _ =>
+                new FakeAnonymousClassConstructor(templ, ref.refName)
             }
           result += new MethodSmartStepTarget(
             method,
@@ -288,9 +300,12 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
 
       val ref =
         pat match {
-          case cp: ScConstructorPattern => Some(cp.ref)
-          case ip: ScInfixPattern       => Some(ip.reference)
-          case _                        => None
+          case cp: ScConstructorPattern =>
+            Some(cp.ref)
+          case ip: ScInfixPattern =>
+            Some(ip.reference)
+          case _ =>
+            None
         }
       ref match {
         case Some(r @ ResolvesTo(f: ScFunctionDefinition)) =>

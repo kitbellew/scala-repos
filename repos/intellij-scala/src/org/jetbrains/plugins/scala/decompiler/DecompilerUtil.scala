@@ -71,7 +71,8 @@ object DecompilerUtil {
   def isScalaFile(file: VirtualFile): Boolean =
     try isScalaFile(file, file.contentsToByteArray)
     catch {
-      case e: IOException => false
+      case e: IOException =>
+        false
     }
   def isScalaFile(file: VirtualFile, bytes: => Array[Byte]): Boolean =
     decompile(file, bytes).isScala
@@ -124,7 +125,8 @@ object DecompilerUtil {
                 }
               }
         } catch {
-          case e: IOException => updateAttributeAndData()
+          case e: IOException =>
+            updateAttributeAndData()
         }
       } else
         updateAttributeAndData()

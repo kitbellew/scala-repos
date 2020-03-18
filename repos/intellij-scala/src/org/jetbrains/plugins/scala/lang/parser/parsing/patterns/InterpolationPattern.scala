@@ -15,6 +15,7 @@ object InterpolationPattern {
       case ScalaTokenTypes.tINTERPOLATED_STRING_ID =>
         CommonUtils.parseInterpolatedString(builder, isPattern = true)
         true
-      case _ => false
+      case _ =>
+        false
     }
 }

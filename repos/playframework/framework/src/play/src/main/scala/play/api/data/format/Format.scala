@@ -177,7 +177,8 @@ object Formats {
                 precision match {
                   case Some((p, s)) =>
                     FormError(key, "error.real.precision", Seq(p, s))
-                  case None => FormError(key, "error.real", Nil)
+                  case None =>
+                    FormError(key, "error.real", Nil)
                 })
             }
         }
@@ -208,9 +209,12 @@ object Formats {
 
       def bind(key: String, data: Map[String, String]) = {
         Right(data.get(key).getOrElse("false")).right.flatMap {
-          case "true"  => Right(true)
-          case "false" => Right(false)
-          case _       => Left(Seq(FormError(key, "error.boolean", Nil)))
+          case "true" =>
+            Right(true)
+          case "false" =>
+            Right(false)
+          case _ =>
+            Left(Seq(FormError(key, "error.boolean", Nil)))
         }
       }
 

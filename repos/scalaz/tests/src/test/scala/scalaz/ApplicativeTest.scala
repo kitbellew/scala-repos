@@ -20,7 +20,8 @@ object ApplicativeTest extends SpecLite {
 
   def filterM[F[_]: Monad, A](l: List[A], f: A => F[Boolean]): F[List[A]] =
     l match {
-      case Nil => Monad[F].point(List())
+      case Nil =>
+        Monad[F].point(List())
       case h :: t =>
         Monad[F].bind(f(h))(b =>
           Monad[F].map(filterM(t, f))(t =>

@@ -115,8 +115,10 @@ object Filter {
 object Filters {
   def apply(h: EssentialAction, filters: EssentialFilter*) =
     h match {
-      case a: EssentialAction => FilterChain(a, filters.toList)
-      case h                  => h
+      case a: EssentialAction =>
+        FilterChain(a, filters.toList)
+      case h =>
+        h
     }
 }
 

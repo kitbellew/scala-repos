@@ -18,7 +18,8 @@ trait SymbolTestMacros extends Macro {
         x.parameterTypes[c.universe.type](c.universe)
           .toList
           .flatMap(_.map(_.key))
-      case None => Seq()
+      case None =>
+        Seq()
     }
   }
 

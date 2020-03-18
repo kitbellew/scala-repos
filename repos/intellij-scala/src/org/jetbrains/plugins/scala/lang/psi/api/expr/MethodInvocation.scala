@@ -229,8 +229,10 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         val dependentSubst =
           new ScSubstitutor(() => {
             this.scalaLanguageLevel match {
-              case Some(level) if level < Scala_2_10 => Map.empty
-              case _                                 => c._4.toMap
+              case Some(level) if level < Scala_2_10 =>
+                Map.empty
+              case _ =>
+                c._4.toMap
             }
           })
         dependentSubst.subst(c._1)
@@ -252,8 +254,10 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
               val dependentSubst =
                 new ScSubstitutor(() => {
                   this.scalaLanguageLevel match {
-                    case Some(level) if level < Scala_2_10 => Map.empty
-                    case _                                 => cd._4.toMap
+                    case Some(level) if level < Scala_2_10 =>
+                      Map.empty
+                    case _ =>
+                      cd._4.toMap
                   }
                 })
               dependentSubst.subst(cd._1)
@@ -273,8 +277,10 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             functionName,
             getResolveScope,
             ScalaPsiManager.ClassCategory.TYPE)).flatMap {
-        case t: ScTrait => Option(t)
-        case _          => None
+        case t: ScTrait =>
+          Option(t)
+        case _ =>
+          None
       }
       val applyFunction = functionClass.flatMap(
         _.functions.find(_.name == "apply"))
@@ -314,9 +320,11 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
           ScalaPsiUtil.toSAMType(any, getResolveScope) match {
             case Some(ScFunctionType(retType: ScType, params: Seq[ScType])) =>
               Some(checkConformance(retType, args, functionParams(params)))
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
 
     val invokedType: ScType = nonValueType.getOrElse(return nonValueType)
@@ -337,9 +345,11 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 a.getLExpression match {
                   case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
                     a.getRExpression.getOrElse(expr)
-                  case _ => expr
+                  case _ =>
+                    expr
                 }
-              case _ => expr
+              case _ =>
+                expr
             }
           new Expression(actualExpr) {
             override def getTypeAfterImplicitConversion(
@@ -348,8 +358,10 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 _expectedOption: Option[ScType])
                 : (TypeResult[ScType], collection.Set[ImportUsed]) = {
               val expectedOption = _expectedOption.map {
-                case ScTupleType(comps) if comps.length == 2 => comps(1)
-                case t                                       => t
+                case ScTupleType(comps) if comps.length == 2 =>
+                  comps(1)
+                case t =>
+                  t
               }
               val (res, imports) = super.getTypeAfterImplicitConversion(
                 checkImplicits,
@@ -381,7 +393,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             .bind()
             .exists(result =>
               result.isDynamic && result.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED)
-        case _ => false
+        case _ =>
+          false
       }
     }
 
@@ -466,12 +479,15 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     val modCount = getManager.getModificationTracker.getModificationCount
     def getData = Option(getUserData(key)).getOrElse(-1L, default)
     getData match {
-      case (`modCount`, res) => res
+      case (`modCount`, res) =>
+        res
       case _ =>
         getType(TypingContext.empty) //update if needed
         getData match {
-          case (`modCount`, res) => res
-          case _                 => default //todo: should we throw an exception in this case?
+          case (`modCount`, res) =>
+            res
+          case _ =>
+            default //todo: should we throw an exception in this case?
         }
     }
   }

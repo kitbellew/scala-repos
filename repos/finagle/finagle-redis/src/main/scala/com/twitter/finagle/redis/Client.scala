@@ -51,7 +51,8 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   def auth(password: ChannelBuffer): Future[Unit] =
     doRequest(Auth(password)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -62,8 +63,10 @@ class BaseClient(service: Service[Command, Reply]) {
   def info(section: ChannelBuffer = ChannelBuffers.EMPTY_BUFFER)
       : Future[Option[ChannelBuffer]] =
     doRequest(Info(section)) {
-      case BulkReply(message) => Future.value(Some(message))
-      case EmptyBulkReply()   => Future.value(None)
+      case BulkReply(message) =>
+        Future.value(Some(message))
+      case EmptyBulkReply() =>
+        Future.value(None)
     }
 
   /**
@@ -71,7 +74,8 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   def flushAll(): Future[Unit] =
     doRequest(FlushAll) {
-      case StatusReply(_) => Future.Unit
+      case StatusReply(_) =>
+        Future.Unit
     }
 
   /**
@@ -79,7 +83,8 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   def flushDB(): Future[Unit] =
     doRequest(FlushDB) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -87,7 +92,8 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   def quit(): Future[Unit] =
     doRequest(Quit) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -96,7 +102,8 @@ class BaseClient(service: Service[Command, Reply]) {
     */
   def select(index: Int): Future[Unit] =
     doRequest(Select(index)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -111,8 +118,10 @@ class BaseClient(service: Service[Command, Reply]) {
       handler: PartialFunction[Reply, Future[T]]) =
     service(cmd) flatMap (
       handler orElse {
-        case ErrorReply(message) => Future.exception(new ServerError(message))
-        case _                   => Future.exception(new IllegalStateException)
+        case ErrorReply(message) =>
+          Future.exception(new ServerError(message))
+        case _ =>
+          Future.exception(new IllegalStateException)
       }
     )
 
@@ -122,8 +131,10 @@ class BaseClient(service: Service[Command, Reply]) {
   private[redis] def returnPairs(messages: Seq[ChannelBuffer]) = {
     assert(messages.length % 2 == 0, "Odd number of items in response")
     messages.grouped(2).toSeq.flatMap {
-      case Seq(a, b) => Some((a, b))
-      case _         => None
+      case Seq(a, b) =>
+        Some((a, b))
+      case _ =>
+        None
     }
   }
 
@@ -140,7 +151,8 @@ trait TransactionalClient extends Client {
     */
   def unwatch(): Future[Unit] =
     doRequest(UnWatch) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -149,7 +161,8 @@ trait TransactionalClient extends Client {
     */
   def watch(keys: Seq[ChannelBuffer]): Future[Unit] =
     doRequest(Watch(keys)) {
-      case StatusReply(message) => Future.Unit
+      case StatusReply(message) =>
+        Future.Unit
     }
 
   /**
@@ -214,20 +227,27 @@ private[redis] class ConnectedTransactionalClient(
 
   private def multi(svc: Service[Command, Reply]): Future[Unit] =
     svc(Multi) flatMap {
-      case StatusReply(message) => Future.Unit
-      case ErrorReply(message)  => Future.exception(new ServerError(message))
-      case _                    => Future.exception(new IllegalStateException)
+      case StatusReply(message) =>
+        Future.Unit
+      case ErrorReply(message) =>
+        Future.exception(new ServerError(message))
+      case _ =>
+        Future.exception(new IllegalStateException)
     }
 
   private def exec(svc: Service[Command, Reply]): Future[Seq[Reply]] =
     svc(Exec) flatMap {
-      case MBulkReply(messages) => Future.value(messages)
-      case EmptyMBulkReply()    => Future.Nil
+      case MBulkReply(messages) =>
+        Future.value(messages)
+      case EmptyMBulkReply() =>
+        Future.Nil
       case NilMBulkReply() =>
         Future.exception(
           new ServerError("One or more keys were modified before transaction"))
-      case ErrorReply(message) => Future.exception(new ServerError(message))
-      case _                   => Future.exception(new IllegalStateException)
+      case ErrorReply(message) =>
+        Future.exception(new ServerError(message))
+      case _ =>
+        Future.exception(new IllegalStateException)
     }
 
 }

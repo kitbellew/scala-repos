@@ -157,8 +157,10 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
             map(key) = value
             CasResult.Stored
 
-          case Some(_) => CasResult.Exists
-          case None    => CasResult.NotFound
+          case Some(_) =>
+            CasResult.Exists
+          case None =>
+            CasResult.NotFound
         }
       })
 

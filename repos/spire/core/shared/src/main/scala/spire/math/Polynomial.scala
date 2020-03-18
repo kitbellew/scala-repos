@@ -116,7 +116,8 @@ object Polynomial extends PolynomialInstances {
       } else {
         val (op, s2) =
           operRe.findPrefixMatchOf(s) match {
-            case Some(m) => (m.group(1), s.substring(m.end))
+            case Some(m) =>
+              (m.group(1), s.substring(m.end))
             case None =>
               if (ts.isEmpty)
                 ("+", s)
@@ -387,14 +388,16 @@ trait Polynomial[@sp(Double) C] {
   def removeZeroRoots(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C] = {
     val Term(_, k) = minTerm
     mapTerms {
-      case Term(c, n) => Term(c, n - k)
+      case Term(c, n) =>
+        Term(c, n - k)
     }
   }
 
   def map[D: Semiring: Eq: ClassTag](
       f: C => D)(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[D] =
     mapTerms {
-      case Term(c, n) => Term(f(c), n)
+      case Term(c, n) =>
+        Term(f(c), n)
     }
 
   def mapTerms[D: Semiring: Eq: ClassTag](f: Term[C] => Term[D])(implicit

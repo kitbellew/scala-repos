@@ -260,7 +260,8 @@ class JobTest(cons: (Args) => Job) {
         None
       }
     next match {
-      case Some(nextjob) => runJob(nextjob, runNext)
+      case Some(nextjob) =>
+        runJob(nextjob, runNext)
       case None => {
         job.mode match {
           case hadoopTest @ HadoopTest(_, _) => {
@@ -273,7 +274,8 @@ class JobTest(cons: (Args) => Job) {
               hadoopTest.finalize(_)
             }
           }
-          case _ => ()
+          case _ =>
+            ()
         }
         // Now it is time to check the test conditions:
         callbacks.foreach { cb =>

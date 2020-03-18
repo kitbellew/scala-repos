@@ -93,7 +93,8 @@ trait BlockSortSpec[M[+_]]
     val sorted =
       original.zipWithIndex
         .map {
-          case (jv, i) => JValue.unsafeInsert(jv, globalIdPath, JNum(i))
+          case (jv, i) =>
+            JValue.unsafeInsert(jv, globalIdPath, JNum(i))
         }
         .sortBy { v =>
           JArray(

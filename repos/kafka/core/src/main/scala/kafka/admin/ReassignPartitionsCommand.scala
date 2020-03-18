@@ -152,7 +152,8 @@ object ReassignPartitionsCommand extends Logging {
       topicsToReassign)
 
     val groupedByTopic = currentAssignment.groupBy {
-      case (tp, _) => tp.topic
+      case (tp, _) =>
+        tp.topic
     }
     val rackAwareMode =
       if (disableRackAware)
@@ -199,7 +200,8 @@ object ReassignPartitionsCommand extends Logging {
           reassignmentJsonFile))
     val duplicateReassignedPartitions = CoreUtils.duplicates(
       partitionsToBeReassigned.map {
-        case (tp, replicas) => tp
+        case (tp, replicas) =>
+          tp
       })
     if (duplicateReassignedPartitions.nonEmpty)
       throw new AdminCommandFailedException(
@@ -207,10 +209,12 @@ object ReassignPartitionsCommand extends Logging {
           duplicateReassignedPartitions.mkString(",")))
     val duplicateEntries = partitionsToBeReassigned
       .map {
-        case (tp, replicas) => (tp, CoreUtils.duplicates(replicas))
+        case (tp, replicas) =>
+          (tp, CoreUtils.duplicates(replicas))
       }
       .filter {
-        case (tp, duplicatedReplicas) => duplicatedReplicas.nonEmpty
+        case (tp, duplicatedReplicas) =>
+          duplicatedReplicas.nonEmpty
       }
     if (duplicateEntries.nonEmpty) {
       val duplicatesMsg = duplicateEntries
@@ -274,8 +278,9 @@ object ReassignPartitionsCommand extends Logging {
       : ReassignmentStatus = {
     val newReplicas = partitionsToBeReassigned(topicAndPartition)
     partitionsBeingReassigned.get(topicAndPartition) match {
-      case Some(partition) => ReassignmentInProgress
-      case None            =>
+      case Some(partition) =>
+        ReassignmentInProgress
+      case None =>
         // check if the current replica assignment matches the expected one after reassignment
         val assignedReplicas = zkUtils.getReplicasForPartition(
           topicAndPartition.topic,

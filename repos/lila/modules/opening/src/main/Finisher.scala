@@ -15,7 +15,8 @@ private[opening] final class Finisher(api: OpeningApi, openingColl: Coll) {
       user: User,
       win: Boolean): Fu[(Attempt, Option[Boolean])] = {
     api.attempt.find(opening.id, user.id) flatMap {
-      case Some(a) => fuccess(a -> win.some)
+      case Some(a) =>
+        fuccess(a -> win.some)
       case None =>
         val userRating = user.perfs.opening.toRating
         val openingRating = opening.perf.toRating
@@ -75,14 +76,18 @@ private[opening] final class Finisher(api: OpeningApi, openingColl: Coll) {
   private def updateRatings(u1: Rating, u2: Rating, result: Glicko.Result) {
     val results = new RatingPeriodResults()
     result match {
-      case Glicko.Result.Draw => results.addDraw(u1, u2)
-      case Glicko.Result.Win  => results.addResult(u1, u2)
-      case Glicko.Result.Loss => results.addResult(u2, u1)
+      case Glicko.Result.Draw =>
+        results.addDraw(u1, u2)
+      case Glicko.Result.Win =>
+        results.addResult(u1, u2)
+      case Glicko.Result.Loss =>
+        results.addResult(u2, u1)
     }
     try {
       system.updateRatings(results)
     } catch {
-      case e: Exception => lila.log("opening").error("update ratings", e)
+      case e: Exception =>
+        lila.log("opening").error("update ratings", e)
     }
   }
 }

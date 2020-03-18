@@ -34,7 +34,8 @@ object Namer {
           "?"
         else
           ""}"
-      case _ => "?"
+      case _ =>
+        "?"
     }
 
   def playerString(

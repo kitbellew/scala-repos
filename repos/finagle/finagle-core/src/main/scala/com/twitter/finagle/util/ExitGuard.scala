@@ -20,7 +20,8 @@ object ExitGuard {
               thread.interrupt()
             } else
               updateName()
-          case None => ()
+          case None =>
+            ()
         }
       }
     }
@@ -57,7 +58,8 @@ object ExitGuard {
     val snap = synchronized {
       guards
         .collect {
-          case ((_, gs)) => gs
+          case ((_, gs)) =>
+            gs
         }
         .getOrElse(Nil)
     }
@@ -80,7 +82,8 @@ object ExitGuard {
         while (true) {
           try Thread.sleep(Long.MaxValue)
           catch {
-            case _: InterruptedException => return
+            case _: InterruptedException =>
+              return
           }
         }
       }

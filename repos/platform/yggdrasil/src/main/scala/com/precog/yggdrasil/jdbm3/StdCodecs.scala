@@ -46,20 +46,29 @@ trait StdCodecs {
 
   def codecForCType(cType: CType): Codec[_] =
     cType match {
-      case cType: CValueType[_] => codecForCValueType(cType)
-      case _: CNullType         => Codec.ConstCodec(true)
+      case cType: CValueType[_] =>
+        codecForCValueType(cType)
+      case _: CNullType =>
+        Codec.ConstCodec(true)
     }
 
   def codecForCValueType[A](cType: CValueType[A]): Codec[A] =
     try {
       cType match {
-        case CBoolean => BooleanCodec
-        case CString  => StringCodec
-        case CLong    => LongCodec
-        case CDouble  => DoubleCodec
-        case CNum     => BigDecimalCodec
-        case CDate    => DateTimeCodec
-        case CPeriod  => PeriodCodec
+        case CBoolean =>
+          BooleanCodec
+        case CString =>
+          StringCodec
+        case CLong =>
+          LongCodec
+        case CDouble =>
+          DoubleCodec
+        case CNum =>
+          BigDecimalCodec
+        case CDate =>
+          DateTimeCodec
+        case CPeriod =>
+          PeriodCodec
         case CArrayType(elemType) =>
           ArrayCodec(codecForCValueType(elemType), elemType.manifest)
       }

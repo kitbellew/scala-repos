@@ -142,7 +142,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       val duplicateColumns = schema.fieldNames
         .groupBy(identity)
         .collect {
-          case (x, ys) if ys.length > 1 => "\"" + x + "\""
+          case (x, ys) if ys.length > 1 =>
+            "\"" + x + "\""
         }
         .mkString(", ")
       throw new AnalysisException(

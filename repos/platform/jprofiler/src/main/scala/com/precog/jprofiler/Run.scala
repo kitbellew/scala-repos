@@ -31,8 +31,10 @@ object Run {
     val cwd = new java.io.File(".").getCanonicalFile
     val db =
       cwd.getName match {
-        case "jprofiler" => "jprofiler.db"
-        case _           => "jprofiler/jprofiler.db"
+        case "jprofiler" =>
+          "jprofiler.db"
+        case _ =>
+          "jprofiler/jprofiler.db"
       }
 
     val args2 = args.toList ++ List("--root-dir", db)

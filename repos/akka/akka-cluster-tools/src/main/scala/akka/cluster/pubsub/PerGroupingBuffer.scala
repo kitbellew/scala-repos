@@ -15,7 +15,8 @@ private[pubsub] trait PerGroupingBuffer {
   def bufferOr(grouping: String, message: Any, originalSender: ActorRef)(
       action: ⇒ Unit): Unit = {
     buffers.get(grouping) match {
-      case None ⇒ action
+      case None ⇒
+        action
       case Some(messages) ⇒
         buffers = buffers.updated(
           grouping,
@@ -46,7 +47,8 @@ private[pubsub] trait PerGroupingBuffer {
       messages: BufferedMessages,
       recipient: ActorRef): Unit = {
     messages.foreach {
-      case (message, originalSender) ⇒ recipient.tell(message, originalSender)
+      case (message, originalSender) ⇒
+        recipient.tell(message, originalSender)
     }
   }
 

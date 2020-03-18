@@ -39,7 +39,8 @@ class SbtIvyCacheIndexer(val cacheDir: File) {
       val version = (xml \\ "ivy-module" \\ "info" \\ "@revision").text
       Some(new ArtifactInfo("", group, artifact, version, "", ""))
     } catch {
-      case e: Throwable => None
+      case e: Throwable =>
+        None
     }
   }
 }

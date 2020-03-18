@@ -62,11 +62,13 @@ object JsonTransSpec extends Specification {
           (__ \ 'field3).json.pickBranch(
             (__ \ 'field32).json.update(
               Reads.of[JsNumber].map {
-                case JsNumber(nb) => JsNumber(nb + 12)
+                case JsNumber(nb) =>
+                  JsNumber(nb + 12)
               }) andThen
               (__ \ 'field31).json.update(
                 Reads.of[JsString].map {
-                  case JsString(s) => JsString(s + "toto")
+                  case JsString(s) =>
+                    JsString(s + "toto")
                 })))
         .get must beEqualTo(
         Json.obj(
@@ -105,7 +107,8 @@ object JsonTransSpec extends Specification {
       js.validate(
           (__ \ 'field3 \ 'field32).json.update(
             Reads.of[JsNumber].map {
-              case JsNumber(nb) => JsNumber(nb + 5)
+              case JsNumber(nb) =>
+                JsNumber(nb + 5)
             }) andThen (__ \ 'field4).json.prune)
         .get must beEqualTo(
         Json.obj(

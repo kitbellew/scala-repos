@@ -37,7 +37,9 @@ object TaskGen extends std.TaskExtra {
   }
   def tryRun[T](root: Task[T], checkCycles: Boolean, maxWorkers: Int): T =
     run(root, checkCycles, maxWorkers) match {
-      case Value(v) => v
-      case Inc(i)   => throw i
+      case Value(v) =>
+        v
+      case Inc(i) =>
+        throw i
     }
 }

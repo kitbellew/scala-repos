@@ -45,7 +45,8 @@ object ConsoleProject {
       Compiler.compilers(ClasspathOptions.repl, ivyConfiguration)(
         state.configuration,
         log) match {
-        case IncrementalCompilerImpl.Compilers(scalac, _) => scalac
+        case IncrementalCompilerImpl.Compilers(scalac, _) =>
+          scalac
       }
     val imports =
       BuildUtil.getImports(unit.unit) ++ BuildUtil.importAll(bindings.map(_._1))
@@ -72,6 +73,7 @@ object ConsoleProject {
     try {
       Option(app.provider.scalaProvider.launcher.ivyHome)
     } catch {
-      case _: NoSuchMethodError => None
+      case _: NoSuchMethodError =>
+        None
     }
 }

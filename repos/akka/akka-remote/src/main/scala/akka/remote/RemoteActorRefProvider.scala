@@ -107,7 +107,8 @@ private[akka] object RemoteActorRefProvider {
           // the dead letter status
           if (seqOpt.isEmpty)
             super.!(m)(senderOption.orNull)
-        case _ ⇒ super.!(message)(sender)
+        case _ ⇒
+          super.!(message)(sender)
       }
 
     @throws(classOf[java.io.ObjectStreamException])
@@ -312,10 +313,14 @@ private[akka] class RemoteActorRefProvider(
       @scala.annotation.tailrec
       def lookupRemotes(p: Iterable[String]): Option[Deploy] = {
         p.headOption match {
-          case None ⇒ None
-          case Some("remote") ⇒ lookupRemotes(p.drop(3))
-          case Some("user") ⇒ deployer.lookup(p.drop(1))
-          case Some(_) ⇒ None
+          case None ⇒
+            None
+          case Some("remote") ⇒
+            lookupRemotes(p.drop(3))
+          case Some("user") ⇒
+            deployer.lookup(p.drop(1))
+          case Some(_) ⇒
+            None
         }
       }
 
@@ -323,17 +328,22 @@ private[akka] class RemoteActorRefProvider(
       val lookup =
         if (lookupDeploy)
           elems.head match {
-            case "user" ⇒ deployer.lookup(elems.drop(1))
-            case "remote" ⇒ lookupRemotes(elems)
-            case _ ⇒ None
+            case "user" ⇒
+              deployer.lookup(elems.drop(1))
+            case "remote" ⇒
+              lookupRemotes(elems)
+            case _ ⇒
+              None
           }
         else
           None
 
       val deployment = {
         deploy.toList ::: lookup.toList match {
-          case Nil ⇒ Nil
-          case l ⇒ List(l reduce ((a, b) ⇒ b withFallback a))
+          case Nil ⇒
+            Nil
+          case l ⇒
+            List(l reduce ((a, b) ⇒ b withFallback a))
         }
       }
 
@@ -446,7 +456,8 @@ private[akka] class RemoteActorRefProvider(
               new EmptyLocalActorRef(this, rootPath, eventStream)
           }
         }
-      case _ ⇒ local.actorFor(ref, path)
+      case _ ⇒
+        local.actorFor(ref, path)
     }
 
   @deprecated("use actorSelection instead of actorFor", "2.2")
@@ -562,13 +573,16 @@ private[akka] class RemoteActorRefProvider(
 
   def getExternalAddressFor(addr: Address): Option[Address] = {
     addr match {
-      case _ if hasAddress(addr) ⇒ Some(local.rootPath.address)
+      case _ if hasAddress(addr) ⇒
+        Some(local.rootPath.address)
       case Address(_, _, Some(_), Some(_)) ⇒
         try Some(transport.localAddressForRemote(addr))
         catch {
-          case NonFatal(_) ⇒ None
+          case NonFatal(_) ⇒
+            None
         }
-      case _ ⇒ None
+      case _ ⇒
+        None
     }
   }
 
@@ -611,8 +625,10 @@ private[akka] class RemoteActorRef private[akka] (
   def getChild(name: Iterator[String]): InternalActorRef = {
     val s = name.toStream
     s.headOption match {
-      case None ⇒ this
-      case Some("..") ⇒ getParent getChild name
+      case None ⇒
+        this
+      case Some("..") ⇒
+        getParent getChild name
       case _ ⇒
         new RemoteActorRef(
           remote,
@@ -666,7 +682,8 @@ private[akka] class RemoteActorRef private[akka] (
         case Unwatch(watchee: InternalActorRef, watcher: InternalActorRef)
             if isWatchIntercepted(watchee, watcher) ⇒
           provider.remoteWatcher ! RemoteWatcher.UnwatchRemote(watchee, watcher)
-        case _ ⇒ remote.send(message, None, this)
+        case _ ⇒
+          remote.send(message, None, this)
       }
     } catch handleException
 

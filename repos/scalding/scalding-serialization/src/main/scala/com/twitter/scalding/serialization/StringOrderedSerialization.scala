@@ -97,7 +97,8 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
       in.readFully(byteString)
       Success(new String(byteString, "UTF-8"))
     } catch {
-      case NonFatal(e) => Failure(e)
+      case NonFatal(e) =>
+        Failure(e)
     }
 
   override def write(b: OutputStream, s: String) =
@@ -107,7 +108,8 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
       b.writeBytes(bytes)
       Serialization.successUnit
     } catch {
-      case NonFatal(e) => Failure(e)
+      case NonFatal(e) =>
+        Failure(e)
     }
 
   override def compareBinary(lhs: InputStream, rhs: InputStream) =
@@ -127,7 +129,8 @@ class StringOrderedSerialization extends OrderedSerialization[String] {
       seekingRight.seekToPosition(rightStart + rightSize)
       res
     } catch {
-      case NonFatal(e) => OrderedSerialization.CompareFailure(e)
+      case NonFatal(e) =>
+        OrderedSerialization.CompareFailure(e)
     }
 
   /**

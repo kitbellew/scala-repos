@@ -170,8 +170,10 @@ trait GenTypes {
     val result = typer.silent(silentTyper =>
       silentTyper.context.withMacrosDisabled(searchForManifest(silentTyper)))
     result match {
-      case analyzer.SilentResultValue(result) => result
-      case analyzer.SilentTypeError(_)        => EmptyTree
+      case analyzer.SilentResultValue(result) =>
+        result
+      case analyzer.SilentTypeError(_) =>
+        EmptyTree
     }
   }
 

@@ -40,10 +40,13 @@ object ScalaReflectMacroExpansionParser {
   def isMacroMessage(message: String): Boolean = {
     import ParsingState._
     parsingState match {
-      case INIT | EXPANSION => message.startsWith(placePrefix)
-      case PLACE            => message == delim
+      case INIT | EXPANSION =>
+        message.startsWith(placePrefix)
+      case PLACE =>
+        message == delim
 //      case DELIM            => message.startsWith(expansionPrefix)
-      case DELIM => true
+      case DELIM =>
+        true
     }
   }
 

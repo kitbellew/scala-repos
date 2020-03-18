@@ -37,14 +37,18 @@ object ActorSystem {
 
   val EnvHome: Option[String] =
     System.getenv("AKKA_HOME") match {
-      case null | "" | "." ⇒ None
-      case value ⇒ Some(value)
+      case null | "" | "." ⇒
+        None
+      case value ⇒
+        Some(value)
     }
 
   val SystemHome: Option[String] =
     System.getProperty("akka.home") match {
-      case null | "" ⇒ None
-      case value ⇒ Some(value)
+      case null | "" ⇒
+        None
+      case value ⇒
+        Some(value)
     }
 
   val GlobalHome: Option[String] = SystemHome orElse EnvHome
@@ -226,9 +230,12 @@ object ActorSystem {
       "akka.log-config-on-start")
     final val LogDeadLetters: Int =
       config.getString("akka.log-dead-letters").toLowerCase(Locale.ROOT) match {
-        case "off" | "false" ⇒ 0
-        case "on" | "true" ⇒ Int.MaxValue
-        case _ ⇒ config.getInt("akka.log-dead-letters")
+        case "off" | "false" ⇒
+          0
+        case "on" | "true" ⇒
+          Int.MaxValue
+        case _ ⇒
+          config.getInt("akka.log-dead-letters")
       }
     final val LogDeadLettersDuringShutdown: Boolean = config.getBoolean(
       "akka.log-dead-letters-during-shutdown")
@@ -248,8 +255,10 @@ object ActorSystem {
 
     final val Home: Option[String] =
       config.getString("akka.home") match {
-        case "" ⇒ None
-        case x ⇒ Some(x)
+        case "" ⇒
+          None
+        case x ⇒
+          Some(x)
       }
 
     final val SchedulerClass: String = getString(
@@ -287,8 +296,10 @@ object ActorSystem {
             c.getName.startsWith("akka.util.Reflect")
           )
       } next () match {
-        case null ⇒ getClass.getClassLoader
-        case c ⇒ c.getClassLoader
+        case null ⇒
+          getClass.getClassLoader
+        case c ⇒
+          c.getClassLoader
       }
 
     Option(Thread.currentThread.getContextClassLoader) orElse
@@ -682,9 +693,12 @@ private[akka] class ActorSystemImpl(
     val guard = guardian.path
     val sys = systemGuardian.path
     path.parent match {
-      case `guard` ⇒ guardian ! StopChild(actor)
-      case `sys` ⇒ systemGuardian ! StopChild(actor)
-      case _ ⇒ actor.asInstanceOf[InternalActorRef].stop()
+      case `guard` ⇒
+        guardian ! StopChild(actor)
+      case `sys` ⇒
+        systemGuardian ! StopChild(actor)
+      case _ ⇒
+        actor.asInstanceOf[InternalActorRef].stop()
     }
   }
 
@@ -787,7 +801,8 @@ private[akka] class ActorSystemImpl(
       case NonFatal(e) ⇒
         try terminate()
         catch {
-          case NonFatal(_) ⇒ Try(stopScheduler())
+          case NonFatal(_) ⇒
+            Try(stopScheduler())
         }
         throw e
     }
@@ -861,7 +876,8 @@ private[akka] class ActorSystemImpl(
    */
   protected def stopScheduler(): Unit =
     scheduler match {
-      case x: Closeable ⇒ x.close()
+      case x: Closeable ⇒
+        x.close()
       case _ ⇒
     }
 
@@ -876,7 +892,8 @@ private[akka] class ActorSystemImpl(
       case c: CountDownLatch ⇒
         c.await();
         findExtension(ext) //Registration in process, await completion and retry
-      case t: Throwable ⇒ throw t //Initialization failed, throw same again
+      case t: Throwable ⇒
+        throw t //Initialization failed, throw same again
       case other ⇒
         other.asInstanceOf[
           T
@@ -922,7 +939,8 @@ private[akka] class ActorSystemImpl(
               ext
             ) //Someone else is in process of registering an extension for this Extension, retry
         }
-      case existing ⇒ existing.asInstanceOf[T]
+      case existing ⇒
+        existing.asInstanceOf[T]
     }
   }
 
@@ -931,7 +949,8 @@ private[akka] class ActorSystemImpl(
       case null ⇒
         throw new IllegalArgumentException(
           "Trying to get non-registered extension [" + ext + "]")
-      case some ⇒ some.asInstanceOf[T]
+      case some ⇒
+        some.asInstanceOf[T]
     }
 
   def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean =
@@ -941,10 +960,13 @@ private[akka] class ActorSystemImpl(
     immutableSeq(settings.config.getStringList("akka.extensions")) foreach {
       fqcn ⇒
         dynamicAccess.getObjectFor[AnyRef](fqcn) recoverWith {
-          case _ ⇒ dynamicAccess.createInstanceFor[AnyRef](fqcn, Nil)
+          case _ ⇒
+            dynamicAccess.createInstanceFor[AnyRef](fqcn, Nil)
         } match {
-          case Success(p: ExtensionIdProvider) ⇒ registerExtension(p.lookup())
-          case Success(p: ExtensionId[_]) ⇒ registerExtension(p)
+          case Success(p: ExtensionIdProvider) ⇒
+            registerExtension(p.lookup())
+          case Success(p: ExtensionId[_]) ⇒
+            registerExtension(p)
           case Success(other) ⇒
             log.error(
               "[{}] is not an 'ExtensionIdProvider' or 'ExtensionId', skipping...",
@@ -979,13 +1001,16 @@ private[akka] class ActorSystemImpl(
                     real.actor.getClass
                   else
                     "null"
-                case _ ⇒ Logging.simpleName(cell)
+                case _ ⇒
+                  Logging.simpleName(cell)
               }
             ) +
             (
               cell match {
-                case real: ActorCell ⇒ " status=" + real.mailbox.currentStatus
-                case _ ⇒ ""
+                case real: ActorCell ⇒
+                  " status=" + real.mailbox.currentStatus
+                case _ ⇒
+                  ""
               }
             ) +
             " " + (
@@ -1007,7 +1032,8 @@ private[akka] class ActorSystemImpl(
                 x.toString
               case n: ChildrenContainer.NormalChildrenContainer ⇒
                 n.c.size + " children"
-              case x ⇒ Logging.simpleName(x)
+              case x ⇒
+                Logging.simpleName(x)
             }
           ) +
             (
@@ -1055,9 +1081,11 @@ private[akka] class ActorSystemImpl(
           case some if ref.compareAndSet(some, p) ⇒
             some.completeWith(
               p.future.andThen {
-                case _ ⇒ r.run()
+                case _ ⇒
+                  r.run()
               })
-          case _ ⇒ addRec(r, p)
+          case _ ⇒
+            addRec(r, p)
         }
       addRec(r, Promise[T]())
     }

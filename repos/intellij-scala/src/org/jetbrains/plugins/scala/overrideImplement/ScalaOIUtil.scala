@@ -72,10 +72,13 @@ object ScalaOIUtil {
               x.containingClass != null,
               "Containing Class is null: " + x.getText)
             Some(new ScAliasMember(x, subst, !isImplement))
-          case x: PsiField => Some(new JavaFieldMember(x, subst))
-          case x           => None
+          case x: PsiField =>
+            Some(new JavaFieldMember(x, subst))
+          case x =>
+            None
         }
-      case x => None
+      case x =>
+        None
     }
   }
 
@@ -127,8 +130,10 @@ object ScalaOIUtil {
         return
     } else {
       selectedMembers ++= classMembers.find {
-        case named: ScalaNamedMember if named.name == methodName => true
-        case _                                                   => false
+        case named: ScalaNamedMember if named.name == methodName =>
+          true
+        case _ =>
+          false
       }.toSeq
     }
 
@@ -167,10 +172,12 @@ object ScalaOIUtil {
       withSelfType: Boolean = false): Iterable[ClassMember] = {
     allMembers(clazz, withSelfType)
       .filter {
-        case sign: PhysicalSignature => needImplement(sign, clazz, withOwn)
+        case sign: PhysicalSignature =>
+          needImplement(sign, clazz, withOwn)
         case (named: PsiNamedElement, subst: ScSubstitutor) =>
           needImplement(named, clazz, withOwn)
-        case _ => false
+        case _ =>
+          false
       }
       .flatMap(toClassMember(_, isImplement = true))
   }
@@ -191,19 +198,26 @@ object ScalaOIUtil {
         clazz != null && clazz.qualifiedName == "scala.Product" &&
         (
           m.name match {
-            case "productArity" | "productElement" => true
-            case _                                 => false
+            case "productArity" | "productElement" =>
+              true
+            case _ =>
+              false
           }
         )
       case x: ScTemplateDefinition =>
         x.superTypes.map(t => ScType.extractClass(t)).find {
-          case Some(c) => isProductAbstractMethod(m, c, visited + clazz)
-          case _       => false
+          case Some(c) =>
+            isProductAbstractMethod(m, c, visited + clazz)
+          case _ =>
+            false
         } match {
-          case Some(_) => true
-          case _       => false
+          case Some(_) =>
+            true
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -212,10 +226,12 @@ object ScalaOIUtil {
       withSelfType: Boolean): Iterable[ClassMember] = {
     allMembers(clazz, withSelfType)
       .filter {
-        case sign: PhysicalSignature => needOverride(sign, clazz)
+        case sign: PhysicalSignature =>
+          needOverride(sign, clazz)
         case (named: PsiNamedElement, _: ScSubstitutor) =>
           needOverride(named, clazz)
-        case _ => false
+        case _ =>
+          false
       }
       .flatMap(toClassMember(_, isImplement = false))
   }
@@ -233,13 +249,17 @@ object ScalaOIUtil {
       sign: PhysicalSignature,
       clazz: ScTemplateDefinition): Boolean = {
     sign.method match {
-      case _ if isProductAbstractMethod(sign.method, clazz) => true
+      case _ if isProductAbstractMethod(sign.method, clazz) =>
+        true
       case f: ScFunctionDeclaration
           if f.hasAnnotation("scala.native") == None =>
         false
-      case x if x.name == "$tag" || x.name == "$init$" => false
-      case x: ScFunction if x.isSyntheticCopy          => false
-      case x if x.containingClass == clazz             => false
+      case x if x.name == "$tag" || x.name == "$init$" =>
+        false
+      case x: ScFunction if x.isSyntheticCopy =>
+        false
+      case x if x.containingClass == clazz =>
+        false
       case x: PsiModifierListOwner
           if (
             x.hasModifierPropertyScala("abstract") &&
@@ -247,7 +267,8 @@ object ScalaOIUtil {
           )
             || x.hasModifierPropertyScala("final") =>
         false
-      case x if x.isConstructor => false
+      case x if x.isConstructor =>
+        false
       case method
           if !ResolveUtils.isAccessible(
             method,
@@ -257,16 +278,20 @@ object ScalaOIUtil {
       case method =>
         var flag = false
         if (method match {
-              case x: ScFunction => x.parameters.length == 0
-              case _             => method.getParameterList.getParametersCount == 0
+              case x: ScFunction =>
+                x.parameters.length == 0
+              case _ =>
+                method.getParameterList.getParametersCount == 0
             }) {
           for (pair <- clazz.allVals;
                v = pair._1)
             if (v.name == method.name) {
               ScalaPsiUtil.nameContext(v) match {
-                case x: ScValue if x.containingClass == clazz    => flag = true
-                case x: ScVariable if x.containingClass == clazz => flag = true
-                case _                                           =>
+                case x: ScValue if x.containingClass == clazz =>
+                  flag = true
+                case x: ScVariable if x.containingClass == clazz =>
+                  flag = true
+                case _ =>
               }
             }
         }
@@ -286,12 +311,15 @@ object ScalaOIUtil {
         m.name
     val place = clazz.extendsBlock
     m match {
-      case _ if isProductAbstractMethod(m, clazz) => false
+      case _ if isProductAbstractMethod(m, clazz) =>
+        false
       case method
           if !ResolveUtils.isAccessible(method, place, forCompletion = false) =>
         false
-      case x if name == "$tag" || name == "$init$"     => false
-      case x if !withOwn && x.containingClass == clazz => false
+      case x if name == "$tag" || name == "$init$" =>
+        false
+      case x if !withOwn && x.containingClass == clazz =>
+        false
       case x
           if x.containingClass != null && x.containingClass.isInterface &&
             !x.containingClass.isInstanceOf[ScTrait] && x.hasModifierProperty(
@@ -306,7 +334,8 @@ object ScalaOIUtil {
       case x: ScFunctionDeclaration
           if x.hasAnnotation("scala.native") == None =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -326,8 +355,10 @@ object ScalaOIUtil {
           if x.asInstanceOf[ScMember].containingClass != clazz =>
         val declaredElements =
           x match {
-            case v: ScValue    => v.declaredElements
-            case v: ScVariable => v.declaredElements
+            case v: ScValue =>
+              v.declaredElements
+            case v: ScVariable =>
+              v.declaredElements
           }
         var flag = false
         for (signe <- clazz.allMethods
@@ -345,14 +376,18 @@ object ScalaOIUtil {
              v = pair._1)
           if (v.name == named.name) {
             ScalaPsiUtil.nameContext(v) match {
-              case x: ScValue if x.containingClass == clazz    => flag = true
-              case x: ScVariable if x.containingClass == clazz => flag = true
-              case _                                           =>
+              case x: ScValue if x.containingClass == clazz =>
+                flag = true
+              case x: ScVariable if x.containingClass == clazz =>
+                flag = true
+              case _ =>
             }
           }
         !flag
-      case x: ScTypeAliasDefinition if x.containingClass != clazz => true
-      case _                                                      => false
+      case x: ScTypeAliasDefinition if x.containingClass != clazz =>
+        true
+      case _ =>
+        false
     }
   }
 
@@ -373,27 +408,34 @@ object ScalaOIUtil {
         true
       case x: ScTypeAliasDeclaration if withOwn || x.containingClass != clazz =>
         true
-      case _ => false
+      case _ =>
+        false
     }
   }
 
   def getAnchor(offset: Int, clazz: ScTemplateDefinition): Option[ScMember] = {
     val body =
       clazz.extendsBlock.templateBody match {
-        case Some(x) => x
-        case None    => return None
+        case Some(x) =>
+          x
+        case None =>
+          return None
       }
     var element: PsiElement = body.getContainingFile.findElementAt(offset)
     while (element != null && element.getParent != body)
       element = element.getParent
 
     element match {
-      case member: ScMember => Some(member)
-      case null             => None
+      case member: ScMember =>
+        Some(member)
+      case null =>
+        None
       case _ =>
         PsiTreeUtil.getNextSiblingOfType(element, classOf[ScMember]) match {
-          case null   => None
-          case member => Some(member)
+          case null =>
+            None
+          case member =>
+            Some(member)
         }
     }
   }

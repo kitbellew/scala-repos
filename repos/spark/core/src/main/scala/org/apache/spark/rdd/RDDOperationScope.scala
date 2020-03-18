@@ -69,7 +69,8 @@ private[spark] class RDDOperationScope(
     other match {
       case s: RDDOperationScope =>
         id == s.id && name == s.name && parent == s.parent
-      case _ => false
+      case _ =>
+        false
     }
   }
 

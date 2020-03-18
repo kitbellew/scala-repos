@@ -32,7 +32,8 @@ class ExpandTables extends Phase {
             if expansions contains tsym =>
           val (sym, exp) = expansions(tsym)
           exp.replace {
-            case Ref(s) if s == sym => path
+            case Ref(s) if s == sym =>
+              path
           }
         case tpe: NominalType =>
           createResult(expansions, path, tpe.structuralView)
@@ -49,7 +50,8 @@ class ExpandTables extends Phase {
             LiteralNode.nullOption,
             OptionApply(createResult(expansions, Ref(gen), el)),
             gen)
-        case _ => path
+        case _ =>
+          path
       }
 
     val s2 = state
@@ -85,11 +87,14 @@ class ExpandTables extends Phase {
                 t.table :@ CollectionType(
                   t.nodeType.asCollectionType.cons,
                   structs(ts))
-              case r: Ref => r.untyped
+              case r: Ref =>
+                r.untyped
               case d: Distinct =>
                 if (d.nodeType.existsType {
-                      case NominalType(_: TableIdentitySymbol, _) => true;
-                      case _                                      => false
+                      case NominalType(_: TableIdentitySymbol, _) =>
+                        true;
+                      case _ =>
+                        false
                     })
                   expandDistinct = true
                 d.mapChildren(tr)
@@ -116,8 +121,10 @@ class ExpandTables extends Phase {
 
           // Perform star expansion in query result
           if (!tree.nodeType.existsType {
-                case NominalType(_: TableIdentitySymbol, _) => true;
-                case _                                      => false
+                case NominalType(_: TableIdentitySymbol, _) =>
+                  true;
+                case _ =>
+                  false
               })
             tree3
           else {

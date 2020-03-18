@@ -414,11 +414,14 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     "return true with comparing two identical Box messages" in prop {
       (c1: Box[Int], c2: Box[Int]) =>
         (c1, c2) match {
-          case (Empty, Empty)     => c1 must_== c2
-          case (Full(x), Full(y)) => (c1 == c2) must_== (x == y)
+          case (Empty, Empty) =>
+            c1 must_== c2
+          case (Full(x), Full(y)) =>
+            (c1 == c2) must_== (x == y)
           case (Failure(m1, e1, l1), Failure(m2, e2, l2)) =>
             (c1 == c2) must_== ((m1, e1, l1) == (m2, e2, l2))
-          case _ => c1 must be_!=(c2)
+          case _ =>
+            c1 must be_!=(c2)
         }
     }
 

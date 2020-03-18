@@ -14,9 +14,12 @@ object foo {
 object foo1 {
   def f() {
     1 match {
-      case 2 => val _ = 1;
-      case 3 => val _ = 2;
-      case 4 => val _ = 2;
+      case 2 =>
+        val _ = 1;
+      case 3 =>
+        val _ = 2;
+      case 4 =>
+        val _ = 2;
     }
   }
 }

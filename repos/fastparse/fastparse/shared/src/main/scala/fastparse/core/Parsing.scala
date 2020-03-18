@@ -28,8 +28,10 @@ sealed trait Parsed[+T] {
     */
   def get: Parsed.Success[T] =
     this match {
-      case s: Parsed.Success[T] => s
-      case f: Parsed.Failure    => throw new ParseError(f)
+      case s: Parsed.Success[T] =>
+        s
+      case f: Parsed.Failure =>
+        throw new ParseError(f)
     }
 }
 
@@ -163,7 +165,8 @@ object Parsed {
     }
     def filterFullStack(fullStack: Seq[Frame]) = {
       fullStack.collect {
-        case f @ Frame(i, p) if p.shortTraced => f
+        case f @ Frame(i, p) if p.shortTraced =>
+          f
       }
     }
   }

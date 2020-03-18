@@ -28,7 +28,8 @@ private[base] class BaseShutdownHooks extends ShutdownHooks {
     shutdownHooks.foreach { hook =>
       try hook()
       catch {
-        case NonFatal(e) => log.error("while executing shutdown hook", e)
+        case NonFatal(e) =>
+          log.error("while executing shutdown hook", e)
       }
     }
     shutdownHooks = Nil

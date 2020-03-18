@@ -21,7 +21,9 @@ private final class SlackClient(url: String, defaultChannel: String) {
               s"#${msg.channel}"))
           .noNull)
       .flatMap {
-        case res if res.status == 200 => funit
-        case res                      => fufail(s"[slack] $url $msg ${res.status} ${res.body}")
+        case res if res.status == 200 =>
+          funit
+        case res =>
+          fufail(s"[slack] $url $msg ${res.status} ${res.body}")
       }
 }

@@ -70,16 +70,21 @@ object RedundantBlockInspection {
     val child: PsiElement = block.getChildren.apply(1)
     val probablyRedundant =
       child match {
-        case ref: ScReferenceExpression if ref.qualifier.isEmpty => true
-        case t: ScThisReference if t.reference.isEmpty           => true
-        case _                                                   => false
+        case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
+          true
+        case t: ScThisReference if t.reference.isEmpty =>
+          true
+        case _ =>
+          false
       }
     if (probablyRedundant) {
       val next: PsiElement = block.getNextSibling
       val parent = block.getParent
       parent match {
-        case _: ScArgumentExprList => false
-        case _ if next == null     => true
+        case _: ScArgumentExprList =>
+          false
+        case _ if next == null =>
+          true
         case _: ScInterpolatedStringLiteral =>
           val text = child.getText
           val nextLetter = next.getText.headOption.getOrElse(' ')
@@ -88,7 +93,8 @@ object RedundantBlockInspection {
           )
           checkId && !text.startsWith("_") && !text.exists(_ == '$') && !text
             .startsWith("`")
-        case _ => false
+        case _ =>
+          false
       }
     } else
       false

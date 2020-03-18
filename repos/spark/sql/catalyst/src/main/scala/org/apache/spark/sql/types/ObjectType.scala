@@ -26,8 +26,10 @@ private[sql] object ObjectType extends AbstractDataType {
 
   override private[sql] def acceptsType(other: DataType): Boolean =
     other match {
-      case ObjectType(_) => true
-      case _             => false
+      case ObjectType(_) =>
+        true
+      case _ =>
+        false
     }
 
   override private[sql] def simpleString: String = "Object"

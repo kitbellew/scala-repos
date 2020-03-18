@@ -685,7 +685,8 @@ private[spark] object UIUtils extends Logging {
                 val fullUri =
                   s"${basePathUri.stripSuffix("/")}/${relativePath.stripPrefix("/")}"
                 e % Attribute(null, "href", fullUri, Null)
-              case _ => n
+              case _ =>
+                n
             }
           }
         }

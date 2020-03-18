@@ -60,12 +60,14 @@ private class SelfPopulatingMap[K, V] {
       ec: ExecutionContext): Future[Option[V]] = {
     lazy val p = Promise[Option[V]]()
     store.putIfAbsent(k, p.future) match {
-      case Some(f) => f
+      case Some(f) =>
+        f
       case None =>
         val f = Future(pf(k))(ec.prepare())
         f.onComplete {
-          case Failure(_) | Success(None) => store.remove(k)
-          case _                          => // Do nothing, the asset was successfully found and is now cached
+          case Failure(_) | Success(None) =>
+            store.remove(k)
+          case _ => // Do nothing, the asset was successfully found and is now cached
         }
         p.completeWith(f)
         p.future
@@ -217,8 +219,10 @@ private[controllers] class AssetInfo(
         Some(httpDateFormat.print(new File(url.toURI).lastModified))
       case "jar" =>
         getLastModified[JarURLConnection](c => c.getJarEntry.getTime)
-      case "bundle" => getLastModified[URLConnection](c => c.getLastModified)
-      case _        => None
+      case "bundle" =>
+        getLastModified[URLConnection](c => c.getLastModified)
+      case _ =>
+        None
     }
   }
 
@@ -239,7 +243,8 @@ private[controllers] class AssetInfo(
           x
         else
           url
-      case None => url
+      case None =>
+        url
     }
   }
 }
@@ -506,7 +511,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
         blocking(digest(bareFullPath)) match {
           case Some(`requestedDigest`) =>
             assetAt(path, bareFile, aggressiveCaching = true)
-          case _ => assetAt(path, file.name, false)
+          case _ =>
+            assetAt(path, file.name, false)
         }
       } else {
         assetAt(path, file.name, false)
@@ -569,7 +575,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
                   assetInfo.gzipUrl.isDefined))
             })
         }
-      case None => notFound
+      case None =>
+        notFound
     }
 
     pendingResult.recoverWith {

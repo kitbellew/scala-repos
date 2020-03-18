@@ -77,7 +77,8 @@ class DuplicatePattern(
           else
             None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -92,7 +93,8 @@ class DuplicatePattern(
               case Some(mtch) if !seen(mtch.candidates(0)) =>
                 result += mtch
                 seen += mtch.candidates(0)
-              case _ => super.visitElement(element)
+              case _ =>
+                super.visitElement(element)
             }
           }
         }

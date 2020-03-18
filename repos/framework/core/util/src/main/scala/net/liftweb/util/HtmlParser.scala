@@ -38,9 +38,10 @@ trait Html5Writer {
     */
   protected def writeAttributes(m: MetaData, writer: Writer) {
     m match {
-      case null                     =>
-      case Null                     =>
-      case md if (null eq md.value) => writeAttributes(md.next, writer)
+      case null =>
+      case Null =>
+      case md if (null eq md.value) =>
+        writeAttributes(md.next, writer)
       case up: UnprefixedAttribute => {
         writer.append(' ')
         writer.append(up.key)
@@ -51,11 +52,15 @@ trait Html5Writer {
         val len = str.length
         while (pos < len) {
           str.charAt(pos) match {
-            case '"'                               => writer.append("&quot;")
-            case '<'                               => writer.append("&lt;")
-            case '&' if str.indexOf(';', pos) >= 0 => writer.append("&amp;")
-            case c if c >= ' ' && c.toInt <= 127   => writer.append(c)
-            case c if c == '\u0085'                =>
+            case '"' =>
+              writer.append("&quot;")
+            case '<' =>
+              writer.append("&lt;")
+            case '&' if str.indexOf(';', pos) >= 0 =>
+              writer.append("&amp;")
+            case c if c >= ' ' && c.toInt <= 127 =>
+              writer.append(c)
+            case c if c == '\u0085' =>
             case c => {
               val str = Integer.toHexString(c)
               writer.append("&#x")
@@ -86,11 +91,15 @@ trait Html5Writer {
           val len = str.length
           while (pos < len) {
             str.charAt(pos) match {
-              case '"'                               => writer.append("&quot;")
-              case '<'                               => writer.append("&lt;")
-              case '&' if str.indexOf(';', pos) >= 0 => writer.append("&amp;")
-              case c if c >= ' ' && c.toInt <= 127   => writer.append(c)
-              case c if c == '\u0085'                =>
+              case '"' =>
+                writer.append("&quot;")
+              case '<' =>
+                writer.append("&lt;")
+              case '&' if str.indexOf(';', pos) >= 0 =>
+                writer.append("&amp;")
+              case c if c >= ' ' && c.toInt <= 127 =>
+                writer.append(c)
+              case c if c == '\u0085' =>
               case c => {
                 val str = Integer.toHexString(c)
                 writer.append("&#x")
@@ -109,7 +118,8 @@ trait Html5Writer {
         writeAttributes(pa.next, writer)
       }
 
-      case x => writeAttributes(x.next, writer)
+      case x =>
+        writeAttributes(x.next, writer)
     }
   }
 
@@ -123,13 +133,20 @@ trait Html5Writer {
     var pos = 0
     while (pos < len) {
       str.charAt(pos) match {
-        case '<'  => sb.append("&lt;")
-        case '>'  => sb.append("&gt;")
-        case '&'  => sb.append("&amp;")
-        case '"'  => sb.append("&quot;")
-        case '\n' => sb.append('\n')
-        case '\r' => sb.append('\r')
-        case '\t' => sb.append('\t')
+        case '<' =>
+          sb.append("&lt;")
+        case '>' =>
+          sb.append("&gt;")
+        case '&' =>
+          sb.append("&amp;")
+        case '"' =>
+          sb.append("&quot;")
+        case '\n' =>
+          sb.append('\n')
+        case '\r' =>
+          sb.append('\r')
+        case '\t' =>
+          sb.append('\t')
         case c =>
           if (reverse) {
             HtmlEntities.revMap.get(c) match {
@@ -178,7 +195,8 @@ trait Html5Writer {
       stripComment: Boolean,
       convertAmp: Boolean): Unit = {
     x match {
-      case Text(str) => escape(str, writer, !convertAmp)
+      case Text(str) =>
+        escape(str, writer, !convertAmp)
 
       case PCData(data) => {
         writer.append("<![CDATA[")
@@ -192,7 +210,8 @@ trait Html5Writer {
         writer.append("]]>")
       }
 
-      case Unparsed(data) => writer.append(data)
+      case Unparsed(data) =>
+        writer.append(data)
 
       case a: Atom[_] if a.getClass eq classOf[Atom[_]] =>
         escape(a.data.toString, writer, !convertAmp)
@@ -205,7 +224,8 @@ trait Html5Writer {
 
       case er: EntityRef if convertAmp =>
         HtmlEntities.entMap.get(er.entityName) match {
-          case Some(chr) if chr.toInt >= 128 => writer.append(chr)
+          case Some(chr) if chr.toInt >= 128 =>
+            writer.append(chr)
           case _ => {
             val sb = new StringBuilder()
             er.buildString(sb)
@@ -239,7 +259,8 @@ trait Html5Writer {
           case null =>
           case seq =>
             seq.foreach {
-              case Text(str) => writer.append(str)
+              case Text(str) =>
+                writer.append(str)
               case pc: PCData => {
                 val sb = new StringBuilder()
                 pc.buildString(sb)
@@ -250,7 +271,8 @@ trait Html5Writer {
                 pc.buildString(sb)
                 writer.append(sb)
               }
-              case Unparsed(text) => writer.append(text)
+              case Unparsed(text) =>
+                writer.append(text)
               case a: Atom[_] if a.getClass eq classOf[Atom[_]] =>
                 writer.append(a.data.toString)
 
@@ -390,13 +412,17 @@ trait Html5Parser {
 
         in.close()
         saxer.rootElem match {
-          case null => Empty
+          case null =>
+            Empty
           case e: Elem =>
             AutoInsertedBody.unapply(e) match {
-              case Some(x) => Full(x)
-              case _       => Full(e)
+              case Some(x) =>
+                Full(x)
+              case _ =>
+                Full(e)
             }
-          case _ => Empty
+          case _ =>
+            Empty
         }
       }
       .flatMap(a => a)
@@ -410,7 +436,8 @@ trait Html5Parser {
           e.attributes == Null &&
           e.child.length == 0
         }
-        case _ => false
+        case _ =>
+          false
       }
 
     def checkBody(n: Node): Boolean =
@@ -421,7 +448,8 @@ trait Html5Parser {
           e.child.length >= 1 &&
           e.child(0).isInstanceOf[Elem]
         }
-        case _ => false
+        case _ =>
+          false
       }
 
     def unapply(n: Node): Option[Elem] =
@@ -438,7 +466,8 @@ trait Html5Parser {
           }
         }
 
-        case _ => None
+        case _ =>
+          None
       }
   }
 

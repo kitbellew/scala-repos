@@ -151,7 +151,8 @@ trait ResolvableStableCodeReferenceElement
                   Success(
                     ScProjectionType(fType, obj, superReference = false),
                     Some(this))
-                case _ => td.getType(TypingContext.empty).map(substitutor.subst)
+                case _ =>
+                  td.getType(TypingContext.empty).map(substitutor.subst)
               }
             var state = ResolveState.initial.put(ScSubstitutor.key, substitutor)
             if (fromType.isDefined) {
@@ -248,8 +249,10 @@ trait ResolvableStableCodeReferenceElement
             stmt.importExprs.foreach {
               case expr: ScImportExpr if expr.singleWildcard =>
                 expr.reference match {
-                  case Some(reference) => reference.resolve()
-                  case None            => expr.qualifier.resolve()
+                  case Some(reference) =>
+                    reference.resolve()
+                  case None =>
+                    expr.qualifier.resolve()
                 }
               case _ =>
             }
@@ -318,7 +321,9 @@ trait ResolvableStableCodeReferenceElement
                     ref))
                 return
               place match {
-                case (_: ScTemplateBody | _: ScExtendsBlock) => // template body and inherited members are at the same level.
+                case (
+                      _: ScTemplateBody | _: ScExtendsBlock
+                    ) => // template body and inherited members are at the same level.
                 case _ =>
                   if (!processor.changedLevel)
                     return
@@ -342,8 +347,9 @@ trait ResolvableStableCodeReferenceElement
           .foreach(processQualifierResolveResult(_, processor, ref))
       case Some(q: ScStableCodeReferenceElement) =>
         q.bind() match {
-          case Some(res) => processQualifierResolveResult(res, processor, ref)
-          case _         =>
+          case Some(res) =>
+            processQualifierResolveResult(res, processor, ref)
+          case _ =>
         }
       case Some(thisQ: ScThisReference) =>
         for (ttype <- thisQ.getType(TypingContext.empty))
@@ -357,12 +363,14 @@ trait ResolvableStableCodeReferenceElement
 
   private def _qualifier() = {
     getContext match {
-      case p: ScInterpolationPattern => Some(p)
+      case p: ScInterpolationPattern =>
+        Some(p)
       case sel: ScImportSelector =>
         sel.getContext /*ScImportSelectors*/ .getContext
           .asInstanceOf[ScImportExpr]
           .reference
-      case _ => pathQualifier
+      case _ =>
+        pathQualifier
     }
   }
 
@@ -379,7 +387,8 @@ trait ResolvableStableCodeReferenceElement
               true,
               classOf[ScPackaging]) == null
         }
-      case _ => true
+      case _ =>
+        true
     }
   }
 

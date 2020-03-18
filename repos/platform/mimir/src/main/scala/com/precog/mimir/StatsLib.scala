@@ -193,7 +193,8 @@ trait StatsLibModule[M[+_]]
                   result
                 }
 
-              case _ => Set.empty[BigDecimal]
+              case _ =>
+                Set.empty[BigDecimal]
             }
           }
         }
@@ -219,7 +220,8 @@ trait StatsLibModule[M[+_]]
             new Map1Column(col) with NumColumn {
               def apply(row: Int) = BigDecimal(col(row))
             }
-          case (col: NumColumn) => col
+          case (col: NumColumn) =>
+            col
         })(collection.breakOut)
 
       new UnionLotsColumn[NumColumn](cols0) with NumColumn {
@@ -304,11 +306,13 @@ trait StatsLibModule[M[+_]]
             range: Range): (Option[BigDecimal], Map[ColumnRef, Column]) = {
           val values = unifyNumColumns(
             cols.collect {
-              case (ColumnRef(ValuePath, _), col) => col
+              case (ColumnRef(ValuePath, _), col) =>
+                col
             })
           val alphas = unifyNumColumns(
             cols.collect {
-              case (ColumnRef(AlphaPath, _), col) => col
+              case (ColumnRef(AlphaPath, _), col) =>
+                col
             })
 
           init orElse findFirst(values, range.start, range.end) map { init0 =>
@@ -394,15 +398,18 @@ trait StatsLibModule[M[+_]]
             range: Range): (ScannerState, Map[ColumnRef, Column]) = {
           val values = unifyNumColumns(
             cols.collect {
-              case (ColumnRef(ValuePath, _), col) => col
+              case (ColumnRef(ValuePath, _), col) =>
+                col
             })
           val alphas = unifyNumColumns(
             cols.collect {
-              case (ColumnRef(AlphaPath, _), col) => col
+              case (ColumnRef(AlphaPath, _), col) =>
+                col
             })
           val betas = unifyNumColumns(
             cols.collect {
-              case (ColumnRef(BetaPath, _), col) => col
+              case (ColumnRef(BetaPath, _), col) =>
+                col
             })
 
           // This is a bit messy, but it's because we need the first 2 values
@@ -420,8 +427,10 @@ trait StatsLibModule[M[+_]]
             state match {
               case FindFirst =>
                 findFirst(values, range.start, range.end) match {
-                  case Some((row, x0)) => loop(FindSecond(x0), Some(row + 1))
-                  case None            => (FindFirst, Map.empty)
+                  case Some((row, x0)) =>
+                    loop(FindSecond(x0), Some(row + 1))
+                  case None =>
+                    (FindFirst, Map.empty)
                 }
 
               case FindSecond(x0) =>
@@ -429,7 +438,8 @@ trait StatsLibModule[M[+_]]
                   values,
                   rowM.getOrElse(range.start),
                   range.end) match {
-                  case Some((_, x1)) => loop(Continue(x0, x1 - x0, true), None)
+                  case Some((_, x1)) =>
+                    loop(Continue(x0, x1 - x0, true), None)
                   case None =>
                     rowM map { row =>
                       // In this case, we found a single value in this slice, but
@@ -833,7 +843,8 @@ trait StatsLibModule[M[+_]]
 
                   Some(foldedMapped)
                 }
-              case _ => None
+              case _ =>
+                None
             }
 
             if (result.isEmpty)
@@ -1133,7 +1144,8 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (result.isEmpty)
@@ -1145,7 +1157,8 @@ trait StatsLibModule[M[+_]]
 
       def extract(res: Result): Table = {
         val res2 = res filter {
-          case (count, _, _, _) => count != 0
+          case (count, _, _, _) =>
+            count != 0
         }
 
         res2 map {
@@ -1465,7 +1478,8 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (result.isEmpty)
@@ -1477,7 +1491,8 @@ trait StatsLibModule[M[+_]]
 
       def extract(res: Result): Table = {
         val res2 = res filter {
-          case (count, _, _, _, _) => count != 0
+          case (count, _, _, _, _) =>
+            count != 0
         }
 
         res2 map {
@@ -1862,7 +1877,8 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (result.isEmpty)
@@ -1874,7 +1890,8 @@ trait StatsLibModule[M[+_]]
 
       def extract(res: Result): Table = {
         val res2 = res filter {
-          case (count, _, _, _, _) => count != 0
+          case (count, _, _, _, _) =>
+            count != 0
         }
 
         res2 map {
@@ -2045,10 +2062,12 @@ trait StatsLibModule[M[+_]]
           next: Long): RankContext = {
         val items = m
           .filter {
-            case (k, v) => v.isDefinedAt(lastRow)
+            case (k, v) =>
+              v.isDefinedAt(lastRow)
           }
           .map {
-            case (k, v) => (k, v.cValue(lastRow))
+            case (k, v) =>
+              (k, v.cValue(lastRow))
           }
         RankContext(curr, next, items)
       }
@@ -2206,7 +2225,8 @@ trait StatsLibModule[M[+_]]
           row: Int): Boolean = {
         val m = mutable.Map.empty[ColumnRef, CValue]
         ctxt.items.foreach {
-          case (ref, cvalue) => m(ref) = cvalue
+          case (ref, cvalue) =>
+            m(ref) = cvalue
         }
         var i = 0
         while (i < cols.length) {
@@ -2439,8 +2459,10 @@ trait StatsLibModule[M[+_]]
       def apply(table: Table, ctx: MorphContext): M[Table] = {
         def count(tbl: Table): M[Long] =
           tbl.size match {
-            case ExactSize(n) => M.point(n)
-            case _            => table.reduce(Count.reducer(ctx))
+            case ExactSize(n) =>
+              M.point(n)
+            case _ =>
+              table.reduce(Count.reducer(ctx))
           }
 
         for {

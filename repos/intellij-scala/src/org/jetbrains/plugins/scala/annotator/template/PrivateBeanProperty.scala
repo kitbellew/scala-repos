@@ -35,9 +35,11 @@ object PrivateBeanProperty extends AnnotatorPart[ScAnnotation] {
       errorAnnotation.registerFix(toProtectedFix)
     }
     member match {
-      case v: ScVariable if v.isPrivate => registerProblem()
-      case v: ScValue if v.isPrivate    => registerProblem()
-      case _                            =>
+      case v: ScVariable if v.isPrivate =>
+        registerProblem()
+      case v: ScValue if v.isPrivate =>
+        registerProblem()
+      case _ =>
     }
   }
 

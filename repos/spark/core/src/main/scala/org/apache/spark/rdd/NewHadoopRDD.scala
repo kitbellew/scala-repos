@@ -151,7 +151,8 @@ class NewHadoopRDD[K, V](
           split.serializableHadoopSplit.value match {
             case _: FileSplit | _: CombineFileSplit =>
               SparkHadoopUtil.get.getFSBytesReadOnThreadCallback()
-            case _ => None
+            case _ =>
+              None
           }
 
         // For Hadoop 2.5+, we get our input bytes from thread-local Hadoop FileSystem statistics.
@@ -278,7 +279,8 @@ class NewHadoopRDD[K, V](
               logDebug("Failed to use InputSplit#getLocationInfo.", e)
               None
           }
-        case None => None
+        case None =>
+          None
       }
     locs.getOrElse(split.getLocations.filter(_ != "localhost"))
   }

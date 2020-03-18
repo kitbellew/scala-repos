@@ -141,7 +141,8 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
     val prior1 = merge.merge(((0, BatchID(1)), 3))
     val first =
       Await.result(prior1) match {
-        case Some(1) => true
+        case Some(1) =>
+          true
         case x =>
           println("first:" + x)
           false
@@ -149,7 +150,8 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
     val prior2 = merge.merge(((0, BatchID(1)), 7))
     val second =
       Await.result(prior2) match {
-        case Some(4) => true
+        case Some(4) =>
+          true
         case x =>
           println("secord:" + x)
           false
@@ -157,7 +159,8 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
     val last = merge.readable.multiGetBatch(BatchID(1), Set(0)).apply(0)
     val third =
       Await.result(last) match {
-        case Some(11) => true
+        case Some(11) =>
+          true
         case x =>
           println("third:" + x)
           false

@@ -90,7 +90,8 @@ case class WritePermission(path: Path, writeAs: WriteAs) extends Permission {
     other match {
       case WritePermission(p0, w0) =>
         path.isEqualOrParentOf(p0) && (writeAs == WriteAsAny || writeAs == w0)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -101,7 +102,8 @@ case class ExecutePermission(path: Path, writtenBy: WrittenBy)
     other match {
       case p @ ExecutePermission(path0, w0) =>
         path.isEqualOrParentOf(path0) && WrittenBy.implies(this, p)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -110,11 +112,14 @@ case class ReadPermission(path: Path, writtenBy: WrittenBy)
     with WrittenByPermission {
   def implies(other: Permission): Boolean =
     other match {
-      case p: ReadPermission   => WrittenBy.implies(this, p)
-      case p: ReducePermission => WrittenBy.implies(this, p)
+      case p: ReadPermission =>
+        WrittenBy.implies(this, p)
+      case p: ReducePermission =>
+        WrittenBy.implies(this, p)
       case p @ ExecutePermission(path0, w0) =>
         path.isEqualOrParentOf(path0) && WrittenBy.implies(this, p)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -123,8 +128,10 @@ case class ReducePermission(path: Path, writtenBy: WrittenBy)
     with WrittenByPermission {
   def implies(other: Permission): Boolean =
     other match {
-      case p: ReducePermission => WrittenBy.implies(this, p)
-      case _                   => false
+      case p: ReducePermission =>
+        WrittenBy.implies(this, p)
+      case _ =>
+        false
     }
 }
 
@@ -133,8 +140,10 @@ case class DeletePermission(path: Path, writtenBy: WrittenBy)
     with WrittenByPermission {
   def implies(other: Permission): Boolean =
     other match {
-      case p: DeletePermission => WrittenBy.implies(this, p)
-      case _                   => false
+      case p: DeletePermission =>
+        WrittenBy.implies(this, p)
+      case _ =>
+        false
     }
 }
 
@@ -172,11 +181,14 @@ object Permission {
       permission.path.isEqualOrParentOf(candidate.path) &&
       (
         permission.writtenBy match {
-          case WrittenByAny => true
+          case WrittenByAny =>
+            true
           case WrittenByAccount(accountId) =>
             candidate.writtenBy match {
-              case WrittenByAny          => false
-              case WrittenByAccount(cid) => cid == accountId
+              case WrittenByAny =>
+                false
+              case WrittenByAccount(cid) =>
+                cid == accountId
             }
         }
       )
@@ -185,19 +197,28 @@ object Permission {
 
   def accessType(p: Permission) =
     p match {
-      case _: ExecutePermission => "execute"
-      case _: ReadPermission    => "read"
-      case _: ReducePermission  => "reduce"
-      case _: WritePermission   => "write"
-      case _: DeletePermission  => "delete"
+      case _: ExecutePermission =>
+        "execute"
+      case _: ReadPermission =>
+        "read"
+      case _: ReducePermission =>
+        "reduce"
+      case _: WritePermission =>
+        "write"
+      case _: DeletePermission =>
+        "delete"
     }
 
   def ownerAccountIds(p: Permission): Set[AccountId] =
     p match {
-      case WritePermission(_, WriteAsAll(ids))          => ids
-      case WritePermission(_, WriteAsAny)               => Set()
-      case WrittenByPermission(_, WrittenByAccount(id)) => Set(id)
-      case WrittenByPermission(_, WrittenByAny)         => Set()
+      case WritePermission(_, WriteAsAll(ids)) =>
+        ids
+      case WritePermission(_, WriteAsAny) =>
+        Set()
+      case WrittenByPermission(_, WrittenByAccount(id)) =>
+        Set(id)
+      case WrittenByPermission(_, WrittenByAny) =>
+        Set()
     }
 
   val decomposerV1Base: Decomposer[Permission] =

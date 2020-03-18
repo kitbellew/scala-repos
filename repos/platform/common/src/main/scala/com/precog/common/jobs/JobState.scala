@@ -58,14 +58,18 @@ object JobState extends JobStateSerialization {
 
   def describe(state: JobState): String =
     state match {
-      case NotStarted          => "The job has not yet been started."
-      case Started(started, _) => "The job was started at %s." format started
+      case NotStarted =>
+        "The job has not yet been started."
+      case Started(started, _) =>
+        "The job was started at %s." format started
       case Cancelled(reason, _, _) =>
         "The job has been cancelled due to '%s'." format reason
       case Aborted(reason, _, _) =>
         "The job was aborted early due to '%s'." format reason
-      case Expired(expiration, _) => "The job expired at %s." format expiration
-      case Finished(_, _)         => "The job has finished successfully."
+      case Expired(expiration, _) =>
+        "The job expired at %s." format expiration
+      case Finished(_, _) =>
+        "The job has finished successfully."
     }
 }
 

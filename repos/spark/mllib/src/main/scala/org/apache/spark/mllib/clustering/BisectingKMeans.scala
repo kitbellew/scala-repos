@@ -157,7 +157,8 @@ class BisectingKMeans private (
       .map(v => Vectors.norm(v, 2.0))
       .persist(StorageLevel.MEMORY_AND_DISK)
     val vectors = input.zip(norms).map {
-      case (x, norm) => new VectorWithNorm(x, norm)
+      case (x, norm) =>
+        new VectorWithNorm(x, norm)
     }
     var assignments = vectors.map(v => (ROOT_INDEX, v))
     var activeClusters = summarize(d, assignments)

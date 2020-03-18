@@ -98,8 +98,10 @@ class PrintStream private (
        */
       errorFlag || (
         out match {
-          case out: PrintStream => out.checkError()
-          case _                => false
+          case out: PrintStream =>
+            out.checkError()
+          case _ =>
+            false
         }
       )
     }
@@ -254,7 +256,8 @@ class PrintStream private (
     try {
       body
     } catch {
-      case _: IOException => setError()
+      case _: IOException =>
+        setError()
     }
   }
 

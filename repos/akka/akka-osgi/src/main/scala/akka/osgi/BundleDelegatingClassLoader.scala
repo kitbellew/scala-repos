@@ -53,8 +53,10 @@ class BundleDelegatingClassLoader(
         Try {
           remaining.head.loadClass(name)
         } match {
-          case Success(cls) ⇒ cls
-          case Failure(_) ⇒ find(remaining.tail)
+          case Success(cls) ⇒
+            cls
+          case Failure(_) ⇒
+            find(remaining.tail)
         }
     }
     find(bundles)
@@ -69,8 +71,10 @@ class BundleDelegatingClassLoader(
         Option {
           remaining.head.getResource(name)
         } match {
-          case Some(r) ⇒ r
-          case None ⇒ find(remaining.tail)
+          case Some(r) ⇒
+            r
+          case None ⇒
+            find(remaining.tail)
         }
     }
     find(bundles)

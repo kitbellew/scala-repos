@@ -73,8 +73,10 @@ class BrokerChannelHandler extends SimpleChannelHandler {
   object MessageValue {
     def unapply(e: UpstreamEvent): Option[(Any, ChannelHandlerContext)] =
       e match {
-        case Message(e, ctx) => Some((e.getMessage, ctx))
-        case _               => None
+        case Message(e, ctx) =>
+          Some((e.getMessage, ctx))
+        case _ =>
+          None
       }
   }
 
@@ -116,8 +118,10 @@ class BrokerChannelHandler extends SimpleChannelHandler {
   object WriteValue {
     def unapply(e: DownstreamEvent): Option[(Any, ChannelHandlerContext)] =
       e match {
-        case Write(e, ctx) => Some((e.getMessage, ctx))
-        case _             => None
+        case Write(e, ctx) =>
+          Some((e.getMessage, ctx))
+        case _ =>
+          None
       }
   }
 

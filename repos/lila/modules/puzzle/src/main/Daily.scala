@@ -26,7 +26,8 @@ private[puzzle] final class Daily(
         logger.error("find daily", e)
         none
     } flatMap {
-      case Some(puzzle) => makeDaily(puzzle)
+      case Some(puzzle) =>
+        makeDaily(puzzle)
       case None =>
         scheduler.scheduleOnce(10.seconds)(cache.clear)
         fuccess(none)
@@ -64,7 +65,8 @@ private[puzzle] final class Daily(
           BSONDocument("_id" -> puzzle.id),
           BSONDocument(
             "$set" -> BSONDocument("day" -> DateTime.now))) inject puzzle.some
-      case None => fuccess(none)
+      case None =>
+        fuccess(none)
     }
 }
 

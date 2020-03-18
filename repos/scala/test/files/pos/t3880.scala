@@ -7,11 +7,13 @@ abstract class C1[+B] extends Bar[B] {
   // (That is good news.)
   private[this] def f1(x: Bar[B]): Unit =
     x match {
-      case x: C1[_] => g(x)
+      case x: C1[_] =>
+        g(x)
     }
   // this one crashes.
   private[this] def f2(x: Bar[B]): Unit =
     x match {
-      case x: C1[_] => f2(x)
+      case x: C1[_] =>
+        f2(x)
     }
 }

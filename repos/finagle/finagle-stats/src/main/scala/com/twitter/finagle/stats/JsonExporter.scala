@@ -147,8 +147,9 @@ class JsonExporter(registry: Metrics, timer: Timer)
   private[this] def getOrRegisterLatchedStats(): CounterDeltas =
     synchronized {
       deltas match {
-        case Some(ds) => ds
-        case None     =>
+        case Some(ds) =>
+          ds
+        case None =>
           // Latching should happen every minute, at the top of the minute.
           deltas = Some(new CounterDeltas())
           timer.schedule(startOfNextMinute, 1.minute) {
@@ -211,16 +212,20 @@ class JsonExporter(registry: Metrics, timer: Timer)
 
   def mkRegex(regexesString: String): Option[Regex] = {
     regexesString.split(",") match {
-      case Array("") => None
-      case regexes   => mkRegex(regexes)
+      case Array("") =>
+        None
+      case regexes =>
+        mkRegex(regexes)
     }
   }
 
   def filterSample(sample: collection.Map[String, Number])
       : collection.Map[String, Number] = {
     statsFilterRegex match {
-      case Some(regex) => sample.filterKeys(!regex.pattern.matcher(_).matches)
-      case None        => sample
+      case Some(regex) =>
+        sample.filterKeys(!regex.pattern.matcher(_).matches)
+      case None =>
+        sample
     }
   }
 

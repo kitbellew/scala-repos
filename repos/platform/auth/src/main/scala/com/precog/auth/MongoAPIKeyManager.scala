@@ -361,9 +361,11 @@ class MongoAPIKeyManager(
             }.map { _ =>
               Some(nt)
             }
-          case _ => Future(Some(t))
+          case _ =>
+            Future(Some(t))
         }
-      case None => Future(None)
+      case None =>
+        Future(None)
     }
   }
 
@@ -379,7 +381,8 @@ class MongoAPIKeyManager(
         } yield {
           ot
         }
-      case None => Future(None)
+      case None =>
+        Future(None)
     }
 
   def deleteGrant(gid: GrantId): Future[Set[Grant]] = {

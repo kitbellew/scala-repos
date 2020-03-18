@@ -228,11 +228,16 @@ private[impl] object ReservationSerializer {
         else
           None
       proto.getType match {
-        case ProtoState.Type.New       => State.New(timeout)
-        case ProtoState.Type.Launched  => State.Launched
-        case ProtoState.Type.Suspended => State.Suspended(timeout)
-        case ProtoState.Type.Garbage   => State.Garbage(timeout)
-        case ProtoState.Type.Unknown   => State.Unknown(timeout)
+        case ProtoState.Type.New =>
+          State.New(timeout)
+        case ProtoState.Type.Launched =>
+          State.Launched
+        case ProtoState.Type.Suspended =>
+          State.Suspended(timeout)
+        case ProtoState.Type.Garbage =>
+          State.Garbage(timeout)
+        case ProtoState.Type.Unknown =>
+          State.Unknown(timeout)
         case _ =>
           throw new SerializationFailedException(
             s"Unable to parse ${proto.getType}")
@@ -270,7 +275,8 @@ private[impl] object ReservationSerializer {
     val state: Task.Reservation.State = StateSerializer.fromProto(
       proto.getState)
     val volumes = proto.getLocalVolumeIdsList.asScala.map {
-      case LocalVolumeId(volumeId) => volumeId
+      case LocalVolumeId(volumeId) =>
+        volumeId
       case invalid: String =>
         throw new SerializationFailedException(s"$invalid is no valid volumeId")
     }

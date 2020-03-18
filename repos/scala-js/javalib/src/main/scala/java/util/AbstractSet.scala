@@ -11,8 +11,10 @@ abstract class AbstractSet[E] protected ()
       true
     else {
       that match {
-        case that: Collection[_] => that.size == this.size && containsAll(that)
-        case _                   => false
+        case that: Collection[_] =>
+          that.size == this.size && containsAll(that)
+        case _ =>
+          false
       }
     }
   }

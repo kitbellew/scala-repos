@@ -19,7 +19,8 @@ object WebSocket {
       request: HttpRequest,
       handler: Flow[Message, Message, _]): HttpResponse =
     request.asScala.header[UpgradeToWebSocket] match {
-      case Some(header) ⇒ header.handleMessagesWith(handler)
+      case Some(header) ⇒
+        header.handleMessagesWith(handler)
       case None ⇒
         HttpResponse
           .create()

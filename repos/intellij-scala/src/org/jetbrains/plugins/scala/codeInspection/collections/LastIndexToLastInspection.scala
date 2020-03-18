@@ -22,7 +22,8 @@ object LastIndexToLast extends SimplificationType {
             PsiEquivalenceUtil.areElementsEquivalent(qual, qual2) && isSeq(
             qual) && !isIndexedSeq(qual) =>
         Some(replace(expr).withText(invocationText(qual, "last")))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

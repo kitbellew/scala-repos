@@ -33,13 +33,15 @@ object EndToEndEventAdapterSpec {
 
     override def toJournal(event: Any): Any =
       event match {
-        case m: AppModel ⇒ JSON(m.payload)
+        case m: AppModel ⇒
+          JSON(m.payload)
       }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("a") ⇒
           EventSeq.single(A(m.payload))
-        case _ ⇒ EventSeq.empty
+        case _ ⇒
+          EventSeq.empty
       }
   }
   class NewAEndToEndAdapter(system: ExtendedActorSystem) extends EventAdapter {
@@ -47,13 +49,15 @@ object EndToEndEventAdapterSpec {
 
     override def toJournal(event: Any): Any =
       event match {
-        case m: AppModel ⇒ JSON(m.payload)
+        case m: AppModel ⇒
+          JSON(m.payload)
       }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("a") ⇒
           EventSeq.single(NewA(m.payload))
-        case _ ⇒ EventSeq.empty
+        case _ ⇒
+          EventSeq.empty
       }
   }
   class BEndToEndAdapter(system: ExtendedActorSystem) extends EventAdapter {
@@ -61,13 +65,15 @@ object EndToEndEventAdapterSpec {
 
     override def toJournal(event: Any): Any =
       event match {
-        case m: AppModel ⇒ JSON(m.payload)
+        case m: AppModel ⇒
+          JSON(m.payload)
       }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("b") ⇒
           EventSeq.single(B(m.payload))
-        case _ ⇒ EventSeq.empty
+        case _ ⇒
+          EventSeq.empty
       }
   }
   class NewBEndToEndAdapter(system: ExtendedActorSystem) extends EventAdapter {
@@ -75,13 +81,15 @@ object EndToEndEventAdapterSpec {
 
     override def toJournal(event: Any): Any =
       event match {
-        case m: AppModel ⇒ JSON(m.payload)
+        case m: AppModel ⇒
+          JSON(m.payload)
       }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
         case m: JSON if m.payload.toString.startsWith("b") ⇒
           EventSeq.single(NewB(m.payload))
-        case _ ⇒ EventSeq.empty
+        case _ ⇒
+          EventSeq.empty
       }
   }
 
@@ -108,7 +116,8 @@ object EndToEndEventAdapterSpec {
 
     override def receiveRecover = {
       case RecoveryCompleted ⇒ // ignore
-      case e ⇒ state ::= e
+      case e ⇒
+        state ::= e
     }
     override def receiveCommand = persistIncoming
 

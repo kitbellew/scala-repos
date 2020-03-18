@@ -115,8 +115,10 @@ case class HandshakeResponse(
 
   lazy val hashPassword =
     password match {
-      case Some(p) => encryptPassword(p, salt)
-      case None    => Array[Byte]()
+      case Some(p) =>
+        encryptPassword(p, salt)
+      case None =>
+        Array[Byte]()
     }
 
   def toPacket = {
@@ -273,8 +275,10 @@ object ExecuteRequest {
       hasNewParams: Boolean = true,
       flags: Byte = 0) = {
     val sanitizedParams = params.map {
-      case null  => Parameter.NullParameter
-      case other => other
+      case null =>
+        Parameter.NullParameter
+      case other =>
+        other
     }
     new ExecuteRequest(stmtId, sanitizedParams, hasNewParams, flags)
   }

@@ -56,8 +56,10 @@ object BaseProcessor {
 
   def isImplicitProcessor(processor: PsiScopeProcessor): Boolean = {
     processor match {
-      case b: BaseProcessor => b.isImplicitProcessor
-      case _                => false
+      case b: BaseProcessor =>
+        b.isImplicitProcessor
+      case _ =>
+        false
     }
   }
 }
@@ -145,8 +147,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     import com.intellij.psi.scope.ElementClassHint.DeclarationKind
     def shouldProcess(kind: DeclarationKind): Boolean = {
       kind match {
-        case null                    => true
-        case DeclarationKind.PACKAGE => kinds contains ResolveTargets.PACKAGE
+        case null =>
+          true
+        case DeclarationKind.PACKAGE =>
+          kinds contains ResolveTargets.PACKAGE
         case DeclarationKind.CLASS if classKind =>
           (
             kinds contains ResolveTargets.CLASS
@@ -162,16 +166,20 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           (kinds contains ResolveTargets.VAR) || (
             kinds contains ResolveTargets.VAL
           )
-        case DeclarationKind.METHOD => kinds contains ResolveTargets.METHOD
-        case _                      => false
+        case DeclarationKind.METHOD =>
+          kinds contains ResolveTargets.METHOD
+        case _ =>
+          false
       }
     }
   }
 
   def getHint[T](hintKey: Key[T]): T = {
     hintKey match {
-      case ElementClassHint.KEY => MyElementClassHint.asInstanceOf[T]
-      case _                    => null.asInstanceOf[T]
+      case ElementClassHint.KEY =>
+        MyElementClassHint.asInstanceOf[T]
+      case _ =>
+        null.asInstanceOf[T]
     }
   }
 
@@ -288,8 +296,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           if place.isInstanceOf[ScTypeProjection] =>
         val result: TypeResult[ScType] =
           e match {
-            case p: ScParameter => p.getRealParameterType(TypingContext.empty)
-            case _              => e.getType(TypingContext.empty)
+            case p: ScParameter =>
+              p.getRealParameterType(TypingContext.empty)
+            case _ =>
+              e.getType(TypingContext.empty)
           }
         result match {
           case Success(tp, _) =>
@@ -299,7 +309,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               state,
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter)
-          case _ => true
+          case _ =>
+            true
         }
       case ScDesignatorType(e) =>
         processElement(
@@ -348,7 +359,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
                   state,
                   visitedAliases = visitedAliases,
                   visitedTypeParameter = visitedTypeParameter)
-              case None => true
+              case None =>
+                true
             }
         }
       case proj @ ScProjectionType(projectd, _, _)
@@ -390,7 +402,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
                         place,
                         visitedAliases = visitedAliases,
                         visitedTypeParameter = visitedTypeParameter)
-                    case _ => true
+                    case _ =>
+                      true
                   }
                 ))
               return false
@@ -437,7 +450,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           updateWithProjectionSubst,
           visitedAliases = visitedAliases,
           visitedTypeParameter = visitedTypeParameter)
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -454,7 +468,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     ) //todo: looks like ugly workaround
     val newSubst =
       compound match {
-        case Some(_) => subst
+        case Some(_) =>
+          subst
         case _ =>
           if (subst != null)
             subst followed s
@@ -483,8 +498,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       case des: ScTypedDefinition =>
         val typeResult: TypeResult[ScType] =
           des match {
-            case p: ScParameter => p.getRealParameterType(TypingContext.empty)
-            case _              => des.getType(TypingContext.empty)
+            case p: ScParameter =>
+              p.getRealParameterType(TypingContext.empty)
+            case _ =>
+              des.getType(TypingContext.empty)
           }
         typeResult match {
           case Success(tp, _) =>
@@ -496,7 +513,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter
             )
-          case _ => true
+          case _ =>
+            true
         }
       case pack: ScPackage =>
         pack.processDeclarations(

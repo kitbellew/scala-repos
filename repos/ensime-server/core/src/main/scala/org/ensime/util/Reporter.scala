@@ -80,8 +80,10 @@ class PresentationReporter(handler: ReportHandler)
 
   def formatMessage(msg: String): String = {
     augmentString(msg).map {
-      case '\n' | '\r' => ' '
-      case c           => c
+      case '\n' | '\r' =>
+        ' '
+      case c =>
+        c
     }
   }
 }

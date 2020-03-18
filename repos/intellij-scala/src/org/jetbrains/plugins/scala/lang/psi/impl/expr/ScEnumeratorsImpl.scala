@@ -47,8 +47,10 @@ class ScEnumeratorsImpl(node: ASTNode)
         reverseChildren.drop(
           reverseChildren.indexOf(lastParent) + (
             lastParent match {
-              case g: ScGenerator => 1
-              case _              => 0
+              case g: ScGenerator =>
+                1
+              case _ =>
+                0
             }
           ))
       else
@@ -60,8 +62,9 @@ class ScEnumeratorsImpl(node: ASTNode)
             if (!processor.execute(b, state))
               return false
           processor match {
-            case b: BaseProcessor => b.changedLevel
-            case _                =>
+            case b: BaseProcessor =>
+              b.changedLevel
+            case _ =>
           }
         case c: ScEnumerator =>
           for (b <- c.pattern.bindings)

@@ -106,8 +106,10 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
 
   protected def isTerminated(a: Routee): Boolean =
     a match {
-      case ActorRefRoutee(ref) ⇒ ref.isTerminated
-      case _ ⇒ false
+      case ActorRefRoutee(ref) ⇒
+        ref.isTerminated
+      case _ ⇒
+        false
     }
 
   /**
@@ -122,9 +124,11 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
         x.underlying match {
           case cell: ActorCell ⇒
             cell.mailbox.isScheduled && cell.currentMessage != null
-          case _ ⇒ false
+          case _ ⇒
+            false
         }
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   /**
@@ -136,8 +140,10 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     */
   protected def hasMessages(a: Routee): Boolean =
     a match {
-      case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying.hasMessages
-      case _ ⇒ false
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒
+        x.underlying.hasMessages
+      case _ ⇒
+        false
     }
 
   /**
@@ -150,10 +156,13 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     a match {
       case ActorRefRoutee(x: ActorRefWithCell) ⇒
         x.underlying match {
-          case cell: ActorCell ⇒ cell.mailbox.isSuspended
-          case _ ⇒ true
+          case cell: ActorCell ⇒
+            cell.mailbox.isSuspended
+          case _ ⇒
+            true
         }
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 
   /**
@@ -164,8 +173,10 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
     */
   protected def numberOfMessages(a: Routee): Int =
     a match {
-      case ActorRefRoutee(x: ActorRefWithCell) ⇒ x.underlying.numberOfMessages
-      case _ ⇒ 0
+      case ActorRefRoutee(x: ActorRefWithCell) ⇒
+        x.underlying.numberOfMessages
+      case _ ⇒
+        0
     }
 }
 

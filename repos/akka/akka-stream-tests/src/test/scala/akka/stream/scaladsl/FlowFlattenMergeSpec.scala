@@ -149,7 +149,8 @@ class FlowFlattenMergeSpec extends AkkaSpec {
         .flatMapMerge(
           10,
           {
-            case 1 ⇒ Source.fromPublisher(p)
+            case 1 ⇒
+              Source.fromPublisher(p)
             case 2 ⇒
               Await.ready(latch, 3.seconds)
               throw ex

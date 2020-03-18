@@ -110,7 +110,8 @@ class TimestampValue(
         val ts = fromBytes(bytes, extractionTimeZone)
         Some(ts)
 
-      case _ => None
+      case _ =>
+        None
     }
 
   /**
@@ -152,11 +153,16 @@ class TimestampValue(
     object Nanos {
       def unapply(str: String): Option[Int] = {
         str match {
-          case ""                              => Some(0)
-          case s: String if !s.startsWith(".") => None
-          case s: String if s.length() > 10    => None
-          case s: String                       => Some(s.stripPrefix(".").padTo(9, '0').toInt)
-          case _                               => None
+          case "" =>
+            Some(0)
+          case s: String if !s.startsWith(".") =>
+            None
+          case s: String if s.length() > 10 =>
+            None
+          case s: String =>
+            Some(s.stripPrefix(".").padTo(9, '0').toInt)
+          case _ =>
+            None
         }
       }
     }
@@ -167,7 +173,8 @@ class TimestampValue(
         val ts = new Timestamp(timeInMillis)
         ts.setNanos(nanos)
         ts
-      case _ => Zero
+      case _ =>
+        Zero
     }
   }
 
@@ -282,7 +289,8 @@ object DateValue extends Injectable[Date] with Extractable[Date] {
 
       case RawValue(Type.Date, Charset.Binary, true, bytes) =>
         Some(fromBytes(bytes))
-      case _ => None
+      case _ =>
+        None
     }
 
   /**
@@ -337,6 +345,7 @@ object BigDecimalValue
     v match {
       case RawValue(Type.NewDecimal, Charset.Binary, _, bytes) =>
         Some(BigDecimal(new String(bytes, Charset(Charset.Binary))))
-      case _ => None
+      case _ =>
+        None
     }
 }

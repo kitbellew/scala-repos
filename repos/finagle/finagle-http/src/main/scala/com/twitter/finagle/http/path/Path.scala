@@ -49,10 +49,12 @@ object ~ {
     */
   def unapply(path: Path): Option[(Path, String)] = {
     path match {
-      case Root => None
+      case Root =>
+        None
       case parent / last =>
         unapply(last) map {
-          case (base, ext) => (parent / base, ext)
+          case (base, ext) =>
+            (parent / base, ext)
         }
     }
   }
@@ -64,7 +66,8 @@ object ~ {
     */
   def unapply(fileName: String): Option[(String, String)] = {
     fileName.lastIndexOf('.') match {
-      case -1 => Some((fileName, ""))
+      case -1 =>
+        Some((fileName, ""))
       case index =>
         Some((fileName.substring(0, index), fileName.substring(index + 1)))
     }
@@ -120,8 +123,10 @@ case object Root extends Path {
 object /: {
   def unapply(path: Path): Option[(String, Path)] = {
     path.toList match {
-      case Nil          => None
-      case head :: tail => Some((head, Path(tail)))
+      case Nil =>
+        None
+      case head :: tail =>
+        Some((head, Path(tail)))
     }
   }
 }

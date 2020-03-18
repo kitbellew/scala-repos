@@ -144,7 +144,8 @@ class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
       case e: SparkException
           if e.getMessage.contains("ClassNotFoundException") =>
         fail("Local executor could not find class", e)
-      case t: Throwable => fail("Unexpected exception ", t)
+      case t: Throwable =>
+        fail("Unexpected exception ", t)
     }
 
     sc.stop()

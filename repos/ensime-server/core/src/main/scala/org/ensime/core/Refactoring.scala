@@ -37,9 +37,11 @@ abstract class RefactoringEnvironment(file: String, start: Int, end: Int) {
               case Right(modifications) =>
                 val edits = modifications.map(FileEditHelper.fromChange).sorted
                 Right(new RefactorEffect(procId, tpe, edits))
-              case Left(error) => Left(RefactorFailure(procId, error.cause))
+              case Left(error) =>
+                Left(RefactorFailure(procId, error.cause))
             }
-          case Left(error) => Left(RefactorFailure(procId, error.cause))
+          case Left(error) =>
+            Left(RefactorFailure(procId, error.cause))
         }
       case None =>
         Left(RefactorFailure(procId, "Compilation unit not found: " + af))
@@ -79,7 +81,8 @@ trait RefactoringHandler {
         FileUtils.writeDiffChanges(effect.changes, cs) match {
           case Right(f) =>
             new RefactorDiffEffect(effect.procedureId, effect.refactorType, f)
-          case Left(err) => RefactorFailure(effect.procedureId, err.toString)
+          case Left(err) =>
+            RefactorFailure(effect.procedureId, err.toString)
         }
       }
       case Left(failure) =>
@@ -92,8 +95,10 @@ trait RefactoringHandler {
     effects.get(procedureId) match {
       case Some(effect: RefactorEffect) =>
         scalaCompiler.askExecRefactor(procedureId, req.tpe, effect) match {
-          case Right(success) => success
-          case Left(failure)  => failure
+          case Right(success) =>
+            success
+          case Left(failure) =>
+            failure
         }
       case None =>
         RefactorFailure(
@@ -117,7 +122,8 @@ trait RefactoringHandler {
           case _ =>
             FileRange(file.getPath, start, stop)
         }
-      case Left(e) => throw e
+      case Left(e) =>
+        throw e
     }
   }
 
@@ -129,7 +135,8 @@ trait RefactoringHandler {
           case Right(contents) =>
             Try(ScalaFormatter.format(contents, config.formattingPrefs))
               .map((f, contents, _))
-          case Left(e) => throw e
+          case Left(e) =>
+            throw e
         }
       }
       .collect {
@@ -169,7 +176,8 @@ trait RefactoringControl {
         askReloadFiles(
           result.touchedFiles.map(f => createSourceFile(f.getPath)))
         Right(result)
-      case Left(failure) => Left(failure)
+      case Left(failure) =>
+        Left(failure)
     }
   }
 
@@ -363,7 +371,8 @@ trait RefactoringImpl {
       case Right(touchedFiles) =>
         val sortedTouchedFiles = touchedFiles.toList.sortBy(_.canon.getPath)
         Right(new RefactorResult(procId, refactorType, sortedTouchedFiles))
-      case Left(err) => Left(RefactorFailure(procId, err.toString))
+      case Left(err) =>
+        Left(RefactorFailure(procId, err.toString))
     }
   }
 

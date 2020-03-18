@@ -28,7 +28,8 @@ trait Proxy extends Any {
   override def hashCode: Int = self.hashCode
   override def equals(that: Any): Boolean =
     that match {
-      case null => false
+      case null =>
+        false
       case _ =>
         val x = that.asInstanceOf[AnyRef]
         (x eq this.asInstanceOf[AnyRef]) || (

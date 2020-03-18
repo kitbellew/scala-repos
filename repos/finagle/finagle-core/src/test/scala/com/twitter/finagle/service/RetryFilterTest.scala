@@ -22,8 +22,10 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
   var timer: JavaTimer = _
   val backoffs = Stream(1.second, 2.seconds, 3.seconds)
   val shouldRetryException: PartialFunction[Try[Nothing], Boolean] = {
-    case Throw(WriteException(_)) => true
-    case _                        => false
+    case Throw(WriteException(_)) =>
+      true
+    case _ =>
+      false
   }
 
   before {
@@ -41,9 +43,12 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
   val nonIdempotentRequest = 999
 
   val shouldRetryResponse: PartialFunction[(Int, Try[Int]), Boolean] = {
-    case (`idempotentRequest`, Throw(WriteException(_))) => true
-    case (`idempotentRequest`, Return(`badResponse`))    => true
-    case _                                               => false
+    case (`idempotentRequest`, Throw(WriteException(_))) =>
+      true
+    case (`idempotentRequest`, Return(`badResponse`)) =>
+      true
+    case _ =>
+      false
   }
 
   val exceptionOnlyRetryPolicy = RetryPolicy.tries(3, shouldRetryException)
@@ -179,7 +184,8 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
                 @volatile
                 var interrupted: Option[Throwable] = None
                 setInterruptHandler {
-                  case exc => interrupted = Some(exc)
+                  case exc =>
+                    interrupted = Some(exc)
                 }
               }
             when(service(123)) thenReturn replyPromise
@@ -364,7 +370,8 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
               @volatile
               var interrupted: Option[Throwable] = None
               setInterruptHandler {
-                case exc => interrupted = Some(exc)
+                case exc =>
+                  interrupted = Some(exc)
               }
             }
           when(service(123)) thenReturn replyPromise

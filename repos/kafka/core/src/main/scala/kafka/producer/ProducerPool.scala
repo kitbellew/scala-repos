@@ -75,7 +75,8 @@ class ProducerPool(val config: ProducerConfig) extends Logging {
     lock.synchronized {
       val producer = syncProducers.get(brokerId)
       producer match {
-        case Some(p) => p
+        case Some(p) =>
+          p
         case None =>
           throw new UnavailableProducerException(
             "Sync producer for broker id %d does not exist".format(brokerId))

@@ -104,11 +104,15 @@ class FakePsiMethod(
     navElement match {
       case b: ScBindingPattern =>
         b.nameContext match {
-          case v: ScVariable => v.getModifierList
-          case v: ScValue    => v.getModifierList
-          case _             => ScalaPsiUtil.getEmptyModifierList(getManager)
+          case v: ScVariable =>
+            v.getModifierList
+          case v: ScValue =>
+            v.getModifierList
+          case _ =>
+            ScalaPsiUtil.getEmptyModifierList(getManager)
         }
-      case _ => ScalaPsiUtil.getEmptyModifierList(getManager)
+      case _ =>
+        ScalaPsiUtil.getEmptyModifierList(getManager)
     }
 
   def findSuperMethods(parentClass: PsiClass): Array[PsiMethod] =
@@ -140,7 +144,8 @@ class FakePsiMethod(
           context.getIcon(flags)
         else
           super.getIcon(flags)
-      case _ => super.getIcon(flags)
+      case _ =>
+        super.getIcon(flags)
     }
 
   def getReturnTypeElement: PsiTypeElement = null

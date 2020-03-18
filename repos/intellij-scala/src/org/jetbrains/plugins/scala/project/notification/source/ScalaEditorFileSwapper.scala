@@ -18,7 +18,8 @@ object ScalaEditorFileSwapper {
     val psiFile: PsiFile = PsiManager.getInstance(project).findFile(eachFile)
     psiFile match {
       case file: ScalaFile if file.isCompiled =>
-      case _                                  => return null
+      case _ =>
+        return null
     }
     val fqn: String = getFQN(psiFile)
     if (fqn == null)

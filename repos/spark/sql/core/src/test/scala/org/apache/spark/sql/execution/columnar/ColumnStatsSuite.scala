@@ -68,7 +68,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       columnStats.collectedStatistics.values
         .zip(initialStatistics.values)
         .foreach {
-          case (actual, expected) => assert(actual === expected)
+          case (actual, expected) =>
+            assert(actual === expected)
         }
     }
 
@@ -113,7 +114,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       columnStats.collectedStatistics.values
         .zip(initialStatistics.values)
         .foreach {
-          case (actual, expected) => assert(actual === expected)
+          case (actual, expected) =>
+            assert(actual === expected)
         }
     }
 

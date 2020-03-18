@@ -90,8 +90,11 @@ private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf)
 
   override def equals(other: Any): Boolean =
     other match {
-      case ByteBufAsBuf.Owned(otherBB) => underlying.equals(otherBB)
-      case other: Buf                  => Buf.equals(this, other)
-      case _                           => false
+      case ByteBufAsBuf.Owned(otherBB) =>
+        underlying.equals(otherBB)
+      case other: Buf =>
+        Buf.equals(this, other)
+      case _ =>
+        false
     }
 }

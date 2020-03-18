@@ -40,7 +40,8 @@ object ParserInstance extends Instance {
       def apply[S, T](f: M[S => T], v: M[S]): M[T] =
         s =>
           (f(s) ~ v(s)) map {
-            case (a, b) => a(b)
+            case (a, b) =>
+              a(b)
           }
       def pure[S](s: => S) = const(Parser.success(s))
       def map[S, T](f: S => T, v: M[S]) = s => v(s).map(f)
@@ -73,7 +74,8 @@ object FullInstance
       (a: Task[Initialize[Task[T]]], data: Task[SS], f) =>
         import TaskExtra.multT2Task
         (a, data) flatMap {
-          case (a, d) => f(a) evaluate d
+          case (a, d) =>
+            f(a) evaluate d
         }
     }
   }
@@ -84,7 +86,8 @@ object FullInstance
       (a: Task[S => Initialize[Task[T]]], data: Task[SS], f) => (s: S) =>
         import TaskExtra.multT2Task
         (a, data) flatMap {
-          case (af, d) => f(af(s)) evaluate d
+          case (af, d) =>
+            f(af(s)) evaluate d
         }
     }
   }
@@ -280,7 +283,8 @@ object TaskMacro {
             TypeApply(Select(preT, newTermName(newName).encodedName), targs),
             init :: sourcePosition(c).tree :: Nil),
           a)
-      case x => ContextUtil.unexpectedTree(x)
+      case x =>
+        ContextUtil.unexpectedTree(x)
     }
   }
   private[this] def removeMacroImpl(c: Context)(init: c.Tree, remove: c.Tree)(
@@ -301,7 +305,8 @@ object TaskMacro {
             TypeApply(Select(preT, newTermName(newName).encodedName), targs),
             init :: sourcePosition(c).tree :: Nil),
           r)
-      case x => ContextUtil.unexpectedTree(x)
+      case x =>
+        ContextUtil.unexpectedTree(x)
     }
   }
   private[this] def transformMacroImpl(c: Context)(init: c.Tree)(
@@ -309,8 +314,10 @@ object TaskMacro {
     import c.universe.{Apply, ApplyTag, newTermName, Select, SelectTag}
     val target =
       c.macroApplication match {
-        case Apply(Select(prefix, _), _) => prefix
-        case x                           => ContextUtil.unexpectedTree(x)
+        case Apply(Select(prefix, _), _) =>
+          prefix
+        case x =>
+          ContextUtil.unexpectedTree(x)
       }
     Apply.apply(
       Select(target, newTermName(newName).encodedName),
@@ -421,7 +428,8 @@ object TaskMacro {
           Converted.Success(wrapInitInput(tree)(c.WeakTypeTag(tpe)))
         case WrapInputName =>
           Converted.Success(wrapInput(tree)(c.WeakTypeTag(tpe)))
-        case _ => Converted.NotApplicable
+        case _ =>
+          Converted.NotApplicable
       }
     val util = ContextUtil[c.type](c)
     util.transformWrappers(

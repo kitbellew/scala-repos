@@ -84,8 +84,10 @@ final case class Extracted(
     val inputTask = get(Scoped.scopedSetting(rkey.scope, rkey.key))
     val task =
       Parser.parse(input, inputTask.parser(state)) match {
-        case Right(t)  => t
-        case Left(msg) => sys.error(s"Invalid programmatic input:\n$msg")
+        case Right(t) =>
+          t
+        case Left(msg) =>
+          sys.error(s"Invalid programmatic input:\n$msg")
       }
     val config = extractedTaskConfig(this, structure, state)
     withStreams(structure, state) { str =>

@@ -113,7 +113,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     // Before optimizer, Union should be combined.
     assert(
       unionDF.queryExecution.analyzed.collect {
-        case j: Union if j.children.size == 5 => j
+        case j: Union if j.children.size == 5 =>
+          j
       }.size === 1)
 
     checkAnswer(
@@ -177,7 +178,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "a b c"), (2, "a b"), (3, "a")).toDF("number", "letters")
     val df2 =
       df.explode('letters) {
-        case Row(letters: String) => letters.split(" ").map(Tuple1(_)).toSeq
+        case Row(letters: String) =>
+          letters.split(" ").map(Tuple1(_)).toSeq
       }
 
     checkAnswer(
@@ -597,7 +599,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       describeOneCol,
       describeResult.map {
-        case Row(s, d, _) => Row(s, d)
+        case Row(s, d, _) =>
+          Row(s, d)
       })
 
     val describeNoCol = describeTestData.select("name").describe()
@@ -605,7 +608,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       describeNoCol,
       describeResult.map {
-        case Row(s, _, _) => Row(s)
+        case Row(s, _, _) =>
+          Row(s)
       })
 
     val emptyDescription = describeTestData.limit(0).describe()
@@ -1225,8 +1229,9 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         }
         atFirstAgg = true
       }
-      case e: ShuffleExchange => atFirstAgg = false
-      case _                  =>
+      case e: ShuffleExchange =>
+        atFirstAgg = false
+      case _ =>
     }
   }
 
@@ -1453,26 +1458,31 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       checkAnswer(join, df)
       assert(
         join.queryExecution.executedPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.size === 1)
       assert(
         join.queryExecution.executedPlan.collect {
-          case e: ReusedExchange => true
+          case e: ReusedExchange =>
+            true
         }.size === 1)
       val broadcasted = broadcast(join)
       val join2 = join.join(broadcasted, "id").join(broadcasted, "id")
       checkAnswer(join2, df)
       assert(
         join2.queryExecution.executedPlan.collect {
-          case e: ShuffleExchange => true
+          case e: ShuffleExchange =>
+            true
         }.size === 1)
       assert(
         join2.queryExecution.executedPlan.collect {
-          case e: BroadcastExchange => true
+          case e: BroadcastExchange =>
+            true
         }.size === 1)
       assert(
         join2.queryExecution.executedPlan.collect {
-          case e: ReusedExchange => true
+          case e: ReusedExchange =>
+            true
         }.size === 4)
     }
   }

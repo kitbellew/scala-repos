@@ -24,7 +24,8 @@ object TestProject extends Build {
   def check(ver: String) =
     (dependencyClasspath in Compile) map { jars =>
       val log4j = jars map (_.data) collect {
-        case f if f.getName contains "log4j-" => f.getName
+        case f if f.getName contains "log4j-" =>
+          f.getName
       }
       if (log4j.size != 1 || !log4j.head.contains(ver))
         error("Did not download the correct jar.")

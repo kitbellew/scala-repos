@@ -82,9 +82,11 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val done = Transport.copyToWriter(failed, reader) { _ =>
       Future.value(Some(Buf.Empty))
     } respond {
-      case Return(()) => reader.close()
-      case Throw(exc) => reader.fail(exc)
-      case _          =>
+      case Return(()) =>
+        reader.close()
+      case Throw(exc) =>
+        reader.fail(exc)
+      case _ =>
     }
     val f = reader.read(1)
     reader.discard()
@@ -104,9 +106,11 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val reader = Reader.writable()
     val done =
       Transport.copyToWriter(failed, reader)(_ => Future.None) respond {
-        case Return(()) => reader.close()
-        case Throw(exc) => reader.fail(exc)
-        case _          =>
+        case Return(()) =>
+          reader.close()
+        case Throw(exc) =>
+          reader.fail(exc)
+        case _ =>
       }
     val f = reader.read(1)
     intercept[IllegalStateException] {
@@ -121,12 +125,16 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
       val t = fromList(list)
       val reader = Reader.writable()
       val done = Transport.copyToWriter(t, reader) {
-        case None      => Future.None
-        case Some(str) => Future.value(Some(Buf.Utf8(str)))
+        case None =>
+          Future.None
+        case Some(str) =>
+          Future.value(Some(Buf.Utf8(str)))
       } respond {
-        case Return(()) => reader.close()
-        case Throw(exc) => reader.fail(exc)
-        case _          =>
+        case Return(()) =>
+          reader.close()
+        case Throw(exc) =>
+          reader.fail(exc)
+        case _ =>
       }
       val f = Reader.readAll(reader)
       assert(Await.result(f) == Buf.Utf8(list.mkString))
@@ -140,12 +148,16 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
       val exc = new Exception
       val reader = Reader.writable()
       val done = Transport.copyToWriter(t, reader) {
-        case None    => Future.exception(exc)
-        case Some(b) => Future.value(Some(Buf.ByteArray.Owned(Array(b))))
+        case None =>
+          Future.exception(exc)
+        case Some(b) =>
+          Future.value(Some(Buf.ByteArray.Owned(Array(b))))
       } respond {
-        case Return(()) => reader.close()
-        case Throw(exc) => reader.fail(exc)
-        case _          =>
+        case Return(()) =>
+          reader.close()
+        case Throw(exc) =>
+          reader.fail(exc)
+        case _ =>
       }
       val f = Reader.readAll(reader)
       val result = intercept[Exception] {
@@ -163,9 +175,12 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val fail = new Exception("fail")
     def read(string: String) =
       string match {
-        case "eof"  => Future.None
-        case "fail" => Future.exception(fail)
-        case x      => Future.value(Some(Buf.Utf8(x)))
+        case "eof" =>
+          Future.None
+        case "fail" =>
+          Future.exception(fail)
+        case x =>
+          Future.value(Some(Buf.Utf8(x)))
       }
     val coll = Transport.collate(trans, read)
     assert(!coll.isDefined)

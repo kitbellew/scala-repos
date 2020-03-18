@@ -38,9 +38,12 @@ trait RawErrors extends Errors with Phases {
 
   override def isWarning(error: Error) =
     error match {
-      case UnusedLetBinding(_)      => true
-      case DeprecatedFunction(_, _) => true
-      case _                        => false
+      case UnusedLetBinding(_) =>
+        true
+      case DeprecatedFunction(_, _) =>
+        true
+      case _ =>
+        false
     }
 }
 
@@ -58,10 +61,14 @@ trait LineErrors extends Errors with Phases with parser.AST {
 
   override def isWarning(error: Error) =
     error match {
-      case Error(UnusedLetBinding(_))               => true
-      case Error(UnableToSolveCriticalCondition(_)) => true
-      case Error(DeprecatedFunction(_, _))          => true
-      case _                                        => false
+      case Error(UnusedLetBinding(_)) =>
+        true
+      case Error(UnableToSolveCriticalCondition(_)) =>
+        true
+      case Error(DeprecatedFunction(_, _)) =>
+        true
+      case _ =>
+        false
     }
 
   class Error(val loc: LineStream, val tp: ErrorType) {

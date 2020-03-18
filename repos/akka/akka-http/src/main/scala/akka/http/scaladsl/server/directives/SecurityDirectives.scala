@@ -80,7 +80,8 @@ trait SecurityDirectives {
     extractExecutionContext.flatMap { implicit ec ⇒
       authenticateOrRejectWithChallenge[BasicHttpCredentials, T] { cred ⇒
         authenticator(Credentials(cred)).fast.map {
-          case Some(t) ⇒ AuthenticationResult.success(t)
+          case Some(t) ⇒
+            AuthenticationResult.success(t)
           case None ⇒
             AuthenticationResult.failWithChallenge(challengeFor(realm))
         }
@@ -138,7 +139,8 @@ trait SecurityDirectives {
     extractExecutionContext.flatMap { implicit ec ⇒
       authenticateOrRejectWithChallenge[OAuth2BearerToken, T] { cred ⇒
         authenticator(Credentials(cred)).fast.map {
-          case Some(t) ⇒ AuthenticationResult.success(t)
+          case Some(t) ⇒
+            AuthenticationResult.success(t)
           case None ⇒
             AuthenticationResult.failWithChallenge(challengeFor(realm))
         }
@@ -186,7 +188,8 @@ trait SecurityDirectives {
     extractExecutionContext.flatMap { implicit ec ⇒
       extractCredentials.flatMap { cred ⇒
         onSuccess(authenticator(cred)).flatMap {
-          case Right(user) ⇒ provide(user)
+          case Right(user) ⇒
+            provide(user)
           case Left(challenge) ⇒
             val cause =
               if (cred.isEmpty)
@@ -209,7 +212,8 @@ trait SecurityDirectives {
     authenticateOrRejectWithChallenge[T](cred ⇒
       authenticator(
         cred collect {
-          case c: C ⇒ c
+          case c: C ⇒
+            c
         }))
 
   /**
@@ -242,8 +246,10 @@ trait SecurityDirectives {
     extractExecutionContext.flatMap { implicit ec ⇒
       extract(check).flatMap[Unit] { fa =>
         onComplete(fa).flatMap {
-          case Success(true) => pass
-          case _             => reject(AuthorizationFailedRejection)
+          case Success(true) =>
+            pass
+          case _ =>
+            reject(AuthorizationFailedRejection)
         }
       }
     }
@@ -289,7 +295,8 @@ object Credentials {
       case Some(GenericHttpCredentials(scheme, token, params)) ⇒
         throw new UnsupportedOperationException(
           "cannot verify generic HTTP credentials")
-      case None ⇒ Credentials.Missing
+      case None ⇒
+        Credentials.Missing
     }
   }
 }
@@ -314,7 +321,8 @@ trait AuthenticationDirective[T] extends Directive1[T] {
     this.map(Some(_): Option[T]) recover {
       case AuthenticationFailedRejection(CredentialsMissing, _) +: _ ⇒
         provide(None)
-      case rejs ⇒ reject(rejs: _*)
+      case rejs ⇒
+        reject(rejs: _*)
     }
 
   /**

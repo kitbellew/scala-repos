@@ -47,10 +47,14 @@ private[http] object BodyPartRenderer {
 
         def completePartRendering(): Source[ChunkStreamPart, Any] =
           bodyPart.entity match {
-            case x if x.isKnownEmpty ⇒ chunkStream(r.get)
-            case Strict(_, data) ⇒ chunkStream((r ~~ data).get)
-            case Default(_, _, data) ⇒ bodyPartChunks(data)
-            case IndefiniteLength(_, data) ⇒ bodyPartChunks(data)
+            case x if x.isKnownEmpty ⇒
+              chunkStream(r.get)
+            case Strict(_, data) ⇒
+              chunkStream((r ~~ data).get)
+            case Default(_, _, data) ⇒
+              bodyPartChunks(data)
+            case IndefiniteLength(_, data) ⇒
+              bodyPartChunks(data)
           }
 
         renderBoundary(
@@ -144,7 +148,8 @@ private[http] object BodyPartRenderer {
     case x: RawHeader if (x is "content-type") || (x is "content-length") ⇒
       suppressionWarning(log, x, "illegal RawHeader")
 
-    case x ⇒ r ~~ x ~~ CrLf
+    case x ⇒
+      r ~~ x ~~ CrLf
   }
 
   /**

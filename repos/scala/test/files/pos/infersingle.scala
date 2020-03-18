@@ -13,7 +13,8 @@ object Test2 {
   }
   val b: a.type =
     (a: a.type) match {
-      case Id(x) => x
+      case Id(x) =>
+        x
     }
 }
 
@@ -24,7 +25,8 @@ object Test3 {
   }
   val b: Test3.type =
     a match {
-      case Id(x) => x
+      case Id(x) =>
+        x
     }
 }
 
@@ -36,7 +38,8 @@ class Test4 {
   }
   val b: Test4.this.type =
     a match {
-      case Id(x) => x
+      case Id(x) =>
+        x
     }
 }
 
@@ -53,6 +56,7 @@ class Test5 extends Super5 {
   }
   val b: Test5.super.q.type =
     a match {
-      case Id(x) => x
+      case Id(x) =>
+        x
     }
 }

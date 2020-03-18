@@ -102,7 +102,8 @@ private[play] final class SerializableResult(constructorResult: Result)
       }
       val body =
         cachedResult.body match {
-          case HttpEntity.Strict(data, _) => data
+          case HttpEntity.Strict(data, _) =>
+            data
           case other =>
             throw new IllegalStateException(
               "Non strict body cannot be materialized")

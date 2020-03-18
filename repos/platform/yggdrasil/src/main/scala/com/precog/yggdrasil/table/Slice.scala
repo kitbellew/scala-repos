@@ -82,7 +82,8 @@ trait Slice {
 
   lazy val valueColumns: Set[Column] =
     columns collect {
-      case (ColumnRef(CPath.Identity, _), col) => col
+      case (ColumnRef(CPath.Identity, _), col) =>
+        col
     } toSet
 
   def isDefinedAt(row: Int) = columns.values.exists(_.isDefinedAt(row))
@@ -104,7 +105,8 @@ trait Slice {
         val resultColumns =
           for {
             col <- source.columns collect {
-              case (ref, col) if ref.selector == CPath.Identity => col
+              case (ref, col) if ref.selector == CPath.Identity =>
+                col
             }
             result <- f(col)
           } yield result
@@ -147,10 +149,12 @@ trait Slice {
       val size = source.size
 
       val cols0 = (source.columns).toList sortBy {
-        case (ref, _) => ref.selector
+        case (ref, _) =>
+          ref.selector
       }
       val cols = cols0 map {
-        case (_, col) => col
+        case (_, col) =>
+          col
       }
 
       def inflate[@spec A: Manifest](cols: Array[Int => A], row: Int) = {
@@ -174,7 +178,8 @@ trait Slice {
               case CLong =>
                 val longcols =
                   cols.collect {
-                    case (col: LongColumn) => col
+                    case (col: LongColumn) =>
+                      col
                   }.toArray
 
                 new HomogeneousArrayColumn[Long] {
@@ -190,7 +195,8 @@ trait Slice {
               case CDouble =>
                 val doublecols =
                   cols.collect {
-                    case (col: DoubleColumn) => col
+                    case (col: DoubleColumn) =>
+                      col
                   }.toArray
                 new HomogeneousArrayColumn[Double] {
                   private val cols: Array[Int => Double] = doublecols map { x =>
@@ -205,7 +211,8 @@ trait Slice {
               case CNum =>
                 val numcols =
                   cols.collect {
-                    case (col: NumColumn) => col
+                    case (col: NumColumn) =>
+                      col
                   }.toArray
                 new HomogeneousArrayColumn[BigDecimal] {
                   private val cols: Array[Int => BigDecimal] = numcols map {
@@ -220,7 +227,8 @@ trait Slice {
               case CBoolean =>
                 val boolcols =
                   cols.collect {
-                    case (col: BoolColumn) => col
+                    case (col: BoolColumn) =>
+                      col
                   }.toArray
                 new HomogeneousArrayColumn[Boolean] {
                   private val cols: Array[Int => Boolean] = boolcols map { x =>
@@ -235,7 +243,8 @@ trait Slice {
               case CString =>
                 val strcols =
                   cols.collect {
-                    case (col: StrColumn) => col
+                    case (col: StrColumn) =>
+                      col
                   }.toArray
                 new HomogeneousArrayColumn[String] {
                   private val cols: Array[Int => String] = strcols map { x =>
@@ -247,7 +256,8 @@ trait Slice {
                     loopForall[StrColumn](strcols)(row)
                   def apply(row: Int): Array[String] = inflate(cols, row)
                 }
-              case _ => sys.error("unsupported type")
+              case _ =>
+                sys.error("unsupported type")
             }))
       }
     }
@@ -413,7 +423,8 @@ trait Slice {
                     val idx = ap.getOrElse(nodes, -1) + 1
                     (ap + (nodes -> idx), nodes :+ CPathIndex(idx))
 
-                  case ((ap, nodes), fieldNode) => (ap, nodes :+ fieldNode)
+                  case ((ap, nodes), fieldNode) =>
+                    (ap, nodes :+ fieldNode)
                 }
 
               (arrayPaths0, acc + (ColumnRef(CPath(nodes: _*), ctype) -> col))
@@ -469,8 +480,10 @@ trait Slice {
                 xs.zipWithIndex map {
                   case (x, j) =>
                     mappers get j match {
-                      case Some(f) => f(x)
-                      case None    => x
+                      case Some(f) =>
+                        f(x)
+                      case None =>
+                        x
                     }
                 })
           case (
@@ -515,7 +528,8 @@ trait Slice {
       private val (removed, withoutPrefixes) = source.columns partition {
         case (ColumnRef(CPath(head @ CPathField(_), _ @_*), _), _) =>
           prefixes contains head
-        case _ => false
+        case _ =>
+          false
       }
 
       private val becomeEmpty =
@@ -551,19 +565,22 @@ trait Slice {
     new Slice {
       val size = source.size
       val columns = source.columns filter {
-        case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+        case (ColumnRef(path, ctpe), _) =>
+          Schema.requiredBy(jtpe, path, ctpe)
       }
     }
 
   def typedSubsumes(jtpe: JType): Slice = {
     val tuples: Seq[(CPath, CType)] =
       source.columns.map({
-        case (ColumnRef(path, ctpe), _) => (path, ctpe)
+        case (ColumnRef(path, ctpe), _) =>
+          (path, ctpe)
       })(collection.breakOut)
     val columns =
       if (Schema.subsumes(tuples, jtpe)) {
         source.columns filter {
-          case (ColumnRef(path, ctpe), _) => Schema.requiredBy(jtpe, path, ctpe)
+          case (ColumnRef(path, ctpe), _) =>
+            Schema.requiredBy(jtpe, path, ctpe)
         }
       } else {
         Map.empty[ColumnRef, Column]
@@ -583,7 +600,8 @@ trait Slice {
     new Slice {
       val size = source.size
       val pathsAndTypes: Seq[(CPath, CType)] = source.columns.toSeq map {
-        case (ColumnRef(selector, ctype), _) => (selector, ctype)
+        case (ColumnRef(selector, ctype), _) =>
+          (selector, ctype)
       }
 
       // we cannot just use subsumes because there could be rows with undefineds in them
@@ -617,8 +635,10 @@ trait Slice {
     new Slice {
       val arraylessPrefix = CPath(
         selectorPrefix.nodes map {
-          case CPathArray => CPathIndex(0)
-          case n          => n
+          case CPathArray =>
+            CPathIndex(0)
+          case n =>
+            n
         }: _*)
 
       val size = source.size
@@ -666,7 +686,8 @@ trait Slice {
         case (ColumnRef(CPath(CPathIndex(`index`), xs @ _*), ctype), col) =>
           (ColumnRef(CPath(CPathIndex(0) +: xs: _*), ctype), col)
 
-        case c @ (ColumnRef(CPath(CPathIndex(i), xs @ _*), ctype), col) => c
+        case c @ (ColumnRef(CPath(CPathIndex(i), xs @ _*), ctype), col) =>
+          c
       }
     }
 
@@ -696,7 +717,8 @@ trait Slice {
         val resultColumns =
           for {
             col <- source.columns collect {
-              case (ref, col) if ref.selector.hasPrefix(from) => col
+              case (ref, col) if ref.selector.hasPrefix(from) =>
+                col
             }
             result <- f(col)
           } yield result
@@ -719,10 +741,12 @@ trait Slice {
         val resultColumns =
           for {
             left <- source.columns collect {
-              case (ref, col) if ref.selector.hasPrefix(froml) => col
+              case (ref, col) if ref.selector.hasPrefix(froml) =>
+                col
             }
             right <- source.columns collect {
-              case (ref, col) if ref.selector.hasPrefix(fromr) => col
+              case (ref, col) if ref.selector.hasPrefix(fromr) =>
+                col
             }
             result <- f(left, right)
           } yield result
@@ -786,7 +810,8 @@ trait Slice {
             }
 
             val grouped = numCols groupBy {
-              case (ColumnRef(cpath, _), _) => cpath
+              case (ColumnRef(cpath, _), _) =>
+                cpath
             }
 
             Loop.range(0, filter.size) { i =>
@@ -890,11 +915,13 @@ trait Slice {
           filter.columns.values.exists(_.isDefinedAt(i)))
 
         (lastDefined, firstDefined) match {
-          case (Some((prev, i)), Some(j)) => findStraddlingDistinct(prev, i, j)
+          case (Some((prev, i)), Some(j)) =>
+            findStraddlingDistinct(prev, i, j)
           case (_, Some(j)) =>
             acc.add(j);
             findSelfDistinct(j, j + 1)
-          case _ => acc
+          case _ =>
+            acc
         }
       }
 
@@ -921,14 +948,16 @@ trait Slice {
         columns.foldLeft(Left(Map.empty): GroupedCols) {
           case (Left(acc), (ColumnRef(path, CArrayType(_)), col)) =>
             val acc0 = acc.map {
-              case (k, v) => (k, Set(v))
+              case (k, v) =>
+                (k, Set(v))
             }
             Right(acc0 + (path -> Set(col)))
 
           case (Left(acc), (ColumnRef(path, _), col)) =>
             acc get path map { col0 =>
               val acc0 = acc.map {
-                case (k, v) => (k, Set(v))
+                case (k, v) =>
+                  (k, Set(v))
               }
               Right(acc0 + (path -> Set(col0, col)))
             } getOrElse Left(acc + (path -> col))
@@ -1217,8 +1246,10 @@ trait Slice {
 
                 case SchemaNode.Union(nodes) => {
                   val objNode = nodes find {
-                    case _: SchemaNode.Obj => true
-                    case _                 => false
+                    case _: SchemaNode.Obj =>
+                      true
+                    case _ =>
+                      false
                   }
 
                   val subTarget = objNode getOrElse SchemaNode.Obj(Map())
@@ -1245,8 +1276,10 @@ trait Slice {
 
                 case SchemaNode.Union(nodes) => {
                   val objNode = nodes find {
-                    case _: SchemaNode.Arr => true
-                    case _                 => false
+                    case _: SchemaNode.Arr =>
+                      true
+                    case _ =>
+                      false
                   }
 
                   val subTarget = objNode getOrElse SchemaNode.Arr(Map())
@@ -1260,16 +1293,20 @@ trait Slice {
               }
             }
 
-            case CPathMeta(_) :: _ => target
+            case CPathMeta(_) :: _ =>
+              target
 
-            case CPathArray :: _ => sys.error("todo")
+            case CPathArray :: _ =>
+              sys.error("todo")
 
             case Nil => {
               val node = SchemaNode.Leaf(ctype, col)
 
               target match {
-                case SchemaNode.Union(nodes) => SchemaNode.Union(nodes + node)
-                case oldNode                 => SchemaNode.Union(Set(oldNode, node))
+                case SchemaNode.Union(nodes) =>
+                  SchemaNode.Union(nodes + node)
+                case oldNode =>
+                  SchemaNode.Union(Set(oldNode, node))
               }
             }
           }
@@ -1357,12 +1394,14 @@ trait Slice {
               }
             }
 
-            case lf: SchemaNode.Leaf => Some(lf)
+            case lf: SchemaNode.Leaf =>
+              Some(lf)
           }
 
         val schema =
           columns.foldLeft(SchemaNode.Union(Set()): SchemaNode) {
-            case (acc, (ref, col)) => insert(acc, ref, col)
+            case (acc, (ref, col)) =>
+              insert(acc, ref, col)
           }
 
         normalize(schema)
@@ -1384,7 +1423,8 @@ trait Slice {
               case union: SchemaNode.Union =>
                 union.possibilities map loop max
 
-              case SchemaNode.Leaf(_, _) => 0
+              case SchemaNode.Leaf(_, _) =>
+                0
             }
 
           loop(schema)
@@ -1464,13 +1504,20 @@ trait Slice {
             val c = str.charAt(idx)
 
             (c: @switch) match {
-              case '"'  => pushStr("\\\"")
-              case '\\' => pushStr("\\\\")
-              case '\b' => pushStr("\\b")
-              case '\f' => pushStr("\\f")
-              case '\n' => pushStr("\\n")
-              case '\r' => pushStr("\\r")
-              case '\t' => pushStr("\\t")
+              case '"' =>
+                pushStr("\\\"")
+              case '\\' =>
+                pushStr("\\\\")
+              case '\b' =>
+                pushStr("\\b")
+              case '\f' =>
+                pushStr("\\f")
+              case '\n' =>
+                pushStr("\\n")
+              case '\r' =>
+                pushStr("\\r")
+              case '\t' =>
+                pushStr("\\t")
 
               case c => {
                 if ((c >= '\u0000' && c < '\u001f') || (
@@ -1820,7 +1867,8 @@ trait Slice {
                   }
                 }
 
-                case CUndefined => false
+                case CUndefined =>
+                  false
               }
           }
 
@@ -1871,7 +1919,8 @@ trait Slice {
       case (rv, (ColumnRef(selector, _), col)) if col.isDefinedAt(row) =>
         rv.unsafeInsert(selector, col.cValue(row))
 
-      case (rv, _) => rv
+      case (rv, _) =>
+        rv
     }
   }
 
@@ -1879,17 +1928,21 @@ trait Slice {
     columns.foldLeft[JValue](JUndefined) {
       case (jv, (ColumnRef(selector, _), col)) if col.isDefinedAt(row) =>
         CPathUtils.cPathToJPaths(selector, col.cValue(row)).foldLeft(jv) {
-          case (jv, (path, value)) => jv.unsafeInsert(path, value.toJValue)
+          case (jv, (path, value)) =>
+            jv.unsafeInsert(path, value.toJValue)
         }
 
-      case (jv, _) => jv
+      case (jv, _) =>
+        jv
     }
   }
 
   def toJson(row: Int): Option[JValue] = {
     toJValue(row) match {
-      case JUndefined => None
-      case jv         => Some(jv)
+      case JUndefined =>
+        None
+      case jv =>
+        Some(jv)
     }
   }
 
@@ -1898,8 +1951,10 @@ trait Slice {
     def rec(i: Int, acc: Vector[JValue]): Vector[JValue] = {
       if (i < source.size) {
         toJValue(i) match {
-          case JUndefined => rec(i + 1, acc)
-          case jv         => rec(i + 1, acc :+ jv)
+          case JUndefined =>
+            rec(i + 1, acc)
+          case jv =>
+            rec(i + 1, acc :+ jv)
         }
       } else
         acc
@@ -1920,8 +1975,10 @@ trait Slice {
           )
       }
     ) match {
-      case Nil => None
-      case l   => Some(l.mkString("[", ", ", "]"))
+      case Nil =>
+        None
+      case l =>
+        Some(l.mkString("[", ", ", "]"))
     }
   }
 
@@ -1949,7 +2006,8 @@ object Slice {
       sliceIndex: Int,
       sliceSize: Int): Map[ColumnRef, ArrayColumn[_]] = {
     rv.flattenWithPath.foldLeft(into) {
-      case (acc, (cpath, CUndefined)) => acc
+      case (acc, (cpath, CUndefined)) =>
+        acc
       case (acc, (cpath, cvalue)) =>
         val ref = ColumnRef(cpath, (cvalue.cType))
 
@@ -2093,7 +2151,8 @@ object Slice {
             },
             offset + slice.size)
 
-        case ((cols, offset), _) => (cols, offset)
+        case ((cols, offset), _) =>
+          (cols, offset)
       }
 
     val slice =
@@ -2113,10 +2172,12 @@ object Slice {
     val paths = (keyf(s1) ++ keyf(s2)).toList
     val traversal = CPathTraversal(paths)
     val lCols = s1.columns groupBy (_._1.selector) map {
-      case (path, m) => path -> m.values.toSet
+      case (path, m) =>
+        path -> m.values.toSet
     }
     val rCols = s2.columns groupBy (_._1.selector) map {
-      case (path, m) => path -> m.values.toSet
+      case (path, m) =>
+        path -> m.values.toSet
     }
     val allPaths = (lCols.keys ++ rCols.keys).toList
     val order = traversal.rowOrder(allPaths, lCols, Some(rCols))
@@ -2138,7 +2199,8 @@ object Slice {
       remapPath: Option[JPath => CPath] = None)
       : Map[ColumnRef, ArrayColumn[_]] = {
     jv.flattenWithPath.foldLeft(into) {
-      case (acc, (jpath, JUndefined)) => acc
+      case (acc, (jpath, JUndefined)) =>
+        acc
       case (acc, (jpath, v)) =>
         val ctype = CType.forJValue(v) getOrElse {
           sys.error(
@@ -2184,7 +2246,8 @@ object Slice {
                       c.update(sliceIndex, d)
                     }
 
-                case _ => sys.error("non-numeric type reached")
+                case _ =>
+                  sys.error("non-numeric type reached")
               }
 
             case JString(s) =>
@@ -2219,7 +2282,8 @@ object Slice {
                   c.update(sliceIndex, true)
                 }
 
-            case _ => sys.error("non-flattened value reached")
+            case _ =>
+              sys.error("non-flattened value reached")
           }
 
         acc + (ref -> updatedColumn)

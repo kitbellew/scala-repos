@@ -34,7 +34,8 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         RoundRobinPool(5).props(routeeProps = Props(
           new Actor {
             def receive = {
-              case "hello" ⇒ helloLatch.countDown()
+              case "hello" ⇒
+                helloLatch.countDown()
             }
 
             override def postStop() {
@@ -68,8 +69,10 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
           new Actor {
             lazy val id = counter.getAndIncrement()
             def receive = {
-              case "hit" ⇒ sender() ! id
-              case "end" ⇒ doneLatch.countDown()
+              case "hit" ⇒
+                sender() ! id
+              case "end" ⇒
+                doneLatch.countDown()
             }
           })),
         "round-robin"
@@ -99,7 +102,8 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         RoundRobinPool(5).props(routeeProps = Props(
           new Actor {
             def receive = {
-              case "hello" ⇒ helloLatch.countDown()
+              case "hello" ⇒
+                helloLatch.countDown()
             }
 
             override def postStop() {
@@ -152,8 +156,10 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
           Props(
             new Actor {
               def receive = {
-                case "hit" ⇒ sender() ! self.path.name
-                case "end" ⇒ doneLatch.countDown()
+                case "hit" ⇒
+                  sender() ! self.path.name
+                case "end" ⇒
+                  doneLatch.countDown()
               }
             }),
           name = "target-" + n)
@@ -202,15 +208,18 @@ class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
                 router = router.removeRoutee(c)
                 if (router.routees.isEmpty)
                   context.stop(self)
-              case other ⇒ router.route(other, sender())
+              case other ⇒
+                router.route(other, sender())
             }
           }))
 
       val childProps = Props(
         new Actor {
           def receive = {
-            case "hit" ⇒ sender() ! self.path.name
-            case "end" ⇒ context.stop(self)
+            case "hit" ⇒
+              sender() ! self.path.name
+            case "end" ⇒
+              context.stop(self)
           }
         })
 

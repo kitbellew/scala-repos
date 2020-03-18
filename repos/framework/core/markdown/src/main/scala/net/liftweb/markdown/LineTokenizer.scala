@@ -80,8 +80,10 @@ class LineTokenizer() extends Parsers {
         Failure("End of Input.", in)
       } else {
         lineParsers.parseAll(parser, in.first) match {
-          case lineParsers.Success(t, _) => Success(t, in.rest)
-          case n: lineParsers.NoSuccess  => Failure(n.msg, in)
+          case lineParsers.Success(t, _) =>
+            Success(t, in.rest)
+          case n: lineParsers.NoSuccess =>
+            Failure(n.msg, in)
         }
       }
     }
@@ -123,7 +125,8 @@ class LineTokenizer() extends Parsers {
   def maybeUrlInNextLine(
       prev: (LinkDefinitionStart, Option[String])): Parser[LinkDefinition] =
     prev match {
-      case (lds, Some(title)) => success(lds.toLinkDefinition(Some(title)))
+      case (lds, Some(title)) =>
+        success(lds.toLinkDefinition(Some(title)))
       case (lds, None) =>
         Parser { in =>
           if (in.atEnd) {
@@ -134,7 +137,8 @@ class LineTokenizer() extends Parsers {
               in.first) match {
               case lineParsers.Success(title, _) =>
                 Success(lds.toLinkDefinition(Some(title)), in.rest)
-              case _ => Success(lds.toLinkDefinition(None), in)
+              case _ =>
+                Success(lds.toLinkDefinition(None), in)
             }
           }
         }
@@ -178,20 +182,32 @@ class LineTokenizer() extends Parsers {
       } else {
         val line = in.first
         (firstChar(line), indicatorChar(line)) match {
-          case ('=', _) => p(lineParsers.setextHeader1)(in)
-          case ('-', _) => p(lineParsers.setext2OrRulerOrUItem)(in)
-          case ('#', _) => p(lineParsers.atxHeader)(in)
-          case (_, '-') => p(lineParsers.rulerOrUItem)(in)
-          case (_, '*') => p(lineParsers.rulerOrUItem)(in)
-          case (_, '+') => p(lineParsers.uItemStartLine)(in)
-          case (_, '>') => p(lineParsers.blockquoteLine)(in)
+          case ('=', _) =>
+            p(lineParsers.setextHeader1)(in)
+          case ('-', _) =>
+            p(lineParsers.setext2OrRulerOrUItem)(in)
+          case ('#', _) =>
+            p(lineParsers.atxHeader)(in)
+          case (_, '-') =>
+            p(lineParsers.rulerOrUItem)(in)
+          case (_, '*') =>
+            p(lineParsers.rulerOrUItem)(in)
+          case (_, '+') =>
+            p(lineParsers.uItemStartLine)(in)
+          case (_, '>') =>
+            p(lineParsers.blockquoteLine)(in)
           case (_, n) if (n >= '0' && n <= '9') =>
             p(lineParsers.oItemStartLine)(in)
-          case (_, ' ')  => p(lineParsers.emptyOrCode)(in)
-          case (_, '\t') => p(lineParsers.emptyOrCode)(in)
-          case (_, '\n') => p(lineParsers.emptyLine)(in)
-          case (_, '`')  => p(lineParsers.fencedCodeStartOrEnd)(in)
-          case _         => p(lineParsers.otherLine)(in)
+          case (_, ' ') =>
+            p(lineParsers.emptyOrCode)(in)
+          case (_, '\t') =>
+            p(lineParsers.emptyOrCode)(in)
+          case (_, '\n') =>
+            p(lineParsers.emptyLine)(in)
+          case (_, '`') =>
+            p(lineParsers.fencedCodeStartOrEnd)(in)
+          case _ =>
+            p(lineParsers.otherLine)(in)
         }
       }
     } | p(
@@ -208,11 +224,14 @@ class LineTokenizer() extends Parsers {
         val line = in.first
         (firstChar(line), indicatorChar(line)) match {
           //link definitions have absolute precedence
-          case (_, '[') => linkDefinition(in)
+          case (_, '[') =>
+            linkDefinition(in)
           //then filter out xml blocks if allowed
-          case ('<', _) if (allowXmlBlocks) => xmlChunk(in)
+          case ('<', _) if (allowXmlBlocks) =>
+            xmlChunk(in)
           //no token for preprocessing
-          case _ => Failure("No preprocessing token.", in)
+          case _ =>
+            Failure("No preprocessing token.", in)
         }
       }
     }
@@ -223,7 +242,8 @@ class LineTokenizer() extends Parsers {
   def innerTokens(
       lookup: Map[String, LinkDefinition]): Parser[MarkdownLineReader] =
     phrase(lineToken *) ^^ {
-      case ts => new MarkdownLineReader(ts, lookup)
+      case ts =>
+        new MarkdownLineReader(ts, lookup)
     }
 
   /** Parses first level line tokens, i.e. Markdown lines, XML chunks and link definitions.
@@ -235,8 +255,10 @@ class LineTokenizer() extends Parsers {
         val lookup = new HashMap[String, LinkDefinition]()
         for (t <- ts) {
           t match {
-            case ld: LinkDefinition => lookup(ld.id) = ld
-            case ml: MarkdownLine   => lines.append(ml)
+            case ld: LinkDefinition =>
+              lookup(ld.id) = ld
+            case ml: MarkdownLine =>
+              lines.append(ml)
           }
         }
         new MarkdownLineReader(lines.toList, lookup.toMap)
@@ -262,7 +284,8 @@ class LineTokenizer() extends Parsers {
     */
   def innerTokenize(lines: List[String], lookup: Map[String, LinkDefinition]) =
     innerTokens(lookup)(new LineReader(lines)) match {
-      case Success(reader, _) => reader
+      case Success(reader, _) =>
+        reader
       case n: NoSuccess =>
         throw new IllegalStateException(
           "Inner line Tokenizing failed. This is a bug. Message was: " + n.msg)
@@ -281,7 +304,8 @@ class LineTokenizer() extends Parsers {
     */
   def tokenize(lines: Reader[String]): MarkdownLineReader =
     tokens(lines) match {
-      case Success(reader, _) => reader
+      case Success(reader, _) =>
+        reader
       case n: NoSuccess =>
         throw new IllegalStateException(
           "Tokenizing failed. This is a bug. Message was: " + n.msg)

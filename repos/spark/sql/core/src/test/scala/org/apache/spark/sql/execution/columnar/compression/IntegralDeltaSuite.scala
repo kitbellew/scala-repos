@@ -46,8 +46,10 @@ class IntegralDeltaSuite extends SparkFunSuite {
           Seq.empty[Long]
         } else {
           (input.tail, input.init).zipped.map {
-            case (x: Int, y: Int)   => (x - y).toLong
-            case (x: Long, y: Long) => x - y
+            case (x: Int, y: Int) =>
+              (x - y).toLong
+            case (x: Long, y: Long) =>
+              x - y
           }
         }
 
@@ -131,8 +133,10 @@ class IntegralDeltaSuite extends SparkFunSuite {
     test(s"$scheme: simple case") {
       val input =
         columnType match {
-          case INT  => Seq(2: Int, 1: Int, 2: Int, 130: Int)
-          case LONG => Seq(2: Long, 1: Long, 2: Long, 130: Long)
+          case INT =>
+            Seq(2: Int, 1: Int, 2: Int, 130: Int)
+          case LONG =>
+            Seq(2: Long, 1: Long, 2: Long, 130: Long)
         }
 
       skeleton(input.map(_.asInstanceOf[I#InternalType]))

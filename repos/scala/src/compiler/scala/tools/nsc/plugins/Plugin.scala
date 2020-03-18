@@ -109,7 +109,8 @@ object Plugin {
           throw new PluginLoadException(
             jarp.path,
             s"Missing $PluginXML in $jarp")
-        case Some(is) => PluginDescription.fromXML(is)
+        case Some(is) =>
+          PluginDescription.fromXML(is)
       }
     Try(new Jar(jarp.jfile).withEntryStream(PluginXML)(read))
   }
@@ -160,7 +161,8 @@ object Plugin {
     // scan plugin dirs for jars containing plugins, ignoring dirs with none and other jars
     val fromDirs: PDResults = dirs filter (_.isDirectory) flatMap { d =>
       scan(d.toDirectory) collect {
-        case (j, Success(pd)) => Success((pd, loaderFor(Seq(j))))
+        case (j, Success(pd)) =>
+          Success((pd, loaderFor(Seq(j))))
       }
     }
 
@@ -169,7 +171,8 @@ object Plugin {
     def findDescriptor(ps: List[Path]) = {
       def loop(qs: List[Path]): Try[PluginDescription] =
         qs match {
-          case Nil => Failure(new MissingPluginException(ps))
+          case Nil =>
+            Failure(new MissingPluginException(ps))
           case p :: rest =>
             if (p.isDirectory)
               loadDescriptionFromFile(p.toDirectory / PluginXML) orElse loop(
@@ -182,8 +185,10 @@ object Plugin {
       loop(ps)
     }
     val fromPaths: PDResults = paths map (p => (p, findDescriptor(p))) map {
-      case (p, Success(pd)) => Success((pd, loaderFor(p)))
-      case (_, Failure(e))  => Failure(e)
+      case (p, Success(pd)) =>
+        Success((pd, loaderFor(p)))
+      case (_, Failure(e)) =>
+        Failure(e)
     }
 
     val seen = mutable.HashSet[String]()

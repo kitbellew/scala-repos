@@ -12,8 +12,10 @@ object ScalaOptionParser {
     def StringSetting(name: String): Parser[String] = {
       val valueParser =
         name match {
-          case "-d" => JarOrDirectoryParser
-          case _    => token(StringBasic, TokenCompletions.displayOnly("<value>"))
+          case "-d" =>
+            JarOrDirectoryParser
+          case _ =>
+            token(StringBasic, TokenCompletions.displayOnly("<value>"))
         }
       concat(concat(token(name ~ Space.string)) ~ valueParser)
     }
@@ -84,15 +86,18 @@ object ScalaOptionParser {
         StringSetting) ++ multiStringSettingNames.map(
         MultiStringSetting) ++ intSettingNames.map(
         IntSetting) ++ choiceSettingNames.map {
-        case (k, v) => ChoiceSetting(k, v)
+        case (k, v) =>
+          ChoiceSetting(k, v)
       } ++ multiChoiceSettingNames.map {
-        case (k, v) => MultiChoiceSetting(k, v)
+        case (k, v) =>
+          MultiChoiceSetting(k, v)
       } ++ scalaVersionSettings.map(ScalaVersionSetting))
     val ScalacOpt = sourceFile | UniversalOpt
 
     val ScalaExtraSettings = oneOf(
       scalaChoiceSettingNames.map {
-        case (k, v) => ChoiceSetting(k, v)
+        case (k, v) =>
+          ChoiceSetting(k, v)
       }.toList
         ++ scalaStringSettingNames.map(StringSetting)
         ++ scalaBooleanSettingNames.map(BooleanSetting))
@@ -102,7 +107,8 @@ object ScalaOptionParser {
       scalaDocBooleanSettingNames.map(BooleanSetting)
         ++ scalaDocIntSettingNames.map(IntSetting)
         ++ scalaDocChoiceSettingNames.map {
-          case (k, v) => ChoiceSetting(k, v)
+          case (k, v) =>
+            ChoiceSetting(k, v)
         }
         ++ scaladocStringSettingNames.map(StringSetting)
         ++ scaladocPathSettingNames.map(PathSetting)

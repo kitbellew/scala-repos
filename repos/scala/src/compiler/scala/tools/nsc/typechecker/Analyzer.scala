@@ -66,8 +66,10 @@ trait Analyzer
                   if (tree.symbol.name == nme.PACKAGEkw) {
                     openPackageModule(tree.symbol, tree.symbol.owner)
                   }
-                case ClassDef(_, _, _, _) => () // make it fast
-                case _                    => super.traverse(tree)
+                case ClassDef(_, _, _, _) =>
+                  () // make it fast
+                case _ =>
+                  super.traverse(tree)
               }
           }
 

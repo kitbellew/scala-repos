@@ -38,8 +38,9 @@ object Generator {
       builder error ErrMsg("wrong.expression")
     genMarker.done(ScalaElementTypes.GENERATOR)
     builder.getTokenType match {
-      case ScalaTokenTypes.kIF => Guard parse builder
-      case _                   =>
+      case ScalaTokenTypes.kIF =>
+        Guard parse builder
+      case _ =>
     }
     return true
   }

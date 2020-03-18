@@ -58,14 +58,17 @@ class ConvertibleToMethodValueInspection
     case und: ScUnderscoreSection if und.bindingExpr.isDefined =>
       val isInParameterOfParameterizedClass =
         PsiTreeUtil.getParentOfType(und, classOf[ScClassParameter]) match {
-          case null => false
-          case cp   => cp.containingClass.hasTypeParameters
+          case null =>
+            false
+          case cp =>
+            cp.containingClass.hasTypeParameters
         }
       def checkStable() =
         und.bindingExpr.get match {
           case ScReferenceExpression.withQualifier(qual) =>
             onlyStableValuesUsed(qual)
-          case e => onlyStableValuesUsed(e)
+          case e =>
+            onlyStableValuesUsed(e)
         }
       if (!isInParameterOfParameterizedClass && checkStable())
         registerProblem(
@@ -83,20 +86,27 @@ class ConvertibleToMethodValueInspection
   private def onlyStableValuesUsed(qual: ScExpression): Boolean = {
     def isStable(named: PsiNamedElement) =
       ScalaPsiUtil.nameContext(named) match {
-        case cp: ScClassParameter         => !cp.isVar
-        case f: PsiField                  => f.hasFinalModifier
-        case o: ScObject                  => o.isLocal || ScalaPsiUtil.hasStablePath(o)
-        case _: PsiMethod | _: ScVariable => false
-        case _                            => true
+        case cp: ScClassParameter =>
+          !cp.isVar
+        case f: PsiField =>
+          f.hasFinalModifier
+        case o: ScObject =>
+          o.isLocal || ScalaPsiUtil.hasStablePath(o)
+        case _: PsiMethod | _: ScVariable =>
+          false
+        case _ =>
+          true
       }
 
     qual.depthFirst(e => !e.isInstanceOf[ScImportStmt]).forall {
-      case _: ScNewTemplateDefinition => false
+      case _: ScNewTemplateDefinition =>
+        false
       case Both(
             _: ScReferenceExpression | ScConstructor.byReference(_),
             ResolvesTo(named: PsiNamedElement)) =>
         isStable(named)
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -116,14 +126,17 @@ class ConvertibleToMethodValueInspection
 
   private def methodWithoutArgumentsText(expr: ScExpression): Seq[String] =
     expr match {
-      case call: ScMethodCall => Seq(call.getEffectiveInvokedExpr.getText)
+      case call: ScMethodCall =>
+        Seq(call.getEffectiveInvokedExpr.getText)
       case ScInfixExpr(_, oper, right)
           if !ScalaNamesUtil.isOperatorName(oper.refName) =>
         val infixCopy = expr.copy.asInstanceOf[ScInfixExpr]
         infixCopy.getNode.removeChild(infixCopy.rOp.getNode)
         Seq(infixCopy.getText)
-      case und: ScUnderscoreSection => und.bindingExpr.map(_.getText).toSeq
-      case _                        => Seq.empty
+      case und: ScUnderscoreSection =>
+        und.bindingExpr.map(_.getText).toSeq
+      case _ =>
+        Seq.empty
     }
 
   private def isSuitableForReplace(
@@ -145,9 +158,11 @@ class ConvertibleToMethodValueInspection
         (oldExpr.getType(), newExpr.getType()) match {
           case (Success(oldType, _), Success(newType, _)) =>
             oldType.equiv(newType)
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 

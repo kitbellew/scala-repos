@@ -51,17 +51,22 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     import DistributedPubSubMediator._
 
     def receive = {
-      case Whisper(path, msg) ⇒ mediator ! Send(path, msg, localAffinity = true)
-      case Talk(path, msg) ⇒ mediator ! SendToAll(path, msg)
+      case Whisper(path, msg) ⇒
+        mediator ! Send(path, msg, localAffinity = true)
+      case Talk(path, msg) ⇒
+        mediator ! SendToAll(path, msg)
       case TalkToOthers(path, msg) ⇒
         mediator ! SendToAll(path, msg, allButSelf = true)
-      case Shout(topic, msg) ⇒ mediator ! Publish(topic, msg)
-      case ShoutToGroups(topic, msg) ⇒ mediator ! Publish(topic, msg, true)
+      case Shout(topic, msg) ⇒
+        mediator ! Publish(topic, msg)
+      case ShoutToGroups(topic, msg) ⇒
+        mediator ! Publish(topic, msg, true)
       case JoinGroup(topic, group) ⇒
         mediator ! Subscribe(topic, Some(group), self)
       case ExitGroup(topic, group) ⇒
         mediator ! Unsubscribe(topic, Some(group), self)
-      case msg ⇒ testActor ! msg
+      case msg ⇒
+        testActor ! msg
     }
   }
 
@@ -328,7 +333,8 @@ class DistributedPubSubMediatorSpec
       runOn(first) {
         val names =
           receiveWhile(messages = 2) {
-            case "hello all" ⇒ lastSender.path.name
+            case "hello all" ⇒
+              lastSender.path.name
           }
         names.toSet should ===(Set("u8", "u9"))
       }

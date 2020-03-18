@@ -126,10 +126,14 @@ case class HyperLogLogPlusPlus(
     */
   private[this] val alphaM2 =
     p match {
-      case 4 => 0.673d * m * m
-      case 5 => 0.697d * m * m
-      case 6 => 0.709d * m * m
-      case _ => (0.7213d / (1.0d + 1.079d / m)) * m * m
+      case 4 =>
+        0.673d * m * m
+      case 5 =>
+        0.697d * m * m
+      case 6 =>
+        0.709d * m * m
+      case _ =>
+        (0.7213d / (1.0d + 1.079d / m)) * m * m
     }
 
   /**
@@ -244,8 +248,10 @@ case class HyperLogLogPlusPlus(
     // interpolation estimate closest to the current estimate.
     val nearestEstimateIndex =
       util.Arrays.binarySearch(estimates, 0, numEstimates, e) match {
-        case ix if ix < 0 => -(ix + 1)
-        case ix           => ix
+        case ix if ix < 0 =>
+          -(ix + 1)
+        case ix =>
+          ix
       }
 
     // Use square of the difference between the current estimate and the estimate at the given
@@ -311,8 +317,10 @@ case class HyperLogLogPlusPlus(
     @inline
     def EBiasCorrected =
       alphaM2 / zInverse match {
-        case e if p < 19 && e < 5.0d * m => e - estimateBias(e)
-        case e                           => e
+        case e if p < 19 && e < 5.0d * m =>
+          e - estimateBias(e)
+        case e =>
+          e
       }
 
     // Estimate the cardinality.
@@ -1518,8 +1526,10 @@ object HyperLogLogPlusPlus {
 
   private def validateDoubleLiteral(exp: Expression): Double =
     exp match {
-      case Literal(d: Double, DoubleType) => d
-      case Literal(dec: Decimal, _)       => dec.toDouble
+      case Literal(d: Double, DoubleType) =>
+        d
+      case Literal(dec: Decimal, _) =>
+        dec.toDouble
       case _ =>
         throw new AnalysisException(
           "The second argument should be a double literal.")

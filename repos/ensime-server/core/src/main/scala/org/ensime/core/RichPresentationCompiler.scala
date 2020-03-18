@@ -439,18 +439,23 @@ class RichPresentationCompiler(
 
   protected def typeAt(p: Position): Option[Type] = {
     wrapTypedTreeAt(p) match {
-      case Import(_, _) => symbolAt(p).map(_.tpe)
-      case tree         => typeOfTree(tree)
+      case Import(_, _) =>
+        symbolAt(p).map(_.tpe)
+      case tree =>
+        typeOfTree(tree)
     }
   }
 
   protected def typeByName(name: String): Option[Type] =
     symbolByName(name).flatMap {
-      case NoSymbol => None
+      case NoSymbol =>
+        None
       case sym: Symbol =>
         sym.tpe match {
-          case NoType    => None
-          case tpe: Type => Some(tpe)
+          case NoType =>
+            None
+          case tpe: Type =>
+            Some(tpe)
         }
     }
 
@@ -524,7 +529,8 @@ class RichPresentationCompiler(
                     locate(p, qualifier)
                   else
                     inExpr.symbol
-                case tree => tree.symbol
+                case tree =>
+                  tree.symbol
               }
             List(locate(pos, expr))
           } else {
@@ -557,10 +563,13 @@ class RichPresentationCompiler(
     tree match {
       case tree @ Select(qualifier, name) =>
         qualifier match {
-          case t: ApplyImplicitView => t.args.headOption.map(_.tpe.typeSymbol)
-          case _                    => Some(qualifier.tpe.typeSymbol)
+          case t: ApplyImplicitView =>
+            t.args.headOption.map(_.tpe.typeSymbol)
+          case _ =>
+            Some(qualifier.tpe.typeSymbol)
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -581,7 +590,8 @@ class RichPresentationCompiler(
           val index = GlobalIndex(cuIndexes.toList)
           val result = index.occurences(sym).map {
             _.pos match {
-              case p: RangePosition => p
+              case p: RangePosition =>
+                p
               case p =>
                 new RangePosition(p.source, p.point, p.point, p.point)
             }
@@ -589,7 +599,8 @@ class RichPresentationCompiler(
         }
         val gi = new CompilerGlobalIndexes
         gi.result
-      case None => List.empty
+      case None =>
+        List.empty
     }
   }
 
@@ -638,8 +649,10 @@ class RichPresentationCompiler(
 
   def wrapReloadSources(sources: List[SourceFile]): Unit = {
     val superseded = scheduler.dequeueAll {
-      case ri: ReloadItem if ri.sources == sources => Some(ri)
-      case _                                       => None
+      case ri: ReloadItem if ri.sources == sources =>
+        Some(ri)
+      case _ =>
+        None
     }
     superseded.foreach(_.response.set(()))
     wrap[Unit](r => new ReloadItem(sources, r).apply(), _ => ())

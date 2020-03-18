@@ -49,8 +49,10 @@ package javaguide.testhelpers {
 
     def invocation = {
       method.invoke(this) match {
-        case r: Result             => CompletableFuture.completedFuture(r)
-        case f: CompletionStage[_] => f.asInstanceOf[CompletionStage[Result]]
+        case r: Result =>
+          CompletableFuture.completedFuture(r)
+        case f: CompletionStage[_] =>
+          f.asInstanceOf[CompletionStage[Result]]
       }
     }
   }

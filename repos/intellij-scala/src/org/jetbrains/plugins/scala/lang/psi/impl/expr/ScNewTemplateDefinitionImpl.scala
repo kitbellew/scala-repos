@@ -61,23 +61,28 @@ class ScNewTemplateDefinitionImpl private (
       extendsBlock.earlyDefinitions match {
         case Some(e: ScEarlyDefinitions) =>
           e.members.flatMap {
-            case holder: ScDeclaredElementsHolder => Seq(holder)
-            case _                                => Seq.empty
+            case holder: ScDeclaredElementsHolder =>
+              Seq(holder)
+            case _ =>
+              Seq.empty
           }
-        case None => Seq.empty
+        case None =>
+          Seq.empty
       }
 
     val (holders, aliases): (Seq[ScDeclaredElementsHolder], Seq[ScTypeAlias]) =
       extendsBlock.templateBody match {
         case Some(b: ScTemplateBody) =>
           (b.holders.toSeq ++ earlyHolders, b.aliases.toSeq)
-        case None => (earlyHolders, Seq.empty)
+        case None =>
+          (earlyHolders, Seq.empty)
       }
 
     val superTypes = extendsBlock.superTypes.filter {
       case ScDesignatorType(clazz: PsiClass) =>
         clazz.qualifiedName != "scala.ScalaObject"
-      case _ => true
+      case _ =>
+        true
     }
 
     if (superTypes.length > 1 || holders.nonEmpty || aliases.nonEmpty) {
@@ -94,8 +99,10 @@ class ScNewTemplateDefinitionImpl private (
           tp.allTypeElements.head.getNonValueType(ctx)
         case _ =>
           superTypes.headOption match {
-            case s @ Some(t) => Success(t, Some(this))
-            case None        => Success(AnyRef, Some(this)) //this is new {} case
+            case s @ Some(t) =>
+              Success(t, Some(this))
+            case None =>
+              Success(AnyRef, Some(this)) //this is new {} case
           }
       }
     }
@@ -113,7 +120,8 @@ class ScNewTemplateDefinitionImpl private (
           state,
           lastParent,
           place)
-      case _ => true
+      case _ =>
+        true
     }
   def nameId: PsiElement = null
   override def setName(name: String): PsiElement =
@@ -125,8 +133,10 @@ class ScNewTemplateDefinitionImpl private (
   override def getSupers: Array[PsiClass] = {
     val direct =
       extendsBlock.supers.filter {
-        case clazz: PsiClass => clazz.qualifiedName != "scala.ScalaObject"
-        case _               => true
+        case clazz: PsiClass =>
+          clazz.qualifiedName != "scala.ScalaObject"
+        case _ =>
+          true
       }.toArray
     val res = new ArrayBuffer[PsiClass]
     res ++= direct
@@ -169,7 +179,8 @@ class ScNewTemplateDefinitionImpl private (
     visitor match {
       case visitor: ScalaElementVisitor =>
         visitor.visitNewTemplateDefinition(this)
-      case _ => super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

@@ -40,7 +40,8 @@ class IDFSuite
     dataSet.map {
       case data: DenseVector =>
         val res = data.toArray.zip(model.toArray).map {
-          case (x, y) => x * y
+          case (x, y) =>
+            x * y
         }
         Vectors.dense(res)
       case data: SparseVector =>

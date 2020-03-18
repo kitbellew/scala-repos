@@ -47,7 +47,8 @@ object Content {
           builder.advanceLexer()
         case ScalaXmlTokenTypes.XML_CHAR_ENTITY_REF =>
           builder.advanceLexer()
-        case ScalaXmlTokenTypes.XML_ENTITY_REF_TOKEN => builder.advanceLexer()
+        case ScalaXmlTokenTypes.XML_ENTITY_REF_TOKEN =>
+          builder.advanceLexer()
         case _ =>
           if (isReturn)
             return

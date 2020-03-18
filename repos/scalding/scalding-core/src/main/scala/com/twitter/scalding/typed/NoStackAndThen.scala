@@ -42,7 +42,8 @@ sealed trait NoStackAndThen[-A, +B] extends java.io.Serializable {
           push(front, first, NonEmpty(tail, toAndThen))
       }
     that match {
-      case NoStackWrap(fn)         => andThen(fn)
+      case NoStackWrap(fn) =>
+        andThen(fn)
       case NoStackMore(head, tail) =>
         // casts needed for the tailrec, they can't cause runtime errors
         push(
@@ -100,14 +101,18 @@ object NoStackAndThen {
         toPush: NoStackAndThen[A, Any],
         rest: ReversedStack[Any, C]): ReversedStack[A, C] =
       toPush match {
-        case NoStackWrap(fn)       => NonEmpty(fn, rest)
-        case NoStackMore(more, fn) => reversed(more, NonEmpty(fn, rest))
+        case NoStackWrap(fn) =>
+          NonEmpty(fn, rest)
+        case NoStackMore(more, fn) =>
+          reversed(more, NonEmpty(fn, rest))
       }
     @annotation.tailrec
     private def call(arg: Any, revstack: ReversedStack[Any, C]): C =
       revstack match {
-        case EmptyStack(last)     => last(arg)
-        case NonEmpty(head, rest) => call(head(arg), rest)
+        case EmptyStack(last) =>
+          last(arg)
+        case NonEmpty(head, rest) =>
+          call(head(arg), rest)
       }
     private lazy val revStack =
       // casts needed for the tailrec, they can't cause runtime errors

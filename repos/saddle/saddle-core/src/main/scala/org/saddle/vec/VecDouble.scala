@@ -162,6 +162,7 @@ class VecDouble(values: Array[Double]) extends Vec[Double] {
           }
           eq
         }
-      case _ => super.equals(o)
+      case _ =>
+        super.equals(o)
     }
 }

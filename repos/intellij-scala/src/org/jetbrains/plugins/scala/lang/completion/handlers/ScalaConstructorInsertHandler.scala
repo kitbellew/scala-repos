@@ -127,14 +127,17 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                 val element: ScTypeElement = elements.head
                 val ref: ScStableCodeReferenceElement =
                   element match {
-                    case simple: ScSimpleTypeElement => simple.reference.orNull
+                    case simple: ScSimpleTypeElement =>
+                      simple.reference.orNull
                     case par: ScParameterizedTypeElement =>
                       par.typeElement match {
                         case simple: ScSimpleTypeElement =>
                           simple.reference.orNull
-                        case _ => null
+                        case _ =>
+                          null
                       }
-                    case _ => null
+                    case _ =>
+                      null
                   }
                 if (ref != null && !isRenamed) {
                   if (item.prefixCompletion) {

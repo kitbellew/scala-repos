@@ -19,23 +19,31 @@ final class BuildUtil[Proj](
 
   def projectFor(ref: ResolvedReference): Proj =
     ref match {
-      case ProjectRef(uri, id) => project(uri, id)
-      case BuildRef(uri)       => rootProject(uri)
+      case ProjectRef(uri, id) =>
+        project(uri, id)
+      case BuildRef(uri) =>
+        rootProject(uri)
     }
   def projectRefFor(ref: ResolvedReference): ProjectRef =
     ref match {
-      case p: ProjectRef => p
-      case BuildRef(uri) => ProjectRef(uri, rootProjectID(uri))
+      case p: ProjectRef =>
+        p
+      case BuildRef(uri) =>
+        ProjectRef(uri, rootProjectID(uri))
     }
   def projectForAxis(ref: Option[ResolvedReference]): Proj =
     ref match {
-      case Some(ref) => projectFor(ref)
-      case None      => rootProject(root)
+      case Some(ref) =>
+        projectFor(ref)
+      case None =>
+        rootProject(root)
     }
   def exactProject(refOpt: Option[Reference]): Option[Proj] =
     refOpt map resolveRef flatMap {
-      case ProjectRef(uri, id) => Some(project(uri, id))
-      case _                   => None
+      case ProjectRef(uri, id) =>
+        Some(project(uri, id))
+      case _ =>
+        None
     }
 
   val configurationsForAxis: Option[ResolvedReference] => Seq[String] =

@@ -10,7 +10,8 @@ object O {
 object Test extends App {
   val scrut: O.LK = O.B
   scrut match {
-    case O.A => ???
+    case O.A =>
+      ???
     case O.B => // spurious unreachable
   }
 }

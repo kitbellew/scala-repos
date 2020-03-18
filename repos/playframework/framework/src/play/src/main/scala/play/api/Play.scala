@@ -131,7 +131,8 @@ object Play {
 
     app.mode match {
       case Mode.Test =>
-      case mode      => logger.info("Application started (" + mode + ")")
+      case mode =>
+        logger.info("Application started (" + mode + ")")
     }
 
   }
@@ -146,7 +147,8 @@ object Play {
         try {
           Await.ready(app.stop(), Duration.Inf)
         } catch {
-          case NonFatal(e) => logger.warn("Error stopping application", e)
+          case NonFatal(e) =>
+            logger.warn("Error stopping application", e)
         }
       }
     }

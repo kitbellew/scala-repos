@@ -29,8 +29,10 @@ object TypeCheckerWithExplicitTypes_Monadic {
   // the real type check function, which works with the type environment.
   def typeCheck(expr: Exp, env: TypeEnv = predef): String \/ Type =
     expr match {
-      case Lit(v) => success(litToTy(v))
-      case Id(x)  => find(x, env)
+      case Lit(v) =>
+        success(litToTy(v))
+      case Id(x) =>
+        find(x, env)
       // make sure the first branch is a boolean and then
       // make sure the second and third branches have the same type
       case If(tst, texp, fexp) =>

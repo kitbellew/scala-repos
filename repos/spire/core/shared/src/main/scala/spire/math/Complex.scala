@@ -101,10 +101,14 @@ object Complex extends ComplexInstances {
     while (x < last) {
       val c =
         x match {
-          case `north` => i[T]
-          case `west`  => -one[T]
-          case `south` => -i[T]
-          case _       => polar(f.one, (t.pi * 2 * x) / n)
+          case `north` =>
+            i[T]
+          case `west` =>
+            -one[T]
+          case `south` =>
+            -i[T]
+          case _ =>
+            polar(f.one, (t.pi * 2 * x) / n)
         }
       roots(x) = c
       sum += c
@@ -131,8 +135,10 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     */
   def signum(implicit o: IsReal[T]): Int =
     real.signum match {
-      case 0 => imag.signum
-      case n => n
+      case 0 =>
+        imag.signum
+      case n =>
+        n
     }
 
   /**
@@ -454,7 +460,8 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   // not typesafe, so this is the best we can do :(
   override def equals(that: Any): Boolean =
     that match {
-      case that: Complex[_] => this === that
+      case that: Complex[_] =>
+        this === that
       case that: Quaternion[_] =>
         real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(
           that.k)
@@ -525,7 +532,8 @@ class FloatComplex(val u: Long) extends AnyVal {
 
   final def /%(b: FloatComplex): (FloatComplex, FloatComplex) =
     FastComplex.quotmod(u, b.u) match {
-      case (q, m) => (new FloatComplex(q), new FloatComplex(m))
+      case (q, m) =>
+        (new FloatComplex(q), new FloatComplex(m))
     }
 
   final def pow(b: FloatComplex): FloatComplex =

@@ -38,7 +38,8 @@ object TestConfigurationUtil {
       element match {
         case dir: PsiDirectory =>
           JavaRuntimeConfigurationProducerBase.checkPackage(dir)
-        case pack: PsiPackage => pack
+        case pack: PsiPackage =>
+          pack
       }
     if (pack == null)
       return null
@@ -64,7 +65,8 @@ object TestConfigurationUtil {
       element match {
         case dir: PsiDirectory =>
           JavaDirectoryService.getInstance.getPackage(dir)
-        case pack: PsiPackage => pack
+        case pack: PsiPackage =>
+          pack
       }
     if (pack == null)
       return false
@@ -72,7 +74,8 @@ object TestConfigurationUtil {
       case configuration: AbstractTestRunConfiguration =>
         configuration.getTestKind == TestRunConfigurationForm.TestKind.ALL_IN_PACKAGE &&
           configuration.getTestPackagePath == pack.getQualifiedName
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -95,19 +98,26 @@ object TestConfigurationUtil {
         //special handling for now, since only toString is allowed on integers
         refExpr.smartQualifier.flatMap(
           getStaticTestNameElement(_, allowSymbolLiterals) match {
-            case Some(string: String) => Some(string)
-            case Some(number: Number) => Some(number.toString)
-            case _                    => None
+            case Some(string: String) =>
+              Some(string)
+            case Some(number: Number) =>
+              Some(number.toString)
+            case _ =>
+              None
           })
       } else
         refExpr.smartQualifier
           .flatMap(getStaticTestNameRaw(_, allowSymbolLiterals))
           .flatMap { expr =>
             refExpr.refName match {
-              case "toLowerCase" => Some(expr.toLowerCase)
-              case "trim"        => Some(expr.trim)
-              case "toString"    => Some(expr)
-              case _             => None
+              case "toLowerCase" =>
+                Some(expr.toLowerCase)
+              case "trim" =>
+                Some(expr.trim)
+              case "toString" =>
+                Some(expr)
+              case _ =>
+                None
             }
           }
 
@@ -130,7 +140,8 @@ object TestConfigurationUtil {
               .flatMap(left =>
                 getStaticTestNameElement(infixExpr.rOp, allowSymbolLiterals)
                   .map(left + _.toString))
-          case _ => None
+          case _ =>
+            None
         }
       case methodCall: ScMethodCall =>
         methodCall.getInvokedExpr match {
@@ -149,7 +160,8 @@ object TestConfigurationUtil {
                   Some(expr.stripPrefix(string))
                 case (expr: String, "substring", integer: Int) =>
                   Some(expr.substring(integer))
-                case _ => None
+                case _ =>
+                  None
               }
             methodCall.argumentExpressions.headOption
               .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
@@ -166,7 +178,8 @@ object TestConfigurationUtil {
                   Some(expr.replace(s1, s2))
                 case (expr: String, "substring", begin: Int, end: Int) =>
                   Some(expr.substring(begin, end))
-                case _ => None
+                case _ =>
+                  None
               }
             val arg1Opt = getStaticTestNameElement(
               methodCall.argumentExpressions.head,
@@ -179,9 +192,11 @@ object TestConfigurationUtil {
                 refExpr.smartQualifier
                   .flatMap(getStaticTestNameElement(_, allowSymbolLiterals))
                   .flatMap(helper(_, arg1, arg2))
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
       case refExpr: ScReferenceExpression if refExpr.getText == "+" =>
         getStaticTestNameRaw(refExpr.getParent, allowSymbolLiterals)
@@ -195,11 +210,14 @@ object TestConfigurationUtil {
               case patternDef: ScPatternDefinition =>
                 patternDef.expr.flatMap(
                   getStaticTestNameRaw(_, allowSymbolLiterals))
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 

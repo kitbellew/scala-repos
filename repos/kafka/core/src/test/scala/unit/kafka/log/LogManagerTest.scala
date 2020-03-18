@@ -116,7 +116,8 @@ class LogManagerTest {
       log.read(0, 1024)
       fail("Should get exception from fetching earlier.")
     } catch {
-      case e: OffsetOutOfRangeException => "This is good."
+      case e: OffsetOutOfRangeException =>
+        "This is good."
     }
     // log should still be appendable
     log.append(TestUtils.singleMessageSet("test".getBytes()))
@@ -175,7 +176,8 @@ class LogManagerTest {
       log.read(0, 1024)
       fail("Should get exception from fetching earlier.")
     } catch {
-      case e: OffsetOutOfRangeException => "This is good."
+      case e: OffsetOutOfRangeException =>
+        "This is good."
     }
     // log should still be appendable
     log.append(TestUtils.singleMessageSet("test".getBytes()))

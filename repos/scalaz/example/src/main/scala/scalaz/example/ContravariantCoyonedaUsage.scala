@@ -264,9 +264,12 @@ object ContravariantCoyonedaUsage extends App {
 
   def sortTypeOrd(s: SortType): CtCoyo[Order, String] =
     s match {
-      case SortType.CI      => CCOrder(caseInsensitively)
-      case SortType.Dateish => CCOrder(parseDate)
-      case SortType.Num     => CCOrder(parseCommaNum) // like numerically4
+      case SortType.CI =>
+        CCOrder(caseInsensitively)
+      case SortType.Dateish =>
+        CCOrder(parseDate)
+      case SortType.Num =>
+        CCOrder(parseCommaNum) // like numerically4
     }
 
   // And then, similarly to `bySchwartzianListSorts', to combine one
@@ -447,7 +450,8 @@ object ContravariantCoyonedaUsage extends App {
 
   def sortSpecOrdF(s: SortSpec): CtCoyo[Order, Vector[String]] =
     s.foldMap {
-      case (st, i) => recItemOrd(i, sortTypeOrd(st))
+      case (st, i) =>
+        recItemOrd(i, sortTypeOrd(st))
     }
 
   // “But how can this follow the monoid laws; it isn’t associative
@@ -529,9 +533,12 @@ object ContravariantCoyonedaUsage extends App {
 
   def sortTypeBinOrd(s: SortType): CtCoyo[BinOrd, String] =
     s match {
-      case SortType.CI      => CCBinOrd(caseInsensitively)
-      case SortType.Dateish => CCBinOrd(parseDate)
-      case SortType.Num     => CCBinOrd(parseCommaNum)
+      case SortType.CI =>
+        CCBinOrd(caseInsensitively)
+      case SortType.Dateish =>
+        CCBinOrd(parseDate)
+      case SortType.Num =>
+        CCBinOrd(parseCommaNum)
     }
 
   // It turns out that recItemOrd is completely abstract:
@@ -562,7 +569,8 @@ object ContravariantCoyonedaUsage extends App {
 
   def sortSpecBinOrdF(s: SortSpec): CtCoyo[BinOrd, Vector[String]] =
     s.foldMap {
-      case (st, i) => recItem[BinOrd](i, sortTypeBinOrd(st))
+      case (st, i) =>
+        recItem[BinOrd](i, sortTypeBinOrd(st))
     }
 
   // The drawback here is that I can’t just build a separate stack

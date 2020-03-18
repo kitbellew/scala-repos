@@ -66,7 +66,8 @@ object Test extends Properties("Division of Duration by Long") {
           mul(a, b);
           false
         } catch {
-          case _: IllegalArgumentException => true
+          case _: IllegalArgumentException =>
+            true
         }
     }
 
@@ -85,7 +86,8 @@ object Test extends Properties("Division of Duration by Long") {
           mul(a, b);
           shouldFit
         } catch {
-          case _: IllegalArgumentException => !shouldFit
+          case _: IllegalArgumentException =>
+            !shouldFit
         }
     }
 }

@@ -97,7 +97,8 @@ abstract class PreTyperComponent
                 ddef.tpt,
                 transform(ddef.rhs))
 
-            case member => transform(member)
+            case member =>
+              transform(member)
           }
           val newImpl = treeCopy.Template(
             tree.impl,
@@ -115,16 +116,20 @@ abstract class PreTyperComponent
           val newBody = tree.body.map(transform)
           treeCopy.Template(tree, tree.parents, tree.self, newBody)
 
-        case _ => super.transform(tree)
+        case _ =>
+          super.transform(tree)
       }
   }
 
   private def needsAnnotations(classDef: ClassDef): Boolean = {
     classDef.name == nme.ANON_CLASS_NAME.toTypeName &&
     classDef.impl.body.exists {
-      case vdef: ValDef => needsAnnotations(vdef)
-      case ddef: DefDef => needsAnnotations(ddef)
-      case _            => false
+      case vdef: ValDef =>
+        needsAnnotations(vdef)
+      case ddef: DefDef =>
+        needsAnnotations(ddef)
+      case _ =>
+        false
     }
   }
 

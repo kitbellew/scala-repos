@@ -5,8 +5,9 @@ object Test {
     try {
       ???
     } catch {
-      case e: SpecialException => e.isInstanceOf[SpecialException]
-      case e                   =>
+      case e: SpecialException =>
+        e.isInstanceOf[SpecialException]
+      case e =>
     }
 
     // OKAY

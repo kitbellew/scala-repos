@@ -250,16 +250,24 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     if (isMultiline(node) || isMultilineImport(node) && !isWorksheetResults(
           node)) {
       node.getElementType match {
-        case ScalaElementTypes.BLOCK_EXPR           => return "{...}"
-        case ScalaTokenTypes.tBLOCK_COMMENT         => return "/.../"
-        case ScalaDocElementTypes.SCALA_DOC_COMMENT => return "/**...*/"
-        case ScalaElementTypes.TEMPLATE_BODY        => return "{...}"
-        case ScalaElementTypes.PACKAGING            => return "{...}"
-        case ScalaElementTypes.IMPORT_STMT          => return "..."
-        case ScalaElementTypes.MATCH_STMT           => return "{...}"
+        case ScalaElementTypes.BLOCK_EXPR =>
+          return "{...}"
+        case ScalaTokenTypes.tBLOCK_COMMENT =>
+          return "/.../"
+        case ScalaDocElementTypes.SCALA_DOC_COMMENT =>
+          return "/**...*/"
+        case ScalaElementTypes.TEMPLATE_BODY =>
+          return "{...}"
+        case ScalaElementTypes.PACKAGING =>
+          return "{...}"
+        case ScalaElementTypes.IMPORT_STMT =>
+          return "..."
+        case ScalaElementTypes.MATCH_STMT =>
+          return "{...}"
         case ScalaTokenTypes.tSH_COMMENT if node.getText.charAt(0) == ':' =>
           return "::#!...::!#"
-        case ScalaTokenTypes.tSH_COMMENT => return "#!...!#"
+        case ScalaTokenTypes.tSH_COMMENT =>
+          return "#!...!#"
         case ScalaElementTypes.FUNCTION_DEFINITION =>
           val (isMultilineBody, _, sign) = isMultilineFuncBody(
             node.getPsi.asInstanceOf[ScFunctionDefinition])
@@ -284,8 +292,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
           || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType
         )) {
       node.getPsi match {
-        case _: ScBlockExpr => return "{...}"
-        case _              => return null
+        case _: ScBlockExpr =>
+          return "{...}"
+        case _ =>
+          return null
       }
     }
     node.getElementType match {
@@ -313,8 +323,10 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
             }
           }
         }
-      case ScalaElementTypes.SIMPLE_TYPE => return " "
-      case _                             => return null
+      case ScalaElementTypes.SIMPLE_TYPE =>
+        return " "
+      case _ =>
+        return null
     }
 
     null
@@ -322,8 +334,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
 
   override def isRegionCollapsedByDefault(node: ASTNode): Boolean = {
     node.getPsi.getContainingFile match {
-      case sc: ScalaFile if sc.isWorksheetFile => return false
-      case _                                   =>
+      case sc: ScalaFile if sc.isWorksheetFile =>
+        return false
+      case _ =>
     }
 
     if (node.getTreeParent.getElementType == ScalaElementTypes.FILE &&
@@ -390,7 +403,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               .getInstance()
               .isCollapseMultilineBlocks =>
           true
-        case ScalaElementTypes.SIMPLE_TYPE => true
+        case ScalaElementTypes.SIMPLE_TYPE =>
+          true
         case _
             if node.getPsi.isInstanceOf[ScBlockExpr] &&
               node.getTreeParent.getElementType == ScalaElementTypes.ARG_EXPRS &&
@@ -428,7 +442,8 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
                 .getInstance()
                 .isCollapseMultilineBlocks =>
           true
-        case _ => false
+        case _ =>
+          false
       }
     }
   }

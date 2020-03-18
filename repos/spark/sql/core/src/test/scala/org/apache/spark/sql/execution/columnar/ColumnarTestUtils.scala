@@ -45,18 +45,26 @@ object ColumnarTestUtils {
 
     (
       columnType match {
-        case NULL    => null
-        case BOOLEAN => Random.nextBoolean()
-        case BYTE    => (Random.nextInt(Byte.MaxValue * 2) - Byte.MaxValue).toByte
+        case NULL =>
+          null
+        case BOOLEAN =>
+          Random.nextBoolean()
+        case BYTE =>
+          (Random.nextInt(Byte.MaxValue * 2) - Byte.MaxValue).toByte
         case SHORT =>
           (Random.nextInt(Short.MaxValue * 2) - Short.MaxValue).toShort
-        case INT    => Random.nextInt()
-        case LONG   => Random.nextLong()
-        case FLOAT  => Random.nextFloat()
-        case DOUBLE => Random.nextDouble()
+        case INT =>
+          Random.nextInt()
+        case LONG =>
+          Random.nextLong()
+        case FLOAT =>
+          Random.nextFloat()
+        case DOUBLE =>
+          Random.nextDouble()
         case STRING =>
           UTF8String.fromString(Random.nextString(Random.nextInt(32)))
-        case BINARY => randomBytes(Random.nextInt(32))
+        case BINARY =>
+          randomBytes(Random.nextInt(32))
         case COMPACT_DECIMAL(precision, scale) =>
           Decimal(Random.nextLong() % 100, precision, scale)
         case LARGE_DECIMAL(precision, scale) =>

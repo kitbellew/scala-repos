@@ -191,7 +191,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   repository.name,
                   context.loginAccount)
               )
-            case Left(_) => NotFound
+            case Left(_) =>
+              NotFound
           }
       }
     })
@@ -477,7 +478,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
             }
         }
       } catch {
-        case e: MissingObjectException => NotFound
+        case e: MissingObjectException =>
+          NotFound
       }
     })
 
@@ -743,7 +745,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           archiveRepository(name, ".zip", repository)
         case name if name.endsWith(".tar.gz") =>
           archiveRepository(name, ".tar.gz", repository)
-        case _ => BadRequest
+        case _ =>
+          BadRequest
       }
     })
 
@@ -759,7 +762,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
           repository.repository.originRepositoryName
             .getOrElse(repository.name)),
         context.loginAccount match {
-          case None => List()
+          case None =>
+            List()
           case account: Option[Account] =>
             getGroupsByUserName(account.get.userName)
         }, // groups of current user
@@ -798,7 +802,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       repository: RepositoryService.RepositoryInfo,
       path: String): (String, String) = {
     val id = repository.branchList.collectFirst {
-      case branch if (path == branch || path.startsWith(branch + "/")) => branch
+      case branch if (path == branch || path.startsWith(branch + "/")) =>
+        branch
     } orElse repository.tags.collectFirst {
       case tag if (path == tag.name || path.startsWith(tag.name + "/")) =>
         tag.name
@@ -1024,9 +1029,12 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     @scala.annotation.tailrec
     def _getPathObjectId(path: String, walk: TreeWalk): Option[ObjectId] =
       walk.next match {
-        case true if (walk.getPathString == path) => Some(walk.getObjectId(0))
-        case true                                 => _getPathObjectId(path, walk)
-        case false                                => None
+        case true if (walk.getPathString == path) =>
+          Some(walk.getObjectId(0))
+        case true =>
+          _getPathObjectId(path, walk)
+        case false =>
+          None
       }
 
     using(new TreeWalk(git.getRepository)) { treeWalk =>

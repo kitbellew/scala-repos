@@ -18,8 +18,10 @@ class ScalaCurrentPackageMacro extends Macro {
     PsiDocumentManager
       .getInstance(context.getProject)
       .getPsiFile(context.getEditor.getDocument) match {
-      case scFile: ScalaFile => new TextResult(scFile.getPackageName)
-      case _                 => new TextResult("")
+      case scFile: ScalaFile =>
+        new TextResult(scFile.getPackageName)
+      case _ =>
+        new TextResult("")
     }
   }
 

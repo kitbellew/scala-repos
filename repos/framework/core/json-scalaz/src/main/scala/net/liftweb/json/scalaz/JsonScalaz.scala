@@ -83,7 +83,8 @@ trait Types {
               .read(JNothing)
               .fold(_ => none, x => some(Success(x))))
           .getOrElse(NoSuchFieldError(name, json).fail.liftFailNel)
-      case x => UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
+      case x =>
+        UnexpectedJSONError(x, classOf[JObject]).fail.liftFailNel
     }
 
   def validate[A: JSONR](name: String): Kleisli[Result, JValue, A] =
@@ -92,7 +93,8 @@ trait Types {
   def makeObj(fields: Traversable[(String, JValue)]): JObject =
     JObject(
       fields.toList.map {
-        case (n, v) => JField(n, v)
+        case (n, v) =>
+          JField(n, v)
       })
 }
 

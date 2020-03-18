@@ -148,8 +148,10 @@ abstract class AbstractFetcherThread(
                         val validBytes = messages.validBytes
                         val newOffset =
                           messages.shallowIterator.toSeq.lastOption match {
-                            case Some(m: MessageAndOffset) => m.nextOffset
-                            case None                      => currentPartitionFetchState.offset
+                            case Some(m: MessageAndOffset) =>
+                              m.nextOffset
+                            case None =>
+                              currentPartitionFetchState.offset
                           }
                         partitionMap.put(
                           topicAndPartition,

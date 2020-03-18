@@ -44,8 +44,10 @@ class AsyncQueue[T](maxPendingOffers: Int) {
     */
   def size: Int =
     state.get match {
-      case Offering(q) => q.size
-      case _           => 0
+      case Offering(q) =>
+        q.size
+      case _ =>
+        0
     }
 
   private[this] def queueOf[E](e: E): Queue[E] = Queue.empty.enqueue(e)

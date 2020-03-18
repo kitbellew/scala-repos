@@ -32,7 +32,8 @@ object FingerTreeTest extends SpecLite {
 
   def streamToTree[A](stream: Stream[A]): SequenceTree[A] =
     stream.foldLeft(FingerTree.empty(SizeReducer[A])) {
-      case (t, x) => (t :+ x)
+      case (t, x) =>
+        (t :+ x)
     }
 
   "append one element works correctly" ! forAll {

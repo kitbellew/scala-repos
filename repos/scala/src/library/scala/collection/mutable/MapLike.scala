@@ -217,7 +217,8 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
     */
   def getOrElseUpdate(key: A, op: => B): B =
     get(key) match {
-      case Some(v) => v
+      case Some(v) =>
+        v
       case None =>
         val d = op;
         this(key) = d;
@@ -233,7 +234,8 @@ trait MapLike[A, B, +This <: MapLike[A, B, This] with Map[A, B]]
     */
   def transform(f: (A, B) => B): this.type = {
     this.iterator foreach {
-      case (key, value) => update(key, f(key, value))
+      case (key, value) =>
+        update(key, f(key, value))
     }
     this
   }

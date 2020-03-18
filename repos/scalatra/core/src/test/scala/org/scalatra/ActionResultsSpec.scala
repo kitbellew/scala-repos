@@ -9,7 +9,8 @@ class ActionResultServlet extends ScalatraServlet with ActionResultTestBase
 trait ActionResultTestBase {
   self: ScalatraBase =>
   error {
-    case e => BadRequest("something went wrong")
+    case e =>
+      BadRequest("something went wrong")
   }
 
   get("/ok") {

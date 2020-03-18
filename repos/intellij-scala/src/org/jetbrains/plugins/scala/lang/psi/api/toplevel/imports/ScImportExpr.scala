@@ -19,8 +19,10 @@ trait ScImportExpr extends ScalaPsiElement {
 
   def selectors: Seq[ScImportSelector] = {
     selectorSet match {
-      case None    => Seq.empty
-      case Some(s) => s.selectors
+      case None =>
+        Seq.empty
+      case Some(s) =>
+        s.selectors
     }
   }
 
@@ -41,10 +43,12 @@ trait ScImportExpr extends ScalaPsiElement {
         ).toArray
       case _ =>
         getNode.getLastChildNode.getText match {
-          case "_" => Array[String]("_")
+          case "_" =>
+            Array[String]("_")
           case _ if getNode.getLastChildNode.getLastChildNode != null =>
             Array[String](getNode.getLastChildNode.getLastChildNode.getText)
-          case _ => Array[String]()
+          case _ =>
+            Array[String]()
         }
     }
 

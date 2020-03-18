@@ -53,19 +53,23 @@ class StripNameTest extends FunSuite {
     }
 
     assertName(Set("source", "map", "sumByKey")) {
-      case p @ Source(l) if l == input => p
+      case p @ Source(l) if l == input =>
+        p
     }
     assertName(Set("map", "sumByKey")) {
-      case p @ OptionMappedProducer(_, f) if f == fn => p
+      case p @ OptionMappedProducer(_, f) if f == fn =>
+        p
     }
     assertName(Set("sumByKey")) {
-      case p @ Summer(_, str, _) if str == store => p
+      case p @ Summer(_, str, _) if str == store =>
+        p
     }
 
     // The final stripped has no names:
     assert(
       strippedDeps.nodes.collect {
-        case NamedProducer(_, _) => 1
+        case NamedProducer(_, _) =>
+          1
       }.sum == 0)
   }
   test("merge name test") {
@@ -121,25 +125,31 @@ class StripNameTest extends FunSuite {
     }
 
     assertName(List("source0", "map0", "sumByKey")) {
-      case p @ Source(l) if l == input0 => p
+      case p @ Source(l) if l == input0 =>
+        p
     }
     assertName(List("map0", "sumByKey")) {
-      case p @ OptionMappedProducer(_, f) if f == fn0 => p
+      case p @ OptionMappedProducer(_, f) if f == fn0 =>
+        p
     }
     assertName(List("source1", "map1", "sumByKey")) {
-      case p @ Source(l) if l == input1 => p
+      case p @ Source(l) if l == input1 =>
+        p
     }
     assertName(List("map1", "sumByKey")) {
-      case p @ OptionMappedProducer(_, f) if f == fn1 => p
+      case p @ OptionMappedProducer(_, f) if f == fn1 =>
+        p
     }
     assertName(List("sumByKey")) {
-      case p @ Summer(_, str, _) if str == store => p
+      case p @ Summer(_, str, _) if str == store =>
+        p
     }
 
     // The final stripped has no names:
     assert(
       strippedDeps.nodes.collect {
-        case NamedProducer(_, _) => 1
+        case NamedProducer(_, _) =>
+          1
       }.sum == 0)
   }
 
@@ -206,27 +216,34 @@ class StripNameTest extends FunSuite {
         s"not sorted: $names != ${names.sorted(order)}")
     }
     assertName(List("source", "map0", "sumByKey0")) {
-      case p @ Source(l) if l == input => p
+      case p @ Source(l) if l == input =>
+        p
     }
     assertName(List("source", "map1", "map1.1", "sumByKey1", "also")) {
-      case p @ Source(l) if l == input => p
+      case p @ Source(l) if l == input =>
+        p
     }
     assertName(List("map0", "sumByKey0")) {
-      case p @ OptionMappedProducer(_, f) if f == fn0 => p
+      case p @ OptionMappedProducer(_, f) if f == fn0 =>
+        p
     }
     assertName(List("map1", "sumByKey1", "also")) {
-      case p @ OptionMappedProducer(_, f) if f == fn1 => p
+      case p @ OptionMappedProducer(_, f) if f == fn1 =>
+        p
     }
     assertName(List("sumByKey0")) {
-      case p @ Summer(_, str, _) if str eq store0 => p
+      case p @ Summer(_, str, _) if str eq store0 =>
+        p
     }
     assertName(List("sumByKey1", "also")) {
-      case p @ Summer(_, str, _) if str eq store1 => p
+      case p @ Summer(_, str, _) if str eq store1 =>
+        p
     }
     // The final stripped has no names:
     assert(
       strippedDeps.nodes.collect {
-        case NamedProducer(_, _) => 1
+        case NamedProducer(_, _) =>
+          1
       }.sum == 0)
   }
 }

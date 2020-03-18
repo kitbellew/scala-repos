@@ -12,8 +12,10 @@ class NoOrdering(val x: String) {
 
   override def equals(other: Any): Boolean =
     other match {
-      case that: NoOrdering => x.equals(that.x)
-      case _                => false
+      case that: NoOrdering =>
+        x.equals(that.x)
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = x.hashCode
@@ -23,8 +25,10 @@ class NoOrderingHashCollisions(val x: String) {
 
   override def equals(other: Any): Boolean =
     other match {
-      case that: NoOrderingHashCollisions => x.equals(that.x)
-      case _                              => false
+      case that: NoOrderingHashCollisions =>
+        x.equals(that.x)
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = 0
@@ -74,7 +78,8 @@ class TypedPipeDiffTest extends FunSuite {
     val pipe2 = TypedPipe.from(rightArr)
 
     val diff = TypedPipeDiff.diffArrayPipes(pipe1, pipe2).map {
-      case (arr, counts) => (arr.toSeq, counts)
+      case (arr, counts) =>
+        (arr.toSeq, counts)
     }
 
     assert(expectedSortedArrDiff === sort(diff.inMemoryToList))
@@ -96,7 +101,8 @@ class TypedPipeDiffTest extends FunSuite {
 
     assert(
       expectedSortedDiff === diff.inMemoryToList.map {
-        case (nord, counts) => (nord.x, counts)
+        case (nord, counts) =>
+          (nord.x, counts)
       }.sorted)
   }
 
@@ -106,7 +112,8 @@ class TypedPipeDiffTest extends FunSuite {
     val diff = TypedPipeDiff.diffByHashCode(pipe1, pipe2)
     assert(
       expectedSortedDiff === diff.inMemoryToList.map {
-        case (nord, counts) => (nord.x, counts)
+        case (nord, counts) =>
+          (nord.x, counts)
       }.sorted)
   }
 
@@ -129,7 +136,8 @@ class TypedPipeDiffTest extends FunSuite {
     assert(
       expectedSortedArrDiff === sort(
         diff.inMemoryToList.map {
-          case (arr, counts) => (arr.map(_.x.toByte).toSeq, counts)
+          case (arr, counts) =>
+            (arr.map(_.x.toByte).toSeq, counts)
         }))
   }
 
@@ -147,7 +155,8 @@ object TypedPipeDiffLaws {
       .sumByKey(
         left.map((_, (1L, 0L))).iterator ++ right.map((_, (0L, 1L))).iterator)
       .filter {
-        case (t, (rCount, lCount)) => rCount != lCount
+        case (t, (rCount, lCount)) =>
+          rCount != lCount
       }
 
     noDuplicates && expected == diff.toMap
@@ -180,7 +189,8 @@ object TypedPipeDiffLaws {
         .diffArrayPipes(TypedPipe.from(right))
         .inMemoryToList
         .map {
-          case (arr, counts) => (arr.toSeq, counts)
+          case (arr, counts) =>
+            (arr.toSeq, counts)
         }
       checkArrayDiff(left, right, diff)
     }

@@ -25,7 +25,8 @@ object Test extends App {
         case _: NoClassDefFoundError | _: ClassNotFoundException |
             _: TypeNotPresentException if ok(t) =>
           Some(t)
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -68,7 +69,8 @@ object Test extends App {
       try {
         Some[Class[_]](classLoader.loadClass(name))
       } catch {
-        case AllowedMissingClass(_) => None
+        case AllowedMissingClass(_) =>
+          None
       }
 
     for (name <- classFullNames;
@@ -80,7 +82,8 @@ object Test extends App {
         cls.getDeclaredClasses
       } catch {
         case AllowedMissingClass(_) =>
-        case t: Throwable           => faulty += ((name, t))
+        case t: Throwable =>
+          faulty += ((name, t))
       }
     }
 

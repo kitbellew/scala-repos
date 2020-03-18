@@ -28,30 +28,40 @@ final class NullArgument[A, B] private (_apply: Option[A] => B) {
 
   def ***[C, D](x: C ?=> D): (A, C) ?=> (B, D) =
     NullArgument {
-      case None         => (apply(None), x(None))
-      case Some((a, c)) => (apply(Some(a)), x(Some(c)))
+      case None =>
+        (apply(None), x(None))
+      case Some((a, c)) =>
+        (apply(Some(a)), x(Some(c)))
     }
 
   def +++[C, D](x: C ?=> D): (A \/ C) ?=> (B \/ D) = left compose x.right
 
   def left[C]: (A \/ C) ?=> (B \/ C) =
     NullArgument {
-      case None             => -\/(apply(None))
-      case Some(-\/(a))     => -\/(apply(Some(a)))
-      case Some(c @ \/-(_)) => c
+      case None =>
+        -\/(apply(None))
+      case Some(-\/(a)) =>
+        -\/(apply(Some(a)))
+      case Some(c @ \/-(_)) =>
+        c
     }
 
   def right[C]: (C \/ A) ?=> (C \/ B) =
     NullArgument {
-      case None             => \/-(apply(None))
-      case Some(\/-(a))     => \/-(apply(Some(a)))
-      case Some(c @ -\/(_)) => c
+      case None =>
+        \/-(apply(None))
+      case Some(\/-(a)) =>
+        \/-(apply(Some(a)))
+      case Some(c @ -\/(_)) =>
+        c
     }
 
   def compose[C](f: C ?=> A): C ?=> B =
     NullArgument {
-      case None        => apply(None)
-      case c @ Some(_) => apply(Some(f(c)))
+      case None =>
+        apply(None)
+      case c @ Some(_) =>
+        apply(Some(f(c)))
     }
 
   def andThen[C](g: B ?=> C): A ?=> C = g compose this
@@ -89,8 +99,10 @@ object NullArgument extends NullArgumentInstances {
   def pair[A, B](f: A => B, b: => B): A ?=> B =
     NullArgument(
       (_: Option[A]) match {
-        case None    => b
-        case Some(a) => f(a)
+        case None =>
+          b
+        case Some(a) =>
+          f(a)
       })
 
   def cokleisli[A, B](c: Cokleisli[Option, A, B]): A ?=> B = NullArgument(c.run)
@@ -151,8 +163,10 @@ sealed abstract class NullArgumentInstances extends NullArgumentInstances0 {
           @annotation.tailrec
           def go(a0: A): B =
             f(a0)(t) match {
-              case \/-(b)  => b
-              case -\/(a1) => go(a1)
+              case \/-(b) =>
+                b
+              case -\/(a1) =>
+                go(a1)
             }
           go(a)
         }

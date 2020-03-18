@@ -43,8 +43,10 @@ trait SetInstances {
         implicit val o = Order[A].toScalaOrdering
         implicit val so = Order.fromScalaOrdering(seqDerivedOrdering[Seq, A])
         Order[Int].order(a1.size, a2.size) match {
-          case EQ => Order.orderBy((s: Set[A]) => s.toSeq.sorted).order(a1, a2)
-          case x  => x
+          case EQ =>
+            Order.orderBy((s: Set[A]) => s.toSeq.sorted).order(a1, a2)
+          case x =>
+            x
         }
       }
 

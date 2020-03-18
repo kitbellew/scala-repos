@@ -43,8 +43,10 @@ class ReplicatedCache extends Actor {
       g.dataValue match {
         case data: LWWMap[_] ⇒
           data.get(key) match {
-            case Some(value) ⇒ replyTo ! Cached(key, Some(value))
-            case None ⇒ replyTo ! Cached(key, None)
+            case Some(value) ⇒
+              replyTo ! Cached(key, Some(value))
+            case None ⇒
+              replyTo ! Cached(key, None)
           }
       }
     case NotFound(_, Some(Request(key, replyTo))) ⇒

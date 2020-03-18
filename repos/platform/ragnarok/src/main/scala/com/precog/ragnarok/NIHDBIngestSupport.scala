@@ -66,7 +66,8 @@ trait NIHDBIngestSupport
     try {
       Some(new ZipFile(f))
     } catch {
-      case _: ZipException => None
+      case _: ZipException =>
+        None
     }
 
   /**

@@ -103,8 +103,10 @@ class ScalaLookupItem(
 
   val containingClass = containingClass0.getOrElse(
     ScalaPsiUtil.nameContext(element) match {
-      case memb: PsiMember => memb.containingClass
-      case _               => null
+      case memb: PsiMember =>
+        memb.containingClass
+      case _ =>
+        null
     })
 
   override def equals(o: Any): Boolean = {
@@ -131,15 +133,19 @@ class ScalaLookupItem(
             ""
         case t: ScTypeParametersOwner =>
           t.typeParametersClause match {
-            case Some(tp) => presentationString(tp, substitutor)
-            case None     => ""
+            case Some(tp) =>
+              presentationString(tp, substitutor)
+            case None =>
+              ""
           }
         case p: PsiTypeParameterListOwner if p.getTypeParameters.nonEmpty =>
           p.getTypeParameters
             .map(ptp => presentationString(ptp))
             .mkString("[", ", ", "]")
-        case p: PsiPackage => s"    (${p.getQualifiedName})"
-        case _             => ""
+        case p: PsiPackage =>
+          s"    (${p.getQualifiedName})"
+        case _ =>
+          ""
       }
     element match {
       //scala
@@ -242,8 +248,9 @@ class ScalaLookupItem(
         }
       case f: PsiField =>
         presentation.setTypeText(presentationString(f.getType, substitutor))
-      case p: PsiPackage => presentation.setTailText(tailText, /*grayed*/ true)
-      case _             =>
+      case p: PsiPackage =>
+        presentation.setTailText(tailText, /*grayed*/ true)
+      case _ =>
     }
     if (presentation.isReal)
       presentation.setIcon(element.getIcon(0))
@@ -345,8 +352,10 @@ class ScalaLookupItem(
                    ref.getParent
                      .asInstanceOf[ScReferenceElement]
                      .qualifier match {
-                     case Some(r) => r != ref
-                     case _       => true
+                     case Some(r) =>
+                       r != ref
+                     case _ =>
+                       true
                    }
                  ))
             ref = ref.getParent.asInstanceOf[ScReferenceElement]
@@ -480,6 +489,7 @@ object ScalaLookupItem {
     element match {
       case decorator: LookupElementDecorator[_] =>
         original(decorator.getDelegate)
-      case it => it
+      case it =>
+        it
     }
 }

@@ -12,7 +12,8 @@ object Test extends App {
       try {
         println(code.eval)
       } catch {
-        case e: ToolBoxError => println(e.getMessage)
+        case e: ToolBoxError =>
+          println(e.getMessage)
       }
     }
 

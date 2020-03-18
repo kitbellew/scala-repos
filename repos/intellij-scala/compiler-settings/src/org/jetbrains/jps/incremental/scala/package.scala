@@ -54,7 +54,8 @@ package object scala {
       Option(url.openStream).flatMap(it =>
         using(new BufferedInputStream(it))(readProperty(_, name)))
     } catch {
-      case _: IOException => None
+      case _: IOException =>
+        None
     }
   }
 

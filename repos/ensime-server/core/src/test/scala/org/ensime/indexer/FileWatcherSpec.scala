@@ -123,8 +123,10 @@ abstract class FileWatcherSpec
             dir.delete()
 
             val createOrDelete: Fish = {
-              case r: BaseRemoved => true
-              case a: BaseAdded   => true
+              case r: BaseRemoved =>
+                true
+              case a: BaseAdded =>
+                true
             }
 
             tk.fishForMessage()(createOrDelete)
@@ -146,8 +148,10 @@ abstract class FileWatcherSpec
             parent.tree.reverse.foreach(_.delete())
 
             val createOrDelete: Fish = {
-              case r: BaseRemoved => true
-              case a: BaseAdded   => true
+              case r: BaseRemoved =>
+                true
+              case a: BaseAdded =>
+                true
             }
             tk.fishForMessage()(createOrDelete)
             tk.fishForMessage()(createOrDelete)
@@ -173,9 +177,12 @@ abstract class FileWatcherSpec
             dir.tree.reverse.foreach(_.delete())
 
             val createOrDelete: Fish = {
-              case r: BaseRemoved => true
-              case a: BaseAdded   => true
-              case r: Removed     => false // foo/bar
+              case r: BaseRemoved =>
+                true
+              case a: BaseAdded =>
+                true
+              case r: Removed =>
+                false // foo/bar
             }
 
             tk.fishForMessage()(createOrDelete)
@@ -184,9 +191,12 @@ abstract class FileWatcherSpec
             foo.createWithParents() shouldBe true
             bar.createWithParents() shouldBe true
             val nonDeterministicAdd: Fish = {
-              case a: Added   => true
-              case c: Changed => true
-              case r: Removed => false
+              case a: Added =>
+                true
+              case c: Changed =>
+                true
+              case r: Removed =>
+                false
             }
             tk.fishForMessage()(nonDeterministicAdd)
             tk.fishForMessage()(nonDeterministicAdd)
@@ -242,9 +252,12 @@ abstract class FileWatcherSpec
             parent.tree.reverse.foreach(_.delete())
 
             val createOrDelete: Fish = {
-              case r: BaseRemoved => true
-              case a: BaseAdded   => true
-              case r: Removed     => false
+              case r: BaseRemoved =>
+                true
+              case a: BaseAdded =>
+                true
+              case r: Removed =>
+                false
             }
             tk.fishForMessage()(createOrDelete)
             tk.fishForMessage()(createOrDelete)
@@ -255,9 +268,12 @@ abstract class FileWatcherSpec
             // non-deterministically receive zero, one or two more Removed
             // and either Added or Changed for foo / bar.
             val nonDeterministicAdd: Fish = {
-              case a: Added   => true
-              case c: Changed => true
-              case r: Removed => false
+              case a: Added =>
+                true
+              case c: Changed =>
+                true
+              case r: Removed =>
+                false
             }
             tk.fishForMessage()(nonDeterministicAdd)
             tk.fishForMessage()(nonDeterministicAdd)

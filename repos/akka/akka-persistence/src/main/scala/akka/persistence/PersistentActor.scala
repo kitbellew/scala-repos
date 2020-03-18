@@ -174,11 +174,13 @@ abstract class UntypedPersistentActor
   final def onReceive(message: Any) = onReceiveCommand(message)
 
   final def receiveRecover: Receive = {
-    case msg ⇒ onReceiveRecover(msg)
+    case msg ⇒
+      onReceiveRecover(msg)
   }
 
   final def receiveCommand: Receive = {
-    case msg ⇒ onReceiveCommand(msg)
+    case msg ⇒
+      onReceiveCommand(msg)
   }
 
   /**

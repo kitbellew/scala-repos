@@ -16,7 +16,8 @@ object RefineStatSeq {
     while (true) {
       builder.getTokenType match {
         //end of parsing when find } or builder.eof
-        case ScalaTokenTypes.tRBRACE | null => return
+        case ScalaTokenTypes.tRBRACE | null =>
+          return
         case ScalaTokenTypes.tSEMICOLON =>
           builder.advanceLexer() //not interesting case
         //otherwise parse TopStat
@@ -28,7 +29,8 @@ object RefineStatSeq {
             builder.getTokenType match {
               case ScalaTokenTypes.tSEMICOLON =>
                 builder.advanceLexer //it is good
-              case null | ScalaTokenTypes.tRBRACE => return
+              case null | ScalaTokenTypes.tRBRACE =>
+                return
               case _ if !builder.newlineBeforeCurrentToken =>
                 builder error ScalaBundle.message("semi.expected")
               case _ =>

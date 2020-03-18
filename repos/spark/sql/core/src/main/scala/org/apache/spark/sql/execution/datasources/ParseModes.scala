@@ -26,8 +26,10 @@ private[datasources] object ParseModes {
 
   def isValidMode(mode: String): Boolean = {
     mode.toUpperCase match {
-      case PERMISSIVE_MODE | DROP_MALFORMED_MODE | FAIL_FAST_MODE => true
-      case _                                                      => false
+      case PERMISSIVE_MODE | DROP_MALFORMED_MODE | FAIL_FAST_MODE =>
+        true
+      case _ =>
+        false
     }
   }
 

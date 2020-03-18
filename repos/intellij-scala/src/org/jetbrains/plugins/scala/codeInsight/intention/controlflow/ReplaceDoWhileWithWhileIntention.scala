@@ -134,13 +134,17 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
         val parentBlockNeedBraces: Boolean =
           doStmtParent match {
-            case _: ScalaFile => false
+            case _: ScalaFile =>
+              false
             case block: ScBlock =>
               block.getParent match {
-                case _: ScCaseClause => false
-                case _               => true
+                case _: ScCaseClause =>
+                  false
+                case _ =>
+                  true
               }
-            case _ => true
+            case _ =>
+              true
           }
 
         inWriteAction {
@@ -162,8 +166,10 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
           val bodyElements =
             newBody match {
-              case _: ScBlock      => newBody.children
-              case _: ScExpression => Iterator(newBody)
+              case _: ScBlock =>
+                newBody.children
+              case _: ScExpression =>
+                Iterator(newBody)
             }
 
           for (elem <- bodyElements) {

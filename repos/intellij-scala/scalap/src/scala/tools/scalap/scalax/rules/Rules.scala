@@ -90,9 +90,12 @@ trait Rules {
   def expect[In, Out, A, Any](rule: Rule[In, Out, A, Any]): In => A =
     (in) =>
       rule(in) match {
-        case Success(_, a) => a
-        case Failure       => throw new ScalaSigParserError("Unexpected failure")
-        case Error(x)      => throw new ScalaSigParserError("Unexpected error: " + x)
+        case Success(_, a) =>
+          a
+        case Failure =>
+          throw new ScalaSigParserError("Unexpected failure")
+        case Error(x) =>
+          throw new ScalaSigParserError("Unexpected error: " + x)
       }
 }
 
@@ -151,12 +154,16 @@ trait StateRules {
         rules: List[Rule[A, X]],
         results: List[A]): Result[S, List[A], X] = {
       rules match {
-        case Nil => Success(in, results.reverse)
+        case Nil =>
+          Success(in, results.reverse)
         case rule :: tl =>
           rule(in) match {
-            case Failure         => Failure
-            case Error(x)        => Error(x)
-            case Success(out, v) => rep(out, tl, v :: results)
+            case Failure =>
+              Failure
+            case Error(x) =>
+              Error(x)
+            case Success(out, v) =>
+              rep(out, tl, v :: results)
           }
       }
     }
@@ -181,9 +188,12 @@ trait StateRules {
           Success(in, t)
         else
           rule(in) match {
-            case Success(out, f) => rep(out, f(t))
-            case Failure         => Failure
-            case Error(x)        => Error(x)
+            case Success(out, f) =>
+              rep(out, f(t))
+            case Failure =>
+              Failure
+            case Error(x) =>
+              Error(x)
           }
       }
       in => rep(in, initial)

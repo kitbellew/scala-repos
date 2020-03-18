@@ -199,7 +199,8 @@ final class OpenAddressHashArray[
                   that(k) match {
                     case `v` =>
                       true
-                    case _ => false
+                    case _ =>
+                      false
                   }
               }
             } catch {

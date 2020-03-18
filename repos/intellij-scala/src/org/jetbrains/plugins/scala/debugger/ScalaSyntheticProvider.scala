@@ -34,11 +34,16 @@ object ScalaSyntheticProvider {
           if m.name() == "apply" && hasSpecializationMethod(
             m.declaringType()) && !isMacroDefined(m) =>
         true
-      case m: Method if isDefaultArg(m)                      => true
-      case m: Method if isTraitForwarder(m)                  => true
-      case m: Method if m.name().endsWith("$adapted")        => true
-      case m: Method if ScalaPositionManager.isIndyLambda(m) => false
-      case f: Field if f.name().startsWith("bitmap$")        => true
+      case m: Method if isDefaultArg(m) =>
+        true
+      case m: Method if isTraitForwarder(m) =>
+        true
+      case m: Method if m.name().endsWith("$adapted") =>
+        true
+      case m: Method if ScalaPositionManager.isIndyLambda(m) =>
+        false
+      case f: Field if f.name().startsWith("bitmap$") =>
+        true
       case _ =>
         val machine: VirtualMachine = typeComponent.virtualMachine
         machine != null && machine.canGetSyntheticAttribute && typeComponent.isSynthetic
@@ -67,7 +72,8 @@ object ScalaSyntheticProvider {
           val origMethodName = methodName.stripSuffix(s)
           val refType = m.declaringType
           !refType.methodsByName(origMethodName).isEmpty
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -84,7 +90,8 @@ object ScalaSyntheticProvider {
     val bytecodes =
       try m.bytecodes()
       catch {
-        case t: Throwable => return false
+        case t: Throwable =>
+          return false
       }
 
     var i = 0
@@ -123,7 +130,8 @@ object ScalaSyntheticProvider {
           return true
         }
         false
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

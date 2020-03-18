@@ -51,9 +51,11 @@ object Round extends LilaController with TheftPrevention {
                   ~get("ran"),
                   ctx.me,
                   ctx.ip) map Right.apply
-              case None => fuccess(Left(NotFound))
+              case None =>
+                fuccess(Left(NotFound))
             }
-        case None => fuccess(Left(NotFound))
+        case None =>
+          fuccess(Left(NotFound))
       }
     }
 
@@ -152,13 +154,16 @@ object Round extends LilaController with TheftPrevention {
         otherPovs(currentGame) map getNext(currentGame) map {
           _ orElse Pov(currentGame, me)
         } flatMap {
-          case Some(next) => renderPlayer(next)
+          case Some(next) =>
+            renderPlayer(next)
           case None =>
             fuccess(
               Redirect(
                 currentGame.simulId match {
-                  case Some(simulId) => routes.Simul.show(simulId)
-                  case None          => routes.Round.watcher(gameId, "white")
+                  case Some(simulId) =>
+                    routes.Simul.show(simulId)
+                  case None =>
+                    routes.Round.watcher(gameId, "white")
                 }))
         }
       }
@@ -170,7 +175,8 @@ object Round extends LilaController with TheftPrevention {
         case Some(pov) =>
           env.checkOutoftime(pov.game)
           watch(pov)
-        case None => Challenge showId gameId
+        case None =>
+          Challenge showId gameId
       }
     }
 
@@ -321,7 +327,8 @@ object Round extends LilaController with TheftPrevention {
             val pgn = Env.game.pgnDump(pov.game, initialFen)
             Ok(views.xml.round.atom(pov, pgn)) as XML
           }
-        case _ => NotFound("no such game").fuccess
+        case _ =>
+          NotFound("no such game").fuccess
       }
     }
 }

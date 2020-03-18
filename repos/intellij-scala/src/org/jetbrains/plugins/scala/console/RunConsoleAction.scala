@@ -30,11 +30,14 @@ class RunConsoleAction extends AnAction {
     try {
       val file = CommonDataKeys.PSI_FILE.getData(e.getDataContext)
       file match {
-        case _: ScalaFile => enable()
-        case _            => disable()
+        case _: ScalaFile =>
+          enable()
+        case _ =>
+          disable()
       }
     } catch {
-      case e: Exception => disable()
+      case e: Exception =>
+        disable()
     }
   }
 

@@ -70,7 +70,8 @@ trait MomentsTestBase[T] extends FunSuite with Checkers {
             println(
               s"$x has higher prob (${distr(x)}) than mode ${distr.mode} ($probMode)");
             false
-          case None => true
+          case None =>
+            true
         }
       })
   }

@@ -180,7 +180,8 @@ class PrimitiveApiTest
           ErrorMapping.maybeThrowException(pdata.error))
         fail("Expected exception when fetching message with invalid offset")
       } catch {
-        case e: OffsetOutOfRangeException => "this is good"
+        case e: OffsetOutOfRangeException =>
+          "this is good"
       }
     }
 
@@ -197,7 +198,8 @@ class PrimitiveApiTest
           ErrorMapping.maybeThrowException(pdata.error))
         fail("Expected exception when fetching message with invalid partition")
       } catch {
-        case e: UnknownTopicOrPartitionException => "this is good"
+        case e: UnknownTopicOrPartitionException =>
+          "this is good"
       }
     }
 

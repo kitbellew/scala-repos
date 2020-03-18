@@ -156,7 +156,8 @@ object TaskTest extends SpecLite {
       throw FailWhale;
       42
     }.handle {
-      case FailWhale => 84
+      case FailWhale =>
+        84
     }.unsafePerformSyncAttempt ==
       \/-(84)
   }
@@ -167,7 +168,8 @@ object TaskTest extends SpecLite {
       throw FailWhale;
       42
     }.handle {
-      case SadTrombone => 84
+      case SadTrombone =>
+        84
     }.unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
@@ -178,7 +180,8 @@ object TaskTest extends SpecLite {
       throw FailWhale;
       42
     }.handle {
-      case FailWhale => throw SadTrombone
+      case FailWhale =>
+        throw SadTrombone
     }.unsafePerformSyncAttempt ==
       -\/(SadTrombone)
   }
@@ -190,7 +193,8 @@ object TaskTest extends SpecLite {
         throw FailWhale;
         42
       }.handleWith {
-        case FailWhale => Task.delay(84)
+        case FailWhale =>
+          Task.delay(84)
       }.unsafePerformSyncAttempt ==
         \/-(84)
   }
@@ -201,7 +205,8 @@ object TaskTest extends SpecLite {
       throw FailWhale;
       42
     }.handleWith {
-      case SadTrombone => Task.delay(84)
+      case SadTrombone =>
+        Task.delay(84)
     }.unsafePerformSyncAttempt ==
       -\/(FailWhale)
   }
@@ -212,7 +217,8 @@ object TaskTest extends SpecLite {
       throw FailWhale;
       42
     }.handleWith {
-      case FailWhale => Task.delay(throw SadTrombone)
+      case FailWhale =>
+        Task.delay(throw SadTrombone)
     }.unsafePerformSyncAttempt ==
       -\/(SadTrombone)
   }
@@ -390,7 +396,8 @@ object TaskTest extends SpecLite {
         }(es)
 
       t.unsafePerformSyncAttemptFor(100) mustMatch {
-        case -\/(ex: TimeoutException) => true
+        case -\/(ex: TimeoutException) =>
+          true
       }
 
       es.shutdown()
@@ -408,7 +415,8 @@ object TaskTest extends SpecLite {
       }(es).map(_ => bool = true)
 
       t.unsafePerformSyncAttemptFor(100) mustMatch {
-        case -\/(ex: TimeoutException) => true
+        case -\/(ex: TimeoutException) =>
+          true
       }
 
       Thread.sleep(1500)

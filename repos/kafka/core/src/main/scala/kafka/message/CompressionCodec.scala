@@ -19,10 +19,14 @@ package kafka.message
 object CompressionCodec {
   def getCompressionCodec(codec: Int): CompressionCodec = {
     codec match {
-      case NoCompressionCodec.codec     => NoCompressionCodec
-      case GZIPCompressionCodec.codec   => GZIPCompressionCodec
-      case SnappyCompressionCodec.codec => SnappyCompressionCodec
-      case LZ4CompressionCodec.codec    => LZ4CompressionCodec
+      case NoCompressionCodec.codec =>
+        NoCompressionCodec
+      case GZIPCompressionCodec.codec =>
+        GZIPCompressionCodec
+      case SnappyCompressionCodec.codec =>
+        SnappyCompressionCodec
+      case LZ4CompressionCodec.codec =>
+        LZ4CompressionCodec
       case _ =>
         throw new kafka.common.UnknownCodecException(
           "%d is an unknown compression codec".format(codec))
@@ -30,10 +34,14 @@ object CompressionCodec {
   }
   def getCompressionCodec(name: String): CompressionCodec = {
     name.toLowerCase match {
-      case NoCompressionCodec.name     => NoCompressionCodec
-      case GZIPCompressionCodec.name   => GZIPCompressionCodec
-      case SnappyCompressionCodec.name => SnappyCompressionCodec
-      case LZ4CompressionCodec.name    => LZ4CompressionCodec
+      case NoCompressionCodec.name =>
+        NoCompressionCodec
+      case GZIPCompressionCodec.name =>
+        GZIPCompressionCodec
+      case SnappyCompressionCodec.name =>
+        SnappyCompressionCodec
+      case LZ4CompressionCodec.name =>
+        LZ4CompressionCodec
       case _ =>
         throw new kafka.common.UnknownCodecException(
           "%s is an unknown compression codec".format(name))
@@ -57,8 +65,10 @@ object BrokerCompressionCodec {
 
   def getCompressionCodec(compressionType: String): CompressionCodec = {
     compressionType.toLowerCase match {
-      case UncompressedCodec.name => NoCompressionCodec
-      case _                      => CompressionCodec.getCompressionCodec(compressionType)
+      case UncompressedCodec.name =>
+        NoCompressionCodec
+      case _ =>
+        CompressionCodec.getCompressionCodec(compressionType)
     }
   }
 

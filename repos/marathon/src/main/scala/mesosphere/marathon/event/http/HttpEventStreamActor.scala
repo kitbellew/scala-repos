@@ -106,8 +106,10 @@ class HttpEventStreamActor(
 
   /** Cleanup child actors which are not needed anymore. */
   private[this] def cleanupHandlerActors: Receive = {
-    case HttpEventStreamConnectionClosed(handle) => removeHandler(handle)
-    case Terminated(actor)                       => unexpectedTerminationOfHandlerActor(actor)
+    case HttpEventStreamConnectionClosed(handle) =>
+      removeHandler(handle)
+    case Terminated(actor) =>
+      unexpectedTerminationOfHandlerActor(actor)
   }
 
   private[this] def removeHandler(handle: HttpEventStreamHandle): Unit = {
@@ -133,7 +135,8 @@ class HttpEventStreamActor(
   }
 
   private[this] def warnAboutUnknownMessages: Receive = {
-    case message: Any => log.warn(s"Received unexpected message $message")
+    case message: Any =>
+      log.warn(s"Received unexpected message $message")
   }
 }
 

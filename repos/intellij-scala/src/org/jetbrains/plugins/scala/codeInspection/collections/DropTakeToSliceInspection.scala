@@ -31,20 +31,29 @@ object DropTakeToSlice extends SimplificationType {
             .withText(invocationText(qual, "slice", m, n))
             .highlightFrom(qual)
             .withHint(takeDropHint))
-      case _ => None
+      case _ =>
+        None
     }
 
   private def sum(left: ScExpression, right: ScExpression): ScExpression = {
     val sumText =
       (left, right) match {
-        case (intLiteral(l), intLiteral(r))       => s"${l + r}"
-        case (intLiteral(a) `+` q, intLiteral(b)) => s"${q.getText} + ${a + b}"
-        case (intLiteral(a), intLiteral(b) `+` q) => s"${q.getText} + ${a + b}"
-        case (q `+` intLiteral(a), intLiteral(b)) => s"${q.getText} + ${a + b}"
-        case (intLiteral(a), q `+` intLiteral(b)) => s"${q.getText} + ${a + b}"
-        case (q, intLiteral(b))                   => s"${q.getText} + $b"
-        case (intLiteral(a), q)                   => s"${q.getText} + $a"
-        case _                                    => s"${left.getText} + ${right.getText}"
+        case (intLiteral(l), intLiteral(r)) =>
+          s"${l + r}"
+        case (intLiteral(a) `+` q, intLiteral(b)) =>
+          s"${q.getText} + ${a + b}"
+        case (intLiteral(a), intLiteral(b) `+` q) =>
+          s"${q.getText} + ${a + b}"
+        case (q `+` intLiteral(a), intLiteral(b)) =>
+          s"${q.getText} + ${a + b}"
+        case (intLiteral(a), q `+` intLiteral(b)) =>
+          s"${q.getText} + ${a + b}"
+        case (q, intLiteral(b)) =>
+          s"${q.getText} + $b"
+        case (intLiteral(a), q) =>
+          s"${q.getText} + $a"
+        case _ =>
+          s"${left.getText} + ${right.getText}"
       }
     ScalaPsiElementFactory.createExpressionFromText(sumText, left.getManager)
   }
@@ -54,10 +63,13 @@ object DropTakeToSlice extends SimplificationType {
       expr match {
         case l: ScLiteral =>
           l.getValue match {
-            case int: java.lang.Integer => Some(int)
-            case _                      => None
+            case int: java.lang.Integer =>
+              Some(int)
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
     }
   }

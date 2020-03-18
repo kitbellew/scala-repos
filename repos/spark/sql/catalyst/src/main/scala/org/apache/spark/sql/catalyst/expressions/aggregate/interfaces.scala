@@ -85,8 +85,10 @@ private[sql] case class AggregateExpression(
   override def references: AttributeSet = {
     val childReferences =
       mode match {
-        case Partial | Complete   => aggregateFunction.references.toSeq
-        case PartialMerge | Final => aggregateFunction.aggBufferAttributes
+        case Partial | Complete =>
+          aggregateFunction.references.toSeq
+        case PartialMerge | Final =>
+          aggregateFunction.aggBufferAttributes
       }
 
     AttributeSet(childReferences)

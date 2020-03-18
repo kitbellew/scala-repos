@@ -46,10 +46,12 @@ class ScalaUselessExpressionInspection
           PsiTreeUtil.getParentOfType(
             expr,
             classOf[ScFunctionDefinition]) match {
-            case null => Seq.empty
+            case null =>
+              Seq.empty
             case fun if fun.returnType.getOrAny != types.Unit =>
               Seq(new AddReturnQuickFix(expr))
-            case _ => Seq.empty
+            case _ =>
+              Seq.empty
           }
 
         holder.registerProblem(
@@ -61,18 +63,22 @@ class ScalaUselessExpressionInspection
 
   private def isLastInBlock(expr: ScExpression): Boolean =
     expr match {
-      case ChildOf(bl: ScBlock) => bl.lastExpr.contains(expr)
+      case ChildOf(bl: ScBlock) =>
+        bl.lastExpr.contains(expr)
       case ChildOf(
             _: ScPatternDefinition | _: ScFunctionDefinition |
             _: ScVariableDefinition) =>
         !expr.isInstanceOf[ScBlock]
-      case _ => false
+      case _ =>
+        false
     }
 
   private def isInBlock(expr: ScExpression): Boolean =
     expr match {
-      case ChildOf(bl: ScBlock) => true
-      case _                    => false
+      case ChildOf(bl: ScBlock) =>
+        true
+      case _ =>
+        false
     }
 
   private def canResultInSideEffectsOnly(expr: ScExpression): Boolean = {
@@ -89,11 +95,14 @@ class ScalaUselessExpressionInspection
             _: ScCaseClause | _: ScCaseClauses | _: ScMatchStmt | _: ScTryStmt |
             _: ScCatchBlock =>
           true
-        case _ => false
+        case _ =>
+          false
       }
       (expr +: parents.toSeq).exists {
-        case e: ScExpression => isInBlock(e) && !isLastInBlock(e)
-        case _               => false
+        case e: ScExpression =>
+          isInBlock(e) && !isLastInBlock(e)
+        case _ =>
+          false
       }
     }
     def isInReturnPositionForUnitFunction: Boolean = {
@@ -102,7 +111,8 @@ class ScalaUselessExpressionInspection
           .getParentOfType(expr, classOf[ScFunctionDefinition])) match {
         case Some(fun) if fun.returnType.getOrAny == types.Unit =>
           fun.returnUsages().contains(expr)
-        case _ => false
+        case _ =>
+          false
       }
     }
     isNotLastInBlock || isInReturnPositionForUnitFunction

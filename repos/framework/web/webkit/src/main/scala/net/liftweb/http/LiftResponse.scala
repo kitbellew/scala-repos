@@ -611,8 +611,10 @@ object RedirectWithState {
 
   def unapply(in: Any): Option[(String, RedirectState, Seq[HTTPCookie])] =
     in match {
-      case rdws: RedirectWithState => Some((rdws.uri, rdws.state, rdws.cookies))
-      case _                       => None
+      case rdws: RedirectWithState =>
+        Some((rdws.uri, rdws.state, rdws.cookies))
+      case _ =>
+        None
     }
 }
 
@@ -851,11 +853,14 @@ case class XhtmlResponse(
 
   val headers: List[(String, String)] =
     _headers.find(_._1 equalsIgnoreCase "content-type") match {
-      case Some(_) => _headers
+      case Some(_) =>
+        _headers
       case _ =>
         htmlProperties.contentType match {
-          case Full(ct) => ("Content-Type" -> ct) :: _headers
-          case _        => _headers
+          case Full(ct) =>
+            ("Content-Type" -> ct) :: _headers
+          case _ =>
+            _headers
         }
     }
 }

@@ -183,7 +183,8 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
           }
           dataset.where(filterer(dataset($(inputCol))))
         }
-        case _ => dataset
+        case _ =>
+          dataset
       }
     filteredDataset.select(
       col("*"),

@@ -309,7 +309,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
 
     unconfirmed.iterator
       .filter {
-        case (_, delivery) ⇒ delivery.timestamp <= deadline
+        case (_, delivery) ⇒
+          delivery.timestamp <= deadline
       }
       .take(redeliveryBurstLimit)
       .foreach {

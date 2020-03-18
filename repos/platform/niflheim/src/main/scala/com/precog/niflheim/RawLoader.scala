@@ -147,7 +147,8 @@ private[niflheim] object RawLoader {
     try {
       line.substring(6).toLong == eventid
     } catch {
-      case _: Exception => false
+      case _: Exception =>
+        false
     }
 
   def loadEvents1(

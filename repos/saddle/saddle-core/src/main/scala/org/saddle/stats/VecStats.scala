@@ -421,8 +421,10 @@ trait VecStats[@spec(Int, Long, Double) A] {
       else {
         val n =
           method match {
-            case PctMethod.Excel => (tile / 100.0) * (c - 1.0) + 1.0
-            case PctMethod.NIST  => (tile / 100.0) * (c + 1.0)
+            case PctMethod.Excel =>
+              (tile / 100.0) * (c - 1.0) + 1.0
+            case PctMethod.NIST =>
+              (tile / 100.0) * (c + 1.0)
           }
         val s = vf.sorted
         val k = math.floor(n).toInt

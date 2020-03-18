@@ -35,15 +35,19 @@ case class Challenge(
 
   def daysPerTurn =
     timeControl match {
-      case TimeControl.Correspondence(d) => d.some
-      case _                             => none
+      case TimeControl.Correspondence(d) =>
+        d.some
+      case _ =>
+        none
     }
   def unlimited = timeControl == TimeControl.Unlimited
 
   def clock =
     timeControl match {
-      case c: TimeControl.Clock => c.some
-      case _                    => none
+      case c: TimeControl.Clock =>
+        c.some
+      case _ =>
+        none
     }
 
   def hasClock = clock.isDefined
@@ -103,8 +107,10 @@ object Challenge {
 
   private def speedOf(timeControl: TimeControl) =
     timeControl match {
-      case c: TimeControl.Clock => Speed(c.chessClock)
-      case _                    => Speed.Correspondence
+      case c: TimeControl.Clock =>
+        Speed(c.chessClock)
+      case _ =>
+        Speed.Correspondence
     }
 
   private def perfTypeOf(variant: Variant, timeControl: TimeControl): PerfType =
@@ -113,8 +119,10 @@ object Challenge {
         speedOf(timeControl),
         variant,
         timeControl match {
-          case TimeControl.Correspondence(d) => d.some
-          case _                             => none
+          case TimeControl.Correspondence(d) =>
+            d.some
+          case _ =>
+            none
         })
       .orElse {
         (variant == FromPosition) option perfTypeOf(
@@ -142,8 +150,10 @@ object Challenge {
       rematchOf: Option[String]): Challenge = {
     val (colorChoice, finalColor) =
       color match {
-        case "white" => ColorChoice.White -> chess.White
-        case "black" => ColorChoice.Black -> chess.Black
+        case "white" =>
+          ColorChoice.White -> chess.White
+        case "black" =>
+          ColorChoice.Black -> chess.Black
         case _ =>
           ColorChoice.Random -> chess.Color(scala.util.Random.nextBoolean)
       }

@@ -39,7 +39,8 @@ object CachedWithRecursionGuard {
             params(1),
             modCountParamToModTracker(c)(params(2), params.head),
             t)
-        case _ => abort("Wrong annotation parameters!")
+        case _ =>
+          abort("Wrong annotation parameters!")
       }
 
     val (element, defaultValue, dependencyItem, providerType) = parameters
@@ -91,7 +92,8 @@ object CachedWithRecursionGuard {
           """
         println(res)
         c.Expr(res)
-      case _ => abort("You can only annotate one function!")
+      case _ =>
+        abort("You can only annotate one function!")
     }
   }
 }

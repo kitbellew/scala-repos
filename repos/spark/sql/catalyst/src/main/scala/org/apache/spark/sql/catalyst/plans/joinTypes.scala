@@ -22,11 +22,16 @@ import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 object JoinType {
   def apply(typ: String): JoinType =
     typ.toLowerCase.replace("_", "") match {
-      case "inner"                        => Inner
-      case "outer" | "full" | "fullouter" => FullOuter
-      case "leftouter" | "left"           => LeftOuter
-      case "rightouter" | "right"         => RightOuter
-      case "leftsemi"                     => LeftSemi
+      case "inner" =>
+        Inner
+      case "outer" | "full" | "fullouter" =>
+        FullOuter
+      case "leftouter" | "left" =>
+        LeftOuter
+      case "rightouter" | "right" =>
+        RightOuter
+      case "leftsemi" =>
+        LeftSemi
       case _ =>
         val supported = Seq(
           "inner",

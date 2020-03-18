@@ -34,11 +34,13 @@ trait ScClassParameter
           c.constructor match {
             case Some(const) =>
               const.effectiveFirstParameterSection.contains(this)
-            case None => false
+            case None =>
+              false
           }
         val hasExplicitModifier = Option(getModifierList).exists(
           _.hasExplicitModifiers)
         isInPrimaryConstructorFirstParamSection && !hasExplicitModifier
-      case _ => false
+      case _ =>
+        false
     }
 }

@@ -77,7 +77,8 @@ class PCA(override val uid: String)
   override def fit(dataset: DataFrame): PCAModel = {
     transformSchema(dataset.schema, logging = true)
     val input = dataset.select($(inputCol)).rdd.map {
-      case Row(v: Vector) => v
+      case Row(v: Vector) =>
+        v
     }
     val pca = new feature.PCA(k = $(k))
     val pcaModel = pca.fit(input)
@@ -211,7 +212,8 @@ object PCAModel extends MLReadable[PCAModel] {
         metadata.sparkVersion match {
           case versionRegex(major, minor) =>
             (major.toInt >= 2 || (major.toInt == 1 && minor.toInt > 6))
-          case _ => false
+          case _ =>
+            false
         }
 
       val dataPath = new Path(path, "data").toString

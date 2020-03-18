@@ -137,7 +137,8 @@ private[akka] class ClusterDeployer(
           }
         } else
           d
-      case None ⇒ None
+      case None ⇒
+        None
     }
   }
 

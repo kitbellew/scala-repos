@@ -110,7 +110,8 @@ trait WikiControllerBase extends ControllerBase {
           JGitUtil.getCommitLog(git, "master", path = pageName + ".md") match {
             case Right((logs, hasNext)) =>
               html.history(Some(pageName), logs, repository)
-            case Left(_) => NotFound
+            case Left(_) =>
+              NotFound
           }
       }
     })
@@ -313,8 +314,10 @@ trait WikiControllerBase extends ControllerBase {
       using(Git.open(getWikiRepositoryDir(repository.owner, repository.name))) {
         git =>
           JGitUtil.getCommitLog(git, "master") match {
-            case Right((logs, hasNext)) => html.history(None, logs, repository)
-            case Left(_)                => NotFound
+            case Right((logs, hasNext)) =>
+              html.history(None, logs, repository)
+            case Left(_) =>
+              NotFound
           }
       }
     })

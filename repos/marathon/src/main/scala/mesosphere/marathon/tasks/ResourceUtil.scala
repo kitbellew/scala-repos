@@ -131,9 +131,12 @@ object ResourceUtil {
     }
 
     resource.getType match {
-      case MesosProtos.Value.Type.SCALAR => consumeScalarResource
-      case MesosProtos.Value.Type.RANGES => consumeRangeResource
-      case MesosProtos.Value.Type.SET    => consumeSetResource
+      case MesosProtos.Value.Type.SCALAR =>
+        consumeScalarResource
+      case MesosProtos.Value.Type.RANGES =>
+        consumeRangeResource
+      case MesosProtos.Value.Type.SET =>
+        consumeSetResource
 
       case unexpectedResourceType: MesosProtos.Value.Type =>
         log.warn(
@@ -177,7 +180,8 @@ object ResourceUtil {
                       e)
                     None
                 }
-            case (None, _) => None
+            case (None, _) =>
+              None
           }
         case None => // if the resource isn't used, we keep it
           Some(resource)
@@ -240,7 +244,8 @@ object ResourceUtil {
           else
             rangesToString(ranges)
         }"
-      case other: MesosProtos.Value.Type => resource.toString
+      case other: MesosProtos.Value.Type =>
+        resource.toString
     }
   }
 

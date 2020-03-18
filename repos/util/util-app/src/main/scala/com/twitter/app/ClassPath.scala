@@ -127,7 +127,8 @@ private object ClassPath {
     val jarFile =
       try new JarFile(file)
       catch {
-        case _: IOException => return // not a Jar file
+        case _: IOException =>
+          return // not a Jar file
       }
 
     try {
@@ -174,6 +175,7 @@ private object ClassPath {
             jarFile.getParentFile,
             path.replace('/', File.separatorChar)).toURI)
     } catch {
-      case _: URISyntaxException => None
+      case _: URISyntaxException =>
+        None
     }
 }

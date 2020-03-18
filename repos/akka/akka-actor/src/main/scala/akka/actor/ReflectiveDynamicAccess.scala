@@ -62,7 +62,8 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
         getClassFor(fqcn)
       else
         getClassFor(fqcn + "$") recoverWith {
-          case _ ⇒ getClassFor(fqcn)
+          case _ ⇒
+            getClassFor(fqcn)
         }
     classTry flatMap { c ⇒
       Try {
@@ -70,10 +71,12 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
         module.setAccessible(true)
         val t = implicitly[ClassTag[T]].runtimeClass
         module.get(null) match {
-          case null ⇒ throw new NullPointerException
+          case null ⇒
+            throw new NullPointerException
           case x if !t.isInstance(x) ⇒
             throw new ClassCastException(fqcn + " is not a subtype of " + t)
-          case x: T ⇒ x
+          case x: T ⇒
+            x
         }
       } recover {
         case i: InvocationTargetException if i.getTargetException ne null ⇒

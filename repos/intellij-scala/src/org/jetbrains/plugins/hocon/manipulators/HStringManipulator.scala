@@ -24,8 +24,10 @@ class HStringManipulator extends AbstractElementManipulator[HString] {
 
     val escapedContent =
       strType match {
-        case MultilineString => newContent
-        case _               => StringUtil.escapeStringCharacters(newContent)
+        case MultilineString =>
+          newContent
+        case _ =>
+          StringUtil.escapeStringCharacters(newContent)
       }
 
     val needsQuoting = strType == UnquotedString &&

@@ -72,7 +72,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
         .size("", Path("/foo/bar1/baz/quux1"))
         .valueOr(e => sys.error(e.toString))
         .copoint must beLike {
-        case JNum(result) => result mustEqual 10
+        case JNum(result) =>
+          result mustEqual 10
       }
     }
 
@@ -81,7 +82,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
         .size("", Path("/foo/bar"))
         .valueOr(e => sys.error(e.toString))
         .copoint must beLike {
-        case JNum(result) => result mustEqual 60
+        case JNum(result) =>
+          result mustEqual 60
       }
     }
 
@@ -90,7 +92,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
         .size("", Path("/not/really"))
         .valueOr(e => sys.error(e.toString))
         .copoint must beLike {
-        case JNum(result) => result mustEqual 0
+        case JNum(result) =>
+          result mustEqual 0
       }
     }
   }
@@ -125,7 +128,8 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
         .structure("", Path("/bar/foo"), CPath.Identity)
         .valueOr(e => sys.error(e.toString))
         .copoint must beLike {
-        case result => result must_== JUndefined
+        case result =>
+          result must_== JUndefined
       }
     }
   }

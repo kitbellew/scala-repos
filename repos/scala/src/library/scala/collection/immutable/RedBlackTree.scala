@@ -30,8 +30,10 @@ private[collection] object RedBlackTree {
     lookup(tree, x) ne null
   def get[A: Ordering, B](tree: Tree[A, B], x: A): Option[B] =
     lookup(tree, x) match {
-      case null => None
-      case tree => Some(tree.value)
+      case null =>
+        None
+      case tree =>
+        Some(tree.value)
     }
 
   @tailrec
@@ -66,7 +68,8 @@ private[collection] object RedBlackTree {
     else
       (from, to) match {
         // with no bounds use this node's count
-        case (None, None) => tree.count
+        case (None, None) =>
+          tree.count
         // if node is less than the lower bound, try the tree on the right, it might be in range
         case (Some(lb), _) if ordering.lt(tree.key, lb) =>
           countInRange(tree.right, from, to)
@@ -95,10 +98,14 @@ private[collection] object RedBlackTree {
       from: Option[A],
       until: Option[A]): Tree[A, B] =
     (from, until) match {
-      case (Some(from), Some(until)) => this.range(tree, from, until)
-      case (Some(from), None)        => this.from(tree, from)
-      case (None, Some(until))       => this.until(tree, until)
-      case (None, None)              => tree
+      case (Some(from), Some(until)) =>
+        this.range(tree, from, until)
+      case (Some(from), None) =>
+        this.from(tree, from)
+      case (None, Some(until)) =>
+        this.until(tree, until)
+      case (None, None) =>
+        tree
     }
   def range[A: Ordering, B](tree: Tree[A, B], from: A, until: A): Tree[A, B] =
     blacken(doRange(tree, from, until))

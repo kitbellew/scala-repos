@@ -89,7 +89,8 @@ private class ClientSessionTest extends FunSuite {
         case Some(Throw(f: Failure)) =>
           assert(f.isFlagged(Failure.Restartable))
           assert(f.getMessage == "The request was Nacked by the server")
-        case _ => fail()
+        case _ =>
+          fail()
       }
 
       val rep = Message.RdispatchOk(2, Seq.empty, buf)
@@ -113,7 +114,8 @@ private class ClientSessionTest extends FunSuite {
     session.ping().poll match {
       case Some(Throw(f: Failure)) =>
         assert(f.getMessage == "A ping is already outstanding on this session.")
-      case _ => fail()
+      case _ =>
+        fail()
     }
 
     recv(Message.Rping(Message.Tags.PingTag))

@@ -203,8 +203,10 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           children.asScala
             .map { child =>
               path match {
-                case "/"  => s"/$child"
-                case path => s"$path/$child"
+                case "/" =>
+                  s"/$child"
+                case path =>
+                  s"$path/$child"
               }
             }
             .foreach(setAclsRecursively)

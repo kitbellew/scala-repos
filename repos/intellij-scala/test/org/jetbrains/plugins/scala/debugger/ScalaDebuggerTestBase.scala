@@ -144,10 +144,12 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
 
   def checkOrAddAllSourceFiles() = {
     if (sourceFiles.exists {
-          case (path, text) => !fileWithTextExists(new File(path), text)
+          case (path, text) =>
+            !fileWithTextExists(new File(path), text)
         }) {}
     sourceFiles.foreach {
-      case (path, text) => addFileToProject(path, text)
+      case (path, text) =>
+        addFileToProject(path, text)
     }
   }
 
@@ -250,7 +252,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
           case map: mutable.HashMap[String, Array[Byte]] @unchecked =>
             checksums = map;
             true
-          case _ => false
+          case _ =>
+            false
         }
       } finally ois.close()
     result
@@ -264,8 +267,10 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
   private def sameSourceFiles(): Boolean = {
     def numberOfFiles(dir: File): Int =
       dir match {
-        case d: File if d.isDirectory => d.listFiles().map(numberOfFiles).sum
-        case f                        => 1
+        case d: File if d.isDirectory =>
+          d.listFiles().map(numberOfFiles).sum
+        case f =>
+          1
       }
     val existingFilesNumber = numberOfFiles(srcDir)
     sourceFiles.size == existingFilesNumber && sourceFiles.forall {

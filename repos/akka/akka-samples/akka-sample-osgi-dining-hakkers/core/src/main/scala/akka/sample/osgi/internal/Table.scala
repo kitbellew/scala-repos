@@ -23,6 +23,7 @@ class Table extends Actor {
       yield context.actorOf(Props[Chopstick], "Chopstick" + i)
 
   def receive = {
-    case x: Int => sender() ! ((chopsticks(x), chopsticks((x + 1) % 5)))
+    case x: Int =>
+      sender() ! ((chopsticks(x), chopsticks((x + 1) % 5)))
   }
 }

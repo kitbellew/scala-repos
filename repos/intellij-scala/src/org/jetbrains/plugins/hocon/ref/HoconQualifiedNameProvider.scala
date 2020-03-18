@@ -23,7 +23,8 @@ class HoconQualifiedNameProvider extends QualifiedNameProvider {
               .map(_.iterator.map(_.getText).mkString("."))
               .orNull
         )
-      case _ => null
+      case _ =>
+        null
     }
 
   def insertQualifiedName(

@@ -82,7 +82,8 @@ object ActionBasedSQLInterpolation {
           ctx.session.withPreparedStatement(
             macroTreeBuilder.staticQueryString) {
             _.getMetaData match {
-              case null => Vector()
+              case null =>
+                Vector()
               case resultMeta =>
                 Vector.tabulate(resultMeta.getColumnCount) { i =>
                   val modelBuilder =

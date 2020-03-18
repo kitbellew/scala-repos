@@ -89,22 +89,32 @@ object BatchID {
     */
   def toIterable(interval: Interval[BatchID]): Iterable[BatchID] =
     interval match {
-      case Empty()               => Iterable.empty
-      case Universe()            => range(Min, Max)
-      case ExclusiveUpper(upper) => range(Min, upper.prev)
-      case InclusiveUpper(upper) => range(Min, upper)
-      case ExclusiveLower(lower) => range(lower.next, Max)
-      case InclusiveLower(lower) => range(lower, Max)
+      case Empty() =>
+        Iterable.empty
+      case Universe() =>
+        range(Min, Max)
+      case ExclusiveUpper(upper) =>
+        range(Min, upper.prev)
+      case InclusiveUpper(upper) =>
+        range(Min, upper)
+      case ExclusiveLower(lower) =>
+        range(lower.next, Max)
+      case InclusiveLower(lower) =>
+        range(lower, Max)
       case Intersection(low, high) =>
         val lowbatch =
           low match {
-            case InclusiveLower(lb) => lb
-            case ExclusiveLower(lb) => lb.next
+            case InclusiveLower(lb) =>
+              lb
+            case ExclusiveLower(lb) =>
+              lb.next
           }
         val highbatch =
           high match {
-            case InclusiveUpper(hb) => hb
-            case ExclusiveUpper(hb) => hb.prev
+            case InclusiveUpper(hb) =>
+              hb
+            case ExclusiveUpper(hb) =>
+              hb.prev
           }
         range(lowbatch, highbatch)
     }

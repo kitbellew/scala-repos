@@ -280,7 +280,8 @@ private[deploy] class Master(
       }
     }
 
-    case CompleteRecovery => completeRecovery()
+    case CompleteRecovery =>
+      completeRecovery()
 
     case RevokedLeadership => {
       logError("Leadership has been revoked -- master shutting down.")
@@ -449,7 +450,8 @@ private[deploy] class Master(
 
           for (driverId <- driverIds) {
             val driverMatches = worker.drivers.exists {
-              case (id, _) => id == driverId
+              case (id, _) =>
+                id == driverId
             }
             if (!driverMatches) {
               // master doesn't recognize this driver. So just tell worker to kill it.

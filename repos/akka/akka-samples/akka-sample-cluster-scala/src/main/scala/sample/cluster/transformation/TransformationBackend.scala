@@ -29,7 +29,8 @@ class TransformationBackend extends Actor {
       sender() ! TransformationResult(text.toUpperCase)
     case state: CurrentClusterState =>
       state.members.filter(_.status == MemberStatus.Up) foreach register
-    case MemberUp(m) => register(m)
+    case MemberUp(m) =>
+      register(m)
   }
 
   def register(member: Member): Unit =

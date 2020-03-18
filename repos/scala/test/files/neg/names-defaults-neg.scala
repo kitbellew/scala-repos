@@ -67,7 +67,8 @@ object Test extends App {
 
   // no defaults in patterns
   A1() match {
-    case A1(_) => ()
+    case A1(_) =>
+      ()
   }
 
   // return types of default getters

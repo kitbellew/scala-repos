@@ -159,7 +159,8 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
     val typedDefinition = Parameter.replaceAllIn(
       definition,
       _ match {
-        case Parameter(n, t) => n + ": " + id.next
+        case Parameter(n, t) =>
+          n + ": " + id.next
       })
 
     val typeParameters = "[" + ids.mkString(", ") + "]"

@@ -103,7 +103,8 @@ class ScalaLineMarkerProvider(
             case _: ScFunction | _: ScValue | _: ScVariable |
                 _: ScTypeDefinition | _: ScTypeAlias =>
               true
-            case _ => false
+            case _ =>
+              false
           }
         while (e != null && !test(e))
           e = e.getParent
@@ -151,8 +152,10 @@ class ScalaLineMarkerProvider(
           val signatures = new ArrayBuffer[Signature]
           val bindings =
             x match {
-              case v: ScDeclaredElementsHolder => v.declaredElements
-              case _                           => return null
+              case v: ScDeclaredElementsHolder =>
+                v.declaredElements
+              case _ =>
+                return null
             }
           for (z <- bindings)
             signatures ++= ScalaPsiUtil.superValsSignatures(
@@ -167,8 +170,10 @@ class ScalaLineMarkerProvider(
           if (signatures.nonEmpty) {
             val token =
               x match {
-                case v: ScValue    => v.getValToken
-                case v: ScVariable => v.getVarToken
+                case v: ScValue =>
+                  v.getValToken
+                case v: ScVariable =>
+                  v.getVarToken
               }
             return marker(token, icon, typez)
           }
@@ -254,9 +259,11 @@ class ScalaLineMarkerProvider(
         case x: ScTypeDefinition
             if !x.isObject && x.getParent.isInstanceOf[ScTemplateBody] =>
           members += x
-        case x: PsiMember with PsiNamedElement => members += x
-        case _: ScValue | _: ScVariable        => members += element
-        case _                                 =>
+        case x: PsiMember with PsiNamedElement =>
+          members += x
+        case _: ScValue | _: ScVariable =>
+          members += element
+        case _ =>
       }
     }
     if (members.nonEmpty) {
@@ -277,8 +284,10 @@ private object GutterUtil {
       val offset = clazz.getTextOffset
       val icon =
         clazz match {
-          case _: ScTrait => IMPLEMENTED_INTERFACE_MARKER_RENDERER
-          case _          => SUBCLASSED_CLASS_MARKER_RENDERER
+          case _: ScTrait =>
+            IMPLEMENTED_INTERFACE_MARKER_RENDERER
+          case _ =>
+            SUBCLASSED_CLASS_MARKER_RENDERER
         }
       val typez = ScalaMarkerType.SUBCLASSED_CLASS
       val info =
@@ -303,10 +312,14 @@ private object GutterUtil {
       val offset = member.getTextOffset
       val members =
         member match {
-          case d: ScDeclaredElementsHolder => d.declaredElements.toArray
-          case td: ScTypeDefinition        => Array[PsiNamedElement](td)
-          case ta: ScTypeAlias             => Array[PsiNamedElement](ta)
-          case _                           => Array[PsiNamedElement]()
+          case d: ScDeclaredElementsHolder =>
+            d.declaredElements.toArray
+          case td: ScTypeDefinition =>
+            Array[PsiNamedElement](td)
+          case ta: ScTypeAlias =>
+            Array[PsiNamedElement](ta)
+          case _ =>
+            Array[PsiNamedElement]()
         }
       val overrides = new ArrayBuffer[PsiNamedElement]
       for (member <- members)
@@ -324,8 +337,10 @@ private object GutterUtil {
         val info =
           new LineMarkerInfo[PsiElement](
             member match {
-              case memb: ScNamedElement => memb.nameId
-              case _                    => member
+              case memb: ScNamedElement =>
+                memb.nameId
+              case _ =>
+                member
             },
             offset,
             icon,
@@ -339,26 +354,36 @@ private object GutterUtil {
 
   def isOverrides(element: PsiElement, supers: Seq[Signature]): Boolean = {
     element match {
-      case decl: ScFunctionDeclaration => true
-      case v: ScValueDeclaration       => true
-      case v: ScVariableDeclaration    => true
+      case decl: ScFunctionDeclaration =>
+        true
+      case v: ScValueDeclaration =>
+        true
+      case v: ScVariableDeclaration =>
+        true
       case _ =>
         val iter = supers.iterator
         while (iter.hasNext) {
           val s = iter.next()
           ScalaPsiUtil.nameContext(s.namedElement) match {
-            case fun: ScFunctionDefinition                        => return true
-            case fun: ScFunction                                  =>
-            case method: PsiMethod if !method.hasAbstractModifier => return true
-            case _: ScVariableDefinition | _: ScPatternDefinition => return true
-            case f: PsiField if !f.hasAbstractModifier            => return true
-            case _: ScVariableDeclaration                         =>
-            case _: ScValueDeclaration                            =>
-            case _: ScParameter                                   => return true
-            case _: ScTypeAliasDefinition                         => return true
-            case _: ScTypeAliasDeclaration                        =>
-            case _: PsiClass                                      => return true
-            case _                                                =>
+            case fun: ScFunctionDefinition =>
+              return true
+            case fun: ScFunction =>
+            case method: PsiMethod if !method.hasAbstractModifier =>
+              return true
+            case _: ScVariableDefinition | _: ScPatternDefinition =>
+              return true
+            case f: PsiField if !f.hasAbstractModifier =>
+              return true
+            case _: ScVariableDeclaration =>
+            case _: ScValueDeclaration    =>
+            case _: ScParameter =>
+              return true
+            case _: ScTypeAliasDefinition =>
+              return true
+            case _: ScTypeAliasDeclaration =>
+            case _: PsiClass =>
+              return true
+            case _ =>
           }
         }
         false
@@ -367,9 +392,13 @@ private object GutterUtil {
 
   def isAbstract(element: PsiElement) =
     element match {
-      case method: ScFunctionDeclaration   => true
-      case value: ScValueDeclaration       => true
-      case variable: ScVariableDeclaration => true
-      case _                               => false
+      case method: ScFunctionDeclaration =>
+        true
+      case value: ScValueDeclaration =>
+        true
+      case variable: ScVariableDeclaration =>
+        true
+      case _ =>
+        false
     }
 }

@@ -289,8 +289,10 @@ private[streaming] class ReceiverTracker(
 
     def isAcceptable: Boolean =
       acceptableExecutors.exists {
-        case loc: ExecutorCacheTaskLocation => loc.executorId == executorId
-        case loc: TaskLocation              => loc.host == host
+        case loc: ExecutorCacheTaskLocation =>
+          loc.executorId == executorId
+        case loc: TaskLocation =>
+          loc.host == host
       }
 
     if (!isAcceptable) {
@@ -641,8 +643,10 @@ private[streaming] class ReceiverTracker(
           val executors = getExecutors.toSet
           // Only return the alive executors
           scheduledLocations.get.filter {
-            case loc: ExecutorCacheTaskLocation => executors(loc)
-            case loc: TaskLocation              => true
+            case loc: ExecutorCacheTaskLocation =>
+              executors(loc)
+            case loc: TaskLocation =>
+              true
           }
         } else {
           Nil

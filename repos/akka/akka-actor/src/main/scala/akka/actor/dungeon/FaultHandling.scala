@@ -378,8 +378,10 @@ private[akka] trait FaultHandling {
     status match {
       case Some(c @ ChildrenContainer.Recreation(cause)) ⇒
         finishRecreate(cause, actor)
-      case Some(c @ ChildrenContainer.Creation()) ⇒ finishCreate()
-      case Some(ChildrenContainer.Termination) ⇒ finishTerminate()
+      case Some(c @ ChildrenContainer.Creation()) ⇒
+        finishCreate()
+      case Some(ChildrenContainer.Termination) ⇒
+        finishTerminate()
       case _ ⇒
     }
   }

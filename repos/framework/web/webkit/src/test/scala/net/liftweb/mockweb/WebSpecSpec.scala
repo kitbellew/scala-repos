@@ -86,8 +86,10 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
 
     "properly set up S with a String url" withSFor (testUrl) in {
       S.request match {
-        case Full(req) => req.path.partPath must_== List("stateless", "works")
-        case _         => failure("No request in S")
+        case Full(req) =>
+          req.path.partPath must_== List("stateless", "works")
+        case _ =>
+          failure("No request in S")
       }
     }
 
@@ -127,8 +129,10 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       req.contentType must_== Full("text/plain")
       req.post_? must_== true
       req.body match {
-        case Full(body) => (new String(body)) must_== "This is a test"
-        case _          => failure("No body set")
+        case Full(body) =>
+          (new String(body)) must_== "This is a test"
+        case _ =>
+          failure("No body set")
       }
     }
 
@@ -140,7 +144,8 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
       req.json match {
         case Full(jval) =>
           jval must_== JObject(List(JField("name", JString("Joe"))))
-        case _ => failure("No body set")
+        case _ =>
+          failure("No body set")
       }
     }
 
@@ -150,7 +155,8 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
           req.xml_? must_== true
           req.post_? must_== true
           req.xml must_== Full(<test/>)
-        case _ => failure("No request found in S")
+        case _ =>
+          failure("No request found in S")
       }
     }
 
@@ -165,8 +171,10 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
     ) in { req =>
       (
         WebSpecSpecRest(req)() match {
-          case Full(JsonResponse(_, _, _, 200)) => success
-          case other                            => failure("Invalid response : " + other)
+          case Full(JsonResponse(_, _, _, 200)) =>
+            success
+          case other =>
+            failure("Invalid response : " + other)
         }
       )
     }
@@ -176,7 +184,8 @@ class WebSpecSpec extends WebSpec(WebSpecSpecBoot.boot _) {
     ) in {
       case Full(template) =>
         template.toString.contains("Hello, WebSpec!") must_== true
-      case other => failure("Error on template : " + other)
+      case other =>
+        failure("Error on template : " + other)
     }
   }
 }

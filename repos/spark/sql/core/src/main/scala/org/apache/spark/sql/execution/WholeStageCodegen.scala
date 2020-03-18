@@ -39,12 +39,18 @@ trait CodegenSupport extends SparkPlan {
   /** Prefix used in the current operator's variable names. */
   private def variablePrefix: String =
     this match {
-      case _: TungstenAggregate => "agg"
-      case _: BroadcastHashJoin => "bhj"
-      case _: SortMergeJoin     => "smj"
-      case _: PhysicalRDD       => "rdd"
-      case _: DataSourceScan    => "scan"
-      case _                    => nodeName.toLowerCase
+      case _: TungstenAggregate =>
+        "agg"
+      case _: BroadcastHashJoin =>
+        "bhj"
+      case _: SortMergeJoin =>
+        "smj"
+      case _: PhysicalRDD =>
+        "rdd"
+      case _: DataSourceScan =>
+        "scan"
+      case _ =>
+        nodeName.toLowerCase
     }
 
   /**
@@ -444,8 +450,10 @@ case class WholeStageCodegen(child: SparkPlan)
 
   private def collectInputs(plan: SparkPlan): Seq[SparkPlan] =
     plan match {
-      case InputAdapter(c) => c :: Nil
-      case other           => other.children.flatMap(collectInputs)
+      case InputAdapter(c) =>
+        c :: Nil
+      case other =>
+        other.children.flatMap(collectInputs)
     }
 
   override def treeChildren: Seq[SparkPlan] = {
@@ -462,11 +470,15 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
 
   private def supportCodegen(e: Expression): Boolean =
     e match {
-      case e: LeafExpression => true
-      case e: CaseWhen       => e.shouldCodegen
+      case e: LeafExpression =>
+        true
+      case e: CaseWhen =>
+        e.shouldCodegen
       // CodegenFallback requires the input to be an InternalRow
-      case e: CodegenFallback => false
-      case _                  => true
+      case e: CodegenFallback =>
+        false
+      case _ =>
+        true
     }
 
   private def supportCodegen(plan: SparkPlan): Boolean =
@@ -477,7 +489,8 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
         // the generated code will be huge if there are too many columns
         val haveManyColumns = plan.output.length > 200
         !willFallback && !haveManyColumns
-      case _ => false
+      case _ =>
+        false
     }
 
   /**

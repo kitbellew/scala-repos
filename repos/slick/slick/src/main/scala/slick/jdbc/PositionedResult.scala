@@ -392,128 +392,160 @@ abstract class PositionedResult(val rs: ResultSet) extends Closeable {
   final def updateBooleanOption(v: Option[Boolean]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateBoolean(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateBoolean(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateBlobOption(v: Option[Blob]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateBlob(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateBlob(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateByteOption(v: Option[Byte]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateByte(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateByte(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateBytesOption(v: Option[Array[Byte]]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateBytes(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateBytes(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateClobOption(v: Option[Clob]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateClob(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateClob(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateDateOption(v: Option[Date]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateDate(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateDate(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateDoubleOption(v: Option[Double]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateDouble(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateDouble(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateFloatOption(v: Option[Float]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateFloat(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateFloat(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateIntOption(v: Option[Int]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateInt(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateInt(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateLongOption(v: Option[Long]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateLong(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateLong(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateShortOption(v: Option[Short]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateShort(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateShort(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateStringOption(v: Option[String]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateString(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateString(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateTimeOption(v: Option[Time]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateTime(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateTime(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateTimestampOption(v: Option[Timestamp]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateTimestamp(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateTimestamp(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateBigDecimalOption(v: Option[BigDecimal]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateBigDecimal(npos, s.bigDecimal);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateBigDecimal(npos, s.bigDecimal);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }
   final def updateObjectOption(v: Option[AnyRef]) {
     val npos = pos + 1;
     v match {
-      case Some(s) => rs.updateObject(npos, s);
-      case None    => rs.updateNull(npos)
+      case Some(s) =>
+        rs.updateObject(npos, s);
+      case None =>
+        rs.updateNull(npos)
     };
     pos = npos
   }

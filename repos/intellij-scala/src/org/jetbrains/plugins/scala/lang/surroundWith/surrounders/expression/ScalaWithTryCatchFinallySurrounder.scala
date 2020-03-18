@@ -33,10 +33,13 @@ class ScalaWithTryCatchFinallySurrounder extends ScalaExpressionSurrounder {
       withTryCatchNode.getPsi match {
         case x: ScParenthesisedExpr =>
           x.expr match {
-            case Some(y) => y
-            case _       => return x.getTextRange
+            case Some(y) =>
+              y
+            case _ =>
+              return x.getTextRange
           }
-        case x => x
+        case x =>
+          x
       }
 
     val tryCatchStmt = element.asInstanceOf[ScTryStmt]

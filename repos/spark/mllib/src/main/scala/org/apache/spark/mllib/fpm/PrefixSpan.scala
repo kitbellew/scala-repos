@@ -303,7 +303,8 @@ object PrefixSpan extends Logging {
             (c0 + c1, s0 + s1)
         }
         .filter {
-          case (_, (c, _)) => c >= minCount
+          case (_, (c, _)) =>
+            c >= minCount
         }
         .collect()
       val newLargePrefixes = mutable.Map.empty[Int, Prefix]

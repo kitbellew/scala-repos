@@ -44,13 +44,16 @@ trait RedisRequestTest extends RedisTest {
         head match {
           case c: Command =>
             fn.isDefinedAt(c) match {
-              case true => fn(c)
+              case true =>
+                fn(c)
               case false =>
                 fail("Didn't find expected type in list: %s".format(c.getClass))
             }
-          case _ => fail("Expected to find a command in the list")
+          case _ =>
+            fail("Expected to find a command in the list")
         }
-      case _ => fail("Expected single element list")
+      case _ =>
+        fail("Expected single element list")
     }
 }
 
@@ -150,13 +153,17 @@ trait RedisClientServerIntegrationTest
         val actualReply = expects.isEmpty
         assert(actualReply == isEmpty)
       }
-      case r: Reply => fail("Expected MBulkReply, got %s".format(r))
-      case _        => fail("Expected MBulkReply")
+      case r: Reply =>
+        fail("Expected MBulkReply, got %s".format(r))
+      case _ =>
+        fail("Expected MBulkReply")
     }
 
   def assertBulkReply(reply: Future[Reply], expects: String) =
     Await.result(reply) match {
-      case BulkReply(msg) => assert(BytesToString(msg.array) == expects)
-      case _              => fail("Expected BulkReply")
+      case BulkReply(msg) =>
+        assert(BytesToString(msg.array) == expects)
+      case _ =>
+        fail("Expected BulkReply")
     }
 }

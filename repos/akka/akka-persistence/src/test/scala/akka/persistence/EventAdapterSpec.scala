@@ -42,14 +42,18 @@ object EventAdapterSpec {
 
     override def toJournal(event: Any): Any =
       event match {
-        case e @ UserDataChanged(_, age) if age > 18 ⇒ Tagged(e, Adult)
-        case e @ UserDataChanged(_, age) ⇒ Tagged(e, Minor)
-        case e ⇒ NotTagged(e)
+        case e @ UserDataChanged(_, age) if age > 18 ⇒
+          Tagged(e, Adult)
+        case e @ UserDataChanged(_, age) ⇒
+          Tagged(e, Minor)
+        case e ⇒
+          NotTagged(e)
       }
     override def fromJournal(event: Any, manifest: String): EventSeq =
       EventSeq.single {
         event match {
-          case m: JournalModel ⇒ m.payload
+          case m: JournalModel ⇒
+            m.payload
         }
       }
 
@@ -103,7 +107,8 @@ object EventAdapterSpec {
 
     override def receiveRecover = {
       case RecoveryCompleted ⇒ // ignore
-      case e ⇒ state ::= e
+      case e ⇒
+        state ::= e
     }
     override def receiveCommand = persistIncoming
   }

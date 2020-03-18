@@ -60,7 +60,8 @@ class ReliableProxySpec
       Props(
         new Actor {
           def receive = {
-            case x ⇒ testActor ! x
+            case x ⇒
+              testActor ! x
           }
         }).withDeploy(Deploy.local),
       "echo")
@@ -392,7 +393,8 @@ class ReliableProxySpec
           val proxyTerm = expectMsgType[ProxyTerminated]
           // Validate that the unsent messages are 50 ints
           val unsentInts = proxyTerm.outstanding.queue collect {
-            case Message(i: Int, _, _) if i > 0 && i <= 50 ⇒ i
+            case Message(i: Int, _, _) if i > 0 && i <= 50 ⇒
+              i
           }
           unsentInts should have size 50
           expectTerminated(proxy)

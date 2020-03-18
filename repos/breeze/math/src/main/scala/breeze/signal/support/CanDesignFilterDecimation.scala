@@ -44,8 +44,10 @@ object CanDesignFilterDecimation {
             import OptFilterTaps._
             val realOrder =
               optFilterOrder match {
-                case Automatic   => 31
-                case IntOpt(ord) => ord
+                case Automatic =>
+                  31
+                case IntOpt(ord) =>
+                  ord
               }
             //cannot use parameter-by-name for optWindow, given duplicate variable name
             designFilterFirwin(

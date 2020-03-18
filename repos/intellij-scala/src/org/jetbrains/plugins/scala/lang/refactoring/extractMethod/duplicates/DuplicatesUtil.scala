@@ -42,10 +42,14 @@ import org.jetbrains.plugins.scala.lang.refactoring.extractMethod.{
 object DuplicatesUtil {
   def isSignificant(e: PsiElement): Boolean =
     e match {
-      case _: PsiWhiteSpace                                    => false
-      case _: PsiComment                                       => false
-      case ElementType(tp) if tp == ScalaTokenTypes.tSEMICOLON => false
-      case _                                                   => true
+      case _: PsiWhiteSpace =>
+        false
+      case _: PsiComment =>
+        false
+      case ElementType(tp) if tp == ScalaTokenTypes.tSEMICOLON =>
+        false
+      case _ =>
+        true
     }
 
   def filtered(elements: Seq[PsiElement]): Seq[PsiElement] = {
@@ -62,10 +66,13 @@ object DuplicatesUtil {
 
   def canBeEquivalent(pattern: PsiElement, candidate: PsiElement): Boolean = {
     (pattern, candidate) match {
-      case (ref: ScReferenceExpression, expr: ScExpression) => true
-      case (ElementType(tp1), ElementType(tp2))             => tp1 == tp2
+      case (ref: ScReferenceExpression, expr: ScExpression) =>
+        true
+      case (ElementType(tp1), ElementType(tp2)) =>
+        tp1 == tp2
       //todo this expressions, return statements, infix expressions
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -128,8 +135,9 @@ object DuplicatesUtil {
               replaceAll = true
             case FindManager.PromptResult.OK =>
               replaceDuplicate(project, settings, d)
-            case FindManager.PromptResult.SKIP   =>
-            case FindManager.PromptResult.CANCEL => cancelled = true
+            case FindManager.PromptResult.SKIP =>
+            case FindManager.PromptResult.CANCEL =>
+              cancelled = true
           }
         }
 

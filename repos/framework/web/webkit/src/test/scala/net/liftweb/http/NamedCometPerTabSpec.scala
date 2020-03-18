@@ -32,7 +32,8 @@ object NamedCometPerTabSpec extends Specification {
 
   class CometA extends NamedCometActorTrait {
     override def lowPriority = {
-      case msg => JsCmds.Noop
+      case msg =>
+        JsCmds.Noop
     }
     def render = {
       "nada" #> Text("nada")

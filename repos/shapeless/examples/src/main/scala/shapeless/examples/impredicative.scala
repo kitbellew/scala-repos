@@ -28,8 +28,10 @@ object ImpredicativeExamples extends App {
 
   def g(o: Option[List ~> Id]) =
     o match {
-      case None      => (0, '0')
-      case Some(get) => (get(List(1, 2)), get(List('a', 'b', 'c')))
+      case None =>
+        (0, '0')
+      case Some(get) =>
+        (get(List(1, 2)), get(List('a', 'b', 'c')))
     }
 
   val gNone = g(None)

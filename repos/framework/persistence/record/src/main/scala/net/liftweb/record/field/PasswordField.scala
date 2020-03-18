@@ -76,8 +76,10 @@ trait PasswordTypedField extends TypedField[String] {
         setBoxPlain(Full(a(0)))
       case (h1: String) :: (h2: String) :: Nil if h1 == h2 =>
         setBoxPlain(Full(h1))
-      case (hash: String) if (hash.startsWith("$2a$"))     => setBox(Full(hash))
-      case Full(hash: String) if (hash.startsWith("$2a$")) => setBox(Full(hash))
+      case (hash: String) if (hash.startsWith("$2a$")) =>
+        setBox(Full(hash))
+      case Full(hash: String) if (hash.startsWith("$2a$")) =>
+        setBox(Full(hash))
       case _ => {
         invalidPw = true;
         invalidMsg = S.?("passwords.do.not.match");
@@ -88,9 +90,12 @@ trait PasswordTypedField extends TypedField[String] {
 
   def setFromString(s: String): Box[String] =
     s match {
-      case null | "" if optional_? => setBoxPlain(Empty)
-      case null | ""               => setBoxPlain(Failure(notOptionalErrorMessage))
-      case _                       => setBoxPlain(Full(s))
+      case null | "" if optional_? =>
+        setBoxPlain(Empty)
+      case null | "" =>
+        setBoxPlain(Failure(notOptionalErrorMessage))
+      case _ =>
+        setBoxPlain(Full(s))
     }
 
   override def validate: List[FieldError] = {
@@ -124,8 +129,10 @@ trait PasswordTypedField extends TypedField[String] {
 
   def toForm: Box[NodeSeq] =
     uniqueFieldId match {
-      case Full(id) => Full(elem % ("id" -> id))
-      case _        => Full(elem)
+      case Full(id) =>
+        Full(elem % ("id" -> id))
+      case _ =>
+        Full(elem)
     }
 
   protected def validatePassword(pwdValue: Box[String]): Boolean = {
@@ -155,9 +162,12 @@ trait PasswordTypedField extends TypedField[String] {
 
   def setFromJValue(jvalue: JValue): Box[MyType] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBoxPlain(Empty)
-      case JString(s)                     => setFromString(s)
-      case other                          => setBoxPlain(FieldHelpers.expectedA("JString", other))
+      case JNothing | JNull if optional_? =>
+        setBoxPlain(Empty)
+      case JString(s) =>
+        setFromString(s)
+      case other =>
+        setBoxPlain(FieldHelpers.expectedA("JString", other))
     }
 
 }

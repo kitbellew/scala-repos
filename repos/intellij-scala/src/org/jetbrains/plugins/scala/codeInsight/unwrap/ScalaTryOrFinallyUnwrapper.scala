@@ -18,9 +18,12 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{
 class ScalaTryOrFinallyUnwrapper extends ScalaUnwrapper {
   override def isApplicableTo(e: PsiElement) =
     e match {
-      case _: ScTryBlock                                   => true
-      case fBl: ScFinallyBlock if fBl.expression.isDefined => true
-      case _                                               => false
+      case _: ScTryBlock =>
+        true
+      case fBl: ScFinallyBlock if fBl.expression.isDefined =>
+        true
+      case _ =>
+        false
     }
 
   override def doUnwrap(element: PsiElement, context: ScalaUnwrapContext) =
@@ -37,9 +40,12 @@ class ScalaTryOrFinallyUnwrapper extends ScalaUnwrapper {
 
   override def getDescription(e: PsiElement) =
     e match {
-      case _: ScTryBlock     => CodeInsightBundle.message("unwrap.try")
-      case _: ScFinallyBlock => ScalaBundle.message("unwrap.finally")
-      case _                 => ""
+      case _: ScTryBlock =>
+        CodeInsightBundle.message("unwrap.try")
+      case _: ScFinallyBlock =>
+        ScalaBundle.message("unwrap.finally")
+      case _ =>
+        ""
     }
 
   override def collectAffectedElements(
@@ -49,6 +55,7 @@ class ScalaTryOrFinallyUnwrapper extends ScalaUnwrapper {
       case _: ScTryStmt =>
         super.collectAffectedElements(e, toExtract)
         e
-      case _ => e
+      case _ =>
+        e
     }
 }

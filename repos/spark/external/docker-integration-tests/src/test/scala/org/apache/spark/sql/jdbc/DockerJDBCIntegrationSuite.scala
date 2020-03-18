@@ -118,7 +118,8 @@ abstract class DockerJDBCIntegrationSuite
         .env(
           db.env
             .map {
-              case (k, v) => s"$k=$v"
+              case (k, v) =>
+                s"$k=$v"
             }
             .toSeq
             .asJava)

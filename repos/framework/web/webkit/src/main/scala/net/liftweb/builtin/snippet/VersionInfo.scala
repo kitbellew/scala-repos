@@ -24,8 +24,10 @@ import net.liftweb.http._
 object VersionInfo extends DispatchSnippet {
 
   def dispatch: DispatchIt = {
-    case "lift" => liftVersion _
-    case "date" => buildDate _
+    case "lift" =>
+      liftVersion _
+    case "date" =>
+      buildDate _
   }
 
   private def liftVersion(ignore: NodeSeq): NodeSeq =

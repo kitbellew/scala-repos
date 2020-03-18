@@ -59,8 +59,10 @@ object Duration extends TimeLikeOps[Duration] {
 
       override def equals(other: Any) =
         other match {
-          case d: Duration => d eq this
-          case _           => false
+          case d: Duration =>
+            d eq this
+          case _ =>
+            false
         }
 
       override def *(x: Long): Duration =
@@ -104,8 +106,10 @@ object Duration extends TimeLikeOps[Duration] {
       override def afterEpoch = Time.Top
       override def +(delta: Duration) =
         delta match {
-          case Bottom | Undefined => Undefined
-          case _                  => this
+          case Bottom | Undefined =>
+            Undefined
+          case _ =>
+            this
         }
       override def unary_- = Bottom
       override def toString = "Duration.Top"
@@ -130,8 +134,10 @@ object Duration extends TimeLikeOps[Duration] {
 
       override def equals(other: Any) =
         other match {
-          case d: Duration => d eq this
-          case _           => false
+          case d: Duration =>
+            d eq this
+          case _ =>
+            false
         }
 
       /** Scaling arithmetic is Bottom preserving. */
@@ -178,8 +184,10 @@ object Duration extends TimeLikeOps[Duration] {
 
       override def +(delta: Duration) =
         delta match {
-          case Top | Undefined => Undefined
-          case _               => this
+          case Top | Undefined =>
+            Undefined
+          case _ =>
+            this
         }
 
       override def unary_- = Top
@@ -200,8 +208,10 @@ object Duration extends TimeLikeOps[Duration] {
 
       override def equals(other: Any) =
         other match {
-          case d: Duration => d eq this
-          case _           => false
+          case d: Duration =>
+            d eq this
+          case _ =>
+            false
         }
 
       override def *(x: Long): Duration = this
@@ -274,13 +284,17 @@ object Duration extends TimeLikeOps[Duration] {
             val List(signStr, numStr, unitStr, special) = m.subgroups
             val absDuration =
               special match {
-                case "top"       => Top
-                case "bottom"    => Bottom
-                case "undefined" => Undefined
+                case "top" =>
+                  Top
+                case "bottom" =>
+                  Bottom
+                case "undefined" =>
+                  Undefined
                 case _ =>
                   val u =
                     nameToUnit.get(unitStr) match {
-                      case Some(t) => t
+                      case Some(t) =>
+                        t
                       case None =>
                         throw new NumberFormatException(
                           "Invalid unit: " + unitStr)
@@ -289,14 +303,16 @@ object Duration extends TimeLikeOps[Duration] {
               }
 
             signStr match {
-              case "-" => -absDuration
+              case "-" =>
+                -absDuration
 
               // It's only OK to omit the sign for the first duration.
               case "" if i > 0 =>
                 throw new NumberFormatException(
                   "Expected a sign between durations")
 
-              case _ => absDuration
+              case _ =>
+                absDuration
             }
 
           // It's OK to use reduce because the regex ensures that there is
@@ -304,7 +320,8 @@ object Duration extends TimeLikeOps[Duration] {
         } reduce {
           _ + _
         }
-      case _ => throw new NumberFormatException("Invalid duration: " + s)
+      case _ =>
+        throw new NumberFormatException("Invalid duration: " + s)
     }
   }
 }
@@ -453,9 +470,12 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     */
   def *(x: Double): Duration =
     (nanos * x) match {
-      case product if java.lang.Double.isNaN(product) => Undefined
-      case Double.PositiveInfinity                    => Top
-      case Double.NegativeInfinity                    => Bottom
+      case product if java.lang.Double.isNaN(product) =>
+        Undefined
+      case Double.PositiveInfinity =>
+        Top
+      case Double.NegativeInfinity =>
+        Bottom
       case product =>
         val productLong = product.toLong
         if (productLong == Long.MaxValue)
@@ -493,9 +513,12 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     */
   def %(x: Duration): Duration =
     x match {
-      case Undefined | Nanoseconds(0) => Undefined
-      case Nanoseconds(ns)            => fromNanoseconds(nanos % ns)
-      case Top | Bottom               => this
+      case Undefined | Nanoseconds(0) =>
+        Undefined
+      case Nanoseconds(ns) =>
+        fromNanoseconds(nanos % ns)
+      case Top | Bottom =>
+        this
     }
 
   /**

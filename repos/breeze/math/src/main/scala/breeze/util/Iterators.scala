@@ -52,10 +52,14 @@ object Iterators {
                     headA
                   else
                     headB
-                case ((Some(a), i), (None, j)) => headA
-                case ((None, i), (Some(b), j)) => headB
-                case ((None, i), (None, j))    => headA
-                case x: Any                    => throw new IllegalStateException(x.toString)
+                case ((Some(a), i), (None, j)) =>
+                  headA
+                case ((None, i), (Some(b), j)) =>
+                  headB
+                case ((None, i), (None, j)) =>
+                  headA
+                case x: Any =>
+                  throw new IllegalStateException(x.toString)
               }
           }
 

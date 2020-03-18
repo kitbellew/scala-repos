@@ -234,7 +234,8 @@ object PartialFunction {
     *  Here `fallback_pf` is used as both unique marker object and special fallback function that returns it.
     */
   private[this] val fallback_pf: PartialFunction[Any, Any] = {
-    case _ => fallback_pf
+    case _ =>
+      fallback_pf
   }
   private def checkFallback[B] =
     fallback_pf.asInstanceOf[PartialFunction[Any, B]]
@@ -272,15 +273,18 @@ object PartialFunction {
 
   private[scala] def unlifted[A, B](f: A => Option[B]): PartialFunction[A, B] =
     f match {
-      case lf: Lifted[A, B] => lf.pf
-      case ff               => new Unlifted(ff)
+      case lf: Lifted[A, B] =>
+        lf.pf
+      case ff =>
+        new Unlifted(ff)
     }
 
   /** Converts ordinary function to partial one
     *  @since   2.10
     */
   def apply[A, B](f: A => B): PartialFunction[A, B] = {
-    case x => f(x)
+    case x =>
+      f(x)
   }
 
   private[this] val constFalse: Any => Boolean = { _ =>

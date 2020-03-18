@@ -192,13 +192,20 @@ private[util] trait Props extends Logger {
     Box
       .legacyNullTest((System.getProperty("run.mode")))
       .map(_.toLowerCase) match {
-      case Full("test")        => Test
-      case Full("production")  => Production
-      case Full("staging")     => Staging
-      case Full("pilot")       => Pilot
-      case Full("profile")     => Profile
-      case Full("development") => Development
-      case _                   => (autoDetectRunModeFn.get)()
+      case Full("test") =>
+        Test
+      case Full("production") =>
+        Production
+      case Full("staging") =>
+        Staging
+      case Full("pilot") =>
+        Pilot
+      case Full("profile") =>
+        Profile
+      case Full("development") =>
+        Development
+      case _ =>
+        (autoDetectRunModeFn.get)()
     }
   }
 
@@ -306,20 +313,28 @@ private[util] trait Props extends Logger {
     */
   lazy val modeName =
     mode match {
-      case Test       => "test"
-      case Staging    => "staging"
-      case Production => "production"
-      case Pilot      => "pilot"
-      case Profile    => "profile"
-      case _          => ""
+      case Test =>
+        "test"
+      case Staging =>
+        "staging"
+      case Production =>
+        "production"
+      case Pilot =>
+        "pilot"
+      case Profile =>
+        "profile"
+      case _ =>
+        ""
     }
 
   private lazy val _modeName = dotLen(modeName)
 
   private def dotLen(in: String): String =
     in match {
-      case null | "" => in
-      case x         => x + "."
+      case null | "" =>
+        in
+      case x =>
+        x + "."
     }
 
   /**
@@ -431,7 +446,8 @@ private[util] trait Props extends Logger {
           prop.entrySet.toArray.flatMap {
             case s: JMap.Entry[_, _] =>
               List((s.getKey.toString, s.getValue.toString))
-            case _ => Nil
+            case _ =>
+              Nil
           }: _*)
 
       case _ =>

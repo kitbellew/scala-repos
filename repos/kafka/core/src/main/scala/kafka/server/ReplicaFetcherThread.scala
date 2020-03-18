@@ -363,8 +363,10 @@ class ReplicaFetcherThread(
     val response = new ListOffsetResponse(clientResponse.responseBody)
     val partitionData = response.responseData.get(topicPartition)
     Errors.forCode(partitionData.errorCode) match {
-      case Errors.NONE => partitionData.offsets.asScala.head
-      case errorCode   => throw errorCode.exception
+      case Errors.NONE =>
+        partitionData.offsets.asScala.head
+      case errorCode =>
+        throw errorCode.exception
     }
   }
 
@@ -416,8 +418,10 @@ object ReplicaFetcherThread {
 
     def exception: Option[Throwable] =
       Errors.forCode(errorCode) match {
-        case Errors.NONE => None
-        case e           => Some(e.exception)
+        case Errors.NONE =>
+          None
+        case e =>
+          Some(e.exception)
       }
 
   }

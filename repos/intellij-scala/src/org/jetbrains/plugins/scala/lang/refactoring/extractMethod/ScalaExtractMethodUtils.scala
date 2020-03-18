@@ -94,7 +94,8 @@ object ScalaExtractMethodUtils {
       settings.elements.toSeq match {
         case Seq(x: ScBlockExpr) =>
           x.children.toSeq.drop(1).dropRight(1).toIterator // drop '{' and '}'
-        case x => x.toIterator
+        case x =>
+          x.toIterator
       }
     val elementsText = elementsToAdd.map(_.getText).mkString("")
 
@@ -103,9 +104,12 @@ object ScalaExtractMethodUtils {
         ifOne: => String,
         ifMany: => String): String = {
       settings.outputs.length match {
-        case 0 => ifZero
-        case 1 => ifOne
-        case _ => ifMany
+        case 0 =>
+          ifZero
+        case 1 =>
+          ifOne
+        case _ =>
+          ifMany
       }
     }
 
@@ -167,7 +171,8 @@ object ScalaExtractMethodUtils {
                     s"Some($retExprText)",
                     s"Left($retExprText)",
                     s"Left($retExprText)")
-                case None => "" //should not occur
+                case None =>
+                  "" //should not occur
               }
             val retElem = ScalaPsiElementFactory.createExpressionFromText(
               s"return $newText",
@@ -215,7 +220,8 @@ object ScalaExtractMethodUtils {
                           case ref: ScReferenceElement
                               if ref.refName == "apply" =>
                             tail()
-                          case call: ScMethodCall => tail()
+                          case call: ScMethodCall =>
+                            tail()
                           case _ =>
                             ref
                               .asInstanceOf[ScExpression]
@@ -233,7 +239,8 @@ object ScalaExtractMethodUtils {
                                   .replaceChild(ref.getNode, newRef.getNode)
                             }
                         }
-                      case _ => tail()
+                      case _ =>
+                        tail()
                     }
                     break = true
                   }
@@ -294,7 +301,8 @@ object ScalaExtractMethodUtils {
           ScFunctionType(retType, Seq.empty)(
             definition.getProject,
             definition.getResolveScope)
-        case _ => retType
+        case _ =>
+          retType
       }
     new ScalaVariableData(definition, isInside, tp)
   }
@@ -325,9 +333,12 @@ object ScalaExtractMethodUtils {
     }
     def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T = {
       outputs.length match {
-        case 0 => ifZero
-        case 1 => ifOne
-        case _ => ifMany
+        case 0 =>
+          ifZero
+        case 1 =>
+          ifOne
+        case _ =>
+          ifMany
       }
     }
     val outputType = outputTypeText(settings)
@@ -356,8 +367,10 @@ object ScalaExtractMethodUtils {
     else {
       val outputs = settings.outputs
       outputs.length match {
-        case 0 => ""
-        case 1 => outputs(0).returnType.presentableText
+        case 0 =>
+          ""
+        case 1 =>
+          outputs(0).returnType.presentableText
         case _ =>
           outputs.map(_.returnType.presentableText).mkString("(", ", ", ")")
       }
@@ -538,8 +551,10 @@ object ScalaExtractMethodUtils {
       else if (settings.outputs.length == 0) {
         val exprText =
           settings.returnType match {
-            case None                 => methodCallText
-            case Some(psi.types.Unit) => s"if ($methodCallText) return"
+            case None =>
+              methodCallText
+            case Some(psi.types.Unit) =>
+              s"if ($methodCallText) return"
             case Some(_) =>
               val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
               s"""$methodCallText match {
@@ -566,7 +581,8 @@ object ScalaExtractMethodUtils {
         val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
         val exprText =
           settings.returnType match {
-            case None => methodCallText
+            case None =>
+              methodCallText
             case Some(psi.types.Unit) =>
               s"""$methodCallText match {
                   |  case Some(result) $arrow result
@@ -682,7 +698,9 @@ object ScalaExtractMethodUtils {
 
   private def typeParametersText(settings: ScalaExtractMethodSettings) =
     settings.typeParameters match {
-      case Seq() => ""
-      case seq   => seq.map(_.getText).mkString("[", ", ", "]")
+      case Seq() =>
+        ""
+      case seq =>
+        seq.map(_.getText).mkString("[", ", ", "]")
     }
 }

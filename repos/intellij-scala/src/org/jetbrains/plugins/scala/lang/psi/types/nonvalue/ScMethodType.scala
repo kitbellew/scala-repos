@@ -90,8 +90,10 @@ case class Parameter(
 
   def paramInCode: Option[ScParameter] =
     psiParam match {
-      case Some(scParam: ScParameter) => Some(scParam)
-      case _                          => None
+      case Some(scParam: ScParameter) =>
+        Some(scParam)
+      case _ =>
+        None
     }
 
   def nameInCode = psiParam.map(_.getName)
@@ -113,20 +115,28 @@ class TypeParameter(
   def this(ptp: PsiTypeParameter) {
     this(
       ptp match {
-        case tp: ScTypeParam => tp.name
-        case _               => ptp.getName
+        case tp: ScTypeParam =>
+          tp.name
+        case _ =>
+          ptp.getName
       },
       ptp match {
-        case tp: ScTypeParam => tp.typeParameters.map(new TypeParameter(_))
-        case _               => Seq.empty
+        case tp: ScTypeParam =>
+          tp.typeParameters.map(new TypeParameter(_))
+        case _ =>
+          Seq.empty
       },
       ptp match {
-        case tp: ScTypeParam => () => tp.lowerBound.getOrNothing
-        case _               => () => Nothing //todo: lower type?
+        case tp: ScTypeParam =>
+          () => tp.lowerBound.getOrNothing
+        case _ =>
+          () => Nothing //todo: lower type?
       },
       ptp match {
-        case tp: ScTypeParam => () => tp.upperBound.getOrAny
-        case _               => () => Any //todo: upper type?
+        case tp: ScTypeParam =>
+          () => tp.upperBound.getOrAny
+        case _ =>
+          () => Any //todo: upper type?
       },
       ptp)
   }
@@ -155,7 +165,8 @@ class TypeParameter(
           lowerType() == that.lowerType() &&
           upperType() == that.upperType() &&
           ptp == that.ptp
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int = {
@@ -237,13 +248,16 @@ case class ScMethodType(
       visited: HashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     val newVisited = visited + this
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         new ScMethodType(
           returnType.recursiveUpdate(update, newVisited),
@@ -259,7 +273,8 @@ case class ScMethodType(
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         new ScMethodType(
           returnType
@@ -304,7 +319,8 @@ case class ScMethodType(
           i = i + 1
         }
         (true, undefinedSubst)
-      case _ => (false, undefinedSubst)
+      case _ =>
+        (false, undefinedSubst)
     }
   }
 }
@@ -336,7 +352,8 @@ case class ScTypePolymorphicType(
                   (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
                 case ScAbstractType(tp, _, _) =>
                   (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-                case _ => null
+                case _ =>
+                  null
               }
             if (pair != null) {
               val (tpName, id) = pair
@@ -371,12 +388,14 @@ case class ScTypePolymorphicType(
             (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
               tpt.name, tpt.getId
             )) match {
-            case None => (true, tpt)
+            case None =>
+              (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true
               (true, tpt)
           }
-        case tp: ScType => (hasRecursiveTypeParameters, tp)
+        case tp: ScType =>
+          (hasRecursiveTypeParameters, tp)
       }
       hasRecursiveTypeParameters
     }
@@ -412,12 +431,14 @@ case class ScTypePolymorphicType(
             (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
               tpt.name, tpt.getId
             )) match {
-            case None => (true, tpt)
+            case None =>
+              (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true
               (true, tpt)
           }
-        case tp: ScType => (hasRecursiveTypeParameters, tp)
+        case tp: ScType =>
+          (hasRecursiveTypeParameters, tp)
       }
       hasRecursiveTypeParameters
     }
@@ -481,13 +502,16 @@ case class ScTypePolymorphicType(
       visited: HashSet[ScType]): ScType = {
     if (visited.contains(this)) {
       return update(this) match {
-        case (true, res) => res
-        case _           => this
+        case (true, res) =>
+          res
+        case _ =>
+          this
       }
     }
     val newVisited = visited + this
     update(this) match {
-      case (true, res) => res
+      case (true, res) =>
+        res
       case _ =>
         ScTypePolymorphicType(
           internalType.recursiveUpdate(update, newVisited),
@@ -513,7 +537,8 @@ case class ScTypePolymorphicType(
       update: (ScType, Int, T) => (Boolean, ScType, T),
       variance: Int = 1): ScType = {
     update(this, variance, data) match {
-      case (true, res, _) => res
+      case (true, res, _) =>
+        res
       case (_, _, newData) =>
         ScTypePolymorphicType(
           internalType
@@ -582,7 +607,8 @@ case class ScTypePolymorphicType(
                           p.typeParameters.toList.map {
                             new ScTypeParameterType(_, ScSubstitutor.empty)
                           }
-                        case _ => Nil
+                        case _ =>
+                          Nil
                       },
                       new Suspension(tuple._2.lowerType),
                       new Suspension(tuple._2.upperType),
@@ -595,7 +621,8 @@ case class ScTypePolymorphicType(
           p.internalType,
           undefinedSubst,
           falseUndef)
-      case _ => (false, undefinedSubst)
+      case _ =>
+        (false, undefinedSubst)
     }
   }
 

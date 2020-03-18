@@ -90,7 +90,8 @@ object Box extends BoxTrait with Tryo {
       if (theListOfBoxes.exists(_.isInstanceOf[Failure])) {
         val failureChain = theListOfBoxes
           .collect {
-            case fail: Failure => fail
+            case fail: Failure =>
+              fail
           }
           .reduceRight { (topmostFailure, latestFailure) =>
             topmostFailure.copy(chain = Full(latestFailure))
@@ -135,8 +136,10 @@ sealed trait BoxTrait {
     */
   def apply[T](in: Option[T]) =
     in match {
-      case Some(x) => Full(x)
-      case _       => Empty
+      case Some(x) =>
+        Full(x)
+      case _ =>
+        Empty
     }
 
   /**
@@ -147,9 +150,12 @@ sealed trait BoxTrait {
     */
   def apply[T](in: Box[T]) =
     in match {
-      case Full(x)     => legacyNullTest(x)
-      case x: EmptyBox => x
-      case _           => Empty
+      case Full(x) =>
+        legacyNullTest(x)
+      case x: EmptyBox =>
+        x
+      case _ =>
+        Empty
     }
 
   /**
@@ -161,8 +167,10 @@ sealed trait BoxTrait {
     */
   def apply[T](in: List[T]) =
     in match {
-      case x :: _ => Full(x)
-      case _      => Empty
+      case x :: _ =>
+        Full(x)
+      case _ =>
+        Empty
     }
 
   /**
@@ -236,8 +244,10 @@ sealed trait BoxTrait {
     */
   def legacyNullTest[T](in: T): Box[T] =
     in match {
-      case null => Empty
-      case _    => Full(in)
+      case null =>
+        Empty
+      case _ =>
+        Full(in)
     }
 
   /**
@@ -721,10 +731,14 @@ sealed abstract class Box[+A] extends Product with Serializable {
     */
   override def equals(other: Any): Boolean =
     (this, other) match {
-      case (Full(x), Full(y)) => x == y
-      case (Full(x), y)       => x == y
-      case (x, y: AnyRef)     => x eq y
-      case _                  => false
+      case (Full(x), Full(y)) =>
+        x == y
+      case (Full(x), y) =>
+        x == y
+      case (x, y: AnyRef) =>
+        x eq y
+      case _ =>
+        false
     }
 
   /**
@@ -732,8 +746,10 @@ sealed abstract class Box[+A] extends Product with Serializable {
     */
   def choice[B](f1: A => Box[B])(alternative: => Box[B]): Box[B] =
     this match {
-      case Full(x) => f1(x)
-      case _       => alternative
+      case Full(x) =>
+        f1(x)
+      case _ =>
+        alternative
     }
 
   /**
@@ -858,15 +874,18 @@ final case class Full[+A](value: A) extends Box[A] {
       case value: AnyRef =>
         val cls =
           Box.primitiveMap.get(clsOrg) match {
-            case Some(c) => c
-            case _       => clsOrg
+            case Some(c) =>
+              c
+            case _ =>
+              clsOrg
           }
 
         if (cls.isAssignableFrom(value.getClass))
           Full(value.asInstanceOf[B])
         else
           Empty
-      case _ => Empty
+      case _ =>
+        Empty
     }
 
   override def asA[B](implicit m: Manifest[B]): Box[B] =
@@ -947,8 +966,10 @@ sealed case class Failure(
 
   private def chainList: List[Failure] =
     chain match {
-      case Full(f) => f :: f.chainList
-      case _       => Nil
+      case Full(f) =>
+        f :: f.chainList
+      case _ =>
+        Nil
     }
 
   /**
@@ -1006,9 +1027,12 @@ sealed case class Failure(
 
   override def equals(other: Any): Boolean =
     (this, other) match {
-      case (Failure(x, y, z), Failure(x1, y1, z1)) => (x, y, z) == (x1, y1, z1)
-      case (x, y: AnyRef)                          => x eq y
-      case _                                       => false
+      case (Failure(x, y, z), Failure(x1, y1, z1)) =>
+        (x, y, z) == (x1, y1, z1)
+      case (x, y: AnyRef) =>
+        x eq y
+      case _ =>
+        false
     }
 
   override def ?~(msg: => String): Failure = this
@@ -1037,7 +1061,8 @@ object ParamFailure {
     in match {
       case pf: ParamFailure[_] =>
         Some((pf.msg, pf.exception, pf.chain, pf.param))
-      case _ => None
+      case _ =>
+        None
     }
 }
 
@@ -1085,14 +1110,17 @@ final class ParamFailure[T](
     that match {
       case ParamFailure(m, e, c, p) =>
         m == msg && e == exception && c == chain && p == param
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode(): Int =
     super.hashCode() + (
       param match {
-        case null => 0
-        case x    => x.hashCode()
+        case null =>
+          0
+        case x =>
+          x.hashCode()
       }
     )
 

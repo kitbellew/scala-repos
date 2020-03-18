@@ -267,7 +267,8 @@ trait MarkupParsers {
             case '?' =>
               nextch();
               xProcInstr // PI
-            case _ => element // child node
+            case _ =>
+              element // child node
           }
         ts append toAppend
         false
@@ -294,7 +295,8 @@ trait MarkupParsers {
             case '&' => // EntityRef or CharRef
               content_AMP(ts)
               loopContent()
-            case SU => ()
+            case SU =>
+              ()
             case _ => // text content - here xEmbeddedBlock might be true
               appendText(tmppos, ts, xText)
               loopContent()
@@ -365,8 +367,10 @@ trait MarkupParsers {
         debugLastStartElement.pop()
         val pos = r2p(start, start, curOffset)
         qname match {
-          case "xml:group" => handle.group(pos, ts)
-          case _           => handle.element(pos, qname, attrMap, empty = false, ts)
+          case "xml:group" =>
+            handle.group(pos, ts)
+          case _ =>
+            handle.element(pos, qname, attrMap, empty = false, ts)
         }
       }
     }

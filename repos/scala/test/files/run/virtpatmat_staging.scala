@@ -28,8 +28,10 @@ trait Intf {
 
   def test =
     7 match {
-      case 5 => "foo"
-      case _ => "bar"
+      case 5 =>
+        "foo"
+      case _ =>
+        "bar"
     }
 }
 

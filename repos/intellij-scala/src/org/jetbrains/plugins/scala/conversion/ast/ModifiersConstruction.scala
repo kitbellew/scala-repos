@@ -25,8 +25,10 @@ object ModifierType extends Enumeration {
 
   override def toString(): String = {
     Value match {
-      case ABSTRACT => "abstract"
-      case _        => "other"
+      case ABSTRACT =>
+        "abstract"
+      case _ =>
+        "other"
     }
   }
 }

@@ -152,7 +152,8 @@ object WebSocketClient {
           channel.read()
         }
         .onFailure {
-          case t => disconnected.tryFailure(t)
+          case t =>
+            disconnected.tryFailure(t)
         }
 
       disconnected.future
@@ -198,7 +199,8 @@ object WebSocketClient {
 
           onConnected(webSocketProtocol(clientConnection))
 
-        case _ => throw new WebSocketException("Unexpected message: " + msg)
+        case _ =>
+          throw new WebSocketException("Unexpected message: " + msg)
       }
     }
 

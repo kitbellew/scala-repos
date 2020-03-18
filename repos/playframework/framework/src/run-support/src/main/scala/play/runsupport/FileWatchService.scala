@@ -71,10 +71,14 @@ object FileWatchService {
       .get("os.name")
       .map { name =>
         name.toLowerCase(Locale.ENGLISH) match {
-          case osx if osx.contains("darwin") || osx.contains("mac") => OSX
-          case windows if windows.contains("windows")               => Windows
-          case linux if linux.contains("linux")                     => Linux
-          case _                                                    => Other
+          case osx if osx.contains("darwin") || osx.contains("mac") =>
+            OSX
+          case windows if windows.contains("windows") =>
+            Windows
+          case linux if linux.contains("linux") =>
+            Linux
+          case _ =>
+            Other
         }
       }
       .getOrElse(Other)
@@ -99,7 +103,8 @@ object FileWatchService {
                 logger.trace(e)
                 new PollingFileWatchService(pollDelayMillis)
             }.get
-          case _ => new PollingFileWatchService(pollDelayMillis)
+          case _ =>
+            new PollingFileWatchService(pollDelayMillis)
         }
 
       def watch(filesToWatch: Seq[File], onChange: () => Unit) =
@@ -322,7 +327,8 @@ private object JNotifyFileWatchService {
         }
         watchService = Some(ws)
         ws
-      case Some(ws) => ws
+      case Some(ws) =>
+        ws
     }
   }
 }
@@ -397,7 +403,9 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
                 watchKey.reset()
               }
             } catch {
-              case NonFatal(e) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
+              case NonFatal(
+                    e
+                  ) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
             } finally {
               // Just in case it wasn't closed.
               watcher.close()

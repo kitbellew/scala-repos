@@ -37,11 +37,14 @@ private[spark] class PythonPartitioner(
 
   override def getPartition(key: Any): Int =
     key match {
-      case null => 0
+      case null =>
+        0
       // we don't trust the Python partition function to return valid partition ID's so
       // let's do a modulo numPartitions in any case
-      case key: Long => Utils.nonNegativeMod(key.toInt, numPartitions)
-      case _         => Utils.nonNegativeMod(key.hashCode(), numPartitions)
+      case key: Long =>
+        Utils.nonNegativeMod(key.toInt, numPartitions)
+      case _ =>
+        Utils.nonNegativeMod(key.hashCode(), numPartitions)
     }
 
   override def equals(other: Any): Boolean =

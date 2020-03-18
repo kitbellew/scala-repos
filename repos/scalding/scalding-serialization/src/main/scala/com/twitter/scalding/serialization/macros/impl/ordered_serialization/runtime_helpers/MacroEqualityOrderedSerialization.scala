@@ -32,7 +32,9 @@ abstract class MacroEqualityOrderedSerialization[T]
     MacroEqualityOrderedSerialization.seed ^ uniqueId.hashCode
   override def equals(other: Any): Boolean =
     other match {
-      case o: MacroEqualityOrderedSerialization[_] => o.uniqueId == uniqueId
-      case _                                       => false
+      case o: MacroEqualityOrderedSerialization[_] =>
+        o.uniqueId == uniqueId
+      case _ =>
+        false
     }
 }

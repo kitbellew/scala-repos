@@ -36,9 +36,12 @@ import Helpers._
 object Form extends DispatchSnippet {
 
   def dispatch: DispatchIt = {
-    case "render" => render _
-    case "ajax"   => render _
-    case "post"   => post _
+    case "render" =>
+      render _
+    case "ajax" =>
+      render _
+    case "post" =>
+      post _
   }
 
   /**
@@ -66,7 +69,8 @@ object Form extends DispatchSnippet {
               e.attributes.filter {
                 case up: UnprefixedAttribute =>
                   up.key != "method" && up.key != "action"
-                case x => true
+                case x =>
+                  true
               }))
         new Elem(null, "form", meta, e.scope, e.minimizeEmpty, e.child: _*)
       } else {
@@ -80,7 +84,8 @@ object Form extends DispatchSnippet {
     S.attr("multipart") match {
       case Full(x) if Helpers.toBoolean(x) =>
         ret % ("enctype" -> "multipart/form-data")
-      case _ => ret
+      case _ =>
+        ret
     }
   }
 

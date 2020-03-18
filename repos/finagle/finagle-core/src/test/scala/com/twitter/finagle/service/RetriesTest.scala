@@ -16,7 +16,8 @@ class RetriesTest extends FunSuite {
   private[this] class AnotherEx extends Exception
 
   private[this] val retryFn: PartialFunction[Try[Nothing], Boolean] = {
-    case Throw(_: MyRetryEx) => true
+    case Throw(_: MyRetryEx) =>
+      true
   }
 
   private[this] def newRetryPolicy(retries: Int) =
@@ -54,7 +55,8 @@ class RetriesTest extends FunSuite {
     val budget = newBudget()
 
     val retryAll: PartialFunction[Try[Nothing], Boolean] = {
-      case _ => true
+      case _ =>
+        true
     }
 
     val params = Stack.Params.empty +

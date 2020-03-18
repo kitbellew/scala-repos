@@ -116,7 +116,8 @@ object WebSocket {
         def transform(flow: Flow[String, String, _]) = {
           AkkaStreams.bypassWith[Message, String, Message](
             Flow[Message] collect {
-              case TextMessage(text) => Left(text)
+              case TextMessage(text) =>
+                Left(text)
               case BinaryMessage(_) =>
                 Right(
                   CloseMessage(
@@ -136,7 +137,8 @@ object WebSocket {
         def transform(flow: Flow[ByteString, ByteString, _]) = {
           AkkaStreams.bypassWith[Message, ByteString, Message](
             Flow[Message] collect {
-              case BinaryMessage(data) => Left(data)
+              case BinaryMessage(data) =>
+                Left(data)
               case TextMessage(_) =>
                 Right(
                   CloseMessage(
@@ -177,7 +179,8 @@ object WebSocket {
             Flow[Message].collect {
               case BinaryMessage(data) =>
                 closeOnException(Json.parse(data.iterator.asInputStream))
-              case TextMessage(text) => closeOnException(Json.parse(text))
+              case TextMessage(text) =>
+                closeOnException(Json.parse(text))
             })(
             flow map { json =>
               TextMessage(Json.stringify(json))
@@ -396,9 +399,11 @@ object WebSocket {
                     case eof @ Input.EOF =>
                       action()
                       wrap(k(eof))
-                    case other => wrap(k(other))
+                    case other =>
+                      wrap(k(other))
                   })
-              case other => folder(other)
+              case other =>
+                folder(other)
             }(ec)
         }
     }

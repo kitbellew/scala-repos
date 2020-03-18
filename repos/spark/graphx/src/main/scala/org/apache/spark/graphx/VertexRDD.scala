@@ -279,7 +279,8 @@ object VertexRDD {
   def apply[VD: ClassTag](vertices: RDD[(VertexId, VD)]): VertexRDD[VD] = {
     val vPartitioned: RDD[(VertexId, VD)] =
       vertices.partitioner match {
-        case Some(p) => vertices
+        case Some(p) =>
+          vertices
         case None =>
           vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
       }
@@ -326,7 +327,8 @@ object VertexRDD {
       mergeFunc: (VD, VD) => VD): VertexRDD[VD] = {
     val vPartitioned: RDD[(VertexId, VD)] =
       vertices.partitioner match {
-        case Some(p) => vertices
+        case Some(p) =>
+          vertices
         case None =>
           vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
       }

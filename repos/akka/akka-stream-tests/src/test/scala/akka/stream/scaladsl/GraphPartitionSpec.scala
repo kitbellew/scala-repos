@@ -36,9 +36,12 @@ class GraphPartitionSpec extends AkkaSpec {
               Partition[Int](
                 3,
                 {
-                  case g if (g > 3) ⇒ 0
-                  case l if (l < 3) ⇒ 1
-                  case e if (e == 3) ⇒ 2
+                  case g if (g > 3) ⇒
+                    0
+                  case l if (l < 3) ⇒
+                    1
+                  case e if (e == 3) ⇒
+                    2
                 }))
             Source(List(1, 2, 3, 4, 5)) ~> partition.in
             partition.out(0) ~> sink1.in
@@ -65,8 +68,10 @@ class GraphPartitionSpec extends AkkaSpec {
               Partition[String](
                 2,
                 {
-                  case s if (s.length > 4) ⇒ 0
-                  case _ ⇒ 1
+                  case s if (s.length > 4) ⇒
+                    0
+                  case _ ⇒
+                    1
                 }))
             Source(
               List("this", "is", "just", "another", "test")) ~> partition.in
@@ -99,8 +104,10 @@ class GraphPartitionSpec extends AkkaSpec {
               Partition[Int](
                 2,
                 {
-                  case l if l < 6 ⇒ 0;
-                  case _ ⇒ 1
+                  case l if l < 6 ⇒
+                    0;
+                  case _ ⇒
+                    1
                 }))
             Source(List(6, 3)) ~> partition.in
             partition.out(0) ~> Sink.fromSubscriber(c1)
@@ -130,8 +137,10 @@ class GraphPartitionSpec extends AkkaSpec {
               Partition[Int](
                 2,
                 {
-                  case l if l < 6 ⇒ 0;
-                  case _ ⇒ 1
+                  case l if l < 6 ⇒
+                    0;
+                  case _ ⇒
+                    1
                 }))
             Source.fromPublisher(p1.getPublisher) ~> partition.in
             partition.out(0) ~> Flow[Int].buffer(
@@ -170,8 +179,10 @@ class GraphPartitionSpec extends AkkaSpec {
             Partition[Int](
               2,
               {
-                case l if l < 4 ⇒ 0;
-                case _ ⇒ 1
+                case l if l < 4 ⇒
+                  0;
+                case _ ⇒
+                  1
               }))
           val merge = b.add(Merge[Int](2))
           Source(input) ~> partition.in
@@ -200,8 +211,10 @@ class GraphPartitionSpec extends AkkaSpec {
               Partition[Int](
                 2,
                 {
-                  case l if l < 6 ⇒ 0;
-                  case _ ⇒ 1
+                  case l if l < 6 ⇒
+                    0;
+                  case _ ⇒
+                    1
                 }))
             Source(List(6)) ~> partition.in
             partition.out(0) ~> Sink.fromSubscriber(c1)
@@ -229,8 +242,10 @@ class GraphPartitionSpec extends AkkaSpec {
               Partition[Int](
                 2,
                 {
-                  case l if l < 0 ⇒ -1;
-                  case _ ⇒ 0
+                  case l if l < 0 ⇒
+                    -1;
+                  case _ ⇒
+                    0
                 }))
             Source(List(-3)) ~> partition.in
             partition.out(0) ~> Sink.fromSubscriber(c1)

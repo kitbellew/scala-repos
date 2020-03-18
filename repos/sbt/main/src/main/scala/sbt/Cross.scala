@@ -48,8 +48,10 @@ object Cross {
 
         val (resolveVersion, homePath) =
           arg.split("=") match {
-            case Array(v, h) => (v, h)
-            case _           => ("", arg)
+            case Array(v, h) =>
+              (v, h)
+            case _ =>
+              ("", arg)
           }
         val home = IO.resolve(x.currentProject.base, new File(homePath))
         // Basic Algorithm.
@@ -98,7 +100,8 @@ object Cross {
 
         // TODO - Track delegates and avoid regenerating.
         val delegates: Seq[Setting[_]] = session.mergeSettings collect {
-          case x if exclude(x) => delegateToGlobal(x.key)
+          case x if exclude(x) =>
+            delegateToGlobal(x.key)
         }
         val fixedSession = session.appendRaw(add ++ delegates)
         val fixedState = BuiltinCommands.reapply(fixedSession, structure, state)
@@ -123,7 +126,8 @@ object Cross {
     _.key match {
       case ScopedKey(Scope(_, Global, Global, _), key) if keys.contains(key) =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def crossParser(state: State): Parser[String] =

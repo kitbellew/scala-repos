@@ -14,9 +14,12 @@ private[http4] object Bijections {
 
     def versionToFinagle(v: NettyHttp.HttpVersion): FinagleHttp.Version =
       v match {
-        case NettyHttp.HttpVersion.HTTP_1_0 => FinagleHttp.Version.Http10
-        case NettyHttp.HttpVersion.HTTP_1_1 => FinagleHttp.Version.Http11
-        case _                              => FinagleHttp.Version.Http11
+        case NettyHttp.HttpVersion.HTTP_1_0 =>
+          FinagleHttp.Version.Http10
+        case NettyHttp.HttpVersion.HTTP_1_1 =>
+          FinagleHttp.Version.Http11
+        case _ =>
+          FinagleHttp.Version.Http11
       }
 
     def methodToFinagle(m: NettyHttp.HttpMethod): FinagleHttp.Method =
@@ -92,8 +95,10 @@ private[http4] object Bijections {
 
     def versionToNetty(v: FinagleHttp.Version): NettyHttp.HttpVersion =
       v match {
-        case FinagleHttp.Version.Http10 => NettyHttp.HttpVersion.HTTP_1_0
-        case FinagleHttp.Version.Http11 => NettyHttp.HttpVersion.HTTP_1_1
+        case FinagleHttp.Version.Http10 =>
+          NettyHttp.HttpVersion.HTTP_1_0
+        case FinagleHttp.Version.Http11 =>
+          NettyHttp.HttpVersion.HTTP_1_1
       }
 
     def responseToNetty(r: FinagleHttp.Response): NettyHttp.FullHttpResponse =

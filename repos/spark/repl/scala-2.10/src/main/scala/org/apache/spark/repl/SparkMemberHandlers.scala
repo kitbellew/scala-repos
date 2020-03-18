@@ -53,7 +53,8 @@ private[repl] trait SparkMemberHandlers {
             ()
           else
             importVars += name
-        case _ => super.traverse(ast)
+        case _ =>
+          super.traverse(ast)
       }
   }
   private object ImportVarsTraverser {
@@ -66,15 +67,24 @@ private[repl] trait SparkMemberHandlers {
 
   def chooseHandler(member: Tree): MemberHandler =
     member match {
-      case member: DefDef        => new DefHandler(member)
-      case member: ValDef        => new ValHandler(member)
-      case member: Assign        => new AssignHandler(member)
-      case member: ModuleDef     => new ModuleHandler(member)
-      case member: ClassDef      => new ClassHandler(member)
-      case member: TypeDef       => new TypeAliasHandler(member)
-      case member: Import        => new ImportHandler(member)
-      case DocDef(_, documented) => chooseHandler(documented)
-      case member                => new GenericHandler(member)
+      case member: DefDef =>
+        new DefHandler(member)
+      case member: ValDef =>
+        new ValHandler(member)
+      case member: Assign =>
+        new AssignHandler(member)
+      case member: ModuleDef =>
+        new ModuleHandler(member)
+      case member: ClassDef =>
+        new ClassHandler(member)
+      case member: TypeDef =>
+        new TypeAliasHandler(member)
+      case member: Import =>
+        new ImportHandler(member)
+      case DocDef(_, documented) =>
+        chooseHandler(documented)
+      case member =>
+        new GenericHandler(member)
     }
 
   sealed abstract class MemberDefHandler(override val member: MemberDef)
@@ -227,7 +237,8 @@ private[repl] trait SparkMemberHandlers {
       selectors foreach {
         case sel @ ImportSelector(old, _, `name`, _) =>
           return "import %s.{ %s }".format(expr, sel)
-        case _ => ()
+        case _ =>
+          ()
       }
       "import %s.%s".format(expr, name)
     }

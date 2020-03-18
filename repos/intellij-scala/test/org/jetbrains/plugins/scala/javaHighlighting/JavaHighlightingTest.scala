@@ -574,9 +574,12 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
 
     getFile.depthFirst.foreach(annotator.annotate(_, mock))
     mock.annotations.filter {
-      case Error(_, null) | Error(null, _) => false
-      case Error(_, _)                     => true
-      case _                               => false
+      case Error(_, null) | Error(null, _) =>
+        false
+      case Error(_, _) =>
+        true
+      case _ =>
+        false
     }
   }
 

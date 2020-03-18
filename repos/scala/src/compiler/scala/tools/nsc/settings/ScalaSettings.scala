@@ -50,8 +50,10 @@ trait ScalaSettings
   /** Any -multichoice:help? Nicer if any option could report that it had help to offer. */
   private def multihelp =
     allSettings exists {
-      case s: MultiChoiceSetting[_] => s.isHelping
-      case _                        => false
+      case s: MultiChoiceSetting[_] =>
+        s.isHelping
+      case _ =>
+        false
     }
 
   /** Is an info setting set? */

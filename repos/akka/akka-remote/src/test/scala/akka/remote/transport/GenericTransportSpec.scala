@@ -73,8 +73,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       result._2 should not be null
 
       registry.logSnapshot.exists {
-        case ListenAttempt(address) ⇒ address == addressATest
-        case _ ⇒ false
+        case ListenAttempt(address) ⇒
+          address == addressATest
+        case _ ⇒
+          false
       } should ===(true)
     }
 
@@ -167,7 +169,8 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       registry.logSnapshot.exists {
         case WriteAttempt(`addressATest`, `addressBTest`, sentPdu) ⇒
           sentPdu == pdu
-        case _ ⇒ false
+        case _ ⇒
+          false
       } should ===(true)
     }
 
@@ -212,8 +215,10 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
 
       awaitCond {
         registry.logSnapshot exists {
-          case DisassociateAttempt(`addressATest`, `addressBTest`) ⇒ true
-          case _ ⇒ false
+          case DisassociateAttempt(`addressATest`, `addressBTest`) ⇒
+            true
+          case _ ⇒
+            false
         }
       }
     }

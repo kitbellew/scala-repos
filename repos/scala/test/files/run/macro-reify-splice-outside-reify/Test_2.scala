@@ -7,6 +7,7 @@ object Test extends App {
     List(Literal(Constant(42))))
   try println(cm.mkToolBox().eval(tree))
   catch {
-    case ex: Throwable => println(ex.getMessage)
+    case ex: Throwable =>
+      println(ex.getMessage)
   }
 }

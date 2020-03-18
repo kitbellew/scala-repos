@@ -15,7 +15,8 @@ object TestActors {
     */
   class EchoActor extends Actor {
     override def receive = {
-      case message ⇒ sender() ! message
+      case message ⇒
+        sender() ! message
     }
   }
 
@@ -26,7 +27,8 @@ object TestActors {
     */
   class ForwardActor(ref: ActorRef) extends Actor {
     override def receive = {
-      case message ⇒ ref forward message
+      case message ⇒
+        ref forward message
     }
   }
 

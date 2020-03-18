@@ -78,7 +78,8 @@ class CSVIngestProcessing(
       chunk match {
         case Left(bytes) =>
           writeChannel(chan, bytes :: StreamT.empty[Future, Array[Byte]], 0L)
-        case Right(stream) => writeChannel(chan, stream, 0L)
+        case Right(stream) =>
+          writeChannel(chan, stream, 0L)
       }
     }
 
@@ -111,8 +112,10 @@ class CSVIngestProcessing(
           s: Option[String],
           default: Char): ValidationNel[String, Char] = {
         s map {
-          case s if s.length == 1 => success(s.charAt(0))
-          case _                  => failure("Expected a single character but found a string.")
+          case s if s.length == 1 =>
+            success(s.charAt(0))
+          case _ =>
+            failure("Expected a single character but found a string.")
         } getOrElse {
           success(default)
         } toValidationNel

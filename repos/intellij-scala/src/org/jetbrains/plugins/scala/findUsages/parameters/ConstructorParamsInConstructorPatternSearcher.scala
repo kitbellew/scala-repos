@@ -61,7 +61,8 @@ class ConstructorParamsInConstructorPatternSearcher
                           }
                         }
                       })
-                case _ => true
+                case _ =>
+                  true
               }
           }
         ReferencesSearch.search(cls, scope, false).forEach(processor)
@@ -80,10 +81,13 @@ class ConstructorParamsInConstructorPatternSearcher
           classOf[ScPrimaryConstructor]) match {
           case pc @ ScPrimaryConstructor.ofClass(cls) if cls.isCase =>
             pc.parameters.indexOf(param) match {
-              case -1 => None
-              case i  => Some(cls, i)
+              case -1 =>
+                None
+              case i =>
+                Some(cls, i)
             }
-          case _ => None
+          case _ =>
+            None
         }
       }
     }
@@ -95,7 +99,8 @@ class ConstructorParamsInConstructorPatternSearcher
         ref.getElement.getParent match {
           case consPattern: ScConstructorPattern =>
             consPattern.args.patterns.lift(i).map(_.bindings)
-          case _ => None
+          case _ =>
+            None
         }
       }
     }

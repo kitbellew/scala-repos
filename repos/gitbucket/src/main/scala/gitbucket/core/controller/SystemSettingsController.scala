@@ -300,7 +300,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           .split(",")
           .map {
             _.split(":") match {
-              case Array(userName, isManager) => (userName, isManager.toBoolean)
+              case Array(userName, isManager) =>
+                (userName, isManager.toBoolean)
             }
           }
           .toList)
@@ -325,7 +326,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           .split(",")
           .map {
             _.split(":") match {
-              case Array(userName, isManager) => (userName, isManager.toBoolean)
+              case Array(userName, isManager) =>
+                (userName, isManager.toBoolean)
             }
           }
           .toList) {
@@ -380,7 +382,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           messages: Messages): Option[String] = {
         if (value.split(",").exists {
               _.split(":") match {
-                case Array(userName, isManager) => isManager.toBoolean
+                case Array(userName, isManager) =>
+                  isManager.toBoolean
               }
             })
           None

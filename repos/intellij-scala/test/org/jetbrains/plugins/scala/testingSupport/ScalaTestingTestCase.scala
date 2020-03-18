@@ -200,7 +200,8 @@ abstract class ScalaTestingTestCase(
             .createConfigurationByLocation(
               createLocation(lineNumber, offset, fileName))
             .map(_._2) match {
-            case Some(testConfig) => testConfig
+            case Some(testConfig) =>
+              testConfig
             case _ =>
               throw new RuntimeException(
                 failedConfigMessage(fileName, lineNumber, offset))
@@ -214,8 +215,10 @@ abstract class ScalaTestingTestCase(
       packageName: String): RunnerAndConfigurationSettings =
     createTestFromDirectory(
       ScalaPsiManager.instance(getProject).getCachedPackage(packageName) match {
-        case Some(myPackage) => myPackage.getDirectories().head
-        case _               => throw new RuntimeException(failedConfigMessage(packageName))
+        case Some(myPackage) =>
+          myPackage.getDirectories().head
+        case _ =>
+          throw new RuntimeException(failedConfigMessage(packageName))
       })
 
   override protected def createTestFromModule(
@@ -239,7 +242,8 @@ abstract class ScalaTestingTestCase(
     configurationProducer
       .createConfigurationByLocation(new PsiLocation(getProject, directory))
       .map(_._2) match {
-      case Some(testConfig) => testConfig
+      case Some(testConfig) =>
+        testConfig
       case _ =>
         throw new RuntimeException(failedConfigMessage(directory.getName))
     }

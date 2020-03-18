@@ -31,8 +31,10 @@ class ScTryStmtImpl(node: ASTNode)
     with ScTryStmt {
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -42,7 +44,8 @@ class ScTryStmtImpl(node: ASTNode)
     val lifted = tryBlock.getType(ctx)
     lifted flatMap { result =>
       catchBlock match {
-        case None => lifted
+        case None =>
+          lifted
         case Some(cb) => {
           cb.expression match {
             case Some(expr) if !lifted.isEmpty =>
@@ -70,13 +73,16 @@ class ScTryStmtImpl(node: ASTNode)
                         case ScalaResolveResult(fun: ScFunction, subst) =>
                           fun.returnType.map(tp =>
                             Bounds.weakLub(lifted.get, subst.subst(tp)))
-                        case _ => lifted
+                        case _ =>
+                          lifted
                       }
                     }
                   }
-                case _ => lifted
+                case _ =>
+                  lifted
               }
-            case _ => lifted
+            case _ =>
+              lifted
           }
         }
       }

@@ -16,12 +16,18 @@ object Test extends DirectTest {
       def show(a: Any) =
         "" + a + (
           a match {
-            case _: Byte   => ".toByte"
-            case _: Short  => ".toShort"
-            case _: Long   => "L"
-            case _: Float  => "f"
-            case _: Double => "d"
-            case _         => ""
+            case _: Byte =>
+              ".toByte"
+            case _: Short =>
+              ".toShort"
+            case _: Long =>
+              "L"
+            case _: Float =>
+              "f"
+            case _: Double =>
+              "d"
+            case _ =>
+              ""
           }
         )
       val op =

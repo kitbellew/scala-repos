@@ -56,7 +56,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
               isOnTheFly))
           return
         case _: PsiNamedElement =>
-        case _                  => return
+        case _ =>
+          return
       }
       val context = ScalaPsiUtil.nameContext(
         refElement.asInstanceOf[PsiNamedElement])
@@ -72,7 +73,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
           if (!doc.isDeprecated && !Option(doc.containingClass).exists(
                 _.isDeprecated))
             return
-        case _ => return
+        case _ =>
+          return
       }
       val message =
         for {

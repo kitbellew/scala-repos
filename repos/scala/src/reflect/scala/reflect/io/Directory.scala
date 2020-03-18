@@ -59,17 +59,21 @@ class Directory(jfile: JFile) extends Path(jfile) {
     */
   def list: Iterator[Path] =
     jfile.listFiles match {
-      case null => Iterator.empty
-      case xs   => xs.iterator map Path.apply
+      case null =>
+        Iterator.empty
+      case xs =>
+        xs.iterator map Path.apply
     }
 
   def dirs: Iterator[Directory] =
     list collect {
-      case x: Directory => x
+      case x: Directory =>
+        x
     }
   def files: Iterator[File] =
     list collect {
-      case x: File => x
+      case x: File =>
+        x
     }
 
   override def walkFilter(cond: Path => Boolean): Iterator[Path] =

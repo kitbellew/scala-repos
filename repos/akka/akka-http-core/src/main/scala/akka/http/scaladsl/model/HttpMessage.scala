@@ -89,8 +89,10 @@ sealed trait HttpMessage extends jm.HttpMessage {
     */
   def encoding: HttpEncoding =
     header[`Content-Encoding`] match {
-      case Some(x) ⇒ x.encodings.head
-      case None ⇒ HttpEncodings.identity
+      case Some(x) ⇒
+        x.encodings.head
+      case None ⇒
+        HttpEncodings.identity
     }
 
   /** Returns the first header of the given type if there is one */
@@ -288,7 +290,8 @@ final class HttpRequest(
           headers == _headers &&
           entity == _entity &&
           protocol == _protocol
-      case _ => false
+      case _ =>
+        false
     }
 
   override def toString = s"""HttpRequest(${_1},${_2},${_3},${_4},${_5})"""
@@ -317,7 +320,8 @@ object HttpRequest {
       securedConnection: Boolean,
       defaultHostHeader: Host): Uri = {
     val hostHeader = headers.collectFirst {
-      case x: Host ⇒ x
+      case x: Host ⇒
+        x
     }
     if (uri.isRelative) {
       def fail(detail: String) =
@@ -335,7 +339,8 @@ object HttpRequest {
               fail("an empty `Host` header")
             else
               defaultHostHeader
-          case Some(x) ⇒ x
+          case Some(x) ⇒
+            x
         }
       uri.toEffectiveHttpRequestUri(host, port, securedConnection)
     } else // http://tools.ietf.org/html/rfc7230#section-5.4
@@ -361,7 +366,8 @@ object HttpRequest {
       def c(i: Int) = CharUtils.toLowerCase(uri.scheme charAt i)
       uri.scheme.length match {
         case 0 ⇒ // ok
-        case 4 if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' ⇒ // ok
+        case 4
+            if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' ⇒ // ok
         case 5
             if c(0) == 'h' && c(1) == 't' && c(2) == 't' && c(3) == 'p' && c(
               4) == 's' ⇒ // ok
@@ -459,7 +465,8 @@ final class HttpResponse(
           headers == _headers &&
           entity == _entity &&
           protocol == _protocol
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode: Int = {

@@ -222,8 +222,10 @@ class JavaCopyPastePostProcessor
     val dialog = new ScalaPasteFromJavaDialog(project)
     val (text, associations) =
       value match {
-        case code: ConvertedCode => (code.data, code.associations)
-        case _                   => ("", Array.empty[Association])
+        case code: ConvertedCode =>
+          (code.data, code.associations)
+        case _ =>
+          ("", Array.empty[Association])
       }
     if (text == "")
       return //copy as usually

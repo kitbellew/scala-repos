@@ -67,8 +67,10 @@ trait Chars {
   /** Is character a line break? */
   def isLineBreakChar(c: Char) =
     (c: @switch) match {
-      case LF | FF | CR | SU => true
-      case _                 => false
+      case LF | FF | CR | SU =>
+        true
+      case _ =>
+        false
     }
 
   /** Is character a whitespace character (but not a new line)? */
@@ -111,7 +113,8 @@ trait Chars {
       case '~' | '!' | '@' | '#' | '%' | '^' | '*' | '+' | '-' | '<' | '>' |
           '?' | ':' | '=' | '&' | '|' | '/' | '\\' =>
         true
-      case c => isSpecial(c)
+      case c =>
+        isSpecial(c)
     }
 }
 

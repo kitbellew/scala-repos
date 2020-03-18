@@ -21,12 +21,16 @@ class ZkMetadataTest extends FunSuite {
 
   test("unapply") {
     Addr.Metadata.empty match {
-      case ZkMetadata(_) => assert(false)
-      case _             => assert(true)
+      case ZkMetadata(_) =>
+        assert(false)
+      case _ =>
+        assert(true)
     }
     ZkMetadata.toAddrMetadata(metadata) match {
-      case ZkMetadata(4) => assert(true)
-      case _             => assert(false)
+      case ZkMetadata(4) =>
+        assert(true)
+      case _ =>
+        assert(false)
     }
   }
 }

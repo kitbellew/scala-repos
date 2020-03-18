@@ -77,7 +77,8 @@ private[persistence] trait LeveldbStore
                       p.payload match {
                         case Tagged(payload, tags) ⇒
                           (p.withPayload(payload), tags)
-                        case _ ⇒ (p, Set.empty[String])
+                        case _ ⇒
+                          (p, Set.empty[String])
                       }
                     if (tags.nonEmpty && hasTagSubscribers)
                       allTags = allTags union tags
@@ -130,7 +131,8 @@ private[persistence] trait LeveldbStore
         }
       }
     } catch {
-      case NonFatal(e) ⇒ Future.failed(e)
+      case NonFatal(e) ⇒
+        Future.failed(e)
     }
 
   def leveldbSnapshot(): ReadOptions =
@@ -185,8 +187,10 @@ private[persistence] trait LeveldbStore
   private def nextTagSequenceNr(tag: String): Long = {
     val n =
       tagSequenceNr.get(tag) match {
-        case Some(n) ⇒ n
-        case None ⇒ readHighestSequenceNr(tagNumericId(tag))
+        case Some(n) ⇒
+          n
+        case None ⇒
+          readHighestSequenceNr(tagNumericId(tag))
       }
     tagSequenceNr = tagSequenceNr.updated(tag, n + 1)
     n + 1
@@ -221,14 +225,16 @@ private[persistence] trait LeveldbStore
 
   protected def removeSubscriber(subscriber: ActorRef): Unit = {
     val keys = persistenceIdSubscribers.collect {
-      case (k, s) if s.contains(subscriber) ⇒ k
+      case (k, s) if s.contains(subscriber) ⇒
+        k
     }
     keys.foreach { key ⇒
       persistenceIdSubscribers.removeBinding(key, subscriber)
     }
 
     val tagKeys = tagSubscribers.collect {
-      case (k, s) if s.contains(subscriber) ⇒ k
+      case (k, s) if s.contains(subscriber) ⇒
+        k
     }
     tagKeys.foreach { key ⇒
       tagSubscribers.removeBinding(key, subscriber)

@@ -21,8 +21,10 @@ trait SexpFormats {
       def write(o: T) = o
       def read(v: Sexp) =
         v match {
-          case t: T => t
-          case x    => deserializationError(x)
+          case t: T =>
+            t
+          case x =>
+            deserializationError(x)
         }
     }
 

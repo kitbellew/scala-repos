@@ -32,7 +32,8 @@ class ScNameValuePairImpl(node: ASTNode)
           value.toString
         else
           null
-      case _ => null
+      case _ =>
+        null
     }
   }
 }

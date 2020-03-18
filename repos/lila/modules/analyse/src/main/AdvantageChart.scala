@@ -37,7 +37,8 @@ object AdvantageChart {
                     val whiteWins = mate > 0
                     whiteWins.fold(max - mateDelta, mateDelta - max)
                   })
-              case _ => point(move(info, none), 0)
+              case _ =>
+                point(move(info, none), 0)
             }
         }
       }

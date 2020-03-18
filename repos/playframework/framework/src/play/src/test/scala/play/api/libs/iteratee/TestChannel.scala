@@ -75,8 +75,10 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
     takeChunk(timeout) match {
       case null =>
         throw new AssertionError(s"timeout ($timeout) waiting for EOF")
-      case eof @ Input.EOF => eof
-      case other           => throw new AssertionError(s"expected EOF but found [$other]")
+      case eof @ Input.EOF =>
+        eof
+      case other =>
+        throw new AssertionError(s"expected EOF but found [$other]")
     }
   }
 

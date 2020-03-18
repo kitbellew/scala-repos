@@ -61,7 +61,8 @@ object Dependencies {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, major)) if major >= 11 =>
         Seq("org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4")
-      case _ => Nil
+      case _ =>
+        Nil
     }
 
   val springFrameworkVersion = "4.2.4.RELEASE"
@@ -160,7 +161,8 @@ object Dependencies {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, major)) if major >= 11 =>
         "org.scala-sbt" %% "io" % "0.13.11" % "provided"
-      case _ => "org.scala-sbt" % "io" % sbtVersion % "provided"
+      case _ =>
+        "org.scala-sbt" % "io" % sbtVersion % "provided"
     }
 
   val jnotify = "net.contentobjects.jnotify" % "jnotify" % "0.94-play-1"
@@ -175,9 +177,12 @@ object Dependencies {
   // use partial version so that non-standard scala binary versions from dbuild also work
   def sbtRcClient(scalaBinaryVersion: String): ModuleID =
     CrossVersion.partialVersion(scalaBinaryVersion) match {
-      case Some((2, 10)) => "com.typesafe.sbtrc" % "client-2-10" % sbtRcVersion
-      case Some((2, 11)) => "com.typesafe.sbtrc" % "client-2-11" % sbtRcVersion
-      case _             => sys.error(s"Unsupported scala version: $scalaBinaryVersion")
+      case Some((2, 10)) =>
+        "com.typesafe.sbtrc" % "client-2-10" % sbtRcVersion
+      case Some((2, 11)) =>
+        "com.typesafe.sbtrc" % "client-2-11" % sbtRcVersion
+      case _ =>
+        sys.error(s"Unsupported scala version: $scalaBinaryVersion")
     }
 
   def forkRunDependencies(scalaBinaryVersion: String) =
@@ -190,7 +195,8 @@ object Dependencies {
         "com.typesafe.sbtrc" % "actor-client-2-10" % sbtRcVersion
       case Some((2, 11)) =>
         "com.typesafe.sbtrc" % "actor-client-2-11" % sbtRcVersion
-      case _ => sys.error(s"Unsupported scala version: $scalaBinaryVersion")
+      case _ =>
+        sys.error(s"Unsupported scala version: $scalaBinaryVersion")
     }
 
   def sbtForkRunPluginDependencies(sbtVersion: String, scalaVersion: String) =

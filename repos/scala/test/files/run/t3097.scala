@@ -12,7 +12,9 @@ class DoubleValue(val data: Double) extends IDoubleValue
 object Test extends App {
   // match is exhaustive
   (new DoubleValue(1): ISimpleValue) match {
-    case m: IListValue      => println("list")
-    case a: IAtomicValue[_] => println("atomic")
+    case m: IListValue =>
+      println("list")
+    case a: IAtomicValue[_] =>
+      println("atomic")
   }
 }

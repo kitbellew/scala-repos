@@ -48,7 +48,8 @@ object ClassPath {
           ("^" + pattern.replaceAllLiterally("""\*""", """.*""") + "$").r
         lsDir(Directory(pattern).parent, regexp findFirstIn _ isDefined)
       } catch {
-        case _: PatternSyntaxException => List(pattern)
+        case _: PatternSyntaxException =>
+          List(pattern)
       }
     } else
       List(pattern)
@@ -75,7 +76,8 @@ object ClassPath {
   /** Expand dir out to contents, a la extdir */
   def expandDir(extdir: String): List[String] = {
     AbstractFile getDirectory extdir match {
-      case null => Nil
+      case null =>
+        Nil
       case dir =>
         dir filter (_.isClassContainer) map (x =>
           new java.io.File(dir.file, x.name) getPath) toList
@@ -98,7 +100,8 @@ object ClassPath {
   def specToURL(spec: String): Option[URL] =
     try Some(new URL(spec))
     catch {
-      case _: MalformedURLException => None
+      case _: MalformedURLException =>
+        None
     }
 
   /** A class modeling aspects of a ClassPath which should be
@@ -210,7 +213,8 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
       extends ClassRepresentation[T] {
     def name: String =
       binary match {
-        case Some(x) => context.toBinaryName(x)
+        case Some(x) =>
+          context.toBinaryName(x)
         case _ =>
           assert(source.isDefined)
           toSourceName(source.get)
@@ -232,7 +236,8 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
       case Some((pkg, rest)) =>
         val rep = packages find (_.name == pkg) flatMap (_ findClass rest)
         rep map {
-          case x: ClassRepresentation[T] => x
+          case x: ClassRepresentation[T] =>
+            x
           case x =>
             throw new FatalError(
               "Unexpected ClassRep '%s' found searching for name '%s'"
@@ -244,8 +249,10 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
 
   override def findClassFile(name: String): Option[AbstractFile] =
     findClass(name) match {
-      case Some(ClassRepresentation(Some(x: AbstractFile), _)) => Some(x)
-      case _                                                   => None
+      case Some(ClassRepresentation(Some(x: AbstractFile), _)) =>
+        Some(x)
+      case _ =>
+        None
     }
 
   override def asSourcePathString: String = sourcepaths.mkString(pathSeparator)
@@ -253,8 +260,10 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
   def sortString = join(split(asClassPathString).sorted: _*)
   override def equals(that: Any) =
     that match {
-      case x: ClassPath[_] => this.sortString == x.sortString
-      case _               => false
+      case x: ClassPath[_] =>
+        this.sortString == x.sortString
+      case _ =>
+        false
     }
   override def hashCode = sortString.hashCode()
 }
@@ -315,9 +324,12 @@ class DirectoryClassPath(
         f match {
           case pf: io.PlainFile =>
             pf.givenPath match {
-              case _: io.Directory => true
-              case _: io.File      => false
-              case _               => f.isDirectory
+              case _: io.Directory =>
+                true
+              case _: io.File =>
+                false
+              case _ =>
+                f.isDirectory
             }
           case _ =>
             f.isDirectory
@@ -418,8 +430,10 @@ class MergedClassPath[T](
   private def addPackage(to: ClassPath[T], pkg: ClassPath[T]) = {
     val newEntries: IndexedSeq[ClassPath[T]] =
       to match {
-        case cp: MergedClassPath[_] => cp.entries :+ pkg
-        case _                      => IndexedSeq(to, pkg)
+        case cp: MergedClassPath[_] =>
+          cp.entries :+ pkg
+        case _ =>
+          IndexedSeq(to, pkg)
       }
     new MergedClassPath[T](newEntries, context)
   }

@@ -50,7 +50,8 @@ class PsiClassWrapper(
       case wrapper: PsiClassWrapper =>
         definition.equals(
           wrapper.definition) && qualName == wrapper.qualName && name == wrapper.name
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -80,8 +81,10 @@ class PsiClassWrapper(
 
   def getFields: Array[PsiField] = {
     definition match {
-      case o: ScObject => Array.empty
-      case _           => definition.getFields //todo:
+      case o: ScObject =>
+        Array.empty
+      case _ =>
+        definition.getFields //todo:
     }
   }
 
@@ -148,14 +151,20 @@ class PsiClassWrapper(
         o.members.flatMap {
           case o: ScObject =>
             o.fakeCompanionClass match {
-              case Some(clazz) => Seq(o, clazz)
-              case None        => Seq(o)
+              case Some(clazz) =>
+                Seq(o, clazz)
+              case None =>
+                Seq(o)
             }
-          case t: ScTrait => Seq(t, t.fakeCompanionClass)
-          case c: ScClass => Seq(c)
-          case _          => Seq.empty
+          case t: ScTrait =>
+            Seq(t, t.fakeCompanionClass)
+          case c: ScClass =>
+            Seq(c)
+          case _ =>
+            Seq.empty
         }.toArray
-      case _ => definition.getInnerClasses //todo:
+      case _ =>
+        definition.getInnerClasses //todo:
     }
   }
 
@@ -234,7 +243,8 @@ class PsiClassWrapper(
           (
             baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
           )
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -245,7 +255,8 @@ class PsiClassWrapper(
           (
             baseClass.getQualifiedName == "scala.ScalaObject" && !baseClass.isDeprecated
           )
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -287,7 +298,8 @@ class PsiClassWrapper(
         processor match {
           case methodProcessor: MethodsProcessor =>
             methodProcessor.getLanguageLevel
-          case _ => PsiUtil.getLanguageLevel(place)
+          case _ =>
+            PsiUtil.getLanguageLevel(place)
         }
       return PsiClassImplUtil.processDeclarationsInClass(
         this,

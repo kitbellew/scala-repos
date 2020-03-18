@@ -92,7 +92,8 @@ class HashSet[A]
       case that: HashSet[A] =>
         val buffer = new Array[HashSet[A]](bufferSize(this.size + that.size))
         nullToEmpty(union0(that, 0, buffer, 0))
-      case _ => super.union(that)
+      case _ =>
+        super.union(that)
     }
 
   override def intersect(that: GenSet[A]): HashSet[A] =
@@ -100,7 +101,8 @@ class HashSet[A]
       case that: HashSet[A] =>
         val buffer = new Array[HashSet[A]](bufferSize(this.size min that.size))
         nullToEmpty(intersect0(that, 0, buffer, 0))
-      case _ => super.intersect(that)
+      case _ =>
+        super.intersect(that)
     }
 
   override def diff(that: GenSet[A]): HashSet[A] =
@@ -108,7 +110,8 @@ class HashSet[A]
       case that: HashSet[A] =>
         val buffer = new Array[HashSet[A]](bufferSize(this.size))
         nullToEmpty(diff0(that, 0, buffer, 0))
-      case _ => super.diff(that)
+      case _ =>
+        super.diff(that)
     }
 
   /**
@@ -466,7 +469,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
           // switch to the simpler Tree/Leaf implementation
           // we can swap this and that because union is symmetrical
           that.union0(this, level)
-        case _ => this
+        case _ =>
+          this
       }
 
     override private[immutable] def intersect0(
@@ -784,7 +788,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             System.arraycopy(buffer, offset0, elems, 0, length)
             new HashTrieSet(this.bitmap | that.bitmap, elems, rs)
           }
-        case _ => this
+        case _ =>
+          this
       }
 
     override private[immutable] def intersect0(
@@ -879,7 +884,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
               new HashTrieSet[A](rbm, elems, rs)
             }
           }
-        case _ => null
+        case _ =>
+          null
       }
 
     override private[immutable] def diff0(
@@ -976,7 +982,8 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             else
               removeAll(s.removed0(r.head, that.hash, level), r.tail)
           removeAll(this, that.ks)
-        case _ => this
+        case _ =>
+          this
       }
 
     override protected def removed0(

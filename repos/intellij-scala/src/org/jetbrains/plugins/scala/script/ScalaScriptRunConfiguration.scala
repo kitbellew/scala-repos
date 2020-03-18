@@ -90,10 +90,12 @@ class ScalaScriptRunConfiguration(
       val file: VirtualFile = VcsUtil.getVirtualFile(scriptPath)
       PsiManager.getInstance(project).findFile(file) match {
         case f: ScalaFile if f.isScriptFile() && !f.isWorksheetFile =>
-        case _                                                      => fileNotFoundError()
+        case _ =>
+          fileNotFoundError()
       }
     } catch {
-      case e: Exception => fileNotFoundError()
+      case e: Exception =>
+        fileNotFoundError()
     }
 
     val module = getModule
@@ -203,7 +205,8 @@ class ScalaScriptRunConfiguration(
               new OpenFileHyperlinkInfo(getProject, file, lineNumber - 1)
             new Result(start, end, hyperlink)
           } catch {
-            case _: Exception => return null
+            case _: Exception =>
+              return null
           }
         } else
           null
@@ -232,6 +235,7 @@ class ScalaScriptRunConfiguration(
             setScriptPath(oldQualifiedName)
           }
         }
-      case _ => RefactoringElementListener.DEAF
+      case _ =>
+        RefactoringElementListener.DEAF
     }
 }

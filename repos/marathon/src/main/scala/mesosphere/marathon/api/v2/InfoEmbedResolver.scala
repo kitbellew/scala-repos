@@ -44,10 +44,14 @@ private[v2] object InfoEmbedResolver {
             AppInfo.Embed.Tasks,
             AppInfo.Embed.LastTaskFailure,
             AppInfo.Embed.Deployments)
-        case EmbedDeployments     => Set(AppInfo.Embed.Deployments)
-        case EmbedLastTaskFailure => Set(AppInfo.Embed.LastTaskFailure)
-        case EmbedCounts          => Set(AppInfo.Embed.Counts)
-        case EmbedTaskStats       => Set(AppInfo.Embed.TaskStats)
+        case EmbedDeployments =>
+          Set(AppInfo.Embed.Deployments)
+        case EmbedLastTaskFailure =>
+          Set(AppInfo.Embed.LastTaskFailure)
+        case EmbedCounts =>
+          Set(AppInfo.Embed.Counts)
+        case EmbedTaskStats =>
+          Set(AppInfo.Embed.TaskStats)
         case unknown: String =>
           log.warn(s"unknown app embed argument: $prefix$unknown")
           Set.empty
@@ -63,14 +67,17 @@ private[v2] object InfoEmbedResolver {
 
     val embedWithSeparatedPrefixes = embed.map(separatePrefix)
     embedWithSeparatedPrefixes.flatMap {
-      case (prefix, withoutPrefix) => mapEmbedStrings(prefix, withoutPrefix)
+      case (prefix, withoutPrefix) =>
+        mapEmbedStrings(prefix, withoutPrefix)
     }
   }
 
   def resolveGroup(embeds: Set[String]): Set[GroupInfo.Embed] = {
     embeds.flatMap {
-      case EmbedGroups => Some(GroupInfo.Embed.Groups)
-      case EmbedApps   => Some(GroupInfo.Embed.Apps)
+      case EmbedGroups =>
+        Some(GroupInfo.Embed.Groups)
+      case EmbedApps =>
+        Some(GroupInfo.Embed.Apps)
       case unknown: String =>
         log.warn(s"unknown group embed argument: $unknown")
         None

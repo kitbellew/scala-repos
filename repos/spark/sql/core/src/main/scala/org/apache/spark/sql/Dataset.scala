@@ -190,7 +190,8 @@ class Dataset[T] private[sql] (
       plan match {
         case _: Command | _: InsertIntoTable | _: CreateTableUsingAsSelect =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     queryExecution.logical match {
@@ -264,20 +265,27 @@ class Dataset[T] private[sql] (
     // For cells that are beyond 20 characters, replace it with the first 17 and "..."
     val rows: Seq[Seq[String]] = schema.fieldNames.toSeq +: data
       .map {
-        case r: Row         => r
-        case tuple: Product => Row.fromTuple(tuple)
-        case o              => Row(o)
+        case r: Row =>
+          r
+        case tuple: Product =>
+          Row.fromTuple(tuple)
+        case o =>
+          Row(o)
       }
       .map { row =>
         row.toSeq.map { cell =>
           val str =
             cell match {
-              case null => "null"
+              case null =>
+                "null"
               case binary: Array[Byte] =>
                 binary.map("%02X".format(_)).mkString("[", " ", "]")
-              case array: Array[_] => array.mkString("[", ", ", "]")
-              case seq: Seq[_]     => seq.mkString("[", ", ", "]")
-              case _               => cell.toString
+              case array: Array[_] =>
+                array.mkString("[", ", ", "]")
+              case seq: Seq[_] =>
+                seq.mkString("[", ", ", "]")
+              case _ =>
+                cell.toString
             }
           if (truncate && str.length > 20)
             str.substring(0, 17) + "..."
@@ -734,13 +742,17 @@ class Dataset[T] private[sql] (
 
     val leftData =
       this.unresolvedTEncoder match {
-        case e if e.flat => Alias(leftOutput.head, "_1")()
-        case _           => Alias(CreateStruct(leftOutput), "_1")()
+        case e if e.flat =>
+          Alias(leftOutput.head, "_1")()
+        case _ =>
+          Alias(CreateStruct(leftOutput), "_1")()
       }
     val rightData =
       other.unresolvedTEncoder match {
-        case e if e.flat => Alias(rightOutput.head, "_2")()
-        case _           => Alias(CreateStruct(rightOutput), "_2")()
+        case e if e.flat =>
+          Alias(rightOutput.head, "_2")()
+        case _ =>
+          Alias(CreateStruct(rightOutput), "_2")()
       }
 
     implicit val tuple2Encoder: Encoder[(T, U)] = ExpressionEncoder.tuple(
@@ -1804,7 +1816,8 @@ class Dataset[T] private[sql] (
           queryExecution.analyzed
             .resolveQuoted(u.name, sqlContext.sessionState.analyzer.resolver)
             .getOrElse(u)
-        case Column(expr: Expression) => expr
+        case Column(expr: Expression) =>
+          expr
       }
     val attrs = this.logicalPlan.output
     val colsAfterDrop = attrs
@@ -1920,7 +1933,8 @@ class Dataset[T] private[sql] (
         } else {
           // If there are no output columns, just output a single column that contains the stats.
           statistics.map {
-            case (name, _) => Row(name)
+            case (name, _) =>
+              Row(name)
           }
         }
 

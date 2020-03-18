@@ -11,7 +11,8 @@ object Test {
 
   def f[a](t: Term[a], c: Cell[a]) {
     t match {
-      case NumTerm(n) => c.x = MyDouble(1.0)
+      case NumTerm(n) =>
+        c.x = MyDouble(1.0)
     }
   }
 

@@ -203,7 +203,8 @@ Measurement overhead:        %10.02f%%
   def meanRepTime(): Double = {
     val denom = timings.length * repCount * 1000000000.0
     timings.foldLeft(0.0) {
-      case (acc, el) => acc + (el / denom)
+      case (acc, el) =>
+        acc + (el / denom)
     }
   }
 }

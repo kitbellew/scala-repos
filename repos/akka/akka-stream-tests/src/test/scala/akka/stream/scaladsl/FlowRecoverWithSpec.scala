@@ -29,7 +29,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
             a
         }
         .recoverWith {
-          case t: Throwable ⇒ Source(List(0, -1))
+          case t: Throwable ⇒
+            Source(List(0, -1))
         }
         .runWith(TestSink.probe[Int])
         .request(2)
@@ -50,7 +51,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
             a
         }
         .recoverWith {
-          case t: Throwable ⇒ Source(List(0, -1))
+          case t: Throwable ⇒
+            Source(List(0, -1))
         }
         .runWith(TestSink.probe[Int])
         .request(2)
@@ -69,7 +71,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
             a
         }
         .recoverWith {
-          case t: IndexOutOfBoundsException ⇒ Source.single(0)
+          case t: IndexOutOfBoundsException ⇒
+            Source.single(0)
         }
         .runWith(TestSink.probe[Int])
         .request(1)
@@ -87,7 +90,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
       }
       src
         .recoverWith {
-          case t: Throwable ⇒ src
+          case t: Throwable ⇒
+            src
         }
         .runWith(TestSink.probe[Int])
         .request(2)
@@ -103,7 +107,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
       Source(1 to 3)
         .map(identity)
         .recoverWith {
-          case t: Throwable ⇒ Source.single(0)
+          case t: Throwable ⇒
+            Source.single(0)
         }
         .runWith(TestSink.probe[Int])
         .request(3)
@@ -115,7 +120,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
       Source.empty
         .map(identity)
         .recoverWith {
-          case t: Throwable ⇒ Source.single(0)
+          case t: Throwable ⇒
+            Source.single(0)
         }
         .runWith(TestSink.probe[Int])
         .request(3)
@@ -137,7 +143,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
                 throw new IllegalArgumentException()
               else
                 m)
-          case t: IllegalArgumentException ⇒ Source(List(33, 44))
+          case t: IllegalArgumentException ⇒
+            Source(List(33, 44))
         }
         .runWith(TestSink.probe[Int])
         .request(2)

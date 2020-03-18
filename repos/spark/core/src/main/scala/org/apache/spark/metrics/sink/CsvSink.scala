@@ -41,22 +41,28 @@ private[spark] class CsvSink(
 
   val pollPeriod =
     Option(property.getProperty(CSV_KEY_PERIOD)) match {
-      case Some(s) => s.toInt
-      case None    => CSV_DEFAULT_PERIOD
+      case Some(s) =>
+        s.toInt
+      case None =>
+        CSV_DEFAULT_PERIOD
     }
 
   val pollUnit: TimeUnit =
     Option(property.getProperty(CSV_KEY_UNIT)) match {
-      case Some(s) => TimeUnit.valueOf(s.toUpperCase())
-      case None    => TimeUnit.valueOf(CSV_DEFAULT_UNIT)
+      case Some(s) =>
+        TimeUnit.valueOf(s.toUpperCase())
+      case None =>
+        TimeUnit.valueOf(CSV_DEFAULT_UNIT)
     }
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 
   val pollDir =
     Option(property.getProperty(CSV_KEY_DIR)) match {
-      case Some(s) => s
-      case None    => CSV_DEFAULT_DIR
+      case Some(s) =>
+        s
+      case None =>
+        CSV_DEFAULT_DIR
     }
 
   val reporter: CsvReporter = CsvReporter

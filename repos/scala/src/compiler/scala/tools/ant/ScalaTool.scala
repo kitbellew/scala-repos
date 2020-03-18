@@ -179,7 +179,8 @@ class ScalaTool extends ScalaMatchingTask {
   private def getProperties: String =
     properties
       .map({
-        case (name, value) => "-D" + name + "=\"" + value + "\""
+        case (name, value) =>
+          "-D" + name + "=\"" + value + "\""
       })
       .mkString("", " ", "")
 

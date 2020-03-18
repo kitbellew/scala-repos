@@ -53,12 +53,14 @@ trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
 
     withReducers(
       in.map {
-        case (t, (k, w)) => (k, (t, w))
+        case (t, (k, w)) =>
+          (k, (t, w))
       }.group)
       .leftJoin(withReducers(serv.group))
       .toTypedPipe
       .map {
-        case (k, ((t, w), optV)) => (t, (k, (w, optV)))
+        case (k, ((t, w), optV)) =>
+          (t, (k, (w, optV)))
       }
   }
 

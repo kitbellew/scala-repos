@@ -72,8 +72,10 @@ trait FunctionAnnotator {
           recursiveReferences.filter(!_.isTailCall).foreach { ref =>
             val target =
               ref.element.getParent match {
-                case call: ScMethodCall => call
-                case _                  => ref.element
+                case call: ScMethodCall =>
+                  call
+                case _ =>
+                  ref.element
               }
             val annotation = holder.createErrorAnnotation(
               target,
@@ -122,7 +124,8 @@ trait FunctionAnnotator {
           .collect {
             case retStmt: ScReturnStmt =>
               retStmt.expr.flatMap(_.getType().toOption).getOrElse(AnyType)
-            case expr: ScExpression => expr.getType().getOrAny
+            case expr: ScExpression =>
+              expr.getType().getOrAny
           }
         val lub = Bounds.lub(returnTypes)
         val annotation = holder.createErrorAnnotation(
@@ -156,17 +159,22 @@ trait FunctionAnnotator {
               None
           val expr =
             returnExpression.getOrElse(usage) match {
-              case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
+              case b: ScBlockExpr =>
+                b.getRBrace.map(_.getPsi).getOrElse(b)
               case b: ScBlock =>
                 b.getParent match {
                   case t: ScTryBlock =>
                     t.getRBrace match {
-                      case Some(brace) => brace.getPsi
-                      case _           => b
+                      case Some(brace) =>
+                        brace.getPsi
+                      case _ =>
+                        b
                     }
-                  case _ => b
+                  case _ =>
+                    b
                 }
-              case e => e
+              case e =>
+                e
             }
           val annotation = holder.createErrorAnnotation(expr, message)
           annotation.registerFix(ReportHighlightingErrorQuickFix)
@@ -179,10 +187,14 @@ trait FunctionAnnotator {
     element match {
       case r: ScReturnStmt =>
         r.expr match {
-          case Some(e) => e.getTypeAfterImplicitConversion().tr
-          case None    => Success(UnitType, None)
+          case Some(e) =>
+            e.getTypeAfterImplicitConversion().tr
+          case None =>
+            Success(UnitType, None)
         }
-      case e: ScExpression => e.getTypeAfterImplicitConversion().tr
-      case _               => Success(AnyType, None)
+      case e: ScExpression =>
+        e.getTypeAfterImplicitConversion().tr
+      case _ =>
+        Success(AnyType, None)
     }
 }

@@ -70,7 +70,8 @@ case class LTuple2[T, U](_1: T, _2: U) {
     other match {
       case LTuple2(oT1, oT2) =>
         hashCode == other.hashCode && _1 == oT1 && _2 == oT2
-      case _ => false
+      case _ =>
+        false
     }
 
 }
@@ -160,8 +161,10 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
     }
     (
       commutativity match {
-        case Commutative    => inits.sumByLocalKeys
-        case NonCommutative => inits
+        case Commutative =>
+          inits.sumByLocalKeys
+        case NonCommutative =>
+          inits
       }
     )
   }
@@ -183,11 +186,13 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
           flow.map { typedP =>
             sumByBatches(typedP, capturedBatcher, Commutative)
               .map {
-                case (LTuple2(k, _), (ts, v)) => (ts, (k, v))
+                case (LTuple2(k, _), (ts, v)) =>
+                  (ts, (k, v))
               }
           }
         }
-      case NonCommutative => delta
+      case NonCommutative =>
+        delta
     }
   }
 
@@ -226,7 +231,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
     def prepareOld(
         old: TypedPipe[(K, V)]): TypedPipe[(K, (BatchID, (Timestamp, V)))] =
       old.map {
-        case (k, v) => (k, (inBatch, (Timestamp.Min, v)))
+        case (k, v) =>
+          (k, (inBatch, (Timestamp.Min, v)))
       }
 
     val capturedBatcher = batcher //avoid a closure on the whole store
@@ -235,7 +241,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
         : TypedPipe[(K, (BatchID, (Timestamp, V)))] =
       sumByBatches(ins, capturedBatcher, commutativity)
         .map {
-          case (LTuple2(k, batch), (ts, v)) => (k, (batch, (ts, v)))
+          case (LTuple2(k, batch), (ts, v)) =>
+            (k, (batch, (ts, v)))
         }
 
     /**
@@ -260,11 +267,13 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
         commutativity match {
           case NonCommutative =>
             grouped.sortBy {
-              case (_, (t, _)) => t
+              case (_, (t, _)) =>
+                t
             }(BinaryOrdering.ordSer[com.twitter.summingbird.batch.Timestamp])
           case Commutative =>
             grouped.sortBy {
-              case (b, (_, _)) => b
+              case (b, (_, _)) =>
+                b
             }(BinaryOrdering.ordSer[BatchID])
         }
 
@@ -297,7 +306,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
           val totalSum = Semigroup
             .plus[Option[(Timestamp, V)]](flatOpt(prev), v)
           totalSum.map {
-            case (_, sumv) => (batchid, (k, sumv))
+            case (_, sumv) =>
+              (batchid, (k, sumv))
           }
       }
 
@@ -346,7 +356,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
               List(
                 "Timespan is covered by Nil: %s batcher: %s"
                   .format(timeSpan, batcher)))
-          case list => Right((in, list))
+          case list =>
+            Right((in, list))
         }
       )
     })
@@ -369,11 +380,16 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] {
       lb: InclusiveLower[Timestamp],
       interv: Interval[Timestamp]): Interval[Timestamp] =
     interv match {
-      case u @ ExclusiveUpper(_) => lb && u
-      case u @ InclusiveUpper(_) => lb && u
-      case Intersection(_, u)    => lb && u
-      case Empty()               => Empty()
-      case _                     => lb // Otherwise the upperbound is infinity.
+      case u @ ExclusiveUpper(_) =>
+        lb && u
+      case u @ InclusiveUpper(_) =>
+        lb && u
+      case Intersection(_, u) =>
+        lb && u
+      case Empty() =>
+        Empty()
+      case _ =>
+        lb // Otherwise the upperbound is infinity.
     }
 
   /**

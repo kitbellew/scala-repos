@@ -134,7 +134,8 @@ object Swagger {
                   (acc._1 ++ m, acc._2 + b)
               }
             nested._1
-          case _ => Set.empty
+          case _ =>
+            Set.empty
         }
       }
     }
@@ -239,8 +240,10 @@ object Swagger {
           DefaultReaders.StringReader,
           DefaultWriters.StringWriter)
         paramType match {
-          case null     => AllowableValues.AllowableValuesList(params)
-          case "string" => AllowableValues.AllowableValuesList(params)
+          case null =>
+            AllowableValues.AllowableValuesList(params)
+          case "string" =>
+            AllowableValues.AllowableValuesList(params)
         }
       }
     }
@@ -305,7 +308,8 @@ class Swagger(
     logger.debug(
       s"registering swagger api with: { listingPath: $listingPath, resourcePath: $resourcePath, description: $resourcePath, servlet: ${s.getClass} }")
     val endpoints: List[Endpoint] = s.endpoints(resourcePath) collect {
-      case m: Endpoint => m
+      case m: Endpoint =>
+        m
     }
     _docs += listingPath -> Api(
       apiVersion,

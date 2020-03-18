@@ -17,13 +17,17 @@ trait MonadTransformer {
   class MonadLike[+T](opt: Option[T])(implicit msg: String) {
     def flatMap[U <: ScType](f: T => TypeResult[U]): TypeResult[U] =
       opt match {
-        case Some(elem) => f(elem)
-        case None       => Failure(msg, Some(self))
+        case Some(elem) =>
+          f(elem)
+        case None =>
+          Failure(msg, Some(self))
       }
     def map[U <: ScType](f: T => U): TypeResult[U] =
       opt match {
-        case s @ Some(elem) => Success(f(elem), Some(self))
-        case None           => Failure(msg, None)
+        case s @ Some(elem) =>
+          Success(f(elem), Some(self))
+        case None =>
+          Failure(msg, None)
       }
   }
 
@@ -31,8 +35,10 @@ trait MonadTransformer {
       msg: String) {
     def flatMap(f: T => TypeResult[ScType]): TypeResult[ScType] =
       opt match {
-        case Some(elem) => f(elem)
-        case None       => Success(default, None)
+        case Some(elem) =>
+          f(elem)
+        case None =>
+          Success(default, None)
       }
   }
 
@@ -56,8 +62,10 @@ trait MonadTransformer {
       default: T): (Seq[T] => T) => Success[T] =
     (succ: (Seq[T]) => T) => {
       val defaults = seq.map {
-        case Success(t, _) => t
-        case Failure(_, _) => default
+        case Success(t, _) =>
+          t
+        case Failure(_, _) =>
+          default
       }
       (
         for (f @ Failure(_, _) <- seq)

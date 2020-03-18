@@ -110,7 +110,8 @@ trait NIHDBSnapshot {
 
   def getConstraints(columns: Iterable[ColumnRef], cpaths: Set[CPath]) = {
     columns.collect {
-      case ColumnRef(cpath, _) if cpaths.exists(cpath.hasPrefix(_)) => cpath
+      case ColumnRef(cpath, _) if cpaths.exists(cpath.hasPrefix(_)) =>
+        cpath
     }
   }
 

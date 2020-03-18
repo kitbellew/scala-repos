@@ -42,8 +42,10 @@ case class BroadcastNestedLoopJoin(
   /** BuildRight means the right relation <=> the broadcast relation. */
   private val (streamed, broadcast) =
     buildSide match {
-      case BuildRight => (left, right)
-      case BuildLeft  => (right, left)
+      case BuildRight =>
+        (left, right)
+      case BuildLeft =>
+        (right, left)
     }
 
   override def requiredChildDistribution: Seq[Distribution] =

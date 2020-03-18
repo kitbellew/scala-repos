@@ -1138,8 +1138,10 @@ private trait Tuple2Order[A1, A2]
   import Ordering.EQ
   def order(f1: (A1, A2), f2: (A1, A2)) =
     (_1.order(f1._1, f2._1), _2.order(f1._2, f2._2)) match {
-      case (EQ, ord) => ord
-      case (ord, _)  => ord
+      case (EQ, ord) =>
+        ord
+      case (ord, _) =>
+        ord
     }
 }
 private trait Tuple3Order[A1, A2, A3]
@@ -1154,9 +1156,12 @@ private trait Tuple3Order[A1, A2, A3]
       _1.order(f1._1, f2._1),
       _2.order(f1._2, f2._2),
       _3.order(f1._3, f2._3)) match {
-      case (EQ, EQ, ord) => ord
-      case (EQ, ord, _)  => ord
-      case (ord, _, _)   => ord
+      case (EQ, EQ, ord) =>
+        ord
+      case (EQ, ord, _) =>
+        ord
+      case (ord, _, _) =>
+        ord
     }
 }
 private trait Tuple4Order[A1, A2, A3, A4]
@@ -1173,10 +1178,14 @@ private trait Tuple4Order[A1, A2, A3, A4]
       _2.order(f1._2, f2._2),
       _3.order(f1._3, f2._3),
       _4.order(f1._4, f2._4)) match {
-      case (EQ, EQ, EQ, ord) => ord
-      case (EQ, EQ, ord, _)  => ord
-      case (EQ, ord, _, _)   => ord
-      case (ord, _, _, _)    => ord
+      case (EQ, EQ, EQ, ord) =>
+        ord
+      case (EQ, EQ, ord, _) =>
+        ord
+      case (EQ, ord, _, _) =>
+        ord
+      case (ord, _, _, _) =>
+        ord
     }
 }
 private trait Tuple5Order[A1, A2, A3, A4, A5]
@@ -1195,11 +1204,16 @@ private trait Tuple5Order[A1, A2, A3, A4, A5]
       _3.order(f1._3, f2._3),
       _4.order(f1._4, f2._4),
       _5.order(f1._5, f2._5)) match {
-      case (EQ, EQ, EQ, EQ, ord) => ord
-      case (EQ, EQ, EQ, ord, _)  => ord
-      case (EQ, EQ, ord, _, _)   => ord
-      case (EQ, ord, _, _, _)    => ord
-      case (ord, _, _, _, _)     => ord
+      case (EQ, EQ, EQ, EQ, ord) =>
+        ord
+      case (EQ, EQ, EQ, ord, _) =>
+        ord
+      case (EQ, EQ, ord, _, _) =>
+        ord
+      case (EQ, ord, _, _, _) =>
+        ord
+      case (ord, _, _, _, _) =>
+        ord
     }
 }
 private trait Tuple6Order[A1, A2, A3, A4, A5, A6]
@@ -1220,12 +1234,18 @@ private trait Tuple6Order[A1, A2, A3, A4, A5, A6]
       _4.order(f1._4, f2._4),
       _5.order(f1._5, f2._5),
       _6.order(f1._6, f2._6)) match {
-      case (EQ, EQ, EQ, EQ, EQ, ord) => ord
-      case (EQ, EQ, EQ, EQ, ord, _)  => ord
-      case (EQ, EQ, EQ, ord, _, _)   => ord
-      case (EQ, EQ, ord, _, _, _)    => ord
-      case (EQ, ord, _, _, _, _)     => ord
-      case (ord, _, _, _, _, _)      => ord
+      case (EQ, EQ, EQ, EQ, EQ, ord) =>
+        ord
+      case (EQ, EQ, EQ, EQ, ord, _) =>
+        ord
+      case (EQ, EQ, EQ, ord, _, _) =>
+        ord
+      case (EQ, EQ, ord, _, _, _) =>
+        ord
+      case (EQ, ord, _, _, _, _) =>
+        ord
+      case (ord, _, _, _, _, _) =>
+        ord
     }
 }
 private trait Tuple7Order[A1, A2, A3, A4, A5, A6, A7]
@@ -1250,13 +1270,20 @@ private trait Tuple7Order[A1, A2, A3, A4, A5, A6, A7]
       _5.order(f1._5, f2._5),
       _6.order(f1._6, f2._6),
       _7.order(f1._7, f2._7)) match {
-      case (EQ, EQ, EQ, EQ, EQ, EQ, ord) => ord
-      case (EQ, EQ, EQ, EQ, EQ, ord, _)  => ord
-      case (EQ, EQ, EQ, EQ, ord, _, _)   => ord
-      case (EQ, EQ, EQ, ord, _, _, _)    => ord
-      case (EQ, EQ, ord, _, _, _, _)     => ord
-      case (EQ, ord, _, _, _, _, _)      => ord
-      case (ord, _, _, _, _, _, _)       => ord
+      case (EQ, EQ, EQ, EQ, EQ, EQ, ord) =>
+        ord
+      case (EQ, EQ, EQ, EQ, EQ, ord, _) =>
+        ord
+      case (EQ, EQ, EQ, EQ, ord, _, _) =>
+        ord
+      case (EQ, EQ, EQ, ord, _, _, _) =>
+        ord
+      case (EQ, EQ, ord, _, _, _, _) =>
+        ord
+      case (EQ, ord, _, _, _, _, _) =>
+        ord
+      case (ord, _, _, _, _, _, _) =>
+        ord
     }
 }
 private trait Tuple8Order[A1, A2, A3, A4, A5, A6, A7, A8]
@@ -1283,14 +1310,22 @@ private trait Tuple8Order[A1, A2, A3, A4, A5, A6, A7, A8]
       _6.order(f1._6, f2._6),
       _7.order(f1._7, f2._7),
       _8.order(f1._8, f2._8)) match {
-      case (EQ, EQ, EQ, EQ, EQ, EQ, EQ, ord) => ord
-      case (EQ, EQ, EQ, EQ, EQ, EQ, ord, _)  => ord
-      case (EQ, EQ, EQ, EQ, EQ, ord, _, _)   => ord
-      case (EQ, EQ, EQ, EQ, ord, _, _, _)    => ord
-      case (EQ, EQ, EQ, ord, _, _, _, _)     => ord
-      case (EQ, EQ, ord, _, _, _, _, _)      => ord
-      case (EQ, ord, _, _, _, _, _, _)       => ord
-      case (ord, _, _, _, _, _, _, _)        => ord
+      case (EQ, EQ, EQ, EQ, EQ, EQ, EQ, ord) =>
+        ord
+      case (EQ, EQ, EQ, EQ, EQ, EQ, ord, _) =>
+        ord
+      case (EQ, EQ, EQ, EQ, EQ, ord, _, _) =>
+        ord
+      case (EQ, EQ, EQ, EQ, ord, _, _, _) =>
+        ord
+      case (EQ, EQ, EQ, ord, _, _, _, _) =>
+        ord
+      case (EQ, EQ, ord, _, _, _, _, _) =>
+        ord
+      case (EQ, ord, _, _, _, _, _, _) =>
+        ord
+      case (ord, _, _, _, _, _, _, _) =>
+        ord
     }
 }
 

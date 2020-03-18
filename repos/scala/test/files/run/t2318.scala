@@ -10,8 +10,10 @@ object Test {
   object Mgr extends SecurityManager {
     override def checkPermission(perm: Permission) =
       perm match {
-        case _: java.lang.RuntimePermission => ()
-        case _: java.io.FilePermission      => ()
+        case _: java.lang.RuntimePermission =>
+          ()
+        case _: java.io.FilePermission =>
+          ()
         case x: java.security.SecurityPermission
             if x.getName contains ".networkaddress." =>
           () // generality ftw
@@ -20,7 +22,8 @@ object Test {
           ()
         case _: java.lang.reflect.ReflectPermission =>
           () // needed for LambdaMetaFactory
-        case _ => super.checkPermission(perm)
+        case _ =>
+          super.checkPermission(perm)
       }
   }
 
@@ -51,7 +54,8 @@ object Test {
     // figuring this will otherwise break on windows
     try t1()
     catch {
-      case _: java.io.IOException => ()
+      case _: java.io.IOException =>
+        ()
     }
 
     t2()

@@ -42,10 +42,14 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
 
   private val replayFilterMode: ReplayFilter.Mode =
     config.getString("replay-filter.mode").toLowerCase(Locale.ROOT) match {
-      case "off" ⇒ ReplayFilter.Disabled
-      case "repair-by-discard-old" ⇒ ReplayFilter.RepairByDiscardOld
-      case "fail" ⇒ ReplayFilter.Fail
-      case "warn" ⇒ ReplayFilter.Warn
+      case "off" ⇒
+        ReplayFilter.Disabled
+      case "repair-by-discard-old" ⇒
+        ReplayFilter.RepairByDiscardOld
+      case "fail" ⇒
+        ReplayFilter.Fail
+      case "warn" ⇒
+        ReplayFilter.Warn
       case other ⇒
         throw new IllegalArgumentException(
           s"invalid replay-filter.mode [$other], supported values [off, repair, fail, warn]")
@@ -81,13 +85,15 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                 // try in case the asyncWriteMessages throws
                 try breaker.withCircuitBreaker(asyncWriteMessages(prep))
                 catch {
-                  case NonFatal(e) ⇒ Future.failed(e)
+                  case NonFatal(e) ⇒
+                    Future.failed(e)
                 }
               case f @ Failure(_) ⇒
                 // exception from preparePersistentBatch => rejected
                 Future.successful(
                   messages.collect {
-                    case a: AtomicWrite ⇒ f
+                    case a: AtomicWrite ⇒
+                      f
                   })
             }
           ).map { results ⇒
@@ -218,7 +224,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             RecoverySuccess(highSeqNr)
           }
           .recover {
-            case e ⇒ ReplayMessagesFailure(e)
+            case e ⇒
+              ReplayMessagesFailure(e)
           }
           .pipeTo(replyTo)
           .onSuccess {
@@ -230,9 +237,11 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
       case d @ DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) ⇒
         breaker.withCircuitBreaker(
           asyncDeleteMessagesTo(persistenceId, toSequenceNr)) map {
-          case _ ⇒ DeleteMessagesSuccess(toSequenceNr)
+          case _ ⇒
+            DeleteMessagesSuccess(toSequenceNr)
         } recover {
-          case e ⇒ DeleteMessagesFailure(e, toSequenceNr)
+          case e ⇒
+            DeleteMessagesFailure(e, toSequenceNr)
         } pipeTo persistentActor onComplete {
           case _ ⇒
             if (publish)
@@ -355,7 +364,8 @@ private[persistence] object AsyncWriteJournal {
     private var delivered = 0L
 
     def receive = {
-      case d: Desequenced ⇒ resequence(d)
+      case d: Desequenced ⇒
+        resequence(d)
     }
 
     @scala.annotation.tailrec

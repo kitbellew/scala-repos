@@ -122,8 +122,10 @@ object MacroInferUtil {
                   ScalaPsiUtil.getCompanionModule(c) match {
                     case Some(obj: ScObject) =>
                       val elem = obj.members.find {
-                        case a: ScTypeAlias if a.name == "Aux" => true
-                        case _                                 => false
+                        case a: ScTypeAlias if a.name == "Aux" =>
+                          true
+                        case _ =>
+                          false
                       }
                       if (!elem.isDefined)
                         return None
@@ -134,13 +136,17 @@ object MacroInferUtil {
                             elem.get.asInstanceOf[PsiNamedElement],
                             superReference = false),
                           Seq(productLikeType, repr)))
-                    case _ => None
+                    case _ =>
+                      None
                   }
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
-        case None => None
+        case None =>
+          None
       }
     }
 
@@ -152,14 +158,16 @@ object MacroInferUtil {
 
   def isMacro(n: PsiNamedElement): Option[ScFunction] = {
     n match {
-      case f: ScMacroDefinition => Some(f)
+      case f: ScMacroDefinition =>
+        Some(f)
       //todo: fix decompiler to avoid this check:
       case f: ScFunction
           if f
             .hasAnnotation("scala.reflect.macros.internal.macroImpl")
             .isDefined =>
         Some(f)
-      case _ => None
+      case _ =>
+        None
     }
   }
 }

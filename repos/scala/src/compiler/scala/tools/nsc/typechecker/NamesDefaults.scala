@@ -48,12 +48,15 @@ trait NamesDefaults {
 
   private def nameOfNamedArg(arg: Tree) =
     Some(arg) collect {
-      case AssignOrNamedArg(Ident(name), _) => name
+      case AssignOrNamedArg(Ident(name), _) =>
+        name
     }
   def isNamedArg(arg: Tree) =
     arg match {
-      case AssignOrNamedArg(Ident(_), _) => true
-      case _                             => false
+      case AssignOrNamedArg(Ident(_), _) =>
+        true
+      case _ =>
+        false
     }
 
   /** @param pos maps indices from old to new */
@@ -178,7 +181,8 @@ trait NamesDefaults {
                 targs
             (baseFun, Nil, targsInSource)
 
-          case _ => (baseFun, Nil, Nil)
+          case _ =>
+            (baseFun, Nil, Nil)
         }
 
       // never used for constructor calls, they always have a stable qualifier
@@ -332,8 +336,10 @@ trait NamesDefaults {
                 (
                   if (repeated)
                     arg match {
-                      case WildcardStarArg(expr) => expr.tpe
-                      case _                     => seqType(arg.tpe)
+                      case WildcardStarArg(expr) =>
+                        expr.tpe
+                      case _ =>
+                        seqType(arg.tpe)
                     }
                   else {
                     // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
@@ -356,7 +362,8 @@ trait NamesDefaults {
               Some((context.scope.enter(s), byName, repeated))
           })
       map2(symPs, args) {
-        case (None, _) => None
+        case (None, _) =>
+          None
         case (Some((sym, byName, repeated)), arg) =>
           val body =
             if (byName) {
@@ -371,8 +378,10 @@ trait NamesDefaults {
                 sym) traverse arg // fixes #4502
               if (repeated)
                 arg match {
-                  case WildcardStarArg(expr) => expr
-                  case _                     => blockTyper typed gen.mkSeqApply(resetAttrs(arg))
+                  case WildcardStarArg(expr) =>
+                    expr
+                  case _ =>
+                    blockTyper typed gen.mkSeqApply(resetAttrs(arg))
                 }
               else
                 arg
@@ -431,16 +440,19 @@ trait NamesDefaults {
                   map3(reorderArgs(valDefs, argPos), formals, typedArgs)(
                     (vDefOpt, tpe, origArg) =>
                       vDefOpt match {
-                        case None => origArg
+                        case None =>
+                          origArg
                         case Some(vDef) =>
                           val ref = gen.mkAttributedRef(vDef.symbol)
                           atPos(vDef.pos.focus) {
                             // for by-name parameters, the local value is a nullary function returning the argument
                             tpe.typeSymbol match {
-                              case ByNameParamClass => Apply(ref, Nil)
+                              case ByNameParamClass =>
+                                Apply(ref, Nil)
                               case RepeatedParamClass =>
                                 Typed(ref, Ident(tpnme.WILDCARD_STAR))
-                              case _ => ref
+                              case _ =>
+                                ref
                             }
                           }
                       })
@@ -455,7 +467,8 @@ trait NamesDefaults {
                     block,
                     NamedApplyInfo(qual, targs, vargss :+ refArgs, blockTyper)))
                 block
-              case _ => tree
+              case _ =>
+                tree
             }
           }
 
@@ -539,8 +552,10 @@ trait NamesDefaults {
           else {
             var default1: Tree =
               qual match {
-                case Some(q) => gen.mkAttributedSelect(q.duplicate, defGetter)
-                case None    => gen.mkAttributedRef(defGetter)
+                case Some(q) =>
+                  gen.mkAttributedSelect(q.duplicate, defGetter)
+                case None =>
+                  gen.mkAttributedRef(defGetter)
 
               }
             default1 =
@@ -678,8 +693,10 @@ trait NamesDefaults {
         context0.deprecationWarning(args(argIndex).pos, param, w)
       def checkDeprecation(anonOK: Boolean) =
         when(param.deprecatedParamName) {
-          case Some(`name`)      => true
-          case Some(nme.NO_NAME) => anonOK
+          case Some(`name`) =>
+            true
+          case Some(nme.NO_NAME) =>
+            anonOK
         }
       def checkName = {
         val res = param.name == name
@@ -712,7 +729,8 @@ trait NamesDefaults {
           case paramPos if argPos contains paramPos =>
             val existingArgIndex = argPos.indexWhere(_ == paramPos)
             val otherName = Some(args(paramPos)) collect {
-              case AssignOrNamedArg(Ident(oName), _) if oName != name => oName
+              case AssignOrNamedArg(Ident(oName), _) if oName != name =>
+                oName
             }
             DoubleParamNamesDefaultError(
               arg,
@@ -727,7 +745,8 @@ trait NamesDefaults {
               false // named arg is not in original parameter order: require names after this
             argPos(argIndex) = paramPos // fix up the arg position
             rhs
-          case _ => rhs
+          case _ =>
+            rhs
         }
       }
       mapWithIndex(args) {

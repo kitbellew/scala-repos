@@ -68,10 +68,14 @@ trait AST extends Phases {
           printSExp(right, indent + "  "))
       case Neg(_, child) =>
         "%s(neg\n%s)".format(indent, printSExp(child, indent + "  "))
-      case Paren(_, child)  => printSExp(child, indent)
-      case NumLit(_, value) => indent + value
-      case TicVar(_, id)    => indent + id
-      case _                => indent + "<unprintable>"
+      case Paren(_, child) =>
+        printSExp(child, indent)
+      case NumLit(_, value) =>
+        indent + value
+      case TicVar(_, id) =>
+        indent + id
+      case _ =>
+        indent + "<unprintable>"
     }
 
   def printInfix(tree: Expr): String =
@@ -84,11 +88,16 @@ trait AST extends Phases {
         "(%s * %s)".format(printInfix(left), printInfix(right))
       case Div(_, left, right) =>
         "(%s / %s)".format(printInfix(left), printInfix(right))
-      case Neg(_, child)    => "neg%s".format(printInfix(child))
-      case Paren(_, child)  => "(%s)".format(printInfix(child))
-      case NumLit(_, value) => value
-      case TicVar(_, id)    => id
-      case _                => "<unprintable>"
+      case Neg(_, child) =>
+        "neg%s".format(printInfix(child))
+      case Paren(_, child) =>
+        "(%s)".format(printInfix(child))
+      case NumLit(_, value) =>
+        value
+      case TicVar(_, id) =>
+        id
+      case _ =>
+        "<unprintable>"
     }
 
   def prettyPrint(e: Expr, level: Int = 0): String = {
@@ -121,8 +130,10 @@ trait AST extends Phases {
         case Import(loc, spec, child) => {
           val specStr =
             spec match {
-              case WildcardImport(prefix) => prefix mkString ("", "::", "::_")
-              case SpecificImport(prefix) => prefix mkString "::"
+              case WildcardImport(prefix) =>
+                prefix mkString ("", "::", "::_")
+              case SpecificImport(prefix) =>
+                prefix mkString "::"
             }
 
           indent + "type: import\n" +
@@ -386,15 +397,18 @@ trait AST extends Phases {
   protected def bindRoot(root: Expr, e: Expr) {
     def bindElements(a: Any) {
       a match {
-        case e: Expr => bindRoot(root, e)
+        case e: Expr =>
+          bindRoot(root, e)
 
         case (e1: Expr, e2: Expr) => {
           bindRoot(root, e1)
           bindRoot(root, e2)
         }
 
-        case (e: Expr, _) => bindRoot(root, e)
-        case (_, e: Expr) => bindRoot(root, e)
+        case (e: Expr, _) =>
+          bindRoot(root, e)
+        case (_, e: Expr) =>
+          bindRoot(root, e)
 
         case _ =>
       }
@@ -403,9 +417,11 @@ trait AST extends Phases {
     e.root = root
 
     e.productIterator foreach {
-      case e: Expr      => bindRoot(root, e)
-      case v: Vector[_] => v foreach bindElements
-      case _            =>
+      case e: Expr =>
+        bindRoot(root, e)
+      case v: Vector[_] =>
+        v foreach bindElements
+      case _ =>
     }
   }
 
@@ -456,9 +472,11 @@ trait AST extends Phases {
     private lazy val subForest: Stream[Tree[Expr]] = {
       def subForest0(l: List[Expr]): Stream[Tree[Expr]] =
         l match {
-          case Nil => Stream.empty
+          case Nil =>
+            Stream.empty
 
-          case head :: tail => Stream.cons(head.tree, subForest0(tail))
+          case head :: tail =>
+            Stream.cons(head.tree, subForest0(tail))
         }
 
       subForest0(children)
@@ -488,8 +506,10 @@ trait AST extends Phases {
 
     override def toString: String = {
       val result = productIterator map {
-        case ls: LineStream => "<%d:%d>".format(ls.lineNum, ls.colNum)
-        case x              => x.toString
+        case ls: LineStream =>
+          "<%d:%d>".format(ls.lineNum, ls.colNum)
+        case x =>
+          x.toString
       }
 
       productPrefix + "(%s)".format(result mkString ",")
@@ -497,7 +517,8 @@ trait AST extends Phases {
 
     def equalsIgnoreLoc(that: Expr): Boolean =
       (this, that) match {
-        case (a, b) if a == b => true
+        case (a, b) if a == b =>
+          true
 
         case (
               Let(_, id1, params1, left1, right1),
@@ -512,7 +533,8 @@ trait AST extends Phases {
               Solve(_, constraints2, child2)) => {
           val sizing = constraints1.length == constraints2.length
           val contents = constraints1 zip constraints2 forall {
-            case (e1, e2) => e1 equalsIgnoreLoc e2
+            case (e1, e2) =>
+              e1 equalsIgnoreLoc e2
           }
 
           sizing && contents && (child1 equalsIgnoreLoc child2)
@@ -566,7 +588,8 @@ trait AST extends Phases {
         case (ArrayDef(_, values1), ArrayDef(_, values2)) => {
           val sizing = values1.length == values2.length
           val contents = values1 zip values2 forall {
-            case (e1, e2) => e1 equalsIgnoreLoc e2
+            case (e1, e2) =>
+              e1 equalsIgnoreLoc e2
           }
 
           sizing && contents
@@ -590,7 +613,8 @@ trait AST extends Phases {
           val sizing = actuals1.length == actuals2.length
           val binding = d1.binding == d2.binding
           val contents = actuals1 zip actuals2 forall {
-            case (e1, e2) => e1 equalsIgnoreLoc e2
+            case (e1, e2) =>
+              e1 equalsIgnoreLoc e2
           }
 
           naming && sizing && binding && contents
@@ -655,14 +679,17 @@ trait AST extends Phases {
         case (Or(_, left1, right1), Or(_, left2, right2)) =>
           (left1 equalsIgnoreLoc left2) && (right1 equalsIgnoreLoc right2)
 
-        case (Comp(_, child1), Comp(_, child2)) => child1 equalsIgnoreLoc child2
+        case (Comp(_, child1), Comp(_, child2)) =>
+          child1 equalsIgnoreLoc child2
 
-        case (Neg(_, child1), Neg(_, child2)) => child1 equalsIgnoreLoc child2
+        case (Neg(_, child1), Neg(_, child2)) =>
+          child1 equalsIgnoreLoc child2
 
         case (Paren(_, child1), Paren(_, child2)) =>
           child1 equalsIgnoreLoc child2
 
-        case _ => false
+        case _ =>
+          false
       }
 
     def hashCodeIgnoreLoc: Int =
@@ -686,26 +713,34 @@ trait AST extends Phases {
         case Observe(_, data, samples) =>
           data.hashCodeIgnoreLoc + samples.hashCodeIgnoreLoc
 
-        case New(_, child) => child.hashCodeIgnoreLoc * 23
+        case New(_, child) =>
+          child.hashCodeIgnoreLoc * 23
 
         case Relate(_, from, to, in) =>
           from.hashCodeIgnoreLoc + to.hashCodeIgnoreLoc + in.hashCodeIgnoreLoc
 
-        case TicVar(_, id) => id.hashCode
+        case TicVar(_, id) =>
+          id.hashCode
 
-        case StrLit(_, value) => value.hashCode
+        case StrLit(_, value) =>
+          value.hashCode
 
-        case NumLit(_, value) => value.hashCode
+        case NumLit(_, value) =>
+          value.hashCode
 
-        case BoolLit(_, value) => value.hashCode
+        case BoolLit(_, value) =>
+          value.hashCode
 
-        case UndefinedLit(_) => "undefined".hashCode
+        case UndefinedLit(_) =>
+          "undefined".hashCode
 
-        case NullLit(_) => "null".hashCode
+        case NullLit(_) =>
+          "null".hashCode
 
         case ObjectDef(_, props) => {
           props map {
-            case (key, value) => key.hashCode + value.hashCodeIgnoreLoc
+            case (key, value) =>
+              key.hashCode + value.hashCodeIgnoreLoc
           } sum
         }
 
@@ -790,11 +825,14 @@ trait AST extends Phases {
         case Or(_, left, right) =>
           left.hashCodeIgnoreLoc + right.hashCodeIgnoreLoc
 
-        case Comp(_, child) => child.hashCodeIgnoreLoc * 13
+        case Comp(_, child) =>
+          child.hashCodeIgnoreLoc * 13
 
-        case Neg(_, child) => child.hashCodeIgnoreLoc * 7
+        case Neg(_, child) =>
+          child.hashCodeIgnoreLoc * 7
 
-        case Paren(_, child) => child.hashCodeIgnoreLoc * 29
+        case Paren(_, child) =>
+          child.hashCodeIgnoreLoc * 29
       }
 
     protected def attribute[A](phase: Phase): Atom[A] =
@@ -806,8 +844,10 @@ trait AST extends Phases {
   private[quirrel] case class ExprWrapper(expr: Expr) {
     override def equals(a: Any): Boolean =
       a match {
-        case ExprWrapper(expr2) => expr equalsIgnoreLoc expr2
-        case _                  => false
+        case ExprWrapper(expr2) =>
+          expr equalsIgnoreLoc expr2
+        case _ =>
+          false
       }
 
     override def hashCode = expr.hashCodeIgnoreLoc
@@ -954,8 +994,10 @@ trait AST extends Phases {
 
       lazy val criticalConstraints =
         constraints filter {
-          case TicVar(_, _) => false
-          case _            => true
+          case TicVar(_, _) =>
+            false
+          case _ =>
+            true
         } toSet
 
       private val _buckets = attribute[Map[Set[Dispatch], BucketSpec]](
@@ -1055,7 +1097,8 @@ trait AST extends Phases {
 
       def form = {
         val opt = (props map {
-          case (_, e) => 'name ~ e
+          case (_, e) =>
+            'name ~ e
         } reduceOption {
           _ ~ _
         })

@@ -130,7 +130,8 @@ package object reify {
     if (isThisInScope) {
       val enclosingClasses =
         typer0.context.enclosingContextChain map (_.tree) collect {
-          case classDef: ClassDef => classDef
+          case classDef: ClassDef =>
+            classDef
         }
       val classInScope = enclosingClasses.headOption getOrElse EmptyTree
       def isUnsafeToUseThis = {
@@ -139,8 +140,10 @@ package object reify {
         // Note: It's ok to check for any object here, because if we were in an enclosing class, we'd already have returned its classOf
         val isInsideObject =
           typer0.context.enclosingContextChain map (_.tree) exists {
-            case _: ModuleDef => true;
-            case _            => false
+            case _: ModuleDef =>
+              true;
+            case _ =>
+              false
           }
         isInsideConstructorSuper && isInsideObject
       }

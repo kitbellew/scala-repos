@@ -97,7 +97,8 @@ object Analysis {
 
         def typeDisplayName(tpe: ReferenceType): String =
           tpe match {
-            case ClassType(encodedName) => decodeClassName(encodedName)
+            case ClassType(encodedName) =>
+              decodeClassName(encodedName)
             case ArrayType(base, dimensions) =>
               "[" * dimensions + decodeClassName(base)
           }

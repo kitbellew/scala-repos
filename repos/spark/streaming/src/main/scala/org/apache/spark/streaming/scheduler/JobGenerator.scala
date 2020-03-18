@@ -209,11 +209,14 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   private def processEvent(event: JobGeneratorEvent) {
     logDebug("Got event " + event)
     event match {
-      case GenerateJobs(time)  => generateJobs(time)
-      case ClearMetadata(time) => clearMetadata(time)
+      case GenerateJobs(time) =>
+        generateJobs(time)
+      case ClearMetadata(time) =>
+        clearMetadata(time)
       case DoCheckpoint(time, clearCheckpointDataLater) =>
         doCheckpoint(time, clearCheckpointDataLater)
-      case ClearCheckpointData(time) => clearCheckpointData(time)
+      case ClearCheckpointData(time) =>
+        clearCheckpointData(time)
     }
   }
 

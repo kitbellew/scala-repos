@@ -103,8 +103,10 @@ class SubScene(override val delegate: jfxs.SubScene)
     */
   def getChildren =
     root.value match {
-      case group: jfxs.Group => group.getChildren
-      case pane: jfxsl.Pane  => pane.getChildren
+      case group: jfxs.Group =>
+        group.getChildren
+      case pane: jfxsl.Pane =>
+        pane.getChildren
       case _ =>
         throw new IllegalStateException(
           "Cannot access children of root: " + root +

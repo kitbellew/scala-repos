@@ -10,9 +10,12 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 object InterpolatedStringFormatter extends StringFormatter {
   def format(parts: Seq[StringPart]) = {
     val toMultiline = parts.exists {
-      case Text(s)      => s.contains("\n")
-      case i: Injection => i.value == "\n"
-      case _            => false
+      case Text(s) =>
+        s.contains("\n")
+      case i: Injection =>
+        i.value == "\n"
+      case _ =>
+        false
     }
     format(parts, toMultiline)
   }
@@ -21,8 +24,10 @@ object InterpolatedStringFormatter extends StringFormatter {
     val content = formatContent(parts, toMultiline)
     val prefix = {
       val formattingRequired = parts.exists {
-        case it: Injection => it.isFormattingRequired
-        case _             => false
+        case it: Injection =>
+          it.isFormattingRequired
+        case _ =>
+          false
       }
       if (formattingRequired)
         "f"
@@ -41,7 +46,8 @@ object InterpolatedStringFormatter extends StringFormatter {
       parts: Seq[StringPart],
       toMultiline: Boolean = false): String = {
     val strings = parts.collect {
-      case Text(s) if toMultiline => s.replace("\r", "")
+      case Text(s) if toMultiline =>
+        s.replace("\r", "")
       case Text(s) =>
         StringUtil.escapeStringCharacters(s.replaceAll("\\$", "\\$\\$"))
       case it: Injection =>

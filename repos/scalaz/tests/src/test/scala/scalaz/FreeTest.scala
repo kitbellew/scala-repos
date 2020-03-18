@@ -142,7 +142,8 @@ object FreeTest extends SpecLite {
       new (FTestApi ~> Id.Id) {
         def apply[A](fa: FTestApi[A]) =
           fa match {
-            case TB(i) => i + 1
+            case TB(i) =>
+              i + 1
           }
       }
 

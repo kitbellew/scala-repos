@@ -69,7 +69,8 @@ object TcpHelper {
       case WriteAck ⇒
         writePending = false
         closeAfterWrite match {
-          case Some(cmd) ⇒ connection ! cmd
+          case Some(cmd) ⇒
+            connection ! cmd
           case None ⇒
         }
       case ClientRead(count, requester) ⇒
@@ -168,8 +169,10 @@ trait TcpHelper {
         max: Duration = 3.seconds): Unit = {
       connectionActor ! PingClose(connectionProbe.ref)
       connectionProbe.fishForMessage(max) {
-        case c: ConnectionClosed if p(c) ⇒ true
-        case other ⇒ false
+        case c: ConnectionClosed if p(c) ⇒
+          true
+        case other ⇒
+          false
       }
     }
 

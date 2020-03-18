@@ -14,6 +14,7 @@ object Test extends App {
   println(implicitly[DynamicMaterialization[C2]])
 
   42 match {
-    case ExtractorMacro(x) => println(x)
+    case ExtractorMacro(x) =>
+      println(x)
   }
 }

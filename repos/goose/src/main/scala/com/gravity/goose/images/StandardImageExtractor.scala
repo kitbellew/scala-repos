@@ -310,7 +310,8 @@ class StandardImageExtractor(
                 depthObj.parentDepth,
                 depthObj.siblingDepth)
             }
-            case None => trace("Image iteration is over!")
+            case None =>
+              trace("Image iteration is over!")
           }
         }
       }
@@ -323,7 +324,8 @@ class StandardImageExtractor(
               depthObj.parentDepth,
               depthObj.siblingDepth)
           }
-          case None => trace("Image iteration is over!")
+          case None =>
+            trace("Image iteration is over!")
         }
       }
     }
@@ -369,7 +371,8 @@ class StandardImageExtractor(
           image.remove()
         }
       } catch {
-        case e: Exception => warn(e, e.toString)
+        case e: Exception =>
+          warn(e, e.toString)
       }
       cnt += 1
     })

@@ -196,7 +196,8 @@ object FSM {
       */
     def forMax(timeout: Duration): State[S, D] =
       timeout match {
-        case f: FiniteDuration ⇒ copy(timeout = Some(f))
+        case f: FiniteDuration ⇒
+          copy(timeout = Some(f))
         case Duration.Inf ⇒
           copy(timeout =
             SomeMaxFiniteDuration
@@ -450,7 +451,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     def using(andThen: PartialFunction[State, State]): StateFunction =
       func andThen (
         andThen orElse {
-          case x ⇒ x
+          case x ⇒
+            x
         }
       )
   }
@@ -607,7 +609,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       case null ⇒
         throw new IllegalStateException(
           "nextStateData is only available during onTransition")
-      case x ⇒ x.stateData
+      case x ⇒
+        x.stateData
     }
 
   /*
@@ -743,7 +746,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
   private[akka] def applyState(nextState: State): Unit = {
     nextState.stopReason match {
-      case None ⇒ makeTransition(nextState)
+      case None ⇒
+        makeTransition(nextState)
       case _ ⇒
         nextState.replies.reverse foreach { r ⇒
           sender() ! r
@@ -833,8 +837,10 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     */
   protected def logTermination(reason: Reason): Unit =
     reason match {
-      case Failure(ex: Throwable) ⇒ log.error(ex, "terminating due to Failure")
-      case Failure(msg: AnyRef) ⇒ log.error(msg.toString)
+      case Failure(ex: Throwable) ⇒
+        log.error(ex, "terminating due to Failure")
+      case Failure(msg: AnyRef) ⇒
+        log.error(msg.toString)
       case _ ⇒
     }
 }
@@ -875,10 +881,14 @@ trait LoggingFSM[S, D] extends FSM[S, D] {
     if (debugEvent) {
       val srcstr =
         source match {
-          case s: String ⇒ s
-          case Timer(name, _, _, _) ⇒ "timer " + name
-          case a: ActorRef ⇒ a.toString
-          case _ ⇒ "unknown"
+          case s: String ⇒
+            s
+          case Timer(name, _, _, _) ⇒
+            "timer " + name
+          case a: ActorRef ⇒
+            a.toString
+          case _ ⇒
+            "unknown"
         }
       log.debug("processing " + event + " from " + srcstr)
     }

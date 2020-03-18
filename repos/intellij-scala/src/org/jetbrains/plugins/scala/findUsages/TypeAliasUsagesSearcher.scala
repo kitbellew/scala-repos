@@ -45,10 +45,13 @@ class TypeAliasUsagesSearcher
       target match {
         case named: PsiNamedElement =>
           inReadAction(ScalaPsiUtil.nameContext(named)) match {
-            case ta: ScTypeAliasDefinition => ta
-            case _                         => return
+            case ta: ScTypeAliasDefinition =>
+              ta
+            case _ =>
+              return
           }
-        case _ => return
+        case _ =>
+          return
       }
     val name: String = ta.name
     if (name == null || StringUtil.isEmptyOrSpaces(name))
@@ -85,11 +88,14 @@ class TypeAliasUsagesSearcher
                 resRef.bind().flatMap(_.parentElement) match {
                   case Some(`myTarget`) =>
                     consumer.process(resRef)
-                  case _ => true
+                  case _ =>
+                    true
                 }
-              case _ => true
+              case _ =>
+                true
             }
-          case _ => true
+          case _ =>
+            true
         }
       }
   }

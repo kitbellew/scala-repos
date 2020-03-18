@@ -119,7 +119,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     try {
       Some(Integer.parseInt(i))
     } catch {
-      case _: Throwable ⇒ None
+      case _: Throwable ⇒
+        None
     }
 
   val propOrder =
@@ -334,8 +335,10 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         case "responseMessages" =>
           val af =
             act \ fn match {
-              case JArray(res) => res
-              case _           => Nil
+              case JArray(res) =>
+                res
+              case _ =>
+                Nil
             }
           val JArray(ef) = exp \ fn
           val r = af map { v =>

@@ -78,10 +78,14 @@ class WebJarServlet extends HttpServlet {
 
   private[this] def mimeType(mediaType: String): String = {
     mediaType.toLowerCase match {
-      case "eot" => "application/vnd.ms-fontobject"
-      case "svg" => "image/svg+xml"
-      case "ttf" => "application/font-ttf"
-      case _     => "application/octet-stream"
+      case "eot" =>
+        "application/vnd.ms-fontobject"
+      case "svg" =>
+        "image/svg+xml"
+      case "ttf" =>
+        "application/font-ttf"
+      case _ =>
+        "application/octet-stream"
     }
   }
 

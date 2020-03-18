@@ -467,8 +467,10 @@ trait FSM[S, D] extends ListenerManagement {
         handleEvent(event)
       }
     nextState.stopReason match {
-      case Some(reason) => terminate(reason)
-      case None         => makeTransition(nextState)
+      case Some(reason) =>
+        terminate(reason)
+      case None =>
+        makeTransition(nextState)
     }
   }
 
@@ -532,8 +534,9 @@ trait FSM[S, D] extends ListenerManagement {
       */
     def replying(replyValue: Any): State = {
       self.sender match {
-        case Some(sender) => sender ! replyValue
-        case None         =>
+        case Some(sender) =>
+          sender ! replyValue
+        case None =>
       }
       this
     }

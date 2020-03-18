@@ -386,8 +386,10 @@ class DebugManager(broadcaster: ActorRef, config: EnsimeConfig)
     case DebugToStringReq(threadId, location) =>
       sender ! handleRPCWithVM() { vm =>
         vm.debugValueAtLocationToString(threadId, location) match {
-          case Some(strValue) => StringResponse(strValue)
-          case None           => FalseResponse
+          case Some(strValue) =>
+            StringResponse(strValue)
+          case None =>
+            FalseResponse
         }
       }
 

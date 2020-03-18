@@ -47,13 +47,15 @@ object PermissionsFinder {
     val permWriteAs = permissions.map(_.writeAs)
     permWriteAs.exists(_ == WriteAsAny) || {
       val writeAsAlls = permWriteAs.collect({
-        case WriteAsAll(s) if s.subsetOf(authorities.accountIds) => s
+        case WriteAsAll(s) if s.subsetOf(authorities.accountIds) =>
+          s
       })
 
       permWriteAs.nonEmpty &&
       writeAsAlls
         .foldLeft(authorities.accountIds)({
-          case (remaining, s) => remaining diff s
+          case (remaining, s) =>
+            remaining diff s
         })
         .isEmpty
     }
@@ -117,10 +119,12 @@ class PermissionsFinder[M[+_]: Monad](
         _.bisequence[M, Option[Authorities], Option[Authorities]]) map {
         (perms: List[Option[Authorities] \/ Option[Authorities]]) =>
           perms collectFirst {
-            case -\/(Some(authorities)) => authorities
+            case -\/(Some(authorities)) =>
+              authorities
           } orElse {
             val allOptions = perms collect {
-              case \/-(Some(authorities)) => authorities
+              case \/-(Some(authorities)) =>
+                authorities
             }
             if (allOptions.size == 1)
               allOptions.headOption
@@ -185,7 +189,8 @@ class PermissionsFinder[M[+_]: Monad](
           else
             Some(perm.path)
 
-        case _ => None
+        case _ =>
+          None
       }
     }
   }

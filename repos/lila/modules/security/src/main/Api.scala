@@ -30,7 +30,8 @@ final class Api(
       fufail(Api.AuthFromTorExitNode)
     else
       UserRepo mustConfirmEmail userId flatMap {
-        case true => fufail(Api MustConfirmEmail userId)
+        case true =>
+          fufail(Api MustConfirmEmail userId)
         case false =>
           val sessionId = Random nextStringUppercase 12
           Store.save(sessionId, userId, req, apiVersion) inject sessionId
@@ -42,7 +43,8 @@ final class Api(
       password: String): Option[User] =
     (
       emailAddress.validate(usernameOrEmail) match {
-        case Some(email) => UserRepo.authenticateByEmail(email, password)
+        case Some(email) =>
+          UserRepo.authenticateByEmail(email, password)
         case None =>
           UserRepo.authenticateById(User normalize usernameOrEmail, password)
       }
@@ -99,7 +101,8 @@ final class Api(
           "user" -> userId,
           field -> BSONDocument("$exists" -> true)).some)
       .flatMap {
-        case Nil => fuccess(Nil)
+        case Nil =>
+          fuccess(Nil)
         case values =>
           tube.storeColl.distinct(
             "user",

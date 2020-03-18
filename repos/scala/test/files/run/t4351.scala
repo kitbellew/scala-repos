@@ -3,7 +3,8 @@ object Test {
     try new BooleanPropImpl().value
     catch {
       // was: StackOverflowError
-      case e: RuntimeException => println("runtime exception")
+      case e: RuntimeException =>
+        println("runtime exception")
     }
   }
 }

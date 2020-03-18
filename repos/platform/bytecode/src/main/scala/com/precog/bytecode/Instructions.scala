@@ -33,55 +33,91 @@ trait Instructions {
 
     def operandStackDelta: (Int, Int) =
       self match {
-        case Map1(_)      => (1, 1)
-        case Map2Match(_) => (2, 1)
-        case Map2Cross(_) => (2, 1)
+        case Map1(_) =>
+          (1, 1)
+        case Map2Match(_) =>
+          (2, 1)
+        case Map2Cross(_) =>
+          (2, 1)
 
-        case Reduce(_) => (1, 1)
-        case Morph1(_) => (1, 1)
-        case Morph2(_) => (2, 1)
+        case Reduce(_) =>
+          (1, 1)
+        case Morph1(_) =>
+          (1, 1)
+        case Morph2(_) =>
+          (2, 1)
 
-        case Observe => (2, 1)
+        case Observe =>
+          (2, 1)
 
-        case Assert => (2, 1)
+        case Assert =>
+          (2, 1)
 
-        case IUnion        => (2, 1)
-        case IIntersect    => (2, 1)
-        case SetDifference => (2, 1)
+        case IUnion =>
+          (2, 1)
+        case IIntersect =>
+          (2, 1)
+        case SetDifference =>
+          (2, 1)
 
-        case FilterMatch => (2, 1)
-        case FilterCross => (2, 1)
+        case FilterMatch =>
+          (2, 1)
+        case FilterCross =>
+          (2, 1)
 
-        case Group(_)        => (2, 1)
-        case MergeBuckets(_) => (2, 1)
-        case KeyPart(_)      => (1, 1)
-        case Extra           => (1, 1)
+        case Group(_) =>
+          (2, 1)
+        case MergeBuckets(_) =>
+          (2, 1)
+        case KeyPart(_) =>
+          (1, 1)
+        case Extra =>
+          (1, 1)
 
-        case Split => (1, 0)
-        case Merge => (1, 1)
+        case Split =>
+          (1, 0)
+        case Merge =>
+          (1, 1)
 
-        case Dup         => (1, 2)
-        case Drop        => (1, 0)
-        case Swap(depth) => (depth + 1, depth + 1)
+        case Dup =>
+          (1, 2)
+        case Drop =>
+          (1, 0)
+        case Swap(depth) =>
+          (depth + 1, depth + 1)
 
-        case Line(_, _, _) => (0, 0)
+        case Line(_, _, _) =>
+          (0, 0)
 
-        case AbsoluteLoad => (1, 1)
-        case RelativeLoad => (1, 1)
+        case AbsoluteLoad =>
+          (1, 1)
+        case RelativeLoad =>
+          (1, 1)
 
-        case Distinct => (1, 1)
+        case Distinct =>
+          (1, 1)
 
-        case PushString(_) => (0, 1)
-        case PushNum(_)    => (0, 1)
-        case PushTrue      => (0, 1)
-        case PushFalse     => (0, 1)
-        case PushNull      => (0, 1)
-        case PushUndefined => (0, 1)
-        case PushObject    => (0, 1)
-        case PushArray     => (0, 1)
+        case PushString(_) =>
+          (0, 1)
+        case PushNum(_) =>
+          (0, 1)
+        case PushTrue =>
+          (0, 1)
+        case PushFalse =>
+          (0, 1)
+        case PushNull =>
+          (0, 1)
+        case PushUndefined =>
+          (0, 1)
+        case PushObject =>
+          (0, 1)
+        case PushArray =>
+          (0, 1)
 
-        case PushGroup(_) => (0, 1)
-        case PushKey(_)   => (0, 1)
+        case PushGroup(_) =>
+          (0, 1)
+        case PushKey(_) =>
+          (0, 1)
       }
   }
 
@@ -155,9 +191,12 @@ trait Instructions {
     object Map2 {
       def unapply(instr: JoinInstr): Option[BinaryOperationType] =
         instr match {
-          case Map2Match(op) => Some(op.tpe)
-          case Map2Cross(op) => Some(op.tpe)
-          case _             => None
+          case Map2Match(op) =>
+            Some(op.tpe)
+          case Map2Cross(op) =>
+            Some(op.tpe)
+          case _ =>
+            None
         }
     }
 

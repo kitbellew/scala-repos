@@ -46,9 +46,12 @@ private[akka] class InputStreamPublisher(
   var readBytesTotal = 0L
 
   def receive = {
-    case ActorPublisherMessage.Request(elements) ⇒ readAndSignal()
-    case Continue ⇒ readAndSignal()
-    case ActorPublisherMessage.Cancel ⇒ context.stop(self)
+    case ActorPublisherMessage.Request(elements) ⇒
+      readAndSignal()
+    case Continue ⇒
+      readAndSignal()
+    case ActorPublisherMessage.Cancel ⇒
+      context.stop(self)
   }
 
   def readAndSignal(): Unit =

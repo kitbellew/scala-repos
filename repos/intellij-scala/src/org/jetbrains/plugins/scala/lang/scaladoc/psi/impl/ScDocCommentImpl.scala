@@ -48,8 +48,10 @@ class ScDocCommentImpl(text: CharSequence)
 
   def getOwner: PsiDocCommentOwner =
     getParent match {
-      case owner: PsiDocCommentOwner if owner.getDocComment eq this => owner
-      case _                                                        => null
+      case owner: PsiDocCommentOwner if owner.getDocComment eq this =>
+        owner
+      case _ =>
+        null
     }
 
   override def processDeclarations(
@@ -61,10 +63,13 @@ class ScDocCommentImpl(text: CharSequence)
       getOwner).exists {
       case owner: ScClass =>
         owner.members.exists {
-          case named: PsiNamedElement => !processor.execute(named, state)
-          case _                      => false
+          case named: PsiNamedElement =>
+            !processor.execute(named, state)
+          case _ =>
+            false
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -136,8 +141,10 @@ class ScDocCommentImpl(text: CharSequence)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => accept(s)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        accept(s)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

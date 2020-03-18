@@ -41,7 +41,8 @@ object Canonicalize extends {
     e match {
       case a: AttributeReference =>
         AttributeReference("none", a.dataType.asNullable)(exprId = a.exprId)
-      case _ => e
+      case _ =>
+        e
     }
 
   /** Collects adjacent commutative operations. */
@@ -49,8 +50,10 @@ object Canonicalize extends {
       e: Expression,
       f: PartialFunction[Expression, Seq[Expression]]): Seq[Expression] =
     e match {
-      case c if f.isDefinedAt(c) => f(c).flatMap(gatherCommutative(_, f))
-      case other                 => other :: Nil
+      case c if f.isDefinedAt(c) =>
+        f(c).flatMap(gatherCommutative(_, f))
+      case other =>
+        other :: Nil
     }
 
   /** Orders a set of commutative operations by their hash code. */
@@ -66,27 +69,33 @@ object Canonicalize extends {
         orderCommutative(
           a,
           {
-            case Add(l, r) => Seq(l, r)
+            case Add(l, r) =>
+              Seq(l, r)
           }).reduce(Add)
       case m: Multiply =>
         orderCommutative(
           m,
           {
-            case Multiply(l, r) => Seq(l, r)
+            case Multiply(l, r) =>
+              Seq(l, r)
           }).reduce(Multiply)
 
-      case EqualTo(l, r) if l.hashCode() > r.hashCode() => EqualTo(r, l)
+      case EqualTo(l, r) if l.hashCode() > r.hashCode() =>
+        EqualTo(r, l)
       case EqualNullSafe(l, r) if l.hashCode() > r.hashCode() =>
         EqualNullSafe(r, l)
 
-      case GreaterThan(l, r) if l.hashCode() > r.hashCode() => LessThan(r, l)
-      case LessThan(l, r) if l.hashCode() > r.hashCode()    => GreaterThan(r, l)
+      case GreaterThan(l, r) if l.hashCode() > r.hashCode() =>
+        LessThan(r, l)
+      case LessThan(l, r) if l.hashCode() > r.hashCode() =>
+        GreaterThan(r, l)
 
       case GreaterThanOrEqual(l, r) if l.hashCode() > r.hashCode() =>
         LessThanOrEqual(r, l)
       case LessThanOrEqual(l, r) if l.hashCode() > r.hashCode() =>
         GreaterThanOrEqual(r, l)
 
-      case _ => e
+      case _ =>
+        e
     }
 }

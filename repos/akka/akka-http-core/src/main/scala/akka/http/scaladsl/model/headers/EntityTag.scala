@@ -23,7 +23,8 @@ object EntityTag {
       entityTagRange: EntityTagRange,
       weakComparison: Boolean) =
     entityTagRange match {
-      case EntityTagRange.`*` ⇒ weakComparison || !eTag.weak
+      case EntityTagRange.`*` ⇒
+        weakComparison || !eTag.weak
       case EntityTagRange.Default(tags) ⇒
         tags.exists(matches(eTag, _, weakComparison))
     }

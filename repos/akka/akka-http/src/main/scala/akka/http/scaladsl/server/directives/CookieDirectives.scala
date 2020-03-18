@@ -29,8 +29,10 @@ trait CookieDirectives {
     optionalHeaderValue(findCookie(name))
 
   private def findCookie(name: String): HttpHeader ⇒ Option[HttpCookiePair] = {
-    case Cookie(cookies) ⇒ cookies.find(_.name == name)
-    case _ ⇒ None
+    case Cookie(cookies) ⇒
+      cookies.find(_.name == name)
+    case _ ⇒
+      None
   }
 
   /**

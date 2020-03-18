@@ -51,7 +51,8 @@ trait InteractiveAnalyzer extends Analyzer {
         qual: Tree,
         name: Name): Tree =
       tree match {
-        case Select(_, _) => treeCopy.Select(tree, qual, name)
+        case Select(_, _) =>
+          treeCopy.Select(tree, qual, name)
         case SelectFromTypeTree(_, _) =>
           treeCopy.SelectFromTypeTree(tree, qual, name)
       }
@@ -64,7 +65,8 @@ trait InteractiveAnalyzer extends Analyzer {
       // otherwise not find the default symbol, because the second time it the method
       // symbol will be re-entered in the scope but the default parameter will not.
       meth.attachments.get[DefaultsOfLocalMethodAttachment] match {
-        case Some(att) => att.defaultGetters += default
+        case Some(att) =>
+          att.defaultGetters += default
         case None =>
           meth.updateAttachment(new DefaultsOfLocalMethodAttachment(default))
       }
@@ -94,7 +96,8 @@ trait InteractiveAnalyzer extends Analyzer {
           tree match {
             case dd: DocDef =>
               dd.definition // See SI-9011, Scala IDE's presentation compiler incorporates ScaladocGlobal with InteractiveGlobal, so we have to unwrap DocDefs.
-            case _ => tree
+            case _ =>
+              tree
           }
         enterImplicitWrapper(defTree.asInstanceOf[ClassDef])
       }
@@ -398,8 +401,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   override def registerContext(c: Context) =
     c.unit match {
-      case u: RichCompilationUnit => addContext(u.contexts, c)
-      case _                      =>
+      case u: RichCompilationUnit =>
+        addContext(u.contexts, c)
+      case _ =>
     }
 
   /** The top level classes and objects currently seen in the presentation compiler
@@ -511,8 +515,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
               scheduler
                 .synchronized { // lock the work queue so no more items are posted while we clean it up
                   val units = scheduler.dequeueAll {
-                    case item: WorkItem => Some(item.raiseMissing())
-                    case _              => Some(())
+                    case item: WorkItem =>
+                      Some(item.raiseMissing())
+                    case _ =>
+                      Some(())
                   }
 
                   // don't forget to service interrupt requests
@@ -642,9 +648,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
           r set unit.body
         serviceParsedEntered()
       } catch {
-        case ex: FreshRunReq      => throw ex // propagate a new run request
-        case ShutdownReq          => throw ShutdownReq // propagate a shutdown request
-        case ex: ControlThrowable => throw ex
+        case ex: FreshRunReq =>
+          throw ex // propagate a new run request
+        case ShutdownReq =>
+          throw ShutdownReq // propagate a shutdown request
+        case ex: ControlThrowable =>
+          throw ex
         case ex: Throwable =>
           println(
             "[%s]: exception during background compile: ".format(
@@ -901,7 +910,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
 //          println("tree not found at "+pos)
             EmptyTree
           } catch {
-            case ex: TyperResult => new Locator(pos) locateIn ex.tree
+            case ex: TyperResult =>
+              new Locator(pos) locateIn ex.tree
           } finally {
             unit.targetPos = NoPosition
           }
@@ -987,7 +997,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             }
           }
         } catch {
-          case ex: ControlThrowable => throw ex
+          case ex: ControlThrowable =>
+            throw ex
           case ex: Throwable =>
             debugLog("error in findMirrorSymbol: " + ex)
             ex.printStackTrace()
@@ -1084,13 +1095,17 @@ with ContextTrees with RichCompilationUnits with Picklers {
               case s @ Select(qual, name)
                   if treeInfo.admitsTypeSelection(expr) =>
                 singleType(qual.tpe, s.symbol)
-              case i: Ident => i.tpe
-              case _        => tree.tpe
+              case i: Ident =>
+                i.tpe
+              case _ =>
+                tree.tpe
             }
-          case _ => tree.tpe
+          case _ =>
+            tree.tpe
         }
 
-      case _ => tree.tpe
+      case _ =>
+        tree.tpe
     }
 
   import analyzer.{SearchResult, ImplicitSearch}
@@ -1223,16 +1238,22 @@ with ContextTrees with RichCompilationUnits with Picklers {
     //   Otherwise, type the tree found at 'pos' directly.
     val tree0 =
       typedTreeAt(pos) match {
-        case sel @ Select(qual, _) if sel.tpe == ErrorType => qual
-        case Import(expr, _)                               => expr
-        case t                                             => t
+        case sel @ Select(qual, _) if sel.tpe == ErrorType =>
+          qual
+        case Import(expr, _) =>
+          expr
+        case t =>
+          t
       }
     val context = doLocateContext(pos)
     val shouldTypeQualifier =
       tree0.tpe match {
-        case null           => true
-        case mt: MethodType => mt.isImplicit
-        case _              => false
+        case null =>
+          true
+        case mt: MethodType =>
+          mt.isImplicit
+        case _ =>
+          false
       }
 
     // TODO: guard with try/catch to deal with ill-typed qualifiers.
@@ -1286,10 +1307,14 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
     val ownerTpe =
       tree.tpe match {
-        case ImportType(expr)         => expr.tpe
-        case null                     => pre
-        case MethodType(List(), rtpe) => rtpe
-        case _                        => tree.tpe
+        case ImportType(expr) =>
+          expr.tpe
+        case null =>
+          pre
+        case MethodType(List(), rtpe) =>
+          rtpe
+        case _ =>
+          tree.tpe
       }
 
     //print("add members")
@@ -1381,8 +1406,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
     private val CamelRegex = "([A-Z][^A-Z]*)".r
     private def camelComponents(s: String): List[String] = {
       CamelRegex.findAllIn("X" + s).toList match {
-        case head :: tail => head.drop(1) :: tail;
-        case Nil          => Nil
+        case head :: tail =>
+          head.drop(1) :: tail;
+        case Nil =>
+          Nil
       }
     }
     def camelMatch(entered: Name): Name => Boolean = {
@@ -1398,7 +1425,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             candidate: List[String],
             matchCount: Int): Boolean = {
           candidate match {
-            case Nil => entered.isEmpty && matchCount > 0
+            case Nil =>
+              entered.isEmpty && matchCount > 0
             case head :: tail =>
               val enteredAlternatives = Set(entered, entered.capitalize)
               head.inits
@@ -1458,7 +1486,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         CompletionResult.ScopeMembers(positionDelta, allMembers, subName)
       case imp @ Import(qual, selectors) =>
         selectors.reverseIterator.find(_.namePos <= pos.start) match {
-          case None => CompletionResult.NoResults
+          case None =>
+            CompletionResult.NoResults
           case Some(selector) =>
             typeCompletions(imp, qual, selector.namePos, selector.name)
         }

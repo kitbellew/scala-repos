@@ -24,8 +24,10 @@ class ScFunctionExprImpl(node: ASTNode)
     with ScFunctionExpr {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -55,7 +57,8 @@ class ScFunctionExprImpl(node: ASTNode)
             return false
         }
         true
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -63,8 +66,10 @@ class ScFunctionExprImpl(node: ASTNode)
     val paramTypes = (parameters: Seq[ScParameter]).map(_.getType(ctx))
     val resultType =
       result match {
-        case Some(r) => r.getType(ctx).getOrAny
-        case _       => Unit
+        case Some(r) =>
+          r.getType(ctx).getOrAny
+        case _ =>
+          Unit
       }
     collectFailures(paramTypes, Nothing)(
       ScFunctionType(resultType, _)(getProject, getResolveScope))

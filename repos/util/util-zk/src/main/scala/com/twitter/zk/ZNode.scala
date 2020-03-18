@@ -28,8 +28,10 @@ trait ZNode {
   /** ZNodes are equal if they share a path. */
   override def equals(other: Any) =
     other match {
-      case z @ ZNode(_) => (z.hashCode == hashCode)
-      case _            => false
+      case z @ ZNode(_) =>
+        (z.hashCode == hashCode)
+      case _ =>
+        false
     }
 
   /*
@@ -56,23 +58,29 @@ trait ZNode {
   /** The 'basename' of the ZNode path. */
   lazy val name: String =
     path.lastIndexOf('/') match {
-      case i if (i == -1 || i == path.length - 1) => ""
-      case i                                      => path.substring(i + 1)
+      case i if (i == -1 || i == path.length - 1) =>
+        ""
+      case i =>
+        path.substring(i + 1)
     }
 
   /** The parent node.  The root node is its own parent. */
   lazy val parent: ZNode = ZNode(zkClient, parentPath)
   lazy val parentPath: String =
     path.lastIndexOf('/') match {
-      case i if (i <= 0) => "/"
-      case i             => path.substring(0, i)
+      case i if (i <= 0) =>
+        "/"
+      case i =>
+        path.substring(0, i)
     }
 
   /** The absolute path of a child */
   def childPath(child: String): String =
     path match {
-      case path if (!path.endsWith("/")) => path + "/" + child
-      case path                          => path + child
+      case path if (!path.endsWith("/")) =>
+        path + "/" + child
+      case path =>
+        path + child
     }
 
   /** Create a copy of this ZNode with an alternate ZkClient. */
@@ -313,9 +321,12 @@ trait ZNode {
   protected[this] object MonitorableEvent {
     def unapply(event: WatchedEvent) =
       event match {
-        case StateEvent.AuthFailed() => false
-        case StateEvent.Expired()    => false
-        case _                       => true
+        case StateEvent.AuthFailed() =>
+          false
+        case StateEvent.Expired() =>
+          false
+        case _ =>
+          true
       }
   }
 }
@@ -347,8 +358,10 @@ object ZNode {
 
     override def equals(other: Any) =
       other match {
-        case Exists(p, s) => (p == path && s == stat)
-        case o            => super.equals(o)
+        case Exists(p, s) =>
+          (p == path && s == stat)
+        case o =>
+          super.equals(o)
       }
 
     def apply(children: Seq[String]): ZNode.Children = apply(stat, children)
@@ -373,8 +386,10 @@ object ZNode {
 
     override def equals(other: Any) =
       other match {
-        case Children(p, s, c) => (p == path && s == stat && c == children)
-        case o                 => super.equals(o)
+        case Children(p, s, c) =>
+          (p == path && s == stat && c == children)
+        case o =>
+          super.equals(o)
       }
   }
 
@@ -399,8 +414,10 @@ object ZNode {
 
     override def equals(other: Any) =
       other match {
-        case Data(p, s, b) => (p == path && s == stat && b == bytes)
-        case o             => super.equals(o)
+        case Data(p, s, b) =>
+          (p == path && s == stat && b == bytes)
+        case o =>
+          super.equals(o)
       }
   }
 

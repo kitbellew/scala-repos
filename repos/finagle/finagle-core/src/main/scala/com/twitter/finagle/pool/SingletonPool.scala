@@ -45,7 +45,8 @@ private[finagle] object SingletonPool {
 
     override def close(deadline: Time): Future[Unit] =
       count.decrementAndGet() match {
-        case 0          => underlying.close(deadline)
+        case 0 =>
+          underlying.close(deadline)
         case n if n < 0 =>
           // This is technically an API usage error.
           count.incrementAndGet()
@@ -90,8 +91,10 @@ class SingletonPool[Req, Rep](
   private[this] def connect(done: Promise[Unit], conn: ClientConnection) {
     def complete(newState: State[Req, Rep]) =
       state.get match {
-        case s @ Awaiting(d) if d == done          => state.compareAndSet(s, newState)
-        case Idle | Closed | Awaiting(_) | Open(_) => false
+        case s @ Awaiting(d) if d == done =>
+          state.compareAndSet(s, newState)
+        case Idle | Closed | Awaiting(_) | Open(_) =>
+          false
       }
 
     done.become(
@@ -167,13 +170,16 @@ class SingletonPool[Req, Rep](
     */
   override def status: Status =
     state.get match {
-      case Closed    => Status.Closed
+      case Closed =>
+        Status.Closed
       case Open(svc) =>
         // We don't account for closed services as these will
         // be reestablished on the next request.
         svc.status match {
-          case Status.Closed => underlying.status
-          case status        => Status.worst(status, underlying.status)
+          case Status.Closed =>
+            underlying.status
+          case status =>
+            Status.worst(status, underlying.status)
         }
       case Idle | Awaiting(_) =>
         // This could also be Status.worst(underlying.status, Status.Busy(p));

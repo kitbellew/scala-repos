@@ -112,8 +112,10 @@ abstract class AutoPlugin extends Plugins.Basic with PluginsFunctions {
   /** If this plugin does not have any requirements, it means it is actually a root plugin. */
   private[sbt] final def isRoot: Boolean =
     requires match {
-      case Empty => true
-      case _     => false
+      case Empty =>
+        true
+      case _ =>
+        false
     }
 
   /** If this plugin does not have any requirements, it means it is actually a root plugin. */
@@ -207,7 +209,8 @@ object Plugins extends PluginsFunctions {
         val knowlege0: Set[Atom] =
           (
             (flatten(requestedPlugins) ++ alwaysEnabled) collect {
-              case x: AutoPlugin => Atom(x.label)
+              case x: AutoPlugin =>
+                Atom(x.label)
             }
           ).toSet
         val clauses = Clauses(
@@ -221,7 +224,8 @@ object Plugins extends PluginsFunctions {
           (
             flattenConvert(requestedPlugins) ++ convertAll(alwaysEnabled)
           ).toSet) match {
-          case Left(problem) => throw AutoPluginException(problem)
+          case Left(problem) =>
+            throw AutoPluginException(problem)
           case Right(results) =>
             log.debug(s"  :: deduced result: ${results}")
             val selectedAtoms: List[Atom] = results.ordered
@@ -289,8 +293,10 @@ object Plugins extends PluginsFunctions {
     }
   private[this] def literalsString(lits: Seq[Literal]): String =
     lits map {
-      case Atom(l)          => l;
-      case Negated(Atom(l)) => l
+      case Atom(l) =>
+        l;
+      case Negated(Atom(l)) =>
+        l
     } mkString (", ")
 
   private[this] def duplicateProvidesError(
@@ -371,9 +377,12 @@ ${listConflicts(conflicting)}""")
   }
   private[sbt] def and(a: Plugins, b: Plugins) =
     b match {
-      case Empty    => a
-      case And(ns)  => (a /: ns)(_ && _)
-      case b: Basic => a && b
+      case Empty =>
+        a
+      case And(ns) =>
+        (a /: ns)(_ && _)
+      case b: Basic =>
+        a && b
     }
   private[sbt] def remove(a: Plugins, del: Set[Basic]): Plugins =
     a match {
@@ -382,7 +391,8 @@ ${listConflicts(conflicting)}""")
           Empty
         else
           b
-      case Empty => Empty
+      case Empty =>
+        Empty
       case And(ns) =>
         val removed = ns.filterNot(del)
         if (removed.isEmpty)
@@ -407,56 +417,80 @@ ${listConflicts(conflicting)}""")
     }
   private[sbt] def asRequirements(ap: AutoPlugin): List[AutoPlugin] =
     flatten(ap.requires).toList collect {
-      case x: AutoPlugin => x
+      case x: AutoPlugin =>
+        x
     }
   private[sbt] def asExclusions(ap: AutoPlugin): List[AutoPlugin] =
     flatten(ap.requires).toList collect {
-      case Exclude(x) => x
+      case Exclude(x) =>
+        x
     }
   // TODO - This doesn't handle nested AND boolean logic...
   private[sbt] def hasExclude(n: Plugins, p: AutoPlugin): Boolean =
     n match {
-      case `p`          => false
-      case Exclude(`p`) => true
+      case `p` =>
+        false
+      case Exclude(`p`) =>
+        true
       // TODO - This is stupidly advanced.  We do a nested check through possible and-ed
       // lists of plugins exclusions to see if the plugin ever winds up in an excluded=true case.
       // This would handle things like !!p or !(p && z)
-      case Exclude(n) => hasInclude(n, p)
-      case And(ns)    => ns.forall(n => hasExclude(n, p))
-      case b: Basic   => false
-      case Empty      => false
+      case Exclude(n) =>
+        hasInclude(n, p)
+      case And(ns) =>
+        ns.forall(n => hasExclude(n, p))
+      case b: Basic =>
+        false
+      case Empty =>
+        false
     }
   private[sbt] def hasInclude(n: Plugins, p: AutoPlugin): Boolean =
     n match {
-      case `p`        => true
-      case Exclude(n) => hasExclude(n, p)
-      case And(ns)    => ns.forall(n => hasInclude(n, p))
-      case b: Basic   => false
-      case Empty      => false
+      case `p` =>
+        true
+      case Exclude(n) =>
+        hasExclude(n, p)
+      case And(ns) =>
+        ns.forall(n => hasInclude(n, p))
+      case b: Basic =>
+        false
+      case Empty =>
+        false
     }
   private[this] def flattenConvert(n: Plugins): Seq[Literal] =
     n match {
-      case And(ns)  => convertAll(ns)
-      case b: Basic => convertBasic(b) :: Nil
-      case Empty    => Nil
+      case And(ns) =>
+        convertAll(ns)
+      case b: Basic =>
+        convertBasic(b) :: Nil
+      case Empty =>
+        Nil
     }
   private[sbt] def flatten(n: Plugins): Seq[Basic] =
     n match {
-      case And(ns)  => ns
-      case b: Basic => b :: Nil
-      case Empty    => Nil
+      case And(ns) =>
+        ns
+      case b: Basic =>
+        b :: Nil
+      case Empty =>
+        Nil
     }
 
   private[this] def convert(n: Plugins): Formula =
     n match {
-      case And(ns)  => convertAll(ns).reduce[Formula](_ && _)
-      case b: Basic => convertBasic(b)
-      case Empty    => Formula.True
+      case And(ns) =>
+        convertAll(ns).reduce[Formula](_ && _)
+      case b: Basic =>
+        convertBasic(b)
+      case Empty =>
+        Formula.True
     }
   private[this] def convertBasic(b: Basic): Literal =
     b match {
-      case Exclude(n)    => !convertBasic(n)
-      case a: AutoPlugin => Atom(a.label)
+      case Exclude(n) =>
+        !convertBasic(n)
+      case a: AutoPlugin =>
+        Atom(a.label)
     }
   private[this] def convertAll(ns: Seq[Basic]): Seq[Literal] =
     ns map convertBasic
@@ -464,8 +498,10 @@ ${listConflicts(conflicting)}""")
   /** True if the trigger clause `n` is satisifed by `model`. */
   def satisfied(n: Plugins, model: Set[AutoPlugin]): Boolean =
     flatten(n) forall {
-      case Exclude(a)     => !model(a)
-      case ap: AutoPlugin => model(ap)
+      case Exclude(a) =>
+        !model(a)
+      case ap: AutoPlugin =>
+        model(ap)
     }
 
   private[sbt] def hasAutoImportGetter(
@@ -477,8 +513,10 @@ ${listConflicts(conflicting)}""")
     val im = m.reflect(ap)
     val hasGetterOpt = catching(classOf[ScalaReflectionException]) opt {
       im.symbol.asType.toType.declaration(ru.newTermName("autoImport")) match {
-        case ru.NoSymbol => false
-        case sym         => sym.asTerm.isGetter || sym.asTerm.isModule
+        case ru.NoSymbol =>
+          false
+        case sym =>
+          sym.asTerm.isGetter || sym.asTerm.isModule
       }
     }
     hasGetterOpt getOrElse false

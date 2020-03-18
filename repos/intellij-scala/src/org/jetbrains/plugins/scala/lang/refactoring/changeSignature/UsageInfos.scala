@@ -43,9 +43,12 @@ private[changeSignature] trait ScalaNamedElementUsageInfo {
 
   val paramClauses: Option[ScParameters] =
     namedElement match {
-      case fun: ScFunction => Some(fun.paramClauses)
-      case cl: ScClass     => cl.clauses
-      case _               => None
+      case fun: ScFunction =>
+        Some(fun.paramClauses)
+      case cl: ScClass =>
+        cl.clauses
+      case _ =>
+        None
     }
   val scParams: Seq[ScParameter] = paramClauses.toSeq.flatMap(_.params)
   val parameters: Seq[Parameter] = scParams.map(new Parameter(_))
@@ -56,8 +59,10 @@ private[changeSignature] trait ScalaNamedElementUsageInfo {
 private[changeSignature] object ScalaNamedElementUsageInfo {
   def unapply(ou: UsageInfo): Option[ScalaNamedElementUsageInfo] = {
     ou match {
-      case scUsage: ScalaNamedElementUsageInfo => Some(scUsage)
-      case _                                   => None
+      case scUsage: ScalaNamedElementUsageInfo =>
+        Some(scUsage)
+      case _ =>
+        None
     }
   }
 
@@ -65,14 +70,20 @@ private[changeSignature] object ScalaNamedElementUsageInfo {
       named: PsiNamedElement): UsageInfo with ScalaNamedElementUsageInfo = {
     val unwrapped =
       named match {
-        case isWrapper(elem) => elem
-        case _               => named
+        case isWrapper(elem) =>
+          elem
+        case _ =>
+          named
       }
     unwrapped match {
-      case fun: ScFunction      => FunUsageInfo(fun)
-      case bp: ScBindingPattern => OverriderValUsageInfo(bp)
-      case cp: ScClassParameter => OverriderClassParamUsageInfo(cp)
-      case _                    => null
+      case fun: ScFunction =>
+        FunUsageInfo(fun)
+      case bp: ScBindingPattern =>
+        OverriderValUsageInfo(bp)
+      case cp: ScClassParameter =>
+        OverriderClassParamUsageInfo(cp)
+      case _ =>
+        null
     }
   }
 }
@@ -103,7 +114,8 @@ private[changeSignature] trait MethodUsageInfo {
   def ref: ScReferenceElement
   def method: PsiNamedElement =
     ref.resolve() match {
-      case e: PsiNamedElement => e
+      case e: PsiNamedElement =>
+        e
       case _ =>
         throw new IllegalArgumentException("Found reference does not resolve")
     }
@@ -122,8 +134,10 @@ private[changeSignature] case class MethodCallUsageInfo(
 
   private def allArgs(call: ScMethodCall): Seq[ScExpression] = {
     call.getInvokedExpr match {
-      case mc: ScMethodCall => allArgs(mc) ++ call.argumentExpressions
-      case _                => call.argumentExpressions
+      case mc: ScMethodCall =>
+        allArgs(mc) ++ call.argumentExpressions
+      case _ =>
+        call.argumentExpressions
     }
   }
 }
@@ -180,12 +194,14 @@ private[changeSignature] object isAnonFunUsage {
           if mc.argumentExpressions.exists(
             ScUnderScoreSectionUtil.isUnderscore) =>
         Some(AnonFunUsageInfo(mc, ref))
-      case ChildOf(und: ScUnderscoreSection) => Some(AnonFunUsageInfo(und, ref))
+      case ChildOf(und: ScUnderscoreSection) =>
+        Some(AnonFunUsageInfo(und, ref))
       case Both(ResolvesTo(m: PsiMethod), ChildOf(elem))
           if m.getParameterList.getParametersCount > 0 && !elem
             .isInstanceOf[MethodInvocation] =>
         Some(AnonFunUsageInfo(ref, ref))
-      case _ => None
+      case _ =>
+        None
     }
   }
 }
@@ -220,7 +236,8 @@ private[changeSignature] object UsageUtil {
       case ScalaNamedElementUsageInfo(_) | _: ParameterUsageInfo |
           _: MethodUsageInfo | _: AnonFunUsageInfo | _: ImportUsageInfo =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def substitutor(usage: ScalaNamedElementUsageInfo): ScSubstitutor =
@@ -229,12 +246,16 @@ private[changeSignature] object UsageUtil {
         funUsage.namedElement match {
           case fun: ScFunction =>
             fun.superMethodAndSubstitutor match {
-              case Some((_, subst)) => subst
-              case _                => ScSubstitutor.empty
+              case Some((_, subst)) =>
+                subst
+              case _ =>
+                ScSubstitutor.empty
             }
-          case _ => ScSubstitutor.empty
+          case _ =>
+            ScSubstitutor.empty
         }
-      case _ => ScSubstitutor.empty
+      case _ =>
+        ScSubstitutor.empty
     }
 
   def returnType(
@@ -242,13 +263,15 @@ private[changeSignature] object UsageUtil {
       usage: ScalaNamedElementUsageInfo): Option[ScType] = {
     val newType =
       change match {
-        case sc: ScalaChangeInfo => sc.newType
+        case sc: ScalaChangeInfo =>
+          sc.newType
         case jc: JavaChangeInfo =>
           val method = jc.getMethod
           val javaType = jc.getNewReturnType
             .getType(method.getParameterList, method.getManager)
           ScType.create(javaType, method.getProject)
-        case _ => return None
+        case _ =>
+          return None
       }
 
     val substType = substitutor(usage).subst(newType)

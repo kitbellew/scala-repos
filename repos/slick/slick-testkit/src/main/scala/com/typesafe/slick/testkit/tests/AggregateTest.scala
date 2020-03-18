@@ -85,7 +85,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
               t <- ts if t.a === u.id
             } yield (u, t)
           ).groupBy(_._1.id).map {
-            case (id, q) => (id, q.length, q.map(_._2.a).sum, q.map(_._2.b).sum)
+            case (id, q) =>
+              (id, q.length, q.map(_._2.a).sum, q.map(_._2.b).sum)
           }
         db.run(mark("q2", q2.result)).map {
           r2t: Seq[(Int, Int, Option[Int], Option[Int])] =>
@@ -133,7 +134,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           .sortBy(_._2)
           .groupBy(x => (x._1, x._2))
           .map {
-            case (a, _) => (a._1, a._2)
+            case (a, _) =>
+              (a._1, a._2)
           }
           .to[Set]
         db.run(mark("q5", q5.result))
@@ -296,7 +298,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     }
     val as = TableQuery[A]
     val q1 = as.groupBy(_.id).map {
-      case (_, q) => (q.map(_.id).min, q.length)
+      case (_, q) =>
+        (q.map(_.id).min, q.length)
     }
     DBIO.seq(
       as.schema.create,
@@ -333,7 +336,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q1 = Tabs
         .groupBy(t => (t.col1, t.col2, t.col3))
         .map {
-          case (grp, t) => (grp._1, grp._2, t.map(_.col4).sum)
+          case (grp, t) =>
+            (grp._1, grp._2, t.map(_.col4).sum)
         }
         .to[Set]
       _ <- q1.result.map(
@@ -344,7 +348,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q2 = Tabs
         .groupBy(t => ((t.col1, t.col2), t.col3))
         .map {
-          case (grp, t) => (grp._1._1, grp._1._2, t.map(_.col4).sum)
+          case (grp, t) =>
+            (grp._1._1, grp._1._2, t.map(_.col4).sum)
         }
         .to[Set]
       _ <- q2.result.map(
@@ -355,7 +360,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q3 = Tabs
         .groupBy(_.col1)
         .map {
-          case (grp, t) => (grp, t.map(x => x.col4 + x.col5).sum)
+          case (grp, t) =>
+            (grp, t.map(x => x.col4 + x.col5).sum)
         }
         .to[Set]
       _ <- q3.result.map(_ shouldBe Set(("baz", Some(12)), ("foo", Some(24))))

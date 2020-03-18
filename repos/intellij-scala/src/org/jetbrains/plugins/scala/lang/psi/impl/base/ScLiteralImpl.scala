@@ -48,7 +48,8 @@ class ScLiteralImpl(node: ASTNode)
     val child = getFirstChild.getNode
     val inner =
       child.getElementType match {
-        case ScalaTokenTypes.kNULL => Null
+        case ScalaTokenTypes.kNULL =>
+          Null
         case ScalaTokenTypes.tINTEGER =>
           if (child.getText.endsWith('l') || child.getText.endsWith('L'))
             Long
@@ -59,7 +60,8 @@ class ScLiteralImpl(node: ASTNode)
             Float
           else
             Double
-        case ScalaTokenTypes.tCHAR => Char
+        case ScalaTokenTypes.tCHAR =>
+          Char
         case ScalaTokenTypes.tSYMBOL =>
           val sym = ScalaPsiManager
             .instance(getProject)
@@ -77,8 +79,10 @@ class ScLiteralImpl(node: ASTNode)
             .instance(getProject)
             .getCachedClass(getResolveScope, "java.lang.String")
           str.map(ScType.designator(_)).getOrElse(Nothing)
-        case ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE => Boolean
-        case _                                              => return Failure("Wrong Psi to get Literal type", Some(this))
+        case ScalaTokenTypes.kTRUE | ScalaTokenTypes.kFALSE =>
+          Boolean
+        case _ =>
+          return Failure("Wrong Psi to get Literal type", Some(this))
       }
     Success(inner, Some(this))
   }
@@ -108,8 +112,10 @@ class ScLiteralImpl(node: ASTNode)
           text = text.substring(0, text.length - 3)
         }
         text
-      case ScalaTokenTypes.kTRUE  => java.lang.Boolean.TRUE
-      case ScalaTokenTypes.kFALSE => java.lang.Boolean.FALSE
+      case ScalaTokenTypes.kTRUE =>
+        java.lang.Boolean.TRUE
+      case ScalaTokenTypes.kFALSE =>
+        java.lang.Boolean.FALSE
       case ScalaTokenTypes.tCHAR =>
         if (StringUtil.endsWithChar(getText, '\'')) {
           if (textLength == 1)
@@ -140,8 +146,10 @@ class ScLiteralImpl(node: ASTNode)
           text match {
             case t if t.startsWith("0x") || t.startsWith("0X") =>
               (t.substring(2), 16)
-            case t if t.startsWith("0") && t.length >= 2 => (t.substring(0), 8)
-            case t                                       => (t, 10)
+            case t if t.startsWith("0") && t.length >= 2 =>
+              (t.substring(0), 8)
+            case t =>
+              (t, 10)
           }
         val limit =
           if (endsWithL)
@@ -171,19 +179,22 @@ class ScLiteralImpl(node: ASTNode)
           try {
             java.lang.Float.valueOf(text.substring(0, text.length - 1))
           } catch {
-            case e: Exception => null
+            case e: Exception =>
+              null
           }
         else
           try {
             java.lang.Double.valueOf(text)
           } catch {
-            case e: Exception => null
+            case e: Exception =>
+              null
           }
       case ScalaTokenTypes.tSYMBOL =>
         if (!text.startsWith('\''))
           return null
         Symbol(text.substring(1))
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -212,14 +223,18 @@ class ScLiteralImpl(node: ASTNode)
 
   def isString =
     getFirstChild.getNode.getElementType match {
-      case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING => true
-      case _                                                           => false
+      case ScalaTokenTypes.tMULTILINE_STRING | ScalaTokenTypes.tSTRING =>
+        true
+      case _ =>
+        false
     }
 
   def isMultiLineString =
     getFirstChild.getNode.getElementType match {
-      case ScalaTokenTypes.tMULTILINE_STRING => true
-      case _                                 => false
+      case ScalaTokenTypes.tMULTILINE_STRING =>
+        true
+      case _ =>
+        false
     }
 
   override def isSymbol: Boolean =
@@ -244,7 +259,8 @@ class ScLiteralImpl(node: ASTNode)
         this match {
           case intrp: ScInterpolatedStringLiteral =>
             intrp.reference.fold("")(_.refName)
-          case _ => ""
+          case _ =>
+            ""
         }
       new TextRange(
         range.getStartOffset + prefix.length + quote.length,
@@ -263,8 +279,10 @@ class ScLiteralImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case visitor: ScalaElementVisitor => visitor.visitLiteral(this)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        visitor.visitLiteral(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 

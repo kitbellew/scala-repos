@@ -78,7 +78,8 @@ object URLHelper extends Logging {
     try {
       Some(new URL(finalUrl))
     } catch {
-      case _: Exception => None
+      case _: Exception =>
+        None
     }
   }
 
@@ -93,14 +94,17 @@ object URLHelper extends Logging {
     try {
       Some(URI.create(finalUrl))
     } catch {
-      case _: Exception => None
+      case _: Exception =>
+        None
     }
   }
 
   def tryToHttpGet(url: String): Option[HttpGet] = {
     tryToURI(url) match {
-      case Some(uri) => Some(new HttpGet(uri))
-      case None      => None
+      case Some(uri) =>
+        Some(new HttpGet(uri))
+      case None =>
+        None
     }
   }
 }

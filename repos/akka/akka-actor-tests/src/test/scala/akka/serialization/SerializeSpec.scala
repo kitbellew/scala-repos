@@ -88,7 +88,8 @@ object SerializationTests {
 
   class FooActor extends Actor {
     def receive = {
-      case s: String ⇒ sender() ! s
+      case s: String ⇒
+        sender() ! s
     }
   }
 
@@ -98,7 +99,8 @@ object SerializationTests {
 
   class NonSerializableActor(system: ActorSystem) extends Actor {
     def receive = {
-      case s: String ⇒ sender() ! s
+      case s: String ⇒
+        sender() ! s
     }
   }
 
@@ -154,10 +156,12 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
 
     "have correct bindings" in {
       ser.bindings.collectFirst {
-        case (c, s) if c == addr.getClass ⇒ s.getClass
+        case (c, s) if c == addr.getClass ⇒
+          s.getClass
       } should ===(Some(classOf[JavaSerializer]))
       ser.bindings.collectFirst {
-        case (c, s) if c == classOf[PlainMessage] ⇒ s.getClass
+        case (c, s) if c == classOf[PlainMessage] ⇒
+          s.getClass
       } should ===(Some(classOf[TestSerializer]))
     }
 
@@ -182,7 +186,8 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
               case o: ObjectOutputStream ⇒
                 try o.writeObject(this)
                 catch {
-                  case _: NotSerializableException ⇒ testActor ! "pass"
+                  case _: NotSerializableException ⇒
+                    testActor ! "pass"
                 }
             }
           }))

@@ -40,7 +40,8 @@ private[http] object FrameHandler {
             becomeAndHandleWith(new CollectingBinaryMessage, start)
           case (Opcode.Text, _) ⇒
             becomeAndHandleWith(new CollectingTextMessage, start)
-          case x ⇒ protocolError()
+          case x ⇒
+            protocolError()
         }
     }
 
@@ -84,7 +85,8 @@ private[http] object FrameHandler {
         try publishMessagePart(
           createMessagePart(part.data, last = finSeen && part.lastPart))
         catch {
-          case NonFatal(e) ⇒ closeWithCode(Protocol.CloseCodes.InconsistentData)
+          case NonFatal(e) ⇒
+            closeWithCode(Protocol.CloseCodes.InconsistentData)
         }
     }
 
@@ -121,7 +123,8 @@ private[http] object FrameHandler {
         case FrameHeader(op, _, length, fin, _, _, _)
             if op.isControl && (length > 125 || !fin) ⇒
           Some(protocolError())
-        case _ ⇒ None
+        case _ ⇒
+          None
       }
 
     private def handleControlFrame(
@@ -184,7 +187,8 @@ private[http] object FrameHandler {
                 data) ⇒
             become(WaitForPeerTcpClose)
             ctx.push(PeerClosed.parse(data))
-          case _ ⇒ ctx.pull() // ignore all other data
+          case _ ⇒
+            ctx.pull() // ignore all other data
         }
     }
     private object WaitForPeerTcpClose extends State {
@@ -224,9 +228,12 @@ private[http] object FrameHandler {
 
       def onPush(part: FrameEventOrError, ctx: Ctx): SyncDirective =
         part match {
-          case data: FrameData ⇒ handleFrameData(data)(ctx)
-          case start: FrameStart ⇒ handleFrameStart(start)(ctx)
-          case FrameError(ex) ⇒ ctx.fail(ex)
+          case data: FrameData ⇒
+            handleFrameData(data)(ctx)
+          case start: FrameStart ⇒
+            handleFrameStart(start)(ctx)
+          case FrameError(ex) ⇒
+            ctx.fail(ex)
         }
     }
   }
@@ -255,8 +262,10 @@ private[http] object FrameHandler {
   object PeerClosed {
     def parse(data: ByteString): PeerClosed =
       FrameEventParser.parseCloseCode(data) match {
-        case Some((code, reason)) ⇒ PeerClosed(Some(code), reason)
-        case None ⇒ PeerClosed(None)
+        case Some((code, reason)) ⇒
+          PeerClosed(Some(code), reason)
+        case None ⇒
+          PeerClosed(None)
       }
   }
 

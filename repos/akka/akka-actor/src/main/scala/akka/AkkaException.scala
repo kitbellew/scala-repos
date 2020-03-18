@@ -22,8 +22,10 @@ trait OnlyCauseStackTrace {
   override def fillInStackTrace(): Throwable = {
     setStackTrace(
       getCause match {
-        case null ⇒ Array.empty
-        case some ⇒ some.getStackTrace
+        case null ⇒
+          Array.empty
+        case some ⇒
+          some.getStackTrace
       })
     this
   }

@@ -36,8 +36,9 @@ object InterpretedPredicate {
 
   def create(expression: Expression): (InternalRow => Boolean) = {
     expression.foreach {
-      case n: Nondeterministic => n.setInitialValues()
-      case _                   =>
+      case n: Nondeterministic =>
+        n.setInitialValues()
+      case _ =>
     }
     (r: InternalRow) => expression.eval(r).asInstanceOf[Boolean]
   }
@@ -56,7 +57,8 @@ trait PredicateHelper {
     condition match {
       case And(cond1, cond2) =>
         splitConjunctivePredicates(cond1) ++ splitConjunctivePredicates(cond2)
-      case other => other :: Nil
+      case other =>
+        other :: Nil
     }
   }
 
@@ -65,7 +67,8 @@ trait PredicateHelper {
     condition match {
       case Or(cond1, cond2) =>
         splitDisjunctivePredicates(cond1) ++ splitDisjunctivePredicates(cond2)
-      case other => other :: Nil
+      case other =>
+        other :: Nil
     }
   }
 
@@ -74,7 +77,8 @@ trait PredicateHelper {
       condition: Expression,
       aliases: AttributeMap[Expression]): Expression = {
     condition.transform {
-      case a: Attribute => aliases.getOrElse(a, a)
+      case a: Attribute =>
+        aliases.getOrElse(a, a)
     }
   }
 
@@ -388,9 +392,12 @@ private[sql] object BinaryComparison {
 private[sql] object Equality {
   def unapply(e: BinaryComparison): Option[(Expression, Expression)] =
     e match {
-      case EqualTo(l, r)       => Some((l, r))
-      case EqualNullSafe(l, r) => Some((l, r))
-      case _                   => None
+      case EqualTo(l, r) =>
+        Some((l, r))
+      case EqualNullSafe(l, r) =>
+        Some((l, r))
+      case _ =>
+        None
     }
 }
 

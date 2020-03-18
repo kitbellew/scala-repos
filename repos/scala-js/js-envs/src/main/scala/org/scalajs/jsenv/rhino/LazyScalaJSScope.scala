@@ -39,8 +39,10 @@ private[rhino] class LazyScalaJSScope(
     // Pre-fill fields with the properties of `base`
     for (id <- base.getIds()) {
       (id.asInstanceOf[Any]: @unchecked) match {
-        case name: String => put(name, this, base.get(name, base))
-        case index: Int   => put(index, this, base.get(index, base))
+        case name: String =>
+          put(name, this, base.get(name, base))
+        case index: Int =>
+          put(index, this, base.get(index, base))
       }
     }
   }

@@ -19,7 +19,8 @@ private[blog] final class Notifier(
           ThreadRepo.visibleByUserContainingExists(
             user = lichessUserId,
             containing = post.id) foreach {
-            case true => funit
+            case true =>
+              funit
             case false =>
               UserRepo recentlySeenNotKidIds DateTime.now.minusWeeks(
                 2) foreach { userIds =>

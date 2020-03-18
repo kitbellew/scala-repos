@@ -503,8 +503,10 @@ object HttpEntity {
         transformer: Flow[ByteString, ByteString, Any]): HttpEntity.Chunked = {
       val newData =
         chunks.map {
-          case Chunk(data, "") ⇒ data
-          case LastChunk("", Nil) ⇒ ByteString.empty
+          case Chunk(data, "") ⇒
+            data
+          case LastChunk("", Nil) ⇒
+            ByteString.empty
           case _ ⇒
             throw new IllegalArgumentException(
               "Chunked.transformDataBytes not allowed for chunks with metadata")
@@ -539,7 +541,8 @@ object HttpEntity {
       HttpEntity.Chunked(
         contentType,
         chunks.collect[ChunkStreamPart] {
-          case b: ByteString if b.nonEmpty ⇒ Chunk(b)
+          case b: ByteString if b.nonEmpty ⇒
+            Chunk(b)
         })
   }
 
@@ -672,7 +675,8 @@ object HttpEntity {
   private[http] def captureTermination[T <: HttpEntity](
       entity: T): (T, Future[Unit]) =
     entity match {
-      case x: HttpEntity.Strict ⇒ x.asInstanceOf[T] -> FastFuture.successful(())
+      case x: HttpEntity.Strict ⇒
+        x.asInstanceOf[T] -> FastFuture.successful(())
       case x: HttpEntity.Default ⇒
         val (newData, whenCompleted) = StreamUtils.captureTermination(x.data)
         x.copy(data = newData).asInstanceOf[T] -> whenCompleted

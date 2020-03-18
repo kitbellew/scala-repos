@@ -35,7 +35,8 @@ class ScalaLocalInplaceRenameHandler
       elementToRename: PsiElement,
       editor: Editor): VariableInplaceRenamer = {
     elementToRename match {
-      case named: PsiNamedElement => new ScalaLocalInplaceRenamer(named, editor)
+      case named: PsiNamedElement =>
+        new ScalaLocalInplaceRenamer(named, editor)
       case _ =>
         throw new IllegalArgumentException(
           s"Cannot rename element: \n${elementToRename.getText}")

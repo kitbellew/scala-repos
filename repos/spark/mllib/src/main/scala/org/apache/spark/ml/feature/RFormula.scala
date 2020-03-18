@@ -235,8 +235,10 @@ class RFormulaModel private[feature] (
     } else if (schema.exists(_.name == resolvedFormula.label)) {
       val nullable =
         schema(resolvedFormula.label).dataType match {
-          case _: NumericType | BooleanType => false
-          case _                            => true
+          case _: NumericType | BooleanType =>
+            false
+          case _ =>
+            true
         }
       StructType(
         withFeatures.fields :+ StructField($(labelCol), DoubleType, nullable))
@@ -451,7 +453,8 @@ private class VectorAttributeRewriter(
         if (attr.name.isDefined) {
           val name = attr.name.get
           val replacement = prefixesToRewrite.filter {
-            case (k, _) => name.startsWith(k)
+            case (k, _) =>
+              name.startsWith(k)
           }
           if (replacement.nonEmpty) {
             val (k, v) = replacement.headOption.get

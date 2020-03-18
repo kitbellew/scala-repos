@@ -184,53 +184,83 @@ private[hive] trait HiveInspectors {
   def javaClassToDataType(clz: Class[_]): DataType =
     clz match {
       // writable
-      case c: Class[_] if c == classOf[hadoopIo.DoubleWritable] => DoubleType
-      case c: Class[_] if c == classOf[hiveIo.DoubleWritable]   => DoubleType
+      case c: Class[_] if c == classOf[hadoopIo.DoubleWritable] =>
+        DoubleType
+      case c: Class[_] if c == classOf[hiveIo.DoubleWritable] =>
+        DoubleType
       case c: Class[_] if c == classOf[hiveIo.HiveDecimalWritable] =>
         DecimalType.SYSTEM_DEFAULT
-      case c: Class[_] if c == classOf[hiveIo.ByteWritable]  => ByteType
-      case c: Class[_] if c == classOf[hiveIo.ShortWritable] => ShortType
-      case c: Class[_] if c == classOf[hiveIo.DateWritable]  => DateType
+      case c: Class[_] if c == classOf[hiveIo.ByteWritable] =>
+        ByteType
+      case c: Class[_] if c == classOf[hiveIo.ShortWritable] =>
+        ShortType
+      case c: Class[_] if c == classOf[hiveIo.DateWritable] =>
+        DateType
       case c: Class[_] if c == classOf[hiveIo.TimestampWritable] =>
         TimestampType
-      case c: Class[_] if c == classOf[hadoopIo.Text]            => StringType
-      case c: Class[_] if c == classOf[hadoopIo.IntWritable]     => IntegerType
-      case c: Class[_] if c == classOf[hadoopIo.LongWritable]    => LongType
-      case c: Class[_] if c == classOf[hadoopIo.FloatWritable]   => FloatType
-      case c: Class[_] if c == classOf[hadoopIo.BooleanWritable] => BooleanType
-      case c: Class[_] if c == classOf[hadoopIo.BytesWritable]   => BinaryType
+      case c: Class[_] if c == classOf[hadoopIo.Text] =>
+        StringType
+      case c: Class[_] if c == classOf[hadoopIo.IntWritable] =>
+        IntegerType
+      case c: Class[_] if c == classOf[hadoopIo.LongWritable] =>
+        LongType
+      case c: Class[_] if c == classOf[hadoopIo.FloatWritable] =>
+        FloatType
+      case c: Class[_] if c == classOf[hadoopIo.BooleanWritable] =>
+        BooleanType
+      case c: Class[_] if c == classOf[hadoopIo.BytesWritable] =>
+        BinaryType
 
       // java class
-      case c: Class[_] if c == classOf[java.lang.String]   => StringType
-      case c: Class[_] if c == classOf[java.sql.Date]      => DateType
-      case c: Class[_] if c == classOf[java.sql.Timestamp] => TimestampType
+      case c: Class[_] if c == classOf[java.lang.String] =>
+        StringType
+      case c: Class[_] if c == classOf[java.sql.Date] =>
+        DateType
+      case c: Class[_] if c == classOf[java.sql.Timestamp] =>
+        TimestampType
       case c: Class[_] if c == classOf[HiveDecimal] =>
         DecimalType.SYSTEM_DEFAULT
       case c: Class[_] if c == classOf[java.math.BigDecimal] =>
         DecimalType.SYSTEM_DEFAULT
-      case c: Class[_] if c == classOf[Array[Byte]]       => BinaryType
-      case c: Class[_] if c == classOf[java.lang.Short]   => ShortType
-      case c: Class[_] if c == classOf[java.lang.Integer] => IntegerType
-      case c: Class[_] if c == classOf[java.lang.Long]    => LongType
-      case c: Class[_] if c == classOf[java.lang.Double]  => DoubleType
-      case c: Class[_] if c == classOf[java.lang.Byte]    => ByteType
-      case c: Class[_] if c == classOf[java.lang.Float]   => FloatType
-      case c: Class[_] if c == classOf[java.lang.Boolean] => BooleanType
+      case c: Class[_] if c == classOf[Array[Byte]] =>
+        BinaryType
+      case c: Class[_] if c == classOf[java.lang.Short] =>
+        ShortType
+      case c: Class[_] if c == classOf[java.lang.Integer] =>
+        IntegerType
+      case c: Class[_] if c == classOf[java.lang.Long] =>
+        LongType
+      case c: Class[_] if c == classOf[java.lang.Double] =>
+        DoubleType
+      case c: Class[_] if c == classOf[java.lang.Byte] =>
+        ByteType
+      case c: Class[_] if c == classOf[java.lang.Float] =>
+        FloatType
+      case c: Class[_] if c == classOf[java.lang.Boolean] =>
+        BooleanType
 
       // primitive type
-      case c: Class[_] if c == java.lang.Short.TYPE   => ShortType
-      case c: Class[_] if c == java.lang.Integer.TYPE => IntegerType
-      case c: Class[_] if c == java.lang.Long.TYPE    => LongType
-      case c: Class[_] if c == java.lang.Double.TYPE  => DoubleType
-      case c: Class[_] if c == java.lang.Byte.TYPE    => ByteType
-      case c: Class[_] if c == java.lang.Float.TYPE   => FloatType
-      case c: Class[_] if c == java.lang.Boolean.TYPE => BooleanType
+      case c: Class[_] if c == java.lang.Short.TYPE =>
+        ShortType
+      case c: Class[_] if c == java.lang.Integer.TYPE =>
+        IntegerType
+      case c: Class[_] if c == java.lang.Long.TYPE =>
+        LongType
+      case c: Class[_] if c == java.lang.Double.TYPE =>
+        DoubleType
+      case c: Class[_] if c == java.lang.Byte.TYPE =>
+        ByteType
+      case c: Class[_] if c == java.lang.Float.TYPE =>
+        FloatType
+      case c: Class[_] if c == java.lang.Boolean.TYPE =>
+        BooleanType
 
       case c: Class[_] if c.isArray =>
         ArrayType(javaClassToDataType(c.getComponentType))
 
       // Hive seems to return this for struct types?
-      case c: Class[_] if c == classOf[java.lang.Object] => NullType
+      case c: Class[_] if c == classOf[java.lang.Object] =>
+        NullType
 
       // java list type unsupported
       case c: Class[_] if c == classOf[java.util.List[_]] =>
@@ -244,7 +274,8 @@ private[hive] trait HiveInspectors {
           "Map type in java is unsupported because " +
             "JVM type erasure makes spark fail to catch key and value types in Map<>")
 
-      case c => throw new AnalysisException(s"Unsupported java type $c")
+      case c =>
+        throw new AnalysisException(s"Unsupported java type $c")
     }
 
   /**
@@ -327,7 +358,8 @@ private[hive] trait HiveInspectors {
             .toArray
         new GenericArrayData(values)
       // if the value is null, we don't care about the object inspector type
-      case _ if data == null => null
+      case _ if data == null =>
+        null
       case poi: VoidObjectInspector =>
         null // always be null for void object inspector
       case pi: PrimitiveObjectInspector =>
@@ -350,13 +382,20 @@ private[hive] trait HiveInspectors {
             UTF8String.fromBytes(result, 0, result.length)
           case x: StringObjectInspector =>
             UTF8String.fromString(x.getPrimitiveJavaObject(data))
-          case x: IntObjectInspector if x.preferWritable()     => x.get(data)
-          case x: BooleanObjectInspector if x.preferWritable() => x.get(data)
-          case x: FloatObjectInspector if x.preferWritable()   => x.get(data)
-          case x: DoubleObjectInspector if x.preferWritable()  => x.get(data)
-          case x: LongObjectInspector if x.preferWritable()    => x.get(data)
-          case x: ShortObjectInspector if x.preferWritable()   => x.get(data)
-          case x: ByteObjectInspector if x.preferWritable()    => x.get(data)
+          case x: IntObjectInspector if x.preferWritable() =>
+            x.get(data)
+          case x: BooleanObjectInspector if x.preferWritable() =>
+            x.get(data)
+          case x: FloatObjectInspector if x.preferWritable() =>
+            x.get(data)
+          case x: DoubleObjectInspector if x.preferWritable() =>
+            x.get(data)
+          case x: LongObjectInspector if x.preferWritable() =>
+            x.get(data)
+          case x: ShortObjectInspector if x.preferWritable() =>
+            x.get(data)
+          case x: ByteObjectInspector if x.preferWritable() =>
+            x.get(data)
           case x: HiveDecimalObjectInspector =>
             HiveShim.toCatalystDecimal(x, data)
           case x: BinaryObjectInspector if x.preferWritable() =>
@@ -376,7 +415,8 @@ private[hive] trait HiveInspectors {
             t.getSeconds * 1000000L + t.getNanos / 1000L
           case ti: TimestampObjectInspector =>
             DateTimeUtils.fromJavaTimestamp(ti.getPrimitiveJavaObject(data))
-          case _ => pi.getPrimitiveJavaObject(data)
+          case _ =>
+            pi.getPrimitiveJavaObject(data)
         }
       case li: ListObjectInspector =>
         Option(li.getList(data)).map { l =>
@@ -581,41 +621,53 @@ private[hive] trait HiveInspectors {
     */
   def wrap(a: Any, oi: ObjectInspector, dataType: DataType): AnyRef =
     oi match {
-      case x: ConstantObjectInspector => x.getWritableConstantValue
-      case _ if a == null             => null
+      case x: ConstantObjectInspector =>
+        x.getWritableConstantValue
+      case _ if a == null =>
+        null
       case x: PrimitiveObjectInspector =>
         x match {
           // TODO we don't support the HiveVarcharObjectInspector yet.
           case _: StringObjectInspector if x.preferWritable() =>
             getStringWritable(a)
-          case _: StringObjectInspector                    => a.asInstanceOf[UTF8String].toString()
-          case _: IntObjectInspector if x.preferWritable() => getIntWritable(a)
-          case _: IntObjectInspector                       => a.asInstanceOf[java.lang.Integer]
+          case _: StringObjectInspector =>
+            a.asInstanceOf[UTF8String].toString()
+          case _: IntObjectInspector if x.preferWritable() =>
+            getIntWritable(a)
+          case _: IntObjectInspector =>
+            a.asInstanceOf[java.lang.Integer]
           case _: BooleanObjectInspector if x.preferWritable() =>
             getBooleanWritable(a)
-          case _: BooleanObjectInspector => a.asInstanceOf[java.lang.Boolean]
+          case _: BooleanObjectInspector =>
+            a.asInstanceOf[java.lang.Boolean]
           case _: FloatObjectInspector if x.preferWritable() =>
             getFloatWritable(a)
-          case _: FloatObjectInspector => a.asInstanceOf[java.lang.Float]
+          case _: FloatObjectInspector =>
+            a.asInstanceOf[java.lang.Float]
           case _: DoubleObjectInspector if x.preferWritable() =>
             getDoubleWritable(a)
-          case _: DoubleObjectInspector => a.asInstanceOf[java.lang.Double]
+          case _: DoubleObjectInspector =>
+            a.asInstanceOf[java.lang.Double]
           case _: LongObjectInspector if x.preferWritable() =>
             getLongWritable(a)
-          case _: LongObjectInspector => a.asInstanceOf[java.lang.Long]
+          case _: LongObjectInspector =>
+            a.asInstanceOf[java.lang.Long]
           case _: ShortObjectInspector if x.preferWritable() =>
             getShortWritable(a)
-          case _: ShortObjectInspector => a.asInstanceOf[java.lang.Short]
+          case _: ShortObjectInspector =>
+            a.asInstanceOf[java.lang.Short]
           case _: ByteObjectInspector if x.preferWritable() =>
             getByteWritable(a)
-          case _: ByteObjectInspector => a.asInstanceOf[java.lang.Byte]
+          case _: ByteObjectInspector =>
+            a.asInstanceOf[java.lang.Byte]
           case _: HiveDecimalObjectInspector if x.preferWritable() =>
             getDecimalWritable(a.asInstanceOf[Decimal])
           case _: HiveDecimalObjectInspector =>
             HiveDecimal.create(a.asInstanceOf[Decimal].toJavaBigDecimal)
           case _: BinaryObjectInspector if x.preferWritable() =>
             getBinaryWritable(a)
-          case _: BinaryObjectInspector => a.asInstanceOf[Array[Byte]]
+          case _: BinaryObjectInspector =>
+            a.asInstanceOf[Array[Byte]]
           case _: DateObjectInspector if x.preferWritable() =>
             getDateWritable(a)
           case _: DateObjectInspector =>
@@ -734,19 +786,26 @@ private[hive] trait HiveInspectors {
           toInspector(valueType))
       case StringType =>
         PrimitiveObjectInspectorFactory.javaStringObjectInspector
-      case IntegerType => PrimitiveObjectInspectorFactory.javaIntObjectInspector
+      case IntegerType =>
+        PrimitiveObjectInspectorFactory.javaIntObjectInspector
       case DoubleType =>
         PrimitiveObjectInspectorFactory.javaDoubleObjectInspector
       case BooleanType =>
         PrimitiveObjectInspectorFactory.javaBooleanObjectInspector
-      case LongType  => PrimitiveObjectInspectorFactory.javaLongObjectInspector
-      case FloatType => PrimitiveObjectInspectorFactory.javaFloatObjectInspector
-      case ShortType => PrimitiveObjectInspectorFactory.javaShortObjectInspector
-      case ByteType  => PrimitiveObjectInspectorFactory.javaByteObjectInspector
-      case NullType  => PrimitiveObjectInspectorFactory.javaVoidObjectInspector
+      case LongType =>
+        PrimitiveObjectInspectorFactory.javaLongObjectInspector
+      case FloatType =>
+        PrimitiveObjectInspectorFactory.javaFloatObjectInspector
+      case ShortType =>
+        PrimitiveObjectInspectorFactory.javaShortObjectInspector
+      case ByteType =>
+        PrimitiveObjectInspectorFactory.javaByteObjectInspector
+      case NullType =>
+        PrimitiveObjectInspectorFactory.javaVoidObjectInspector
       case BinaryType =>
         PrimitiveObjectInspectorFactory.javaByteArrayObjectInspector
-      case DateType => PrimitiveObjectInspectorFactory.javaDateObjectInspector
+      case DateType =>
+        PrimitiveObjectInspectorFactory.javaDateObjectInspector
       case TimestampType =>
         PrimitiveObjectInspectorFactory.javaTimestampObjectInspector
       // TODO decimal precision?
@@ -844,7 +903,8 @@ private[hive] trait HiveInspectors {
       case _ if expr.foldable =>
         toInspector(Literal.create(expr.eval(), expr.dataType))
       // For those non constant expression, map to object inspector according to its data type
-      case _ => toInspector(expr.dataType)
+      case _ =>
+        toInspector(expr.dataType)
     }
 
   def inspectorToDataType(inspector: ObjectInspector): DataType =
@@ -862,36 +922,66 @@ private[hive] trait HiveInspectors {
         MapType(
           inspectorToDataType(m.getMapKeyObjectInspector),
           inspectorToDataType(m.getMapValueObjectInspector))
-      case _: WritableStringObjectInspector      => StringType
-      case _: JavaStringObjectInspector          => StringType
-      case _: WritableHiveVarcharObjectInspector => StringType
-      case _: JavaHiveVarcharObjectInspector     => StringType
-      case _: WritableHiveCharObjectInspector    => StringType
-      case _: JavaHiveCharObjectInspector        => StringType
-      case _: WritableIntObjectInspector         => IntegerType
-      case _: JavaIntObjectInspector             => IntegerType
-      case _: WritableDoubleObjectInspector      => DoubleType
-      case _: JavaDoubleObjectInspector          => DoubleType
-      case _: WritableBooleanObjectInspector     => BooleanType
-      case _: JavaBooleanObjectInspector         => BooleanType
-      case _: WritableLongObjectInspector        => LongType
-      case _: JavaLongObjectInspector            => LongType
-      case _: WritableShortObjectInspector       => ShortType
-      case _: JavaShortObjectInspector           => ShortType
-      case _: WritableByteObjectInspector        => ByteType
-      case _: JavaByteObjectInspector            => ByteType
-      case _: WritableFloatObjectInspector       => FloatType
-      case _: JavaFloatObjectInspector           => FloatType
-      case _: WritableBinaryObjectInspector      => BinaryType
-      case _: JavaBinaryObjectInspector          => BinaryType
-      case w: WritableHiveDecimalObjectInspector => decimalTypeInfoToCatalyst(w)
-      case j: JavaHiveDecimalObjectInspector     => decimalTypeInfoToCatalyst(j)
-      case _: WritableDateObjectInspector        => DateType
-      case _: JavaDateObjectInspector            => DateType
-      case _: WritableTimestampObjectInspector   => TimestampType
-      case _: JavaTimestampObjectInspector       => TimestampType
-      case _: WritableVoidObjectInspector        => NullType
-      case _: JavaVoidObjectInspector            => NullType
+      case _: WritableStringObjectInspector =>
+        StringType
+      case _: JavaStringObjectInspector =>
+        StringType
+      case _: WritableHiveVarcharObjectInspector =>
+        StringType
+      case _: JavaHiveVarcharObjectInspector =>
+        StringType
+      case _: WritableHiveCharObjectInspector =>
+        StringType
+      case _: JavaHiveCharObjectInspector =>
+        StringType
+      case _: WritableIntObjectInspector =>
+        IntegerType
+      case _: JavaIntObjectInspector =>
+        IntegerType
+      case _: WritableDoubleObjectInspector =>
+        DoubleType
+      case _: JavaDoubleObjectInspector =>
+        DoubleType
+      case _: WritableBooleanObjectInspector =>
+        BooleanType
+      case _: JavaBooleanObjectInspector =>
+        BooleanType
+      case _: WritableLongObjectInspector =>
+        LongType
+      case _: JavaLongObjectInspector =>
+        LongType
+      case _: WritableShortObjectInspector =>
+        ShortType
+      case _: JavaShortObjectInspector =>
+        ShortType
+      case _: WritableByteObjectInspector =>
+        ByteType
+      case _: JavaByteObjectInspector =>
+        ByteType
+      case _: WritableFloatObjectInspector =>
+        FloatType
+      case _: JavaFloatObjectInspector =>
+        FloatType
+      case _: WritableBinaryObjectInspector =>
+        BinaryType
+      case _: JavaBinaryObjectInspector =>
+        BinaryType
+      case w: WritableHiveDecimalObjectInspector =>
+        decimalTypeInfoToCatalyst(w)
+      case j: JavaHiveDecimalObjectInspector =>
+        decimalTypeInfoToCatalyst(j)
+      case _: WritableDateObjectInspector =>
+        DateType
+      case _: JavaDateObjectInspector =>
+        DateType
+      case _: WritableTimestampObjectInspector =>
+        TimestampType
+      case _: JavaTimestampObjectInspector =>
+        TimestampType
+      case _: WritableVoidObjectInspector =>
+        NullType
+      case _: JavaVoidObjectInspector =>
+        NullType
     }
 
   private def decimalTypeInfoToCatalyst(
@@ -1078,19 +1168,32 @@ private[hive] trait HiveInspectors {
             java.util.Arrays.asList(fields.map(_.dataType.toTypeInfo): _*))
         case MapType(keyType, valueType, _) =>
           getMapTypeInfo(keyType.toTypeInfo, valueType.toTypeInfo)
-        case BinaryType     => binaryTypeInfo
-        case BooleanType    => booleanTypeInfo
-        case ByteType       => byteTypeInfo
-        case DoubleType     => doubleTypeInfo
-        case FloatType      => floatTypeInfo
-        case IntegerType    => intTypeInfo
-        case LongType       => longTypeInfo
-        case ShortType      => shortTypeInfo
-        case StringType     => stringTypeInfo
-        case d: DecimalType => decimalTypeInfo(d)
-        case DateType       => dateTypeInfo
-        case TimestampType  => timestampTypeInfo
-        case NullType       => voidTypeInfo
+        case BinaryType =>
+          binaryTypeInfo
+        case BooleanType =>
+          booleanTypeInfo
+        case ByteType =>
+          byteTypeInfo
+        case DoubleType =>
+          doubleTypeInfo
+        case FloatType =>
+          floatTypeInfo
+        case IntegerType =>
+          intTypeInfo
+        case LongType =>
+          longTypeInfo
+        case ShortType =>
+          shortTypeInfo
+        case StringType =>
+          stringTypeInfo
+        case d: DecimalType =>
+          decimalTypeInfo(d)
+        case DateType =>
+          dateTypeInfo
+        case TimestampType =>
+          timestampTypeInfo
+        case NullType =>
+          voidTypeInfo
       }
   }
 }

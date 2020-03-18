@@ -184,8 +184,10 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       for (series <- data) {
         val seriesPath: Option[Path] =
           series.node() match {
-            case path: jfxss.Path => Some(path)
-            case _                => None
+            case path: jfxss.Path =>
+              Some(path)
+            case _ =>
+              None
           }
         seriesPath.foreach(_.elements.clear())
 
@@ -204,7 +206,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
                     xAxis match {
                       case xa: jfxsc.NumberAxis =>
                         xa.displayPosition(xa.tickUnit()) * 0.90
-                      case _ => -1
+                      case _ =>
+                        -1
                     }
                   candle.update(
                     yClose - yOpen,

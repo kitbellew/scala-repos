@@ -42,13 +42,16 @@ object DisjunctionTest extends SpecLite {
     implicit val showFoo = Show.showA[Foo]
 
     -\/[Foo](Bar).recover({
-      case Bar => 1
+      case Bar =>
+        1
     }) must_=== \/-(1)
     -\/[Foo](Bar).recover({
-      case Baz => 1
+      case Baz =>
+        1
     }) must_=== -\/(Bar)
     \/.right[Foo, Int](1).recover({
-      case Bar => 4
+      case Bar =>
+        4
     }) must_=== \/-(1)
   }
 
@@ -61,11 +64,13 @@ object DisjunctionTest extends SpecLite {
     implicit val showFoo = Show.showA[Foo]
 
     val barToBaz: PartialFunction[Foo, \/[Foo, Int]] = {
-      case Bar => -\/(Baz)
+      case Bar =>
+        -\/(Baz)
     }
 
     val bazToInt: PartialFunction[Foo, \/[Foo, Int]] = {
-      case Baz => \/-(1)
+      case Baz =>
+        \/-(1)
     }
 
     -\/[Foo](Bar).recoverWith(barToBaz) must_=== -\/(Baz)

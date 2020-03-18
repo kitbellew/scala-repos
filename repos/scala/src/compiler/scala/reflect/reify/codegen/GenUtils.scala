@@ -102,16 +102,19 @@ trait GenUtils {
       case TypeRef(SingleType(_, _), sym, _)
           if sym.isAbstractType && !sym.isExistential =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def isCrossStageTypeBearer(tree: Tree): Boolean =
     tree match {
-      case TypeApply(hk, _) => isCrossStageTypeBearer(hk)
+      case TypeApply(hk, _) =>
+        isCrossStageTypeBearer(hk)
       case Select(sym @ Select(_, ctor), nme.apply)
           if ctor == nme.WeakTypeTag || ctor == nme.TypeTag || ctor == nme.Expr =>
         true
-      case _ => false
+      case _ =>
+        false
     }
 
   def origin(sym: Symbol) = {

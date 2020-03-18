@@ -99,13 +99,17 @@ class ScalaImportTypeFix(
     if (ref.qualifier.isDefined)
       return false
     ref.getContext match {
-      case postf: ScPostfixExpr if postf.operation == ref => false
-      case pref: ScPrefixExpr if pref.operation == ref    => false
-      case inf: ScInfixExpr if inf.operation == ref       => false
+      case postf: ScPostfixExpr if postf.operation == ref =>
+        false
+      case pref: ScPrefixExpr if pref.operation == ref =>
+        false
+      case inf: ScInfixExpr if inf.operation == ref =>
+        false
       case _ =>
         classes = ScalaImportTypeFix.getTypesToImport(ref, project)
         classes.length match {
-          case 0 => false
+          case 0 =>
+            false
           case 1
               if ScalaApplicationSettings
                 .getInstance()
@@ -319,10 +323,14 @@ object ScalaImportTypeFix {
   object TypeToImport {
     def unapply(elem: PsiElement): Option[TypeToImport] = {
       elem match {
-        case clazz: PsiClass => Some(ClassTypeToImport(clazz))
-        case ta: ScTypeAlias => Some(TypeAliasToImport(ta))
-        case pack: ScPackage => Some(PrefixPackageToImport(pack))
-        case _               => None
+        case clazz: PsiClass =>
+          Some(ClassTypeToImport(clazz))
+        case ta: ScTypeAlias =>
+          Some(TypeAliasToImport(ta))
+        case pack: ScPackage =>
+          Some(PrefixPackageToImport(pack))
+        case _ =>
+          None
       }
     }
   }
@@ -368,12 +376,14 @@ object ScalaImportTypeFix {
       PsiTreeUtil.getParentOfType(ref, classOf[ScPackaging]) match {
         case null =>
           ref.getContainingFile match {
-            case holder: ScImportsHolder => holder
+            case holder: ScImportsHolder =>
+              holder
             case file =>
               throw new AssertionError(
                 s"Holder is wrong, file text: ${file.getText}")
           }
-        case packaging: ScPackaging => packaging
+        case packaging: ScPackaging =>
+          packaging
       }
     }
   }
@@ -390,22 +400,29 @@ object ScalaImportTypeFix {
     clazz match {
       case o: ScObject if o.isSyntheticObject =>
         ScalaPsiUtil.getCompanionModule(o) match {
-          case Some(cl) => notInner(cl, ref)
-          case _        => true
+          case Some(cl) =>
+            notInner(cl, ref)
+          case _ =>
+            true
         }
       case t: ScTypeDefinition =>
         parent(t) match {
-          case _: ScalaFile   => true
-          case _: ScPackaging => true
+          case _: ScalaFile =>
+            true
+          case _: ScPackaging =>
+            true
           case _: ScTemplateBody =>
             Option(t.containingClass) match {
               case Some(obj: ScObject) =>
                 ResolveUtils.isAccessible(obj, ref) && notInner(obj, ref)
-              case _ => false
+              case _ =>
+                false
             }
-          case _ => false
+          case _ =>
+            false
         }
-      case _ => true
+      case _ =>
+        true
     }
   }
 
@@ -436,8 +453,9 @@ object ScalaImportTypeFix {
         case c: ScTypeDefinition if c.fakeCompanionModule.isDefined =>
           if (ScalaPsiUtil.getBaseCompanionModule(c).isEmpty) {
             ScalaPsiUtil.getCompanionModule(c) match {
-              case Some(companion) => addClazz(companion)
-              case _               =>
+              case Some(companion) =>
+                addClazz(companion)
+              case _ =>
             }
           }
         case _ =>
@@ -473,7 +491,8 @@ object ScalaImportTypeFix {
             false
       }
       .map {
-        case s => s.reverse.dropWhile(_ != '.').tail.reverse
+        case s =>
+          s.reverse.dropWhile(_ != '.').tail.reverse
       }
 
     for (packageQualifier <- packagesList) {
@@ -493,7 +512,8 @@ object ScalaImportTypeFix {
           case ClassTypeToImport(clazz) =>
             clazz.isInstanceOf[ScObject] &&
               clazz.asInstanceOf[ScObject].functionsByName("apply").nonEmpty
-          case _ => false
+          case _ =>
+            false
         }
         .sortBy(_.qualifiedName)
         .toArray

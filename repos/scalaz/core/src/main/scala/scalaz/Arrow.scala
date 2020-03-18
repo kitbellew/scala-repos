@@ -35,7 +35,8 @@ trait Arrow[=>:[_, _]] extends Split[=>:] with Strong[=>:] with Category[=>:] {
   def second[A, B, C](f: (A =>: B)): ((C, A) =>: (C, B)) = {
     def swap[X, Y] =
       arr[(X, Y), (Y, X)] {
-        case (x, y) => (y, x)
+        case (x, y) =>
+          (y, x)
       }
 
     >>>(<<<(first[A, B, C](f), swap), swap)

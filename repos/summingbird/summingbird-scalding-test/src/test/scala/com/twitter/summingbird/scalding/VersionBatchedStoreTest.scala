@@ -106,7 +106,8 @@ class VersionedBatchedStoreTest extends WordSpec {
 
       // Add a time:
       val inWithTime = original.zipWithIndex.map {
-        case (item, time) => (time.toLong, item)
+        case (item, time) =>
+          (time.toLong, item)
       }
 
       // get time interval for the input

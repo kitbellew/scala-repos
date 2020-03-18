@@ -133,7 +133,8 @@ class EndToEndTest
   def assertAnnotationsInOrder(tracer: Seq[Record], annos: Seq[Annotation]) {
     assert(
       tracer.collect {
-        case Record(_, _, ann, _) if annos.contains(ann) => ann
+        case Record(_, _, ann, _) if annos.contains(ann) =>
+          ann
       } == annos)
   }
 
@@ -348,19 +349,25 @@ EOF
       }
 
       val Some((_, available)) = sr.gauges.find {
-        case (_ +: Seq("loadbalancer", "available"), value) => true
-        case _                                              => false
+        case (_ +: Seq("loadbalancer", "available"), value) =>
+          true
+        case _ =>
+          false
       }
 
       val Some((_, leaseDuration)) = sr.gauges.find {
-        case (_ +: Seq("mux", "current_lease_ms"), value) => true
-        case _                                            => false
+        case (_ +: Seq("mux", "current_lease_ms"), value) =>
+          true
+        case _ =>
+          false
       }
 
       val leaseCtr: () => Int = { () =>
         val Some((_, ctr)) = sr.counters.find {
-          case (_ +: Seq("mux", "leased"), value) => true
-          case _                                  => false
+          case (_ +: Seq("mux", "leased"), value) =>
+            true
+          case _ =>
+            false
         }
         ctr
       }

@@ -148,13 +148,16 @@ class AppsResource @Inject() (
           case Some(appInfo) =>
             checkAuthorization(ViewApp, appInfo.app)
             ok(jsonObjString("app" -> appInfo))
-          case None => unknownApp(appId)
+          case None =>
+            unknownApp(appId)
         }
       }
 
       id match {
-        case ListApps(gid) => transitiveApps(gid.toRootPath)
-        case _             => app(id.toRootPath)
+        case ListApps(gid) =>
+          transitiveApps(gid.toRootPath)
+        case _ =>
+          app(id.toRootPath)
       }
     }
 
@@ -211,7 +214,8 @@ class AppsResource @Inject() (
                     id,
                     updateOrCreate(id, _, update, version),
                     version)
-                case None => group
+                case None =>
+                  group
               }
             }
 

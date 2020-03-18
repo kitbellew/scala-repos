@@ -140,10 +140,14 @@ class DocResolver(
       anchor,
       { m =>
         anchor(m.start) match {
-          case ',' => "-"
-          case '(' => "-"
-          case ')' => "-"
-          case '[' => ":A"
+          case ',' =>
+            "-"
+          case '(' =>
+            "-"
+          case ')' =>
+            "-"
+          case '[' =>
+            ":A"
         }
       })
   }
@@ -198,8 +202,10 @@ class DocResolver(
     case p: DocSigPair =>
       val response =
         resolve(p) match {
-          case Some(path) => StringResponse(path)
-          case None       => FalseResponse
+          case Some(path) =>
+            StringResponse(path)
+          case None =>
+            FalseResponse
         }
       sender() ! response
   }

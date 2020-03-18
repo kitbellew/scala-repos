@@ -20,8 +20,11 @@ class TestItemRepresentation(
 
   override def getIcon(open: Boolean) =
     testStatus match {
-      case TestStructureViewElement.ignoredStatusId => IGNORED_ICON
-      case TestStructureViewElement.pendingStatusId => NOT_RAN
-      case _                                        => Icons.SCALA_TEST_NODE
+      case TestStructureViewElement.ignoredStatusId =>
+        IGNORED_ICON
+      case TestStructureViewElement.pendingStatusId =>
+        NOT_RAN
+      case _ =>
+        Icons.SCALA_TEST_NODE
     }
 }

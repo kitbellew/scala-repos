@@ -71,8 +71,10 @@ class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
       case isQualifierInImport(impExpr: ScImportExpr) =>
         val text = impExpr.getText
         qual.getText != text && !text.endsWith("_")
-      case isQualifierFor(ref) => !isInImport(ref) && resolvesToStablePath(ref)
-      case _                   => false
+      case isQualifierFor(ref) =>
+        !isInImport(ref) && resolvesToStablePath(ref)
+      case _ =>
+        false
     }
 }
 

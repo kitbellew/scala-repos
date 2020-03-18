@@ -40,8 +40,10 @@ object RemoteReDeploymentMultiJvmSpec extends MultiNodeConfig {
   class Parent extends Actor {
     val monitor = context.actorSelection("/user/echo")
     def receive = {
-      case (p: Props, n: String) ⇒ context.actorOf(p, n)
-      case msg ⇒ monitor ! msg
+      case (p: Props, n: String) ⇒
+        context.actorOf(p, n)
+      case msg ⇒
+        monitor ! msg
     }
   }
 

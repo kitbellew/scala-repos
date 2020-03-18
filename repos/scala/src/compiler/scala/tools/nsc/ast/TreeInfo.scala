@@ -22,7 +22,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
       t match {
         case Apply(sel @ Select(arg1, _), arg2 :: Nil) =>
           Some((arg1, sel.symbol, arg2))
-        case _ => None
+        case _ =>
+          None
       }
   }
   // recv.op[T1, ...] returns (recv, op.symbol, type argument types)
@@ -31,7 +32,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
       t match {
         case TypeApply(sel @ Select(recv, _), targs) =>
           Some((recv, sel.symbol, targs map (_.tpe)))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -41,7 +43,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
       t match {
         case Apply(TypeApplyOp(recv, Object_asInstanceOf, tpe :: Nil), Nil) =>
           Some((recv, tpe))
-        case _ => None
+        case _ =>
+          None
       }
   }
 
@@ -59,7 +62,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
           case Apply(sel @ Select(ref, _), Nil)
               if valueUnbox(ref.tpe) == sel.symbol =>
             Some(ref)
-          case _ => None
+          case _ =>
+            None
         }
     }
     // new B(v). Returns B and v.
@@ -68,15 +72,18 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
         t match {
           case Apply(sel @ Select(New(tpt), nme.CONSTRUCTOR), v :: Nil) =>
             Some((v, tpt.tpe.finalResultType))
-          case _ => None
+          case _ =>
+            None
         }
     }
     // (new B(v)).unbox. returns v.
     object BoxAndUnbox {
       def unapply(t: Tree): Option[Tree] =
         t match {
-          case Unbox(Box(v, tpe)) if isValueClass(tpe) => Some(v)
-          case _                                       => None
+          case Unbox(Box(v, tpe)) if isValueClass(tpe) =>
+            Some(v)
+          case _ =>
+            None
         }
     }
     // new B(v1) op new B(v2) where op is == or !=. Returns v1, op, v2.
@@ -88,7 +95,8 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
                 op @ (Object_== | Object_!=),
                 Box(v2, tpe2)) if isValueClass(tpe1) && tpe1 =:= tpe2 =>
             Some((v1, op, v2))
-          case _ => None
+          case _ =>
+            None
         }
     }
   }
@@ -102,21 +110,27 @@ abstract class TreeInfo extends scala.reflect.internal.TreeInfo {
     */
   override def isInterfaceMember(tree: Tree): Boolean =
     tree match {
-      case DocDef(_, definition) => isInterfaceMember(definition)
-      case _                     => super.isInterfaceMember(tree)
+      case DocDef(_, definition) =>
+        isInterfaceMember(definition)
+      case _ =>
+        super.isInterfaceMember(tree)
     }
 
   override def isConstructorWithDefault(t: Tree) =
     t match {
-      case DocDef(_, definition) => isConstructorWithDefault(definition)
-      case _                     => super.isConstructorWithDefault(t)
+      case DocDef(_, definition) =>
+        isConstructorWithDefault(definition)
+      case _ =>
+        super.isConstructorWithDefault(t)
     }
 
   /** Is tree a pure (i.e. non-side-effecting) definition?
     */
   override def isPureDef(tree: Tree): Boolean =
     tree match {
-      case DocDef(_, definition) => isPureDef(definition)
-      case _                     => super.isPureDef(tree)
+      case DocDef(_, definition) =>
+        isPureDef(definition)
+      case _ =>
+        super.isPureDef(tree)
     }
 }

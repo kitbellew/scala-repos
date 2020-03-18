@@ -42,7 +42,8 @@ object RoutingSpec {
 
   class Echo extends Actor {
     def receive = {
-      case _ ⇒ sender() ! self
+      case _ ⇒
+        sender() ! self
     }
   }
 
@@ -76,7 +77,8 @@ class RoutingSpec
         router ! ""
         val res =
           receiveWhile(100 millis, messages = 2) {
-            case x: ActorRef ⇒ x
+            case x: ActorRef ⇒
+              x
           }
         res == Seq(c1, c1)
       }
@@ -212,7 +214,8 @@ class RoutingSpec
       supervisor ! RoundRobinPool(3).props(routeeProps = Props(
         new Actor {
           def receive = {
-            case x: String ⇒ throw new Exception(x)
+            case x: String ⇒
+              throw new Exception(x)
           }
           override def postRestart(reason: Throwable): Unit =
             testActor ! "restarted"
@@ -237,7 +240,8 @@ class RoutingSpec
                   RoundRobinPool(2).props(routeeProps = Props(
                     new Actor {
                       def receive = {
-                        case x ⇒ sender() ! x
+                        case x ⇒
+                          sender() ! x
                       }
                     }))) ? "hello" pipeTo sender()
             }
@@ -252,7 +256,8 @@ class RoutingSpec
     "send message to connection" in {
       class Actor1 extends Actor {
         def receive = {
-          case msg ⇒ testActor forward msg
+          case msg ⇒
+            testActor forward msg
         }
       }
 

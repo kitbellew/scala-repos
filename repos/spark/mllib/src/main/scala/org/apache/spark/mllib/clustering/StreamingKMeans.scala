@@ -95,7 +95,8 @@ class StreamingKMeansModel @Since("1.2.0") (
 
     val discount =
       timeUnit match {
-        case StreamingKMeans.BATCHES => decayFactor
+        case StreamingKMeans.BATCHES =>
+          decayFactor
         case StreamingKMeans.POINTS =>
           val numNewPoints =
             pointStats.view.map {
@@ -125,7 +126,8 @@ class StreamingKMeansModel @Since("1.2.0") (
           clusterCenters(label).size match {
             case x if x > 100 =>
               centroid.toArray.take(100).mkString("[", ",", "...")
-            case _ => centroid.toArray.mkString("[", ",", "]")
+            case _ =>
+              centroid.toArray.mkString("[", ",", "]")
           }
 
         logInfo(

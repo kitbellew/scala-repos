@@ -56,7 +56,8 @@ private[finagle] object ExceptionRemoteInfoFactory {
           case Address.Inet(addr, _) =>
             val param.Label(label) = params[param.Label]
             new ExceptionRemoteInfoFactory(next, addr, label)
-          case _ => next
+          case _ =>
+            next
         }
 
       }

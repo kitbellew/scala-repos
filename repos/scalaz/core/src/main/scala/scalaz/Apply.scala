@@ -335,10 +335,14 @@ trait Apply[F[_]] extends Functor[F] {
       def point[A](a: => A) = \/-(a)
       def ap[A, B](a: => F[A] \/ A)(f: => F[A => B] \/ (A => B)) =
         (f, a) match {
-          case (\/-(f), \/-(a)) => \/-(f(a))
-          case (\/-(f), -\/(a)) => -\/(self.map(a)(f))
-          case (-\/(f), \/-(a)) => -\/(self.map(f)(_(a)))
-          case (-\/(f), -\/(a)) => -\/(self.ap(a)(f))
+          case (\/-(f), \/-(a)) =>
+            \/-(f(a))
+          case (\/-(f), -\/(a)) =>
+            -\/(self.map(a)(f))
+          case (-\/(f), \/-(a)) =>
+            -\/(self.map(f)(_(a)))
+          case (-\/(f), -\/(a)) =>
+            -\/(self.ap(a)(f))
         }
     }
 

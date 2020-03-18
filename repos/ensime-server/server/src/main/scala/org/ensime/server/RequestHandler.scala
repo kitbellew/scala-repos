@@ -25,7 +25,8 @@ class RequestHandler(
         project ! envelope.req
         context.become(resolveDocSig, discardOld = false)
 
-      case req => project ! req
+      case req =>
+        project ! req
     }
   }
 

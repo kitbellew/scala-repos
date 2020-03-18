@@ -43,7 +43,8 @@ object Endpoint {
       val ipv4 = Endpoint.toIpv4(InetAddress.getLoopbackAddress)
       Endpoint(ipv4, 0)
     } catch {
-      case NonFatal(_) => Endpoint.Unknown
+      case NonFatal(_) =>
+        Endpoint.Unknown
     }
   }
 
@@ -64,7 +65,8 @@ object Endpoint {
       case inet: InetSocketAddress => {
         Endpoint(toIpv4(inet.getAddress), inet.getPort.toShort)
       }
-      case _ => Endpoint.Unknown
+      case _ =>
+        Endpoint.Unknown
     }
   }
 }

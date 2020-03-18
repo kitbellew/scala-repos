@@ -54,13 +54,15 @@ object Conneg {
 
     def parameter: Parser[(String, String)] =
       (token ~ (valueSep ~> (token | quotedString))) ^^ {
-        case token ~ value => (token, value)
+        case token ~ value =>
+          (token, value)
       }
 
     def parameters: Parser[Map[String, String]] =
       repsep(parameter, paramSep) ^^ {
         _.foldLeft(Map[String, String]()) {
-          case (params, param) => params + param
+          case (params, param) =>
+            params + param
         }
       }
 
@@ -71,8 +73,10 @@ object Conneg {
     /** Parser for a single conneg value. */
     def conneg: Parser[Option[Conneg[T]]] =
       entry ~ qValue ^^ {
-        case Some(entry) ~ q => Some(new Conneg(entry, q))
-        case _               => None
+        case Some(entry) ~ q =>
+          Some(new Conneg(entry, q))
+        case _ =>
+          None
       }
 
     /** Parser for a list of conneg values. */
@@ -84,8 +88,10 @@ object Conneg {
         paramSep ~> (
           "q" ~ valueSep
         ) ~> """[0-1](\.[0-9]{1,3})?""".r ^^ (_.toFloat)) ^^ {
-        case Some(q) => q
-        case _       => 1.0f
+        case Some(q) =>
+          q
+        case _ =>
+          1.0f
       }
     }
 
@@ -93,9 +99,11 @@ object Conneg {
       parseAll(connegs, raw) match {
         case Success(a, _) =>
           a.collect {
-            case Some(v) => v
+            case Some(v) =>
+              v
           }
-        case _ => List()
+        case _ =>
+          List()
       }
     }
   }

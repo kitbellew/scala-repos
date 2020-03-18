@@ -111,7 +111,8 @@ object ScalaRuntimeTypeEvaluator {
           .map(findPsiClass(project, _))
           .find(_ != null)
           .orNull
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -131,12 +132,17 @@ object ScalaRuntimeTypeEvaluator {
     scType match {
       case ExtractClass(psiClass) =>
         psiClass match {
-          case _: ScObject                                => false
-          case owner: ScModifierListOwner                 => !owner.hasFinalModifier
-          case _ if scType.isInstanceOf[PsiPrimitiveType] => false
-          case _                                          => !psiClass.hasModifierProperty(PsiModifier.FINAL)
+          case _: ScObject =>
+            false
+          case owner: ScModifierListOwner =>
+            !owner.hasFinalModifier
+          case _ if scType.isInstanceOf[PsiPrimitiveType] =>
+            false
+          case _ =>
+            !psiClass.hasModifierProperty(PsiModifier.FINAL)
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

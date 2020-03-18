@@ -12,6 +12,7 @@ package object util {
     * code inside of another exception handler to prevent an exception during cleanup from
     * overriding the original one. */
   val ignoreFollowOnError: PartialFunction[Throwable, Unit] = {
-    case NonFatal(_) => ()
+    case NonFatal(_) =>
+      ()
   }
 }

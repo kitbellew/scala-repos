@@ -109,19 +109,27 @@ class Classfile(in: ByteArrayReader) {
           pool(i) = Empty
         } else
           pool(i) = tag match {
-            case CONSTANT_UTF8 => UTF8(in.nextUTF8(in.nextChar.toInt))
+            case CONSTANT_UTF8 =>
+              UTF8(in.nextUTF8(in.nextChar.toInt))
             case CONSTANT_UNICODE =>
               in.skip(in.nextChar);
               Empty
-            case CONSTANT_CLASS     => ClassRef(in.nextChar)
-            case CONSTANT_STRING    => StringConst(in.nextChar)
-            case CONSTANT_FIELDREF  => FieldRef(in.nextChar, in.nextChar)
-            case CONSTANT_METHODREF => MethodRef(in.nextChar, in.nextChar)
+            case CONSTANT_CLASS =>
+              ClassRef(in.nextChar)
+            case CONSTANT_STRING =>
+              StringConst(in.nextChar)
+            case CONSTANT_FIELDREF =>
+              FieldRef(in.nextChar, in.nextChar)
+            case CONSTANT_METHODREF =>
+              MethodRef(in.nextChar, in.nextChar)
             case CONSTANT_INTFMETHODREF =>
               IntfMethodRef(in.nextChar, in.nextChar)
-            case CONSTANT_NAMEANDTYPE => NameAndType(in.nextChar, in.nextChar)
-            case CONSTANT_INTEGER     => IntegerConst(in.nextInt)
-            case CONSTANT_FLOAT       => FloatConst(in.nextFloat)
+            case CONSTANT_NAMEANDTYPE =>
+              NameAndType(in.nextChar, in.nextChar)
+            case CONSTANT_INTEGER =>
+              IntegerConst(in.nextInt)
+            case CONSTANT_FLOAT =>
+              FloatConst(in.nextFloat)
           }
 
         i += 1
@@ -149,7 +157,8 @@ class Classfile(in: ByteArrayReader) {
   case class Attribute(name: Int, data: Array[Byte]) {
     override def toString =
       (pool(name): @unchecked) match {
-        case pool.UTF8(s) => s
+        case pool.UTF8(s) =>
+          s
       }
     def reader: ByteArrayReader = new ByteArrayReader(data)
   }

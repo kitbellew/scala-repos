@@ -64,7 +64,8 @@ class EventTest extends FunSuite {
   test("Event.collect") {
     val e = Event[Int]()
     val events = e collect {
-      case i if i % 2 == 0 => i * 2
+      case i if i % 2 == 0 =>
+        i * 2
     }
     val ref = new AtomicReference[Seq[Int]](Seq.empty)
     events.build.register(Witness(ref))

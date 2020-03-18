@@ -33,9 +33,12 @@ class ExpandSums extends Phase {
         oldDiscCandidates: Set[(TypeSymbol, List[TermSymbol])]): Node = {
       val discCandidates = oldDiscCandidates ++ (
         tree match {
-          case Filter(_, _, p)     => collectDiscriminatorCandidates(p)
-          case Bind(_, j: Join, _) => collectDiscriminatorCandidates(j.on)
-          case _                   => Set.empty
+          case Filter(_, _, p) =>
+            collectDiscriminatorCandidates(p)
+          case Bind(_, j: Join, _) =>
+            collectDiscriminatorCandidates(j.on)
+          case _ =>
+            Set.empty
         }
       )
       val tree2 = tree.mapChildren(tr(_, discCandidates), keepType = true)
@@ -72,7 +75,8 @@ class ExpandSums extends Phase {
             val pred = Library.==.typed[Boolean](from, LiteralNode(null))
             val n2 =
               (ifEmpty, map) match {
-                case (LiteralNode(true), LiteralNode(false)) => pred
+                case (LiteralNode(true), LiteralNode(false)) =>
+                  pred
                 case (LiteralNode(false), LiteralNode(true)) =>
                   Library.Not.typed[Boolean](pred)
                 case _ =>
@@ -96,7 +100,8 @@ class ExpandSums extends Phase {
             val pred = Library.==.typed[Boolean](left, LiteralNode(null))
             val n2 =
               (ifEmpty, map) match {
-                case (LiteralNode(true), LiteralNode(false)) => pred
+                case (LiteralNode(true), LiteralNode(false)) =>
+                  pred
                 case (LiteralNode(false), LiteralNode(true)) =>
                   Library.Not.typed[Boolean](pred)
                 case _ =>
@@ -123,7 +128,8 @@ class ExpandSums extends Phase {
             n2.infer()
 
           // Primitive OptionApply -> leave unchanged
-          case n @ OptionApply(_) :@ OptionType.Primitive(_) => n
+          case n @ OptionApply(_) :@ OptionType.Primitive(_) =>
+            n
 
           // Other OptionApply -> translate to product form
           case n @ OptionApply(ch) =>
@@ -136,7 +142,8 @@ class ExpandSums extends Phase {
           // (.get is only defined on primitive Options, but this can occur inside of HOFs like .map)
           case g @ GetOrElse(ch :@ tpe, _) =>
             tpe match {
-              case OptionType.Primitive(_) => g
+              case OptionType.Primitive(_) =>
+                g
               case _ =>
                 throw new SlickException(
                   ".get may only be called on Options of top-level primitive types")
@@ -148,7 +155,8 @@ class ExpandSums extends Phase {
             multi = true
             translateJoin(bind, discCandidates)
 
-          case n => n
+          case n =>
+            n
         }
       val tree4 = fuse(tree3)
       tree4 :@ trType(tree4.nodeType)
@@ -191,27 +199,33 @@ class ExpandSums extends Phase {
           case NominalType(ts, exp) =>
             val c = discCandidates
               .filter {
-                case (t, ss) => t == ts && ss.nonEmpty
+                case (t, ss) =>
+                  t == ts && ss.nonEmpty
               }
               .map(_._2)
             logger.debug(
               "Discriminator candidates from surrounding Filter and Join predicates: " +
                 c.map(Path.toString).mkString(", "))
             c
-          case _ => Set.empty
+          case _ =>
+            Set.empty
         }
       def find(t: Type, path: List[TermSymbol]): Vector[List[TermSymbol]] =
         t.structural match {
           case StructType(defs) =>
             defs.toSeq.flatMap {
-              case (s, t) => find(t, s :: path)
+              case (s, t) =>
+                find(t, s :: path)
             }(collection.breakOut)
           case p: ProductType =>
             p.elements.iterator.zipWithIndex.flatMap {
-              case (t, i) => find(t, ElementSymbol(i + 1) :: path)
+              case (t, i) =>
+                find(t, ElementSymbol(i + 1) :: path)
             }.toVector
-          case _: AtomicType => Vector(path)
-          case _             => Vector.empty
+          case _: AtomicType =>
+            Vector(path)
+          case _ =>
+            Vector.empty
         }
       val local = find(t, Nil).sortBy { ss =>
         (
@@ -226,7 +240,8 @@ class ExpandSums extends Phase {
                 -2
               else
                 -1
-            case _ => 0
+            case _ =>
+              0
           }
         )
       }
@@ -261,7 +276,8 @@ class ExpandSums extends Phase {
       val on2 = on
         .replace(
           {
-            case Ref(s) if s == sym => sideInCondition
+            case Ref(s) if s == sym =>
+              sideInCondition
           },
           bottomUp = true)
         .infer()
@@ -329,7 +345,8 @@ class ExpandSums extends Phase {
       ConstArray(optionCast(0, ldisc), optionCast(1, rdisc))).infer()
     val pure2 = pure.replace(
       {
-        case Ref(s) if s == bsym => ref
+        case Ref(s) if s == bsym =>
+          ref
 
         // Hoist SilentCasts and remove unnecessary ones
         case Library.SilentCast(Library.SilentCast(ch)) :@ tpe =>
@@ -350,7 +367,8 @@ class ExpandSums extends Phase {
     n match {
       case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
         buildMultiColumnNone(tpe)
-      case n :@ tpe2 if tpe2 == tpe => n
+      case n :@ tpe2 if tpe2 == tpe =>
+        n
       case n =>
         if (tpe == UnassignedType)
           throw new SlickTreeException("Unexpected UnassignedType for:", n)
@@ -361,13 +379,16 @@ class ExpandSums extends Phase {
   def buildMultiColumnNone(tpe: Type): Node =
     (
       tpe.structural match {
-        case ProductType(ch) => ProductNode(ch.map(buildMultiColumnNone))
+        case ProductType(ch) =>
+          ProductNode(ch.map(buildMultiColumnNone))
         case StructType(ch) =>
           StructNode(
             ch.map {
-              case (sym, t) => (sym, buildMultiColumnNone(t))
+              case (sym, t) =>
+                (sym, buildMultiColumnNone(t))
             })
-        case OptionType(ch) => LiteralNode(tpe, None)
+        case OptionType(ch) =>
+          LiteralNode(tpe, None)
         case t =>
           throw new SlickException(
             "Unexpected non-Option type in multi-column None")
@@ -378,13 +399,15 @@ class ExpandSums extends Phase {
   def trType(tpe: Type): Type = {
     def f(tpe: Type): Type =
       tpe.mapChildren(f) match {
-        case t @ OptionType.Primitive(_) => t
+        case t @ OptionType.Primitive(_) =>
+          t
         case OptionType(ch) =>
           ProductType(
             ConstArray(
               ScalaBaseType.optionDiscType.optionType,
               toOptionColumns(ch)))
-        case t => t
+        case t =>
+          t
       }
     val tpe2 = f(tpe)
     logger.debug(s"Translated type: $tpe -> $tpe2")
@@ -394,10 +417,14 @@ class ExpandSums extends Phase {
   /** Strip nominal types and convert all atomic types to OptionTypes */
   def toOptionColumns(tpe: Type): Type =
     tpe match {
-      case NominalType(_, str)                                          => toOptionColumns(str)
-      case o @ OptionType(ch) if ch.structural.isInstanceOf[AtomicType] => o
-      case t: AtomicType                                                => OptionType(t)
-      case t                                                            => t.mapChildren(toOptionColumns)
+      case NominalType(_, str) =>
+        toOptionColumns(str)
+      case o @ OptionType(ch) if ch.structural.isInstanceOf[AtomicType] =>
+        o
+      case t: AtomicType =>
+        OptionType(t)
+      case t =>
+        t.mapChildren(toOptionColumns)
     }
 
   /** Fuse unnecessary Option operations */
@@ -410,7 +437,8 @@ class ExpandSums extends Phase {
               ProductNode(ConstArray(Disc1, map)),
               ProductNode(ConstArray(DiscNone, _)))) =>
         ProductNode(ConstArray(disc, map)).infer()
-      case n => n
+      case n =>
+        n
     }
 
   /** Collect discriminator candidate fields in a predicate. These are all paths below an
@@ -420,7 +448,8 @@ class ExpandSums extends Phase {
     n.collectAll[(TypeSymbol, List[TermSymbol])] {
         case OptionApply(ch) =>
           ch.collect[(TypeSymbol, List[TermSymbol])] {
-            case PathOnTypeSymbol(ts, ss) => (ts, ss)
+            case PathOnTypeSymbol(ts, ss) =>
+              (ts, ss)
           }
       }
       .toSet
@@ -428,13 +457,17 @@ class ExpandSums extends Phase {
   object PathOnTypeSymbol {
     def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] =
       n match {
-        case (n: PathElement) :@ NominalType(ts, _) => Some((ts, Nil))
+        case (n: PathElement) :@ NominalType(ts, _) =>
+          Some((ts, Nil))
         case Select(in, s) =>
           unapply(in).map {
-            case (ts, l) => (ts, s :: l)
+            case (ts, l) =>
+              (ts, s :: l)
           }
-        case Library.SilentCast(ch) => unapply(ch)
-        case _                      => None
+        case Library.SilentCast(ch) =>
+          unapply(ch)
+        case _ =>
+          None
       }
   }
 
@@ -444,7 +477,8 @@ class ExpandSums extends Phase {
     val invalid = mutable.HashSet.empty[TypeSymbol]
     def invalidate(n: Node): Unit =
       invalid ++= n.nodeType.collect {
-        case NominalType(ts, _) => ts
+        case NominalType(ts, _) =>
+          ts
       }.toSeq
 
     def tr(n: Node): Node =
@@ -509,27 +543,32 @@ class ExpandSums extends Phase {
               clauses.last match {
                 case LiteralNode(None) :@ OptionType(ScalaBaseType.nullType) =>
                   true;
-                case _ => false
+                case _ =>
+                  false
               }
             ) =>
           cond.copy(clauses.init :+ LiteralNode(cond.nodeType, None))
 
         // Resolve Selects into ProductNodes and StructNodes
-        case Select(ProductNode(ch), ElementSymbol(idx)) => ch(idx - 1)
-        case Select(StructNode(ch), sym)                 => ch.find(_._1 == sym).get._2
+        case Select(ProductNode(ch), ElementSymbol(idx)) =>
+          ch(idx - 1)
+        case Select(StructNode(ch), sym) =>
+          ch.find(_._1 == sym).get._2
 
         case n2 @ Pure(_, ts) if n2 ne n =>
           invalid += ts
           n2
 
-        case n => n
+        case n =>
+          n
       }
 
     val n2 = tr(n)
     logger.debug("Invalidated TypeSymbols: " + invalid.mkString(", "))
     n2.replace(
         {
-          case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
+          case n: PathElement if n.nodeType.containsSymbol(invalid) =>
+            n.untyped
         },
         bottomUp = true)
       .infer()

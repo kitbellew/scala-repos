@@ -184,7 +184,8 @@ class TcpIntegrationSpec extends AkkaSpec("""
       // expecting CommandFailed or no reply (within timeout)
       val replies =
         connectCommander.receiveWhile(1.second) {
-          case m: Connected ⇒ m
+          case m: Connected ⇒
+            m
         }
       replies should ===(Nil)
     }

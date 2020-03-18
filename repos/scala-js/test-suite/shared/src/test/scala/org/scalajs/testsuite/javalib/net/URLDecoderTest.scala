@@ -29,7 +29,8 @@ class URLDecoderTest {
            */
           res.contains(ReplacementChar)
         } catch {
-          case _: IllegalArgumentException => true
+          case _: IllegalArgumentException =>
+            true
         }
       }
 

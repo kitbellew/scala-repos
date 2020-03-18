@@ -58,7 +58,8 @@ class ScalaCompositeTypeValidator(
       enclosingContainerAll match {
         case directory: PsiDirectory =>
           findFilesForDownConflictFindings(directory, name)
-        case _ => null
+        case _ =>
+          null
       }
 
     for (file <- filesToSearchIn) {

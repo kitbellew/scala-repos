@@ -36,7 +36,8 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
     acceptMatch(
       s"identifier matching regex ${regex}",
       {
-        case Identifier(str) if regex.unapplySeq(str).isDefined => str
+        case Identifier(str) if regex.unapplySeq(str).isDefined =>
+          str
       })
 
   protected lazy val primitiveType: Parser[DataType] =
@@ -70,23 +71,27 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
 
   protected lazy val arrayType: Parser[DataType] =
     "(?i)array".r ~> "<" ~> dataType <~ ">" ^^ {
-      case tpe => ArrayType(tpe)
+      case tpe =>
+        ArrayType(tpe)
     }
 
   protected lazy val mapType: Parser[DataType] =
     "(?i)map".r ~> "<" ~> dataType ~ "," ~ dataType <~ ">" ^^ {
-      case t1 ~ _ ~ t2 => MapType(t1, t2)
+      case t1 ~ _ ~ t2 =>
+        MapType(t1, t2)
     }
 
   protected lazy val structField: Parser[StructField] =
     ident ~ ":" ~ dataType ^^ {
-      case name ~ _ ~ tpe => StructField(name, tpe, nullable = true)
+      case name ~ _ ~ tpe =>
+        StructField(name, tpe, nullable = true)
     }
 
   protected lazy val structType: Parser[DataType] =
     (
       "(?i)struct".r ~> "<" ~> repsep(structField, ",") <~ ">" ^^ {
-        case fields => new StructType(fields.toArray)
+        case fields =>
+          new StructType(fields.toArray)
       }
     ) |
       ("(?i)struct".r ~ "<>" ^^^ StructType(Nil))
@@ -100,7 +105,8 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
   def toDataType(dataTypeString: String): DataType =
     synchronized {
       phrase(dataType)(new lexical.Scanner(dataTypeString)) match {
-        case Success(result, _) => result
+        case Success(result, _) =>
+          result
         case failure: NoSuccess =>
           throw new DataTypeException(failMessage(dataTypeString))
       }

@@ -14,10 +14,13 @@ trait ScInfixArgumentExpression extends ScExpression {
     getContext match {
       case infix: ScInfixExpr =>
         infix.isLeftAssoc match {
-          case true  => infix.lOp == this
-          case false => infix.rOp == this
+          case true =>
+            infix.lOp == this
+          case false =>
+            infix.rOp == this
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 }

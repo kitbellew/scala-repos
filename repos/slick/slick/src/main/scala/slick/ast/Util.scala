@@ -89,7 +89,8 @@ final class NodeOps(val tree: Node) extends AnyVal {
         n2 match {
           case n2: PathElement if n2.nodeType.containsSymbol(invalid) =>
             n2.untyped
-          case _ => n2
+          case _ =>
+            n2
         }
     }
     tr(tree)
@@ -102,7 +103,8 @@ final class NodeOps(val tree: Node) extends AnyVal {
     else
       replace(
         {
-          case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
+          case n: PathElement if n.nodeType.containsSymbol(invalid) =>
+            n.untyped
         },
         bottomUp = true)
   }
@@ -123,17 +125,21 @@ final class NodeOps(val tree: Node) extends AnyVal {
     (field, tree) match {
       case (s: AnonSymbol, StructNode(ch)) =>
         ch.find {
-            case (s2, _) => s == s2
+            case (s2, _) =>
+              s == s2
           }
           .get
           ._2
       case (s: FieldSymbol, StructNode(ch)) =>
         ch.find {
-            case (s2, _) => s == s2
+            case (s2, _) =>
+              s == s2
           }
           .get
           ._2
-      case (s: ElementSymbol, ProductNode(ch)) => ch(s.idx - 1)
-      case (s, n)                              => Select(n, s)
+      case (s: ElementSymbol, ProductNode(ch)) =>
+        ch(s.idx - 1)
+      case (s, n) =>
+        Select(n, s)
     }
 }

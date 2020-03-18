@@ -58,8 +58,10 @@ class JavaDStream[T](val dstream: DStream[T])(implicit
   /** Generate an RDD for the given duration */
   def compute(validTime: Time): JavaRDD[T] = {
     dstream.compute(validTime) match {
-      case Some(rdd) => new JavaRDD(rdd)
-      case None      => null
+      case Some(rdd) =>
+        new JavaRDD(rdd)
+      case None =>
+        null
     }
   }
 

@@ -35,13 +35,20 @@ object LogFormatter {
           builder = new StringBuilder(s.substring(0, index))
         }
         c match {
-          case '\b'       => builder.append("\\b")
-          case '\n'       => builder.append("\\n")
-          case '\r'       => builder.append("\\r")
-          case '\t'       => builder.append("\\t")
-          case BackslashV => builder.append("\\v")
-          case '\\'       => builder.append("\\\\")
-          case '"'        => builder.append("\\\"")
+          case '\b' =>
+            builder.append("\\b")
+          case '\n' =>
+            builder.append("\\n")
+          case '\r' =>
+            builder.append("\\r")
+          case '\t' =>
+            builder.append("\\t")
+          case BackslashV =>
+            builder.append("\\v")
+          case '\\' =>
+            builder.append("\\\\")
+          case '"' =>
+            builder.append("\\\"")
           case _ =>
             c.toString().getBytes("UTF-8").foreach { byte =>
               builder.append("\\x")

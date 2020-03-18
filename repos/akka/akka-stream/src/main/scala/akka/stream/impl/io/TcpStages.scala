@@ -139,7 +139,8 @@ private[stream] class ConnectionSourceStage(
               case d: FiniteDuration ⇒
                 tcpFlow.join(
                   BidiFlow.bidirectionalIdleTimeout[ByteString, ByteString](d))
-              case _ ⇒ tcpFlow
+              case _ ⇒
+                tcpFlow
             }
 
           StreamTcp.IncomingConnection(
@@ -284,9 +285,12 @@ private[stream] object TcpConnectionStage {
             new StreamTcpException(s"The connection closed with error: $cause"))
         case Aborted ⇒
           failStage(new StreamTcpException("The connection has been aborted"))
-        case Closed ⇒ completeStage()
-        case ConfirmedClosed ⇒ completeStage()
-        case PeerClosed ⇒ complete(bytesOut)
+        case Closed ⇒
+          completeStage()
+        case ConfirmedClosed ⇒
+          completeStage()
+        case PeerClosed ⇒
+          complete(bytesOut)
 
         case Received(data) ⇒
           // Keep on reading even when closed. There is no "close-read-side" in TCP
@@ -418,8 +422,10 @@ private[stream] class OutgoingConnectionStage(
     // FIXME: A method like this would make soo much sense on Duration (i.e. toOption)
     val connTimeout =
       connectTimeout match {
-        case x: FiniteDuration ⇒ Some(x)
-        case _ ⇒ None
+        case x: FiniteDuration ⇒
+          Some(x)
+        case _ ⇒
+          None
       }
 
     val localAddressPromise = Promise[InetSocketAddress]

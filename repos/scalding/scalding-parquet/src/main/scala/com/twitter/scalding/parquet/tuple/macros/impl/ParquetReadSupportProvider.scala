@@ -104,8 +104,10 @@ object ParquetReadSupportProvider {
                 $child
               }
             """
-          case MAP => converter
-          case _   => q"val $converterName = $converter"
+          case MAP =>
+            converter
+          case _ =>
+            q"val $converterName = $converter"
         }
 
       }
@@ -222,7 +224,8 @@ object ParquetReadSupportProvider {
     def expandMethod(outerTpe: Type): List[(Tree, Tree, Tree, Tree)] =
       outerTpe.declarations
         .collect {
-          case m: MethodSymbol if m.isCaseAccessor => m
+          case m: MethodSymbol if m.isCaseAccessor =>
+            m
         }
         .zipWithIndex
         .map {

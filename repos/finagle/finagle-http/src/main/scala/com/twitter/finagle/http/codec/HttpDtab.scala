@@ -49,21 +49,27 @@ object HttpDtab {
 
   private def decodePath(b64path: String): Try[Path] =
     b64Decode(b64path) match {
-      case Throw(e: IllegalArgumentException) => Throw(decodingFailure(b64path))
-      case Throw(e)                           => Throw(e)
+      case Throw(e: IllegalArgumentException) =>
+        Throw(decodingFailure(b64path))
+      case Throw(e) =>
+        Throw(e)
       case Return(pathStr) =>
         Try(Path.read(pathStr)).rescue {
-          case iae: IllegalArgumentException => Throw(pathFailure(pathStr, iae))
+          case iae: IllegalArgumentException =>
+            Throw(pathFailure(pathStr, iae))
         }
     }
 
   private def decodeName(b64name: String): Try[NameTree[Path]] =
     b64Decode(b64name) match {
-      case Throw(e: IllegalArgumentException) => Throw(decodingFailure(b64name))
-      case Throw(e)                           => Throw(e)
+      case Throw(e: IllegalArgumentException) =>
+        Throw(decodingFailure(b64name))
+      case Throw(e) =>
+        Throw(e)
       case Return(nameStr) =>
         Try(NameTree.read(nameStr)).rescue {
-          case iae: IllegalArgumentException => Throw(nameFailure(nameStr, iae))
+          case iae: IllegalArgumentException =>
+            Throw(nameFailure(nameStr, iae))
         }
     }
 
@@ -208,7 +214,8 @@ object HttpDtab {
         } yield Dentry(path, name)
 
       dentries(i) = tryDentry match {
-        case Return(dentry) => dentry
+        case Return(dentry) =>
+          dentry
         case Throw(e) =>
           return Throw(e)
       }

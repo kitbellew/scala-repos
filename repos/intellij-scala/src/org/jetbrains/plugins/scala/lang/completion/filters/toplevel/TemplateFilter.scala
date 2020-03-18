@@ -38,8 +38,10 @@ class TemplateFilter extends ElementFilter {
                   x.getParent.getParent match {
                     case _: ScMatchStmt if (x.getParent.getFirstChild == x) =>
                       return false
-                    case _: ScMatchStmt => return true
-                    case _              => return true
+                    case _: ScMatchStmt =>
+                      return true
+                    case _ =>
+                      return true
                   }
                 }
                 case _ =>

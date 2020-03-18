@@ -134,7 +134,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           override def clear(): Unit = {
             super.clear()
             TestHiveContext.overrideConfs.map {
-              case (key, value) => setConfString(key, value)
+              case (key, value) =>
+                setConfString(key, value)
             }
           }
         }
@@ -208,16 +209,20 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
     override lazy val analyzed = {
       val describedTables =
         logical match {
-          case HiveNativeCommand(describedTable(tbl)) => tbl :: Nil
-          case CacheTableCommand(tbl, _, _)           => tbl :: Nil
-          case _                                      => Nil
+          case HiveNativeCommand(describedTable(tbl)) =>
+            tbl :: Nil
+          case CacheTableCommand(tbl, _, _) =>
+            tbl :: Nil
+          case _ =>
+            Nil
         }
 
       // Make sure any test tables referenced are loaded.
       val referencedTables =
         describedTables ++
           logical.collect {
-            case UnresolvedRelation(tableIdent, _) => tableIdent.table
+            case UnresolvedRelation(tableIdent, _) =>
+              tableIdent.table
           }
       val referencedTestTables = referencedTables.filter(testTables.contains)
       logDebug(
@@ -524,7 +529,8 @@ private[hive] class TestHiveFunctionRegistry(
 
   def restore(): Unit = {
     removedFunctions.foreach {
-      case (name, (info, builder)) => fr.registerFunction(name, info, builder)
+      case (name, (info, builder)) =>
+        fr.registerFunction(name, info, builder)
     }
   }
 }

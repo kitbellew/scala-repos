@@ -26,8 +26,10 @@ import scala.xml._
   */
 object CSS extends DispatchSnippet {
   def dispatch: DispatchIt = {
-    case "blueprint" => _ => blueprint
-    case "fancyType" => _ => fancyType
+    case "blueprint" =>
+      _ => blueprint
+    case "fancyType" =>
+      _ => fancyType
   }
 
   /**

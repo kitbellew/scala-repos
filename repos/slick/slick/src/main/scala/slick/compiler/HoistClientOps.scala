@@ -20,7 +20,8 @@ class HoistClientOps extends Phase {
           case Bind(s2, from2, Pure(StructNode(defs2), ts2)) =>
             // Extract client-side operations into ResultSetMapping
             val hoisted = defs2.map {
-              case (ts, n) => (ts, n, unwrap(n, true))
+              case (ts, n) =>
+                (ts, n, unwrap(n, true))
             }
             logger.debug(
               "Hoisting operations from defs: " + hoisted.iterator
@@ -29,7 +30,8 @@ class HoistClientOps extends Phase {
                 .mkString(", "))
             val newDefsM =
               hoisted.iterator.map {
-                case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+                case (ts, n, (n2, wrap)) =>
+                  (n2, new AnonSymbol)
               }.toMap
             logger.debug("New defs: " + newDefsM)
             val oldDefsM =
@@ -48,7 +50,8 @@ class HoistClientOps extends Phase {
               .copy(
                 from = bind2,
                 map = rsm.map.replace {
-                  case Select(Ref(s), f) if s == rsm.generator => oldDefsM(f)
+                  case Select(Ref(s), f) if s == rsm.generator =>
+                    oldDefsM(f)
                 })
               .infer()
             logger.debug("New ResultSetMapping:", Ellipsis(rsm2, List(0, 0)))
@@ -76,7 +79,8 @@ class HoistClientOps extends Phase {
             val defs = elems2.iterator.toMap
             bind2
               .copy(select = sel1.replace {
-                case Select(Ref(s), f) if s == s1 => defs(f)
+                case Select(Ref(s), f) if s == s1 =>
+                  defs(f)
               })
               .infer()
           // Hoist operations out of the non-Option sides of inner and left and right outer joins
@@ -95,7 +99,8 @@ class HoistClientOps extends Phase {
               lrepl: Map[TermSymbol, (Node => Node, AnonSymbol)]) =
               if (jt != JoinType.Right) {
                 val hoisted = ldefs.map {
-                  case (ts, n) => (ts, n, unwrap(n, false))
+                  case (ts, n) =>
+                    (ts, n, unwrap(n, false))
                 }
                 logger.debug(
                   "Hoisting operations from defs in left side of Join: " + hoisted.iterator
@@ -104,7 +109,8 @@ class HoistClientOps extends Phase {
                     .mkString(", "))
                 val newDefsM =
                   hoisted.iterator.map {
-                    case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+                    case (ts, n, (n2, wrap)) =>
+                      (n2, new AnonSymbol)
                   }.toMap
                 logger.debug("New defs: " + newDefsM)
                 val bl2 = bl
@@ -116,7 +122,8 @@ class HoistClientOps extends Phase {
                   Ellipsis(bl2, List(0)))
                 val repl =
                   hoisted.iterator.map {
-                    case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
+                    case (s, _, (n2, wrap)) =>
+                      (s, (wrap, newDefsM(n2)))
                   }.toMap
                 (bl2, repl)
               } else
@@ -126,7 +133,8 @@ class HoistClientOps extends Phase {
               rrepl: Map[TermSymbol, (Node => Node, AnonSymbol)]) =
               if (jt != JoinType.Left) {
                 val hoisted = rdefs.map {
-                  case (ts, n) => (ts, n, unwrap(n, false))
+                  case (ts, n) =>
+                    (ts, n, unwrap(n, false))
                 }
                 logger.debug(
                   "Hoisting operations from defs in right side of Join: " + hoisted.iterator
@@ -135,7 +143,8 @@ class HoistClientOps extends Phase {
                     .mkString(", "))
                 val newDefsM =
                   hoisted.iterator.map {
-                    case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
+                    case (ts, n, (n2, wrap)) =>
+                      (n2, new AnonSymbol)
                   }.toMap
                 logger.debug("New defs: " + newDefsM)
                 val br2 = br
@@ -147,7 +156,8 @@ class HoistClientOps extends Phase {
                   Ellipsis(br2, List(0)))
                 val repl =
                   hoisted.iterator.map {
-                    case (s, _, (n2, wrap)) => (s, (wrap, newDefsM(n2)))
+                    case (s, _, (n2, wrap)) =>
+                      (s, (wrap, newDefsM(n2)))
                   }.toMap
                 (br2, repl)
               } else
@@ -164,9 +174,9 @@ class HoistClientOps extends Phase {
                     val (wrap, f2) = rrepl(f)
                     wrap(Select(Ref(s), f2))
                   case Ref(s)
-                      if (
-                        s == sl1 && (bl2 ne bl)
-                      ) || (s == sr1 && (br2 ne br)) =>
+                      if (s == sl1 && (bl2 ne bl)) || (
+                        s == sr1 && (br2 ne br)
+                      ) =>
                     Ref(s)
                 }
               )
@@ -179,7 +189,8 @@ class HoistClientOps extends Phase {
                     if s == s1 && (br2 ne br) =>
                   val (wrap, f2) = rrepl(f)
                   wrap(Select(Select(Ref(s), ElementSymbol(2)), f2))
-                case Ref(s) if s == s1 => Ref(s)
+                case Ref(s) if s == s1 =>
+                  Ref(s)
               }
               logger.debug("from3", from3)
               logger.debug("sel2", sel2)
@@ -206,7 +217,8 @@ class HoistClientOps extends Phase {
               s1,
               CollectionCast(bfrom1, cons2),
               sel1.replace {
-                case Ref(s) if s == s1 => Ref(s)
+                case Ref(s) if s == s1 =>
+                  Ref(s)
               }).infer()
             logger.debug(
               "Pulled Bind out of CollectionCast",
@@ -236,11 +248,13 @@ class HoistClientOps extends Phase {
                 pred1.replace {
                   case Select(Ref(s), f) if s == s1 =>
                     defs(f).replace {
-                      case Ref(s) if s == bs1 => Ref(s3)
+                      case Ref(s) if s == bs1 =>
+                        Ref(s3)
                     }
                 }),
               sel1.replace {
-                case Ref(s) if s == bs1 => Ref(s)
+                case Ref(s) if s == bs1 =>
+                  Ref(s)
               }
             )
             logger.debug("Pulled Bind out of Filter", Ellipsis(res, List(0, 0)))
@@ -252,7 +266,8 @@ class HoistClientOps extends Phase {
               n.copy(from = from2) :@ n.nodeType
         }
 
-      case n => n
+      case n =>
+        n
     }
 
   /** Remove a hoistable operation from a top-level column or join column and create a
@@ -299,14 +314,16 @@ class HoistClientOps extends Phase {
           { n =>
             Library.SilentCast.typed(tpe, recTr(n))
           })
-      case n => (n, identity)
+      case n =>
+        (n, identity)
     }
 
   /** Rewrite remaining `GetOrElse` operations in the server-side tree into conditionals. */
   def rewriteDBSide(tree: Node): Node =
     tree.replace(
       {
-        case GetOrElse(OptionApply(ch), _) => ch
+        case GetOrElse(OptionApply(ch), _) =>
+          ch
         case n @ GetOrElse(ch :@ OptionType(tpe), default) =>
           logger.debug("Translating GetOrElse to IfNull", n)
           val d =

@@ -17,8 +17,10 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
   "authenticateBasic-0" in {
     def myUserPassAuthenticator(credentials: Credentials): Option[String] =
       credentials match {
-        case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") => Some(id)
-        case _                                                    => None
+        case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") =>
+          Some(id)
+        case _ =>
+          None
       }
 
     val route = Route.seal {
@@ -58,7 +60,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
   }
   "authenticateBasicPF-0" in {
     val myUserPassAuthenticator: AuthenticatorPF[String] = {
-      case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") => id
+      case p @ Credentials.Provided(id) if p.verify("p4ssw0rd") =>
+        id
       case p @ Credentials.Provided(id) if p.verify("p4ssw0rd-special") =>
         s"$id-admin"
     }
@@ -166,7 +169,8 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
             else
               None
           }
-        case _ => Future.successful(None)
+        case _ =>
+          Future.successful(None)
       }
 
     val route = Route.seal {
@@ -214,8 +218,10 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
         : Future[AuthenticationResult[String]] =
       Future {
         credentials match {
-          case Some(creds) if auth(creds) => Right("some-user-name-from-creds")
-          case _                          => Left(challenge)
+          case Some(creds) if auth(creds) =>
+            Right("some-user-name-from-creds")
+          case _ =>
+            Left(challenge)
         }
       }
 
@@ -251,8 +257,10 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     // authenticate the user:
     def myUserPassAuthenticator(credentials: Credentials): Option[User] =
       credentials match {
-        case Credentials.Provided(id) => Some(User(id))
-        case _                        => None
+        case Credentials.Provided(id) =>
+          Some(User(id))
+        case _ =>
+          None
       }
 
     // check if user is authorized to perform admin actions:
@@ -293,8 +301,10 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     // authenticate the user:
     def myUserPassAuthenticator(credentials: Credentials): Option[User] =
       credentials match {
-        case Credentials.Provided(id) => Some(User(id))
-        case _                        => None
+        case Credentials.Provided(id) =>
+          Some(User(id))
+        case _ =>
+          None
       }
 
     // check if user is authorized to perform admin actions,
@@ -335,8 +345,10 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val route = extractCredentials { creds =>
       complete {
         creds match {
-          case Some(c) => "Credentials: " + c
-          case _       => "No credentials"
+          case Some(c) =>
+            "Credentials: " + c
+          case _ =>
+            "No credentials"
         }
       }
     }

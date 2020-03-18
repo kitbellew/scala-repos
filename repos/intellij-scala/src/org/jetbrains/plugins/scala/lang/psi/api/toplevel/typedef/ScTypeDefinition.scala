@@ -77,7 +77,8 @@ trait ScTypeDefinition
 
   def allInnerTypeDefinitions: Seq[ScTypeDefinition] =
     members.collect {
-      case td: ScTypeDefinition => td
+      case td: ScTypeDefinition =>
+        td
     }
 
   override def syntheticTypeDefinitionsImpl: Seq[ScTypeDefinition] =
@@ -92,7 +93,8 @@ trait ScTypeDefinition
       return None
     val baseCompanion = ScalaPsiUtil.getBaseCompanionModule(this)
     baseCompanion match {
-      case Some(td: ScObject) => return None
+      case Some(td: ScObject) =>
+        return None
       case _ if !isCase && !SyntheticMembersInjector.needsCompanion(this) =>
         return None
       case _ =>
@@ -136,7 +138,8 @@ trait ScTypeDefinition
                 ""
               }
             } catch {
-              case e: Exception => ""
+              case e: Exception =>
+                ""
             }
           }
 

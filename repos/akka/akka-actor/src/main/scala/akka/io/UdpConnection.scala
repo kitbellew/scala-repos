@@ -71,7 +71,8 @@ private[io] class UdpConnection(
   def receive = {
     case registration: ChannelRegistration ⇒
       options.foreach {
-        case v2: Inet.SocketOptionV2 ⇒ v2.afterConnect(channel.socket)
+        case v2: Inet.SocketOptionV2 ⇒
+          v2.afterConnect(channel.socket)
         case _ ⇒
       }
       commander ! Connected
@@ -79,9 +80,12 @@ private[io] class UdpConnection(
   }
 
   def connected(registration: ChannelRegistration): Receive = {
-    case SuspendReading ⇒ registration.disableInterest(OP_READ)
-    case ResumeReading ⇒ registration.enableInterest(OP_READ)
-    case ChannelReadable ⇒ doRead(registration, handler)
+    case SuspendReading ⇒
+      registration.disableInterest(OP_READ)
+    case ResumeReading ⇒
+      registration.enableInterest(OP_READ)
+    case ChannelReadable ⇒
+      doRead(registration, handler)
 
     case Disconnect ⇒
       log.debug("Closing UDP connection to [{}]", remoteAddress)
@@ -103,7 +107,8 @@ private[io] class UdpConnection(
       pendingSend = (send, sender())
       registration.enableInterest(OP_WRITE)
 
-    case ChannelWritable ⇒ doWrite()
+    case ChannelWritable ⇒
+      doWrite()
   }
 
   def doRead(registration: ChannelRegistration, handler: ActorRef): Unit = {
@@ -153,7 +158,8 @@ private[io] class UdpConnection(
       log.debug("Closing DatagramChannel after being stopped")
       try channel.close()
       catch {
-        case NonFatal(e) ⇒ log.debug("Error closing DatagramChannel: {}", e)
+        case NonFatal(e) ⇒
+          log.debug("Error closing DatagramChannel: {}", e)
       }
     }
 

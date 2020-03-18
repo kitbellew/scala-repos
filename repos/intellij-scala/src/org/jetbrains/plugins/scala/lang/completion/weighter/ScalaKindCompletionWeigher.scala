@@ -37,11 +37,16 @@ class ScalaKindCompletionWeigher extends CompletionWeigher {
       if (noClass)
         return normal
       inMember match {
-        case f: ScValue    => field
-        case f: ScVariable => field
-        case f: PsiField   => field
-        case m: PsiMethod  => method
-        case _             => member
+        case f: ScValue =>
+          field
+        case f: ScVariable =>
+          field
+        case f: PsiField =>
+          field
+        case m: PsiMethod =>
+          method
+        case _ =>
+          member
       }
     }
 
@@ -49,16 +54,22 @@ class ScalaKindCompletionWeigher extends CompletionWeigher {
       ScalaLookupItem.original(element) match {
         case s: ScalaLookupItem =>
           s.element match {
-            case p: ScClassParameter => KindWeights.field
+            case p: ScClassParameter =>
+              KindWeights.field
             case patt: ScTypedDefinition =>
               patt.nameContext match {
-                case m: PsiMember => handleMember(m, position)
-                case _            => null
+                case m: PsiMember =>
+                  handleMember(m, position)
+                case _ =>
+                  null
               }
-            case m: PsiMember => handleMember(m, position)
-            case _            => null
+            case m: PsiMember =>
+              handleMember(m, position)
+            case _ =>
+              null
           }
-        case _ => null
+        case _ =>
+          null
       }
 
     weight

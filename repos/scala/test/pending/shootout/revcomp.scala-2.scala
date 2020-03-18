@@ -17,7 +17,8 @@ object revcomp {
 
     for (indexValue <- code zip comp)
       indexValue match {
-        case (i, v) => a(i) = v
+        case (i, v) =>
+          a(i) = v
       }
 
     a

@@ -54,7 +54,8 @@ case class LogicalRelation(
           // exprId in `expectedOutputAttributes`.
           // The reason is that, some relations(like parquet) will reconcile attribute names to
           // workaround case insensitivity issue.
-          case (attr, expected) => attr.withExprId(expected.exprId)
+          case (attr, expected) =>
+            attr.withExprId(expected.exprId)
         }
       }
       .getOrElse(attrs)
@@ -65,7 +66,8 @@ case class LogicalRelation(
     other match {
       case l @ LogicalRelation(otherRelation, _, _) =>
         relation == otherRelation && output == l.output
-      case _ => false
+      case _ =>
+        false
     }
 
   override def hashCode: Int = {
@@ -74,8 +76,10 @@ case class LogicalRelation(
 
   override def sameResult(otherPlan: LogicalPlan): Boolean =
     otherPlan match {
-      case LogicalRelation(otherRelation, _, _) => relation == otherRelation
-      case _                                    => false
+      case LogicalRelation(otherRelation, _, _) =>
+        relation == otherRelation
+      case _ =>
+        false
     }
 
   // When comparing two LogicalRelations from within LogicalPlan.sameResult, we only need

@@ -220,16 +220,21 @@ object CrossValidator extends MLReadable[CrossValidator] {
     def getUidMapImpl(instance: Params): List[(String, Params)] = {
       val subStages: Array[Params] =
         instance match {
-          case p: Pipeline          => p.getStages.asInstanceOf[Array[Params]]
-          case pm: PipelineModel    => pm.stages.asInstanceOf[Array[Params]]
-          case v: ValidatorParams   => Array(v.getEstimator, v.getEvaluator)
+          case p: Pipeline =>
+            p.getStages.asInstanceOf[Array[Params]]
+          case pm: PipelineModel =>
+            pm.stages.asInstanceOf[Array[Params]]
+          case v: ValidatorParams =>
+            Array(v.getEstimator, v.getEvaluator)
           case ovr: OneVsRestParams =>
             // TODO: SPARK-11892: This case may require special handling.
             throw new UnsupportedOperationException(
               "CrossValidator write will fail because it" +
                 " cannot yet handle an estimator containing type: ${ovr.getClass.getName}")
-          case rformModel: RFormulaModel => Array(rformModel.pipelineModel)
-          case _: Params                 => Array()
+          case rformModel: RFormulaModel =>
+            Array(rformModel.pipelineModel)
+          case _: Params =>
+            Array()
         }
       val subStageMaps =
         subStages

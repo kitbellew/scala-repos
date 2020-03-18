@@ -155,7 +155,8 @@ package ll {
                 case (tp, ys) =>
                   (
                     ys map {
-                      case (_, _, prefix, seen) => fmt(tp, prefix, seen)
+                      case (_, _, prefix, seen) =>
+                        fmt(tp, prefix, seen)
                     }
                   ).sorted.distinct
               }

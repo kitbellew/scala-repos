@@ -295,7 +295,8 @@ object SpnegoAuthenticator {
           credentialFuture.flatMap { context =>
             // look for any Token data in the challenge, and attempt to initialize
             val challengeToken = rsps.wwwAuthenticateHeader(rsp).collect {
-              case AuthHeader(token) => token
+              case AuthHeader(token) =>
+                token
             }
             credSrc.init(context, challengeToken).flatMap { nextToken =>
               // loop to reattempt the request, mutated with the next token data

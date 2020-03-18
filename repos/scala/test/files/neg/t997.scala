@@ -7,17 +7,20 @@ object Test extends App {
 
 // Prints '(x, x)'. Should compile as per SI-6111.
   "x" match {
-    case Foo(a) => Console.println(a)
+    case Foo(a) =>
+      Console.println(a)
   }
 
 // Prints '(x,x)' as expected.
   "x" match {
-    case Foo(a, b) => Console.println((a, b))
+    case Foo(a, b) =>
+      Console.println((a, b))
   }
 
 // Gives confusing error 'not found: value c'.
   "x" match {
-    case Foo(a, b, c) => Console.println((a, b, c))
+    case Foo(a, b, c) =>
+      Console.println((a, b, c))
   }
 
 }

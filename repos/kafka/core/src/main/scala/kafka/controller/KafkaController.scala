@@ -98,10 +98,12 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
   def partitionsOnBroker(brokerId: Int): Set[TopicAndPartition] = {
     partitionReplicaAssignment
       .filter {
-        case (topicAndPartition, replicas) => replicas.contains(brokerId)
+        case (topicAndPartition, replicas) =>
+          replicas.contains(brokerId)
       }
       .map {
-        case (topicAndPartition, replicas) => topicAndPartition
+        case (topicAndPartition, replicas) =>
+          topicAndPartition
       }
       .toSet
   }
@@ -111,7 +113,8 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
       .map { brokerId =>
         partitionReplicaAssignment
           .filter {
-            case (topicAndPartition, replicas) => replicas.contains(brokerId)
+            case (topicAndPartition, replicas) =>
+              replicas.contains(brokerId)
           }
           .map {
             case (topicAndPartition, replicas) =>
@@ -165,10 +168,12 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
 
   def removeTopic(topic: String) = {
     partitionLeadershipInfo = partitionLeadershipInfo.filter {
-      case (topicAndPartition, _) => topicAndPartition.topic != topic
+      case (topicAndPartition, _) =>
+        topicAndPartition.topic != topic
     }
     partitionReplicaAssignment = partitionReplicaAssignment.filter {
-      case (topicAndPartition, _) => topicAndPartition.topic != topic
+      case (topicAndPartition, _) =>
+        topicAndPartition.topic != topic
     }
     allTopics -= topic
   }
@@ -1186,7 +1191,8 @@ class KafkaController(
         val replicasNotInIsr = replicas.filterNot(r =>
           leaderAndIsr.isr.contains(r))
         replicasNotInIsr.isEmpty
-      case None => false
+      case None =>
+        false
     }
   }
 
@@ -1460,7 +1466,8 @@ class KafkaController(
       case e: ZkNoNodeException =>
         throw new IllegalStateException(
           "Topic %s doesn't exist".format(topicAndPartition.topic))
-      case e2: Throwable => throw new KafkaException(e2.toString)
+      case e2: Throwable =>
+        throw new KafkaException(e2.toString)
     }
   }
 

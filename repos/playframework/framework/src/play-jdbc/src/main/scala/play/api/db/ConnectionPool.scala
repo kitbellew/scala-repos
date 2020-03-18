@@ -47,9 +47,12 @@ object ConnectionPool {
       environment: Environment,
       default: ConnectionPool): ConnectionPool = {
     config match {
-      case "default"  => default
-      case "bonecp"   => new BoneConnectionPool(environment)
-      case "hikaricp" => new HikariCPConnectionPool(environment)
+      case "default" =>
+        default
+      case "bonecp" =>
+        new BoneConnectionPool(environment)
+      case "hikaricp" =>
+        new HikariCPConnectionPool(environment)
       case fqcn =>
         injector.instanceOf(
           Reflect.getClass[ConnectionPool](fqcn, environment.classLoader))

@@ -36,11 +36,14 @@ private[serverset2] object HealthStabilizer {
           .select(probationEpoch.event)
           .foldLeft[Status](Unknown) {
             // always take the first update as our status
-            case (Unknown, Left(ClientHealth.Healthy))   => Healthy
-            case (Unknown, Left(ClientHealth.Unhealthy)) => Unhealthy
+            case (Unknown, Left(ClientHealth.Healthy)) =>
+              Healthy
+            case (Unknown, Left(ClientHealth.Unhealthy)) =>
+              Unhealthy
 
             // Any change from * => healthy makes us immediately healthy
-            case (_, Left(ClientHealth.Healthy)) => Healthy
+            case (_, Left(ClientHealth.Healthy)) =>
+              Healthy
 
             // Change from good to bad is placed in limbo starting now
             case (Healthy, Left(ClientHealth.Unhealthy)) =>
@@ -53,7 +56,8 @@ private[serverset2] object HealthStabilizer {
               Unhealthy
 
             // any other change is ignored
-            case (v, _) => v
+            case (v, _) =>
+              v
           }
 
       val currentStatus = new AtomicReference[Status]()
@@ -64,18 +68,24 @@ private[serverset2] object HealthStabilizer {
       val gauge =
         statsReceiver.addGauge("zkHealth") {
           currentStatus.get() match {
-            case Unknown      => 0
-            case Healthy      => 1
-            case Unhealthy    => 2
-            case Probation(_) => 3
+            case Unknown =>
+              0
+            case Healthy =>
+              1
+            case Unhealthy =>
+              2
+            case Probation(_) =>
+              3
           }
         }
 
       val notify = stateChanges
         .collect {
           // re-map to the underlying health status
-          case Healthy | Probation(_) => ClientHealth.Healthy
-          case Unhealthy              => ClientHealth.Unhealthy
+          case Healthy | Probation(_) =>
+            ClientHealth.Healthy
+          case Unhealthy =>
+            ClientHealth.Unhealthy
         }
         .dedup
         .register(Witness(u))

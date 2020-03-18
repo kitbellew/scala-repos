@@ -60,7 +60,8 @@ class HiveTypeCoercionSuite extends HiveComparisonTest {
         .queryExecution
         .sparkPlan
         .collect {
-          case e: Project => e
+          case e: Project =>
+            e
         }
         .head
 

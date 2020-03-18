@@ -30,7 +30,8 @@ object ScClsStubBuilder {
     try {
       canBeProcessed(file, file.contentsToByteArray())
     } catch {
-      case ex: IOException => false
+      case ex: IOException =>
+        false
       case u: UnsupportedOperationException =>
         false //why we need to handle this?
     }
@@ -62,13 +63,16 @@ object ScClsStubBuilder {
       split(suffix) match {
         case Some((suffixPrefix, suffixSuffix)) =>
           go(prefix + "$" + suffixPrefix, suffixSuffix)
-        case _ => false
+        case _ =>
+          false
       }
     }
 
     split(fileName) match {
-      case Some((prefix, suffix)) => go(prefix, suffix)
-      case _                      => false
+      case Some((prefix, suffix)) =>
+        go(prefix, suffix)
+      case _ =>
+        false
     }
   }
 }

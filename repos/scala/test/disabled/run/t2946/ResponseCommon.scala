@@ -15,6 +15,7 @@ trait ResponseCommon extends Parser {
         value.foreach {
           paramsParser.parse(_)
         }
-      case _ => super.parse(t)
+      case _ =>
+        super.parse(t)
     }
 }

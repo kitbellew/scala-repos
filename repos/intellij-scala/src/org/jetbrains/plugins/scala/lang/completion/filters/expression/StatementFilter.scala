@@ -35,7 +35,8 @@ class StatementFilter extends ElementFilter {
             )
           )) {
         parent.getParent match {
-          case _: ScBlockExpr | _: ScBlock | _: ScTemplateBody => return true
+          case _: ScBlockExpr | _: ScBlock | _: ScTemplateBody =>
+            return true
           case x: ScExpression =>
             return checkReplace(x, "if (true) true", x.getManager)
           case _ =>

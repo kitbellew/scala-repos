@@ -37,7 +37,8 @@ private final class Streaming(
 
         def receive = {
 
-          case Get => sender ! onAir
+          case Get =>
+            sender ! onAir
 
           case Search =>
             streamerList.get.map(_.filter(_.featured)).foreach {
@@ -107,8 +108,10 @@ private final class Streaming(
                 (twitch |+| hitbox |+| youtube) map { ss =>
                   StreamsOnAir {
                     ss.foldLeft(List.empty[StreamOnAir]) {
-                      case (acc, s) if acc.exists(_.id == s.id) => acc
-                      case (acc, s)                             => acc :+ s
+                      case (acc, s) if acc.exists(_.id == s.id) =>
+                        acc
+                      case (acc, s) =>
+                        acc :+ s
                     }
                   }
                 } pipeTo self

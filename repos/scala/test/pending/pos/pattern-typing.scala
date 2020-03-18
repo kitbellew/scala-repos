@@ -8,7 +8,8 @@ package p1 {
     def g[A](x: Bound[A]) = ()
     def f(x: Any) =
       x match {
-        case Sub(p) => g(p)
+        case Sub(p) =>
+          g(p)
       }
   }
 }
@@ -30,11 +31,13 @@ package p2 {
 
     def f1(x: Any) =
       x match {
-        case SubHK(xs) => xs
+        case SubHK(xs) =>
+          xs
       }
     def f2[B <: Bound[B], CC[X] <: Traversable[X]](sub: SubHK[B, CC]): CC[B] =
       sub match {
-        case SubHK(xs) => xs
+        case SubHK(xs) =>
+          xs
       }
     def f3 = g(f1(SubHK(new MySeq)).head)
     def f4 = g(f2(SubHK(new MySeq)).head)

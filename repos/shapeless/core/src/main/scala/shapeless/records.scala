@@ -167,7 +167,8 @@ class RecordMacros(val c: whitebox.Context) {
       }
 
     rec.foldRight(hnilValueTree) {
-      case (elem, acc) => q""" $hconsValueTree(${promoteElem(elem)}, $acc) """
+      case (elem, acc) =>
+        q""" $hconsValueTree(${promoteElem(elem)}, $acc) """
     }
   }
 }

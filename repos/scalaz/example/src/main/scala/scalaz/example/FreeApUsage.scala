@@ -26,8 +26,10 @@ object FreeApUsage extends App {
 
   def parseOpt[A: ClassTag](a: Any): Option[A] =
     a match {
-      case a: A => Some(a)
-      case _    => None
+      case a: A =>
+        Some(a)
+      case _ =>
+        None
     }
 
   // Natural transformation to Option[A]
@@ -39,7 +41,8 @@ object FreeApUsage extends App {
             input
               .get(key)
               .flatMap(parseOpt[java.lang.Integer](_).map(x => (x: Int)))
-          case ParseString(key) => input.get(key).flatMap(parseOpt[String])
+          case ParseString(key) =>
+            input.get(key).flatMap(parseOpt[String])
           case ParseBool(key) =>
             input
               .get(key)

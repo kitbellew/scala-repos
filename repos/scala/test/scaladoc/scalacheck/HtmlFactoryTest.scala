@@ -19,7 +19,8 @@ object XMLUtil {
         val child = e.child.map(stripGroup _)
         Elem(e.prefix, e.label, e.attributes, e.scope, child: _*)
       }
-      case _ => seq
+      case _ =>
+        seq
     }
   }
 }
@@ -152,7 +153,8 @@ object Test extends Properties("HtmlFactory") {
           None
         }
       }
-      case _ => None
+      case _ =>
+        None
     }
 
   property("Trac #3790") = {
@@ -167,7 +169,8 @@ object Test extends Properties("HtmlFactory") {
           _.toString.contains(">A non-lazy String\n</p>")
         }
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -186,7 +189,8 @@ object Test extends Properties("HtmlFactory") {
           }
         }
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -196,7 +200,8 @@ object Test extends Properties("HtmlFactory") {
         !shortComments(node).exists {
           _.toString.contains("<em>i.</em>")
         }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -215,7 +220,8 @@ object Test extends Properties("HtmlFactory") {
         html.contains(
           """<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -227,7 +233,8 @@ object Test extends Properties("HtmlFactory") {
         s.contains("""href="WithPublic$.html"""") &&
         files.get("WithPublic$.html") != None
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -239,7 +246,8 @@ object Test extends Properties("HtmlFactory") {
         !s.contains("""href="WithPrivate$.html"""") &&
         files.get("WithPrivate$.html") == None
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -260,7 +268,8 @@ object Test extends Properties("HtmlFactory") {
         val s = node.toString
         !s.contains("""href="WithSynthetic$.html"""")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -272,7 +281,8 @@ object Test extends Properties("HtmlFactory") {
         val s = node.toString
         s.contains("""href="WithObject$.html"""")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -284,7 +294,8 @@ object Test extends Properties("HtmlFactory") {
         val s = node.toString
         s.contains("""See YYY for more details""")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
   //
@@ -318,7 +329,8 @@ object Test extends Properties("HtmlFactory") {
           """<dt>returns</dt><dd class="cmt"><p>123</p></dd>"""
         }
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -327,7 +339,8 @@ object Test extends Properties("HtmlFactory") {
       case node: scala.xml.Node => {
         !node.toString.contains("""<div class="block"><ol>since""")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -335,7 +348,8 @@ object Test extends Properties("HtmlFactory") {
     createTemplate("Trac4452.scala") match {
       case node: scala.xml.Node =>
         !node.toString.contains(">*")
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -345,7 +359,8 @@ object Test extends Properties("HtmlFactory") {
         val html = node.toString
         html.contains(">Example:") && html.contains(">Note<")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -356,7 +371,8 @@ object Test extends Properties("HtmlFactory") {
         html.contains(">x0123456789: <") &&
         html.contains(">x012345678901234567890123456789: <")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -366,7 +382,8 @@ object Test extends Properties("HtmlFactory") {
         val html = node.toString
         html.contains(">:+:<")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -377,7 +394,8 @@ object Test extends Properties("HtmlFactory") {
       case node: scala.xml.Node => {
         node.toString.contains(">123<")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -386,7 +404,8 @@ object Test extends Properties("HtmlFactory") {
       case node: scala.xml.Node =>
         !node.toString.contains(
           "<li>returns silently when evaluating true and true</li>")
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -671,7 +690,8 @@ object Test extends Properties("HtmlFactory") {
         s.contains("<pre>Trait example {\n  Val x = a\n  Val y = b\n}</pre>") &&
         s.contains("<pre>l1\n\nl2\n\nl3\n\nl4\n\nl5</pre>")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -683,7 +703,8 @@ object Test extends Properties("HtmlFactory") {
         val s = node.toString
         !s.contains("Author")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -696,7 +717,8 @@ object Test extends Properties("HtmlFactory") {
         s.contains("<h6>Author:</h6>") &&
         s.contains("<p>The Only Author</p>")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -710,7 +732,8 @@ object Test extends Properties("HtmlFactory") {
         s.contains("<p>The First Author</p>") &&
         s.contains("<p>The Second Author</p>")
       }
-      case _ => false
+      case _ =>
+        false
     }
   }
 
@@ -730,24 +753,30 @@ object Test extends Properties("HtmlFactory") {
           node.toString contains "title=\"gt4s: $colon$colon$colon$colon. Deprecated: "
         true
       }
-      case _ => false
+      case _ =>
+        false
     }
     property("package") = files.get("com/example/p1/index.html") != None
 
     property("package object") = files("com/example/p1/index.html") match {
       case node: scala.xml.Node =>
         node.toString contains "com.example.p1#packageObjectMethod"
-      case _ => false
+      case _ =>
+        false
     }
 
     property("lower bound") = files("com/example/p1/LowerBound.html") match {
-      case node: scala.xml.Node => true
-      case _                    => false
+      case node: scala.xml.Node =>
+        true
+      case _ =>
+        false
     }
 
     property("upper bound") = files("com/example/p1/UpperBound.html") match {
-      case node: scala.xml.Node => true
-      case _                    => false
+      case node: scala.xml.Node =>
+        true
+      case _ =>
+        false
     }
 
     property("SI-8514: No inconsistencies") =
@@ -807,8 +836,10 @@ object Test extends Properties("HtmlFactory") {
     def check(pagePath: String)(
         f: NodeSeq => org.scalacheck.Prop): org.scalacheck.Prop =
       files(pagePath) match {
-        case node: scala.xml.Node => f(XMLUtil.stripGroup(node))
-        case _                    => false
+        case node: scala.xml.Node =>
+          f(XMLUtil.stripGroup(node))
+        case _ =>
+          false
       }
 
     property("SI-8144: Members' permalink - inner package") =
@@ -867,8 +898,10 @@ object Test extends Properties("HtmlFactory") {
 
   property("SI-9599 Multiple @todo formatted with comma on separate line") = {
     createTemplates("SI-9599.scala")("X.html") match {
-      case node: scala.xml.Node => node.text.contains("todo3todo2todo1")
-      case _                    => false
+      case node: scala.xml.Node =>
+        node.text.contains("todo3todo2todo1")
+      case _ =>
+        false
     }
   }
 }

@@ -50,7 +50,8 @@ class ResolverTest extends FunSuite {
     Var.sample(addr) match {
       case Addr.Bound(addrs, attrs) if addrs.size == 1 && attrs.isEmpty =>
         assert(addrs.head == TestAddr("xyz"))
-      case _ => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -60,7 +61,8 @@ class ResolverTest extends FunSuite {
     Var.sample(binding) match {
       case Addr.Bound(addrs, attrs) if addrs.size == 1 && attrs.isEmpty =>
         assert(addrs.head == TestAddr("xyz"))
-      case _ => fail()
+      case _ =>
+        fail()
     }
   }
 
@@ -68,13 +70,16 @@ class ResolverTest extends FunSuite {
     val exc = new Exception
     ConstResolver(Addr.Failed(exc)).resolve("blah") match {
       case Throw(`exc`) =>
-      case _            => fail()
+      case _ =>
+        fail()
     }
 
     val sockaddr = new InetSocketAddress(0)
     ConstResolver(Addr.Bound(Address(sockaddr))).resolve("blah") match {
-      case Return(g) => assert(g() == Set(sockaddr))
-      case _         => fail()
+      case Return(g) =>
+        assert(g() == Set(sockaddr))
+      case _ =>
+        fail()
     }
   }
 

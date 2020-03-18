@@ -32,9 +32,12 @@ trait WrapAsScala {
     */
   implicit def asScalaIterator[A](it: ju.Iterator[A]): Iterator[A] =
     it match {
-      case null                     => null
-      case IteratorWrapper(wrapped) => wrapped
-      case _                        => JIteratorWrapper(it)
+      case null =>
+        null
+      case IteratorWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        JIteratorWrapper(it)
     }
 
   /**
@@ -53,9 +56,12 @@ trait WrapAsScala {
   implicit def enumerationAsScalaIterator[A](
       i: ju.Enumeration[A]): Iterator[A] =
     i match {
-      case null                     => null
-      case IteratorWrapper(wrapped) => wrapped
-      case _                        => JEnumerationWrapper(i)
+      case null =>
+        null
+      case IteratorWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        JEnumerationWrapper(i)
     }
 
   /**
@@ -74,9 +80,12 @@ trait WrapAsScala {
     */
   implicit def iterableAsScalaIterable[A](i: jl.Iterable[A]): Iterable[A] =
     i match {
-      case null                     => null
-      case IterableWrapper(wrapped) => wrapped
-      case _                        => JIterableWrapper(i)
+      case null =>
+        null
+      case IterableWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        JIterableWrapper(i)
     }
 
   /**
@@ -91,9 +100,12 @@ trait WrapAsScala {
     */
   implicit def collectionAsScalaIterable[A](i: ju.Collection[A]): Iterable[A] =
     i match {
-      case null                     => null
-      case IterableWrapper(wrapped) => wrapped
-      case _                        => JCollectionWrapper(i)
+      case null =>
+        null
+      case IterableWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        JCollectionWrapper(i)
     }
 
   /**
@@ -112,9 +124,12 @@ trait WrapAsScala {
     */
   implicit def asScalaBuffer[A](l: ju.List[A]): mutable.Buffer[A] =
     l match {
-      case null                          => null
-      case MutableBufferWrapper(wrapped) => wrapped
-      case _                             => new JListWrapper(l)
+      case null =>
+        null
+      case MutableBufferWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        new JListWrapper(l)
     }
 
   /**
@@ -132,9 +147,12 @@ trait WrapAsScala {
     */
   implicit def asScalaSet[A](s: ju.Set[A]): mutable.Set[A] =
     s match {
-      case null                       => null
-      case MutableSetWrapper(wrapped) => wrapped
-      case _                          => new JSetWrapper(s)
+      case null =>
+        null
+      case MutableSetWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        new JSetWrapper(s)
     }
 
   /**
@@ -159,9 +177,12 @@ trait WrapAsScala {
     */
   implicit def mapAsScalaMap[A, B](m: ju.Map[A, B]): mutable.Map[A, B] =
     m match {
-      case null                       => null
-      case MutableMapWrapper(wrapped) => wrapped
-      case _                          => new JMapWrapper(m)
+      case null =>
+        null
+      case MutableMapWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        new JMapWrapper(m)
     }
 
   /**
@@ -180,9 +201,12 @@ trait WrapAsScala {
   implicit def mapAsScalaConcurrentMap[A, B](
       m: juc.ConcurrentMap[A, B]): concurrent.Map[A, B] =
     m match {
-      case null                            => null
-      case cmw: ConcurrentMapWrapper[_, _] => cmw.underlying
-      case _                               => new JConcurrentMapWrapper(m)
+      case null =>
+        null
+      case cmw: ConcurrentMapWrapper[_, _] =>
+        cmw.underlying
+      case _ =>
+        new JConcurrentMapWrapper(m)
     }
 
   /**
@@ -199,9 +223,12 @@ trait WrapAsScala {
   implicit def dictionaryAsScalaMap[A, B](
       p: ju.Dictionary[A, B]): mutable.Map[A, B] =
     p match {
-      case null                       => null
-      case DictionaryWrapper(wrapped) => wrapped
-      case _                          => new JDictionaryWrapper(p)
+      case null =>
+        null
+      case DictionaryWrapper(wrapped) =>
+        wrapped
+      case _ =>
+        new JDictionaryWrapper(p)
     }
 
   /**
@@ -217,8 +244,10 @@ trait WrapAsScala {
   implicit def propertiesAsScalaMap(
       p: ju.Properties): mutable.Map[String, String] =
     p match {
-      case null => null
-      case _    => new JPropertiesWrapper(p)
+      case null =>
+        null
+      case _ =>
+        new JPropertiesWrapper(p)
     }
 }
 

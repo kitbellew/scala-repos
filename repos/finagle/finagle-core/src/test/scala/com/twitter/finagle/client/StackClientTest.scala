@@ -453,9 +453,12 @@ class StackClientTest
               next: ServiceFactory[Unit, Unit]) = {
             val LoadBalancerFactory.Dest(va) = dest
             va.sample() match {
-              case Addr.Bound(addrs, _) if addrs == Set(addr1) => fac1
-              case Addr.Bound(addrs, _) if addrs == Set(addr2) => fac2
-              case _                                           => throw new IllegalArgumentException("wat")
+              case Addr.Bound(addrs, _) if addrs == Set(addr1) =>
+                fac1
+              case Addr.Bound(addrs, _) if addrs == Set(addr2) =>
+                fac2
+              case _ =>
+                throw new IllegalArgumentException("wat")
             }
           }
         }

@@ -74,9 +74,12 @@ object HMapTests extends Properties("HMap") {
       val finalKeys = added.keysOf(v)
       val sizeIsConsistent =
         (finalKeys -- initKeys).size match {
-          case 0 => hmap.contains(k) // initially present
-          case 1 => !hmap.contains(k) // initially absent
-          case _ => false // we can't change the count by more than 1.
+          case 0 =>
+            hmap.contains(k) // initially present
+          case 1 =>
+            !hmap.contains(k) // initially absent
+          case _ =>
+            false // we can't change the count by more than 1.
         }
 
       sizeIsConsistent && added.contains(k)
@@ -86,12 +89,15 @@ object HMapTests extends Properties("HMap") {
     val partial =
       new GenPartial[Key, Value] {
         def apply[T] = {
-          case Key(id) if (id % 2 == 0) => Value(0)
+          case Key(id) if (id % 2 == 0) =>
+            Value(0)
         }
       }
     hmap.updateFirst(partial) match {
-      case Some((updated, k)) => updated.get(k) == Some(Value(0))
-      case None               => true
+      case Some((updated, k)) =>
+        updated.get(k) == Some(Value(0))
+      case None =>
+        true
     }
   }
 
@@ -100,20 +106,23 @@ object HMapTests extends Properties("HMap") {
     val partial =
       new GenPartial[HMap[Key, Value]#Pair, Value] {
         def apply[T] = {
-          case (Key(k), Value(v)) if k > v => Value(k * v)
+          case (Key(k), Value(v)) if k > v =>
+            Value(k * v)
         }
       }
     val collected =
       hm.collect(partial)
         .map {
-          case Value(v) => v
+          case Value(v) =>
+            v
         }
         .toSet
     val mapCollected =
       map
         .collect(partial.apply[Int])
         .map {
-          case Value(v) => v
+          case Value(v) =>
+            v
         }
         .toSet
     collected == mapCollected
@@ -124,20 +133,23 @@ object HMapTests extends Properties("HMap") {
     val partial =
       new GenPartial[Value, Value] {
         def apply[T] = {
-          case Value(v) if v < 0 => Value(v * v)
+          case Value(v) if v < 0 =>
+            Value(v * v)
         }
       }
     val collected =
       hm.collectValues(partial)
         .map {
-          case Value(v) => v
+          case Value(v) =>
+            v
         }
         .toSet
     val mapCollected =
       map.values
         .collect(partial.apply[Int])
         .map {
-          case Value(v) => v
+          case Value(v) =>
+            v
         }
         .toSet
     collected == mapCollected

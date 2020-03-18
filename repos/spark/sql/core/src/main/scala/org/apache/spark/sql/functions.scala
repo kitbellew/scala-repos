@@ -91,9 +91,11 @@ object functions {
     */
   def lit(literal: Any): Column = {
     literal match {
-      case c: Column => return c
-      case s: Symbol => return new ColumnName(literal.asInstanceOf[Symbol].name)
-      case _         => // continue
+      case c: Column =>
+        return c
+      case s: Symbol =>
+        return new ColumnName(literal.asInstanceOf[Symbol].name)
+      case _ => // continue
     }
 
     val literalExpr = Literal(literal)
@@ -264,8 +266,10 @@ object functions {
     withAggregateFunction {
       e.expr match {
         // Turn count(*) into count(1)
-        case s: Star => Count(Literal(1))
-        case _       => Count(e.expr)
+        case s: Star =>
+          Count(Literal(1))
+        case _ =>
+          Count(e.expr)
       }
     }
 

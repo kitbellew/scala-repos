@@ -30,28 +30,33 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
 
       val upstreamSubscription = upstream.expectSubscription()
       val downstreamSubscription: Subscription = downstream.expectEventPF {
-        case OnSubscribe(sub) ⇒ sub
+        case OnSubscribe(sub) ⇒
+          sub
       }
 
       upstreamSubscription.sendNext(1)
       downstreamSubscription.request(1)
       upstream.expectEventPF {
-        case RequestMore(_, e) ⇒ e
+        case RequestMore(_, e) ⇒
+          e
       } should ===(1)
       downstream.expectEventPF {
-        case OnNext(e) ⇒ e
+        case OnNext(e) ⇒
+          e
       } should ===(1)
 
       upstreamSubscription.sendNext(1)
       downstreamSubscription.request(1)
       downstream.expectNextPF[Int] {
-        case e: Int ⇒ e
+        case e: Int ⇒
+          e
       } should ===(1)
 
       upstreamSubscription.sendComplete()
       downstream.expectEventPF {
         case OnComplete ⇒
-        case _ ⇒ fail()
+        case _ ⇒
+          fail()
       }
     }
 
@@ -64,16 +69,19 @@ class TestPublisherSubscriberSpec extends AkkaSpec {
         .subscribe(downstream)
       val upstreamSubscription = upstream.expectSubscription()
       val downstreamSubscription: Subscription = downstream.expectEventPF {
-        case OnSubscribe(sub) ⇒ sub
+        case OnSubscribe(sub) ⇒
+          sub
       }
 
       upstreamSubscription.sendNext(1)
       downstreamSubscription.request(1)
       an[AssertionError] should be thrownBy upstream.expectEventPF {
-        case Subscribe(e) ⇒ e
+        case Subscribe(e) ⇒
+          e
       }
       an[AssertionError] should be thrownBy downstream.expectNextPF[String] {
-        case e: String ⇒ e
+        case e: String ⇒
+          e
       }
 
       upstreamSubscription.sendComplete()

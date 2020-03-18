@@ -37,9 +37,12 @@ object MIndexInfo {
         r.<<,
         r.<<,
         r.nextStringOption match {
-          case Some("A") => Some(true)
-          case Some("D") => Some(false)
-          case _         => None
+          case Some("A") =>
+            Some(true)
+          case Some("D") =>
+            Some(false)
+          case _ =>
+            None
         },
         r.<<,
         r.<<,

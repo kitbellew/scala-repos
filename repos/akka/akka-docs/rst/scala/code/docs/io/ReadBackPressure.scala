@@ -56,8 +56,10 @@ object PullReadingExample {
     override def preStart: Unit = connection ! ResumeReading
 
     def receive = {
-      case Received(data) => connection ! Write(data, Ack)
-      case Ack            => connection ! ResumeReading
+      case Received(data) =>
+        connection ! Write(data, Ack)
+      case Ack =>
+        connection ! ResumeReading
     }
     //#pull-reading-echo
   }

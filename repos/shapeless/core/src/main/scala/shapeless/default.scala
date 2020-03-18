@@ -326,7 +326,8 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
 
     val resultTpe = mkHListTpe(
       wrapTpeTrees.map {
-        case (wrapTpe, _) => wrapTpe
+        case (wrapTpe, _) =>
+          wrapTpe
       })
 
     val resultTree =

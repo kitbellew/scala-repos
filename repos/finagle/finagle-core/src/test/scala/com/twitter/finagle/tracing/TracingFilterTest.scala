@@ -57,7 +57,8 @@ class TracingFilterTest
       mkFilter: String => Filter[Int, Int, Int, Int]): Unit = {
     test(s"$prefix: should trace service name") {
       val services = record(mkFilter("")) collect {
-        case Record(_, _, Annotation.ServiceName(svc), _) => svc
+        case Record(_, _, Annotation.ServiceName(svc), _) =>
+          svc
       }
       assert(services == Seq(serviceName))
     }
@@ -119,17 +120,22 @@ class TracingFilterTest
 
   test("clnt: send and then recv") {
     val annotations = record(mkClient()) collect {
-      case Record(_, _, a @ Annotation.ClientSend(), _) => a
-      case Record(_, _, a @ Annotation.ClientRecv(), _) => a
+      case Record(_, _, a @ Annotation.ClientSend(), _) =>
+        a
+      case Record(_, _, a @ Annotation.ClientRecv(), _) =>
+        a
     }
     assert(annotations == Seq(Annotation.ClientSend(), Annotation.ClientRecv()))
   }
 
   test("clnt: recv error") {
     val annotations = recordException(mkClient()) collect {
-      case Record(_, _, a @ Annotation.ClientSend(), _)       => a
-      case Record(_, _, a @ Annotation.ClientRecv(), _)       => a
-      case Record(_, _, a @ Annotation.ClientRecvError(_), _) => a
+      case Record(_, _, a @ Annotation.ClientSend(), _) =>
+        a
+      case Record(_, _, a @ Annotation.ClientRecv(), _) =>
+        a
+      case Record(_, _, a @ Annotation.ClientRecvError(_), _) =>
+        a
     }
     assert(
       annotations == Seq(
@@ -149,8 +155,10 @@ class TracingFilterTest
 
   test("srv: recv and then send") {
     val annotations = record(mkServer()) collect {
-      case Record(_, _, a @ Annotation.ServerRecv(), _) => a
-      case Record(_, _, a @ Annotation.ServerSend(), _) => a
+      case Record(_, _, a @ Annotation.ServerRecv(), _) =>
+        a
+      case Record(_, _, a @ Annotation.ServerSend(), _) =>
+        a
     }
     assert(annotations == Seq(Annotation.ServerRecv(), Annotation.ServerSend()))
   }

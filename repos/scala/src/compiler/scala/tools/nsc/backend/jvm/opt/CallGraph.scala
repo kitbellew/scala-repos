@@ -141,7 +141,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
             case nullnessAnalyzer: NullnessAnalyzer =>
               val frame = nullnessAnalyzer.frameAt(call, methodNode)
               frame.getStack(frame.getStackSize - 1 - numArgs) eq NotNullValue
-            case _ => false
+            case _ =>
+              false
           }
 
         var methodCallsites = Map.empty[MethodInsnNode, Callsite]
@@ -294,9 +295,12 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
         else {
           val argInfo =
             prods.head match {
-              case LambdaMetaFactoryCall(_, _, _, _) => Some(FunctionLiteral)
-              case ParameterProducer(local)          => Some(ForwardedParam(local))
-              case _                                 => None
+              case LambdaMetaFactoryCall(_, _, _, _) =>
+                Some(FunctionLiteral)
+              case ParameterProducer(local) =>
+                Some(ForwardedParam(local))
+              case _ =>
+                None
             }
           argInfo.map((index, _))
         }
@@ -677,9 +681,11 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
               else
                 None
 
-            case _ => None
+            case _ =>
+              None
           }
-        case _ => None
+        case _ =>
+          None
       }
   }
 }

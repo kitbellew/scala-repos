@@ -55,7 +55,8 @@ object IteratorSumLaws extends Properties("IteratorSumLaws") {
   property("partials passes through keys-values") = forAll {
     (in: List[(Int, Long)]) =>
       partials(in.iterator).map {
-        case (k, (o, v)) => (k, v)
+        case (k, (o, v)) =>
+          (k, v)
       }.toList == in
   }
   property("partials gives partial sums") = forAll { (in: List[(Int, Long)]) =>

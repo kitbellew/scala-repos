@@ -788,7 +788,8 @@ class DenseMatrixTest
     val d = DenseVector[Double]()
     val m =
       DenseMatrix.tabulate(0, 0) {
-        case x => 0.0
+        case x =>
+          0.0
       }
     assert(m \ d === d)
 

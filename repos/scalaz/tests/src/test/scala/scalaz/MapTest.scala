@@ -638,7 +638,8 @@ object MapTest extends SpecLite {
         (a.keySet isSubsetOf b.keySet) must_=== true
         a.difference(b) must_=== ==>>.empty
         a.toList.foreach {
-          case (k, v) => b.lookup(k) must_=== Some(v)
+          case (k, v) =>
+            b.lookup(k) must_=== Some(v)
         }
       }
     }

@@ -87,8 +87,10 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
     */
   def findValue(key: K)(f: (V) ⇒ Boolean): Option[V] =
     container get key match {
-      case null ⇒ None
-      case set ⇒ set.iterator.asScala find f
+      case null ⇒
+        None
+      case set ⇒
+        set.iterator.asScala find f
     }
 
   /**
@@ -96,8 +98,10 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
     */
   def valueIterator(key: K): scala.Iterator[V] = {
     container.get(key) match {
-      case null ⇒ Iterator.empty
-      case some ⇒ some.iterator.asScala
+      case null ⇒
+        Iterator.empty
+      case some ⇒
+        some.iterator.asScala
     }
   }
 

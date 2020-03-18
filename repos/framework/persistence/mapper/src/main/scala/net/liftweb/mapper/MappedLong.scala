@@ -195,17 +195,28 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
 
   override def setFromAny(in: Any): Seq[ENUM#Value] = {
     in match {
-      case JsonAST.JInt(bi) => this.set(fromLong(bi.longValue))
-      case n: Long          => this.set(fromLong(n))
-      case n: Number        => this.set(fromLong(n.longValue))
-      case (n: Number) :: _ => this.set(fromLong(n.longValue))
-      case Some(n: Number)  => this.set(fromLong(n.longValue))
-      case None             => this.set(Nil)
-      case (s: String) :: _ => this.set(fromLong(Helpers.toLong(s)))
-      case vs: List[_]      => this.set(vs.asInstanceOf[List[ENUM#Value]])
-      case null             => this.set(Nil)
-      case s: String        => this.set(fromLong(Helpers.toLong(s)))
-      case o                => this.set(fromLong(Helpers.toLong(o)))
+      case JsonAST.JInt(bi) =>
+        this.set(fromLong(bi.longValue))
+      case n: Long =>
+        this.set(fromLong(n))
+      case n: Number =>
+        this.set(fromLong(n.longValue))
+      case (n: Number) :: _ =>
+        this.set(fromLong(n.longValue))
+      case Some(n: Number) =>
+        this.set(fromLong(n.longValue))
+      case None =>
+        this.set(Nil)
+      case (s: String) :: _ =>
+        this.set(fromLong(Helpers.toLong(s)))
+      case vs: List[_] =>
+        this.set(vs.asInstanceOf[List[ENUM#Value]])
+      case null =>
+        this.set(Nil)
+      case s: String =>
+        this.set(fromLong(Helpers.toLong(s)))
+      case o =>
+        this.set(fromLong(Helpers.toLong(o)))
     }
   }
 
@@ -289,7 +300,8 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
         inst,
         accessor,
         {
-          case f: MappedEnumList[T, ENUM] => f.st(defaultValue)
+          case f: MappedEnumList[T, ENUM] =>
+            f.st(defaultValue)
         })
 
   /**
@@ -407,8 +419,10 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
 
   def real_convertToJDBCFriendly(value: Box[Long]): Object =
     value match {
-      case Full(value) => new java.lang.Long(value)
-      case _           => null
+      case Full(value) =>
+        new java.lang.Long(value)
+      case _ =>
+        null
     }
 
   // def asJsExp = JE.Num(is)
@@ -418,20 +432,34 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
 
   override def setFromAny(in: Any): Box[Long] = {
     in match {
-      case n: Long                          => this.set(Full(n))
-      case n: Number                        => this.set(Full(n.longValue))
-      case JsonAST.JNothing | JsonAST.JNull => this.set(Empty)
-      case JsonAST.JInt(n)                  => this.set(Full(n.longValue))
-      case (n: Number) :: _                 => this.set(Full(n.longValue))
-      case Some(n: Number)                  => this.set(Full(n.longValue))
-      case Full(n: Number)                  => this.set(Full(n.longValue))
-      case Empty | Failure(_, _, _)         => this.set(Empty)
-      case None                             => this.set(Empty)
-      case (s: String) :: _                 => this.set(Helpers.asLong(s))
-      case s :: _                           => this.setFromAny(s)
-      case null                             => this.set(Empty)
-      case s: String                        => this.set(Helpers.asLong(s))
-      case o                                => this.set(Helpers.asLong(o))
+      case n: Long =>
+        this.set(Full(n))
+      case n: Number =>
+        this.set(Full(n.longValue))
+      case JsonAST.JNothing | JsonAST.JNull =>
+        this.set(Empty)
+      case JsonAST.JInt(n) =>
+        this.set(Full(n.longValue))
+      case (n: Number) :: _ =>
+        this.set(Full(n.longValue))
+      case Some(n: Number) =>
+        this.set(Full(n.longValue))
+      case Full(n: Number) =>
+        this.set(Full(n.longValue))
+      case Empty | Failure(_, _, _) =>
+        this.set(Empty)
+      case None =>
+        this.set(Empty)
+      case (s: String) :: _ =>
+        this.set(Helpers.asLong(s))
+      case s :: _ =>
+        this.setFromAny(s)
+      case null =>
+        this.set(Empty)
+      case s: String =>
+        this.set(Helpers.asLong(s))
+      case o =>
+        this.set(Helpers.asLong(o))
     }
   }
 
@@ -451,7 +479,8 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedNullableLong[T] => f.st(asLong(v))
+          case f: MappedNullableLong[T] =>
+            f.st(asLong(v))
         })
 
   def buildSetLongValue(
@@ -478,7 +507,8 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedNullableLong[T] => f.st(asLong(v))
+          case f: MappedNullableLong[T] =>
+            f.st(asLong(v))
         })
 
   def buildSetDateValue(
@@ -607,19 +637,32 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
 
   override def setFromAny(in: Any): Long = {
     in match {
-      case n: Long                  => this.set(n)
-      case JsonAST.JInt(bigint)     => this.set(bigint.longValue)
-      case n: Number                => this.set(n.longValue)
-      case (n: Number) :: _         => this.set(n.longValue)
-      case Some(n: Number)          => this.set(n.longValue)
-      case Full(n: Number)          => this.set(n.longValue)
-      case Empty | Failure(_, _, _) => this.set(0L)
-      case None                     => this.set(0L)
-      case (s: String) :: _         => this.set(toLong(s))
-      case s :: _                   => this.setFromAny(s)
-      case null                     => this.set(0L)
-      case s: String                => this.set(toLong(s))
-      case o                        => this.set(toLong(o))
+      case n: Long =>
+        this.set(n)
+      case JsonAST.JInt(bigint) =>
+        this.set(bigint.longValue)
+      case n: Number =>
+        this.set(n.longValue)
+      case (n: Number) :: _ =>
+        this.set(n.longValue)
+      case Some(n: Number) =>
+        this.set(n.longValue)
+      case Full(n: Number) =>
+        this.set(n.longValue)
+      case Empty | Failure(_, _, _) =>
+        this.set(0L)
+      case None =>
+        this.set(0L)
+      case (s: String) :: _ =>
+        this.set(toLong(s))
+      case s :: _ =>
+        this.setFromAny(s)
+      case null =>
+        this.set(0L)
+      case s: String =>
+        this.set(toLong(s))
+      case o =>
+        this.set(toLong(o))
     }
   }
 
@@ -639,7 +682,8 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedLong[T] => f.st(toLong(v))
+          case f: MappedLong[T] =>
+            f.st(toLong(v))
         })
 
   def buildSetLongValue(
@@ -666,7 +710,8 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
         inst,
         accessor,
         {
-          case f: MappedLong[T] => f.st(toLong(v))
+          case f: MappedLong[T] =>
+            f.st(toLong(v))
         })
 
   def buildSetDateValue(

@@ -476,8 +476,10 @@ private[akka] class ActorCell(
 
     def shouldStash(m: SystemMessage, state: Int): Boolean =
       (state: @switch) match {
-        case DefaultState ⇒ false
-        case SuspendedState ⇒ m.isInstanceOf[StashWhenFailed]
+        case DefaultState ⇒
+          false
+        case SuspendedState ⇒
+          m.isInstanceOf[StashWhenFailed]
         case SuspendedWaitForChildrenState ⇒
           m.isInstanceOf[StashWhenWaitingForChildren]
       }
@@ -493,17 +495,26 @@ private[akka] class ActorCell(
         message match {
           case message: SystemMessage if shouldStash(message, currentState) ⇒
             stash(message)
-          case f: Failed ⇒ handleFailure(f)
+          case f: Failed ⇒
+            handleFailure(f)
           case DeathWatchNotification(a, ec, at) ⇒
             watchedActorTerminated(a, ec, at)
-          case Create(failure) ⇒ create(failure)
-          case Watch(watchee, watcher) ⇒ addWatcher(watchee, watcher)
-          case Unwatch(watchee, watcher) ⇒ remWatcher(watchee, watcher)
-          case Recreate(cause) ⇒ faultRecreate(cause)
-          case Suspend() ⇒ faultSuspend()
-          case Resume(inRespToFailure) ⇒ faultResume(inRespToFailure)
-          case Terminate() ⇒ terminate()
-          case Supervise(child, async) ⇒ supervise(child, async)
+          case Create(failure) ⇒
+            create(failure)
+          case Watch(watchee, watcher) ⇒
+            addWatcher(watchee, watcher)
+          case Unwatch(watchee, watcher) ⇒
+            remWatcher(watchee, watcher)
+          case Recreate(cause) ⇒
+            faultRecreate(cause)
+          case Suspend() ⇒
+            faultSuspend()
+          case Resume(inRespToFailure) ⇒
+            faultResume(inRespToFailure)
+          case Terminate() ⇒
+            terminate()
+          case Supervise(child, async) ⇒
+            supervise(child, async)
           case NoMessage ⇒ // only here to suppress warning
         }
       } catch handleNonFatalOrInterruptedException { e ⇒
@@ -536,8 +547,10 @@ private[akka] class ActorCell(
       if (influenceReceiveTimeout)
         cancelReceiveTimeout()
       messageHandle.message match {
-        case msg: AutoReceivedMessage ⇒ autoReceiveMessage(messageHandle)
-        case msg ⇒ receiveMessage(msg)
+        case msg: AutoReceivedMessage ⇒
+          autoReceiveMessage(messageHandle)
+        case msg ⇒
+          receiveMessage(msg)
       }
       currentMessage = null // reset current message after successful invocation
     } catch handleNonFatalOrInterruptedException { e ⇒
@@ -557,12 +570,18 @@ private[akka] class ActorCell(
           "received AutoReceiveMessage " + msg))
 
     msg.message match {
-      case t: Terminated ⇒ receivedTerminated(t)
-      case AddressTerminated(address) ⇒ addressTerminated(address)
-      case Kill ⇒ throw new ActorKilledException("Kill")
-      case PoisonPill ⇒ self.stop()
-      case sel: ActorSelectionMessage ⇒ receiveSelection(sel)
-      case Identify(messageId) ⇒ sender() ! ActorIdentity(messageId, Some(self))
+      case t: Terminated ⇒
+        receivedTerminated(t)
+      case AddressTerminated(address) ⇒
+        addressTerminated(address)
+      case Kill ⇒
+        throw new ActorKilledException("Kill")
+      case PoisonPill ⇒
+        self.stop()
+      case sel: ActorSelectionMessage ⇒
+        receiveSelection(sel)
+      case Identify(messageId) ⇒
+        sender() ! ActorIdentity(messageId, Some(self))
     }
   }
 
@@ -581,9 +600,12 @@ private[akka] class ActorCell(
 
   final def sender(): ActorRef =
     currentMessage match {
-      case null ⇒ system.deadLetters
-      case msg if msg.sender ne null ⇒ msg.sender
-      case _ ⇒ system.deadLetters
+      case null ⇒
+        system.deadLetters
+      case msg if msg.sender ne null ⇒
+        msg.sender
+      case _ ⇒
+        system.deadLetters
     }
 
   def become(behavior: Actor.Receive, discardOld: Boolean = true): Unit =
@@ -600,7 +622,8 @@ private[akka] class ActorCell(
   def become(behavior: Procedure[Any], discardOld: Boolean): Unit =
     become(
       {
-        case msg ⇒ behavior.apply(msg)
+        case msg ⇒
+          behavior.apply(msg)
       }: Actor.Receive,
       discardOld)
 
@@ -724,7 +747,8 @@ private[akka] class ActorCell(
   // future extension point
   protected def handleSupervise(child: ActorRef, async: Boolean): Unit =
     child match {
-      case r: RepointableActorRef if async ⇒ r.point(catchFailures = true)
+      case r: RepointableActorRef if async ⇒
+        r.point(catchFailures = true)
       case _ ⇒
     }
 

@@ -235,8 +235,10 @@ trait ScanningClassification {
             a: (Classifier, Subscriber),
             b: (Classifier, Subscriber)): Int =
           compareClassifiers(a._1, b._1) match {
-            case 0 ⇒ compareSubscribers(a._2, b._2)
-            case other ⇒ other
+            case 0 ⇒
+              compareSubscribers(a._2, b._2)
+            case other ⇒
+              other
           }
       })
 
@@ -410,7 +412,8 @@ trait ManagedActorClassification {
     val current = mappings.get
 
     current.backing.get(monitored) match {
-      case None ⇒ false
+      case None ⇒
+        false
       case Some(monitors) ⇒
         val removed = current.remove(monitored, monitor)
         val removedMonitors = removed.get(monitored)
@@ -438,7 +441,8 @@ trait ManagedActorClassification {
 
   def publish(event: Event): Unit = {
     mappings.get.backing.get(classify(event)) match {
-      case None ⇒ ()
+      case None ⇒
+        ()
       case Some(refs) ⇒
         refs.foreach {
           _ ! event
@@ -543,7 +547,8 @@ trait ActorClassification {
         monitored: ActorRef): immutable.Iterable[ActorRef] = {
       val current = mappings get monitored
       current match {
-        case null ⇒ empty
+        case null ⇒
+          empty
         case raw: immutable.TreeSet[_] ⇒
           val v = raw.asInstanceOf[immutable.TreeSet[ActorRef]]
           if (!mappings.remove(monitored, v))
@@ -581,7 +586,8 @@ trait ActorClassification {
       monitor: ActorRef): Boolean = {
     val current = mappings get monitored
     current match {
-      case null ⇒ false
+      case null ⇒
+        false
       case raw: immutable.TreeSet[_] ⇒
         val v = raw.asInstanceOf[immutable.TreeSet[ActorRef]]
         val removed = v - monitor
@@ -613,7 +619,8 @@ trait ActorClassification {
 
   def publish(event: Event): Unit =
     mappings.get(classify(event)) match {
-      case null ⇒ ()
+      case null ⇒
+        ()
       case some ⇒
         some foreach {
           _ ! event

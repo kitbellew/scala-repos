@@ -22,12 +22,14 @@ object Test extends InteractiveTest {
     val item2 = askItem()
 
     item1.get(Timeout) match {
-      case None => println("TIMEOUT")
-      case _    =>
+      case None =>
+        println("TIMEOUT")
+      case _ =>
     }
     item2.get(Timeout) match {
-      case None => println("TIMEOUT")
-      case _    =>
+      case None =>
+        println("TIMEOUT")
+      case _ =>
     }
   }
 }

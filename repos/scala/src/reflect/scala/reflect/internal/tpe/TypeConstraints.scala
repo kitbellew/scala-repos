@@ -118,8 +118,10 @@ private[internal] trait TypeConstraints {
       // See pos/t6367 and pos/t6499 for the competing test cases.
       val mustConsider =
         tp.typeSymbol match {
-          case NothingClass => true
-          case _            => !(lobounds contains tp)
+          case NothingClass =>
+            true
+          case _ =>
+            !(lobounds contains tp)
         }
       if (mustConsider) {
         if (isNumericBound && isNumericValueType(tp)) {
@@ -137,8 +139,9 @@ private[internal] trait TypeConstraints {
         avoidWidening = true
       else
         tp match {
-          case HasTypeMember(_, _) => avoidWidening = true
-          case _                   =>
+          case HasTypeMember(_, _) =>
+            avoidWidening = true
+          case _ =>
         }
     }
 
@@ -147,8 +150,10 @@ private[internal] trait TypeConstraints {
       // a lower bound, but I suspect the situation is symmetrical.
       val mustConsider =
         tp.typeSymbol match {
-          case AnyClass => true
-          case _        => !(hibounds contains tp)
+          case AnyClass =>
+            true
+          case _ =>
+            !(hibounds contains tp)
         }
       if (mustConsider) {
         checkWidening(tp)
@@ -185,15 +190,21 @@ private[internal] trait TypeConstraints {
       val boundsStr = {
         val lo =
           loBounds filterNot typeIsNothing match {
-            case Nil       => ""
-            case tp :: Nil => " >: " + tp
-            case tps       => tps.mkString(" >: (", ", ", ")")
+            case Nil =>
+              ""
+            case tp :: Nil =>
+              " >: " + tp
+            case tps =>
+              tps.mkString(" >: (", ", ", ")")
           }
         val hi =
           hiBounds filterNot typeIsAny match {
-            case Nil       => ""
-            case tp :: Nil => " <: " + tp
-            case tps       => tps.mkString(" <: (", ", ", ")")
+            case Nil =>
+              ""
+            case tp :: Nil =>
+              " <: " + tp
+            case tps =>
+              tps.mkString(" <: (", ", ", ")")
           }
         lo + hi
       }

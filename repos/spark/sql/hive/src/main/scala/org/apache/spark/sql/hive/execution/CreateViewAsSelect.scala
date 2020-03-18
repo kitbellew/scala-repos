@@ -82,7 +82,8 @@ private[hive] case class CreateViewAsSelect(
       if (sqlContext.conf.canonicalView) {
         try rebuildViewQueryString(sqlContext)
         catch {
-          case NonFatal(e) => wrapViewTextWithSelect
+          case NonFatal(e) =>
+            wrapViewTextWithSelect
         }
       } else {
         wrapViewTextWithSelect
@@ -120,7 +121,8 @@ private[hive] case class CreateViewAsSelect(
         columnNames
           .zip(tableDesc.schema.map(f => quote(f.name)))
           .map {
-            case (name, alias) => s"$name AS $alias"
+            case (name, alias) =>
+              s"$name AS $alias"
           }
           .mkString(", ")
       }
@@ -137,7 +139,8 @@ private[hive] case class CreateViewAsSelect(
         child
       } else {
         val projectList = childSchema.zip(tableDesc.schema).map {
-          case (attr, col) => Alias(attr, col.name)()
+          case (attr, col) =>
+            Alias(attr, col.name)()
         }
         sqlContext.executePlan(Project(projectList, child)).analyzed
       }

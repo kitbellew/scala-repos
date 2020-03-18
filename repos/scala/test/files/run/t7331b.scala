@@ -6,6 +6,7 @@ object Test extends App {
   val tb = cm.mkToolBox()
   try tb.parse("f(x")
   catch {
-    case ToolBoxError(msg, _) => println(msg)
+    case ToolBoxError(msg, _) =>
+      println(msg)
   }
 }

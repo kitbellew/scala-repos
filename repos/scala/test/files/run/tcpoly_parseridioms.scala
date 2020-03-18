@@ -20,10 +20,13 @@ trait Parsers {
         a(in) match {
           case Success(next, x) =>
             b(next) match {
-              case Success(next2, y) => Success(next2, (x, y))
-              case Failure(_, msg)   => Failure(in, msg)
+              case Success(next2, y) =>
+                Success(next2, (x, y))
+              case Failure(_, msg) =>
+                Failure(in, msg)
             }
-          case Failure(_, msg) => Failure(in, msg)
+          case Failure(_, msg) =>
+            Failure(in, msg)
         }
     }
 
@@ -32,11 +35,14 @@ trait Parsers {
     new Parser[T] {
       def apply(in: Input): ParseResult[T] =
         a(in) match {
-          case Success(next, x) => Success(next, x)
+          case Success(next, x) =>
+            Success(next, x)
           case Failure(_, _) =>
             b(in) match {
-              case Success(next, y) => Success(next, y)
-              case Failure(_, msg)  => Failure(in, msg)
+              case Success(next, y) =>
+                Success(next, y)
+              case Failure(_, msg) =>
+                Failure(in, msg)
             }
         }
     }
@@ -46,8 +52,10 @@ trait Parsers {
     new Parser[U] {
       def apply(in: Input): ParseResult[U] =
         a(in) match {
-          case Success(n, x)   => Success(n, f(x))
-          case Failure(n, msg) => Failure(n, msg)
+          case Success(n, x) =>
+            Success(n, f(x))
+          case Failure(n, msg) =>
+            Failure(n, msg)
         }
     }
 
@@ -55,14 +63,17 @@ trait Parsers {
     new Parser[T] {
       def apply(in: Input) =
         in match {
-          case c2 :: n if c2 == c => Success(n, r)
-          case n                  => Failure(n, "expected " + c + " at the head of " + n)
+          case c2 :: n if c2 == c =>
+            Success(n, r)
+          case n =>
+            Failure(n, "expected " + c + " at the head of " + n)
         }
     }
 
   def apply_++[s, tt](fun: Parser[s => tt], arg: Parser[s]): Parser[tt] =
     lift[Tuple2[s => tt, s], tt]({
-      case (f, a) => f(a)
+      case (f, a) =>
+        f(a)
     })(sq(fun, arg))
 
   def success[u](v: u): Parser[u] =

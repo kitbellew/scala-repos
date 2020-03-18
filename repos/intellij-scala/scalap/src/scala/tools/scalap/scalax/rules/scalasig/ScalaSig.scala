@@ -49,7 +49,8 @@ object ScalaSigAttributeParsers extends ByteCodeReader {
           else
             natN(out, y)
         }
-        case _ => Failure
+        case _ =>
+          Failure
       }
     in => natN(in, 0)
   }
@@ -317,8 +318,10 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
 
   def isTopLevel(symbol: Symbol) =
     symbol.parent match {
-      case Some(ext: ExternalSymbol) => true
-      case _                         => false
+      case Some(ext: ExternalSymbol) =>
+        true
+      case _ =>
+        false
     }
   def isTopLevelClass(symbol: Symbol) = !symbol.isModule && isTopLevel(symbol)
 }

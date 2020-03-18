@@ -62,7 +62,8 @@ object TransformationFrontend {
       (
         frontend ? TransformationJob("hello-" + counter.incrementAndGet())
       ) onSuccess {
-        case result => println(result)
+        case result =>
+          println(result)
       }
     }
 

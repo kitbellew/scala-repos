@@ -19,11 +19,14 @@ private final class Captcher extends Actor {
 
   def receive = {
 
-    case AnyCaptcha => sender ! Impl.current
+    case AnyCaptcha =>
+      sender ! Impl.current
 
-    case GetCaptcha(id: String) => Impl get id pipeTo sender
+    case GetCaptcha(id: String) =>
+      Impl get id pipeTo sender
 
-    case actorApi.NewCaptcha => Impl.refresh
+    case actorApi.NewCaptcha =>
+      Impl.refresh
 
     case ValidCaptcha(id: String, solution: String) =>
       Impl get id map (_ valid solution) pipeTo sender
@@ -33,15 +36,18 @@ private final class Captcher extends Actor {
 
     def get(id: String): Fu[Captcha] =
       find(id) match {
-        case None    => getFromDb(id) map (c => (c | Captcha.default) ~ add)
-        case Some(c) => fuccess(c)
+        case None =>
+          getFromDb(id) map (c => (c | Captcha.default) ~ add)
+        case Some(c) =>
+          fuccess(c)
       }
 
     def current = challenges.head
 
     def refresh =
       createFromDb onSuccess {
-        case Some(captcha) => add(captcha)
+        case Some(captcha) =>
+          add(captcha)
       }
 
     // Private stuff
@@ -85,7 +91,8 @@ private final class Captcher extends Actor {
             rewinded ← rewind(game, moves)
             solutions ← solve(rewinded)
             moves = rewinded.situation.destinations map {
-              case (from, dests) => from.key -> dests.mkString
+              case (from, dests) =>
+                from.key -> dests.mkString
             }
           } yield Captcha(
             game.id,
@@ -111,9 +118,12 @@ private final class Captcher extends Actor {
 
     private def safeInit[A](list: List[A]): List[A] =
       list match {
-        case x :: Nil => Nil
-        case x :: xs  => x :: safeInit(xs)
-        case _        => Nil
+        case x :: Nil =>
+          Nil
+        case x :: xs =>
+          x :: safeInit(xs)
+        case _ =>
+          Nil
       }
 
     private def fen(game: ChessGame): String =

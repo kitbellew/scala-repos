@@ -24,7 +24,8 @@ class Properties(protected val defaults: Properties)
 
   def getProperty(key: String, defaultValue: String): String = {
     get(key) match {
-      case value: String => value
+      case value: String =>
+        value
 
       case _ =>
         if (defaults != null)
@@ -42,7 +43,8 @@ class Properties(protected val defaults: Properties)
       else
         scala.collection.Iterator.empty
     val filteredDefaults = defaultsIterator.collect {
-      case k: String if !thisSet(k) => k
+      case k: String if !thisSet(k) =>
+        k
     }
     thisSet.iterator ++ filteredDefaults
   }
@@ -51,8 +53,9 @@ class Properties(protected val defaults: Properties)
     val set = new ju.HashSet[String]
     entrySet().foreach { entry =>
       (entry.getKey, entry.getValue) match {
-        case (key: String, _: String) => set.add(key)
-        case _                        => // Ignore key
+        case (key: String, _: String) =>
+          set.add(key)
+        case _ => // Ignore key
       }
     }
     if (defaults != null)

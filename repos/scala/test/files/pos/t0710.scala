@@ -4,7 +4,8 @@ object t0710 {
     case object Child extends Parent
     val x: Parent = Child
     x match {
-      case Child => ()
+      case Child =>
+        ()
     }
   }
 }

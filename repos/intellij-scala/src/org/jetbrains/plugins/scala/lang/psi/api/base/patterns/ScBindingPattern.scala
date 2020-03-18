@@ -38,15 +38,19 @@ trait ScBindingPattern
 
   protected def getEnclosingVariable: Option[ScVariable] = {
     ScalaPsiUtil.nameContext(this) match {
-      case v: ScVariable => Some(v)
-      case _             => None
+      case v: ScVariable =>
+        Some(v)
+      case _ =>
+        None
     }
   }
 
   override def isStable =
     getEnclosingVariable match {
-      case None => true
-      case _    => false
+      case None =>
+        true
+      case _ =>
+        false
     }
 
   override def isVar: Boolean = nameContext.isInstanceOf[ScVariable]
@@ -54,19 +58,25 @@ trait ScBindingPattern
 
   def isClassMember =
     nameContext.getContext match {
-      case _: ScTemplateBody | _: ScEarlyDefinitions => true
-      case _                                         => false
+      case _: ScTemplateBody | _: ScEarlyDefinitions =>
+        true
+      case _ =>
+        false
     }
   def isBeanProperty: Boolean =
     nameContext match {
-      case a: ScAnnotationsHolder => ScalaPsiUtil.isBeanProperty(a)
-      case _                      => false
+      case a: ScAnnotationsHolder =>
+        ScalaPsiUtil.isBeanProperty(a)
+      case _ =>
+        false
     }
 
   def containingClass: ScTemplateDefinition = {
     ScalaPsiUtil.nameContext(this) match {
-      case memb: ScMember => memb.containingClass
-      case _              => null
+      case memb: ScMember =>
+        memb.containingClass
+      case _ =>
+        null
     }
   }
 
@@ -101,15 +111,19 @@ trait ScBindingPattern
 
   def getDocComment: PsiDocComment = {
     nameContext match {
-      case d: PsiDocCommentOwner => d.getDocComment
-      case _                     => null
+      case d: PsiDocCommentOwner =>
+        d.getDocComment
+      case _ =>
+        null
     }
   }
 
   def isDeprecated: Boolean = {
     nameContext match {
-      case d: PsiDocCommentOwner => d.isDeprecated
-      case _                     => false
+      case d: PsiDocCommentOwner =>
+        d.isDeprecated
+      case _ =>
+        false
     }
   }
 
@@ -118,22 +132,28 @@ trait ScBindingPattern
     */
   def getContainingClass: PsiClass = {
     nameContext match {
-      case m: PsiMember => m.getContainingClass
-      case _            => null
+      case m: PsiMember =>
+        m.getContainingClass
+      case _ =>
+        null
     }
   }
 
   def getModifierList: PsiModifierList = {
     nameContext match {
-      case owner: PsiModifierListOwner => owner.getModifierList
-      case _                           => null
+      case owner: PsiModifierListOwner =>
+        owner.getModifierList
+      case _ =>
+        null
     }
   }
 
   def hasModifierProperty(name: String): Boolean = {
     nameContext match {
-      case owner: PsiModifierListOwner => owner.hasModifierProperty(name)
-      case _                           => false
+      case owner: PsiModifierListOwner =>
+        owner.hasModifierProperty(name)
+      case _ =>
+        false
     }
   }
 }
@@ -142,7 +162,8 @@ object ScBindingPattern {
   @tailrec
   def getCompoundCopy(rt: ScType, b: ScBindingPattern): ScBindingPattern = {
     b match {
-      case light: ScLightBindingPattern => getCompoundCopy(rt, light.b)
+      case light: ScLightBindingPattern =>
+        getCompoundCopy(rt, light.b)
       case definition: ScBindingPattern =>
         new ScLightBindingPattern(rt, definition)
     }

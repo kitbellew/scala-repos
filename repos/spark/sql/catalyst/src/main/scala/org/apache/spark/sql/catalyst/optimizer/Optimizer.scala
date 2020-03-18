@@ -168,8 +168,10 @@ object LimitPushDown extends Rule[LogicalPlan] {
 
   private def stripGlobalLimitIfPresent(plan: LogicalPlan): LogicalPlan = {
     plan match {
-      case GlobalLimit(expr, child) => child
-      case _                        => plan
+      case GlobalLimit(expr, child) =>
+        child
+      case _ =>
+        plan
     }
   }
 
@@ -182,7 +184,8 @@ object LimitPushDown extends Rule[LogicalPlan] {
         LocalLimit(limitExp, stripGlobalLimitIfPresent(plan))
       case (_, None) =>
         LocalLimit(limitExp, stripGlobalLimitIfPresent(plan))
-      case _ => plan
+      case _ =>
+        plan
     }
   }
 
@@ -208,8 +211,10 @@ object LimitPushDown extends Rule[LogicalPlan] {
       case LocalLimit(exp, join @ Join(left, right, joinType, condition)) =>
         val newJoin =
           joinType match {
-            case RightOuter => join.copy(right = maybePushLimit(exp, right))
-            case LeftOuter  => join.copy(left = maybePushLimit(exp, left))
+            case RightOuter =>
+              join.copy(right = maybePushLimit(exp, right))
+            case LeftOuter =>
+              join.copy(left = maybePushLimit(exp, left))
             case FullOuter =>
               (left.maxRows, right.maxRows) match {
                 case (None, None) =>
@@ -218,14 +223,16 @@ object LimitPushDown extends Rule[LogicalPlan] {
                   } else {
                     join.copy(right = maybePushLimit(exp, right))
                   }
-                case (Some(_), Some(_)) => join
+                case (Some(_), Some(_)) =>
+                  join
                 case (Some(_), None) =>
                   join.copy(left = maybePushLimit(exp, left))
                 case (None, Some(_)) =>
                   join.copy(right = maybePushLimit(exp, right))
 
               }
-            case _ => join
+            case _ =>
+              join
           }
         LocalLimit(exp, newJoin)
     }
@@ -265,7 +272,8 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
       e: A,
       rewrites: AttributeMap[Attribute]) = {
     val result = e transform {
-      case a: Attribute => rewrites(a)
+      case a: Attribute =>
+        rewrites(a)
     }
 
     // We must promise the compiler that we did not discard the names in the case of project
@@ -402,8 +410,10 @@ object ColumnPruning extends Rule[LogicalPlan] {
         j.copy(right = prunedChild(right, j.references))
 
       // all the columns will be used to compare, so we can't prune them
-      case p @ Project(_, _: SetOperation) => p
-      case p @ Project(_, _: Distinct)     => p
+      case p @ Project(_, _: SetOperation) =>
+        p
+      case p @ Project(_, _: Distinct) =>
+        p
       // Eliminate unneeded attributes from children of Union.
       case p @ Project(_, u: Union) =>
         if ((u.outputSet -- p.references).nonEmpty) {
@@ -431,7 +441,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
           p.references.contains)))
 
       // Eliminate no-op Window
-      case w: Window if w.windowExpressions.isEmpty => w.child
+      case w: Window if w.windowExpressions.isEmpty =>
+        w.child
 
       // Eliminate no-op Projects
       case p @ Project(projectList, child)
@@ -439,7 +450,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
         child
 
       // Can't prune the columns on LeafNode
-      case p @ Project(_, l: LeafNode) => p
+      case p @ Project(_, l: LeafNode) =>
+        p
 
       // for all other logical plans that inherits the output from it's children
       case p @ Project(_, child) =>
@@ -474,14 +486,16 @@ object CollapseProject extends Rule[LogicalPlan] {
         // e.g., 'SELECT ... FROM (SELECT a + b AS c, d ...)' produces Map(c -> Alias(a + b, c)).
         val aliasMap = AttributeMap(
           projectList2.collect {
-            case a: Alias => (a.toAttribute, a)
+            case a: Alias =>
+              (a.toAttribute, a)
           })
 
         // We only collapse these two Projects if their overlapped expressions are all
         // deterministic.
         val hasNondeterministic = projectList1.exists(
           _.collect {
-            case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
+            case a: Attribute if aliasMap.contains(a) =>
+              aliasMap(a).child
           }.exists(!_.deterministic))
 
         if (hasNondeterministic) {
@@ -494,7 +508,8 @@ object CollapseProject extends Rule[LogicalPlan] {
           val substitutedProjection = projectList1
             .map(
               _.transform {
-                case a: Attribute => aliasMap.getOrElse(a, a)
+                case a: Attribute =>
+                  aliasMap.getOrElse(a, a)
               })
             .asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
@@ -513,14 +528,16 @@ object CollapseProject extends Rule[LogicalPlan] {
         // e.g., 'SELECT ... FROM (SELECT a + b AS c, d ...)' produces Map(c -> Alias(a + b, c)).
         val aliasMap = AttributeMap(
           projectList2.collect {
-            case a: Alias => (a.toAttribute, a)
+            case a: Alias =>
+              (a.toAttribute, a)
           })
 
         // We only collapse these two Projects if their overlapped expressions are all
         // deterministic.
         val hasNondeterministic = projectList1.exists(
           _.collect {
-            case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
+            case a: Attribute if aliasMap.contains(a) =>
+              aliasMap(a).child
           }.exists(!_.deterministic))
 
         if (hasNondeterministic) {
@@ -533,7 +550,8 @@ object CollapseProject extends Rule[LogicalPlan] {
           val substitutedProjection = projectList1
             .map(
               _.transform {
-                case a: Attribute => aliasMap.getOrElse(a, a)
+                case a: Attribute =>
+                  aliasMap.getOrElse(a, a)
               })
             .asInstanceOf[Seq[NamedExpression]]
           // collapse 2 projects may introduce unnecessary Aliases, trim them here.
@@ -596,8 +614,10 @@ object LikeSimplification extends Rule[LogicalPlan] {
 object NullPropagation extends Rule[LogicalPlan] {
   def nonNullLiteral(e: Expression): Boolean =
     e match {
-      case Literal(null, _) => false
-      case _                => true
+      case Literal(null, _) =>
+        false
+      case _ =>
+        true
     }
 
   def apply(plan: LogicalPlan): LogicalPlan =
@@ -623,8 +643,10 @@ object NullPropagation extends Rule[LogicalPlan] {
             Literal.create(null, e.dataType)
           case e @ GetArrayStructFields(Literal(null, _), _, _, _, _) =>
             Literal.create(null, e.dataType)
-          case e @ EqualNullSafe(Literal(null, _), r) => IsNull(r)
-          case e @ EqualNullSafe(l, Literal(null, _)) => IsNull(l)
+          case e @ EqualNullSafe(Literal(null, _), r) =>
+            IsNull(r)
+          case e @ EqualNullSafe(l, Literal(null, _)) =>
+            IsNull(l)
           case e @ AggregateExpression(Count(exprs), mode, false)
               if !exprs.exists(_.nullable) =>
             // This rule should be only triggered when isDistinct field is false.
@@ -649,8 +671,10 @@ object NullPropagation extends Rule[LogicalPlan] {
             Literal.create(null, e.dataType)
 
           // MaxOf and MinOf can't do null propagation
-          case e: MaxOf => e
-          case e: MinOf => e
+          case e: MaxOf =>
+            e
+          case e: MinOf =>
+            e
 
           // Put exceptional cases above if any
           case e @ BinaryArithmetic(Literal(null, _), _) =>
@@ -669,7 +693,8 @@ object NullPropagation extends Rule[LogicalPlan] {
                 Literal.create(null, e.dataType)
               case left :: Literal(null, _) :: Nil =>
                 Literal.create(null, e.dataType)
-              case _ => e
+              case _ =>
+                e
             }
 
           case e: StringPredicate =>
@@ -678,12 +703,14 @@ object NullPropagation extends Rule[LogicalPlan] {
                 Literal.create(null, e.dataType)
               case left :: Literal(null, _) :: Nil =>
                 Literal.create(null, e.dataType)
-              case _ => e
+              case _ =>
+                e
             }
 
           // If the value expression is NULL then transform the In expression to
           // Literal(null)
-          case In(Literal(null, _), list) => Literal.create(null, BooleanType)
+          case In(Literal(null, _), list) =>
+            Literal.create(null, BooleanType)
 
         }
     }
@@ -753,10 +780,12 @@ object ConstantFolding extends Rule[LogicalPlan] {
           // Skip redundant folding of literals. This rule is technically not necessary. Placing this
           // here avoids running the next rule for Literal values, which would create a new Literal
           // object and running eval unnecessarily.
-          case l: Literal => l
+          case l: Literal =>
+            l
 
           // Fold expressions that are foldable.
-          case e if e.foldable => Literal.create(e.eval(EmptyRow), e.dataType)
+          case e if e.foldable =>
+            Literal.create(e.eval(EmptyRow), e.dataType)
         }
     }
 }
@@ -790,28 +819,46 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
     plan transform {
       case q: LogicalPlan =>
         q transformExpressionsUp {
-          case TrueLiteral And e => e
-          case e And TrueLiteral => e
-          case FalseLiteral Or e => e
-          case e Or FalseLiteral => e
+          case TrueLiteral And e =>
+            e
+          case e And TrueLiteral =>
+            e
+          case FalseLiteral Or e =>
+            e
+          case e Or FalseLiteral =>
+            e
 
-          case FalseLiteral And _ => FalseLiteral
-          case _ And FalseLiteral => FalseLiteral
-          case TrueLiteral Or _   => TrueLiteral
-          case _ Or TrueLiteral   => TrueLiteral
+          case FalseLiteral And _ =>
+            FalseLiteral
+          case _ And FalseLiteral =>
+            FalseLiteral
+          case TrueLiteral Or _ =>
+            TrueLiteral
+          case _ Or TrueLiteral =>
+            TrueLiteral
 
-          case a And b if a.semanticEquals(b) => a
-          case a Or b if a.semanticEquals(b)  => a
+          case a And b if a.semanticEquals(b) =>
+            a
+          case a Or b if a.semanticEquals(b) =>
+            a
 
-          case a And (b Or c) if Not(a).semanticEquals(b) => And(a, c)
-          case a And (b Or c) if Not(a).semanticEquals(c) => And(a, b)
-          case (a Or b) And c if a.semanticEquals(Not(c)) => And(b, c)
-          case (a Or b) And c if b.semanticEquals(Not(c)) => And(a, c)
+          case a And (b Or c) if Not(a).semanticEquals(b) =>
+            And(a, c)
+          case a And (b Or c) if Not(a).semanticEquals(c) =>
+            And(a, b)
+          case (a Or b) And c if a.semanticEquals(Not(c)) =>
+            And(b, c)
+          case (a Or b) And c if b.semanticEquals(Not(c)) =>
+            And(a, c)
 
-          case a Or (b And c) if Not(a).semanticEquals(b) => Or(a, c)
-          case a Or (b And c) if Not(a).semanticEquals(c) => Or(a, b)
-          case (a And b) Or c if a.semanticEquals(Not(c)) => Or(b, c)
-          case (a And b) Or c if b.semanticEquals(Not(c)) => Or(a, c)
+          case a Or (b And c) if Not(a).semanticEquals(b) =>
+            Or(a, c)
+          case a Or (b And c) if Not(a).semanticEquals(c) =>
+            Or(a, b)
+          case (a And b) Or c if a.semanticEquals(Not(c)) =>
+            Or(b, c)
+          case (a And b) Or c if b.semanticEquals(Not(c)) =>
+            Or(a, c)
 
           // Common factor elimination for conjunction
           case and @ (left And right) =>
@@ -865,19 +912,28 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
               }
             }
 
-          case Not(TrueLiteral)  => FalseLiteral
-          case Not(FalseLiteral) => TrueLiteral
+          case Not(TrueLiteral) =>
+            FalseLiteral
+          case Not(FalseLiteral) =>
+            TrueLiteral
 
-          case Not(a GreaterThan b)        => LessThanOrEqual(a, b)
-          case Not(a GreaterThanOrEqual b) => LessThan(a, b)
+          case Not(a GreaterThan b) =>
+            LessThanOrEqual(a, b)
+          case Not(a GreaterThanOrEqual b) =>
+            LessThan(a, b)
 
-          case Not(a LessThan b)        => GreaterThanOrEqual(a, b)
-          case Not(a LessThanOrEqual b) => GreaterThan(a, b)
+          case Not(a LessThan b) =>
+            GreaterThanOrEqual(a, b)
+          case Not(a LessThanOrEqual b) =>
+            GreaterThan(a, b)
 
-          case Not(a Or b)  => And(Not(a), Not(b))
-          case Not(a And b) => Or(Not(a), Not(b))
+          case Not(a Or b) =>
+            And(Not(a), Not(b))
+          case Not(a And b) =>
+            Or(Not(a), Not(b))
 
-          case Not(Not(e)) => e
+          case Not(Not(e)) =>
+            e
         }
     }
 }
@@ -890,8 +946,10 @@ object SimplifyConditionals extends Rule[LogicalPlan] with PredicateHelper {
     plan transform {
       case q: LogicalPlan =>
         q transformExpressionsUp {
-          case If(TrueLiteral, trueValue, _)   => trueValue
-          case If(FalseLiteral, _, falseValue) => falseValue
+          case If(TrueLiteral, trueValue, _) =>
+            trueValue
+          case If(FalseLiteral, _, falseValue) =>
+            falseValue
 
           case e @ CaseWhen(branches, elseValue)
               if branches.exists(_._1 == FalseLiteral) =>
@@ -922,7 +980,8 @@ object SimplifyConditionals extends Rule[LogicalPlan] with PredicateHelper {
 object CombineUnions extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transform {
-      case Unions(children) => Union(children)
+      case Unions(children) =>
+        Union(children)
     }
 }
 
@@ -972,7 +1031,8 @@ object PruneFilters extends Rule[LogicalPlan] with PredicateHelper {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transform {
       // If the filter condition always evaluate to true, remove the filter.
-      case Filter(Literal(true, BooleanType), child) => child
+      case Filter(Literal(true, BooleanType), child) =>
+        child
       // If the filter condition always evaluate to null or false,
       // replace the input with an empty relation.
       case Filter(Literal(null, _), child) =>
@@ -1019,7 +1079,8 @@ object PushPredicateThroughProject
         // e.g., 'SELECT a + b AS c, d ...' produces Map(c -> a + b).
         val aliasMap = AttributeMap(
           fields.collect {
-            case a: Alias => (a.toAttribute, a.child)
+            case a: Alias =>
+              (a.toAttribute, a.child)
           })
 
         // Split the condition into small conditions by `And`, so that we can push down part of this
@@ -1028,7 +1089,8 @@ object PushPredicateThroughProject
 
         val (deterministic, nondeterministic) = andConditions.partition(
           _.collect {
-            case a: Attribute if aliasMap.contains(a) => aliasMap(a)
+            case a: Attribute if aliasMap.contains(a) =>
+              aliasMap(a)
           }.forall(_.deterministic))
 
         // If there is no nondeterministic conditions, push down the whole condition.
@@ -1238,13 +1300,18 @@ object OuterJoinElimination extends Rule[LogicalPlan] with PredicateHelper {
           join.right.outputSet.intersect(expr.references).nonEmpty)
 
     join.joinType match {
-      case RightOuter if leftHasNonNullPredicate => Inner
-      case LeftOuter if rightHasNonNullPredicate => Inner
+      case RightOuter if leftHasNonNullPredicate =>
+        Inner
+      case LeftOuter if rightHasNonNullPredicate =>
+        Inner
       case FullOuter if leftHasNonNullPredicate && rightHasNonNullPredicate =>
         Inner
-      case FullOuter if leftHasNonNullPredicate  => LeftOuter
-      case FullOuter if rightHasNonNullPredicate => RightOuter
-      case o                                     => o
+      case FullOuter if leftHasNonNullPredicate =>
+        LeftOuter
+      case FullOuter if rightHasNonNullPredicate =>
+        RightOuter
+      case o =>
+        o
     }
   }
 
@@ -1346,9 +1413,12 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             (
               rightFilterConditions ++ commonFilterCondition
             ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
-          case FullOuter       => f // DO Nothing for Full Outer Join
-          case NaturalJoin(_)  => sys.error("Untransformed NaturalJoin node")
-          case UsingJoin(_, _) => sys.error("Untransformed Using join node")
+          case FullOuter =>
+            f // DO Nothing for Full Outer Join
+          case NaturalJoin(_) =>
+            sys.error("Untransformed NaturalJoin node")
+          case UsingJoin(_, _) =>
+            sys.error("Untransformed Using join node")
         }
 
       // push down the join filter into sub query scanning if applicable
@@ -1395,9 +1465,12 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
               .reduceLeftOption(And)
 
             Join(newLeft, newRight, LeftOuter, newJoinCond)
-          case FullOuter       => f
-          case NaturalJoin(_)  => sys.error("Untransformed NaturalJoin node")
-          case UsingJoin(_, _) => sys.error("Untransformed Using join node")
+          case FullOuter =>
+            f
+          case NaturalJoin(_) =>
+            sys.error("Untransformed NaturalJoin node")
+          case UsingJoin(_, _) =>
+            sys.error("Untransformed Using join node")
         }
     }
 }
@@ -1408,7 +1481,8 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
 object SimplifyCasts extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transformAllExpressions {
-      case Cast(e, dataType) if e.dataType == dataType => e
+      case Cast(e, dataType) if e.dataType == dataType =>
+        e
     }
 }
 
@@ -1418,8 +1492,10 @@ object SimplifyCasts extends Rule[LogicalPlan] {
 object RemoveDispensableExpressions extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transformAllExpressions {
-      case UnaryPositive(child)    => child
-      case PromotePrecision(child) => child
+      case UnaryPositive(child) =>
+        child
+      case PromotePrecision(child) =>
+        child
     }
 }
 
@@ -1448,10 +1524,14 @@ object SimplifyCaseConversionExpressions extends Rule[LogicalPlan] {
     plan transform {
       case q: LogicalPlan =>
         q transformExpressionsUp {
-          case Upper(Upper(child)) => Upper(child)
-          case Upper(Lower(child)) => Upper(child)
-          case Lower(Upper(child)) => Lower(child)
-          case Lower(Lower(child)) => Lower(child)
+          case Upper(Upper(child)) =>
+            Upper(child)
+          case Upper(Lower(child)) =>
+            Upper(child)
+          case Lower(Upper(child)) =>
+            Lower(child)
+          case Lower(Lower(child)) =>
+            Lower(child)
         }
     }
 }
@@ -1517,7 +1597,8 @@ object ConvertToLocalRelation extends Rule[LogicalPlan] {
 object ReplaceDistinctWithAggregate extends Rule[LogicalPlan] {
   def apply(plan: LogicalPlan): LogicalPlan =
     plan transform {
-      case Distinct(child) => Aggregate(child.output, child.output, child)
+      case Distinct(child) =>
+        Aggregate(child.output, child.output, child)
     }
 }
 
@@ -1539,7 +1620,8 @@ object ReplaceIntersectWithSemiJoin extends Rule[LogicalPlan] {
       case Intersect(left, right) =>
         assert(left.output.size == right.output.size)
         val joinCond = left.output.zip(right.output).map {
-          case (l, r) => EqualNullSafe(l, r)
+          case (l, r) =>
+            EqualNullSafe(l, r)
         }
         Distinct(Join(left, right, LeftSemi, joinCond.reduceLeftOption(And)))
     }
@@ -1569,8 +1651,10 @@ object ComputeCurrentTime extends Rule[LogicalPlan] {
     val currentTime = Literal.create(timeExpr.eval(EmptyRow), timeExpr.dataType)
 
     plan transformAllExpressions {
-      case CurrentDate()      => currentDate
-      case CurrentTimestamp() => currentTime
+      case CurrentDate() =>
+        currentDate
+      case CurrentTimestamp() =>
+        currentTime
     }
   }
 }

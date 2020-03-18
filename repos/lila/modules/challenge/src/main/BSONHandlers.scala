@@ -18,16 +18,22 @@ private object BSONHandlers {
     new BSONHandler[BSONInteger, ColorChoice] {
       def read(b: BSONInteger) =
         b.value match {
-          case 1 => ColorChoice.White
-          case 2 => ColorChoice.Black
-          case _ => ColorChoice.Random
+          case 1 =>
+            ColorChoice.White
+          case 2 =>
+            ColorChoice.Black
+          case _ =>
+            ColorChoice.Random
         }
       def write(c: ColorChoice) =
         BSONInteger(
           c match {
-            case ColorChoice.White  => 1
-            case ColorChoice.Black  => 2
-            case ColorChoice.Random => 0
+            case ColorChoice.White =>
+              1
+            case ColorChoice.Black =>
+              2
+            case ColorChoice.Random =>
+              0
           })
     }
   implicit val ColorBSONHandler =
@@ -39,15 +45,19 @@ private object BSONHandlers {
     new BSON[TimeControl] {
       def reads(r: Reader) =
         (r.intO("l") |@| r.intO("i")) {
-          case (limit, inc) => TimeControl.Clock(limit, inc)
+          case (limit, inc) =>
+            TimeControl.Clock(limit, inc)
         } orElse {
           r intO "d" map TimeControl.Correspondence.apply
         } getOrElse TimeControl.Unlimited
       def writes(w: Writer, t: TimeControl) =
         t match {
-          case TimeControl.Clock(l, i)       => BSONDocument("l" -> l, "i" -> i)
-          case TimeControl.Correspondence(d) => BSONDocument("d" -> d)
-          case TimeControl.Unlimited         => BSONDocument()
+          case TimeControl.Clock(l, i) =>
+            BSONDocument("l" -> l, "i" -> i)
+          case TimeControl.Correspondence(d) =>
+            BSONDocument("d" -> d)
+          case TimeControl.Unlimited =>
+            BSONDocument()
         }
     }
   implicit val VariantBSONHandler =

@@ -332,7 +332,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
                   (t, token)
                 }
               }
-              case _ => None
+              case _ =>
+                None
             }
           html.application(x, tokens, generatedToken)
       } getOrElse NotFound
@@ -398,7 +399,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           .split(",")
           .map {
             _.split(":") match {
-              case Array(userName, isManager) => (userName, isManager.toBoolean)
+              case Array(userName, isManager) =>
+                (userName, isManager.toBoolean)
             }
           }
           .toList)
@@ -444,7 +446,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           .split(",")
           .map {
             _.split(":") match {
-              case Array(userName, isManager) => (userName, isManager.toBoolean)
+              case Array(userName, isManager) =>
+                (userName, isManager.toBoolean)
             }
           }
           .toList) {
@@ -519,7 +522,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           }
           helper.html
             .forkrepository(repository, (groups zip managerPermissions).toMap)
-        case _ => redirect(s"/${loginUserName}")
+        case _ =>
+          redirect(s"/${loginUserName}")
       }
     })
 
@@ -622,7 +626,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           messages: Messages): Option[String] = {
         if (value.split(",").exists {
               _.split(":") match {
-                case Array(userName, isManager) => isManager.toBoolean
+                case Array(userName, isManager) =>
+                  isManager.toBoolean
               }
             })
           None
@@ -638,8 +643,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           value: String,
           messages: Messages): Option[String] =
         SshUtil.str2PublicKey(value) match {
-          case Some(_) => None
-          case None    => Some("Key is invalid.")
+          case Some(_) =>
+            None
+          case None =>
+            Some("Key is invalid.")
         }
     }
 
@@ -650,8 +657,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           value: String,
           messages: Messages): Option[String] = {
         getAccountByUserName(value) match {
-          case Some(_) => None
-          case None    => Some("Invalid Group/User Account.")
+          case Some(_) =>
+            None
+          case None =>
+            Some("Invalid Group/User Account.")
         }
       }
     }

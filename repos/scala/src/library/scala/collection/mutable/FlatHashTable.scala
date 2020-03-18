@@ -125,8 +125,10 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
     "2.11.0")
   protected def findEntry(elem: A): Option[A] =
     findElemImpl(elem) match {
-      case null  => None
-      case entry => Some(entryToElem(entry))
+      case null =>
+        None
+      case entry =>
+        Some(entryToElem(entry))
     }
 
   /** Checks whether an element is contained in the hash table. */

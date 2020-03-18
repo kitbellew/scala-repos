@@ -37,7 +37,8 @@ object Test extends DirectTest {
       inheritedFromGenericCollection filterNot isExempt filter returnsView
 
     val grouped = needOverride.groupBy(_.owner).toSeq.sortBy {
-      case (owner, _) => viewType baseTypeIndex owner
+      case (owner, _) =>
+        viewType baseTypeIndex owner
     }
     val report = grouped
       .map {

@@ -30,8 +30,10 @@ class ShardingServiceTest extends FunSuite with MockitoSugar {
         distributor,
         { request: MockRequest =>
           request match {
-            case req: ShardingRequest => Some(req.shardingKey)
-            case _                    => None
+            case req: ShardingRequest =>
+              Some(req.shardingKey)
+            case _ =>
+              None
           }
         })
 

@@ -167,8 +167,10 @@ private object ScalaSdkData {
       "(?:scala-compiler|scala-library|scala-reflect)-(.*?)(?:-src|-sources|-javadoc).jar".r
 
     file.getName match {
-      case FileName(number) => Some(number)
-      case _                => None
+      case FileName(number) =>
+        Some(number)
+      case _ =>
+        None
     }
   }
 

@@ -56,8 +56,10 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
        */
       errorFlag || (
         out match {
-          case out: PrintWriter => out.checkError()
-          case _                => false
+          case out: PrintWriter =>
+            out.checkError()
+          case _ =>
+            false
         }
       )
     }
@@ -173,7 +175,8 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
     try {
       body
     } catch {
-      case _: IOException => setError()
+      case _: IOException =>
+        setError()
     }
   }
 

@@ -9,16 +9,20 @@ import org.jetbrains.annotations.TestOnly
 trait ResolvableReferenceElement extends PsiPolyVariantReference {
   def resolve(): PsiElement = {
     this.bind() match {
-      case Some(result) if !result.isCyclicReference => result.element
-      case _                                         => null
+      case Some(result) if !result.isCyclicReference =>
+        result.element
+      case _ =>
+        null
     }
   }
 
   @TestOnly
   def advancedResolve: Option[ScalaResolveResult] = {
     this.bind() match {
-      case Some(result) if !result.isCyclicReference => Some(result)
-      case _                                         => None
+      case Some(result) if !result.isCyclicReference =>
+        Some(result)
+      case _ =>
+        None
     }
   }
 }

@@ -30,7 +30,8 @@ object CachedInsidePsiElement {
       c.prefix.tree match {
         case q"new CachedInsidePsiElement(..$params)" if params.length == 2 =>
           (params.head, modCountParamToModTracker(c)(params(1), params.head))
-        case _ => abort("Wrong annotation parameters!")
+        case _ =>
+          abort("Wrong annotation parameters!")
       }
     }
 
@@ -86,7 +87,8 @@ object CachedInsidePsiElement {
           """
         println(res)
         c.Expr(res)
-      case _ => abort("You can only annotate one function!")
+      case _ =>
+        abort("You can only annotate one function!")
     }
   }
 

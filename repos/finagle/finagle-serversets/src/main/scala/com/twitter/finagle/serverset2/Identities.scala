@@ -51,8 +51,10 @@ class UserIdentity extends Identity {
 private[finagle] object Identities {
   private def filter(c: Identity): Option[String] =
     c.id match {
-      case Some(id) => Some("/%s/%s".format(c.scheme, id))
-      case _        => None
+      case Some(id) =>
+        Some("/%s/%s".format(c.scheme, id))
+      case _ =>
+        None
     }
 
   /**

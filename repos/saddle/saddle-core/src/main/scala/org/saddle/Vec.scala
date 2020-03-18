@@ -521,7 +521,8 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
           }
           eq
         }
-      case _ => false
+      case _ =>
+        false
     }
 
   /**

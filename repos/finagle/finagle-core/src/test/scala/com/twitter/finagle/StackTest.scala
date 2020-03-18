@@ -41,7 +41,8 @@ class StackTest extends FunSuite {
           next
         else
           Stack.Node(head, mk, next)
-      case other => other
+      case other =>
+        other
     }
 
     assert(stack.make(empty) == Seq(30, 1, 2, 3, 4))

@@ -221,7 +221,8 @@ private[akka] trait Pump {
     try while (transferState.isExecutable) {
       currentAction()
     } catch {
-      case NonFatal(e) ⇒ pumpFailed(e)
+      case NonFatal(e) ⇒
+        pumpFailed(e)
     }
 
     if (isPumpFinished)

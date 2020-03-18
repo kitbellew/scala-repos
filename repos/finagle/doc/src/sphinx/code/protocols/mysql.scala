@@ -14,9 +14,12 @@ object Shared {
   //#processRow
   def processRow(row: Row): Option[Long] =
     row("product").flatMap {
-      case LongValue(l) => Some(l)
-      case IntValue(i)  => Some(i.toLong)
-      case _            => None
+      case LongValue(l) =>
+        Some(l)
+      case IntValue(i) =>
+        Some(i.toLong)
+      case _ =>
+        None
     }
   //#processRow
 }
@@ -43,8 +46,10 @@ object ServiceFactoryExample {
     val product = client().flatMap { service =>
       // `service` is checked out from the pool.
       service(QueryRequest("SELECT 5*5 AS `product`")) map {
-        case rs: ResultSet => rs.rows.map(processRow)
-        case _             => Seq.empty
+        case rs: ResultSet =>
+          rs.rows.map(processRow)
+        case _ =>
+          Seq.empty
       } ensure {
         // put `service` back into the pool.
         service.close()

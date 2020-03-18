@@ -244,7 +244,8 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
     */
   def unapplySeq(s: CharSequence): Option[List[String]] =
     s match {
-      case null => None
+      case null =>
+        None
       case _ =>
         val m = pattern matcher s
         if (runMatcher(m))
@@ -328,8 +329,10 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
           Some((1 to m.groupCount).toList map m.group)
         else
           None
-      case m: Match => unapplySeq(m.matched)
-      case _        => None
+      case m: Match =>
+        unapplySeq(m.matched)
+      case _ =>
+        None
     }
 
   //  @see UnanchoredRegex
@@ -711,7 +714,8 @@ object Regex {
       nameToIndex.get(id) match {
         case None =>
           throw new NoSuchElementException("group name " + id + " not defined")
-        case Some(index) => group(index)
+        case Some(index) =>
+          group(index)
       }
 
     /** The matched string; equivalent to `matched.toString`. */

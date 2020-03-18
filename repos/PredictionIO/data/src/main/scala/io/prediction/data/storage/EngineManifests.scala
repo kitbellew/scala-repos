@@ -83,7 +83,8 @@ class EngineManifestSerializer
             fields.foldLeft(seed) {
               case (enginemanifest, field) =>
                 field match {
-                  case JField("id", JString(id)) => enginemanifest.copy(id = id)
+                  case JField("id", JString(id)) =>
+                    enginemanifest.copy(id = id)
                   case JField("version", JString(version)) =>
                     enginemanifest.copy(version = version)
                   case JField("name", JString(name)) =>
@@ -93,12 +94,15 @@ class EngineManifestSerializer
                   case JField("files", JArray(s)) =>
                     enginemanifest.copy(files = s.map(t =>
                       t match {
-                        case JString(file) => file
-                        case _             => ""
+                        case JString(file) =>
+                          file
+                        case _ =>
+                          ""
                       }))
                   case JField("engineFactory", JString(engineFactory)) =>
                     enginemanifest.copy(engineFactory = engineFactory)
-                  case _ => enginemanifest
+                  case _ =>
+                    enginemanifest
                 }
             }
         },

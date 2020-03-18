@@ -40,7 +40,8 @@ object PlayerRepo {
     bestByTour(tourId, nb, skip).map { res =>
       res
         .foldRight(List.empty[RankedPlayer] -> (res.size + skip)) {
-          case (p, (res, rank)) => (RankedPlayer(rank, p) :: res, rank - 1)
+          case (p, (res, rank)) =>
+            (RankedPlayer(rank, p) :: res, rank - 1)
         }
         ._1
     }
@@ -103,8 +104,10 @@ object PlayerRepo {
         coll.update(
           selectId(p._id),
           BSONDocument("$unset" -> BSONDocument("w" -> true)))
-      case Some(p) => funit
-      case None    => coll.insert(Player.make(tourId, user, perfLens))
+      case Some(p) =>
+        funit
+      case None =>
+        coll.insert(Player.make(tourId, user, perfLens))
     } void
 
   def withdraw(tourId: String, userId: String) =
@@ -160,7 +163,8 @@ object PlayerRepo {
               r = r + 1
             }
             b.result
-          case _ => Map.empty
+          case _ =>
+            Map.empty
         }
       }
     }
@@ -185,9 +189,12 @@ object PlayerRepo {
       id1: String,
       id2: String): Fu[Option[(Player, Player)]] =
     byTourAndUserIds(tourId, List(id1, id2)) map {
-      case List(p1, p2) if p1.is(id1) && p2.is(id2) => Some(p1 -> p2)
-      case List(p1, p2) if p1.is(id2) && p2.is(id1) => Some(p2 -> p1)
-      case _                                        => none
+      case List(p1, p2) if p1.is(id1) && p2.is(id2) =>
+        Some(p1 -> p2)
+      case List(p1, p2) if p1.is(id2) && p2.is(id1) =>
+        Some(p2 -> p1)
+      case _ =>
+        none
     }
 
   def setPerformance(player: Player, performance: Int) =

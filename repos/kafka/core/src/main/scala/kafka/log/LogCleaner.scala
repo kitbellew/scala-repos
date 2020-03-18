@@ -401,8 +401,10 @@ private[log] class Cleaner(
     // this position is defined to be a configurable time beneath the last modified time of the last clean segment
     val deleteHorizonMs =
       log.logSegments(0, cleanable.firstDirtyOffset).lastOption match {
-        case None      => 0L
-        case Some(seg) => seg.lastModified - log.config.deleteRetentionMs
+        case None =>
+          0L
+        case Some(seg) =>
+          seg.lastModified - log.config.deleteRetentionMs
       }
 
     // group the segments and clean the groups

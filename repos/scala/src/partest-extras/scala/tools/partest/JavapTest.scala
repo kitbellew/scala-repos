@@ -22,6 +22,7 @@ abstract class JavapTest extends ReplTest {
       val unsupported = res exists (s => baddies exists (s contains _))
       assert((unsupported || yah(res)), res.mkString("", "\n", "\n"))
     } catch {
-      case ae: AssertionError => ae.printStackTrace(sysout)
+      case ae: AssertionError =>
+        ae.printStackTrace(sysout)
     }
 }

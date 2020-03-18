@@ -177,8 +177,10 @@ class BackupRequestFilter[Req, Rep] private[exp] (
         // because it has either fired or we will dispatch a backup immediately.
         backupCountdown.raise(BackupRequestFilter.cancelEx)
         orig.transform {
-          case r @ Return(v) => Future.const(r)
-          case Throw(_)      => record(service(req), lost)
+          case r @ Return(v) =>
+            Future.const(r)
+          case Throw(_) =>
+            record(service(req), lost)
         }
       } else {
         // If we've waited long enough to fire the backup normally, do so and

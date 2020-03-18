@@ -27,6 +27,7 @@ object Test extends InteractiveTest {
         reporter.println(
           "Compilation Unit for " + source.file.name + " still loaded after askLoadedTyped")
 
-      case None => reporter.println("Test OK")
+      case None =>
+        reporter.println("Test OK")
     }
 }

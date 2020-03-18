@@ -26,7 +26,8 @@ class UTestTestFramework extends AbstractTestFramework {
         Seq("\"com.lihaoyi\" % \"utest_2.11\" % \"latest.integration\"")
       case Some(v) if v.startsWith("2.10") =>
         Seq("\"com.lihaoyi\" % \"utest_2.10\" % \"latest.integration\"")
-      case _ => Seq("\"com.lihaoyi\" %% \"utest\" % \"latest.integration\"")
+      case _ =>
+        Seq("\"com.lihaoyi\" %% \"utest\" % \"latest.integration\"")
     }
 
   override protected def getLibraryResolvers(

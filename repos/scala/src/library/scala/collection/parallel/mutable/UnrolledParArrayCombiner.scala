@@ -61,7 +61,8 @@ trait UnrolledParArrayCombiner[T] extends Combiner[T, ParArray[T]] {
   def combine[N <: T, NewTo >: ParArray[T]](
       other: Combiner[N, NewTo]): Combiner[N, NewTo] =
     other match {
-      case that if that eq this => this // just return this
+      case that if that eq this =>
+        this // just return this
       case that: UnrolledParArrayCombiner[t] =>
         buff concat that.buff
         this

@@ -53,8 +53,10 @@ object JsonCommand {
     } yield {
       val target =
         (in \ "target") match {
-          case JString(t) => Some(t)
-          case _          => None
+          case JString(t) =>
+            Some(t)
+          case _ =>
+            None
         }
       (command, target, params)
     }

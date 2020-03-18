@@ -308,7 +308,8 @@ private[hive] class HadoopTableReader(
         val fs = path.getFileSystem(sc.hiveconf)
         val filteredFiles = fs.listStatus(path, filter).map(_.getPath.toString)
         filteredFiles.mkString(",")
-      case None => path.toString
+      case None =>
+        path.toString
     }
   }
 

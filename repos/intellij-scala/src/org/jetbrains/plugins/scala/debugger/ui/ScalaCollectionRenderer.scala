@@ -111,7 +111,8 @@ object ScalaCollectionRenderer {
             !DebuggerUtils.instanceOf(ct, streamClassName) && !DebuggerUtils
             .instanceOf(ct, iteratorClassName) =>
         true
-      case _ => evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
+      case _ =>
+        evaluateBoolean(value, evaluationContext, hasDefiniteSizeEval)
     }
   }
 
@@ -120,7 +121,8 @@ object ScalaCollectionRenderer {
       case ct: ClassType
           if ct.name.toLowerCase.contains("empty") || ct.name.contains("Nil") =>
         false
-      case _ => evaluateBoolean(value, evaluationContext, nonEmptyEval)
+      case _ =>
+        evaluateBoolean(value, evaluationContext, nonEmptyEval)
     }
   }
 
@@ -155,7 +157,8 @@ object ScalaCollectionRenderer {
             evaluationContext: EvaluationContext,
             labelListener: DescriptorLabelListener): String = {
           descriptor.getValue match {
-            case null => "null"
+            case null =>
+              "null"
             case objRef: ObjectReference =>
               val typeName =
                 if (objRef.referenceType() != null)
@@ -186,8 +189,10 @@ object ScalaCollectionRenderer {
       context: EvaluationContext,
       evaluator: Evaluator): Boolean = {
     evaluate(value, context, evaluator) match {
-      case b: BooleanValue => b.booleanValue()
-      case x               => throw EvaluationException(s"$x is not a boolean")
+      case b: BooleanValue =>
+        b.booleanValue()
+      case x =>
+        throw EvaluationException(s"$x is not a boolean")
     }
   }
 
@@ -196,8 +201,10 @@ object ScalaCollectionRenderer {
       context: EvaluationContext,
       evaluator: Evaluator): Int = {
     evaluate(value, context, evaluator) match {
-      case i: IntegerValue => i.intValue()
-      case x               => throw EvaluationException(s"$x is not an integer")
+      case i: IntegerValue =>
+        i.intValue()
+      case x =>
+        throw EvaluationException(s"$x is not an integer")
     }
   }
 
@@ -211,8 +218,10 @@ object ScalaCollectionRenderer {
     } else if (value != null) {
       val newContext = context.createEvaluationContext(value)
       evaluator.exprEval.evaluate(newContext) match {
-        case b: BooleanValue => b.booleanValue()
-        case _               => throw EvaluationException("Cannot evaluate expression")
+        case b: BooleanValue =>
+          b.booleanValue()
+        case _ =>
+          throw EvaluationException("Cannot evaluate expression")
       }
     } else
       throw EvaluationException("Cannot evaluate expression")

@@ -61,7 +61,8 @@ object StaticRoutesGenerator extends RoutesGenerator {
       task.file.getCanonicalPath.replace(File.separator, "/"),
       new java.util.Date().toString)
     val routes = rules.collect {
-      case r: Route => r
+      case r: Route =>
+        r
     }
 
     val forwardsRoutesFiles =
@@ -182,7 +183,8 @@ object StaticRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     rules
       .collect {
-        case r: Route => r
+        case r: Route =>
+          r
       }
       .groupBy(_.call.packageName)
       .map {
@@ -223,7 +225,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       task.file.getCanonicalPath.replace(File.separator, "/"),
       new java.util.Date().toString)
     val routes = rules.collect {
-      case r: Route => r
+      case r: Route =>
+        r
     }
 
     val forwardsRoutesFiles =
@@ -278,7 +281,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
     val includesDeps =
       rules
         .collect {
-          case include: Include => include
+          case include: Include =>
+            include
         }
         .groupBy(_.router)
         .zipWithIndex
@@ -295,7 +299,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
     val routesDeps =
       rules
         .collect {
-          case route: Route => route
+          case route: Route =>
+            route
         }
         .groupBy(r =>
           (r.call.packageName, r.call.controller, r.call.instantiate))
@@ -419,7 +424,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       namespaceReverseRouter: Boolean) = {
     rules
       .collect {
-        case r: Route => r
+        case r: Route =>
+          r
       }
       .groupBy(_.call.packageName)
       .map {

@@ -275,7 +275,8 @@ private[spark] class JavaFutureActionWrapper[S, T](
     // This will throw TimeoutException on timeout:
     Await.ready(futureAction, timeout)
     futureAction.value.get match {
-      case scala.util.Success(value) => converter(value)
+      case scala.util.Success(value) =>
+        converter(value)
       case scala.util.Failure(exception) =>
         if (isCancelled) {
           throw new CancellationException("Job cancelled").initCause(exception)

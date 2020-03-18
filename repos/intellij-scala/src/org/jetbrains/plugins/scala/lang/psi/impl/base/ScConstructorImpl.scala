@@ -84,12 +84,15 @@ class ScConstructorImpl(node: ASTNode)
               e.getContext match {
                 case n: ScNewTemplateDefinition =>
                   n.expectedType()
-                case _ => None
+                case _ =>
+                  None
               }
-            case _ => None
+            case _ =>
+              None
           }
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -101,10 +104,12 @@ class ScConstructorImpl(node: ASTNode)
             e.getContext match {
               case n: ScNewTemplateDefinition =>
                 Some(n)
-              case _ => None
+              case _ =>
+                None
             }
         }
-      case _ => None
+      case _ =>
+        None
     }
   }
 
@@ -119,8 +124,10 @@ class ScConstructorImpl(node: ASTNode)
       ScParameterizedType(
         tp,
         clazz.getTypeParameters.map {
-          case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
-          case ptp             => new ScTypeParameterType(ptp, subst)
+          case tp: ScTypeParam =>
+            new ScTypeParameterType(tp, subst)
+          case ptp =>
+            new ScTypeParameterType(ptp, subst)
         })
     }
   }
@@ -187,7 +194,8 @@ class ScConstructorImpl(node: ASTNode)
           case ptp: PsiTypeParameterListOwner
               if ptp.getTypeParameters.nonEmpty =>
             ptp.getTypeParameters.toSeq.map(new TypeParameter(_))
-          case _ => return Success(res, Some(this))
+          case _ =>
+            return Success(res, Some(this))
         }
       s.getParent match {
         case p: ScParameterizedTypeElement =>
@@ -260,7 +268,8 @@ class ScConstructorImpl(node: ASTNode)
                       p.getDefaultValue != null,
                       isRepeated = false,
                       isByName = false))
-                case _ => Seq.empty
+                case _ =>
+                  Seq.empty
               }
               buffer += Success(
                 ScMethodType(
@@ -271,7 +280,8 @@ class ScConstructorImpl(node: ASTNode)
             case _ =>
           }
           buffer.toSeq
-        case _ => Seq(Failure("Hasn't reference", Some(this)))
+        case _ =>
+          Seq(Failure("Hasn't reference", Some(this)))
       }
     }
 
@@ -284,13 +294,17 @@ class ScConstructorImpl(node: ASTNode)
 
   def simpleTypeElement: Option[ScSimpleTypeElement] =
     typeElement match {
-      case s: ScSimpleTypeElement => Some(s)
+      case s: ScSimpleTypeElement =>
+        Some(s)
       case p: ScParameterizedTypeElement =>
         p.typeElement match {
-          case s: ScSimpleTypeElement => Some(s)
-          case _                      => None
+          case s: ScSimpleTypeElement =>
+            Some(s)
+          case _ =>
+            None
         }
-      case _ => None
+      case _ =>
+        None
     }
 
   override def accept(visitor: ScalaElementVisitor) {
@@ -299,8 +313,10 @@ class ScConstructorImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitConstructor(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitConstructor(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -314,7 +330,8 @@ class ScConstructorImpl(node: ASTNode)
           fun.parameterList.clauses.map(_.parameters)
         case Some(m: PsiMethod) if m.isConstructor =>
           Seq(m.getParameterList.getParameters.toSeq)
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     (
       for {

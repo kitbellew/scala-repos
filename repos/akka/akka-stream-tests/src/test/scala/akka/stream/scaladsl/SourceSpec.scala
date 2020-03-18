@@ -263,11 +263,14 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
     "generate a finite fibonacci sequence" in {
       Source
         .unfold((0, 1)) {
-          case (a, _) if a > 10000000 ⇒ None
-          case (a, b) ⇒ Some((b, a + b) → a)
+          case (a, _) if a > 10000000 ⇒
+            None
+          case (a, b) ⇒
+            Some((b, a + b) → a)
         }
         .runFold(List.empty[Int]) {
-          case (xs, x) ⇒ x :: xs
+          case (xs, x) ⇒
+            x :: xs
         }
         .futureValue should ===(expected)
     }
@@ -280,11 +283,14 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         whenReady(
           Source
             .unfold((0, 1)) {
-              case (a, _) if a > 10000000 ⇒ throw t
-              case (a, b) ⇒ Some((b, a + b) → a)
+              case (a, _) if a > 10000000 ⇒
+                throw t
+              case (a, b) ⇒
+                Some((b, a + b) → a)
             }
             .runFold(List.empty[Int]) {
-              case (xs, x) ⇒ x :: xs
+              case (xs, x) ⇒
+                x :: xs
             }
             .failed) {
           _ should be theSameInstanceAs (t)
@@ -294,11 +300,14 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
     "generate a finite fibonacci sequence asynchronously" in {
       Source
         .unfoldAsync((0, 1)) {
-          case (a, _) if a > 10000000 ⇒ Future.successful(None)
-          case (a, b) ⇒ Future(Some((b, a + b) → a))(system.dispatcher)
+          case (a, _) if a > 10000000 ⇒
+            Future.successful(None)
+          case (a, b) ⇒
+            Future(Some((b, a + b) → a))(system.dispatcher)
         }
         .runFold(List.empty[Int]) {
-          case (xs, x) ⇒ x :: xs
+          case (xs, x) ⇒
+            x :: xs
         }
         .futureValue should ===(expected)
     }
@@ -306,11 +315,13 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
     "generate an unbounded fibonacci sequence" in {
       Source
         .unfold((0, 1))({
-          case (a, b) ⇒ Some((b, a + b) → a)
+          case (a, b) ⇒
+            Some((b, a + b) → a)
         })
         .take(36)
         .runFold(List.empty[Int]) {
-          case (xs, x) ⇒ x :: xs
+          case (xs, x) ⇒
+            x :: xs
         }
         .futureValue should ===(expected)
     }

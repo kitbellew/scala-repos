@@ -144,7 +144,8 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
       clazz: Class[T]): T = {
     val bytes = data.toByteArray
     serialization.deserialize(bytes, clazz) match {
-      case Success(x: T) ⇒ x
+      case Success(x: T) ⇒
+        x
       case Success(other) ⇒
         throw new IllegalArgumentException(
           "Can't deserialize to [%s], got [%s]".format(clazz.getName, other))
@@ -155,8 +156,10 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
         // akka.routing.RouterConfig
         // akka.actor.Scope
         serialization.deserialize(bytes, classOf[java.io.Serializable]) match {
-          case Success(x: T) ⇒ x
-          case _ ⇒ throw e // the first exception
+          case Success(x: T) ⇒
+            x
+          case _ ⇒
+            throw e // the first exception
         }
     }
   }

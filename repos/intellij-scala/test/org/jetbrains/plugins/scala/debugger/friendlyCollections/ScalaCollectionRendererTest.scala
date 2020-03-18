@@ -80,7 +80,8 @@ class ScalaCollectionRendererTest
           impl.updateRepresentation(
             evaluationContext(),
             DescriptorLabelListener.DUMMY_LISTENER)
-        case a => println(a)
+        case a =>
+          println(a)
       }
     }
 
@@ -110,7 +111,8 @@ class ScalaCollectionRendererTest
       local setContext evaluationContext
       local
     } catch {
-      case e: EvaluateException => null
+      case e: EvaluateException =>
+        null
     }
   }
 

@@ -126,11 +126,14 @@ trait ColumnarTableModuleTestSupport[M[+_]]
         def scan(a: BigDecimal, cols: Map[ColumnRef, Column], range: Range)
             : (A, Map[ColumnRef, Column]) = {
           val identityPath = cols collect {
-            case c @ (ColumnRef(CPath.Identity, _), _) => c
+            case c @ (ColumnRef(CPath.Identity, _), _) =>
+              c
           }
           val prioritized = identityPath.values filter {
-            case (_: LongColumn | _: DoubleColumn | _: NumColumn) => true
-            case _                                                => false
+            case (_: LongColumn | _: DoubleColumn | _: NumColumn) =>
+              true
+            case _ =>
+              false
           }
 
           val mask =

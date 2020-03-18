@@ -101,7 +101,8 @@ class FixedPointCheck
             implicit val scale = FixedScale(denom)
             Some(f(fx, fy, scale))
           } catch {
-            case _: FixedPointOverflow => None
+            case _: FixedPointOverflow =>
+              None
           }
 
         ofz match {
@@ -156,7 +157,8 @@ class FixedPointCheck
             implicit val scale = FixedScale(denom)
             Some(f(fx, y, scale))
           } catch {
-            case _: FixedPointOverflow => None
+            case _: FixedPointOverflow =>
+              None
           }
 
         ofz match {
@@ -192,7 +194,8 @@ class FixedPointCheck
           implicit val scale = FixedScale(denom)
           Some(new FixedPoint(x).pow(k))
         } catch {
-          case _: FixedPointOverflow => None
+          case _: FixedPointOverflow =>
+            None
         }
 
       ofz match {

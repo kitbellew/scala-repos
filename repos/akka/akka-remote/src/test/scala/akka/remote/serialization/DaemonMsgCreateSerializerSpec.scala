@@ -79,7 +79,8 @@ class DaemonMsgCreateSerializerSpec extends AkkaSpec {
         // Duration.Inf doesn't equal Duration.Inf, so we use another for test
         val supervisorStrategy =
           OneForOneStrategy(3, 10 seconds) {
-            case _ ⇒ SupervisorStrategy.Escalate
+            case _ ⇒
+              SupervisorStrategy.Escalate
           }
         val deploy1 = Deploy(
           path = "path1",

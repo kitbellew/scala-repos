@@ -24,9 +24,12 @@ final case class Android(version: String) extends Sdk
 object SdkUtils {
   def findProjectSdk(sdk: Sdk): Option[projectRoots.Sdk] =
     sdk match {
-      case Android(version)    => findAndroidJdkByVersion(version)
-      case JdkByName(version)  => allJdks.find(_.getName.contains(version))
-      case JdkByHome(homeFile) => findJdkByHome(homeFile)
+      case Android(version) =>
+        findAndroidJdkByVersion(version)
+      case JdkByName(version) =>
+        allJdks.find(_.getName.contains(version))
+      case JdkByHome(homeFile) =>
+        findJdkByHome(homeFile)
     }
 
   def allAndroidSdks: Seq[projectRoots.Sdk] =
@@ -53,7 +56,8 @@ object SdkUtils {
     val jdkVersion = Option(jdk.getVersionString).getOrElse(jdk.getName)
 
     JavaLanguageLevels.collectFirst {
-      case (name, level) if jdkVersion.contains(name) => level
+      case (name, level) if jdkVersion.contains(name) =>
+        level
     }
   }
 
@@ -74,7 +78,8 @@ object SdkUtils {
         val sndInt = snd.toInt
         fstInt >= sndInt
       } catch {
-        case exc: NumberFormatException => false
+        case exc: NumberFormatException =>
+          false
       }
 
     val matchingSdks =

@@ -44,7 +44,8 @@ object BuildSettings {
       } else
         branch
     } catch {
-      case NonFatal(_) => "unknown"
+      case NonFatal(_) =>
+        "unknown"
     }
   }
 
@@ -112,8 +113,10 @@ object BuildSettings {
       .settings(
         (javacOptions in compile) ~= (
           _.map {
-            case "1.8" => "1.6"
-            case other => other
+            case "1.8" =>
+              "1.6"
+            case other =>
+              other
           }
         ))
   }

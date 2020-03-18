@@ -67,7 +67,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
         summaryHeight(obj)
       }
-      case _ => ko
+      case _ =>
+        ko
     }
   }
 
@@ -103,13 +104,15 @@ trait NormalizationSpecs extends EvalStackSpecs {
             d.toDouble mustEqual 17881.13433742673
         }
       }
-      case _ => ko
+      case _ =>
+        ko
     }
   }
 
   def makeObject(query: String): Map[String, SValue] = {
     val result = evalE(query) collect {
-      case (_, SObject(values)) => values("model1")
+      case (_, SObject(values)) =>
+        values("model1")
     }
     val SObject(obj) = result.head
     obj
@@ -170,7 +173,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
               summary mustEqual weightResult
             }
 
-            case _ => ko
+            case _ =>
+              ko
           }
 
         testModels(models("model1"))
@@ -238,7 +242,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
     def makeObject(query: String): Map[String, SValue] = {
       val result = evalE(query) collect {
-        case (_, SObject(values)) => values("model1")
+        case (_, SObject(values)) =>
+          values("model1")
       }
       val SObject(obj) = result.head
       obj
@@ -275,7 +280,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
         testModel(models("model4"))
       }
 
-      case _ => ko
+      case _ =>
+        ko
     }
   }
 
@@ -320,10 +326,12 @@ trait NormalizationSpecs extends EvalStackSpecs {
     val expected0 = evalE(expectedInput)
 
     val result = result0 collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
     val expected = expected0 collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     result mustEqual expected
@@ -351,11 +359,13 @@ trait NormalizationSpecs extends EvalStackSpecs {
     val expected = evalE(expectedInput)
 
     val resultValues = result collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     val expectedValues = expected collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     resultValues mustEqual expectedValues
@@ -418,11 +428,13 @@ trait NormalizationSpecs extends EvalStackSpecs {
     expected.size mustEqual result.size
 
     val resultValues = result collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     val expectedValues = expected collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     resultValues mustEqual expectedValues
@@ -451,11 +463,13 @@ trait NormalizationSpecs extends EvalStackSpecs {
     val expected = evalE(expectedInput)
 
     val resultValues = result collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     val expectedValues = expected collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     resultValues mustEqual expectedValues
@@ -525,11 +539,13 @@ trait NormalizationSpecs extends EvalStackSpecs {
     val expected = evalE(expectedInput)
 
     val resultValues = result collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     val expectedValues = expected collect {
-      case (ids, value) if ids.size == 1 => value
+      case (ids, value) if ids.size == 1 =>
+        value
     }
 
     resultValues mustEqual expectedValues
@@ -559,7 +575,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
         obj("originalHeight") mustEqual obj("HeightIncm")
       }
 
-      case _ => ko
+      case _ =>
+        ko
     }
   }
 
@@ -591,8 +608,10 @@ trait NormalizationSpecs extends EvalStackSpecs {
         obj: Map[String, SValue],
         clusterId: String): Set[String] =
       obj(clusterId) match {
-        case SObject(ctr) => ctr.keySet
-        case _            => sys.error("malformed SObject")
+        case SObject(ctr) =>
+          ctr.keySet
+        case _ =>
+          sys.error("malformed SObject")
       }
 
     result must haveAllElementsLike {
@@ -615,7 +634,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
               ko
         }
 
-      case _ => ko
+      case _ =>
+        ko
     }
   }
 }

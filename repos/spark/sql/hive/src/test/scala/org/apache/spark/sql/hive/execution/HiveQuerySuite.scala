@@ -122,7 +122,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     def assertBroadcastNestedLoopJoin(sqlText: String): Unit = {
       assert(
         sql(sqlText).queryExecution.sparkPlan.collect {
-          case _: BroadcastNestedLoopJoin => 1
+          case _: BroadcastNestedLoopJoin =>
+            1
         }.nonEmpty)
     }
 
@@ -783,7 +784,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val actual =
       sql("SELECT (CASE key WHEN key THEN key END) FROM src").rdd
         .map {
-          case Row(i: Int) => i
+          case Row(i: Int) =>
+            i
         }
         .collect()
         .toSet
@@ -791,7 +793,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     val expected =
       sql("SELECT key FROM src").rdd
         .map {
-          case Row(i: Int) => i
+          case Row(i: Int) =>
+            i
         }
         .collect()
         .toSet
@@ -827,7 +830,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   def isExplanation(result: DataFrame): Boolean = {
     val explanation = result.select('plan).collect().map {
-      case Row(plan: String) => plan
+      case Row(plan: String) =>
+        plan
     }
     explanation.contains("== Physical Plan ==")
   }
@@ -847,7 +851,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       ("bar", 1),
       ("foo", 4),
       ("bar", 3)).zipWithIndex.map {
-      case ((value, attr), key) => HavingRow(key, value, attr)
+      case ((value, attr), key) =>
+        HavingRow(key, value, attr)
     }
     TestHive.sparkContext
       .parallelize(fixture)
@@ -1236,7 +1241,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
       analyzedPlan.collect {
-        case _: Project => ()
+        case _: Project =>
+          ()
       }.size
     }
   }
@@ -1255,7 +1261,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
       analyzedPlan.collect {
-        case _: Project => ()
+        case _: Project =>
+          ()
       }.size
     }
   }
@@ -1288,7 +1295,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     def collectResults(df: DataFrame): Set[Any] =
       df.collect()
         .map {
-          case Row(key: String, value: String) => key -> value
+          case Row(key: String, value: String) =>
+            key -> value
           case Row(key: String, defaultValue: String, doc: String) =>
             (key, defaultValue, doc)
         }

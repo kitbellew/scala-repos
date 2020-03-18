@@ -17,7 +17,8 @@ trait EmbeddedJettyContainer extends JettyContainer {
     */
   def localPort: Option[Int] =
     server.getConnectors collectFirst {
-      case x: ServerConnector => x.getLocalPort
+      case x: ServerConnector =>
+        x.getLocalPort
     }
 
   def contextPath = "/"

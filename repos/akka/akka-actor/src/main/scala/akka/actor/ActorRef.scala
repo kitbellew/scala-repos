@@ -164,8 +164,10 @@ abstract class ActorRef
     */
   final override def equals(that: Any): Boolean =
     that match {
-      case other: ActorRef ⇒ path.uid == other.path.uid && path == other.path
-      case _ ⇒ false
+      case other: ActorRef ⇒
+        path.uid == other.path.uid && path == other.path
+      case _ ⇒
+        false
     }
 
   override def toString: String =
@@ -418,9 +420,12 @@ private[akka] class LocalActorRef private[akka] (
         case l: LocalActorRef ⇒
           val next =
             name.next() match {
-              case ".." ⇒ l.getParent
-              case "" ⇒ l
-              case any ⇒ l.getSingleChild(any)
+              case ".." ⇒
+                l.getParent
+              case "" ⇒
+                l
+              case any ⇒
+                l.getSingleChild(any)
             }
           if (next == Nobody || name.isEmpty)
             next
@@ -593,7 +598,8 @@ private[akka] class EmptyLocalActorRef(
   override def !(message: Any)(implicit
       sender: ActorRef = Actor.noSender): Unit =
     message match {
-      case null ⇒ throw new InvalidMessageException("Message is null")
+      case null ⇒
+        throw new InvalidMessageException("Message is null")
       case d: DeadLetter ⇒
         specialHandle(
           d.message,
@@ -621,7 +627,8 @@ private[akka] class EmptyLocalActorRef(
               existenceConfirmed = false,
               addressTerminated = false))
         true
-      case _: Unwatch ⇒ true // Just ignore
+      case _: Unwatch ⇒
+        true // Just ignore
       case Identify(messageId) ⇒
         sender ! ActorIdentity(messageId, None)
         true
@@ -651,7 +658,8 @@ private[akka] class EmptyLocalActorRef(
               sender,
             this))
         true
-      case _ ⇒ false
+      case _ ⇒
+        false
     }
 }
 
@@ -669,8 +677,10 @@ private[akka] class DeadLetterActorRef(
 
   override def !(message: Any)(implicit sender: ActorRef = this): Unit =
     message match {
-      case null ⇒ throw new InvalidMessageException("Message is null")
-      case Identify(messageId) ⇒ sender ! ActorIdentity(messageId, None)
+      case null ⇒
+        throw new InvalidMessageException("Message is null")
+      case Identify(messageId) ⇒
+        sender ! ActorIdentity(messageId, None)
       case d: DeadLetter ⇒
         if (!specialHandle(d.message, d.sender))
           eventStream.publish(d)
@@ -696,7 +706,8 @@ private[akka] class DeadLetterActorRef(
               existenceConfirmed = false,
               addressTerminated = false))
         true
-      case _ ⇒ super.specialHandle(msg, sender)
+      case _ ⇒
+        super.specialHandle(msg, sender)
     }
 
   @throws(classOf[java.io.ObjectStreamException])
@@ -751,7 +762,8 @@ private[akka] class VirtualPathContainer(
               emptyRef.tell(msg, sender)
         }
       }
-      case _ ⇒ super.!(message)
+      case _ ⇒
+        super.!(message)
     }
 
   def addChild(name: String, ref: InternalActorRef): Unit = {
@@ -792,7 +804,8 @@ private[akka] class VirtualPathContainer(
         this
       else
         children.get(n) match {
-          case null ⇒ Nobody
+          case null ⇒
+            Nobody
           case some ⇒
             if (name.isEmpty)
               some
@@ -840,8 +853,10 @@ private[akka] final class FunctionRef(
 
   override def sendSystemMessage(message: SystemMessage): Unit = {
     message match {
-      case w: Watch ⇒ addWatcher(w.watchee, w.watcher)
-      case u: Unwatch ⇒ remWatcher(u.watchee, u.watcher)
+      case w: Watch ⇒
+        addWatcher(w.watchee, w.watcher)
+      case u: Unwatch ⇒
+        remWatcher(u.watchee, u.watcher)
       case DeathWatchNotification(actorRef, _, _) ⇒
         this.!(
           Terminated(actorRef)(

@@ -44,7 +44,8 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
           Blame(_, Outcome.Abort)
         }
     } ?? {
-      case Blame(player, outcome) => player.userId.??(save(outcome))
+      case Blame(player, outcome) =>
+        player.userId.??(save(outcome))
     }
 
   def rageQuit(game: Game, quitterColor: Color): Funit =
@@ -110,8 +111,10 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
           )
           .map(_.value)
       } map2 UserRecordBSONHandler.read flatMap {
-        case None         => fufail(s"can't find record for user $userId")
-        case Some(record) => legiferate(record)
+        case None =>
+          fufail(s"can't find record for user $userId")
+        case Some(record) =>
+          legiferate(record)
       } logFailure lila.log("playban")
 
   private def legiferate(record: UserRecord): Funit =

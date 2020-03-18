@@ -41,7 +41,8 @@ class OperatorAndBacktickedSearcher
 
     val toProcess: Seq[(PsiElement, String)] = inReadAction {
       element match {
-        case e if !e.isValid => Nil
+        case e if !e.isValid =>
+          Nil
         case ScalaNamesUtil.isBackticked(name) =>
           if (name != "")
             Seq((element, name), (element, s"`$name`"))
@@ -50,7 +51,8 @@ class OperatorAndBacktickedSearcher
         case named: ScNamedElement
             if named.name.exists(ScalaNamesUtil.isOpCharacter) =>
           Seq((named, named.name))
-        case _ => Nil
+        case _ =>
+          Nil
       }
     }
     toProcess.foreach {

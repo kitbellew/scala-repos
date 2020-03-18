@@ -31,9 +31,12 @@ trait InteractiveTestSettings
     def adjustPaths(paths: settings.PathSetting*) {
       for (p <- paths if argsString.contains(p.name))
         p.value = p.value.map {
-          case '/' => separatorChar
-          case ':' => pathSeparatorChar
-          case c   => c
+          case '/' =>
+            separatorChar
+          case ':' =>
+            pathSeparatorChar
+          case c =>
+            c
         }
     }
 
@@ -45,7 +48,8 @@ trait InteractiveTestSettings
     settings.processArgumentString(argsString) match {
       case (false, rest) =>
         println("error processing arguments (unprocessed: %s)".format(rest))
-      case _ => ()
+      case _ =>
+        ()
     }
 
     // Make the --sourcepath path provided in the .flags file (if any) relative to the test's base directory
@@ -68,7 +72,8 @@ trait InteractiveTestSettings
     val str =
       try File(optsFile).slurp()
       catch {
-        case e: java.io.IOException => ""
+        case e: java.io.IOException =>
+          ""
       }
     str.lines.filter(!_.startsWith(CommentStartDelimiter)).mkString(" ")
   }

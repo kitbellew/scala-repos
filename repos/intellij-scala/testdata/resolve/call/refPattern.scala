@@ -8,6 +8,7 @@ abstract class A {
 
   def bar =
     42 match {
-      case test @ (MY_C) => test.fo < ref > o
+      case test @ (MY_C) =>
+        test.fo < ref > o
     }
 }

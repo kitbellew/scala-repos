@@ -40,8 +40,10 @@ object Logger {
     */
   def apply(logClass: Class[_], logSource: String): SLFLogger =
     logClass match {
-      case c if c == classOf[DummyClassForStringSources] ⇒ apply(logSource)
-      case _ ⇒ SLFLoggerFactory getLogger logClass
+      case c if c == classOf[DummyClassForStringSources] ⇒
+        apply(logSource)
+      case _ ⇒
+        SLFLoggerFactory getLogger logClass
     }
 
   /**
@@ -115,7 +117,8 @@ class Slf4jLogger
     MDC.put(mdcAkkaTimestamp, formatTimestamp(logEvent.timestamp))
     MDC.put(mdcActorSystemAttributeName, actorSystemName)
     logEvent.mdc foreach {
-      case (k, v) ⇒ MDC.put(k, String.valueOf(v))
+      case (k, v) ⇒
+        MDC.put(k, String.valueOf(v))
     }
     try logStatement
     finally {

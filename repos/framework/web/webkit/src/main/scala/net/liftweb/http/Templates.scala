@@ -45,7 +45,8 @@ object Templates {
             lv.dispatch(last)()
           else
             Empty
-        case _ => Empty
+        case _ =>
+          Empty
       }
     } else
       Empty
@@ -56,8 +57,10 @@ object Templates {
       what: LiftRules.ViewDispatchPF): Box[NodeSeq] =
     if (what.isDefinedAt(whole))
       what(whole) match {
-        case Left(func) => func()
-        case _          => Empty
+        case Left(func) =>
+          func()
+        case _ =>
+          Empty
       }
     else
       Empty
@@ -68,11 +71,14 @@ object Templates {
       last: String,
       what: List[LiftRules.ViewDispatchPF]): Box[NodeSeq] =
     what match {
-      case Nil => Empty
+      case Nil =>
+        Empty
       case x :: xs =>
         (checkForLiftView(part, last, x) or checkForFunc(whole, x)) match {
-          case Full(ret) => Full(ret)
-          case _         => findInViews(whole, part, last, xs)
+          case Full(ret) =>
+            Full(ret)
+          case _ =>
+            findInViews(whole, part, last, xs)
         }
     }
 
@@ -114,17 +120,21 @@ object Templates {
   def checkForContentId(in: NodeSeq): NodeSeq = {
     def df(in: MetaData): Option[PrefixedAttribute] =
       in match {
-        case Null => None
+        case Null =>
+          None
         case p: PrefixedAttribute
             if (p.pre == "l" || p.pre == "lift") &&
               (p.key == "content_id") =>
           Some(p)
-        case n => df(n.next)
+        case n =>
+          df(n.next)
       }
 
     in.flatMap {
-        case e: Elem if e.label == "html" => df(e.attributes)
-        case _                            => None
+        case e: Elem if e.label == "html" =>
+          df(e.attributes)
+        case _ =>
+          None
       }
       .flatMap { md =>
         Helpers.findId(in, md.value.text)
@@ -144,16 +154,19 @@ object Templates {
                         case s if s.startsWith("lift:content_id=") =>
                           Some(
                             urlDecode(s.substring("lift:content_id=".length)))
-                        case _ => None
+                        case _ =>
+                          None
                       }.headOption
 
                     }
                   }
               }
 
-              case _ => None
+              case _ =>
+                None
             }
-          case _ => None
+          case _ =>
+            None
         }
         .flatMap { id =>
           Helpers.findId(in, id)
@@ -235,8 +248,10 @@ object Templates {
                 val xmlb =
                   try {
                     LiftRules.doWithResource(name)(parser.parse) match {
-                      case Full(seq) => seq
-                      case _         => Empty
+                      case Full(seq) =>
+                        seq
+                      case _ =>
+                        Empty
                     }
                   } catch {
                     case e: ValidationException
@@ -257,7 +272,8 @@ object Templates {
                         }
                     </div>)
 
-                    case e: ValidationException => Empty
+                    case e: ValidationException =>
+                      Empty
                   }
                 if (xmlb.isDefined) {
                   found = true
@@ -286,7 +302,8 @@ object Templates {
                             }{
                               e.getStackTrace.map(_.toString).mkString("\n")
                             }</pre>
-                          case _ => NodeSeq.Empty
+                          case _ =>
+                            NodeSeq.Empty
                         }
                       }
                     }
@@ -307,9 +324,12 @@ object Templates {
   private def lookForClasses(places: List[String]): Box[NodeSeq] = {
     val (controller, action) =
       places match {
-        case ctl :: act :: _ => (ctl, act)
-        case ctl :: _        => (ctl, "index")
-        case Nil             => ("default_template", "index")
+        case ctl :: act :: _ =>
+          (ctl, act)
+        case ctl :: _ =>
+          (ctl, "index")
+        case Nil =>
+          ("default_template", "index")
       }
     val trans = List[String => String](n => n, n => camelify(n))
     val toTry = trans.flatMap(f =>
@@ -322,31 +342,47 @@ object Templates {
           Class.forName(clsName).asInstanceOf[Class[AnyRef]]).flatMap { c =>
           (
             c.newInstance match {
-              case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
+              case inst: InsecureLiftView =>
+                c.getMethod(action).invoke(inst)
               case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
                 inst.dispatch(action)()
-              case _ => Empty
+              case _ =>
+                Empty
             }
           ) match {
-            case null | Empty | None  => Empty
-            case n: Group             => Full(n)
-            case n: Elem              => Full(n)
-            case s: NodeSeq           => Full(s)
-            case Some(n: Group)       => Full(n)
-            case Some(n: Elem)        => Full(n)
-            case Some(n: NodeSeq)     => Full(n)
-            case Some(SafeNodeSeq(n)) => Full(n)
-            case Full(n: Group)       => Full(n)
-            case Full(n: Elem)        => Full(n)
-            case Full(n: NodeSeq)     => Full(n)
-            case Full(SafeNodeSeq(n)) => Full(n)
-            case _                    => Empty
+            case null | Empty | None =>
+              Empty
+            case n: Group =>
+              Full(n)
+            case n: Elem =>
+              Full(n)
+            case s: NodeSeq =>
+              Full(s)
+            case Some(n: Group) =>
+              Full(n)
+            case Some(n: Elem) =>
+              Full(n)
+            case Some(n: NodeSeq) =>
+              Full(n)
+            case Some(SafeNodeSeq(n)) =>
+              Full(n)
+            case Full(n: Group) =>
+              Full(n)
+            case Full(n: Elem) =>
+              Full(n)
+            case Full(n: NodeSeq) =>
+              Full(n)
+            case Full(SafeNodeSeq(n)) =>
+              Full(n)
+            case _ =>
+              Empty
           }
         }
       } catch {
         case ite: java.lang.reflect.InvocationTargetException =>
           throw ite.getCause
-        case e: NoClassDefFoundError => Empty
+        case e: NoClassDefFoundError =>
+          Empty
       }
     }
   }

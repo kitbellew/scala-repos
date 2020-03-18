@@ -117,6 +117,7 @@ object FutureTest extends SpecLite {
     else
       Future.fork(
         non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map ({
-          case (l, r) => l ++ r
+          case (l, r) =>
+            l ++ r
         }))
 }

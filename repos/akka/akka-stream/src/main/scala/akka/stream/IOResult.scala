@@ -30,7 +30,8 @@ final case class IOResult private[stream] (count: Long, status: Try[Done]) {
     */
   def getError: Throwable =
     status match {
-      case Failure(t) ⇒ t
+      case Failure(t) ⇒
+        t
       case Success(_) ⇒
         throw new UnsupportedOperationException("IO operation was successful.")
     }

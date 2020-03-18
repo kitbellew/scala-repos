@@ -121,9 +121,11 @@ class HighlightingAdvisor(project: Project)
     NotificationUtil.builder(
       project,
       message) setNotificationType notificationType setTitle title setHandler {
-      case "enable"  => enabled = true
-      case "disable" => enabled = false
-      case _         =>
+      case "enable" =>
+        enabled = true
+      case "disable" =>
+        enabled = false
+      case _ =>
     }
   }
 

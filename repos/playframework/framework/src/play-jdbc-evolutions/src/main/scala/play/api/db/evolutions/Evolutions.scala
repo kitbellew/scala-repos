@@ -207,7 +207,8 @@ object Evolutions {
       .zip(ups)
       .reverse
       .dropWhile {
-        case (down, up) => down.hash == up.hash
+        case (down, up) =>
+          down.hash == up.hash
       }
       .reverse
       .unzip

@@ -39,8 +39,10 @@ object BasicHttpCredentials {
     val bytes = Base64.rfc2045.decodeFast(credentials)
     val userPass = new String(bytes, `UTF-8`.nioCharset)
     userPass.indexOf(':') match {
-      case -1 ⇒ apply(userPass, "")
-      case ix ⇒ apply(userPass.substring(0, ix), userPass.substring(ix + 1))
+      case -1 ⇒
+        apply(userPass, "")
+      case ix ⇒
+        apply(userPass.substring(0, ix), userPass.substring(ix + 1))
     }
   }
 }

@@ -88,7 +88,8 @@ object SafeDeleteProcessorUtil {
                     .map(_.getElement)
                     .filterNot(isSyntheticObject)
                   nonSyntheticTargets.toSet subsetOf allElementsToDelete.toSet
-                case _ => true
+                case _ =>
+                  true
               }
 
             val usagesToAdd =

@@ -9,6 +9,7 @@ object Test extends App {
   case class NestedAnnotArg(ai: AnnotationInfo)
 
   NestedAnnotArg(AnnotationInfo("a", 1)) match {
-    case NestedAnnotArg(x) => println(x)
+    case NestedAnnotArg(x) =>
+      println(x)
   }
 }

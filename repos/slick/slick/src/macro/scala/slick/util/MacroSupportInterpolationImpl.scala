@@ -92,7 +92,8 @@ object MacroSupportInterpolationImpl {
                     "Invalid escaped character '" + c2 + "' in literal \"" + str + "\"")
               }
             }
-          case c => sb append c
+          case c =>
+            sb append c
         }
         pos += 1
       }
@@ -104,7 +105,8 @@ object MacroSupportInterpolationImpl {
     val Expr(Apply(_, List(Apply(_, parts)))) = ctx.prefix
     val pit =
       parts.map {
-        case Literal(Constant(s: String)) => s
+        case Literal(Constant(s: String)) =>
+          s
       }.iterator
     val ait = args.iterator
     val exprs = new ListBuffer[Tree]

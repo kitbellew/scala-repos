@@ -70,7 +70,8 @@ class ImportsUsagesTest extends ScalaResolveTestCase {
         val imports = srr.importsUsed
         assert(imports.size == 1)
         printResults(imports)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 
@@ -89,7 +90,8 @@ class ImportsUsagesTest extends ScalaResolveTestCase {
         assert(imports.size == 3)
 
         printResults(imports)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 
@@ -108,7 +110,8 @@ class ImportsUsagesTest extends ScalaResolveTestCase {
         assert(imports.size == 3)
 
         printResults(imports)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 
@@ -127,7 +130,8 @@ class ImportsUsagesTest extends ScalaResolveTestCase {
         assert(imports.size == 1)
 
         printResults(imports)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 
@@ -146,7 +150,8 @@ class ImportsUsagesTest extends ScalaResolveTestCase {
         assert(imports.size == 2)
 
         printResults(imports)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 
@@ -165,7 +170,8 @@ class ImportsUsagesTest extends ScalaResolveTestCase {
         assert(imports.size == 2)
 
         printResults(imports)
-      case _ => throw new Exception("Wrong reference!")
+      case _ =>
+        throw new Exception("Wrong reference!")
     }
   }
 

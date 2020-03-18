@@ -537,7 +537,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     val joinResult = rdd.leftOuterJoin(other, partitioner)
     fromRDD(
       joinResult.mapValues {
-        case (v, w) => (v, JavaUtils.optionToOptional(w))
+        case (v, w) =>
+          (v, JavaUtils.optionToOptional(w))
       })
   }
 
@@ -553,7 +554,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     val joinResult = rdd.rightOuterJoin(other, partitioner)
     fromRDD(
       joinResult.mapValues {
-        case (v, w) => (JavaUtils.optionToOptional(v), w)
+        case (v, w) =>
+          (JavaUtils.optionToOptional(v), w)
       })
   }
 
@@ -643,7 +645,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     val joinResult = rdd.leftOuterJoin(other)
     fromRDD(
       joinResult.mapValues {
-        case (v, w) => (v, JavaUtils.optionToOptional(w))
+        case (v, w) =>
+          (v, JavaUtils.optionToOptional(w))
       })
   }
 
@@ -659,7 +662,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     val joinResult = rdd.leftOuterJoin(other, numPartitions)
     fromRDD(
       joinResult.mapValues {
-        case (v, w) => (v, JavaUtils.optionToOptional(w))
+        case (v, w) =>
+          (v, JavaUtils.optionToOptional(w))
       })
   }
 
@@ -674,7 +678,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     val joinResult = rdd.rightOuterJoin(other)
     fromRDD(
       joinResult.mapValues {
-        case (v, w) => (JavaUtils.optionToOptional(v), w)
+        case (v, w) =>
+          (JavaUtils.optionToOptional(v), w)
       })
   }
 
@@ -690,7 +695,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     val joinResult = rdd.rightOuterJoin(other, numPartitions)
     fromRDD(
       joinResult.mapValues {
-        case (v, w) => (JavaUtils.optionToOptional(v), w)
+        case (v, w) =>
+          (JavaUtils.optionToOptional(v), w)
       })
   }
 

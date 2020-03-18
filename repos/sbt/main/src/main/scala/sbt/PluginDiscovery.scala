@@ -122,7 +122,8 @@ object PluginDiscovery {
           Nil
         else
           definition.name :: Nil
-      case _ => Nil
+      case _ =>
+        Nil
     }
   }
 
@@ -180,7 +181,8 @@ object PluginDiscovery {
           throw e
         else
           throw cause
-      case e: LinkageError => incompatiblePlugins(data, e)
+      case e: LinkageError =>
+        incompatiblePlugins(data, e)
     }
 
   private[this] def incompatiblePlugins(
@@ -193,7 +195,8 @@ object PluginDiscovery {
         (id.organization, id.name)
       } distinct;
     val evictedStrings = evictedModules map {
-      case (o, n) => o + ":" + n
+      case (o, n) =>
+        o + ":" + n
     }
     val msgBase = "Binary incompatibility in plugins detected."
     val msgExtra =

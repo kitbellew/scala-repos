@@ -52,8 +52,10 @@ private[csv] object CSVInferSchema {
       case (thisHeader, rootType) =>
         val dType =
           rootType match {
-            case _: NullType => StringType
-            case other       => other
+            case _: NullType =>
+              StringType
+            case other =>
+              other
           }
         StructField(thisHeader, dType, nullable = true)
     }
@@ -95,13 +97,20 @@ private[csv] object CSVInferSchema {
       typeSoFar
     } else {
       typeSoFar match {
-        case NullType      => tryParseInteger(field)
-        case IntegerType   => tryParseInteger(field)
-        case LongType      => tryParseLong(field)
-        case DoubleType    => tryParseDouble(field)
-        case TimestampType => tryParseTimestamp(field)
-        case BooleanType   => tryParseBoolean(field)
-        case StringType    => StringType
+        case NullType =>
+          tryParseInteger(field)
+        case IntegerType =>
+          tryParseInteger(field)
+        case LongType =>
+          tryParseLong(field)
+        case DoubleType =>
+          tryParseDouble(field)
+        case TimestampType =>
+          tryParseTimestamp(field)
+        case BooleanType =>
+          tryParseBoolean(field)
+        case StringType =>
+          StringType
         case other: DataType =>
           throw new UnsupportedOperationException(
             s"Unexpected data type $other")
@@ -162,18 +171,24 @@ private[csv] object CSVInferSchema {
     * [[org.apache.spark.sql.catalyst.analysis.HiveTypeCoercion]]
     */
   val findTightestCommonType: (DataType, DataType) => Option[DataType] = {
-    case (t1, t2) if t1 == t2 => Some(t1)
-    case (NullType, t1)       => Some(t1)
-    case (t1, NullType)       => Some(t1)
-    case (StringType, t2)     => Some(StringType)
-    case (t1, StringType)     => Some(StringType)
+    case (t1, t2) if t1 == t2 =>
+      Some(t1)
+    case (NullType, t1) =>
+      Some(t1)
+    case (t1, NullType) =>
+      Some(t1)
+    case (StringType, t2) =>
+      Some(StringType)
+    case (t1, StringType) =>
+      Some(StringType)
 
     // Promote numeric types to the highest of the two and all numeric types to unlimited decimal
     case (t1, t2) if Seq(t1, t2).forall(numericPrecedence.contains) =>
       val index = numericPrecedence.lastIndexWhere(t => t == t1 || t == t2)
       Some(numericPrecedence(index))
 
-    case _ => None
+    case _ =>
+      None
   }
 }
 
@@ -201,10 +216,14 @@ private[csv] object CSVTypeCast {
       null
     } else {
       castType match {
-        case _: ByteType    => datum.toByte
-        case _: ShortType   => datum.toShort
-        case _: IntegerType => datum.toInt
-        case _: LongType    => datum.toLong
+        case _: ByteType =>
+          datum.toByte
+        case _: ShortType =>
+          datum.toShort
+        case _: IntegerType =>
+          datum.toInt
+        case _: LongType =>
+          datum.toLong
         case _: FloatType =>
           Try(datum.toFloat)
             .getOrElse(
@@ -219,7 +238,8 @@ private[csv] object CSVTypeCast {
                 .getInstance(Locale.getDefault)
                 .parse(datum)
                 .doubleValue())
-        case _: BooleanType => datum.toBoolean
+        case _: BooleanType =>
+          datum.toBoolean
         case dt: DecimalType =>
           val value = new BigDecimal(datum.replaceAll(",", ""))
           Decimal(value, dt.precision, dt.scale)
@@ -231,7 +251,8 @@ private[csv] object CSVTypeCast {
         // TODO(hossein): would be good to support other common date formats
         case _: DateType =>
           DateTimeUtils.millisToDays(DateTimeUtils.stringToTime(datum).getTime)
-        case _: StringType => UTF8String.fromString(datum)
+        case _: StringType =>
+          UTF8String.fromString(datum)
         case _ =>
           throw new RuntimeException(s"Unsupported type: ${castType.typeName}")
       }
@@ -247,14 +268,20 @@ private[csv] object CSVTypeCast {
   def toChar(str: String): Char = {
     if (str.charAt(0) == '\\') {
       str.charAt(1) match {
-        case 't' => '\t'
-        case 'r' => '\r'
-        case 'b' => '\b'
-        case 'f' => '\f'
+        case 't' =>
+          '\t'
+        case 'r' =>
+          '\r'
+        case 'b' =>
+          '\b'
+        case 'f' =>
+          '\f'
         case '\"' =>
           '\"' // In case user changes quote char and uses \" as delimiter in options
-        case '\''                       => '\''
-        case 'u' if str == """\u0000""" => '\u0000'
+        case '\'' =>
+          '\''
+        case 'u' if str == """\u0000""" =>
+          '\u0000'
         case _ =>
           throw new IllegalArgumentException(
             s"Unsupported special character for delimiter: $str")

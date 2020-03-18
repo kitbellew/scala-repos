@@ -57,8 +57,10 @@ class CreateScalaDocStubAction
         id.getParent match {
           case docOwner: ScDocCommentOwner =>
             docOwner.docComment match {
-              case Some(comment) => recreateStub(docOwner, editor.getDocument)
-              case None          => createStub(docOwner, editor.getDocument)
+              case Some(comment) =>
+                recreateStub(docOwner, editor.getDocument)
+              case None =>
+                createStub(docOwner, editor.getDocument)
             }
           case _ =>
         }
@@ -109,7 +111,8 @@ class CreateScalaDocStubAction
         case tag if tag.getName == groupName =>
           newTags remove tag.getValueElement.getText match {
             case Some(elem) => //do nothing
-            case None       => tag.delete()
+            case None =>
+              tag.delete()
           }
         case _ =>
       }

@@ -105,7 +105,8 @@ object CsvParser {
     // first line is either header, or needs to be processed
     val fields = Vec(firstLine).take(locs)
     fields.toSeq.zipWithIndex.map {
-      case (s, i) => addToBuffer(s, i)
+      case (s, i) =>
+        addToBuffer(s, i)
     }
 
     // parse remaining rows
@@ -261,27 +262,31 @@ object CsvParser {
     try {
       java.lang.Integer.parseInt(s)
     } catch {
-      case _: NumberFormatException => Int.MinValue
+      case _: NumberFormatException =>
+        Int.MinValue
     }
 
   def parseLong(s: String) =
     try {
       java.lang.Long.parseLong(s)
     } catch {
-      case _: NumberFormatException => Long.MinValue
+      case _: NumberFormatException =>
+        Long.MinValue
     }
 
   def parseFloat(s: String) =
     try {
       java.lang.Float.parseFloat(s)
     } catch {
-      case _: NumberFormatException => Float.NaN
+      case _: NumberFormatException =>
+        Float.NaN
     }
 
   def parseDouble(s: String) =
     try {
       java.lang.Double.parseDouble(s)
     } catch {
-      case _: NumberFormatException => Double.NaN
+      case _: NumberFormatException =>
+        Double.NaN
     }
 }

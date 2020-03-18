@@ -35,7 +35,8 @@ private[team] final class PaginatorBuilder(
           length)
         users ← $find.byOrderedIds[User](members.map(_.user))
       } yield members zip users map {
-        case (member, user) => MemberWithUser(member, user)
+        case (member, user) =>
+          MemberWithUser(member, user)
       }
     private def selector = MemberRepo teamQuery team.id
     private def sorting = $sort desc "date"

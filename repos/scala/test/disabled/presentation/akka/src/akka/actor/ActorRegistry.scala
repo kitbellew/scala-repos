@@ -197,7 +197,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
         actorRef.get.actor.getClass)
     }
     findTypedActor({
-      case a: Some[AnyRef] if predicate(a.get) => a
+      case a: Some[AnyRef] if predicate(a.get) =>
+        a
     })
   }
 
@@ -427,6 +428,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
     */
   def clear =
     foreach {
-      case (k, v) => remove(k, v)
+      case (k, v) =>
+        remove(k, v)
     }
 }

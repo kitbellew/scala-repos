@@ -31,9 +31,12 @@ private final class PushApi(
                 _.finish,
                 PushApi.Data(
                   title = pov.win match {
-                    case Some(true)  => "You won!"
-                    case Some(false) => "You lost."
-                    case _           => "It's a draw."
+                    case Some(true) =>
+                      "You won!"
+                    case Some(false) =>
+                      "You lost."
+                    case _ =>
+                      "It's a draw."
                   },
                   body = s"Your game with ${opponentName(pov)} is over.",
                   payload = Json.obj(
@@ -154,9 +157,12 @@ private final class PushApi(
     List(
       c.mode.fold("Casual", "Rated"),
       c.timeControl match {
-        case Unlimited         => "Unlimited"
-        case Correspondence(d) => s"$d days"
-        case c: Clock          => c.show
+        case Unlimited =>
+          "Unlimited"
+        case Correspondence(d) =>
+          s"$d days"
+        case c: Clock =>
+          c.show
       },
       c.variant.name) mkString " • "
   }
@@ -165,8 +171,10 @@ private final class PushApi(
     import makeTimeout.short
     roundSocketHub ? Ask(pov.gameId, IsOnGame(pov.color)) mapTo manifest[
       Boolean] flatMap {
-      case true  => funit
-      case false => f
+      case true =>
+        funit
+      case false =>
+        f
     }
   }
 

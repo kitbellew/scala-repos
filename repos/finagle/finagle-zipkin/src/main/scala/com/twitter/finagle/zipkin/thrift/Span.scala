@@ -39,7 +39,8 @@ case class Span(
     parentSpanString match {
       case Some(parentSpanString) =>
         "%s<:%s".format(spanString, parentSpanString)
-      case None => spanString
+      case None =>
+        spanString
     }
   }
 
@@ -48,8 +49,10 @@ case class Span(
 
     span.setId(traceId.spanId.toLong)
     traceId._parentId match {
-      case Some(id) => span.setParent_id(id.toLong)
-      case None     => ()
+      case Some(id) =>
+        span.setParent_id(id.toLong)
+      case None =>
+        ()
     }
     span.setTrace_id(traceId.traceId.toLong)
     span.setName(name)

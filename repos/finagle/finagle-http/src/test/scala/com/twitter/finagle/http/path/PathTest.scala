@@ -61,8 +61,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test(":? extractor") {
     assert {
       (Path("/test.json") :? ParamMap()) match {
-        case Root / "test.json" :? _ => true
-        case _                       => false
+        case Root / "test.json" :? _ =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -73,26 +75,34 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
     assert {
       (Path("/test.json") :? ParamMap("a" -> "1", "b" -> "2")) match {
-        case Root / "test.json" :? A(a) => a == "1"
-        case _                          => false
+        case Root / "test.json" :? A(a) =>
+          a == "1"
+        case _ =>
+          false
       }
     }
     assert {
       (Path("/test.json") :? ParamMap("a" -> "1", "b" -> "2")) match {
-        case Root / "test.json" :? B(b) => b == "2"
-        case _                          => false
+        case Root / "test.json" :? B(b) =>
+          b == "2"
+        case _ =>
+          false
       }
     }
     assert {
       (Path("/test.json") :? ParamMap("a" -> "1", "b" -> "2")) match {
-        case Root / "test.json" :? (A(a) :& B(b)) => a == "1" && b == "2"
-        case _                                    => false
+        case Root / "test.json" :? (A(a) :& B(b)) =>
+          a == "1" && b == "2"
+        case _ =>
+          false
       }
     }
     assert {
       (Path("/test.json") :? ParamMap("a" -> "1", "b" -> "2")) match {
-        case Root / "test.json" :? (B(b) :& A(a)) => a == "1" && b == "2"
-        case _                                    => false
+        case Root / "test.json" :? (B(b) :& A(a)) =>
+          a == "1" && b == "2"
+        case _ =>
+          false
       }
     }
   }
@@ -111,7 +121,8 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
       ) match {
         case Root / "test.json" :? (I(i) :& L(l) :& D(d)) =>
           i == 1 && l == 2147483648L && d == 1.3d
-        case _ => false
+        case _ =>
+          false
       }
     }
   }
@@ -119,8 +130,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("~ extractor on Path") {
     assert {
       Path("/foo.json") match {
-        case Root / "foo" ~ "json" => true
-        case _                     => false
+        case Root / "foo" ~ "json" =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -128,8 +141,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("~ extractor on filename foo.json") {
     assert {
       "foo.json" match {
-        case "foo" ~ "json" => true
-        case _              => false
+        case "foo" ~ "json" =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -137,8 +152,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("~ extractor on filename foo") {
     assert {
       "foo" match {
-        case "foo" ~ "" => true
-        case _          => false
+        case "foo" ~ "" =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -146,8 +163,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("-> extractor") {
     assert {
       (Method.Get, Path("/test.json")) match {
-        case Method.Get -> Root / "test.json" => true
-        case _                                => false
+        case Method.Get -> Root / "test.json" =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -155,8 +174,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Root extractor") {
     assert {
       Path("/") match {
-        case Root => true
-        case _    => false
+        case Root =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -165,8 +186,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert {
       (
         Path("/test.json") match {
-          case Root => true
-          case _    => false
+          case Root =>
+            true
+          case _ =>
+            false
         }
       ) == false
     }
@@ -175,8 +198,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Root extractor, empty path") {
     assert {
       Path("") match {
-        case Root => true
-        case _    => false
+        case Root =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -184,8 +209,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("/ extractor") {
     assert {
       Path("/1/2/3/test.json") match {
-        case Root / "1" / "2" / "3" / "test.json" => true
-        case _                                    => false
+        case Root / "1" / "2" / "3" / "test.json" =>
+          true
+        case _ =>
+          false
       }
     }
   }
@@ -193,8 +220,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Integer extractor") {
     assert {
       Path("/user/123") match {
-        case Root / "user" / Integer(userId) => userId == 123
-        case _                               => false
+        case Root / "user" / Integer(userId) =>
+          userId == 123
+        case _ =>
+          false
       }
     }
   }
@@ -202,8 +231,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Integer extractor, negative int") {
     assert {
       Path("/user/-123") match {
-        case Root / "user" / Integer(userId) => userId == -123
-        case _                               => false
+        case Root / "user" / Integer(userId) =>
+          userId == -123
+        case _ =>
+          false
       }
     }
   }
@@ -212,8 +243,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert {
       (
         Path("/user/invalid") match {
-          case Root / "user" / Integer(userId) => true
-          case _                               => false
+          case Root / "user" / Integer(userId) =>
+            true
+          case _ =>
+            false
         }
       ) == false
     }
@@ -223,8 +256,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert {
       (
         Path("/user/2147483648") match {
-          case Root / "user" / Integer(userId) => true
-          case _                               => false
+          case Root / "user" / Integer(userId) =>
+            true
+          case _ =>
+            false
         }
       ) == false
     }
@@ -233,8 +268,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
   test("Long extractor") {
     assert {
       Path("/user/123") match {
-        case Root / "user" / Long(userId) => userId == 123
-        case _                            => false
+        case Root / "user" / Long(userId) =>
+          userId == 123
+        case _ =>
+          false
       }
     }
   }
@@ -243,8 +280,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert {
       (
         Path("/user/invalid") match {
-          case Root / "user" / Long(userId) => true
-          case _                            => false
+          case Root / "user" / Long(userId) =>
+            true
+          case _ =>
+            false
         }
       ) == false
     }
@@ -254,8 +293,10 @@ class PathTest extends FunSuite with GeneratorDrivenPropertyChecks {
     assert {
       (
         Path("/user/9223372036854775808") match {
-          case Root / "user" / Long(userId) => true
-          case _                            => false
+          case Root / "user" / Long(userId) =>
+            true
+          case _ =>
+            false
         }
       ) == false
     }

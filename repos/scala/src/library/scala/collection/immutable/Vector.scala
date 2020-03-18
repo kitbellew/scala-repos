@@ -268,7 +268,8 @@ final class Vector[+A] private[immutable] (
             while (ri.hasNext)
               v = ri.next +: v
             v.asInstanceOf[That]
-          case _ => super.++(again)
+          case _ =>
+            super.++(again)
         }
       }
     } else

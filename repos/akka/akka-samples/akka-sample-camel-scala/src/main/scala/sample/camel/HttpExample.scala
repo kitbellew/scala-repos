@@ -26,7 +26,8 @@ object HttpExample {
     def endpointUri = "jetty:http://0.0.0.0:8875/"
 
     def receive = {
-      case msg => producer forward msg
+      case msg =>
+        producer forward msg
     }
   }
 
@@ -58,7 +59,8 @@ object HttpExample {
             new String(body).replaceAll("Akka ", "AKKA ")
           }
         )
-      case msg: Failure => sender() ! msg
+      case msg: Failure =>
+        sender() ! msg
     }
   }
 

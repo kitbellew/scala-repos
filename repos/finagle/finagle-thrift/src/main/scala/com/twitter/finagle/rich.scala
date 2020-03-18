@@ -40,7 +40,8 @@ private[twitter] object ThriftUtil {
   def findClass1(name: String): Option[Class[_]] =
     try Some(Class.forName(name))
     catch {
-      case _: ClassNotFoundException => None
+      case _: ClassNotFoundException =>
+        None
     }
 
   def findClass[A](name: String): Option[Class[A]] =
@@ -54,7 +55,8 @@ private[twitter] object ThriftUtil {
     try {
       Some(clz.getConstructor(paramTypes: _*))
     } catch {
-      case _: NoSuchMethodException => None
+      case _: NoSuchMethodException =>
+        None
     }
 
   def findMethod(
@@ -63,7 +65,8 @@ private[twitter] object ThriftUtil {
       params: Class[_]*): Option[Method] =
     try Some(clz.getMethod(name, params: _*))
     catch {
-      case _: NoSuchMethodException => None
+      case _: NoSuchMethodException =>
+        None
     }
 
   def findRootWithSuffix(str: String, suffix: String): Option[String] =
@@ -84,7 +87,8 @@ private[twitter] object ThriftUtil {
           else
             None
         } catch {
-          case NonFatal(_) => None
+          case NonFatal(_) =>
+            None
         }
       }
 
@@ -407,8 +411,10 @@ trait ThriftRichClient {
     "6.7.x")
   def newIface[Iface](group: Group[SocketAddress], cls: Class[_]): Iface =
     group match {
-      case LabelledGroup(g, label) => newIface(Name.fromGroup(g), label, cls)
-      case _                       => newIface(Name.fromGroup(group), "", cls)
+      case LabelledGroup(g, label) =>
+        newIface(Name.fromGroup(g), label, cls)
+      case _ =>
+        newIface(Name.fromGroup(group), "", cls)
     }
 
   /**
@@ -418,9 +424,12 @@ trait ThriftRichClient {
     val underlying = newService(name, label)
     val clientLabel =
       (label, defaultClientName) match {
-        case ("", "") => Showable.show(name)
-        case ("", l1) => l1
-        case (l0, l1) => l0
+        case ("", "") =>
+          Showable.show(name)
+        case ("", l1) =>
+          l1
+        case (l0, l1) =>
+          l0
       }
     val sr = stats.scope(clientLabel)
     val responseClassifier =

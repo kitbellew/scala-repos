@@ -240,7 +240,8 @@ class RuntimePickler(
     val fieldTpe = fieldTag.tpe
     if (shouldBotherAboutSharing(fieldTpe))
       fieldValue match {
-        case null => pickler.asInstanceOf[Pickler[Null]].pickle(null, builder)
+        case null =>
+          pickler.asInstanceOf[Pickler[Null]].pickle(null, builder)
         case _ =>
           val oid = scala.pickling.internal.lookupPicklee(fieldValue)
           builder.hintOid(oid)
@@ -271,7 +272,8 @@ class RuntimePickler(
               else
                 new PrivateJavaFieldLogic(fir, javaField))
           } catch {
-            case e: java.lang.NoSuchFieldException => List()
+            case e: java.lang.NoSuchFieldException =>
+              List()
           }
       }
 

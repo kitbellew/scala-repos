@@ -30,8 +30,10 @@ object Enumerators {
           case ScalaTokenTypes.tSEMICOLON =>
             builder.advanceLexer()
             false
-          case _ if builder.newlineBeforeCurrentToken => false
-          case _ if Guard.parse(builder)              => true
+          case _ if builder.newlineBeforeCurrentToken =>
+            false
+          case _ if Guard.parse(builder) =>
+            true
           case _ =>
             exit = false;
             true

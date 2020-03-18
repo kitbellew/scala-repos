@@ -440,7 +440,8 @@ trait UnregisterReceiver extends ContextWrapper with Destroyable {
       } catch {
         // Suppress "Receiver not registered" exception
         // Refer to http://stackoverflow.com/questions/2682043/how-to-check-if-receiver-is-registered-in-android
-        case e: IllegalArgumentException => e.printStackTrace()
+        case e: IllegalArgumentException =>
+          e.printStackTrace()
       }
     }
 

@@ -40,7 +40,8 @@ object TypecheckingMacros {
 
     def treeToString(t: Tree): String =
       t match {
-        case Literal(Constant(str: String)) => str
+        case Literal(Constant(str: String)) =>
+          str
 
         case Apply(Select(t1, name), List(t2)) if name.decoded == "+" =>
           treeToString(t1) + treeToString(t2)

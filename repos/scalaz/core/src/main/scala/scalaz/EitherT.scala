@@ -19,8 +19,10 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   final class Switching_\/[X](r: => X) {
     def <<?:(left: => X)(implicit F: Functor[F]): F[X] =
       F.map(EitherT.this.run) {
-        case -\/(_) => left
-        case \/-(_) => r
+        case -\/(_) =>
+          left
+        case \/-(_) =>
+          r
       }
   }
 
@@ -150,8 +152,10 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
     val g = run
     EitherT(
       F.bind(g) {
-        case -\/(_)       => x.run
-        case r @ (\/-(_)) => F.point(r)
+        case -\/(_) =>
+          x.run
+        case r @ (\/-(_)) =>
+          F.point(r)
       })
   }
 
@@ -208,8 +212,10 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   /** Return the value from whichever side of the disjunction is defined, given a commonly assignable type. */
   def merge[AA >: A](implicit F: Functor[F], ev: B <~< AA): F[AA] = {
     F.map(run) {
-      case -\/(a) => a
-      case \/-(b) => ev(b)
+      case -\/(a) =>
+        a
+      case \/-(b) =>
+        ev(b)
     }
   }
 }
@@ -301,7 +307,8 @@ object EitherT extends EitherTInstances {
     try {
       right(a)
     } catch {
-      case NonFatal(t) => left(F.point(t))
+      case NonFatal(t) =>
+        left(F.point(t))
     }
 
 }
@@ -448,8 +455,10 @@ private trait EitherTPlus[F[_], E] extends Plus[EitherT[F, E, ?]] {
       F.bind(a.run) {
         case -\/(l) =>
           F.map(b.run) {
-            case -\/(ll)    => -\/(G.append(l, ll))
-            case r @ \/-(_) => r
+            case -\/(ll) =>
+              -\/(G.append(l, ll))
+            case r @ \/-(_) =>
+              r
           }
         case r =>
           F.point(r)
@@ -547,8 +556,10 @@ private[scalaz] trait EitherTMonadListen[F[_], W, A]
   def listen[B](ma: EitherT[F, A, B]): EitherT[F, A, (B, W)] = {
     val tmp =
       MT.bind[(A \/ B, W), A \/ (B, W)](MT.listen(ma.run)) {
-        case (-\/(a), _) => MT.point(-\/(a))
-        case (\/-(b), w) => MT.point(\/-((b, w)))
+        case (-\/(a), _) =>
+          MT.point(-\/(a))
+        case (\/-(b), w) =>
+          MT.point(\/-((b, w)))
       }
 
     EitherT[F, A, (B, W)](tmp)
@@ -564,7 +575,9 @@ private trait EitherTMonadError[F[_], E]
       f: E => EitherT[F, E, A]): EitherT[F, E, A] =
     EitherT(
       F.bind(fa.run) {
-        case -\/(e) => f(e).run
-        case r      => F.point(r)
+        case -\/(e) =>
+          f(e).run
+        case r =>
+          F.point(r)
       })
 }

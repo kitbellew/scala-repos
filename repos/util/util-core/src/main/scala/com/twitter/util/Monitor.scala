@@ -88,7 +88,8 @@ trait Monitor {
     Try {
       self.handle(exc)
     } rescue {
-      case monitorExc => Throw(MonitorException(exc, monitorExc))
+      case monitorExc =>
+        Throw(MonitorException(exc, monitorExc))
     } flatMap { ok =>
       if (ok)
         Return.Unit
@@ -110,8 +111,10 @@ object Monitor extends Monitor {
     */
   def get: Monitor =
     local() match {
-      case Some(m) => m
-      case None    => NullMonitor
+      case Some(m) =>
+        m
+      case None =>
+        NullMonitor
     }
 
   /** Set the [[Local]] monitor */

@@ -41,6 +41,7 @@ private[challenge] final class SocketHandler(
       o int "v" foreach { v =>
         socket ! PingVersion(uid, v)
       }
-    case ("ping", _) if member.owner => pingChallenge(challengeId)
+    case ("ping", _) if member.owner =>
+      pingChallenge(challengeId)
   }
 }

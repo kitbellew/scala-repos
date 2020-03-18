@@ -47,7 +47,8 @@ trait Multimethod[Method, A <: AnyRef, R] extends MMRegistry1[Method] {
     } else {
       val options = resolve(ac)
       options.size match {
-        case 0 => bindingMissing(a)
+        case 0 =>
+          bindingMissing(a)
         case 1 =>
           val method = options.values.head
           cache.put(ac, method)
@@ -100,7 +101,8 @@ trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
     val cached = cache.get(ac -> bc)
     if (cached != null) {
       cached match {
-        case None => bindingMissing(a, b)
+        case None =>
+          bindingMissing(a, b)
         case Some(m) =>
           m.asInstanceOf[Method[A, B, R]].apply(a, b)
       }
@@ -162,7 +164,8 @@ trait Multiproc2[Method[AA, BB] <: (AA, BB) => Unit, A <: AnyRef, B]
     val cached = cache.get(ac -> bc)
     if (cached != null) {
       cached match {
-        case None => bindingMissing(a, b)
+        case None =>
+          bindingMissing(a, b)
         case Some(m) =>
           m.asInstanceOf[Method[A, B]].apply(a, b)
       }
@@ -244,7 +247,8 @@ trait MMRegistry2[R] {
 
   def resolve(a: Class[_], b: Class[_]): Map[(Class[_], Class[_]), R] = {
     ops.get(a -> b) match {
-      case Some(m) => Map((a -> b) -> m)
+      case Some(m) =>
+        Map((a -> b) -> m)
       case None =>
         val sa = closeSupertypes(a)
         val sb = closeSupertypes(b)
@@ -328,7 +332,8 @@ trait MMRegistry3[R] {
       b: Class[_],
       c: Class[_]): Map[(Class[_], Class[_], Class[_]), R] = {
     ops.get((a, b, c)) match {
-      case Some(m) => Map((a, b, c) -> m)
+      case Some(m) =>
+        Map((a, b, c) -> m)
       case None =>
         val sa = closeSupertypes(a)
         val sb = closeSupertypes(b)
@@ -383,7 +388,8 @@ trait MMRegistry1[M] {
       a: Class[_],
       checkedA: Set[Class[_]] = Set.empty): Map[Class[_], M] = {
     ops.get(a) match {
-      case Some(m) => Map(a -> m)
+      case Some(m) =>
+        Map(a -> m)
       case None =>
         val newCA = checkedA ++ a.getInterfaces
         val sa = a.getSuperclass +: a.getInterfaces.filterNot(checkedA)

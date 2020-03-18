@@ -29,7 +29,8 @@ object IfElseToOption extends SimplificationType {
         case IfStmt(literal("null") `!=` x, scalaSome(x1), scalaNone())
             if PsiEquivalenceUtil.areElementsEquivalent(x, x1) =>
           Some(x)
-        case _ => None
+        case _ =>
+          None
       }
     inner.map { x =>
       val text = x.getText

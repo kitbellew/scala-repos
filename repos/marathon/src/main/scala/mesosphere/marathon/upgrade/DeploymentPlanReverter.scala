@@ -54,7 +54,8 @@ private[upgrade] object DeploymentPlanReverter {
     val appChanges: Seq[(Option[AppDefinition], Option[AppDefinition])] = {
       changesOnIds(original.transitiveApps, target.transitiveApps)(_.id)
         .filter {
-          case (oldOpt, newOpt) => oldOpt != newOpt
+          case (oldOpt, newOpt) =>
+            oldOpt != newOpt
         }
     }
 

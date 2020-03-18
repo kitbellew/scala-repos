@@ -8,8 +8,10 @@ object Util {
   }
   def mkArgs(xs: Any*) =
     xs map {
-      case ((k, v)) => k + "=" + v;
-      case x        => "" + x
+      case ((k, v)) =>
+        k + "=" + v;
+      case x =>
+        "" + x
     } mkString ("(", ", ", ")")
 }
 import Util._

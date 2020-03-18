@@ -115,16 +115,21 @@ private[io] abstract class TcpConnection(
   /** normal connected state */
   def connected(info: ConnectionInfo): Receive =
     handleWriteMessages(info) orElse {
-      case SuspendReading ⇒ suspendReading(info)
-      case ResumeReading ⇒ resumeReading(info)
-      case ChannelReadable ⇒ doRead(info, None)
-      case cmd: CloseCommand ⇒ handleClose(info, Some(sender()), cmd.event)
+      case SuspendReading ⇒
+        suspendReading(info)
+      case ResumeReading ⇒
+        resumeReading(info)
+      case ChannelReadable ⇒
+        doRead(info, None)
+      case cmd: CloseCommand ⇒
+        handleClose(info, Some(sender()), cmd.event)
     }
 
   /** the peer sent EOF first, but we may still want to send */
   def peerSentEOF(info: ConnectionInfo): Receive =
     handleWriteMessages(info) orElse {
-      case cmd: CloseCommand ⇒ handleClose(info, Some(sender()), cmd.event)
+      case cmd: CloseCommand ⇒
+        handleClose(info, Some(sender()), cmd.event)
     }
 
   /** connection is closing but a write has to be finished first */
@@ -132,9 +137,12 @@ private[io] abstract class TcpConnection(
       info: ConnectionInfo,
       closeCommander: Option[ActorRef],
       closedEvent: ConnectionClosed): Receive = {
-    case SuspendReading ⇒ suspendReading(info)
-    case ResumeReading ⇒ resumeReading(info)
-    case ChannelReadable ⇒ doRead(info, closeCommander)
+    case SuspendReading ⇒
+      suspendReading(info)
+    case ResumeReading ⇒
+      resumeReading(info)
+    case ChannelReadable ⇒
+      doRead(info, closeCommander)
 
     case ChannelWritable ⇒
       doWrite(info)
@@ -152,17 +160,22 @@ private[io] abstract class TcpConnection(
     case WriteFileFailed(e) ⇒
       handleError(info.handler, e) // rethrow exception from dispatcher task
 
-    case Abort ⇒ handleClose(info, Some(sender()), Aborted)
+    case Abort ⇒
+      handleClose(info, Some(sender()), Aborted)
   }
 
   /** connection is closed on our side and we're waiting from confirmation from the other side */
   def closing(
       info: ConnectionInfo,
       closeCommander: Option[ActorRef]): Receive = {
-    case SuspendReading ⇒ suspendReading(info)
-    case ResumeReading ⇒ resumeReading(info)
-    case ChannelReadable ⇒ doRead(info, closeCommander)
-    case Abort ⇒ handleClose(info, Some(sender()), Aborted)
+    case SuspendReading ⇒
+      suspendReading(info)
+    case ResumeReading ⇒
+      resumeReading(info)
+    case ChannelReadable ⇒
+      doRead(info, closeCommander)
+    case Abort ⇒
+      handleClose(info, Some(sender()), Aborted)
   }
 
   def handleWriteMessages(info: ConnectionInfo): Receive = {
@@ -286,8 +299,10 @@ private[io] abstract class TcpConnection(
                 MoreDataWaiting
               else
                 innerRead(buffer, remainingLimit - maxBufferSpace)
-            case x if x >= 0 ⇒ AllRead
-            case -1 ⇒ EndOfStream
+            case x if x >= 0 ⇒
+              AllRead
+            case -1 ⇒
+              EndOfStream
             case _ ⇒
               throw new IllegalStateException(
                 "Unexpected value returned from read: " + readBytes)
@@ -312,7 +327,8 @@ private[io] abstract class TcpConnection(
             log.debug("Read returned end-of-stream, our side not yet closed")
           handleClose(info, closeCommander, PeerClosed)
       } catch {
-        case e: IOException ⇒ handleError(info.handler, e)
+        case e: IOException ⇒
+          handleError(info.handler, e)
       } finally bufferPool.release(buffer)
     }
 
@@ -385,7 +401,8 @@ private[io] abstract class TcpConnection(
       channel.socket().shutdownOutput()
       true
     } catch {
-      case _: SocketException ⇒ false
+      case _: SocketException ⇒
+        false
     }
 
   @tailrec
@@ -394,8 +411,10 @@ private[io] abstract class TcpConnection(
       "unknown"
     else {
       t.getMessage match {
-        case null | "" ⇒ extractMsg(t.getCause)
-        case msg ⇒ msg
+        case null | "" ⇒
+          extractMsg(t.getCause)
+        case msg ⇒
+          msg
       }
     }
 
@@ -454,7 +473,8 @@ private[io] abstract class TcpConnection(
           PendingBufferWrite(commander, data, ack, tail)
         case WriteFile(path, offset, count, ack) ⇒
           PendingWriteFile(commander, path, offset, count, ack, tail)
-        case CompoundWrite(h, t) ⇒ create(h, t)
+        case CompoundWrite(h, t) ⇒
+          create(h, t)
         case x @ Write(
               _,
               ack
@@ -598,7 +618,8 @@ private[io] abstract class TcpConnection(
             andThen)
         }
       } catch {
-        case e: IOException ⇒ self ! WriteFileFailed(e)
+        case e: IOException ⇒
+          self ! WriteFileFailed(e)
       }
   }
 }

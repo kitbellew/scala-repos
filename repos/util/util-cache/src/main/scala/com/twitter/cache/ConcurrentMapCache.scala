@@ -27,7 +27,8 @@ class ConcurrentMapCache[K, V](underlying: ConcurrentMap[K, Future[V]])
       case null =>
         p.become(compute)
         p
-      case oldv => oldv
+      case oldv =>
+        oldv
     }
   }
 

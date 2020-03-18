@@ -101,7 +101,8 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
         Var.sample(filteredAddr) match {
           case Addr.Bound(addrs, attrs) if addrs.size == 1 && attrs.isEmpty =>
             true
-          case _ => fail()
+          case _ =>
+            fail()
         }
       }
     }
@@ -188,7 +189,8 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
         Var.sample(filteredAddr) match {
           case Addr.Bound(addrs, attrs) if addrs.size == 1 && attrs.isEmpty =>
             true
-          case _ => fail()
+          case _ =>
+            fail()
         }
       }
     }

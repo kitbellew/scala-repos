@@ -50,7 +50,8 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
     */
   def toBinary(o: AnyRef): Array[Byte] =
     o match {
-      case Snapshot(data) ⇒ snapshotToBinary(data.asInstanceOf[AnyRef])
+      case Snapshot(data) ⇒
+        snapshotToBinary(data.asInstanceOf[AnyRef])
       case _ ⇒
         throw new IllegalArgumentException(
           s"Can't serialize object of type ${o.getClass}")
@@ -97,7 +98,8 @@ class SnapshotSerializer(val system: ExtendedActorSystem)
         Serialization.currentTransportInformation.withValue(ti) {
           serialize()
         }
-      case None ⇒ serialize()
+      case None ⇒
+        serialize()
     }
   }
 

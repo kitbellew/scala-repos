@@ -46,12 +46,18 @@ private[debugger] object BytecodeUtil {
 
   def iloadCode(istoreCode: Seq[Byte]): Seq[Byte] = {
     istoreCode match {
-      case Seq(`istore_0`)  => Seq(iload_0)
-      case Seq(`istore_1`)  => Seq(iload_1)
-      case Seq(`istore_2`)  => Seq(iload_2)
-      case Seq(`istore_3`)  => Seq(iload_3)
-      case Seq(`istore`, b) => Seq(iload, b)
-      case _                => Nil
+      case Seq(`istore_0`) =>
+        Seq(iload_0)
+      case Seq(`istore_1`) =>
+        Seq(iload_1)
+      case Seq(`istore_2`) =>
+        Seq(iload_2)
+      case Seq(`istore_3`) =>
+        Seq(iload_3)
+      case Seq(`istore`, b) =>
+        Seq(iload, b)
+      case _ =>
+        Nil
     }
   }
 
@@ -59,9 +65,12 @@ private[debugger] object BytecodeUtil {
     if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
       return Nil
     bytecodes(codeIndex) match {
-      case c @ (`istore_0` | `istore_1` | `istore_2` | `istore_3`) => Seq(c)
-      case `istore`                                                => Seq(istore, bytecodes(codeIndex + 1))
-      case _                                                       => Nil
+      case c @ (`istore_0` | `istore_1` | `istore_2` | `istore_3`) =>
+        Seq(c)
+      case `istore` =>
+        Seq(istore, bytecodes(codeIndex + 1))
+      case _ =>
+        Nil
     }
   }
 
@@ -69,9 +78,12 @@ private[debugger] object BytecodeUtil {
     if (codeIndex < 0 || codeIndex > bytecodes.length - 1)
       return Nil
     bytecodes(codeIndex) match {
-      case c @ (`iload_0` | `iload_1` | `iload_2` | `iload_3`) => Seq(c)
-      case `iload`                                             => Seq(iload, bytecodes(codeIndex + 1))
-      case _                                                   => Nil
+      case c @ (`iload_0` | `iload_1` | `iload_2` | `iload_3`) =>
+        Seq(c)
+      case `iload` =>
+        Seq(iload, bytecodes(codeIndex + 1))
+      case _ =>
+        Nil
     }
   }
 
@@ -103,10 +115,12 @@ private[debugger] object BytecodeUtil {
 
   def loadCode(storeCode: Seq[Byte]): Seq[Byte] = {
     storeCode match {
-      case Seq(b) => oneByteCodes.get(b).map(b => Seq(b)).getOrElse(Nil)
+      case Seq(b) =>
+        oneByteCodes.get(b).map(b => Seq(b)).getOrElse(Nil)
       case Seq(code, addr) =>
         twoBytesCodes.get(code).map(b => Seq(b, addr)).getOrElse(Nil)
-      case _ => Nil
+      case _ =>
+        Nil
     }
   }
 

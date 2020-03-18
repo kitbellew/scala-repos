@@ -46,7 +46,8 @@ object helpers
           "s"
         else
           ""} ago"
-      case None => "just now"
+      case None =>
+        "just now"
     }
   }
 
@@ -67,7 +68,8 @@ object helpers
           "s"
         else
           ""} ago"
-      case None => "just now"
+      case None =>
+        "just now"
     }
   }
 
@@ -333,36 +335,66 @@ object helpers
     */
   def editorType(fileName: String): String = {
     fileName.toLowerCase match {
-      case x if (x.endsWith(".bat"))     => "batchfile"
-      case x if (x.endsWith(".java"))    => "java"
-      case x if (x.endsWith(".scala"))   => "scala"
-      case x if (x.endsWith(".js"))      => "javascript"
-      case x if (x.endsWith(".css"))     => "css"
-      case x if (x.endsWith(".md"))      => "markdown"
-      case x if (x.endsWith(".html"))    => "html"
-      case x if (x.endsWith(".xml"))     => "xml"
-      case x if (x.endsWith(".c"))       => "c_cpp"
-      case x if (x.endsWith(".cpp"))     => "c_cpp"
-      case x if (x.endsWith(".coffee"))  => "coffee"
-      case x if (x.endsWith(".ejs"))     => "ejs"
-      case x if (x.endsWith(".hs"))      => "haskell"
-      case x if (x.endsWith(".json"))    => "json"
-      case x if (x.endsWith(".jsp"))     => "jsp"
-      case x if (x.endsWith(".jsx"))     => "jsx"
-      case x if (x.endsWith(".cl"))      => "lisp"
-      case x if (x.endsWith(".clojure")) => "lisp"
-      case x if (x.endsWith(".lua"))     => "lua"
-      case x if (x.endsWith(".php"))     => "php"
-      case x if (x.endsWith(".py"))      => "python"
-      case x if (x.endsWith(".rdoc"))    => "rdoc"
-      case x if (x.endsWith(".rhtml"))   => "rhtml"
-      case x if (x.endsWith(".ruby"))    => "ruby"
-      case x if (x.endsWith(".sh"))      => "sh"
-      case x if (x.endsWith(".sql"))     => "sql"
-      case x if (x.endsWith(".tcl"))     => "tcl"
-      case x if (x.endsWith(".vbs"))     => "vbscript"
-      case x if (x.endsWith(".yml"))     => "yaml"
-      case _                             => "plain_text"
+      case x if (x.endsWith(".bat")) =>
+        "batchfile"
+      case x if (x.endsWith(".java")) =>
+        "java"
+      case x if (x.endsWith(".scala")) =>
+        "scala"
+      case x if (x.endsWith(".js")) =>
+        "javascript"
+      case x if (x.endsWith(".css")) =>
+        "css"
+      case x if (x.endsWith(".md")) =>
+        "markdown"
+      case x if (x.endsWith(".html")) =>
+        "html"
+      case x if (x.endsWith(".xml")) =>
+        "xml"
+      case x if (x.endsWith(".c")) =>
+        "c_cpp"
+      case x if (x.endsWith(".cpp")) =>
+        "c_cpp"
+      case x if (x.endsWith(".coffee")) =>
+        "coffee"
+      case x if (x.endsWith(".ejs")) =>
+        "ejs"
+      case x if (x.endsWith(".hs")) =>
+        "haskell"
+      case x if (x.endsWith(".json")) =>
+        "json"
+      case x if (x.endsWith(".jsp")) =>
+        "jsp"
+      case x if (x.endsWith(".jsx")) =>
+        "jsx"
+      case x if (x.endsWith(".cl")) =>
+        "lisp"
+      case x if (x.endsWith(".clojure")) =>
+        "lisp"
+      case x if (x.endsWith(".lua")) =>
+        "lua"
+      case x if (x.endsWith(".php")) =>
+        "php"
+      case x if (x.endsWith(".py")) =>
+        "python"
+      case x if (x.endsWith(".rdoc")) =>
+        "rdoc"
+      case x if (x.endsWith(".rhtml")) =>
+        "rhtml"
+      case x if (x.endsWith(".ruby")) =>
+        "ruby"
+      case x if (x.endsWith(".sh")) =>
+        "sh"
+      case x if (x.endsWith(".sql")) =>
+        "sql"
+      case x if (x.endsWith(".tcl")) =>
+        "tcl"
+      case x if (x.endsWith(".vbs")) =>
+        "vbscript"
+      case x if (x.endsWith(".yml")) =>
+        "yaml"
+      case _ =>
+        "plain_text"
     }
   }
 
@@ -396,9 +428,12 @@ object helpers
     state match {
       case CommitState.PENDING =>
         "Waiting to hear about " + commitId.substring(0, 8)
-      case CommitState.SUCCESS => "All is well"
-      case CommitState.ERROR   => "Failed"
-      case CommitState.FAILURE => "Failed"
+      case CommitState.SUCCESS =>
+        "All is well"
+      case CommitState.ERROR =>
+        "Failed"
+      case CommitState.FAILURE =>
+        "Failed"
     }
 
   // This pattern comes from: http://stackoverflow.com/a/4390768/1771641 (extract-url-from-string)

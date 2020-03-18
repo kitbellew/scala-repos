@@ -27,13 +27,18 @@ trait Printers extends scala.reflect.internal.Printers {
                   ClassDef(
                     tree.symbol,
                     Template(ps, ValDef(tree.symbol.thisSym), body))
-                case ClassDef(_, _, _, impl) => ClassDef(tree.symbol, impl)
-                case ModuleDef(_, _, impl)   => ModuleDef(tree.symbol, impl)
-                case ValDef(_, _, _, rhs)    => ValDef(tree.symbol, rhs)
+                case ClassDef(_, _, _, impl) =>
+                  ClassDef(tree.symbol, impl)
+                case ModuleDef(_, _, impl) =>
+                  ModuleDef(tree.symbol, impl)
+                case ValDef(_, _, _, rhs) =>
+                  ValDef(tree.symbol, rhs)
                 case DefDef(_, _, _, vparamss, _, rhs) =>
                   DefDef(tree.symbol, vparamss, rhs)
-                case TypeDef(_, _, _, rhs) => TypeDef(tree.symbol, rhs)
-                case _                     => tree
+                case TypeDef(_, _, _, rhs) =>
+                  TypeDef(tree.symbol, rhs)
+                case _ =>
+                  tree
               }
             } else
               tree)
@@ -87,8 +92,10 @@ trait Printers extends scala.reflect.internal.Printers {
     // drill down through Blocks and pull out the real statements.
     def allStatements(t: Tree): List[Tree] =
       t match {
-        case Block(stmts, expr) => (stmts flatMap allStatements) ::: List(expr)
-        case _                  => List(t)
+        case Block(stmts, expr) =>
+          (stmts flatMap allStatements) ::: List(expr)
+        case _ =>
+          List(t)
       }
 
     def printLogicalOr(t1: (Tree, Boolean), t2: (Tree, Boolean)) =
@@ -138,7 +145,8 @@ trait Printers extends scala.reflect.internal.Printers {
                 printTree(Ident(method))
                 print(" ")
                 printTree(arg)
-              case _ => s()
+              case _ =>
+                s()
             }
 
         // target.unary_! ==> !target
@@ -152,18 +160,23 @@ trait Printers extends scala.reflect.internal.Printers {
           print(quotedName(name, decode = true))
 
         // target.toString() ==> target.toString
-        case Apply(fn, Nil) => printTree(fn)
+        case Apply(fn, Nil) =>
+          printTree(fn)
 
         // if a Block only continues one actual statement, just print it.
         case Block(stats, expr) =>
           allStatements(tree) match {
-            case List(x) => printTree(x)
-            case xs      => s()
+            case List(x) =>
+              printTree(x)
+            case xs =>
+              s()
           }
 
         // We get a lot of this stuff
-        case If(IsTrue(), x, _)  => printTree(x)
-        case If(IsFalse(), _, x) => printTree(x)
+        case If(IsTrue(), x, _) =>
+          printTree(x)
+        case If(IsFalse(), _, x) =>
+          printTree(x)
 
         case If(cond, IsTrue(), elsep) =>
           printLogicalOr(cond -> true, elsep -> true)
@@ -189,9 +202,12 @@ trait Printers extends scala.reflect.internal.Printers {
           print(") ")
 
           thenStmts match {
-            case List(x: If) => ifIndented(x)
-            case List(x)     => printTree(x)
-            case _           => printTree(thenp)
+            case List(x: If) =>
+              ifIndented(x)
+            case List(x) =>
+              printTree(x)
+            case _ =>
+              printTree(thenp)
           }
 
           if (elseStmts.nonEmpty) {
@@ -199,13 +215,16 @@ trait Printers extends scala.reflect.internal.Printers {
             indent();
             println()
             elseStmts match {
-              case List(x) => printTree(x)
-              case _       => printTree(elsep)
+              case List(x) =>
+                printTree(x)
+              case _ =>
+                printTree(elsep)
             }
             undent();
             println()
           }
-        case _ => s()
+        case _ =>
+          s()
       }
     }
   }

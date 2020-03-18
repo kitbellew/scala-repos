@@ -37,7 +37,8 @@ class SetterMethodSearcher
     val element = queryParameters.getElementToSearch
     val project = queryParameters.getProject
     element match {
-      case _ if !inReadAction(element.isValid) => true
+      case _ if !inReadAction(element.isValid) =>
+        true
       case fun: ScFunction if fun.name endsWith suffixScala =>
         processAssignments(fun, fun.name, project)
         processSimpleUsages(fun, fun.name, project)
@@ -48,7 +49,8 @@ class SetterMethodSearcher
         processAssignments(refPattern, name, project)
         processSimpleUsages(refPattern, name + suffixScala, project)
         processSimpleUsages(refPattern, name + suffixJava, project)
-      case _ => true
+      case _ =>
+        true
     }
   }
 

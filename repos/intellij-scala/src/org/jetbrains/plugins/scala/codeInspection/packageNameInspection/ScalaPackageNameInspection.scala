@@ -40,8 +40,10 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
         val packName = cleanKeywords(file.packageName)
         val ranges: Seq[TextRange] =
           file.packagingRanges match {
-            case Seq() => file.typeDefinitions.map(_.nameId.getTextRange)
-            case seq   => seq
+            case Seq() =>
+              file.typeDefinitions.map(_.nameId.getTextRange)
+            case seq =>
+              seq
           }
 
         def problemDescriptors(
@@ -82,7 +84,8 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
           problemDescriptors(fixes).toArray
         } else
           null
-      case _ => null
+      case _ =>
+        null
     }
   }
 
@@ -91,8 +94,10 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
       return null
     import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil._
     packageName.split('.').map {
-      case isBacktickedName(name) if isKeyword(name) => name
-      case name                                      => name
+      case isBacktickedName(name) if isKeyword(name) =>
+        name
+      case name =>
+        name
     } mkString "."
   }
 }

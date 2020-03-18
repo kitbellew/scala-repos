@@ -39,8 +39,10 @@ object BundleBuilder {
   private object IsText {
     def unapply(in: NodeSeq): Option[String] =
       in.toList match {
-        case (x: Atom[_]) :: Nil => Some(x.text)
-        case _                   => None
+        case (x: Atom[_]) :: Nil =>
+          Some(x.text)
+        case _ =>
+          None
       }
   }
 
@@ -74,7 +76,8 @@ object BundleBuilder {
                 ) -> (e.child: NodeSeq))
           }
 
-          case _ => Nil
+          case _ =>
+            Nil
         }
 
         val map =
@@ -122,7 +125,8 @@ object BundleBuilder {
 
         val res: Map[String, NodeSeq] = Map(
           map.map {
-            case (name, lst) => name -> choose(lst)
+            case (name, lst) =>
+              name -> choose(lst)
           }.toSeq: _*)
 
         List(
@@ -137,14 +141,18 @@ object BundleBuilder {
 
             def handleGetObject(key: String): Object =
               res.get(key) match {
-                case Some(IsText(str)) => str
-                case Some(ns)          => ns
-                case _                 => null
+                case Some(IsText(str)) =>
+                  str
+                case Some(ns) =>
+                  ns
+                case _ =>
+                  null
               }
           })
       }
 
-      case _ => Nil
+      case _ =>
+        Nil
     }
 
     vals.headOption

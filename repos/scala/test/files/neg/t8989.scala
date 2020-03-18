@@ -10,7 +10,9 @@ object d {
   val p: Any = ???
   val f =
     p match {
-      case d(1) => true;
-      case _    => false
+      case d(1) =>
+        true;
+      case _ =>
+        false
     }
 }

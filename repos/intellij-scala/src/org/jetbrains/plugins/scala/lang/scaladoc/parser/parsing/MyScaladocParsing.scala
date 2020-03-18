@@ -207,7 +207,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
           hasClosingElementsInWikiSyntax = true
           closedBy("tag")
           return true
-        case _ => builder.advanceLexer()
+        case _ =>
+          builder.advanceLexer()
       }
     }
 

@@ -9,8 +9,10 @@ sealed abstract class CaseInsensitive[A] {
 
   final override def equals(other: Any): Boolean =
     other match {
-      case that: CaseInsensitive[_] => foldedCase == that.foldedCase
-      case _                        => false
+      case that: CaseInsensitive[_] =>
+        foldedCase == that.foldedCase
+      case _ =>
+        false
     }
 
   final override lazy val hashCode: Int = foldedCase.hashCode

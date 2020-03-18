@@ -72,10 +72,12 @@ class WrappedDictionaryTest {
     dict ++= Seq("one" -> 1, "two" -> 2, "three" -> 3)
 
     val mapChr = dict.map {
-      case (k, v) => k(0) -> v * 2
+      case (k, v) =>
+        k(0) -> v * 2
     }
     val mapStr = dict.map {
-      case (k, v) => k(0).toString -> v * 2
+      case (k, v) =>
+        k(0).toString -> v * 2
     }
 
     assertFalse(ct(mapChr).runtimeClass == classOf[js.WrappedDictionary[_]])
@@ -89,7 +91,8 @@ class WrappedDictionaryTest {
   def withFilter(): Unit = {
     val dict = js.Dictionary[Int]()
     val flt = dict.withFilter {
-      case (k, v) => v > 5 || k == "a"
+      case (k, v) =>
+        v > 5 || k == "a"
     }
     def size: Int = flt.map(x => x).size
 

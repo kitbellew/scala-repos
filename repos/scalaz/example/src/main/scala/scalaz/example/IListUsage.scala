@@ -43,8 +43,10 @@ object IListUsage extends App {
   // Destructure with matching
   val s2 =
     ns match {
-      case INil()      => "empty"
-      case ICons(h, t) => "head is %s and tail is %s".format(h, t)
+      case INil() =>
+        "empty"
+      case ICons(h, t) =>
+        "head is %s and tail is %s".format(h, t)
     }
 
   // Same typeclass instances as List

@@ -15,7 +15,8 @@ object Test extends App {
       val thisShouldBeA = aAccessor.apply()
       println(thisShouldBeA)
     } catch {
-      case ScalaReflectionException(msg) => println(msg)
+      case ScalaReflectionException(msg) =>
+        println(msg)
     }
   }
 }

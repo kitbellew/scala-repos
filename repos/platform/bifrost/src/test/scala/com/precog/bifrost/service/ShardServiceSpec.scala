@@ -225,8 +225,10 @@ trait TestShardService
     new AsyncHttpTranscoder[QueryResult, ByteChunk] {
       def apply(req: HttpRequest[QueryResult]): HttpRequest[ByteChunk] =
         req map {
-          case Left(jv)      => Left(jv.renderCompact.getBytes(utf8))
-          case Right(stream) => Right(stream.map(charBufferToBytes))
+          case Left(jv) =>
+            Left(jv.renderCompact.getBytes(utf8))
+          case Right(stream) =>
+            Right(stream.map(charBufferToBytes))
         }
 
       def unapply(fres: Future[HttpResponse[ByteChunk]])
@@ -262,7 +264,8 @@ trait TestShardService
                 }
               } else {
                 response map {
-                  case Left(bb) => Left(JString(new String(bb.array, "UTF-8")))
+                  case Left(bb) =>
+                    Left(JString(new String(bb.array, "UTF-8")))
                   case chunk =>
                     Right(
                       StreamT.wrapEffect(
@@ -357,8 +360,10 @@ class ShardServiceSpec extends TestShardService {
 
   def extractJobId(jv: JValue): JobId = {
     jv \ "jobId" match {
-      case JString(jobId) => jobId
-      case _              => sys.error("This is not JSON! GIVE ME JSON!")
+      case JString(jobId) =>
+        jobId
+      case _ =>
+        sys.error("This is not JSON! GIVE ME JSON!")
     }
   }
 
@@ -379,7 +384,8 @@ class ShardServiceSpec extends TestShardService {
   "Shard query service" should {
     "handle absolute accessible query from root path" in {
       query(accessibleAbsoluteQuery).copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(_), _) => ok
+        case HttpResponse(HttpStatus(OK, _), _, Some(_), _) =>
+          ok
       }
     }
 
@@ -396,7 +402,8 @@ class ShardServiceSpec extends TestShardService {
         } yield job
 
       res.copoint must beLike {
-        case Some(Job(_, _, _, _, _, _)) => ok
+        case Some(Job(_, _, _, _, _, _)) =>
+          ok
       }
     }
     "results of an async job must eventually be made available" in {
@@ -427,7 +434,8 @@ class ShardServiceSpec extends TestShardService {
     }
     "handle relative query from accessible non-root path" in {
       query(relativeQuery, path = "/test").copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(_), _) => ok
+        case HttpResponse(HttpStatus(OK, _), _, Some(_), _) =>
+          ok
       }
     }
     "reject query when no API key provided" in {
@@ -460,7 +468,8 @@ class ShardServiceSpec extends TestShardService {
         } yield result
 
       result.copoint must beLike {
-        case JArray(JString("ERROR!") :: Nil) => ok
+        case JArray(JString("ERROR!") :: Nil) =>
+          ok
       }
     }
     "return warnings/errors if format is 'detailed'" in {
@@ -541,7 +550,8 @@ class ShardServiceSpec extends TestShardService {
       val obj = JObject(
         Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
       browse().copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) => ok
+        case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) =>
+          ok
         case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
           failure("Not found: " + obj.renderCompact)
       }
@@ -588,7 +598,8 @@ class ShardServiceSpec extends TestShardService {
       val obj = JObject(
         Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
       meta().copoint must beLike {
-        case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) => ok
+        case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) =>
+          ok
         case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
           failure("Not found: " + obj.renderCompact)
       }

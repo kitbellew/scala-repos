@@ -84,9 +84,12 @@ private[persistence] trait Eventsourced
   private val internalStash = createStash()
 
   private val unstashFilterPredicate: Any ⇒ Boolean = {
-    case _: WriteMessageSuccess ⇒ false
-    case _: ReplayedMessage ⇒ false
-    case _ ⇒ true
+    case _: WriteMessageSuccess ⇒
+      false
+    case _: ReplayedMessage ⇒
+      false
+    case _ ⇒
+      true
   }
 
   /**
@@ -296,7 +299,8 @@ private[persistence] trait Eventsourced
           e.getClass.getCanonicalName,
           e.getMessage
         )
-      case m ⇒ super.unhandled(m)
+      case m ⇒
+        super.unhandled(m)
     }
   }
 

@@ -31,8 +31,10 @@ private[akka] final case class WildcardTree[T](
       this
     else {
       (children.get(elems.next()) orElse children.get("*")) match {
-        case Some(branch) ⇒ branch.find(elems)
-        case None ⇒ WildcardTree()
+        case Some(branch) ⇒
+          branch.find(elems)
+        case None ⇒
+          WildcardTree()
       }
     }
 }

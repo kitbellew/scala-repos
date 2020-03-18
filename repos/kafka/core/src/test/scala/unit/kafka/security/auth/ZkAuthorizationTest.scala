@@ -249,13 +249,17 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
       secure: Boolean): Boolean = {
     val isListSizeCorrect =
       secure match {
-        case true  => list.size == 2
-        case false => list.size == 1
+        case true =>
+          list.size == 2
+        case false =>
+          list.size == 1
       }
     isListSizeCorrect && list.asScala.forall(
       secure match {
-        case true  => isAclSecure
-        case false => isAclUnsecure
+        case true =>
+          isAclSecure
+        case false =>
+          isAclUnsecure
       })
   }
 
@@ -312,7 +316,8 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
     // Fail the test if able to delete
     result match {
       case Success(v) => // All done
-      case Failure(e) => fail(e.getMessage)
+      case Failure(e) =>
+        fail(e.getMessage)
     }
   }
 
@@ -325,23 +330,29 @@ class ZkAuthorizationTest extends ZooKeeperTestHarness with Logging {
     for (child <- zkUtils.getChildren(path))
       result = (
         path match {
-          case "/"  => deleteRecursive(zkUtils, s"/$child")
-          case path => deleteRecursive(zkUtils, s"$path/$child")
+          case "/" =>
+            deleteRecursive(zkUtils, s"/$child")
+          case path =>
+            deleteRecursive(zkUtils, s"$path/$child")
         }
       ) match {
-        case Success(v) => result
-        case Failure(e) => Failure(e)
+        case Success(v) =>
+          result
+        case Failure(e) =>
+          Failure(e)
       }
     path match {
       // Do not try to delete the root
-      case "/" => result
+      case "/" =>
+        result
       // For all other paths, try to delete it
       case path =>
         try {
           zkUtils.deletePath(path)
           Failure(new Exception(s"Have been able to delete $path"))
         } catch {
-          case e: Exception => result
+          case e: Exception =>
+            result
         }
     }
   }

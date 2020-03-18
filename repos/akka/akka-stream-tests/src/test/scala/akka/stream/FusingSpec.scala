@@ -53,7 +53,8 @@ class FusingSpec extends AkkaSpec {
         case CopiedModule(_, attributes, copyOf)
             if (attributes and copyOf.attributes).contains(to) ⇒
           ()
-        case other if other.attributes.contains(to) ⇒ ()
+        case other if other.attributes.contains(to) ⇒
+          ()
         case _ ⇒
           val outs = curr.inPorts.map(ups)
           outs.size should ===(1)

@@ -90,7 +90,8 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
             _.basic map {
               case BasicAuthCredentials(email, password) =>
                 accountManager.authAccount(email, password) flatMap {
-                  case Success(account) => f(account)
+                  case Success(account) =>
+                    f(account)
                   case Failure(error) =>
                     logger.warn(
                       "Authentication failure from %s for %s: %s"

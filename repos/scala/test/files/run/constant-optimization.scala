@@ -33,9 +33,12 @@ object Test extends App {
     val i = util.Random.nextInt
     val y =
       (i % 2) match {
-        case 0 => "good"
-        case 1 => "good"
-        case _ => "good"
+        case 0 =>
+          "good"
+        case 1 =>
+          "good"
+        case _ =>
+          "good"
       }
     println(s"testAllReachable: $y")
   }
@@ -50,9 +53,12 @@ object Test extends App {
       }
     val y =
       x match {
-        case 0 => "good"
-        case 1 => "good"
-        case _ => "good"
+        case 0 =>
+          "good"
+        case 1 =>
+          "good"
+        case _ =>
+          "good"
       }
     println(s"testOneUnreachable: $y")
   }
@@ -67,9 +73,12 @@ object Test extends App {
       }
     val y =
       x match {
-        case 1 => "good"
-        case 2 => "good"
-        case _ => "good"
+        case 1 =>
+          "good"
+        case 2 =>
+          "good"
+        case _ =>
+          "good"
       }
     println(s"testDefaultUnreachable: $y")
   }

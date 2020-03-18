@@ -243,7 +243,8 @@ package object plot {
       val (min, max) = (values.min, values.max)
       val binner: StaticHistogramBins =
         bins match {
-          case static: StaticHistogramBins => static
+          case static: StaticHistogramBins =>
+            static
           case dynamic: DynamicHistogramBins =>
             dynamic(min, max)
         }

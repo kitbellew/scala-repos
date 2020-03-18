@@ -66,7 +66,8 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
     synchronized {
       val counterValues = counters.asMap.asScala
       val gaugeValues = gauges.toSeq map {
-        case (names, gauge) => variableName(names) -> gauge().toString
+        case (names, gauge) =>
+          variableName(names) -> gauge().toString
       }
       val statValues = stats.asMap.asScala collect {
         case (k, buf) if buf.nonEmpty =>
@@ -80,7 +81,8 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
       val counterLines =
         (
           counterValues map {
-            case (k, v) => (variableName(k), v.toString)
+            case (k, v) =>
+              (variableName(k), v.toString)
           }
         ).toSeq
       val statLines =
@@ -123,16 +125,20 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
         ).toSeq
 
       val sortedCounters = counterLines.sortBy {
-        case (k, _) => k
+        case (k, _) =>
+          k
       }
       val sortedGauges = gaugeValues.sortBy {
-        case (k, _) => k
+        case (k, _) =>
+          k
       }
       val sortedStats = statLines.sortBy {
-        case (k, _) => k
+        case (k, _) =>
+          k
       }
       lazy val sortedTails = tailValues.sortBy {
-        case (k, _) => k
+        case (k, _) =>
+          k
       }
 
       val fmt = Function.tupled { (k: String, v: String) =>

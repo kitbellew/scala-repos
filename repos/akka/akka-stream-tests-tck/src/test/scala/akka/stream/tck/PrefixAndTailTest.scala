@@ -15,7 +15,8 @@ class PrefixAndTailTest extends AkkaPublisherVerification[Int] {
     val futureTailSource = Source(iterable(elements))
       .prefixAndTail(0)
       .map {
-        case (_, tail) ⇒ tail
+        case (_, tail) ⇒
+          tail
       }
       .runWith(Sink.head)
     val tailSource = Await.result(futureTailSource, 3.seconds)

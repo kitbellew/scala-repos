@@ -130,10 +130,14 @@ object LookupJoin extends Serializable {
       new Ordering[Either[T, U]] {
         def compare(l: Either[T, U], r: Either[T, U]) =
           (l, r) match {
-            case (Left(_), Right(_))  => -1
-            case (Right(_), Left(_))  => 1
-            case (Left(_), Left(_))   => 0
-            case (Right(_), Right(_)) => 0
+            case (Left(_), Right(_)) =>
+              -1
+            case (Right(_), Left(_)) =>
+              1
+            case (Left(_), Left(_)) =>
+              0
+            case (Right(_), Right(_)) =>
+              0
           }
       }
 
@@ -141,7 +145,8 @@ object LookupJoin extends Serializable {
       (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] =
       left
         .map {
-          case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV]))
+          case (t, (k, v)) =>
+            (k, (t, Left(v): Either[V, JoinedV]))
         }
         .++(
           right.map {
@@ -215,7 +220,8 @@ object LookupJoin extends Serializable {
         // filter out every event that produced a Right(delta) above,
         // leaving only the leftJoin events that occurred above:
         optV.map {
-          case (t, v, optJoined) => (t, (k, (v, optJoined)))
+          case (t, v, optJoined) =>
+            (t, (k, (v, optJoined)))
         }
     }
   }

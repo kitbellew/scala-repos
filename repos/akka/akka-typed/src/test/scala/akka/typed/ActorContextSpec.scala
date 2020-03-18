@@ -102,7 +102,8 @@ object ActorContextSpec {
       case Sig(ctx, signal) ⇒
         monitor ! GotSignal(signal)
         signal match {
-          case f: Failed ⇒ f.decide(Failed.Restart)
+          case f: Failed ⇒
+            f.decide(Failed.Restart)
           case _ ⇒
         }
         Same
@@ -122,8 +123,10 @@ object ActorContextSpec {
           case MkChild(name, mon, replyTo) ⇒
             val child =
               name match {
-                case None ⇒ ctx.spawnAnonymous(Props(subject(mon)))
-                case Some(n) ⇒ ctx.spawn(Props(subject(mon)), n)
+                case None ⇒
+                  ctx.spawnAnonymous(Props(subject(mon)))
+                case Some(n) ⇒
+                  ctx.spawn(Props(subject(mon)), n)
               }
             replyTo ! Created(child)
             Same
@@ -135,7 +138,8 @@ object ActorContextSpec {
             replyTo ! Scheduled
             ctx.schedule(delay, target, msg)
             Same
-          case Stop ⇒ Stopped
+          case Stop ⇒
+            Stopped
           case Kill(ref, replyTo) ⇒
             if (ctx.stop(ref))
               replyTo ! Killed
@@ -167,12 +171,14 @@ object ActorContextSpec {
                 Same
               case Msg(_, Throw(ex)) ⇒
                 throw ex
-              case _ ⇒ Same
+              case _ ⇒
+                Same
             }
           case BecomeCareless(replyTo) ⇒
             replyTo ! BecameCareless
             Full {
-              case Sig(_, Terminated(_)) ⇒ Unhandled
+              case Sig(_, Terminated(_)) ⇒
+                Unhandled
               case Sig(_, sig) ⇒
                 monitor ! GotSignal(sig)
                 Same
@@ -709,7 +715,8 @@ class ActorContextSpec
     override def suite = "widened"
     override def behavior(ctx: ActorContext[Event]): Behavior[Command] =
       subject(ctx.self).widen {
-        case x ⇒ x
+        case x ⇒
+          x
       }
   }
 
@@ -740,7 +747,8 @@ class ActorContextSpec
   }
 
   private val stoppingBehavior = Full[Command] {
-    case Msg(_, Stop) ⇒ Stopped
+    case Msg(_, Stop) ⇒
+      Stopped
   }
 
   object `An ActorContext with And (left)` extends Tests {

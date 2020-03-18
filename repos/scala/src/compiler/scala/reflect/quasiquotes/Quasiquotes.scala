@@ -30,7 +30,8 @@ abstract class Quasiquotes
         debug(
           s"parse prefix:\nuniverse=$universe0\nparts=$parts0\ninterpolator=$interpolator0\nmethod=$method0\nargs=$args0\n")
         val parts1 = parts0.map {
-          case lit @ Literal(Constant(s: String)) => s -> lit.pos
+          case lit @ Literal(Constant(s: String)) =>
+            s -> lit.pos
           case part =>
             c.abort(
               part.pos,
@@ -38,18 +39,27 @@ abstract class Quasiquotes
         }
         val reify0 =
           method0 match {
-            case nme.apply   => new ApplyReifier().reifyFillingHoles(_)
-            case nme.unapply => new UnapplyReifier().reifyFillingHoles(_)
-            case other       => global.abort(s"Unknown quasiquote api method: $other")
+            case nme.apply =>
+              new ApplyReifier().reifyFillingHoles(_)
+            case nme.unapply =>
+              new UnapplyReifier().reifyFillingHoles(_)
+            case other =>
+              global.abort(s"Unknown quasiquote api method: $other")
           }
         val parse0 =
           interpolator0 match {
-            case nme.q  => TermParser.parse(_)
-            case nme.tq => TypeParser.parse(_)
-            case nme.cq => CaseParser.parse(_)
-            case nme.pq => PatternParser.parse(_)
-            case nme.fq => ForEnumeratorParser.parse(_)
-            case other  => global.abort(s"Unknown quasiquote flavor: $other")
+            case nme.q =>
+              TermParser.parse(_)
+            case nme.tq =>
+              TypeParser.parse(_)
+            case nme.cq =>
+              CaseParser.parse(_)
+            case nme.pq =>
+              PatternParser.parse(_)
+            case nme.fq =>
+              ForEnumeratorParser.parse(_)
+            case other =>
+              global.abort(s"Unknown quasiquote flavor: $other")
           }
         (universe0, args0, parts1, parse0, reify0, method0)
       case _ =>

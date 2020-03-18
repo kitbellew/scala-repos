@@ -46,7 +46,8 @@ object HashEqualsArrayWrapper {
           a: Array[Float] => new HashEqualsFloatArrayWrapper(a)
         case c if classOf[Array[Double]].equals(c) =>
           a: Array[Double] => new HashEqualsDoubleArrayWrapper(a)
-        case c => a: Array[T] => new HashEqualsObjectArrayWrapper(a)
+        case c =>
+          a: Array[T] => new HashEqualsObjectArrayWrapper(a)
       }
 
     fn.asInstanceOf[(Array[T] => HashEqualsArrayWrapper[T])]
@@ -314,7 +315,8 @@ final class HashEqualsLongArrayWrapper(override val wrapped: Array[Long])
     obj match {
       case other: HashEqualsLongArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -325,7 +327,8 @@ final class HashEqualsIntArrayWrapper(override val wrapped: Array[Int])
     obj match {
       case other: HashEqualsIntArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -336,7 +339,8 @@ final class HashEqualsShortArrayWrapper(override val wrapped: Array[Short])
     obj match {
       case other: HashEqualsShortArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -347,7 +351,8 @@ final class HashEqualsCharArrayWrapper(override val wrapped: Array[Char])
     obj match {
       case other: HashEqualsCharArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -358,7 +363,8 @@ final class HashEqualsByteArrayWrapper(override val wrapped: Array[Byte])
     obj match {
       case other: HashEqualsByteArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -369,7 +375,8 @@ final class HashEqualsBooleanArrayWrapper(override val wrapped: Array[Boolean])
     obj match {
       case other: HashEqualsBooleanArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -380,7 +387,8 @@ final class HashEqualsFloatArrayWrapper(override val wrapped: Array[Float])
     obj match {
       case other: HashEqualsFloatArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -392,7 +400,8 @@ final class HashEqualsDoubleArrayWrapper(override val wrapped: Array[Double])
     obj match {
       case other: HashEqualsDoubleArrayWrapper =>
         util.Arrays.equals(wrapped, other.wrapped)
-      case _ => false
+      case _ =>
+        false
     }
 }
 
@@ -404,6 +413,7 @@ final class HashEqualsObjectArrayWrapper[T](override val wrapped: Array[T])
     obj match {
       case other: HashEqualsObjectArrayWrapper[T] =>
         wrappedInternal.equals(other.wrappedInternal)
-      case _ => false
+      case _ =>
+        false
     }
 }

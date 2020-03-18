@@ -18,14 +18,22 @@ package com.twitter.finagle.http
 case class Status(code: Int) {
   def reason: String =
     Status.reasons.get(this) match {
-      case Some(reason)    => reason
-      case _ if code < 100 => "Unknown Status"
-      case _ if code < 200 => "Informational"
-      case _ if code < 300 => "Successful"
-      case _ if code < 400 => "Redirection"
-      case _ if code < 500 => "Client Error"
-      case _ if code < 600 => "Server Error"
-      case _               => "Unknown Status"
+      case Some(reason) =>
+        reason
+      case _ if code < 100 =>
+        "Unknown Status"
+      case _ if code < 200 =>
+        "Informational"
+      case _ if code < 300 =>
+        "Successful"
+      case _ if code < 400 =>
+        "Redirection"
+      case _ if code < 500 =>
+        "Client Error"
+      case _ if code < 600 =>
+        "Server Error"
+      case _ =>
+        "Unknown Status"
     }
 }
 

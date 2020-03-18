@@ -15,8 +15,10 @@ object Parsing {
     def content: A
     def isMatch =
       this match {
-        case Matched(_)   => true
-        case Unmatched(_) => false
+        case Matched(_) =>
+          true
+        case Unmatched(_) =>
+          false
       }
   }
   case class Matched[A](val content: A) extends MatchInfo[A]
@@ -90,7 +92,8 @@ object Parsing {
           case Input.Empty =>
             Cont(step(rest, inner)) //here should rather pass Input.Empty along
 
-          case Input.EOF => Done(inner, Input.El(rest))
+          case Input.EOF =>
+            Done(inner, Input.El(rest))
 
           case Input.El(chunk) =>
             val all = rest ++ chunk
@@ -135,7 +138,8 @@ object Parsing {
                                     k(Input.El(Unmatched(suffix))),
                                     Input.EOF
                                   ) //suffix maybe empty
-                                case other => step(ss ++ suffix, Cont(k))(other)
+                                case other =>
+                                  step(ss ++ suffix, Cont(k))(other)
                               })),
                         (err, e) => throw new Exception()
                       )(dec)

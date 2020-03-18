@@ -55,7 +55,8 @@ private[persistence] class LeveldbJournal extends {
           RecoverySuccess(highSeqNr)
         }
         .recover {
-          case e ⇒ ReplayMessagesFailure(e)
+          case e ⇒
+            ReplayMessagesFailure(e)
         }
         .pipeTo(replyTo)
 
@@ -140,7 +141,8 @@ private[persistence] class SharedLeveldbJournal extends AsyncWriteProxy {
     case cmd: LeveldbJournal.SubscriptionCommand ⇒
       // forward subscriptions, they are used by query-side
       store match {
-        case Some(s) ⇒ s.forward(cmd)
+        case Some(s) ⇒
+          s.forward(cmd)
         case None ⇒
           log.error(
             "Failed {} request. " +

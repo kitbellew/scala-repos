@@ -166,7 +166,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
           // As far as it is known currently, these errors can only happen if a TCP error bubbles up
           // from the TCP layer through the HTTP layer to the Http.IncomingConnection.flow.
           // See https://github.com/akka/akka/issues/17992
-          case NonFatal(_) ⇒ Future.successful(())
+          case NonFatal(_) ⇒
+            Future.successful(())
         }(fm.executionContext)
       }
       .to(Sink.ignore)
@@ -566,7 +567,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
         log)
       gatewayFuture.flatMap(_(request))(fm.executionContext)
     } catch {
-      case e: IllegalUriException ⇒ FastFuture.failed(e)
+      case e: IllegalUriException ⇒
+        FastFuture.failed(e)
     }
 
   /**
@@ -600,8 +602,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
 
     val ctx =
       uri.scheme match {
-        case "ws" ⇒ ConnectionContext.noEncryption()
-        case "wss" if connectionContext.isSecure ⇒ connectionContext
+        case "ws" ⇒
+          ConnectionContext.noEncryption()
+        case "wss" if connectionContext.isSecure ⇒
+          connectionContext
         case "wss" ⇒
           throw new IllegalArgumentException(
             "Provided connectionContext is not secure, yet request to secure `wss` endpoint detected!")
@@ -688,7 +692,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
           val ctx = createDefaultClientHttpsContext()
           _defaultClientHttpsConnectionContext = ctx
           ctx
-        case ctx ⇒ ctx
+        case ctx ⇒
+          ctx
       }
     }
 
@@ -752,7 +757,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
           hostPoolCache.remove(setup, fastFuture))(fm.executionContext)
         fastFuture
 
-      case future ⇒ future // return cached instance
+      case future ⇒
+        future // return cached instance
     }
   }
 
@@ -792,7 +798,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     connectionContext match {
       case hctx: HttpsConnectionContext ⇒
         TLS(hctx.sslContext, hctx.firstSession, role, hostInfo = hostInfo)
-      case other ⇒ TLSPlacebo() // if it's not HTTPS, we don't enable SSL/TLS
+      case other ⇒
+        TLSPlacebo() // if it's not HTTPS, we don't enable SSL/TLS
     }
 }
 
@@ -999,10 +1006,14 @@ trait DefaultSSLContextCreation {
     import com.typesafe.sslconfig.ssl.{ClientAuth ⇒ SslClientAuth}
     val clientAuth =
       config.sslParametersConfig.clientAuth match {
-        case SslClientAuth.Default ⇒ None
-        case SslClientAuth.Want ⇒ Some(TLSClientAuth.Want)
-        case SslClientAuth.Need ⇒ Some(TLSClientAuth.Need)
-        case SslClientAuth.None ⇒ Some(TLSClientAuth.None)
+        case SslClientAuth.Default ⇒
+          None
+        case SslClientAuth.Want ⇒
+          Some(TLSClientAuth.Want)
+        case SslClientAuth.Need ⇒
+          Some(TLSClientAuth.Need)
+        case SslClientAuth.None ⇒
+          Some(TLSClientAuth.None)
       }
     // hostname!
     defaultParams.setEndpointIdentificationAlgorithm("https")

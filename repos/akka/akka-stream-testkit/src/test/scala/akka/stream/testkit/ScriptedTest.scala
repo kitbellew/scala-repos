@@ -171,7 +171,8 @@ trait ScriptedTest extends Matchers {
             debugLog(s"operation requests $n")
             pendingRequests += n
             true
-          case _ ⇒ false // Ignore
+          case _ ⇒
+            false // Ignore
         }
       val d =
         downstream.receiveWhile(1.milliseconds) {
@@ -188,7 +189,8 @@ trait ScriptedTest extends Matchers {
           case OnError(e) ⇒
             currentScript = currentScript.error(e)
             true
-          case _ ⇒ false // Ignore
+          case _ ⇒
+            false // Ignore
         }
       (u ++ d) exists (x ⇒ x)
     }

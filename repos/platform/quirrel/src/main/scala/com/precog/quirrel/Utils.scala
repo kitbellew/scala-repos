@@ -26,7 +26,8 @@ object Utils {
     second.foldLeft(first) {
       case (acc, (key, set)) if acc contains key =>
         acc.updated(key, acc(key) ++ set)
-      case (acc, pair) => acc + pair
+      case (acc, pair) =>
+        acc + pair
     }
   }
 }

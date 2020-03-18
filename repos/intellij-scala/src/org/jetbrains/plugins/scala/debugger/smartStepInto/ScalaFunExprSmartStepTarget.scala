@@ -39,14 +39,17 @@ object FunExpressionTarget {
         Some(clauses.caseClauses.flatMap(_.expr).flatMap(blockStmts), text(b))
       case expr: ScExpression if ScalaPsiUtil.isByNameArgument(expr) =>
         Some(blockStmts(expr), text(expr))
-      case _ => None
+      case _ =>
+        None
     }
   }
 
   private def blockStmts(expr: ScExpression): Seq[ScBlockStatement] = {
     expr match {
-      case b: ScBlock => b.statements
-      case e          => Seq(e)
+      case b: ScBlock =>
+        b.statements
+      case e =>
+        Seq(e)
     }
   }
 
@@ -54,8 +57,10 @@ object FunExpressionTarget {
     ScalaPsiUtil.parameterOf(expr) match {
       case Some(p) if p.isByName =>
         Some(s"${p.name}: => ${p.paramType.presentableText}")
-      case Some(p) => Some(s"${p.name}: ${p.paramType.presentableText}")
-      case _       => None
+      case Some(p) =>
+        Some(s"${p.name}: ${p.paramType.presentableText}")
+      case _ =>
+        None
     }
   }
 

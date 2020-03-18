@@ -4,12 +4,14 @@ class TestPos {
 
   def unwrap[T](x: AbsWrapperCov[T]): T =
     x match {
-      case Wrapper /*[_ <: T ]*/ (x) => x // _ <: T, which is a subtype of T
+      case Wrapper /*[_ <: T ]*/ (x) =>
+        x // _ <: T, which is a subtype of T
     }
 
   def unwrapOption[T](x: Option[T]): T =
     x match {
-      case Some(xs) => xs
+      case Some(xs) =>
+        xs
     }
 
   case class Down[+T](x: T)
@@ -17,7 +19,8 @@ class TestPos {
 
   def f1[T](x1: Down[T])(x2: Up[T]) =
     ((x1, x2)) match {
-      case (Down(x), Up(f)) => f(x)
+      case (Down(x), Up(f)) =>
+        f(x)
     }
 }
 

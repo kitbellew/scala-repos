@@ -291,7 +291,8 @@ object CompileServerLauncher {
   def needRestart(project: Project): Boolean = {
     val serverInstance = CompileServerLauncher.instance.serverInstance
     serverInstance match {
-      case None => true
+      case None =>
+        true
       case Some(instance) =>
         val useProjectHome =
           ScalaCompileServerSettings

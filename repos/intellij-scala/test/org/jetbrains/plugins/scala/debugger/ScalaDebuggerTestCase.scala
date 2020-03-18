@@ -279,10 +279,14 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       }
       val res =
         value match {
-          case Success(v: VoidValue)         => "undefined"
-          case Success(v)                    => DebuggerUtils.getValueAsString(ctx, v)
-          case Failure(e: EvaluateException) => e.getMessage
-          case Failure(e: Throwable)         => "Other error: " + e.getMessage
+          case Success(v: VoidValue) =>
+            "undefined"
+          case Success(v) =>
+            DebuggerUtils.getValueAsString(ctx, v)
+          case Failure(e: EvaluateException) =>
+            e.getMessage
+          case Failure(e: Throwable) =>
+            "Other error: " + e.getMessage
         }
       semaphore.up()
       res

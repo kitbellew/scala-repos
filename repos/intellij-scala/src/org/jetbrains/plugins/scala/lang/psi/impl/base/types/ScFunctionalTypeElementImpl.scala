@@ -29,10 +29,12 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
   def desugarizedInfixType: Option[ScParameterizedTypeElement] = {
     val paramTypes =
       paramTypeElement match {
-        case tup: ScTupleTypeElement => tup.components
+        case tup: ScTupleTypeElement =>
+          tup.components
         case par: ScParenthesisedTypeElement if par.typeElement.isEmpty =>
           Seq.empty
-        case other => Seq(other)
+        case other =>
+          Seq(other)
       }
     val n = paramTypes.length
     val newTypeText =
@@ -46,15 +48,19 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
       getContext,
       this)
     newTypeElement match {
-      case p: ScParameterizedTypeElement => Some(p)
-      case _                             => None
+      case p: ScParameterizedTypeElement =>
+        Some(p)
+      case _ =>
+        None
     }
   }
 
   protected def innerType(ctx: TypingContext): TypeResult[ScType] = {
     desugarizedInfixType match {
-      case Some(p) => p.getType(ctx)
-      case _       => Failure("Cannot desugarize function type", Some(this))
+      case Some(p) =>
+        p.getType(ctx)
+      case _ =>
+        Failure("Cannot desugarize function type", Some(this))
     }
   }
 
@@ -64,8 +70,10 @@ class ScFunctionalTypeElementImpl(node: ASTNode)
 
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitFunctionalTypeElement(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitFunctionalTypeElement(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }

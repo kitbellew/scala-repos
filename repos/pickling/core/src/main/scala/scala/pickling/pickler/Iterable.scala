@@ -64,7 +64,8 @@ object TravPickler {
           .apply(currentMirror, one.toString)
           .asInstanceOf[FastTypeTag[T]]
       // Note: This is what we do to handle
-      case List() => ANY_TAG.asInstanceOf[FastTypeTag[T]]
+      case List() =>
+        ANY_TAG.asInstanceOf[FastTypeTag[T]]
       case x =>
         throw new PicklingException(
           s"Error, expected one type argument  on $tpe, found: $x")

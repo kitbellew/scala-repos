@@ -22,18 +22,30 @@ case class Entry(
   lazy val decode: Option[Atom] =
     (
       typ match {
-        case "follow"       => Json.fromJson[Follow](data)
-        case "team-join"    => Json.fromJson[TeamJoin](data)
-        case "team-create"  => Json.fromJson[TeamCreate](data)
-        case "forum-post"   => Json.fromJson[ForumPost](data)
-        case "note-create"  => Json.fromJson[NoteCreate](data)
-        case "tour-join"    => Json.fromJson[TourJoin](data)
-        case "qa-question"  => Json.fromJson[QaQuestion](data)
-        case "qa-answer"    => Json.fromJson[QaAnswer](data)
-        case "qa-comment"   => Json.fromJson[QaComment](data)
-        case "game-end"     => Json.fromJson[GameEnd](data)
-        case "simul-create" => Json.fromJson[SimulCreate](data)
-        case "simul-join"   => Json.fromJson[SimulJoin](data)
+        case "follow" =>
+          Json.fromJson[Follow](data)
+        case "team-join" =>
+          Json.fromJson[TeamJoin](data)
+        case "team-create" =>
+          Json.fromJson[TeamCreate](data)
+        case "forum-post" =>
+          Json.fromJson[ForumPost](data)
+        case "note-create" =>
+          Json.fromJson[NoteCreate](data)
+        case "tour-join" =>
+          Json.fromJson[TourJoin](data)
+        case "qa-question" =>
+          Json.fromJson[QaQuestion](data)
+        case "qa-answer" =>
+          Json.fromJson[QaAnswer](data)
+        case "qa-comment" =>
+          Json.fromJson[QaComment](data)
+        case "game-end" =>
+          Json.fromJson[GameEnd](data)
+        case "simul-create" =>
+          Json.fromJson[SimulCreate](data)
+        case "simul-join" =>
+          Json.fromJson[SimulJoin](data)
       }
     ).asOpt
 
@@ -45,18 +57,30 @@ object Entry {
   private[timeline] def make(users: List[String], data: Atom): Option[Entry] =
     (
       data match {
-        case d: Follow      => "follow" -> Json.toJson(d)
-        case d: TeamJoin    => "team-join" -> Json.toJson(d)
-        case d: TeamCreate  => "team-create" -> Json.toJson(d)
-        case d: ForumPost   => "forum-post" -> Json.toJson(d)
-        case d: NoteCreate  => "note-create" -> Json.toJson(d)
-        case d: TourJoin    => "tour-join" -> Json.toJson(d)
-        case d: QaQuestion  => "qa-question" -> Json.toJson(d)
-        case d: QaAnswer    => "qa-answer" -> Json.toJson(d)
-        case d: QaComment   => "qa-comment" -> Json.toJson(d)
-        case d: GameEnd     => "game-end" -> Json.toJson(d)
-        case d: SimulCreate => "simul-create" -> Json.toJson(d)
-        case d: SimulJoin   => "simul-join" -> Json.toJson(d)
+        case d: Follow =>
+          "follow" -> Json.toJson(d)
+        case d: TeamJoin =>
+          "team-join" -> Json.toJson(d)
+        case d: TeamCreate =>
+          "team-create" -> Json.toJson(d)
+        case d: ForumPost =>
+          "forum-post" -> Json.toJson(d)
+        case d: NoteCreate =>
+          "note-create" -> Json.toJson(d)
+        case d: TourJoin =>
+          "tour-join" -> Json.toJson(d)
+        case d: QaQuestion =>
+          "qa-question" -> Json.toJson(d)
+        case d: QaAnswer =>
+          "qa-answer" -> Json.toJson(d)
+        case d: QaComment =>
+          "qa-comment" -> Json.toJson(d)
+        case d: GameEnd =>
+          "game-end" -> Json.toJson(d)
+        case d: SimulCreate =>
+          "simul-create" -> Json.toJson(d)
+        case d: SimulJoin =>
+          "simul-join" -> Json.toJson(d)
       }
     ) match {
       case (typ, json) =>

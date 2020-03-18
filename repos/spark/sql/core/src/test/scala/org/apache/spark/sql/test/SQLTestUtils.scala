@@ -111,8 +111,10 @@ private[sql] trait SQLTestUtils
     try f
     finally {
       keys.zip(currentValues).foreach {
-        case (key, Some(value)) => sqlContext.conf.setConfString(key, value)
-        case (key, None)        => sqlContext.conf.unsetConf(key)
+        case (key, Some(value)) =>
+          sqlContext.conf.setConfString(key, value)
+        case (key, None) =>
+          sqlContext.conf.unsetConf(key)
       }
     }
   }
@@ -265,9 +267,12 @@ private[sql] object SQLTestUtils {
       val converted: Seq[Row] = answer.map { s =>
         Row.fromSeq(
           s.toSeq.map {
-            case d: java.math.BigDecimal => BigDecimal(d)
-            case b: Array[Byte]          => b.toSeq
-            case o                       => o
+            case d: java.math.BigDecimal =>
+              BigDecimal(d)
+            case b: Array[Byte] =>
+              b.toSeq
+            case o =>
+              o
           })
       }
       if (sort) {

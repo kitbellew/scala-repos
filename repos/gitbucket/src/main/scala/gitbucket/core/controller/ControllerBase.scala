@@ -94,7 +94,8 @@ abstract class ControllerBase
         contextCache.set(context)
         context
       }
-      case context => context
+      case context =>
+        context
     }
   }
 
@@ -204,8 +205,10 @@ abstract class ControllerBase
       request.contentType.map(_.split(";").head.toLowerCase) match {
         case Some("application/x-www-form-urlencoded") =>
           multiParams.keys.headOption.map(parse(_))
-        case Some("application/json") => Some(parsedBody)
-        case _                        => Some(parse(request.body))
+        case Some("application/json") =>
+          Some(parsedBody)
+        case _ =>
+          Some(parse(request.body))
       }
     ).filterNot(_ == JNothing).flatMap(j => Try(j.extract[A]).toOption)
   }
@@ -225,11 +228,16 @@ case class Context(
   val host = new java.net.URL(baseUrl).getHost
   val platform =
     request.getHeader("User-Agent") match {
-      case null                             => null
-      case agent if agent.contains("Mac")   => "mac"
-      case agent if agent.contains("Linux") => "linux"
-      case agent if agent.contains("Win")   => "windows"
-      case _                                => null
+      case null =>
+        null
+      case agent if agent.contains("Mac") =>
+        "mac"
+      case agent if agent.contains("Linux") =>
+        "linux"
+      case agent if agent.contains("Win") =>
+        "windows"
+      case _ =>
+        null
     }
 
   /**

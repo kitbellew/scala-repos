@@ -147,7 +147,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
           "Preferred replica leader election currently in progress for " +
             "%s. Aborting operation".format(
               partitionsUndergoingPreferredReplicaElection))
-      case e2: Throwable => throw new AdminOperationException(e2.toString)
+      case e2: Throwable =>
+        throw new AdminOperationException(e2.toString)
     }
   }
 }

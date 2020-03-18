@@ -295,7 +295,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
                   maxRpcMessageSize)
                 taskSetMgr.abort(msg)
               } catch {
-                case e: Exception => logError("Exception in error callback", e)
+                case e: Exception =>
+                  logError("Exception in error callback", e)
               }
           }
         } else {

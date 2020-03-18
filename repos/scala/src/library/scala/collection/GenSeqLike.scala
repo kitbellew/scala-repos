@@ -484,8 +484,10 @@ trait GenSeqLike[+A, +Repr]
     */
   override def equals(that: Any): Boolean =
     that match {
-      case that: GenSeq[_] => (that canEqual this) && (this sameElements that)
-      case _               => false
+      case that: GenSeq[_] =>
+        (that canEqual this) && (this sameElements that)
+      case _ =>
+        false
     }
 
 }

@@ -39,7 +39,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   override def manifest(obj: AnyRef): String =
     obj match {
-      case _: MetricsGossipEnvelope ⇒ MetricsGossipEnvelopeManifest
+      case _: MetricsGossipEnvelope ⇒
+        MetricsGossipEnvelopeManifest
       case _ ⇒
         throw new IllegalArgumentException(
           s"Can't serialize object of type ${obj.getClass} in [${getClass.getName}]")
@@ -70,7 +71,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
     @tailrec
     def readChunk(): Unit =
       in.read(buffer) match {
-        case -1 ⇒ ()
+        case -1 ⇒
+          ()
         case n ⇒
           out.write(buffer, 0, n)
           readChunk()
@@ -143,7 +145,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
       value: T,
       unknown: String): Int =
     map.get(value) match {
-      case Some(x) ⇒ x
+      case Some(x) ⇒
+        x
       case _ ⇒
         throw new IllegalArgumentException(
           s"Unknown $unknown [$value] in cluster message")
@@ -255,9 +258,12 @@ class MessageSerializer(val system: ExtendedActorSystem)
       number.getType.getNumber match {
         case NumberType.Double_VALUE ⇒
           jl.Double.longBitsToDouble(number.getValue64)
-        case NumberType.Long_VALUE ⇒ number.getValue64
-        case NumberType.Float_VALUE ⇒ jl.Float.intBitsToFloat(number.getValue32)
-        case NumberType.Integer_VALUE ⇒ number.getValue32
+        case NumberType.Long_VALUE ⇒
+          number.getValue64
+        case NumberType.Float_VALUE ⇒
+          jl.Float.intBitsToFloat(number.getValue32)
+        case NumberType.Integer_VALUE ⇒
+          number.getValue32
         case NumberType.Serialized_VALUE ⇒
           val in =
             new ClassLoaderObjectInputStream(

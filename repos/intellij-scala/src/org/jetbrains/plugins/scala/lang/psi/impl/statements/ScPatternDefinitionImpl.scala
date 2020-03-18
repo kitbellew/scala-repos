@@ -35,8 +35,10 @@ class ScPatternDefinitionImpl private (
     with ScPatternDefinition {
   override def accept(visitor: PsiElementVisitor): Unit = {
     visitor match {
-      case visitor: ScalaElementVisitor => super.accept(visitor)
-      case _                            => super.accept(visitor)
+      case visitor: ScalaElementVisitor =>
+        super.accept(visitor)
+      case _ =>
+        super.accept(visitor)
     }
   }
 
@@ -66,7 +68,8 @@ class ScPatternDefinitionImpl private (
 
   def getType(ctx: TypingContext) = {
     typeElement match {
-      case Some(te) => te.getType(ctx)
+      case Some(te) =>
+        te.getType(ctx)
       case None =>
         expr
           .map(_.getType(ctx))

@@ -9,8 +9,10 @@ object Test {
       backing.view.map {
         case (k, v) =>
           f(v) match {
-            case Left(l)  => Left((k, l))
-            case Right(r) => Right((k, r))
+            case Left(l) =>
+              Left((k, l))
+            case Right(r) =>
+              Right((k, r))
           }
       }
     }

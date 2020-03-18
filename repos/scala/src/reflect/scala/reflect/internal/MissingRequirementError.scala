@@ -22,7 +22,9 @@ object MissingRequirementError {
   def notFound(req: String): Nothing = signal(req + suffix)
   def unapply(x: Throwable): Option[String] =
     x match {
-      case x: MissingRequirementError => Some(x.req)
-      case _                          => None
+      case x: MissingRequirementError =>
+        Some(x.req)
+      case _ =>
+        None
     }
 }

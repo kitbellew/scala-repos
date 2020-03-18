@@ -26,7 +26,8 @@ private[pickling] object IrSymbol {
             tail ++ hd.parentClasses,
             newMthds ++ mthds,
             visitedClasses + hd.className)
-        case Nil => mthds
+        case Nil =>
+          mthds
       }
     // TODO - We should maybe warn if we see transient fields that cause us not to compile correctly, or maybe
     //       allow serializing transient fields...
@@ -47,7 +48,8 @@ private[pickling] object IrSymbol {
             tail ++ hd.parentClasses,
             newFields ++ fields,
             visitedClasses + hd.className)
-        case Nil => fields
+        case Nil =>
+          fields
       }
     // TODO - We should maybe warn if we see transient fields that cause us not to compile correctly, or maybe
     //       allow serializing transient fields...

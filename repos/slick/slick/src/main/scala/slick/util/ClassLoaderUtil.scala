@@ -14,7 +14,8 @@ object ClassLoaderUtil {
           // classloader.
           Thread.currentThread().getContextClassLoader.loadClass(name)
         } catch {
-          case e: ClassNotFoundException => super.loadClass(name)
+          case e: ClassNotFoundException =>
+            super.loadClass(name)
         }
       }
     }

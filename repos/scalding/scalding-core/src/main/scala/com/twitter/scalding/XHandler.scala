@@ -51,8 +51,10 @@ object RichXHandler {
   @annotation.tailrec
   final def rootOf(t: Throwable): Throwable =
     t.getCause match {
-      case null  => t
-      case cause => rootOf(cause)
+      case null =>
+        t
+      case cause =>
+        rootOf(cause)
     }
 
   @annotation.tailrec
@@ -62,7 +64,8 @@ object RichXHandler {
         t.getClass // we're going to find a mappable cause.
       case (None, null) =>
         t.getClass // we're at the root. There won't be any cause
-      case (None, cause) => peelUntilMappable(cause)
+      case (None, cause) =>
+        peelUntilMappable(cause)
     }
 
   def createXUrl(t: Throwable): String =

@@ -65,7 +65,8 @@ class HASkipListView[S <: Sys[S], A](private val l: HASkipList[S, A])(implicit
           val chb = chbt.map(_._1)
           val h = Horiz(bs = chb)
           Vert(bs = IndexedSeq[Box](b, h))
-        case None => b
+        case None =>
+          b
       }
 
     (bb, b)

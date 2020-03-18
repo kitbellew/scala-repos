@@ -166,7 +166,8 @@ abstract class RefChecks
           tpe match {
             case MethodType(params, restpe) =>
               (params exists (_.hasDefault)) || hasDefaultParam(restpe)
-            case _ => false
+            case _ =>
+              false
           }
         val haveDefaults = methods filter (
           if (settings.isScala211)
@@ -866,7 +867,8 @@ abstract class RefChecks
                 case Scope(concrete) =>
                   val mismatches =
                     abstractParams zip concrete.tpe.paramTypes filterNot {
-                      case (x, y) => x =:= y
+                      case (x, y) =>
+                        x =:= y
                     }
                   mismatches match {
                     // Only one mismatched parameter: say something useful.
@@ -1086,8 +1088,7 @@ abstract class RefChecks
           case Nil =>
             devWarning(
               s"base $baseClass not found in basetypes of $clazz. This might indicate incorrect caching of TypeRef#parents.")
-          case _ :: Nil =>
-            ; // OK
+          case _ :: Nil => ; // OK
           case tp1 :: tp2 :: _ =>
             reporter.error(
               clazz.pos,
@@ -1107,7 +1108,8 @@ abstract class RefChecks
         tp match {
           case ClassInfoType(parents, _, clazz) =>
             "supertype " + intersectionType(parents, clazz.owner)
-          case _ => "type " + tp
+          case _ =>
+            "type " + tp
         }
       override def issueVarianceError(
           base: Symbol,
@@ -1207,7 +1209,8 @@ abstract class RefChecks
       sym match {
         case Object_eq | Object_ne | Object_== | Object_!= | Any_== | Any_!= =>
           true
-        case _ => false
+        case _ =>
+          false
       }
 
     /** Check the sensibility of using the given `equals` to compare `qual` and `other`. */
@@ -1222,7 +1225,8 @@ abstract class RefChecks
         tree match {
           case Function(_, _) | Apply(Select(New(_), nme.CONSTRUCTOR), _) =>
             true
-          case _ => false
+          case _ =>
+            false
         }
       def underlyingClass(tp: Type): Symbol = {
         val sym = tp.widen.typeSymbol
@@ -1313,8 +1317,10 @@ abstract class RefChecks
 
       def unrelatedMsg =
         name match {
-          case nme.EQ | nme.eq => "never compare equal"
-          case _               => "always compare unequal"
+          case nme.EQ | nme.eq =>
+            "never compare equal"
+          case _ =>
+            "always compare unequal"
         }
       def unrelatedTypes() =
         if (!isNonSensible) {
@@ -1388,8 +1394,9 @@ abstract class RefChecks
         if (isCaseEquals) {
           def thisCase = receiver.info.member(nme.equals_).owner
           actual.info.baseClasses.find(_.isCase) match {
-            case Some(p) if p != thisCase => nonSensible("case class ", false)
-            case None                     =>
+            case Some(p) if p != thisCase =>
+              nonSensible("case class ", false)
+            case None =>
               // stronger message on (Some(1) == None)
               //if (receiver.isCase && receiver.isEffectivelyFinal && !(receiver isSubClass actual)) nonSensiblyNeq()
               //else
@@ -1424,7 +1431,8 @@ abstract class RefChecks
         valOrDef.rhs match {
           case t @ (Ident(_) | Select(This(_), _)) =>
             t hasSymbolWhich (_.accessedOrSelf == valOrDef.symbol)
-          case _ => false
+          case _ =>
+            false
         }
       val trivialInfiniteLoop = (!valOrDef.isErroneous
         && !valOrDef.symbol.isValueParameter
@@ -1563,7 +1571,8 @@ abstract class RefChecks
               currentLevel.refpos,
               "forward reference not allowed from self constructor invocation")
           }
-        case ModuleDef(_, _, _) => eliminateModuleDefs(tree)
+        case ModuleDef(_, _, _) =>
+          eliminateModuleDefs(tree)
         case ValDef(_, _, _, _) =>
           val tree1 = transform(
             tree
@@ -1580,11 +1589,13 @@ abstract class RefChecks
             }
             tree1 :: Nil
           }
-        case Import(_, _) => Nil
+        case Import(_, _) =>
+          Nil
         case DefDef(mods, _, _, _, _, _)
             if (mods hasFlag MACRO) || (tree.symbol hasFlag MACRO) =>
           Nil
-        case _ => transform(tree) :: Nil
+        case _ =>
+          transform(tree) :: Nil
       }
 
     /* Check whether argument types conform to bounds of type parameters */
@@ -1713,8 +1724,10 @@ abstract class RefChecks
     private def warnLessAccessible(otherSym: Symbol, memberSym: Symbol) {
       val comparison =
         accessFlagsToString(memberSym) match {
-          case ""  => ""
-          case acc => " is " + acc + " but"
+          case "" =>
+            ""
+          case acc =>
+            " is " + acc + " but"
         }
       val cannot =
         if (memberSym.isDeferred)
@@ -1808,9 +1821,11 @@ abstract class RefChecks
       tp match {
         case TypeRef(pre, sym, args) =>
           tree match {
-            case tt: TypeTree if tt.original == null => // SI-7783 don't warn about inferred types
+            case tt: TypeTree
+                if tt.original == null => // SI-7783 don't warn about inferred types
             // FIXME: reconcile this check with one in resetAttrs
-            case _ => checkUndesiredProperties(sym, tree.pos)
+            case _ =>
+              checkUndesiredProperties(sym, tree.pos)
           }
           if (sym.isJavaDefined)
             sym.typeParams foreach (_.cookJavaRawInfo())
@@ -1985,8 +2000,9 @@ abstract class RefChecks
         transformCaseApply(tree)
       } else {
         qual match {
-          case Super(_, mix) => checkSuper(mix)
-          case _             =>
+          case Super(_, mix) =>
+            checkSuper(mix)
+          case _ =>
         }
         tree
       }
@@ -2007,7 +2023,8 @@ abstract class RefChecks
             else
               elsepart
           unitIfEmpty(res)
-        case _ => tree
+        case _ =>
+          tree
       }
     }
 
@@ -2025,7 +2042,8 @@ abstract class RefChecks
             reporter.warning(
               sym.pos,
               s"side-effecting nullary methods are discouraged: suggest defining as `def ${sym.name.decode}()` instead")
-        case _ => ()
+        case _ =>
+          ()
       }
 
     // Verify classes extending AnyVal meet the requirements
@@ -2075,8 +2093,9 @@ abstract class RefChecks
                   checkAccessibilityOfReferencedTypes(tree)
               }
               tree match {
-                case dd: DefDef => checkByNameRightAssociativeDef(dd)
-                case _          =>
+                case dd: DefDef =>
+                  checkByNameRightAssociativeDef(dd)
+                case _ =>
               }
               tree
 
@@ -2196,7 +2215,8 @@ abstract class RefChecks
               // probably not, until we allow parameterised extractors
               tree
 
-            case _ => tree
+            case _ =>
+              tree
           }
 
         // skip refchecks in patterns....

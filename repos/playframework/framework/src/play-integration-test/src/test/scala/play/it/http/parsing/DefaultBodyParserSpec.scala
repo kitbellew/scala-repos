@@ -54,7 +54,8 @@ object DefaultBodyParserSpec extends PlaySpecification {
         "PUT",
         Some("application/json"),
         ByteString("""{"foo":"bar"}""")) must beRight.like {
-        case AnyContentAsJson(json) => (json \ "foo").as[String] must_== "bar"
+        case AnyContentAsJson(json) =>
+          (json \ "foo").as[String] must_== "bar"
       }
     }
 
@@ -62,7 +63,8 @@ object DefaultBodyParserSpec extends PlaySpecification {
       parse("PUT", None, ByteString.empty) must beRight.like {
         case AnyContentAsRaw(rawBuffer) =>
           rawBuffer.asBytes() must beSome.like {
-            case outBytes => outBytes must beEmpty
+            case outBytes =>
+              outBytes must beEmpty
           }
       }
     }

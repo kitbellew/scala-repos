@@ -18,7 +18,8 @@ object Test {
         f();
         assert(false)
       } catch {
-        case _: Throwable => ()
+        case _: Throwable =>
+          ()
       }
     }
   }

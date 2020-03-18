@@ -126,14 +126,17 @@ trait Node extends Dumpable {
             .filterNot(_.isInstanceOf[Node])
             .mkString(", ")
           (n, args)
-        case _ => (super.toString, "")
+        case _ =>
+          (super.toString, "")
       }
     val t = peekType
     val ch =
       this match {
         // Omit path details unless dumpPaths is set
-        case Path(l @ (_ :: _ :: _)) if !GlobalConfig.dumpPaths => Vector.empty
-        case _                                                  => childNames.zip(children.toSeq).toVector
+        case Path(l @ (_ :: _ :: _)) if !GlobalConfig.dumpPaths =>
+          Vector.empty
+        case _ =>
+          childNames.zip(children.toSeq).toVector
       }
     DumpInfo(
       objName,
@@ -183,9 +186,12 @@ final case class ProductNode(children: ConstArray[Node])
   def flatten: ProductNode = {
     def f(n: Node): ConstArray[Node] =
       n match {
-        case ProductNode(ns) => ns.flatMap(f)
-        case StructNode(els) => els.flatMap(el => f(el._2))
-        case n               => ConstArray(n)
+        case ProductNode(ns) =>
+          ns.flatMap(f)
+        case StructNode(els) =>
+          els.flatMap(el => f(el._2))
+        case n =>
+          ConstArray(n)
       }
     ProductNode(f(this))
   }
@@ -204,12 +210,14 @@ final case class StructNode(elements: ConstArray[(TermSymbol, Node)])
   override protected[this] def rebuild(ch: ConstArray[Node]) =
     new StructNode(
       elements.zip(ch).map {
-        case ((s, _), n) => (s, n)
+        case ((s, _), n) =>
+          (s, n)
       })
   def generators = elements
   protected[this] def rebuildWithSymbols(gen: ConstArray[TermSymbol]): Node =
     copy(elements = elements.zip(gen).map {
-      case (e, s) => (s, e._2)
+      case (e, s) =>
+        (s, e._2)
     })
 
   override protected def buildType: Type =
@@ -251,8 +259,10 @@ class LiteralNode(
     )
   override def equals(o: Any) =
     o match {
-      case l: LiteralNode => buildType == l.buildType && value == l.value
-      case _              => false
+      case l: LiteralNode =>
+        buildType == l.buildType && value == l.value
+      case _ =>
+        false
     }
 }
 
@@ -449,8 +459,10 @@ final case class Filter(generator: TermSymbol, from: Node, where: Node)
 object Filter {
   def ifRefutable(generator: TermSymbol, from: Node, where: Node): Node =
     where match {
-      case LiteralNode(true) => from
-      case _                 => Filter(generator, from, where)
+      case LiteralNode(true) =>
+        from
+      case _ =>
+        Filter(generator, from, where)
     }
 }
 
@@ -466,7 +478,8 @@ final case class SortBy(
     copy(
       from = ch(0),
       by = by.zip(ch.tail).map {
-        case ((_, o), n) => (n, o)
+        case ((_, o), n) =>
+          (n, o)
       })
   override def childNames =
     ("from " + generator) +: by.zipWithIndex.map("by" + _._2).toSeq
@@ -632,7 +645,8 @@ final case class Join(
           (
             OptionType(left2Type.elementType),
             OptionType(right2Type.elementType))
-        case _ => (left2Type.elementType, right2Type.elementType)
+        case _ =>
+          (left2Type.elementType, right2Type.elementType)
       }
     withChildren(ConstArray[Node](left2, right2, on2)) :@ (
       if (!hasType)
@@ -790,7 +804,8 @@ final case class Select(in: Node, field: TermSymbol)
       case Some(l) =>
         super.getDumpInfo
           .copy(name = "Path", mainInfo = l.reverseIterator.mkString("."))
-      case None => super.getDumpInfo
+      case None =>
+        super.getDumpInfo
     }
   protected def buildType = in.nodeType.select(field)
   def pathString = in.asInstanceOf[PathElement].pathString + "." + field
@@ -821,7 +836,8 @@ final case class Ref(sym: TermSymbol) extends PathElement with NullaryNode {
       this
     else {
       scope.get(sym) match {
-        case Some(t) => this :@ t
+        case Some(t) =>
+          this :@ t
         case _ =>
           throw new SlickException(
             "No type for symbol " + sym + " found for " + this)
@@ -837,9 +853,12 @@ final case class Ref(sym: TermSymbol) extends PathElement with NullaryNode {
 object Path {
   def apply(l: List[TermSymbol]): PathElement =
     l match {
-      case s :: Nil => Ref(s)
-      case s :: l   => Select(apply(l), s)
-      case _        => throw new SlickException("Empty Path")
+      case s :: Nil =>
+        Ref(s)
+      case s :: l =>
+        Select(apply(l), s)
+      case _ =>
+        throw new SlickException("Empty Path")
     }
   def unapply(n: PathElement): Option[List[TermSymbol]] = {
     var l = new ListBuffer[TermSymbol]
@@ -853,15 +872,18 @@ object Path {
       case Ref(sym) =>
         l += sym
         Some(l.toList)
-      case _ => None
+      case _ =>
+        None
     }
   }
   def toString(path: Seq[TermSymbol]): String =
     path.reverseIterator.mkString("Path ", ".", "")
   def toString(s: Select): String =
     s match {
-      case Path(syms) => toString(syms)
-      case n          => n.toString
+      case Path(syms) =>
+        toString(syms)
+      case n =>
+        n.toString
     }
 }
 
@@ -884,8 +906,10 @@ object FwdPath {
       el = sel.child
     }
     el match {
-      case Ref(sym) => Some(sym :: l)
-      case _        => None
+      case Ref(sym) =>
+        Some(sym :: l)
+      case _ =>
+        None
     }
   }
   def toString(path: Seq[TermSymbol]): String = path.mkString("Path ", ".", "")
@@ -981,7 +1005,8 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
     mapClauses(f, keepType, (i => i % 2 == 1 || i == clauses.length - 1))
   def ifThenClauses: Iterator[(Node, Node)] =
     clauses.iterator.grouped(2).withPartial(false).map {
-      case List(i, t) => (i, t)
+      case List(i, t) =>
+        (i, t)
     }
   def elseClause = clauses.last
 
@@ -990,9 +1015,12 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
       : IfThenElse = { //TODO 3.2: Remove this method. It is only preserved for binary compatibility in 3.1.1
     def isOpt(n: Node) =
       n match {
-        case LiteralNode(null)  => true
-        case _ :@ OptionType(_) => true
-        case _                  => false
+        case LiteralNode(null) =>
+          true
+        case _ :@ OptionType(_) =>
+          true
+        case _ =>
+          false
       }
     val hasOpt = (ifThenClauses.map(_._2) ++ Iterator(elseClause)).exists(isOpt)
     if (hasOpt)

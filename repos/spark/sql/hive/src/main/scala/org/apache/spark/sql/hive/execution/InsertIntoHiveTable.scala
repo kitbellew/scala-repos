@@ -110,8 +110,10 @@ private[hive] case class InsertIntoHiveTable(
     val numDynamicPartitions = partition.values.count(_.isEmpty)
     val numStaticPartitions = partition.values.count(_.nonEmpty)
     val partitionSpec = partition.map {
-      case (key, Some(value)) => key -> value
-      case (key, None)        => key -> ""
+      case (key, Some(value)) =>
+        key -> value
+      case (key, None) =>
+        key -> ""
     }
 
     // All partition column names in the format of "<column name 1>/<column name 2>/..."

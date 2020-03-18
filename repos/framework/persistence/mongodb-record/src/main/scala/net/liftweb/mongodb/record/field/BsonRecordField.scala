@@ -58,7 +58,8 @@ class BsonRecordField[OwnerType <: BsonRecord[
   def owner = rec
   def asJs =
     asJValue match {
-      case JNothing => JsNull
+      case JNothing =>
+        JsNull
       case jv =>
         new JsExp {
           lazy val toJsCmd = compactRender(jv)
@@ -71,15 +72,19 @@ class BsonRecordField[OwnerType <: BsonRecord[
 
   def setFromAny(in: Any): Box[SubRecordType] =
     in match {
-      case dbo: DBObject => setBox(Full(valueMeta.fromDBObject(dbo)))
-      case _             => genericSetFromAny(in)
+      case dbo: DBObject =>
+        setBox(Full(valueMeta.fromDBObject(dbo)))
+      case _ =>
+        genericSetFromAny(in)
     }
 
   def asJValue: JValue = valueBox.map(_.asJValue) openOr (JNothing: JValue)
   def setFromJValue(jvalue: JValue): Box[SubRecordType] =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
-      case _                              => setBox(valueMeta.fromJValue(jvalue))
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
+      case _ =>
+        setBox(valueMeta.fromJValue(jvalue))
     }
 }
 
@@ -117,13 +122,15 @@ class BsonRecordListField[OwnerType <: BsonRecord[
 
   override def setFromJValue(jvalue: JValue) =
     jvalue match {
-      case JNothing | JNull if optional_? => setBox(Empty)
+      case JNothing | JNull if optional_? =>
+        setBox(Empty)
       case JArray(arr) =>
         setBox(
           Full(
             arr.map(jv => {
               valueMeta.fromJValue(jv) openOr valueMeta.createRecord
             })))
-      case other => setBox(FieldHelpers.expectedA("JArray", other))
+      case other =>
+        setBox(FieldHelpers.expectedA("JArray", other))
     }
 }

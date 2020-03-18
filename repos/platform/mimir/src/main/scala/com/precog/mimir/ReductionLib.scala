@@ -165,7 +165,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (maxs.isEmpty)
@@ -233,7 +234,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (maxs.isEmpty)
@@ -320,7 +322,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             // now we just find the max out of all of our column types
@@ -407,7 +410,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             // now we just find the min out of all of our column types
@@ -477,7 +481,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (sum.isEmpty)
@@ -548,7 +553,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (results.isEmpty)
@@ -560,12 +566,14 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       def perform(res: Result): Option[BigDecimal] =
         res map {
-          case (sum, count) => sum / count
+          case (sum, count) =>
+            sum / count
         }
 
       def extract(res: Result): Table =
         perform(res) map {
-          case v => Table.constDecimal(Set(v))
+          case v =>
+            Table.constDecimal(Set(v))
         } getOrElse Table.empty
 
       def extractValue(res: Result) =
@@ -633,7 +641,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (results.isEmpty)
@@ -645,7 +654,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
       private def perform(res: Result) =
         res map {
-          case (prod, count) => math.pow(prod.toDouble, 1 / count.toDouble)
+          case (prod, count) =>
+            math.pow(prod.toDouble, 1 / count.toDouble)
         } filter (StdLib.doubleIsDefined)
 
       def extract(res: Result): Table =
@@ -704,7 +714,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 else
                   None
 
-              case _ => None
+              case _ =>
+                None
             }
 
             if (result.isEmpty)
@@ -782,7 +793,8 @@ trait ReductionLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             else
               None
 
-          case _ => None
+          case _ =>
+            None
         }
 
         if (result.isEmpty)

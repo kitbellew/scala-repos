@@ -142,9 +142,12 @@ abstract class TailCalls extends Transform {
       final def yesTailContext() = clonedTailContext(true)
       protected def clonedTailContext(tailPos: Boolean): TailContext =
         this match {
-          case _ if this.tailPos == tailPos => this
-          case clone: ClonedTailContext     => clone.that.clonedTailContext(tailPos)
-          case _                            => new ClonedTailContext(this, tailPos)
+          case _ if this.tailPos == tailPos =>
+            this
+          case clone: ClonedTailContext =>
+            clone.that.clonedTailContext(tailPos)
+          case _ =>
+            new ClonedTailContext(this, tailPos)
         }
     }
 
@@ -244,8 +247,10 @@ abstract class TailCalls extends Transform {
           mustTransformArgs: Boolean = true) = {
         val receiver: Tree =
           fun match {
-            case Select(qual, _) => qual
-            case _               => EmptyTree
+            case Select(qual, _) =>
+              qual
+            case _ =>
+              EmptyTree
           }
         def receiverIsSame = ctx.enclosingType.widen =:= receiver.tpe.widen
         def receiverIsSuper = ctx.enclosingType.widen <:< receiver.tpe.widen
@@ -542,7 +547,8 @@ abstract class TailCalls extends Transform {
 
         case Apply(_, _) | EmptyTree | Super(_, _) | This(_) | Select(_, _) |
             Ident(_) | Literal(_) | Function(_, _) | TypeTree() =>
-        case _                                                  => super.traverse(tree)
+        case _ =>
+          super.traverse(tree)
       }
   }
 }

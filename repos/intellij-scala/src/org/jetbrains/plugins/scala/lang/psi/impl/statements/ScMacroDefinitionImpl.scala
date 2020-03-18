@@ -94,7 +94,8 @@ class ScMacroDefinitionImpl private (
           doGetType(),
           Some(this)
         ) // TODO look up type from the macro impl.
-      case Some(rte: ScTypeElement) => rte.getType(TypingContext.empty)
+      case Some(rte: ScTypeElement) =>
+        rte.getType(TypingContext.empty)
     }
 
   def body: Option[ScExpression] = {
@@ -122,13 +123,16 @@ class ScMacroDefinitionImpl private (
           .createTypeElementFromText("(Int, String)", getManager)
           .getType()
           .get
-      case _ => Any
+      case _ =>
+        Any
     }
   }
   override def accept(visitor: PsiElementVisitor) {
     visitor match {
-      case s: ScalaElementVisitor => s.visitMacroDefinition(this)
-      case _                      => super.accept(visitor)
+      case s: ScalaElementVisitor =>
+        s.visitMacroDefinition(this)
+      case _ =>
+        super.accept(visitor)
     }
   }
 }
